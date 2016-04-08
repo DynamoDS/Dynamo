@@ -58,7 +58,7 @@ a;
                         }
                         ", core);
             ExecutionMirror mirror = runtimeCore.Mirror;
-            Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 10);
+            thisTest.Verify("a", 10);
 
         }
         [Test]
@@ -80,7 +80,7 @@ a;
                         }
                         ", core);
             ExecutionMirror mirror = runtimeCore.Mirror;
-            Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 20);
+            thisTest.Verify("a", 20);
         }
         [Test]
         [Ignore]
@@ -102,7 +102,7 @@ a;
                         }
                         ", core);
             ExecutionMirror mirror = runtimeCore.Mirror;
-            Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 60);
+            thisTest.Verify("a", 60);
         }
 
 
@@ -127,8 +127,8 @@ a;ainit;
                         }
                         ", core);
             ExecutionMirror mirror = runtimeCore.Mirror;
-            Assert.IsTrue((Int64)mirror.GetValue("ainit", 0).Payload == 2);
-            Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 6);
+            thisTest.Verify("ainit", 2);
+            thisTest.Verify("a", 6);
         }
         [Test]
         [Ignore]
@@ -151,17 +151,16 @@ a;ainit;afirst;
                         }
                         ", core);
             ExecutionMirror mirror = runtimeCore.Mirror;
-            Assert.IsTrue((Int64)mirror.GetValue("ainit", 0).Payload == 3);
-            Assert.IsTrue((Int64)mirror.GetValue("afirst", 0).Payload == 4);
-            Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 16);
+            thisTest.Verify("ainit", 3);
+            thisTest.Verify("afirst", 4);
+            thisTest.Verify("a", 16);
         }
         [Test]
         [Ignore]
         [Category("ModifierBlock")]
         public void ModifierStackWithArray()
         {
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore  = fsr.Execute(
+            string code = 
                         @"
 a;
 ainit;
@@ -174,24 +173,18 @@ afirst;
                                     1 => afirst;
                                 }
                         }
-                        ", core);
+                        ";
 
-            ExecutionMirror mirror = runtimeCore.Mirror;
-            Obj o = mirror.GetValue("ainit");
-            List<Obj> os = mirror.GetArrayElements(o);
-            Assert.IsTrue(os.Count == 3);
-            Assert.IsTrue((Int64)os[0].Payload == 3);
-            Assert.IsTrue((Int64)os[1].Payload == 2);
-            Assert.IsTrue((Int64)os[2].Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetValue("afirst", 0).Payload == 1);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("ainit", new[] { 3, 2, 1 });
+            thisTest.Verify("afirst", 1);
         }
         [Test]
         [Ignore]
         [Category("ModifierBlock")] 
         public void ModifierStackWithArrayAndFunction()
         {
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore  = fsr.Execute(
+            string code = 
                         @"ainit;afirst;b;
                         [Associative]
                          {
@@ -206,16 +199,10 @@ afirst;
                                      foo(7) => afirst;
                                  }
                          }
-                        ", core);
-            ExecutionMirror mirror = runtimeCore.Mirror;
-            Obj o = mirror.GetValue("ainit");
-            List<Obj> os = mirror.GetArrayElements(o);
-            Assert.IsTrue(os.Count == 3);
-            Assert.IsTrue((Int64)os[0].Payload == 3);
-            Assert.IsTrue((Int64)os[1].Payload == 2);
-            Assert.IsTrue((Int64)os[2].Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetValue("afirst", 0).Payload == 9);
-            Assert.IsTrue((Int64)mirror.GetValue("b", 0).Payload == 9);
+                        ";
+            thisTest.Verify("ainit", new[] { 3, 2, 1 });
+            thisTest.Verify("afirst", 9);
+            thisTest.Verify("b", 9);
         }
 
         [Test]
@@ -223,8 +210,7 @@ afirst;
         [Category("ModifierBlock")] 
         public void ModifierStackWithArrayAndFunction2()
         {
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore  = fsr.Execute(
+            string code = 
                         @"b;ainit;afirst;
                          [Associative]
                          {
@@ -239,19 +225,18 @@ afirst;
                                      foo(ainit) => afirst;
                                  }
                          }
-                        ", core);
-            ExecutionMirror mirror = runtimeCore.Mirror;
-            Assert.IsTrue((Int64)mirror.GetValue("ainit", 0).Payload == 8);
-            Assert.IsTrue((Int64)mirror.GetValue("afirst", 0).Payload == 10);
-            Assert.IsTrue((Int64)mirror.GetValue("b", 0).Payload == 10);
+                        ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("ainit", 8);
+            thisTest.Verify("afirst", 10);
+            thisTest.Verify("b", 10);
         }
         [Test]
         [Ignore]
         [Category("ModifierBlock")] 
         public void ModifierStackWithArrayAndFunctionReplication()
         {
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore  = fsr.Execute(
+           string code =  
                         @"ainit;afirst;b;
                          [Associative]
                          {
@@ -266,26 +251,11 @@ afirst;
                                      foo(ainit) => afirst;
                                  }
                          }
-                        ", core);
-            ExecutionMirror mirror = runtimeCore.Mirror;
-            Obj o = mirror.GetValue("ainit");
-            List<Obj> os = mirror.GetArrayElements(o);
-            Assert.IsTrue(os.Count == 3);
-            Assert.IsTrue((Int64)os[0].Payload == 1);
-            Assert.IsTrue((Int64)os[1].Payload == 2);
-            Assert.IsTrue((Int64)os[2].Payload == 3);
-            o = mirror.GetValue("afirst");
-            os = mirror.GetArrayElements(o);
-            Assert.IsTrue(os.Count == 3);
-            Assert.IsTrue((Int64)os[0].Payload == 3);
-            Assert.IsTrue((Int64)os[1].Payload == 4);
-            Assert.IsTrue((Int64)os[2].Payload == 5);
-            o = mirror.GetValue("b");
-            os = mirror.GetArrayElements(o);
-            Assert.IsTrue(os.Count == 3);
-            Assert.IsTrue((Int64)os[0].Payload == 3);
-            Assert.IsTrue((Int64)os[1].Payload == 4);
-            Assert.IsTrue((Int64)os[2].Payload == 5);
+                        ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("ainit", new object[] { 1, 2, 3 });
+            thisTest.Verify("afirst", new object[] {3, 4, 5});
+            thisTest.Verify("b", new object[] {3, 4, 5});
         }
         [Test]
         [Ignore][Category("DSDefinedClass_Ignored_EmptyTest")]

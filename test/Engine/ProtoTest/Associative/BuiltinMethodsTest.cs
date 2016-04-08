@@ -18,7 +18,14 @@ namespace ProtoTest.Associative
         public void BIM01_SomeNulls()
         {
             String code =
-@"a = {null,20,30,null,{10,0},0,5,2};b = {1,2,3};e = {3,20,30,4,{null,0},0,5,2};c = SomeNulls(a);d = SomeNulls(b);f = SomeNulls(e);";
+@"
+a = {null,20,30,null,{10,0},0,5,2};
+b = {1,2,3};
+e = {3,20,30,4,{null,0},0,5,2};
+c = SomeNulls(a);
+d = SomeNulls(b);
+f = SomeNulls(e);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("c", true);
             thisTest.Verify("d", false);
@@ -30,11 +37,17 @@ namespace ProtoTest.Associative
         public void BIM02_CountTrue()
         {
             String code =
-@"a = {true,true,true,false,{true,false},true,{false,false,{true,{false},true,true,false}}};b = {true,true,true,false,true,true};c = {true,true,true,true,true,true,true};w = CountTrue(a);x = CountTrue(b);y = CountTrue(c);";
+@"a = {true,true,true,false,{true,false},true,{false,false,{true,{false},true,true,false}}};
+b = {true,true,true,false,true,true};
+c = {true,true,true,true,true,true,true};
+w = CountTrue(a);
+x = CountTrue(b);
+y = CountTrue(c);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("w").Payload == 8);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 5);
-            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 7);
+            thisTest.Verify("w",8);
+            thisTest.Verify("x",5);
+            thisTest.Verify("y",7);
         }
 
         [Test]
@@ -42,11 +55,17 @@ namespace ProtoTest.Associative
         public void BIM03_CountFalse()
         {
             String code =
-@"a = {true,true,true,false,{true,false},true,{false,false,{true,{false},true,true,false}}};b = {true,true,true,false,true,true};c = {true,true,true,true,true,true,true};e = CountFalse(a);f = CountFalse(b);g = CountFalse(c);";
+@"a = {true,true,true,false,{true,false},true,{false,false,{true,{false},true,true,false}}};
+b = {true,true,true,false,true,true};
+c = {true,true,true,true,true,true,true};
+e = CountFalse(a);
+f = CountFalse(b);
+g = CountFalse(c);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("e").Payload == 6);
-            Assert.IsTrue((Int64)mirror.GetValue("f").Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetValue("g").Payload == 0);
+            thisTest.Verify("e",6);
+            thisTest.Verify("f",1);
+            thisTest.Verify("g",0);
         }
 
         [Test]
@@ -54,7 +73,17 @@ namespace ProtoTest.Associative
         public void BIM04_AllFalse_AllTrue()
         {
             String code =
-@"a = {true};b = {false,false,{false,{false,{false,false,{false},false}}},false};c = {true,true,true,true,{true,true},true,{true,true,{true, true,{true},true,true,true}}};d = AllTrue(a);e = AllTrue(b);f = AllTrue(c);g = AllFalse(a);h = AllFalse(b);i = AllFalse(c);";
+@"
+a = {true};
+b = {false,false,{false,{false,{false,false,{false},false}}},false};
+c = {true,true,true,true,{true,true},true,{true,true,{true, true,{true},true,true,true}}};
+d = AllTrue(a);
+e = AllTrue(b);
+f = AllTrue(c);
+g = AllFalse(a);
+h = AllFalse(b);
+i = AllFalse(c);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", true);
             thisTest.Verify("e", false);
@@ -69,8 +98,18 @@ namespace ProtoTest.Associative
         public void BIM05_IsHomogeneous()
         {
             String code =
-@"a = {1,2,3,4,5};b = {false, true, false};c = {{1},{1.0,2.0}};d = {null,1,2,3};e = {};ca = IsHomogeneous(a);cb = IsHomogeneous(b);cc = IsHomogeneous(c);cd = IsHomogeneous(d);ce = IsHomogeneous(e);";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+@"a = {1,2,3,4,5};
+b = {false, true, false};
+c = {{1},{1.0,2.0}};
+d = {null,1,2,3};
+e = {};
+ca = IsHomogeneous(a);
+cb = IsHomogeneous(b);
+cc = IsHomogeneous(c);
+cd = IsHomogeneous(d);
+ce = IsHomogeneous(e);
+";
+            thisTest.RunScriptSource(code);
             thisTest.Verify("ca", true);
             thisTest.Verify("cb", true);
             thisTest.Verify("cc", true);
@@ -83,8 +122,15 @@ namespace ProtoTest.Associative
         public void BIM06_SumAverage()
         {
             String code =
-@"b = {1,2,{3,4,{5,{6,{7},8,{9,10},11}},12,13,14,{15}},16};c = {1.2,2.2,{3.2,4.2,{5.2,{6.2,{7.2},8.2,{9.2,10.2},11.2}},12.2,13.2,14.2,{15.2}},16.2};x = Average(b);y = Sum(b);z = Average(c);s = Sum(c);";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+@"
+b = {1,2,{3,4,{5,{6,{7},8,{9,10},11}},12,13,14,{15}},16};
+c = {1.2,2.2,{3.2,4.2,{5.2,{6.2,{7.2},8.2,{9.2,10.2},11.2}},12.2,13.2,14.2,{15.2}},16.2};
+x = Average(b);
+y = Sum(b);
+z = Average(c);
+s = Sum(c);
+";
+            thisTest.RunScriptSource(code);
             thisTest.Verify("x", 8.5);
             thisTest.Verify("y", 136);
             thisTest.Verify("z", 8.7);
@@ -97,8 +143,17 @@ namespace ProtoTest.Associative
         public void BIM07_SomeTrue_SomeFalse()
         {
             String code =
-@"a = {true,true,true,{false,false,{true, true,{false},true,true,false}}};b = {true,true,{true,true,true,{true,{true},true},true},true};c = {true, false, false};p = SomeTrue(a);q = SomeTrue(b);r = SomeTrue(c);s = SomeFalse(a);t = SomeFalse(b);u = SomeFalse(c);";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+@"a = {true,true,true,{false,false,{true, true,{false},true,true,false}}};
+b = {true,true,{true,true,true,{true,{true},true},true},true};
+c = {true, false, false};
+p = SomeTrue(a);
+q = SomeTrue(b);
+r = SomeTrue(c);
+s = SomeFalse(a);
+t = SomeFalse(b);
+u = SomeFalse(c);
+";
+            thisTest.RunScriptSource(code);
             thisTest.Verify("p", true);
             thisTest.Verify("q", true);
             thisTest.Verify("r", true);
@@ -112,12 +167,22 @@ namespace ProtoTest.Associative
         public void BIM08_Remove_RemoveDuplicate()
         {
             String code =
-@"a = {null,20,30,null,20,15,true,true,5,false};b = {1,2,3,4,9,4,2,5,6,7,8,7,1,0,2};rda = RemoveDuplicates(a);rdb = RemoveDuplicates(b);ra = Remove(a,3);rb = Remove(b,2);p = rda[3];q = rdb[4];x = ra[3];y = rb[2];";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("p").Payload == 15);
-            Assert.IsTrue((Int64)mirror.GetValue("q").Payload == 9);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 20);
-            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 4);
+@"a = {null,20,30,null,20,15,true,true,5,false};
+b = {1,2,3,4,9,4,2,5,6,7,8,7,1,0,2};
+rda = RemoveDuplicates(a);
+rdb = RemoveDuplicates(b);
+ra = Remove(a,3);
+rb = Remove(b,2);
+p = rda[3];
+q = rdb[4];
+x = ra[3];
+y = rb[2];
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("p",15);
+            thisTest.Verify("q",9);
+            thisTest.Verify("x",20);
+            thisTest.Verify("y",4);
         }
 
         [Test]
@@ -125,10 +190,16 @@ namespace ProtoTest.Associative
         public void BIM09_RemoveNulls()
         {
             String code =
-@"a = {1,{6,null,7,{null,null}},7,null,2};b = {null,{null,{null,{null},null},null},null};p = RemoveNulls(a);q = RemoveNulls(b);x = p[3];y = p[1][1];";
+@"a = {1,{6,null,7,{null,null}},7,null,2};
+b = {null,{null,{null,{null},null},null},null};
+p = RemoveNulls(a);
+q = RemoveNulls(b);
+x = p[3];
+y = p[1][1];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 2);
-            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 7);
+            thisTest.Verify("x",2);
+            thisTest.Verify("y",7);
         }
 
         [Test]
@@ -136,7 +207,16 @@ namespace ProtoTest.Associative
         public void BIM10_RemoveIfNot()
         {
             String code =
-@"a = {""This is "",""a very complex "",""array"",1,2.0,3,false,4.0,5,6.0,true,{2,3.1415926},null,false,'c'};b = RemoveIfNot(a, ""int"");c = RemoveIfNot(a, ""double"");d = RemoveIfNot(a, ""bool"");e = RemoveIfNot(a, ""array"");q = b[0];r = c[0];s = d[0];t = e[0][0];";
+@"a = {""This is "",""a very complex "",""array"",1,2.0,3,false,4.0,5,6.0,true,{2,3.1415926},null,false,'c'};
+b = RemoveIfNot(a, ""int"");
+c = RemoveIfNot(a, ""double"");
+d = RemoveIfNot(a, ""bool"");
+e = RemoveIfNot(a, ""array"");
+q = b[0];
+r = c[0];
+s = d[0];
+t = e[0][0];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("q", 1);
             thisTest.Verify("r", 2.0);
@@ -149,10 +229,16 @@ namespace ProtoTest.Associative
         public void BIM11_Reverse()
         {
             String code =
-@"a = {1,{{1},{3.1415}},null,1.0,12.3};b = {1,2,{3}};p = Reverse(a);q = Reverse(b);x = p[0];y = q[0][0];";
+@"a = {1,{{1},{3.1415}},null,1.0,12.3};
+b = {1,2,{3}};
+p = Reverse(a);
+q = Reverse(b);
+x = p[0];
+y = q[0][0];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(Math.Round((Double)mirror.GetValue("x").Payload, 4) == 12.3000);
-            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 3);
+            thisTest.Verify("x",12.3000);
+            thisTest.Verify("y",3);
         }
 
         [Test]
@@ -160,7 +246,16 @@ namespace ProtoTest.Associative
         public void BIM12_Contains()
         {
             String code =
-@"a = {1,{{1},{3.1415}},null,1.0,12.3};b = {1,2,{3}};x = {{1},{3.1415}};r = Contains(a, 3.0);s = Contains(a, x);t = Contains(a, null);u = Contains(b, b);v = Contains(b, {3});w = Contains(b, 3);";
+@"a = {1,{{1},{3.1415}},null,1.0,12.3};
+b = {1,2,{3}};
+x = {{1},{3.1415}};
+r = Contains(a, 3.0);
+s = Contains(a, x);
+t = Contains(a, null);
+u = Contains(b, b);
+v = Contains(b, {3});
+w = Contains(b, 3);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", false);
             thisTest.Verify("s", true);
@@ -176,13 +271,22 @@ namespace ProtoTest.Associative
         public void BIM13_IndexOf()
         {
             String code =
-@"a = {1,{{1},{3.1415}},null,1.0,12,3};b = {1,2,{3}};c = {1,2,{3}};d = {{1},{3.1415}};r = IndexOf(a, d);s = IndexOf(a, 1);t = IndexOf(a, null);u = IndexOf(b, {3});v = IndexOf(b, 3);";
+@"a = {1,{{1},{3.1415}},null,1.0,12,3};
+b = {1,2,{3}};
+c = {1,2,{3}};
+d = {{1},{3.1415}};
+r = IndexOf(a, d);
+s = IndexOf(a, 1);
+t = IndexOf(a, null);
+u = IndexOf(b, {3});
+v = IndexOf(b, 3);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("r").Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetValue("s").Payload == 0);
-            Assert.IsTrue((Int64)mirror.GetValue("t").Payload == 2);
-            Assert.IsTrue((Int64)mirror.GetValue("u").Payload == 2);
-            Assert.IsTrue((Int64)mirror.GetValue("v").Payload == -1);
+            thisTest.Verify("r",1);
+            thisTest.Verify("s",0);
+            thisTest.Verify("t",2);
+            thisTest.Verify("u",2);
+            thisTest.Verify("v",-1);
         }
 
         [Test]
@@ -190,7 +294,19 @@ namespace ProtoTest.Associative
         public void BIM14_Sort()
         {
             String code =
-@"a = {1,3,5,7,9,8,6,4,2,0};b = {1.3,2,0.8,2,null,2,2.0,2,null};x = Sort(a);x1 = Sort(a,true);x2 = Sort(a,false);y = Sort(b);p = x[0];p1 = x1[0];p2 = x2[0];q = x[9];s = y[0];t = y[7];";
+@"a = {1,3,5,7,9,8,6,4,2,0};
+b = {1.3,2,0.8,2,null,2,2.0,2,null};
+x = Sort(a);
+x1 = Sort(a,true);
+x2 = Sort(a,false);
+y = Sort(b);
+p = x[0];
+p1 = x1[0];
+p2 = x2[0];
+q = x[9];
+s = y[0];
+t = y[7];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("p", 0);
             thisTest.Verify("p1", 0);
@@ -205,7 +321,19 @@ namespace ProtoTest.Associative
         public void BIM15_SortIndexByValue()
         {
             String code =
-@"a = {1,3,5,7,9,8,6,4,2,0};b = {1.3,2,0.8,2,null,2,2.0,2,null};x = SortIndexByValue(a);x1 = SortIndexByValue(a,true);x2 = SortIndexByValue(a,false);y = SortIndexByValue(b);p = x[0];p1 = x1[0];p2 = x2[0];q = x[9];s = y[0];t = y[7];";
+@"a = {1,3,5,7,9,8,6,4,2,0};
+b = {1.3,2,0.8,2,null,2,2.0,2,null};
+x = SortIndexByValue(a);
+x1 = SortIndexByValue(a,true);
+x2 = SortIndexByValue(a,false);
+y = SortIndexByValue(b);
+p = x[0];
+p1 = x1[0];
+p2 = x2[0];
+q = x[9];
+s = y[0];
+t = y[7];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("p", 9);
             thisTest.Verify("p1", 9);
@@ -220,7 +348,20 @@ namespace ProtoTest.Associative
         public void BIM16_Insert()
         {
             String code =
-@"a = {false,2,3.1415926,null,{false}};b = 1;c = {1};d = {};e = {{1},2,3.0};p = Insert(a,b,1);q = Insert(a,c,1);r = Insert(a,d,0);s = Insert(a,e,5);u = p[1];v = q[1][0];w = r[1][0];x = s[5][0][0];";
+@"a = {false,2,3.1415926,null,{false}};
+b = 1;
+c = {1};
+d = {};
+e = {{1},2,3.0};
+p = Insert(a,b,1);
+q = Insert(a,c,1);
+r = Insert(a,d,0);
+s = Insert(a,e,5);
+u = p[1];
+v = q[1][0];
+w = r[1][0];
+x = s[5][0][0];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("u", 1);
             thisTest.Verify("v", 1);
@@ -233,12 +374,22 @@ namespace ProtoTest.Associative
         public void BIM17_SetDifference_SetUnion_SetIntersection()
         {
             String code =
-@"a = {false,15,6.0,15,false,null,15.0};b = {10,20,false,12,21,6.0,15,null,8.2};c = SetDifference(a,b);d = SetDifference(b,a);e = SetIntersection(a,b);f = SetUnion(a,b);p = c[0];q = d[1];r = e[1];s = f[1];";
+@"a = {false,15,6.0,15,false,null,15.0};
+b = {10,20,false,12,21,6.0,15,null,8.2};
+c = SetDifference(a,b);
+d = SetDifference(b,a);
+e = SetIntersection(a,b);
+f = SetUnion(a,b);
+p = c[0];
+q = d[1];
+r = e[1];
+s = f[1];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(Math.Round((Double)mirror.GetValue("p").Payload, 4) == 15.0000);
-            Assert.IsTrue((Int64)mirror.GetValue("q").Payload == 20);
-            Assert.IsTrue((Int64)mirror.GetValue("r").Payload == 15);
-            Assert.IsTrue((Int64)mirror.GetValue("s").Payload == 15);
+            thisTest.Verify("p",15.0000);
+            thisTest.Verify("q",20);
+            thisTest.Verify("r",15);
+            thisTest.Verify("s",15);
         }
 
         [Test]
@@ -246,11 +397,17 @@ namespace ProtoTest.Associative
         public void BIM18_Reorder()
         {
             String code =
-@"a = {1,4,3,8.0,2.0,0};b = {2,1,0,3,4};c = Reorder(a,b);p = c[0];q = c[1];r = c[2];";
+@"a = {1,4,3,8.0,2.0,0};
+b = {2,1,0,3,4};
+c = Reorder(a,b);
+p = c[0];
+q = c[1];
+r = c[2];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("p").Payload == 3);
-            Assert.IsTrue((Int64)mirror.GetValue("q").Payload == 4);
-            Assert.IsTrue((Int64)mirror.GetValue("r").Payload == 1);
+            thisTest.Verify("p",3);
+            thisTest.Verify("q",4);
+            thisTest.Verify("r",1);
         }
 
         [Test]
@@ -258,7 +415,15 @@ namespace ProtoTest.Associative
         public void BIM19_IsUniformDepth()
         {
             String code =
-@"a = {};b = {1,2,3};c = {{1},{2,3}};d = {1,{2},{{3}}};p = IsUniformDepth(a);q = IsUniformDepth(b);r = IsUniformDepth(c);s = IsUniformDepth(d);";
+@"a = {};
+b = {1,2,3};
+c = {{1},{2,3}};
+d = {1,{2},{{3}}};
+p = IsUniformDepth(a);
+q = IsUniformDepth(b);
+r = IsUniformDepth(c);
+s = IsUniformDepth(d);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("p", true);
             thisTest.Verify("q", true);
@@ -271,12 +436,21 @@ namespace ProtoTest.Associative
         public void BIM20_NormalizeDepth()
         {
             String code =
-@"a = {{1,{2,3,4,{5}}}};p = NormalizeDepth(a,1);q = NormalizeDepth(a,2);r = NormalizeDepth(a,4);s = NormalizeDepth(a);w = p[0];x = q[0][0];y = r[0][0][0][0];z = s[0][0][0][0];";
+@"a = {{1,{2,3,4,{5}}}};
+p = NormalizeDepth(a,1);
+q = NormalizeDepth(a,2);
+r = NormalizeDepth(a,4);
+s = NormalizeDepth(a);
+w = p[0];
+x = q[0][0];
+y = r[0][0][0][0];
+z = s[0][0][0][0];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("w").Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetValue("z").Payload == 1);
+            thisTest.Verify("w",1);
+            thisTest.Verify("x",1);
+            thisTest.Verify("y",1);
+            thisTest.Verify("z",1);
         }
 
         [Test]
@@ -284,10 +458,12 @@ namespace ProtoTest.Associative
         public void BIM21_Map_MapTo()
         {
             String code =
-@"a = Map(80.0, 120.0, 100.0);b = MapTo(0.0, 100.0 ,25.0, 80.0, 90.0);";
+@"a = Map(80.0, 120.0, 100.0);
+b = MapTo(0.0, 100.0 ,25.0, 80.0, 90.0);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(Math.Round((Double)mirror.GetValue("a").Payload, 4) == 0.5000);
-            Assert.IsTrue(Math.Round((Double)mirror.GetValue("b").Payload, 4) == 82.5000);
+            thisTest.Verify("a",0.5000);
+            thisTest.Verify("b",82.5000);
         }
 
         [Test]
@@ -295,7 +471,12 @@ namespace ProtoTest.Associative
         public void BIM22_Transpose()
         {
             String code =
-@"a = {{1,2,3},{1,2},{1,2,3,4,5,6,7}};p = Transpose(a);q = Transpose(p);x = p[6][0];y = q[2][6];";
+@"a = {{1,2,3},{1,2},{1,2,3,4,5,6,7}};
+p = Transpose(a);
+q = Transpose(p);
+x = p[6][0];
+y = q[2][6];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", null);
             thisTest.Verify("y", 7);
@@ -314,7 +495,14 @@ namespace ProtoTest.Associative
         public void BIM23_LoadCSV()
         {
             String code =
-@"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv"";b = ImportFromCSV(a);c = ImportFromCSV(a, false);d = ImportFromCSV(a, true);x = b[0][2];y = c[0][2];z = d[0][2];";
+@"a = ""../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv"";
+b = ImportFromCSV(a);
+c = ImportFromCSV(a, false);
+d = ImportFromCSV(a, true);
+x = b[0][2];
+y = c[0][2];
+z = d[0][2];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 3.0);
             thisTest.Verify("y", 3.0);
@@ -327,7 +515,10 @@ namespace ProtoTest.Associative
         {
             // ensure that white space is trimmed from the path
             String code =
-@"a = ""\n \r\t../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv\r\r\n "";b = ImportFromCSV(a);x = b[0][2];";
+@"a = ""\n \r\t../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv\r\r\n "";
+b = ImportFromCSV(a);
+x = b[0][2];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 3.0);
         }
@@ -337,7 +528,13 @@ namespace ProtoTest.Associative
         public void BIM24_Count()
         {
             String code =
-@"a = {1, 2, 3, 4};b = { { 1, { 2, 3, 4, { 5 } } } };c = { { 2, null }, 1, ""str"", { 2, { 3, 4 } } };x = Count(a);y = Count(b);z = Count(c);";
+@"a = {1, 2, 3, 4};
+b = { { 1, { 2, 3, 4, { 5 } } } };
+c = { { 2, null }, 1, ""str"", { 2, { 3, 4 } } };
+x = Count(a);
+y = Count(b);
+z = Count(c);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 4);
             thisTest.Verify("y", 1);
@@ -349,7 +546,13 @@ namespace ProtoTest.Associative
         public void BIM25_Rank()
         {
             String code =
-@"a = { { 1 }, 2, 3, 4 };b = { ""good"", { { null } }, { 1, { 2, 3, 4, { 5, { ""good"" }, { null } } } } };c = { { null }, { 2, ""good"" }, 1, null, { 2, { 3, 4 } } };x = Rank(a);y = Rank(b);z = Rank(c);";
+@"a = { { 1 }, 2, 3, 4 };
+b = { ""good"", { { null } }, { 1, { 2, 3, 4, { 5, { ""good"" }, { null } } } } };
+c = { { null }, { 2, ""good"" }, 1, null, { 2, { 3, 4 } } };
+x = Rank(a);
+y = Rank(b);
+z = Rank(c);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 2);
             thisTest.Verify("y", 5);
@@ -361,7 +564,17 @@ namespace ProtoTest.Associative
         public void BIM26_Flatten()
         {
             String code =
-@"a = {1, 2, 3, 4};b = { ""good"", { 1, { 2, 3, 4, { 5 } } } };c = { null, { 2, ""good""}, 1, null, { 2, { 3, 4 } } };q = Flatten(a);p = Flatten(b);r = Flatten(c);x = q[0];y = p[2];z = r[4];s = p[0];";
+@"a = {1, 2, 3, 4};
+b = { ""good"", { 1, { 2, 3, 4, { 5 } } } };
+c = { null, { 2, ""good""}, 1, null, { 2, { 3, 4 } } };
+q = Flatten(a);
+p = Flatten(b);
+r = Flatten(c);
+x = q[0];
+y = p[2];
+z = r[4];
+s = p[0];
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
             thisTest.Verify("y", 2);
@@ -374,7 +587,18 @@ namespace ProtoTest.Associative
         public void BIM27_Conversion_Resolution_Cases()
         {
             String code =
-@"a = {null,20,30,null,{10,0},true,{false,0,{true,{false},5,2,false}}};b = {1,2,{3,4,9},4,2,5,{6,7,{8}},7,1,0,2};x = CountTrue(a);y = CountFalse(a);z = AllTrue(a);w = AllFalse(a);p = SomeTrue(a);q = SomeTrue(a);r = Sum(true);s = Sum(null);t = RemoveDuplicates(b);";
+@"a = {null,20,30,null,{10,0},true,{false,0,{true,{false},5,2,false}}};
+b = {1,2,{3,4,9},4,2,5,{6,7,{8}},7,1,0,2};
+x = CountTrue(a);
+y = CountFalse(a);
+z = AllTrue(a);
+w = AllFalse(a);
+p = SomeTrue(a);
+q = SomeTrue(a);
+r = Sum(true);
+s = Sum(null);
+t = RemoveDuplicates(b);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Theses are invalid cases not following the parameter requirements
             //But need error messages when executing.
@@ -385,7 +609,13 @@ namespace ProtoTest.Associative
         public void BIM28_IsRectangular()
         {
             String code =
-@"a = {{1,{2,3}},{4, 5, 6}};b= {{1, 2, 3, 4}, {5, 6, 7, 8}};c= {};x = IsRectangular(a);y = IsRectangular(b);z = IsRectangular(c);";
+@"a = {{1,{2,3}},{4, 5, 6}};
+b= {{1, 2, 3, 4}, {5, 6, 7, 8}};
+c= {};
+x = IsRectangular(a);
+y = IsRectangular(b);
+z = IsRectangular(c);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", false);
             thisTest.Verify("y", true);
@@ -395,7 +625,10 @@ namespace ProtoTest.Associative
         [Test]
         public void BIM29_RemoveIfNot()
         {
-            string code = @"a = { true,null,false,true};b = RemoveIfNot(a, ""bool""); ";
+            string code = @"
+a = { true,null,false,true};
+b = RemoveIfNot(a, ""bool""); 
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { true, false, true });
         }
@@ -405,10 +638,28 @@ namespace ProtoTest.Associative
         public void BIM30_RemoveDuplicate()
         {
             String code =
-@"import(""FFITarget.dll"");a = {null,20,30,null,20,15,true,true,5,false};b = {1,2,3,4,9,4,2,5,6,7,8,7,1,0,2};rda = RemoveDuplicates(a);rdb = RemoveDuplicates(b);rdd = RemoveDuplicates({{1,2,{5,{6}}}, {1,2,{5,6}}, {1,2,{5,{6}}}});rde = RemoveDuplicates({""hello2"", ""hello"", 'r', ""hello2"", 's', 's', ""hello"", ' '});rdf = RemoveDuplicates({});p = rda[3];q = rdb[4];m2 = rdd[0][2][0];m3 = rde[4];res1 = Count(rda);res2 = Count(rdb);res4 = Count(rdd);res5 = Count(rde);res6 = Count(rdf);";
+@"
+import(""FFITarget.dll"");
+a = {null,20,30,null,20,15,true,true,5,false};
+b = {1,2,3,4,9,4,2,5,6,7,8,7,1,0,2};
+rda = RemoveDuplicates(a);
+rdb = RemoveDuplicates(b);
+rdd = RemoveDuplicates({{1,2,{5,{6}}}, {1,2,{5,6}}, {1,2,{5,{6}}}});
+rde = RemoveDuplicates({""hello2"", ""hello"", 'r', ""hello2"", 's', 's', ""hello"", ' '});
+rdf = RemoveDuplicates({});
+p = rda[3];
+q = rdb[4];
+m2 = rdd[0][2][0];
+m3 = rde[4];
+res1 = Count(rda);
+res2 = Count(rdb);
+res4 = Count(rdd);
+res5 = Count(rde);
+res6 = Count(rdf);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("p").Payload == 15);
-            Assert.IsTrue((Int64)mirror.GetValue("q").Payload == 9);
+            thisTest.Verify("p",15);
+            thisTest.Verify("q",9);
             thisTest.Verify("m2", 5);
             thisTest.Verify("m3", ' ');
             thisTest.Verify("res1", 7);
@@ -423,7 +674,13 @@ namespace ProtoTest.Associative
         public void BIM31_Sort()
         {
             String code =
-@"a = { 3, 1, 2 };def sorterFunction(a : double, b : int){    return = a > b ? 1 : -1;}sort = Sort(sorterFunction, a);";
+@"a = { 3, 1, 2 };
+def sorterFunction(a : double, b : int)
+{
+    return = a > b ? 1 : -1;
+}
+sort = Sort(sorterFunction, a);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { 1, 2, 3 });
         }
@@ -433,7 +690,20 @@ namespace ProtoTest.Associative
         public void BIM31_Sort_null()
         {
             String code =
-@"c = { 3, 1, 2,null };def sorterFunction(a : int, b : int){    return = [Imperative]    {        if (a == null)            return = -1;        if (b == null)            return = 1;        return = a > b ? 10 : -10;    }}sort = Sort(sorterFunction, c);";
+@"c = { 3, 1, 2,null };
+def sorterFunction(a : int, b : int)
+{
+    return = [Imperative]
+    {
+        if (a == null)
+            return = -1;
+        if (b == null)
+            return = 1;
+        return = a > b ? 10 : -10;
+    }
+}
+sort = Sort(sorterFunction, c);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { null, 1, 2, 3 });
         }
@@ -443,7 +713,20 @@ namespace ProtoTest.Associative
         public void BIM31_Sort_duplicate()
         {
             String code =
-@"c = { 3, 1, 2, 2,null };def sorterFunction(a : int, b : int){    return = [Imperative]    {        if (a == null)            return = -1;        if (b == null)            return = 1;        return = a - b;    }}sort = Sort(sorterFunction, c);";
+@"c = { 3, 1, 2, 2,null };
+def sorterFunction(a : int, b : int)
+{
+    return = [Imperative]
+    {
+        if (a == null)
+            return = -1;
+        if (b == null)
+            return = 1;
+        return = a - b;
+    }
+}
+sort = Sort(sorterFunction, c);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { null, 1, 2, 2, 3 });
         }
@@ -845,7 +1128,26 @@ k = GetKeys(x);";
         public void TestMathematicalFunction()
         {
             String code =
-@"import(""DSCoreNodes.dll"");a = -9.30281;b = 20.036;x1 = Math.Abs(a);y1 = Math.Abs(b);x2 = Math.Ceiling(a);y2 = Math.Ceiling(b);x3 = Math.Exp(1.3);y3 = Math.Exp(b);x4 = Math.Floor(a);y4 = Math.Floor(b);x5 = Math.Log(x1, 2);y5 = Math.Log(b, 2);x6 = Math.Log10(x1);y6 = Math.Log10(b);x7 = Math.Min(a, b);y7 = Math.Max(a, b);x9 = Math.Sqrt(x1);y9 = Math.Sqrt(b);";
+@"import(""DSCoreNodes.dll"");
+a = -9.30281;
+b = 20.036;
+x1 = Math.Abs(a);
+y1 = Math.Abs(b);
+x2 = Math.Ceiling(a);
+y2 = Math.Ceiling(b);
+x3 = Math.Exp(1.3);
+y3 = Math.Exp(b);
+x4 = Math.Floor(a);
+y4 = Math.Floor(b);
+x5 = Math.Log(x1, 2);
+y5 = Math.Log(b, 2);
+x6 = Math.Log10(x1);
+y6 = Math.Log10(b);
+x7 = Math.Min(a, b);
+y7 = Math.Max(a, b);
+x9 = Math.Sqrt(x1);
+y9 = Math.Sqrt(b);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x1", 9.30281);
             thisTest.Verify("y1", 20.036);
@@ -872,7 +1174,29 @@ k = GetKeys(x);";
         public void TestTrigonometricFunction()
         {
             String code =
-@"import(""DSCoreNodes.dll"");a = -0.5;b = 0.5;c = 45;d = -45;e = 2.90;f = 1.90;x1 = Math.Acos(a);y1 = Math.Asin(a);z1 = Math.Atan(a);r1 = Math.Atan2(e, f);x2 = Math.Acos(b);y2 = Math.Asin(b);z2 = Math.Atan(b);x3 = Math.Sin(c);y3 = Math.Cos(c);z3 = Math.Tan(c);r3 = Math.Tanh(c);x4 = Math.Sin(d);y4 = Math.Cos(d);z4 = Math.Tan(d);r4 = Math.Tanh(d);";
+@"import(""DSCoreNodes.dll"");
+a = -0.5;
+b = 0.5;
+c = 45;
+d = -45;
+e = 2.90;
+f = 1.90;
+x1 = Math.Acos(a);
+y1 = Math.Asin(a);
+z1 = Math.Atan(a);
+r1 = Math.Atan2(e, f);
+x2 = Math.Acos(b);
+y2 = Math.Asin(b);
+z2 = Math.Atan(b);
+x3 = Math.Sin(c);
+y3 = Math.Cos(c);
+z3 = Math.Tan(c);
+r3 = Math.Tanh(c);
+x4 = Math.Sin(d);
+y4 = Math.Cos(d);
+z4 = Math.Tan(d);
+r4 = Math.Tanh(d);
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x1", 120.0);
             thisTest.Verify("y1", -30.0);

@@ -1260,10 +1260,8 @@ c;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            ProtoCore.Lang.Obj o = mirror.GetValue("x");
-            Assert.IsTrue((Int64)o.Payload == 5);
-            ProtoCore.Lang.Obj o2 = mirror.GetValue("test");
-            Assert.IsTrue((Int64)o2.Payload == 10);
+            thisTest.Verify("x",5);
+            thisTest.Verify("test",10);
         }
 
         [Test]
@@ -1279,14 +1277,8 @@ c;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            ProtoCore.Lang.Obj o = mirror.GetValue("foo");
-            ProtoCore.DSASM.Mirror.DsasmArray a = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
-            Assert.IsTrue(a.members.Length == 1);
-            Assert.IsTrue((Int64)a.members[0].Payload == 5);
-            ProtoCore.Lang.Obj o2 = mirror.GetValue("test");
-            ProtoCore.DSASM.Mirror.DsasmArray a2 = (ProtoCore.DSASM.Mirror.DsasmArray)o2.Payload;
-            Assert.IsTrue(a2.members.Length == 1);
-            Assert.IsTrue((Int64)a2.members[0].Payload == 10);
+            thisTest.Verify("foo", new [] { 5});
+            thisTest.Verify("test", new [] { 10});
         }
 
         [Test]
@@ -1307,10 +1299,7 @@ test;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            ProtoCore.Lang.Obj o = mirror.GetValue("test");
-            ProtoCore.DSASM.Mirror.DsasmArray a = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
-            Assert.IsTrue(a.members.Length == 1);
-            Assert.IsTrue((Int64)a.members[0].Payload == 10);
+            thisTest.Verify("test", new object[] {10});
         }
 
         [Test]
@@ -1331,7 +1320,7 @@ a = {12.0,13.0,14.0};
 x = f(a);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((double)mirror.GetValue("x").Payload == 14);
+            thisTest.Verify("x", 14);
         }
 
         [Test]
@@ -1352,9 +1341,9 @@ x2 = t[1];
 x3 = t[2];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((double)mirror.GetValue("x1").Payload == 12);
-            Assert.IsTrue((double)mirror.GetValue("x2").Payload == 13);
-            Assert.IsTrue((double)mirror.GetValue("x3").Payload == 14);
+            thisTest.Verify("x1", 12);
+            thisTest.Verify("x2", 13);
+            thisTest.Verify("x3", 14);
         }
 
         [Test]
@@ -1372,7 +1361,7 @@ x = f(list);
 y = x[0] + x[1];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 32);
+            thisTest.Verify("y", 32);
         }
 
         [Test]
@@ -1384,8 +1373,7 @@ y = x[0] + x[1];
 a = fun();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Double)o.Payload == 4);
+            thisTest.Verify("a",4);
         }
 
         [Test]
@@ -1400,8 +1388,7 @@ a;
 a = fun();
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Double)o.Payload == 4);
+            thisTest.Verify("a",4);
         }
 
         [Test]
@@ -1413,8 +1400,7 @@ a = fun();
 a = fun(1.0);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Double)o.Payload == 4);
+            thisTest.Verify("a",4);
         }
 
         [Test]
@@ -1512,9 +1498,7 @@ a = fun({{1.0, 2.0, 3.0, 4.0}, {5.0, 6.0}});
 a = fun(1.0, 2.0);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue(!o.Type.IsIndexable);
-            Assert.IsTrue((Double)o.Payload == 4);
+            thisTest.Verify("a", 4);
         }
 
         [Test]
@@ -2517,14 +2501,6 @@ controlPolyF = Polygon.ByVertices(groupOfPointGroups);
 c=2 * {{1},{2}};";
             string error = "";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //Object[] v1 = new Object[] {true,true,true,false,false};
-            Object v1 = null;
-            Assert.IsTrue(mirror.GetValue("controlPolyA").Payload != v1);
-            Assert.IsTrue(mirror.GetValue("controlPolyB").Payload != v1);
-            Assert.IsTrue(mirror.GetValue("controlPolyC").Payload != v1);
-            Assert.IsTrue(mirror.GetValue("controlPolyD").Payload == v1);
-            Assert.IsTrue(mirror.GetValue("controlPolyE").Payload != v1);
-            //thisTest.Verify("controlPolyA",v2);
         }
 
         [Test]

@@ -629,7 +629,7 @@ x3 = a1.y;
 
             thisTest.Verify("x1", 1, 0);
             thisTest.Verify("x2", 2, 0);
-            Assert.IsTrue(mirror.GetValue("x3").DsasmValue.IsNull);
+            thisTest.Verify("x3", null);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -696,7 +696,7 @@ b1 = a1.x;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.IdUnboundIdentifier);
-            Assert.IsTrue(mirror.GetValue("b1").DsasmValue.IsNull);
+            thisTest.Verify("b1", null);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -1393,8 +1393,8 @@ x5 = p1.W;
 x6 = p1.X;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("x2").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("x5").DsasmValue.IsNull);
+            thisTest.Verify("x2", null);
+            thisTest.Verify("x5", null);
             thisTest.Verify("x1", 1.0, 0);
             thisTest.Verify("x3", 1.0, 0);
             thisTest.Verify("x4", 1, 0);
@@ -2430,7 +2430,7 @@ class A
 a = A.foo(); 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("a", 0).DsasmValue.IsNull);
+            thisTest.Verify("a", null);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -2450,7 +2450,7 @@ class Sample
 test1 = Sample.ret_a(); 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("test1", 0).DsasmValue.IsNull);
+            thisTest.Verify("test1", null);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -2608,8 +2608,8 @@ x2 = derivedpoint.B;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x1", 1);
             thisTest.Verify("x2", 8);
-            Assert.IsTrue(mirror.GetValue("basePoint", 0).DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("derivedPoint2", 0).DsasmValue.IsNull);
+            thisTest.Verify("basePoint", null);
+            thisTest.Verify("derivedPoint2", null);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -2654,8 +2654,8 @@ x2=derivedpoint.B; ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x1", 1);
             thisTest.Verify("x2", 8);
-            Assert.IsTrue(mirror.GetValue("basePoint", 0).DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("derivedPoint2", 0).DsasmValue.IsNull);
+            thisTest.Verify("basePoint", null);
+            thisTest.Verify("derivedPoint2", null);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -2701,8 +2701,8 @@ x2 = derivedpoint.B;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x1", 1);
             thisTest.Verify("x2", 8);
-            Assert.IsTrue(mirror.GetValue("basePoint", 0).DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("derivedPoint2", 0).DsasmValue.IsNull);
+            thisTest.Verify("basePoint", null);
+            thisTest.Verify("derivedPoint2", null);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]

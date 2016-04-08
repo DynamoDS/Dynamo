@@ -30,9 +30,9 @@ sum;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 10);
-            Assert.IsTrue((Int64)mirror.GetValue("sum").Payload == 11);
+            thisTest.Verify("a", 1);
+            thisTest.Verify("b", 10);
+            thisTest.Verify("sum", 11);
 
         }
 
@@ -50,7 +50,7 @@ d;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("d").Payload == 10);
+            thisTest.Verify("d", 10);
 
         }
 
@@ -69,8 +69,7 @@ d;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-
-            Assert.IsTrue(Convert.ToInt64(mirror.GetValue("d").Payload) == 0);
+            thisTest.Verify("d", 0);
         }
 
         [Test]
@@ -132,7 +131,7 @@ result;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //Assert.IsTrue((Double)mirror.GetValue("d").Payload == 0);
+            //thisTest.Verify("d", 0);
         }
 
         [Test]
@@ -158,7 +157,7 @@ result;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Double)mirror.GetValue("result").Payload == 2.1);
+            thisTest.Verify("result", 2.1);
         }
 
         [Test]
@@ -183,7 +182,7 @@ sum;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("sum").Payload == 11);
+            thisTest.Verify("sum", 11);
         }
 
         [Test]
@@ -227,8 +226,8 @@ result2;
 	result2 = Foo (true);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("result1").Payload) == false);
-            Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("result2").Payload));
+            thisTest.Verify("result1", false);
+            thisTest.Verify("result2", true);
         }
 
         [Test]
@@ -248,7 +247,7 @@ result1;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("result1").Payload == 5);
+            thisTest.Verify("result1", 5);
         }
 
         [Test]
@@ -278,8 +277,8 @@ result2;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("result1").Payload == 5);
-            Assert.IsTrue((Int64)mirror.GetValue("result2").Payload == 6);
+            thisTest.Verify("result1", 5);
+            thisTest.Verify("result2", 6);
         }
 
         [Test]
@@ -372,9 +371,9 @@ originalInput;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("input").Payload == 3);
-            Assert.IsTrue((Int64)mirror.GetValue("result").Payload == 4);
-            Assert.IsTrue((Int64)mirror.GetValue("originalInput").Payload == 3);
+            thisTest.Verify("input", 3);
+            thisTest.Verify("result", 4);
+            thisTest.Verify("originalInput", 3);
         }
 
         [Test]
@@ -400,8 +399,8 @@ result;
 	result = Level1(input);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("input").Payload == 3);
-            Assert.IsTrue((Int64)mirror.GetValue("result").Payload == 5);
+            thisTest.Verify("input", 3);
+            thisTest.Verify("result", 5);
         }
 
         [Test]
@@ -556,7 +555,13 @@ x = f();
         public void TestDefaultArgumentPointer01()
         {
             string code = @"    
-import(""FFITarget.dll"");def f(p : ClassFunctionality = ClassFunctionality.ClassFunctionality(1)){    return = p.IntVal;}x = f();
+import(""FFITarget.dll"");
+def f(p : ClassFunctionality = ClassFunctionality.ClassFunctionality(1))
+{
+    return = p.IntVal;
+}
+
+x = f();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
@@ -566,7 +571,15 @@ import(""FFITarget.dll"");def f(p : ClassFunctionality = ClassFunctionality.Cla
         [Test]
         public void TestDefaultArgumentPointer02()
         {
-            string code = @"    import(""FFITarget.dll"");def f (a : DummyPoint = DummyPoint.ByCoordinates(1,2,3)){    return = a.X;}x = f();
+            string code = @"    
+import(""FFITarget.dll"");
+
+def f (a : DummyPoint = DummyPoint.ByCoordinates(1,2,3))
+{
+    return = a.X;
+}
+
+x = f();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
@@ -575,7 +588,9 @@ import(""FFITarget.dll"");def f(p : ClassFunctionality = ClassFunctionality.Cla
         [Test]
         public void TestDefaultArgumenFFI01()
         {
-            string code = @"    import(""DSCoreNodes.dll"");a = Math.Random();
+            string code = @"    
+import(""DSCoreNodes.dll"");
+a = Math.Random();
 x = (a != null) ? 1 : 0;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -615,7 +630,13 @@ x = f();
         public void TestDefaultArgumentUntyped03()
         {
             string code = @"    
-import(""FFITarget.dll"");def f(p = ClassFunctionality.ClassFunctionality(1)){    return = p.IntVal;}x = f();
+import(""FFITarget.dll"");
+def f(p = ClassFunctionality.ClassFunctionality(1))
+{
+    return = p.IntVal;
+}
+
+x = f();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
@@ -624,7 +645,15 @@ import(""FFITarget.dll"");def f(p = ClassFunctionality.ClassFunctionality(1)){
         [Test]
         public void TestDefaultArgumentUntyped04()
         {
-            string code = @"    import(""FFITarget.dll"");def f (a = DummyPoint.ByCoordinates(1,2,3)){    return = a.X;}x = f();
+            string code = @"    
+import(""FFITarget.dll"");
+
+def f (a = DummyPoint.ByCoordinates(1,2,3))
+{
+    return = a.X;
+}
+
+x = f();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
