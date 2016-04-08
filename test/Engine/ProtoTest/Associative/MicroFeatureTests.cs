@@ -1698,7 +1698,7 @@ a = {10,20};
 a[2] = 100;
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("a", new object[] {10, 20, 1000});
+            thisTest.Verify("a", new object[] {10, 20, 100});
         }
 
         [Test]
@@ -1712,7 +1712,7 @@ t[1] = 200;
 t[2] = 300;
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("a", new object[] {100, 200, 300});
+            thisTest.Verify("t", new object[] {100, 200, 300});
         }
 
         [Test]
@@ -4079,7 +4079,7 @@ a2 = Flatten(a);";
             thisTest.RunScriptSource(src);
             thisTest.Verify("c",4);
             thisTest.Verify("r",6);
-            thisTest.Verify("a2", new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 });
+            thisTest.Verify("a2", new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13 });
         }
 
         [Test]

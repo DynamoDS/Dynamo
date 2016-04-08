@@ -19,8 +19,7 @@ def f(i : int)
 x = 1000;
 x = f(x);
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
+            thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1001);
         }
 
@@ -55,8 +54,7 @@ def f(a : int)
 x = 10;
 x = f(x);
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
+            thisTest.RunScriptSource(code);
             thisTest.Verify("x", 11);
         }
         //TestCase from Mark//
@@ -77,8 +75,7 @@ x = 12;
 y = 10;
 x = f1(x, y) - f2(x, y); 
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
+            thisTest.RunScriptSource(code);
             thisTest.Verify("x", 20);
         }
 
@@ -95,8 +92,7 @@ return = i;
 x = 2;
 x = f(x + f(x));
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
+            thisTest.RunScriptSource(code);
             thisTest.Verify("x", 36);
         }
 
@@ -110,8 +106,7 @@ a = {a, 2};
 x = a[0];
 y = a[1];
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
+            thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
             thisTest.Verify("y", 2);
         }
@@ -130,8 +125,7 @@ a = {1, f(a)};
 x = a[0];
 y = a[1];
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
+            thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
             thisTest.Verify("y", 2);
         }
@@ -153,8 +147,7 @@ a = {f(f(a)), f(a)};
 x = a[0];
 y = a[1];
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
+            thisTest.RunScriptSource(code);
             thisTest.Verify("x", 7);
             thisTest.Verify("y", 3);
         }

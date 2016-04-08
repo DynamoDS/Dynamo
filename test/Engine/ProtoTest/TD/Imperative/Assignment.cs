@@ -310,7 +310,7 @@ c3;
             thisTest.Verify("b",0);
             thisTest.Verify("c1", true);
             thisTest.Verify("c2", false);
-            thisTest.Verify("c3", false);
+            thisTest.Verify("c3", null);
         }
 
         [Test]

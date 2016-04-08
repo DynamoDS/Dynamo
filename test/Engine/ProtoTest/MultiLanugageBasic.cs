@@ -94,8 +94,7 @@ namespace ProtoTest
         [Category("DSDefinedClass_Ported")]
         public void TestClassUsageInImpeartive()
         {
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(
+            string code =
 @"
 import(""FFITarget.dll"");
 x;y;
@@ -106,9 +105,8 @@ x;y;
     p.IntVal = 32;
     y = p.IntVal;
 }
-"
-    , core);
-            ExecutionMirror mirror = runtimeCore.Mirror;
+";
+            thisTest.RunScriptSource(code);
             thisTest.Verify("x", 16);
             thisTest.Verify("y", 32);
         }

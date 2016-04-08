@@ -292,8 +292,7 @@ namespace ProtoTest.ProtoAST
             astList.Add(nodeALHSAssignment);
 
             // Verify the results
-            ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            thisTest.Verify("a", new object[] { 0, 2, 3, 4});
+            thisTest.RunASTSource(astList);
         }
 
         [Test]
