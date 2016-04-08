@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
@@ -26,12 +27,12 @@ namespace Dynamo.Search
         ///     Dumps the contents of search into an Xml file.
         /// </summary>
         /// <param name="fileName"></param>
-        internal void DumpLibraryToXml(string fileName)
+        internal void DumpLibraryToXml(string fileName, string dynamoPath)
         {
             if (string.IsNullOrEmpty(fileName))
                 return;
 
-            var document = ComposeXmlForLibrary();
+            var document = ComposeXmlForLibrary(dynamoPath);
             document.Save(fileName);
         }
 
@@ -39,7 +40,7 @@ namespace Dynamo.Search
         ///     Serializes the contents of search into Xml.
         /// </summary>
         /// <returns></returns>
-        internal XmlDocument ComposeXmlForLibrary()
+        internal XmlDocument ComposeXmlForLibrary(string dynamoPath)
         {
             var document = XmlHelper.CreateDocument("LibraryTree");
 
@@ -48,15 +49,15 @@ namespace Dynamo.Search
                 entry => entry.Categories);
 
             foreach (var category in root.SubCategories)
-                AddCategoryToXml(document.DocumentElement, category);
+                AddCategoryToXml(document.DocumentElement, category, dynamoPath);
 
             foreach (var entry in root.Entries)
-                AddEntryToXml(document.DocumentElement, entry);
+                AddEntryToXml(document.DocumentElement, entry, dynamoPath);
 
             return document;
         }
 
-        private static void AddEntryToXml(XmlNode parent, NodeSearchElement entry)
+        private static void AddEntryToXml(XmlNode parent, NodeSearchElement entry, string dynamoPath)
         {
             var element = XmlHelper.AddNode(parent, entry.GetType().ToString());
             XmlHelper.AddNode(element, "FullCategoryName", entry.FullCategoryName);
@@ -87,19 +88,29 @@ namespace Dynamo.Search
                 }
             }
 
+            string assemblyName = Path.GetFileNameWithoutExtension(entry.Assembly);
+            // Get icon path.
+            string pathToIcon = Path.Combine(
+                dynamoPath,
+                @"..\..\..\src\Resources\",
+                assemblyName);
+
+            // Dump icons.
+            XmlHelper.AddNode(element, "SmallIcon", Path.Combine(pathToIcon, "SmallIcons", entry.IconName));
+            XmlHelper.AddNode(element, "LargeIcon", Path.Combine(pathToIcon, "LargeIcons", entry.IconName));
         }
 
         private static void AddCategoryToXml(
-            XmlNode parent, ISearchCategory<NodeSearchElement> category)
+            XmlNode parent, ISearchCategory<NodeSearchElement> category, string dynamoPath)
         {
             var element = XmlHelper.AddNode(parent, "Category");
             XmlHelper.AddAttribute(element, "Name", category.Name);
 
             foreach (var subCategory in category.SubCategories)
-                AddCategoryToXml(element, subCategory);
+                AddCategoryToXml(element, subCategory, dynamoPath);
 
             foreach (var entry in category.Entries)
-                AddEntryToXml(element, entry);
+                AddEntryToXml(element, entry, dynamoPath);
         }
 
         /// <summary>
