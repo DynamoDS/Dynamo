@@ -4,7 +4,7 @@ namespace Dynamo.Visualization
 {
     /// <summary>
     /// IRenderPackageFactory is used to create IRenderPackage objects suitable 
-    /// for a specific rednering pipeline. IRenderPackages generated from IRenderPackageFactory 
+    /// for a specific rendering pipeline. IRenderPackages generated from IRenderPackageFactory 
     /// classes contain tessellated geometry for rendering, which may be stored 
     /// in different forms depending on the rendering pipeline being used. 
     /// </summary>

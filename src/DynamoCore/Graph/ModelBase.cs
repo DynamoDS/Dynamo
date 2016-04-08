@@ -317,7 +317,7 @@ namespace Dynamo.Graph
         /// Deserialize model from xml node.
         /// </summary>
         /// <param name="element">Xml node</param>
-        /// <param name="context"></param>
+        /// <param name="context">Save context. E.g. save in file, copy node etc.</param>
         public void Deserialize(XmlElement element, SaveContext context)
         {
             DeserializeCore(element, context);

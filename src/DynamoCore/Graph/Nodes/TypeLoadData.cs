@@ -39,7 +39,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Creates TypeLoadData.
         /// </summary>
-        /// <param name="typeIn"></param>
+        /// <param name="typeIn">Type</param>
         public TypeLoadData(Type typeIn)
         {
             Type = typeIn;

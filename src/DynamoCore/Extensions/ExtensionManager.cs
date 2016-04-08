@@ -86,12 +86,12 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// Event fired when new extension is added.
+        /// Event is fired when new extension is added.
         /// </summary>
         public event Action<IExtension> ExtensionAdded;
 
         /// <summary>
-        /// Event fired when new extension is removed.
+        /// Event is fired when new extension is removed.
         /// </summary>
         public event Action<IExtension> ExtensionRemoved;
 

@@ -23,7 +23,7 @@ namespace Dynamo.Models
         private bool runEnabled;
 
         /// <summary>
-        /// This defalu tmilliseconds number for the period in periodic run.
+        /// This defalut milliseconds number for the period in periodic run.
         /// </summary>
         public const int DefaultRunPeriod = 1000;
 

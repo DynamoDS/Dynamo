@@ -27,7 +27,7 @@ namespace Dynamo.Models
         #region Properties/Fields
 
         /// <summary>
-        /// Name of loaded assemblies.
+        /// Names of loaded assemblies.
         /// </summary>
         public readonly HashSet<string> LoadedAssemblyNames = new HashSet<string>();
         private readonly HashSet<Assembly> loadedAssemblies = new HashSet<Assembly>();
