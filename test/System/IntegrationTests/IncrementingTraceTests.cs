@@ -60,9 +60,9 @@ cleanB = mtcB.WasCreatedWithTrace();
 
 "
 );
-            Assert.IsTrue((bool)mirror.GetFirstValue("cleanA").Payload == false);
-            Assert.IsTrue((bool)mirror.GetFirstValue("cleanB").Payload == false);
 
+            testFx.Verify("cleanA", false);
+            testFx.Verify("cleanB", false);
         }
 
 
@@ -141,11 +141,10 @@ mtcBID = mtcB.ID;
 mtcBWasTraced = mtcB.WasCreatedWithTrace();
 "
 );
-            Assert.IsTrue((Int64)mirror.GetFirstValue("mtcAID").Payload == 0);
-            Assert.IsTrue((Boolean)mirror.GetFirstValue("mtcAWasTraced").Payload == false);
-
-            Assert.IsTrue((Int64)mirror.GetFirstValue("mtcBID").Payload == 1);
-            Assert.IsTrue((Boolean)mirror.GetFirstValue("mtcBWasTraced").Payload == false);
+            testFx.Verify("mtcAID", 0);
+            testFx.Verify("mtcAWasTraced", false);
+            testFx.Verify("mtcBID", 1);
+            testFx.Verify("mtcBWasTraced", false);
         }
 
 
@@ -167,8 +166,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace();
 x = 1;
 "
 );
-  //          Assert.IsTrue((Int64)mirror.GetFirstValue("mtcAID").Payload == 0);
-            Assert.IsTrue((Boolean)mirror.GetFirstValue("mtcAWasTraced").Payload == true);
+            testFx.Verify("mtcAWasTraced", true);
         }
 
         [Test]

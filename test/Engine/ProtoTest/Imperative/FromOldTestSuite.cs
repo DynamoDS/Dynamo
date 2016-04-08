@@ -137,9 +137,8 @@ f0;f1;f2;f3;t0;t1;t2;t3;t4;t5;t6;t7;
 	    y = 57;
 }
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
-            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 57);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("y", 57);
         }
 
 

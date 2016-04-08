@@ -613,13 +613,9 @@ testFoo2 = foo();";
                 a = 5;
                 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Obj o = mirror.GetValue("a");
-            Obj o2 = mirror.GetValue("b");
             thisTest.Verify("a", 5);
             thisTest.Verify("b", 5);
             mirror.SetValueAndExecute("a", 10);
-            o = mirror.GetValue("a");
-            o2 = mirror.GetValue("b");
             thisTest.Verify("a", 10);
             thisTest.Verify("b", 10);
         }
@@ -846,12 +842,6 @@ return = t;
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 1.0);
             thisTest.Verify("b", 1);
-            Assert.IsTrue(mirror.GetValue("a", 0).DsasmValue.IsDouble);
-            Assert.IsFalse(mirror.GetValue("a", 0).DsasmValue.IsInteger);
-            Assert.IsTrue(mirror.GetValue("b", 0).DsasmValue.IsInteger);
-            Assert.IsFalse(mirror.GetValue("b", 0).DsasmValue.IsDouble);
-
-            //thisTest.Verify("b", 1.0);
         }
 
         [Test]
@@ -866,10 +856,6 @@ return = t;
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", new object[] { 1.0, 2.0 });
             thisTest.Verify("b", new object[] { 1, 2 });
-            Assert.IsFalse(mirror.GetValue("a", 0).DsasmValue.Equals(new object[] { 1, 1 }));
-            Assert.IsFalse(mirror.GetValue("b", 0).DsasmValue.Equals(new object[] { 1.0, 1.0 }));
-
-            //thisTest.Verify("b", 1.0);
         }
 
         [Test]

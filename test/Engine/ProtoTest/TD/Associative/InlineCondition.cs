@@ -27,8 +27,8 @@ namespace ProtoTest.TD.Associative
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             // expected "StatementUsedInAssignment" warning
-            Assert.IsTrue((Int64)mirror.GetValue("smallest2").Payload == 100);
-            Assert.IsTrue((Int64)mirror.GetValue("largest2").Payload == 400);
+            thisTest.Verify("smallest2", 100);
+            thisTest.Verify("largest2", 400);
         }
 
 
@@ -44,7 +44,7 @@ import(""DSCoreNodes.dll"");
 	smallest   =   Math.Sqrt(b)	< a  ?   Math.Sqrt(a)	:	Math.Sqrt(b);	
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Double)mirror.GetValue("smallest").Payload == 3);
+            thisTest.Verify("smallest", 3);
         }
 
 

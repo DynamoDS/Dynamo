@@ -104,7 +104,7 @@ namespace ProtoTest.TD.Imperative
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 5);
+            thisTest.Verify("x", 5);
         }
 
         [Test]
@@ -127,7 +127,7 @@ namespace ProtoTest.TD.Imperative
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 9);
+            thisTest.Verify("b", 9);
         }
 
         [Test]
@@ -147,7 +147,7 @@ namespace ProtoTest.TD.Imperative
 	z = local_var;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 30);
+            thisTest.Verify("x", 30);
         }
 
         [Test]
@@ -177,8 +177,8 @@ z;
 	z = sum ( -4.0, 5.0, 6.0 );
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((double)mirror.GetValue("y").Payload == 6);
-            Assert.IsTrue((double)mirror.GetValue("z").Payload == 7);
+            thisTest.Verify("y", 6);
+            thisTest.Verify("z", 7);
         }
 
         [Test]
@@ -197,7 +197,7 @@ z;
 	}	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 1);
+            thisTest.Verify("x", 1);
         }
 
         [Test]
@@ -218,7 +218,7 @@ z;
 	}
 }	";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 18);
+            thisTest.Verify("x", 18);
         }
 
         [Test]
@@ -243,7 +243,7 @@ z;
 	}
 } ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 2);
+            thisTest.Verify("x", 2);
         }
 
         [Test]
@@ -274,8 +274,8 @@ z;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 10);
-            Assert.IsTrue((Int64)mirror.GetValue("z").Payload == 21);
+            thisTest.Verify("x", 10);
+            thisTest.Verify("z", 21);
         }
 
         [Test]
@@ -302,8 +302,8 @@ y;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == -9);
-            Assert.IsTrue((double)mirror.GetValue("y").Payload == 10.2);
+            thisTest.Verify("x", -9);
+            thisTest.Verify("y", 10.2);
         }
 
         [Test]
@@ -322,7 +322,7 @@ y;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("x").DsasmValue.IsNull);
+            thisTest.Verify("x", null);
         }
 
         [Test]
@@ -349,8 +349,8 @@ y;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(Convert.ToInt64(mirror.GetValue("x").Payload) == -27);
-            Assert.IsTrue(mirror.GetValue("y").DsasmValue.IsNull);
+            thisTest.Verify("x", -27);
+            thisTest.Verify("y", null);
         }
 
         [Test]
@@ -379,7 +379,7 @@ y;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 10);
+            thisTest.Verify("a", 10);
         }
 
         [Test]
@@ -412,7 +412,7 @@ y;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 10);
+            thisTest.Verify("a", 10);
         }
 
         [Test]
@@ -440,7 +440,7 @@ y;
 }
 			";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 15);
+            thisTest.Verify("x", 15);
         }
 
         [Test]
@@ -471,7 +471,7 @@ y;
 		
 			";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 125);
+            thisTest.Verify("x", 125);
         }
 
         [Test]
@@ -488,7 +488,7 @@ y;
 	    x = y;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 3);
+            thisTest.Verify("x", 3);
         }
 
         [Test]
@@ -514,7 +514,7 @@ y;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 10);
+            thisTest.Verify("x", 10);
         }
 
         [Test]
@@ -544,7 +544,7 @@ y;
 }
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 75);
+            thisTest.Verify("x", 75);
         }
 
         [Test]
@@ -578,12 +578,12 @@ a6;
 	a6 = a[5];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("a6").Payload == 5);
-            Assert.IsTrue((Int64)mirror.GetValue("a5").Payload == 4);
-            Assert.IsTrue((Int64)mirror.GetValue("a4").Payload == 3);
-            Assert.IsTrue((Int64)mirror.GetValue("a3").Payload == 2);
-            Assert.IsTrue((Int64)mirror.GetValue("a2").Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetValue("a1").Payload == 0);
+            thisTest.Verify("a6", 5);
+            thisTest.Verify("a5", 4);
+            thisTest.Verify("a4", 3);
+            thisTest.Verify("a3", 2);
+            thisTest.Verify("a2", 1);
+            thisTest.Verify("a1", 0);
         }
 
         [Test]
@@ -612,8 +612,8 @@ a7;
 	a7 = a[6];
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("a6").Payload == 7);
-            Assert.IsTrue((Int64)mirror.GetValue("a7").Payload == 8);
+            thisTest.Verify("a6", 7);
+            thisTest.Verify("a7", 8);
         }
 
         [Test]
@@ -632,7 +632,7 @@ a7;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 0);
+            thisTest.Verify("x", 0);
         }
 
         [Test]
@@ -650,7 +650,7 @@ a7;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 0);
+            thisTest.Verify("x", 0);
         }
 
         [Test]
@@ -675,7 +675,7 @@ a7;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((double)mirror.GetValue("x").Payload == 17);
+            thisTest.Verify("x", 17);
         }
 
         [Test]
@@ -696,7 +696,7 @@ a7;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 18);
+            thisTest.Verify("x", 18);
         }
 
         [Test]
@@ -718,7 +718,7 @@ a7;
 	}		
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 21);
+            thisTest.Verify("x", 21);
         }
 
         [Test]
@@ -738,7 +738,7 @@ a7;
 }
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 4);
+            thisTest.Verify("x", 4);
         }
 
         [Test]

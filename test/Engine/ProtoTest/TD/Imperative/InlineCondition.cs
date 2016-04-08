@@ -31,8 +31,8 @@ largest2;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             // expected "StatementUsedInAssignment" warning
-            Assert.IsTrue((Int64)mirror.GetValue("smallest2").Payload == 100);
-            Assert.IsTrue((Int64)mirror.GetValue("largest2").Payload == 400);
+            thisTest.Verify("smallest2", 100);
+            thisTest.Verify("largest2", 400);
         }
         [Ignore]
         [Category("SmokeTest")]
@@ -58,8 +58,8 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             // expected "StatementUsedInAssignment" warning
-            Assert.IsTrue((Double)mirror.GetValue("smallest2").Payload == 10.0);
-            Assert.IsTrue((Double)mirror.GetValue("largest2").Payload == 20.0);
+            thisTest.Verify("smallest2", 10.0);
+            thisTest.Verify("largest2", 20.0);
         }
         [Ignore]
         public void T003_Inline_Using_Collection()
@@ -207,9 +207,9 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
             // expected "StatementUsedInAssignment" warning
             List<Object> b = new List<object> { 2, 4, 6 };
             Assert.IsTrue(mirror.CompareArrays("b", b, typeof(System.Int64)));
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 10);
-            Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 13);
-            Assert.IsTrue((Int64)mirror.GetValue("d").Payload == 53);
+            thisTest.Verify("a", 10);
+            thisTest.Verify("c", 13);
+            thisTest.Verify("d", 53);
         }
 
         [Test]
@@ -237,14 +237,14 @@ h;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 1);
-            Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("b").Payload) == false);
-            Assert.IsTrue(Convert.ToInt64(mirror.GetValue("c").Payload) == 4);
-            Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("d").Payload));
-            Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("e").Payload) == false);
-            Assert.IsTrue((Int64)mirror.GetValue("f").Payload == 1);
-            Assert.IsTrue((double)mirror.GetValue("g").Payload == 0.33333333333333331);
-            Assert.IsTrue(Convert.ToInt64(mirror.GetValue("h").Payload) == 1);
+            thisTest.Verify("a", 1);
+            thisTest.Verify("b", false);
+            thisTest.Verify("c", 4);
+            thisTest.Verify("d", true);
+            thisTest.Verify("e", false);
+            thisTest.Verify("f", 1);
+            thisTest.Verify("g", 0.33333333333333331);
+            thisTest.Verify("h", 1);
         }
 
         [Test]

@@ -488,7 +488,9 @@ namespace ProtoTestFx.TD
                     Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                 }
             }
-            testMirror = runner.Execute(astList, testCore);
+
+            testRuntimeCore = runner.Execute(astList, testCore);
+            testMirror = testRuntimeCore.Mirror;
             SetErrorMessage(errorstring);
             return testMirror;
         }
