@@ -1475,7 +1475,7 @@ namespace Dynamo.Models
             string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
             string fullFileName = Path.Combine(pathManager.LogDirectory, fileName);
 
-            SearchModel.DumpLibraryToXml(fullFileName, this.PathManager.DynamoCoreDirectory);            
+            SearchModel.DumpLibraryToXml(fullFileName, this.PathManager.DynamoCoreDirectory);
 
             Logger.Log(string.Format(Resources.LibraryIsDumped, fullFileName));
         }
