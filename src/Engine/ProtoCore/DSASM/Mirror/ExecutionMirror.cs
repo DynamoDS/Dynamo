@@ -723,7 +723,36 @@ namespace ProtoCore.DSASM.Mirror
             return retVal;
         }
         
-        public Obj GetValue(string name, int block = 0, int classcope = Constants.kGlobalScope)
+        /// <summary>
+        /// Return the stack value of specified symbol.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public StackValue GetSymbolValue(string name)
+        {
+            ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
+
+            int index = Constants.kInvalidIndex;
+            for (int block = 0; block < exe.runtimeSymbols.Length; ++block)
+            {
+                index = exe.runtimeSymbols[block].IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
+                if (index != Constants.kInvalidIndex)
+                    break;
+            }
+
+            if (Constants.kInvalidIndex == index)
+            {
+                throw new SymbolNotFoundException(name);
+            }
+            else
+            {
+                var symbol = exe.runtimeSymbols[0].symbolList[index];
+                var stackValue = MirrorTarget.rmem.GetSymbolValue(symbol);
+                return stackValue;
+            }
+        }
+
+        public Obj GetValue(string name, int block = 0)
         {
             ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
 
@@ -732,14 +761,14 @@ namespace ProtoCore.DSASM.Mirror
             {
                 for (block = 0; block < exe.runtimeSymbols.Length; ++block)
                 {
-                    index = exe.runtimeSymbols[block].IndexOf(name, classcope, Constants.kInvalidIndex);
+                    index = exe.runtimeSymbols[block].IndexOf(name, Constants.kGlobalScope, Constants.kInvalidIndex);
                     if (index != Constants.kInvalidIndex)
                         break;
                 }
             }
             else
             {
-                index = exe.runtimeSymbols[block].IndexOf(name, classcope, Constants.kInvalidIndex);
+                index = exe.runtimeSymbols[block].IndexOf(name, Constants.kGlobalScope, Constants.kInvalidIndex);
             }
 
             if (Constants.kInvalidIndex == index)
@@ -1445,9 +1474,9 @@ namespace ProtoCore.DSASM.Mirror
             return true;
         }
 
-        public bool CompareArrays(string mirrorObj, List<Object> expected, System.Type type, int blockIndex = 0)
+        public bool CompareArrays(string mirrorObj, List<Object> expected, System.Type type)
         {
-            DsasmArray computedArray = GetValue(mirrorObj, blockIndex).Payload as DsasmArray;
+            DsasmArray computedArray = GetValue(mirrorObj).Payload as DsasmArray;
             return CompareArrays(computedArray, expected, type);
         }
 
