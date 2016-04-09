@@ -116,19 +116,6 @@ namespace ProtoCore.DSASM.Mirror
             }
         }
 
-        public string PrintClass(StackValue val, Heap heap, int langblock, bool forPrint)
-        {
-            return PrintClass(val, heap, langblock, -1, -1, forPrint);
-        }
-
-        public string PrintClass(StackValue val, Heap heap, int langblock, int maxArraySize, int maxOutputDepth, bool forPrint)
-        {
-            if (null == formatParams)
-                formatParams = new OutputFormatParameters(maxArraySize, maxOutputDepth);
-
-            return GetClassTrace(val, heap, langblock, forPrint);
-        }
-
         private string GetFormattedValue(string varname, string value)
         {
             return string.Format("{0} = {1}", varname, value);
@@ -785,43 +772,6 @@ namespace ProtoCore.DSASM.Mirror
             }
         }
 
-        public void UpdateValue(int line, int index, int value)
-        {
-        }
-
-        public void UpdateValue(int line, int index, double value)
-        {
-        }
-
-        [Obsolete]
-        private bool __Set_Value(string varName, int? value)
-        {
-            int blockId = 0;
-            AssociativeGraph.GraphNode graphNode = MirrorTarget.GetFirstGraphNode(varName, out blockId);
-
-            // There was no variable to set
-            if (null == graphNode)
-            {
-                return false;
-            }
-
-            graphNode.isDirty = true;
-            int startpc = graphNode.updateBlock.startpc;
-            MirrorTarget.Modify_istream_entrypoint_FromSetValue(blockId, startpc);
-
-            StackValue sv;
-            if (null == value)
-            {
-                sv = StackValue.Null;
-            }
-            else
-            {
-                sv = StackValue.BuildInt((long)value);
-            }
-            MirrorTarget.Modify_istream_instrList_FromSetValue(blockId, startpc, sv);
-            return true;
-        }
-
 
         //
         //  1.	Get the graphnode given the varname
@@ -982,24 +932,6 @@ namespace ProtoCore.DSASM.Mirror
 
                 ret[name] = Unpack(val);
                 index++;
-            }
-
-            return ret;
-        }
-
-        public List<string> GetPropertyNames(Obj obj)
-        {
-            if (obj == null || !obj.DsasmValue.IsPointer)
-                return null;
-
-            List<string> ret = new List<string>();
-            int classIndex = obj.DsasmValue.metaData.type;
-
-            StackValue[] svs = MirrorTarget.rmem.Heap.ToHeapObject<DSObject>(obj.DsasmValue).Values.ToArray();
-            for (int ix = 0; ix < svs.Length; ++ix)
-            {
-                string propertyName = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].Symbols.symbolList[ix].name;
-                ret.Add(propertyName);
             }
 
             return ret;
