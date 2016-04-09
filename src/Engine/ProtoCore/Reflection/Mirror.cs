@@ -66,7 +66,7 @@ namespace ProtoCore
 
                 variableName = varname;
                 blockDeclaration = blockDecl;
-                StackValue svData = deprecateThisMirror.GetValue(variableName).DsasmValue;
+                StackValue svData = deprecateThisMirror.GetSymbolValue(variableName);
 
                 mirrorData = new MirrorData(staticCore, this.runtimeCore, svData);
             }

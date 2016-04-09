@@ -888,16 +888,6 @@ namespace ProtoCore.DSASM.Mirror
             return true;
         }
 
-        public void NullifyVariable(string varName)
-        {
-            if (!string.IsNullOrEmpty(varName))
-            {
-                int nodesMarkedDirty = 0;
-                SetValue(varName, null, out nodesMarkedDirty);
-            }
-        }
-
-
         /// <summary>
         /// Reset an existing value and re-execute the vm
         /// </summary>
