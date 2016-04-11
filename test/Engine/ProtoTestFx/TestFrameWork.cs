@@ -516,12 +516,6 @@ namespace ProtoTestFx.TD
                   files.Close();
         }
 
-        public void DebugModeVerification(ExecutionMirror mirror, string variable, object expectedValue)
-        {
-            Obj dsObj = mirror.GetDebugValue(variable);
-            Assert.IsTrue(mirror.EqualDotNetObject(dsObj, expectedValue), mErrorMessage);
-        }
-
         private static string BuildIndicesString(List<int> indices)
         {
             StringBuilder builder = new StringBuilder("");
