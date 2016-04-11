@@ -161,6 +161,10 @@ namespace Dynamo.Scheduler
             else
             {
                 var graphicItem = mirrorData.Data as IGraphicItem;
+                if (graphicItem == null)
+                {
+                    return;
+                }
 
                 var package = factory.CreateRenderPackage();
                 package.Description = tag;
