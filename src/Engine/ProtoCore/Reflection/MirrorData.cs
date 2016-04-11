@@ -154,14 +154,14 @@ namespace ProtoCore
             /// else null.
             /// </summary>
             /// <returns>List of MirrorData represented by this data.</returns>
-            public List<MirrorData> GetElements() 
+            public IEnumerable<MirrorData> GetElements() 
             {
                 //This is not a collection
                 if (!this.IsCollection)
                     return null;
 
                 var array = runtimeCore.Heap.ToHeapObject<DSArray>(svData);
-                return array.Values.Select(x => new MirrorData(this.core, this.runtimeCore, x)).ToList();
+                return array.Values.Select(x => new MirrorData(this.core, this.runtimeCore, x));
             }
 
             /// <summary>

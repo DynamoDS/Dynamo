@@ -307,7 +307,6 @@ c3;
   c1 = 1 && 2;
   c2 = 1 && 0;
   c3 = null && true;
-  
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);

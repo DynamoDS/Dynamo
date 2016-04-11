@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using ProtoCore.Lang;
 using ProtoFFI;
@@ -8,6 +9,7 @@ using ProtoScript.Runners;
 using ProtoCore.DSASM.Mirror;
 using ProtoTest.TD;
 using ProtoTestFx.TD;
+using ProtoCore.DSASM;
 
 namespace ProtoTest.DebugTests
 {
@@ -32,6 +34,14 @@ namespace ProtoTest.DebugTests
         {
             runtimeCore = fsr.runtimeCore;
             base.TearDown();
+        }
+
+        private List<Obj> UnpackToList(ExecutionMirror mirror, Obj obj)
+        {
+            if (obj == null || !obj.DsasmValue.IsArray)
+                return null;
+
+            return mirror.MirrorTarget.rmem.Heap.ToHeapObject<DSArray>(obj.DsasmValue).Values.Select(x => mirror.Unpack(x)).ToList();
         }
 
         [Test]
@@ -2967,7 +2977,7 @@ a =
             type = vms.mirror.GetType("a5");
 
             Assert.IsTrue(type == "array");
-            List<Obj> lo = vms.mirror.GetArrayElements(o);
+            List<Obj> lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue((Int64)lo[0].Payload == 1);
             Assert.IsTrue((Int64)lo[1].Payload == 2);
 
@@ -2977,7 +2987,7 @@ a =
             type = vms.mirror.GetType("a6");
 
             Assert.IsTrue(type == "array");
-            lo = vms.mirror.GetArrayElements(o);
+            lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue((Double)lo[0].Payload == 2.0);
             Assert.IsTrue((Double)lo[1].Payload == 2.0);
 
@@ -3854,7 +3864,7 @@ p = { 9, 0 };
 
             o = vms.mirror.GetDebugValue("p");
             type = vms.mirror.GetType("p");
-            List<Obj> lo = vms.mirror.GetArrayElements(o);
+            List<Obj> lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue(type == "array");
             Assert.IsTrue((Int64)lo[0].Payload == 9);
             Assert.IsTrue((Int64)lo[1].Payload == 0);
@@ -4590,7 +4600,7 @@ b2 = a1.foo2(1);
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("b1");
             Assert.IsTrue(vms.mirror.GetType("b1") == "array");
-            List<Obj> ol = vms.mirror.GetArrayElements(o);
+            List<Obj> ol = UnpackToList(vms.mirror, o);
 
             Assert.IsTrue(ol.Count == 2);
             Assert.IsTrue((Int64)ol[0].Payload == 1);
@@ -4700,7 +4710,7 @@ class Complex
 
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("y");
-            List<Obj> ol = vms.mirror.GetArrayElements(o);
+            List<Obj> ol = UnpackToList(vms.mirror, o);
 
             Assert.IsTrue(vms.mirror.GetType(o) == "array");
             Assert.IsTrue(ol.Count == 2);
@@ -4721,7 +4731,7 @@ class Complex
             Assert.IsTrue((Int64)os1["z2"].Payload == 10);
 
             Assert.IsTrue(vms.mirror.GetType(o2) == "array");
-            List<Obj> ol2 = vms.mirror.GetArrayElements(o2);
+            List<Obj> ol2 = UnpackToList(vms.mirror, o);
             Assert.IsTrue(ol2.Count == 2);
             Assert.IsTrue((Int64)ol2[0].Payload == 11);
             Assert.IsTrue((Int64)ol2[1].Payload == 12);
@@ -4737,7 +4747,7 @@ class Complex
 
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("y");
-            ol = vms.mirror.GetArrayElements(o);
+            ol = UnpackToList(vms.mirror, o);
 
             Assert.IsTrue(vms.mirror.GetType(o) == "array");
             Assert.IsTrue(ol.Count == 2);
@@ -4758,7 +4768,7 @@ class Complex
             Assert.IsTrue((Int64)os1["z2"].Payload == 10);
 
             Assert.IsTrue(vms.mirror.GetType(o2) == "array");
-            ol2 = vms.mirror.GetArrayElements(o2);
+            ol2 = UnpackToList(vms.mirror, o2);
             Assert.IsTrue(ol2.Count == 2);
             Assert.IsTrue((Int64)ol2[0].Payload == 12);
             Assert.IsTrue((Int64)ol2[1].Payload == 13);
@@ -4783,20 +4793,20 @@ class Complex
             Assert.IsTrue((Int64)os1["z2"].Payload == 10);
 
             Assert.IsTrue(vms.mirror.GetType(o2) == "array");
-            ol2 = vms.mirror.GetArrayElements(o2);
+            ol2 = UnpackToList(vms.mirror, o2);
             Assert.IsTrue(ol2.Count == 2);
             Assert.IsTrue((Int64)ol2[0].Payload == 11);
             Assert.IsTrue((Int64)ol2[1].Payload == 12);
 
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("c");
-            ol = vms.mirror.GetArrayElements(o);
+            ol = UnpackToList(vms.mirror, o);
 
             Assert.IsTrue(vms.mirror.GetType(o) == "array");
             Assert.IsTrue(ol.Count == 3);
             Assert.IsTrue((Int64)ol[0].Payload == 3);
 
-            List<Obj> ol1 = vms.mirror.GetArrayElements(ol[1]);
+            List<Obj> ol1 = UnpackToList(vms.mirror, o1);
             Assert.IsTrue(ol1.Count == 2);
             Assert.IsTrue((Int64)ol1[0].Payload == 2);
             Assert.IsTrue((Int64)ol1[1].Payload == 1);
@@ -4811,7 +4821,7 @@ class Complex
             Assert.IsTrue((Int64)os1["z2"].Payload == 10);
 
             Assert.IsTrue(vms.mirror.GetType(o2) == "array");
-            ol2 = vms.mirror.GetArrayElements(o2);
+            ol2 = UnpackToList(vms.mirror, o2);
             Assert.IsTrue(ol2.Count == 2);
             Assert.IsTrue((Int64)ol2[0].Payload == 12);
             Assert.IsTrue((Int64)ol2[1].Payload == 13);
@@ -4909,7 +4919,7 @@ class Complex
 
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("y");
-            List<Obj> ol = vms.mirror.GetArrayElements(o);
+            List<Obj> ol = UnpackToList(vms.mirror, o);
 
             Assert.IsTrue(vms.mirror.GetType(o) == "array");
             Assert.IsTrue(ol.Count == 2);
@@ -4930,7 +4940,7 @@ class Complex
             Assert.IsTrue((Int64)os1["z2"].Payload == 10);
 
             Assert.IsTrue(vms.mirror.GetType(o2) == "array");
-            List<Obj> ol2 = vms.mirror.GetArrayElements(o2);
+            List<Obj> ol2 = UnpackToList(vms.mirror, o2);
             Assert.IsTrue(ol2.Count == 2);
             Assert.IsTrue((Int64)ol2[0].Payload == 11);
             Assert.IsTrue((Int64)ol2[1].Payload == 12);
@@ -4946,7 +4956,7 @@ class Complex
 
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("y");
-            ol = vms.mirror.GetArrayElements(o);
+            ol = UnpackToList(vms.mirror, o);
 
             Assert.IsTrue(vms.mirror.GetType(o) == "array");
             Assert.IsTrue(ol.Count == 2);
@@ -4967,7 +4977,7 @@ class Complex
             Assert.IsTrue((Int64)os1["z2"].Payload == 10);
 
             Assert.IsTrue(vms.mirror.GetType(o2) == "array");
-            ol2 = vms.mirror.GetArrayElements(o2);
+            ol2 = UnpackToList(vms.mirror, o2);
             Assert.IsTrue(ol2.Count == 2);
             Assert.IsTrue((Int64)ol2[0].Payload == 12);
             Assert.IsTrue((Int64)ol2[1].Payload == 13);
@@ -4992,20 +5002,20 @@ class Complex
             Assert.IsTrue((Int64)os1["z2"].Payload == 10);
 
             Assert.IsTrue(vms.mirror.GetType(o2) == "array");
-            ol2 = vms.mirror.GetArrayElements(o2);
+            ol2 = UnpackToList(vms.mirror, o2);
             Assert.IsTrue(ol2.Count == 2);
             Assert.IsTrue((Int64)ol2[0].Payload == 11);
             Assert.IsTrue((Int64)ol2[1].Payload == 12);
 
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("c");
-            ol = vms.mirror.GetArrayElements(o);
+            ol = UnpackToList(vms.mirror, o);
 
             Assert.IsTrue(vms.mirror.GetType(o) == "array");
             Assert.IsTrue(ol.Count == 3);
             Assert.IsTrue((Int64)ol[0].Payload == 3);
 
-            List<Obj> ol1 = vms.mirror.GetArrayElements(ol[1]);
+            List<Obj> ol1 = UnpackToList(vms.mirror, ol[1]);
             Assert.IsTrue(ol1.Count == 2);
             Assert.IsTrue((Int64)ol1[0].Payload == 2);
             Assert.IsTrue((Int64)ol1[1].Payload == 1);
@@ -5020,7 +5030,7 @@ class Complex
             Assert.IsTrue((Int64)os1["z2"].Payload == 10);
 
             Assert.IsTrue(vms.mirror.GetType(o2) == "array");
-            ol2 = vms.mirror.GetArrayElements(o2);
+            ol2 = UnpackToList(vms.mirror, o2);
             Assert.IsTrue(ol2.Count == 2);
             Assert.IsTrue((Int64)ol2[0].Payload == 12);
             Assert.IsTrue((Int64)ol2[1].Payload == 13);
@@ -6544,7 +6554,7 @@ a1.a = -1;";
             os = vms.mirror.GetProperties(o);
             type = vms.mirror.GetType(os["a"]);
             Assert.IsTrue(type == "array");
-            List<Obj> lo = vms.mirror.GetArrayElements(os["a"]);
+            List<Obj> lo = UnpackToList(vms.mirror, os["a"]);
             Assert.IsTrue((Int64)lo[0].Payload == 1);
             Assert.IsTrue((Int64)lo[1].Payload == 2);
 
@@ -6553,7 +6563,7 @@ a1.a = -1;";
             o = vms.mirror.GetDebugValue("b");
             type = vms.mirror.GetType("b");
             Assert.IsTrue(type == "array");
-            lo = vms.mirror.GetArrayElements(o);
+            lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue((Int64)lo[0].Payload == 1);
             Assert.IsTrue((Int64)lo[1].Payload == 2);
 
@@ -6569,7 +6579,7 @@ a1.a = -1;";
             type = vms.mirror.GetType(os["a"]);
             Assert.IsTrue(type == "array");
 
-            lo = vms.mirror.GetArrayElements(os["a"]);
+            lo = UnpackToList(vms.mirror, os["a"]);
             Assert.IsTrue((Int64)lo[0].Payload == -1);
 
             vms = fsr.Step();
@@ -6577,7 +6587,7 @@ a1.a = -1;";
             o = vms.mirror.GetDebugValue("b");
             type = vms.mirror.GetType("b");
             Assert.IsTrue(type == "array");
-            lo = vms.mirror.GetArrayElements(o);
+            lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue((Int64)lo[0].Payload == -1);
         }
 
@@ -6875,7 +6885,7 @@ a = [Imperative]
 
             o = vms.mirror.GetDebugValue("b2");
             type = vms.mirror.GetType("b2");
-            List<Obj> lo = vms.mirror.GetArrayElements(o);
+            List<Obj> lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue(type == "array");
             Assert.IsTrue((Int64)lo[0].Payload == 2);
         }
@@ -7198,11 +7208,11 @@ b : int;
             DebugRunner.VMState vms = fsr.Step();
             Obj o = vms.mirror.GetDebugValue("a");
             string type = vms.mirror.GetType(o);
-            List<Obj> os = vms.mirror.GetArrayElements(o);
+            List<Obj> os = UnpackToList(vms.mirror, o);
 
             Assert.IsTrue(type == "array");
             Assert.IsTrue(os.Count == 6);
-            Assert.IsTrue((Int64)vms.mirror.GetArrayElements(os[3])[1].Payload == 5);
+            Assert.IsTrue((Int64)UnpackToList(vms.mirror, os[3])[1].Payload == 5);
         }
 
         [Test]
@@ -7268,7 +7278,7 @@ b : int;
             o = vms.mirror.GetDebugValue("a");
             name = vms.mirror.GetType(o);
             Assert.IsTrue(name == "array");
-            List<Obj> lo = vms.mirror.GetArrayElements(o);
+            List<Obj> lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue((Int64)lo[2].Payload == 5);
         }
 
@@ -8001,9 +8011,9 @@ test = foo();";
             mirror = watchRunner.Execute(@"arr");
             o = mirror.GetWatchValue();
 
-            List<Obj> ol = mirror.GetArrayElements(o);
+            List<Obj> ol = UnpackToList(vms.mirror, o);
             Assert.IsTrue(ol.Count == 1);
-            List<Obj> ol_1 = mirror.GetArrayElements(ol[0]);
+            List<Obj> ol_1 = UnpackToList(mirror, ol[0]);
             Assert.IsTrue(ol_1.Count == 2);
             Assert.IsTrue((Int64)ol_1[0].Payload == 1);
             Assert.IsTrue((Int64)ol_1[1].Payload == 2);
@@ -8031,9 +8041,9 @@ test = foo();";
             watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
             mirror = watchRunner.Execute(@"arr");
             o = mirror.GetWatchValue();
-            ol = vms.mirror.GetArrayElements(o);
+            ol = UnpackToList(vms.mirror, o);
             //Assert.IsTrue(ol.Count == 2);
-            List<Obj> ol_2 = vms.mirror.GetArrayElements(ol[1]);
+            List<Obj> ol_2 = UnpackToList(vms.mirror, ol[1]);
             Assert.IsTrue(ol_2.Count == 2);
             Assert.IsTrue((Int64)ol_2[0].Payload == 1);
             Assert.IsTrue((Int64)ol_2[1].Payload == 2);
@@ -8049,15 +8059,15 @@ test = foo();";
             watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
             mirror = watchRunner.Execute(@"test");
             o = mirror.GetWatchValue();
-            ol = vms.mirror.GetArrayElements(o);
+            ol = UnpackToList(vms.mirror, o);
             Assert.IsTrue(ol.Count == 2);
 
-            ol_1 = vms.mirror.GetArrayElements(ol[0]);
+            ol_1 = UnpackToList(vms.mirror, ol[0]);
             Assert.IsTrue(ol_1.Count == 2);
             Assert.IsTrue((Int64)ol_1[0].Payload == 1);
             Assert.IsTrue((Int64)ol_1[1].Payload == 2);
 
-            ol_2 = vms.mirror.GetArrayElements(ol[1]);
+            ol_2 = UnpackToList(vms.mirror, ol[1]);
             Assert.IsTrue(ol_2.Count == 2);
             Assert.IsTrue((Int64)ol_2[0].Payload == 1);
             Assert.IsTrue((Int64)ol_2[1].Payload == 2);
@@ -8100,7 +8110,7 @@ sorted = Sort(Compare, arr); //Stepping over this statement throws exception for
 
             Obj o = vms.mirror.GetDebugValue("arr");
             string type = vms.mirror.GetType("arr");
-            List<Obj> lo = vms.mirror.GetArrayElements(o);
+            List<Obj> lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue(type == "array");
             Assert.IsTrue((Int64)lo[0].Payload == 3);
             Assert.IsTrue((Int64)lo[1].Payload == 5);
@@ -8119,7 +8129,7 @@ sorted = Sort(Compare, arr); //Stepping over this statement throws exception for
 
             o = vms.mirror.GetDebugValue("sorted");
             type = vms.mirror.GetType("sorted");
-            lo = vms.mirror.GetArrayElements(o);
+            lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue(type == "array");
             Assert.AreEqual(null, lo[0].Payload);
             Assert.IsTrue((Boolean)lo[1].Payload == true);
@@ -8173,7 +8183,7 @@ test = a1.t;";
             string type = vms.mirror.GetType("a1");
 
             Assert.IsTrue(type == "array");
-            List<Obj> lo = vms.mirror.GetArrayElements(o);
+            List<Obj> lo = UnpackToList(vms.mirror, o);
 
             type = vms.mirror.GetType(lo[0]);
             Assert.IsTrue(type == "B");
@@ -8193,7 +8203,7 @@ test = a1.t;";
             type = vms.mirror.GetType("test");
 
             Assert.IsTrue(type == "array");
-            lo = vms.mirror.GetArrayElements(o);
+            lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue((Int64)lo[0].Payload == 0);
             Assert.IsTrue((Int64)lo[1].Payload == 1);
         }
@@ -8406,7 +8416,7 @@ test = a1.x; //expected : { 1, { 2, { 0, 1 } } }
             fsr.Step();
             vms = fsr.Step();
             Obj o3 = vms.mirror.GetDebugValue("test");
-            List<Obj> ol3 = vms.mirror.GetArrayElements(o3);
+            List<Obj> ol3 = UnpackToList(vms.mirror, o3);
             string type3 = vms.mirror.GetType(ol3[0]);
             Assert.IsTrue(type3 == "int");
             Assert.IsTrue((Int64)ol3[0].Payload == 1);
@@ -8480,14 +8490,14 @@ test = a1.x; //expected : { 1, { 2, { 0, 1 } } }
             Assert.IsTrue((Boolean)o4.Payload == false);
             fsr.Step();
             Obj o5 = vms.mirror.GetDebugValue("a5");
-            List<Obj> ol5 = vms.mirror.GetArrayElements(o5);
+            List<Obj> ol5 = UnpackToList(vms.mirror, o5);
             string type5 = vms.mirror.GetType(ol5[0]);
             Assert.IsTrue(type5 == "int");
             Assert.IsTrue((Int64)ol5[0].Payload == 1);
             Assert.IsTrue((Int64)ol5[1].Payload == 2);
             fsr.Step();
             Obj o6 = vms.mirror.GetDebugValue("a6");
-            List<Obj> ol6 = vms.mirror.GetArrayElements(o6);
+            List<Obj> ol6 = UnpackToList(vms.mirror, o6);
             string type6 = vms.mirror.GetType(ol6[0]);
             Assert.IsTrue(type6 == "double");
             Assert.IsTrue((Double)ol6[0].Payload == 2.0);
@@ -13982,7 +13992,7 @@ c = 2;
             watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
             mirror = watchRunner.Execute(@"g");
             objExecVal = mirror.GetWatchValue();
-            List<Obj> lo = mirror.GetArrayElements(objExecVal);
+            List<Obj> lo = UnpackToList(mirror, objExecVal);
             Assert.IsTrue((Int64)lo[0].Payload == 1);
             Assert.IsTrue((Int64)lo[1].Payload == 2);
             Assert.IsTrue((Int64)lo[2].Payload == 3);
@@ -14115,7 +14125,7 @@ c = 2;
             mirror = watchRunner.Execute(@"arr");
             objExecVal = mirror.GetWatchValue();
             Assert.AreEqual(mirror.GetType(objExecVal), "array");
-            List<Obj> lo = mirror.GetArrayElements(objExecVal);
+            List<Obj> lo = UnpackToList(mirror, objExecVal);
             Assert.AreEqual(lo[0].Payload, 1);
             Assert.AreEqual(lo[1].Payload, 2);
 
@@ -15638,7 +15648,6 @@ d = b[0..(Count(b) - 1)..2]; // rnage expression used for indexing into a collec
 
             Obj objExecVal = mirror.GetWatchValue();
 
-            List<Obj> lo = mirror.GetArrayElements(objExecVal);
             String type = objExecVal.GetType().ToString();
 
             TestFrameWork.Verify(mirror, "a", new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 0);
@@ -15675,16 +15684,9 @@ a = a < 5 ? 3 : 4;
             ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
 
-            Obj objExecVal = mirror.GetWatchValue();
-
-            List<Obj> lo = mirror.GetArrayElements(objExecVal);
-            String type = objExecVal.GetType().ToString();
-
             TestFrameWork.Verify(mirror, "a", new object[] { 0, 2, 4, 6, 8, 10 }, 0);
             vms = fsr.StepOver();
             TestFrameWork.Verify(mirror, "a", new object[] { 3, 3, 3, 4, 4, 4 }, 0);
-
-
         }
         [Test]
         [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]

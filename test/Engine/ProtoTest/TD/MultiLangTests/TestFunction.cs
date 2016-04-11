@@ -6363,16 +6363,15 @@ d1 = [Imperative]
             };
             fsr.ToggleBreakpoint(cp);
             ProtoScript.Runners.DebugRunner.VMState vms = fsr.Run();
-            thisTest.DebugModeVerification(vms.mirror, "y1", true);
-            thisTest.DebugModeVerification(vms.mirror, "y3", true);
-            thisTest.DebugModeVerification(vms.mirror, "y2", false);
-            thisTest.DebugModeVerification(vms.mirror, "y4", false);
+            Assert.AreEqual((bool)vms.mirror.GetDebugValue("y1").Payload, true);
+            Assert.AreEqual((bool)vms.mirror.GetDebugValue("y3").Payload, true);
+            Assert.AreEqual((bool)vms.mirror.GetDebugValue("y2").Payload, false);
+            Assert.AreEqual((bool)vms.mirror.GetDebugValue("y4").Payload, false);
             fsr.Run();
-            thisTest.DebugModeVerification(vms.mirror, "y1", false);
-            thisTest.DebugModeVerification(vms.mirror, "y3", false);
-            thisTest.DebugModeVerification(vms.mirror, "y2", true);
-            thisTest.DebugModeVerification(vms.mirror, "y4", true);
-
+            Assert.AreEqual((bool)vms.mirror.GetDebugValue("y1").Payload, false);
+            Assert.AreEqual((bool)vms.mirror.GetDebugValue("y3").Payload, false);
+            Assert.AreEqual((bool)vms.mirror.GetDebugValue("y2").Payload, true);
+            Assert.AreEqual((bool)vms.mirror.GetDebugValue("y4").Payload, true);
         }
 
         [Test]

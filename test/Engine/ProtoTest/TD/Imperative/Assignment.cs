@@ -286,6 +286,7 @@ b;
         public void T14_TestUsingMathAndLogicalExpr()
         {
             string src = @"a;
+b;
 f;
 c1;
 c2;
