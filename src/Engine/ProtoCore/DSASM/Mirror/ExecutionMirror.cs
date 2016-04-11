@@ -688,35 +688,6 @@ namespace ProtoCore.DSASM.Mirror
             return retVal;
         }
         
-        /// <summary>
-        /// Return the stack value of specified variable at the global scope.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public StackValue GetValueAtGlobalScope(string name)
-        {
-            ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
-
-            int index = Constants.kInvalidIndex;
-            for (int block = 0; block < exe.runtimeSymbols.Length; ++block)
-            {
-                index = exe.runtimeSymbols[block].IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
-                if (index != Constants.kInvalidIndex)
-                    break;
-            }
-
-            if (Constants.kInvalidIndex == index)
-            {
-                throw new SymbolNotFoundException(name);
-            }
-            else
-            {
-                var symbol = exe.runtimeSymbols[0].symbolList[index];
-                var stackValue = MirrorTarget.rmem.GetSymbolValue(symbol);
-                return stackValue;
-            }
-        }
-
         //
         //  1.	Get the graphnode given the varname
         //  2.	Get the sv of the symbol
