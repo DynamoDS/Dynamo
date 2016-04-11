@@ -67,6 +67,10 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Tools\DynamoInstallDetective\DynamoInstallDetective.csproj">
+      <Project>{98692887-b389-4f73-a71a-9fc516738dab}</Project>
+      <Name>DynamoInstallDetective</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
       <Name>DynamoShapeManager</Name>

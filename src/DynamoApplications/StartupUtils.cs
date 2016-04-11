@@ -144,9 +144,6 @@ namespace Dynamo.Applications
 
         public static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
         {
-            var exePath = Assembly.GetExecutingAssembly().Location;
-            var rootFolder = Path.GetDirectoryName(exePath);
-
             var versions = new[]
             {
                 LibraryVersion.Version220,
@@ -154,7 +151,7 @@ namespace Dynamo.Applications
                 LibraryVersion.Version222, 
             };
 
-            var preloader = new Preloader(rootFolder, versions);
+            var preloader = new Preloader(DynamoCorePath, versions);
             preloader.Preload();
             geometryFactoryPath = preloader.GeometryFactoryPath;
             preloaderLocation = preloader.PreloaderLocation;
@@ -173,6 +170,41 @@ namespace Dynamo.Applications
             return um;
         }
 
+        private static string dynamopath;
+
+        /// <summary>
+        /// Gets the path of Dynamo Core installation.
+        /// </summary>
+        public static string DynamoCorePath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(dynamopath))
+                {
+                    dynamopath = GetDynamoCorePath();
+                }
+                return dynamopath;
+            }
+        }
+
+        /// <summary>
+        /// Finds the Dynamo Core path by looking into registery.
+        /// </summary>
+        /// <returns>The root folder path of Dynamo Core.</returns>
+        private static string GetDynamoCorePath()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var version = assembly.GetName().Version;
+
+            var installs = DynamoInstallDetective.DynamoProducts.FindDynamoInstallations();
+            if (installs == null) return string.Empty;
+
+            return installs.Products
+                .Where(p => p.VersionInfo.Item1 == version.Major && p.VersionInfo.Item2 == version.Minor)
+                .Select(p => p.InstallLocation)
+                .FirstOrDefault();
+        }
+
         public static DynamoModel MakeModel(bool CLImode)
         {
 
@@ -181,11 +213,13 @@ namespace Dynamo.Applications
             PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
 
             var config = new DynamoModel.DefaultStartConfiguration()
-                  {
-                      GeometryFactoryPath = geometryFactoryPath,
-                      ProcessMode = TaskProcessMode.Asynchronous
-                  };
-
+            {
+                DynamoCorePath = DynamoCorePath,
+                DynamoHostPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                GeometryFactoryPath = geometryFactoryPath,
+                ProcessMode = TaskProcessMode.Asynchronous
+            };
+            
             config.UpdateManager = CLImode ? null : InitializeUpdateManager();
             config.StartInTestMode = CLImode ? true : false;
             config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver ;

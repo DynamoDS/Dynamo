@@ -1,70 +1,53 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
-
+using System.Reflection;
+using System.IO;
 using Dynamo.Controls;
-using Dynamo.Core;
 using Dynamo.DynamoSandbox;
 using Dynamo.Models;
-using Dynamo.Services;
 using Dynamo.ViewModels;
 using Dynamo.Applications;
-using Dynamo.Logging;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace DynamoSandbox
 {
-   
     internal class Program
     {
-        private static SettingsMigrationWindow migrationWindow;
-        
-        private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
+        /// <summary>
+        /// Handler to the ApplicationDomain's AssemblyResolve event.
+        /// If an assembly's location cannot be resolved, an exception is
+        /// thrown. Failure to resolve an assembly will leave Dynamo in 
+        /// a bad state, so we should throw an exception here which gets caught 
+        /// by our unhandled exception handler and presents the crash dialogue.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
         {
-            DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
+            var assemblyPath = string.Empty;
+            var assemblyName = new AssemblyName(args.Name).Name + ".dll";
 
-            var model = Dynamo.Applications.StartupUtils.MakeModel(false);
-
-            viewModel = DynamoViewModel.Start(
-                new DynamoViewModel.StartConfiguration()
+            try
+            {
+                assemblyPath = Path.Combine(Dynamo.Applications.StartupUtils.DynamoCorePath, assemblyName);
+                if (File.Exists(assemblyPath))
                 {
-                    CommandFilePath = commandFilePath,
-                    DynamoModel = model,
-                    Watch3DViewModel = HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(new Watch3DViewModelStartupParams(model), model.Logger)
-                });
+                    return Assembly.LoadFrom(assemblyPath);
+                }
 
-            var view = new DynamoView(viewModel);
-            view.Loaded += (sender, args) => CloseMigrationWindow();
+                var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+                var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
 
-            var app = new Application();
-            app.Run(view);
-
-            DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
-        }
-
-        private static void CloseMigrationWindow()
-        {
-            if (migrationWindow == null)
-                return;
-
-            migrationWindow.Close();
-            migrationWindow = null;
-        }
-
-        private static void MigrationStatusDialogRequested(SettingsMigrationEventArgs args)
-        {
-            if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.Begin)
-            {
-                migrationWindow = new SettingsMigrationWindow();
-                migrationWindow.Show();
+                assemblyPath = Path.Combine(assemblyDirectory, assemblyName);
+                return (File.Exists(assemblyPath) ? Assembly.LoadFrom(assemblyPath) : null);
             }
-            else if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.End)
+            catch (Exception ex)
             {
-                CloseMigrationWindow();
+                throw new Exception(string.Format("The location of the assembly, {0} could not be resolved for loading.", assemblyPath), ex);
             }
         }
-
 
         [DllImport("msvcrt.dll")]
         public static extern int _putenv(string env);
@@ -72,49 +55,17 @@ namespace DynamoSandbox
         [STAThread]
         public static void Main(string[] args)
         {
-            DynamoViewModel viewModel = null;
-            try
-            {
-                var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
-                var locale = Dynamo.Applications.StartupUtils.SetLocale(cmdLineArgs);
-                    _putenv(locale);
+            
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
 
-                    MakeStandaloneAndRun(cmdLineArgs.CommandFilePath, out viewModel);
-            }
-            catch (Exception e)
-            {
-                try
-                {
-#if DEBUG
-                    // Display the recorded command XML when the crash happens, 
-                    // so that it maybe saved and re-run later
-                    if (viewModel != null)
-                        viewModel.SaveRecordedCommand.Execute(null);
-#endif
+            var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
+            var locale = StartupUtils.SetLocale(cmdLineArgs);
+            _putenv(locale);
 
-                    DynamoModel.IsCrashing = true;
-                    InstrumentationLogger.LogException(e);
-                    StabilityTracking.GetInstance().NotifyCrash();
-
-                    if (viewModel != null)
-                    {
-                        // Show the unhandled exception dialog so user can copy the 
-                        // crash details and report the crash if she chooses to.
-                        viewModel.Model.OnRequestsCrashPrompt(null,
-                            new CrashPromptArgs(e.Message + "\n\n" + e.StackTrace));
-
-                        // Give user a chance to save (but does not allow cancellation)
-                        viewModel.Exit(allowCancel: false);
-                    }
-                }
-                catch
-                {
-                }
-
-                Debug.WriteLine(e.Message);
-                Debug.WriteLine(e.StackTrace);
-            }
+            var setup = new DynamoCoreSetup(cmdLineArgs.CommandFilePath);
+            var app = new Application();
+            setup.RunApplication(app);
+            
         }
-
     }
 }
