@@ -12,6 +12,7 @@ using System.IO;
 using System.Xml;
 using System.Linq;
 using ProtoCore.Properties;
+using ProtoCore.Exceptions;
 
 namespace ProtoFFI
 {
@@ -434,8 +435,16 @@ namespace ProtoFFI
                 ++index;
             }
 
-            var retVal = dsi.runtime.rmem.Heap.AllocateArray(sv);
-            return retVal;
+            try
+            {
+                var retVal = dsi.runtime.rmem.Heap.AllocateArray(sv);
+                return retVal;
+            }
+            catch (RunOutOfMemoryException)
+            {
+                dsi.runtime.RuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
         }
 
         protected StackValue ToDSArray(IEnumerable enumerable, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type expectedDSType)
@@ -448,15 +457,34 @@ namespace ProtoFFI
             }
 
             var heap = dsi.runtime.rmem.Heap;
-            var retVal = heap.AllocateArray(svs.ToArray());
-            return retVal;
+
+            try
+            {
+                var retVal = heap.AllocateArray(svs.ToArray());
+                return retVal;
+            }
+            catch (RunOutOfMemoryException)
+            {
+                dsi.runtime.RuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
         }
 
         protected StackValue ToDSArray(IDictionary dictionary, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type expectedDSType)
         {
             var runtimeCore = dsi.runtime.RuntimeCore;
 
-            var svArray = dsi.runtime.rmem.Heap.AllocateArray(new StackValue[] {});
+            StackValue svArray;
+            try
+            {
+                svArray = dsi.runtime.rmem.Heap.AllocateArray(new StackValue[] { });
+            }
+            catch (RunOutOfMemoryException)
+            {
+                dsi.runtime.RuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
+
             DSArray array = dsi.runtime.rmem.Heap.ToHeapObject<DSArray>(svArray);
             foreach (var key in dictionary.Keys)
             {

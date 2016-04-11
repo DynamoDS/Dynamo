@@ -45,6 +45,11 @@ namespace Dynamo.ViewModels
             get { return _port.IsConnected; }
         }
 
+        public bool IsEnabled
+        {
+            get { return _port.IsEnabled; }
+        }
+
         public double Height
         {
             get { return _port.Height; }
@@ -89,41 +94,7 @@ namespace Dynamo.ViewModels
         }
 
         public PortEventType EventType { get; set; }
-      
-        public PortPosition Position
-        {
-            get
-            {
-                if (PortType == PortType.Input)
-                {
-                    if (_node.InPorts.Count > 1)
-                    {
-                        int pos = _node.InPorts.IndexOf(this);
-                        if (pos == 0) //first port 
-                            return PortPosition.Top;
-                        if (pos == _node.InPorts.Count - 1)
-                            return PortPosition.Last;
-                        return PortPosition.Middle;
-                    }
-                }
 
-                if (PortType == PortType.Output)
-                {
-                    if (_node.OutPorts.Count > 1)
-                    {
-                        int pos = _node.OutPorts.IndexOf(this);                      
-                        if (pos == 0) //first port 
-                            return PortPosition.Top;
-                        if (pos == _node.OutPorts.Count - 1)
-                            return PortPosition.Last;
-                        return PortPosition.Middle;
-                    }
-                }
-
-                return PortPosition.First;
-            }
-
-        }
         #endregion
 
         #region events
@@ -183,6 +154,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsConnected":
                     RaisePropertyChanged("IsConnected");
+                    break;
+                case "IsEnabled":
+                    RaisePropertyChanged("IsEnabled");
                     break;
                 case "Center":
                     RaisePropertyChanged("Center");

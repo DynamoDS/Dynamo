@@ -55,7 +55,7 @@ namespace ProtoTest.DSASM
             var array = heap.AllocateArray(values);
             var str = heap.AllocateString("hello world");
 
-            heap.GCMarkAndSweep(new List<StackValue>(), testExecutive);
+            heap.FullGC(new List<StackValue>(), testExecutive);
             Assert.IsNull(heap.ToHeapObject<DSArray>(array));
             Assert.IsNull(heap.ToHeapObject<DSArray>(str));
         }
@@ -72,7 +72,7 @@ namespace ProtoTest.DSASM
             var array2 = heap.AllocateArray(new StackValue[] { array1 });
             var array3 = heap.AllocateArray(new StackValue[] { array2 });
 
-            heap.GCMarkAndSweep(new List<StackValue>() {}, testExecutive);
+            heap.FullGC(new List<StackValue>() {}, testExecutive);
 
             Assert.IsNull(heap.ToHeapObject<DSArray>(array1));
             Assert.IsNull(heap.ToHeapObject<DSArray>(array2));
@@ -94,7 +94,7 @@ namespace ProtoTest.DSASM
 
             var array = heap.AllocateArray(new StackValue[] { });
 
-            heap.GCMarkAndSweep(new List<StackValue>() {}, testExecutive);
+            heap.FullGC(new List<StackValue>() {}, testExecutive);
 
             Assert.IsNull(heap.ToHeapObject<DSArray>(val));
             Assert.IsNull(heap.ToHeapObject<DSArray>(array));
@@ -112,7 +112,7 @@ namespace ProtoTest.DSASM
             // self reference
             array.SetValueForIndex(0, svArray, null);
 
-            heap.GCMarkAndSweep(new List<StackValue>() {}, testExecutive);
+            heap.FullGC(new List<StackValue>() {}, testExecutive);
             Assert.IsNull(heap.ToHeapObject<DSArray>(svArray));
         }
 
@@ -129,7 +129,7 @@ namespace ProtoTest.DSASM
             // self reference
             array1.SetValueForIndex(0, svArray2, null);
 
-            heap.GCMarkAndSweep(new List<StackValue>() { }, testExecutive);
+            heap.FullGC(new List<StackValue>() { }, testExecutive);
             Assert.IsNull(heap.ToHeapObject<DSArray>(svArray1));
             Assert.IsNull(heap.ToHeapObject<DSArray>(svArray2));
         }

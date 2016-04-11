@@ -22,13 +22,9 @@ namespace ProtoTest.DebugTests
     a = 1;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            StackValue svA = mirror.GetValue("a").DsasmValue;
-            Assert.IsTrue(svA.IsInteger);
-            Assert.IsTrue(svA.IntegerValue == 1);
+            thisTest.Verify("a", 1);
             mirror.SetValueAndExecute("a", 2);
-            StackValue svA2 = mirror.GetValue("a").DsasmValue;
-            Assert.IsTrue(svA2.IsInteger);
-            Assert.IsTrue(svA2.IntegerValue == 2);
+            thisTest.Verify("a", 2);
         }
 
         [Test]
@@ -40,19 +36,11 @@ namespace ProtoTest.DebugTests
     b = a + 1;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            StackValue svA = mirror.GetValue("a").DsasmValue;
-            Assert.IsTrue(svA.IsInteger);
-            Assert.IsTrue(svA.IntegerValue == 1);
-            StackValue svB = mirror.GetValue("b").DsasmValue;
-            Assert.IsTrue(svB.IsInteger);
-            Assert.IsTrue(svB.IntegerValue == 2);
+            thisTest.Verify("a", 1);
+            thisTest.Verify("b", 2);
             mirror.SetValueAndExecute("a", 2);
-            StackValue svA2 = mirror.GetValue("a").DsasmValue;
-            Assert.IsTrue(svA2.IsInteger);
-            Assert.IsTrue(svA2.IntegerValue == 2);
-            StackValue svB2 = mirror.GetValue("b").DsasmValue;
-            Assert.IsTrue(svB2.IsInteger);
-            Assert.IsTrue(svB2.IntegerValue == 3);
+            thisTest.Verify("a", 2);
+            thisTest.Verify("b", 3);
         }
 
         [Test]
@@ -66,25 +54,13 @@ namespace ProtoTest.DebugTests
     c = foo(b);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            StackValue svA = mirror.GetValue("a").DsasmValue;
-            Assert.IsTrue(svA.IsInteger);
-            Assert.IsTrue(svA.IntegerValue == 1);
-            StackValue svB = mirror.GetValue("b").DsasmValue;
-            Assert.IsTrue(svB.IsInteger);
-            Assert.IsTrue(svB.IntegerValue == 2);
-            StackValue svC = mirror.GetValue("c").DsasmValue;
-            Assert.IsTrue(svC.IsInteger);
-            Assert.IsTrue(svC.IntegerValue == 4);
+            thisTest.Verify("a", 1);
+            thisTest.Verify("b", 2);
+            thisTest.Verify("c", 4);
             mirror.SetValueAndExecute("a", 2);
-            StackValue svA2 = mirror.GetValue("a").DsasmValue;
-            Assert.IsTrue(svA2.IsInteger);
-            Assert.IsTrue(svA2.IntegerValue == 2);
-            StackValue svB2 = mirror.GetValue("b").DsasmValue;
-            Assert.IsTrue(svB2.IsInteger);
-            Assert.IsTrue(svB2.IntegerValue == 3);
-            StackValue svC2 = mirror.GetValue("c").DsasmValue;
-            Assert.IsTrue(svC2.IsInteger);
-            Assert.IsTrue(svC2.IntegerValue == 6);
+            thisTest.Verify("a", 2);
+            thisTest.Verify("b", 3);
+            thisTest.Verify("c", 6);
         }
 
         [Test]
@@ -105,26 +81,13 @@ a;b;c;
             string defectID = "MAGN-1537 Regression in SetValueAndExecute API";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1537
             ExecutionMirror mirror = thisTest.RunScriptSource(code, defectID);
-            StackValue svA = mirror.GetValue("a").DsasmValue;
-            Assert.IsTrue(svA.IsInteger);
-            Assert.IsTrue(svA.IntegerValue == 1);
-            StackValue svB = mirror.GetValue("b").DsasmValue;
-            Assert.IsTrue(svB.IsInteger);
-            Assert.IsTrue(svB.IntegerValue == 2);
-            StackValue svC = mirror.GetValue("c").DsasmValue;
-            Assert.IsTrue(svC.IsInteger);
-            Assert.IsTrue(svC.IntegerValue == 4);
-
+            thisTest.Verify("a", 1);
+            thisTest.Verify("b", 2);
+            thisTest.Verify("c", 4);
             mirror.SetValueAndExecute("a", 2);
-            StackValue svA2 = mirror.GetValue("a").DsasmValue;
-            Assert.IsTrue(svA2.IsInteger);
-            Assert.IsTrue(svA2.IntegerValue == 2, defectID);
-            StackValue svB2 = mirror.GetValue("b").DsasmValue;
-            Assert.IsTrue(svB2.IsInteger);
-            Assert.IsTrue(svB2.IntegerValue == 3, defectID);
-            StackValue svC2 = mirror.GetValue("c").DsasmValue;
-            Assert.IsTrue(svC2.IsInteger);
-            Assert.IsTrue(svC2.IntegerValue == 6, defectID);
+            thisTest.Verify("a", 2);
+            thisTest.Verify("b", 3);
+            thisTest.Verify("c", 6);
         }
     }
 }

@@ -47,7 +47,7 @@ namespace Autodesk.DesignScript.Runtime
     /// that implements IExtensionApplication interface.
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false, Inherited = false)]
-    public sealed class ExtensionApplicationAttribute : Attribute
+    internal sealed class ExtensionApplicationAttribute : Attribute
     {
         public ExtensionApplicationAttribute(Type entryPointType)
         {
@@ -83,7 +83,7 @@ namespace Autodesk.DesignScript.Runtime
     /// that implements IContextDataProvider interface.
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false, Inherited = false)]
-    public sealed class ContextDataProviderAttribute : Attribute
+    internal sealed class ContextDataProviderAttribute : Attribute
     {
         private Func<bool> mCapturesData = () => true;
 

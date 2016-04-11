@@ -267,13 +267,13 @@ namespace Dynamo.Search.SearchElements
 
         protected virtual IEnumerable<string> GenerateOutputParameters()
         {
-            outputParameters.Add("none");
+            outputParameters.Add(Properties.Resources.NoneString);
             return outputParameters;
         }
 
         protected virtual IEnumerable<Tuple<string, string>> GenerateInputParameters()
         {
-            inputParameters.Add(Tuple.Create("", "none"));
+            inputParameters.Add(Tuple.Create(String.Empty, Properties.Resources.NoneString));
             return inputParameters;
         }
     }

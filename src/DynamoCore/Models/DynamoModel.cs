@@ -538,7 +538,8 @@ namespace Dynamo.Models
             {
                 PreferenceSettings.CustomPackageFolders.Add(userDataFolder);
             }
-            pathManager.LoadCustomPackageFolders(PreferenceSettings.CustomPackageFolders);
+
+            pathManager.Preferences = PreferenceSettings;
 
 
             SearchModel = new NodeSearchModel();

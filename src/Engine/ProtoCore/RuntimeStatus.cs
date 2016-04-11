@@ -36,7 +36,8 @@ namespace ProtoCore
             ModuloByZero,
             InvalidType,
             RangeExpressionOutOfMemory,
-            MoreThanOneDominantList
+            MoreThanOneDominantList,
+            RunOutOfMemory,
         }
 
         public struct WarningEntry

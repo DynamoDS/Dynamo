@@ -66,7 +66,7 @@ namespace ProtoCore.DSASM
         public DynamicVariableTable DynamicVarTable { get; set; }
         public DynamicFunctionTable DynamicFuncTable { get; set; }
         public FunctionPointerTable FuncPointerTable { get; set; }
-        public ContextDataManager ContextDataMngr { get; set; }
+        internal ContextDataManager ContextDataMngr { get; set; }
         public IDictionary<string, object> Configurations { get; set; }
         public Dictionary<ulong, ulong> CodeToLocation { get; set; }
         public string CurrentDSFileName { get; set; }

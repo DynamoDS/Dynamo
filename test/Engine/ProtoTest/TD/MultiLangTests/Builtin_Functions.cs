@@ -618,7 +618,7 @@ result =
          {
            Assert.Fail("");
            ExecutionMirror mirror = thisTest.RunScript(testPath, "T018_CountTrue_RangeExpression_02.ds");
-           Assert.IsTrue((Int64)mirror.GetValue("result").Payload == 0);
+           thisTest.Verify("result", 0);
            List<Object> li = new List<Object>() { 1, 4, 9 };
            Assert.IsTrue(mirror.CompareArrays("a", li, typeof(System.Int64)));
          }*/
@@ -643,7 +643,7 @@ result =
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1.0, 4.0, 7.0 };
             thisTest.Verify("a", v1, 0);
-            //Assert.IsTrue((Int64)mirror.GetValue("result").Payload == 0);
+            //thisTest.Verify("result", 0);
             //List<Object> li = new List<Object>() { 1, 4, 7 };
             //Assert.IsTrue(mirror.CompareArrays("a", li, typeof(System.Int64)));
         }
@@ -935,7 +935,7 @@ result =
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1.0, 4.0, 7.0 };
             thisTest.Verify("a", v1, 0);
-            //Assert.IsTrue((Int64)mirror.GetValue("result").Payload == 0);
+            //thisTest.Verify("result", 0);
             //List<Object> li = new List<Object>() { 1, 4, 7 };
             //Assert.IsTrue(mirror.CompareArrays("a", li, typeof(System.Int64)));
         }

@@ -1,7 +1,4 @@
-﻿using Autodesk.DesignScript.Runtime;
-using Dynamo.Models;
-using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -9,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Graph.Nodes;
 using Path = System.IO.Path;
 using Rectangle = System.Drawing.Rectangle;
@@ -83,10 +81,44 @@ namespace DSCore.IO
     /// </summary>
     public static class File
     {
+        /// <summary>
+        /// Gets absolute path from the given path. If the given path is 
+        /// relative path then it is resolved with respect to the current 
+        /// workspace. If file doesn't exist at the relative path but exists
+        /// at the given hintPath then hintPath is returned.
+        /// </summary>
+        /// <param name="path">Relative path or full path</param>
+        /// <param name="hintPath">Last resolved path</param>
+        /// <returns>Absolute path</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static string AbsolutePath(string path, string hintPath = null)
+        {
+            //If the path is absolute path no need to transform.
+            if (Path.IsPathRooted(path)) return path;
+
+            var session = Dynamo.Events.ExecutionEvents.ActiveSession;
+            if(session != null && !string.IsNullOrEmpty(session.CurrentWorkspacePath))
+            {
+                var parent = Path.GetDirectoryName(session.CurrentWorkspacePath);
+                var filepath = Path.Combine(parent, path);
+                //If hint path is null or file exists at this location return the computed path
+                //If hint path doesn't exist then the relative path might be for write operation.
+                if (File.Exists(filepath) || string.IsNullOrEmpty(hintPath) || !File.Exists(hintPath))
+                    return Path.GetFullPath(filepath);
+            }
+
+            return string.IsNullOrEmpty(hintPath) ? path : hintPath;
+        }
+
+        /// <summary>
+        /// Creates File object from given file path.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static FileInfo FromPath(string path)
         {
-            return new FileInfo(path);
+            return new FileInfo(AbsolutePath(path));
         }
 
         /// <summary>
@@ -150,7 +182,8 @@ namespace DSCore.IO
         /// <search>write file,text,file,filepath</search>
         public static void WriteText(string filePath, string text)
         {
-            System.IO.File.WriteAllText(filePath, text);
+            var fullpath = AbsolutePath(filePath);
+            System.IO.File.WriteAllText(fullpath, text);
         }
 
         #region Obsolete Methods
@@ -411,7 +444,7 @@ namespace DSCore.IO
         /// <search>write image,image,file,filepath</search>
         public static void WriteToFile(string path, Bitmap image)
         {
-            image.Save(path);
+            image.Save(File.AbsolutePath(path));
         }
     }
 
@@ -430,7 +463,7 @@ namespace DSCore.IO
         /// <search>write,text,file</search>
         public static void WriteToFile(string filePath, object[][] data)
         {
-            using (var writer = new StreamWriter(filePath))
+            using (var writer = new StreamWriter(File.AbsolutePath(filePath)))
             {
                 foreach (var line in data)
                 {

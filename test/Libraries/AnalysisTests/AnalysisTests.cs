@@ -17,28 +17,8 @@ using NUnit.Framework;
 namespace AnalysisTests
 {
     [TestFixture]
-    public class AnalysisTests
+    public class AnalysisTests : TestServices.GeometricTestBase
     {
-        private TestExecutionSession executionSession;
-        IExtensionApplication application = Application.Instance as IExtensionApplication;
-
-        [TestFixtureSetUp]
-        public void SetUp()
-        {
-            var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-            executionSession = new TestExecutionSession(assemblyDirectory);
-
-            application.OnBeginExecution(executionSession);
-            HostFactory.Instance.StartUp();
-        }
-
-        [TestFixtureTearDown]
-        public void TearDown()
-        {
-            executionSession = null;
-        }
-
         [Test, Category("UnitTests")]
         public void SurfaceAnalysisDataBySurfacePointsAndResults_ValidArgs()
         {
@@ -195,81 +175,5 @@ namespace AnalysisTests
             var a = new List<Vector> {x,y,z};
             return a;
         } 
-    }
-
-    /// <summary>
-    /// This is a temporary session class which is only used for nodes that are using Geometries.
-    /// When ProtoGeometry is loaded, the static instance GeometryFactory will be constructed which
-    /// requires a session to be present.
-    /// </summary>
-    class TestExecutionSession : IExecutionSession, IConfiguration, IDisposable
-    {
-        private readonly string rootModulePath;
-        private readonly Dictionary<string, object> configValues;
-        private Preloader preloader;
-
-        public TestExecutionSession(string rootModulePath)
-        {
-            configValues = new Dictionary<string, object>();
-            this.rootModulePath = rootModulePath;
-        }
-
-        public IConfiguration Configuration
-        {
-            get { return this; }
-        }
-
-        public string SearchFile(string fileName)
-        {
-            var path = Path.Combine(RootModulePath, fileName);
-            if (File.Exists(path))
-                return path;
-            return fileName;
-        }
-
-        public string RootModulePath
-        {
-            get { return rootModulePath; }
-        }
-
-        public string[] IncludeDirectories
-        {
-            get { return new string[] { RootModulePath }; }
-        }
-
-        public bool IsDebugMode
-        {
-            get { return false; }
-        }
-
-        public object GetConfigValue(string config)
-        {
-            if (string.Compare(ConfigurationKeys.GeometryFactory, config) == 0)
-            {
-                if (preloader == null)
-                {
-                    var exePath = Assembly.GetExecutingAssembly().Location;
-                    preloader = new Preloader(Path.GetDirectoryName(exePath));
-                    preloader.Preload();
-                }
-
-                return preloader.GeometryFactoryPath;
-            }
-
-            if (configValues.ContainsKey(config))
-                return configValues[config];
-
-            return null;
-        }
-
-        public void SetConfigValue(string config, object value)
-        {
-            configValues[config] = value;
-        }
-
-        public void Dispose()
-        {
-            configValues.Clear();
-        }
     }
 }

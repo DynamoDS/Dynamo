@@ -11,7 +11,7 @@
     <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="84509ca2-09bc-4294-82a0-3844021c1a65" nickname="Code Block" x="315.286051157114" y="250.671976518046" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Point.ByCoordinates(0,0);" ShouldFocus="false" />
     <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="b4fc5d9a-4c5a-4dba-b7a0-b2e1d8876d33" nickname="Code Block" x="351.230088057328" y="57.2879899363054" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{1,2,3};" ShouldFocus="false" />
     <DSCore.File.Filename type="DSCore.File.Filename" guid="c3543240-7c54-4ed0-aac2-01ccb6d5ce8c" nickname="File Path" x="-59.2302863602432" y="733.729063245387" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String>../../../test/UI/Bricks.PNG</System.String>
+      <System.String>Bricks.PNG</System.String>
     </DSCore.File.Filename>
     <DSCore.File.FileObject type="DSCore.File.FileObject" guid="aea33285-bd50-4311-bac5-91941a5d26d2" nickname="File.FromPath" x="289.421883045283" y="738.907065761311" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </Elements>
