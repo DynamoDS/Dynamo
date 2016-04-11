@@ -154,7 +154,7 @@ namespace Dynamo.Applications
                 LibraryVersion.Version222, 
             };
 
-            var preloader = new Preloader(@"C:\Program Files\Dynamo\Dynamo Core\1.0\", versions);
+            var preloader = new Preloader(rootFolder, versions);
             preloader.Preload();
             geometryFactoryPath = preloader.GeometryFactoryPath;
             preloaderLocation = preloader.PreloaderLocation;
@@ -182,7 +182,7 @@ namespace Dynamo.Applications
 
             var config = new DynamoModel.DefaultStartConfiguration()
             {
-                DynamoCorePath = @"C:\Program Files\Dynamo\Dynamo Core\1.0\",
+               // DynamoCorePath = @"C:\Program Files\Dynamo\Dynamo Core\1.0\",
                 //DynamoHostPath = @"C:\Program Files\Dynamo\Dynamo Core\1.0",
                 GeometryFactoryPath = geometryFactoryPath,
                 ProcessMode = TaskProcessMode.Asynchronous

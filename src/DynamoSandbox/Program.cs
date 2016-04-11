@@ -99,15 +99,16 @@ namespace DynamoSandbox
             
             //Include Dynamo Core path in System Path variable for helix to load properly.
             UpdateSystemPathForProcess();
-
+            /*
             var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
             var locale = StartupUtils.SetLocale(cmdLineArgs);
             _putenv(locale);
+            */
+            var cmdLineArgs = CommandLineArguments.FromArguments(args);
 
-            //var cmdLineArgs = CommandLineArguments.FromArguments(args);
-
-            var setup = new DynamoCoreSetup();
-            setup.RunApplication(cmdLineArgs.CommandFilePath);
+            var setup = new DynamoCoreSetup(cmdLineArgs);
+            var app = new Application();
+            setup.RunApplication(app);
 
 
         }

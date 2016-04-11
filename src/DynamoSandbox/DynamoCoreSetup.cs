@@ -18,9 +18,72 @@ using Dynamo.Logging;
 using Dynamo.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using Dynamo.DynamoSandbox;
+using Dynamo.Applications;
 
 namespace DynamoSandbox
 {
+    internal class SandboxPathResolver : IPathResolver
+    {
+        private readonly List<string> additionalResolutionPaths;
+        private readonly List<string> additionalNodeDirectories;
+        private readonly List<string> preloadedLibraryPaths;
+
+        public SandboxPathResolver(string preloaderLocation)
+        {
+            // If a suitable preloader cannot be found on the system, then do 
+            // not add invalid path into additional resolution. The default 
+            // implementation of IPathManager in Dynamo insists on having valid 
+            // paths specified through "IPathResolver" implementation.
+            // 
+            additionalResolutionPaths = new List<string>();
+            if (Directory.Exists(preloaderLocation))
+                additionalResolutionPaths.Add(preloaderLocation);
+
+            additionalNodeDirectories = new List<string>();
+            preloadedLibraryPaths = new List<string>
+            {
+                "VMDataBridge.dll",
+                "ProtoGeometry.dll",
+                "DSCoreNodes.dll",
+                "DSOffice.dll",
+                "DSIronPython.dll",
+                "FunctionObject.ds",
+                "Optimize.ds",
+                "DynamoConversions.dll",
+                "DynamoUnits.dll",
+                "Tessellation.dll",
+                "Analysis.dll",
+                "Display.dll"
+            };
+
+        }
+
+        public IEnumerable<string> AdditionalResolutionPaths
+        {
+            get { return additionalResolutionPaths; }
+        }
+
+        public IEnumerable<string> AdditionalNodeDirectories
+        {
+            get { return additionalNodeDirectories; }
+        }
+
+        public IEnumerable<string> PreloadedLibraryPaths
+        {
+            get { return preloadedLibraryPaths; }
+        }
+
+        public string UserDataRootFolder
+        {
+            get { return string.Empty; }
+        }
+
+        public string CommonDataRootFolder
+        {
+            get { return string.Empty; }
+        }
+    }
+    /*
     class DynamoProPathResolver : IPathResolver
     {
         private readonly HashSet<string> additionalNodeDirectories;
@@ -36,7 +99,7 @@ namespace DynamoSandbox
             var currentAssemblyDir = Path.GetDirectoryName(currentAssemblyPath);
 
             var nodesDirectory = Path.Combine(currentAssemblyDir, "nodes");
-            var translationDll = Path.Combine(currentAssemblyDir, "Translation.dll");
+           // var translationDll = Path.Combine(currentAssemblyDir, "Translation.dll");
 
             // Add an additional node processing folder
             additionalNodeDirectories = new HashSet<string>();
@@ -63,7 +126,7 @@ namespace DynamoSandbox
                 "Tessellation.dll",
                 "Analysis.dll",
                 "Display.dll",
-                translationDll
+             //   translationDll
             };
             this.userDataRootFolder = userDataFolder;
             this.commonDataRootFolder = commonDataFolder;
@@ -100,7 +163,7 @@ namespace DynamoSandbox
             get { return commonDataRootFolder; }
         }
     }
-
+    
 #if DYNAMO_LICENSING
     internal class DynamoProLicensing
     {
@@ -121,10 +184,12 @@ namespace DynamoSandbox
         }
     }
 #endif
+    */
 
     class DynamoCoreSetup
     {
-        private DynamoProPathResolver pathResolver;
+        private SandboxPathResolver pathResolver;
+        //private DynamoProPathResolver pathResolver;
         private SettingsMigrationWindow migrationWindow;
         private DynamoViewModel viewModel = null;
         private const string DownloadSourcePath = "http://dyn-studio-data.s3.amazonaws.com/";
@@ -132,20 +197,22 @@ namespace DynamoSandbox
         private const string InstallerNameBase = "DynamoStudio";
         private CommandLineArguments argumentSettings;
 
-        public DynamoCoreSetup()
+        public DynamoCoreSetup(CommandLineArguments args)
         {
-            //argumentSettings = args;
+            argumentSettings = args;
         }
 
-        public void RunApplication(string commandFilePath)
+        public void RunApplication(Application app)
         {
             try
             {
                 
                 var exePath = Assembly.GetExecutingAssembly().Location;
                 var geometryFactoryPath = string.Empty;
-                PreloadShapeManager(ref geometryFactoryPath);
-                
+                var preloaderLocation = string.Empty;
+                PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
+                pathResolver = new SandboxPathResolver(preloaderLocation);
+
                 DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
 
                 /*
@@ -169,19 +236,21 @@ namespace DynamoSandbox
                             DynamoCorePath = Program.DynamoCorePath,
                             DynamoHostPath = Path.GetDirectoryName(exePath),
                             GeometryFactoryPath = geometryFactoryPath,
-                            //UpdateManager = new UpdateManager(GetUpdateManagerConfiguration()),
+                            UpdateManager = InitializeUpdateManager(),
                             //AuthProvider = authProvider,
                             ProcessMode = Dynamo.Scheduler.TaskProcessMode.Asynchronous
                         });
-                
+
                 var startconfig = new DynamoViewModel.StartConfiguration
                 {
-                    CommandFilePath = commandFilePath,
+                    CommandFilePath = argumentSettings.CommandFilePath,
                     DynamoModel = model,
-                    Watch3DViewModel = HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(new Watch3DViewModelStartupParams(model), model.Logger)
+                    Watch3DViewModel = HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(new Watch3DViewModelStartupParams(model), model.Logger),
+                    ShowLogin = true
                 };
 
                 viewModel = DynamoViewModel.Start(startconfig);
+                //viewModel = DynamoViewModel.Start();
 
                 //var startUpFilePath = argumentSettings.StartUpDynFilePath;
                 var view = new DynamoView(viewModel);
@@ -212,7 +281,7 @@ namespace DynamoSandbox
                     DynamoProLicensing.Licensing.CleanUp();
                 }
 #else
-                var app = new Application();
+                //var app = new Application();
                 app.Run(view);
 #endif
                 DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
@@ -254,6 +323,31 @@ namespace DynamoSandbox
             }
         }
 
+        private static IUpdateManager InitializeUpdateManager()
+        {
+            var cfg = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
+            var um = new Dynamo.Updates.UpdateManager(cfg);
+            Debug.Assert(cfg.DynamoLookUp != null);
+            return um;
+        }
+       
+        /*
+        private UpdateManagerConfiguration GetUpdateManagerConfiguration()
+        {
+
+            var config = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
+            if (string.IsNullOrEmpty(config.ConfigFilePath))
+            {
+                config.DownloadSourcePath = DownloadSourcePath;
+                config.SignatureSourcePath = SignatureSourcePath;
+                config.InstallerNameBase = InstallerNameBase;
+            };
+
+            Debug.Assert(config.DynamoLookUp != null);
+            return config;
+        }
+        */
+
         private void CloseMigrationWindow()
         {
             if (migrationWindow == null)
@@ -276,7 +370,7 @@ namespace DynamoSandbox
             }
         }
         
-        private void PreloadShapeManager(ref string geometryFactoryPath)
+        private void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
         {
             /*
             var exePath = Assembly.GetExecutingAssembly().Location;
@@ -294,33 +388,67 @@ namespace DynamoSandbox
             geometryFactoryPath = preloader.GeometryFactoryPath;
             */
             //preloaderLocation = preloader.PreloaderLocation;
-            
+            /*
             var exePath = Assembly.GetExecutingAssembly().Location;
             var rootFolder = Path.GetDirectoryName(exePath);
 
             const LibraryVersion version = LibraryVersion.Version222;
 
+            var binaryFileName = string.Format("ASMAHL{0}A.dll", ((int)version));
 
             var shapeManagerPath = Path.Combine(rootFolder,
                 string.Format("libg_{0}", ((int)version)));
 
+            if (!File.Exists(Path.Combine(shapeManagerPath, binaryFileName)))
+            {
+                // First look under 'libg_xxx' folder for ASM binaries. If not 
+                // found, try looking for them directly under 'rootFolder'.
+                // 
+                shapeManagerPath = rootFolder;
+            }
+            */
+            var versions = new[]
+            {
+                LibraryVersion.Version220,
+                LibraryVersion.Version221,
+                LibraryVersion.Version222,
+            };
 
-            var preloader = new Preloader(Program.DynamoCorePath, shapeManagerPath, version);
+            var preloader = new Preloader(Program.DynamoCorePath, versions);
 
             preloader.Preload();
             geometryFactoryPath = preloader.GeometryFactoryPath;
+            preloaderLocation = preloader.PreloaderLocation;
 
+            /*
             var userDataFolder = string.Empty; //Let's use default location location from Dynamo Core
             var commonDataFolder = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 "Dynamo", "Dynamo Revit");
+            */
+            
 
-            pathResolver = new DynamoProPathResolver(userDataFolder, commonDataFolder);
+            //pathResolver = new DynamoProPathResolver(userDataFolder, commonDataFolder);
 
-            pathResolver.AddAdditionalResolutionPath(preloader.PreloaderLocation);
+            //pathResolver.AddAdditionalResolutionPath(preloader.PreloaderLocation);
             
         }
         
+    }
+    internal class SandboxLookUp : DynamoLookUp
+    {
+        public override IEnumerable<string> GetDynamoInstallLocations()
+        {
+            const string regKey64 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\";
+            //Open HKLM for 64bit registry
+            var regKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+            //Open Windows/CurrentVersion/Uninstall registry key
+            regKey = regKey.OpenSubKey(regKey64);
+
+            //Get "InstallLocation" value as string for all the subkey that starts with "Dynamo"
+            return regKey.GetSubKeyNames().Where(s => s.StartsWith("Dynamo")).Select(
+                (s) => regKey.OpenSubKey(s).GetValue("InstallLocation") as string);
+        }
     }
     /*
     internal class StudioLookUp : DynamoLookUp
