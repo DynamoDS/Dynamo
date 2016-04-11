@@ -566,7 +566,7 @@ namespace ProtoTestFx.TD
             else if (expectedObject is Int32 || expectedObject is Int64)
             {
                 Int64 expectedValue = Convert.ToInt64(expectedObject);
-                if (dsObject.Type.UID != (int)ProtoCore.PrimitiveType.Integer)
+                if (!(dsObject.Payload is long))
                 {
                     Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is not an integer. \n{2}", dsVariable, 
                         BuildIndicesString(indices), expectedValue, mErrorMessage));
@@ -579,7 +579,7 @@ namespace ProtoTestFx.TD
             else if (expectedObject is Double)
             {
                 Double expectedValue = Convert.ToDouble(expectedObject);
-                if (dsObject.Type.UID != (int)ProtoCore.PrimitiveType.Double)
+                if (!(dsObject.Payload is Double))
                 {
                     Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is not a double. \n{3}", dsVariable, 
                         BuildIndicesString(indices), expectedValue, mErrorMessage));
@@ -606,7 +606,7 @@ namespace ProtoTestFx.TD
             else if (expectedObject is Boolean)
             {
                 Boolean expectedValue = Convert.ToBoolean(expectedObject);
-                if (dsObject.Type.UID != (int)ProtoCore.PrimitiveType.Bool)
+                if (!(dsObject.Payload is Boolean))
                 {
                     Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual type is not bool. \n{3}", dsVariable, 
                         BuildIndicesString(indices), expectedValue, mErrorMessage));
@@ -620,7 +620,7 @@ namespace ProtoTestFx.TD
             {
                 Char expectedValue = Convert.ToChar(expectedObject);
 
-                if (dsObject.Type.UID != (int)ProtoCore.PrimitiveType.Char)
+                if (!(dsObject.Payload is long))
                 {
                     Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual type is not char. \n{3}", dsVariable, BuildIndicesString(indices), expectedValue, mErrorMessage));
                 }
