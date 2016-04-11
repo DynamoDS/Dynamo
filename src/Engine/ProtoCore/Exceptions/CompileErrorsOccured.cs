@@ -15,4 +15,15 @@ namespace ProtoCore.Exceptions
 
         public RuntimeException(string message) : base("Runtime exception occured. " + message) { }
     }
+
+    public class RunOutOfMemoryException : OutOfMemoryException 
+    {
+        public RunOutOfMemoryException(): base("Run out of memory") 
+        {
+        }
+
+        public RunOutOfMemoryException(string message) : base("Run out of memory. " + message)
+        {
+        }
+    }
 }

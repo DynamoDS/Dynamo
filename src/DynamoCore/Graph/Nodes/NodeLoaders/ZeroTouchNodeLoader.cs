@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Xml;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Exceptions;
 using ProtoCore.Namespace;
 
 namespace Dynamo.Graph.Nodes.NodeLoaders
@@ -72,9 +73,18 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
                 var docPath = Nodes.Utilities.GetDocumentXmlPath(document);
                 assembly = Nodes.Utilities.MakeAbsolutePath(docPath, assembly);
 
-                descriptor = libraryServices.IsLibraryLoaded(assembly) || libraryServices.ImportLibrary(assembly)
+                try
+                {
+                    descriptor = libraryServices.IsLibraryLoaded(assembly) || libraryServices.ImportLibrary(assembly)
                     ? libraryServices.GetFunctionDescriptor(assembly, function)
                     : libraryServices.GetFunctionDescriptor(function);
+                }
+                catch (LibraryLoadFailedException) 
+                {
+                    descriptor = libraryServices.IsLibraryLoaded(assembly)
+                    ? libraryServices.GetFunctionDescriptor(assembly, function)
+                    : libraryServices.GetFunctionDescriptor(function);
+                }
             }
             else
             {

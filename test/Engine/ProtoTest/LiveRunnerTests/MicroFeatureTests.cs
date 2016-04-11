@@ -786,7 +786,7 @@ namespace ProtoTest.LiveRunner
             liveRunner.UpdateGraph(syncData);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
-            var collection = mirror.GetData().GetElements();
+            var collection = mirror.GetData().GetElements().ToList();
             Assert.IsTrue((Int64)collection[1].Data == 1);
         }
 
@@ -881,13 +881,13 @@ namespace ProtoTest.LiveRunner
             {
                 Assert.IsTrue(data.IsCollection);
                 var values = (value as IEnumerable<int>).ToList().Select(v => (object)v).ToList();
-                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(Int64)));
+                TestFrameWork.AssertValue(data, values);
             }
             else if (value is IEnumerable<double>)
             {
                 Assert.IsTrue(data.IsCollection);
                 var values = (value as IEnumerable<double>).ToList().Select(v => (object)v).ToList();
-                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(double)));
+                TestFrameWork.AssertValue(data, values);
             }
         }
 
@@ -4276,7 +4276,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("i");
             StackValue value = mirror.GetData().GetStackValue();
-            Assert.AreEqual(value.opdata, 1);
+            Assert.AreEqual(value.IntegerValue, 1);
         }
 
         [Test]

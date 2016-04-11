@@ -629,7 +629,7 @@ x3 = a1.y;
 
             thisTest.Verify("x1", 1, 0);
             thisTest.Verify("x2", 2, 0);
-            Assert.IsTrue(mirror.GetValue("x3").DsasmValue.IsNull);
+            thisTest.Verify("x3", null);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -695,8 +695,8 @@ a1 = A.A();
 b1 = a1.x;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier);
-            Assert.IsTrue(mirror.GetValue("b1").DsasmValue.IsNull);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.IdUnboundIdentifier);
+            thisTest.Verify("b1", null);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -1393,8 +1393,8 @@ x5 = p1.W;
 x6 = p1.X;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("x2").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("x5").DsasmValue.IsNull);
+            thisTest.Verify("x2", null);
+            thisTest.Verify("x5", null);
             thisTest.Verify("x1", 1.0, 0);
             thisTest.Verify("x3", 1.0, 0);
             thisTest.Verify("x4", 1, 0);
@@ -2147,7 +2147,7 @@ class A
 	
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.CyclicDependency);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -2430,7 +2430,7 @@ class A
 a = A.foo(); 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("a", 0).DsasmValue.IsNull);
+            thisTest.Verify("a", null);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -2450,7 +2450,7 @@ class Sample
 test1 = Sample.ret_a(); 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("test1", 0).DsasmValue.IsNull);
+            thisTest.Verify("test1", null);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -2608,8 +2608,8 @@ x2 = derivedpoint.B;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x1", 1);
             thisTest.Verify("x2", 8);
-            Assert.IsTrue(mirror.GetValue("basePoint", 0).DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("derivedPoint2", 0).DsasmValue.IsNull);
+            thisTest.Verify("basePoint", null);
+            thisTest.Verify("derivedPoint2", null);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -2654,8 +2654,8 @@ x2=derivedpoint.B; ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x1", 1);
             thisTest.Verify("x2", 8);
-            Assert.IsTrue(mirror.GetValue("basePoint", 0).DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("derivedPoint2", 0).DsasmValue.IsNull);
+            thisTest.Verify("basePoint", null);
+            thisTest.Verify("derivedPoint2", null);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -2701,8 +2701,8 @@ x2 = derivedpoint.B;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x1", 1);
             thisTest.Verify("x2", 8);
-            Assert.IsTrue(mirror.GetValue("basePoint", 0).DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("derivedPoint2", 0).DsasmValue.IsNull);
+            thisTest.Verify("basePoint", null);
+            thisTest.Verify("derivedPoint2", null);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -3657,7 +3657,7 @@ p8 = y[2][1];
 p8 = y[2][2];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
             Object a = null;
             thisTest.Verify("p1", a);
             thisTest.Verify("p2", a);
@@ -3721,7 +3721,7 @@ p3 = y[0][1][0];
 p4 = y[0][1][1];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
             Object a = null;
             thisTest.Verify("p1", a);
             thisTest.Verify("p2", a);
@@ -3745,7 +3745,7 @@ x = A.A( );
 y = x.foo ();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
             Object a = null;
             thisTest.Verify("y", a);
 
@@ -3995,7 +3995,7 @@ a = Test.DoSomething(); //wrong warning is thrown:
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object n1 = null;
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.FunctionNotFound);
             thisTest.Verify("a", n1);
         }
 
@@ -5206,7 +5206,7 @@ r = x.foo();
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
 
         }
 
@@ -5243,7 +5243,7 @@ r;
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -5331,7 +5331,7 @@ a.foo = 1;
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -5353,7 +5353,7 @@ a = test.test();
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -5368,7 +5368,7 @@ a.b = 1;
 ";
             string error = "Class 'test' does not have a property 'b'";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -5387,7 +5387,7 @@ a.b = 1;
 ";
             string error = "1467443 Error on incorrect set property is not helpful ";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -5410,7 +5410,7 @@ a.foo = 1;
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -5437,7 +5437,7 @@ a.foo = 1;
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -5460,7 +5460,7 @@ a.foo = 1;
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -5487,7 +5487,7 @@ a.foo = 1;
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -5514,7 +5514,7 @@ a.foo = 1;
 ";
             string error = "Class 'test' does not have a property 'foo'";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -5545,7 +5545,7 @@ a.foo = 1;
 ";
             string error = "1467443 Error on incorrect set property is not helpful ";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure);
         }
 
         [Test][Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
@@ -6726,7 +6726,7 @@ a = test.sum();
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
 
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kFunctionNotFound);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.FunctionNotFound);
             thisTest.Verify("a", null);
 
 

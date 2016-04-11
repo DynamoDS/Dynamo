@@ -290,7 +290,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="node">The node itself</param>
         /// <param name="value">A boolean value indicating whether to silence or not</param>
-        private void NodeOnRequestSilenceNodeModifiedEvents(NodeModel _, bool value)
+        private void NodeOnRequestSilenceNodeModifiedEvents(NodeModel node, bool value)
         {
             this.silenceNodeModifications = value;
         }
@@ -449,12 +449,12 @@ namespace Dynamo.Graph.Workspaces
                 string message = string.Empty;
                 if (messages.ContainsKey(warning.Key))
                 {
-                    if (!warning.Value.Any(w => w.ID == ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency))
+                    if (!warning.Value.Any(w => w.ID == ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency))
                         continue;
 
                     messages.Remove(warning.Key);
                     message = string.Join("\n", warning.Value.
-                        Where(w => w.ID == ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency).
+                        Where(w => w.ID == ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency).
                         Select(w => w.Message));
                 }
                 else
@@ -502,7 +502,8 @@ namespace Dynamo.Graph.Workspaces
             EngineController.ReconcileTraceDataAndNotify();
 
             // Refresh values of nodes that took part in update.
-            foreach (var executedNode in updateTask.ExecutedNodes)
+            var nodes = new HashSet<NodeModel>(updateTask.ExecutedNodes.Concat(updateTask.ModifiedNodes));
+            foreach (var executedNode in nodes)
             {
                 executedNode.RequestValueUpdate(EngineController);
             }

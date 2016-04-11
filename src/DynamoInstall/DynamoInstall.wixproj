@@ -28,8 +28,11 @@
     </WixVariables>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="MaintenanceTypeDlg.wxs" />
+    <Compile Include="VerifyReadyDlg.wxs" />
     <Compile Include="Product.wxs" />
     <Compile Include="Release-autogen.wxs" />
+    <Compile Include="SetupDialog.wxs" />
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixUtilExtension">
@@ -56,32 +59,35 @@
       <Output TaskParameter="Value" PropertyName="Minor" />
     </CreateProperty>
     <CreateProperty Value="$(FullVersion.Split('.')[2])">
-      <Output TaskParameter="Value" PropertyName="Rev" />
+      <Output TaskParameter="Value" PropertyName="Build" />
     </CreateProperty>
     <CreateProperty Value="$(FullVersion.Split('.')[3])">
-      <Output TaskParameter="Value" PropertyName="Build" />
+      <Output TaskParameter="Value" PropertyName="Rev" />
     </CreateProperty>
     <CreateProperty Value="Dynamo Core">
       <Output TaskParameter="Value" PropertyName="ProductName" />
     </CreateProperty>
-    <CreateProperty Value="FullVersion=$(FullVersion);ProductName=$(ProductName);Major=$(Major);Minor=$(Minor);Rev=$(Rev);Build=$(Build);$(DefineConstants)">
+    <CreateProperty Value="{584B3E06-FE7A-4341-8C22-339B00ABD58A}">
+      <Output TaskParameter="Value" PropertyName="UpgradeCode" />
+    </CreateProperty>
+    <CreateProperty Value="UpgradeCode=$(UpgradeCode);ProductName=$(ProductName);FullVersion=$(FullVersion);Major=$(Major);Minor=$(Minor);Rev=$(Rev);Build=$(Build);$(DefineConstants)">
       <Output TaskParameter="Value" PropertyName="DefineConstants" />
     </CreateProperty>
     <Exec Command="rd /s /q $(DYNAMO_HARVEST_PATH)" />
     <Exec Command="robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) -XF %2aTest%2a.dll %2a.pdb TestResult.xml -e -XD int -XD Revit_2015 -XD Revit_2016 -XD Revit_2017 -XD samples -XD gallery -XD 0.8" IgnoreExitCode="true" />
     <Exec Command="$(DYNAMO_BASE_PATH)\tools\install\Extra\InstallerSpec.exe $(DYNAMO_HARVEST_PATH) $(DYNAMO_HARVEST_PATH)\InstallSpec.xml" IgnoreExitCode="true" />
     <Exec Condition="Exists('$(MSBuildProjectDirectory)\Digital_Sign.bat')" Command="$(MSBuildProjectDirectory)\Digital_Sign.bat $(DYNAMO_HARVEST_PATH)\binariestosign.txt" IgnoreExitCode="true" />
-    <HeatDirectory Directory="$(DYNAMO_HARVEST_PATH)" 
-                   PreprocessorVariable="var.harvest" 
-                   OutputFile="$(ProjectDir)Release-autogen.wxs" 
-                   ComponentGroupName="RELEASE" 
-                   DirectoryRefId="DYNAMO_INSTALLDIR" 
-                   GenerateGuidsNow="true" 
-                   Transforms="$(ProjectDir)Release.xsl" 
-                   ToolPath="$(WixToolPath)" 
-                   SuppressCom="true" 
-                   SuppressRegistry="true" 
-                   SuppressRootDirectory="true"/>
+    <HeatDirectory  Directory="$(DYNAMO_HARVEST_PATH)" 
+                    PreprocessorVariable="var.harvest" 
+                    OutputFile="$(ProjectDir)Release-autogen.wxs" 
+                    ComponentGroupName="RELEASE" 
+                    DirectoryRefId="DYNAMO_INSTALLDIR" 
+                    GenerateGuidsNow="true" 
+                    Transforms="$(ProjectDir)Release.xsl" 
+                    ToolPath="$(WixToolPath)" 
+                    SuppressCom="true" 
+                    SuppressRegistry="true" 
+                    SuppressRootDirectory="true" />
   </Target>
   <Target Name="AfterBuild">
   </Target>

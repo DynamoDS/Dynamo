@@ -28,9 +28,6 @@ namespace ProtoTest.TD.MultiLangTests
 	}
 }";
                 ExecutionMirror mirror = thisTest.RunScriptSource(src);
-                //Assert.IsTrue((Int64)mirror.GetValue("a_inner", 2).Payload == 10);
-                //Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("b_inner", 2).Payload) == true);
-                //Assert.IsTrue((double)mirror.GetValue("c_inner", 2).Payload == 20.1);
             });
         }
 
@@ -54,9 +51,6 @@ namespace ProtoTest.TD.MultiLangTests
 	}
 }";
                 ExecutionMirror mirror = thisTest.RunScriptSource(src);
-                // Assert.IsTrue((Int64)mirror.GetValue("a_inner", 2).Payload == 10);
-                // Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("b_inner", 2).Payload) == true);
-                // Assert.IsTrue((double)mirror.GetValue("c_inner", 2).Payload == 20.1);
             });
         }
 
@@ -80,9 +74,9 @@ c_inner;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("a_inner").Payload == 10);
-            Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("b_inner").Payload));
-            Assert.IsTrue((double)mirror.GetValue("c_inner").Payload == 20.1);
+            thisTest.Verify("a_inner", 10);
+            thisTest.Verify("b_inner", true);
+            thisTest.Verify("c_inner", 20.1);
         }
 
         [Test]
@@ -104,9 +98,9 @@ c_inner;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("a_inner").Payload == 10);
-            Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("b_inner").Payload));
-            Assert.IsTrue((double)mirror.GetValue("c_inner").Payload == 20.1);
+            thisTest.Verify("a_inner", 10);
+            thisTest.Verify("b_inner", true);
+            thisTest.Verify("c_inner", 20.1);
         }
 
         [Test]
@@ -138,12 +132,12 @@ c_inner1;c_inner2;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("a_inner1").Payload == 10);
-            Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("b_inner1").Payload));
-            Assert.IsTrue((double)mirror.GetValue("c_inner1").Payload == 20.1);
-            Assert.IsTrue((Int64)mirror.GetValue("a_inner2").Payload == 10);
-            Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("b_inner2").Payload));
-            Assert.IsTrue((double)mirror.GetValue("c_inner2").Payload == 20.1);
+            thisTest.Verify("a_inner1", 10);
+            thisTest.Verify("b_inner1", true);
+            thisTest.Verify("c_inner1", 20.1);
+            thisTest.Verify("a_inner2", 10);
+            thisTest.Verify("b_inner2", true);
+            thisTest.Verify("c_inner2", 20.1);
         }
 
         [Test]
@@ -174,12 +168,12 @@ a_inner2;b_inner2;c_inner2;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("a_inner1").Payload == 10);
-            Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("b_inner1").Payload));
-            Assert.IsTrue((double)mirror.GetValue("c_inner1").Payload == 20.1);
-            Assert.IsTrue((Int64)mirror.GetValue("a_inner2").Payload == 10);
-            Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("b_inner2").Payload));
-            Assert.IsTrue((double)mirror.GetValue("c_inner2").Payload == 20.1);
+            thisTest.Verify("a_inner1", 10);
+            thisTest.Verify("b_inner1", true);
+            thisTest.Verify("c_inner1",20.1);
+            thisTest.Verify("a_inner2", 10);
+            thisTest.Verify("b_inner2", true);
+            thisTest.Verify("c_inner2",20.1);
         }
 
         [Test]
@@ -203,9 +197,9 @@ a_inner2;b_inner2;c_inner2;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
 
-            Assert.IsTrue(mirror.GetValue("aI").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("bI").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("cI").DsasmValue.IsNull);
+            thisTest.Verify("aI", null);
+            thisTest.Verify("bI", null);
+            thisTest.Verify("cI", null);
         }
 
         [Test]
@@ -226,9 +220,9 @@ a_inner2;b_inner2;c_inner2;
 	cA = c;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("aA").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("bA").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("cA").DsasmValue.IsNull);
+            thisTest.Verify("aA", null);
+            thisTest.Verify("bA", null);
+            thisTest.Verify("cA", null);
         }
 
         [Test]
@@ -255,12 +249,12 @@ newA;newB;newC;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((double)mirror.GetValue("a").Payload == 1.5);
-            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == -4);
-            Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("c").Payload) == false);
-            Assert.IsTrue((double)mirror.GetValue("newA").Payload == 1.5);
-            Assert.IsTrue((Int64)mirror.GetValue("newB").Payload == -4);
-            Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("newC").Payload) == false);
+            thisTest.Verify("a",1.5);
+            thisTest.Verify("b", -4);
+            thisTest.Verify("c", false);
+            thisTest.Verify("newA",1.5);
+            thisTest.Verify("newB", -4);
+            thisTest.Verify("newC", false);
         }
 
         [Test]
@@ -288,12 +282,12 @@ newA;newB;newC;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
 
-            Assert.IsTrue((double)mirror.GetValue("a").Payload == 1.5);
-            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == -4);
-            Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("c").Payload) == false);
-            Assert.IsTrue((double)mirror.GetValue("newA", 0).Payload == 1.5);
-            Assert.IsTrue((Int64)mirror.GetValue("newB", 0).Payload == -4);
-            Assert.IsTrue(System.Convert.ToBoolean(mirror.GetValue("newC", 0).Payload) == false);
+            thisTest.Verify("a",1.5);
+            thisTest.Verify("b", -4);
+            thisTest.Verify("c", false);
+            thisTest.Verify("newA",1.5);
+            thisTest.Verify("newB",-4);
+            thisTest.Verify("newC", false);
 
         }
 
@@ -317,9 +311,9 @@ newA;newB;newC;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("aA").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("bA").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("cA").DsasmValue.IsNull);
+            thisTest.Verify("aA", null);
+            thisTest.Verify("bA", null);
+            thisTest.Verify("cA", null);
         }
 
         [Test]
@@ -342,9 +336,9 @@ newA;newB;newC;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("aI").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("bI").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("cI").DsasmValue.IsNull);
+            thisTest.Verify("aI", null);
+            thisTest.Verify("bI", null);
+            thisTest.Verify("cI", null);
         }
 
         [Test]
@@ -375,12 +369,12 @@ aA;bA;cA;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("aI").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("bI").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("cI").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("aA").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("bA").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("cA").DsasmValue.IsNull);
+            thisTest.Verify("aI", null);
+            thisTest.Verify("bI", null);
+            thisTest.Verify("cI", null);
+            thisTest.Verify("aA", null);
+            thisTest.Verify("bA", null);
+            thisTest.Verify("cA", null);
         }
 
         [Test]
@@ -411,12 +405,12 @@ aA;bA;cA;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("aI").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("bI").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("cI").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("aA").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("bA").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("cA").DsasmValue.IsNull);
+            thisTest.Verify("aI", null);
+            thisTest.Verify("bI", null);
+            thisTest.Verify("cI", null);
+            thisTest.Verify("aA", null);
+            thisTest.Verify("bA", null);
+            thisTest.Verify("cA", null);
         }
 
         [Test]
@@ -443,11 +437,11 @@ aA;bA;cA;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 10);
-            Assert.IsTrue((Int64)mirror.GetValue("aI1").Payload == 10);
-            Assert.IsTrue((Int64)mirror.GetValue("aA1").Payload == 10);
-            Assert.IsTrue((Int64)mirror.GetValue("aI2").Payload == 10);
-            Assert.IsTrue((Int64)mirror.GetValue("aA2").Payload == 10);
+            thisTest.Verify("a", 10);
+            thisTest.Verify("aI1", 10);
+            thisTest.Verify("aA1", 10);
+            thisTest.Verify("aI2", 10);
+            thisTest.Verify("aA2", 10);
 
         }
 
@@ -473,11 +467,11 @@ aA;bA;cA;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 10);
-            Assert.IsTrue((Int64)mirror.GetValue("aA1").Payload == 10);
-            Assert.IsTrue((Int64)mirror.GetValue("aI1").Payload == 10);
-            Assert.IsTrue((Int64)mirror.GetValue("aA2").Payload == 10);
-            Assert.IsTrue((Int64)mirror.GetValue("aI2").Payload == 10);
+            thisTest.Verify("a", 10);
+            thisTest.Verify("aA1", 10);
+            thisTest.Verify("aI1", 10);
+            thisTest.Verify("aA2", 10);
+            thisTest.Verify("aI2", 10);
         }
 
         [Test]
@@ -500,7 +494,7 @@ aA;bA;cA;
 	}
 }";
                 ExecutionMirror mirror = thisTest.RunScriptSource(src);
-                // Assert.IsTrue((Int64)mirror.GetValue("z").Payload == 30);           
+                // thisTest.Verify("z", 30);           
             });
         }
 
@@ -524,7 +518,7 @@ aA;bA;cA;
 	}
 }";
                 ExecutionMirror mirror = thisTest.RunScriptSource(src);
-                // Assert.IsTrue((Int64)mirror.GetValue("z").Payload == 30);
+                // thisTest.Verify("z", 30);
             });
         }
 
@@ -571,7 +565,7 @@ z;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("z").Payload == 10);
+            thisTest.Verify("z", 10);
         }
 
         [Test]
@@ -638,8 +632,8 @@ z_2;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("z_1").Payload == 10);
-            Assert.IsTrue((Int64)mirror.GetValue("z_2").Payload == 0);
+            thisTest.Verify("z_1", 10);
+            thisTest.Verify("z_2", 0);
         }
 
         [Test]
@@ -665,7 +659,7 @@ z_2;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("z").DsasmValue.IsNull);
+            thisTest.Verify("z", null);
             //Fuqiang: If function not found, it will return null and continues to execute.
 
             //Assert.Fail("1453777: Sprint 15: Rev 617: Scope: DS is able to call function defined in a parallel language block ");
@@ -700,7 +694,7 @@ z_2;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("z").DsasmValue.IsNull);
+            thisTest.Verify("z", null);
             //});
             //Assert.Fail("Sprint 15: Rev 617: Scope: Need sensible error message to show the user that function called in a parallel language block is not defined. ");
         }
@@ -730,7 +724,7 @@ z_2;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("z").DsasmValue.IsNull);
+            thisTest.Verify("z", null);
             //});
             //Assert.Fail("Sprint 15: Rev 617: Scope: Need sensible error message to show the user that function called in a parallel language block is not defined. ");
         }
@@ -760,7 +754,7 @@ z_2;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("z").DsasmValue.IsNull);
+            thisTest.Verify("z", null);
             //});
             //Assert.Fail("Sprint 15: Rev 617: Scope: Need sensible error message to show the user that function called in a parallel language block is not defined. ");
         }
@@ -797,8 +791,8 @@ z_2;
 	z_2 = foo (x_2, y_2);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("z_1").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("z_2").DsasmValue.IsNull);
+            thisTest.Verify("z_1", null);
+            thisTest.Verify("z_2", null);
             //});
             //Assert.Fail("Sprint 15: Rev 617: Scope: Need sensible error message to show the user that function called in a parallel language block is not defined. ");
         }
@@ -835,8 +829,8 @@ z_2;
 	z_2 = foo (x_2, y_2);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("z_1").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("z_2").DsasmValue.IsNull);
+            thisTest.Verify("z_1", null);
+            thisTest.Verify("z_2", null);
             //});
             //Assert.Fail("Sprint 15: Rev 617: Scope: Need sensible error message to show the user that function called in a parallel language block is not defined. ");
         }
@@ -882,10 +876,10 @@ z_A2;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("z_I1").Payload == 0);
-            Assert.IsTrue((Int64)mirror.GetValue("z_I2").Payload == -12);
-            Assert.IsTrue((Int64)mirror.GetValue("z_A1").Payload == 18);
-            Assert.IsTrue((Int64)mirror.GetValue("z_A2").Payload == 10);
+            thisTest.Verify("z_I1", 0);
+            thisTest.Verify("z_I2", -12);
+            thisTest.Verify("z_A1", 18);
+            thisTest.Verify("z_A2", 10);
         }
 
         [Test]
@@ -1011,15 +1005,15 @@ y = 1;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
 
-            Assert.IsTrue(mirror.GetValue("f").DsasmValue.IsNull);
+            thisTest.Verify("f", null);
             
-            Assert.IsTrue((Int64)mirror.GetValue("p").Payload == 2);
-            Assert.IsTrue(mirror.GetValue("q").DsasmValue.IsNull);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 2);
-            Assert.IsTrue((Int64)mirror.GetValue("y1").Payload == 3);
-            Assert.IsTrue((Int64)mirror.GetValue("z").Payload == 4);
-            Assert.IsTrue((Int64)mirror.GetValue("y2").Payload == 3);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kIdUnboundIdentifier);
+            thisTest.Verify("p", 2);
+            thisTest.Verify("q", null);
+            thisTest.Verify("x", 2);
+            thisTest.Verify("y1", 3);
+            thisTest.Verify("z", 4);
+            thisTest.Verify("y2", 3);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.IdUnboundIdentifier);
 
         }
 
@@ -1042,7 +1036,7 @@ a = 10;
 // expected: count = 21
 // result: count = 11";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("count").Payload == 21);
+            thisTest.Verify("count", 21);
 
         }
 
@@ -1305,7 +1299,7 @@ a = 10;
             String code =
                @";a = 1;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 1);
+            thisTest.Verify("a", 1);
         }
 
         [Test]
@@ -1412,7 +1406,7 @@ a = 10;
             String code =
              @"a = 1;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 1);
+            thisTest.Verify("a", 1);
 
         }
 
@@ -1423,7 +1417,7 @@ a = 10;
             String code =
                @"_a = 1;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("_a").Payload == 1);
+            thisTest.Verify("_a", 1);
         }
 
         [Test]
@@ -1793,7 +1787,7 @@ a = 10;
             String code =
                @"a_ = 1;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a_").Payload == 1);
+            thisTest.Verify("a_", 1);
         }
 
         [Test]
@@ -1815,7 +1809,7 @@ a = 10;
   a = foo(t);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 3);
+            thisTest.Verify("a", 3);
         }
 
         [Test]
@@ -1833,7 +1827,7 @@ t = 1;
 c = foo(t);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 2);
+            thisTest.Verify("c", 2);
         }
 
         [Test]
@@ -1854,7 +1848,7 @@ c = [Imperative]
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 70);
+            thisTest.Verify("c", 70);
         }
 
         [Test]
@@ -1878,7 +1872,7 @@ c = [Imperative]
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 10);
+            thisTest.Verify("c", 10);
         }
 
         [Test]
@@ -1897,7 +1891,7 @@ b;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 5);
+            thisTest.Verify("b", 5);
         }
 
         [Test]
@@ -1916,7 +1910,7 @@ c;
                         
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 1);
+            thisTest.Verify("c", 1);
         }
 
         [Test]
@@ -1938,7 +1932,7 @@ a;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> result = new List<Object> { 1, 2, 3, 4, 5 };
-            Assert.IsTrue(mirror.CompareArrays("a", result, typeof(System.Double)));
+            thisTest.Verify("a", result);
         }
 
 

@@ -123,6 +123,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         internal const double DefaultFarClipDistance = 100000;
         internal static BoundingBox DefaultBounds = new BoundingBox(new Vector3(-25f, -25f, -25f), new Vector3(25f,25f,25f));
 
+        private List<Model3D> sceneItems;
+
 #if DEBUG
         private readonly Stopwatch renderTimer = new Stopwatch();
 #endif
@@ -133,6 +135,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public Object Model3DDictionaryMutex = new object();
         private Dictionary<string, Model3D> model3DDictionary = new Dictionary<string, Model3D>();
+        // Dictionary<nodeId, List<Tuple<nodeArrayItemId, labelPosition>>>
+        private readonly Dictionary<string, List<Tuple<string, Vector3>>> labelPlaces 
+            = new Dictionary<string, List<Tuple<string, Vector3>>>();
 
         public event Action RequestViewRefresh;
         protected void OnRequestViewRefresh()
@@ -351,18 +356,33 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public bool IsResizable { get; protected set; }
 
+        private void UpdateSceneItems()
+        {
+            if (Model3DDictionary == null)
+            {
+                sceneItems = new List<Model3D>();
+                return;
+            }
+
+            var values = Model3DDictionary.Values.ToList();
+            if (Camera != null)
+            {
+                values.Sort(new Model3DComparer(Camera.Position));
+            }
+
+            sceneItems = values;
+        }
+
         public IEnumerable<Model3D> SceneItems
         {
             get
             {
-                if (Model3DDictionary == null)
+                if (sceneItems == null)
                 {
-                    return new List<Model3D>();
+                    UpdateSceneItems();
                 }
 
-                var values = Model3DDictionary.Values.ToList();
-                //values.Sort(new Model3DComparer(Camera.Position));
-                return values;
+                return sceneItems;
             }
         }
 
@@ -530,6 +550,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     model.Detach();
                     Model3DDictionary.Remove(key);
                 }
+
+                labelPlaces.Clear();
             }
 
             OnSceneItemsChanged();
@@ -696,14 +718,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     // check if the geometry is frozen. if the gemoetry is frozen 
                     // then do not detach from UI.
                     var frozenModel = AttachedProperties.GetIsFrozen(model3D);
-                    if (!frozenModel)
+                    if (frozenModel) continue;
+
+                    if (model3D != null)
                     {
-                        if (model3D != null)
-                        {
-                            model3D.Detach();
-                        }
-                        Model3DDictionary.Remove(kvp.Key);
+                        model3D.Detach();
                     }
+
+                    Model3DDictionary.Remove(kvp.Key);
+                    var nodePath = kvp.Key.Split(':')[0];
+                    labelPlaces.Remove(nodePath);
                 }
             }
 
@@ -864,6 +888,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void OnSceneItemsChanged()
         {
+            UpdateSceneItems();
             RaisePropertyChanged("SceneItems");
             OnRequestViewRefresh();
         }
@@ -874,11 +899,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             lock (Model3DDictionaryMutex)
             {
-                geometryModels =
-                    Model3DDictionary
-                        .Where(x => x.Key.Contains(node.AstIdentifierGuid))
-                        .Where(x => x.Value is GeometryModel3D)
-                        .Select(x => x).ToArray();
+                geometryModels = Model3DDictionary
+                        .Where(x => x.Key.Contains(node.AstIdentifierGuid) && x.Value is GeometryModel3D).ToArray();
             }
 
             return geometryModels;
@@ -890,11 +912,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             lock (Model3DDictionaryMutex)
             {
-                geometryModels =
-                    Model3DDictionary
-                        .Where(x => x.Key.Contains(identifier))
-                        .Where(x => x.Value is GeometryModel3D)
-                        .Select(x => x).ToArray();
+                geometryModels = Model3DDictionary
+                        .Where(x => x.Key.Contains(identifier) && x.Value is GeometryModel3D).ToArray();
             }
 
             return geometryModels;
@@ -1088,6 +1107,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 Model3DDictionary.Add(DefaultAxesName, axesModel3D);
             }
+
+            UpdateSceneItems();
         }
 
         /// <summary>
@@ -1256,12 +1277,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 // it may be requested an array of items to put labels
                 // for example, the first item in 2-dim array - path will look like var_guid:0
-                // and it will select var_guid:0:0, var_guid:0:1, var_guid:0:2 and so on
-                var nodeLabelKeys = Model3DDictionary.Keys
-                    .Where(k => k.StartsWith(path + ':') && Model3DDictionary[k] is GeometryModel3D).ToList();
-
-                // if there is a geometry to add label
-                if (nodeLabelKeys.Any())
+                // and it will select var_guid:0:0, var_guid:0:1, var_guid:0:2 and so on.
+                // if there is a geometry to add label(s)
+                List<Tuple<string, Vector3>> requestedLabelPlaces;
+                if (labelPlaces.ContainsKey(nodePath) && 
+                        (requestedLabelPlaces = labelPlaces[nodePath]
+                            .Where(pair => pair.Item1.StartsWith(path)).ToList()).Any())
                 {
                     // second, add requested labels
                     var textGeometry = HelixRenderPackage.InitText3D();
@@ -1270,21 +1291,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         Geometry = textGeometry
                     };
 
-                    foreach (var key in nodeLabelKeys)
+                    foreach (var id_position in requestedLabelPlaces)
                     {
-                        var geom = (GeometryModel3D)Model3DDictionary[key];
-                        var id = key.Remove(key.LastIndexOf(':'));
-                        var text = HelixRenderPackage.CleanTag(id.Remove(0, nodePath.Length));
-                        //use the transform of the geometry to transform the text position
-
+                        var text = HelixRenderPackage.CleanTag(id_position.Item1);
                         var textPosition = geom.Transform.Transform(
-                            (geom.Geometry.Positions[0]).ToPoint3D()).ToVector3()
-                            + defaultLabelOffset;
+                            id_position.Item2.ToPoint3D()).ToVector3() + defaultLabelOffset;
+                            
                         var textInfo = new TextInfo(text, textPosition);
                         textGeometry.TextInfo.Add(textInfo);
                     }
 
-                    Model3DDictionary.Add(nodePath + TextKey, bbText);
+                    Model3DDictionary.Add(labelName, bbText);
                     sceneItemsChanged = true;
                     AttachAllGeometryModel3DToRenderHost();
                 }
@@ -1344,7 +1361,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var p = rp.Points;
                     if (p.Positions.Any())
                     {
-                        id = rp.Description + PointsKey;
+                        id = baseId + PointsKey;
 
                         PointGeometryModel3D pointGeometry3D;
 
@@ -1374,13 +1391,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                               : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
                             points.Indices.AddRange(p.Indices.Select(i => i + startIdx));
                         }
-                        
 
-                        if (rp.DisplayLabels)
-                        {
-                            CreateOrUpdateText(baseId, p.Positions[0], rp);
-                        }
-
+                        AddLabelPlace(baseId, p.Positions[0], rp);
                         pointGeometry3D.Geometry = points;
                         pointGeometry3D.Name = baseId;
                     }
@@ -1388,7 +1400,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var l = rp.Lines;
                     if (l.Positions.Any())
                     {
-                        id = rp.Description + LinesKey;
+                        id = baseId + LinesKey;
 
                         LineGeometryModel3D lineGeometry3D;
 
@@ -1423,12 +1435,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             ? l.Indices.Select(i => i + startIdx)
                             : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
 
-                        if (rp.DisplayLabels)
-                        {
-                            var pt = lineSet.Positions[startIdx];
-                            CreateOrUpdateText(baseId, pt, rp);
-                        }
-
+                        AddLabelPlace(baseId, lineSet.Positions[startIdx], rp);
                         lineGeometry3D.Geometry = lineSet;
                         lineGeometry3D.Name = baseId;
                     }
@@ -1479,17 +1486,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         meshGeometry3D.SetValue(AttachedProperties.HasTransparencyProperty, true);
                     }
 
-                    if (rp.DisplayLabels)
-                    {
-                        var pt = mesh.Positions[idxCount];
-                        CreateOrUpdateText(baseId, pt, rp);
-                    }
-
+                    AddLabelPlace(baseId, mesh.Positions[idxCount], rp);
                     meshGeometry3D.Geometry = mesh;
                     meshGeometry3D.Name = baseId;
                 }
 
                 AttachAllGeometryModel3DToRenderHost();
+            }
+        }
+
+        private void AddLabelPlace(string nodeId, Vector3 pos, IRenderPackage rp)
+        {
+            if (!labelPlaces.ContainsKey(nodeId))
+            {
+                labelPlaces[nodeId] = new List<Tuple<string, Vector3>>();
+            }
+
+            labelPlaces[nodeId].Add(new Tuple<string, Vector3>(rp.Description, pos));
+            if (rp.DisplayLabels)
+            {
+                CreateOrUpdateText(nodeId, pos, rp);
             }
         }
 
@@ -1945,10 +1961,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// The Model3DComparer is used to sort arrays of Model3D objects. 
     /// After sorting, the target array's objects will be organized
     /// as follows:
-    /// 1. All opaque geometry.
-    /// 2. All text.
-    /// 3. All transparent geometry, ordered by distance from
-    /// the camera.
+    /// 1. All not GeometryModel3D objects
+    /// 2. All opaque mesh geometry
+    /// 3. All opaque line geometry
+    /// 4. All opaque point geometry
+    /// 5. All transparent geometry, ordered by distance from the camera.
+    /// 6. All text.
     /// </summary>
     public class Model3DComparer : IComparer<Model3D>
     {
@@ -1964,6 +1982,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var a = x as GeometryModel3D;
             var b = y as GeometryModel3D;
 
+            // if at least one of them is not GeometryModel3D
+            // we either sort by being GeometryModel3D type (result is 1 or -1) 
+            // or don't care about order (result is 0)
             if (a == null && b == null)
             {
                 return 0;
@@ -1983,7 +2004,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var textB = b.GetType() == typeof(BillboardTextModel3D);
             var result = textA.CompareTo(textB);
 
-            if (result == 0 && textA)
+            // if at least one of them is text
+            // we either sort by being text type (result is 1 or -1) 
+            // or don't care about order (result is 0)
+            if (textA || textB)
             {
                 return result;
             }
@@ -1992,16 +2016,36 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var transB = (bool) b.GetValue(AttachedProperties.HasTransparencyProperty);
             result = transA.CompareTo(transB);
 
-            if (result != 0 || !transA) return result;
+            // if only one of transA and transB has transparency, sort by having this property
+            if (result != 0) return result;
 
-            // compare distance
-            var boundsA = a.Bounds;
-            var boundsB = b.Bounds;
-            var cpA = (boundsA.Maximum + boundsA.Minimum)/2;
-            var cpB = (boundsB.Maximum + boundsB.Minimum)/2;
-            var dA = Vector3.DistanceSquared(cpA, cameraPosition);
-            var dB = Vector3.DistanceSquared(cpB, cameraPosition);
-            return -dA.CompareTo(dB);
+            // if both items has transparency, sort by distance
+            if (transA)
+            {
+                // compare distance
+                var boundsA = a.Bounds;
+                var boundsB = b.Bounds;
+                var cpA = (boundsA.Maximum + boundsA.Minimum) / 2;
+                var cpB = (boundsB.Maximum + boundsB.Minimum) / 2;
+                var dA = Vector3.DistanceSquared(cpA, cameraPosition);
+                var dB = Vector3.DistanceSquared(cpB, cameraPosition);
+                result = -dA.CompareTo(dB);
+                return result;
+            }
+
+            // if both items does not have transparency, sort following next order: mesh, line, point
+            var pointA = a is PointGeometryModel3D;
+            var pointB = b is PointGeometryModel3D;
+            result = pointA.CompareTo(pointB);
+
+            if (pointA || pointB)
+            {
+                return result;
+            }
+
+            var lineA = a is LineGeometryModel3D;
+            var lineB = b is LineGeometryModel3D;
+            return lineA.CompareTo(lineB);
         }
     }
 

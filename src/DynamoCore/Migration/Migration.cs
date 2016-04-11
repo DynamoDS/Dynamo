@@ -135,6 +135,8 @@ namespace Dynamo.Migration
         /// </summary>
         /// <param name="workspaceInfo"></param>
         /// <param name="xmlDoc"></param>
+        /// <param name="isTestMode"></param>
+        /// <param name="factory"></param>
         /// <returns></returns>
         public bool ProcessWorkspace(WorkspaceInfo workspaceInfo, XmlDocument xmlDoc, bool isTestMode, NodeFactory factory)
         {
@@ -565,6 +567,8 @@ namespace Dynamo.Migration
         /// basic function node information.
         /// </summary>
         /// <param name="document">The XmlDocument to create the node in.</param>
+        /// <param name="oldNode"></param>
+        /// <param name="nodeIndex"></param>
         /// <param name="assembly">Name of the assembly that implements this 
         /// function.</param>
         /// <param name="nickname">The nickname to display on the node.</param>
@@ -973,6 +977,12 @@ namespace Dynamo.Migration
     /// </summary>
     public struct PortId
     {
+        /// <summary>
+        /// Creates PortId.
+        /// </summary>
+        /// <param name="owningNode">Node GUID</param>
+        /// <param name="portIndex">Index</param>
+        /// <param name="type">Port type</param>
         public PortId(string owningNode, int portIndex, PortType type)
             : this()
         {
@@ -981,8 +991,20 @@ namespace Dynamo.Migration
             PortType = type;
         }
 
+        /// <summary>
+        /// Node GUID.
+        /// </summary>
         public string OwningNode { get; private set; }
+
+        /// <summary>
+        /// Index of the port.
+        /// </summary>
         public int PortIndex { get; private set; }
+
+        /// <summary>
+        /// PortType.
+        /// The port can be incoming or outcoming.
+        /// </summary>
         public PortType PortType { get; private set; }
     }
 

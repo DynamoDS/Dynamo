@@ -402,9 +402,6 @@
   <data name="MapsValueIntoInputRange" xml:space="preserve">
     <value>Maps a value into an input range</value>
   </data>
-  <data name="ModifierBlockNotSupported" xml:space="preserve">
-    <value>Modifier Blocks are not supported currently</value>
-  </data>
   <data name="NoConstructorForAttribute" xml:space="preserve">
     <value>No constructors for Attribute '{0}' takes {1} arguments</value>
   </data>
@@ -910,5 +907,8 @@ Parameter name: {0}</value>
   </data>
   <data name="IndexIntoNonArrayObject" xml:space="preserve">
     <value>No item exists at specified index address</value>
+  </data>
+  <data name="RunOutOfMemory" xml:space="preserve">
+    <value>There is not enough memory to finish the operation.</value>
   </data>
 </root>

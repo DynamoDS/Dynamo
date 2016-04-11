@@ -35,7 +35,7 @@ namespace ProtoTest.ProtoAST
 
             // 2. Execute AST and verify
             mirror = thisTest.RunASTSource(astList);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == result1);
+            thisTest.Verify("a", result1);
 
             // 3. Convert AST to source
             ProtoCore.CodeGenDS codegenDS = new ProtoCore.CodeGenDS(astList);
@@ -43,7 +43,7 @@ namespace ProtoTest.ProtoAST
 
             // 4. Execute source and verify
             mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == result1);
+            thisTest.Verify("a", result1);
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace ProtoTest.ProtoAST
 
             // 2. Execute AST and verify
             mirror = thisTest.RunASTSource(astList);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == result1);
+            thisTest.Verify("a", result1);
 
             // 3. Convert AST to source
             ProtoCore.CodeGenDS codegenDS = new ProtoCore.CodeGenDS(astList);
@@ -80,7 +80,7 @@ namespace ProtoTest.ProtoAST
 
             // 4. Execute source and verify
             mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == result1);
+            thisTest.Verify("a", result1);
         }
 
 
@@ -138,7 +138,7 @@ namespace ProtoTest.ProtoAST
             // Function Return type
             ProtoCore.Type returnType = new ProtoCore.Type();
             returnType.Initialize();
-            returnType.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
+            returnType.UID = (int)ProtoCore.PrimitiveType.Var;
             returnType.Name = ProtoCore.DSDefinitions.Keyword.Var;
             funcDefNode.ReturnType = returnType;
 
@@ -158,7 +158,7 @@ namespace ProtoTest.ProtoAST
 
             // 2. Execute AST and verify
             mirror = thisTest.RunASTSource(astList);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == result1);
+            thisTest.Verify("x", result1);
 
 
             // 3. Convert AST to source
@@ -169,7 +169,7 @@ namespace ProtoTest.ProtoAST
 
             // 4. Execute source and verify
             mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == result1);
+            thisTest.Verify("x", result1);
 
         }
 
@@ -233,7 +233,7 @@ namespace ProtoTest.ProtoAST
             // Build the type of arg1
             ProtoCore.Type arg1Type = new ProtoCore.Type();
             arg1Type.Initialize();
-            arg1Type.UID = (int)ProtoCore.PrimitiveType.kTypeInt;
+            arg1Type.UID = (int)ProtoCore.PrimitiveType.Integer;
             arg1Type.Name = ProtoCore.DSDefinitions.Keyword.Int;
             arg1Decl.ArgumentType = arg1Type;
             funcDefNode.Signature.AddArgument(arg1Decl);
@@ -242,7 +242,7 @@ namespace ProtoTest.ProtoAST
             // Function Return type
             ProtoCore.Type returnType = new ProtoCore.Type();
             returnType.Initialize();
-            returnType.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
+            returnType.UID = (int)ProtoCore.PrimitiveType.Var;
             returnType.Name = ProtoCore.DSDefinitions.Keyword.Var;
             funcDefNode.ReturnType = returnType;
 
@@ -271,7 +271,7 @@ namespace ProtoTest.ProtoAST
 
             // 2. Execute AST and verify
             mirror = thisTest.RunASTSource(astList);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == result1);
+            thisTest.Verify("x", result1);
 
 
             // 3. Convert AST to source
@@ -280,7 +280,7 @@ namespace ProtoTest.ProtoAST
 
             // 4. Execute source and verify
             mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == result1);
+            thisTest.Verify("x", result1);
 
         }
 
@@ -321,7 +321,7 @@ namespace ProtoTest.ProtoAST
             {
                 Name = "int",
                 rank = 0,
-                UID = (int)ProtoCore.PrimitiveType.kTypeInt
+                UID = (int)ProtoCore.PrimitiveType.Integer
             };
             classDefNode.Variables.Add(varDeclNode);
 
@@ -377,7 +377,7 @@ namespace ProtoTest.ProtoAST
 
             // 2. Execute AST and verify
             mirror = thisTest.RunASTSource(astList);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == result1);
+            thisTest.Verify("a", result1);
 
             // 3. Convert AST to source
             ProtoCore.CodeGenDS codegenDS = new ProtoCore.CodeGenDS(astListcopy);
@@ -385,7 +385,7 @@ namespace ProtoTest.ProtoAST
 
             // 4. Execute source and verify
             mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == result1);
+            thisTest.Verify("a", result1);
         }
 
         [Test]
@@ -447,7 +447,7 @@ namespace ProtoTest.ProtoAST
             // Function Return type
             ProtoCore.Type returnType = new ProtoCore.Type();
             returnType.Initialize();
-            returnType.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
+            returnType.UID = (int)ProtoCore.PrimitiveType.Var;
             returnType.Name = ProtoCore.DSDefinitions.Keyword.Var;
             funcDefNode.ReturnType = returnType;
 
@@ -467,7 +467,7 @@ namespace ProtoTest.ProtoAST
             {
                 Name = "int",
                 rank = 0,
-                UID = (int)ProtoCore.PrimitiveType.kTypeInt
+                UID = (int)ProtoCore.PrimitiveType.Integer
             };
             classDefNode.Variables.Add(varDeclNode);
 
@@ -513,7 +513,7 @@ namespace ProtoTest.ProtoAST
 
             // 2. Execute AST and verify
             mirror = thisTest.RunASTSource(astList);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == result1);
+            thisTest.Verify("a", result1);
 
 
             // 3. Convert AST to source
@@ -522,7 +522,7 @@ namespace ProtoTest.ProtoAST
 
             // 4. Execute source and verify
             mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == result1);
+            thisTest.Verify("a", result1);
         }
 
         [Test]

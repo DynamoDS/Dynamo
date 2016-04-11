@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Threading;
-using Dynamo.Configuration;
+﻿using Dynamo.Configuration;
 using Dynamo.Engine;
+using Dynamo.Exceptions;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
@@ -33,9 +21,22 @@ using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynamoUtilities;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Forms;
+using System.Windows.Threading;
 using ISelectable = Dynamo.Selection.ISelectable;
-using Autodesk.DesignScript.Interfaces;
+
 
 namespace Dynamo.ViewModels
 {
@@ -1105,10 +1106,10 @@ namespace Dynamo.ViewModels
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
             // that can't be handled reliably
+            string xmlFilePath = string.Empty;
+            bool forceManualMode = false; 
             try
             {
-                string xmlFilePath = string.Empty;
-                bool forceManualMode = false;
                 var packedParams = parameters as Tuple<string, bool>;
                 if (packedParams != null)
                 {
@@ -1123,8 +1124,27 @@ namespace Dynamo.ViewModels
             }
             catch (Exception e)
             {
-                model.Logger.Log(Resources.MessageFailedToOpenFile + e.Message);
-                model.Logger.Log(e);
+                if (!DynamoModel.IsTestMode)
+                {
+                    // Catch all the IO exceptions here. The message provided by .Net is clear enough to indicate the problem in this case.
+                    if (e is IOException)
+                    {
+                        System.Windows.MessageBox.Show(String.Format(e.Message, xmlFilePath));
+                    }
+                    else if (e is System.Xml.XmlException)
+                    {
+                        System.Windows.MessageBox.Show(String.Format(Resources.MessageFailedToOpenCorruptedFile, xmlFilePath));
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show(String.Format(Resources.MessageUnkownErrorOpeningFile, xmlFilePath));
+                    }
+                    model.Logger.Log(e);
+                }
+                else
+                {
+                    throw (e);
+                }
                 return;
             }
             this.ShowStartPage = false; // Hide start page if there's one.
@@ -1133,7 +1153,7 @@ namespace Dynamo.ViewModels
         private bool CanOpen(object parameters)
         {
             var filePath = parameters as string;
-            return ((!string.IsNullOrEmpty(filePath)) && File.Exists(filePath));
+            return PathHelper.IsValidPath(filePath);
         }
 
         /// <summary>
@@ -1979,11 +1999,18 @@ namespace Dynamo.ViewModels
             DialogResult result = openFileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-                foreach (var file in openFileDialog.FileNames)
+                try
                 {
-                    EngineController.ImportLibrary(file);
+                    foreach (var file in openFileDialog.FileNames)
+                    {
+                        EngineController.ImportLibrary(file);
+                    }
+                    SearchViewModel.SearchAndUpdateResults();
                 }
-                SearchViewModel.SearchAndUpdateResults();
+                catch(LibraryLoadFailedException ex)
+                {
+                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+                }
             }
         }
 

@@ -486,6 +486,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to load library: {0}.
+        /// </summary>
+        public static string FailedToLoadLibrary {
+            get {
+                return ResourceManager.GetString("FailedToLoadLibrary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to load type from {0}. The type was {1}..
         /// </summary>
         public static string FailedToLoadType {
@@ -851,6 +860,15 @@ namespace Dynamo.Properties {
         public static string NoMatchesFound {
             get {
                 return ResourceManager.GetString("NoMatchesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to none.
+        /// </summary>
+        public static string NoneString {
+            get {
+                return ResourceManager.GetString("NoneString", resourceCulture);
             }
         }
         

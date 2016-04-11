@@ -19,10 +19,9 @@ namespace ProtoTest.RegressionTests
  // Probably has somthing to do with convertingthe language blocks into binary exprs
      x = a[0];  
 }";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
-            Obj o = mirror.GetValue("x");
-            Assert.IsTrue((Int64)o.Payload == 1001);
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1001);
         }
     }
 }

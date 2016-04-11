@@ -19,8 +19,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     /// </summary>
     [NodeName("Custom Node")]
     [NodeDescription("FunctionDescription",typeof(Dynamo.Properties.Resources))]
-    [IsInteractive(false)]
-    [NodeSearchable(false)]
     [IsMetaNode]
     [AlsoKnownAs("Dynamo.Nodes.Function")]
     public class Function 
@@ -86,7 +84,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         ///     by adding input and output ports as far as we don't have
         ///     a corresponding custom node workspace
         /// </summary>
-        /// <param name="funcID">Identifier of the custom node instance</param>
+        /// <param name="nodeId">Identifier of the custom node instance</param>
         /// <param name="inputs">Number of inputs</param>
         /// <param name="outputs">Number of outputs</param>
         internal void LoadNode(Guid nodeId, int inputs, int outputs)
@@ -251,7 +249,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("SymbolNodeDescription",typeof(Properties.Resources))]
     [NodeSearchTags("SymbolSearchTags", typeof(Properties.Resources))]
-    [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("Dynamo.Nodes.Symbol")]
@@ -284,7 +281,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 nickName = inputSymbol;
                 ClearRuntimeError();
 
-                var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+                var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
                 AssociativeNode defaultValue = null;
 
                 string comment = null;
@@ -412,7 +409,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     }
                     else if (parseParam.Warnings.Any())
                     {
-                        var warnings = parseParam.Warnings.Where(w => w.ID != WarningID.kIdUnboundIdentifier);
+                        var warnings = parseParam.Warnings.Where(w => w.ID != WarningID.IdUnboundIdentifier);
                         if (warnings.Any())
                         {
                             this.Warning(parseParam.Warnings.First().Message);
@@ -445,7 +442,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     [NodeName("Output")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("OutputNodeDescription",typeof(Dynamo.Properties.Resources))]
-    [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("Dynamo.Nodes.Output")]

@@ -357,7 +357,7 @@ namespace Dynamo.Scheduler
             {
                 AddToLabelMap(data.Data as IEnumerable, map, tag);
             }
-            else
+            else if (data.Data is IGraphicItem)
             {
                 map.Add(tag);
             }
@@ -375,7 +375,7 @@ namespace Dynamo.Scheduler
                 {
                     AddToLabelMap(obj as IEnumerable, map, newTag);
                 }
-                else
+                else if (obj is IGraphicItem)
                 {
                     map.Add(newTag);
                 }

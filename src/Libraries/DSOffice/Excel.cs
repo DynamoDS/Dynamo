@@ -499,7 +499,7 @@ namespace DSOffice
         /// instance method, write data to existing worksheet, (WriteDataToExcelWorksheet node)
         /// </summary>
         /// <param name="startRow"></param>
-        /// <param name="startCol"></param>
+        /// <param name="startColumn"></param>
         /// <param name="data"></param>
         /// <returns></returns>
         internal WorkSheet WriteData(int startRow, int startColumn, object[][] data)

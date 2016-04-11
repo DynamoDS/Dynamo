@@ -4,9 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using System.Xml;
-using SystemTestServices;
 using CoreNodeModels.Input;
 using Dynamo;
 using Dynamo.Controls;
@@ -19,22 +20,21 @@ using Dynamo.Tests;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Views;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
 using HelixToolkit.Wpf.SharpDX;
 using NUnit.Framework;
 using SharpDX;
+using SystemTestServices;
 using TestServices;
 using Watch3DNodeModels;
 using Watch3DNodeModelsWpf;
-using Color = System.Windows.Media.Color;
-using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
-using Dynamo.Views;
-using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
-using System.Windows.Controls;
-using System.Windows.Input;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
+using Color = System.Windows.Media.Color;
+using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 
 namespace WpfVisualizationTests
 {
@@ -149,14 +149,14 @@ namespace WpfVisualizationTests
             p1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
-            Assert.AreEqual(6, BackgroundPreviewGeometry.NumberOfInvisiblePoints());
+            Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfInvisiblePoints());
 
             //flip off the lines node
             var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
-            Assert.AreEqual(6, BackgroundPreviewGeometry.NumberOfInvisibleCurves());
+            Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfInvisibleCurves());
 
             //flip those back on and ensure the visualization returns
             p1.UpdateValue(new UpdateValueParams("IsVisible", "true"));
@@ -322,7 +322,7 @@ namespace WpfVisualizationTests
             p1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
-            Assert.AreEqual(6, BackgroundPreviewGeometry.NumberOfInvisiblePoints());
+            Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfInvisiblePoints());
 
             // Now change the number of points
             var cbn =

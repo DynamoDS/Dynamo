@@ -30,8 +30,8 @@ y;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 11);
-            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 5);
+            thisTest.Verify("x", 11);
+            thisTest.Verify("y", 5);
         }
 
         [Test]
@@ -63,7 +63,7 @@ y;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("sum").Payload == 40);
+            thisTest.Verify("sum", 40);
         }
 
         [Test]
@@ -83,7 +83,7 @@ y;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("sum").Payload == 55);
+            thisTest.Verify("sum", 55);
         }
 
         [Test]
@@ -104,7 +104,7 @@ y;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("sum").Payload == 60);
+            thisTest.Verify("sum", 60);
         }
 
         [Test]
@@ -136,11 +136,11 @@ d;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kFunctionAbnormalExit);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 2);
-            Assert.IsTrue(mirror.GetValue("b").DsasmValue.IsNull);
-            Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 4);
-            Assert.IsTrue(mirror.GetValue("d").DsasmValue.IsNull);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.FunctionAbnormalExit);
+            thisTest.Verify("a", 2);
+            thisTest.Verify("b", null);
+            thisTest.Verify("c", 4);
+            thisTest.Verify("d", null);
         }
     }
 }

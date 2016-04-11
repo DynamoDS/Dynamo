@@ -1,4 +1,5 @@
 ﻿using ProtoCore.DSASM;
+using ProtoCore.Exceptions;
 using ProtoCore.Properties;
 using System;
 using System.Collections.Generic;
@@ -130,7 +131,15 @@ namespace ProtoCore.Lang.Replication
             // Promote the array
             while (nestedLevel < 0)
             {
-                argument = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[1] { argument });
+                try
+                {
+                    argument = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[1] { argument });
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return null;
+                }
                 nestedLevel++;
             }
 
@@ -141,7 +150,15 @@ namespace ProtoCore.Lang.Replication
             else
             {
                 var elements = GetElementsAtLevel(argument, nestedLevel, new List<int>(), atLevel.IsDominant, runtimeCore);
-                argument = runtimeCore.RuntimeMemory.Heap.AllocateArray(elements.Select(e => e.Element).ToArray());
+                try
+                {
+                    argument = runtimeCore.RuntimeMemory.Heap.AllocateArray(elements.Select(e => e.Element).ToArray());
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return null;
+                }
                 var indices = elements.Select(e => e.Indices).ToList();
                 return new ArgumentAtLevel(argument, indices, atLevel.IsDominant);
             }
@@ -182,7 +199,7 @@ namespace ProtoCore.Lang.Replication
 
             if (runtimeCore != null && argumentAtLevels.Count(x => x.IsDominant) > 1)
             {
-                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kMoreThanOneDominantList, Resources.MoreThanOneDominantList);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.MoreThanOneDominantList, Resources.MoreThanOneDominantList);
                 return new ArgumentAtLevelStructure(arguments, null);
             }
 
@@ -240,7 +257,16 @@ namespace ProtoCore.Lang.Replication
             }
 
             // Allocate an empty array to hold the value
-            var newRet = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[] { });
+            StackValue newRet;
+            try
+            {
+                newRet = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[] { });
+            }
+            catch (RunOutOfMemoryException)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                return StackValue.Null;
+            }
             var array = runtimeCore.Heap.ToHeapObject<DSArray>(newRet);
 
             // Write the result back

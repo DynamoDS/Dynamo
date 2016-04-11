@@ -35,12 +35,6 @@ namespace ProtoCore.DSASM
     /// 
     public class Executable
     {
-        // Constants that represent indices into Executable data
-        public enum OffsetConstants
-        {
-            kInstrStreamGlobalScope = 0 // Offset into the instruction stream where global scope instructions are stored
-        }
-
         /// <summary>
         /// RuntimeData is set in the executable to isolate data passed to the runtime VM
         /// The RuntimeData will eventually be integrated completely into executable,
@@ -72,7 +66,7 @@ namespace ProtoCore.DSASM
         public DynamicVariableTable DynamicVarTable { get; set; }
         public DynamicFunctionTable DynamicFuncTable { get; set; }
         public FunctionPointerTable FuncPointerTable { get; set; }
-        public ContextDataManager ContextDataMngr { get; set; }
+        internal ContextDataManager ContextDataMngr { get; set; }
         public IDictionary<string, object> Configurations { get; set; }
         public Dictionary<ulong, ulong> CodeToLocation { get; set; }
         public string CurrentDSFileName { get; set; }
@@ -111,10 +105,9 @@ namespace ProtoCore.DSASM
 
     public enum CodeBlockType
     {
-        kLanguage,
-        kConstruct,
-        kFunction,
-        kTypesMax
+        Language,
+        Construct,
+        Function,
     }
 
     public class CodeBlock

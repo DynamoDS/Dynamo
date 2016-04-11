@@ -3,11 +3,11 @@
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 
   <Product Id="*"
-           Name="$(var.ProductName) $(var.Major).$(var.Minor).$(var.Rev)"
+           Name="$(var.ProductName) $(var.Major).$(var.Minor).$(var.Build)"
            Language="1033"
-           Version="$(var.Major).$(var.Minor).$(var.Rev)"
+           Version="$(var.FullVersion)"
            Manufacturer="Dynamo"
-           UpgradeCode="{584B3E06-FE7A-4341-8C22-339B00ABD58A}">
+           UpgradeCode="$(var.UpgradeCode)">
 
     <Package Comments="$(var.ProductName) $(var.FullVersion)"
                  Description="Install package for $(var.ProductName)"
@@ -16,18 +16,37 @@
                  Languages="1033"
                  Manufacturer="Dynamo"
                  Platform="x64"/>
+   
+    <!-- (1) To prevent downgrades. 
+         If there are any MAJOR.MINOR.BUILD version that is higher installed,
+         prevent current installation.-->
+    <MajorUpgrade AllowSameVersionUpgrades="no"
+                  Schedule="afterInstallValidate"
+                  DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
 
-    <MajorUpgrade AllowSameVersionUpgrades="yes"
-                      Schedule="afterInstallValidate"
-                      DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
+    <!-- (2) To manage same version upgrades/downgrades.
+         The property SELF_FOUND is set when the same MAJOR.MINOR.BUILD version and UpgradeCode is already installed.-->
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion Property='SELF_FOUND' 
+                      Minimum='$(var.Major).$(var.Minor).$(var.Build)' 
+                      IncludeMinimum='yes' 
+                      Maximum='$(var.Major).$(var.Minor).$(var.Build)' 
+                      IncludeMaximum='yes' 
+                      OnlyDetect='yes' />
+    </Upgrade>
 
     <MediaTemplate EmbedCab="yes" />
 
+    <UIRef Id="SetupDialogUI" />
+    
     <Property Id="INSTALLDIR"/>
     <CustomAction Id="DIRCA_DEFAULT_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder][Manufacturer]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
     <CustomAction Id="DIRCA_SET_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[INSTALLDIR]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
 
+    <CustomAction Id='AlreadyInstalled' Error='[ProductName] is already installed.&#13;&#10;&#13;&#10;Skipping [ProductName] Installation...' />
+
     <InstallExecuteSequence>
+      <Custom Action='AlreadyInstalled' Before="CostInitialize"><![CDATA[SELF_FOUND]]></Custom>
       <Custom Action="DIRCA_DEFAULT_INSTALLDIR" Before="CostInitialize">INSTALLDIR=""</Custom>
       <Custom Action="DIRCA_SET_INSTALLDIR" Before="CostInitialize"><![CDATA[INSTALLDIR<>""]]></Custom>
     </InstallExecuteSequence>
@@ -41,7 +60,7 @@
 
     <Icon Id="DynamoInstaller.ico" SourceFile="$(var.base)\tools\install\Extra\DynamoInstaller.ico"/>
     <Property Id="ARPPRODUCTICON" Value="DynamoInstaller.ico" />
-    
+
   </Product>
 
   <Fragment>
@@ -71,7 +90,7 @@
           <RegistryValue Name="InstallLocation" Value="[DYNAMO_INSTALLDIR]" Type="string" />
           <RegistryValue Name="UninstallString" Value="MsiExec.exe" Type="string" />
           <RegistryValue Name="UninstallParam" Value="/X[ProductCode] /quiet" Type="string" />
-          <RegistryValue Name="Version" Value="$(var.FullVersion)" Type="string" />
+          <RegistryValue Name="Version" Value="$(var.Major).$(var.Minor).$(var.Build)" Type="string" />
           <RegistryValue Name="RevVersion" Value="$(var.Rev)" Type="integer" />
         </RegistryKey>
 

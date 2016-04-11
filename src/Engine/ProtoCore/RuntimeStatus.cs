@@ -15,28 +15,29 @@ namespace ProtoCore
     {
         public enum WarningID
         {
-            kDefault,
-            kAccessViolation,
-            kAmbiguousMethodDispatch,
-            kAurgumentIsNotExpected,
-            kCallingConstructorOnInstance,
-            kConversionNotPossible,
-            kDereferencingNonPointer,
-            kFileNotExist,
-            kIndexOutOfRange,
-            kInvalidRecursion,
-            kInvalidArguments,
-            kCyclicDependency,
-            kMethodResolutionFailure,
-            kOverIndexing,
-            kTypeConvertionCauseInfoLoss,
-            kTypeMismatch,
-            kReplicationWarning,
-            kInvalidIndexing,
-            kModuloByZero,
-            kInvalidType,
-            kRangeExpressionOutOfMemory,
-            kMoreThanOneDominantList
+            Default,
+            AccessViolation,
+            AmbiguousMethodDispatch,
+            AurgumentIsNotExpected,
+            CallingConstructorOnInstance,
+            ConversionNotPossible,
+            DereferencingNonPointer,
+            FileNotExist,
+            IndexOutOfRange,
+            InvalidRecursion,
+            InvalidArguments,
+            CyclicDependency,
+            MethodResolutionFailure,
+            OverIndexing,
+            TypeConvertionCauseInfoLoss,
+            TypeMismatch,
+            ReplicationWarning,
+            InvalidIndexing,
+            ModuloByZero,
+            InvalidType,
+            RangeExpressionOutOfMemory,
+            MoreThanOneDominantList,
+            RunOutOfMemory,
         }
 
         public struct WarningEntry
@@ -327,12 +328,12 @@ namespace ProtoCore
                 if (CoreUtils.TryGetPropertyName(methodName, out propertyName))
                 {
                     string message = string.Format(Resources.kPropertyOfClassNotFound, propertyName, className);
-                    LogWarning(WarningID.kMethodResolutionFailure, message);
+                    LogWarning(WarningID.MethodResolutionFailure, message);
                 }
                 else
                 {
                     string message = string.Format(Resources.FunctionGroupNotFound, methodName, className);
-                    LogWarning(WarningID.kMethodResolutionFailure, message);
+                    LogWarning(WarningID.MethodResolutionFailure, message);
                 }
             }
             else
@@ -343,7 +344,7 @@ namespace ProtoCore
                     argumentTypes.Add(type.ToShortString());
                 }
                 string message = string.Format(Resources.FunctionGroupWithParameterNotFound, methodName, className, string.Join(",", argumentTypes));
-                LogWarning(WarningID.kMethodResolutionFailure, message);
+                LogWarning(WarningID.MethodResolutionFailure, message);
             }
         }
 
@@ -393,7 +394,7 @@ namespace ProtoCore
                 message = string.Format(Resources.kMethodResolutionFailureWithTypes, methodName, typesList);
             }
 
-            LogWarning(WarningID.kMethodResolutionFailure, message);
+            LogWarning(WarningID.MethodResolutionFailure, message);
         }
 
         public void LogMethodNotAccessibleWarning(string methodName)
@@ -409,7 +410,7 @@ namespace ProtoCore
             {
                 message = String.Format(Resources.kMethodResolutionFailure, methodName);
             }
-            LogWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure, message);
+            LogWarning(ProtoCore.Runtime.WarningID.MethodResolutionFailure, message);
         }
     }
 }

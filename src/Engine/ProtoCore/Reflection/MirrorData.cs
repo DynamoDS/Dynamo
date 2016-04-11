@@ -154,14 +154,14 @@ namespace ProtoCore
             /// else null.
             /// </summary>
             /// <returns>List of MirrorData represented by this data.</returns>
-            public List<MirrorData> GetElements() 
+            public IEnumerable<MirrorData> GetElements() 
             {
                 //This is not a collection
                 if (!this.IsCollection)
                     return null;
 
                 var array = runtimeCore.Heap.ToHeapObject<DSArray>(svData);
-                return array.Values.Select(x => new MirrorData(this.core, this.runtimeCore, x)).ToList();
+                return array.Values.Select(x => new MirrorData(this.core, this.runtimeCore, x));
             }
 
             /// <summary>
@@ -183,13 +183,13 @@ namespace ProtoCore
                 switch (sv.optype)
                 {
                     case AddressType.Int:
-                        return sv.opdata;
+                        return sv.IntegerValue;
                     case AddressType.Double:
-                        return sv.RawDoubleValue;
+                        return sv.DoubleValue;
                     case AddressType.Boolean:
-                        return sv.opdata != 0;
+                        return sv.BooleanValue;
                     case AddressType.Char:
-                        return Convert.ToChar(sv.opdata); 
+                        return Convert.ToChar(sv.CharValue); 
                     case AddressType.String:
                         return StringUtils.GetStringValue(sv, runtimeCore);
                     case AddressType.Pointer:

@@ -154,6 +154,7 @@
     <Compile Include="Controls\NotificationsControl.xaml.cs">
       <DependentUpon>NotificationsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ParentMenuItem.cs" />
     <Compile Include="Controls\RunSettingsControl.xaml.cs">
       <DependentUpon>RunSettingsControl.xaml</DependentUpon>
     </Compile>
@@ -167,6 +168,7 @@
     <Compile Include="Extensions\IViewExtensionLoader.cs" />
     <Compile Include="Extensions\IViewExtensionManager.cs" />
     <Compile Include="Extensions\MenuBarTypeExtensions.cs" />
+    <Compile Include="Extensions\ObservableCollectionExtension.cs" />
     <Compile Include="Extensions\ViewExtensionCommandExecutive.cs" />
     <Compile Include="Extensions\ViewExtensionLoader.cs" />
     <Compile Include="Extensions\ViewExtensionManager.cs" />
@@ -1225,6 +1227,7 @@
     <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\ShapewaysClient\ShapewaysClient.csproj">
       <Project>{756ceba5-4e20-4403-8448-c3c47957975b}</Project>

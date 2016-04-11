@@ -36,7 +36,7 @@ namespace ProtoCore
             foreach (FunctionEndPoint fep in rhs)
             {
                 Validity.Assert(null != fep.procedureNode);
-                if (fep.procedureNode.AccessModifier != CompilerDefinitions.AccessModifier.kPrivate && !fep.procedureNode.IsConstructor)
+                if (fep.procedureNode.AccessModifier != CompilerDefinitions.AccessModifier.Private && !fep.procedureNode.IsConstructor)
                 {
                     if (!FunctionEndPoints.Contains(fep))
                     {
@@ -54,7 +54,7 @@ namespace ProtoCore
             foreach (FunctionEndPoint fep in rhs)
             {
                 Validity.Assert(null != fep.procedureNode);
-                if (fep.procedureNode.AccessModifier == CompilerDefinitions.AccessModifier.kPublic)
+                if (fep.procedureNode.AccessModifier == CompilerDefinitions.AccessModifier.Public)
                 {
                     if (!FunctionEndPoints.Contains(fep))
                     {
@@ -120,8 +120,8 @@ namespace ProtoCore
             
             //Now test the reduced Params over all of the available end points
             StackValue thisptr = stackFrame.ThisPtr;
-            bool isInstance = thisptr.IsPointer && thisptr.opdata != Constants.kInvalidIndex;
-            bool isGlobal = thisptr.IsPointer && thisptr.opdata == Constants.kInvalidIndex;
+            bool isInstance = thisptr.IsPointer && thisptr.Pointer!= Constants.kInvalidIndex;
+            bool isGlobal = thisptr.IsPointer && thisptr.Pointer == Constants.kInvalidIndex;
                                   
             foreach (FunctionEndPoint fep in FunctionEndPoints)
             {
@@ -180,7 +180,7 @@ namespace ProtoCore
             {
                 int distance = fep.GetConversionDistance(reducedParamSVs, classTable, allowArrayPromotion, runtimeCore);
                 if (distance != 
-                    (int)ProcedureDistance.kInvalidDistance)
+                    (int)ProcedureDistance.InvalidDistance)
                     ret.Add(fep, distance);
             }
 
@@ -193,7 +193,7 @@ namespace ProtoCore
             for (int i = 0; i < reducedSVs.Count; i++)
             {
                 Type typ = fep.FormalParams[i];
-                if (typ.UID == (int)ProtoCore.PrimitiveType.kInvalidType)
+                if (typ.UID == (int)ProtoCore.PrimitiveType.InvalidType)
                     return true;
 
                 if (!typ.IsIndexable)
@@ -227,7 +227,7 @@ namespace ProtoCore
                 {
                     //This was an empty array
                     Validity.Assert(cn == null, "If it was an empty array, there shouldn't be a type node");
-                    cn = runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.kTypeNull];
+                    cn = runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.Null];
                 }
                 else if (arrayTypes.Count == 1)
                 {
@@ -256,8 +256,8 @@ namespace ProtoCore
 
 
                 bool isNotExactTypeMatch = cn != argTypeNode;
-                bool argumentsNotNull = cn != runtimeCore.DSExecutable.classTable.ClassNodes[(int) PrimitiveType.kTypeNull];
-                bool recievingTypeNotAVar = argTypeNode != runtimeCore.DSExecutable.classTable.ClassNodes[(int) PrimitiveType.kTypeVar];
+                bool argumentsNotNull = cn != runtimeCore.DSExecutable.classTable.ClassNodes[(int) PrimitiveType.Null];
+                bool recievingTypeNotAVar = argTypeNode != runtimeCore.DSExecutable.classTable.ClassNodes[(int) PrimitiveType.Var];
                 bool isNotConvertible = !cn.ConvertibleTo(typ.UID);
                 
                 //bool isCalleeVar = cn == core.classTable.list[(int) PrimitiveType.kTypeVar];

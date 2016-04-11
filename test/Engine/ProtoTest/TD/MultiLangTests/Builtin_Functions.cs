@@ -376,6 +376,7 @@ n;
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")]
         [Category("SmokeTest")]
         public void T011_SomeNulls_ModifierStack()
@@ -404,6 +405,7 @@ a = {
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")]
         [Category("SmokeTest")]
         public void T011_Defect_ModifierStack()
@@ -616,7 +618,7 @@ result =
          {
            Assert.Fail("");
            ExecutionMirror mirror = thisTest.RunScript(testPath, "T018_CountTrue_RangeExpression_02.ds");
-           Assert.IsTrue((Int64)mirror.GetValue("result").Payload == 0);
+           thisTest.Verify("result", 0);
            List<Object> li = new List<Object>() { 1, 4, 9 };
            Assert.IsTrue(mirror.CompareArrays("a", li, typeof(System.Int64)));
          }*/
@@ -641,7 +643,7 @@ result =
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1.0, 4.0, 7.0 };
             thisTest.Verify("a", v1, 0);
-            //Assert.IsTrue((Int64)mirror.GetValue("result").Payload == 0);
+            //thisTest.Verify("result", 0);
             //List<Object> li = new List<Object>() { 1, 4, 7 };
             //Assert.IsTrue(mirror.CompareArrays("a", li, typeof(System.Int64)));
         }
@@ -705,6 +707,7 @@ result =
             thisTest.Verify("result", 1, 0);
         }
         [Test]
+        [Ignore]
         [Category("ModifierBlock")]
         [Category("SmokeTest")]
         public void T021_CountTrue_ModifierStack()
@@ -932,7 +935,7 @@ result =
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1.0, 4.0, 7.0 };
             thisTest.Verify("a", v1, 0);
-            //Assert.IsTrue((Int64)mirror.GetValue("result").Payload == 0);
+            //thisTest.Verify("result", 0);
             //List<Object> li = new List<Object>() { 1, 4, 7 };
             //Assert.IsTrue(mirror.CompareArrays("a", li, typeof(System.Int64)));
         }
@@ -996,6 +999,7 @@ result =
             thisTest.Verify("result", 1, 0);
         }
         [Test]
+        [Ignore]
         [Category("ModifierBlock")]
         [Category("SmokeTest")]
         public void T032_CountFalse_ModifierStack()
@@ -1277,6 +1281,7 @@ a = {{true},{false},{false},
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")]
         [Category("SmokeTest")]
         public void T043_AllFalse_ModifierStack()
@@ -1863,6 +1868,7 @@ c = Average({m})..Average({n});//3.0,4.0,5.0";
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")]
         [Category("SmokeTest")]
         public void T065_Average_ModifierStack()
@@ -2103,6 +2109,7 @@ r = CountTrue(arr);
         }
 
         [Test]
+        [Ignore]
         [Category("ModifierBlock")]
         [Category("Built in Functions")]
         public void TV_1467322_CountTrue_ModifierStack()
@@ -2646,6 +2653,8 @@ sort = Sort(sorterFunction,a1);
         }
 
         [Test]
+        [Ignore]
+        [Category("ModifierBlock")]
         public void BIM36_Sort_conditional_1467446()
         {
             String code =
@@ -2778,6 +2787,8 @@ sort = Sort(sorterFunction,a1);
         }
 
         [Test]
+        [Ignore]
+        [Category("ModifierBlock")]
         public void BIM37_Sort_rangeexpression_1467446()
         {//1467446
             String code =
@@ -2970,6 +2981,8 @@ d = { };
         }
 
         [Test]
+        [Ignore]
+        [Category("ModifierBlock")]
         public void BIM55_RemoveDuplicates_modifier_1467447()
         {//1467446
             String code =
