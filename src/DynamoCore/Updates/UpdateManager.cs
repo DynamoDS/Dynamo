@@ -64,6 +64,13 @@ namespace Dynamo.Updates
         IEnumerable<string> GetDynamoInstallLocations();
 
         /// <summary>
+        /// Gets the full path of user data location of all version of this
+        /// Dynamo product installed on this system.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<string> GetDynamoUserDataLocations();
+
+        /// <summary>
         /// Gets the version of latest installed product
         /// </summary>
         BinaryVersion LatestProduct { get; }
@@ -1131,6 +1138,21 @@ namespace Dynamo.Updates
         /// </summary>
         /// <returns>List of Dynamo install path</returns>
         public abstract IEnumerable<string> GetDynamoInstallLocations();
+
+        /// <summary>
+        /// Gets the full path of user data location of all version of this
+        /// Dynamo product installed on this system.
+        /// </summary>
+        /// <returns></returns>
+        public virtual IEnumerable<string> GetDynamoUserDataLocations()
+        {
+            var appdatafolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var dynamoFolder = Path.Combine(appdatafolder, "Dynamo");
+            var coreFolder = Path.Combine(dynamoFolder, "Dynamo Core");
+            var paths = Directory.EnumerateDirectories(coreFolder).ToList();
+            paths.AddRange(Directory.EnumerateDirectories(dynamoFolder));
+            return paths;
+        }
         
         private BinaryVersion GetLatestInstallVersion()
         {
