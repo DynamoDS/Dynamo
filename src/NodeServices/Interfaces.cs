@@ -8,7 +8,7 @@ namespace Autodesk.DesignScript.Interfaces
     /// <summary>
     /// Provides application configuration
     /// </summary>
-    public interface IConfiguration
+    internal interface IConfiguration
     {
         /// <summary>
         /// Provides the path of main executing script
@@ -35,7 +35,7 @@ namespace Autodesk.DesignScript.Interfaces
         void SetConfigValue(string config, object value);
     }
 
-    public class ConfigurationKeys
+    internal class ConfigurationKeys
     {
         /// <summary>
         /// This key is used to configure the library filename, which implements 
@@ -127,7 +127,7 @@ namespace Autodesk.DesignScript.Interfaces
     /// <summary>
     /// Represents a session object for current execution.
     /// </summary>
-    public interface IExecutionSession
+    internal interface IExecutionSession
     {
         /// <summary>
         /// Gets the configuration object for this execution session.
@@ -147,7 +147,7 @@ namespace Autodesk.DesignScript.Interfaces
     /// An FFI library can implement this interface to get some notifications
     /// from DesignScript application.
     /// </summary>
-    public interface IExtensionApplication
+    internal interface IExtensionApplication
     {
         /// <summary>
         /// Called when first time this application is loaded.

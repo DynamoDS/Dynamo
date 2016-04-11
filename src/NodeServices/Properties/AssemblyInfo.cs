@@ -11,3 +11,8 @@ using System.Runtime.InteropServices;
 [assembly: Guid("bb5cae3b-3d5a-4a69-91eb-718791cad422")]
 
 [assembly: InternalsVisibleTo("DynamoCore")]
+[assembly: InternalsVisibleTo("ProtoCore")]
+[assembly: InternalsVisibleTo("ProtoGeometry")]
+[assembly: InternalsVisibleTo("LibG.ProtoInterface")]
+[assembly: InternalsVisibleTo("TestServices")]
+[assembly: InternalsVisibleTo("ProtoTestFx")]
