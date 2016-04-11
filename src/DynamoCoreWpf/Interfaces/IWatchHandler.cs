@@ -127,7 +127,7 @@ namespace Dynamo.Interfaces
             {
                 var list = data.GetElements();
 
-                var node = new WatchViewModel(list.Count == 0 ? "Empty List" : "List", tag, RequestSelectGeometry, true);
+                var node = new WatchViewModel(!list.Any() ? "Empty List" : "List", tag, RequestSelectGeometry, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
                     node.Children.Add(ProcessThing(e.element, runtimeCore, tag + ":" + e.idx, showRawData, callback));
