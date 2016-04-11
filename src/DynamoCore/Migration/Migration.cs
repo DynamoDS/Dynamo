@@ -41,6 +41,9 @@ namespace Dynamo.Migration
         }
     }
 
+    /// <summary>
+    /// A class which provides functionality for managing migration of Dynamo workspaces
+    /// </summary>
     public class MigrationManager : LogSourceBase
     {
         /// <summary>

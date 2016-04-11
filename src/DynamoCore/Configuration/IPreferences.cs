@@ -6,6 +6,9 @@ using Dynamo.Models;
 
 namespace Dynamo.Interfaces
 {
+    /// <summary>
+    /// An interface which defines preference settings.
+    /// </summary>
     public interface IPreferences
     {
         int ConsoleHeight { get; set; }

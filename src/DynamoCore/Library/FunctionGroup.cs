@@ -11,6 +11,10 @@ namespace Dynamo.Engine
     {
         private readonly List<FunctionDescriptor> functions;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FunctionGroup"/> class.
+        /// </summary>
+        /// <param name="qualifiedName">Qualified name.</param>
         public FunctionGroup(string qualifiedName)
         {
             functions = new List<FunctionDescriptor>();

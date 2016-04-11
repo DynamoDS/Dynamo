@@ -24,6 +24,13 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     public class Function 
         : FunctionCallBase<CustomNodeController<CustomNodeDefinition>, CustomNodeDefinition>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Function"/> class.
+        /// </summary>
+        /// <param name="def">CustomNode definition.</param>
+        /// <param name="nickName">Nickname.</param>
+        /// <param name="description">Description.</param>
+        /// <param name="category">Category.</param>
         public Function(
             CustomNodeDefinition def, string nickName, string description, string category)
             : base(new CustomNodeController<CustomNodeDefinition>(def))
@@ -245,6 +252,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
     }
 
+    /// <summary>
+    ///     Represents input of Custom Node instance.
+    /// </summary>
     [NodeName("Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("SymbolNodeDescription",typeof(Properties.Resources))]
@@ -439,6 +449,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
     }
 
+    /// <summary>
+    /// Represents output of CustomNode
+    /// </summary>
     [NodeName("Output")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("OutputNodeDescription",typeof(Dynamo.Properties.Resources))]

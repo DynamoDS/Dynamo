@@ -18,6 +18,10 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     [AlsoKnownAs("Dynamo.Nodes.DSVarArgFunction")]
     public class DSVarArgFunction : DSFunctionBase
     {
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="DSVarArgFunction"/> class.
+        /// </summary>
+        /// <param name="descriptor">Function descritor.</param>
         public DSVarArgFunction(FunctionDescriptor descriptor)
             : base(new ZeroTouchVarArgNodeController<FunctionDescriptor>(descriptor))
         {

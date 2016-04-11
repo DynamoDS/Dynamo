@@ -15,6 +15,9 @@ using Dynamo.Logging;
 namespace Dynamo.Updates
 {
     public delegate void UpdateDownloadedEventHandler(object sender, UpdateDownloadedEventArgs e);
+    /// <summary>
+    /// A delegate is used to handle shutdown request
+    /// </summary>
     public delegate void ShutdownRequestedEventHandler(IUpdateManager updateManager);
 
     public class UpdateDownloadedEventArgs : EventArgs
@@ -126,6 +129,10 @@ namespace Dynamo.Updates
         Action<IAsynchronousRequest> OnRequestCompleted { get; set; }
     }
 
+    /// <summary>
+    /// A class to describe available
+    /// application update info.
+    /// </summary>
     public class AppVersionInfo : IAppVersionInfo
     {
         public BinaryVersion Version { get; set; }

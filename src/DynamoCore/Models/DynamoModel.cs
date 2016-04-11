@@ -455,6 +455,10 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
+        /// <summary>
+        /// Default constructor for DynamoModel
+        /// </summary>
+        /// <param name="config">Start configuration</param>
         protected DynamoModel(IStartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();

@@ -278,6 +278,9 @@ namespace Dynamo.Search.SearchElements
         }
     }
 
+    /// <summary>
+    /// This class is being used when drag-drop search element on canvas to create a node.
+    /// </summary>
     public class DragDropNodeSearchElementInfo
     {
         public NodeSearchElement SearchElement { get; private set; }

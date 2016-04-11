@@ -5,6 +5,9 @@
         None, Create, Action, Query
     }
 
+    /// <summary>
+    /// Enumeration of external elemtnts' types
+    /// </summary>
     [System.Flags]
     public enum ElementTypes
     {

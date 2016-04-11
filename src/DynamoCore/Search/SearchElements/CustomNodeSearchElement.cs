@@ -30,8 +30,13 @@ namespace Dynamo.Search.SearchElements
                 if (value == path) return;
                 path = value;
             }
-        }         
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomNodeSearchElement"/> class.
+        /// </summary>
+        /// <param name="customNodeManager">Custom node manager</param>
+        /// <param name="info">Custom node info</param>
         public CustomNodeSearchElement(ICustomNodeSource customNodeManager, CustomNodeInfo info)
         {
             this.customNodeManager = customNodeManager;
