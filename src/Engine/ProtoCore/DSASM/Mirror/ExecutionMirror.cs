@@ -1340,68 +1340,6 @@ namespace ProtoCore.DSASM.Mirror
             return obj.DsasmValue;
         }
 
-        public bool CompareArrays(DsasmArray dsArray, List<Object> expected, System.Type type)
-        {
-            if (dsArray.members.Length != expected.Count)
-                return false;
-
-            for (int i = 0; i < dsArray.members.Length; ++i)
-            {
-                List<Object> subExpected = expected[i] as List<Object>;
-                DsasmArray subArray = dsArray.members[i].Payload as DsasmArray;
-
-                if ((subExpected != null) && (subArray != null)) {
-
-                    if (!CompareArrays(subArray, subExpected, type))
-                        return false;
-                }
-                else if ((subExpected == null) && (subArray == null))
-                {
-                    if (type == typeof(Int64))
-                    {
-                        if (Convert.ToInt64(dsArray.members[i].Payload) != Convert.ToInt64(expected[i]))
-                            return false;
-                    }
-                    else if (type == typeof(Double))
-                    {
-                        // can't use Double.Episilion, according to msdn, it is smaller than most
-                        // errors.
-                        if (Math.Abs(Convert.ToDouble(dsArray.members[i].Payload) - Convert.ToDouble(expected[i])) > 0.000001)
-                            return false;
-                    }
-                    else if (type == typeof(Boolean))
-                    {
-                        if (Convert.ToBoolean(dsArray.members[i].Payload) != Convert.ToBoolean(expected[i]))
-                            return false;
-                    }
-                    else if (type == typeof(Char))
-                    {
-                        object payload = dsArray.members[i].Payload;
-                        return Convert.ToChar(Convert.ToInt64(payload)) == Convert.ToChar(expected[i]);
-                    }
-                    else if (type == typeof(String))
-                    {
-                        return Convert.ToString(dsArray.members[i].Payload) == Convert.ToString(expected[i]);
-                    }
-                    else
-                    {
-                        throw new NotImplementedException("Test comparison not implemented: {EBAFAE6C-BCBF-42B8-B99C-49CFF989F0F0}");
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public bool CompareArrays(string mirrorObj, List<Object> expected, System.Type type)
-        {
-            DsasmArray computedArray = GetValue(mirrorObj).Payload as DsasmArray;
-            return CompareArrays(computedArray, expected, type);
-        }
-
         public bool EqualDotNetObject(Obj dsObj, object dotNetObj)
         {
             // check for null first
@@ -1515,7 +1453,6 @@ namespace ProtoCore.DSASM.Mirror
         }
 
         internal int MaxArraySize { get { return maximumArray; } }
-        internal int MaxOutputDepth { get { return maximumDepth; } }
         internal int CurrentOutputDepth { get; private set; }
     }
 

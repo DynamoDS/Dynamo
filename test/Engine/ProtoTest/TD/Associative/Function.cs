@@ -59,6 +59,7 @@ d;
         public void T003_Associative_Function_MultilineFunction()
         {
             string code = @"
+d;
 [Associative]
 {
 	def Divide : int(a:int, b:int)

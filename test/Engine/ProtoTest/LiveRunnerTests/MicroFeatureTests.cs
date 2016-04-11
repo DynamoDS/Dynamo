@@ -881,13 +881,13 @@ namespace ProtoTest.LiveRunner
             {
                 Assert.IsTrue(data.IsCollection);
                 var values = (value as IEnumerable<int>).ToList().Select(v => (object)v).ToList();
-                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(Int64)));
+                TestFrameWork.AssertValue(data, values);
             }
             else if (value is IEnumerable<double>)
             {
                 Assert.IsTrue(data.IsCollection);
                 var values = (value as IEnumerable<double>).ToList().Select(v => (object)v).ToList();
-                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(double)));
+                TestFrameWork.AssertValue(data, values);
             }
         }
 
