@@ -10,6 +10,7 @@ using System.Xml.Serialization;
 using Dynamo.Configuration;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Updates;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Lang;
 
@@ -19,11 +20,13 @@ namespace Dynamo.Core
     {
         public readonly int MajorPart;
         public readonly int MinorPart;
+        public readonly string UserDataRoot;
 
-        public FileVersion(int majorPart, int minorPart)
+        public FileVersion(int majorPart, int minorPart, string userdataRoot)
         {
             MajorPart = majorPart;
             MinorPart = minorPart;
+            UserDataRoot = userdataRoot;
         }
 
         public static bool operator <(FileVersion thisVersion, FileVersion otherVersion)
@@ -122,13 +125,13 @@ namespace Dynamo.Core
 
         #endregion
 
-        protected DynamoMigratorBase(IPathResolver pathResolver, FileVersion version)
+        protected DynamoMigratorBase(FileVersion version)
         {
             this.pathManager = new PathManager(new PathManagerParams()
             {
                 MajorFileVersion = version.MajorPart,
                 MinorFileVersion = version.MinorPart,
-                PathResolver = pathResolver
+                PathResolver = new MigratorPathResolver(version.UserDataRoot)
             });
         }
 
@@ -194,19 +197,19 @@ namespace Dynamo.Core
         /// definitions from the last but one version to the currently installed Dynamo version
         /// </summary>
         /// <param name="pathManager"></param>
-        /// <param name="pathResolver"></param>
+        /// <param name="dynamoLookup"></param>
         /// <returns>new migrator instance after migration</returns>
-        public static DynamoMigratorBase MigrateBetweenDynamoVersions(IPathManager pathManager, IPathResolver pathResolver)
+        public static DynamoMigratorBase MigrateBetweenDynamoVersions(IPathManager pathManager, IDynamoLookUp dynamoLookup = null)
         {
-            var userDataDir = Path.GetDirectoryName(pathManager.UserDataDirectory);
-            var versions = GetInstalledVersions(userDataDir).ToList();
+            var versions = GetInstalledVersions(pathManager, dynamoLookup);
+
             if (versions.Count() < 2)
                 return null; // No need for migration
 
-            var previousVersion = versions[1];
-            var currentVersion = versions[0];
+            var previousVersion = versions.ElementAt(1);
+            var currentVersion = versions.First();
 
-            return Migrate(pathResolver, previousVersion, currentVersion);
+            return Migrate(previousVersion, currentVersion);
         }
 
         #region static APIs
@@ -237,35 +240,56 @@ namespace Dynamo.Core
         /// is thrown if rootFolder points to an invalid directory.</exception>
         public static IEnumerable<FileVersion> GetInstalledVersions(string rootFolder)
         {
-            if(string.IsNullOrEmpty(rootFolder))
-                throw new ArgumentNullException("rootFolder");
-
-            var fileVersions = new List<FileVersion>();
-            if(!Directory.Exists(rootFolder))
-                throw new DirectoryNotFoundException("rootFolder");
-
-            var subDirs = Directory.EnumerateDirectories(rootFolder);
-            foreach (var subDir in subDirs)
-            {
-                var dirName = new DirectoryInfo(subDir).Name;
-
-                var versions = dirName.Split('.');
-                if(versions.Length < 2)
-                    continue;
-
-                int majorVersion;
-                if (!Int32.TryParse(versions[0], out majorVersion)) 
-                    continue;
-
-                int minorVersion;
-                if (Int32.TryParse(versions[1], out minorVersion))
+            return GetInstalledVersionsCore(() =>
                 {
-                    fileVersions.Add(new FileVersion(majorVersion, minorVersion));
-                }
-            }
-            fileVersions.Sort();
+                    if (string.IsNullOrEmpty(rootFolder))
+                        throw new ArgumentNullException("rootFolder");
 
-            return fileVersions;
+                    if (!Directory.Exists(rootFolder))
+                        throw new DirectoryNotFoundException("rootFolder");
+
+                    return Directory.EnumerateDirectories(rootFolder);
+                });
+        }
+
+        public static IEnumerable<FileVersion> GetInstalledVersions(IPathManager pathManager, IDynamoLookUp dynamoLookup)
+        {
+            return dynamoLookup != null
+                ? GetInstalledVersionsCore(() => dynamoLookup.GetDynamoUserDataLocations())
+                : GetInstalledVersions(Path.GetDirectoryName(pathManager.UserDataDirectory));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userDataFolders"></param>
+        /// <returns></returns>
+        private static IEnumerable<FileVersion> GetInstalledVersionsCore(Func<IEnumerable<string>> userDataFolders)
+        {
+            var folders = userDataFolders();
+            return folders.Select(x => GetInstallVersionFromUserDataFolder(x)).OrderBy(x => x);
+        }
+
+        public static FileVersion GetInstallVersionFromUserDataFolder(string folder)
+        {
+            var dirInfo = new DirectoryInfo(folder);
+            var dirName = dirInfo.Name;
+
+            var versions = dirName.Split('.');
+            if (versions.Length < 2)
+                return default(FileVersion);
+
+            int majorVersion;
+            if (!Int32.TryParse(versions[0], out majorVersion))
+                return default(FileVersion);
+
+            int minorVersion;
+            if (Int32.TryParse(versions[1], out minorVersion))
+            {
+                return new FileVersion(majorVersion, minorVersion, dirInfo.Parent.FullName);
+            }
+
+            return default(FileVersion);
         }
 
         /// <summary>
@@ -277,14 +301,14 @@ namespace Dynamo.Core
         /// <param name="fromVersion"> source Dynamo version from which to migrate </param>
         /// <param name="toVersion"> target Dynamo version into which to migrate </param>
         /// <returns> new migrator instance after migration, null if there's no migration </returns>
-        internal static DynamoMigratorBase Migrate(IPathResolver pathResolver, FileVersion fromVersion, FileVersion toVersion)
+        internal static DynamoMigratorBase Migrate(FileVersion fromVersion, FileVersion toVersion)
         {
             // Create concrete DynamoMigratorBase object using previousVersion and reflection
-            var sourceMigrator = CreateMigrator(pathResolver, fromVersion);
+            var sourceMigrator = CreateMigrator(fromVersion);
             Debug.Assert(sourceMigrator != null);
 
             // get migrator object for current version
-            var targetMigrator = CreateMigrator(pathResolver, toVersion);
+            var targetMigrator = CreateMigrator(toVersion);
             Debug.Assert(targetMigrator != null);
 
             bool isPackagesDirectoryEmpty = !Directory.EnumerateFileSystemEntries(targetMigrator.PackagesDirectory).Any();
@@ -302,24 +326,23 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Given a root user directory, this creates an instance of the migrator
+        /// Given a FileVersion, this creates an instance of the migrator
         /// depending on the input version using reflection. Returns the default
         /// migrator (DynamoMigratorBase) if version specific migrator does not exist
         /// </summary>
-        /// <param name="pathResolver"></param>
         /// <param name="version"> input version for which migrator instance is created </param>
         /// <returns> instance of migrator specific to input version. </returns>
-        internal static DynamoMigratorBase CreateMigrator(IPathResolver pathResolver, FileVersion version)
+        internal static DynamoMigratorBase CreateMigrator(FileVersion version)
         {
             var className = "Dynamo.Core.DynamoMigrator" + version.MajorPart + version.MinorPart;
 
-            var args = new object[] { pathResolver, version };
+            var args = new object[] { version };
             var type = Assembly.GetExecutingAssembly().GetType(className);
 
             if(type != null)
                 return (DynamoMigratorBase)Activator.CreateInstance(type, args);
 
-            return new DynamoMigratorBase(pathResolver, version);
+            return new DynamoMigratorBase(version);
         }
 
         #endregion
@@ -363,8 +386,8 @@ namespace Dynamo.Core
 
     internal class DynamoMigrator07 : DynamoMigratorBase
     {
-        public DynamoMigrator07(IPathResolver pathResolver, FileVersion version)
-            : base(pathResolver, version)
+        public DynamoMigrator07(FileVersion version)
+            : base(version)
         {
         }
 
@@ -384,8 +407,8 @@ namespace Dynamo.Core
 
     internal class DynamoMigrator08 : DynamoMigratorBase
     {
-        public DynamoMigrator08(IPathResolver pathResolver, FileVersion version)
-            : base(pathResolver, version)
+        public DynamoMigrator08(FileVersion version)
+            : base(version)
         {
         }
 
@@ -401,4 +424,36 @@ namespace Dynamo.Core
             return base.MigrateFrom(sourceMigrator);
         }
     }
+
+    class MigratorPathResolver : IPathResolver
+    {
+        private readonly IEnumerable<string> emptyList = new List<string>();
+        public MigratorPathResolver(string userDataRoot)
+        {
+            UserDataRootFolder = userDataRoot;
+        }
+
+        public IEnumerable<string> AdditionalResolutionPaths
+        {
+            get { return emptyList; }
+        }
+
+        public IEnumerable<string> AdditionalNodeDirectories
+        {
+            get { return emptyList; }
+        }
+
+        public IEnumerable<string> PreloadedLibraryPaths
+        {
+            get { return emptyList; }
+        }
+
+        public string UserDataRootFolder { get; set; }
+
+        public string CommonDataRootFolder
+        {
+            get { return string.Empty; }
+        }
+    }
+
 }
