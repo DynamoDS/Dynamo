@@ -688,11 +688,11 @@ namespace ProtoCore.DSASM.Mirror
         }
         
         /// <summary>
-        /// Return the stack value of specified symbol.
+        /// Return the stack value of specified variable at the global scope.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public StackValue GetSymbolValue(string name)
+        public StackValue GetValueAtGlobalScope(string name)
         {
             ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
 
@@ -1068,6 +1068,7 @@ namespace ProtoCore.DSASM.Mirror
         public Obj Unpack(StackValue val)
         {
             Obj obj = null;
+
 
             switch (val.optype)
             {
