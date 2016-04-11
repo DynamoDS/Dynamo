@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -181,12 +181,10 @@ namespace Dynamo.Applications
             PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
 
             var config = new DynamoModel.DefaultStartConfiguration()
-            {
-               // DynamoCorePath = @"C:\Program Files\Dynamo\Dynamo Core\1.0\",
-                //DynamoHostPath = @"C:\Program Files\Dynamo\Dynamo Core\1.0",
-                GeometryFactoryPath = geometryFactoryPath,
-                ProcessMode = TaskProcessMode.Asynchronous
-            };
+                  {
+                      GeometryFactoryPath = geometryFactoryPath,
+                      ProcessMode = TaskProcessMode.Asynchronous
+                  };
 
             config.UpdateManager = CLImode ? null : InitializeUpdateManager();
             config.StartInTestMode = CLImode ? true : false;
