@@ -1932,7 +1932,7 @@ a;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> result = new List<Object> { 1, 2, 3, 4, 5 };
-            Assert.IsTrue(mirror.CompareArrays("a", result, typeof(System.Double)));
+            thisTest.Verify("a", result);
         }
 
 

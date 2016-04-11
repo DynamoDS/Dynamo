@@ -66,22 +66,10 @@ namespace ProtoCore
 
                 variableName = varname;
                 blockDeclaration = blockDecl;
-                StackValue svData = deprecateThisMirror.GetValue(variableName, blockDeclaration).DsasmValue;
+                StackValue svData = deprecateThisMirror.GetGlobalValue(variableName);
 
                 mirrorData = new MirrorData(staticCore, this.runtimeCore, svData);
             }
-
-            /// <summary>
-            ///  This is a helper function to be able to retrive the data inspection capabilities of the 
-            ///  soon to be deprecated ExecutionMirror
-            /// </summary>
-            /// <returns></returns>
-            public ProtoCore.DSASM.Mirror.ExecutionMirror GetUtils()
-            {
-                Validity.Assert(deprecateThisMirror != null);
-                return deprecateThisMirror;
-            }
-
 
             /// <summary>
             ///  Retrieve the data associated with this RuntimeMirror

@@ -1912,15 +1912,14 @@ b = {
             };
             fsr.ToggleBreakpoint(cp1);
             ProtoScript.Runners.DebugRunner.VMState vms = fsr.Run();
-            thisTest.DebugModeVerification(vms.mirror, "a", 4);
+            Assert.AreEqual((Int64)vms.mirror.GetDebugValue("a").Payload, 4);
 
             fsr.ToggleBreakpoint(cp2);
             fsr.Run();
-            thisTest.DebugModeVerification(vms.mirror, "a", 5);
+            Assert.AreEqual((Int64)vms.mirror.GetDebugValue("a").Payload, 5);
             fsr.ToggleBreakpoint(cp3);
             fsr.Run();
-            Object n1 = null;
-            thisTest.DebugModeVerification(vms.mirror, "a", n1);
+            Assert.AreEqual(vms.mirror.GetDebugValue("a").Payload, null);
 
             fsr.Run();
         }

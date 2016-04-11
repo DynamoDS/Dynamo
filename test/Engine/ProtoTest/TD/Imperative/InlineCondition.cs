@@ -81,7 +81,7 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             // expected "StatementUsedInAssignment" warning
             List<Object> result = new List<object> { 1, 0, 1, 1, 0, };
-            Assert.IsTrue(mirror.CompareArrays("Results", result, typeof(System.Int64)));
+            thisTest.Verify("Results", result);
         }
         [Ignore]
         public void T005_Inline_Using_2_Collections_In_Condition()
@@ -104,9 +104,9 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
             List<Object> c1 = new List<object> { false, false, false };
             List<Object> c2 = new List<object> { false, false, false };
             List<Object> c3 = new List<object> { false, false, false, null };
-            Assert.IsTrue(mirror.CompareArrays("c1", c1, typeof(System.Boolean)));
-            Assert.IsTrue(mirror.CompareArrays("c2", c2, typeof(System.Boolean)));
-            Assert.IsTrue(mirror.CompareArrays("c3", c3, typeof(System.Object)));
+            thisTest.Verify("c1", c1);
+            thisTest.Verify("c2", c2);
+            thisTest.Verify("c3", c3);
         }
 
         [Ignore]
@@ -132,9 +132,9 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
             List<Object> b1 = new List<object> { 1, 2, 3, true };
             List<Object> b2 = new List<object> { 1, 2, 3 };
             List<Object> b3 = new List<object> { 1, 2 };
-            Assert.IsTrue(mirror.CompareArrays("b1", b1, typeof(System.Object)));
-            Assert.IsTrue(mirror.CompareArrays("b2", b2, typeof(System.Int64)));
-            Assert.IsTrue(mirror.CompareArrays("b3", b3, typeof(System.Int64)));
+            thisTest.Verify("b1", b1);
+            thisTest.Verify("b2", b2);
+            thisTest.Verify("b3", b3);
         }
         [Ignore]
         public void T007_Inline_Using_Collections_And_Replication()
@@ -159,10 +159,10 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
             List<Object> c = new List<object> { 4, 6, 8, 0, 2 };
             List<Object> d = new List<object> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
             List<Object> e1 = new List<object> { 2, 3 };
-            Assert.IsTrue(mirror.CompareArrays("b", b, typeof(System.Int64)));
-            Assert.IsTrue(mirror.CompareArrays("c", c, typeof(System.Int64)));
-            Assert.IsTrue(mirror.CompareArrays("d", d, typeof(System.Int64)));
-            Assert.IsTrue(mirror.CompareArrays("e1", e1, typeof(System.Int64)));
+            thisTest.Verify("b", b);
+            thisTest.Verify("c", c);
+            thisTest.Verify("d", d);
+            thisTest.Verify("e1", e1);
         }
 
         [Test]
@@ -181,7 +181,7 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             // expected "StatementUsedInAssignment" warning
             List<Object> x = new List<object> { 1, 1 };
-            Assert.IsTrue(mirror.CompareArrays("x", x, typeof(System.Int64)));
+            thisTest.Verify("x", x);
         }
         [Ignore]
         public void T009_Inline_Using_Function_Call_And_Collection_And_Replication()
@@ -206,7 +206,7 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             // expected "StatementUsedInAssignment" warning
             List<Object> b = new List<object> { 2, 4, 6 };
-            Assert.IsTrue(mirror.CompareArrays("b", b, typeof(System.Int64)));
+            thisTest.Verify("b", b);
             thisTest.Verify("a", 10);
             thisTest.Verify("c", 13);
             thisTest.Verify("d", 53);
