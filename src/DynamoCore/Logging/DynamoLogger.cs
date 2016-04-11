@@ -61,6 +61,9 @@ namespace Dynamo.Logging
         }
     }
 
+    /// <summary>
+    /// Contains logging functionality.
+    /// </summary>
     public class DynamoLogger: NotificationObject, ILogger, IDisposable
     {
         private readonly Object guardMutex = new Object();

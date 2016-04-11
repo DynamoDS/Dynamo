@@ -10,7 +10,14 @@ namespace Dynamo.Extensions
     /// </summary>
     public interface IExtensionLoader
     {
+        /// <summary>
+        /// Loads assembly by passed extension path and return it as IExtension
+        /// </summary>
         IExtension Load(string extensionPath);
+
+        /// <summary>
+        /// Returns an enum of IExtension specified by passed extension path
+        /// </summary>
         IEnumerable<IExtension> LoadDirectory(string extensionsPath);
     }
 }

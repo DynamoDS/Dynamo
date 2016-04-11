@@ -2112,6 +2112,9 @@ namespace Dynamo.Graph.Nodes
         }
     }
 
+    /// <summary>
+    /// Enumeration of possible Node's states
+    /// </summary>
     public enum ElementState
     {
         Dead,

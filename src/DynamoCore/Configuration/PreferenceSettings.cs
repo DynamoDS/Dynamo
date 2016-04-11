@@ -177,6 +177,9 @@ namespace Dynamo.Configuration
         /// </summary>
         public bool OpenFileInManualExecutionMode { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PreferenceSettings"/> class.
+        /// </summary>
         public PreferenceSettings()
         {
             RecentFiles = new List<string>();

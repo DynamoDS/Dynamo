@@ -9,6 +9,9 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Search
 {
+    /// <summary>
+    ///     Base class for all browser items in search area.
+    /// </summary>
     public abstract class BrowserItem : NotificationObject
     {
         public abstract ObservableCollection<BrowserItem> Items { get; set; }

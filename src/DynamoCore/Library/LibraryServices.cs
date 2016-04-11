@@ -83,6 +83,11 @@ namespace Dynamo.Engine
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LibraryServices"/> class.
+        /// </summary>
+        /// <param name="libraryManagementCore"></param>
+        /// <param name="pathManager"></param>
         public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager)
         {
             LibraryManagementCore = libraryManagementCore;

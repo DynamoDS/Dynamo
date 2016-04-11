@@ -3,6 +3,9 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Configuration
 {
+    /// <summary>
+    ///     This class contains the constants to configure some aspects of Dynamo's work.
+    /// </summary>
     public class Configurations
     {
         #region Dynamo Universal Constants

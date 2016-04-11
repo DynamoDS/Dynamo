@@ -2,6 +2,9 @@
 
 namespace Dynamo.Scheduler
 {
+    /// <summary>
+    /// Implements IDisposable functionality.
+    /// </summary>
     public static class Disposable
     {
         private sealed class SimpleDisposable : IDisposable
