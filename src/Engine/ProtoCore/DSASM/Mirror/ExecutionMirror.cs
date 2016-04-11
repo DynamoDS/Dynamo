@@ -739,40 +739,6 @@ namespace ProtoCore.DSASM.Mirror
             }
         }
 
-        public Obj GetValue(string name, int block = 0)
-        {
-            ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
-
-            int index = Constants.kInvalidIndex;
-            if (block == 0)
-            {
-                for (block = 0; block < exe.runtimeSymbols.Length; ++block)
-                {
-                    index = exe.runtimeSymbols[block].IndexOf(name, Constants.kGlobalScope, Constants.kInvalidIndex);
-                    if (index != Constants.kInvalidIndex)
-                        break;
-                }
-            }
-            else
-            {
-                index = exe.runtimeSymbols[block].IndexOf(name, Constants.kGlobalScope, Constants.kInvalidIndex);
-            }
-
-            if (Constants.kInvalidIndex == index)
-            {
-                throw new SymbolNotFoundException(name);
-            }
-            else
-            {
-                var symbol = exe.runtimeSymbols[block].symbolList[index];
-                Obj retVal = Unpack(MirrorTarget.rmem.GetSymbolValue(symbol), MirrorTarget.rmem.Heap, runtimeCore);
-
-                return retVal;
-
-            }
-        }
-
-
         //
         //  1.	Get the graphnode given the varname
         //  2.	Get the sv of the symbol
