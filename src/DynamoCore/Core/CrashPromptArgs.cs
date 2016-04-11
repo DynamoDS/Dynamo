@@ -2,6 +2,9 @@
 
 namespace Dynamo.Core
 {
+    /// <summary>
+    ///     Event argument for CrashPrompt. It contains display options, details, overriding text and file path.
+    /// </summary>
     public class CrashPromptArgs : EventArgs
     {
         [Flags]

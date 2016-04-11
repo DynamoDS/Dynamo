@@ -18,6 +18,9 @@ using ProtoCore.Namespace;
 
 namespace Dynamo.Graph.Workspaces
 {
+    /// <summary>
+    ///     This class represents executable workspace.
+    /// </summary>
     public class HomeWorkspaceModel : WorkspaceModel
     {
         #region Class Data Members and Properties

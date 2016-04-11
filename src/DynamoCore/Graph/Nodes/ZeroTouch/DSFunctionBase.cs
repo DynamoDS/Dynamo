@@ -15,6 +15,10 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     public abstract class DSFunctionBase 
         : FunctionCallBase<ZeroTouchNodeController<FunctionDescriptor>, FunctionDescriptor>
     {
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="DSFunctionBase"/> class.
+        /// </summary>
+        /// <param name="controller">Function descritor.</param>
         protected DSFunctionBase(ZeroTouchNodeController<FunctionDescriptor> controller)
             : base(controller)
         {

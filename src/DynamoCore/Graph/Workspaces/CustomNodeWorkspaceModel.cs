@@ -15,6 +15,9 @@ using ProtoCore.Namespace;
 
 namespace Dynamo.Graph.Workspaces
 {
+    /// <summary>
+    /// Extension of standard WorkspaceModel. Represents workspace of CustomNode inner functionality.
+    /// </summary>
     public class CustomNodeWorkspaceModel : WorkspaceModel, ICustomNodeWorkspaceModel
     {
         public Guid CustomNodeId
@@ -37,6 +40,9 @@ namespace Dynamo.Graph.Workspaces
 
         #region Contructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomNodeWorkspaceModel"/> class.
+        /// </summary>
         public CustomNodeWorkspaceModel( 
             WorkspaceInfo info, 
             NodeFactory factory)

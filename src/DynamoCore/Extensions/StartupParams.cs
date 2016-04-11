@@ -34,6 +34,9 @@ namespace Dynamo.Extensions
         public Version DynamoVersion { get { return dynamoVersion; } }
         private readonly Version dynamoVersion;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StartupParams"/> class.
+        /// </summary>
         public StartupParams(IAuthProvider provider, IPathManager pathManager,
             ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager,
             Version dynamoVersion, IPreferences preferences)
