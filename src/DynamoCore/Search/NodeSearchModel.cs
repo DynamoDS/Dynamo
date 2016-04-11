@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Xml;
 using Dynamo.Configuration;
@@ -65,39 +66,81 @@ namespace Dynamo.Search
             XmlHelper.AddNode(element, "Group", entry.Group.ToString());
             XmlHelper.AddNode(element, "Description", entry.Description);
 
+            // Add search tags, joined by ",".
+            // E.g. <SearchTags>bounding,bound,bymaxmin,max,min,bypoints</SearchTags>
+            XmlHelper.AddNode(element, "SearchTags",
+                String.Join(",", entry.SearchKeywords.Where(word => !String.IsNullOrWhiteSpace(word))));
+
+            var dynamoNode = entry.CreateNode();
+
             // If entry has input parameters.
-            if (entry.InputParameters.First().Item2 != Properties.Resources.NoneString)
+            if (dynamoNode.InPorts.Count != 0)
             {
                 var inputNode = XmlHelper.AddNode(element, "Inputs");
-                foreach (var parameter in entry.InputParameters)
+                for (int i = 0; i < dynamoNode.InPorts.Count; i++)
                 {
                     var parameterNode = XmlHelper.AddNode(inputNode, "InputParameter");
-                    XmlHelper.AddAttribute(parameterNode, "Name", parameter.Item1);
-                    XmlHelper.AddAttribute(parameterNode, "Type", parameter.Item2);
+                    XmlHelper.AddAttribute(parameterNode, "Name", dynamoNode.InPorts[i].PortName);
+
+                    // Case for UI nodes as ColorRange.
+                    if (dynamoNode.InPorts.Count == entry.InputParameters.Count()
+                        && entry.InputParameters.First().Item2 != Properties.Resources.NoneString)
+                    {
+                        XmlHelper.AddAttribute(parameterNode, "Type", entry.InputParameters.ElementAt(i).Item2);
+                    }
+
+                    // Add default value, if it's not null.
+                    if (dynamoNode.InPorts[i].DefaultValue != null)
+                    {
+                        XmlHelper.AddAttribute(parameterNode, "DefaultValue",
+                            dynamoNode.InPorts[i].DefaultValue.ToString());
+                    }
+                    XmlHelper.AddAttribute(parameterNode, "Tooltip", dynamoNode.InPorts[i].ToolTipContent);
+                    i++;
                 }
             }
 
             // If entry has output parameters.
-            if (entry.OutputParameters.First() != Properties.Resources.NoneString)
+            if (dynamoNode.OutPorts.Count != 0)
             {
                 var inputNode = XmlHelper.AddNode(element, "Outputs");
-                foreach (var parameter in entry.OutputParameters)
+                for (int i = 0; i < dynamoNode.OutPorts.Count; i++)
                 {
                     var parameterNode = XmlHelper.AddNode(inputNode, "OutputParameter");
-                    XmlHelper.AddAttribute(parameterNode, "Type", parameter);
+
+                    // Case for UI nodes as ColorRange.
+                    if (dynamoNode.OutPorts.Count == entry.OutputParameters.Count()
+                        && entry.OutputParameters.First() != Properties.Resources.NoneString)
+                    {
+                        XmlHelper.AddAttribute(parameterNode, "Type", entry.OutputParameters.ElementAt(i));
+                    }
+
+                    XmlHelper.AddAttribute(parameterNode, "Tooltip", dynamoNode.OutPorts[i].ToolTipContent);
+                    i++;
                 }
             }
 
-            string assemblyName = Path.GetFileNameWithoutExtension(entry.Assembly);
-            // Get icon path.
-            string pathToIcon = Path.Combine(
+            // If assembly file doesn't exist, then node might be loaded from DynamoCore assembly.
+            // E.g. Operators or BuildIn
+            var assemblyName = File.Exists(entry.Assembly) ?
+                Path.GetFileNameWithoutExtension(entry.Assembly) : "DynamoCore";
+
+            // Get icon paths.
+            string pathToSmallIcon = Path.Combine(
                 dynamoPath,
                 @"..\..\..\src\Resources\",
-                assemblyName);
+                assemblyName,
+                "SmallIcons", entry.IconName + ".Small.png");
+
+            string pathToLargeIcon = Path.Combine(
+               dynamoPath,
+               @"..\..\..\src\Resources\",
+               assemblyName,
+               "LargeIcons", entry.IconName + ".Large.png");
 
             // Dump icons.
-            XmlHelper.AddNode(element, "SmallIcon", Path.Combine(pathToIcon, "SmallIcons", entry.IconName));
-            XmlHelper.AddNode(element, "LargeIcon", Path.Combine(pathToIcon, "LargeIcons", entry.IconName));
+            XmlHelper.AddNode(element, "SmallIcon", File.Exists(pathToSmallIcon) ? pathToSmallIcon : "Not found");
+            XmlHelper.AddNode(element, "LargeIcon", File.Exists(pathToLargeIcon) ? pathToLargeIcon : "Not found");
         }
 
         private static void AddCategoryToXml(
