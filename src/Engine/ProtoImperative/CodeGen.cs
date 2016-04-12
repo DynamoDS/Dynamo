@@ -667,35 +667,11 @@ namespace ProtoImperative
                 }
             }
 
-            if (null != localFunctionDefNode)
-            {
-                FunctionDefinitionNode funcDefNode = localFunctionDefNode as FunctionDefinitionNode;
-                if (null == funcDefNode || (null == funcDefNode.FunctionBody))
-                    return false;
-
-                col = funcDefNode.FunctionBody.endCol - 1;
-                endCol = funcDefNode.FunctionBody.endCol;
-                line = endLine = funcDefNode.FunctionBody.endLine;
-                return true;
-            }            
-
             return false;
         }
 
         private bool AuditReturnLocationFromFunction(ref int line, ref int col, ref int endLine, ref int endCol)
         {
-            if (null != localFunctionDefNode)
-            {
-                FunctionDefinitionNode funcDefNode = localFunctionDefNode as FunctionDefinitionNode;
-                if (null == funcDefNode || (null == funcDefNode.FunctionBody))
-                    return false;
-
-                col = funcDefNode.FunctionBody.endCol - 1;
-                endCol = funcDefNode.FunctionBody.endCol;
-                line = endLine = funcDefNode.FunctionBody.endLine;
-                return true;
-            }
-
             if (null != localCodeBlockNode)
             {
                 if (localCodeBlockNode is CodeBlockNode ||
@@ -1041,233 +1017,6 @@ namespace ProtoImperative
         private void EmitConstructorDefinitionNode(ImperativeNode node)
         {
             throw new NotImplementedException();
-        }
-
-        private void EmitFunctionDefinitionNode(ImperativeNode node, ref ProtoCore.Type inferedType)
-        {
-            bool parseGlobalFunctionSig = null == localProcedure && ProtoCore.CompilerDefinitions.Imperative.CompilePass.GlobalFuncSig == compilePass;
-            bool parseGlobalFunctionBody = null == localProcedure && ProtoCore.CompilerDefinitions.Imperative.CompilePass.GlobalFuncBody == compilePass;
-
-            FunctionDefinitionNode funcDef = node as FunctionDefinitionNode;
-            localFunctionDefNode = funcDef;
-
-            ProtoCore.DSASM.CodeBlockType originalBlockType = codeBlock.blockType;
-            codeBlock.blockType = ProtoCore.DSASM.CodeBlockType.Function;
-            if (parseGlobalFunctionSig)
-            {
-                Validity.Assert(null == localProcedure);
-
-
-                // TODO jun: Add semantics for checking overloads (different parameter types)
-                localProcedure = new ProtoCore.DSASM.ProcedureNode();
-                localProcedure.Name = funcDef.Name;
-                localProcedure.PC = pc;
-                localProcedure.LocalCount = funcDef.LocalVariableCount;
-                var returnType = new ProtoCore.Type();
-                returnType.UID = core.TypeSystem.GetType(funcDef.ReturnType.Name);
-                returnType.rank = funcDef.ReturnType.rank;
-                if (returnType.UID == (int)PrimitiveType.InvalidType)
-                {
-                    string message = String.Format(ProtoCore.Properties.Resources.kReturnTypeUndefined, funcDef.ReturnType.Name, funcDef.Name);
-                    buildStatus.LogWarning(ProtoCore.BuildData.WarningID.TypeUndefined, message, null, funcDef.line, funcDef.col, firstSSAGraphNode);
-                    returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, funcDef.ReturnType.rank);
-                }
-                localProcedure.ReturnType = returnType;
-                localProcedure.RuntimeIndex = codeBlock.codeBlockId;
-                globalProcIndex = codeBlock.procedureTable.Append(localProcedure);
-                core.ProcNode = localProcedure;
-
-
-                // Append arg symbols
-                if (null != funcDef.Signature)
-                {
-                    foreach (VarDeclNode argNode in funcDef.Signature.Arguments)
-                    {
-                        IdentifierNode paramNode = null;
-                        ProtoCore.AST.Node aDefaultExpression = null;
-                        if (argNode.NameNode is IdentifierNode)
-                        {
-                            paramNode = argNode.NameNode as IdentifierNode;
-                        }
-                        else if (argNode.NameNode is BinaryExpressionNode)
-                        {
-                            BinaryExpressionNode bNode = argNode.NameNode as BinaryExpressionNode;
-                            paramNode = bNode.LeftNode as IdentifierNode;
-                            aDefaultExpression = bNode;
-                        }
-                        else
-                        {
-                            Validity.Assert(false, "Check generated AST");
-                        }
-
-                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, firstSSAGraphNode);
-                        int symbolIndex = AllocateArg(paramNode.Value, localProcedure.ID, argType);
-                        if (ProtoCore.DSASM.Constants.kInvalidIndex == symbolIndex)
-                        {
-                            throw new BuildHaltException("26384684");
-                        }
-
-                        localProcedure.ArgumentTypes.Add(argType);
-                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { DefaultExpression = aDefaultExpression };
-                        localProcedure.ArgumentInfos.Add(argInfo);
-                    }
-                }         
-            }
-            else if (parseGlobalFunctionBody)
-            {
-                EmitCompileLogFunctionStart(GetFunctionSignatureString(funcDef.Name, funcDef.ReturnType, funcDef.Signature));
-
-                // Build arglist for comparison
-                List<ProtoCore.Type> argList = new List<ProtoCore.Type>();
-                if (null != funcDef.Signature)
-                {
-                    foreach (VarDeclNode argNode in funcDef.Signature.Arguments)
-                    {
-                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, firstSSAGraphNode);
-                        argList.Add(argType);
-                    }
-                }
-
-                // Get the exisitng procedure that was added on the previous pass
-                var procNode = codeBlock.procedureTable.GetFunctionBySignature(funcDef.Name, argList);
-                globalProcIndex = procNode == null ? Constants.kInvalidIndex : procNode.ID;
-                localProcedure = codeBlock.procedureTable.Procedures[globalProcIndex];
-
-
-                Validity.Assert(null != localProcedure);
-                localProcedure.Attributes = PopulateAttributes(funcDef.Attributes);
-                // Its only on the parse body pass where the real pc is determined. Update this procedures' pc
-                //Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == localProcedure.pc);
-                localProcedure.PC = pc;
-
-                // Copy the active function to the core so nested language blocks can refer to it
-                core.ProcNode = localProcedure;
-
-                // Arguments have been allocated, update the baseOffset
-                localProcedure.LocalCount = core.BaseOffset;
-
-
-                ProtoCore.FunctionEndPoint fep = null;
-                                
-                //Traverse default argument
-                emitDebugInfo = false;
-                foreach (ProtoCore.DSASM.ArgumentInfo argNode in localProcedure.ArgumentInfos)
-                {
-                    if (!argNode.IsDefault)
-                    {
-                        continue;
-                    }
-                    BinaryExpressionNode bNode = argNode.DefaultExpression as BinaryExpressionNode;
-
-                    // build a temporay node for statement : temp = defaultarg;
-                    var iNodeTemp = nodeBuilder.BuildIdentfier(Constants.kTempDefaultArg);
-                    BinaryExpressionNode bNodeTemp = nodeBuilder.BuildBinaryExpression(iNodeTemp, bNode.LeftNode) as BinaryExpressionNode;
-                    EmitBinaryExpressionNode(bNodeTemp, ref inferedType);
-
-                    //duild an inline conditional node for statement: defaultarg = (temp == DefaultArgNode) ? defaultValue : temp;
-                    InlineConditionalNode icNode = new InlineConditionalNode();
-                    icNode.ConditionExpression = nodeBuilder.BuildBinaryExpression(iNodeTemp, new DefaultArgNode(), Operator.eq);
-                    icNode.TrueExpression = bNode.RightNode;
-                    icNode.FalseExpression = iNodeTemp;
-                    bNodeTemp.LeftNode = bNode.LeftNode;
-                    bNodeTemp.RightNode = icNode;
-                    EmitBinaryExpressionNode(bNodeTemp, ref inferedType);
-                }
-                emitDebugInfo = true;
-
-                // Traverse definition
-                bool hasReturnStatement = false;
-                foreach (ImperativeNode bnode in funcDef.FunctionBody.Body)
-                {
-                    DfsTraverse(bnode, ref inferedType);
-                    if (ProtoCore.Utils.NodeUtils.IsReturnExpressionNode(bnode))
-                    {
-                        hasReturnStatement = true;
-                    }
-
-                    if (bnode is FunctionCallNode)
-                    {
-                        EmitSetExpressionUID(core.ExpressionUID++);
-                    }
-                }
-
-                // All locals have been stack allocated, update the local count of this function
-                localProcedure.LocalCount = core.BaseOffset;
-
-                // Update the param stack indices of this function
-                foreach (ProtoCore.DSASM.SymbolNode symnode in codeBlock.symbolTable.symbolList.Values)
-                {
-                    if (symnode.functionIndex == localProcedure.ID && symnode.isArgument)
-                    {
-                        symnode.index -= localProcedure.LocalCount;
-                    }
-                }
-
-                ProtoCore.Lang.JILActivationRecord record = new ProtoCore.Lang.JILActivationRecord();
-                record.pc = localProcedure.PC;
-                record.locals = localProcedure.LocalCount;
-                record.classIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
-                record.funcIndex = localProcedure.ID;
-                fep = new ProtoCore.Lang.JILFunctionEndPoint(record);
-
-
-
-                // Construct the fep arguments
-                fep.FormalParams = new ProtoCore.Type[localProcedure.ArgumentTypes.Count];
-                fep.BlockScope = codeBlock.codeBlockId;
-                fep.procedureNode = localProcedure;
-                localProcedure.ArgumentTypes.CopyTo(fep.FormalParams, 0);
-
-                // TODO Jun: 'classIndexAtCallsite' is the class index as it is stored at the callsite function tables
-                // Determine whether this still needs to be aligned to the actual 'classIndex' variable
-                // The factors that will affect this is whether the 2 function tables (compiler and callsite) need to be merged
-                int classIndexAtCallsite = ProtoCore.DSASM.Constants.kInvalidIndex + 1;
-                if (!core.FunctionTable.GlobalFuncTable.ContainsKey(classIndexAtCallsite))
-                {
-                    Dictionary<string, FunctionGroup> funcList = new Dictionary<string, FunctionGroup>();
-                    core.FunctionTable.GlobalFuncTable.Add(classIndexAtCallsite, funcList);
-                }
-
-                Dictionary<string, FunctionGroup> fgroup = core.FunctionTable.GlobalFuncTable[classIndexAtCallsite];
-                if (!fgroup.ContainsKey(funcDef.Name))
-                {
-                    // Create a new function group in this class
-                    ProtoCore.FunctionGroup funcGroup = new ProtoCore.FunctionGroup();
-                    funcGroup.FunctionEndPoints.Add(fep);
-
-                    // Add this group to the class function tables
-                    core.FunctionTable.GlobalFuncTable[classIndexAtCallsite].Add(funcDef.Name, funcGroup);
-                }
-                else
-                {
-                    // Add this fep into the exisitng function group
-                    core.FunctionTable.GlobalFuncTable[classIndexAtCallsite][funcDef.Name].FunctionEndPoints.Add(fep);
-                }
-
-                if (!hasReturnStatement)
-                {
-                    if (!core.Options.SuppressFunctionResolutionWarning)
-                    {
-                        string message = String.Format(ProtoCore.Properties.Resources.kFunctionNotReturnAtAllCodePaths, localProcedure.Name);
-                        core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.MissingReturnStatement, message, core.CurrentDSFileName, funcDef.line, funcDef.col, firstSSAGraphNode);
-                    }
-
-                    EmitReturnNull();
-                }
-
-                EmitCompileLogFunctionEnd();
-                //Fuqiang: return is already done in traversing the function body
-                //// function return
-                //EmitInstrConsole(ProtoCore.DSASM.kw.ret);
-                //EmitReturn();
-            }
-
-            core.ProcNode = localProcedure = null;
-            globalProcIndex = ProtoCore.DSASM.Constants.kGlobalScope;
-            argOffset = 0;
-            core.BaseOffset = 0;
-            codeBlock.blockType = originalBlockType;
-            localFunctionDefNode = null;
         }
 
         private void EmitFunctionCallNode(ImperativeNode node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.AST.ImperativeAST.BinaryExpressionNode bnode = null)
@@ -1645,11 +1394,6 @@ namespace ProtoImperative
                 }
                 Backpatch(bp, pc);
             }
-        }
-
-        private void EmitVarDeclNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
-        {
-            throw new NotImplementedException("EmitVarDeclNode");
         }
 
         private void EmitBinaryExpressionNode(ImperativeNode node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null,
@@ -2745,84 +2489,6 @@ namespace ProtoImperative
             EmitIdentifierNode(tmpVar, ref inferedType, false);
         }
 
-        public String GetFunctionSignatureString(string functionName, ProtoCore.Type returnType, ArgumentSignatureNode signature, bool isConstructor = false)
-        {
-            StringBuilder functionSig = new StringBuilder(isConstructor ? "\nconstructor " : "\ndef ");
-            functionSig.Append(functionName);
-            functionSig.Append(":");
-            functionSig.Append(core.TypeSystem.GetType(returnType.UID));
-            if (returnType.rank < 0)
-            {
-                functionSig.Append("[]..[]");
-            }
-            else
-            {
-                for (int k = 0; k < returnType.rank; ++k)
-                {
-                    functionSig.Append("[]");
-                }
-            }
-            functionSig.Append("(");
-
-            for (int i = 0; i < signature.Arguments.Count; ++i)
-            {
-                var arg = signature.Arguments[i];
-                functionSig.Append(arg.NameNode.Name);
-                functionSig.Append(":");
-
-                if (arg.ArgumentType.UID < 0)
-                {
-                    functionSig.Append("invalid");
-                }
-                else if (arg.ArgumentType.UID == 0 && !String.IsNullOrEmpty(arg.ArgumentType.Name))
-                {
-                    functionSig.Append(arg.ArgumentType.Name);
-                }
-                else
-                {
-                    functionSig.Append(core.TypeSystem.GetType(arg.ArgumentType.UID));
-                }
-
-                if (arg.ArgumentType.rank < 0)
-                {
-                    functionSig.Append("[]..[]");
-                }
-                else
-                {
-                    for (int k = 0; k < arg.ArgumentType.rank; ++k)
-                    {
-                        functionSig.Append("[]");
-                    }
-                }
-
-                if (i < signature.Arguments.Count - 1)
-                {
-                    functionSig.Append(", ");
-                }
-            }
-            functionSig.Append(")\n");
-            return functionSig.ToString();
-        }
-
-        private ProtoCore.Type BuildArgumentTypeFromVarDeclNode(VarDeclNode argNode, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
-        {
-            ProtoCore.Utils.Validity.Assert(argNode != null);
-            if (argNode == null)
-            {
-                return new ProtoCore.Type();
-            }
-
-            int uid = core.TypeSystem.GetType(argNode.ArgumentType.Name);
-            if (uid == (int)PrimitiveType.InvalidType && !core.IsTempVar(argNode.NameNode.Name))
-            {
-                string message = String.Format(ProtoCore.Properties.Resources.kArgumentTypeUndefined, argNode.ArgumentType.Name, argNode.NameNode.Name);
-                buildStatus.LogWarning(WarningID.TypeUndefined, message, null, argNode.line, argNode.col, graphNode);
-            }
-
-            int rank = argNode.ArgumentType.rank;
-            return core.TypeSystem.BuildTypeObject(uid, rank);
-        }
-
         private bool IsParsingGlobal()
         {
             return (!InsideFunction()) && (ProtoCore.CompilerDefinitions.Imperative.CompilePass.GlobalScope == compilePass);
@@ -2883,9 +2549,6 @@ namespace ProtoImperative
                 case AstKind.LanguageBlock:
                     EmitLanguageBlockNode(node, ref inferedType, graphNode);
                     break;
-                case AstKind.FunctionDefinition:
-                    EmitFunctionDefinitionNode(node, ref inferedType);
-                    break;
                 case AstKind.FunctionCall:
                     EmitFunctionCallNode(node, ref inferedType, isBooleanOp, graphNode, parentNode as BinaryExpressionNode);
                     break;
@@ -2894,9 +2557,6 @@ namespace ProtoImperative
                     break;
                 case AstKind.While:
                     EmitWhileStmtNode(node, ref inferedType, isBooleanOp, graphNode);
-                    break;
-                case AstKind.VariableDeclaration:
-                    EmitVarDeclNode(node, ref inferedType, graphNode);
                     break;
                 case AstKind.ExpressionList:
                     EmitExprListNode(node, ref inferedType, null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
@@ -2924,9 +2584,6 @@ namespace ProtoImperative
                     break;
                 case AstKind.Continue:
                     EmitContinueNode(node);
-                    break;
-                case AstKind.DefaultArgument:
-                    EmitDefaultArgNode();
                     break;
                 case AstKind.GroupExpression:
                     EmitGropuExpressionNode(node, ref inferedType);
