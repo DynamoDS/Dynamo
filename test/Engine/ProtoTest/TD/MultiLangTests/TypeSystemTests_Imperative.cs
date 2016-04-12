@@ -154,13 +154,13 @@ a;                    def length : ClassFunctionality (pts : ClassFunctionality[
 import(""FFITarget.dll"");
                         numpts;
                         a;
-                        [Imperative]{
-                        //return type int and return a double
-                       
                         def length : int (pts : ClassFunctionality[])
                         {
                               return = 1;
                         }
+                        [Imperative]{
+                        //return type int and return a double
+                       
                         pt1 = ClassFunctionality.ClassFunctionality( );
                         pt2 = ClassFunctionality.ClassFunctionality( );
                         pts = {pt1, pt2};

@@ -1176,7 +1176,7 @@ c;
 d;
    	def test:int( a:int, b:int )
 	{
-    return = [Imperative]
+    return = [Imperative]{
 		c = 0;
 	    if( !(a == b) ) 
 		{
