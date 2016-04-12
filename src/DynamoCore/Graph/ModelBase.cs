@@ -29,8 +29,8 @@ namespace Dynamo.Graph
         /// allows such values.This value comes directly
         /// from DynamoTextBox after user commits it. Overridden methods then use 
         /// a specific IValueConverter to turn this string into another data type 
-        /// that it expects</param>
-        /// <param name="elementResolver">responsible for resolving class namespaces</param>
+        /// that it expects.</param>
+        /// <param name="elementResolver">Responsible for resolving class namespaces.</param>
         public UpdateValueParams(string propertyName, string propertyValue, ElementResolver elementResolver = null)
         {
             ElementResolver = elementResolver;
@@ -38,8 +38,19 @@ namespace Dynamo.Graph
             PropertyValue = propertyValue;
         }
 
+        /// <summary>
+        /// Name of the property whose value needs to be updated.
+        /// </summary>
         public string PropertyName { get; private set; }
+
+        /// <summary>
+        /// String representation of value to update specified node property
+        /// </summary>
         public string PropertyValue { get; private set; }
+
+        /// <summary>
+        /// ElementResolver object responsible for resolving class namespaces
+        /// </summary>
         public ElementResolver ElementResolver { get; private set; }
     }
 

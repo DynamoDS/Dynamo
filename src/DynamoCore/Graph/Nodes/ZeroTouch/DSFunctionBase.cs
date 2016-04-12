@@ -84,6 +84,12 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     /// </summary>
     public class ZeroTouchNodeController<T> : FunctionCallNodeController<T> where T : FunctionDescriptor
     {
+        /// <summary>
+        ///     Initializes a new instance of 
+        /// the <see cref="ZeroTouchNodeController"/> class with FunctionDescriptor.
+        /// </summary>
+        /// <param name="zeroTouchDef">FunctionDescriptor describing the function 
+        /// that this controller will call.</param>
         public ZeroTouchNodeController(T zeroTouchDef) : base(zeroTouchDef) { }
 
         /// <summary>
@@ -195,6 +201,11 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             }
         }
         
+        /// <summary>
+        /// Serializes data into given <see cref="XmlElement"/> object.
+        /// </summary>
+        /// <param name="element"><see cref="XmlElement"/> object to store data.</param>
+        /// <param name="context">Saving context.</param>
         public override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context);
@@ -211,6 +222,10 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             element.SetAttribute("function", Definition.MangledName ?? "");
         }
 
+        /// <summary>
+        /// Syncronizes custom node instance with its definition
+        /// </summary>
+        /// <param name="model">The custom node instance</param>
         public override void SyncNodeWithDefinition(NodeModel model)
         {
             base.SyncNodeWithDefinition(model);
