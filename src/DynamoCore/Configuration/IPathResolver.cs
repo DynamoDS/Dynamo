@@ -3,7 +3,7 @@
 namespace Dynamo.Interfaces
 {
     /// <summary>
-    /// Interface provides paths to additional assemblies and node directories.
+    /// This interface provides paths to external assemblies and node directories.
     /// </summary>
     public interface IPathResolver
     {
@@ -61,7 +61,7 @@ namespace Dynamo.Interfaces
     }
 
     /// <summary>
-    /// Interface provides the most common paths.
+    /// This interface provides the most common paths.
     /// E.g. core directory, package directory etc.
     /// </summary>
     public interface IPathManager

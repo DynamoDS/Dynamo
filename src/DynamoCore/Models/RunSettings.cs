@@ -23,7 +23,7 @@ namespace Dynamo.Models
         private bool runEnabled;
 
         /// <summary>
-        /// This defalut milliseconds number for the period in periodic run.
+        /// Defalut milliseconds number for the period in periodic run.
         /// </summary>
         public const int DefaultRunPeriod = 1000;
 
@@ -80,7 +80,7 @@ namespace Dynamo.Models
         #region Constructors
 
         /// <summary>
-        /// Creates RunSettings.
+        /// This method creates default RunSettings with DefaultRunPeriod, Manual run type and run is anabled.
         /// </summary>
         public RunSettings()
         {
@@ -90,7 +90,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Creates RunSettings.
+        /// This function creates RunSettings with specified run type and run period.
         /// </summary>
         /// <param name="runType">RunType</param>
         /// <param name="period">milliseconds</param>

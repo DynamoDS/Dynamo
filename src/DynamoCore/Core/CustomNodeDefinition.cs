@@ -19,7 +19,7 @@ namespace Dynamo
     public class CustomNodeDefinition : IFunctionDescriptor
     {
         /// <summary>
-        /// Creates CustomNodeDefinition
+        /// This function creates CustomNodeDefinition.
         /// </summary>
         /// <param name="functionId">Custom node unique ID</param>
         /// <param name="displayName">Custom node name</param>
@@ -225,7 +225,7 @@ namespace Dynamo
         #region Dependencies
 
         /// <summary>
-        /// Returns all other custom node definitions used in DirectDependencies.
+        /// Returns all custom node definitions.
         /// </summary>
         public IEnumerable<CustomNodeDefinition> Dependencies
         {
@@ -233,7 +233,7 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Returns all other custom node definitions used in this custom node.
+        /// Returns custom node definitions for direct dependencies.
         /// </summary>
         public IEnumerable<CustomNodeDefinition> DirectDependencies { get; private set; }
         
@@ -271,14 +271,14 @@ namespace Dynamo
     public class CustomNodeInfo
     {
         /// <summary>
-        /// Creates CustomNodeInfo
+        /// This function creates CustomNodeInfo.
         /// </summary>
         /// <param name="functionId">Custom node unique ID</param>
         /// <param name="name">Custom node name</param>
         /// <param name="category">Custom node category</param>
         /// <param name="description">Custom node description</param>
         /// <param name="path">Path to custom node</param>
-        /// <param name="isVisibleInDynamoLibrary">Bool value, that sets visibility in library search</param>
+        /// <param name="isVisibleInDynamoLibrary">Bool value controls the visibility in library search</param>
         public CustomNodeInfo(Guid functionId, string name, string category, string description, string path, bool isVisibleInDynamoLibrary = true)
         {
             if (functionId == Guid.Empty)
@@ -321,12 +321,14 @@ namespace Dynamo
         public string Path { get; set; }
 
         /// <summary>
-        /// Bool value, that indicates if custom node is part of the package or not.
+        /// Indicates if custom node is part of the package.
+        /// If true, then custom node is part of package manager.
         /// </summary>
         public bool IsPackageMember { get; set; }
 
         /// <summary>
-        /// Bool value, that sets visibility in library search
+        /// Indicates if custom node is part of the library search.
+        /// If true, then custom node is part of library search.
         /// </summary>
         public bool IsVisibleInDynamoLibrary { get; private set; }
     }

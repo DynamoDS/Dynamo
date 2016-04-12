@@ -39,27 +39,27 @@ namespace Dynamo.Library
         }
 
         /// <summary>
-        /// DesignScript function
+        /// Returns DesignScript function.
         /// </summary>
         public FunctionDescriptor Function { get; private set; }
 
         /// <summary>
-        /// Name of the parameter.
+        /// Returns the name of the parameter.
         /// </summary>
         public string Name { get; private set; }
 
         /// <summary>
-        /// Type of the parameter.
+        /// Returns type of the parameter.
         /// </summary>
         public ProtoCore.Type Type { get; private set; }
 
         /// <summary>
-        /// Default value of the parameter.
+        /// Returns default value of the parameter.
         /// </summary>
         public AssociativeNode DefaultValue { get; private set; }
 
         /// <summary>
-        /// Summary of the parameter.
+        /// Returns summary of the parameter.
         /// </summary>
         public string Summary
         {
@@ -75,7 +75,7 @@ namespace Dynamo.Library
         }
 
         /// <summary>
-        /// Description of the parameter.
+        /// Returns description of the parameter.
         /// </summary>
         public string Description
         {
@@ -100,7 +100,7 @@ namespace Dynamo.Library
         }
 
         /// <summary>
-        /// Short type name of the parameter.
+        /// Returns short type name of the parameter.
         /// </summary>
         public string DisplayTypeName
         {

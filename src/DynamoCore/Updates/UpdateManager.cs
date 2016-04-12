@@ -38,17 +38,17 @@ namespace Dynamo.Updates
     public interface IUpdateManager
     {
         /// <summary>
-        /// Current product version.
+        /// Returns current product version.
         /// </summary>
         BinaryVersion ProductVersion { get; }
 
         /// <summary>
-        /// Available product version.
+        /// Returns available product version.
         /// </summary>
         BinaryVersion AvailableVersion { get; }
 
         /// <summary>
-        /// Information, where version can be updated.
+        /// Returns information, where version can be updated.
         /// </summary>
         IAppVersionInfo UpdateInfo { get; set; }
 
@@ -58,12 +58,12 @@ namespace Dynamo.Updates
         bool IsUpdateAvailable { get; }
 
         /// <summary>
-        /// Event fired, when update is downloaded.
+        /// Event is fired when an update is downloaded.
         /// </summary>
         event UpdateDownloadedEventHandler UpdateDownloaded;
 
         /// <summary>
-        /// Event fired, when Dynamo needs to be restarted.
+        /// Event is fired when Dynamo needs to be restarted.
         /// </summary>
         event ShutdownRequestedEventHandler ShutdownRequested;
 
@@ -79,7 +79,7 @@ namespace Dynamo.Updates
         void QuitAndInstallUpdate();
 
         /// <summary>
-        /// Called, when Dynamo Model is shuting down.
+        /// This function is called when a Dynamo Model is shutting down.
         /// </summary>
         void HostApplicationBeginQuit();
 
@@ -93,18 +93,17 @@ namespace Dynamo.Updates
 
         /// <summary>
         /// This flag is available via the debug menu to
-        /// allow the update manager to check for newer daily 
-        /// builds as well.
+        /// allow the update manager to check for newer daily builds.
         /// </summary>
         bool CheckNewerDailyBuilds { get; set; }
 
         /// <summary>
-        /// Defines whether to force update, default value is false.
+        /// Defines whether to force update.
         /// </summary>
         bool ForceUpdate { get; set; }
 
         /// <summary>
-        /// Configurations.
+        /// Returns a reference to Update Manager Configuration settings.
         /// </summary>
         IUpdateManagerConfiguration Configuration { get; }
 
@@ -114,7 +113,7 @@ namespace Dynamo.Updates
         event LogEventHandler Log;
 
         /// <summary>
-        /// Logs some message.
+        /// This function logs a message.
         /// </summary>
         /// <param name="args">LogEventArgs</param>
         void OnLog(LogEventArgs args);
@@ -154,7 +153,7 @@ namespace Dynamo.Updates
     }
 
     /// <summary>
-    /// Interface provides configuration properties for UpdateManager.
+    /// This interface represents configuration properties for Update manager.
     /// </summary>
     public interface IUpdateManagerConfiguration
     {
@@ -218,7 +217,7 @@ namespace Dynamo.Updates
         string Error { get; set; }
 
         /// <summary>
-        /// Link, where send request.
+        /// Represents the send request link.
         /// </summary>
         Uri Path { get; set; }
 
@@ -601,7 +600,7 @@ namespace Dynamo.Updates
         }
 
         /// <summary>
-        /// Bool value indicates if new version is available.
+        /// Returns true if a new version is available.
         /// </summary>
         public bool IsUpdateAvailable
         {

@@ -8,7 +8,7 @@ using Dynamo.Graph.Workspaces;
 namespace Dynamo.Graph.Nodes
 {
     /// <summary>
-    /// Base class for nodes, that have dinamic incoming ports.
+    /// Base class for nodes that have dynamic incoming ports.
     /// E.g. list.create. 
     /// </summary>
     public abstract class VariableInputNode : NodeModel
@@ -113,7 +113,7 @@ namespace Dynamo.Graph.Nodes
     }
 
     /// <summary>
-    /// Helper class, that processes inputs of VariableInputNode.
+    /// This is a helper class that processess inputs of VariableInputNode.
     /// </summary>
     public abstract class VariableInputNodeController
     {
@@ -186,7 +186,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Called, when node is built.
+        /// This is called when a node is built.
         /// </summary>
         public void OnBuilt()
         {

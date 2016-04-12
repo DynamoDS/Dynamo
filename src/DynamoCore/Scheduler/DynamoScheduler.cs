@@ -84,7 +84,7 @@ namespace Dynamo.Scheduler
     }
 
     /// <summary>
-    /// DynamoScheduler is run in the second thread, with Scheduler Dynamo runs tasks asynchronously.
+    /// This class represents Dynamo scheduler. All the tasks are scheduled on the scheduler. Also, these tasks runs async.
     /// </summary>
     public partial class DynamoScheduler : IScheduler
     {

@@ -3,7 +3,8 @@
 namespace Dynamo.Configuration
 {
     /// <summary>
-    /// DebugSettings is used in Dynamo Logger and UI.
+    /// This class is used for setting debug settings through Dynamo UI.
+    /// E.g. turn on/off logging; show/hide compiled node values.
     /// </summary>
     public class DebugSettings : NotificationObject
     {

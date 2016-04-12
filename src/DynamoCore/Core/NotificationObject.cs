@@ -4,8 +4,7 @@ using System.ComponentModel;
 namespace Dynamo.Core
 {
     /// <summary>
-    /// This is base class for all classes, that can notify View about some changes.
-    /// It should be used as base class for view model.
+    /// This class notifies the View when there is a change.    
     /// </summary>
     [Serializable]
     public abstract class NotificationObject : INotifyPropertyChanged

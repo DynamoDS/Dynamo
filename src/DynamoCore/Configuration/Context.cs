@@ -3,8 +3,7 @@
 namespace Dynamo.Configuration
 {
     /// <summary>
-    /// Context in which Dynamo can be run.
-    /// E.g. Revit 2014 or Revit 2015.
+    /// This specifies the Dynamo Context (RunTime). ex : Revit 2014, Revit 2015 etc.
     /// </summary>
     public static class Context
     {

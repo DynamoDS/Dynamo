@@ -32,7 +32,7 @@ namespace Dynamo.Scheduler
         #region Private Class Data Members
 
         /// <summary>
-        /// Priority of the AsyncTask.
+        /// Returns priority of the AsyncTask.
         /// </summary>
         public enum TaskPriority
         {

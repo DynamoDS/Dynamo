@@ -25,7 +25,7 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// Adds an extension to the current application session.
+        /// Adds an extension to the current session.
         /// </summary>
         /// <param name="extension">Extension</param>
         public void Add(IExtension extension)
@@ -48,7 +48,7 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// Removes an extension from the current application session.
+        /// Removes an extension from the current session.
         /// </summary>
         /// <param name="extension">Extension</param>
         public void Remove(IExtension extension)
@@ -78,7 +78,7 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// Returns the collection of currently registered extensions
+        /// Returns the collection of registered extensions
         /// </summary>
         public IEnumerable<IExtension> Extensions
         {
@@ -86,12 +86,12 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// Event is fired when new extension is added.
+        /// This event is fired when a new extension is added.
         /// </summary>
         public event Action<IExtension> ExtensionAdded;
 
         /// <summary>
-        /// Event is fired when new extension is removed.
+        /// This event is fired when a new extension is removed,
         /// </summary>
         public event Action<IExtension> ExtensionRemoved;
 
@@ -104,7 +104,7 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// Disposes loaded extensions.
+        /// Disposes all the loaded extensions.
         /// </summary>
         public void Dispose()
         {
@@ -117,7 +117,7 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// Event is fired in order to log message.
+        /// This event is fired when a message is logged.
         /// </summary>
         public event Action<ILogMessage> MessageLogged;
 

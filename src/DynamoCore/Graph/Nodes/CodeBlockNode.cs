@@ -992,7 +992,7 @@ namespace Dynamo.Graph.Nodes
         #region State enum
 
         /// <summary>
-        /// Enum describes statement state.
+        /// Describes statement state.
         /// E.g. normal, warning or error.
         /// </summary>
         public enum State
@@ -1007,7 +1007,7 @@ namespace Dynamo.Graph.Nodes
         #region StatementType enum
 
         /// <summary>
-        /// Enum describes statement type.
+        /// Describes statement type.
         /// Used in order to set correct column to variable.
         /// </summary>
         public enum StatementType
@@ -1189,13 +1189,13 @@ namespace Dynamo.Graph.Nodes
         #region Properties
 
         /// <summary>
-        /// Int value indicates where statement started.
+        /// Returns the index of the Startline.
         /// E.g. a+5 StartLine will be 1.
         /// </summary>
         public int StartLine { get; private set; }
 
         /// <summary>
-        /// Int value indicates where statement ended.
+        /// Returns the index of the EndLine.
         /// E.g.
         /// a+5
         /// +6+3;
@@ -1209,12 +1209,14 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// State of the statement.
+        /// Returns the State of the Statement.
+        /// E.g. normal, warning or error.
         /// </summary>
         public State CurrentState { get; private set; }
 
         /// <summary>
-        /// Type of the statement.
+        /// Returns the type of the statement.
+        /// E.g. expression, literal etc.
         /// </summary>
         public StatementType CurrentType { get; private set; }
 
@@ -1269,17 +1271,17 @@ namespace Dynamo.Graph.Nodes
     public class Variable
     {
         /// <summary>
-        /// 
+        /// Returns the index of row.
         /// </summary>
         public int Row { get; private set; }
 
         /// <summary>
-        /// 
+        /// Returns the index of start column.
         /// </summary>
         public int StartColumn { get; private set; }
 
         /// <summary>
-        /// 
+        /// Returns the index of end column.
         /// </summary>
         public int EndColumn
         {
@@ -1287,7 +1289,10 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Name of the variable.
+        /// This returns the name of the variable.
+        /// E.g. 
+        /// a = 5;
+        /// Name will be "a".
         /// </summary>
         public string Name { get; private set; }
 
@@ -1331,11 +1336,11 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// 
+        /// Moves column index back only if variable is not an expression.
         /// </summary>
-        /// <param name="refVar"></param>
-        /// <param name="type"></param>
-        /// <param name="line"></param>
+        /// <param name="refVar">list of variables</param>
+        /// <param name="type">statement type</param>
+        /// <param name="line">line index</param>
         public static void SetCorrectColumn(List<Variable> refVar, Statement.StatementType type, int line)
         {
             if (refVar == null)
