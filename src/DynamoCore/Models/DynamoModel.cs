@@ -507,7 +507,10 @@ namespace Dynamo.Models
 
                 try
                 {
-                    migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
+                    var dynamoLookup = config.UpdateManager != null && config.UpdateManager.Configuration != null 
+                        ? config.UpdateManager.Configuration.DynamoLookUp : null;
+
+                    migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, dynamoLookup);
                 }
                 catch (Exception e)
                 {

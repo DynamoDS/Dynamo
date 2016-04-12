@@ -64,6 +64,16 @@ namespace Dynamo.Updates
         IEnumerable<string> GetDynamoInstallLocations();
 
         /// <summary>
+        /// Get a list of user data folders on this system.
+        /// </summary>
+        /// <returns>
+        /// The implementation of this interface method should return a list of user 
+        /// data folders, one for each of Dynamo product installed on the system. When 
+        /// there is no Dynamo product installed, this method returns an empty list.
+        /// </returns>
+        IEnumerable<string> GetDynamoUserDataLocations();
+
+        /// <summary>
         /// Gets the version of latest installed product
         /// </summary>
         BinaryVersion LatestProduct { get; }
@@ -1131,6 +1141,32 @@ namespace Dynamo.Updates
         /// </summary>
         /// <returns>List of Dynamo install path</returns>
         public abstract IEnumerable<string> GetDynamoInstallLocations();
+
+        /// <summary>
+        /// Gets the full path of user data location of all version of this
+        /// Dynamo product installed on this system. The default implementation
+        /// returns list of all subfolders in %appdata%\Dynamo as well as 
+        /// %appdata%\Dynamo\Dynamo Core\ folders.
+        /// </summary>
+        /// <returns></returns>
+        public virtual IEnumerable<string> GetDynamoUserDataLocations()
+        {
+            var appDatafolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var dynamoFolder = Path.Combine(appDatafolder, "Dynamo");
+            if (!Directory.Exists(dynamoFolder)) return Enumerable.Empty<string>();
+
+            var paths = new List<string>();
+            var coreFolder = Path.Combine(dynamoFolder, "Dynamo Core");
+            //Dynamo Core folder has to be enumerated first to cater migration from
+            //Dynamo 1.0 to Dynamo Core 1.0
+            if (Directory.Exists(coreFolder))
+            {
+                paths.AddRange(Directory.EnumerateDirectories(coreFolder));
+            }
+
+            paths.AddRange(Directory.EnumerateDirectories(dynamoFolder));
+            return paths;
+        }
         
         private BinaryVersion GetLatestInstallVersion()
         {
