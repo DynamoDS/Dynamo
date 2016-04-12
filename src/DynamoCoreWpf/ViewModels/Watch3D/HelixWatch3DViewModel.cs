@@ -1294,12 +1294,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     foreach (var id_position in requestedLabelPlaces)
                     {
                         var text = HelixRenderPackage.CleanTag(id_position.Item1);
-                        var geom = (GeometryModel3D)Model3DDictionary[key];
-                        
-                        //use the transform of the geometry to transform the text position
-                        var textPosition = geom.Transform.Transform(
-                            id_position.Item2.ToPoint3D()).ToVector3()
-                            + defaultLabelOffset;
+                        var textPosition = id_position.Item2 + defaultLabelOffset;
+
                         var textInfo = new TextInfo(text, textPosition);
                         textGeometry.TextInfo.Add(textInfo);
                     }
@@ -1505,10 +1501,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 labelPlaces[nodeId] = new List<Tuple<string, Vector3>>();
             }
 
-            labelPlaces[nodeId].Add(new Tuple<string, Vector3>(rp.Description, pos));
+            //if the renderPackage as a transform use it to transform the text
+            //labels
+            var transformedPos = rp.Transform.ToMatrix3D().Transform(
+                         (pos).ToPoint3D()).ToVector3();
+
+            labelPlaces[nodeId].Add(new Tuple<string, Vector3>(rp.Description, transformedPos));
             if (rp.DisplayLabels)
             {
-                CreateOrUpdateText(nodeId, pos, rp);
+                CreateOrUpdateText(nodeId, transformedPos, rp);
             }
         }
 
@@ -1671,13 +1672,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Model3DDictionary.Add(textId, bbText);
             }
             var geom = bbText.Geometry as BillboardText3D;
-            //use the transform of the render package to transform the text position
-            var textPosition = (rp as HelixRenderPackage).Transform.Transform(
-                           (pt).ToPoint3D()).ToVector3()
-                           + defaultLabelOffset;
-
+           
             geom.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description),
-               textPosition));
+               pt + defaultLabelOffset));
         }
 
         private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp)
@@ -1685,7 +1682,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
           
                 var meshGeometry3D = new DynamoGeometryModel3D(renderTechnique)
                 {
-                    Transform = new MatrixTransform3D(rp.Transform),
+                    Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
                     Material = WhiteMaterial,
                     IsHitTestVisible = false,
                     RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
@@ -1727,7 +1724,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var lineGeometry3D = new DynamoLineGeometryModel3D()
             {
                 Geometry = HelixRenderPackage.InitLineGeometry(),
-                Transform = new MatrixTransform3D(rp.Transform),
+                Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
                 Color = Color.White,
                 Thickness = thickness,
                 IsHitTestVisible = false,
@@ -1741,7 +1738,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var pointGeometry3D = new DynamoPointGeometryModel3D
             {
                 Geometry = HelixRenderPackage.InitPointGeometry(),
-                Transform = new MatrixTransform3D(rp.Transform),
+                Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
                 Color = Color.White,
                 Figure = PointGeometryModel3D.PointFigure.Ellipse,
                 Size = defaultPointSize,
