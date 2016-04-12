@@ -22,7 +22,8 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Creates DummyNode
+        /// This function creates DummyNode.
+        /// DummyNode is used for tests or in case if node couldn't be loaded.
         /// </summary>
         public DummyNode()
         {
@@ -246,22 +247,22 @@ namespace Dynamo.Graph.Nodes
         }
         
         /// <summary>
-        /// Number of input ports
+        /// Returns the number of input ports
         /// </summary>
         public int InputCount { get; private set; }
 
         /// <summary>
-        /// Number of output ports
+        /// Returns the number of output ports
         /// </summary>
         public int OutputCount { get; private set; }
 
         /// <summary>
-        /// Node name
+        /// Returns the node name
         /// </summary>
         public string LegacyNodeName { get; private set; }
 
         /// <summary>
-        /// Node assembly
+        /// Returns the node assembly
         /// </summary>
         public string LegacyAssembly { get; private set; }
 

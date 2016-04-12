@@ -35,7 +35,7 @@ namespace Dynamo.Core
     public class CustomNodeManager : LogSourceBase, ICustomNodeSource, ICustomNodeManager
     {
         /// <summary>
-        /// Creates CustomNodeManager
+        /// This function creates CustomNodeManager
         /// </summary>
         /// <param name="nodeFactory">NodeFactory</param>
         /// <param name="migrationManager">MigrationManager</param>

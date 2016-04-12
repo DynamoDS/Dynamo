@@ -36,12 +36,12 @@ namespace Dynamo.Engine
     public class EngineController : LogSourceBase, IAstNodeContainer, IDisposable
     {
         /// <summary>
-        /// Event is fired, when node has been compiled.
+        /// This event is fired when a node has been compiled.
         /// </summary>
         public event AstBuiltEventHandler AstBuilt;
 
         /// <summary>
-        /// Event is fired, when UpdateGraphTask is completed.
+        /// This event is fired when updategraphtask is completed.
         /// </summary>
         internal event Action<TraceReconciliationEventArgs> TraceReconcliationComplete;
         private void OnTraceReconciliationComplete(TraceReconciliationEventArgs e)
@@ -61,15 +61,14 @@ namespace Dynamo.Engine
         private readonly Queue<List<Guid>> previewGraphQueue = new Queue<List<Guid>>();
 
         /// <summary>
-        /// Bool value indicates if every action should be logged. Useful for debugging.
+        /// Bool value indicates if every action should be logged. Used in debug mode.
         /// </summary>
         public bool VerboseLogging;
 
         private readonly Object macroMutex = new Object();
 
         /// <summary>
-        /// Static member, that is used in Input/Output nodes of the custom node.
-        /// Compiles Input/Output node.
+        /// Reference to Compilation service. This compiles Input / Output node.
         /// </summary>
         public static CompilationServices CompilationServices;
 
@@ -117,11 +116,11 @@ namespace Dynamo.Engine
         public bool IsDisposed { get; private set; }
 
         /// <summary>
-        /// Creates EngineController
+        /// This function creates EngineController
         /// </summary>
         /// <param name="libraryServices"> LibraryServices manages builtin libraries and imported libraries.</param>
         /// <param name="geometryFactoryFileName">Path to LibG</param>
-        /// <param name="verboseLogging">Bool value indicates if every action should be logged</param>
+        /// <param name="verboseLogging">Bool value, if set to true, enables verbose logging</param>
         public EngineController(LibraryServices libraryServices, string geometryFactoryFileName, bool verboseLogging)
         {
             this.libraryServices = libraryServices;
@@ -182,7 +181,7 @@ namespace Dynamo.Engine
         /// Get runtime mirror for variable.
         /// </summary>
         /// <param name="variableName">Unique ID of AST node</param>
-        /// <returns>RuntimeMirror object reflects status of a single designsript variable</returns>
+        /// <returns>RuntimeMirror object that reflects status of a single designsript variable</returns>
         public RuntimeMirror GetMirror(string variableName)
         {
             lock (macroMutex)
@@ -614,7 +613,7 @@ namespace Dynamo.Engine
         #region Implement IAstNodeContainer interface
 
         /// <summary>
-        /// Indicates to start compiling a NodeModel to AST nodes.
+        /// This class represents the intermediate state (Compiling state), when a nodemodel is compiled to AST nodes.
         /// </summary>
         /// <param name="nodeGuid">Node unique ID</param>
         public void OnCompiling(Guid nodeGuid)
@@ -623,7 +622,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Indicates if NodeModel has been compiled to AST nodes. 
+        /// This class represents a state after a nodemodel is compiled to AST nodes.
         /// </summary>
         /// <param name="nodeGuid">Node unique ID</param>
         /// <param name="astNodes">Resulting AST nodes</param>
@@ -690,7 +689,7 @@ namespace Dynamo.Engine
     }
 
     /// <summary>
-    /// This class used to precompile code block node.
+    /// This class is used to precompile code block node.
     /// Also it's used as helper for resolving code in Input and Output nodes.
     /// </summary>
     public class CompilationServices
@@ -707,7 +706,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Pre-compiles DS code in code block node.
+        /// Pre-compiles Design script code in code block node.
         /// </summary>
         /// <param name="parseParams">Container for compilation related parameters</param>
         /// <returns>true if code compilation succeeds, false otherwise</returns>

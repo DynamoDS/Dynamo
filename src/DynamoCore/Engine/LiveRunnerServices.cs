@@ -18,7 +18,7 @@ namespace Dynamo.Engine
     }
 
     /// <summary>
-    /// LiveRunnerServices is helper class, that can get mirror data from live runner, update graph etc.
+    /// This is a helper class that can get mirror data from live runner, update graph etc.
     /// </summary>
     public class LiveRunnerServices : LogSourceBase, IDisposable
     {
@@ -35,7 +35,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Disposes liveRunner.
+        /// Dispose LiveRunner object.
         /// </summary>
         public void Dispose()
         {
@@ -69,7 +69,7 @@ namespace Dynamo.Engine
         /// TPDP
         /// </summary>
         /// <param name="var">AST node id</param>
-        /// <param name="verboseLogging">True, if command should be logged</param>
+        /// <param name="verboseLogging">if set to true this enables verbose logging</param>
         /// <returns>RuntimeMirror</returns>
         internal RuntimeMirror GetMirror(string var, bool verboseLogging)
         {

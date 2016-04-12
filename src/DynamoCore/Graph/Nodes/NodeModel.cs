@@ -2123,7 +2123,7 @@ namespace Dynamo.Graph.Nodes
     };
 
     /// <summary>
-    /// Defines Enum lacing for node.
+    /// Defines Lacing strategy for nodes.
     /// Learn more about lacing here: http://dynamoprimer.com/06_Designing-with-Lists/6-1_whats-a-list.html
     /// </summary>
     public enum LacingStrategy
@@ -2147,7 +2147,7 @@ namespace Dynamo.Graph.Nodes
     };
 
     /// <summary>
-    /// Enum describes places, where ports can be snapped.
+    /// Returns one of the possible values(none, top, bottom) where a port can be snapped.
     /// </summary>
     [Flags]
     public enum SnapExtensionEdges
@@ -2160,7 +2160,7 @@ namespace Dynamo.Graph.Nodes
     internal delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
 
     /// <summary>
-    /// Args, that are sent, when something needs to be dispatched on UI thread.
+    /// This class represents the UIDIspatcher thread event arguments.
     /// </summary>
     public class UIDispatcherEventArgs : EventArgs
     {

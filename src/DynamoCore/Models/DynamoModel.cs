@@ -49,7 +49,7 @@ using Dynamo.Events;
 namespace Dynamo.Models
 {
     /// <summary>
-    /// Interface provides Engine Controller.
+    /// This class creates an interface for Engine controller. 
     /// </summary>
     public interface IEngineControllerManager
     {
