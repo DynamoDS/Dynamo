@@ -40,4 +40,36 @@
     <oldName>Autodesk.DesignScript.Geometry.Curve.PointAtDistance</oldName>
     <newName>Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength</newName>
   </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Curve.DistanceAtParameter</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Curve.SegmentLengthAtParameter</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtDistance</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Curve.LengthBetweenParameters</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Curve.SegmentLengthBetweenParameters</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Curve.ParameterTrimStart</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Curve.TrimByStartParameter</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Curve.ParameterTrimEnd</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Curve.TrimByEndParameter</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Curve.ParameterTrim</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Curve.TrimByParameter</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Curve.ParameterTrimInterior</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Curve.TrimInteriorByParameter</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Curve.ParameterTrimSegments</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter</newName>
+  </priorNameHint>
 </migrations>
