@@ -8,7 +8,9 @@
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>DynamoServices library for Dynamo.</description>
+    <description>DynamoServices library for Dynamo.It contains the following files: 
+		1)DynamoServices.dll
+	</description>
     <summary>This package contains DynamoServices assembly that defines interfaces and attribute for Dynamo Zero Touch libraries.</summary>
     <copyright>Copyright Autodesk 2016</copyright>
     <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
