@@ -39,9 +39,13 @@
     <xsl:key name="RevitAddinUtility-search" match="wix:Component[contains(wix:File/@Source, 'RevitAddinUtility.dll')]" use="@Id"/>
     <xsl:template match="wix:Component[key('RevitAddinUtility-search', @Id)]" />
 	
-    <!--Exclude DynamoAddinGenerator.exe-->
-    <xsl:key name="DynamoAddinGenerator-search" match="wix:Component[contains(wix:File/@Source, 'DynamoAddinGenerator.exe')]" use="@Id"/>
-    <xsl:template match="wix:Component[key('DynamoAddinGenerator-search', @Id)]" />
+    <!--Exclude DynamoAddInGenerator.exe-->
+    <xsl:key name="DynamoAddInGenerator-search" match="wix:Component[contains(wix:File/@Source, 'DynamoAddInGenerator.exe')]" use="@Id"/>
+    <xsl:template match="wix:Component[key('DynamoAddInGenerator-search', @Id)]" />
+    
+    <!--Exclude DynamoInstallDetective.dll-->
+    <xsl:key name="DynamoInstallDetective-search" match="wix:Component[contains(wix:File/@Source, 'DynamoInstallDetective.dll')]" use="@Id"/>
+    <xsl:template match="wix:Component[key('DynamoInstallDetective-search', @Id)]" />
 
     <!--Exclude DynamoSandbox-->
     <xsl:key name="DynamoSandbox-search" match="wix:Component[contains(wix:File/@Source, 'DynamoSandbox')]" use="@Id"/>
