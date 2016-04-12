@@ -15,5 +15,6 @@ mkdir .\%zt%\tools
 
 copy %base%\ProtoGeometry.dll .\%zt%\lib\%framework%\ProtoGeometry.dll
 copy %base%\ProtoGeometry.xml .\%zt%\build\%framework%\ProtoGeometry.xml
+copy %base%\DynamoUnits.dll .\%zt%\lib\%framework%\DynamoUnits.dll
 
 nuget pack .\%zt%\ZeroTouchLibrary.nuspec
