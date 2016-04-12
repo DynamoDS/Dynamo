@@ -42,10 +42,6 @@
     <!--Exclude DynamoAddInGenerator.exe-->
     <xsl:key name="DynamoAddInGenerator-search" match="wix:Component[contains(wix:File/@Source, 'DynamoAddInGenerator.exe')]" use="@Id"/>
     <xsl:template match="wix:Component[key('DynamoAddInGenerator-search', @Id)]" />
-    
-    <!--Exclude DynamoInstallDetective.dll-->
-    <xsl:key name="DynamoInstallDetective-search" match="wix:Component[contains(wix:File/@Source, 'DynamoInstallDetective.dll')]" use="@Id"/>
-    <xsl:template match="wix:Component[key('DynamoInstallDetective-search', @Id)]" />
 
     <!--Exclude DynamoSandbox-->
     <xsl:key name="DynamoSandbox-search" match="wix:Component[contains(wix:File/@Source, 'DynamoSandbox')]" use="@Id"/>
