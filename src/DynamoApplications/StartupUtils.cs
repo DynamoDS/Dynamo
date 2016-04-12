@@ -144,6 +144,9 @@ namespace Dynamo.Applications
 
         public static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
         {
+            var exePath = Assembly.GetExecutingAssembly().Location;
+            var rootFolder = Path.GetDirectoryName(exePath);
+
             var versions = new[]
             {
                 LibraryVersion.Version220,
@@ -151,7 +154,7 @@ namespace Dynamo.Applications
                 LibraryVersion.Version222, 
             };
 
-            var preloader = new Preloader(DynamoCorePath, versions);
+            var preloader = new Preloader(String.IsNullOrEmpty(DynamoCorePath) ? rootFolder : DynamoCorePath, versions);
             preloader.Preload();
             geometryFactoryPath = preloader.GeometryFactoryPath;
             preloaderLocation = preloader.PreloaderLocation;
@@ -207,15 +210,12 @@ namespace Dynamo.Applications
 
         public static DynamoModel MakeModel(bool CLImode)
         {
-
             var geometryFactoryPath = string.Empty;
             var preloaderLocation = string.Empty;
             PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
 
             var config = new DynamoModel.DefaultStartConfiguration()
             {
-                DynamoCorePath = DynamoCorePath,
-                DynamoHostPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                 GeometryFactoryPath = geometryFactoryPath,
                 ProcessMode = TaskProcessMode.Asynchronous
             };
