@@ -35,11 +35,11 @@
     <xsl:key name="binariestosign-search" match="wix:Component[contains(wix:File/@Source, 'binariestosign.txt')]" use="@Id"/>
     <xsl:template match="wix:Component[key('binariestosign-search', @Id)]" />
 	
-	<!--Exclude RevitAddinUtility.dll-->
+    <!--Exclude RevitAddinUtility.dll-->
     <xsl:key name="RevitAddinUtility-search" match="wix:Component[contains(wix:File/@Source, 'RevitAddinUtility.dll')]" use="@Id"/>
     <xsl:template match="wix:Component[key('RevitAddinUtility-search', @Id)]" />
 	
-	<!--Exclude DynamoAddinGenerator.exe-->
+    <!--Exclude DynamoAddinGenerator.exe-->
     <xsl:key name="DynamoAddinGenerator-search" match="wix:Component[contains(wix:File/@Source, 'DynamoAddinGenerator.exe')]" use="@Id"/>
     <xsl:template match="wix:Component[key('DynamoAddinGenerator-search', @Id)]" />
 
@@ -55,7 +55,7 @@
     <xsl:key name="nunit-search" match="wix:Component[contains(wix:File/@Source, 'nunit')]" use="@Id"/>
     <xsl:template match="wix:Component[key('nunit-search', @Id)]" />
 	
-	<!--Exclude OpenSans* fonts-->
+    <!--Exclude OpenSans* fonts-->
     <xsl:key name="OpenSans-search" match="wix:Component[contains(wix:File/@Source, 'OpenSans')]" use="@Id"/>
     <xsl:template match="wix:Component[key('OpenSans-search', @Id)]" />
   
