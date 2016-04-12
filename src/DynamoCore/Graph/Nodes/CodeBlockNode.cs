@@ -1033,7 +1033,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Creates Statement from node
         /// </summary>
-        /// <param name="parsedNode">AST node</param>
+        /// <param name="parsedNode"><see cref="Node"/></param>
         /// <returns>Statement</returns>
         public static Statement CreateInstance(Node parsedNode)
         {
@@ -1047,7 +1047,7 @@ namespace Dynamo.Graph.Nodes
         /// Gets valiables from AST nodes.
         /// E.g. a+5. Here "a" is variable.
         /// </summary>
-        /// <param name="astNode">Ast node</param>
+        /// <param name="astNode"><see cref="Node"/></param>
         /// <param name="refVariableList">list of variables</param>
         public static void GetReferencedVariables(Node astNode, List<Variable> refVariableList)
         {
@@ -1146,7 +1146,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Gets statement type.
         /// </summary>
-        /// <param name="astNode">AST node</param>
+        /// <param name="astNode"><see cref="Node"/></param>
         /// <returns>StatementType</returns>
         private static StatementType GetStatementType(Node astNode)
         {
@@ -1313,7 +1313,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Creates Variable
         /// </summary>
-        /// <param name="identNode">AST node</param>
+        /// <param name="identNode"><see cref="IdentifierNode"/></param>
         public Variable(IdentifierNode identNode)
         {
             if (identNode == null)

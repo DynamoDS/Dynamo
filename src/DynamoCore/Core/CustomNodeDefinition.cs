@@ -296,27 +296,27 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Custom node unique ID
+        /// Returns custom node unique ID
         /// </summary>
         public Guid FunctionId { get; set; }
 
         /// <summary>
-        /// Custom node name
+        /// Returns custom node name
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// Custom node category
+        /// Returns custom node category
         /// </summary>
         public string Category { get; set; }
 
         /// <summary>
-        /// Custom node description
+        /// Returns custom node description
         /// </summary>
         public string Description { get; set; }
 
         /// <summary>
-        /// Path to custom node
+        /// Returns path to custom node
         /// </summary>
         public string Path { get; set; }
 

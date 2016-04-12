@@ -35,7 +35,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Creates DummyNode
+        /// This function creates DummyNode with specified number of ports.
         /// </summary>
         /// <param name="inputCount">Number of input ports</param>
         /// <param name="outputCount">Number of output ports</param>

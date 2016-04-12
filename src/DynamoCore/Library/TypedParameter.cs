@@ -14,7 +14,7 @@ namespace Dynamo.Library
         private readonly string defaultValueString;
 
         /// <summary>
-        /// Creates TypedParameter
+        /// This function creates TypedParameter
         /// </summary>
         /// <param name="parameter">parameter name</param>
         /// <param name="type">parameter type</param>
