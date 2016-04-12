@@ -20,8 +20,8 @@ namespace Dynamo.Models
     /// <summary>
     /// This delegate is used in workspace events.
     /// </summary>
-    /// <param name="sender">Object sender</param>
-    /// <param name="e">EventArgs</param>
+    /// <param name="sender">Workspace</param>
+    /// <param name="e"><see cref="EventArgs"/></param>
     public delegate void NodeEventHandler(object sender, EventArgs e);
 
     internal delegate void SettingsMigrationHandler(SettingsMigrationEventArgs args);
