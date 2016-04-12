@@ -48,7 +48,12 @@ namespace Autodesk.DesignScript.Interfaces
         /// The number of mesh vertices in the package.
         /// </summary>
         int MeshVertexCount { get; }
-        
+
+        /// <summary>
+        /// a 4x4 matrix which is used to transform all geometry in the render packaage
+        /// </summary>
+        double[] Transform  { get; } 
+
         /// <summary>
         /// A collection of int values representing how many vertices
         /// comprise each line segment in the package.
@@ -189,6 +194,36 @@ namespace Autodesk.DesignScript.Interfaces
         /// </summary>
         /// <param name="colors"></param>
         void SetColors(byte[] colors);
+
+        /// <summary>
+        /// sets the transform as a series of doubles that will be applied to all geometry in the renderPackage
+        /// </summary>
+        /// <param name="m11"></param>
+        /// <param name="m12"></param>
+        /// <param name="m13"></param>
+        /// <param name="m14"></param>
+        /// <param name="m21"></param>
+        /// <param name="m22"></param>
+        /// <param name="m23"></param>
+        /// <param name="m24"></param>
+        /// <param name="m31"></param>
+        /// <param name="m32"></param>
+        /// <param name="m33"></param>
+        /// <param name="m34"></param>
+        /// <param name="m41"></param>
+        /// <param name="m42"></param>
+        /// <param name="m43"></param>
+        /// <param name="m44"></param>
+        void SetTransform(double m11, double m12, double m13, double m14,
+           double m21, double m22, double m23, double m24,
+           double m31, double m32, double m33, double m34,
+           double m41, double m42, double m43, double m44);
+
+        /// <summary>
+        /// sets the transform as a double array, this transform will be applied to all geometry in the renderPackage
+        /// </summary>
+        /// <param name="matrix"></param>
+        void SetTransform(double[] matrix);
 
         /// <summary>
         /// Clear all render data from the render package.

@@ -191,6 +191,46 @@ namespace Dynamo.Visualization
         }
 
         /// <summary>
+        /// sets the transform that will be applied to all geometry in the renderPackage
+        /// </summary>
+        /// <param name="m11"></param>
+        /// <param name="m12"></param>
+        /// <param name="m13"></param>
+        /// <param name="m14"></param>
+        /// <param name="m21"></param>
+        /// <param name="m22"></param>
+        /// <param name="m23"></param>
+        /// <param name="m24"></param>
+        /// <param name="m31"></param>
+        /// <param name="m32"></param>
+        /// <param name="m33"></param>
+        /// <param name="m34"></param>
+        /// <param name="m41"></param>
+        /// <param name="m42"></param>
+        /// <param name="m43"></param>
+        /// <param name="m44"></param>
+        public void SetTransform(double m11, double m12, double m13, double m14,
+            double m21, double m22, double m23, double m24,
+            double m31, double m32, double m33, double m34,
+            double m41, double m42, double m43, double m44)
+        {
+            this.Transform = new double[] { m11, m12, m13, m14,
+                m21, m22, m23, m24,
+                m31, m32, m33, m34,
+                m41, m42, m43, m44 };
+        }
+
+        /// <summary>
+        /// sets the transform as a double array, this transform will be applied to all geometry in the renderPackage
+        /// </summary>
+        /// <param name="matrix"></param>
+        public void SetTransform(double[] matrix)
+        {
+            this.Transform = matrix;
+        }
+
+
+        /// <summary>
         /// Clear all render data from the render package.
         /// </summary>
         public void Clear()
@@ -215,6 +255,10 @@ namespace Dynamo.Visualization
             IsSelected = false;
             RequiresPerVertexColoration = false;
             DisplayLabels = false;
+            Transform = new double[] {1,0,0,0,
+                                       0,1,0,0,
+                                       0,0,1,0,
+                                       0,0,0,1};
         }
 
         /// <summary>
@@ -268,6 +312,11 @@ namespace Dynamo.Visualization
         {
             get { return meshVertices.Count / 3; }
         }
+
+        /// <summary>
+        /// a 4x4 matrix which is used to transform all geometry in the render packaage
+        /// </summary>
+        public double[] Transform { get; private set; }
 
         /// <summary>
         /// Returns the collection of int values representing how many vertices

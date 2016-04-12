@@ -46,8 +46,7 @@ namespace Dynamo.Wpf.Rendering
         private bool hasData;
         private List<int> lineStripVertexCounts;
         private byte[] colors;
-        private System.Windows.Media.Media3D.Matrix3D transform;
-
+        
         #endregion
 
         #region constructors
@@ -58,7 +57,7 @@ namespace Dynamo.Wpf.Rendering
             lines = InitLineGeometry();
             mesh = InitMeshGeometry();
             lineStripVertexCounts = new List<int>();
-            transform = System.Windows.Media.Media3D.Matrix3D.Identity;
+            Transform = System.Windows.Media.Media3D.Matrix3D.Identity.ToArray();
         }
 
         #endregion
@@ -88,7 +87,7 @@ namespace Dynamo.Wpf.Rendering
                                                                       org.X, org.Z, -org.Y, 1);
 
 
-            this.transform = csAsMat;
+            this.Transform = csAsMat.ToArray();
         }
 
         /// <summary>
@@ -137,10 +136,19 @@ namespace Dynamo.Wpf.Rendering
             double m31, double m32, double m33, double m34,
             double m41, double m42, double m43, double m44 )
         {
-            this.transform =  new System.Windows.Media.Media3D.Matrix3D(m11, m12, m13, m14,
+            this.Transform =  new System.Windows.Media.Media3D.Matrix3D(m11, m12, m13, m14,
                 m21, m22, m23, m24,
                 m31, m32, m33, m34,
-                m41, m42, m43, m44);
+                m41, m42, m43, m44).ToArray();
+        }
+
+        /// <summary>
+        /// sets the transform as a double array, this transform will be applied to all geometry in the renderPackage
+        /// </summary>
+        /// <param name="matrix"></param>
+        public void SetTransform(double[] matrix)
+        {
+            this.Transform = matrix;
         }
 
         public void Clear()
@@ -156,7 +164,7 @@ namespace Dynamo.Wpf.Rendering
 
             lineStripVertexCounts.Clear();
 
-            transform = System.Windows.Media.Media3D.Matrix3D.Identity;
+            Transform = System.Windows.Media.Media3D.Matrix3D.Identity.ToArray();
 
             IsSelected = false;
             DisplayLabels = false;
@@ -416,16 +424,6 @@ namespace Dynamo.Wpf.Rendering
                 return hasData;
             }
         }
-        /// <summary>
-        /// a 4x4 matrix which is used to transform all geometry in the render packaage
-        /// </summary>
-        public System.Windows.Media.Media3D.Matrix3D Transform
-        {
-            get
-            {
-                return transform;
-            }
-        }
 
         /// <summary>
         /// A flag indicating whether the render package is displaying labels
@@ -461,6 +459,11 @@ namespace Dynamo.Wpf.Rendering
         {
             get { return mesh.Positions.Count; }
         }
+
+        /// <summary>
+        /// a 4x4 matrix which is used to transform all geometry in the render packaage
+        /// </summary>
+        public double[] Transform { get; private set; }
 
         public IEnumerable<int> LineStripVertexCounts
         {
@@ -661,6 +664,26 @@ namespace Dynamo.Wpf.Rendering
             }
 
             return colors;
+        }
+
+        public static double[] ToArray(this System.Windows.Media.Media3D.Matrix3D mat)
+        {
+            return new double[] {mat.M11,mat.M12,mat.M13,mat.M14,
+                mat.M21,mat.M22,mat.M23,mat.M24,
+                mat.M31,mat.M32,mat.M33,mat.M34,
+                mat.OffsetX,mat.OffsetY,mat.OffsetZ,mat.M14,
+            };
+
+        }
+
+        public static System.Windows.Media.Media3D.Matrix3D ToMatrix3D(this double[] matArray)
+        {
+            return new System.Windows.Media.Media3D.Matrix3D(
+                matArray[0], matArray[1], matArray[2], matArray[3],
+                matArray[4], matArray[5], matArray[6], matArray[7],
+                matArray[8], matArray[9], matArray[10], matArray[11],
+                matArray[12], matArray[13], matArray[14], matArray[15]);
+
         }
     }
 }
