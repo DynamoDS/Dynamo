@@ -19,32 +19,33 @@ namespace Dynamo.Graph
     public class NodeGraph
     {
         /// <summary>
-        /// Nodes loaded from xml.
+        /// <see cref="NodeModel"/> loaded from xml.
         /// </summary>
         public List<NodeModel> Nodes { get; private set; }
 
         /// <summary>
-        /// Connectors loaded from xml.
+        /// <see cref="ConnectorModel"/> loaded from xml.
         /// </summary>
         public List<ConnectorModel> Connectors { get; private set; }
 
         /// <summary>
-        /// Notes loaded from xml.
+        /// <see cref="NoteModel"/> loaded from xml.
         /// </summary>
         public List<NoteModel> Notes { get; private set; }
 
         /// <summary>
-        /// Annotations loaded from xml.
+        /// <see cref="AnnotationModel"/> loaded from xml.
         /// </summary>
         public List<AnnotationModel> Annotations { get; private set; }
 
         /// <summary>
         /// Partial class name nodes loaded from xml.
+        /// E.g. Range turns into DSCoreNodesUI.Range.
         /// </summary>
         public ElementResolver ElementResolver { get; private set; }
 
         /// <summary>
-        /// Presets loaded from xml.
+        /// <see cref="PresetModel"/> loaded from xml.
         /// </summary>
         public List<PresetModel> Presets { get; private set; }
   

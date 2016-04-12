@@ -1221,7 +1221,7 @@ namespace Dynamo.Graph.Nodes
         public StatementType CurrentType { get; private set; }
 
         /// <summary>
-        /// AST node.
+        /// <see cref="Node"/>
         /// </summary>
         public Node AstNode { get; private set; }
 

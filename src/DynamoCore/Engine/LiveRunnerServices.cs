@@ -55,6 +55,8 @@ namespace Dynamo.Engine
 
         /// <summary>
         /// RuntimeCore of liveRunner.
+        /// RuntimeCore is an object that is instantiated once across the lifecycle of the runtime.
+        /// This is the entry point of the runtime VM and its input is a DS Executable format. 
         /// </summary>
         public ProtoCore.RuntimeCore RuntimeCore
         {
