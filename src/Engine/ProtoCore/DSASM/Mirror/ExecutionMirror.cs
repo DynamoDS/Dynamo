@@ -861,7 +861,15 @@ namespace ProtoCore.DSASM.Mirror
             return MirrorTarget.rmem.Heap.ToHeapObject<DSArray>(obj.DsasmValue).Values.Select(x => Unpack(x)).ToList();
         }
 
-        public StackValue GetGlobalValue(string name, int startBlock = 0)
+        /// <summary>
+        /// Searching variable name starting from specified block.
+        /// Exception:
+        ///     SymbolNotFoundException if variable not found.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="startBlock"></param>
+        /// <returns></returns>
+        public StackValue GetValue(string name, int startBlock = 0)
         {
             ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
 
@@ -877,7 +885,8 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 }
             }
-            return StackValue.Null;
+
+            throw new SymbolNotFoundException(name);
         }
 
         public StackValue GetRawFirstValue(string name, int startBlock = 0, int classcope = Constants.kGlobalScope)
