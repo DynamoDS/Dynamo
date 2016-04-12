@@ -4,6 +4,8 @@ using System.IO;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
 using ProtoCore.Properties;
+using System.Reflection;
+using System.Text;
 
 namespace ProtoFFI
 {
@@ -88,6 +90,17 @@ namespace ProtoFFI
             }
             catch (System.Exception ex)
             {
+                if (ex is System.Reflection.ReflectionTypeLoadException)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    var typeLoadException = ex as ReflectionTypeLoadException;
+                    var loaderExceptions = typeLoadException.LoaderExceptions;
+                    foreach(var item in loaderExceptions)
+                    {
+                        sb.AppendLine(item.Message);
+                    }
+                    _coreObj.BuildStatus.LogSemanticError(sb.ToString());
+                }
                 if (ex.InnerException != null)
                     _coreObj.BuildStatus.LogSemanticError(ex.InnerException.Message);
                 _coreObj.BuildStatus.LogSemanticError(ex.Message);
