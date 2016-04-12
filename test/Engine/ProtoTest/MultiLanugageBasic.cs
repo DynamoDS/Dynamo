@@ -11,28 +11,58 @@ namespace ProtoTest
         {
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             runtimeCore = fsr.Execute(
-@"[Imperative]{    a = 3;    b = 4;}", core);
+@"
+[Imperative]
+{
+    a = 3;
+    b = 4;
+}
+", core);
         }
         [Test]
         public void TestSingleLanguageAssociative()
         {
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             runtimeCore = fsr.Execute(
-@"[Associative]{    a = 3;    b = 4;}", core);
+@"
+[Associative]
+{
+    a = 3;
+    b = 4;
+}
+", core);
         }
         [Test]
         public void TestMultLanguageAssociativeImperative()
         {
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             runtimeCore = fsr.Execute(
-@"[Associative]{    a = [Imperative]        {            return= 5;        }    b = 4;}", core);
+@"
+[Associative]
+{
+    a = [Imperative]
+        {
+            return= 5;
+        }
+    b = 4;
+}
+", core);
         }
         [Test]
         public void TestMultLanguageImperativeAssociative()
         {
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             runtimeCore = fsr.Execute(
-@"[Imperative]{    [Associative]    {        return= 5;    }    b = 4;}", core);
+@"
+[Imperative]
+{
+    [Associative]
+    {
+        return= 5;
+    }
+    b = 4;
+}
+", core);
         }
         [Test]
         public void TestMultLanguageVariableUsage()
@@ -40,20 +70,45 @@ namespace ProtoTest
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
 
             runtimeCore = fsr.Execute(
-@"[Associative]{    a = 2;    [Imperative]    {        if(a == 2 )        {            b = a + 5;            a = 20;        }        else         {            b = 4;        }    }    c = a;}", core);
+@"
+[Associative]
+{
+    a = 2;
+    [Imperative]
+    {
+        if(a == 2 )
+        {
+            b = a + 5;
+            a = 20;
+        }
+        else 
+        {
+            b = 4;
+        }
+    }
+    c = a;
+}
+", core);
         }
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestClassUsageInImpeartive()
         {
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(
+            string code =
 @"
-import(""FFITarget.dll"");x;y;[Imperative]{	p = ClassFunctionality.ClassFunctionality(16);    x = p.IntVal;    p.IntVal = 32;    y = p.IntVal;}"
-    , core);
-            ExecutionMirror mirror = runtimeCore.Mirror;
-            Assert.IsTrue((Int64)mirror.GetValue("x", 0).Payload == 16);
-            Assert.IsTrue((Int64)mirror.GetValue("y", 0).Payload == 32);
+import(""FFITarget.dll"");
+x;y;
+[Imperative]
+{
+	p = ClassFunctionality.ClassFunctionality(16);
+    x = p.IntVal;
+    p.IntVal = 32;
+    y = p.IntVal;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 16);
+            thisTest.Verify("y", 32);
         }
     }
 }

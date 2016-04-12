@@ -13,6 +13,7 @@ using Dynamo.UI;
 using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.Wpf.ViewModels
 {
@@ -503,7 +504,7 @@ namespace Dynamo.Wpf.ViewModels
                 if (entry is NodeSearchElementViewModel)
                 {
                     if (nextLargerItemIndex >= 0)
-                        Items.Insert(nextLargerItemIndex + SubCategories.Count, entry);
+                        Items.TryInsert(nextLargerItemIndex + SubCategories.Count, entry);
                     else
                         Items.Add(entry);
                 }

@@ -53,6 +53,7 @@ namespace Dynamo.UI.Controls
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
             this.InnerTextEditor.TextChanged += OnTextChanged;
+            this.InnerTextEditor.TextArea.GotFocus+= OnTextAreaGotFocus; 
             this.InnerTextEditor.TextArea.LostFocus += OnTextAreaLostFocus;
             this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
             this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
@@ -119,13 +120,14 @@ namespace Dynamo.UI.Controls
         protected virtual void OnCommitChange()
         {
         }
-
+        
         /// <summary>
-        /// Derived class overrides this function to handle the text changed event.
+        /// Derived class overrides this function to handle the event of getting focus. 
         /// </summary>
-        protected virtual void OnEditorTextChanged()
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected virtual void OnTextAreaGotFocus(object sender, RoutedEventArgs e)
         {
-
         }
 
         /// <summary>
@@ -183,8 +185,6 @@ namespace Dynamo.UI.Controls
         {
             if (WatermarkLabel.Visibility == Visibility.Visible)
                 WatermarkLabel.Visibility = Visibility.Collapsed;
-
-            OnEditorTextChanged();
         }
 
         private void OnTextAreaTextEntering(object sender, TextCompositionEventArgs e)

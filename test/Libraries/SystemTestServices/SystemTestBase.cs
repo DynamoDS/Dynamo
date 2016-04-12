@@ -295,7 +295,7 @@ namespace SystemTestServices
 
             var data = mirror.GetData();
             Assert.IsTrue(data.IsCollection);
-            Assert.AreEqual(count, data.GetElements().Count);
+            Assert.AreEqual(count, data.GetElements().ToList().Count);
         }
 
         public NodeModel GetNode<T>(string guid) where T : NodeModel
@@ -353,7 +353,7 @@ namespace SystemTestServices
             var data = mirror.GetData();
             if (data == null) return null;
             if (!data.IsCollection) return null;
-            var elements = data.GetElements();
+            var elements = data.GetElements().ToList();
             return elements[index].Data;
         }
 

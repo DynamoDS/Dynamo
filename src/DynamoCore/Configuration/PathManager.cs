@@ -80,8 +80,15 @@ namespace Dynamo.Core
         private readonly HashSet<string> preloadedLibraries;
         private readonly HashSet<string> extensionsDirectories;
         private readonly HashSet<string> viewExtensionsDirectories;
-        
+
         #endregion
+
+        internal IPreferences Preferences { get; set; }
+
+        private IEnumerable<string> RootDirectories
+        {
+            get { return Preferences != null ? Preferences.CustomPackageFolders : rootDirectories; }
+        }
 
         #region IPathManager Interface Implementation
 
@@ -107,12 +114,12 @@ namespace Dynamo.Core
 
         public string DefaultUserDefinitions
         {
-            get { return TransformPath(rootDirectories[0], DefinitionsDirectoryName); }
+            get { return TransformPath(RootDirectories.First(), DefinitionsDirectoryName); }
         }
 
         public IEnumerable<string> DefinitionDirectories
         {
-            get { return rootDirectories.Select(path => TransformPath(path, DefinitionsDirectoryName)); }
+            get { return RootDirectories.Select(path => TransformPath(path, DefinitionsDirectoryName)); }
         }
 
         public string CommonDefinitions
@@ -127,12 +134,12 @@ namespace Dynamo.Core
 
         public string DefaultPackagesDirectory
         {
-            get { return TransformPath(rootDirectories[0], PackagesDirectoryName); }
+            get { return TransformPath(RootDirectories.First(), PackagesDirectoryName); }
         }
 
         public IEnumerable<string> PackagesDirectories
         {
-            get { return rootDirectories.Select(path => TransformPath(path, PackagesDirectoryName)); }
+            get { return RootDirectories.Select(path => TransformPath(path, PackagesDirectoryName)); }
         }
 
         public IEnumerable<string> ExtensionsDirectories
@@ -249,7 +256,7 @@ namespace Dynamo.Core
 
                 return PathHelper.IsValidPath(document);
             }
-            catch(Exception)
+            catch
             {
                 return false;
             }
@@ -348,7 +355,7 @@ namespace Dynamo.Core
         /// the target directories cannot be created during this call.</param>
         internal void EnsureDirectoryExistence(List<Exception> exceptions)
         {
-            if (rootDirectories.Count <= 0)
+            if (!RootDirectories.Any())
             {
                 throw new InvalidOperationException(
                     "At least one custom package directory must be specified");
@@ -398,12 +405,6 @@ namespace Dynamo.Core
             }
 
             return Path.Combine(BackupDirectory, fileName);
-        }
-
-        internal void LoadCustomPackageFolders(IEnumerable<string> folders)
-        {
-            rootDirectories.Clear();
-            rootDirectories.AddRange(folders);
         }
 
         #endregion

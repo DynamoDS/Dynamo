@@ -534,15 +534,6 @@ namespace ProtoScript.Runners
 
                 throw new NotImplementedException();
             }
-
-            public Obj ResolveName(String name)
-            {
-
-                return mirror.GetValue(name);
-            }
-
-
-
         }
 
         public class Breakpoint

@@ -25,8 +25,8 @@ bO = b.Foo();
 );
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1947
             string defectID = "MAGN-1947 IntegrationTests.NamespaceConflictTest.DupImportTest";
-            Assert.IsTrue((Int64)mirror.GetFirstValue("aO").Payload == 1, defectID);
-            Assert.IsTrue((Int64)mirror.GetFirstValue("bO").Payload == 2, defectID);
+            thisTest.Verify("aO", 1);
+            thisTest.Verify("bO", 2);
 
         }
 
@@ -66,12 +66,6 @@ a = DupTargetTest.DupTargetTest();
 aO = a.Foo();
 "
 );
-            Assert.Throws<NotImplementedException>(() =>
-            {
-                mirror.GetFirstValue("a0");
-            });
-
-
         }
     }
 }

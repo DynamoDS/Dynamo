@@ -1169,7 +1169,6 @@ namespace Dynamo.PackageManager
 
             }
 
-            pathManager.LoadCustomPackageFolders(setting.CustomPackageFolders);
             return folder;
         }
 

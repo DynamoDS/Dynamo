@@ -35,7 +35,7 @@ namespace ProtoTest.ProtoAST
 
             // 2. Execute AST and verify
             mirror = thisTest.RunASTSource(astList);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == result1);
+            thisTest.Verify("a", result1);
 
             // 3. Convert AST to source
             ProtoCore.CodeGenDS codegenDS = new ProtoCore.CodeGenDS(astList);
@@ -43,7 +43,7 @@ namespace ProtoTest.ProtoAST
 
             // 4. Execute source and verify
             mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == result1);
+            thisTest.Verify("a", result1);
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace ProtoTest.ProtoAST
 
             // 2. Execute AST and verify
             mirror = thisTest.RunASTSource(astList);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == result1);
+            thisTest.Verify("a", result1);
 
             // 3. Convert AST to source
             ProtoCore.CodeGenDS codegenDS = new ProtoCore.CodeGenDS(astList);
@@ -80,7 +80,7 @@ namespace ProtoTest.ProtoAST
 
             // 4. Execute source and verify
             mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == result1);
+            thisTest.Verify("a", result1);
         }
 
 
@@ -158,7 +158,7 @@ namespace ProtoTest.ProtoAST
 
             // 2. Execute AST and verify
             mirror = thisTest.RunASTSource(astList);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == result1);
+            thisTest.Verify("x", result1);
 
 
             // 3. Convert AST to source
@@ -169,7 +169,7 @@ namespace ProtoTest.ProtoAST
 
             // 4. Execute source and verify
             mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == result1);
+            thisTest.Verify("x", result1);
 
         }
 
@@ -271,7 +271,7 @@ namespace ProtoTest.ProtoAST
 
             // 2. Execute AST and verify
             mirror = thisTest.RunASTSource(astList);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == result1);
+            thisTest.Verify("x", result1);
 
 
             // 3. Convert AST to source
@@ -280,7 +280,7 @@ namespace ProtoTest.ProtoAST
 
             // 4. Execute source and verify
             mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == result1);
+            thisTest.Verify("x", result1);
 
         }
 
@@ -377,7 +377,7 @@ namespace ProtoTest.ProtoAST
 
             // 2. Execute AST and verify
             mirror = thisTest.RunASTSource(astList);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == result1);
+            thisTest.Verify("a", result1);
 
             // 3. Convert AST to source
             ProtoCore.CodeGenDS codegenDS = new ProtoCore.CodeGenDS(astListcopy);
@@ -385,7 +385,7 @@ namespace ProtoTest.ProtoAST
 
             // 4. Execute source and verify
             mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == result1);
+            thisTest.Verify("a", result1);
         }
 
         [Test]
@@ -513,7 +513,7 @@ namespace ProtoTest.ProtoAST
 
             // 2. Execute AST and verify
             mirror = thisTest.RunASTSource(astList);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == result1);
+            thisTest.Verify("a", result1);
 
 
             // 3. Convert AST to source
@@ -522,7 +522,7 @@ namespace ProtoTest.ProtoAST
 
             // 4. Execute source and verify
             mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == result1);
+            thisTest.Verify("a", result1);
         }
 
         [Test]

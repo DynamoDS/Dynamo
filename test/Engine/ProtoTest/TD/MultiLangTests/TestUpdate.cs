@@ -1233,7 +1233,7 @@ p1 = 2;
 p2 = p1+2;
 p1 = true;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("p2", 0).DsasmValue.IsNull);
+            thisTest.Verify("p2", null);
         }
 
         [Test]
@@ -1246,7 +1246,7 @@ y = a1[1] + 1;
 a1[1] = 3;
 a1 = 5;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("y", 0).DsasmValue.IsNull);
+            thisTest.Verify("y", null);
         }
 
         [Test]
@@ -1304,7 +1304,7 @@ a;
 	a = x;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
+            thisTest.Verify("a", null);
         }
 
         [Test]
@@ -1912,15 +1912,14 @@ b = {
             };
             fsr.ToggleBreakpoint(cp1);
             ProtoScript.Runners.DebugRunner.VMState vms = fsr.Run();
-            thisTest.DebugModeVerification(vms.mirror, "a", 4);
+            Assert.AreEqual((Int64)vms.mirror.GetDebugValue("a").Payload, 4);
 
             fsr.ToggleBreakpoint(cp2);
             fsr.Run();
-            thisTest.DebugModeVerification(vms.mirror, "a", 5);
+            Assert.AreEqual((Int64)vms.mirror.GetDebugValue("a").Payload, 5);
             fsr.ToggleBreakpoint(cp3);
             fsr.Run();
-            Object n1 = null;
-            thisTest.DebugModeVerification(vms.mirror, "a", n1);
+            Assert.AreEqual(vms.mirror.GetDebugValue("a").Payload, null);
 
             fsr.Run();
         }

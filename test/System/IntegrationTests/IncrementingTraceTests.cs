@@ -60,9 +60,9 @@ cleanB = mtcB.WasCreatedWithTrace();
 
 "
 );
-            Assert.IsTrue((bool)mirror.GetFirstValue("cleanA").Payload == false);
-            Assert.IsTrue((bool)mirror.GetFirstValue("cleanB").Payload == false);
 
+            testFx.Verify("cleanA", false);
+            testFx.Verify("cleanB", false);
         }
 
 
@@ -88,10 +88,10 @@ cleanB = mtcB.WasCreatedWithTrace();
 );
 
             List<Object> allFalse4 = new List<Object> {false, false, false, false};
-            Assert.IsTrue(mirror.CompareArrays("cleanA", allFalse4, typeof(bool)));
+            testFx.Verify("cleanA", allFalse4);
 
             List<Object> allFalse3 = new List<Object> { false, false, false };
-            Assert.IsTrue(mirror.CompareArrays("cleanB", allFalse3, typeof(bool)));
+            testFx.Verify("cleanB", allFalse3);
 
         }
 
@@ -116,9 +116,8 @@ x = 1..4;
 );
 
             List<Object> allFalse4 = new List<Object> { true, true, true, true };
-            Assert.IsTrue(mirror.CompareArrays("cleanA", allFalse4, typeof(bool)));
-             Assert.IsTrue(mirror.CompareArrays("ids", new List<Object>{ 0L, 1L, 2L, 3L}, typeof(Int64)));
-
+            testFx.Verify("cleanA", allFalse4);
+            testFx.Verify("ids", new List<Object>{ 0L, 1L, 2L, 3L});
         }
 
 
@@ -141,11 +140,10 @@ mtcBID = mtcB.ID;
 mtcBWasTraced = mtcB.WasCreatedWithTrace();
 "
 );
-            Assert.IsTrue((Int64)mirror.GetFirstValue("mtcAID").Payload == 0);
-            Assert.IsTrue((Boolean)mirror.GetFirstValue("mtcAWasTraced").Payload == false);
-
-            Assert.IsTrue((Int64)mirror.GetFirstValue("mtcBID").Payload == 1);
-            Assert.IsTrue((Boolean)mirror.GetFirstValue("mtcBWasTraced").Payload == false);
+            testFx.Verify("mtcAID", 0);
+            testFx.Verify("mtcAWasTraced", false);
+            testFx.Verify("mtcBID", 1);
+            testFx.Verify("mtcBWasTraced", false);
         }
 
 
@@ -167,8 +165,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace();
 x = 1;
 "
 );
-  //          Assert.IsTrue((Int64)mirror.GetFirstValue("mtcAID").Payload == 0);
-            Assert.IsTrue((Boolean)mirror.GetFirstValue("mtcAWasTraced").Payload == true);
+            testFx.Verify("mtcAWasTraced", true);
         }
 
         [Test]

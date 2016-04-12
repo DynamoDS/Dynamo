@@ -8,7 +8,7 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace ProtoFFI
 {
-    public class ContextDataManager
+    class ContextDataManager
     {
         private Dictionary<string, IContextData> mData = new Dictionary<string, IContextData>();
         private static Dictionary<string, IContextDataProvider> mDataProviders;

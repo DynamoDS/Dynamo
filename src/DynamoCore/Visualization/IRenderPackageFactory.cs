@@ -10,6 +10,9 @@ namespace Dynamo.Visualization
     /// </summary>
     public interface IRenderPackageFactory
     {
+        /// <summary>
+        /// Gets or sets the Tessellation parameters.
+        /// </summary>
         TessellationParameters TessellationParameters { get; set; }
 
         /// <summary>
