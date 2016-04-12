@@ -115,20 +115,24 @@ y;
 b;
 c;
 d;
-[Imperative]
-{
     def ding:int(x:int)
     {
+return = [Imperative] {
         if (x >= 5)
             break;
         return = 2 * x;
+}
     }
     def dong:int(x: int)
     {
+return = [Imperative] {
         if (x >= 5)
             continue;
         return = 2 * x;
+}
     }
+[Imperative]
+{
     a = ding(1);
     b = ding(6);
     c = dong(2);

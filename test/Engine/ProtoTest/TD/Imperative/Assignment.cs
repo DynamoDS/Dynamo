@@ -180,13 +180,13 @@ e;
         public void T10_TestInFunctionScope()
         {
             string src = @"test;
-[Imperative]
-{
 	 def add:double( n1:int, n2:double )
 	 {
 		  
 		  return = n1 + n2;
 	 }
+[Imperative]
+{
 	 test = add(2,2.5);
 }
 ";
@@ -319,17 +319,19 @@ c3;
         public void T15_TestInRecursiveFunctionScope()
         {
             string src = @"val;
-[Imperative]
-{
-	
 	def fac : int ( n : int )
 	{
+return = [Imperative]
+{
 	    if(n == 0 )
         {
 		    return = 1;
         }
 		return = n * fac (n-1 );
 	}
+}
+[Imperative]
+{
     val = fac(5);				
 }
 ";
@@ -385,8 +387,6 @@ test2;
 test3;
 test4;
 test5;
-[Imperative]
-{
 	   def  mul : double ( n1 : double, n2 : double )
         {
         	return = n1 * n2;
@@ -395,6 +395,8 @@ test5;
         {
         	return = n1 + n2;
         }
+[Imperative]
+{
         test0 = add (-1 , 7.5 ) ;
         test1 = add ( mul(1,2), 4.5 ) ;  
         test2 = add (mul(1,2.5), 4 ) ; 
@@ -700,12 +702,12 @@ e;
         public void T32_Defect_1449877_2()
         {
             string src = @"d;
-[Imperative]
-{
 	def func:int(a:int,b:int)
 	{
 	return = b + a;
 	}
+[Imperative]
+{
 	a = 3;
 	b = -1;
 	d = func(a,b);
@@ -721,13 +723,13 @@ e;
             string src = @"_a_test;
 _b;
 _c;
-[Imperative]
-{
 	def check:double( _a:double, _b:int )
 	{
 	_c = _a * _b;
 	return = _c;
 	} 
+[Imperative]
+{
 	_a_test = check(2.5,5);
 	_b = 4.5;
 	_c = true;
@@ -760,14 +762,14 @@ _c;
         public void T35_Defect_1450727_2()
         {
             string src = @"z;
-[Imperative]
-{
 	def neg_float:double(x:double,y:double)
 	{
 	a = x;
 	b = y;
 	return = a + b;
 	}
+[Imperative]
+{
 	z = neg_float(-2.3,-5.8);
  
 }";
@@ -1017,13 +1019,13 @@ b;
 x;
 y;
 b1;
-[Imperative]
-{
     def foo : int ( a : int )
 	{
 	    t1 = t2 = 2;
 		return = t1 + t2 + a ;
 	}
+[Imperative]
+{
 	a = b = 4;
     x = y = foo(1);
 	b1= a+x;

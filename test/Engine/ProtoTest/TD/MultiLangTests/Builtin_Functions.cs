@@ -574,14 +574,16 @@ n = foo(b, m);
         {
             string code = @"
 result;
-[Imperative]
-{
 def foo(x:var[]..[])
 {
+    return = [Imperative]{
 	if(CountTrue(x) > 0)
 		return = true;
 	return = false;
+    }
 }
+[Imperative]
+{
 a = {null,1};//0
 b = {null,20,30,null,{10,0},true,{false,0,{true,{false},5,2,false}}};//2
 c = {1,2,foo(b)};
@@ -876,14 +878,16 @@ result = foo(b);
         {
             string code = @"
 result;
-[Imperative]
-{
 def foo(x:var[]..[])
 {
+    return = [Imperative]{
 	if(CountFalse(x) > 0)
 		return = true;
 	return = false;
+    }
 }
+[Imperative]
+{
 a = {null,0};//0
 b = {null,20,30,null,{10,0},false,{true,0,{true,{false},5,2,true}}};//2
 c = {1,2,foo(b)};
@@ -2615,14 +2619,14 @@ y=z.create();
 @"
 sort;
 a1;
-[Imperative]
-{
-    a1 =  { 3, 1, 2 };
-   // c = Flatten(a1);
 def sorterFunction(a : double, b : int)
 {
     return = a > b ? 1 : -1;
 }
+[Imperative]
+{
+    a1 =  { 3, 1, 2 };
+   // c = Flatten(a1);
 sort = Sort(sorterFunction,a1);
 }
 ";
@@ -2637,14 +2641,14 @@ sort = Sort(sorterFunction,a1);
             @"
             sort;
             a1;
-            [Imperative]
-            {
-                a1 =  { 3, 1, 2 };
-               // c = Flatten(a1);
             def sorterFunction(a : double, b : int)
             {
                 return = a > b ? 1 : -1;
             }
+            [Imperative]
+            {
+                a1 =  { 3, 1, 2 };
+               // c = Flatten(a1);
             sort = Sort(sorterFunction,a1);
             }
             ";
@@ -2683,6 +2687,10 @@ sort = Sort(sorterFunction,a1);
             @"
                 sort;
                 a1;
+                def sorterFunction(a : double, b : int)
+                {
+                    return = a > b ? 1 : -1;
+                }
                 [Associative]
                 {
                 [Imperative]
@@ -2693,10 +2701,6 @@ sort = Sort(sorterFunction,a1);
                 {
                 a1 = { 3, 1, 2 };
                 // c = Flatten(a1);
-                def sorterFunction(a : double, b : int)
-                {
-                    return = a > b ? 1 : -1;
-                }
                 sort = Sort(sorterFunction, a1);
                 }
                 }
@@ -2844,13 +2848,13 @@ def sorterFunction(a : int, b : int)
     return = a > b ? 1 : -1;
 }
 d = { };
-[Imperative]
-{
     def foo(a : int[])
     {
         sort = Sort(sorterFunction, a);
         return = sort;
     }
+[Imperative]
+{
     dim = Count(a1);
     i = 0;
     while(i < dim)

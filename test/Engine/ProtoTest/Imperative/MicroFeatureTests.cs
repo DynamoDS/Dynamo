@@ -111,78 +111,6 @@ foo;
         }
 
         [Test]
-        public void TestFunction01()
-        {
-            String code =
-@"
-a;
-[Imperative] 
-{
-	// An imperative function
-	// Clamps 'i' between min and max ranges
-	def clampRange : int(i : int, rangeMin : int, rangeMax : int)
-	{
-		clampedValue = i;
-		if(i < rangeMin) 
-		{
-			clampedValue = rangeMin;
-		}
-		elseif( i > rangeMax ) 
-		{
-			clampedValue = rangeMax; 
-		} 
-		return = clampedValue;
-	}
-	a = clampRange(99, 10, 100);
-}"
-;
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a",99);
-        }
-
-        [Test]
-        public void TestFunction02()
-        {
-            string code =
-                    @"test;[Imperative]
-                    {
-	                    def add:double( n1:int, n2:double )
-	                    {
-		                    return = n1 + n2;
-	                    }
-	                    test = add (3+1, 4.5 ) ;
-                    }";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("test",8.5);
-        }
-
-        [Test]
-        public void TestFunction03()
-        {
-            string code =
-                    @"x;temp2;[Imperative]
-                        {
-	                        def fn2:int(a:int)
-	                        {   
-		                        if( a < 0 )
-		                        {
-			                        return = 0;
-		                        }	
-		                        return = 1;
-	                        }
-	                        x = fn2(4);
-	                        temp2 = 56;
-	                        if( fn2(4) == 1 )
-	                        {
-		                        temp2 = fn2 ( 5 );
-	                        }
-                        }";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x",1);
-            thisTest.Verify("temp2",1);
-        }
-
-        [Test]
         public void IfStatement01()
         {
             String code =
@@ -957,14 +885,18 @@ x1; x2; x3; x4;
             String code =
                         @"
 val;
+def fac : int( n : int )
+{
+    return = [Imperative]
+    {
+        if(n == 0)                
+	        return = 1;                
+        else
+            return = n * fac (n-1 );
+    }
+}
                         [Imperative]
                         {	
-	                        def fac : int( n : int )
-	                        {
-       	                        if(n == 0)                
-	                                return = 1;                
-                                return = n * fac (n-1 );
-	                        }    
 	                        val = fac(5);				
                         }
                         ";

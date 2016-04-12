@@ -1224,18 +1224,19 @@ list2 = !list1; // { false, false, true, true, false, true }
         public void T50_Replication_Imperative_Scope()
         {
             string code = @"
-c;
-[Imperative]
-{
 	def even : int (a : int) 
 	{	
+return =[Imperative]{
 		if(( a % 2 ) > 0 )
 			return = a + 1;		
 		else 
 			return = a;
-		
-		return = 0;
+}
 	}
+c;
+[Imperative]
+{
+
     x = { 1, 2, 3 };
 	c = even(x);
 	
@@ -2808,12 +2809,12 @@ test3 = a1.X[0][0];
         {
             string code = @"
 x1;x2;x3;
-[Imperative]
-{
     def foo()
     {
         return = (0..9);
     }
+[Imperative]
+{
     x1 = ({1,2,3})[1];
     x2 = (0..9)[3];
     x3 = (foo())[4];

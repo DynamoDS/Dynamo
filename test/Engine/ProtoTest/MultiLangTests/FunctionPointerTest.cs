@@ -64,30 +64,6 @@ c;
         }
 
         [Test]
-        public void T04_GlobalFunctionInImperBlk()
-        {
-            string code = @"
-a;
-b;
-c;
-[Imperative]
-{
-	def foo:double(x:int, y:double = 2.0)
-	{
-		return = x + y;
-	}
-	a = foo;
-	b = foo(3); //b=5.0;
-	c = foo(2, 4.0); //c = 6.0
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            object b = 5.0;
-            object c = 6.0;
-            thisTest.Verify("b", b);
-            thisTest.Verify("c", c);
-        }
-
-        [Test]
         [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T05_ClassMemerVarAsFunctionPointer()
         {
@@ -249,21 +225,6 @@ def foo:int(x:int)
 	return = x;
 }
 foo = 3;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-        }
-
-        [Test]
-        public void T11_NegativeTest_UsingFunctionNameAsVarName_Global_ImperBlk()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo:int(x:int)
-	{
-		return = x;
-	}
-	foo = 3;
-}";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
