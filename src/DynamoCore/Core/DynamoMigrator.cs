@@ -192,6 +192,7 @@ namespace Dynamo.Core
 
         #endregion
 
+        #region static APIs
         /// <summary>
         /// Migrates preference settings and copies packages and custom node 
         /// definitions from the last but one version to the currently installed Dynamo version
@@ -201,19 +202,45 @@ namespace Dynamo.Core
         /// <returns>new migrator instance after migration</returns>
         public static DynamoMigratorBase MigrateBetweenDynamoVersions(IPathManager pathManager, IDynamoLookUp dynamoLookup = null)
         {
+            //Get the current version from the current path manager user data directory.
+            var currentVersion = GetInstallVersionFromUserDataFolder(pathManager.UserDataDirectory);
+            var previousVersion = GetLatestVersionToMigrate(pathManager, dynamoLookup, currentVersion);
+            
+            if (!previousVersion.HasValue || previousVersion.Value.UserDataRoot == null)
+                return null; //Don't have previous version for migration
+
+            return Migrate(previousVersion.Value, currentVersion);
+        }
+
+        /// <summary>
+        /// Gets the most recent version to migrate to the given current version.
+        /// </summary>
+        /// <param name="pathManager"></param>
+        /// <param name="dynamoLookup"></param>
+        /// <param name="currentVersion"></param>
+        /// <returns>FileVersion?</returns>
+        public static FileVersion? GetLatestVersionToMigrate(IPathManager pathManager, IDynamoLookUp dynamoLookup, FileVersion currentVersion)
+        {
             var versions = GetInstalledVersions(pathManager, dynamoLookup);
 
             if (versions.Count() < 2)
                 return null; // No need for migration
 
-            var previousVersion = versions.ElementAt(1);
-            var currentVersion = versions.First();
 
-            return Migrate(previousVersion, currentVersion);
+            foreach (var version in versions)
+            {
+                if (version < currentVersion) return version;
+                
+                if(version <= currentVersion 
+                    && version.UserDataRoot != currentVersion.UserDataRoot)
+                {
+                    return version;
+                }
+            }
+            return null;
         }
 
-        #region static APIs
-
+        
         /// <summary>
         /// Get a list of file version objects given a root folder. Assuming the 
         /// following folders exist:

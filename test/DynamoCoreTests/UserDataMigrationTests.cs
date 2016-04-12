@@ -211,6 +211,60 @@ namespace Dynamo
             Assert.AreEqual(TempFolder, versionList[1].UserDataRoot);
         }
 
+        [Test, Category("UnitTests")]
+        public void GetLatestVersionToMigrate()
+        {
+            var mockLookup = new Mock<IDynamoLookUp>();
+            mockLookup.Setup(x => x.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
+
+            var current = new FileVersion(1, 0, Path.Combine(TempFolder, "Test"));
+            var latest = DynamoMigratorBase.GetLatestVersionToMigrate(null, mockLookup.Object, current);
+            Assert.IsTrue(latest.HasValue);
+            Assert.AreEqual(1, latest.Value.MajorPart);
+            Assert.AreEqual(0, latest.Value.MinorPart);
+            Assert.AreEqual(TempFolder, latest.Value.UserDataRoot);
+        }
+
+        [Test, Category("UnitTests")]
+        public void GetLatestVersionToMigrate_10()
+        {
+            var mockLookup = new Mock<IDynamoLookUp>();
+            mockLookup.Setup(x => x.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
+
+            var current = new FileVersion(1, 0, TempFolder);
+            var latest = DynamoMigratorBase.GetLatestVersionToMigrate(null, mockLookup.Object, current);
+            Assert.IsTrue(latest.HasValue);
+            Assert.AreEqual(1, latest.Value.MajorPart);
+            Assert.AreEqual(0, latest.Value.MinorPart);
+            Assert.AreEqual(Path.Combine(TempFolder, "Test"), latest.Value.UserDataRoot);
+        }
+
+
+        [Test, Category("UnitTests")]
+        public void GetLatestVersionToMigrate_PartiallyValidData()
+        {
+            var mockLookup = new Mock<IDynamoLookUp>();
+            mockLookup.Setup(x => x.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
+
+            var current = new FileVersion(0, 9, TempFolder);
+            var latest = DynamoMigratorBase.GetLatestVersionToMigrate(null, mockLookup.Object, current);
+            Assert.IsTrue(latest.HasValue);
+            Assert.AreEqual(0, latest.Value.MajorPart);
+            Assert.AreEqual(8, latest.Value.MinorPart);
+            Assert.AreEqual(TempFolder, latest.Value.UserDataRoot);
+        }
+
+        [Test, Category("UnitTests")]
+        public void GetLatestVersionToMigrate_AllInvalidData()
+        {
+            var mockLookup = new Mock<IDynamoLookUp>();
+            mockLookup.Setup(x => x.GetDynamoUserDataLocations()).Returns(new[] { "x", "y", "z" });
+
+            var current = new FileVersion(1, 0, "a");
+            var latest = DynamoMigratorBase.GetLatestVersionToMigrate(null, mockLookup.Object, current);
+            Assert.IsTrue(!latest.HasValue || latest.Value.UserDataRoot == null);
+        }
+
         private IEnumerable<string> MockUserDirectories()
         {
             yield return Path.Combine(TempFolder, "Test", "1.0");
