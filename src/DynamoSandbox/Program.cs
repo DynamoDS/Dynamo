@@ -38,22 +38,14 @@ namespace DynamoSandbox
 
             try
             {
-
-                Debug.WriteLine("-------------------Dynamo Core Path : " + DynamoCorePath);
                 assemblyPath = Path.Combine(DynamoCorePath, assemblyName);
                 if (File.Exists(assemblyPath))
-                {
-                    Debug.WriteLine("==========assemblyPath EXIST! : " + assemblyPath);
                     return Assembly.LoadFrom(assemblyPath);
-                }
-                else
-                    Debug.WriteLine("-------------------assemblyPath does not exist : " + assemblyPath);
 
                 var assemblyLocation = Assembly.GetExecutingAssembly().Location;
                 var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
 
                 assemblyPath = Path.Combine(assemblyDirectory, assemblyName);
-                Debug.WriteLine("==========Trying this assemblyPath : " + assemblyPath);
                 return (File.Exists(assemblyPath) ? Assembly.LoadFrom(assemblyPath) : null);
             }
             catch (Exception ex)
@@ -86,7 +78,7 @@ namespace DynamoSandbox
             var assembly = Assembly.GetExecutingAssembly();
             var version = assembly.GetName().Version;
 
-            var installs = DynamoInstallDetective.DynamoProducts.FindDynamoInstallations();
+            var installs = DynamoInstallDetective.DynamoProducts.FindDynamoInstallations(Path.GetDirectoryName(assembly.Location));
             if (installs == null) return string.Empty;
 
             return installs.Products
