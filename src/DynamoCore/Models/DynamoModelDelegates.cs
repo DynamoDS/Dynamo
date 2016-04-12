@@ -11,6 +11,11 @@ namespace Dynamo.Models
     /// </summary>
     /// <param name="node">Node model</param>
     public delegate void NodeHandler(NodeModel node);
+
+    /// <summary>
+    /// Represents the method that will handle workspace related events.
+    /// </summary>
+    /// <param name="model">The <see cref="WorkspaceModel"/> object which caused the event.</param>
     public delegate void WorkspaceHandler(WorkspaceModel model);   
     public delegate void ActionHandler(Action action);
 

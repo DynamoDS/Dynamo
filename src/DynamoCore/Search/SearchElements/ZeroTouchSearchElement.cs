@@ -22,6 +22,12 @@ namespace Dynamo.Search.SearchElements
         /// </summary>
         public override string CreationName { get { return functionDescriptor != null ? functionDescriptor.MangledName : this.Name; } }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ZeroTouchSearchElement"/> class 
+        /// with the DesignScript function description
+        /// </summary>
+        /// <param name="functionDescriptor"><see cref="FunctionDescriptor"/> object
+        /// describing DesignScript function.</param>
         public ZeroTouchSearchElement(FunctionDescriptor functionDescriptor)
         {
             this.functionDescriptor = functionDescriptor;

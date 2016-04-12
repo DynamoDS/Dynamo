@@ -1296,12 +1296,29 @@ namespace Dynamo.Migration
         }
     }
 
+    /// <summary>
+    /// Specifies versions which workspace should be migrated between.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public class WorkspaceMigrationAttribute : Attribute
     {
+        /// <summary>
+        /// Version which workspace should be migrated from.
+        /// </summary>
         public Version From { get; private set; }
+
+        /// <summary>
+        /// Version which workspace should be migrated to.
+        /// </summary>
         public Version To { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WorkspaceMigrationAttribute"/> class 
+        /// with the versions which workspace should be migrated between.
+        /// </summary>
+        /// <param name="from">Version which workspace should be migrated from.</param>
+        /// <param name="to">Version which workspace should be migrated to. 
+        /// This parameter can be omitted that means workspace should migrate to the latest version</param>
         public WorkspaceMigrationAttribute(string from, string to = "")
         {
             From = new Version(from);

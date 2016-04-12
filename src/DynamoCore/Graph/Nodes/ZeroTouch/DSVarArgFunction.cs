@@ -99,8 +99,13 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     public class ZeroTouchVarArgNodeController<T> : ZeroTouchNodeController<T> 
         where T : FunctionDescriptor
     {
-        public ZeroTouchVarArgNodeController(T zeroTouchDef)
-            : base(zeroTouchDef) { }
+        /// <summary>
+        ///     Initializes a new instance of 
+        /// the <see cref="ZeroTouchVarArgNodeController"/> class with FunctionDescriptor.
+        /// </summary>
+        /// <param name="zeroTouchDef">FunctionDescriptor describing the function 
+        /// that this controller will call.</param>
+        public ZeroTouchVarArgNodeController(T zeroTouchDef) : base(zeroTouchDef) { }
 
         protected override void InitializeFunctionParameters(NodeModel model, IEnumerable<TypedParameter> parameters)
         {

@@ -8,8 +8,15 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Graph.Workspaces
 {
+    /// <summary>
+    /// Contains sufficient data to create a <see cref="WorkspaceModel"/> object
+    /// </summary>
     public class WorkspaceInfo
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WorkspaceInfo"/> class
+        /// with default workspace data.
+        /// </summary>
         public WorkspaceInfo()
         {
             Zoom = 1.0;
@@ -20,8 +27,8 @@ namespace Dynamo.Graph.Workspaces
             HasRunWithoutCrash = true;
         }
 
-        internal static bool FromXmlDocument(
-            XmlDocument xmlDoc, string path, bool isTestMode, bool forceManualExecutionMode, ILogger logger, out WorkspaceInfo workspaceInfo)
+        internal static bool FromXmlDocument(XmlDocument xmlDoc, string path, bool isTestMode, 
+            bool forceManualExecutionMode, ILogger logger, out WorkspaceInfo workspaceInfo)
         {
             try
             {
@@ -124,19 +131,74 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        /// <summary>
+        /// Version of Dynamo where the workspace was created
+        /// </summary>
         public string Version { get; internal set; }
+
+        /// <summary>
+        /// Description of the workspace
+        /// </summary>
         public string Description { get; internal set; }
+
+        /// <summary>
+        /// Full category name of custom node
+        /// </summary>
         public string Category { get; internal set; }
+
+        /// <summary>
+        /// X coordinate of top left corner of visible workspace part
+        /// </summary>
         public double X { get; internal set; }
+
+        /// <summary>
+        /// Y coordinate of top left corner of visible workspace part
+        /// </summary>
         public double Y { get; internal set; }
+
+        /// <summary>
+        /// Zoom value of the workspace
+        /// </summary>
         public double Zoom { get; internal set; }
+
+        /// <summary>
+        /// Name of the workspace
+        /// </summary>
         public string Name { get; internal set; }
+        
+        /// <summary>
+        /// <see cref="System.Guid"/> identifier string value of custom node workspace 
+        /// </summary>
         public string ID { get; internal set; }
+
+        /// <summary>
+        /// File name of the workspace
+        /// </summary>
         public string FileName { get; internal set; }
+
+        /// <summary>
+        /// Run type of the home workspace
+        /// </summary>
         public RunType RunType { get; internal set; }
+
+        /// <summary>
+        /// Run period value of the home workspace if RunType is Periodic
+        /// </summary>
         public int RunPeriod { get; internal set; }
+
+        /// <summary>
+        /// Indicates if the workspace was executed successfully at last time 
+        /// </summary>
         public bool HasRunWithoutCrash { get; internal set; }
+
+        /// <summary>
+        /// Indicates if the custom node is visible node library
+        /// </summary>
         public bool IsVisibleInDynamoLibrary { get; internal set; }
+
+        /// <summary>
+        /// Indicates whether the workspace is custom node or home workspace
+        /// </summary>
         public bool IsCustomNodeWorkspace
         {
             get { return !string.IsNullOrEmpty(ID); }
