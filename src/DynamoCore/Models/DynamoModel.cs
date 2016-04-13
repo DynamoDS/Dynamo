@@ -48,8 +48,15 @@ using Dynamo.Events;
 
 namespace Dynamo.Models
 {
+    /// <summary>
+    /// This class creates an interface for Engine controller. 
+    /// </summary>
     public interface IEngineControllerManager
     {
+        /// <summary>
+        /// A controller to coordinate the interactions between some DesignScript
+        /// sub components like library managment, live runner and so on.
+        /// </summary>
         EngineController EngineController { get; }
     }
 

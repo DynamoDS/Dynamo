@@ -5,6 +5,9 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Graph.Nodes
 {
+    /// <summary>
+    /// DummyNode is used for tests or in case if node couldn't be loaded.
+    /// </summary>
     [NodeName("Legacy Node")]
     [NodeDescription("DummyNodeDescription",typeof(Dynamo.Properties.Resources))]
     [IsMetaNode]
@@ -18,6 +21,10 @@ namespace Dynamo.Graph.Nodes
             Deprecated, Unresolved
         }
 
+        /// <summary>
+        /// This function creates DummyNode.
+        /// DummyNode is used for tests or in case if node couldn't be loaded.
+        /// </summary>
         public DummyNode()
         {
             LegacyNodeName = "Dynamo.Graph.Nodes.DummyNode";
@@ -27,6 +34,15 @@ namespace Dynamo.Graph.Nodes
             ShouldDisplayPreviewCore = false;
         }
 
+        /// <summary>
+        /// This function creates DummyNode with specified number of ports.
+        /// </summary>
+        /// <param name="inputCount">Number of input ports</param>
+        /// <param name="outputCount">Number of output ports</param>
+        /// <param name="legacyName">Name of the node</param>
+        /// <param name="originalElement">Xml node</param>
+        /// <param name="legacyAssembly">Assembly of the node</param>
+        /// <param name="nodeNature">Node can be Deprecated or Unresolved</param>
         public DummyNode(int inputCount, int outputCount, string legacyName, XmlElement originalElement, string legacyAssembly, Nature nodeNature)
         {
             InputCount = inputCount;
@@ -230,11 +246,34 @@ namespace Dynamo.Graph.Nodes
             throw new InvalidOperationException(string.Format(message, NodeNature));
         }
         
+        /// <summary>
+        /// Returns the number of input ports
+        /// </summary>
         public int InputCount { get; private set; }
+
+        /// <summary>
+        /// Returns the number of output ports
+        /// </summary>
         public int OutputCount { get; private set; }
+
+        /// <summary>
+        /// Returns the node name
+        /// </summary>
         public string LegacyNodeName { get; private set; }
+
+        /// <summary>
+        /// Returns the node assembly
+        /// </summary>
         public string LegacyAssembly { get; private set; }
+
+        /// <summary>
+        /// Node can be Deprecated or Unresolved
+        /// </summary>
         public Nature NodeNature { get; private set; }
+
+        /// <summary>
+        /// Xml node
+        /// </summary>
         public XmlElement OriginalNodeContent { get; private set; }
     }
 }
