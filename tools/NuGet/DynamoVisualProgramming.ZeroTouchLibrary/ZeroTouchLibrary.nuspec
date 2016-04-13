@@ -16,7 +16,7 @@
     <copyright>Copyright Autodesk 2016</copyright>
     <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
 	<dependencies>
-		<dependency id= "DynamoVisualProgramming.DynamoServices" version="1.0.0-beta2"/>
+		<dependency id= "DynamoVisualProgramming.DynamoServices" version="1.0.0-beta3"/>
 	</dependencies>
  </metadata>
 </package>
