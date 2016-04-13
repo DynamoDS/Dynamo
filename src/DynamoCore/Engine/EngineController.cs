@@ -41,7 +41,7 @@ namespace Dynamo.Engine
         public event AstBuiltEventHandler AstBuilt;
 
         /// <summary>
-        /// This event is fired when updategraphtask is completed.
+        /// This event is fired when <see cref="UpdateGraphAsyncTask"/> is completed.
         /// </summary>
         internal event Action<TraceReconciliationEventArgs> TraceReconcliationComplete;
         private void OnTraceReconciliationComplete(TraceReconciliationEventArgs e)

@@ -6,7 +6,7 @@ namespace Dynamo.Scheduler
     /// <summary>
     /// This delegate is used in AsyncTask events: Completed and Discarded.
     /// </summary>
-    /// <param name="asyncTask">AsyncTask</param>
+    /// <param name="asyncTask"><see cref="AsyncTask"/></param>
     public delegate void AsyncTaskCompletedHandler(AsyncTask asyncTask);
 
     /// <summary>
@@ -32,7 +32,7 @@ namespace Dynamo.Scheduler
         #region Private Class Data Members
 
         /// <summary>
-        /// Returns priority of the AsyncTask.
+        /// Returns priority of the <see cref="AsyncTask"/>.
         /// </summary>
         public enum TaskPriority
         {
