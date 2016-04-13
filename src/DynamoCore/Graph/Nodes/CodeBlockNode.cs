@@ -23,6 +23,9 @@ using ProtoCore.SyntaxAnalysis;
 
 namespace Dynamo.Graph.Nodes
 {
+    /// <summary>
+    ///     Represents codeblock node's functionality.
+    /// </summary>
     [NodeName("Code Block")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("CodeBlockDescription", typeof(Dynamo.Properties.Resources))]

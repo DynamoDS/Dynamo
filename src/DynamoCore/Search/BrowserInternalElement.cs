@@ -2,6 +2,9 @@
 
 namespace Dynamo.Search
 {
+    /// <summary>
+    ///     This class represents "descendant" of browser elemet
+    /// </summary>
     public class BrowserInternalElement : BrowserItem
     {
         /// <summary>
@@ -54,6 +57,11 @@ namespace Dynamo.Search
             this.OldParent = null;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BrowserInternalElement"/> class.
+        /// </summary>
+        /// <param name="name">Name of element.</param>
+        /// <param name="parent">Parent element.</param>
         internal BrowserInternalElement(string name, BrowserItem parent)
         {
             this._name = name;

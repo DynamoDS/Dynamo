@@ -17,6 +17,10 @@ namespace Dynamo.Extensions
     {
         private readonly DynamoModel dynamoModel;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReadyParams"/> class.
+        /// </summary>
+        /// <param name="dynamoM">Dynamo model.</param>
         internal ReadyParams(DynamoModel dynamoM)
         {
             dynamoModel = dynamoM;

@@ -12,6 +12,9 @@ using System.Xml;
 
 namespace Dynamo.Extensions
 {
+    /// <summary>
+    /// Provides functionality for loading Dynamo's extensions
+    /// </summary>
     public class ExtensionLoader: IExtensionLoader, ILogSource
     {
         private IExtension Load(ExtensionDefinition extension)

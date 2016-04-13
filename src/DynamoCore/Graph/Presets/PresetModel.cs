@@ -72,8 +72,10 @@ namespace Dynamo.Graph.Presets
                 serializedNodes.Add(node.Serialize(tempdoc, SaveContext.Preset));
             }
         }
-        
-        //this overload is used for loading
+
+        /// <summary>
+        /// this overload is used for loading
+        /// </summary>
         private PresetModel(string name, string description, List<NodeModel> nodes, List<XmlElement> serializedNodes, Guid id)
         {
             Name = name;
@@ -87,8 +89,7 @@ namespace Dynamo.Graph.Presets
         /// this overload is used for loading with deserializeCore, we must pass the nodesInTheGraph to the instance of the Preset so that
         /// we can detect missing nodes
         /// </summary>
-        /// <param name="nodesInGraph"></param>
- 
+        /// <param name="nodesInGraph"></param> 
         internal PresetModel(IEnumerable<NodeModel> nodesInGraph)
         {
             this.nodes = nodesInGraph.ToList();

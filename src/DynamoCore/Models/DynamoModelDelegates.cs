@@ -7,6 +7,9 @@ using ProtoScript.Runners;
 
 namespace Dynamo.Models
 {
+    /// <summary>
+    /// This delegate is used to manage Dynamo's shutting down.
+    /// </summary>
     public delegate void DynamoModelHandler(DynamoModel model);
 
     /// <summary>
@@ -14,7 +17,10 @@ namespace Dynamo.Models
     /// </summary>
     /// <param name="node">Node model</param>
     public delegate void NodeHandler(NodeModel node);
-    public delegate void WorkspaceHandler(WorkspaceModel model);   
+    public delegate void WorkspaceHandler(WorkspaceModel model);
+    /// <summary>
+    /// This delegate is used to manage Dynamo's request dispatcher invoke.
+    /// </summary>
     public delegate void ActionHandler(Action action);
 
     /// <summary>

@@ -5,8 +5,14 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Graph.Connectors
 {
+    /// <summary>
+    /// Idicates which type of connector's should be displayed on canvas.
+    /// </summary>
     public enum ConnectorType { BEZIER, POLYLINE };
 
+    /// <summary>
+    /// Represents a connector between nodes. Connector can be a bezier or polyline type.
+    /// </summary>
     public class ConnectorModel : ModelBase
     {
         #region properties

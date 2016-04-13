@@ -51,8 +51,14 @@ namespace Dynamo.Engine
         ProtoCore.Type ReturnType { get; }
     }
 
+    /// <summary>
+    ///     Contains parameters for function description.
+    /// </summary>
     public class FunctionDescriptorParams
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FunctionDescriptorParams"/> class.
+        /// </summary>
         public FunctionDescriptorParams()
         {
             IsVisibleInLibrary = true;
@@ -90,6 +96,10 @@ namespace Dynamo.Engine
 
         private readonly IPathManager pathManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FunctionDescriptor"/> class.
+        /// </summary>
+        /// <param name="funcDescParams">Function descriptor parameters.</param>
         public FunctionDescriptor(FunctionDescriptorParams funcDescParams)
         {
             if (!String.IsNullOrEmpty(funcDescParams.Summary))
