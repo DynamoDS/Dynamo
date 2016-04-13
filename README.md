@@ -23,8 +23,7 @@ You will need the following to build Dynamo:
 
 - Microsoft Visual Studio 2013
 - [GitHub for Windows](https://windows.github.com/)
-- [Microsoft .NET Framework 3.5 with SP1](http://www.microsoft.com/en-sg/download/details.aspx?id=25150)
-- Microsoft .NET Framework 4.0 and above (included with Visual Studio 2013)
+- Microsoft .NET Framework 4.5 and above (included with Visual Studio 2013)
 - Microsoft DirectX (install from %GitHub%\Dynamo\tools\install\Extra\DirectX\DXSETUP.exe)
 
 Directions for building Dynamo on other platforms (e.g. Linux or OS X) can be found [here](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-on-Linux,-Mac).  
