@@ -11,7 +11,7 @@ namespace Dynamo.Scheduler
         private Action actionToPerform;
 
         /// <summary>
-        /// Returns priority of the DelegateBasedAsyncTask
+        /// Returns priority of the <see cref="DelegateBasedAsyncTask"/>.
         /// </summary>
         public override TaskPriority Priority
         {

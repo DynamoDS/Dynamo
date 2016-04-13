@@ -40,7 +40,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        /// Event fired when an entry is added.
+        /// Event is fired when an entry is added.
         /// </summary>
         public event Action<V> EntryAdded;
 
@@ -51,7 +51,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        /// Event fired when an entry is removed.
+        /// Event is fired when an entry is removed.
         /// </summary>
         public event Action<V> EntryRemoved;
 
@@ -62,7 +62,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        /// Event fired when an entry is updated.
+        /// Event is fired when an entry is updated.
         /// </summary>
         public event Action<V> EntryUpdated;
 

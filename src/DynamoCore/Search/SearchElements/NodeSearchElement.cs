@@ -21,7 +21,7 @@ namespace Dynamo.Search.SearchElements
         private bool isVisibleInSearch = true;
 
         /// <summary>
-        /// Event fired when a node visibility in library search was changed.
+        /// Event is fired when a node visibility in library search was changed.
         /// </summary>
         public Action VisibilityChanged;
         private void OnVisibilityChanged()
