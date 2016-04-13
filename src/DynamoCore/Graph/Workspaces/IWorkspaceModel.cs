@@ -40,19 +40,45 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         IEnumerable<NodeModel> CurrentSelection { get; }
 
+        /// <summary>
+        /// X coordinate of center point of visible workspace part
+        /// </summary>
         double CenterX { get; }
+
+        /// <summary>
+        /// Y coordinate of center point of visible workspace part
+        /// </summary>
         double CenterY { get; }
 
+        /// <summary>
+        /// Triggers when a node is added to the workspace.
+        /// </summary>
         event Action<NodeModel> NodeAdded;
+
+        /// <summary>
+        /// Triggers when a node is removed from the workspace.
+        /// </summary>
         event Action<NodeModel> NodeRemoved;
+
+        /// <summary>
+        /// Triggers when nodes are cleared from the workspace.
+        /// </summary>
         event Action NodesCleared;
+
+        /// <summary>
+        /// Triggers when a connector is added to the workspace.
+        /// </summary>
         event Action<ConnectorModel> ConnectorAdded;
+
+        /// <summary>
+        /// Triggers when a connector is removed from the workspace.
+        /// </summary>
         event Action<ConnectorModel> ConnectorDeleted;
 
         /// <summary>
         /// Implement to record node modification for undo/redo
         /// </summary>
-        /// <param name="models"></param>
+        /// <param name="models">Collection of <see cref="ModelBase"/> objects to record.</param>
         void RecordModelsForModification(IEnumerable<ModelBase> models);
     }
 }
