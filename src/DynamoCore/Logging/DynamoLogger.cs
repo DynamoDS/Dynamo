@@ -77,6 +77,9 @@ namespace Dynamo.Logging
         private TextWriter FileWriter { get; set; }
         private StringBuilder ConsoleWriter { get; set; }
 
+        /// <summary>
+        /// Warning level for log messages.
+        /// </summary>
         public WarningLevel WarningLevel
         {
             get { return _warningLevel; }
@@ -90,6 +93,9 @@ namespace Dynamo.Logging
             }
         }
 
+        /// <summary>
+        /// Warning message text
+        /// </summary>
         public string Warning
         {
             get { return _warning; }
@@ -104,11 +110,17 @@ namespace Dynamo.Logging
             }
         }
 
+        /// <summary>
+        /// Full path to log file
+        /// </summary>
         public string LogPath 
         {
             get { return _logPath; }
         }
 
+        /// <summary>
+        /// Contains all message which have been logged
+        /// </summary>
         public string LogText
         {
             get
@@ -123,8 +135,11 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
-        /// The default constructor.
+        /// Initializes a new instance of <see cref="DynamoLogger"/> class
+        /// with specified debug settings and directory where to write logs
         /// </summary>
+        /// <param name="debugSettings">Debug settings</param>
+        /// <param name="logDirectory">Directory path where log file will be written</param>
         public DynamoLogger(DebugSettings debugSettings, string logDirectory)
         {
             lock (guardMutex)
@@ -243,6 +258,11 @@ namespace Dynamo.Logging
             Log(tag, error);
         }
 
+        /// <summary>
+        /// Log an information message
+        /// </summary>
+        /// <param name="tag">Tag of the message to log</param>
+        /// <param name="info">Message to log</param>
         public void LogInfo(string tag, string info)
         {
             Log(tag, LogLevel.File);
@@ -263,7 +283,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Log a message
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="message">Message to log</param>
         public void Log(string message)
         {
             Log(message, LogLevel.Console);
@@ -272,7 +292,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Log an exception
         /// </summary>
-        /// <param name="e"></param>
+        /// <param name="e">Exception to log</param>
         public void Log(Exception e)
         {
             Log(e.GetType() + ":", LogLevel.Console);
@@ -283,8 +303,8 @@ namespace Dynamo.Logging
         /// <summary>
         /// Log some data with an associated tag
         /// </summary>
-        /// <param name="tag"></param>
-        /// <param name="data"></param>
+        /// <param name="tag">Tag of the message to log</param>
+        /// <param name="data">Message to log</param>
         public void Log(string tag, string data)
         {
             Log(string.Format("{0}:{1}", tag, data));
@@ -350,6 +370,9 @@ namespace Dynamo.Logging
                 ConsoleWriter = null;
         }
 
+        /// <summary>
+        /// Disposes the logger and finishes logging.
+        /// </summary>
         public void Dispose()
         {
             Dispose(_isDisposed);

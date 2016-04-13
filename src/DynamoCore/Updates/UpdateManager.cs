@@ -20,7 +20,7 @@ namespace Dynamo.Updates
     /// <param name="sender">The object where the event handler is attached.</param>
     /// <param name="e">The event data.</param>
     public delegate void UpdateDownloadedEventHandler(object sender, UpdateDownloadedEventArgs e);
-
+	
     /// <summary>
     /// A delegate is used to handle shutdown request
     /// </summary>
@@ -265,9 +265,25 @@ namespace Dynamo.Updates
     /// </summary>
     public class AppVersionInfo : IAppVersionInfo
     {
+        /// <summary>
+        /// Current Dynamo version
+        /// </summary>
         public BinaryVersion Version { get; set; }
+
+        /// <summary>
+        /// URL where one can get information about 
+        /// current Dynamo version
+        /// </summary>
         public string VersionInfoURL { get; set; }
+        
+        /// <summary>
+        /// URL where Dynamo installer can be downloaded from
+        /// </summary>
         public string InstallerURL { get; set; }
+
+        /// <summary>
+        /// URL where signature file to validate the new installer can be downloaded from
+        /// </summary>
         public string SignatureURL { get; set; }
     }
 

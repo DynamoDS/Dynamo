@@ -21,8 +21,14 @@ namespace Dynamo.Engine
             QualifiedName = qualifiedName;
         }
 
+        /// <summary>
+        /// Qualified name of the corresponding functions
+        /// </summary>
         public string QualifiedName { get; private set; }
 
+        /// <summary>
+        /// Collection of functions with common qualified name
+        /// </summary>
         public IEnumerable<FunctionDescriptor> Functions
         {
             get { return functions; }
@@ -31,8 +37,8 @@ namespace Dynamo.Engine
         /// <summary>
         ///     Add a function descriptor to the group
         /// </summary>
-        /// <param name="function"></param>
-        /// <returns></returns>
+        /// <param name="function"><see cref="FunctionDescriptor"/> object to add</param>
+        /// <returns>True if descriptor has been added</returns>
         internal bool AddFunctionDescriptor(FunctionDescriptor function)
         {
             if (!QualifiedName.Equals(function.QualifiedName) || functions.Contains(function))
@@ -77,6 +83,13 @@ namespace Dynamo.Engine
             return func;
         }
 
+        /// <summary>
+        /// Overrides equality check of two <see cref="FunctionGroup"/> objects
+        /// </summary>
+        /// <param name="obj"><see cref="FunctionGroup"/> object to compare 
+        /// with the current one</param>
+        /// <returns>Returns true if two <see cref="FunctionGroup"/> objects 
+        /// are equals</returns>
         public override bool Equals(object obj)
         {
             if (null == obj || GetType() != obj.GetType())
@@ -85,6 +98,10 @@ namespace Dynamo.Engine
             return QualifiedName.Equals((obj as FunctionGroup).QualifiedName);
         }
 
+        /// <summary>
+        ///     Overrides computing the hash code for the <see cref="FunctionGroup"/>
+        /// </summary>
+        /// <returns>The hash code for this <see cref="FunctionGroup"/></returns>
         public override int GetHashCode()
         {
             return QualifiedName.GetHashCode();

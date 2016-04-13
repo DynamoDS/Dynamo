@@ -3,19 +3,30 @@
 namespace Dynamo.Search
 {
     /// <summary>
-    ///     This class represents "descendant" of browser elemet
+    ///     This class represents "descendant" of browser element
     /// </summary>
     public class BrowserInternalElement : BrowserItem
     {
+        private ObservableCollection<BrowserItem> _items = new ObservableCollection<BrowserItem>();
+        
         /// <summary>
         ///     The items inside of the browser item
         /// </summary>
-        private ObservableCollection<BrowserItem> _items = new ObservableCollection<BrowserItem>();
         public override ObservableCollection<BrowserItem> Items { get { return _items; } set { _items = value; } }
 
+        /// <summary>
+        ///     The items which are in the same category as the browser item
+        /// </summary>
         public ObservableCollection<BrowserItem> Siblings { get { return this.Parent.Items; } }
 
+        /// <summary>
+        ///     Browser item representing category which this element belongs to
+        /// </summary>
         public BrowserItem Parent { get; set; }
+
+        /// <summary>
+        ///     Previous parent item 
+        /// </summary>
         public BrowserItem OldParent { get; set; }
 
         internal void ReturnToOldParent()
@@ -40,15 +51,20 @@ namespace Dynamo.Search
             }
         }
 
-        /// <summary>
-        /// Name property </summary>
-        /// <value>
-        /// The name of the node </value>
         private string _name;
+        
+        /// <summary>
+        ///     Name of the node
+        /// </summary>
         public override string Name
         {
             get { return _name; }
         }
+
+        /// <summary>
+        ///     Full category name consisting of root and all sub categories names
+        /// </summary>
+        public string FullCategoryName { get; set; }
 
         internal BrowserInternalElement()
         {
@@ -68,9 +84,6 @@ namespace Dynamo.Search
             this.Parent = parent;
             this.OldParent = null;
         }
-
-
-        public string FullCategoryName { get; set; }
 
         internal override void Execute()
         {

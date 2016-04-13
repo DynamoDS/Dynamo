@@ -24,6 +24,10 @@ namespace Dynamo.Models
         internal event RecordableCommandHandler CommandStarting;
         internal event RecordableCommandHandler CommandCompleted;
 
+        /// <summary>
+        /// Executes specified command
+        /// </summary>
+        /// <param name="command">Command to execute</param>
         public void ExecuteCommand(RecordableCommand command)
         {
             if (CommandStarting != null)

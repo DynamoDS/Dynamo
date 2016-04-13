@@ -288,8 +288,16 @@ namespace Dynamo.Search.SearchElements
     /// </summary>
     public class DragDropNodeSearchElementInfo
     {
+        /// <summary>
+        /// SearchElement which is being dragged
+        /// </summary>
         public NodeSearchElement SearchElement { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DragDropNodeSearchElementInfo"/>
+        /// with specified element to drag
+        /// </summary>
+        /// <param name="searchElement">Element to drag on the canvas</param>
         public DragDropNodeSearchElementInfo(NodeSearchElement searchElement)
         {
             this.SearchElement = searchElement;
