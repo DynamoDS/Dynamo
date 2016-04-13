@@ -68,15 +68,20 @@
       <Directory Id="DYNAMO_INSTALLDIR"/>
       <Directory Id="CommonAppDataFolder">
         <Directory Id="DYNAMO_PROGDATA" Name="Dynamo">
-          <Directory Id="PROGDATA" Name="$(var.Major).$(var.Minor)"/>
+          <Directory Id="DYNAMO_CORE_PROGDATA" Name="$(var.ProductName)">
+            <Directory Id="PROGDATA" Name="$(var.Major).$(var.Minor)">
+            </Directory>
+          </Directory>
         </Directory>
       </Directory>
       <Directory Id="AppDataFolder">
         <Directory Id="DYNAMO_APPDATA" Name="Dynamo">
-          <Directory Id="APPDATA" Name="$(var.Major).$(var.Minor)">
-            <Directory Id="definitions" Name="definitions" />
-            <Directory Id="logs" Name="Logs" />
-            <Directory Id="packages" Name="packages" />
+          <Directory Id="DYNAMO_CORE_APPDATA" Name="$(var.ProductName)">
+            <Directory Id="APPDATA" Name="$(var.Major).$(var.Minor)">
+              <Directory Id="definitions" Name="definitions" />
+              <Directory Id="logs" Name="Logs" />
+              <Directory Id="packages" Name="packages" />
+            </Directory>
           </Directory>
         </Directory>
       </Directory>
@@ -102,6 +107,7 @@
         <RemoveFolder Id="RemoveLogsDir" Directory="logs" On="uninstall" />
         <RemoveFolder Id="RemovePackagesDir" Directory="packages" On="uninstall" />
         <RemoveFolder Id="RemoveAppDataDir" Directory="APPDATA" On="uninstall" />
+        <RemoveFolder Id="RemoveDynamoRevitAppDataDir" Directory="DYNAMO_CORE_APPDATA" On="uninstall" />
         <RemoveFolder Id="RemoveDynamoAppDataDir" Directory="DYNAMO_APPDATA" On="uninstall" />
       </Component>
     </DirectoryRef>
