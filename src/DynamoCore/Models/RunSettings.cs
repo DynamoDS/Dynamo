@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-using Dynamo.Core;
+﻿using Dynamo.Core;
 
 namespace Dynamo.Models
 {
@@ -80,7 +78,7 @@ namespace Dynamo.Models
         #region Constructors
 
         /// <summary>
-        /// This method creates default RunSettings with DefaultRunPeriod, Manual run type and run is anabled.
+        /// This method creates default RunSettings with DefaultRunPeriod, Manual run type and run is enabled.
         /// </summary>
         public RunSettings()
         {
