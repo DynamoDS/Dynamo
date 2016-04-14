@@ -96,17 +96,16 @@ namespace Dynamo.Search
                             dynamoNode.InPorts[i].DefaultValue.ToString());
                     }
                     XmlHelper.AddAttribute(parameterNode, "Tooltip", dynamoNode.InPorts[i].ToolTipContent);
-                    i++;
                 }
             }
 
             // If entry has output parameters.
             if (dynamoNode.OutPorts.Count != 0)
             {
-                var inputNode = XmlHelper.AddNode(element, "Outputs");
+                var outputNode = XmlHelper.AddNode(element, "Outputs");
                 for (int i = 0; i < dynamoNode.OutPorts.Count; i++)
                 {
-                    var parameterNode = XmlHelper.AddNode(inputNode, "OutputParameter");
+                    var parameterNode = XmlHelper.AddNode(outputNode, "OutputParameter");
 
                     // Case for UI nodes as ColorRange.
                     if (dynamoNode.OutPorts.Count == entry.OutputParameters.Count()
@@ -116,7 +115,6 @@ namespace Dynamo.Search
                     }
 
                     XmlHelper.AddAttribute(parameterNode, "Tooltip", dynamoNode.OutPorts[i].ToolTipContent);
-                    i++;
                 }
             }
 
