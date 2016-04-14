@@ -74,17 +74,6 @@
           </Directory>
         </Directory>
       </Directory>
-      <Directory Id="AppDataFolder">
-        <Directory Id="DYNAMO_APPDATA" Name="Dynamo">
-          <Directory Id="DYNAMO_CORE_APPDATA" Name="$(var.ProductName)">
-            <Directory Id="APPDATA" Name="$(var.Major).$(var.Minor)">
-              <Directory Id="definitions" Name="definitions" />
-              <Directory Id="logs" Name="Logs" />
-              <Directory Id="packages" Name="packages" />
-            </Directory>
-          </Directory>
-        </Directory>
-      </Directory>
     </Directory>
 
     <DirectoryRef Id="TARGETDIR">
@@ -98,17 +87,6 @@
           <RegistryValue Name="Version" Value="$(var.Major).$(var.Minor).$(var.Build)" Type="string" />
           <RegistryValue Name="RevVersion" Value="$(var.Rev)" Type="integer" />
         </RegistryKey>
-
-        <CreateFolder Directory="definitions" />
-        <CreateFolder Directory="logs" />
-        <CreateFolder Directory="packages" />
-
-        <RemoveFolder Id="RemoveDefinitionsDir" Directory="definitions" On="uninstall" />
-        <RemoveFolder Id="RemoveLogsDir" Directory="logs" On="uninstall" />
-        <RemoveFolder Id="RemovePackagesDir" Directory="packages" On="uninstall" />
-        <RemoveFolder Id="RemoveAppDataDir" Directory="APPDATA" On="uninstall" />
-        <RemoveFolder Id="RemoveDynamoRevitAppDataDir" Directory="DYNAMO_CORE_APPDATA" On="uninstall" />
-        <RemoveFolder Id="RemoveDynamoAppDataDir" Directory="DYNAMO_APPDATA" On="uninstall" />
       </Component>
     </DirectoryRef>
 
