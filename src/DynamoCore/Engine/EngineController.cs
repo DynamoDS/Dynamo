@@ -1,24 +1,22 @@
-﻿using Autodesk.DesignScript.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using Autodesk.DesignScript.Interfaces;
 using Dynamo.Engine.CodeCompletion;
-using Dynamo.Models;
+using Dynamo.Engine.CodeGeneration;
+using Dynamo.Engine.NodeToCode;
+using Dynamo.Graph.Nodes;
 using Dynamo.Logging;
 using Dynamo.Scheduler;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
+using ProtoCore.Utils;
 using ProtoScript.Runners;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using Constants = ProtoCore.DSASM.Constants;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
-using ProtoCore.Utils;
-using Dynamo.Engine.NodeToCode;
-using Dynamo.Engine.CodeGeneration;
-using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Engine
 {
@@ -181,7 +179,7 @@ namespace Dynamo.Engine
         /// Get runtime mirror for variable.
         /// </summary>
         /// <param name="variableName">Unique ID of AST node</param>
-        /// <returns>RuntimeMirror object that reflects status of a single designsript variable</returns>
+        /// <returns>RuntimeMirror object that reflects status of a single designscript variable</returns>
         public RuntimeMirror GetMirror(string variableName)
         {
             lock (macroMutex)
