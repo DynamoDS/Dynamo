@@ -48,6 +48,10 @@ namespace Dynamo.Search.SearchElements
             this.OnExecuted();
         }
 
+        /// <summary>
+        /// Delegate is used in Executed event.
+        /// </summary>
+        /// <param name="ele">search element</param>
         public delegate void SearchElementHandler(SearchElementBase ele);
         internal event SearchElementHandler Executed;
         protected void OnExecuted()

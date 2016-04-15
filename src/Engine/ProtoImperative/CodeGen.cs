@@ -226,7 +226,6 @@ namespace ProtoImperative
                 ProtoCore.DSASM.Constants.kInvalidIndex, 
                 funcIndex, 
                 datatype,
-                TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                 false,
                 codeBlock.symbolTable.RuntimeIndex,
                 MemoryRegion.MemStack,
@@ -271,7 +270,6 @@ namespace ProtoImperative
                 ident,
                 ProtoCore.DSASM.Constants.kInvalidIndex,
                 funcIndex,
-                datatype,
                 datatype,
                 true,
                 codeBlock.symbolTable.RuntimeIndex,
@@ -838,8 +836,6 @@ namespace ProtoImperative
                         core.FunctionPointerTable.functionPointerDictionary.TryAdd(fptr, fptrNode);
                         core.FunctionPointerTable.functionPointerDictionary.TryGetBySecond(fptrNode, out fptr);
 
-                        EmitPushVarData(0);
-
                         EmitInstrConsole(ProtoCore.DSASM.kw.push, t.Name);
                         StackValue opFunctionPointer = StackValue.BuildFunctionPointer(fptr);
                         EmitPush(opFunctionPointer, runtimeIndex, t.line, t.col);
@@ -875,13 +871,10 @@ namespace ProtoImperative
                 //      warning is emitted during pre-execute phase, and at the ID is bound to null. (R1 - Feb)
 
                 EmitPushNull();
-
-                EmitPushVarData(dimensions);
-
                 ProtoCore.Type varType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
                 symbolnode = Allocate(t.Value, globalProcIndex, varType);
 
-                EmitInstrConsole(ProtoCore.DSASM.kw.pop, t.Value);
+                EmitInstrConsole(kw.pop, t.Value);
                 EmitPopForSymbol(symbolnode, runtimeIndex);
             }
             else
@@ -905,6 +898,8 @@ namespace ProtoImperative
                 }
             }
 
+            EmitInstrConsole(kw.push, t.Value);
+            EmitPushForSymbol(symbolnode, runtimeIndex, t);
 
             if (null != t.ArrayDimensions)
             {
@@ -923,10 +918,11 @@ namespace ProtoImperative
                 }
             }
 
-            EmitPushVarData(dimensions);
-
-            EmitInstrConsole(ProtoCore.DSASM.kw.push, t.Value);
-            EmitPushForSymbol(symbolnode, runtimeIndex, t);
+            if (dimensions > 0)
+            {
+                EmitPushDimensions(dimensions);
+                EmitLoadElement(symbolnode, runtimeIndex);
+            }
 
             if (core.TypeSystem.IsHigherRank(type.UID, inferedType.UID))
             {
@@ -1027,8 +1023,8 @@ namespace ProtoImperative
             if (fnode != null && fnode.ArrayDimensions != null)
             {
                 int dimensions = DfsEmitArrayIndexHeap(fnode.ArrayDimensions);
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, dimensions.ToString() + "[dim]");
-                EmitPushArrayIndex(dimensions);
+                EmitPushDimensions(dimensions);
+                EmitLoadElement(null, Constants.kInvalidIndex);
                 fnode.ArrayDimensions = null;
             }
 
@@ -1668,31 +1664,43 @@ namespace ProtoImperative
 
                             if (b.LeftNode is TypedIdentifierNode)
                             {
-                                symbolnode.SetStaticType(castType);
+                                EmitCast(castType.UID, castType.rank);
                             }
-                            castType = symbolnode.staticType;
-                            EmitPushVarData(dimensions, castType.UID, castType.rank);
 
-                            EmitInstrConsole(ProtoCore.DSASM.kw.pop, s);
-                            StackValue operand = StackValue.BuildVarIndex(symbol);
-                            EmitPop(operand, symbolnode.classScope, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            if (dimensions == 0)
+                            {
+                                EmitInstrConsole(kw.pop, s);
+                                EmitPopForSymbol(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            }
+                            else
+                            {
+                                EmitPushDimensions(dimensions);
+                                EmitInstrConsole(kw.setelement, t.Name);
+                                EmitSetElement(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            }
                         }
                         else
                         {
                             if (b.LeftNode is TypedIdentifierNode)
                             {
-                                symbolnode.SetStaticType(castType);
+                                EmitCast(castType.UID, castType.rank);
                             }
-                            castType = symbolnode.staticType;
-                            EmitPushVarData(dimensions, castType.UID, castType.rank);
-
-                            EmitInstrConsole(ProtoCore.DSASM.kw.popm, t.Name);
 
                             StackValue operand = symbolnode.isStatic
                                                  ? StackValue.BuildStaticMemVarIndex(symbol)
                                                  : StackValue.BuildMemVarIndex(symbol);
 
-                            EmitPopm(operand, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            if (dimensions == 0)
+                            {
+                                EmitInstrConsole(kw.popm, t.Name);
+                                EmitPopm(operand, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            }
+                            else
+                            {
+                                EmitPushDimensions(dimensions);
+                                EmitInstrConsole(kw.setmemelement, t.Name);
+                                EmitSetMemElement(operand, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            }
                         }
                     }
                     else
@@ -1715,18 +1723,36 @@ namespace ProtoImperative
 
                         if (b.LeftNode is TypedIdentifierNode)
                         {
-                            symbolnode.SetStaticType(castType);
+                            EmitCast(castType.UID, castType.rank);
                         }
-                        castType = symbolnode.staticType;
-                        EmitPushVarData(dimensions, castType.UID, castType.rank);
-                        EmitInstrConsole(ProtoCore.DSASM.kw.pop, t.Value);
+
                         if (parentNode != null)
                         {
-                            EmitPopForSymbol(symbolnode, runtimeIndex, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
+                            if (dimensions == 0)
+                            {
+                                EmitInstrConsole(kw.pop, t.Value);
+                                EmitPopForSymbol(symbolnode, runtimeIndex, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
+                            }
+                            else
+                            {
+                                EmitPushDimensions(dimensions);
+                                EmitInstrConsole(kw.setelement, t.Value);
+                                EmitSetElement(symbolnode, runtimeIndex);
+                            }
                         }
                         else
                         {
-                            EmitPopForSymbol(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            if (dimensions == 0)
+                            {
+                                EmitInstrConsole(kw.pop, t.Value);
+                                EmitPopForSymbol(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
+                            }
+                            else
+                            {
+                                EmitPushDimensions(dimensions);
+                                EmitInstrConsole(kw.setelement, t.Value);
+                                EmitSetElement(symbolnode, runtimeIndex);
+                            }
                         }
                         
 
@@ -1932,11 +1958,6 @@ namespace ProtoImperative
                 }
                 EmitInstrConsole(ProtoCore.DSASM.kw.pushvarsize, identName);
                 EmitPushArrayKey(symbolIndex, codeBlock.symbolTable.RuntimeIndex, (symbol == null) ? globalClassIndex : symbol.classScope);
-
-                // Push the identifier local block information 
-                // Push the array dimensions
-                int dimensions = 0;
-                EmitPushVarData(dimensions);
 
                 if (ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex && !IsInLanguageBlockDefinedInFunction())
                 {
@@ -2174,8 +2195,8 @@ namespace ProtoImperative
             if (range.ArrayDimensions != null)
             {
                 int dimensions = DfsEmitArrayIndexHeap(range.ArrayDimensions);
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, dimensions.ToString() + "[dim]");
-                EmitPushArrayIndex(dimensions);
+                EmitPushDimensions(dimensions);
+                EmitLoadElement(null, Constants.kInvalidIndex);
             }
         }
 

@@ -44,76 +44,6 @@ namespace ProtoCore.DSASM.Mirror
 
             runtimeCore = coreObj;
             MirrorTarget = exec;
-
-            LoadPropertyFilters();
-        }
-
-        private void LoadPropertyFilters()
-        {
-            if (runtimeCore.Options.RootCustomPropertyFilterPathName == null)
-            {
-                return;
-            }
-
-            System.IO.FileInfo file = new System.IO.FileInfo(runtimeCore.Options.RootCustomPropertyFilterPathName);
-            if (!file.Exists)
-            {
-                return;
-            }
-
-            using (var stream = file.OpenText())
-            {
-                propertyFilter = new Dictionary<string, List<string>>();
-                var line = stream.ReadLine();
-                while (line != null)
-                {
-                    //  after removing leading and trailing spaces if there is something then
-                    //  only try to tokenize
-                    //
-                    line = line.Trim();
-                    if (line.Length != 0)
-                    {
-                        if (line.StartsWith(";"))
-                        {
-                            //  now over to next line
-                            line = stream.ReadLine();
-
-                            //  neglect a comment;
-                            continue;
-                        }
-                        //  Point X,Y,Z
-                        //
-                        //  this will give you two strings:
-                        //  0-> Point
-                        //  1-> X,Y,Z
-                        var splitStrings1 = line.Split(' ', ',');
-
-                        //  first string in this array is class-name
-                        //
-                        var className = splitStrings1[0];
-
-                        //  second string is optional, so check it it exists
-                        //
-                        List<string> classProps = null;
-                        if (splitStrings1.Length > 1)
-                        {
-                            classProps = new List<string>();
-                            for (int i = 1; i < splitStrings1.Length; ++i)
-                            {
-                                while (String.IsNullOrWhiteSpace(splitStrings1[i]))
-                                {
-                                    i++;
-                                }
-                                classProps.Add(splitStrings1[i]);
-                            }
-                        }
-                        propertyFilter.Add(className, classProps);
-                    }
-
-                    //  now over to next line
-                    line = stream.ReadLine();
-                }
-            }
         }
 
         private string GetFormattedValue(string varname, string value)
@@ -861,7 +791,15 @@ namespace ProtoCore.DSASM.Mirror
             return MirrorTarget.rmem.Heap.ToHeapObject<DSArray>(obj.DsasmValue).Values.Select(x => Unpack(x)).ToList();
         }
 
-        public StackValue GetGlobalValue(string name, int startBlock = 0)
+        /// <summary>
+        /// Searching variable name starting from specified block.
+        /// Exception:
+        ///     SymbolNotFoundException if variable not found.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="startBlock"></param>
+        /// <returns></returns>
+        public StackValue GetValue(string name, int startBlock = 0)
         {
             ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
 
@@ -877,7 +815,8 @@ namespace ProtoCore.DSASM.Mirror
                     }
                 }
             }
-            return StackValue.Null;
+
+            throw new SymbolNotFoundException(name);
         }
 
         public StackValue GetRawFirstValue(string name, int startBlock = 0, int classcope = Constants.kGlobalScope)

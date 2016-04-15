@@ -2605,8 +2605,7 @@ z = x[1];
         public void TestTypeArrayAssign4()
         {
             string code = @"
-a:int[] = {1, 2, 3};
-a[0] = false;
+a:int[] = {false, 2, 3};
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", new object[] { null, 2, 3 });
@@ -2631,7 +2630,7 @@ a:int = 2;
 a[1] = 3;;
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("a", null);
+            thisTest.Verify("a", new object[] { 2, 3 });
         }
 
         [Test]
@@ -4293,8 +4292,7 @@ t = 3;
 x:int = 1;
 def foo()
 {
-    p:int = 3;
-    p = false;
+    p:int = false;
     return = p;
 }
 r = foo();

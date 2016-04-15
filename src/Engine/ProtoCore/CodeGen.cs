@@ -792,13 +792,17 @@ namespace ProtoCore
                             {
                                 dim = DfsEmitArrayIndexHeap(identnode.ArrayDimensions, graphNode);
                             }
-                            EmitInstrConsole(ProtoCore.DSASM.kw.push, dim + "[dim]");
-                            StackValue dynamicOpdim = StackValue.BuildArrayDimension(dim);
-                            EmitPush(dynamicOpdim);
 
-                            EmitInstrConsole(ProtoCore.DSASM.kw.pushm, identnode.Value + "[dynamic]");
+
+                            EmitInstrConsole(kw.pushm, identnode.Value + "[dynamic]");
                             StackValue dynamicOp = StackValue.BuildDynamic(core.DynamicVariableTable.variableTable.Count - 1);
                             EmitPushm(dynamicOp, symbolnode == null ? globalClassIndex : symbolnode.classScope, DSASM.Constants.kInvalidIndex);
+
+                            if (dim > 0)
+                            {
+                                EmitPushDimensions(dim);
+                                EmitLoadElement(null, Constants.kInvalidIndex);
+                            }
 
                             lefttype.UID = finalType.UID = (int)PrimitiveType.Var;
                             depth++;
@@ -817,14 +821,6 @@ namespace ProtoCore
 
                     // Get the symbols' table index
                     int runtimeIndex = symbolnode.runtimeTableIndex;
-
-                    ProtoCore.DSASM.AddressType operandType = ProtoCore.DSASM.AddressType.Pointer;
-
-                    if (null != identnode.ArrayDimensions)
-                    {
-                        dimensions = DfsEmitArrayIndexHeap(identnode.ArrayDimensions, graphNode);
-                        operandType = ProtoCore.DSASM.AddressType.ArrayPointer;
-                    }
 
                     if (lefttype.rank >= 0)
                     {
@@ -853,17 +849,21 @@ namespace ProtoCore
                         }
                     }
 
-                    // TODO Jun: Performance. 
-                    // Is it faster to have a 'push' specific to arrays to prevent pushing dimension for push instruction?
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, dimensions + "[dim]");
-                    StackValue opdim = StackValue.BuildArrayDimension(dimensions);
-                    EmitPush(opdim);
-
-                    
                     if (isLeftidentList || depth == 0)
                     {
-                        EmitInstrConsole(ProtoCore.DSASM.kw.pushm, identnode.Value);
+                        EmitInstrConsole(kw.pushm, identnode.Value);
                         EmitPushm(op, symbolnode == null ? globalClassIndex : symbolnode.classScope, runtimeIndex);
+
+                        if (null != identnode.ArrayDimensions)
+                        {
+                            dimensions = DfsEmitArrayIndexHeap(identnode.ArrayDimensions, graphNode);
+                        }
+
+                        if (dimensions > 0)
+                        {
+                            EmitPushDimensions(dimensions);
+                            EmitLoadElement(symbolnode, runtimeIndex);
+                        }
                     }
                     else
                     {
@@ -873,6 +873,17 @@ namespace ProtoCore
                         StackValue dynamicOp = StackValue.BuildDynamic(core.DynamicVariableTable.variableTable.Count - 1);
                         EmitInstrConsole(ProtoCore.DSASM.kw.pushm, identnode.Value + "[dynamic]");
                         EmitPushm(dynamicOp, symbolnode == null ? globalClassIndex : symbolnode.classScope, runtimeIndex);
+
+                        if (null != identnode.ArrayDimensions)
+                        {
+                            dimensions = DfsEmitArrayIndexHeap(identnode.ArrayDimensions, graphNode);
+                        }
+
+                        if (dimensions > 0)
+                        {
+                            EmitPushDimensions(dimensions);
+                            EmitLoadElement(null, Constants.kInvalidIndex);
+                        }
                     }
                     depth = depth + 1;
                     finalType = lefttype;
@@ -1384,7 +1395,7 @@ namespace ProtoCore
         {
             SetEntry();
             Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.ALLOCA;
+            instr.opCode = ProtoCore.DSASM.OpCode.NEWARR;
 
             instr.op1 = StackValue.BuildInt(size);
             instr.op2 = StackValue.BuildArrayPointer(0);
@@ -1393,17 +1404,6 @@ namespace ProtoCore
             AppendInstruction(instr);
         }
 
-        protected void EmitPushArrayIndex(int dimCount)
-        {
-            SetEntry();
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.PUSHINDEX;
-            instr.op1 = StackValue.BuildArrayDimension(dimCount);
-
-            ++pc;
-            AppendInstruction(instr);
-        }
-        
         protected void EmitPushReplicationGuide(int repGuide, bool isLongest)
         {
             SetEntry();
@@ -1459,6 +1459,42 @@ namespace ProtoCore
 
             ++pc;
             instr.debug = GetDebugObject(line, col, eline, ecol, pc);
+            AppendInstruction(instr, line, col);
+        }
+
+        protected void EmitSetElement(SymbolNode symbol,
+           int blockId,
+           int line = Constants.kInvalidIndex,
+           int col = Constants.kInvalidIndex,
+           int eline = Constants.kInvalidIndex,
+           int ecol = Constants.kInvalidIndex)
+        {
+            Validity.Assert(symbol != null);
+            if (symbol == null)
+            {
+                return;
+            }
+
+            Instruction instr = new Instruction();
+            instr.opCode = OpCode.SETELEMENT;
+            instr.op1 = BuildOperand(symbol);
+            instr.op2 = StackValue.BuildClassIndex(symbol.classScope);
+            instr.op3 = StackValue.BuildBlockIndex(blockId);
+
+            ++pc;
+
+            bool outputBreakpoint = false;
+            DebugProperties.BreakpointOptions options = core.DebuggerProperties.breakOptions;
+            if (options.HasFlag(DebugProperties.BreakpointOptions.EmitPopForTempBreakpoint))
+                outputBreakpoint = true;
+
+            // Do not emit breakpoints for null or var type declarations
+            if (!core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.SuppressNullVarDeclarationBreakpoint))
+            {
+                // Don't need no pop for temp (unless caller demands it).
+                if (outputBreakpoint || !symbol.name.StartsWith("%"))
+                    instr.debug = GetDebugObject(line, col, eline, ecol, pc);
+            }
             AppendInstruction(instr, line, col);
         }
 
@@ -1549,18 +1585,6 @@ namespace ProtoCore
             AppendInstruction(instr, line, col);
         }
 
-        protected void EmitPushType(int UID, int rank)
-        {
-            SetEntry();
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.PUSH;
-            instr.op1 = StackValue.BuildStaticType(UID, rank);
-            instr.op2 = StackValue.BuildClassIndex(globalClassIndex);
-
-            ++pc;
-            AppendInstruction(instr);
-        }
-
         private void AppendInstruction(Instruction instr, int line = Constants.kInvalidIndex, int col = Constants.kInvalidIndex)
         {
             if (DSASM.InterpreterMode.Expression == core.Options.RunMode)
@@ -1574,6 +1598,25 @@ namespace ProtoCore
                 if(line > 0 && col > 0)
                     updatePcDictionary(line, col);
             }
+        }
+
+        protected void EmitLoadElement(SymbolNode symbol, int blockId)
+        {
+            EmitInstrConsole(kw.loadelement);
+
+            SetEntry();
+            Instruction instr = new Instruction();
+            instr.opCode = OpCode.LOADELEMENT;
+
+            if (symbol != null)
+            {
+                instr.op1 = BuildOperand(symbol);
+                instr.op2 = StackValue.BuildClassIndex(symbol.classScope);
+                instr.op3 = StackValue.BuildBlockIndex(blockId);
+            }
+
+            ++pc;
+            AppendInstruction(instr);
         }
 
         protected void EmitPushForSymbol(SymbolNode symbol, int blockId, ProtoCore.AST.Node identNode)
@@ -1624,6 +1667,23 @@ namespace ProtoCore
 
             ++pc;
             instr.debug = GetDebugObject(line, col, eline, ecol, pc);
+            AppendInstruction(instr, line, col);
+        }
+
+        protected void EmitSetMemElement(StackValue op, int blockId, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
+    int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex)
+        {
+            SetEntry();
+            Instruction instr = new Instruction();
+            instr.opCode = ProtoCore.DSASM.OpCode.POPM;
+            instr.op1 = op;
+            instr.op2 = StackValue.BuildBlockIndex(blockId);
+
+            ++pc;
+            if (emitDebugInfo)
+            {
+                instr.debug = GetDebugObject(line, col, endline, endcol, pc);
+            }
             AppendInstruction(instr, line, col);
         }
 
@@ -2040,14 +2100,14 @@ namespace ProtoCore
                 return;
             }
 
-            EmitInstrConsole(ProtoCore.DSASM.kw.alloca, exprlist.Exprs.Count.ToString());
+            EmitInstrConsole(ProtoCore.DSASM.kw.newarr, exprlist.Exprs.Count.ToString());
             EmitPopArray(exprlist.Exprs.Count);
 
             if (exprlist.ArrayDimensions != null)
             {
                 int dimensions = DfsEmitArrayIndexHeap(exprlist.ArrayDimensions, graphNode);
-                EmitInstrConsole(ProtoCore.DSASM.kw.pushindex, dimensions.ToString() + "[dim]");
-                EmitPushArrayIndex(dimensions);
+                EmitPushDimensions(dimensions);
+                EmitLoadElement(null, Constants.kInvalidIndex);
             }
 
             var exprNode = node as AST.AssociativeAST.ExprListNode;
@@ -2240,18 +2300,8 @@ namespace ProtoCore
             EmitPush(StackValue.BuildDefaultArgument());
         }
 
-        protected void EmitPushVarData(int dimensions, int UID = (int)ProtoCore.PrimitiveType.Var, int rank = 0)
+        protected void EmitCast(int UID = (int)PrimitiveType.Var, int rank = 0)
         {
-            // TODO Jun: Consider adding the block and dimension information in the instruction instead of storing them on the stack
-
-            // TODO Jun: Performance 
-            // Is it faster to have a 'pop' specific to arrays to prevent popping dimension for pop to instruction?
-            EmitInstrConsole(ProtoCore.DSASM.kw.push, dimensions + "[dim]");
-            StackValue opdim = StackValue.BuildArrayDimension(dimensions);
-            EmitPush(opdim);
-
-
-            // Push the identifier block information 
             string srank = "";
             if (rank == Constants.nDimensionArrayRank)
             {
@@ -2264,11 +2314,28 @@ namespace ProtoCore
                     srank += "[]";
                 }
             }
-            EmitInstrConsole(ProtoCore.DSASM.kw.push, UID + srank + "[type]");
-            EmitPushType(UID, rank);
+            EmitInstrConsole(kw.cast, UID + srank + "[type]");
+
+            SetEntry();
+            Instruction instr = new Instruction();
+            instr.opCode = OpCode.CAST;
+            instr.op1 = StackValue.BuildStaticType(UID, rank);
+
+            ++pc;
+            AppendInstruction(instr);
         }
 
-      
+        protected void EmitPushDimensions(int dimensions)
+        {
+            if (dimensions <= 0)
+            {
+                return;
+            }
+
+            EmitInstrConsole(ProtoCore.DSASM.kw.push, dimensions + "[dim]");
+            StackValue opdim = StackValue.BuildArrayDimension(dimensions);
+            EmitPush(opdim);
+        }
 
         protected void EmitDynamicNode(ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
         {
@@ -2301,7 +2368,6 @@ namespace ProtoCore
             var fptrNode = new FunctionPointerNode(procNode);
             fptrDict.TryAdd(fptr, fptrNode);
             fptrDict.TryGetBySecond(fptrNode, out fptr);
-            EmitPushVarData(0);
 
             string name = procNode.Name;
             if (Constants.kGlobalScope != procNode.ClassID)

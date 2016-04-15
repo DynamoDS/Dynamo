@@ -4,7 +4,6 @@ using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Utilities;
 
-using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Models
 {
@@ -125,17 +124,29 @@ namespace Dynamo.Models
         #endregion
     }
 
+    /// <summary>
+    /// This class represents the arguments when a graph evaluation is completed.
+    /// </summary>
     public class EvaluationCompletedEventArgs : EventArgs
     {
         private readonly IOption<Exception> error;
 
+        /// <summary>
+        /// Returns true if there was any evaluation.
+        /// </summary>
         public bool EvaluationTookPlace { get; private set; }
 
+        /// <summary>
+        /// Returns true if Evaluation is succeeded.
+        /// </summary>
         public bool EvaluationSucceeded
         {
             get { return !error.HasValue(); }
         }
 
+        /// <summary>
+        /// Exception thrown during graph evaluation.
+        /// </summary>
         public Exception Error
         {
             get
@@ -150,6 +161,11 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Creates EvaluationCompletedEventArgs
+        /// </summary>
+        /// <param name="evaluationTookPlace">Bool value indicates if evaluation took place</param>
+        /// <param name="errorMsg">Exception thrown during evaluation</param>
         public EvaluationCompletedEventArgs(bool evaluationTookPlace, Exception errorMsg = null)
         {
             EvaluationTookPlace = evaluationTookPlace;

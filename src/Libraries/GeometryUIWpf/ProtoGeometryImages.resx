@@ -22588,4 +22588,42 @@
         hcF/9bvQtCoAAAAASUVORK5CYII=
 </value>
   </data>
+  <data name="Autodesk.DesignScript.Geometry.Vector.AngleAboutAxis.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAEgklEQVR4Xu2cvW4TQRSF8wh5
+        BB4hj5AeCaUCEQmJNyAgCkSVNwg1FKkQJYgaZAqKUAVIh0QiIVGEJhQpkCjMOeuzZq49a69j7yDW55Ou
+        8nPXU3yTnTs/u9kwxhhjjDHGGGOMMcYYY3rGcDi8pm/NvwAdMEDc1Y+mJBSPIBeITf3alIDCEWe0L/aV
+        MiWg8JH3gOtBCSgawWFnkpe6xHQJRY98Z9nWZaYLKHjkuZFjXWq6gIJHnmeyp8vNKoHYeto5D09Lu2bk
+        OaKUKYGcB5QyJZDzgFKmBHIeUMqUQM4DSpkSyHlAKVMCOQ8oZUog5wGlTAnkPKCUKYGcB5QyJZDzgFKm
+        BHIeUMqUQM4DSpkSyHlAKVMCOQ8oZUog5wGlTAnkPKBUUd7fuH6AGCTxErHfEFv62P+PnAeUKgqkbiOG
+        LeIM0Z9TOjkPKFUciD1ORDfFji7vB3IeUKoYkHoNcZhIboqBPtIf5DygVOdA6CaCY3pOdi7698SenAeU
+        6hTIpPiLRO686Oczq3IeUKoTIPIugoU0J7kp+lV4U+Q8oNRKgUDOctoU2TrSu6O/j0nKeUCplQB5WwjO
+        61O5s4LFmEW5rg39flBYzgNKLYUktpnZ1MFOGi+w8D0LNO+Yfj8qL+cBpa6ExO0f7d66+HnyWS0Oh99f
+        v8pJZ1BydojB7/v/WKT8BJRaGAjbQ1Rj9+mzp2rtL99ePE/Fs7D6nTS5CSjVGoqU0LFgys7x8f49dpBf
+        g6qRl4BSc4FIzmyyBfbLkwO1NkX/VrPLICkBpRqBYBZY7lZOiU/j/O0btThFv/ZzlkFCAkpNAakssK1n
+        Nh/u7PLd4/QNzBrfBTUSElBqDGTWezZttw5YD6qZDZprehnEb2ISyQgoVQGRLLCLiJ+a2aDJ3F3gGRCR
+        jAB/D5E7EpoTPRnVzAaRnbejyVxFPlR6vZGMAEQuunUwc8GEJndGLQdcB4hkBCYENwVnQa3GcTTJF8Kn
+        UHq9kYvAhOjJ4N2x8O6kmg4otb5AJP9RxxSJ7DRYD648f1fTAaXWFwg9lItAIr2OpbYO0OTWqOXAhdLr
+        C8QOuEuZMmPXkkMPN9sWfiYHzebWAi7CkFmtarlvw80zfuXPLYLDER+kajUkQXbuTjtQen2BQO7ptF1k
+        NQU/zxkRF2xT01GIZp3J/Usc7wcRSpM8Sly2Mxg8YBkPVRCd+4dQpP+HLVcB4rjFzOGl7Sq4MT49fMAt
+        iNxff3YVjM+4U1IghEMU/5oXWRlXcXT75vDy9Kt8R1Bvmo4geSd6iyIHxNRDFQv33KEqdyRJeEagazhU
+        cf8oPYivzxjcCfOgOASHquyzPumBfM3vy8vqzshczw6d7Fh3Qlsgqx6qxqdkuTvg5PGjWm7b8NnxokAa
+        hypuZR/+eDc441/9r/PzRdYYk+Fzg2WAQA5VHOuzQ1XLcCesAojkUFWvOXKiZ4U7YdVAajVUIdquObx6
+        7gKInbXO4NBV7TshfJC/aiCVRTsVzs5gzaBwr4y7BpLrIt3fdwCMMcYYY4wxxhhjjDHGmCY2Nv4AEm/Y
+        IvhfN/8AAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.Vector.AngleAboutAxis.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAABYUlEQVRYR+2WvUrEQBSF8wh5
+        hDzCPkJ6wXLBLqhYbyOKVTqx8hG2EkvFF0hjISgsrI3dgj+1zWJjMX5nvCNRFHc3maCQD06RuZBzJndy
+        k6Sn58/jnMtQaZfdg/kYiYEtdQem+bu3p7Ll7sBUAWbenjag1ErdgWkld7vsnj7Avwpwub6WorymzEqr
+        s2SADLmaciutziIBMNLOS/RsxtLYys34LQBGBZqZqQIoiK7bmRk/BcAgn+7tTlR7ujj3O0a+562Zi68B
+        uPkAVchdbQzd63yusmh+4L6DG/sA2h3SLkOPJ0ijulAd4nwxuXEIEKT+FlZWPVUd4nysXh4ffJ/NXI/+
+        U38p6X9BxAlwvb1Z3uxs1V8v6QyNkMzjtiCAmSbbMQqvnCPcxyG8Ozr0bWE9/t8TJjqQo9uDfX8+7k9P
+        wpMJT6qdIbQImGkKahjpDWl/Ei4Dpjob4Xw0/w709MQnSd4AmN2B06ASkTwAAAAASUVORK5CYII=
+</value>
+  </data>
 </root>

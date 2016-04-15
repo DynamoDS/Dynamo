@@ -11,7 +11,6 @@ using ProtoFFI;
 
 namespace ProtoCore
 {
-
     public enum ExecutionMode
     {
         Parallel,
@@ -31,12 +30,12 @@ namespace ProtoCore
     {
         public ReplicationGuide(int guide, bool longest)
         {
-            guideNumber = guide;
-            isLongest = longest;
+            GuideNumber = guide;
+            IsLongest = longest;
         }
 
-        public int guideNumber { get; private set; }
-        public bool isLongest {get; private set;}
+        public int GuideNumber { get; private set; }
+        public bool IsLongest {get; private set;}
     }
 
     public class AtLevel
@@ -60,7 +59,6 @@ namespace ProtoCore
             //      DirectDependencyExecution = true
             //      LHSGraphNodeUpdate = false
             DirectDependencyExecution = true;
-            LHSGraphNodeUpdate = !DirectDependencyExecution;
 
             ApplyUpdate = false;
             DumpByteCode = false;
@@ -72,24 +70,19 @@ namespace ProtoCore
             GCTempVarsOnDebug = true;
 
             DumpFunctionResolverLogic = false; 
-            BuildOptWarningAsError = false;
             BuildOptErrorAsWarning = false;
             ExecutionMode = ExecutionMode.Serial;
             IDEDebugMode = false;
             WatchTestMode = false;
             IncludeDirectories = new List<string>();
-            RootCustomPropertyFilterPathName = string.Empty;
             RootModulePathName = Path.GetFullPath(@".");
             staticCycleCheck = true;
             dynamicCycleCheck = true;
             EmitBreakpoints = true;
-            localDependsOnGlobalSet = false;
             AssociativeToImperativePropagation = true;
             SuppressFunctionResolutionWarning = true;
             IsDeltaExecution = false;
-
             IsDeltaCompile = false;
-
         }
 
         public bool DirectDependencyExecution { get; set; }
@@ -101,7 +94,6 @@ namespace ProtoCore
         public bool GCTempVarsOnDebug { get; set; }
         public bool Verbose { get; set; }
         public bool SuppressBuildOutput { get; set; }
-        public bool BuildOptWarningAsError { get; set; }
         public bool BuildOptErrorAsWarning { get; set; }
         public bool IDEDebugMode { get; set; }      //set to true if two way mapping b/w DesignScript and JIL code is needed
         public bool WatchTestMode { get; set; }     // set to true when running automation tests for expression interpreter
@@ -111,10 +103,7 @@ namespace ProtoCore
         public bool dynamicCycleCheck { get; set; }
         public bool DumpFunctionResolverLogic { get; set; }
         public bool EmitBreakpoints { get; set; }
-        public bool localDependsOnGlobalSet { get; set; }
-        public bool LHSGraphNodeUpdate { get; set; }
         public bool SuppressFunctionResolutionWarning { get; set; }
-
         public bool AssociativeToImperativePropagation { get; set; }
         public bool IsDeltaExecution { get; set; }
         public InterpreterMode RunMode { get; set; }
@@ -125,65 +114,12 @@ namespace ProtoCore
         /// which requires recompiling the entire source code for every delta execution 
         /// </summary>
         public bool IsDeltaCompile { get; set; }
-
         
         // This is being moved to Core.Options as this needs to be overridden for the Watch test framework runner        
         public int kDynamicCycleThreshold = 2000;
-        
-        public double Tolerance
-        {
-            get { return MathUtils.Tolerance; }
-            set { MathUtils.Tolerance = value; }
-        }
 
         public List<string> IncludeDirectories { get; set; }
         public string RootModulePathName { get; set; }
-
-        private string rootCustomPropertyFilterPathName;
-        public string RootCustomPropertyFilterPathName
-        {
-            get
-            {
-                return rootCustomPropertyFilterPathName;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    rootCustomPropertyFilterPathName = null;
-                }
-                else
-                {
-                    var fileName = value;
-                    if (File.Exists(fileName))
-                    {
-                        rootCustomPropertyFilterPathName = fileName;
-
-                        StreamReader stream = null;
-                        try
-                        {
-                            stream = new StreamReader(fileName);
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new FileLoadException(string.Format("Custom property filter file {0} can't be read. Error Message:{1}", fileName, ex.Message));
-                        }
-                        finally
-                        {
-                            if (stream != null)
-                            {
-                                stream.Dispose();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //throw new System.IO.FileNotFoundException(string.Format("Custom property filter file {0} does not exists", fileName));
-                        rootCustomPropertyFilterPathName = null;
-                    }
-                }
-            }
-        }
     }
 
     public struct InlineConditional
@@ -523,7 +459,7 @@ namespace ProtoCore
             DynamicVariableTable = new DynamicVariableTable();
             DynamicFunctionTable = new DynamicFunctionTable();
 
-            BuildStatus = new BuildStatus(this, Options.BuildOptWarningAsError);
+            BuildStatus = new BuildStatus(this);
             
             ExpressionUID = 0;
             ForLoopBlockIndex = Constants.kInvalidIndex;
@@ -583,7 +519,7 @@ namespace ProtoCore
 
             deltaCompileStartPC = Constants.kInvalidIndex;
 
-            BuildStatus = new BuildStatus(this, Options.BuildOptWarningAsError, null, Options.BuildOptErrorAsWarning);
+            BuildStatus = new BuildStatus(this, null, Options.BuildOptErrorAsWarning);
 
             SSAExpressionUID = 0;
             SSASubscript = 0;

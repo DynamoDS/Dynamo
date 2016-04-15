@@ -1,120 +1,90 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Windows;
-
-using Dynamo.Controls;
-using Dynamo.Core;
-using Dynamo.DynamoSandbox;
-using Dynamo.Models;
-using Dynamo.Services;
-using Dynamo.ViewModels;
-using Dynamo.Applications;
-using Dynamo.Logging;
-using Dynamo.Wpf.ViewModels.Watch3D;
+using System.Reflection;
+using System.IO;
+using System.Linq;
+using System.Diagnostics;
 
 namespace DynamoSandbox
 {
-   
     internal class Program
     {
-        private static SettingsMigrationWindow migrationWindow;
-        
-        private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
-        {
-            DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
-
-            var model = Dynamo.Applications.StartupUtils.MakeModel(false);
-
-            viewModel = DynamoViewModel.Start(
-                new DynamoViewModel.StartConfiguration()
-                {
-                    CommandFilePath = commandFilePath,
-                    DynamoModel = model,
-                    Watch3DViewModel = HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(new Watch3DViewModelStartupParams(model), model.Logger)
-                });
-
-            var view = new DynamoView(viewModel);
-            view.Loaded += (sender, args) => CloseMigrationWindow();
-
-            var app = new Application();
-            app.Run(view);
-
-            DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
-        }
-
-        private static void CloseMigrationWindow()
-        {
-            if (migrationWindow == null)
-                return;
-
-            migrationWindow.Close();
-            migrationWindow = null;
-        }
-
-        private static void MigrationStatusDialogRequested(SettingsMigrationEventArgs args)
-        {
-            if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.Begin)
-            {
-                migrationWindow = new SettingsMigrationWindow();
-                migrationWindow.Show();
-            }
-            else if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.End)
-            {
-                CloseMigrationWindow();
-            }
-        }
-
-
-        [DllImport("msvcrt.dll")]
-        public static extern int _putenv(string env);
+        private static string dynamopath;
 
         [STAThread]
         public static void Main(string[] args)
+        {   
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+
+            var setup = new DynamoCoreSetup(args);
+            var app = new Application();
+            setup.RunApplication(app);
+        }
+
+        /// <summary>
+        /// Handler to the ApplicationDomain's AssemblyResolve event.
+        /// If an assembly's location cannot be resolved, an exception is
+        /// thrown. Failure to resolve an assembly will leave Dynamo in 
+        /// a bad state, so we should throw an exception here which gets caught 
+        /// by our unhandled exception handler and presents the crash dialogue.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
         {
-            DynamoViewModel viewModel = null;
+            var assemblyPath = string.Empty;
+            var assemblyName = new AssemblyName(args.Name).Name + ".dll";
+
             try
             {
-                var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
-                var locale = Dynamo.Applications.StartupUtils.SetLocale(cmdLineArgs);
-                    _putenv(locale);
+                assemblyPath = Path.Combine(DynamoCorePath, assemblyName);
+                if (File.Exists(assemblyPath))
+                    return Assembly.LoadFrom(assemblyPath);
 
-                    MakeStandaloneAndRun(cmdLineArgs.CommandFilePath, out viewModel);
+                var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+                var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
+
+                assemblyPath = Path.Combine(assemblyDirectory, assemblyName);
+                return (File.Exists(assemblyPath) ? Assembly.LoadFrom(assemblyPath) : null);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                try
-                {
-#if DEBUG
-                    // Display the recorded command XML when the crash happens, 
-                    // so that it maybe saved and re-run later
-                    if (viewModel != null)
-                        viewModel.SaveRecordedCommand.Execute(null);
-#endif
-
-                    DynamoModel.IsCrashing = true;
-                    InstrumentationLogger.LogException(e);
-                    StabilityTracking.GetInstance().NotifyCrash();
-
-                    if (viewModel != null)
-                    {
-                        // Show the unhandled exception dialog so user can copy the 
-                        // crash details and report the crash if she chooses to.
-                        viewModel.Model.OnRequestsCrashPrompt(null,
-                            new CrashPromptArgs(e.Message + "\n\n" + e.StackTrace));
-
-                        // Give user a chance to save (but does not allow cancellation)
-                        viewModel.Exit(allowCancel: false);
-                    }
-                }
-                catch
-                {
-                }
-
-                Debug.WriteLine(e.Message);
-                Debug.WriteLine(e.StackTrace);
+                throw new Exception(string.Format("The location of the assembly, {0} could not be resolved for loading.", assemblyPath), ex);
             }
         }
 
+        /// <summary>
+        /// Gets the path of Dynamo Core installation.
+        /// </summary>
+        public static string DynamoCorePath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(dynamopath))
+                {
+                    dynamopath = GetDynamoCorePath();
+                }
+                return dynamopath;
+            }
+        }
+        
+        /// <summary>
+        /// Finds the Dynamo Core path by looking into registery or potentially a config file.
+        /// </summary>
+        /// <returns>The root folder path of Dynamo Core.</returns>
+        private static string GetDynamoCorePath()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var version = assembly.GetName().Version;
+
+            var installs = DynamoInstallDetective.DynamoProducts.FindDynamoInstallations(Path.GetDirectoryName(assembly.Location));
+            if (installs == null) return string.Empty;
+
+            return installs.Products
+                .Where(p => p.VersionInfo.Item1 == version.Major && p.VersionInfo.Item2 == version.Minor)
+                .Select(p => p.InstallLocation)
+                .FirstOrDefault();
+        }
     }
 }

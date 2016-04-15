@@ -132,17 +132,13 @@ namespace Dynamo.Scheduler
                            where mirror != null
                            select mirror.GetData();
 
-            var labelMap = new List<string>();
-            var count = 0;
-            
             foreach (var mirrorData in data)
             {
-                AddToLabelMap(mirrorData, labelMap, previewIdentifierName);
-                GetRenderPackagesFromMirrorData(mirrorData, displayLabels, isNodeSelected, ref labelMap,  ref count);
+                GetRenderPackagesFromMirrorData(mirrorData, previewIdentifierName, displayLabels, isNodeSelected);
             }
         }
 
-        private void GetRenderPackagesFromMirrorData(MirrorData mirrorData, bool displayLabels, bool isNodeSelected, ref List<string> labelMap, ref int count)
+        private void GetRenderPackagesFromMirrorData(MirrorData mirrorData, string tag, bool displayLabels, bool isNodeSelectednt)
         {
             if (mirrorData.IsNull)
             {
@@ -151,9 +147,15 @@ namespace Dynamo.Scheduler
 
             if (mirrorData.IsCollection)
             {
+                int count = 0;
                 foreach (var el in mirrorData.GetElements())
                 {
-                    GetRenderPackagesFromMirrorData(el, displayLabels, isNodeSelected, ref labelMap, ref count);
+                    if (el.IsCollection || el.Data is IGraphicItem)
+                    {
+                        string newTag = tag + ":" + count;
+                        GetRenderPackagesFromMirrorData(el, newTag, displayLabels, isNodeSelected);
+                    }
+                    count = count + 1;
                 }
             }
             else
@@ -165,7 +167,7 @@ namespace Dynamo.Scheduler
                 }
 
                 var package = factory.CreateRenderPackage();
-                package.Description = labelMap.Count > count ? labelMap[count] : "?";
+                package.Description = tag;
 
                 try
                 {
@@ -293,7 +295,6 @@ namespace Dynamo.Scheduler
                 package.IsSelected = isNodeSelected;
 
                 renderPackages.Add(package);
-                count++;
             }
         }
 
@@ -334,52 +335,6 @@ namespace Dynamo.Scheduler
                 return TaskMergeInstruction.KeepThis;
 
             return TaskMergeInstruction.KeepOther; // Otherwise, keep the other.
-        }
-
-        #endregion
-
-        #region Private Class Helper Methods
-
-        // Add labels for each of a mirror data object's inner data object to a label map.
-        private static void AddToLabelMap(MirrorData data, List<string> map, string tag)
-        {
-            if (data.IsCollection)
-            {
-                var index = 0;
-                var elements = data.GetElements();
-                foreach (var element in elements)
-                {
-                    var newTag = string.Format("{0}:{1}", tag, index++);
-                    AddToLabelMap(element, map, newTag);
-                }
-            }
-            else if (data.Data is IEnumerable)
-            {
-                AddToLabelMap(data.Data as IEnumerable, map, tag);
-            }
-            else if (data.Data is IGraphicItem)
-            {
-                map.Add(tag);
-            }
-        }
-
-        // Add labels for each object in an enumerable to a label map
-        private static void AddToLabelMap(IEnumerable list, List<string> map, string tag)
-        {
-            int count = 0;
-            foreach (var obj in list)
-            {
-                var newTag = string.Format("{0}:{1}", tag, count++);
-
-                if (obj is IEnumerable)
-                {
-                    AddToLabelMap(obj as IEnumerable, map, newTag);
-                }
-                else if (obj is IGraphicItem)
-                {
-                    map.Add(newTag);
-                }
-            }
         }
 
         #endregion

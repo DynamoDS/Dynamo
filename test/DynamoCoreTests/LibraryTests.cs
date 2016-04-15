@@ -24,7 +24,7 @@ namespace Dynamo.Tests
         {
             base.Setup();
 
-            libraryCore = new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
+            libraryCore = new ProtoCore.Core(new Options());
             libraryCore.Compilers.Add(Language.Associative, new ProtoAssociative.Compiler(libraryCore));
             libraryCore.Compilers.Add(Language.Imperative, new ProtoImperative.Compiler(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;

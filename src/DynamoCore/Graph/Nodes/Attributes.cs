@@ -86,14 +86,6 @@ namespace Dynamo.Graph.Nodes
         public List<string> Tags { get; set; }
     }
 
-    [AttributeUsage(AttributeTargets.Class)]
-    public class NotSearchableInHomeWorkspace : Attribute
-    { }
-
-    [AttributeUsage(AttributeTargets.Class)]
-    public class NotSearchableInCustomNodeWorkspace : Attribute
-    { }
-
     /// <summary>
     ///     The NodeDescriptionAttribute attribute allows the node implementer
     ///     to define node description.
