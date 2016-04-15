@@ -3308,18 +3308,6 @@ namespace ProtoCore.AST.AssociativeAST
             to.skipMe = from.skipMe;
         }
 
-        public static ImperativeAST.ArgumentSignatureNode ToImperativeNode(this ArgumentSignatureNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.ArgumentSignatureNode
-            {
-                Arguments = aNode.Arguments.Select(ToImperativeNode).ToList()
-            };
-            CopyProps(aNode, result);
-            return result;
-        }
-
         public static ImperativeAST.ArrayNameNode ToImperativeNode(this ArrayNameNode aNode)
         {
             if (aNode == null) return null;
@@ -3410,15 +3398,6 @@ namespace ProtoCore.AST.AssociativeAST
             return result;
         }
 
-        public static ImperativeAST.DefaultArgNode ToImperativeNode(this DefaultArgNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.DefaultArgNode();
-            CopyProps(aNode, result);
-            return result;
-        }
-
         public static ImperativeAST.DoubleNode ToImperativeNode(this DoubleNode aNode)
         {
             if (aNode == null) return null;
@@ -3450,21 +3429,6 @@ namespace ProtoCore.AST.AssociativeAST
                 ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
                 FormalArguments = aNode.FormalArguments.Select(ToImperativeAST).ToList(),
                 Function = aNode.Function.ToImperativeAST()
-            };
-            CopyProps(aNode, result);
-            return result;
-        }
-
-        public static ImperativeAST.FunctionDefinitionNode ToImperativeNode(this FunctionDefinitionNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.FunctionDefinitionNode
-            {
-                Attributes = aNode.Attributes.Select(ToImperativeAST).ToList(),
-                FunctionBody = aNode.FunctionBody.ToImperativeNode(),
-                ReturnType = aNode.ReturnType,
-                Signature = aNode.Signature.ToImperativeNode()
             };
             CopyProps(aNode, result);
             return result;
@@ -3606,19 +3570,6 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 Expression = aNode.Expression.ToImperativeAST(),
                 Operator = aNode.Operator
-            };
-            CopyProps(aNode, result);
-            return result;
-        }
-
-        public static ImperativeAST.VarDeclNode ToImperativeNode(this VarDeclNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.VarDeclNode
-            {
-                ArgumentType = aNode.ArgumentType,
-                NameNode = aNode.NameNode.ToImperativeAST()
             };
             CopyProps(aNode, result);
             return result;

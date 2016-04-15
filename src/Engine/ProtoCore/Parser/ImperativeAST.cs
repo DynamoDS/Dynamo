@@ -12,7 +12,6 @@ namespace ProtoCore.AST.ImperativeAST
 {
     public enum AstKind
     {
-        ArgumentSignature,
         ArrayName,
         Array,
         BinaryExpression,
@@ -21,13 +20,11 @@ namespace ProtoCore.AST.ImperativeAST
         Char,
         CodeBlock,
         Continue,
-        DefaultArgument,
         Double,
         ElseIf,
         ExpressionList,
         ForLoop,
         FunctionCall,
-        FunctionDefinition,
         GroupExpression,
         Identifier,
         IdentifierList,
@@ -41,7 +38,6 @@ namespace ProtoCore.AST.ImperativeAST
         String,
         TypedIdentifier,
         UnaryExpression,
-        VariableDeclaration,
         While
     }
 
@@ -871,136 +867,6 @@ namespace ProtoCore.AST.ImperativeAST
         }
     }
 
-    public class VarDeclNode : ImperativeNode
-    {
-        public VarDeclNode()
-        {
-            memregion = MemoryRegion.InvalidRegion;
-        }
-
-        public MemoryRegion memregion { get; set; }
-        public Type ArgumentType { get; set; }
-        public ImperativeNode NameNode { get; set; }
-
-        public override bool Equals(object other)
-        {
-            var otherNode = other as VarDeclNode;
-            if (null == otherNode)
-                return false;
-
-            return memregion == otherNode.memregion &&
-                   ArgumentType.Equals(otherNode.ArgumentType) &&
-                   EqualityComparer<ImperativeNode>.Default.Equals(NameNode, otherNode.NameNode);
-        }
-
-        public override int GetHashCode()
-        {
-            var argumentTypeHashCode = ArgumentType.GetHashCode();
-            var nameNodeHashCode =
-                (NameNode == null ? base.GetHashCode() : NameNode.GetHashCode());
-
-            return argumentTypeHashCode ^ nameNodeHashCode;
-        }
-
-        public override string ToString()
-        {
-            StringBuilder buf = new StringBuilder();
-
-            if (NameNode is TypedIdentifierNode)
-            {
-                buf.AppendLine(NameNode.ToString());
-            }
-            else if (NameNode is IdentifierNode)
-            {
-                buf.Append(NameNode.ToString());
-                string argType = ArgumentType.ToString();
-                if (!string.IsNullOrEmpty(argType))
-                    buf.Append(" : " + argType);
-            }
-            else
-                buf.Append(NameNode.ToString());
-
-            return buf.ToString();
-        }
-
-        public override AstKind Kind
-        {
-            get
-            {
-                return AstKind.VariableDeclaration;
-            }
-        }
-
-        public override void Accept(ImperativeAstVisitor visitor)
-        {
-            visitor.VisitVarDeclNode(this);
-        }
-
-        public override TResult Accept<TResult>(ImperativeAstVisitor<TResult> visitor)
-        {
-            return visitor.VisitVarDeclNode(this);
-        }
-    }
-
-    public class ArgumentSignatureNode : ImperativeNode
-    {
-        public ArgumentSignatureNode()
-        {
-            Arguments = new List<VarDeclNode>();
-        }
-
-        public List<VarDeclNode> Arguments { get; set; }
-
-        public void AddArgument(VarDeclNode arg)
-        {
-            Arguments.Add(arg);
-        }
-
-        public override bool Equals(object other)
-        {
-            var otherNode = other as ArgumentSignatureNode;
-            return null != otherNode && Arguments.SequenceEqual(otherNode.Arguments);
-        }
-
-        public override int GetHashCode()
-        {
-            var argumentsHashCode =
-                (Arguments == null ? base.GetHashCode() : Arguments.GetHashCode());
-
-            return argumentsHashCode;
-        }
-
-        public override string ToString()
-        {
-            StringBuilder buf = new StringBuilder();
-            for (int i = 0; i < Arguments.Count; ++i)
-            {
-                buf.Append(Arguments[i].ToString());
-                if (i < Arguments.Count - 1)
-                    buf.Append(", ");
-            }
-            return buf.ToString();
-        }
-
-        public override AstKind Kind
-        {
-            get
-            {
-                return AstKind.ArgumentSignature;
-            }
-        }
-
-        public override void Accept(ImperativeAstVisitor visitor)
-        {
-            visitor.VisitArgumentSignatureNode(this);
-        }
-
-        public override TResult Accept<TResult>(ImperativeAstVisitor<TResult> visitor)
-        {
-            return visitor.VisitArgumentSignatureNode(this);
-        }
-    }
-
     public class ExprListNode : ArrayNameNode
     {
         public ExprListNode()
@@ -1134,63 +1000,6 @@ namespace ProtoCore.AST.ImperativeAST
         public override TResult Accept<TResult>(ImperativeAstVisitor<TResult> visitor)
         {
             return visitor.VisitCodeBlockNode(this);
-        }
-    }
-
-    public class FunctionDefinitionNode : ImperativeNode
-    {
-        public int LocalVariableCount { get; set; }
-        public List<ImperativeNode> Attributes { get; set; }
-        public CodeBlockNode FunctionBody { get; set; }
-        public ProtoCore.Type ReturnType { get; set; }
-        public ArgumentSignatureNode Signature { get; set; }
-
-        //only compare return type, attributes and signature
-        public override bool Equals(object other)
-        {
-            var otherNode = other as FunctionDefinitionNode;
-            if (null == otherNode)
-            {
-                return false;
-            }
-
-            bool equalSignature = EqualityComparer<ArgumentSignatureNode>.Default.Equals(Signature, otherNode.Signature) &&
-                   ReturnType.Equals(otherNode.ReturnType) &&
-                   Attributes.SequenceEqual(otherNode.Attributes);
-
-            bool equalBody = FunctionBody.Equals(otherNode.FunctionBody);
-
-            return equalSignature && equalBody;
-        }
-
-        public override int GetHashCode()
-        {
-            var signatureHashCode =
-                (Signature == null ? base.GetHashCode() : Signature.GetHashCode());
-            var returnTypeHashCode = ReturnType.GetHashCode();
-            var attributesHashCode =
-                (Attributes == null ? base.GetHashCode() : Attributes.GetHashCode());
-
-            return signatureHashCode ^
-                returnTypeHashCode ^ attributesHashCode;
-        }
-
-        public override AstKind Kind
-        {
-            get
-            {
-                return AstKind.FunctionDefinition;
-            }
-        }
-
-        public override void Accept(ImperativeAstVisitor visitor)
-        {
-            visitor.VisitFunctionDefinitionNode(this);
-        }
-
-        public override TResult Accept<TResult>(ImperativeAstVisitor<TResult> visitor)
-        {
-            return visitor.VisitFunctionDefinitionNode(this);
         }
     }
 
@@ -2081,27 +1890,6 @@ namespace ProtoCore.AST.ImperativeAST
         public override TResult Accept<TResult>(ImperativeAstVisitor<TResult> visitor)
         {
             return visitor.VisitContinueNode(this);
-        }
-    }
-
-    public class DefaultArgNode : ImperativeNode
-    {// not supposed to be used in parser 
-        public override AstKind Kind
-        {
-            get
-            {
-                return AstKind.DefaultArgument;
-            }
-        }
-
-        public override void Accept(ImperativeAstVisitor visitor)
-        {
-            visitor.VisitDefaultArgNode(this);
-        }
-
-        public override TResult Accept<TResult>(ImperativeAstVisitor<TResult> visitor)
-        {
-            return visitor.VisitDefaultArgNode(this);
         }
     }
 }

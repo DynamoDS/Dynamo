@@ -528,12 +528,12 @@ aA;bA;cA;
         {
             string code = @"
 z;
-[Imperative]
-{
 	def foo : int(a : int, b : int)
 	{
 		return = a - b;
 	}
+[Imperative]
+{
 	[Associative]	
 	{
 	x = 20;
@@ -575,12 +575,12 @@ z;
             string code = @"
 z_1;
 z_2;
-[Imperative]
-{
 	def foo : int(a : int, b : int)
 	{
 		return = a - b;
 	}
+[Imperative]
+{
 	[Associative]	
 	{
 		x_1 = 20;
@@ -676,13 +676,12 @@ z_2;
             //Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             //{
             string src = @"z;
-[Imperative]
-{
 	def foo : int(a : int, b : int)
 	{
 		return = a - b;
 	}
-	 
+[Imperative]
+{
 	a = 10;
 	
 }
@@ -694,7 +693,7 @@ z_2;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("z", null);
+            thisTest.Verify("z", 20);
             //});
             //Assert.Fail("Sprint 15: Rev 617: Scope: Need sensible error message to show the user that function called in a parallel language block is not defined. ");
         }
@@ -736,13 +735,12 @@ z_2;
             //Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             //{
             string src = @"z;
-[Imperative]
-{
 	def foo : int(a : int, b : int)
 	{
 		return = a - b;
 	}
-	 
+[Imperative]
+{
 	a = 10;
 	
 }
@@ -754,7 +752,7 @@ z_2;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("z", null);
+            thisTest.Verify("z", 20);
             //});
             //Assert.Fail("Sprint 15: Rev 617: Scope: Need sensible error message to show the user that function called in a parallel language block is not defined. ");
         }
@@ -805,13 +803,12 @@ z_2;
             //{
             string src = @"z_1;
 z_2;
-[Imperative]
-{
 	def foo : int(a : int, b : int)
 	{
 		return = a - b;
 	}
-	 
+[Imperative]
+{
 	a = 10;
 	
 }
@@ -829,8 +826,8 @@ z_2;
 	z_2 = foo (x_2, y_2);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("z_1", null);
-            thisTest.Verify("z_2", null);
+            thisTest.Verify("z_1", 20);
+            thisTest.Verify("z_2", 20);
             //});
             //Assert.Fail("Sprint 15: Rev 617: Scope: Need sensible error message to show the user that function called in a parallel language block is not defined. ");
         }
@@ -891,13 +888,12 @@ z_A1;
 z_I1;
 z_A2;
 z_I2;
-[Imperative]
-{
 	def foo : int(a : int, b : int)
 	{
 		return = a - b;
 	}
-	 
+[Imperative]
+{
 	[Associative]
 	{
 		x_A1 = 30;
@@ -984,10 +980,9 @@ z_I2;
 	q = a;
 }
 y = 1;
-[Imperative]
-{
-   def foo ( i )
+def foo ( i )
    {
+    return = [Imperative]{
 		x = 2;
 		if( i < x ) 
 		{
@@ -995,7 +990,10 @@ y = 1;
 			return = y * i;
 		}
 		return = y;
+}
 	}
+[Imperative]
+{
 	x = y;
 	y1 = foo ( 1 );
 	y2 = foo ( 3 );

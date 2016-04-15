@@ -90,10 +90,9 @@ while( i < 5 )
         public void T05_WithinFunction()
         {
             string src = @"testvar;
-[Imperative]
-{
 	def fn1 : int (a : int)
 	{   
+return = [Imperative]{
 		i = 0;
 		temp = 1;
 		while ( i < a )
@@ -102,7 +101,10 @@ while( i < 5 )
 		    i = i + 1;
 		}
 		return = temp;
+}
 	}
+[Imperative]
+{
 	testvar = fn1(5);
 } 
 	
@@ -305,10 +307,9 @@ p;
         public void T12_WhileWithFunctionCall()
         {
             string src = @"testvar;
-[Imperative]
-{ 
 	def fn1 :int ( a : int )
 	{   
+    return = [Imperative]{
 		i = 0;
 		temp = 1;
 		while ( i < a )
@@ -317,7 +318,10 @@ p;
 			i = i + 1;
 		}
 		return = temp;
+    }
 	}
+[Imperative]
+{ 
 	testvar = 8;
 	
 	while ( testvar != fn1(6) )

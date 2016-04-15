@@ -23,6 +23,10 @@ import(""FFITarget.dll"");
 v1;
 v2;
 v3;
+def foo : int(a : DisposeCounterTest[])
+{
+    return = 10;
+}
 [Imperative]
 {
 DisposeCounter.Reset(1);
@@ -33,10 +37,6 @@ a1 = DisposeCounterTest.DisposeCounterTest();
 arr = { a1, DisposeCounterTest.DisposeCounterTest() };
 arr = 3;
 v2 = DisposeCounter.x; // 5
-def foo : int(a : DisposeCounterTest[])
-{
-    return = 10;
-}
 a2 = DisposeCounterTest.DisposeCounterTest();
 a = foo( { a1, a2 });
 a2 = DisposeCounterTest.DisposeCounterTest();
@@ -376,43 +376,6 @@ v1 = DisposeCounter.x; // 2
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
             thisTest.Verify("v1", 1);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void T12_TestGCIfElseInFunction()
-        {
-            string code = @"
-import(""FFITarget.dll"");
-v1;
-[Imperative]
-{
-	def foo : int(a : DisposeCounterTest)
-	{
-		a1 = DisposeCounterTest.DisposeCounterTest();
-		if (1 == 1)
-		{
-			a2 = DisposeCounterTest.DisposeCounterTest();
-		}
-		
-		return = 10;
-	}
-	DisposeCounter.Reset(1);
-	aaaa = [Associative]
-	{
-		aaaaaaa = DisposeCounterTest.DisposeCounterTest();
-		return = DisposeCounterTest.DisposeCounterTest();
-	}
-	if (1 == 1)
-		aaaaa = DisposeCounterTest.DisposeCounterTest();
-	aa = DisposeCounterTest.DisposeCounterTest();
-	cc = foo(aa);
-	v1 = DisposeCounter.x;
-}
-__GC();
-v2 = DisposeCounter.x; // 4";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
-            thisTest.Verify("v2", 7);
         }
 
         [Test]

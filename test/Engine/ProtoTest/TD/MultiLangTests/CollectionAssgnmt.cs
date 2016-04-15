@@ -88,10 +88,9 @@ def foo: int[]( a: int,b: int )
         {
             string code = @"
 c;
-[Imperative]
-{
 	def collectioninc: int[]( a : int[] )
 	{
+    return = [Imperative]{
 		b = a;
 		j = 0;
 	
@@ -101,7 +100,10 @@ c;
 			j = j + 1;
 		}
 		return = a;
+    }
 	}
+[Imperative]
+{
 		d = { 1,2,3 };
 		c = collectioninc( d );
 		a1 = c[0];

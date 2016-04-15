@@ -13,12 +13,12 @@ namespace ProtoTest.TD.Imperative
         {
             string src = @"smallest2;
 largest2;
-[Imperative]
-{
 	def fo1 : int(a1 : int)
 	{
 		return = a1 * a1;
 	}
+[Imperative]
+{
 	a	=	10;				
 	b	=	20;
 				
@@ -640,9 +640,12 @@ a3 = 1 > 2 ? true : b;";
             String code =
 @"
 x1;x2;x3;x4;x5;
+def foo()
+{
+    return = null;
+}
 [Imperative] 
 {
-   def foo () = null;
    x1 = null == null ? 1 : 0;
    x2 = null != null ? 1 : 0;
    x3 = null == a ? 1 : 0;

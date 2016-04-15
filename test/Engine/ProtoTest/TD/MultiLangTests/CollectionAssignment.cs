@@ -633,13 +633,13 @@ b = CreateArray ( b, count );
         {
             string code = @"
 test;
-[Imperative]
-{
 	def CreateArray ( x : var[] , i )
 	{
 		x[i] = i;
 		return = x;
 	}
+[Imperative]
+{
 	test = { };
 	test = CreateArray ( test, 0 );
 	test = CreateArray ( test, 1 );
@@ -1353,9 +1353,6 @@ x = y.add(); // expected { { 0,0 }, { 1, 1, 1 }, {2, false, {2, 2}} }";
         public void T25_Adding_elements_1465704_7()
         {
             string code = @"
-
-x = [Imperative]
-{
     def add ( )
     {
         x = { { 0, 0 } , { 1, 1 } };
@@ -1363,6 +1360,8 @@ x = [Imperative]
         x[2] = { 2, false,{ 2, 2} };
         return = x;
     }
+x = [Imperative]
+{
     z = add();
     return = z;
 }
@@ -1381,10 +1380,9 @@ x = [Imperative]
         public void T25_Adding_elements_imperative_1465704_8()
         {
             string code = @"
-a = [Imperative]
-{
     def add ( )
     {
+return = [Imperative]{
         x = { { 0, 0 } , { 1, 1 } };
         z = 0..5;
         for(i in z)
@@ -1392,7 +1390,10 @@ a = [Imperative]
 	        x[i] = 1;
         }
         return = x; 
+}
     }
+a = [Imperative]
+{
     return = add();
 }
 ";
@@ -1408,10 +1409,9 @@ a = [Imperative]
         {
             string error = "1467309 rev 3786 : Warning:Couldn't decide which function to execute... coming from valid code ";
             string code = @"
-a = [Imperative]
-{
     def add ( )
     {
+    return = [Imperative]{
         x = { { 0, 0 } , { 1, 1 } };
         z = 5;
         j = 0;
@@ -1422,6 +1422,9 @@ a = [Imperative]
         }
         return = x; 
     }
+    }
+a = [Imperative]
+{
     y = add();
     return = y;
 }
@@ -1437,9 +1440,6 @@ a = [Imperative]
         public void T25_Adding_elements_imperative_1465704_10()
         {
             string code = @"
-
-x = [Imperative]
-{
     def add ( )
     {
         x = { { 0, 0 } , { 1, 1 } };
@@ -1447,6 +1447,8 @@ x = [Imperative]
         x[2] = { null, false,{ 2, 2} };
         return = x;
     }
+x = [Imperative]
+{
     z = add();
     return = z;
 }
@@ -1984,13 +1986,13 @@ aa;aa1;
         {
             string code = @"
 test;
-[Imperative]
-{
 def CreateArray ( x : var[] , i )
 {
 x[i] = i;
 return = x;
 }
+[Imperative]
+{
 test = { };
 test = CreateArray ( test, 0 );
 test = CreateArray ( test, 1 );
@@ -2008,10 +2010,9 @@ test = CreateArray ( test, 1 );
             string code = @"
 a;
 r;
-[Imperative]
-{
     def test (i:int)
     {
+    return = [Imperative]{
         loc = {};
         for(j in i)
         {
@@ -2019,6 +2020,9 @@ r;
         }
         return = loc;
     }
+    }
+[Imperative]
+{
     a={3,4,5};
     t = test(a);
     r = {t[0][3], t[1][4], t[2][5]};

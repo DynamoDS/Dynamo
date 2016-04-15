@@ -4966,28 +4966,6 @@ pt3 = XPlusY(pt2);
 
         [Test]
         [Category("SmokeTest")]
-        public void T66_1467483_CyclicDependancy_2()
-        {
-            String code = @"
-            [Imperative]
-            {
-                a = 1;
-                b = a;
-                def foo(x)
-                {
-                a = b+1;
-                return = a;
-                }
-                r = foo(b);
-            }
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-
-        }
-
-        [Test]
-        [Category("SmokeTest")]
         public void T66_1467512_RighthandsideUpdate_imperative()
         {
             String code = @"
@@ -5031,33 +5009,6 @@ pt3 = XPlusY(pt2);
                   
                 }
                 a = 2;
-                ";
-            string errmsg = "1467512 - a variable declared in associative must trigger update when modified in imperative , it doesnt if inside for or while ";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("b", 2);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T66_1467512_RighthandsideUpdate_imperative_3()
-        {
-            String code = @"
-          a = 1 ;
-            b;
-            [Imperative]
-            {
-               c = 3;
-               i = 0;
-    
-            def foo(a:int)
-            {
-                    b = a;
-                    i = i + 1;
-            }
-                c = foo(a);
- 
-            }
-            a = 2;
                 ";
             string errmsg = "1467512 - a variable declared in associative must trigger update when modified in imperative , it doesnt if inside for or while ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -5214,37 +5165,6 @@ a = 1;
 b = 0;
 r = bar();
 q = a;
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("q", 1);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T69_Cyclic_globalvariable_1467439()
-        {
-            String code = @"
-a;
-b;
-q;
-[Imperative]
-{
-def foo()
-{
-    a = b;
-    return = null;
-}
-def bar()
-{
-    b = a;
-    return = null;
-}
-a = 1;
-b = 0;
-q = a;
-r = bar();
-}
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);

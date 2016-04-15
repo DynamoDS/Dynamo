@@ -156,10 +156,9 @@ namespace ProtoTest.TD.Imperative
         {
             string src = @"y;
 z;
-[Imperative]
-{
 	def sum : double ( a : double, b : double, c : double )
 	{   
+return = [Imperative] {
 		x = 0;
 	    z = {a, b, c};
 		for(y in z)
@@ -168,10 +167,10 @@ z;
 		}
 		
 		return = x;
+}
 	}
-	
-	
-	
+[Imperative]
+{
 	y = sum ( 1.0, 2.5, -3.5 );
 	
 	z = sum ( -4.0, 5.0, 6.0 );
@@ -658,13 +657,12 @@ a7;
         public void T27_TestCallingFunctionInsideForLoop()
         {
             string src = @"x;
-[Imperative]
-{
 	def function1 : double ( a : double )
 	{		
 		return = a + 0.7;
 	}
-	
+[Imperative]
+{
 	a = { 1.3, 2.3, 3.3, 4.3 };
 	
 	x = 3;
@@ -1008,13 +1006,13 @@ x;
         {
             string code = @"
 x;
-[Imperative]
-{
 	def foo ( a : int[])
 	{
 	    a[1] = 4;
 		return = a;
 	}
+[Imperative]
+{
 	a = { 4,5 };
    
 	[Associative]

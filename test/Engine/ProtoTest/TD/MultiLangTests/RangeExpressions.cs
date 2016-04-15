@@ -138,12 +138,12 @@ namespace ProtoTest.TD.MultiLangTests
         public void T04_SimpleRangeExpressionUsingFunctions()
         {
             string src = @"z1;z2;z3;z4;z5;z7;
-[Imperative]
-{
 	def twice : double( a : double ) 
 	{
 		return = 2 * a;
 	}
+[Imperative]
+{
 	z1 = 1..twice(4)..twice(1);
 	z2 = 1..twice(4)..twice(1)-1;
 	z3 = 1..twice(4)..(twice(1)-1);
@@ -249,10 +249,9 @@ Succesfully created function 'twice'
         {
             string code = @"
 d;f;
-[Imperative]
-{
 	def increment : double[] (x : double[]) 
 	{
+    return = [Imperative]{
 		j = 0;
 		for( i in x )
 		{
@@ -260,7 +259,10 @@ d;f;
 			j = j + 1;
 		}
 		return = x;
+    }
 	}
+[Imperative]
+{
 	a = {1,2,3};
 	b = {3,4,5} ;
 	c = {1.5,2.5,4,3.65};
@@ -279,12 +281,12 @@ d;f;
         public void T08_RangeExpressionWithIncrementUsingVariables()
         {
             string src = @"h;i;j;k;l;
-[Imperative]
-{
 	def square : double ( x :double ) 
 	{
 		return = x * x;
 	}
+[Imperative]
+{
 	z = square(4);
 	x = 1 ;
 	y = -2 ;
@@ -340,13 +342,12 @@ o = {0.800000,0.810000}
         public void T09_RangeExpressionWithApproximateIncrement()
         {
             string src = @"a;b;f;g;h;j;k;l;
-[Imperative]
-{
 	def square : double ( x: double ) 
 	{
 		return = x * x;
 	}
-	
+[Imperative]
+{
 	x = 0.1; 
 	a = 0..2..~0.5;
 	b = 0..0.1..~square(0.1);
@@ -494,15 +495,17 @@ a1;a2;a3;a4;
         public void T13_RangeExpressionWithStartEndValuesUsingFunctionCall()
         {
             string src = @"x;b;c;e1;f;g;
-[Imperative]
-{
 	def even : double (a : int) 
 	{
+    return = [Imperative]{
 		if((a % 2)>0)
 		return = (a+(a * 0.5));
 		else
 		return = (a-(a * 0.5));
-	}
+    }
+    }	
+[Imperative]
+{
 	d = 3;
 	x = 1..2..#d;
 	a = even(2) ;
@@ -763,10 +766,9 @@ b;
         public void T20_RangeExpressionsUsingPowerOperator()
         {
             string src = @"e1;f;
-[Imperative]
-{
 	def power : double (a:double,b:int) 
 	{
+    return = [Imperative]{
 		temp = 1;
 		while( b > 0 )
 		{
@@ -774,7 +776,10 @@ b;
 			b = b - 1;
 		}
 		return = temp;
+    }
 	}
+[Imperative]
+{
 	a = 3;
 	b = 2; 
 	c = power(2,3);
@@ -815,16 +820,18 @@ b;
         public void T21_RangeExpressionsUsingEvenFunction()
         {
             string src = @"c;d;e1;f;g;
-[Imperative]
-{
 	def even : int (a : int) 
 	{	
+    return = [Imperative]{
 		if(( a % 2 ) > 0 )
 			return = a + 1;
 		
 		else 
 			return = a;
+    }
 	}
+[Imperative]
+{
 	x = 1..3..1;
 	y = 1..9..2;
 	z = 11..19..2;
@@ -1393,13 +1400,12 @@ a=(5..1).. (1..5);
             // 1467121
             string code = @"
 x;a;b;f;g;h;j;k;l;m;
-[Imperative]
-{
 	def square : double ( x: double ) 
 	{
 		return = x * x;
 	}
-	
+[Imperative]
+{
 	x = 0.1; 
 	a = 0..2..~0.5;
 	b = 0..0.1..~square(0.1);

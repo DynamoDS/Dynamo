@@ -1656,11 +1656,11 @@ r3 = fa.fx[0]; // 10
 @"
 x=[Imperative]
 {
-    def ding()
-    {
-        return = {{1,2,3}, {4,5,6}};
-    }
     return = ding()[1][1];
+}
+def ding()
+{
+    return = {{1,2,3}, {4,5,6}};
 }
 def foo()
 {

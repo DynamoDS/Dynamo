@@ -381,14 +381,14 @@ a=numpts.IntVal;
             string code =
                 @"
 b;c;d;
-                      [Imperative]
-                            {
-                            c={};
-                            def foo( a : bool )
+def foo( a : bool )
                             {
                             c={a};
                             return = c; 
                             }
+                      [Imperative]
+                            {
+                            c={};
                             b = foo( 1 );
                             c = foo( 1.5 );
                             d = 0;
@@ -412,14 +412,14 @@ b;c;d;
             string code =
                 @"
 b;c;d;
-                      [Imperative]
-                            {
-                        
-                            def foo:bool( a  )
+def foo:bool( a  )
                             {
                             
                             return = a; 
                             }
+                      [Imperative]
+                            {
+                        
                             b = foo( 1 );
                             c = foo( 1.5 );
                             d = 0;
@@ -1333,7 +1333,8 @@ import(""FFITarget.dll"");
         public void TS038_eachType_To_Userdefined()
         {
             string code =
-                @"import(""FFITarget.dll"");    
+                @"
+import(""FFITarget.dll"");    
                             a:A= 1;//
                             b:A= -0.1; //
                             c:A= ""1.5""; //false
@@ -1574,7 +1575,8 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""FFITarget.dll"");
+import(""FFITarget.dll"");
+
                     a:double= null; 
                     b:int =  null; 
                     c:string=null; 
@@ -1617,7 +1619,8 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""FFITarget.dll"");
+import(""FFITarget.dll"");
+
                     a:double[]= {1,2,3}; 
                     
                     b:int[] =  {1,2,3}; 
@@ -3854,7 +3857,8 @@ import(""FFITarget.dll"");
         public void TS094_Param_notypedefined_single_Userdefined()
         {
             string code =
-                    @"import(""FFITarget.dll"");
+                    @"
+import(""FFITarget.dll"");
                         def foo (x : ClassFunctionality)
                         {
                             b  : ClassFunctionality = x;
@@ -6287,7 +6291,7 @@ d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00
                 x[2..3] = { true, 2 };
                 ";
             var mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.Verify(mirror, "x", new object[] { true, false, true, 2});
+            TestFrameWork.Verify(mirror, "x", new object[] { true, false, true, 2 });
         }
 
         [Test]
