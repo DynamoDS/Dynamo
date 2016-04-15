@@ -124,11 +124,8 @@ namespace Dynamo.Search
                     XmlHelper.AddAttribute(parameterNode, "Tooltip", dynamoNode.OutPorts[i].ToolTipContent);
                 }
             }
-
-            // If assembly file doesn't exist, then node might be loaded from DynamoCore assembly.
-            // E.g. Operators or BuildIn
-            var assemblyName = File.Exists(entry.Assembly) ?
-                Path.GetFileNameWithoutExtension(entry.Assembly) : "DynamoCore";
+            
+            var assemblyName = Path.GetFileNameWithoutExtension(entry.Assembly);
 
             // Get icon paths.
             string pathToSmallIcon = Path.Combine(
@@ -142,6 +139,26 @@ namespace Dynamo.Search
                @"..\..\..\src\Resources\",
                assemblyName,
                "LargeIcons", entry.IconName + ".Large.png");
+
+            if (!File.Exists(pathToSmallIcon))
+            {
+                // Try DynamoCore path.
+                pathToSmallIcon = Path.Combine(
+                    dynamoPath,
+                    @"..\..\..\src\Resources\",
+                    "DynamoCore",
+                    "SmallIcons", entry.IconName + ".Small.png");
+            }
+
+            if (!File.Exists(pathToLargeIcon))
+            {
+                // Try DynamoCore path.
+                pathToSmallIcon = Path.Combine(
+                    dynamoPath,
+                    @"..\..\..\src\Resources\",
+                    "DynamoCore",
+                    "LargeIcons", entry.IconName + ".Large.png");
+            }
 
             // Dump icons.
             XmlHelper.AddNode(element, "SmallIcon", File.Exists(pathToSmallIcon) ? pathToSmallIcon : "Not found");
