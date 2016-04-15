@@ -760,7 +760,7 @@
             Get a Point on the Curve at a specified parameter between StartParameter() and EndParameter()
             </summary>
             <param name="param"> The parameter at which to evaluate </param>
-            <returns> The result </returns>
+            <returns> Point </returns>
             <search>
             pointoncurve,curvepoint
             </search>
@@ -815,62 +815,104 @@
             planeoncurve,planecurve,tangentplane
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtDistance(System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength(System.Double)">
             <summary>
             Get a Point at a particular arc length along the curve
             </summary>
-            <param name="distance"> The distance at which to evaluate </param>
-            <returns> The Point at the given distance </returns>
+            <param name="segmentLength"> The distance along the curve at which to evaluate </param>
+            <returns> The point at the given arc length </returns>
             <search>
-            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint
+            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtDistance(System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength(System.Int32)">
+            <summary>
+            Returns points spaced equally along the curve length  based on the input number of divisions
+            </summary>
+            <param name="divisions">  </param>
+            <returns> Points spaced equally along length of curve </returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength(System.Int32)">
+            <summary>
+            Returns points spaced along curve at equal chord length  based on the input number of divisions
+            </summary>
+            <param name="divisions">  </param>
+            <returns> List of points on curve </returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtChordLength(System.Double,System.Double,System.Boolean)">
+            <summary>
+            Get the point at a particular chord length of the curve from given parameter location.
+            </summary>
+            <param name="chordLength"> The chord length at which to evaluate </param>
+            <param name="parameterLocation"> Parameter on the curve to measure from </param>
+            <param name="forward"> true if move forward along curve </param>
+            <returns> Point on curve </returns>
+            <search>
+            measure from,measure to,parameteratdist
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
+            <summary>
+            Returns points spaced equally along the curve at given segment length and starting from the given point
+            </summary>
+            <param name="point"> The reference point from where to measure </param>
+            <param name="segmentLength"> The distance along the curve at which to evaluate </param>
+            <returns> List of points on curve </returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtChordLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
+            <summary>
+            Returns points spaced on the curve at given chord length starting from the given point
+            </summary>
+            <param name="point"> The reference point from where to measure </param>
+            <param name="chordLength">  </param>
+            <returns> List of points on curve </returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength(System.Double)">
             <summary>
             Returns a CoordinateSystem at specified distance from Curve start Point. Y Axis lies tangent to the Curve, X Axis is the curvature.
             </summary>
-            <param name="distance">  </param>
-            <returns>  </returns>
+            <param name="segmentLength"> The distance along the curve at which to evaluate </param>
+            <returns> CoordinateSystem on curve </returns>
             <search>
             coordoncurve,curvecoord,derivatives
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtDistance(System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength(System.Double)">
             <summary>
             Returns a Plane at the specified distance along the Curve from the  start Point. The normal of the Plane aligns with the tangent of the  Curve.
             </summary>
-            <param name="distance">  </param>
-            <returns>  </returns>
+            <param name="segmentLength"> The distance along the curve at which to evaluate </param>
+            <returns> Plane on curve </returns>
             <search>
             planeoncurve,planecurve,tangentplane
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DistanceAtParameter(System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthAtParameter(System.Double)">
             <summary>
             Get the arc length along the Curve at the particular parameter.
             </summary>
             <param name="param"> The parameter at which to evaluate </param>
             <returns> The arc length </returns>
             <search>
-            lengthatparameter,dist along,lengthatpoint
+            lengthatparameter,dist along,lengthatpoint,arclength
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtDistance(System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength(System.Double)">
             <summary>
             Get the parameter at a particular arc length along the curve.
             </summary>
-            <param name="distance"> The distance at which to evaluate </param>
+            <param name="segmentLength"> The distance along the curve at which to evaluate </param>
             <returns> The parameter </returns>
             <search>
-            parameteratlen,param along,paramatlen
+            parameteratlen,param along,paramatlen,arclength
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtChordLength(System.Double,System.Double,System.Boolean)">
             <summary>
             Get the parameter at a particular chord length along the curve from given location.
             </summary>
-            <param name="distance"> The chord length at which to evaluate </param>
-            <param name="location"> Parameter on the curve to measure from </param>
+            <param name="chordLength"> The chord length at which to evaluate </param>
+            <param name="parameter"> Parameter on the curve to measure from </param>
             <param name="forward"> true if move forward along curve </param>
             <returns> The parameter </returns>
             <search>
@@ -895,7 +937,7 @@
             end domain,curveend
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.LengthBetweenParameters(System.Double,System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthBetweenParameters(System.Double,System.Double)">
             <summary>
             Get the arc length between two parameter points on the curve
             </summary>
@@ -903,7 +945,7 @@
             <param name="endParam"> The end of the domain </param>
             <returns> The arc length between the two parameters </returns>
             <search>
-            measure,distance
+            measure,distance,arclength
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
@@ -980,27 +1022,27 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByLengthFromParameter(System.Double,System.Double)">
             <summary>
-            Divides curve into curves of given length measuring from given location
+            Divides curve into curves of given length measured from the given parameter location
             </summary>
             <param name="length"> Length of  curves after division </param>
-            <param name="parameter"> Justification location for measuring from </param>
-            <returns> An Array of Curves after dividing </returns>
+            <param name="parameter"> Parameter location for measuring from </param>
+            <returns> Array of Curves after dividing </returns>
             <search>
             divide by chordlength,chord,segment,chopcurve
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByDistanceFromParameter(System.Double,System.Double)">
             <summary>
-            Divides curve into curves of given distances between start and end (chords) measuring from given location
+            Divides curve into curves of given chord length measured from given parameter location
             </summary>
-            <param name="distance"> Distance between start and end of each curve after division </param>
-            <param name="parameter"> Justification location for measuring from </param>
+            <param name="distance"> Chord length of each curve obtained from splitting </param>
+            <param name="parameter"> Parameter location for measuring from </param>
             <returns> An Array of Curves after dividing </returns>
             <search>
             divide by chordlength,chord,segment,chopcurve
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimStart(System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByStartParameter(System.Double)">
             <summary>
             Removes the start of the Curve at the specified parameter
             </summary>
@@ -1010,7 +1052,7 @@
             rem,remstart,removestart,trimcurve
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimEnd(System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByEndParameter(System.Double)">
             <summary>
             Removes the end of the Curve at the specified parameter
             </summary>
@@ -1020,7 +1062,7 @@
             rem,remend,removeend,trimcurve
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrim(System.Double,System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByParameter(System.Double,System.Double)">
             <summary>
             Removes the beginning and ends of at the specified parameters.
             </summary>
@@ -1031,7 +1073,7 @@
             rem,remend,remstart,remove,trimcurve,removeends
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimInterior(System.Double,System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimInteriorByParameter(System.Double,System.Double)">
             <summary>
             Removes the interior portion of a Curve at the specified parameters
             </summary>
@@ -1042,7 +1084,7 @@
             rem,removemiddle,middle,remmiddle,cutout,trimcurve
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimSegments(System.Double[])">
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[])">
             <summary>
             Removes several segments of the curve, discarding the 1st, 3rd, 5th ... segments
             </summary>
@@ -1052,7 +1094,7 @@
             rem,removeparts,remparts,cutout,trimcurv,interior,odd
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimSegments(System.Double[],System.Boolean)">
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[],System.Boolean)">
             <summary>
             Removes several segments of the Curve, disgarding 2nd, 4th, 6th ... segments if the bool is true
             </summary>
@@ -1063,7 +1105,7 @@
             rem,removeparts,remparts,cutout,trimcurv,interior,even
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterSplit(System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double)">
             <summary>
             Split a Curve into two pieces at the given parameter
             </summary>
@@ -1073,12 +1115,22 @@
             cutinto,divide,curve2curves,cut
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterSplit(System.Double[])">
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double[])">
             <summary>
             Split a Curve into multiple pieces at the given parameters
             </summary>
             <param name="parameters"> A list of parameters at which to split the curve </param>
-            <returns> The two Curves remaining after the split </returns>
+            <returns> Curves created from splitting </returns>
+            <search>
+            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>
+            Split a Curve into multiple pieces at the given points
+            </summary>
+            <param name="points"> The points on the curve at which to split the curve </param>
+            <returns> Curves created from splitting </returns>
             <search>
             cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
             </search>
