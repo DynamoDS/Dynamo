@@ -17,7 +17,14 @@ namespace Dynamo.Graph.Connectors
     {
         #region properties
 
+        /// <summary>
+        /// Represents start port model.
+        /// </summary>
         public PortModel Start { get; private set; }
+
+        /// <summary>
+        /// Represents end port model.
+        /// </summary>
         public PortModel End { get; private set; }
 
         #endregion 
@@ -63,6 +70,9 @@ namespace Dynamo.Graph.Connectors
 
         #region operators
 
+        /// <summary>
+        /// Overload for EQUAL operator.
+        /// </summary>
         public static bool operator ==(ConnectorModel lhs, ConnectorModel rhs)
         {
             if (ReferenceEquals(lhs, rhs))
@@ -77,6 +87,9 @@ namespace Dynamo.Graph.Connectors
                 && (lhs.End.Index == rhs.End.Index));
         }
 
+        /// <summary>
+        /// Overload for NOT EQUAL operator.
+        /// </summary>
         public static bool operator !=(ConnectorModel lhs, ConnectorModel rhs)
         {
             return !(lhs == rhs);
@@ -179,6 +192,9 @@ namespace Dynamo.Graph.Connectors
 
         #endregion
 
+        /// <summary>
+        /// Occurs when deleting connector.
+        /// </summary>
         public event Action Deleted;
         protected virtual void OnDeleted()
         {

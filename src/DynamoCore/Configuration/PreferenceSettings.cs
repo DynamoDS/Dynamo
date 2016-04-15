@@ -24,14 +24,34 @@ namespace Dynamo.Configuration
         private string numberFormat;
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
+
+        /// <summary>
+        /// Default date format
+        /// </summary>
         public const string DefaultDateFormat = "MMMM dd, yyyy h:mm tt";
+
+        /// <summary>
+        /// Default time
+        /// </summary>
         public static readonly System.DateTime DynamoDefaultTime = new System.DateTime(1977, 4, 12, 12, 12, 0, 0);
 
         // Variables of the settings that will be persistent
 
         #region Collect Information Settings
+
+        /// <summary>
+        /// Idicates first run
+        /// </summary>
         public bool IsFirstRun { get; set; }
+
+        /// <summary>
+        /// Idicates whether usage reporting is approved or not.
+        /// </summary>
         public bool IsUsageReportingApproved { get; set; }
+
+        /// <summary>
+        /// Idicates whether analytics reporting is approved or not.
+        /// </summary>
         public bool IsAnalyticsReportingApproved { get; set; }
         #endregion
 

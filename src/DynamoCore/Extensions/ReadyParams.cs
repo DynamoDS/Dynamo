@@ -27,6 +27,9 @@ namespace Dynamo.Extensions
             dynamoModel.PropertyChanged += OnDynamoModelPropertyChanged;
         }
 
+        /// <summary>
+        /// List of workspaces
+        /// </summary>
         public IEnumerable<IWorkspaceModel> WorkspaceModels
         {
             get
@@ -35,6 +38,9 @@ namespace Dynamo.Extensions
             }
         }
 
+        /// <summary>
+        /// Current workspace
+        /// </summary>
         public IWorkspaceModel CurrentWorkspaceModel
         {
             get
@@ -52,6 +58,9 @@ namespace Dynamo.Extensions
             get { return commandExecutive ?? (commandExecutive = new ExtensionCommandExecutive(dynamoModel)); }
         }
 
+        /// <summary>
+        /// Occurs when current workspace is changed
+        /// </summary>
         public event Action<IWorkspaceModel> CurrentWorkspaceChanged;
         private void OnCurrentWorkspaceModelChanged(IWorkspaceModel ws)
         {

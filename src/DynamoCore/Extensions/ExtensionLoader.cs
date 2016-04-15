@@ -35,6 +35,9 @@ namespace Dynamo.Extensions
             }
         }
 
+        /// <summary>
+        /// Loads assembly by passed extension path and return it as IExtension
+        /// </summary>
         public IExtension Load(string extensionPath)
         {
             var document = new XmlDocument();
@@ -67,6 +70,9 @@ namespace Dynamo.Extensions
             return extension;
         }
 
+        /// <summary>
+        /// Returns an enum of IExtension specified by passed extension path
+        /// </summary>
         public IEnumerable<IExtension> LoadDirectory(string extensionsPath)
         {
             var result = new List<IExtension>();
@@ -87,6 +93,9 @@ namespace Dynamo.Extensions
             return result;
         }
 
+        /// <summary>
+        /// Logs messages
+        /// </summary>
         public event Action<ILogMessage> MessageLogged;
 
         private void Log(ILogMessage obj)

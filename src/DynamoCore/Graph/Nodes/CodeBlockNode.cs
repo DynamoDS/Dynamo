@@ -42,12 +42,19 @@ namespace Dynamo.Graph.Nodes
         private readonly LibraryServices libraryServices;
 
         private bool shouldFocus = true;
+
+        /// <summary>
+        ///     Indicates whether code block should not be in focus upon undo/redo actions on node
+        /// </summary>
         public bool ShouldFocus
         {
             get { return shouldFocus; }
             internal set { shouldFocus = value; }
         }
 
+        /// <summary>
+        ///     <see cref="ElementResolver"/> for CodeBlock node
+        /// </summary>
         public ElementResolver ElementResolver { get; set; }
 
         private struct Formatting
@@ -56,6 +63,9 @@ namespace Dynamo.Graph.Nodes
             public const string TOOL_TIP_FOR_TEMP_VARIABLE = "Statement Output";
         }
 
+        /// <summary>
+        ///     Indicates whether node is input node
+        /// </summary>
         public override bool IsInputNode
         {
             get { return false; }
@@ -161,6 +171,9 @@ namespace Dynamo.Graph.Nodes
 
         #region Properties
 
+        /// <summary>
+        ///     If this node is allowed to be converted to AST node in nodes to code conversion.
+        /// </summary>
         public override bool IsConvertible
         {
             get
@@ -169,6 +182,10 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        ///     Code block node displays the value
+        ///     of the left hand side variable of last statement.
+        /// </summary>
         public override string AstIdentifierBase
         {
             get
@@ -177,12 +194,18 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        ///     String content of CodeBlock node.
+        /// </summary>
         public string Code
         {
             get { return code; }
             private set { code = value; }
         }
 
+        /// <summary>
+        ///     Sets string content of CodeBlock node.
+        /// </summary>
         public void SetCodeContent(string newCode, ElementResolver workspaceElementResolver)
         {
             if (code != null && code.Equals(newCode))
@@ -235,6 +258,9 @@ namespace Dynamo.Graph.Nodes
             get { return tempVariables; }
         }
 
+        /// <summary>
+        /// Code statement of CBN
+        /// </summary>
         public IEnumerable<Statement> CodeStatements
         {
             get { return codeStatements; }
@@ -393,6 +419,11 @@ namespace Dynamo.Graph.Nodes
             return mappedIdent as IdentifierNode;
         }
 
+        /// <summary>
+        ///     Fetches the ProtoAST Identifier for a given output index.
+        /// </summary>
+        /// <param name="outputIndex">Index of the output port.</param>
+        /// <returns>Identifier corresponding to the given output port.</returns>
         public override IdentifierNode GetAstIdentifierForOutputIndex(int portIndex)
         {
             return GetAstIdentifierForOutputIndexInternal(portIndex, false);

@@ -15,12 +15,30 @@ namespace Dynamo.Core
             HasFilePath = 0x00000004
         }
 
+        /// <summary>
+        ///     Flag which indicates whether args contain default text overriden,
+        ///     has details or has file path
+        /// </summary>
         public DisplayOptions Options { get; private set; }
+
+        /// <summary>
+        ///     Details of crash
+        /// </summary>
         public string Details { get; private set; }
+
+        /// <summary>
+        ///     Crash message
+        /// </summary>
         public string OverridingText { get; private set; }
+
+        /// <summary>
+        ///     Preference file path
+        /// </summary>
         public string FilePath { get; private set; }
 
-        // Default Crash Prompt
+        /// <summary>
+        ///     Default Crash Prompt
+        /// </summary>
         public CrashPromptArgs(string details, string overridingText = null, string filePath = null)
         {  
             if (details != null)

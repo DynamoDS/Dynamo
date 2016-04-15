@@ -42,6 +42,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             Category = category;
         }
 
+        /// <summary>
+        /// CustomNode definition.
+        /// </summary>
         public CustomNodeDefinition Definition { get { return Controller.Definition; } }
         
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
@@ -244,6 +247,10 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             }
         }
 
+        /// <summary>
+        ///     Validates passed Custom Node definition and synchronizes node with it.
+        /// </summary>
+        /// <param name="def">Custom Node definition.</param>
         public void ResyncWithDefinition(CustomNodeDefinition def)
         {
             ValidateDefinition(def);
@@ -268,6 +275,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         public ElementResolver  ElementResolver { get; set;}
         private ElementResolver workspaceElementResolver;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Symbol"/> class.
+        /// </summary>
         public Symbol()
         {
             OutPortData.Add(new PortData("", Properties.Resources.ToolTipSymbol));
@@ -281,6 +291,9 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             ElementResolver = new ElementResolver();
         }
 
+        /// <summary>
+        ///     Represents string input. 
+        /// </summary>
         public string InputSymbol
         {
             get { return inputSymbol; }
@@ -327,12 +340,19 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             }
         }
 
+        /// <summary>
+        ///     A tuple of Input parameter and its type.
+        /// </summary>
         public TypedParameter Parameter
         {
             get;
             private set;
         }
 
+        /// <summary>
+        ///     Returns <see cref="IdentifierNode"/> by passed output index.
+        /// </summary>
+        /// <param name="outputIndex">Output index.</param>
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
             return
