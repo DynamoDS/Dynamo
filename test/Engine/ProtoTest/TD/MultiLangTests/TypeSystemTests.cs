@@ -3357,7 +3357,7 @@ import(""FFITarget.dll"");
                     x = 0;
 ";
             thisTest.VerifyRunScriptSource(code);
-            thisTest.Verify("x", new object[] { 0 });
+            thisTest.Verify("x", 0);
         }
 
 
@@ -5772,7 +5772,7 @@ import(""FFITarget.dll"");
                                             ";
             string error = "1467291 - Assigning a value to a typed array doesn't respect the type ";
             var mirror = thisTest.RunScriptSource(code, error);
-            TestFrameWork.Verify(mirror, "a", new object[] { null, 2, 3 });
+            TestFrameWork.Verify(mirror, "a", new object[] { false, 2, 3 });
         }
 
         [Test]
@@ -6287,7 +6287,7 @@ d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00
                 x[2..3] = { true, 2 };
                 ";
             var mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.Verify(mirror, "x", new object[] { true, false, true, true });
+            TestFrameWork.Verify(mirror, "x", new object[] { true, false, true, 2});
         }
 
         [Test]

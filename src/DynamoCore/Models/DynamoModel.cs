@@ -570,8 +570,7 @@ namespace Dynamo.Models
             Loader.MessageLogged += LogMessage;
 
             // Create a core which is used for parsing code and loading libraries
-            var libraryCore =
-                new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
+            var libraryCore = new ProtoCore.Core(new Options());
 
             libraryCore.Compilers.Add(Language.Associative, new Compiler(libraryCore));
             libraryCore.Compilers.Add(Language.Imperative, new ProtoImperative.Compiler(libraryCore));

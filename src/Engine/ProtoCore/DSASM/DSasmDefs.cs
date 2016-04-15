@@ -92,16 +92,15 @@ namespace ProtoCore.DSASM
         public const string cjmp = "cjmp";
         public const string jdep = "jdep";
         public const string bounce = "bounce";
-        public const string alloca = "alloca";
-        public const string allocc = "allocc";
+        public const string newarr = "newarr";
+        public const string newobj = "newobj";
         public const string push = "push";
         public const string pushm = "pushm";
         public const string pushw = "pushw";
-        public const string pushindex = "pushindex";
         public const string pushdep = "pushdep";
         public const string pushrepguide = "pushguide";
         public const string pushlevel = "pushlevel";
-        public const string ret = "ret";
+        public const string ret = "return";
         public const string retb = "retb";
         public const string retcn = "retcn";
         public const string pop = "pop";
@@ -113,6 +112,10 @@ namespace ProtoCore.DSASM
         public const string setexpuid = "setexpuid";
         public const string pushb = "pushb";
         public const string pushvarsize = "pushvarsize";
+        public const string loadelement = "loadelement";
+        public const string setelement = "setelement";
+        public const string setmemelement = "setmemelement";
+        public const string cast = "cast";
 
         public const string regRX = "_rx";
         public const string regLX = "_lx";
