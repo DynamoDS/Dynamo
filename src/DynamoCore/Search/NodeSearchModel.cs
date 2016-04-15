@@ -82,7 +82,13 @@ namespace Dynamo.Search
                     var parameterNode = XmlHelper.AddNode(inputNode, "InputParameter");
                     XmlHelper.AddAttribute(parameterNode, "Name", dynamoNode.InPorts[i].PortName);
 
-                    // Case for UI nodes as ColorRange.
+                    // Case for UI nodes as ColorRange, List.Create etc.
+                    // UI nodes  do not have incoming ports in NodeSearchElement, but do have incoming ports in NodeModel.
+                    // UI node initializes its incoming ports, when its constructor is called.
+                    // So, here we check if NodeModel has input ports and NodeSearchElement also has the same input ports.
+                    // UI node node will have several incoming ports on NodeModel,
+                    // but 0 incoming ports on NodeSearchElement 
+                    // (when there is no incoming port, it returns none 1st port by default).
                     if (dynamoNode.InPorts.Count == entry.InputParameters.Count()
                         && entry.InputParameters.First().Item2 != Properties.Resources.NoneString)
                     {
@@ -106,6 +112,7 @@ namespace Dynamo.Search
                 for (int i = 0; i < dynamoNode.OutPorts.Count; i++)
                 {
                     var parameterNode = XmlHelper.AddNode(outputNode, "OutputParameter");
+                    XmlHelper.AddAttribute(parameterNode, "Name", dynamoNode.OutPorts[i].PortName);
 
                     // Case for UI nodes as ColorRange.
                     if (dynamoNode.OutPorts.Count == entry.OutputParameters.Count()
