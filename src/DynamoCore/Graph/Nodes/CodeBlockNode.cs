@@ -12,14 +12,13 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Utilities;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.AST;
 using ProtoCore.BuildData;
 using ProtoCore.Namespace;
+using ProtoCore.SyntaxAnalysis;
 using ProtoCore.Utils;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
-using ProtoCore.SyntaxAnalysis;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -1044,7 +1043,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Gets valiables from AST nodes.
+        /// Gets variables from AST nodes.
         /// E.g. a+5. Here "a" is variable.
         /// </summary>
         /// <param name="astNode"><see cref="Node"/></param>

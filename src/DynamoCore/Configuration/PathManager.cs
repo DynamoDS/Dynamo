@@ -446,6 +446,9 @@ namespace Dynamo.Core
             if (pathResolver != null && !string.IsNullOrEmpty(pathResolver.UserDataRootFolder))
                 return GetDynamoDataFolder(pathResolver.UserDataRootFolder);
 
+            if (!string.IsNullOrEmpty(userDataDir))
+                return userDataDir; //Return the cached userDataDir if we have one.
+
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             return GetDynamoDataFolder(Path.Combine(folder, "Dynamo", "Dynamo Core"));
         }
