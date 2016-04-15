@@ -21,11 +21,20 @@ namespace IntegrationTests
 
         private static void PreSeen(IExecutionSession session)
         {
+            Assert.IsNotNull(session);
+            var filepath = "ExecutionEvents.dyn";
+            Assert.IsTrue(session.ResolveFilePath(ref filepath));
+            Assert.IsTrue(Path.IsPathRooted(filepath));
+
+            filepath = @"xyz\DoNotExist.file";
+            Assert.IsFalse(session.ResolveFilePath(ref filepath));
+            Assert.AreEqual(@"xyz\DoNotExist.file", filepath);
             preSeen = true;
         }
 
         private static void PostSeen(IExecutionSession session)
         {
+            Assert.IsNotNull(session);
             postSeen = true;
         }
 
