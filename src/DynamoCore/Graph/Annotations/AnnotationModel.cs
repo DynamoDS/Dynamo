@@ -448,6 +448,9 @@ namespace Dynamo.Graph.Annotations
             base.Deselect();
         }
 
+        /// <summary>
+        /// Implementation of Dispose method
+        /// </summary>
         public override void Dispose()
         {           
             if (this.SelectedModels.Any())

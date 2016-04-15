@@ -36,12 +36,20 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                 signature = Controller.Definition.Signature;
             Description = String.IsNullOrEmpty(Controller.Description) ? signature : Controller.Description + "\n\n" + signature;
         }
-        
+
+        /// <summary>
+        ///     Indicates if this node is allowed to be converted to AST node in nodes to code conversion.
+        /// </summary>
         public override bool IsConvertible
         {
             get { return !IsPartiallyApplied; }
         }
 
+        /// <summary>
+        ///     Fetches the ProtoAST Identifier for a given output index.
+        /// </summary>
+        /// <param name="outputIndex">Index of the output port.</param>
+        /// <returns>Identifier corresponding to the given output port.</returns>
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
             if (Controller.ReturnKeys != null && Controller.ReturnKeys.Any())

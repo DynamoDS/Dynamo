@@ -12,6 +12,9 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     [AlsoKnownAs("Dynamo.Nodes.DSFunction")]
     public class DSFunction : DSFunctionBase
     {
+        /// <summary>
+        ///     Indicates whether Node is input or not.
+        /// </summary>
         public override bool IsInputNode
         {
             get { return false; }

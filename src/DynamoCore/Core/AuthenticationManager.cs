@@ -16,6 +16,9 @@ namespace Dynamo.Core
     {
         private readonly IAuthProvider authProvider;
 
+        /// <summary>
+        ///     Occurs when login state is changed
+        /// </summary>
         public event Action<LoginState> LoginStateChanged;
 
         /// <summary>
@@ -50,6 +53,10 @@ namespace Dynamo.Core
             get { return authProvider; }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthenticationManager"/> class.
+        /// </summary>
+        /// <param name="authProvider">IAuthProvider functionality</param>
         public AuthenticationManager(IAuthProvider authProvider)
         {
             this.authProvider = authProvider;
