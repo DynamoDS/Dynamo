@@ -1617,24 +1617,6 @@ x3 = [Imperative]
         }
 
         [Test]
-        [Ignore]
-        [Category("SmokeTest")]
-        [Category("ModifierBlock")] 
-        public void T028_Modifier_Stack_Simple()
-        {
-            string code = @"
-a = {
-     2 ;
-    +4;
-    +3;                                
-} //expected : a = 9; received : 13
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-
-            thisTest.Verify("a", 9);
-        }
-
-        [Test]
         [Category("Update")]
         public void T029_Defect_1460139_Update_In_Class()
         {
