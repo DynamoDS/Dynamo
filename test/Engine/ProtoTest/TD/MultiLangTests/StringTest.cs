@@ -229,6 +229,10 @@ b = ""world"";
 c = { a, b };
 j = 0;
 s = { };
+	def String(x : string)
+	{
+	    return = x;
+}
 r = 
 [Imperative]
 {
@@ -238,10 +242,6 @@ r =
 	    j = j + 1;
 	}
 	
-	def String(x : string)
-	{
-	    return = x;
-}
     return = s;
   
 }

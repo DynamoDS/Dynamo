@@ -183,18 +183,18 @@ z;
         {
             string src = @"temp;
 temp2;
-[Imperative]
-{
 	def fn1:int(a:int)
 	{   
+return = [Imperative]{
 		if(a>=0)
 			return = 1;
 		else 
 			return = 0;
+}
 	}
     def fn2:int(a:int)
 	{   
-	   
+return = [Imperative]{	   
 		if( a < 0 )
 		{
 			return = 0;
@@ -207,8 +207,10 @@ temp2;
 		{
 			return = 1;
 		}
+}
 	}
-	
+[Imperative]
+{
     temp = 0;
     temp2 = 0;
 	 if(fn1(-1)==0)
@@ -229,15 +231,17 @@ temp2;
         public void T06_NestedIfElse()
         {
             string src = @"temp1;
-[Imperative]
-{
 def fn1:int(a:int)
 {   
+return = [Imperative]{
      if( a >= 0 )
 		return = 1;
 	else
 		return = 0;
 }
+}
+[Imperative]
+{
  a = 1;
  b = 2;
  temp1 = 1;
@@ -383,13 +387,12 @@ temp;
         {
             string src = @"a;
 b;
-[Imperative]
-{
  def add : double (a :double, b:double)
  {
      return  = a + b;
  }
- 
+[Imperative]
+{
  a=4.0;
  b = 4.0;
  if(a<add(1.0,2.0))
@@ -1101,15 +1104,17 @@ f;
         public void T36_IfElseInsideFunctionScope()
         {
             string src = @"temp;
-[Imperative]
-{ 
  def crushcode:int (a:int, b:int)
  {
+return = [Imperative]{
   if(a<=b)
       return = a+b;  
   else 
      return = 0;           
- }                                
+}
+ }     
+[Imperative]
+{ 
  temp=crushcode(2,3);  
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -1169,10 +1174,9 @@ c;
         {
             string src = @"c;
 d;
-[Imperative]
-{
    	def test:int( a:int, b:int )
 	{
+    return = [Imperative]{
 		c = 0;
 	    if( !(a == b) ) 
 		{
@@ -1188,9 +1192,11 @@ d;
 		}
 		
 		return = c;
-	}
+    }
+    }
 	
-	
+[Imperative]
+{
 	a = 1;
 	b = 1;
     c = 0;
@@ -1391,16 +1397,17 @@ temp2;
         public void T44_Defect_1450706_2()
         {
             string src = @"x;
-[Imperative]
-{
 	def float_fn:int(a:int)
 	{
+return = [Imperative]{
 		if( a < 2 )
 			return = 0;
 		else
 			return = 1;
+}
 	}
-	 
+[Imperative]
+{
 	x = float_fn(1);
  
 }";
@@ -1499,10 +1506,9 @@ c;
         public void T48_Defect_1450858_2()
         {
             string src = @"test;
-[Imperative]
-{	
 	def factorial:int(a:int)
 	{
+return = [Imperative]{
 		 fact = 1;
 		 
 		 if( a != 0)
@@ -1515,8 +1521,11 @@ c;
 		}	 
 		
 		return = fact;
+}
 	}
 	
+[Imperative]
+{	
 	test = factorial(4);
 }	";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -1549,10 +1558,9 @@ c;
         public void T50_Defect_1450817()
         {
             string src = @"temp;
-[Imperative]
-{ 
 	def fn:int(a:int)
 	{
+return = [Imperative]{
 		if( a < 0 )
 		if( a < -1 )
 		return = 0;
@@ -1560,8 +1568,10 @@ c;
 		return = -1;
 		
 		return = 1;
+}
 	}
-	
+[Imperative]
+{ 
 	x = fn(-1);
 	
 	temp = 1;
@@ -1619,16 +1629,17 @@ c;
         public void T53_Defect_1452575()
         {
             string src = @"x;
-[Imperative]
-{ 
 	def float_fn:int(a:double)
 	{
+    return = [Imperative]{
 		if( a < 2.0 )
 			return = 0;
 		else
 			return = 1;
+    }
 	}
-	 
+[Imperative]
+{ 
 	x = float_fn(-1.5);
      
 }
@@ -1642,15 +1653,17 @@ c;
         public void T54_Defect_1451089()
         {
             string src = @"temp;
-[Imperative]
-{ 
  def foo:double (a:int, b:int, c : double)
  {
+return = [Imperative]{
   if(a<=b && b > c)
       return = a+b+c;  
   else 
      return = 0;           
- }                                
+}
+ }  
+[Imperative]
+{ 
  temp=foo(2,3,2.5);  
 }
 ";
@@ -1722,16 +1735,19 @@ numpts2 = length(pts2);
             string code = @"
 x;
 y;
-[Imperative]
-{
 	def even : int (a : int) 
 	{	
+    return = [Imperative]{
 		if(( a % 2 ) > 0 )
 			return = a + 1;
 		
 		else 
 			return = a;
+    }
 	}
+[Imperative]
+{
+
 	x = even(1);
 	y = even(2);
 }
@@ -2037,15 +2053,17 @@ A;
         {
             string err = "1467073 - sprint 23 rev 2651-328756 throws warning missing return statement ";
             string src = @"c;
-[Imperative]
-{
 def even : int (a : int)
  { 
+return = [Imperative]{
    if( ( a % 2 ) > 0 )
         return = a + 1;
    else 
            return = a;
 }
+}
+[Imperative]
+{
 c = even(1);
  }
 ";
@@ -2165,15 +2183,15 @@ if(a)
             String code =
 @"
 n;
+def foo(x:bool)
+{
+    return = ""true"";
+}
 r = 
 [Imperative]
 {
 a = A.A();
 b:bool = A.A();
-def foo(x:bool)
-{
-    return = ""true"";
-}
 m = b;
 n = foo(a);
 return = foo(b);

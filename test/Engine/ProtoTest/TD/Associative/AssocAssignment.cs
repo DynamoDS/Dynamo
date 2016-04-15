@@ -319,30 +319,6 @@ c3;
 
         [Test]
         [Category("SmokeTest")]
-        public void T15_TestInRecursiveFunctionScope()
-        {
-            string src = @"val;
-[Imperative]
-{
-	
-	def fac : int ( n : int )
-    {
-        if(n == 0 )
-        {
-			return = 1;
-        }
-		//return = 2;
-		return = n * fac (n-1 );
-	}
-    val = fac(5);				
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("val", 120);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
         public void T16_TestInvalidSyntax()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>

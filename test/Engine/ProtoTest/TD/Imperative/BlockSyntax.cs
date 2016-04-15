@@ -200,13 +200,12 @@ f;
         public void T10_Defect_1449732()
         {
             string src = @"c;
-[Imperative]
-{
 	def fn1:int(a:int,b:int)
 	{
 	return = a + b -1;
 	}
- 
+[Imperative]
+{
 	c = fn1(3,2);
 } ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -218,13 +217,12 @@ f;
         public void T11_Defect_1450174()
         {
             string src = @"c;
-[Imperative]
-{
 	def function1:double(a:int,b:double)
 	{ 
 	return = a * b;
 	}	
- 
+[Imperative]
+{
 	c = function1(2 + 3,4.0 + 6.0 / 4.0);
 }
   ";
@@ -276,17 +274,16 @@ f;
         public void T14_Defect_1450550()
         {
             string src = @"a;
+		def fn:int(a:int)
+		{
+		    return = a;
+		}
 [Associative]
 {
 	a = 4;
 	b = a*2;
 	x = [Imperative]
 	{
-		def fn:int(a:int)
-		{
-		    return = a;
-		}
-		
 		_i = fn(0);
 		
 		return = _i; 

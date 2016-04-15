@@ -121,26 +121,5 @@ f0;f1;f2;f3;t0;t1;t2;t3;t4;t5;t6;t7;
             thisTest.Verify("t6", true);
             thisTest.Verify("t7", true);
         }
-
-        [Test]
-        public void FuncWithDec()
-        {
-            String code =
-@"y;[Imperative]
-{
-        def sum:int( x:int, y:int )
-        {
-	        s = x + y;
-	        return = s;
-        }
-        
-	    y = 57;
-}
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("y", 57);
-        }
-
-
     }
 }
