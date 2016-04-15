@@ -1331,31 +1331,6 @@ e;
         }
 
         [Test]
-        [Ignore]
-        [Category("SmokeTest")]
-        [Category("ModifierBlock")]
-        public void T27_Modifier_Stack_With_Right_Assignment()
-        {
-            string code = @"
-v = 1;
-a = 
-{
-  1 => a1;
-  +1 => a2;
-  +v => a3;
-} 
-b = a + 1;
-c = a1 + 1;
-d = a2 + 1;
-f = a3 + 1;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("b", 4);
-            thisTest.Verify("c", 2);
-            thisTest.Verify("d", 3);
-            thisTest.Verify("f", 4);
-        }
-
-        [Test]
         public void T28_Update_With_Inline_Condition()
         {
             string code = @"
@@ -1934,45 +1909,6 @@ testArrayMember2 = c2;";
             //Assert.Fail("1467086 - Sprint23 : rev 2702 : Assocciative update not working properly for collections referencing each other");
             thisTest.Verify("testArrayMember2", 1);
             thisTest.Verify("testArrayMember1", 1);
-        }
-
-        [Test]
-        [Ignore]
-        [Category("SmokeTest")]
-        [Category("ModifierBlock")]
-        public void T38_Defect_1467059_Modifier_Stack_With_Undefined_Variable()
-        {
-            string code = @"
-a = {
-          1 => a1;
-          a1 + b1 => a2;    
-          +2;                
-    };
-b1 = 2;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 5);
-
-        }
-
-        [Test]
-        [Ignore]
-        [Category("SmokeTest")]
-        [Category("ModifierBlock")]
-        public void T38_Defect_1467059_Modifier_Stack_With_Undefined_Variable_2()
-        {
-            string code = @"
-def foo ( x )
-{
-    return = x;
-}
-a = {
-          1 => a1;
-          a1 + foo(b1) => a2;    
-          +2;                
-    };
-b1 = 2;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 5);
         }
 
         [Test]
@@ -2576,65 +2512,6 @@ a = a + 1;
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test1", new Object[] { 1, 2, 3, 4, 5 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
-        [Category("SmokeTest")]
-        [Category("ModifierBlock")]
-        public void T54_Defect_1467185_Modifier_Stack()
-        {
-            string errmsg = "";
-            string code = @"class B
-{
-    x : var;
-    constructor B ( y )
-    {
-        x = y;
-    }    
-    def bfoo(a : double)
-    {
-        return = a*98;
-    }
-}
-class C
-{
-    x : int;
-    
-    constructor C(a : int)
-    {
-        x = a;
-    }    
-    def bfoo(a : double)
-    {
-        return = a*3;
-    }
-}
-x = 1;
-a =
-{
-    x => a1;
-    - 0.5 => a2; // equivalent to a1 - 0.5 or in general (previous state) - 0.5
-    * 4 => a3; // equivalent to a2 * 4 or in general (previous state)times 4
-    a1 > 10 ? true : false => a4;
-    a1..2 => a5;
-    { a3, a3 } => a6;
-     C.C(a1);
-     bfoo(a2) => a61; // bfoo method of class C called
-     B.B(a1) => a7;
-     bfoo(a2) => a8; // bfoo method of class B called
-     B.B(a1).x => a9; 
-}";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a1", 1);
-            thisTest.Verify("a2", 0.5);
-            thisTest.Verify("a3", 2.0);
-            thisTest.Verify("a4", false);
-            thisTest.Verify("a5", new Object[] { 1, 2 });
-            thisTest.Verify("a6", new Object[] { 2.0, 2.0 });
-            thisTest.Verify("a8", 49.0);
-            thisTest.Verify("a9", 1);
-            thisTest.Verify("a", 1);
         }
 
         [Test]

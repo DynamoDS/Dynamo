@@ -11415,60 +11415,6 @@ c = 90;
         }
 
         [Test]
-        [Category("ModifierBlock")]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        [Category("ExpressionInterpreterRunner")]
-        public void inlineconditional_stepnext_656_13()
-        {
-            // Execute and verify the main script in a debug session
-            fsr.PreStart(
- @"
-class B
-{
-    x : var;
-    constructor B(y)
-    {
-        x = y;
-    }
-    
-    def foo()
-    {
-        return = 90;
-    }
-}
-
-x = 1;
-a =
-{
-    x > 10 ? true : false => a1;
-    B.B(a1).x => a2; //Line 19
-    4 => a5;
-}
-           
-");
-            
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
-            DebugRunner.VMState vms = fsr.Step();
-
-            vms = fsr.StepOver();
-
-
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-            ExecutionMirror mirror = watchRunner.Execute(@"x");
-            // Obj objExecVal = mirror.GetWatchValue();
-            TestFrameWork.Verify(mirror, "x", 1, 0);
-
-            vms = fsr.StepOver();
-            TestFrameWork.Verify(mirror, "a1", false, 0);
-            vms = fsr.StepOver();
-            TestFrameWork.Verify(mirror, "a2", false, 0);
-            vms = fsr.StepOver();
-            TestFrameWork.Verify(mirror, "a5", 4, 0);
-            vms = fsr.StepOver();
-            TestFrameWork.Verify(mirror, "a", 4, 0);
-        }
-
-        [Test]
         [Category("ExpressionInterpreterRunner")]
         [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void inlineconditional_stepnext_656_10()
