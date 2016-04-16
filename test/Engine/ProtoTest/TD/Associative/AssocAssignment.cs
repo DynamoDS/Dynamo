@@ -1295,53 +1295,6 @@ y1 = a..b..2;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        [Category("ModifierBlock")] 
-        public void T58_Modifier_Block_On_User_Defined_Classes()
-        {
-            String code =
-            @"
-class B
-{
-    x:int;
-	constructor B ( x1)
-	{
-	    x = x1;
-	}
-}
-class A
-{
-    b : B;
-	d : bool;
-	constructor A ( bb:B, d1:bool)
-	{
-	    b = bb;
-		d = d1;
-	}
-	def foo ( x1,x2,x3)
-	{
-	    b1 = B.B(x1+x2+x3);
-		return = A.A(b1, d);
-	}
-	def Scale ( xx )
-	{
-	    b2 = B.B(xx+b.x);
-		return = A.A(b2, d);
-	}
-}
-bb = B.B(1);
-a =
-{
-    A.A(bb,false).foo(10,0,0) => a1;
-    a1.Scale(2);
-}
-test = a.b.x;
-            ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("test", 12);
-        }
-
-        [Test]
         public void T59_Defect_1467540()
         {
             String code =
