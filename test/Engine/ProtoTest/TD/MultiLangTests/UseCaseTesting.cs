@@ -146,34 +146,6 @@ a  = a2 + b;    // 6";
         }
 
         [Test]
-        [Category("ModifierBlock")] [Category("Failure")]
-        public void T005_modifiers_with_right_assignments_Robert()
-        {
-            string code = @"
-a = 
-    {
-        10     => a1 ;  // =1
-        + b1  => a2;   // =3
-        + b ;            // 6 
-    }            
-    
-b = 
-    {
-        20     => b1;   // =1
-        + a2  => b2 ;  // =3
-        + 2 ;            // 5
-    }";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 82);
-            thisTest.Verify("b", 52);
-            thisTest.Verify("a2", 30);
-            thisTest.Verify("b1", 20);
-            thisTest.Verify("b2", 50);
-            thisTest.Verify("a1", 10);
-      
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T006_grouped_1_Robert()
         {
@@ -191,59 +163,6 @@ b  = b2 + 2;    // 5";
             thisTest.Verify("a2", 30);
             thisTest.Verify("b1", 20);
             thisTest.Verify("a1", 10);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
-        [Category("ModifierBlock")] 
-        public void T007_surface_trimmed_with_modifier_and_named_states_Robert()
-        {
-
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1578
-            string code = @"
-class BSplineSurface
-{
-    x : double;
-	constructor ByControlVertices( a : double)
-	{
-	    x = a;
-	}
-	def Trim ( a1 : BSplineSurface, p1 : Point )
-	{
-	    temp = a1.x + p1.x;
-		n1 = BSplineSurface.ByControlVertices( temp);
-		return = n1;
-	}
-	def AtParameter ( x1 : double, y1 : double )
-	{
-	    temp = x + x1 + y1;
-		n1 = Point.ByCartesianCoordinates ( temp );
-		return = n1;
-	}
-}
-class Point
-{
-    x : double;
-	constructor ByCartesianCoordinates( a : double)
-	{
-	    x = a;
-	}	
-}
-a = 1;
-b = 2;
-mySurface = 
-    {
-        BSplineSurface.ByControlVertices ( a ) => mySurface@initial ; // built with some 2D array of points
-        Trim(cuttingSurface, samplePoint) ;
-    }
-    
-cuttingSurface = BSplineSurface.ByControlVertices ( b ); // built with another 2D array of points
-samplePoint    = mySurface@initial.AtParameter( 0.5, 0.5 );
-test = mySurface.x; //expected : 4
-// sample points is created using the first state of mySurface [mySurface@initial]
-// and then it used in creating the second (and final) state of mySurface";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            // Verification to be done later, when design issues in the code are sorted out
         }
 
         [Test]
@@ -293,24 +212,6 @@ test = trimmedSurface.x;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", 4.0);
-        }
-
-        [Test]
-        [Ignore]
-        [Category("ModifierBlock")] 
-        public void T009_modifier_test_1_Robert()
-        {
-            string code = @"
-x = {10,20};
-x[0] = x[0] +1;     // this works x = {11, 20}
-// now let's try the same type of construct using the modifier block syntax
-y = { 
-        {50, 60} ;   // initial definition
-         + 1 => y1 ;       // is this the correct syntax for modifying all members of a collection
-         y1[0] + 1 ;  // is this the correct syntax for modifying   a member  of a collection
-    }";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("y", 52);
         }
 
         [Test]

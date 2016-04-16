@@ -376,63 +376,6 @@ n;
         }
 
         [Test]
-        [Ignore]
-        [Category("ModifierBlock")]
-        [Category("SmokeTest")]
-        public void T011_SomeNulls_ModifierStack()
-        {
-            //Assert.Fail("1467062 - Sprint23 : rev 2587 : modifier stack issue : when undefined variable is used inside modfier stack it hangs nunit");
-            string code = @"
-arr = {1};
-a = {
-	arr => a1; //{1,null}
-	SomeNulls(a1) => a2;//true
-	!a2 => a3;//false
-	
-	m => a4;//{1,null}
-	SomeNulls({a4}) => a5;//true
-	}
-	
-	arr[1] = null ;
-	m = arr;
-	
-	result = {a1,a2,a3,a4,a5};
-	";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = { 1, null };
-            Object[] v2 = new Object[] { v1, true, false, v1, true };
-            thisTest.Verify("result", v2, 0);
-        }
-
-        [Test]
-        [Ignore]
-        [Category("ModifierBlock")]
-        [Category("SmokeTest")]
-        public void T011_Defect_ModifierStack()
-        {
-            string code = @"
-a = 
-{
-	m =>a1;
-	""n"" => a2;
-	x + y =>a3;
-	true => a4;
-	&& 0 =>a5;	
-}
-result = {a1,a2,a3,a4,a5};
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            object x = null;
-            Object[] v1 = new[] { x, "n", x, true, false };
-            //thisTest.Verify("result", v1,0);
-            // thisTest.Verify("a1", x,0);
-            //thisTest.Verify("a2", "n");
-            //thisTest.Verify("a3", null);
-            //thisTest.Verify("a4", true);
-            //thisTest.Verify("a5",false);
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T012_CountTrue_IfElse()
         {
@@ -709,30 +652,6 @@ result =
             thisTest.Verify("result", 1, 0);
         }
         [Test]
-        [Ignore]
-        [Category("ModifierBlock")]
-        [Category("SmokeTest")]
-        public void T021_CountTrue_ModifierStack()
-        {
-            string code = @"
-x = {true, 0,{1},false,x,null,{true}};
-m = 2.56;
-a = {
-	CountTrue(x) => a1; //2
-	CountTrue(x[6]) => a2;//1
-	CountTrue(x[CountTrue(x)]);//0
-	m => a4;
-	CountTrue({a4}) => a5;//0
-	}
-	x = {};
-	result = {a1,a2,a3,a4,a5};
-	";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 0, 0, null, 2.56, 0 };
-            thisTest.Verify("result", v1, 0);
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T022_CountTrue_ImperativeAssociative()
         {
@@ -1002,29 +921,6 @@ result =
             thisTest.Verify("a2", v4, 0);
             thisTest.Verify("result", 1, 0);
         }
-        [Test]
-        [Ignore]
-        [Category("ModifierBlock")]
-        [Category("SmokeTest")]
-        public void T032_CountFalse_ModifierStack()
-        {
-            string code = @"
-x = {true, 0,{1},false,x,null,{false}};
-m = 2.56;
-a = {
-	CountFalse(x) => a1; //2
-	CountFalse(x[6]) => a2;//1
-	CountFalse(x[CountFalse(x)]);//0
-	m => a4;
-	CountFalse({a4}) => a5;//0
-	}
-	x = {};
-	result = {a1,a2,a3,a4,a5};
-	";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 0, 0, null, 2.56, 0 };
-            thisTest.Verify("result", v1, 0);
-        }
 
         [Test]
         [Category("SmokeTest")]
@@ -1282,31 +1178,6 @@ a = {{true},{false},{false},
             Object[] v1 = new Object[] { false, true, true, false };
             thisTest.Verify("result", false, 0);
             thisTest.Verify("result2", v1, 0);
-        }
-
-        [Test]
-        [Ignore]
-        [Category("ModifierBlock")]
-        [Category("SmokeTest")]
-        public void T043_AllFalse_ModifierStack()
-        {
-            string code = @"
-arr0 = {{false}};
-arr1 = {1||0};
-arr2 = {false&&0};
-a = 
-{
-	AllFalse(arr0) => a1;//1
-	AllFalse(arr1) => a2;//0
-	AllFalse(arr2) => a3;//1
-	&&a1 => a4;//1
-	
-}
-result = {a1,a2,a3,a4};
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { true, false, true, true };
-            thisTest.Verify("result", v1, 0);
         }
 
         [Test]
@@ -1641,25 +1512,6 @@ result = Sum(a);//12.0";
         }
 
         [Test]
-        [Category("ModifierBlock")]
-        [Category("SmokeTest"), Category("Failure")]
-        public void T055_Sum_ModifierStack()
-        {
-            string code = @"
-a = 
-{
-	{1,false} => a1;
-	Sum(a1)=> a2;//1
-	Sum({a1,a2}) => a3;//2
-}
-result = Sum({a1,a2,a3,a});//6";
-
-            string err = "MAGN-4103 Type coercion issue from conversion of bool, null, empty arrays to numbers";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
-            thisTest.Verify("result", 6, 0);
-        }
-
-        [Test]
         [Category("SmokeTest"), Category("Failure")]
         public void T056_Sum_AssociativeImperative()
         {
@@ -1869,28 +1721,6 @@ c = Average({m})..Average({n});//3.0,4.0,5.0";
             thisTest.Verify("m", 3.0, 0);
             thisTest.Verify("n", 5.0, 0);
             thisTest.Verify("c", v1, 0);
-        }
-
-        [Test]
-        [Ignore]
-        [Category("ModifierBlock")]
-        [Category("SmokeTest")]
-        public void T065_Average_ModifierStack()
-        {
-            string code = @"
-b = {0.0,1};//0.5
-c = b;
-a =
-{
-	Average(c) =>a1;
-	Average({a1}) +1 => a2;
-	
-}
-b[0]=1;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 2.0, 0);
-            thisTest.Verify("a1", 1.0, 0);
-            thisTest.Verify("a2", 2.0, 0);
         }
 
         [Test]
@@ -2110,53 +1940,6 @@ r = CountTrue(arr);
                ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 4);
-        }
-
-        [Test]
-        [Ignore]
-        [Category("ModifierBlock")]
-        [Category("Built in Functions")]
-        public void TV_1467322_CountTrue_ModifierStack()
-        {
-            string code = @"
-a = { { }, true, false };//1
-b = { 1, true };//1
-c = { ""c"" };//0
-d = { 0 };//0
-e = { { true }, true }; //2
-f = { };//0
-g = 1; //0
-h = null; //0
-i = { { } }; //0
-j = { null }; //0
-k = ""string"";//0
-r = 
-{
-     CountTrue(a) =>ra;
-     CountTrue(b)=>rb ;
-     CountTrue(c)=>rc;
-     CountTrue(d)=>rd;
-     CountTrue(e)=>re;
-     CountTrue(f)=>rf;
-     CountTrue(g)=>rg;
-     CountTrue(h)=>rh;
-     CountTrue(i)=>ri;
-     CountTrue(j)=>rj;
-     CountTrue(k)=>rk;
-}
-               ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("ra", 1);
-            thisTest.Verify("rb", 1);
-            thisTest.Verify("rc", 0);
-            thisTest.Verify("rd", 0);
-            thisTest.Verify("re", 2);
-            thisTest.Verify("rf", 0);
-            thisTest.Verify("rg", 0);
-            thisTest.Verify("rh", 0);
-            thisTest.Verify("ri", 0);
-            thisTest.Verify("rj", 0);
-            thisTest.Verify("rk", 0);
         }
 
         [Test]
@@ -2657,30 +2440,6 @@ sort = Sort(sorterFunction,a1);
         }
 
         [Test]
-        [Ignore]
-        [Category("ModifierBlock")]
-        public void BIM36_Sort_conditional_1467446()
-        {
-            String code =
-            @"
-          def sorterFunction(a : double, b : int)
-                {
-                      return =a > b ? 1 : -1;
-                }
-                def sorterFunction2(a : double, b : int)
-                {
-                      return =a < b ? 1 : -1;
-                }
-                sort = { { 3, 1, 2 } => toSort;
-                false => ascend;
-                ascend!=false?Sort(sorterFunction, toSort):Sort(sorterFunction2, toSort) => sort;
-                }
-            ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("sort", new object[] { 3, 2, 1 });
-        }
-
-        [Test]
         public void BIM37_Sort_nested_blocks_1467446()
         {//1467446
             String code =
@@ -2788,27 +2547,6 @@ sort = Sort(sorterFunction,a1);
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { 1, 2, 2, 3, 4, 4, 5, 6, 8 });
-        }
-
-        [Test]
-        [Ignore]
-        [Category("ModifierBlock")]
-        public void BIM37_Sort_rangeexpression_1467446()
-        {//1467446
-            String code =
-            @"
-          def sorterFunction(a : double, b : double)
-            {
-  
-                  return =a > b ? 1 : 0;
-  
-            }
-            sort = { (-5..5) => toSort;
-            Sort(sorterFunction, toSort) => sort2;
-            }
-            ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("toSort", new object[] { -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5 });
         }
 
         [Test]
@@ -2982,20 +2720,6 @@ d = { };
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result", new object[] { true, new object[] { false, true } });
-        }
-
-        [Test]
-        [Ignore]
-        [Category("ModifierBlock")]
-        public void BIM55_RemoveDuplicates_modifier_1467447()
-        {//1467446
-            String code =
-            @"
-            a = { { true, true, { false, true } } => a1;
-            RemoveDuplicates(a1) => a2; }
-            ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", new object[] { true, new object[] { false, true } });
         }
 
         [Test]
@@ -4449,32 +4173,6 @@ class B
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
-        [Category("ModifierBlock")]
-        public void T074_Defect_1467750_6()
-        {
-            String code =
-@"
-class A
-{
-}
-test = { A.A() => x;
-        Flatten(a) => x1; 
-        Flatten(3) => x2;
-        Flatten(3.5) => x3;
-        Flatten(true) => x4;
-        Flatten(x) => x5;
-        Flatten(null) => x6;
-        Flatten({}) => x7;
-        Flatten({ null }) => x8;
-}
-test = { x1, x2, x3, x4, x5, x6, x8 };
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("test", new Object[] { null, null, null, null, null, null, new Object[] { null } });
-        }
-
-        [Test]
         public void T074_Defect_1467301()
         {
             String code =
@@ -4621,37 +4319,6 @@ def foo ()
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", new Object[] { 1, 1, 1, 1, 1, 0, 1 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_ModifierBlock")]
-        public void T075_Defect_1467323_6()
-        {
-            String code =
-@"
-class A
-{
-}
-test = { A.A() => x;
-        Count(a) => x1; 
-        Count(3) => x2;
-        Count(3.5) => x3;
-        Count(true) => x4;
-        Count(x) => x5;
-        Count(null) => x6;
-        Count({}) => x7;
-        Count({ null }) => x8;
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x1", 1);
-            thisTest.Verify("x2", 1);
-            thisTest.Verify("x3", 1);
-            thisTest.Verify("x4", 1);
-            thisTest.Verify("x5", 1);
-            thisTest.Verify("x6", 1);
-            thisTest.Verify("x7", 0);
-            thisTest.Verify("x8", 1);
         }
 
         [Test]
