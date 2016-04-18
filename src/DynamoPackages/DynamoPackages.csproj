@@ -39,9 +39,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Greg, Version=1.0.5892.25330, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\greg\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=1.0.5950.12824, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.1.0.5950.12824\lib\net45\Greg.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
       <HintPath>..\packages\Unofficial.Ionic.Zip.1.9.1.8\lib\Ionic.Zip.dll</HintPath>
