@@ -22,18 +22,18 @@ namespace Dynamo.Interfaces
         bool ShowConnector { get; set; }
 
         /// <summary>
-        /// Idicates which type of connector's should be displayed on canvas.
+        /// Indicates which type of connector's should be displayed on canvas.
         /// I.e. bezier or polyline
         /// </summary>
         ConnectorType ConnectorType { get; set; }
 
         /// <summary>
-        /// Idicates whether background preview is active or not.
+        /// Indicates whether background preview is active or not.
         /// </summary>
         bool IsBackgroundPreviewActive { get; set; }
 
         /// <summary>
-        /// Idicates whether background grid is visible or not.
+        /// Indicates whether background grid is visible or not.
         /// </summary>
         bool IsBackgroundGridVisible { get; set; }
 
@@ -43,17 +43,17 @@ namespace Dynamo.Interfaces
         string NumberFormat { get; set; }
 
         /// <summary>
-        /// Idicates whether usage reporting is approved or not.
+        /// Indicates whether usage reporting is approved or not.
         /// </summary>
         bool IsUsageReportingApproved { get; set; }
 
         /// <summary>
-        /// Idicates whether analytics reporting is approved or not.
+        /// Indicates whether analytics reporting is approved or not.
         /// </summary>
         bool IsAnalyticsReportingApproved { get; set; }
 
         /// <summary>
-        /// Idicates first run
+        /// Indicates first run
         /// </summary>
         bool IsFirstRun { get; set; }
 

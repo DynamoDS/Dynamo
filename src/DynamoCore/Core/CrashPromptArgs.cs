@@ -37,8 +37,11 @@ namespace Dynamo.Core
         public string FilePath { get; private set; }
 
         /// <summary>
-        ///     Default Crash Prompt
+        ///     Initializes a new instance of the <see cref="CrashPromptArgs"/> class.
         /// </summary>
+        /// <param name="details">Details of crash</param>
+        /// <param name="overridingText">Crash message</param>
+        /// <param name="filePath">Preferences file path</param>
         public CrashPromptArgs(string details, string overridingText = null, string filePath = null)
         {  
             if (details != null)

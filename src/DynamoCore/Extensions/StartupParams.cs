@@ -55,6 +55,12 @@ namespace Dynamo.Extensions
         /// <summary>
         /// Initializes a new instance of the <see cref="StartupParams"/> class.
         /// </summary>
+        /// <param name="provider"><see cref="IAuthProvider"/> for DynamoModel</param>
+        /// <param name="pathManager"><see cref="IPathManager"/> for DynamoModel</param>
+        /// <param name="libraryLoader"><see cref="ILibraryLoader"/> for DynamoModel</param>
+        /// <param name="customNodeManager"><see cref="ICustomNodeManager"/> for DynamoModel</param>
+        /// <param name="dynamoVersion">Version of Dynamo</param>
+        /// <param name="preferences"><see cref="IPreferences"/> for DynamoModel</param>
         public StartupParams(IAuthProvider provider, IPathManager pathManager,
             ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager,
             Version dynamoVersion, IPreferences preferences)
