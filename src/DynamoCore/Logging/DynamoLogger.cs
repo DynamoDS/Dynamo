@@ -303,7 +303,10 @@ namespace Dynamo.Logging
         {
             lock (this.guardMutex)
             {
-                _logPath = Path.Combine(logDirectory, string.Format("dynamoLog_{0}.txt", DateTime.UtcNow.ToString("yyyyMMddHHmmss")));
+                // We use a guid to uniquely identify the log name. This disambiguates log files
+                // so that parallel testing which needs to access the log files can be done, and
+                // so that services like Cloud Watch can match the dynamoLog_* pattern.
+                _logPath = Path.Combine(logDirectory, string.Format("dynamoLog_{0}.txt", Guid.NewGuid()));
 
                 var date = DateTime.UtcNow.ToString("u");
                 FileWriter = new StreamWriter(_logPath);
