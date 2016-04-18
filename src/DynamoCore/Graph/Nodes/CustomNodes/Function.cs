@@ -272,9 +272,14 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     {
         private string inputSymbol = String.Empty;
         private string nickName = String.Empty;
-        public ElementResolver  ElementResolver { get; set;}
         private ElementResolver workspaceElementResolver;
 
+        /// <summary>
+        ///     Responsible for resolving 
+        /// a partial class name to its fully resolved name
+        /// </summary>
+        public ElementResolver ElementResolver { get; set; }
+        
         /// <summary>
         ///     Initializes a new instance of the <see cref="Symbol"/> class.
         /// </summary>

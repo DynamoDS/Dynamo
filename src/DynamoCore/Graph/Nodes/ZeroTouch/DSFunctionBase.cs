@@ -84,6 +84,11 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             return Controller.BuildAst(this, inputAstNodes);
         }
 
+        /// <summary>
+        ///     Returns the possible type of output at specified port.
+        /// </summary>
+        /// <param name="index">Index of the port</param>
+        /// <returns>The type</returns>
         public override ProtoCore.Type GetTypeHintForOutput(int index)
         {
             return Controller.Definition.ReturnType;

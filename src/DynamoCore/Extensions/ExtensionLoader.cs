@@ -36,8 +36,10 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// Loads assembly by passed extension path and return it as IExtension
+        /// Loads <see cref="IExtension"/> from assembly by passed path
         /// </summary>
+        /// <param name="extensionPath">Assembly full path</param>
+        /// <returns>Loaded <see cref="IExtension"/></returns>
         public IExtension Load(string extensionPath)
         {
             var document = new XmlDocument();
@@ -71,8 +73,10 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// Returns an enum of IExtension specified by passed extension path
+        /// Loads a collection of <see cref="IExtension"/> from given folder
         /// </summary>
+        /// <param name="extensionsPath">Assemblies location folder</param>
+        /// <returns>Loaded collection of <see cref="IExtension"/></returns>
         public IEnumerable<IExtension> LoadDirectory(string extensionsPath)
         {
             var result = new List<IExtension>();
