@@ -20,7 +20,9 @@ namespace Dynamo.Search.SearchElements
         private string assembly;
         private bool isVisibleInSearch = true;
 
-
+        /// <summary>
+        /// Event is fired when a node visibility in library search was changed.
+        /// </summary>
         public Action VisibilityChanged;
         private void OnVisibilityChanged()
         {
@@ -56,7 +58,7 @@ namespace Dynamo.Search.SearchElements
             get { return SplitCategoryName(FullCategoryName).ToList(); }
         }
 
-        public const char CATEGORY_DELIMITER = '.';
+        private const char CATEGORY_DELIMITER = '.';
 
         /// <summary>
         ///     Split a category name into individual category names splitting be DEFAULT_DELIMITER
@@ -147,6 +149,9 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
+        /// <summary>
+        /// Returns the name of the node icon.
+        /// </summary>
         public string IconName
         {
             get { return iconName; }

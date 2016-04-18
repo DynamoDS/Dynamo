@@ -3,6 +3,9 @@ using System.ComponentModel;
 
 namespace Dynamo.Core
 {
+    /// <summary>
+    /// This class notifies the View when there is a change.    
+    /// </summary>
     [Serializable]
     public abstract class NotificationObject : INotifyPropertyChanged
     {

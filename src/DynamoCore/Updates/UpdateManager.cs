@@ -37,24 +37,97 @@ namespace Dynamo.Updates
     /// </summary>
     public interface IUpdateManager
     {
+        /// <summary>
+        /// Returns current product version.
+        /// </summary>
         BinaryVersion ProductVersion { get; }
+
+        /// <summary>
+        /// Returns available product version.
+        /// </summary>
         BinaryVersion AvailableVersion { get; }
+
+        /// <summary>
+        /// Returns information, where version can be updated.
+        /// </summary>
         IAppVersionInfo UpdateInfo { get; set; }
+
+        /// <summary>
+        /// Bool value indicates if new version is available.
+        /// </summary>
         bool IsUpdateAvailable { get; }
+
+        /// <summary>
+        /// Event is fired when an update is downloaded.
+        /// </summary>
         event UpdateDownloadedEventHandler UpdateDownloaded;
+
+        /// <summary>
+        /// Event is fired when Dynamo needs to be restarted.
+        /// </summary>
         event ShutdownRequestedEventHandler ShutdownRequested;
+
+        /// <summary>
+        /// Checks for product updates in background thread.
+        /// </summary>
+        /// <param name="request">Asynchronous web request for update data</param>
         void CheckForProductUpdate(IAsynchronousRequest request);
+
+        /// <summary>
+        /// Quits and installs new version.
+        /// </summary>
         void QuitAndInstallUpdate();
+
+        /// <summary>
+        /// This function is called when a Dynamo Model is shutting down.
+        /// </summary>
         void HostApplicationBeginQuit();
+
+        /// <summary>
+        /// Reads the request's data, and parses for available versions. 
+        /// If a more recent version is available, the UpdateInfo object 
+        /// will be set.
+        /// </summary>
+        /// <param name="request">Asynchronous request</param>
         void UpdateDataAvailable(IAsynchronousRequest request);
+
+        /// <summary>
+        /// This flag is available via the debug menu to
+        /// allow the update manager to check for newer daily builds.
+        /// </summary>
         bool CheckNewerDailyBuilds { get; set; }
+
+        /// <summary>
+        /// Defines whether to force update.
+        /// </summary>
         bool ForceUpdate { get; set; }
+
+        /// <summary>
+        /// Returns a reference to Update Manager Configuration settings.
+        /// </summary>
         IUpdateManagerConfiguration Configuration { get; }
+
+        /// <summary>
+        /// Event fires, when something should be logged.
+        /// </summary>
         event LogEventHandler Log;
+
+        /// <summary>
+        /// This function logs a message.
+        /// </summary>
+        /// <param name="args">LogEventArgs</param>
         void OnLog(LogEventArgs args);
+
+        /// <summary>
+        /// Sets application process id. It's used for logging.
+        /// </summary>
+        /// <param name="id">int</param>
         void RegisterExternalApplicationProcessId(int id);
     }
 
+    /// <summary>
+    /// Interface provides methods, that get installed Dynamo paths and the last Dynamo version.
+    /// </summary>
     public interface IDynamoLookUp
     {
         /// <summary>
@@ -79,6 +152,9 @@ namespace Dynamo.Updates
         BinaryVersion LatestProduct { get; }
     }
 
+    /// <summary>
+    /// This interface represents configuration properties for Update manager.
+    /// </summary>
     public interface IUpdateManagerConfiguration
     {
         /// <summary>
@@ -130,9 +206,25 @@ namespace Dynamo.Updates
     /// </summary>
     public interface IAsynchronousRequest
     {
+        /// <summary>
+        /// The data returned from the request.
+        /// </summary>
         string Data { get; set; }
+
+        // <summary>
+        /// Any error information returned from the request.
+        /// </summary>
         string Error { get; set; }
+
+        /// <summary>
+        /// Represents the send request link.
+        /// </summary>
         Uri Path { get; set; }
+
+        /// <summary>
+        /// An action to be invoked upon completion of the request.
+        /// This action is invoked regardless of the success of the request.
+        /// </summary>
         Action<IAsynchronousRequest> OnRequestCompleted { get; set; }
     }
 
@@ -256,7 +348,7 @@ namespace Dynamo.Updates
         public bool CheckNewerDailyBuild { get; set; }
 
         /// <summary>
-        /// Defines whether to force update, default vlaue is false.
+        /// Defines whether to force update, default value is false.
         /// </summary>
         public bool ForceUpdate { get; set; }
 
@@ -507,6 +599,9 @@ namespace Dynamo.Updates
             }
         }
 
+        /// <summary>
+        /// Returns true if a new version is available.
+        /// </summary>
         public bool IsUpdateAvailable
         {
             get

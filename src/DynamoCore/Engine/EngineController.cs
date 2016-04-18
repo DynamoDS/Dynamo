@@ -1,28 +1,30 @@
-﻿using Autodesk.DesignScript.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using Autodesk.DesignScript.Interfaces;
 using Dynamo.Engine.CodeCompletion;
-using Dynamo.Models;
+using Dynamo.Engine.CodeGeneration;
+using Dynamo.Engine.NodeToCode;
+using Dynamo.Graph.Nodes;
 using Dynamo.Logging;
 using Dynamo.Scheduler;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
+using ProtoCore.Utils;
 using ProtoScript.Runners;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using Constants = ProtoCore.DSASM.Constants;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
-using ProtoCore.Utils;
-using Dynamo.Engine.NodeToCode;
-using Dynamo.Engine.CodeGeneration;
-using Dynamo.Graph;
-using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Engine
 {
+    /// <summary>
+    /// This is a delegate used in AstBuilt event.   
+    /// </summary>
+    /// <param name="sender">EngineController</param>
+    /// <param name="e">CompiledEventArgs (include node GUID and list of AST nodes)</param>
     public delegate void AstBuiltEventHandler(object sender, CompiledEventArgs e);
 
     /// <summary>
@@ -31,9 +33,15 @@ namespace Dynamo.Engine
     /// </summary>
     public class EngineController : LogSourceBase, IAstNodeContainer, IDisposable
     {
+        /// <summary>
+        /// This event is fired when a node has been compiled.
+        /// </summary>
         public event AstBuiltEventHandler AstBuilt;
 
-        public event Action<TraceReconciliationEventArgs> TraceReconcliationComplete;
+        /// <summary>
+        /// This event is fired when <see cref="UpdateGraphAsyncTask"/> is completed.
+        /// </summary>
+        internal event Action<TraceReconciliationEventArgs> TraceReconcliationComplete;
         private void OnTraceReconciliationComplete(TraceReconciliationEventArgs e)
         {
             if (TraceReconcliationComplete != null)
@@ -49,10 +57,17 @@ namespace Dynamo.Engine
         private SyncDataManager syncDataManager;
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private readonly Queue<List<Guid>> previewGraphQueue = new Queue<List<Guid>>();
+
+        /// <summary>
+        /// Bool value indicates if every action should be logged. Used in debug mode.
+        /// </summary>
         public bool VerboseLogging;
 
         private readonly Object macroMutex = new Object();
 
+        /// <summary>
+        /// Reference to Compilation service. This compiles Input / Output node.
+        /// </summary>
         public static CompilationServices CompilationServices;
 
         /// <summary>
@@ -98,6 +113,12 @@ namespace Dynamo.Engine
         /// </summary>
         public bool IsDisposed { get; private set; }
 
+        /// <summary>
+        /// This function creates EngineController
+        /// </summary>
+        /// <param name="libraryServices"> LibraryServices manages builtin libraries and imported libraries.</param>
+        /// <param name="geometryFactoryFileName">Path to LibG</param>
+        /// <param name="verboseLogging">Bool value, if set to true, enables verbose logging</param>
         public EngineController(LibraryServices libraryServices, string geometryFactoryFileName, bool verboseLogging)
         {
             this.libraryServices = libraryServices;
@@ -117,6 +138,9 @@ namespace Dynamo.Engine
             VerboseLogging = verboseLogging;
         }
 
+        /// <summary>
+        /// Disposes EngineController.
+        /// </summary>
         public void Dispose()
         {
             // This flag must be set immediately
@@ -154,8 +178,8 @@ namespace Dynamo.Engine
         /// <summary>
         /// Get runtime mirror for variable.
         /// </summary>
-        /// <param name="variableName"></param>
-        /// <returns></returns>
+        /// <param name="variableName">Unique ID of AST node</param>
+        /// <returns>RuntimeMirror object that reflects status of a single designscript variable</returns>
         public RuntimeMirror GetMirror(string variableName)
         {
             lock (macroMutex)
@@ -171,7 +195,7 @@ namespace Dynamo.Engine
                 }
                 catch (Exception ex)
                 {
-                    Log(string.Format(Properties.Resources.FailedToGetMirrorVariable,variableName,
+                    Log(string.Format(Properties.Resources.FailedToGetMirrorVariable, variableName,
                         ex.Message));
                 }
 
@@ -270,11 +294,11 @@ namespace Dynamo.Engine
             List<Guid> previewGraphData = this.liveRunnerServices.PreviewGraph(graphSyncdata, verboseLogging);
             syncDataManager = tempSyncDataManager;
 
-             lock (previewGraphQueue)
-             {
-                 previewGraphQueue.Enqueue(previewGraphData);
-             }
-            
+            lock (previewGraphQueue)
+            {
+                previewGraphQueue.Enqueue(previewGraphData);
+            }
+
             return previewGraphQueue.Dequeue();
         }
 
@@ -586,11 +610,20 @@ namespace Dynamo.Engine
 
         #region Implement IAstNodeContainer interface
 
+        /// <summary>
+        /// This class represents the intermediate state (Compiling state), when a nodemodel is compiled to AST nodes.
+        /// </summary>
+        /// <param name="nodeGuid">Node unique ID</param>
         public void OnCompiling(Guid nodeGuid)
         {
             syncDataManager.MarkForAdding(nodeGuid);
         }
 
+        /// <summary>
+        /// This class represents a state after a nodemodel is compiled to AST nodes.
+        /// </summary>
+        /// <param name="nodeGuid">Node unique ID</param>
+        /// <param name="astNodes">Resulting AST nodes</param>
         public void OnCompiled(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes)
         {
             var associativeNodes = astNodes as IList<AssociativeNode> ?? astNodes.ToList();
@@ -624,11 +657,11 @@ namespace Dynamo.Engine
             node.GetDownstreamNodes(node, gathered);
             foreach (var iNode in gathered)
             {
-                syncDataManager.DeleteNodes(iNode.GUID);               
+                syncDataManager.DeleteNodes(iNode.GUID);
             }
         }
 
-        
+
 
         #region Node2Code
 
@@ -653,27 +686,40 @@ namespace Dynamo.Engine
 
     }
 
+    /// <summary>
+    /// This class is used to precompile code block node.
+    /// Also it's used as helper for resolving code in Input and Output nodes.
+    /// </summary>
     public class CompilationServices
     {
-        private  ProtoCore.Core compilationCore;
+        private ProtoCore.Core compilationCore;
 
+        /// <summary>
+        /// Creates CompilationServices.
+        /// </summary>
+        /// <param name="core">Copilation core</param>
         public CompilationServices(ProtoCore.Core core)
         {
             compilationCore = core;
         }
 
+        /// <summary>
+        /// Pre-compiles Design script code in code block node.
+        /// </summary>
+        /// <param name="parseParams">Container for compilation related parameters</param>
+        /// <returns>true if code compilation succeeds, false otherwise</returns>
         public bool PreCompileCodeBlock(ref ParseParam parseParams)
         {
             return CompilerUtils.PreCompileCodeBlock(compilationCore, ref parseParams);
         }
     }
 
-    public class TraceReconciliationEventArgs : EventArgs
+    internal class TraceReconciliationEventArgs : EventArgs
     {
         /// <summary>
         /// A list of ISerializable items.
         /// </summary>
-        public Dictionary<Guid,List<ISerializable>> CallsiteToOrphanMap { get; private set; }
+        public Dictionary<Guid, List<ISerializable>> CallsiteToOrphanMap { get; private set; }
 
         public TraceReconciliationEventArgs(Dictionary<Guid, List<ISerializable>> callsiteToOrphanMap)
         {

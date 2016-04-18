@@ -7,6 +7,10 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Graph.Nodes
 {
+    /// <summary>
+    /// This class represents data loaded from assembly for each type.
+    /// Based on this info node model is created.
+    /// </summary>
     public class TypeLoadData
     {
         /// <summary>
@@ -32,6 +36,10 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
 
+        /// <summary>
+        /// Creates TypeLoadData.
+        /// </summary>
+        /// <param name="typeIn">Type</param>
         public TypeLoadData(Type typeIn)
         {
             Type = typeIn;
