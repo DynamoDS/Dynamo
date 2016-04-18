@@ -13,6 +13,14 @@ namespace Dynamo.Library
         private string summary = null; // Indicating that it is not initialized.
         private readonly string defaultValueString;
 
+        /// <summary>
+        /// This function creates TypedParameter
+        /// </summary>
+        /// <param name="parameter">parameter name</param>
+        /// <param name="type">parameter type</param>
+        /// <param name="defaultValue">parameter default value</param>
+        /// <param name="shortArgumentName">short name is used as tooltip</param>
+        /// <param name="summary">parameter description</param>
         public TypedParameter(string parameter, ProtoCore.Type type, AssociativeNode defaultValue = null, string shortArgumentName = null, string summary = null)
         {
             if (parameter == null)
@@ -30,11 +38,29 @@ namespace Dynamo.Library
             this.summary = summary;
         }
 
+        /// <summary>
+        /// Returns DesignScript function.
+        /// </summary>
         public FunctionDescriptor Function { get; private set; }
+
+        /// <summary>
+        /// Returns the name of the parameter.
+        /// </summary>
         public string Name { get; private set; }
+
+        /// <summary>
+        /// Returns type of the parameter.
+        /// </summary>
         public ProtoCore.Type Type { get; private set; }
+
+        /// <summary>
+        /// Returns default value of the parameter.
+        /// </summary>
         public AssociativeNode DefaultValue { get; private set; }
 
+        /// <summary>
+        /// Returns summary of the parameter.
+        /// </summary>
         public string Summary
         {
             get
@@ -48,6 +74,9 @@ namespace Dynamo.Library
             }
         }
 
+        /// <summary>
+        /// Returns description of the parameter.
+        /// </summary>
         public string Description
         {
             get
@@ -70,6 +99,9 @@ namespace Dynamo.Library
             }
         }
 
+        /// <summary>
+        /// Returns short type name of the parameter.
+        /// </summary>
         public string DisplayTypeName
         {
             get { return Type.ToShortString(); }
@@ -84,6 +116,10 @@ namespace Dynamo.Library
             summary = null;
         }
 
+        /// <summary>
+        /// Turns into string.
+        /// </summary>
+        /// <returns>string</returns>
         public override string ToString()
         {
             string str = Name + ": " + DisplayTypeName;

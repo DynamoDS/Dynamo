@@ -7,7 +7,7 @@ using ProtoCore.AST.AssociativeAST;
 namespace Dynamo.Graph.Nodes.CustomNodes
 {
     /// <summary>
-    ///     Controller that synchronizes a node with a custom node definition.
+    ///     Controller that synchronizes a custom node with a node definition.
     /// </summary>
     public class CustomNodeController<T> : FunctionCallNodeController<T>
         where T : CustomNodeDefinition
@@ -108,6 +108,10 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             }
         }
 
+        /// <summary>
+        /// Synchronizes custom node with its definition.
+        /// </summary>
+        /// <param name="model">Custom node model</param>
         public override void SyncNodeWithDefinition(NodeModel model)
         {
             if (IsInSyncWithNode(model)) 
@@ -118,6 +122,11 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             model.OnNodeModified();
         }
 
+        /// <summary>
+        /// Serializes CustomNode.
+        /// </summary>
+        /// <param name="nodeElement">Xml node</param>
+        /// <param name="saveContext">SaveContext is used in base class.</param>
         public override void SerializeCore(XmlElement nodeElement, SaveContext saveContext)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());

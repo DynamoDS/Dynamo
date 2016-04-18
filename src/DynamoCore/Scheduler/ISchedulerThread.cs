@@ -1,5 +1,8 @@
 ﻿namespace Dynamo.Scheduler
 {
+    /// <summary>
+    /// Interface provides method for DynamoSchedulerThread.
+    /// </summary>
     public interface ISchedulerThread
     {
         /// <summary>
