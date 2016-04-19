@@ -45,6 +45,8 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
   https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Node-Changes  
 
   https://github.com/DynamoDS/Dynamo/wiki/API-Changes
+- Graphics performance enhancements:  see this post for details  
+  https://github.com/DynamoDS/Dynamo/pull/6356
 - Documentation: Along with new sections of the DynamoPrimer (http://DynamoPrimer.com), we have started an online documentation of the Dynamo API with a searchable index of public API calls for core functionality. This will be expanded to include regular nodes and Revit functionality.  http://dynamods.github.io/DynamoAPI/
 - Licensing:  Dynamo Studio is now using a new version of the Autodesk installer that allows for easier access to network and token flex licensing tools
 - Install:  we have created a separate installation for "core" Dynamo functionality, those tools used by all implementations of Dynamo, and Revit, and Studio installations.  This allows for the sharing of a common core of Dynamo code and packages.
