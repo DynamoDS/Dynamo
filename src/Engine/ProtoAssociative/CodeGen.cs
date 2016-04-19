@@ -3625,9 +3625,6 @@ namespace ProtoAssociative
                 localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
 
                 Validity.Assert(null != localProcedure);
-                localProcedure.Attributes = PopulateAttributes(funcDef.Attributes);
-                // Its only on the parse body pass where the real pc is determined. Update this procedures' pc
-                //Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == localProcedure.pc);
                 localProcedure.PC = pc;
 
                 EmitInstrConsole(ProtoCore.DSASM.kw.newobj, localProcedure.Name);
@@ -3983,9 +3980,7 @@ namespace ProtoAssociative
                 Validity.Assert(null != localProcedure);
 
                 // code gen the attribute 
-                localProcedure.Attributes = PopulateAttributes(funcDef.Attributes);
                 // Its only on the parse body pass where the real pc is determined. Update this procedures' pc
-                //Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == localProcedure.pc);
                 localProcedure.PC = pc;
 
                 // Copy the active function to the core so nested language blocks can refer to it

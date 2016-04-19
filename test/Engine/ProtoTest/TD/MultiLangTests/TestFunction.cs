@@ -8000,7 +8000,7 @@ result3 =
         public void T63_Function_notDeclared()
         {
             String code = @"
-            def foo : double(arg : double) { return = arg + 1 };
+            def foo : double(arg : double) { return = arg + 1 ;}
             a = foo(""a""); ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);

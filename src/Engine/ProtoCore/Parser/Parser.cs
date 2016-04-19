@@ -870,13 +870,12 @@ public Node root { get; set; }
 		string methodName;  
 		ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature; 
 		ProtoCore.Type returnType;  
-		ProtoCore.AST.AssociativeAST.AssociativeNode pattern; 
 		string externLibName = ""; 
 		bool isExternLib = false; 
 		
 		Expect(27);
 		NodeUtils.SetNodeLocation(f, t); 
-		Associative_MethodSignature(out methodName, out argumentSignature, out pattern, out returnType);
+		Associative_MethodSignature(out methodName, out argumentSignature, out returnType);
 		if (isExternLib &&  "var" == returnType.Name){
 		   errors.Warning(String.Format("External function {0} does not have a return type defined. Defaulting to var.", methodName));
 		}
@@ -1223,7 +1222,6 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode constr = new ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode(); ;                                 
 		string methodName;  
 		ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature; 
-		ProtoCore.AST.AssociativeAST.AssociativeNode pattern;                               
 		
 		Expect(26);
 		NodeUtils.SetNodeStartLocation(constr, t); 
@@ -1435,7 +1433,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		Expect(13);
 	}
 
-	void Associative_MethodSignature(out string methodName, out ProtoCore.AST.AssociativeAST.AssociativeNode argumentSign, out ProtoCore.AST.AssociativeAST.AssociativeNode pattern, out ProtoCore.Type returnType) {
+	void Associative_MethodSignature(out string methodName, out ProtoCore.AST.AssociativeAST.AssociativeNode argumentSign, out ProtoCore.Type returnType) {
 		Expect(1);
 		methodName = t.val; 
 		if (IsKeyWord(t.val, true))

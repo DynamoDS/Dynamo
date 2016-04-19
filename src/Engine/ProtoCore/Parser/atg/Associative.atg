@@ -347,7 +347,6 @@ Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode co
                                 ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode constr = new ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode(); ;                                 
                                 string methodName;  
                                 ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature; 
-                                ProtoCore.AST.AssociativeAST.AssociativeNode pattern;                               
                             .)  
     kw_constructor          (. NodeUtils.SetNodeStartLocation(constr, t); .)
     Associative_CtorSignature<out methodName, out argumentSignature>
@@ -413,12 +412,11 @@ Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node,
                                 string methodName;  
                                 ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature; 
                                 ProtoCore.Type returnType;  
-                                ProtoCore.AST.AssociativeAST.AssociativeNode pattern; 
                                 string externLibName = ""; 
                                 bool isExternLib = false; 
                             .)  
     kw_def                  (. NodeUtils.SetNodeLocation(f, t); .)
-    Associative_MethodSignature<out methodName, out argumentSignature, out pattern, out returnType>
+    Associative_MethodSignature<out methodName, out argumentSignature, out returnType>
                             (.
                                 if (isExternLib &&  "var" == returnType.Name){
                                     errors.Warning(String.Format("External function {0} does not have a return type defined. Defaulting to var.", methodName));
@@ -443,7 +441,7 @@ Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node,
 .
 
 //------------------------------------------------------------------------
-Associative_MethodSignature<out string methodName, out ProtoCore.AST.AssociativeAST.AssociativeNode argumentSign, out ProtoCore.AST.AssociativeAST.AssociativeNode pattern, out ProtoCore.Type returnType>
+Associative_MethodSignature<out string methodName, out ProtoCore.AST.AssociativeAST.AssociativeNode argumentSign, out ProtoCore.Type returnType>
 =
 ident                           (. methodName = t.val; .)
                                 (.  if (IsKeyWord(t.val, true))
