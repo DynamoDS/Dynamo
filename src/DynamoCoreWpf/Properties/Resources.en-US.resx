@@ -1672,7 +1672,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Publish Online</value>
   </data>
   <data name="StartPageWhatsNew" xml:space="preserve">
-    <value>What's New</value>
+    <value>Getting Started</value>
   </data>
   <data name="TermsOfUseAcceptButton" xml:space="preserve">
     <value>I Accept</value>
