@@ -877,7 +877,7 @@ public class Scanner {
 			case 41:
 				{t.kind = 47; break;}
 			case 42:
-				{t.kind = 52; break;}
+				{t.kind = 51; break;}
 			case 43:
 				{t.kind = 53; break;}
 			case 44:
@@ -901,9 +901,9 @@ public class Scanner {
 				if (ch == '|') {AddCh(); goto case 49;}
 				else {t.kind = 16; break;}
 			case 53:
-				recEnd = pos; recKind = 51;
+				recEnd = pos; recKind = 52;
 				if (ch == '=') {AddCh(); goto case 21;}
-				else {t.kind = 51; break;}
+				else {t.kind = 52; break;}
 			case 54:
 				recEnd = pos; recKind = 56;
 				if (ch == '/') {AddCh(); goto case 25;}

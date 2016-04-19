@@ -704,45 +704,49 @@ public Node root { get; set; }
 		ProtoFFI.ImportModuleHandler imh = null;
 		if (core.IsParsingPreloadedAssembly)
 		{
-		imh = core.ImportHandler;
+		  imh = core.ImportHandler;
 		}
 		else
 		{
-		imh = this.ImportModuleHandler;
+		   imh = this.ImportModuleHandler;
 		}
-		bool rootImport = (null == imh) ? true : false;  
+		bool rootImport = null == imh;  
+		
 		while (la.kind == 34) {
 			ProtoCore.AST.AssociativeAST.AssociativeNode importNode = null; 
 			Import_Statement(out importNode);
 			if (null != importNode)
-			   (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(importNode);
+			  (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(importNode);
 			
 		}
 		imh = null;
-		  if (core.IsParsingPreloadedAssembly)
-		  {
-		      imh = core.ImportHandler;
-		  }
-		  else
-		      imh = ImportModuleHandler;
-		
+		if (core.IsParsingPreloadedAssembly)
+		{
+		  imh = core.ImportHandler;
+		}
+		else
+		{
+		   imh = ImportModuleHandler;
+		}
 		if(null != core.ContextDataManager)
 		{
-		   if (imh == null)
-		       imh = new ProtoFFI.ImportModuleHandler(core);
-		   ProtoCore.AST.AssociativeAST.AssociativeNode importNode = null;
-		   importNode = core.ContextDataManager.Compile(imh);
-		   if (null != importNode)
-		       (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(importNode);
+		  if (imh == null)
+		      imh = new ProtoFFI.ImportModuleHandler(core);
+		  ProtoCore.AST.AssociativeAST.AssociativeNode importNode = null;
+		  importNode = core.ContextDataManager.Compile(imh);
+		  if (null != importNode)
+		      (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(importNode);
 		}
 		
 		if (rootImport && null != imh && imh.RootImportNode.CodeNode.Body.Count != 0)
-		   (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(imh.RootImportNode);
+		{
+		  (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(imh.RootImportNode);
+		}
 		
 		if (rootImport && core.IsParsingPreloadedAssembly && !builtinMethodsLoaded)
 		{
-		CoreUtils.InsertPredefinedAndBuiltinMethods(core, codeblock);
-		core.ImportNodes = codeblock;
+		   CoreUtils.InsertPredefinedAndBuiltinMethods(core, codeblock);
+		  core.ImportNodes = codeblock;
 		}
 		
 		while (StartOf(1)) {
@@ -869,7 +873,6 @@ public Node root { get; set; }
 		ProtoCore.AST.AssociativeAST.AssociativeNode pattern; 
 		string externLibName = ""; 
 		bool isExternLib = false; 
-		bool isDNI = false;                                 
 		
 		Expect(27);
 		NodeUtils.SetNodeLocation(f, t); 
@@ -880,24 +883,15 @@ public Node root { get; set; }
 		
 		
 		f.IsExternLib = isExternLib; 
-		f.IsDNI = isDNI; 
 		f.ExternLibName = externLibName; 
 		f.Name = methodName; 
-		f.Pattern = pattern; 
 		f.ReturnType = returnType; 
 		f.Access = access;
 		f.Signature = argumentSignature as ProtoCore.AST.AssociativeAST.ArgumentSignatureNode; 
 		f.IsStatic = isStatic;
 		ProtoCore.AST.AssociativeAST.AssociativeNode functionBody = null; 
 		
-		if (la.kind == 23) {
-			Get();
-		} else if (la.kind == 51) {
-			Get();
-			Associative_FunctionalMethodBodySingleLine(out functionBody);
-		} else if (la.kind == 45) {
-			Associative_FunctionalMethodBodyMultiLine(out functionBody);
-		} else SynErr(70);
+		Associative_FunctionDefinitionBody(out functionBody);
 		f.FunctionBody = functionBody as ProtoCore.AST.AssociativeAST.CodeBlockNode; 
 		node = f;   
 		
@@ -962,8 +956,8 @@ public Node root { get; set; }
 					NodeUtils.SetNodeEndLocation(varnode, t); 
 				} else if (la.kind == 23) {
 					Get();
-				} else SynErr(71);
-			} else SynErr(72);
+				} else SynErr(70);
+			} else SynErr(71);
 		}
 		Expect(46);
 		isInClass = false; classnode.endLine = t.line; classnode.endCol = t.col; 
@@ -971,7 +965,7 @@ public Node root { get; set; }
 	}
 
 	void Associative_NonAssignmentStatement(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
-		while (!(StartOf(7))) {SynErr(73); Get();}
+		while (!(StartOf(7))) {SynErr(72); Get();}
 		node = null; 
 		ProtoCore.AST.AssociativeAST.AssociativeNode rightNode = null;
 		 
@@ -1001,7 +995,7 @@ public Node root { get; set; }
 	}
 
 	void Associative_FunctionCallStatement(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
-		while (!(StartOf(7))) {SynErr(74); Get();}
+		while (!(StartOf(7))) {SynErr(73); Get();}
 		node = null; 
 		ProtoCore.AST.AssociativeAST.AssociativeNode rightNode = null;
 		 
@@ -1040,7 +1034,7 @@ public Node root { get; set; }
 	}
 
 	void Associative_FunctionalStatement(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
-		while (!(StartOf(8))) {SynErr(75); Get();}
+		while (!(StartOf(8))) {SynErr(74); Get();}
 		node = null; 
 		ProtoCore.AST.AssociativeAST.AssociativeNode leftNode = null; 
 		ProtoCore.AST.AssociativeAST.BinaryExpressionNode expressionNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(); 
@@ -1061,7 +1055,7 @@ public Node root { get; set; }
 			   node = expressionNode;
 			}
 			
-		} else if (la.kind == 51) {
+		} else if (la.kind == 52) {
 			Get();
 			ProtoCore.AST.AssociativeAST.AssociativeNode rightNode = null;
 			bool isLeftMostNode = false; 
@@ -1115,7 +1109,7 @@ public Node root { get; set; }
 				
 				Expect(23);
 				NodeUtils.SetNodeEndLocation(expressionNode, t); node = expressionNode; 
-			} else SynErr(76);
+			} else SynErr(75);
 			if (isLeftMostNode) 
 			{
 			   leftVar = null;
@@ -1130,7 +1124,7 @@ public Node root { get; set; }
 			
 		} else if (StartOf(9)) {
 			SynErr(Resources.SemiColonExpected); 
-		} else SynErr(77);
+		} else SynErr(76);
 	}
 
 	void Associative_LanguageBlock(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
@@ -1159,7 +1153,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Hydrogen(out codeBlockNode);
 		} else if (langblock.codeblock.Language == ProtoCore.Language.Imperative ) {
 			Imperative(out codeBlockNode);
-		} else SynErr(78);
+		} else SynErr(77);
 		if (langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			int openCurlyBraceCount = 0, closeCurlyBraceCount = 0; 
 			ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlockInvalid = new ProtoCore.AST.AssociativeAST.CodeBlockNode(); 
@@ -1180,12 +1174,12 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 					break; 
 				} else if (StartOf(9)) {
 					Get(); 
-				} else SynErr(79);
+				} else SynErr(78);
 			}
 			codeBlockNode = codeBlockInvalid; 
 		} else if (la.kind == 46) {
 			Get();
-		} else SynErr(80);
+		} else SynErr(79);
 		langblock.CodeBlockNode = codeBlockNode; 
 		node = langblock; 
 	}
@@ -1222,7 +1216,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 50) {
 			Get();
 			access = ProtoCore.CompilerDefinitions.AccessModifier.Protected; 
-		} else SynErr(81);
+		} else SynErr(80);
 	}
 
 	void Associative_constructordecl(out ProtoCore.AST.AssociativeAST.AssociativeNode constrNode, ProtoCore.CompilerDefinitions.AccessModifier access) {
@@ -1248,7 +1242,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Associative_BaseConstructorCall(out bnode);
 			constr.BaseConstructor = bnode as ProtoCore.AST.AssociativeAST.FunctionCallNode; 
 		}
-		Associative_FunctionalMethodBodyMultiLine(out functionBody);
+		Associative_FunctionDefinitionBody(out functionBody);
 		constr.FunctionBody = functionBody as ProtoCore.AST.AssociativeAST.CodeBlockNode; 
 		NodeUtils.SetNodeEndLocation(constr, functionBody); 
 		constrNode = constr; 
@@ -1278,7 +1272,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				Get();
 				Expect(11);
 				argtype.rank = 1; 
-				if (la.kind == 10 || la.kind == 24 || la.kind == 51) {
+				if (la.kind == 10 || la.kind == 24 || la.kind == 52) {
 					if (la.kind == 24) {
 						Get();
 						Expect(10);
@@ -1312,7 +1306,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			varDeclNode.ArgumentType = argtype;
 			
 		}
-		if (la.kind == 51) {
+		if (la.kind == 52) {
 			Get();
 			ProtoCore.AST.AssociativeAST.AssociativeNode rhsNode; 
 			Associative_Expression(out rhsNode);
@@ -1393,7 +1387,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		bnode = f; 
 	}
 
-	void Associative_FunctionalMethodBodyMultiLine(out ProtoCore.AST.AssociativeAST.AssociativeNode funcBody) {
+	void Associative_FunctionDefinitionBody(out ProtoCore.AST.AssociativeAST.AssociativeNode funcBody) {
 		ProtoCore.AST.AssociativeAST.CodeBlockNode functionBody = new ProtoCore.AST.AssociativeAST.CodeBlockNode(); 
 		List<ProtoCore.AST.AssociativeAST.AssociativeNode> body = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>(); 
 		NodeUtils.SetNodeStartLocation(functionBody, la);
@@ -1433,7 +1427,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			ProtoCore.AST.AssociativeAST.AssociativeNode t; 
 			Associative_Expression(out t);
 			nodes.Add(t); 
-			while (WeakSeparator(52,4,12) ) {
+			while (WeakSeparator(51,4,12) ) {
 				Associative_Expression(out t);
 				nodes.Add(t); 
 			}
@@ -1455,38 +1449,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Associative_TypeRestriction(out returnType);
 		}
 		Associative_ArgumentSignatureDefinition(out argumentSignature);
-		pattern = null; 
-		if (la.kind == 16) {
-			Associative_PatternExpression(out pattern);
-		}
 		argumentSign = argumentSignature; 
-	}
-
-	void Associative_FunctionalMethodBodySingleLine(out ProtoCore.AST.AssociativeAST.AssociativeNode funcBody) {
-		funcBody = null;
-		
-		ProtoCore.AST.AssociativeAST.CodeBlockNode functionBody = new ProtoCore.AST.AssociativeAST.CodeBlockNode(); 
-		
-		ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryExpr = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-		IdentifierNode returnNode = AstFactory.BuildIdentifier("return");
-		returnNode.datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Return, 0);
-		binaryExpr.LeftNode = returnNode;
-		ProtoCore.AST.AssociativeAST.AssociativeNode expr;
-		
-		Associative_Expression(out expr);
-		binaryExpr.RightNode = expr;
-		binaryExpr.Optr = Operator.assign;
-		NodeUtils.SetNodeLocation(binaryExpr, expr, expr);
-		
-		List<ProtoCore.AST.AssociativeAST.AssociativeNode> body = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>(); 
-		body.Add(binaryExpr);
-		
-		functionBody.Body =body;
-		funcBody = functionBody; 
-		if (la.val != ";")
-		   SynErr(Resources.SemiColonExpected);  
-		
-		Expect(23);
 	}
 
 	void Associative_TypeRestriction(out ProtoCore.Type type) {
@@ -1523,22 +1486,22 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			if (NotDefaultArg()) { 
 			Associative_ArgDecl(out arg);
 			argumentSignature.AddArgument(arg as ProtoCore.AST.AssociativeAST.VarDeclNode); 
-			while (la.kind == 52) {
+			while (la.kind == 51) {
 				if (NotDefaultArg()) { 
-				ExpectWeak(52, 13);
+				ExpectWeak(51, 13);
 				Associative_ArgDecl(out arg);
 				argumentSignature.AddArgument(arg as ProtoCore.AST.AssociativeAST.VarDeclNode); 
 				} else break; 
 			}
 			} 
 		}
-		if (la.kind == 1 || la.kind == 52) {
-			if (la.kind == 52) {
+		if (la.kind == 1 || la.kind == 51) {
+			if (la.kind == 51) {
 				Get();
 			}
 			Associative_DefaultArgDecl(out arg);
 			argumentSignature.AddArgument(arg as ProtoCore.AST.AssociativeAST.VarDeclNode); 
-			while (la.kind == 52) {
+			while (la.kind == 51) {
 				Get();
 				Associative_DefaultArgDecl(out arg);
 				argumentSignature.AddArgument(arg as ProtoCore.AST.AssociativeAST.VarDeclNode); 
@@ -1546,13 +1509,6 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		}
 		Expect(13);
 		argumentSign = argumentSignature; 
-	}
-
-	void Associative_PatternExpression(out ProtoCore.AST.AssociativeAST.AssociativeNode pattern) {
-		ProtoCore.AST.AssociativeAST.AssociativeNode p = null; 
-		Expect(16);
-		Associative_Expression(out p);
-		pattern = p; 
 	}
 
 	void Associative_ArgDecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public) {
@@ -1602,7 +1558,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 	void Associative_DefaultArgDecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public) {
 		Associative_ArgDecl(out node);
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = node as ProtoCore.AST.AssociativeAST.VarDeclNode; 
-		Expect(51);
+		Expect(52);
 		ProtoCore.AST.AssociativeAST.AssociativeNode rhsNode; 
 		Associative_Expression(out rhsNode);
 		ProtoCore.AST.AssociativeAST.BinaryExpressionNode bNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
@@ -1730,7 +1686,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			} else if (la.kind == 1) {
 				Get();
 				strIdent = t.val; 
-			} else SynErr(82);
+			} else SynErr(81);
 			type = core.TypeSystem.GetType(strIdent);
 			typedVar.TypeAlias = strIdent;
 			if (type == ProtoCore.DSASM.Constants.kInvalidIndex)
@@ -1769,7 +1725,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			node = typedVar; 
 		} else if (la.kind == 1 || la.kind == 12 || la.kind == 45) {
 			Associative_IdentifierList(out node);
-		} else SynErr(83);
+		} else SynErr(82);
 	}
 
 	void Associative_IdentifierList(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
@@ -1910,7 +1866,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Associative_NegExpression(out node);
 		} else if (la.kind == 14 || la.kind == 62) {
 			Associative_BitUnaryExpression(out node);
-		} else SynErr(84);
+		} else SynErr(83);
 	}
 
 	void Associative_NegExpression(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
@@ -1947,7 +1903,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Get();
 			op = UnaryOperator.Negate; 
 			#endif                     
-		} else SynErr(85);
+		} else SynErr(84);
 	}
 
 	void Associative_Factor(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
@@ -1977,7 +1933,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Associative_IdentifierList(out node);
 		} else if (StartOf(15)) {
 			Associative_UnaryExpression(out node);
-		} else SynErr(86);
+		} else SynErr(85);
 	}
 
 	void Associative_negop(out UnaryOperator op) {
@@ -1986,7 +1942,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 15) {
 			Get();
 			op = UnaryOperator.Neg; 
-		} else SynErr(87);
+		} else SynErr(86);
 	}
 
 	void Associative_ComparisonExpression(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
@@ -2008,7 +1964,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 61) {
 			Get();
 			op = Operator.or; 
-		} else SynErr(88);
+		} else SynErr(87);
 	}
 
 	void Associative_ComparisonOp(out Operator op) {
@@ -2044,7 +2000,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			op = Operator.nq; 
 			break;
 		}
-		default: SynErr(89); break;
+		default: SynErr(88); break;
 		}
 	}
 
@@ -2116,7 +2072,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 15) {
 			Get();
 			op = Operator.sub; 
-		} else SynErr(90);
+		} else SynErr(89);
 	}
 
 	void Associative_MulOp(out Operator op) {
@@ -2129,7 +2085,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 57) {
 			Get();
 			op = Operator.mod; 
-		} else SynErr(91);
+		} else SynErr(90);
 	}
 
 	void Associative_BitOp(out Operator op) {
@@ -2142,7 +2098,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 16) {
 			Get();
 			op = Operator.bitwiseor; 
-		} else SynErr(92);
+		} else SynErr(91);
 	}
 
 	void Associative_Term(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
@@ -2235,7 +2191,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			   node.line = line; node.col = col;
 			}
 			
-		} else SynErr(93);
+		} else SynErr(92);
 	}
 
 	void Associative_Char(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
@@ -2272,7 +2228,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		if (StartOf(4)) {
 			Associative_Expression(out node);
 			exprlist.Exprs.Add(node); 
-			while (la.kind == 52) {
+			while (la.kind == 51) {
 				Get();
 				Associative_Expression(out node);
 				exprlist.Exprs.Add(node); 
@@ -2319,7 +2275,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Associative_ArrayExprList(out node);
 			nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode;
 			
-		} else SynErr(94);
+		} else SynErr(93);
 		if (la.kind == 10) {
 			ProtoCore.AST.AssociativeAST.ArrayNode array = new ProtoCore.AST.AssociativeAST.ArrayNode(); 
 			
@@ -2461,7 +2417,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			} else if (la.kind == 2) {
 				Get();
 				isLongest = false; 
-			} else SynErr(95);
+			} else SynErr(94);
 			repguide = t.val;
 			if (isLongest)
 			{
@@ -2483,7 +2439,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				} else if (la.kind == 2) {
 					Get();
 					isLongest = false; 
-				} else SynErr(96);
+				} else SynErr(95);
 				repguide = t.val;
 				if (isLongest)
 				{
@@ -2597,7 +2553,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			  SynErr(Resources.SemiColonExpected);
 			
 			Get();
-		} else SynErr(97);
+		} else SynErr(96);
 	}
 
 	void Imperative_languageblock(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -2626,7 +2582,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Hydrogen(out codeBlockNode);
 		} else if (langblock.codeblock.Language == ProtoCore.Language.Imperative ) {
 			Imperative(out codeBlockNode);
-		} else SynErr(98);
+		} else SynErr(97);
 		if (langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			int openCurlyBraceCount = 0, closeCurlyBraceCount = 0; 
 			ProtoCore.AST.ImperativeAST.CodeBlockNode codeBlockInvalid = new ProtoCore.AST.ImperativeAST.CodeBlockNode(); 
@@ -2647,12 +2603,12 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 					break; 
 				} else if (StartOf(9)) {
 					Get(); 
-				} else SynErr(99);
+				} else SynErr(98);
 			}
 			codeBlockNode = codeBlockInvalid; 
 		} else if (la.kind == 46) {
 			Get();
-		} else SynErr(100);
+		} else SynErr(99);
 		langblock.CodeBlockNode = codeBlockNode; 
 		node = langblock; 
 	}
@@ -2679,7 +2635,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			ProtoCore.AST.ImperativeAST.ImperativeNode singleStmt; 
 			Imperative_stmt(out singleStmt);
 			ifStmtNode.IfBody.Add(singleStmt); 
-		} else SynErr(101);
+		} else SynErr(100);
 		NodeUtils.SetNodeEndLocation(ifStmtNode.IfBodyPosition, t); 
 		while (la.kind == 30) {
 			ProtoCore.AST.ImperativeAST.ElseIfBlock elseifBlock = new ProtoCore.AST.ImperativeAST.ElseIfBlock(); 
@@ -2703,7 +2659,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				ProtoCore.AST.ImperativeAST.ImperativeNode singleStmt = null; 
 				Imperative_stmt(out singleStmt);
 				elseifBlock.Body.Add(singleStmt); 
-			} else SynErr(102);
+			} else SynErr(101);
 			NodeUtils.SetNodeEndLocation(elseifBlock.ElseIfBodyPosition, t); 
 			ifStmtNode.ElseIfList.Add(elseifBlock); 
 		}
@@ -2719,7 +2675,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				ProtoCore.AST.ImperativeAST.ImperativeNode singleStmt = null; 
 				Imperative_stmt(out singleStmt);
 				ifStmtNode.ElseBody.Add(singleStmt); 
-			} else SynErr(103);
+			} else SynErr(102);
 			NodeUtils.SetNodeEndLocation(ifStmtNode.ElseBodyPosition, t); 
 		}
 		node = ifStmtNode; 
@@ -2772,7 +2728,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			ProtoCore.AST.ImperativeAST.ImperativeNode singleStmt = null; 
 			Imperative_stmt(out singleStmt);
 			loopNode.Body.Add(singleStmt); 
-		} else SynErr(104);
+		} else SynErr(103);
 		forloop = loopNode;
 		
 	}
@@ -2793,7 +2749,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			NodeUtils.SetNodeEndLocation(bNode, t);
 			node = bNode; 
 			
-		} else if (la.kind == 51) {
+		} else if (la.kind == 52) {
 			Get();
 			ProtoCore.AST.ImperativeAST.ImperativeNode rhsNode = null; 
 			if (HasMoreAssignmentStatements()) {
@@ -2806,7 +2762,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				Expect(23);
 			} else if (la.kind == 10) {
 				Imperative_languageblock(out rhsNode);
-			} else SynErr(105);
+			} else SynErr(104);
 			bNode.LeftNode = lhsNode;
 			bNode.RightNode = rhsNode;
 			bNode.Optr = Operator.assign;
@@ -2815,7 +2771,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			
 		} else if (StartOf(9)) {
 			SynErr("';' is expected"); 
-		} else SynErr(106);
+		} else SynErr(105);
 	}
 
 	void Imperative_expr(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -2951,7 +2907,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			node = typedVar; 
 		} else if (la.kind == 1 || la.kind == 12 || la.kind == 45) {
 			Imperative_IdentifierList(out node);
-		} else SynErr(107);
+		} else SynErr(106);
 	}
 
 	void Imperative_IdentifierList(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -3061,7 +3017,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Imperative_ExprList(out node);
 			nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
 			
-		} else SynErr(108);
+		} else SynErr(107);
 		if (la.kind == 10) {
 			ProtoCore.AST.ImperativeAST.ArrayNode array = new ProtoCore.AST.ImperativeAST.ArrayNode();
 			
@@ -3138,7 +3094,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Imperative_negexpr(out node);
 		} else if (la.kind == 14 || la.kind == 62) {
 			Imperative_bitunaryexpr(out node);
-		} else SynErr(109);
+		} else SynErr(108);
 	}
 
 	void Imperative_negexpr(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -3180,7 +3136,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Get();
 			op = UnaryOperator.Negate; 
 			#endif                     
-		} else SynErr(110);
+		} else SynErr(109);
 	}
 
 	void Imperative_factor(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -3210,7 +3166,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Imperative_IdentifierList(out node);
 		} else if (la.kind == 14 || la.kind == 15 || la.kind == 62) {
 			Imperative_unaryexpr(out node);
-		} else SynErr(111);
+		} else SynErr(110);
 	}
 
 	void Imperative_negop(out UnaryOperator op) {
@@ -3244,7 +3200,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 61) {
 			Get();
 			op = Operator.or; 
-		} else SynErr(112);
+		} else SynErr(111);
 	}
 
 	void Imperative_RangeExpr(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -3311,7 +3267,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			op = Operator.nq; 
 			break;
 		}
-		default: SynErr(113); break;
+		default: SynErr(112); break;
 		}
 	}
 
@@ -3386,7 +3342,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 15) {
 			Get();
 			op = Operator.sub; 
-		} else SynErr(114);
+		} else SynErr(113);
 	}
 
 	void Imperative_interimfactor(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -3418,7 +3374,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 57) {
 			Get();
 			op = Operator.mod; 
-		} else SynErr(115);
+		} else SynErr(114);
 	}
 
 	void Imperative_bitop(out Operator op) {
@@ -3432,7 +3388,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 59) {
 			Get();
 			op = Operator.bitwisexor; 
-		} else SynErr(116);
+		} else SynErr(115);
 	}
 
 	void Imperative_Char(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -3513,7 +3469,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			else{
 			   NodeUtils.SetNodeLocation(node, t); }
 			
-		} else SynErr(117);
+		} else SynErr(116);
 	}
 
 	void Imperative_functioncall(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -3526,7 +3482,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			ProtoCore.AST.ImperativeAST.ImperativeNode argNode; 
 			Imperative_expr(out argNode);
 			arglist.Add(argNode); 
-			while (la.kind == 52) {
+			while (la.kind == 51) {
 				Get();
 				Imperative_expr(out argNode);
 				arglist.Add(argNode); 
@@ -3550,7 +3506,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		if (StartOf(4)) {
 			Imperative_expr(out node);
 			exprlist.Exprs.Add(node); 
-			while (la.kind == 52) {
+			while (la.kind == 51) {
 				Get();
 				Imperative_expr(out node);
 				exprlist.Exprs.Add(node); 
@@ -3657,8 +3613,8 @@ public class Errors {
 			case 48: s = "\"public\" expected"; break;
 			case 49: s = "\"private\" expected"; break;
 			case 50: s = "\"protected\" expected"; break;
-			case 51: s = "\"=\" expected"; break;
-			case 52: s = "\",\" expected"; break;
+			case 51: s = "\",\" expected"; break;
+			case 52: s = "\"=\" expected"; break;
 			case 53: s = "\"?\" expected"; break;
 			case 54: s = "\"+\" expected"; break;
 			case 55: s = "\"*\" expected"; break;
@@ -3676,54 +3632,53 @@ public class Errors {
 			case 67: s = "invalid Import_Statement"; break;
 			case 68: s = "this symbol not expected in Associative_Statement"; break;
 			case 69: s = "invalid Associative_Statement"; break;
-			case 70: s = "invalid Associative_functiondecl"; break;
+			case 70: s = "invalid Associative_classdecl"; break;
 			case 71: s = "invalid Associative_classdecl"; break;
-			case 72: s = "invalid Associative_classdecl"; break;
-			case 73: s = "this symbol not expected in Associative_NonAssignmentStatement"; break;
-			case 74: s = "this symbol not expected in Associative_FunctionCallStatement"; break;
-			case 75: s = "this symbol not expected in Associative_FunctionalStatement"; break;
+			case 72: s = "this symbol not expected in Associative_NonAssignmentStatement"; break;
+			case 73: s = "this symbol not expected in Associative_FunctionCallStatement"; break;
+			case 74: s = "this symbol not expected in Associative_FunctionalStatement"; break;
+			case 75: s = "invalid Associative_FunctionalStatement"; break;
 			case 76: s = "invalid Associative_FunctionalStatement"; break;
-			case 77: s = "invalid Associative_FunctionalStatement"; break;
+			case 77: s = "invalid Associative_LanguageBlock"; break;
 			case 78: s = "invalid Associative_LanguageBlock"; break;
 			case 79: s = "invalid Associative_LanguageBlock"; break;
-			case 80: s = "invalid Associative_LanguageBlock"; break;
-			case 81: s = "invalid Associative_AccessSpecifier"; break;
+			case 80: s = "invalid Associative_AccessSpecifier"; break;
+			case 81: s = "invalid Associative_DecoratedIdentifier"; break;
 			case 82: s = "invalid Associative_DecoratedIdentifier"; break;
-			case 83: s = "invalid Associative_DecoratedIdentifier"; break;
-			case 84: s = "invalid Associative_UnaryExpression"; break;
-			case 85: s = "invalid Associative_unaryop"; break;
-			case 86: s = "invalid Associative_Factor"; break;
-			case 87: s = "invalid Associative_negop"; break;
-			case 88: s = "invalid Associative_LogicalOp"; break;
-			case 89: s = "invalid Associative_ComparisonOp"; break;
-			case 90: s = "invalid Associative_AddOp"; break;
-			case 91: s = "invalid Associative_MulOp"; break;
-			case 92: s = "invalid Associative_BitOp"; break;
-			case 93: s = "invalid Associative_Number"; break;
+			case 83: s = "invalid Associative_UnaryExpression"; break;
+			case 84: s = "invalid Associative_unaryop"; break;
+			case 85: s = "invalid Associative_Factor"; break;
+			case 86: s = "invalid Associative_negop"; break;
+			case 87: s = "invalid Associative_LogicalOp"; break;
+			case 88: s = "invalid Associative_ComparisonOp"; break;
+			case 89: s = "invalid Associative_AddOp"; break;
+			case 90: s = "invalid Associative_MulOp"; break;
+			case 91: s = "invalid Associative_BitOp"; break;
+			case 92: s = "invalid Associative_Number"; break;
+			case 93: s = "invalid Associative_NameReference"; break;
 			case 94: s = "invalid Associative_NameReference"; break;
 			case 95: s = "invalid Associative_NameReference"; break;
-			case 96: s = "invalid Associative_NameReference"; break;
-			case 97: s = "invalid Imperative_stmt"; break;
+			case 96: s = "invalid Imperative_stmt"; break;
+			case 97: s = "invalid Imperative_languageblock"; break;
 			case 98: s = "invalid Imperative_languageblock"; break;
 			case 99: s = "invalid Imperative_languageblock"; break;
-			case 100: s = "invalid Imperative_languageblock"; break;
+			case 100: s = "invalid Imperative_ifstmt"; break;
 			case 101: s = "invalid Imperative_ifstmt"; break;
 			case 102: s = "invalid Imperative_ifstmt"; break;
-			case 103: s = "invalid Imperative_ifstmt"; break;
-			case 104: s = "invalid Imperative_forloop"; break;
+			case 103: s = "invalid Imperative_forloop"; break;
+			case 104: s = "invalid Imperative_assignstmt"; break;
 			case 105: s = "invalid Imperative_assignstmt"; break;
-			case 106: s = "invalid Imperative_assignstmt"; break;
-			case 107: s = "invalid Imperative_decoratedIdentifier"; break;
-			case 108: s = "invalid Imperative_NameReference"; break;
-			case 109: s = "invalid Imperative_unaryexpr"; break;
-			case 110: s = "invalid Imperative_unaryop"; break;
-			case 111: s = "invalid Imperative_factor"; break;
-			case 112: s = "invalid Imperative_logicalop"; break;
-			case 113: s = "invalid Imperative_relop"; break;
-			case 114: s = "invalid Imperative_addop"; break;
-			case 115: s = "invalid Imperative_mulop"; break;
-			case 116: s = "invalid Imperative_bitop"; break;
-			case 117: s = "invalid Imperative_num"; break;
+			case 106: s = "invalid Imperative_decoratedIdentifier"; break;
+			case 107: s = "invalid Imperative_NameReference"; break;
+			case 108: s = "invalid Imperative_unaryexpr"; break;
+			case 109: s = "invalid Imperative_unaryop"; break;
+			case 110: s = "invalid Imperative_factor"; break;
+			case 111: s = "invalid Imperative_logicalop"; break;
+			case 112: s = "invalid Imperative_relop"; break;
+			case 113: s = "invalid Imperative_addop"; break;
+			case 114: s = "invalid Imperative_mulop"; break;
+			case 115: s = "invalid Imperative_bitop"; break;
+			case 116: s = "invalid Imperative_num"; break;
 
 			default: s = "error " + n; break;
 		}

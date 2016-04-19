@@ -1839,11 +1839,9 @@ namespace ProtoCore.AST.AssociativeAST
         public Type ReturnType { get; set; }
         public List<AssociativeNode> Attributes { get; set; }
         public ArgumentSignatureNode Signature { get; set; }
-        public AssociativeNode Pattern { get; set; }
         public bool IsExternLib { get; set; }
         public bool IsBuiltIn { get; set; }
         public BuiltInMethods.MethodID BuiltInMethodId { get; set; }
-        public bool IsDNI { get; set; }
         public string ExternLibName { get; set; }
         public CompilerDefinitions.AccessModifier Access { get; set; }
         public bool IsStatic { get; set; }
@@ -1879,10 +1877,8 @@ namespace ProtoCore.AST.AssociativeAST
 
             Attributes = rhs.Attributes;
             Signature = new ArgumentSignatureNode(rhs.Signature);
-            Pattern = rhs.Pattern;
             IsExternLib = rhs.IsExternLib;
             BuiltInMethodId = rhs.BuiltInMethodId;
-            IsDNI = rhs.IsDNI;
             ExternLibName = rhs.ExternLibName;
             Access = rhs.Access;
             IsStatic = rhs.IsStatic;

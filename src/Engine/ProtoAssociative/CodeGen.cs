@@ -2913,11 +2913,9 @@ namespace ProtoAssociative
             {
                 Name = ProtoCore.DSASM.Constants.kGetterPrefix + prop.name,
                 Signature = new ArgumentSignatureNode(),
-                Pattern = null,
                 ReturnType = prop.datatype,
                 FunctionBody = new CodeBlockNode(),
                 IsExternLib = false,
-                IsDNI = false,
                 ExternLibName = null,
                 Access = prop.access,
                 IsStatic = prop.isStatic,
@@ -2946,11 +2944,9 @@ namespace ProtoAssociative
             {
                 Name = ProtoCore.DSASM.Constants.kSetterPrefix + prop.name,
                 Signature = argumentSingature,
-                Pattern = null,
                 ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Null, 0),
                 FunctionBody = new CodeBlockNode(),
                 IsExternLib = false,
-                IsDNI = false,
                 ExternLibName = null,
                 Access = prop.access,
                 IsStatic = prop.isStatic,
@@ -3160,11 +3156,9 @@ namespace ProtoAssociative
                 {
                     Name = ProtoCore.DSASM.Constants.kStaticPropertiesInitializer,
                     Signature = new ArgumentSignatureNode(),
-                    Pattern = null,
                     ReturnType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)PrimitiveType.Null), UID = (int)PrimitiveType.Null },
                     FunctionBody = new CodeBlockNode(),
                     IsExternLib = false,
-                    IsDNI = false,
                     ExternLibName = null,
                     Access = ProtoCore.CompilerDefinitions.AccessModifier.Public,
                     IsStatic = true
@@ -4097,7 +4091,6 @@ namespace ProtoAssociative
                     record.FunctionName = funcDef.Name;
                     record.ModuleName = funcDef.ExternLibName;
                     record.ModuleType = "dll";
-                    record.IsDNI = funcDef.IsDNI;
                     record.ReturnType = funcDef.ReturnType;
                     record.ParameterTypes = localProcedure.ArgumentTypes;
                     fep = new ProtoCore.Lang.FFIFunctionEndPoint(record);
