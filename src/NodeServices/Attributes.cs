@@ -318,4 +318,14 @@ namespace Autodesk.DesignScript.Runtime
     public class KeepReferenceAttribute : Attribute
     {
     }
+
+    /// <summary>
+    /// This attribute indicates the return object should reference to this object.
+    ///
+    /// Note the return object should be reference type.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public class KeepReferenceThisAttribute : Attribute
+    {
+    }
 }
