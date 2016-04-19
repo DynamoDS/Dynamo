@@ -386,22 +386,6 @@ c = foo1(a, 3);";
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void T19_NegativeTest_PassingFunctionPtrAsArg_CSFFI()
-        {
-            string code = @"
-import (""ProtoGeometry.dll"");
-def foo : CoordinateSystem()
-{
-	return = CoordinateSystem.Identity();
-}
-a = Point.ByCartesianCoordinates(foo, 1.0, 2.0, 3.0);";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            object a = null;
-            thisTest.Verify("a", a);
-        }
-
-        [Test]
         [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T20_FunctionPtrUpdateOnMemVar_1()
         {

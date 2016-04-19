@@ -2671,68 +2671,6 @@ a;
             thisTest.Verify("a",1);
         }
 
-        [Ignore]
-        public void BitwiseOp001()
-        {
-            String code =
-                        @"
-                        [Associative]
-                        {
-	                        a = 2;
-	                        b = 3;
-                            c = a & b;
-                        }
-                        ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("c",2);
-        }
-
-        [Ignore]
-        public void BitwiseOp002()
-        {
-            String code =
-                        @"
-                        [Associative]
-                        {
-	                        a = 2;
-	                        b = 3;
-                            c = a | b;
-                        }
-                        ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("c",3);
-        }
-
-        [Ignore]
-        public void BitwiseOp003()
-        {
-            String code =
-                        @"
-                        [Associative]
-                        {
-	                        a = 2;
-	                        b = ~a;
-                        }
-                        ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("b",-3);
-        }
-        [Ignore]
-        public void BitwiseOp004()
-        {
-            String code =
-                        @"
-                        [Associative]
-                        {
-	                        a = true;
-                            b = false;
-	                        c = a^b;
-                        }
-                        ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("c", null);
-        }
-
         [Test]
         public void LogicalOp001()
         {
@@ -3069,45 +3007,6 @@ z = b[2];
             thisTest.Verify("x",11);
             thisTest.Verify("y",1);
             thisTest.Verify("z",11);
-        }
-        [Ignore]
-        public void PrePostFix001()
-        {
-            String code =
-                        @"
-	                        a = 5;
-                            b = ++a;
-                        ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a",6);
-            thisTest.Verify("b",6);
-        }
-        [Ignore]
-        public void PrePostFix002()
-        {
-            String code =
-                        @"
-	                        a = 5;
-                            b = a++;
-                        ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a",6);
-            thisTest.Verify("b",5);
-        }
-        [Ignore]
-        public void PrePostFix003()
-        {
-            String code =
-                        @"
-	                        a = 5;			//a=5;
-                            b = ++a;		//b =6; a =6;
-                            a++;			//a=7;
-                            c = a++;		//c = 7; a = 8;
-                        ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a",8);
-            thisTest.Verify("b",6);
-            thisTest.Verify("c",7);
         }
 
         [Test]
@@ -3830,48 +3729,22 @@ n = point.point();
         }
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
-        [Category("PortToCodeBlocks")]
-        public void TestGCFFI001()
-        {
-            String code =
-                @"
-def foo : int()
-{
-	p = Point.ByCoordinates(10, 20, 30);
-	p2 = Point.ByCoordinates(12, 22, 32);
-	p3 = Point.ByCoordinates(14, 24, 34);
-	return = 10;
-}
-p = Point.ByCoordinates(15, 25, 35);
-x = p.X;
-y = foo();
-                ";
-            code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
-            thisTest.RunScriptSource(code);
-        }
-
-        [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
-        [Category("PortToCodeBlocks")]
         public void TestGCRefCount002()
         {
             String code =
                 @"
+import (""FFITarget.dll"");
 def CreatePoint : Point(x : int, y : int, z : int)
 {
-	return = Point.ByCoordinates(x, y, z);
+	return = DummyPoint.ByCoordinates(x, y, z);
 }
-def getx : double(p : Point)
+def getx : double(p : DummyPoint)
 {
 	return = p.X;
 }
 p = CreatePoint(5, 6, 7);
 x = getx(p);
                 ";
-            code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 5.0);
         }
@@ -3890,40 +3763,6 @@ x = getx(p);
                 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("gx", 100);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        [Category("ProtoGeometry")]
-        [Category("PortToCodeBlocks")]
-        public void TestNullFFI()
-        {
-            String code =
-                @"
-class Test
-{
-    X : int;
-    constructor Test(x : int)
-    {
-        X = x;
-    }
-    
-    def Equals : bool (other : Test)
-    {
-        return = (other.X == this.X);
-    }
-}
-x = {1001,2001};
-t = Point.ByCoordinates(x, 0, 0);
-s = t;
-s[1] = null;
-check = s.Equals(t);
-value = check[1];
-Print(check);
-                ";
-            code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("value", null);
         }
 
         [Test]
@@ -4005,64 +3844,6 @@ class Point
 	{
 		return = 10;
 	}
-}";
-            thisTest.RunScriptSource(src);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassAttribute")]
-        public void TestAttributeOnLanguageBlock()
-        {
-            string src = @"class TestAttribute
-{
-	constructor TestAttribute()
-	{}
-}
-class VisibilityAttribute
-{
-	x : var;
-	constructor VisibilityAttribute(_x : var)
-	{
-		x = _x;
-	}
-}
-[Imperative, version=""###"", Visibility(11), fingerprint=""FS54"", Test] 
-{
-	a = 19;
-}
-";
-            thisTest.RunScriptSource(src);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassAttribute")]
-        public void TestAttributeWithLanguageBlockAndArrayExpression()
-        {
-            string src = @"class TestAttribute
-{
-	constructor TestAttribute()
-	{}
-}
-class VisibilityAttribute
-{
-	x : var;
-	constructor VisibilityAttribute(_x : var)
-	{
-		x = _x;
-	}
-}
-def foo : int[]..[](p : var[]..[])
-{
-	a = { 1, { 2, 3 }, 4 };
-	return = a[1];
-}
-[Associative, version=""###"", Visibility(11), fingerprint=""FS54"", Test] 
-{
-	a = {1, 2, 3};
-	b = a[1];
-	c = a[0];
 }";
             thisTest.RunScriptSource(src);
             thisTest.VerifyBuildWarningCount(0);

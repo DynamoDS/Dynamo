@@ -2452,60 +2452,6 @@ sum2 = foo(arr1);";
 
         [Test]
         [Category("Replication")]
-        [Category("SmokeTest")]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void T65_Defect_1467125_Geo_Replication()
-        {
-            string code = @"
-import(""ProtoGeometry.dll"");
-WCS = CoordinateSystem.Identity();
-// create initialPoints
-diafac1 = 1;
-h1 = 15;
-hL1=10;
-pt0 = Point.ByCartesianCoordinates(WCS,-5*diafac1,-5*diafac1,0);
-pt1 = Point.ByCartesianCoordinates(WCS,5*diafac1,-5*diafac1,0);
-pt2 = Point.ByCartesianCoordinates(WCS,5*diafac1,5*diafac1,0);
-pt3 = Point.ByCartesianCoordinates(WCS,-5*diafac1,5*diafac1,0);
-pt4 = Point.ByCartesianCoordinates(WCS,-5*diafac1,-5*diafac1,hL1);
-pt5 = Point.ByCartesianCoordinates(WCS,5*diafac1,-5*diafac1,hL1);
-pt6 = Point.ByCartesianCoordinates(WCS,5*diafac1,5*diafac1,hL1);
-pt7 = Point.ByCartesianCoordinates(WCS,-5*diafac1,5*diafac1,hL1);
-pt8 = Point.ByCartesianCoordinates(WCS,-15,-15,h1);
-pt9 = Point.ByCartesianCoordinates(WCS,15,-15,h1);
-pt10= Point.ByCartesianCoordinates(WCS,15,15,h1);
-pt11 = Point.ByCartesianCoordinates(WCS,-15,15,h1);
-pointGroup = {pt0,pt1,pt2,pt3,pt4,pt5,pt6,pt7,pt8,pt9,pt10,pt11};
-facesIndices = {{0,1,5,4},{1,2,6,5},{2,3,7,6},{3,0,4,7},{4,5,9,8},{5,6,10,9},{6,7,11,10},{7,4,8,11}};
-groupOfPointGroups =  { { pt0, pt1, pt2 }, { pt3, pt4, pt5 }, { pt6, pt7, pt8 }, { pt9, pt10, pt11 } };
-simplePointGroup = {pt5, pt6, pt10, pt9};
-// note: Polygon.ByVertices expects a 1D array of points.. so let`s test this 
-controlPolyA = Polygon.ByVertices({pt0, pt1, pt5, pt4}); // OK with 1D collection
-controlPolyB = Polygon.ByVertices(simplePointGroup); // OK with 1D collection
-	controlPolyC = Polygon.ByVertices({{pt1, pt2, pt6, pt5},{pt2, pt3, pt7, pt6}}); // not OK with literal 2D collection
-														// get compiler error `unable to locate mamaged object for given dsObject`
-	controlPolyD = Polygon.ByVertices(pointGroup[3]);    // not OK with a 1D subcollection a a member indexed from a 2D collection
-														// controlPolyD = null
-	controlPolyE = Polygon.ByVertices(pointGroup[facesIndices]); // not OK with an array of indices
-																// controlPolyE = null
-controlPolyF = Polygon.ByVertices(groupOfPointGroups);
-// result = foo({ controlPolyA, controlPolyB, controlPolyC, controlPolyD, controlPolyE });
-/*def foo(x:Polygon)
-{
-	if (x!= null)
-	{
-	    return = true;
-	}
-	else return = false;
-}*/
-//a simple case
-c=2 * {{1},{2}};";
-            string error = "";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-        }
-
-        [Test]
-        [Category("Replication")]
         public void T66_Defect_1467125_Replication_Method()
         {
             String code =
