@@ -3178,42 +3178,11 @@ namespace ProtoAssociative
             unPopulatedClasses.Remove(thisClassIndex);
         }
 
-        /// <summary>
-        /// Determines if a class is allowed to be codegened based on certain conditions in the class node
-        /// </summary>
-        /// <param name="classNode"></param>
-        /// <returns></returns>
-        private bool IsClassAllowed(ClassDeclNode classDecl)
-        {
-            // If its an FFI class, it is allowed
-            if (classDecl.IsExternLib)
-            {
-                return true;
-            }
-
-            // Check the class attributes
-            if (classDecl.Attributes != null)
-            {
-                // If at least one attribute is internal then the class is allowed
-                List<AttributeEntry> attributesList = PopulateAttributes(classDecl.Attributes);
-                if (attributesList.Where(a => a.IsInternalClassAttribute()).Count() > 0)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         private void EmitClassDeclNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None,
             GraphNode graphNode = null)
         {
             ClassDeclNode classDecl = node as ClassDeclNode;
-            
-            // Restrict classes 
-            if (!IsClassAllowed(classDecl))
-            {
-                return;
-            }
+
             // Handling n-pass on class declaration
             if (ProtoCore.CompilerDefinitions.Associative.CompilePass.ClassName == compilePass)
             {
