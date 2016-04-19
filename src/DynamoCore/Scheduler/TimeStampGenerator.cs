@@ -3,6 +3,9 @@ using System.Threading;
 
 namespace Dynamo.Scheduler
 {
+    /// <summary>
+    /// This class is used to set creation time of async task in Dynamo Scheduler.
+    /// </summary>
     public struct TimeStamp
     {
         #region Private Class Data Members

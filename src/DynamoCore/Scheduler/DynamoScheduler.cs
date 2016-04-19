@@ -29,6 +29,9 @@ namespace Dynamo.Scheduler
     public delegate void TaskStateChangedEventHandler(
         DynamoScheduler sender, TaskStateChangedEventArgs e);
 
+    /// <summary>
+    /// This interface provides methods and properties used for Dynamo Scheduler.
+    /// </summary>
     public interface IScheduler 
     {
         /// <summary>
@@ -80,6 +83,9 @@ namespace Dynamo.Scheduler
         Asynchronous
     }
 
+    /// <summary>
+    /// This class represents Dynamo scheduler. All the tasks are scheduled on the scheduler. Also, these tasks runs async.
+    /// </summary>
     public partial class DynamoScheduler : IScheduler
     {
         #region Class Events, Properties
@@ -144,7 +150,6 @@ namespace Dynamo.Scheduler
         /// class and call this method to schedule the task for execution.
         /// </summary>
         /// <param name="asyncTask">The task to execute asynchronously.</param>
-        /// 
         public void ScheduleForExecution(AsyncTask asyncTask)
         {
             // When an AsyncTask is scheduled for execution during a test, it 
@@ -196,7 +201,6 @@ namespace Dynamo.Scheduler
         /// <returns>This method returns true if the task queue is not empty, or
         /// false otherwise. Note that this method returns false when scheduler
         /// begins to shutdown, even when the task queue is not empty.</returns>
-        /// 
         public bool ProcessNextTask(bool waitIfTaskQueueIsEmpty)
         {
             AsyncTask nextTask = null;

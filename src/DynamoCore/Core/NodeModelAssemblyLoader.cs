@@ -26,6 +26,9 @@ namespace Dynamo.Models
     {
         #region Properties/Fields
 
+        /// <summary>
+        /// Loaded Assemblies.
+        /// </summary>
         public readonly HashSet<string> LoadedAssemblyNames = new HashSet<string>();
         private readonly HashSet<Assembly> loadedAssemblies = new HashSet<Assembly>();
 
@@ -41,18 +44,35 @@ namespace Dynamo.Models
 
         #region Events
 
+        /// <summary>
+        /// Delegate used in AssemblyLoaded event.
+        /// </summary>
+        /// <param name="args">AssemblyLoadedEventArgs</param>
         public delegate void AssemblyLoadedHandler(AssemblyLoadedEventArgs args);
 
+        /// <summary>
+        /// This class holds the reference for the loaded assembly.
+        /// </summary>
         public class AssemblyLoadedEventArgs
         {
+            /// <summary>
+            /// Loaded assembly.
+            /// </summary>
             public Assembly Assembly { get; private set; }
 
+            /// <summary>
+            /// Creates AssemblyLoadedEventArgs
+            /// </summary>
+            /// <param name="assembly">loaded assembly</param>
             public AssemblyLoadedEventArgs(Assembly assembly)
             {
                 Assembly = assembly;
             }
         }
 
+        /// <summary>
+        /// Event fired when a new assembly is loaded.
+        /// </summary>
         public event AssemblyLoadedHandler AssemblyLoaded;
 
         private void OnAssemblyLoaded(Assembly assem)

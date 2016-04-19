@@ -248,8 +248,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     [NodeName("Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("SymbolNodeDescription",typeof(Properties.Resources))]
-    [NodeSearchTags("SymbolSearchTags", typeof(Properties.Resources))]
-    [NotSearchableInHomeWorkspace]
+    [NodeSearchTags("SymbolSearchTags", typeof(Properties.Resources))]    
     [IsDesignScriptCompatible]
     [AlsoKnownAs("Dynamo.Nodes.Symbol")]
     public class Symbol : NodeModel
@@ -441,8 +440,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
     [NodeName("Output")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("OutputNodeDescription",typeof(Dynamo.Properties.Resources))]
-    [NotSearchableInHomeWorkspace]
+    [NodeDescription("OutputNodeDescription",typeof(Dynamo.Properties.Resources))]    
     [IsDesignScriptCompatible]
     [AlsoKnownAs("Dynamo.Nodes.Output")]
     public class Output : NodeModel

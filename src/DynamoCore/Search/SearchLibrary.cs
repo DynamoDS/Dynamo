@@ -16,7 +16,7 @@ namespace Dynamo.Search
         /// <summary>
         ///     Adds an entry to search.
         /// </summary>
-        /// <param name="entry"></param>
+        /// <param name="entry">search element</param>
         internal virtual void Add(TEntry entry)
         {
             Add(entry, entry.Name);
@@ -27,8 +27,8 @@ namespace Dynamo.Search
         /// <summary>
         ///     Updates an entry in search.
         /// </summary>
-        /// <param name="entry"></param>
-        /// <param name="isCategoryChanged"></param>
+        /// <param name="entry">search element</param>
+        /// <param name="isCategoryChanged">true, if entry changed its category</param>
         internal void Update(TEntry entry, bool isCategoryChanged = false)
         {
             // If entry's category is changed, we need to delete this entry from search.
