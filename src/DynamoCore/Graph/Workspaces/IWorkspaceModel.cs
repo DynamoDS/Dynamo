@@ -13,27 +13,27 @@ namespace Dynamo.Graph.Workspaces
         string Name { get; }
 
         /// <summary>
-        /// Gets description of the workspace
+        /// Queries description of the workspace
         /// </summary>
         string Description { get; }
 
         /// <summary>
-        /// Gets FileName of the workspace
+        /// Queries FileName of the workspace
         /// </summary>
         string FileName { get; }
 
         /// <summary>
-        /// Gets list of connectors in the workspace
+        /// Queries list of connectors in the workspace
         /// </summary>
         IEnumerable<ConnectorModel> Connectors { get; }
 
         /// <summary>
-        /// Gets list of nodes owned by this workspace.
+        /// Queries list of nodes owned by this workspace.
         /// </summary>
         IEnumerable<NodeModel> Nodes { get; }
 
         /// <summary>
-        /// Gets list of selected nodes.
+        /// Queries list of selected nodes.
         /// </summary>
         IEnumerable<NodeModel> CurrentSelection { get; }
 

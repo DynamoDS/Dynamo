@@ -32,7 +32,7 @@ namespace Dynamo.Configuration
         public string CurrentWorkspacePath { get; private set; }
 
         /// <summary>
-        /// Gets session parameter value for the given parameter name.
+        /// Queries session parameter value for the given parameter name.
         /// </summary>
         /// <param name="parameter">Name of session parameter</param>
         /// <returns>Session parameter value as object</returns>
@@ -42,7 +42,7 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Gets list of session parameter keys available in the session.
+        /// Queries list of session parameter keys available in the session.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<string> GetParameterKeys()

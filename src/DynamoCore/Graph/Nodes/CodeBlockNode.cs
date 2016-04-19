@@ -1043,7 +1043,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Gets variables from AST nodes.
+        /// Queries variables from AST nodes.
         /// E.g. a+5. Here "a" is variable.
         /// </summary>
         /// <param name="astNode"><see cref="Node"/></param>
@@ -1128,7 +1128,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Returns the names of the variables that have been declared in the statement
         /// </summary>
-        /// <param name="s"> Statement whose variable names to be got.</param>
+        /// <param name="s"> Statement whose variable names to be queried.</param>
         /// <param name="onlyTopLevel"> Bool to check if required to return reference variables in sub statements as well</param>
         /// <returns></returns>
         public static List<string> GetDefinedVariableNames(Statement s, bool onlyTopLevel)
@@ -1143,7 +1143,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Gets statement type.
+        /// Queries statement type.
         /// </summary>
         /// <param name="astNode"><see cref="Node"/></param>
         /// <returns>StatementType</returns>

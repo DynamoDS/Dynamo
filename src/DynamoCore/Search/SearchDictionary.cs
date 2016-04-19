@@ -213,7 +213,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Get the elements with a given tag
+        ///     Query the elements with a given tag
         /// </summary>
         /// <param name="tag"> The tag to match </param>
         /// <returns> The elements with the given tag </returns>
@@ -343,7 +343,7 @@ namespace Dynamo.Search
         }
 		
         /// <summary>
-        /// Get all tags for search specified element
+        /// Query all tags for search specified element
         /// </summary>
         /// <param name="element">The element to match</param>
         /// <returns>All tags of the given element</returns>

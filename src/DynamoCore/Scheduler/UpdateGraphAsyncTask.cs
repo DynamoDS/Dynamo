@@ -233,7 +233,7 @@ namespace Dynamo.Scheduler
 
         /// <summary>
         /// Call this method to recursively gather downstream nodes of a given node.
-        /// Get only those nodes that are in RUN state.
+        /// Query only those nodes that are in RUN state.
         /// </summary>
         /// <param name="node">A NodeModel whose downstream nodes are to be gathered.</param>
         /// <param name="gathered">A list of all downstream nodes.</param>

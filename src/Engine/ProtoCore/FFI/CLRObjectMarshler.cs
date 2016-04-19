@@ -637,7 +637,7 @@ namespace ProtoFFI
         }
 
         /// <summary>
-        /// Gets instance of the CLRObjectMarshler for a given core. If marshler
+        /// Queries instance of the CLRObjectMarshler for a given core. If marshler
         /// is not already created, it creates a new one.
         /// </summary>
         /// <param name="core">Core object.</param>
@@ -803,7 +803,7 @@ namespace ProtoFFI
         }
 
         /// <summary>
-        /// Get appropriate marshaler for given DS Type.
+        /// Query appropriate marshaler for given DS Type.
         /// </summary>
         /// <param name="dsType">DS Type to which given objType needs to be marshaled.</param>
         /// <param name="objType">CLR object type that needs to marshal.</param>
@@ -838,7 +838,7 @@ namespace ProtoFFI
         }
 
         /// <summary>
-        /// Gets a primitive System.Type for the given DS type.
+        /// Queries a primitive System.Type for the given DS type.
         /// </summary>
         /// <param name="addressType">DS AddressType</param>
         /// <returns>System.Type</returns>
@@ -862,7 +862,7 @@ namespace ProtoFFI
         }
 
         /// <summary>
-        /// Gets marshaled DS type for the given System.Type
+        /// Queries marshaled DS type for the given System.Type
         /// </summary>
         /// <param name="type">System.Type</param>
         /// <returns>ProtoCore.Type as equivalent DS type for input System.Type</returns>
@@ -872,7 +872,7 @@ namespace ProtoFFI
         }
 
         /// <summary>
-        /// Gets equivalent DS type for the input System.Type
+        /// Queries equivalent DS type for the input System.Type
         /// </summary>
         /// <param name="type">System.Type</param>
         /// <returns>ProtoCore.Type</returns>
@@ -884,7 +884,7 @@ namespace ProtoFFI
         }
 
         /// <summary>
-        /// Gets the marshaled type for input System.Type as DS Pointer type
+        /// Queries the marshaled type for input System.Type as DS Pointer type
         /// </summary>
         /// <param name="type">System.Type</param>
         /// <returns>ProtoCore.Type</returns>
@@ -1125,7 +1125,7 @@ namespace ProtoFFI
         }
 
         /// <summary>
-        /// Get all the properties of input object, that are marked with 
+        /// Query all the properties of input object, that are marked with 
         /// "Primary" Category.
         /// </summary>
         /// <param name="obj">Input FFI object</param>

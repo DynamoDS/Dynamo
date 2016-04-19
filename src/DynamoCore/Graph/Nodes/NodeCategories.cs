@@ -431,7 +431,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Gets words from text, e.g. ImportFromCSV to ("Import","From","CSV")
+        /// Queries words from text, e.g. ImportFromCSV to ("Import","From","CSV")
         /// </summary>
         /// <param name="text">incoming string</param>
         /// <param name="maxCharacters">Max number of characters per row</param>

@@ -31,7 +31,7 @@ namespace Dynamo.Search.SearchElements
         }
 
         /// <summary>
-        ///     Specified whether or not this entry should appear in search.
+        ///     Specifies whether or not this entry should appear in search.
         /// </summary>
         public bool IsVisibleInSearch
         {

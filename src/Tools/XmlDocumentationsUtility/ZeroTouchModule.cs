@@ -80,7 +80,7 @@ namespace NodeDocumentationUtility
         }
 
         /// <summary>
-        /// Gets the given type if exists in this module and is imported
+        /// Queries the given type if exists in this module and is imported
         /// into the engine.
         /// </summary>
         /// <param name="typename">Fully qualified class name</param>

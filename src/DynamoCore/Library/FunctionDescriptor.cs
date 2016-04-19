@@ -136,12 +136,12 @@ namespace Dynamo.Engine
         public bool IsOverloaded { get; set; }
 
         /// <summary>
-        ///     Full path to the assembly the defined this function
+        ///     Full path to the assembly which defined this function
         /// </summary>
         public string Assembly { get; private set; }
 
         /// <summary>
-        ///     Class name of this function. If the functino is global function,
+        ///     Class name of this function. If the function is global function,
         ///     return String.Empty.
         /// </summary>
         public string ClassName { get; private set; }

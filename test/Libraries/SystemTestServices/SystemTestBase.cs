@@ -319,7 +319,7 @@ namespace SystemTestServices
         }
 
         /// <summary>
-        /// Get a collection from a node's mirror data.
+        /// Query a collection from a node's mirror data.
         /// </summary>
         /// <param name="guid"></param>
         /// <returns>A list of objects if the data is a collection, else null.</returns>

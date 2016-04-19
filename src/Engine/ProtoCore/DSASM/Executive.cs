@@ -4663,7 +4663,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Get the next graphnode to execute given the current next pc and scope
+        /// Query the next graphnode to execute given the current next pc and scope
         /// </summary>
         /// <param name="pc"></param>
         /// <param name="ci"></param>

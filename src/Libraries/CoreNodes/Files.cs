@@ -28,7 +28,7 @@ namespace DSCore.IO
         }
 
         /// <summary>
-        ///     Gets the extension from a file path.
+        /// Queries the extension from a file path.
         /// </summary>
         /// <param name="path">Path to get extension of.</param>
         public static string Extension(string path)
@@ -47,7 +47,7 @@ namespace DSCore.IO
         }
 
         /// <summary>
-        ///     Gets the directory name of a file path.
+        /// Queries the directory name of a file path.
         /// </summary>
         /// <param name="path">Path to get directory information of.</param>
         /// <search>directorypath</search>
@@ -57,7 +57,7 @@ namespace DSCore.IO
         }
 
         /// <summary>
-        ///     Gets the file name of a file path.
+        /// Queries the file name of a file path.
         /// </summary>
         /// <param name="path">Path to get the file name of.</param>
         /// <param name="withExtension">Determines whether or not the extension is included in the result, defaults to true.</param>
@@ -82,7 +82,7 @@ namespace DSCore.IO
     public static class File
     {
         /// <summary>
-        /// Gets absolute path from the given path. If the given path is 
+        /// Queries absolute path from the given path. If the given path is 
         /// relative path then it is resolved with respect to the current 
         /// workspace. If file doesn't exist at the relative path but exists
         /// at the given hintPath then hintPath is returned.
@@ -302,7 +302,7 @@ namespace DSCore.IO
         }
 
         /// <summary>
-        ///     Gets all of the contents of a given directory.
+        /// Queries all of the contents of a given directory.
         /// </summary>
         /// <param name="directory">Directory to get contents of.</param>
         /// <param name="searchString">Search string used to filter results. Defaults to "*.*" (displays all contents).</param>
@@ -422,7 +422,7 @@ namespace DSCore.IO
         }
 
         /// <summary>
-        ///     Gets the width and height of an image.
+        /// Queries the width and height of an image.
         /// </summary>
         /// <param name="image">Image to get dimensions of.</param>
         [MultiReturn("width", "height")]

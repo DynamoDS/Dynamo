@@ -8,12 +8,12 @@ using Dynamo.Interfaces;
 namespace Dynamo.Logging
 {
     /// <summary>
-    /// Defines the level for log messages. A log message could be a console or file or warning.
+    /// Specifies the level for log messages. A log message could be a console or file or warning.
     /// </summary>
     public enum LogLevel{Console, File, Warning}
 
     /// <summary>
-    /// Defines the warning level for log messages.
+    /// Specifies the warning level for log messages.
     /// </summary>
     public enum WarningLevel{Mild, Moderate, Error}
 

@@ -1101,9 +1101,9 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Get all function instances or directly or indrectly dependo on the 
+        /// Query all function instances directly or indirectly depends on the 
         /// specified function definition and mark them as modified so that 
-        /// their values will be re-queryed.
+        /// their values will be re-queried.
         /// </summary>
         /// <param name="def"></param>
         /// <returns></returns>
