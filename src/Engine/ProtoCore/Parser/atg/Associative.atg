@@ -58,17 +58,13 @@ Hydrogen<out Node codeBlockNode>
         )
         |
         (
-            (. List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>(); .)
-            [
-                Associative_AttributeDeclaration<out attrs>
-            ]
             (
                 (	               
-                    Associative_functiondecl<out node, attrs>
+                    Associative_functiondecl<out node>
                 )
                 |
                 (
-                    Associative_classdecl<out node, attrs>
+                    Associative_classdecl<out node>
                 )
             )
         )
@@ -205,10 +201,10 @@ Associative_StatementList<.out List<ProtoCore.AST.AssociativeAST.AssociativeNode
     .)
 .
 
-Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>
+Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node.>
 =
                                                 (. ProtoCore.AST.AssociativeAST.ClassDeclNode classnode = new ProtoCore.AST.AssociativeAST.ClassDeclNode(); .)
-                                                (. NodeUtils.SetNodeLocation(classnode, la); classnode.Attributes = attrs; .)
+                                                (. NodeUtils.SetNodeLocation(classnode, la); .)
     kw_class        
     ident                                       (. classnode.ClassName = t.val; .)      
                                                 (. isInClass = true;
@@ -228,11 +224,7 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Li
         }
     ]
     '{'
-        {										(. List<ProtoCore.AST.AssociativeAST.AssociativeNode> attributes = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>(); .)
-            [
-                Associative_AttributeDeclaration<out attributes>
-            ]
-            
+        {										
                                                (. ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public; .)
             [
                 Associative_AccessSpecifier<out access>
@@ -240,7 +232,7 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Li
             (           
                 (      
                                                 (. ProtoCore.AST.AssociativeAST.AssociativeNode constr = null; .)   
-                    Associative_constructordecl<out constr, access, attributes>     
+                    Associative_constructordecl<out constr, access>     
                                                 (. if (String.IsNullOrEmpty(constr.Name))
                                                    {
                                                        constr.Name= classnode.ClassName;
@@ -257,13 +249,13 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Li
                     (
                         (
                                                 (. ProtoCore.AST.AssociativeAST.AssociativeNode funcnode; .)
-                            Associative_functiondecl<out funcnode, attributes, access, isStatic>      
+                            Associative_functiondecl<out funcnode, access, isStatic>      
                                                 (. classnode.Procedures.Add(funcnode); .)
                         )
                         |
                         (   
                                                 (. ProtoCore.AST.AssociativeAST.AssociativeNode varnode = null; .)  
-                            Associative_vardecl<out varnode, access, isStatic, attributes>    
+                            Associative_vardecl<out varnode, access, isStatic>    
                                                 (. classnode.Variables.Add(varnode); .)
 
                                                 (. 
@@ -345,7 +337,7 @@ Associative_LanguageBlock<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                             (. node = langblock; .)
 .       
 
-Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode constrNode, ProtoCore.CompilerDefinitions.AccessModifier access, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>
+Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode constrNode, ProtoCore.CompilerDefinitions.AccessModifier access.>
 =                           (.
                                 ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode constr = new ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode(); ;                                 
                                 string methodName;  
@@ -361,7 +353,6 @@ Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode co
                                 constr.ReturnType = returnType;
                                 constr.Signature = argumentSignature as ProtoCore.AST.AssociativeAST.ArgumentSignatureNode;
                                 constr.Access = access; 
-                                constr.Attributes = attrs;
                                 ProtoCore.AST.AssociativeAST.AssociativeNode functionBody = null; 
                             .)
     [
@@ -410,7 +401,7 @@ Associative_AccessSpecifier<out ProtoCore.CompilerDefinitions.AccessModifier acc
     )
 .
 
-Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false.>
+Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false.>
 =                           
                             (. 
                                 ProtoCore.AST.AssociativeAST.FunctionDefinitionNode f = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode(); 
@@ -438,7 +429,6 @@ Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node,
                                 f.Pattern = pattern; 
                                 f.ReturnType = returnType; 
                                 f.Access = access;
-                                f.Attributes = attrs;
                                 f.Signature = argumentSignature as ProtoCore.AST.AssociativeAST.ArgumentSignatureNode; 
                                 f.IsStatic = isStatic;
                                 ProtoCore.AST.AssociativeAST.AssociativeNode functionBody = null; 
@@ -530,7 +520,7 @@ Associative_ArgumentSignatureDefinition<out ProtoCore.AST.AssociativeAST.Associa
                                                 (. argumentSign = argumentSignature; .)
 .
 
-Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>    
+Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false.>    
 = 
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
@@ -677,15 +667,6 @@ Associative_PatternExpression<out ProtoCore.AST.AssociativeAST.AssociativeNode p
 Associative_Expression<out p>    (. pattern = p; .)
 .
 
-
-//------------------------------------------------------------------------
-Associative_BinaryOps<out Operator op>  (. op = Operator.none; .)
-= Associative_AddOp<out op>
-| Associative_MulOp<out op>
-| Associative_ComparisonOp< out op>
-| Associative_LogicalOp< out op>
-.
-
 //------------------------------------------------------------------------
 Associative_TypeRestriction<out ProtoCore.Type type>
 =
@@ -712,9 +693,6 @@ Associative_ClassReference<out ProtoCore.Type type>
  ident                           (. name = t.val; .)
                                  (. type.Name = name; .)
                                  (. type.UID = 0; .)
-                                 
-                                 // TODO Jun: Luke made changes to array representation, handle this
-                                 //(. type.IsArray = false; .)
 .
 
 
@@ -766,7 +744,6 @@ Associative_FunctionalMethodBodyMultiLine<out ProtoCore.AST.AssociativeAST.Assoc
                                         (. funcBody = functionBody; .)
 .
 
-//-----------------------------------------------------------------------------------------------------
 TypedIdentifierList<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =
 (
@@ -792,7 +769,6 @@ TypedIdentifierList<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
  ) 
  .   
 
-//-----------------------------------------------------------------------------------------------------
 Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =                           (. node = null; .)
 (
@@ -953,7 +929,6 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
 )
 .
 
-//------------------------------------------------------------------------
 Associative_NonAssignmentStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =
   SYNC                       (.
@@ -994,7 +969,6 @@ Associative_NonAssignmentStatement<out ProtoCore.AST.AssociativeAST.AssociativeN
 )
 .
 
-//------------------------------------------------------------------------
 Associative_FunctionCallStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =
   SYNC                       (.
@@ -1044,7 +1018,6 @@ Associative_FunctionCallStatement<out ProtoCore.AST.AssociativeAST.AssociativeNo
 .
 
 
-//------------------------------------------------------------------------
 Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode node> 
 =
  SYNC                       (. node = null; .)
@@ -1122,31 +1095,6 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
                                 .)    
                 )
                 |
-                (  
-                    // Not able to generate parser if remove these production.
-                    // Probably there are some conflicts.
-                    IF(IsModifierStack())   
-                        "{"
-                        
-                        Associative_Expression<out rightNode> 
-                        [
-                            "=>" ident  
-                        ]
-                        SYNC endline
-                        { 
-                            (. Operator op = Operator.add;  .)
-                            [
-                                Associative_BinaryOps<out op>
-                            ]
-                            Associative_Expression<out rightNode>
-                            [
-                                "=>" ident   
-                            ]
-                            SYNC endline
-                        }
-                        "}" 
-                )
-                |
                 (
                     Associative_Expression<out rightNode>
                                 (.
@@ -1189,7 +1137,6 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
 )
 .
 
-//------------------------------------------------------------------------
 Associative_Expression<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =               (. node = null; .)
     (
@@ -1267,7 +1214,6 @@ Associative_LogicalExpression<out ProtoCore.AST.AssociativeAST.AssociativeNode n
   }
 .
 
-//------------------------------------------------------------------------
 Associative_ComparisonOp<out Operator op>
                             (. op = Operator.none; .)
 = ">"                       (. op = Operator.gt; .)
@@ -1278,7 +1224,6 @@ Associative_ComparisonOp<out Operator op>
 | "!="                      (. op = Operator.nq; .)
 .
 
-//------------------------------------------------------------------------
 Associative_ComparisonExpression<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =
 Associative_RangeExpr<out node>
@@ -1293,7 +1238,6 @@ Associative_RangeExpr<out node>
 }
 .
 
-//------------------------------------------------------------------------
 Associative_RangeExpr<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =
     Associative_ArithmeticExpression<out node>
@@ -1323,7 +1267,6 @@ Associative_RangeExpr<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
     ]
 .
 
-//------------------------------------------------------------------------
 Associative_AddOp<out Operator op>
 =                   (. op = Operator.add; .)
   ( "+"
@@ -1346,7 +1289,6 @@ Associative_BitOp<out Operator op>
   | '|'             (. op = Operator.bitwiseor; .)
   ).
 
-/*------------------------------------------------------------------------*/
 Associative_LogicalOp<out Operator op>
 =                   (. op = Operator.and; .)
 ( "&&"
@@ -2076,29 +2018,3 @@ Associative_Arguments<.out List<ProtoCore.AST.AssociativeAST.AssociativeNode> no
                         
     ')'
 .  
-
-Associative_AttributeDeclaration<.out List<ProtoCore.AST.AssociativeAST.AssociativeNode> nodes.>
-                                                    (. nodes = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>(); .)
-=
-    '['												(. ProtoCore.AST.AssociativeAST.AssociativeNode node; .)
-        Associative_Attribute<out node>			(. if (node != null) nodes.Add(node); .)
-        {
-            WEAK ','								(. node = null; .)
-            Associative_Attribute<out node>		(. if (node != null) nodes.Add(node); .)
-        }
-    ']'
-.
-
-Associative_Attribute<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
-=                                   (. ProtoCore.AST.AssociativeAST.FunctionCallNode f = new ProtoCore.AST.AssociativeAST.FunctionCallNode(); .)
-    Associative_Ident<out node>     (. NodeUtils.SetNodeStartLocation(f, t); .)
-                                    (. List<ProtoCore.AST.AssociativeAST.AssociativeNode> args = null; .)
-    {
-        Associative_Arguments<out args> (. f.FormalArguments = args; .)
-    }
-                                        (.
-                                            f.Function = node;
-                                            NodeUtils.SetNodeEndLocation(f, t);
-                                            node = f; 
-                                        .)						
-.
