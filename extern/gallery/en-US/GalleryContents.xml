@@ -8,28 +8,28 @@
 	</GalleryContent>
 	<GalleryContent>
 		<Header>The Building Blocks of Dynamo</Header>
-		<Body>Nodes represent objects or functions that can be connected to form a set of instructions.&#10;&#10;Nodes can be placed anywhere on the canvas, but how they are connected together will determine the order of operations. Data flows between the nodes and is executed in the graph from left to right.</Body>
-		<ImagePath>02-BuildingBlock.png</ImagePath>
+		<Body>[1] Nodes represent objects or functions.&#10;[2] You can wire nodes together to form a set of instructions on how to process data and/or build geometry.&#10;[3] How nodes are wired together will determine the order of operations. Data flows between the nodes and is executed in the graph from left to right.  </Body>
+		<ImagePath>02-BuildingBlock-L.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Node Anatomy: Input, Output, Previews</Header>
-		<Body>Nodes have ports that you can hover over to get hints about inputs, outputs, and default values. To get more details about a node’s output, hover over the node to reveal its preview bubble. Preview bubbles can’t be typed into and can be kept expanded by clicking on the pin icon.</Body>
-		<ImagePath>03-Anatomy.png</ImagePath>
+		<Body>[1] Input Port: Hover over it to reveal the default value and what type of input it accepts&#10;[2] Output Port: Hover over it to reveal the type of output the node returns&#10;[3] Preview Bubble: To get more details about a node’s output, hover over the node for 1 second to reveal its preview bubble. Preview bubbles can’t be typed into, and you can keep the preview bubble open by clicking on the pin icon.  </Body>
+		<ImagePath>03-Anatomy-L.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Finding and Placing Nodes</Header>
-		<Body>The Dynamo Library is located on left side of the screen. From the library, you can search and browse for nodes.&#10;&#10;After you find a node in the library, just click on it or drag it over to the canvas to place it.</Body>
-		<ImagePath>04-Place.png</ImagePath>
+		<Body>The Dynamo Library is located on left side of the screen.&#10;[1] Search: Use the Library Search to find nodes&#10;[2] Browse: Discover nodes in the Library Categories&#10;[3] Add Nodes: After you find a node in the library, just click on it or drag it over to the canvas to place it. </Body>
+		<ImagePath>04-Place-L.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Wiring Nodes</Header>
-		<Body>You can “wire” up nodes by clicking on the output port of one node and connecting it to the inport port of another node.&#10;&#10;To release a wire, just click on one of its connected ports, then click anywhere on the empty canvas.</Body>
-		<ImagePath>05-Wiring.png</ImagePath>
+		<Body>You can “wire” up nodes to build a set of instructions.&#10;[1] Click on the output port of one node, then [2] Connect it to the input port of another.&#10;[3]Wires appear dashed when they are not connected. Click on an empty spot in the canvas to delete a wire.&#10;[4]Deleting Wires: Click on one of its ports. Then, click on an empty spot in the canvas.</Body>
+		<ImagePath>05-Wiring-L.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Graph View  vs. Background 3D Preview</Header>
-		<Body>In Dynamo, you will see 2 views simultaneously: the Graph View and the Background 3d Preview.&#10;&#10;You can switch between the views and independently control them by using the tools found in the upper-right corner of the canvas.</Body>
-		<ImagePath>06-View.png</ImagePath>
+		<Body>In Dynamo, you will see 2 views simultaneously: the Graph View and the Background 3d Preview.&#10;[1] Switch from graph view to the background 3d preview&#10;[2] Independently control the zoom of each view&#10;[3] Pan around each view</Body>
+		<ImagePath>06-View-L.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Packages</Header>
@@ -38,8 +38,8 @@
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Tips and Tricks</Header>
-		<Body>- Code Block Node: Double-click on the canvas to add a node that you can use to enter numbers, strings, and DesignScript, Dynamo’s scripting language.&#10;- Watch Node: Add a permanent view of a node’s output&#10;- Range Syntax: Easily make a list of numbers or letters&#10;- In-canvas Search: Right-click over the canvas to quickly bring up a search bar</Body>
-		<ImagePath>09-Tips.png</ImagePath>
+		<Body>[1] Code Block Node: Double-click on the canvas to add a node that you can use to enter numbers, strings, and DesignScript, Dynamo’s scripting language.&#10;[2] Watch nodes: Add a watch node to add a permanent view of a node’s output&#10;[3] Range Syntax: Easily make a list of numbers or letters&#10;[4] In-canvas Search: Right-click over the canvas to quickly bring up a search bar</Body>
+		<ImagePath>09-Tips-L.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Need More Help?</Header>
