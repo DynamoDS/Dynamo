@@ -10,7 +10,7 @@ namespace ProtoCore.AssociativeEngine
     public class Utils
     {
         /// <summary>
-        /// Gets the dirty graphnode of the given pc
+        /// Queries the dirty graphnode of the given pc
         /// </summary>
         /// <param name="pc"></param>
         /// <param name="classIndex"></param>
@@ -23,7 +23,7 @@ namespace ProtoCore.AssociativeEngine
         }
 
         /// <summary>
-        /// Gets the first dirty graphnode starting from the given pc
+        /// Queries the first dirty graphnode starting from the given pc
         /// </summary>
         /// <param name="pc"></param>
         /// <param name="classIndex"></param>

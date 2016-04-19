@@ -21,7 +21,7 @@ namespace Autodesk.DesignScript.Interfaces
         string[] IncludeDirectories { get; }
 
         /// <summary>
-        /// Gets application defined configuration value.
+        /// Queries application defined configuration value.
         /// </summary>
         /// <param name="config">Configuration name</param>
         /// <returns>Configuration value</returns>
@@ -130,7 +130,7 @@ namespace Autodesk.DesignScript.Interfaces
     internal interface IExecutionSession
     {
         /// <summary>
-        /// Gets the configuration object for this execution session.
+        /// Queries the configuration object for this execution session.
         /// </summary>
         IConfiguration Configuration { get; }
 

@@ -48,7 +48,7 @@ namespace ShapewaysClient
         }
 
         /// <summary>
-        /// Get Oauth request token to authorized with Shapeways service
+        /// Query Oauth request token to authorized with Shapeways service
         /// </summary>
         public void RequestToken()
         {

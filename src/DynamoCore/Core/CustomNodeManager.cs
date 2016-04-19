@@ -81,7 +81,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Gets custom node workspace by a specified custom node ID
+        /// Queries custom node workspace by a specified custom node ID
         /// </summary>
         /// <param name="customNodeId">Custom node ID of a requested workspace</param>
         /// <returns>Custom node workspace by a specified ID</returns>
@@ -223,7 +223,7 @@ namespace Dynamo.Core
         }
 
         /// <summary> 
-        ///     Get a function id from a guid assuming that the file is already loaded.
+        ///     Query a function id from a guid assuming that the file is already loaded.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -381,7 +381,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Get the function workspace from a guid
+        ///     Query the function workspace from a guid
         /// </summary>
         /// <param name="id">The unique id for the node.</param>
         /// <param name="isTestMode">
@@ -406,7 +406,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Gets the function workspace.
+        /// Queries the function workspace.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="isTestMode">if set to <c>true</c> [is test mode].</param>
@@ -421,7 +421,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Get the function definition from a guid.
+        ///     Query the function definition from a guid.
         /// </summary>
         /// <param name="id">Custom node identifier.</param>
         /// <param name="isTestMode">
@@ -445,7 +445,7 @@ namespace Dynamo.Core
         }
         
         /// <summary>
-        ///     Tells whether the custom node's unique identifier is inside of the manager (initialized or not)
+        ///     Indicates whether the custom node's unique identifier is inside of the manager (initialized or not)
         /// </summary>
         /// <param name="guid">The FunctionId</param>
         public bool Contains(Guid guid)
@@ -454,7 +454,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Tells whether the custom node's name is inside of the manager (initialized or not)
+        ///     Indicates whether the custom node's name is inside of the manager (initialized or not)
         /// </summary>
         /// <param name="name">The name of the custom node.</param>
         public bool Contains(string name)
@@ -464,7 +464,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Tells whether the custom node is initialized in the manager
+        ///     Indicates whether the custom node is initialized in the manager
         /// </summary>
         /// <param name="name">The name of the node</param>
         /// <returns>The name of the </returns>
@@ -475,7 +475,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Tells whether the custom node is initialized in the manager
+        ///     Indicates whether the custom node is initialized in the manager
         /// </summary>
         /// <param name="guid">Whether the definition is stored with the manager.</param>
         internal bool IsInitialized(Guid guid)
@@ -484,7 +484,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Get a guid from a specific path, internally this first calls GetDefinitionFromPath
+        ///     Query a guid from a specific path, internally this first calls GetDefinitionFromPath
         /// </summary>
         /// <param name="path">The path from which to get the guid</param>
         /// <param name="isTestMode">

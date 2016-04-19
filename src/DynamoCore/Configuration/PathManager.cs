@@ -381,7 +381,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Get the backup file path for a workspace
+        /// Query the backup file path for a workspace
         /// </summary>
         /// <param name="workspace"></param>
         /// <returns></returns>

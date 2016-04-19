@@ -38,7 +38,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Get all keys.
+        /// Query all keys.
         /// </summary>
         /// <param name="core"></param>
         /// <returns></returns>
@@ -58,7 +58,7 @@ namespace ProtoCore.DSASM
             }
         }
         /// <summary>
-        /// Get all values. 
+        /// Query all values. 
         /// </summary>
         public override IEnumerable<StackValue> Values
         {
@@ -184,7 +184,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Get a list of key-value pairs for an array.
+        /// Query a list of key-value pairs for an array.
         /// </summary>
         /// <param name="array"></param>
         /// <param name="runtimeCore"></param>

@@ -54,7 +54,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Get all nodes that in its input ports's scope. A node is in its 
+        /// Query all nodes that in its input ports' scope. A node is in its 
         /// scope if that node is one of its upstream nodes. 
         /// </summary>
         /// <param name="portIndex">Inport index</param>

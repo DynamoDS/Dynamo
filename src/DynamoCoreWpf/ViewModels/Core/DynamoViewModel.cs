@@ -173,7 +173,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Get the workspace view model whose workspace model is the model's current workspace
+        /// Query the workspace view model whose workspace model is the model's current workspace
         /// </summary>
         public WorkspaceViewModel CurrentSpaceViewModel
         {
@@ -1454,7 +1454,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Gets the selected nodes that are "input" nodes, and makes an 
+        /// Queries the selected nodes that are "input" nodes, and makes an 
         /// exception for CodeBlockNodes as these are marked false so they 
         /// do not expose a IsInput checkbox
         /// </summary>
