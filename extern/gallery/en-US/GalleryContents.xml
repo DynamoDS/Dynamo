@@ -2,34 +2,49 @@
 <GalleryContents xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<GalleryUiContents>
 	<GalleryContent>
-		<Header>Direct Manipulation</Header>
-		<Body>Sometimes numerical manipulation isn’t the right approach. Now you can manually push-and-pull Point geometry when navigating in the background 3D preview.</Body>
-		<ImagePath>Core_DirectManip.png</ImagePath>
+		<Header>Getting Started with Dynamo</Header>
+		<Body>Dynamo is a visual scripting program that will help you compose custom algoritms to process data and generate geometry. With Dynamo, you can generate code without having to know how to code.&#10;&#10;Learn about the basics of Dynamo on the next few pages.</Body>
+		<ImagePath>01-Welcome.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
-		<Header>Freeze Functionality</Header>
-		<Body>When you have long running portions of your graph, or don’t want to export data to other applications, or want to debug some logic, don’t unplug your nodes. Now you can suspend execution of specified nodes in the graph by using Freeze in the right-click contextual menu.</Body>
-		<ImagePath>Core_Freeze.png</ImagePath>
+		<Header>The Building Blocks of Dynamo</Header>
+		<Body>Nodes represent objects or functions that can be connected to form a set of instructions.&#10;&#10;Nodes can be placed anywhere on the canvas, but how they are connected together will determine the order of operations. Data flows between the nodes and is executed in the graph from left to right.</Body>
+		<ImagePath>02-BuildingBlock.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
-		<Header>Search Enhancements</Header>
-		<Body>Only look at the node libraries you want to with new filtering tools.  See more options at once by using a compact view, or get more information with the detail view.</Body>
-		<ImagePath>Core_Search.png</ImagePath>
+		<Header>Node Anatomy: Input, Output, Previews</Header>
+		<Body>Nodes have ports that you can hover over to get hints about inputs, outputs, and default values. To get more details about a node’s output, hover over the node to reveal its preview bubble. Preview bubbles can’t be typed into and can be kept expanded by clicking on the pin icon.</Body>
+		<ImagePath>03-Anatomy.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
-		<Header>Batch placement of Adaptive Components</Header>
-		<Body>Huge improvements to the speed and reliability of placing large numbers of adaptive components.</Body>
-		<ImagePath>Revit_AdaptiveComponent.png</ImagePath>
+		<Header>Finding and Placing Nodes</Header>
+		<Body>The Dynamo Library is located on left side of the screen. From the library, you can search and browse for nodes.&#10;&#10;After you find a node in the library, just click on it or drag it over to the canvas to place it.</Body>
+		<ImagePath>04-Place.png</ImagePath>
 	</GalleryContent>
-  <GalleryContent>
-    <Header>Topology Improvements</Header>
-    <Body>Find adjacent geometries by using Dynamo's brand new nodes. You will now be able determine which edges are connected to a vertex, which faces are connected to an edge, and if geometries have common topology.</Body>
-    <ImagePath>Geometry_Adjacency.png</ImagePath>
-  </GalleryContent>
 	<GalleryContent>
-		<Header>Miscellaneous Updates and Improvements</Header>
-		<Body>- Zoom Re-Center: Select a node, then zoom and center your orbit in the 3D preview&#10;- CTRL + Drag: Copy/Paste nodes in a familiar way&#10;- Add comments to custom node inputs and full default states for complex data types&#10;- More forgiving DesignScript Syntax: Users can now write instance methods as static methods</Body>
-		<ImagePath>Core_Misc.png</ImagePath>
+		<Header>Wiring Nodes</Header>
+		<Body>You can “wire” up nodes by clicking on the output port of one node and connecting it to the inport port of another node.&#10;&#10;To release a wire, just click on one of its connected ports, then click anywhere on the empty canvas.</Body>
+		<ImagePath>05-Wiring.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Graph View  vs. Background 3D Preview</Header>
+		<Body>In Dynamo, you will see 2 views simultaneously: the Graph View and the Background 3d Preview.&#10;&#10;You can switch between the views and independently control them by using the tools found in the upper-right corner of the canvas.</Body>
+		<ImagePath>06-View.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Packages</Header>
+		<Body>Can’t find a node that does what you want? Search user-generated collections of nodes, also known as pacakges, in the Package Manger. &#10;&#10;The Package Manger can be accessed from the top menu under "Packages".</Body>
+		<ImagePath>07-Packages.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Tips and Tricks</Header>
+		<Body>- Code Block Node: Double-click on the canvas to add a node that you can use to enter numbers, strings, and DesignScript, Dynamo’s scripting language.&#10;- Watch Node: Add a permanent view of a node’s output&#10;- Range Syntax: Easily make a list of numbers or letters&#10;- In-canvas Search: Right-click over the canvas to quickly bring up a search bar</Body>
+		<ImagePath>09-Tips.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Need More Help?</Header>
+		<Body>There are more resources to help you learn more about Dynamo.&#10;- dynamobim.com: Dynamo's official website&#10;- dynamoprimer.com: Dynamo's official Getting Started Guide&#10;- Sample Files: Check out examples in the top menu under "Help > Samples"</Body>
+		<ImagePath>10-Help.png</ImagePath>
 	</GalleryContent>
 	</GalleryUiContents>
 </GalleryContents>
