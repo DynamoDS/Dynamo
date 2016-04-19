@@ -878,28 +878,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignore_DisposeWithinDSClass")]
-        public void TestReferenceCount66_DID1467277()
-        {
-            string code = @"class A{    x;    static s_dispose = 0;    constructor A(i)    {        x = i;    }    def _Dispose()    {        s_dispose = s_dispose + 1;        return = null;    }}class B{    def CreateA(i)    {        return = DisposeTestClassA.DisposeTestClassA(i);    }}b = DisposeTestClassB.DisposeTestClassB();t = A.s_dispose;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            // SSA'd transforms will not GC the temps until end of block
-            // However, they must be GC's after every line when in debug step over
-            thisTest.Verify("t", 0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        public void TestReferenceCount67_DID1467277_02()
-        {
-            string code = @"class A{    x;    static s_dispose = 0;    constructor A(i)    {        x = i;    }    def _Dispose()    {        s_dispose = s_dispose + 1;        return = null;    }}t = A.s_dispose;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            // SSA'd transforms will not GC the temps until end of block
-            // However, they must be GC's after every line when in debug setp over
-            thisTest.Verify("t", 0);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount68_TemporaryArrayIndexing01()
         {
