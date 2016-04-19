@@ -40,7 +40,7 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ### 1.0.0 ###
 
-- API Stabilization:  1.0.0 is a commitment to stable code that allows for smoother and more reliable movements from one version to another.  To more clearly express this, we have been moving to “sematic versioning” to illustrate the nature of changes in each release. We will be using the fairly standard version naming with an x.y.z system, where x incrementing represents breaks to the API (requiring developer refactors), y indicates changes that are still backwards compatible, and z are smaller bug fixes.  Package creators and maintainers are encouraged to assess changes to the previous code, which can be found here  
+- API Stabilization:  1.0.0 is a commitment to stable code that allows for smoother and more reliable movements from one version to another.  To more clearly express this, we have been moving to “semantic versioning” to illustrate the nature of changes in each release. We will be using the fairly standard version naming with an x.y.z system, where x incrementing represents breaks to the API (requiring developer refactors), y indicates changes that are still backwards compatible, and z are smaller bug fixes.  Package creators and maintainers are encouraged to assess changes to the previous code, which can be found here  
 
   https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Node-Changes  
 
