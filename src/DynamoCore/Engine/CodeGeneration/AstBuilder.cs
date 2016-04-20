@@ -242,7 +242,7 @@ namespace Dynamo.Engine.CodeGeneration
             var nodeFlags = nodes.ToDictionary(node => node, _ => MarkFlag.NoMark);
             var sortedNodes = new Queue<NodeModel>();
 
-            // Query roots of these nodes
+            // Returns roots of these nodes
             var roots = nodes.Where(n => !n.OutputNodes.Any());
             foreach (NodeModel candidate in roots)
                 BfsTraverse(candidate, nodeFlags, sortedNodes);
