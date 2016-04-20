@@ -81,7 +81,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Queries custom node workspace by a specified custom node ID
+        /// Returns custom node workspace by a specified custom node ID
         /// </summary>
         /// <param name="customNodeId">Custom node ID of a requested workspace</param>
         /// <returns>Custom node workspace by a specified ID</returns>
@@ -223,7 +223,7 @@ namespace Dynamo.Core
         }
 
         /// <summary> 
-        ///     Query a function id from a guid assuming that the file is already loaded.
+        ///     Returns a function id from a guid assuming that the file is already loaded.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -381,7 +381,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Query the function workspace from a guid
+        ///     Returns the function workspace from a guid
         /// </summary>
         /// <param name="id">The unique id for the node.</param>
         /// <param name="isTestMode">
@@ -406,7 +406,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Queries the function workspace.
+        /// Returns the function workspace.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="isTestMode">if set to <c>true</c> [is test mode].</param>
@@ -421,7 +421,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Query the function definition from a guid.
+        ///     Returns the function definition from a guid.
         /// </summary>
         /// <param name="id">Custom node identifier.</param>
         /// <param name="isTestMode">
@@ -484,7 +484,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Query a guid from a specific path, internally this first calls GetDefinitionFromPath
+        ///     Returns a guid from a specific path, internally this first calls GetDefinitionFromPath
         /// </summary>
         /// <param name="path">The path from which to get the guid</param>
         /// <param name="isTestMode">

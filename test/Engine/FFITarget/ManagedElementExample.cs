@@ -28,7 +28,7 @@ namespace FFITarget
         }
 
         /// <summary>
-        /// Query the LifecycleManager for the specific type
+        /// Returns the LifecycleManager for the specific type
         /// WARNING: This is only a singleton for a given TypeArg
         /// </summary>
         /// <returns></returns>
@@ -121,7 +121,7 @@ namespace FFITarget
         }
 
         /// <summary>
-        /// Query the number of wrappers that are registered
+        /// Returns the number of wrappers that are registered
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

@@ -542,7 +542,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Query or set the X position of the workspace.
+        ///     Returns or set the X position of the workspace.
         /// </summary>
         public double X
         {
@@ -555,7 +555,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Query or set the Y position of the workspace
+        ///     Returns or set the Y position of the workspace
         /// </summary>
         public double Y
         {
@@ -578,7 +578,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Query the height of the workspace's bounds.
+        ///     Returns the height of the workspace's bounds.
         /// </summary>
         public double Height
         {
@@ -591,7 +591,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Query the width of the workspace's bounds.
+        ///     Returns the width of the workspace's bounds.
         /// </summary>
         public double Width
         {
@@ -604,7 +604,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Query the bounds of the workspace.
+        ///     Returns the bounds of the workspace.
         /// </summary>
         public Rect2D Rect
         {
@@ -643,7 +643,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Query the current UndoRedoRecorder that is associated with the current 
+        /// Returns the current UndoRedoRecorder that is associated with the current 
         /// WorkspaceModel. Note that external parties should not have the needs 
         /// to access the recorder directly, so this property is exposed just as 
         /// a "temporary solution". Before using this property, consider using 
@@ -770,7 +770,7 @@ namespace Dynamo.Graph.Workspaces
         #region public methods
 
         /// <summary>
-        /// Queries appropriate name of workspace for sharing.
+        /// Returns appropriate name of workspace for sharing.
         /// </summary>
         public virtual string GetSharedName()
         {
@@ -1464,7 +1464,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Query the model from Workspace
+        /// Returns the model from Workspace
         /// </summary>
         /// <param name="modelGuid">The model unique identifier.</param>
         /// <returns></returns>
