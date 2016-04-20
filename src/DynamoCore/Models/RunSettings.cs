@@ -42,7 +42,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// The current Run Type. E.g. Manual, automatic.
+        /// Returns or sets the current Run Type. E.g. Manual, Automatic, Periodic
         /// </summary>
         public RunType RunType
         {

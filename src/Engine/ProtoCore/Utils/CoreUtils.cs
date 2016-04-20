@@ -479,7 +479,7 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
-        /// Queries the has id of a function signature given the name and argument types
+        /// Returns the has id of a function signature given the name and argument types
         /// </summary>
         /// <param name="functionDef"></param>
         /// <returns></returns>
@@ -732,7 +732,7 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
-        /// Query the Codeblock given the blockId
+        /// Returns the Codeblock given the blockId
         /// </summary>
         /// <param name="blockList"></param>
         /// <param name="blockId"></param>

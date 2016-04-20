@@ -445,7 +445,7 @@ namespace Dynamo.Core
         }
         
         /// <summary>
-        ///     Indicates whether the custom node's unique identifier is inside of the manager (initialized or not)
+        ///     Returns true if the custom node's unique identifier is inside of the manager (initialized or not)
         /// </summary>
         /// <param name="guid">The FunctionId</param>
         public bool Contains(Guid guid)
@@ -454,7 +454,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Indicates whether the custom node's name is inside of the manager (initialized or not)
+        ///     Returns true if the custom node's name is inside the manager (initialized or not)
         /// </summary>
         /// <param name="name">The name of the custom node.</param>
         public bool Contains(string name)

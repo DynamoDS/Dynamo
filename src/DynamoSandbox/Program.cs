@@ -58,7 +58,7 @@ namespace DynamoSandbox
         }
 
         /// <summary>
-        /// Queries the path of Dynamo Core installation.
+        /// Returns the path of Dynamo Core installation.
         /// </summary>
         public static string DynamoCorePath
         {

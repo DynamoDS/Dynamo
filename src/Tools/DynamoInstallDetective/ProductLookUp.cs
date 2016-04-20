@@ -40,21 +40,21 @@ namespace DynamoInstallDetective
     public interface IProductLookUp
     {
         /// <summary>
-        /// Queries installed product from the installation path
+        /// Returns installed product from the installation path
         /// </summary>
         /// <param name="path">Installation path</param>
         /// <returns>Installed product</returns>
         IInstalledProduct GetProductFromInstallPath(string path);
 
         /// <summary>
-        /// Queries installed product from it's name
+        /// Returns installed product from it's name
         /// </summary>
         /// <param name="name">Product Name for lookup</param>
         /// <returns>Installed product</returns>
         IInstalledProduct GetProductFromProductName(string name);
 
         /// <summary>
-        /// Queries installed product from it's product id
+        /// Returns installed product from it's product id
         /// </summary>
         /// <param name="productCode">Product guid string such as 
         /// {6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B}</param>
@@ -82,7 +82,7 @@ namespace DynamoInstallDetective
         string GetCoreFilePathFromInstallation(string installPath);
 
         /// <summary>
-        /// Queries file version info from the given path.
+        /// Returns file version info from the given path.
         /// </summary>
         /// <param name="filePath">File path</param>
         /// <returns>Version info as Tuple</returns>
@@ -96,18 +96,18 @@ namespace DynamoInstallDetective
     public interface IProductCollection
     {
         /// <summary>
-        /// Queries list of installed products
+        /// Returns list of installed products
         /// </summary>
         IEnumerable<IInstalledProduct> Products { get; }
 
         /// <summary>
-        /// Queries latest product from installation
+        /// Returns latest product from installation
         /// </summary>
         /// <returns>Installed product</returns>
         IInstalledProduct GetLatestProduct();
 
         /// <summary>
-        /// Queries all installed product on the system using the given lookUp 
+        /// Returns all installed product on the system using the given lookUp 
         /// and initializes itself.
         /// </summary>
         /// <param name="lookUp">LookUp interface</param>

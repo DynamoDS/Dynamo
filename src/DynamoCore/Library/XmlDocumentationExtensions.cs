@@ -21,7 +21,7 @@ namespace Dynamo.Engine
         #region Public methods
 
         /// <summary>
-        /// Query a description of a parameter from the its documentation xml,
+        /// Returns a description of a parameter from the its documentation xml,
         /// using the corresponding FunctionDescriptor.
         /// </summary>
         /// <param name="parameter">The TypedParameter object corresponding to the parameter.</param>
@@ -34,7 +34,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Query a summary of a method from its documentation xml, 
+        /// Returns a summary of a method from its documentation xml, 
         /// using the corresponding FunctionDescriptor object.
         /// </summary>
         /// <param name="member">The FunctionDescriptor object corresponding to the method.</param>
@@ -46,7 +46,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Query a collection of search tags for a method from its documentation xml,
+        /// Returns a collection of search tags for a method from its documentation xml,
         /// using the corresponding FunctionDescriptor object.
         /// </summary>
         /// <param name="member">The FunctionDescriptor object corresponding to the method.</param>
@@ -61,7 +61,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Query a collection of search tag weights for a method from its documentation xml,
+        /// Returns a collection of search tag weights for a method from its documentation xml,
         /// using the corresponding FunctionDescriptor object.
         /// </summary>
         /// <param name="member">The FunctionDescriptor object corresponding to the method.</param>
@@ -83,7 +83,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Query a collection of return descriptions for a method from its documentation xml,
+        /// Returns a collection of return descriptions for a method from its documentation xml,
         /// using the corresponding FunctionDescriptor object.
         /// </summary>
         /// <param name="member">The FunctionDescriptor object corresponding to the method.</param>

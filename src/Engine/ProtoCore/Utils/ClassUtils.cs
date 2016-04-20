@@ -9,7 +9,7 @@ namespace ProtoCore.Utils
     public static class ClassUtils
     {
         /// <summary>
-        /// Query the list of classes that this can be upcast to
+        /// Returns the list of classes that this can be upcast to
         /// It includes the class itself
         /// </summary>
         /// <param name="cn"></param>
@@ -39,7 +39,7 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
-        /// Query the number of upcasts that need to be performed to turn a class into another class in its upcast chain
+        /// Returns the number of upcasts that need to be performed to turn a class into another class in its upcast chain
         /// </summary>
         /// <param name="from"></param>
         /// <param name="to"></param>

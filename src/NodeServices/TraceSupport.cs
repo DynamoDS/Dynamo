@@ -19,7 +19,7 @@ namespace DynamoServices
     public static class TraceUtils
     {
         /// <summary>
-        /// Query the data that is bound to a particular key
+        /// Returns the data that is bound to a particular key
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>

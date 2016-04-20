@@ -331,7 +331,7 @@ namespace Dynamo.Manipulation
         }
 
         /// <summary>
-        /// Queries drawables to render this Gizmo
+        /// Returns drawables to render this Gizmo
         /// </summary>
         /// <returns>List of render package</returns>
         public override IEnumerable<IRenderPackage> GetDrawables()

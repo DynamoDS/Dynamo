@@ -13,7 +13,7 @@ namespace ProtoFFI
     interface IContextData
     {
         /// <summary>
-        /// Queries name of the data. This context data can be identified with
+        /// Returns name of the data. This context data can be identified with
         /// name in designscript world.
         /// </summary>
         string Name { get; }
@@ -29,7 +29,7 @@ namespace ProtoFFI
         event EventHandler DataChanged;
 
         /// <summary>
-        /// Queries the context provider for interpretation of data in designscript
+        /// Returns the context provider for interpretation of data in designscript
         /// world.
         /// </summary>
         IContextDataProvider ContextProvider { get; }
@@ -44,7 +44,7 @@ namespace ProtoFFI
     interface IContextDataProvider
     {
         /// <summary>
-        /// Queries the name of this data provider to identify it uniquely.
+        /// Returns the name of this data provider to identify it uniquely.
         /// </summary>
         string Name { get; }
 

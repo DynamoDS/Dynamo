@@ -542,7 +542,7 @@ namespace ProtoCore.Lang.Replication
         }
 
         /// <summary>
-        /// Query the maximum depth to which an element can be reduced
+        /// Returns the maximum depth to which an element can be reduced
         /// This will include cases where only partial reduction can be performed on jagged arrays
         /// </summary>
         /// <param name="sv"></param>
