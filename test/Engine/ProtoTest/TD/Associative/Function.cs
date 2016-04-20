@@ -45,7 +45,10 @@ sum;
 d;
 [Associative]
 {
-	def singleLine : int(a:int, b:int) = 10;
+	def singleLine : int(a:int, b:int) 
+    {
+        return = 10;
+    }
 	d = singleLine(1,3);
 	
 }";
