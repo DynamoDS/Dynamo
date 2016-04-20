@@ -73,7 +73,7 @@ namespace Dynamo.Interfaces
 
         /// <summary>
         /// The directory in which the host application such as DynamoRevit or 
-        /// DynamoStudio to be found.
+        /// DynamoStudio could be found.
         /// </summary>
         string HostApplicationDirectory { get; }
 
@@ -98,7 +98,7 @@ namespace Dynamo.Interfaces
         /// list is returned, and that the first entry represents the default 
         /// custom node directory. Custom nodes created are stored in the
         /// default directory, which is specific to the current user. Changes to
-        /// custom nodes may or may not be saved to their current location depeding
+        /// custom nodes may or may not be saved to their current location depending
         /// on write access.
         /// </summary>
         IEnumerable<string> DefinitionDirectories { get; }
@@ -159,7 +159,7 @@ namespace Dynamo.Interfaces
 
         /// <summary>
         /// Full path to the GalleryContent xml file. The file is located in
-        /// the AppData/Dynamo/version/locale/
+        /// the AppData/Dynamo/[version]/gallery/
         /// </summary>
         string GalleryFilePath { get; }
 
@@ -188,7 +188,7 @@ namespace Dynamo.Interfaces
         /// resolution take place.
         /// </summary>
         /// <param name="path">The full path to be considered when PathManager
-        /// attempt to resolve a file path. If this argument does not represent 
+        /// attempts to resolve a file path. If this argument does not represent 
         /// a valid directory path, this method throws an exception.</param>
         void AddResolutionPath(string path);
 

@@ -958,7 +958,7 @@ namespace Dynamo.Tests
             var nodes = CreateBaseNodes().ToArray();
             var tasksToSchedule = new List<AsyncTask>()
             {
-                // Query value for a given named variable.
+                // Returns value for a given named variable.
                 MakeQueryMirrorDataAsyncTask("variableOne"), //0
 
                 // This older task is kept because it wasn't re-scheduled.
@@ -971,7 +971,7 @@ namespace Dynamo.Tests
                 // This higher priority task moves to the front.
                 MakeUpdateGraphAsyncTask(), //4
 
-                // Query value for a given named variable.
+                // Returns value for a given named variable.
                 MakeQueryMirrorDataAsyncTask("variableOne"), //5
 
                 // These newer tasks will be kept.

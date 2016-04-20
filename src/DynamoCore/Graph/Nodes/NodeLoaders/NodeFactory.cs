@@ -297,7 +297,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
         }
 
         /// <summary>
-        ///     Given a type name, attempts to get the type associated with that name.
+        ///     Given a type name, attempts to query the type associated with that name.
         /// </summary>
         /// <param name="fullyQualifiedName"></param>
         /// <param name="type"></param>

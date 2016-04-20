@@ -1686,7 +1686,7 @@ namespace ProtoCore.AST.AssociativeAST
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
 
         /// <summary>
-        /// Gets/Sets description for the method.
+        /// Returns/Sets description for the method.
         /// </summary>
         public string Description { get; set; }
 
