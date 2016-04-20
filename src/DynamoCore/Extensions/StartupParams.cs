@@ -59,7 +59,7 @@ namespace Dynamo.Extensions
         /// <param name="pathManager"><see cref="IPathManager"/> for DynamoModel</param>
         /// <param name="libraryLoader"><see cref="ILibraryLoader"/> for DynamoModel</param>
         /// <param name="customNodeManager"><see cref="ICustomNodeManager"/> for DynamoModel</param>
-        /// <param name="dynamoVersion">Version of Dynamo</param>
+        /// <param name="dynamoVersion"><see cref="Version"/> for DynamoModel</param>
         /// <param name="preferences"><see cref="IPreferences"/> for DynamoModel</param>
         public StartupParams(IAuthProvider provider, IPathManager pathManager,
             ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager,

@@ -284,18 +284,18 @@ namespace Dynamo.Search.SearchElements
     }
 
     /// <summary>
-    /// This class is being used when drag-drop search element on canvas to create a node.
+    /// This class returns <see cref="NodeSearchElement"/> which is used 
+    /// for creating a node, when the element is drag and dropped.
     /// </summary>
     public class DragDropNodeSearchElementInfo
     {
         /// <summary>
-        /// SearchElement which is being dragged
+        /// <see cref="NodeSearchElement"/> to drag and drop.
         /// </summary>
         public NodeSearchElement SearchElement { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DragDropNodeSearchElementInfo"/>
-        /// with specified element to drag
+        /// Initializes a new instance of the <see cref="DragDropNodeSearchElementInfo"/> class.
         /// </summary>
         /// <param name="searchElement">Element to drag on the canvas</param>
         public DragDropNodeSearchElementInfo(NodeSearchElement searchElement)

@@ -22,7 +22,7 @@ namespace Dynamo.Updates
     public delegate void UpdateDownloadedEventHandler(object sender, UpdateDownloadedEventArgs e);
 	
     /// <summary>
-    /// A delegate is used to handle shutdown request
+    /// A delegate used to handle shutdown request
     /// </summary>
     public delegate void ShutdownRequestedEventHandler(IUpdateManager updateManager);
 
@@ -260,8 +260,7 @@ namespace Dynamo.Updates
     }
 
     /// <summary>
-    /// A class to describe available
-    /// application update info.
+    /// This class returns <see cref="BinaryVersion"/> of Dynamo
     /// </summary>
     public class AppVersionInfo : IAppVersionInfo
     {

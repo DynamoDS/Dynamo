@@ -10,7 +10,7 @@ using Dynamo.Utilities;
 namespace Dynamo.Graph.Annotations
 {
     /// <summary>
-    /// This class represents a model of Dynamo elements' group
+    /// This class contains methods and properties used for creating groups in Dynamo.
     /// </summary>
     public class AnnotationModel : ModelBase
     {

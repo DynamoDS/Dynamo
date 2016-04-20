@@ -62,7 +62,7 @@ namespace Dynamo.Logging
     }
 
     /// <summary>
-    /// Contains logging functionality.
+    /// This class contains methods and properties used for logging in Dynamo,
     /// </summary>
     public class DynamoLogger: NotificationObject, ILogger, IDisposable
     {

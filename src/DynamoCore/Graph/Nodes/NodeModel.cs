@@ -2113,7 +2113,7 @@ namespace Dynamo.Graph.Nodes
     }
 
     /// <summary>
-    /// Enumeration of possible Node's states
+    /// Represents nodes states.
     /// </summary>
     public enum ElementState
     {

@@ -1,7 +1,7 @@
 ﻿namespace Dynamo.Updates
 {
     /// <summary>
-    /// This class represents binary current version of the product.
+    /// This class represents current version of the product.
     /// </summary>
     public class BinaryVersion
     {

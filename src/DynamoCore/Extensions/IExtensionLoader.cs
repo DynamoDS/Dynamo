@@ -11,12 +11,12 @@ namespace Dynamo.Extensions
     public interface IExtensionLoader
     {
         /// <summary>
-        /// Loads assembly by passed extension path and return it as IExtension
+        /// Extension method for loading assembly from the path. Returns <see cref="IExtension"/>.
         /// </summary>
         IExtension Load(string extensionPath);
 
         /// <summary>
-        /// Returns an enum of IExtension specified by passed extension path
+        /// Extension method for loading assembly from a directory. Returns <see cref="IExtension"/>.
         /// </summary>
         IEnumerable<IExtension> LoadDirectory(string extensionsPath);
     }

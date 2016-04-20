@@ -3,7 +3,7 @@
 namespace Dynamo.Library
 {
     /// <summary>
-    /// An interface which provides functionality for loading node's library
+    /// Exposes (use cref) LoadNodeLibrary method. Specify the usage of LoadNodeLibrary
     /// </summary>
     public interface ILibraryLoader
     {
