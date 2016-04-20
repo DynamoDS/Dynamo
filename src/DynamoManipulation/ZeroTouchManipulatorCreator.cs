@@ -28,10 +28,6 @@ namespace Dynamo.Manipulation
                     new INodeManipulatorFactory[] { new MousePointManipulatorFactory() }
                 },
                 {
-                    "Autodesk.DesignScript.Geometry.Point.ByCartesianCoordinates@Autodesk.DesignScript.Geometry.CoordinateSystem,double,double,double",
-                    new INodeManipulatorFactory[] { new MousePointManipulatorFactory() }
-                },
-                {
                     "Autodesk.DesignScript.Geometry.Curve.PointAtParameter@double",
                     new INodeManipulatorFactory[] { new PointOnCurveManipulatorFactory() }
                 }
