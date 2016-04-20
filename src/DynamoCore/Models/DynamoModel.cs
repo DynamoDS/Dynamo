@@ -48,8 +48,15 @@ using Dynamo.Events;
 
 namespace Dynamo.Models
 {
+    /// <summary>
+    /// This class creates an interface for Engine controller. 
+    /// </summary>
     public interface IEngineControllerManager
     {
+        /// <summary>
+        /// A controller to coordinate the interactions between some DesignScript
+        /// sub components like library managment, live runner and so on.
+        /// </summary>
         EngineController EngineController { get; }
     }
 
@@ -507,7 +514,10 @@ namespace Dynamo.Models
 
                 try
                 {
-                    migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
+                    var dynamoLookup = config.UpdateManager != null && config.UpdateManager.Configuration != null 
+                        ? config.UpdateManager.Configuration.DynamoLookUp : null;
+
+                    migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, dynamoLookup);
                 }
                 catch (Exception e)
                 {
@@ -560,8 +570,7 @@ namespace Dynamo.Models
             Loader.MessageLogged += LogMessage;
 
             // Create a core which is used for parsing code and loading libraries
-            var libraryCore =
-                new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
+            var libraryCore = new ProtoCore.Core(new Options());
 
             libraryCore.Compilers.Add(Language.Associative, new Compiler(libraryCore));
             libraryCore.Compilers.Add(Language.Imperative, new ProtoImperative.Compiler(libraryCore));

@@ -24,8 +24,7 @@ namespace ProtoTest.ProtoAST
             astList.Add(assign);
             // Verify the results
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Int64)o.Payload == 10);
+            thisTest.Verify("a", 10);
         }
 
         [Test]
@@ -44,8 +43,7 @@ namespace ProtoTest.ProtoAST
 
             // Verify the results
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Int64)o.Payload == 30);
+            thisTest.Verify("a", 30);
         }
 
         [Test]
@@ -90,14 +88,10 @@ namespace ProtoTest.ProtoAST
             astList.Add(assign4);
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
             //a = 2800, c = 2600, d = b = 20
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Int64)o.Payload == 2800);
-            o = mirror.GetValue("c");
-            Assert.IsTrue((Int64)o.Payload == 2600);
-            Obj p = mirror.GetValue("b");
-            Assert.IsTrue((Int64)p.Payload == 20);
-            o = mirror.GetValue("d");
-            Assert.IsTrue((Int64)o.Payload == 20);
+            thisTest.Verify("a", 2800);
+            thisTest.Verify("c", 2600);
+            thisTest.Verify("b", 20);
+            thisTest.Verify("d", 20);
         }
 
         [Test]
@@ -152,10 +146,8 @@ namespace ProtoTest.ProtoAST
             astList.Add(assignment2);
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
             //a = 1800, c = a = 1800
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Int64)o.Payload == 1800);
-            o = mirror.GetValue("c");
-            Assert.IsTrue((Int64)o.Payload == 1800);
+            thisTest.Verify("a", 1800);
+            thisTest.Verify("c", 1800);
         }
 
         [Test]
@@ -200,8 +192,7 @@ namespace ProtoTest.ProtoAST
             astList.Add(assignment);
             /*a = 300, b = 30, c= 60 */
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Int64)o.Payload == 300);
+            thisTest.Verify("a", 300);
         }
 
         #region Array Index
@@ -229,14 +220,7 @@ namespace ProtoTest.ProtoAST
 
             // Verify the results
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("a");
-            Console.WriteLine(o.Payload);
-
-            // Expected: a = {1, 2, 3, 0};
-            int[] expected = { 1, 2, 3, 0 };
-            ProtoCore.DSASM.Mirror.DsasmArray result = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
-            for (int i = 0; i < expected.Length; i++)
-                Assert.AreEqual(expected[i], Convert.ToInt32(result.members[i].Payload));
+            thisTest.Verify("a", new [] { 1, 2, 3, 0});
         }
 
         [Test]
@@ -270,15 +254,7 @@ namespace ProtoTest.ProtoAST
 
             // Verify the results
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("a");
-            Console.WriteLine(o.Payload);
-
-            // expected: a = {1, 2, 2, 4};
-            int[] expected = { 1, 2, 2, 4 };
-            ProtoCore.DSASM.Mirror.DsasmArray result = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
-
-            for (int i = 0; i < expected.Length; i++)
-                Assert.AreEqual(expected[i], Convert.ToInt32(result.members[i].Payload));
+            thisTest.Verify("a", new [] { 1, 2, 2, 4});
         }
 
         [Test]
@@ -316,15 +292,7 @@ namespace ProtoTest.ProtoAST
             astList.Add(nodeALHSAssignment);
 
             // Verify the results
-            ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("a");
-            Console.WriteLine(o.Payload);
-
-            // expected: a = { 0, 2, 3, 4 };
-            int[] expected = { 0, 2, 3, 4 };
-            ProtoCore.DSASM.Mirror.DsasmArray result = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
-            for (int i = 0; i < expected.Length; i++)
-                Assert.AreEqual(expected[i], Convert.ToInt32(result.members[i].Payload));
+            thisTest.RunASTSource(astList);
         }
 
         [Test]
@@ -391,14 +359,7 @@ namespace ProtoTest.ProtoAST
 
             // Verify the results
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("a");
-            Console.WriteLine(o.Payload);
-
-            // expected: a = { 1, 2, -1, 4 };
-            int[] expected = { 1, 2, -1, 4 };
-            ProtoCore.DSASM.Mirror.DsasmArray result = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
-            for (int i = 0; i < expected.Length; i++)
-                Assert.AreEqual(expected[i], Convert.ToInt32(result.members[i].Payload));
+            thisTest.Verify("a", new [] { 1, 2, -1, 4});
         }
 
         [Test]
@@ -449,27 +410,7 @@ namespace ProtoTest.ProtoAST
 
             // Verify the results
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("a");
-            Console.WriteLine(o.Payload);
-
-            int[] output1 = { 0, 1, 2 };
-            int[] output2 = { 3, 4, 5 };
-
-            // Result should be = { { 0, 1, 2 }, { 3, 4, 5 } };
-            ProtoCore.DSASM.Mirror.DsasmArray result = o.Payload as ProtoCore.DSASM.Mirror.DsasmArray;
-            Assert.IsNotNull( result );
-
-            // First row of array = { 0, 1, 2 }
-            ProtoCore.DSASM.Mirror.DsasmArray array1 = result.members[0].Payload as ProtoCore.DSASM.Mirror.DsasmArray;
-            Assert.IsNotNull( array1 );
-            for (int i = 0; i < output1.Length; i++)
-                Assert.AreEqual(output1[i], Convert.ToInt32(array1.members[i].Payload));
-
-            // Second row of array = { 3, 4, 5 }
-            ProtoCore.DSASM.Mirror.DsasmArray array2 = (ProtoCore.DSASM.Mirror.DsasmArray)result.members[1].Payload;
-            Assert.IsNotNull( array2 );
-            for (int i = 0; i < output2.Length; i++)
-                Assert.AreEqual(output2[i], Convert.ToInt32(array2.members[i].Payload));
+            thisTest.Verify("a", new [] { new [] { 0, 1, 2}, new [] { 3, 4, 5}});
         }
 
         [Test]
@@ -496,10 +437,7 @@ namespace ProtoTest.ProtoAST
 
             // Verify the results
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("b");
-
-            // Expected: b = 3;
-            Assert.AreEqual(3, Convert.ToInt32(o.Payload));
+            thisTest.Verify("b", 3);
         }
 
         [Test]
@@ -532,10 +470,7 @@ namespace ProtoTest.ProtoAST
 
             // Verify the results
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("c");
-
-            // Expected: c = 4;
-            Assert.AreEqual(4, Convert.ToInt32(o.Payload));
+            thisTest.Verify("c", 4);
         }
 
         [Test]
@@ -573,10 +508,7 @@ namespace ProtoTest.ProtoAST
 
             // Verify the results
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("c");
-
-            // Expected: c = 3
-            Assert.AreEqual(3, Convert.ToInt32(o.Payload));
+            thisTest.Verify("c", 3);
         }
 
         [Test]
@@ -643,11 +575,7 @@ namespace ProtoTest.ProtoAST
 
             // Verify the results
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("c");
-            Console.WriteLine(o.Payload);
-
-            // expected: c = 2
-            Assert.AreEqual(2, Convert.ToInt32(o.Payload));
+            thisTest.Verify("c", 2);
         }
 
         [Test]
@@ -698,10 +626,7 @@ namespace ProtoTest.ProtoAST
 
             // Verify the results
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("c");
-
-            // expected : c = 4
-            Assert.AreEqual(4, Convert.ToInt32(o.Payload));
+            thisTest.Verify("c", 4);
         }
 
         private ProtoCore.AST.AssociativeAST.BinaryExpressionNode CreateDeclareArrayNode(string name, int[] intList)
@@ -789,9 +714,7 @@ namespace ProtoTest.ProtoAST
 
 
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("x");
-            Assert.IsTrue((Int64)o.Payload == 20);
-
+            thisTest.Verify("x", 20);
         }
 
         [Test]
@@ -878,9 +801,7 @@ namespace ProtoTest.ProtoAST
 
 
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("x");
-            Assert.IsTrue((Int64)o.Payload == 11);
-
+            thisTest.Verify("x", 11);
         }
 
         [Test]
@@ -975,9 +896,7 @@ namespace ProtoTest.ProtoAST
 
 
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("x");
-            Assert.IsTrue((Int64)o.Payload == 5);
-
+            thisTest.Verify("x", 5);
         }
 
         [Test]
@@ -1059,7 +978,7 @@ namespace ProtoTest.ProtoAST
 
             // Execute the AST
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 10);
+            thisTest.Verify("a", 10);
         }
 
         [Test]
@@ -1170,7 +1089,7 @@ namespace ProtoTest.ProtoAST
 
             // Execute the AST
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 20);
+            thisTest.Verify("a", 20);
         }
 
         [Test]
@@ -1188,8 +1107,7 @@ namespace ProtoTest.ProtoAST
             string code = codegenDS.GenerateCode();
             // Verify the results
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Int64)o.Payload == 10);
+            thisTest.Verify("a", 10);
         }
 
         [Test]
@@ -1210,8 +1128,7 @@ namespace ProtoTest.ProtoAST
             string code = codegenDS.GenerateCode();
             // Verify the results
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Int64)o.Payload == 30);
+            thisTest.Verify("a", 30);
         }
 
         [Test]
@@ -1259,14 +1176,10 @@ namespace ProtoTest.ProtoAST
             string code = codegen.GenerateCode();
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //a = 2800, c = 2600, d = b = 20
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Int64)o.Payload == 2800);
-            o = mirror.GetValue("c");
-            Assert.IsTrue((Int64)o.Payload == 2600);
-            Obj p = mirror.GetValue("b");
-            Assert.IsTrue((Int64)p.Payload == 20);
-            o = mirror.GetValue("d");
-            Assert.IsTrue((Int64)o.Payload == 20);
+            thisTest.Verify("a", 2800);
+            thisTest.Verify("c", 2600);
+            thisTest.Verify("b", 20);
+            thisTest.Verify("d", 20);
         }
 
         [Test]
@@ -1325,10 +1238,8 @@ namespace ProtoTest.ProtoAST
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
             //a = 1800, c = a = 1800
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Int64)o.Payload == 1800);
-            o = mirror.GetValue("c");
-            Assert.IsTrue((Int64)o.Payload == 1800);
+            thisTest.Verify("a", 1800);
+            thisTest.Verify("c", 1800);
         }
 
         [Test]
@@ -1375,8 +1286,7 @@ namespace ProtoTest.ProtoAST
             string code = codegen.GenerateCode();
             /*a = 300, b = 30, c= 60 */
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Int64)o.Payload == 300);
+            thisTest.Verify("a", 300);
         }
 
         [Test]
@@ -1400,7 +1310,11 @@ namespace ProtoTest.ProtoAST
             ProtoCore.AST.AssociativeAST.FunctionDefinitionNode funcDefNode = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
             funcDefNode.Name = "foo";
             funcDefNode.FunctionBody = cbn;
-            /* def foo()             * {             *   b = 10;             *   return = b + 10;             * }*/
+            /* def foo()
+             * {
+             *   b = 10;
+             *   return = b + 10;
+             * }*/
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
             astList.Add(funcDefNode);
             ProtoCore.CodeGenDS codegen = new ProtoCore.CodeGenDS(astList);
@@ -1413,9 +1327,15 @@ namespace ProtoTest.ProtoAST
         public void TestCodeGenDS_ClassDecl_PropertyAccess_01()
         {
 
-            //  class bar            //  {            //       f : var;            //  }            //
+            //  class bar
+            //  {
+            //       f : var;
+            //  }
+            //
             //  p = bar.bar();
-            //  p.f = 10;            //  a = p.f;            
+            //  p.f = 10;
+            //  a = p.f;
+            
 
             // Create the class node AST
             ProtoCore.AST.AssociativeAST.ClassDeclNode classDefNode = new ProtoCore.AST.AssociativeAST.ClassDeclNode();
@@ -1485,7 +1405,7 @@ namespace ProtoTest.ProtoAST
 
 
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 10);
+            thisTest.Verify("a", 10);
         }
 
         [Test]
@@ -1604,7 +1524,7 @@ namespace ProtoTest.ProtoAST
             string code = codegen.GenerateCode();
 
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 20);
+            thisTest.Verify("a", 20);
         }
 
 
@@ -1653,7 +1573,7 @@ namespace ProtoTest.ProtoAST
 
 
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 10);
+            thisTest.Verify("a", 10);
         }
 
         [Test]
@@ -1733,7 +1653,7 @@ namespace ProtoTest.ProtoAST
 
 
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 11);
+            thisTest.Verify("a", 11);
         }
 
         [Test]
@@ -1828,7 +1748,7 @@ namespace ProtoTest.ProtoAST
 
 
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 12);
+            thisTest.Verify("a", 12);
         }
 
         [Test]
@@ -1872,8 +1792,7 @@ namespace ProtoTest.ProtoAST
 
             // Verify the results
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Int64)o.Payload == 10);
+            thisTest.Verify("a", 10);
         }
 
         [Test]
@@ -1949,8 +1868,7 @@ namespace ProtoTest.ProtoAST
 
             // Verify the results
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Int64)o.Payload == 11);
+            thisTest.Verify("a", 11);
         }
 
         [Test]
@@ -2041,8 +1959,7 @@ namespace ProtoTest.ProtoAST
 
             // Verify the results
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Int64)o.Payload == 12);
+            thisTest.Verify("a", 12);
         }
 
         [Test]
@@ -2057,8 +1974,7 @@ namespace ProtoTest.ProtoAST
 
             // Verify the results
             ExecutionMirror mirror = thisTest.RunASTSource(astList);
-            Obj o = mirror.GetValue("x");
-            Assert.IsTrue((string)o.Payload == "中文字符");
+            thisTest.Verify("x", "中文字符");
         }
     }
 }

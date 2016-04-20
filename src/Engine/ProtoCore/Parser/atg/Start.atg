@@ -99,12 +99,6 @@ COMPILER DesignScriptParser
         return false;
     }
 
-    private bool IsModifierStack()
-	{
-        // always return false cause we no longer support modifier stack
-        return false;
-	}
-
     private bool IsFunctionCall()
     {
         Token pt = la;

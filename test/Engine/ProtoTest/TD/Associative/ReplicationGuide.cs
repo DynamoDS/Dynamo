@@ -1891,45 +1891,6 @@ test;
         }
 
         [Test]
-        [Ignore]
-        [Category("ModifierBlock")]
-        public void T041_1467460_replication_guide_not_in_sequence_012()
-        {
-            string code =
-@"
-def foo (x1,y1,z1)
-{
-    return = y1;
-}
-a1;
-a2;
-a3;
-test;
-[Imperative]
-{
-    x = {0,1};
-    y = {2,3};
-    z = {4,5 };
-    test = [Associative]
-    {
-        a = { foo(x<7>, y<3>, z<6>) => a1; // expect this to be treated as :  foo(x<3>,y<1>,z<2>); 
-              foo(x<2>, y<2>, z<3>) => a2; // expect this to be treated as :  foo(x<1>,y<1>,z<2>);
-              foo(x<1>, y<3>, z<3>) => a3; // expect this to be treated as :  foo(x<1>,y<2>,z<2>);
-            }
-        return = a1;
-    }
-}
-";
-            string errmsg = "";
-            thisTest.VerifyRunScriptSource(code, errmsg);
-            Object[] t1 = new Object[] { new Object[] { 2, 2 }, new Object[] { 2, 2 } };
-            Object[] t2 = new Object[] { new Object[] { 3, 3 }, new Object[] { 3, 3 } };
-            thisTest.Verify("test", new object[] { t1, t2 });
-            thisTest.Verify("a2", new object[] { new Object[] { 2, 2, }, new Object[] { 3, 3 } });
-            thisTest.Verify("a3", new object[] { new Object[] { 2, 3, }, new Object[] { 2, 3 } });
-        }
-
-        [Test]
         public void T041_1467460_replication_guide_not_in_sequence_013()
         {
             string code =
@@ -2496,68 +2457,6 @@ test4 = Math.Max( x<1>, y<2>);
             thisTest.Verify("test2", new Object[] { new Object[] { 0, 0 }, new Object[] { 0, 1 }, new Object[] { 0, 1 }, new Object[] { 0, 1 } });
             thisTest.Verify("test3", new Object[] { 0, 1 });
             thisTest.Verify("test4", new Object[] { new Object[] { 0, 1 }, new Object[] { 1, 1 }, new Object[] { 2, 2 }, new Object[] { 3, 3 } });
-        }
-
-        [Test]
-        [Ignore]
-        [Category("ModifierBlock")]
-        public void T0126_ReplicationGudes_ModifierBlock()
-        {
-            string code =
-@" 
-test1;
-test2;
-test3;
-test4;
-test5;
-test6;
-test7;
-test8;
-[Associative]
-{
-    x = {{0,1},{2,3}};
-    y = {0,1};
-    z = { ""int"", ""double"" };
-    test1 = { x;	          
-              Contains ( x<1>, y<2>);
-              }
-              
-    test2 = { IndexOf ( x<1>, y<2>);
-              } 
-    test3 = { y;
-              Remove ( x<1>, y<2>);
-              } 
-    test4 = { x;
-              y;
-              Insert ( x<1>, y<2>, y<2>) ; 
-              }
-    test5 = { x=>a1;	          
-              NormalizeDepth ( a1<1>, y<2>) ; 
-              }
-    test6 = { 0;
-              1;
-              RemoveIfNot ( x<1>, z<2>) ;
-              }
-    test7 = { x => a1;
-              y => a2;
-              SortIndexByValue ( a1<1>, a2<2>) ; 
-              }
-    test8 = { 
-              Map ( {1,2}<1>, {5,6}<2>, {2,3}<2>) ; 
-              }	
-}
-    
-";
-            string errmsg = "";
-            thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", new Object[] { new Object[] { true, true }, new Object[] { false, false } });
-            thisTest.Verify("test2", new Object[] { new Object[] { 0, 1 }, new Object[] { -1, -1 } });
-            thisTest.Verify("test3", new Object[] { new Object[] { new Object[] { 1 }, new Object[] { 0 } }, new Object[] { new Object[] { 3 }, new Object[] { 2 } } });
-            thisTest.Verify("test4", new Object[] { new Object[] { new Object[] { 0, 0, 1 }, new Object[] { 0, 1, 1 } }, new Object[] { new Object[] { 0, 2, 3 }, new Object[] { 2, 1, 3 } } });
-            thisTest.Verify("test5", new Object[] { new Object[] { null, new Object[] { 0, 1 } }, new Object[] { null, new Object[] { 2, 3 } } });
-            thisTest.Verify("test6", new Object[] { new Object[] { new Object[] { 0, 1 }, new Object[] { } }, new Object[] { new Object[] { 2, 3 }, new Object[] { } } });
-            thisTest.Verify("test7", new Object[] { new Object[] { new Object[] { 1, 0 }, new Object[] { 0, 1 } }, new Object[] { new Object[] { 1, 0 }, new Object[] { 0, 1 } } });
-            thisTest.Verify("test8", new Object[] { new Object[] { 0.25, 0.4 }, new Object[] { 0.0, 0.25 } });
         }
 
         [Test]

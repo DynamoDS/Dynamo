@@ -16,7 +16,7 @@
                  Languages="1033"
                  Manufacturer="Dynamo"
                  Platform="x64"/>
-
+   
     <!-- (1) To prevent downgrades. 
          If there are any MAJOR.MINOR.BUILD version that is higher installed,
          prevent current installation.-->
@@ -37,12 +37,14 @@
 
     <MediaTemplate EmbedCab="yes" />
 
+    <UIRef Id="SetupDialogUI" />
+    
     <Property Id="INSTALLDIR"/>
     <CustomAction Id="DIRCA_DEFAULT_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder][Manufacturer]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
     <CustomAction Id="DIRCA_SET_INSTALLDIR" Property="DYNAMO_INSTALLDIR" Value="[INSTALLDIR]\$(var.ProductName)\$(var.Major).$(var.Minor)" Execute="immediate" />
 
     <CustomAction Id='AlreadyInstalled' Error='[ProductName] is already installed.&#13;&#10;&#13;&#10;Skipping [ProductName] Installation...' />
-    
+
     <InstallExecuteSequence>
       <Custom Action='AlreadyInstalled' Before="CostInitialize"><![CDATA[SELF_FOUND]]></Custom>
       <Custom Action="DIRCA_DEFAULT_INSTALLDIR" Before="CostInitialize">INSTALLDIR=""</Custom>
@@ -66,15 +68,9 @@
       <Directory Id="DYNAMO_INSTALLDIR"/>
       <Directory Id="CommonAppDataFolder">
         <Directory Id="DYNAMO_PROGDATA" Name="Dynamo">
-          <Directory Id="PROGDATA" Name="$(var.Major).$(var.Minor)"/>
-        </Directory>
-      </Directory>
-      <Directory Id="AppDataFolder">
-        <Directory Id="DYNAMO_APPDATA" Name="Dynamo">
-          <Directory Id="APPDATA" Name="$(var.Major).$(var.Minor)">
-            <Directory Id="definitions" Name="definitions" />
-            <Directory Id="logs" Name="Logs" />
-            <Directory Id="packages" Name="packages" />
+          <Directory Id="DYNAMO_CORE_PROGDATA" Name="$(var.ProductName)">
+            <Directory Id="PROGDATA" Name="$(var.Major).$(var.Minor)">
+            </Directory>
           </Directory>
         </Directory>
       </Directory>
@@ -91,16 +87,6 @@
           <RegistryValue Name="Version" Value="$(var.Major).$(var.Minor).$(var.Build)" Type="string" />
           <RegistryValue Name="RevVersion" Value="$(var.Rev)" Type="integer" />
         </RegistryKey>
-
-        <CreateFolder Directory="definitions" />
-        <CreateFolder Directory="logs" />
-        <CreateFolder Directory="packages" />
-
-        <RemoveFolder Id="RemoveDefinitionsDir" Directory="definitions" On="uninstall" />
-        <RemoveFolder Id="RemoveLogsDir" Directory="logs" On="uninstall" />
-        <RemoveFolder Id="RemovePackagesDir" Directory="packages" On="uninstall" />
-        <RemoveFolder Id="RemoveAppDataDir" Directory="APPDATA" On="uninstall" />
-        <RemoveFolder Id="RemoveDynamoAppDataDir" Directory="DYNAMO_APPDATA" On="uninstall" />
       </Component>
     </DirectoryRef>
 

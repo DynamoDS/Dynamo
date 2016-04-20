@@ -14,19 +14,20 @@ namespace ProtoTest.TD.OtherMiscTests
             string code = @"
 fib10_r;
 fib10_i;
-[Imperative]
-{
     def fibonacci_recursive:int(number : int)
     {
+return = [Imperative]{
         if( number < 2)
         {
             return = 1;
         }
         return = fibonacci_recursive(number-1) + fibonacci_recursive(number -2);
+}
     }
     
     def fibonacci_iterative:int(number : int)
     {
+return = [Imperative]{
         one = 0;
         two = 1;
        counter = 1;
@@ -43,9 +44,9 @@ fib10_i;
         
         return = two;
     }
+}
     fib10_r = fibonacci_recursive(20);
     fib10_i = fibonacci_iterative(20);
-}
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("fib10_r", 10946);
@@ -59,15 +60,15 @@ fib10_i;
             string code = @"
 sqrt_10;
 sqrt_20;
-[Imperative]
-{
     def abs : double( val : double )
     {
+return = [Imperative]{
         if( val < 0 )
         {
             return = -1 * val;
         }
         return = val;
+}
     }
     
     //    this is famous as the first ever algo to evaluate
@@ -76,6 +77,7 @@ sqrt_20;
     //    
     def sqrt_heron : double ( val : double )
     {
+return = [Imperative]{
         counter = 0;
         temp_cur = val / 2.0;
         temp_pre = temp_cur - 1.0;
@@ -93,6 +95,7 @@ sqrt_20;
         }
         
         return = temp_cur;
+}
     }
     
     def sqrt : double ( val : double )
@@ -102,8 +105,6 @@ sqrt_20;
     
     sqrt_10 = sqrt(10.0);
     sqrt_20 = sqrt(20.0);
- 
-}
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sqrt_10", Math.Sqrt(10.0));
@@ -613,13 +614,9 @@ testFoo2 = foo();";
                 a = 5;
                 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Obj o = mirror.GetValue("a");
-            Obj o2 = mirror.GetValue("b");
             thisTest.Verify("a", 5);
             thisTest.Verify("b", 5);
             mirror.SetValueAndExecute("a", 10);
-            o = mirror.GetValue("a");
-            o2 = mirror.GetValue("b");
             thisTest.Verify("a", 10);
             thisTest.Verify("b", 10);
         }
@@ -651,47 +648,6 @@ a=5;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification
             thisTest.Verify("a", 5);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void Comments_Nested()
-        {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
-/*
-WCS=CoordinateSystem.Identity();
-/*
-p2 = Point.ByCoordinates(0,0,0);
-*/
-*/
-import(""ProtoGeometry.dll"");
-WCS=CoordinateSystem.Identity();
-p2 = Point.ByCoordinates(0,0,0);";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            });
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void Comments_Negative()
-        {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
-/*
-WCS=CoordinateSystem.Identity();
-p2 = Point.ByCoordinates(0,0,0);
-*/
-/*
-import(""ProtoGeometry.dll"");
-WCS=CoordinateSystem.Identity();
-p2 = Point.ByCoordinates(0,0,0);";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            });
-            //Verification
         }
 
         [Test]
@@ -846,12 +802,6 @@ return = t;
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 1.0);
             thisTest.Verify("b", 1);
-            Assert.IsTrue(mirror.GetValue("a", 0).DsasmValue.IsDouble);
-            Assert.IsFalse(mirror.GetValue("a", 0).DsasmValue.IsInteger);
-            Assert.IsTrue(mirror.GetValue("b", 0).DsasmValue.IsInteger);
-            Assert.IsFalse(mirror.GetValue("b", 0).DsasmValue.IsDouble);
-
-            //thisTest.Verify("b", 1.0);
         }
 
         [Test]
@@ -866,10 +816,6 @@ return = t;
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", new object[] { 1.0, 2.0 });
             thisTest.Verify("b", new object[] { 1, 2 });
-            Assert.IsFalse(mirror.GetValue("a", 0).DsasmValue.Equals(new object[] { 1, 1 }));
-            Assert.IsFalse(mirror.GetValue("b", 0).DsasmValue.Equals(new object[] { 1.0, 1.0 }));
-
-            //thisTest.Verify("b", 1.0);
         }
 
         [Test]
@@ -927,25 +873,6 @@ return = t;
             //});
         }
 
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestKeyword_reserved_1467551_4()
-        {
-            String code =
-            @"
-                import(""ProtoGeometry.dll"");
-                wcs = CoordinateSystem.Identity();
-                base = Cylinder.ByRadiusHeight(wcs, 10, 5);
-            ";
-            string errmsg = "";
-            //Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            //{
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.VerifyBuildWarningCount(0);
-            //});
-        }
-
         [Test]
         public void functionNotFound_1467444()
         {
@@ -957,27 +884,6 @@ return = t;
 
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
 
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.FunctionNotFound);
-        }
-
-        [Test]
-        public void functionNotFound_1467444_2()
-        {
-            String code =
-            @"
-               z=[Imperative]
-               {
-                        def AnotherFunction(test:int)
-                        {
-                            result = test * test;
-                            return = result;    
-                        }
-                        x = Function(5);
-                        return = x;
-               }
-                                ";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.FunctionNotFound);
         }
     }

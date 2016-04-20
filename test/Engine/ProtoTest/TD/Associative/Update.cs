@@ -325,7 +325,7 @@ t1 = 5.5;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification
             thisTest.Verify("b", 3, 0);
-            Assert.IsTrue(mirror.GetValue("t2").DsasmValue.IsNull);
+            thisTest.Verify("t2", null);
         }
 
         [Test]
@@ -393,11 +393,11 @@ r1 = true;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification         
-            Assert.IsTrue(mirror.GetValue("p2").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("q2").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("s2").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("t2").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("r2").DsasmValue.IsNull);
+            thisTest.Verify("p2", null);
+            thisTest.Verify("q2", null);
+            thisTest.Verify("s2", null);
+            thisTest.Verify("t2", null);
+            thisTest.Verify("r2", null);
 
         }
 
@@ -417,8 +417,8 @@ t1 = TestObjectA.TestObjectA(5);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification      
-            Assert.IsTrue(mirror.GetValue("t2").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("r2").DsasmValue.IsNull);
+            thisTest.Verify("t2", null);
+            thisTest.Verify("r2", null);
 
         }
 
@@ -1614,24 +1614,6 @@ x3 = [Imperative]
             thisTest.Verify("x2", v2);
             thisTest.Verify("x3", v2);
             thisTest.Verify("x4", v2);
-        }
-
-        [Test]
-        [Ignore]
-        [Category("SmokeTest")]
-        [Category("ModifierBlock")] 
-        public void T028_Modifier_Stack_Simple()
-        {
-            string code = @"
-a = {
-     2 ;
-    +4;
-    +3;                                
-} //expected : a = 9; received : 13
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-
-            thisTest.Verify("a", 9);
         }
 
         [Test]

@@ -2,6 +2,9 @@
 
 namespace Dynamo.Configuration
 {
+    /// <summary>
+    /// This specifies the Dynamo Context (RunTime). ex : Revit 2014, Revit 2015 etc.
+    /// </summary>
     public static class Context
     {
         // TODO: MAGN-7242

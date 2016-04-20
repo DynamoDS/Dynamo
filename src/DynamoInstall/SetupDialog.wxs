@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  
+  <Fragment>
+
+    <!-- To remove the Uninstall Button in ARP -->
+    <Property Id='ARPNOREMOVE'>1</Property>
+    
+    <WixVariable Id="WixUIBannerBmp" Value="..\..\..\..\tools\install\Extra\logo_banner.bmp" />
+    
+    <UI Id="SetupDialogUI">
+      
+      <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+      <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+      <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+      <TextStyle Id="WixUI_Font_Red" FaceName="Tahoma" Size="10" Red="255" Green="0" Blue="0"  />
+      
+      <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+
+      <DialogRef Id="ErrorDlg" />
+      <DialogRef Id="FatalError" />
+      <DialogRef Id="FilesInUse" />
+      <DialogRef Id="MsiRMFilesInUse" />
+      <DialogRef Id="PrepareDlg" />
+      <DialogRef Id="ProgressDlg" />
+      <DialogRef Id="ResumeDlg" />
+      <DialogRef Id="UserExit" />
+
+      <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return">1</Publish>
+
+      <Publish Dialog="SetupTypeDlg" Control="Back" Event="EndDialog" Value="Return">1</Publish>
+
+      <Publish Dialog="DynamoVerifyReadyDlg" Control="Back" Event="NewDialog" Value="DynamoMaintenanceTypeDlg">
+        WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"
+      </Publish>
+      
+      <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog"
+               Value="DynamoMaintenanceTypeDlg">1</Publish>
+
+      <Publish Dialog="DynamoMaintenanceTypeDlg" Control="RepairButton" Event="NewDialog"
+               Value="DynamoVerifyReadyDlg">1</Publish>
+      <Publish Dialog="DynamoMaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog"
+               Value="DynamoVerifyReadyDlg">1</Publish>
+      
+      <!-- Recommended UI Sequence
+           https://msdn.microsoft.com/en-us/library/windows/desktop/aa372039(v=vs.85).aspx -->
+      <!-- Skip the following dialogs:
+              Prepare
+              Welcome
+              Disk Cost
+              Maintenance Welcome
+              User Cancel
+              Finish -->
+      <InstallUISequence>
+        <Show Dialog="PrepareDlg" Sequence="1">0</Show>
+        <Show Dialog="WelcomeDlg" Sequence="2">0</Show>
+        <Show Dialog="DiskCostDlg" Sequence="3">0</Show>
+        <Show Dialog="MaintenanceWelcomeDlg" Before="DynamoMaintenanceTypeDlg">0</Show>
+        <Show Dialog="DynamoMaintenanceTypeDlg" Sequence="1250">Installed</Show>
+        <Show Dialog="ExitDialog" OnExit="success">0</Show>
+        <Show Dialog="UserExit" OnExit="cancel">0</Show>
+      </InstallUISequence>
+      <AdminUISequence>
+        <Show Dialog="PrepareDlg" Sequence="1">0</Show>
+        <Show Dialog="WelcomeDlg" Sequence="2">0</Show>
+        <Show Dialog="DiskCostDlg" Sequence="3">0</Show> 
+        <Show Dialog="MaintenanceWelcomeDlg" Before="DynamoMaintenanceTypeDlg">0</Show>
+        <Show Dialog="DynamoMaintenanceTypeDlg" Sequence="1250">Installed</Show>
+        <Show Dialog="ExitDialog" OnExit="success">0</Show>
+        <Show Dialog="UserExit" OnExit="cancel">0</Show>
+      </AdminUISequence>
+      
+    </UI>
+
+    <UIRef Id="WixUI_Common" />    
+    
+  </Fragment>
+  
+</Wix>

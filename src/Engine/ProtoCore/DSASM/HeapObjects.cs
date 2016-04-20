@@ -399,7 +399,7 @@ namespace ProtoCore.DSASM
         /// <param name="t"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public StackValue SetValueForIndices(List<StackValue> indices, StackValue value, Type t, RuntimeCore runtimeCore)
+        public StackValue SetValueForIndices(List<StackValue> indices, StackValue value, RuntimeCore runtimeCore)
         {
             StackValue[][] zippedIndices = ArrayUtils.GetZippedIndices(indices, runtimeCore);
             if (zippedIndices == null || zippedIndices.Length == 0)
@@ -407,15 +407,12 @@ namespace ProtoCore.DSASM
                 return StackValue.Null;
             }
 
+            var t = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
+
             if (zippedIndices.Length == 1)
             {
                 StackValue coercedData = TypeSystem.Coerce(value, t, runtimeCore);
                 return SetValueForIndices(zippedIndices[0], coercedData, runtimeCore);
-            }
-
-            if (t.rank > 0)
-            {
-                t.rank = t.rank - 1;
             }
 
             if (value.IsArray)

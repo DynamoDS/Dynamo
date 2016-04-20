@@ -35,37 +35,37 @@ namespace ProtoTest.TD.MultiLangTests
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 1, -1, -3, -5 };
-            Assert.IsTrue(mirror.CompareArrays("a", result, typeof(System.Double)));
+            thisTest.Verify("a", result);
             List<Object> result0 = new List<Object> { 2, 4, 6 };
-            Assert.IsTrue(mirror.CompareArrays("a1", result0, typeof(System.Double)));
+            thisTest.Verify("a1", result0);
             List<Object> result1 = new List<Object> { 0.8, 1 };
-            Assert.IsTrue(mirror.CompareArrays("a2", result1, typeof(System.Double)));
+            thisTest.Verify("a2", result1);
             List<Object> result2 = new List<Object> { 0.7, 1 };
-            Assert.IsTrue(mirror.CompareArrays("a3", result2, typeof(System.Double)));
+            thisTest.Verify("a3", result2);
             List<Object> result3 = new List<Object> { 0.6, 1 };
-            Assert.IsTrue(mirror.CompareArrays("a4", result3, typeof(System.Double)));
+            thisTest.Verify("a4", result3);
             List<Object> result4 = new List<Object> { 0.8, 0.9, 1 };
-            Assert.IsTrue(mirror.CompareArrays("a5", result4, typeof(System.Double)));
+            thisTest.Verify("a5", result4);
             List<Object> result5 = new List<Object> { 1, 1.1 };
-            Assert.IsTrue(mirror.CompareArrays("a6", result5, typeof(System.Double)));
+            thisTest.Verify("a6", result5);
             List<Object> result6 = new List<Object> { 9, 10 };
-            Assert.IsTrue(mirror.CompareArrays("a7", result6, typeof(System.Double)));
+            thisTest.Verify("a7", result6);
             List<Object> result7 = new List<Object> { 9, 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8, 9.9, 10 };
-            Assert.IsTrue(mirror.CompareArrays("a8", result7, typeof(System.Double)));
+            thisTest.Verify("a8", result7);
             List<Object> result8 = new List<Object> { 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 };
-            Assert.IsTrue(mirror.CompareArrays("a9", result8, typeof(System.Double)));
+            thisTest.Verify("a9", result8);
             List<Object> result9 = new List<Object> { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 };
-            Assert.IsTrue(mirror.CompareArrays("a10", result9, typeof(System.Double)));
+            thisTest.Verify("a10", result9);
             List<Object> result10 = new List<Object> { 0.5, 0.6, 0.7, 0.8, 0.9, 1 };
-            Assert.IsTrue(mirror.CompareArrays("a11", result10, typeof(System.Double)));
+            thisTest.Verify("a11", result10);
             List<Object> result11 = new List<Object> { 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 };
-            Assert.IsTrue(mirror.CompareArrays("a12", result11, typeof(System.Double)));
+            thisTest.Verify("a12", result11);
             List<Object> result12 = new List<Object> { 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 };
-            Assert.IsTrue(mirror.CompareArrays("a13", result12, typeof(System.Double)));
+            thisTest.Verify("a13", result12);
             List<Object> result13 = new List<Object> { 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 };
-            Assert.IsTrue(mirror.CompareArrays("a14", result13, typeof(System.Double)));
+            thisTest.Verify("a14", result13);
             List<Object> result14 = new List<Object> { 0.5, 0.25 };
-            Assert.IsTrue(mirror.CompareArrays("a17", result14, typeof(System.Double)));
+            thisTest.Verify("a17", result14);
         }
 
         [Test]
@@ -84,15 +84,15 @@ namespace ProtoTest.TD.MultiLangTests
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 0.5, 0.25 };
-            Assert.IsTrue(mirror.CompareArrays("a15", result, typeof(System.Double)));
+            thisTest.Verify("a15", result);
             List<Object> result1 = new List<Object> { 0.5, 0.25 };
-            Assert.IsTrue(mirror.CompareArrays("a16", result1, typeof(System.Double)));
+            thisTest.Verify("a16", result1);
             List<Object> result2 = new List<Object> { 0.5, 0.25 };
-            Assert.IsTrue(mirror.CompareArrays("a18", result2, typeof(System.Double)));
+            thisTest.Verify("a18", result2);
             List<Object> result3 = new List<Object> { 0.5, 0.25 };
-            Assert.IsTrue(mirror.CompareArrays("a19", result3, typeof(System.Double)));
+            thisTest.Verify("a19", result3);
             List<Object> result4 = new List<Object> { 1, 2, 3, 4, 5, 6 };
-            Assert.IsTrue(mirror.CompareArrays("a20", result4, typeof(System.Double)));
+            thisTest.Verify("a20", result4);
         }
 
         [Test]
@@ -138,12 +138,12 @@ namespace ProtoTest.TD.MultiLangTests
         public void T04_SimpleRangeExpressionUsingFunctions()
         {
             string src = @"z1;z2;z3;z4;z5;z7;
-[Imperative]
-{
 	def twice : double( a : double ) 
 	{
 		return = 2 * a;
 	}
+[Imperative]
+{
 	z1 = 1..twice(4)..twice(1);
 	z2 = 1..twice(4)..twice(1)-1;
 	z3 = 1..twice(4)..(twice(1)-1);
@@ -165,17 +165,17 @@ Succesfully created function 'twice'
 	*/";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 1, 3, 5, 7 };
-            Assert.IsTrue(mirror.CompareArrays("z1", result, typeof(System.Double)));
+            thisTest.Verify("z1", result);
             List<Object> result1 = new List<Object> { 1, 2, 3, 4, 5, 6, 7, 8 };
-            Assert.IsTrue(mirror.CompareArrays("z2", result1, typeof(System.Double)));
+            thisTest.Verify("z2", result1);
             List<Object> result2 = new List<Object> { 1, 2, 3, 4, 5, 6, 7, 8 };
-            Assert.IsTrue(mirror.CompareArrays("z3", result2, typeof(System.Double)));
+            thisTest.Verify("z3", result2);
             List<Object> result3 = new List<Object> { 4, 3, 2, 1 };
-            Assert.IsTrue(mirror.CompareArrays("z4", result3, typeof(System.Double)));
+            thisTest.Verify("z4", result3);
             List<Object> result4 = new List<Object> { 4, 3, 2, 1 };
-            Assert.IsTrue(mirror.CompareArrays("z5", result4, typeof(System.Double)));
+            thisTest.Verify("z5", result4);
             List<Object> result8 = new List<Object> { 1.3 };
-            Assert.IsTrue(mirror.CompareArrays("z7", result8, typeof(System.Double)));
+            thisTest.Verify("z7", result8);
         }
 
         [Test]
@@ -202,25 +202,25 @@ Succesfully created function 'twice'
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result3 = new List<Object> { 0.9, 1 };
-            Assert.IsTrue(mirror.CompareArrays("d", result3, typeof(System.Double)));
+            thisTest.Verify("d", result3);
             List<Object> result4 = new List<Object> { -0.4, -0.5 };
-            Assert.IsTrue(mirror.CompareArrays("e1", result4, typeof(System.Double)));
+            thisTest.Verify("e1", result4);
             List<Object> result5 = new List<Object> { -0.4, -0.3 };
-            Assert.IsTrue(mirror.CompareArrays("f", result5, typeof(System.Double)));
+            thisTest.Verify("f", result5);
             List<Object> result6 = new List<Object> { 0.4, 0.6, 0.8, 1 };
-            Assert.IsTrue(mirror.CompareArrays("g", result6, typeof(System.Double)));
+            thisTest.Verify("g", result6);
             List<Object> result7 = new List<Object> { 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 };
-            Assert.IsTrue(mirror.CompareArrays("h", result7, typeof(System.Double)));
+            thisTest.Verify("h", result7);
             List<Object> result8 = new List<Object> { 0.4 };
-            Assert.IsTrue(mirror.CompareArrays("i", result8, typeof(System.Double)));
+            thisTest.Verify("i", result8);
             List<Object> result9 = new List<Object> { 0.6, 1 };
-            Assert.IsTrue(mirror.CompareArrays("j", result9, typeof(System.Double)));
+            thisTest.Verify("j", result9);
             List<Object> result10 = new List<Object> { 0.02, 0.025, 0.03 };
-            Assert.IsTrue(mirror.CompareArrays("k", result10, typeof(System.Double)));
+            thisTest.Verify("k", result10);
             List<Object> result11 = new List<Object> { 0.9, 0.925, 0.95, 0.975, 1 };
-            Assert.IsTrue(mirror.CompareArrays("l", result11, typeof(System.Double)));
+            thisTest.Verify("l", result11);
             List<Object> result12 = new List<Object> { 0.05, 0.09 };
-            Assert.IsTrue(mirror.CompareArrays("m", result12, typeof(System.Double)));
+            thisTest.Verify("m", result12);
         }
 
         [Test]
@@ -236,11 +236,11 @@ Succesfully created function 'twice'
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 0.3, 0.2, 0.1 };
-            Assert.IsTrue(mirror.CompareArrays("a", result, typeof(System.Double)));
+            thisTest.Verify("a", result);
             List<Object> result1 = new List<Object> { 0.1, 0.3 };
-            Assert.IsTrue(mirror.CompareArrays("b", result1, typeof(System.Double)));
+            thisTest.Verify("b", result1);
             List<Object> result2 = new List<Object> { 0.1, 0.2, 0.3 };
-            Assert.IsTrue(mirror.CompareArrays("c", result2, typeof(System.Double)));
+            thisTest.Verify("c", result2);
         }
 
         [Test]
@@ -249,10 +249,9 @@ Succesfully created function 'twice'
         {
             string code = @"
 d;f;
-[Imperative]
-{
 	def increment : double[] (x : double[]) 
 	{
+    return = [Imperative]{
 		j = 0;
 		for( i in x )
 		{
@@ -260,7 +259,10 @@ d;f;
 			j = j + 1;
 		}
 		return = x;
+    }
 	}
+[Imperative]
+{
 	a = {1,2,3};
 	b = {3,4,5} ;
 	c = {1.5,2.5,4,3.65};
@@ -271,20 +273,20 @@ d;f;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> l1 = new List<object> { 3.5, new List<Object> { 2.5, 3.5, 5, 4.65 } };
             List<Object> l2 = new List<object> { 7, 16, 10, 2, -1, -0.34 };
-            Assert.IsTrue(mirror.CompareArrays("d", l1, typeof(System.Double)));
-            Assert.IsTrue(mirror.CompareArrays("f", l2, typeof(System.Int64)));
+            thisTest.Verify("d", l1);
+            thisTest.Verify("f", l2);
         }
 
         [Test]
         public void T08_RangeExpressionWithIncrementUsingVariables()
         {
             string src = @"h;i;j;k;l;
-[Imperative]
-{
 	def square : double ( x :double ) 
 	{
 		return = x * x;
 	}
+[Imperative]
+{
 	z = square(4);
 	x = 1 ;
 	y = -2 ;
@@ -340,13 +342,12 @@ o = {0.800000,0.810000}
         public void T09_RangeExpressionWithApproximateIncrement()
         {
             string src = @"a;b;f;g;h;j;k;l;
-[Imperative]
-{
 	def square : double ( x: double ) 
 	{
 		return = x * x;
 	}
-	
+[Imperative]
+{
 	x = 0.1; 
 	a = 0..2..~0.5;
 	b = 0..0.1..~square(0.1);
@@ -361,19 +362,19 @@ o = {0.800000,0.810000}
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result3 = new List<Object> { 0.0, 0.5, 1.0, 1.5, 2.0 };
-            Assert.IsTrue(mirror.CompareArrays("a", result3, typeof(System.Double)));
+            thisTest.Verify("a", result3);
             List<Object> result4 = new List<Object> { 0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, };
-            Assert.IsTrue(mirror.CompareArrays("b", result4, typeof(System.Double)));
+            thisTest.Verify("b", result4);
             List<Object> result5 = new List<Object> { 0, 0.1 };
-            Assert.IsTrue(mirror.CompareArrays("f", result5, typeof(System.Double)));
+            thisTest.Verify("f", result5);
             List<Object> result6 = new List<Object> { 0.2, 0.3 };
-            Assert.IsTrue(mirror.CompareArrays("g", result6, typeof(System.Double)));
+            thisTest.Verify("g", result6);
             List<Object> result7 = new List<Object> { 0.3, 0.2 };
-            Assert.IsTrue(mirror.CompareArrays("h", result7, typeof(System.Double)));
+            thisTest.Verify("h", result7);
             List<Object> result9 = new List<Object> { 0.8, 0.5 };
-            Assert.IsTrue(mirror.CompareArrays("j", result9, typeof(System.Double)));
+            thisTest.Verify("j", result9);
             List<Object> result10 = new List<Object> { 0.5, 0.8 };
-            Assert.IsTrue(mirror.CompareArrays("k", result10, typeof(System.Double)));
+            thisTest.Verify("k", result10);
         }
 
         [Test]
@@ -398,15 +399,15 @@ o = {0.800000,0.810000}
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object>() { 1 };
-            Assert.IsTrue(mirror.CompareArrays("a", result, typeof(System.Double)));
+            thisTest.Verify("a", result);
             List<Object> result1 = new List<Object>() { 3 };
-            Assert.IsTrue(mirror.CompareArrays("b", result1, typeof(System.Double)));
+            thisTest.Verify("b", result1);
             //List<Object> result2 = new List<Object>() { { 1, 2, 3 } };
-            //Assert.IsTrue(mirror.CompareArrays("c", result2, typeof(System.Double)));
+            //thisTest.Verify("c", result2);
             // List<Object> result3 = new List<Object>() { { { 0.100 }, { 0.100, 0.600 }, { 0.100, 0.600 }, { 0.100, 0.600 }, { 0.100, 0.600 } }, { { 0.150 }, { 0.150 }, { 0.150, 0.650 }, { 0.150, 0.650 }, { 0.150, 0.650 } }, { { 0.200 }, { 0.200 }, { 0.200, 0.700 }, { 0.200, 0.700 }, { 0.200, 0.700 } } };
-            // Assert.IsTrue(mirror.CompareArrays("f", result3, typeof(System.Double)));
+            // thisTest.Verify("f", result3);
             // List<Object> result4 = new List<Object>() { { { 0.100 }, { 0.150 }, { 0.200 } }, { { 0.100, 0.600 }, { 0.150 }, { 0.200 } }, { { 0.100, 0.600 }, { 0.150, 0.650 }, { 0.200, 0.700 } }, { { 0.100, 0.600 }, { 0.150, 0.650 }, { 0.200, 0.700 } }, { { 0.100, 0.600 }, { 0.150, 0.650 }, { 0.200, 0.700 } } };
-            // Assert.IsTrue(mirror.CompareArrays("h", result4, typeof(System.Double)));
+            // thisTest.Verify("h", result4);
         }
 
         [Test]
@@ -449,11 +450,11 @@ a1;a2;a3;a4;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("a3").Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetValue("a4").Payload == 3);
+            thisTest.Verify("a3", 1);
+            thisTest.Verify("a4", 3);
             List<Object> result = new List<Object> { 1, 2, 3, 4 };
-            Assert.IsTrue(mirror.CompareArrays("a1", result, typeof(System.Int64)));
-            Assert.IsTrue(mirror.CompareArrays("a2", result, typeof(System.Int64)));
+            thisTest.Verify("a1", result);
+            thisTest.Verify("a2", result);
         }
 
         [Test]
@@ -494,15 +495,17 @@ a1;a2;a3;a4;
         public void T13_RangeExpressionWithStartEndValuesUsingFunctionCall()
         {
             string src = @"x;b;c;e1;f;g;
-[Imperative]
-{
 	def even : double (a : int) 
 	{
+    return = [Imperative]{
 		if((a % 2)>0)
 		return = (a+(a * 0.5));
 		else
 		return = (a-(a * 0.5));
-	}
+    }
+    }	
+[Imperative]
+{
 	d = 3;
 	x = 1..2..#d;
 	a = even(2) ;
@@ -516,16 +519,16 @@ a1;a2;a3;a4;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result3 = new List<Object> { 1, 1.5, 2.0 };
-            Assert.IsTrue(mirror.CompareArrays("x", result3, typeof(System.Double)));
+            thisTest.Verify("x", result3);
             List<Object> result4 = new List<Object> { 1 };
-            Assert.IsTrue(mirror.CompareArrays("b", result4, typeof(System.Double)));
+            thisTest.Verify("b", result4);
             List<Object> result5 = new List<Object> { 4.5, 5.1, 5.6999999999999993, 6.2999999999999989, 6.8999999999999986, 7.4999999999999982 };
-            Assert.IsTrue(mirror.CompareArrays("c", result5, typeof(System.Double)));
-            Assert.IsTrue(mirror.GetValue("e1").DsasmValue.IsNull);
+            thisTest.Verify("c", result5);
+            thisTest.Verify("e1", null);
             List<Object> result9 = new List<Object> { 4.5, 5.25, 6.0 };
-            Assert.IsTrue(mirror.CompareArrays("f", result9, typeof(System.Double)));
+            thisTest.Verify("f", result9);
             List<Object> result10 = new List<Object> { 2.0, 1.75, 1.5, 1.25, 1.0 };
-            Assert.IsTrue(mirror.CompareArrays("g", result10, typeof(System.Double)));
+            thisTest.Verify("g", result10);
         }
 
         [Test]
@@ -558,7 +561,7 @@ b;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 5, 6, 7, 8 };
-            Assert.IsTrue(mirror.CompareArrays("b", result, typeof(System.Double)));
+            thisTest.Verify("b", result);
         }
 
         [Test]
@@ -584,23 +587,23 @@ b;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 1, 1.6, 2.2 };
-            Assert.IsTrue(mirror.CompareArrays("a", result, typeof(System.Double)));
+            thisTest.Verify("a", result);
             List<Object> result1 = new List<Object> { 0.1, 0.13333333333333333, 0.16666666666666666, 0.2 };
-            Assert.IsTrue(mirror.CompareArrays("b", result1, typeof(System.Double)));
+            thisTest.Verify("b", result1);
             List<Object> result2 = new List<Object> { 2, 2.1, 2.2, 2.3000000000000003 };
-            Assert.IsTrue(mirror.CompareArrays("d", result2, typeof(System.Double)));
+            thisTest.Verify("d", result2);
             List<Object> result3 = new List<Object> { 0.5, 0.75, 1 };
-            Assert.IsTrue(mirror.CompareArrays("f", result3, typeof(System.Double)));
+            thisTest.Verify("f", result3);
             List<Object> result4 = new List<Object> { 0.5, 0.51, 0.52, 0.53, 0.54, 0.55, 0.56, 0.57, 0.58, 0.59, 0.6 };
-            Assert.IsTrue(mirror.CompareArrays("g", result4, typeof(System.Double)));
+            thisTest.Verify("g", result4);
             List<Object> result5 = new List<Object> { 0.51, 0.52 };
-            Assert.IsTrue(mirror.CompareArrays("h", result5, typeof(System.Double)));
+            thisTest.Verify("h", result5);
             List<Object> result6 = new List<Object> { 0.95, 1 };
-            Assert.IsTrue(mirror.CompareArrays("i", result6, typeof(System.Double)));
+            thisTest.Verify("i", result6);
             //List<Object> result7 = new List<Object>() { 0.9 };
-            ////Assert.IsTrue(mirror.CompareArrays("k", result7, typeof(System.Double)));
+            ////thisTest.Verify("k", result7);
             List<Object> result8 = new List<Object> { 0.9, 1 };
-            Assert.IsTrue(mirror.CompareArrays("l", result8, typeof(System.Double)));
+            thisTest.Verify("l", result8);
         }
 
         [Test]
@@ -622,21 +625,21 @@ b;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 1.2, 1.3 };
-            Assert.IsTrue(mirror.CompareArrays("a", result, typeof(System.Double)));
+            thisTest.Verify("a", result);
             List<Object> result1 = new List<Object> { 2, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3 };
-            Assert.IsTrue(mirror.CompareArrays("b", result1, typeof(System.Double)));
+            thisTest.Verify("b", result1);
             List<Object> result2 = new List<Object> { 1.2, 1.3, 1.4, 1.5 };
-            Assert.IsTrue(mirror.CompareArrays("c", result2, typeof(System.Double)));
+            thisTest.Verify("c", result2);
             List<Object> result3 = new List<Object> { 1.3 };
-            Assert.IsTrue(mirror.CompareArrays("d", result3, typeof(System.Double)));
+            thisTest.Verify("d", result3);
             List<Object> result5 = new List<Object> { 1.5, 1.7 };
-            Assert.IsTrue(mirror.CompareArrays("e1", result5, typeof(System.Double)));
+            thisTest.Verify("e1", result5);
             List<Object> result6 = new List<Object> { 3.0, 3.2 };
-            Assert.IsTrue(mirror.CompareArrays("f", result6, typeof(System.Double)));
+            thisTest.Verify("f", result6);
             List<Object> result7 = new List<Object> { 3.6, 3.8 };
-            Assert.IsTrue(mirror.CompareArrays("g", result7, typeof(System.Double)));
+            thisTest.Verify("g", result7);
             List<Object> result8 = new List<Object> { 3.8, 4.0 };
-            Assert.IsTrue(mirror.CompareArrays("h", result8, typeof(System.Double)));
+            thisTest.Verify("h", result8);
         }
 
         [Test]
@@ -660,27 +663,27 @@ b;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 1, 1.2, 1.4, 1.6, 1.8, 2, 2.2 };
-            Assert.IsTrue(mirror.CompareArrays("a", result, typeof(System.Double)));
+            thisTest.Verify("a", result);
             List<Object> result1 = new List<Object> { 1, 1.5, 2 };
-            Assert.IsTrue(mirror.CompareArrays("b", result1, typeof(System.Double)));
+            thisTest.Verify("b", result1);
             List<Object> result2 = new List<Object> { 2.3, 2.15, 2 };
-            Assert.IsTrue(mirror.CompareArrays("c", result2, typeof(System.Double)));
+            thisTest.Verify("c", result2);
             List<Object> result3 = new List<Object> { 1.2, 1.4 };
-            Assert.IsTrue(mirror.CompareArrays("d", result3, typeof(System.Double)));
+            thisTest.Verify("d", result3);
             List<Object> result5 = new List<Object> { 0.9, 1 };
-            Assert.IsTrue(mirror.CompareArrays("e1", result5, typeof(System.Double)));
+            thisTest.Verify("e1", result5);
             List<Object> result6 = new List<Object> { 0.9, 0.91, 0.92, 0.93, 0.94, 0.95, 0.96, 0.97, 0.98, 0.99 };
-            Assert.IsTrue(mirror.CompareArrays("f", result6, typeof(System.Double)));
+            thisTest.Verify("f", result6);
             List<Object> result7 = new List<Object> { 0.8, 0.9 };
-            Assert.IsTrue(mirror.CompareArrays("g", result7, typeof(System.Double)));
+            thisTest.Verify("g", result7);
             List<Object> result8 = new List<Object> { 0.8, 0.9 };
-            Assert.IsTrue(mirror.CompareArrays("h", result8, typeof(System.Double)));
+            thisTest.Verify("h", result8);
             List<Object> result9 = new List<Object> { 0.9, 1, 1.1 };
-            Assert.IsTrue(mirror.CompareArrays("i", result9, typeof(System.Double)));
+            thisTest.Verify("i", result9);
             List<Object> result10 = new List<Object> { 1, 0.95, 0.9 };
-            Assert.IsTrue(mirror.CompareArrays("j", result10, typeof(System.Double)));
+            thisTest.Verify("j", result10);
             List<Object> result11 = new List<Object> { 1.2, 1.3 };
-            Assert.IsTrue(mirror.CompareArrays("k", result11, typeof(System.Double)));
+            thisTest.Verify("k", result11);
         }
 
         [Test]
@@ -702,21 +705,21 @@ b;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 2.3, 2.6 };
-            Assert.IsTrue(mirror.CompareArrays("a", result, typeof(System.Double)));
+            thisTest.Verify("a", result);
             List<Object> result1 = new List<Object> { 4.3, 4 };
-            Assert.IsTrue(mirror.CompareArrays("b", result1, typeof(System.Double)));
+            thisTest.Verify("b", result1);
             List<Object> result2 = new List<Object> { 3.7, 4 };
-            Assert.IsTrue(mirror.CompareArrays("c", result2, typeof(System.Double)));
+            thisTest.Verify("c", result2);
             List<Object> result3 = new List<Object> { 4, 4.3 };
-            Assert.IsTrue(mirror.CompareArrays("d", result3, typeof(System.Double)));
+            thisTest.Verify("d", result3);
             List<Object> result5 = new List<Object> { 3.2 };
-            Assert.IsTrue(mirror.CompareArrays("e1", result5, typeof(System.Double)));
+            thisTest.Verify("e1", result5);
             List<Object> result6 = new List<Object> { 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 };
-            Assert.IsTrue(mirror.CompareArrays("f", result6, typeof(System.Double)));
+            thisTest.Verify("f", result6);
             List<Object> result7 = new List<Object> { 0.4, 0.45, 0.5, 0.55, 0.6 };
-            Assert.IsTrue(mirror.CompareArrays("g", result7, typeof(System.Double)));
+            thisTest.Verify("g", result7);
             List<Object> result8 = new List<Object> { 0.4, 0.45 };
-            Assert.IsTrue(mirror.CompareArrays("h", result8, typeof(System.Double)));
+            thisTest.Verify("h", result8);
         }
 
         [Test]
@@ -739,23 +742,23 @@ b;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             //List<Object> result = new List<Object>() { 0.1 };
-            //Assert.IsTrue(mirror.CompareArrays("a", result, typeof(System.Double)));
+            //thisTest.Verify("a", result);
             List<Object> result1 = new List<Object> { 0.1, 0.2 };
-            Assert.IsTrue(mirror.CompareArrays("b", result1, typeof(System.Double)));
+            thisTest.Verify("b", result1);
             List<Object> result2 = new List<Object> { 0.1, 0.15, 0.2 };
-            Assert.IsTrue(mirror.CompareArrays("c", result2, typeof(System.Double)));
+            thisTest.Verify("c", result2);
             List<Object> result3 = new List<Object> { 0.1, 0.1, 0.1, 0.1 };
-            Assert.IsTrue(mirror.CompareArrays("d", result3, typeof(System.Double)));
+            thisTest.Verify("d", result3);
             List<Object> result5 = new List<Object> { 0.9, 0.925, 0.95, 0.975, 1 };
-            Assert.IsTrue(mirror.CompareArrays("e1", result5, typeof(System.Double)));
+            thisTest.Verify("e1", result5);
             List<Object> result6 = new List<Object> { 0.8, 0.845, 0.89 };
-            Assert.IsTrue(mirror.CompareArrays("f", result6, typeof(System.Double)));
+            thisTest.Verify("f", result6);
             List<Object> result7 = new List<Object> { 0.9, 0.85, 0.8 };
-            Assert.IsTrue(mirror.CompareArrays("g", result7, typeof(System.Double)));
+            thisTest.Verify("g", result7);
             List<Object> result8 = new List<Object> { 0.9, 0.85, 0.8, 0.75, 0.7 };
-            Assert.IsTrue(mirror.CompareArrays("h", result8, typeof(System.Double)));
+            thisTest.Verify("h", result8);
             List<Object> result9 = new List<Object> { 0.6, 0.73333333333333328, 0.8666666666666667, 1.0 };
-            Assert.IsTrue(mirror.CompareArrays("i", result9, typeof(System.Double)));
+            thisTest.Verify("i", result9);
         }
 
         [Test]
@@ -763,10 +766,9 @@ b;
         public void T20_RangeExpressionsUsingPowerOperator()
         {
             string src = @"e1;f;
-[Imperative]
-{
 	def power : double (a:double,b:int) 
 	{
+    return = [Imperative]{
 		temp = 1;
 		while( b > 0 )
 		{
@@ -774,7 +776,10 @@ b;
 			b = b - 1;
 		}
 		return = temp;
+    }
 	}
+[Imperative]
+{
 	a = 3;
 	b = 2; 
 	c = power(2,3);
@@ -791,23 +796,23 @@ b;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 2, 4, 6, 8 };
-            Assert.IsTrue(mirror.CompareArrays("e1", result, typeof(System.Double)));
+            thisTest.Verify("e1", result);
             List<Object> result1 = new List<Object> { 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0 };
-            Assert.IsTrue(mirror.CompareArrays("f", result1, typeof(System.Double)));
+            thisTest.Verify("f", result1);
             /*List<Object> result2 = new List<Object>() { 0.01,0.02,0.03,0.04 };
-            Assert.IsTrue(mirror.CompareArrays("h", result2, typeof(System.Double)));
+            thisTest.Verify("h", result2);
             List<Object> result3 = new List<Object>() { 0.1, 0.2 };
-            Assert.IsTrue(mirror.CompareArrays("i", result3, typeof(System.Double)));
+            thisTest.Verify("i", result3);
             List<Object> result5 = new List<Object>() { 0.4,0.45 };
-            Assert.IsTrue(mirror.CompareArrays("j", result5, typeof(System.Double)));
+            thisTest.Verify("j", result5);
             List<Object> result6 = new List<Object>() { 1.2,1.4 };
-            Assert.IsTrue(mirror.CompareArrays("k", result6, typeof(System.Double)));
+            thisTest.Verify("k", result6);
             List<Object> result7 = new List<Object>() { 1.2,1.3 };
-            Assert.IsTrue(mirror.CompareArrays("l", result7, typeof(System.Double)));
+            thisTest.Verify("l", result7);
             List<Object> result8 = new List<Object>() { 0.8,0.9 };
-            Assert.IsTrue(mirror.CompareArrays("m", result8, typeof(System.Double)));
+            thisTest.Verify("m", result8);
             List<Object> result9 = new List<Object>() { 0.08, 0.09 };
-            Assert.IsTrue(mirror.CompareArrays("n", result9, typeof(System.Double)));*/
+            thisTest.Verify("n", result9);*/
         }
 
         [Test]
@@ -815,16 +820,18 @@ b;
         public void T21_RangeExpressionsUsingEvenFunction()
         {
             string src = @"c;d;e1;f;g;
-[Imperative]
-{
 	def even : int (a : int) 
 	{	
+    return = [Imperative]{
 		if(( a % 2 ) > 0 )
 			return = a + 1;
 		
 		else 
 			return = a;
+    }
 	}
+[Imperative]
+{
 	x = 1..3..1;
 	y = 1..9..2;
 	z = 11..19..2;
@@ -849,7 +856,7 @@ b;
             thisTest.Verify("f", f);
             thisTest.Verify("g", g);
             //List<Object> result = new List<Object>()  {2,2,4};
-            // Assert.IsTrue(mirror.CompareArrays("d", result, typeof(System.Double)));
+            // thisTest.Verify("d", result);
         }
 
         [Test]
@@ -880,7 +887,7 @@ d;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 5, 4, 6, 8, 10 };
-            Assert.IsTrue(mirror.CompareArrays("d", result, typeof(System.Int64)));
+            thisTest.Verify("d", result);
         }
 
         [Test]
@@ -917,7 +924,7 @@ d;
             thisTest.VerifyRunScriptSource(code, err);
             List<Object> result2 = new List<Object>() { 10, 16, 18, 16, 10 };
             // List<Object> result5 = new List<Object>() { { 11, 16, 18, 16, 10 }, { 10, 10, 9, 8, 7 }, { 10, 8, 6, 4, 5 }, { 1, 2, 3, 4, 2 } };
-            // Assert.IsTrue(mirror.CompareArrays("j", result5, typeof(System.Double)));
+            // thisTest.Verify("j", result5);
             thisTest.Verify("d", new object[] { 10, 8, 6, 4, 5 });
             thisTest.Verify("e1", new object[] { 1, 2, 3, 4, 2 });
         }
@@ -935,9 +942,9 @@ d;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 1, 3, 5 };
-            Assert.IsTrue(mirror.CompareArrays("a1", result, typeof(System.Double)));
+            thisTest.Verify("a1", result);
             List<Object> result1 = new List<Object> { 12.5, 14.5, 16.5, 18.5 };
-            Assert.IsTrue(mirror.CompareArrays("a2", result1, typeof(System.Double)));
+            thisTest.Verify("a2", result1);
         }
 
         [Test]
@@ -952,9 +959,9 @@ d;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 2, 4.7, 7.4 };
-            Assert.IsTrue(mirror.CompareArrays("a1", result, typeof(System.Double)));
+            thisTest.Verify("a1", result);
             List<Object> result1 = new List<Object> { 10, 10.3, 10.6, 10.9, 11.2, 11.5 };
-            Assert.IsTrue(mirror.CompareArrays("a2", result1, typeof(System.Double)));
+            thisTest.Verify("a2", result1);
         }
 
         [Test]
@@ -971,11 +978,11 @@ d;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 10, 8, 6, 4, 2, 0 };
-            Assert.IsTrue(mirror.CompareArrays("a", result, typeof(System.Double)));
+            thisTest.Verify("a", result);
             List<Object> result1 = new List<Object> { -2, -3, -4, -5, -6, -7, -8, -9, -10 };
-            Assert.IsTrue(mirror.CompareArrays("b", result1, typeof(System.Double)));
+            thisTest.Verify("b", result1);
             List<Object> result2 = new List<Object> { 10, 8.5, 7, 5.5, 4 };
-            Assert.IsTrue(mirror.CompareArrays("c", result2, typeof(System.Double)));
+            thisTest.Verify("c", result2);
         }
 
         [Test]
@@ -1021,9 +1028,9 @@ d;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 1, 5.5, 10 };
-            Assert.IsTrue(mirror.CompareArrays("a", result, typeof(System.Double)));
+            thisTest.Verify("a", result);
             List<Object> result1 = new List<Object> { -2.5, 1.6666666666666666666666666667, 5.8333333333333333333333333334, 10 };
-            Assert.IsTrue(mirror.CompareArrays("b", result1, typeof(System.Double)));
+            thisTest.Verify("b", result1);
         }
 
         [Test]
@@ -1057,9 +1064,9 @@ a;b;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 3, 2.5, 2, 1.5, 1 };
-            Assert.IsTrue(mirror.CompareArrays("a", result, typeof(System.Double)));
+            thisTest.Verify("a", result);
             List<Object> result1 = new List<Object> { 18, 16.75, 15.5, 14.25, 13 };
-            Assert.IsTrue(mirror.CompareArrays("b", result1, typeof(System.Double)));
+            thisTest.Verify("b", result1);
         }
 
         [Test]
@@ -1105,11 +1112,11 @@ a;b;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { 1, 1.575, 2.150, 2.725, 3.3 };
-            Assert.IsTrue(mirror.CompareArrays("a", result, typeof(System.Double)));
+            thisTest.Verify("a", result);
             List<Object> result2 = new List<Object> { 3, 3, 3 };
-            Assert.IsTrue(mirror.CompareArrays("b", result2, typeof(System.Double)));
+            thisTest.Verify("b", result2);
             List<Object> result1 = new List<Object> { 3 };
-            Assert.IsTrue(mirror.CompareArrays("c", result1, typeof(System.Double)));
+            thisTest.Verify("c", result1);
         }
 
         [Test]
@@ -1137,7 +1144,7 @@ a;b;
 	a = 7.5..-2..#-9;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
+            thisTest.Verify("a", null);
         }
 
         [Test]
@@ -1178,7 +1185,7 @@ a;b;
 	a = 5..1..2;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
+            thisTest.Verify("a", null);
         }
 
         [Test]
@@ -1191,7 +1198,7 @@ a;b;
 	a = 5.5..10.7..-2;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue(mirror.GetValue("a").DsasmValue.IsNull);
+            thisTest.Verify("a", null);
         }
 
         [Test]
@@ -1207,11 +1214,11 @@ a;b;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result1 = new List<Object> { 7 };
-            Assert.IsTrue(mirror.CompareArrays("a", result1, typeof(System.Double)));
+            thisTest.Verify("a", result1);
             List<Object> result2 = new List<Object> { 8 };
-            Assert.IsTrue(mirror.CompareArrays("b", result2, typeof(System.Double)));
+            thisTest.Verify("b", result2);
             List<Object> result3 = new List<Object> { 9 };
-            Assert.IsTrue(mirror.CompareArrays("c", result3, typeof(System.Double)));
+            thisTest.Verify("c", result3);
         }
 
         [Test]
@@ -1393,13 +1400,12 @@ a=(5..1).. (1..5);
             // 1467121
             string code = @"
 x;a;b;f;g;h;j;k;l;m;
-[Imperative]
-{
 	def square : double ( x: double ) 
 	{
 		return = x * x;
 	}
-	
+[Imperative]
+{
 	x = 0.1; 
 	a = 0..2..~0.5;
 	b = 0..0.1..~square(0.1);
@@ -1902,34 +1908,34 @@ b = 0..10..a;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { "a", "b", "c" };
-            Assert.IsTrue(mirror.CompareArrays("a1", result, typeof(String)));
+            thisTest.Verify("a1", result);
 
             result = new List<Object> { "A", "B", "C", "D", "E" };
-            Assert.IsTrue(mirror.CompareArrays("a2", result, typeof(String)));
+            thisTest.Verify("a2", result);
 
             result = new List<Object> { "A", "C", "E" };
-            Assert.IsTrue(mirror.CompareArrays("a3", result, typeof(String)));
+            thisTest.Verify("a3", result);
 
             result = new List<Object> { "a", "d" };
-            Assert.IsTrue(mirror.CompareArrays("a4", result, typeof(String)));
+            thisTest.Verify("a4", result);
 
             result = new List<Object> { "e", "d", "c", "b", "a" };
-            Assert.IsTrue(mirror.CompareArrays("a5", result, typeof(String)));
+            thisTest.Verify("a5", result);
 
             result = new List<Object> { "z", "y", "x", "w", "v" };
-            Assert.IsTrue(mirror.CompareArrays("a6", result, typeof(String)));
+            thisTest.Verify("a6", result);
 
             result = new List<Object> { "z", "v" };
-            Assert.IsTrue(mirror.CompareArrays("a7", result, typeof(String)));
+            thisTest.Verify("a7", result);
 
             result = new List<Object> { "a", "d", "g", "j", "m", "p", "s", "v", "y" };
-            Assert.IsTrue(mirror.CompareArrays("a8", result, typeof(String)));
+            thisTest.Verify("a8", result);
 
             result = new List<Object> { "A", "B", "C", "D" };
-            Assert.IsTrue(mirror.CompareArrays("a9", result, typeof(String)));
+            thisTest.Verify("a9", result);
 
             result = new List<Object> { "o", "p", "q" };
-            Assert.IsTrue(mirror.CompareArrays("a10", result, typeof(String)));
+            thisTest.Verify("a10", result);
         }
 
         [Test, Category("SmokeTest")]
@@ -1978,34 +1984,34 @@ b = 0..10..a;
 
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { "a", "b", "c" };
-            Assert.IsTrue(mirror.CompareArrays("a1", result, typeof(String)));
+            thisTest.Verify("a1", result);
 
             result = new List<Object> { "A", "B", "C", "D", "E" };
-            Assert.IsTrue(mirror.CompareArrays("a2", result, typeof(String)));
+            thisTest.Verify("a2", result);
 
             result = new List<Object> { "A", "C", "E" };
-            Assert.IsTrue(mirror.CompareArrays("a3", result, typeof(String)));
+            thisTest.Verify("a3", result);
 
             result = new List<Object> { "a", "d" };
-            Assert.IsTrue(mirror.CompareArrays("a4", result, typeof(String)));
+            thisTest.Verify("a4", result);
 
             result = new List<Object> { "e", "d", "c", "b", "a" };
-            Assert.IsTrue(mirror.CompareArrays("a5", result, typeof(String)));
+            thisTest.Verify("a5", result);
 
             result = new List<Object> { "z", "y", "x", "w", "v" };
-            Assert.IsTrue(mirror.CompareArrays("a6", result, typeof(String)));
+            thisTest.Verify("a6", result);
 
             result = new List<Object> { "z", "v" };
-            Assert.IsTrue(mirror.CompareArrays("a7", result, typeof(String)));
+            thisTest.Verify("a7", result);
 
             result = new List<Object> { "a", "d", "g", "j", "m", "p", "s", "v", "y" };
-            Assert.IsTrue(mirror.CompareArrays("a8", result, typeof(String)));
+            thisTest.Verify("a8", result);
 
             result = new List<Object> { "A", "B", "C", "D" };
-            Assert.IsTrue(mirror.CompareArrays("a9", result, typeof(String)));
+            thisTest.Verify("a9", result);
 
             result = new List<Object> { "o", "p", "q" };
-            Assert.IsTrue(mirror.CompareArrays("a10", result, typeof(String)));
+            thisTest.Verify("a10", result);
         }
 
         [Test, Category("SmokeTest")]
@@ -2049,22 +2055,22 @@ b = 0..10..a;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { "a", "c", "e" };
-            Assert.IsTrue(mirror.CompareArrays("a1", result, typeof(String)));
+            thisTest.Verify("a1", result);
 
             result = new List<Object> { "A", "C", "E" };
-            Assert.IsTrue(mirror.CompareArrays("a2", result, typeof(String)));
+            thisTest.Verify("a2", result);
 
             result = new List<Object> { "I", "J", "K", "L" };
-            Assert.IsTrue(mirror.CompareArrays("a3", result, typeof(String)));
+            thisTest.Verify("a3", result);
 
             result = new List<Object> { "z" };
-            Assert.IsTrue(mirror.CompareArrays("a4", result, typeof(String)));
+            thisTest.Verify("a4", result);
 
             result = new List<Object> { "A" };
-            Assert.IsTrue(mirror.CompareArrays("a5", result, typeof(String)));
+            thisTest.Verify("a5", result);
 
             result = new List<Object> { "z", "y", "x" };
-            Assert.IsTrue(mirror.CompareArrays("a6", result, typeof(String)));
+            thisTest.Verify("a6", result);
         }
 
         [Test]
@@ -2100,22 +2106,22 @@ b = 0..10..a;
     a6 = ""z""..#3..-1;";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             List<Object> result = new List<Object> { "a", "c", "e" };
-            Assert.IsTrue(mirror.CompareArrays("a1", result, typeof(String)));
+            thisTest.Verify("a1", result);
 
             result = new List<Object> { "A", "C", "E" };
-            Assert.IsTrue(mirror.CompareArrays("a2", result, typeof(String)));
+            thisTest.Verify("a2", result);
 
             result = new List<Object> { "I", "J", "K", "L" };
-            Assert.IsTrue(mirror.CompareArrays("a3", result, typeof(String)));
+            thisTest.Verify("a3", result);
 
             result = new List<Object> { "z" };
-            Assert.IsTrue(mirror.CompareArrays("a4", result, typeof(String)));
+            thisTest.Verify("a4", result);
 
             result = new List<Object> { "A" };
-            Assert.IsTrue(mirror.CompareArrays("a5", result, typeof(String)));
+            thisTest.Verify("a5", result);
 
             result = new List<Object> { "z", "y", "x" };
-            Assert.IsTrue(mirror.CompareArrays("a6", result, typeof(String)));
+            thisTest.Verify("a6", result);
         }
 
         [Test]

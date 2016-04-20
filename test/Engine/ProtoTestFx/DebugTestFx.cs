@@ -209,13 +209,15 @@ namespace ProtoTestFx
 
                     try
                     {
-                        runValue = runExecMirror.GetGlobalValue(symNode.name);
+                        runValue = runExecMirror.GetValue(symNode.name);
                         lookupOk = true;
 
                     }
                     catch (NotImplementedException)
                     {
-
+                    }
+                    catch (SymbolNotFoundException)
+                    {
                     }
                     catch (Exception ex)
                     {
@@ -235,7 +237,7 @@ namespace ProtoTestFx
 
                     if (lookupOk)
                     {
-                        StackValue debugValue = debugExecMirror.GetGlobalValue(symNode.name);
+                        StackValue debugValue = debugExecMirror.GetValue(symNode.name);
                         if (!StackUtils.CompareStackValues(debugValue, runValue, rtcore2, rtcore1))
                         {
                             Assert.Fail(string.Format("\tThe value of variable \"{0}\" doesn't match in run mode and in debug mode.\nTracked by {1}", symNode.name, defectID));

@@ -237,7 +237,7 @@ namespace ProtoScript.Runners
         /// <param name="core"></param>
         /// <param name="isTest"></param>
         /// <returns></returns>
-        public ExecutionMirror Execute(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, ProtoCore.Core core, bool isTest = true)
+        public ProtoCore.RuntimeCore Execute(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, ProtoCore.Core core, bool isTest = true)
         {
             ProtoCore.RuntimeCore runtimeCore = null;
             bool succeeded = CompileAndGenerateExe(astList, core, new ProtoCore.CompileTime.Context());
@@ -256,10 +256,9 @@ namespace ProtoScript.Runners
 
             if (isTest)
             {
-                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
+                runtimeCore.Mirror = new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             }
-
-            return null;
+            return runtimeCore;
         }
 
 

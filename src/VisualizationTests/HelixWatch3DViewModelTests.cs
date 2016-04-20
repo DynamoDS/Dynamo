@@ -149,14 +149,14 @@ namespace WpfVisualizationTests
             p1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
-            Assert.AreEqual(6, BackgroundPreviewGeometry.NumberOfInvisiblePoints());
+            Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfInvisiblePoints());
 
             //flip off the lines node
             var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
-            Assert.AreEqual(6, BackgroundPreviewGeometry.NumberOfInvisibleCurves());
+            Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfInvisibleCurves());
 
             //flip those back on and ensure the visualization returns
             p1.UpdateValue(new UpdateValueParams("IsVisible", "true"));
@@ -322,7 +322,7 @@ namespace WpfVisualizationTests
             p1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
-            Assert.AreEqual(6, BackgroundPreviewGeometry.NumberOfInvisiblePoints());
+            Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfInvisiblePoints());
 
             // Now change the number of points
             var cbn =

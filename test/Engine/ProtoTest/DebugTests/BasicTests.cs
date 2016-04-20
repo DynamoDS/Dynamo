@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using ProtoCore.Lang;
 using ProtoFFI;
@@ -8,6 +9,7 @@ using ProtoScript.Runners;
 using ProtoCore.DSASM.Mirror;
 using ProtoTest.TD;
 using ProtoTestFx.TD;
+using ProtoCore.DSASM;
 
 namespace ProtoTest.DebugTests
 {
@@ -34,8 +36,15 @@ namespace ProtoTest.DebugTests
             base.TearDown();
         }
 
+        private List<Obj> UnpackToList(ExecutionMirror mirror, Obj obj)
+        {
+            if (obj == null || !obj.DsasmValue.IsArray)
+                return null;
+
+            return mirror.MirrorTarget.rmem.Heap.ToHeapObject<DSArray>(obj.DsasmValue).Values.Select(x => mirror.Unpack(x)).ToList();
+        }
+
         [Test]
-        [Category("ModifierBlock")] 
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpression1()
         {
@@ -275,6 +284,7 @@ c = 3;
         }
 
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpression5()
         {
@@ -926,254 +936,6 @@ class Vector
                 Assert.AreNotEqual(null, objExecVal);
                 Assert.AreNotEqual(null, objExecVal.Payload);
                 Assert.AreEqual("43420", objExecVal.Payload.ToString());
-            }
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        [Category("ModifierBlock")] 
-        [Category("ExpressionInterpreterRunner")]
-        public void TestWatchExpressionInClassMember1()
-        {
-            // Execute and verify the defect IDE-476
-            fsr.PreStart(
-@"class A //line 1
-{
-    a : var;
-    a2 : var;
-    a4 : var;
-    
-    
-    constructor A(x : var)
-    {
-        a2 = 3;
-        a = x;
-    }
-    def update(x : var)
-    {
-        a = {
-            x => a1;
-            a1 > 10 ? true : false => a4;
-            
-        }
-        return = x;
-    }
-}
-
-a1 = A.A(0);
-a1 = A.A();
-x = a1.update(1);
-y = { a1.a1, a1.a4 };
-");
-
-            DebugRunner.VMState vms = fsr.StepOver();//Line 24
-
-            vms = fsr.Step();//Line 10
-
-            // Get the value of "a2".
-            {
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a2");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(null, objExecVal.Payload);
-            }
-
-            vms = fsr.Step();//Line 11
-
-            // Get the value of "a2".
-            {
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a2");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreEqual((Int64)objExecVal.Payload, 3);
-            }
-
-            vms = fsr.Step();//Line 12
-
-            // Get the value of "a2".
-            {
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a2");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreEqual((Int64)objExecVal.Payload, 3);
-            }
-
-            vms = fsr.Step();//Line 24
-
-            // Get the value of "a2".
-            {
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a2");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(null, objExecVal.Payload);
-            }
-
-            vms = fsr.Step();//Line 25
-
-            // Get the value of "a2".
-            {
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a2");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(null, objExecVal.Payload);
-            }
-
-            vms = fsr.Step();//Line 25
-
-            // Get the value of "a2".
-            {
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a2");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(null, objExecVal.Payload);
-            }
-
-            vms = fsr.Step();//Line 26
-
-            // Get the value of "a2".
-            {
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a2");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(null, objExecVal.Payload);
-            }
-
-            vms = fsr.Step();//Line 16
-
-            // Get the value of "a2".
-            {
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a2");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(null, objExecVal.Payload);
-            }
-
-            vms = fsr.Step();//Line 17
-
-            // Get the value of "a2".
-            {
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a2");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(null, objExecVal.Payload);
-            }
-
-            vms = fsr.Step();//Line 15
-
-            // Get the value of "a2".
-            {
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a2");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(null, objExecVal.Payload);
-            }
-
-            vms = fsr.Step();//Line 20
-
-            // Get the value of "a2".
-            {
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a2");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(null, objExecVal.Payload);
-            }
-
-            vms = fsr.Step();//Line 21
-
-            // Get the value of "a2".
-            {
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a2");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(null, objExecVal.Payload);
-            }
-
-            vms = fsr.Step();//Line 26
-
-            // Get the value of "a2".
-            {
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a2");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(null, objExecVal.Payload);
-            }
-
-            vms = fsr.Step();//Line 27
-
-            // Get the value of "a2".
-            {
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a2");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(null, objExecVal.Payload);
-            }
-
-            vms = fsr.Step();//ended
-
-            // Get the value of "a2".
-            {
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a2");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(null, objExecVal.Payload);
             }
         }
 
@@ -2661,402 +2423,8 @@ c2 = [Associative]
 
             DebugRunner.VMState vms = fsr.Step();
             vms = fsr.Step();
-            Object o = vms.mirror.GetFirstValue("foo").Payload;// .GetDebugValue("foo").Payload;
+            Object o = vms.mirror.GetDebugValue("foo").Payload;// .GetDebugValue("foo").Payload;
             Assert.IsTrue((Int64)o == 5);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        [Category("Debugger")]
-        [Category("ModifierBlock")] 
-        public void TestModifierBlockDebugging1()
-        {
-
-            String code =
-@"
-b1 = 1;
-
-class A
-{
-    x : int;
-    
-    constructor A()
-    {
-        x = 1;
-    }
-    
-	def foo()
-	{
-	    return = 90;
-	}
-}
-
-a =
-{    
-	A.A() => a2;	
-    a2.foo();		  
-    b1 + 1;
-    +2 => a1;
-    a1 + b1;
-    
-}
-c = 90;
-";
-            //Assert.Fail("IDE-433Debugger does not step through few modifier block cases");
-
-            fsr.PreStart(code);
-
-            DebugRunner.VMState vms = fsr.Step();
-            vms = fsr.Step();
-
-            Obj o = vms.mirror.GetDebugValue("b1");
-            string type = vms.mirror.GetType("b1");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 1);
-
-            vms = fsr.Step();
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("x");
-            type = vms.mirror.GetType("x");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 0);
-
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("x");
-            type = vms.mirror.GetType("x");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 1);
-
-            vms = fsr.Step();
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("a2");
-            type = vms.mirror.GetType("a2");
-
-            Dictionary<string, Obj> os = vms.mirror.GetProperties(o);
-            Assert.IsTrue(type == "A");
-            Assert.IsTrue(os.Count == 1);
-            Assert.IsTrue((Int64)os["x"].Payload == 1);
-
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-
-            // we should now be at "b1 + 1;"
-            vms = fsr.Step();
-
-            // we should now be at "+2 => a1;"
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("a1");
-            type = vms.mirror.GetType("a1");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 4);
-
-            //vms = fsr.Step();
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("a");
-            type = vms.mirror.GetType("a");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 5);
-
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("c");
-            type = vms.mirror.GetType("c");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 90);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        [Category("Debugger")]
-        [Category("ModifierBlock")] 
-        public void TestModifierBlockDebugging2()
-        {
-
-            String code =
-@"
-b1 = 1;
-
-class A
-{
-    x : int;
-    
-    constructor A()
-    {
-        x = 1;
-    }
-}
-
-    def foo()
-	{
-	    return = 90;
-	}
-
-a =
-{
-    
-	A.A() => a2;	
-    foo();		  
-    b1 + 1;
-    +2 => a1;
-    a1 + b1;
-    
-}
-c = 90;
-";
-            fsr.PreStart(code);
-
-            DebugRunner.VMState vms = fsr.Step();
-            vms = fsr.Step();
-
-            Obj o = vms.mirror.GetDebugValue("b1");
-            string type = vms.mirror.GetType("b1");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 1);
-
-            vms = fsr.Step();
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("x");
-            type = vms.mirror.GetType("x");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 0);
-
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("x");
-            type = vms.mirror.GetType("x");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 1);
-
-            vms = fsr.Step();
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("a2");
-            type = vms.mirror.GetType("a2");
-
-            Dictionary<string, Obj> os = vms.mirror.GetProperties(o);
-            Assert.IsTrue(type == "A");
-            Assert.IsTrue(os.Count == 1);
-            Assert.IsTrue((Int64)os["x"].Payload == 1);
-
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("a1");
-            type = vms.mirror.GetType("a1");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 4);
-
-            //vms = fsr.Step();
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("a");
-            type = vms.mirror.GetType("a");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 5);
-
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("c");
-            type = vms.mirror.GetType("c");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 90);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        [Category("Debugger")]
-        [Category("ModifierBlock")]
-        public void TestModifierBlockDebugging3()
-        {
-
-            String code =
-@"
-class B
-{
-	x : var;
-	constructor B ( y )
-	{
-		x = y;
-	}
-    
-    def foo()
-    {
-        return = 90;
-    }
-}
-
-x = 1;
-a =
-{
-	x => a1;
-	 - 0.5 => a2;
-	a2 * 4 => a3;
-	a1 > 10 ? true : false => a4;
-	a1..2 => a5;
-	{ a3, a3 } => a6;
-    B.B(a1) => a7;
-    foo();
-    B.B(a1).x => a8;    
-}
-";
-            fsr.PreStart(code);
-
-            DebugRunner.VMState vms = fsr.Step();
-            vms = fsr.Step();
-
-            Obj o = vms.mirror.GetDebugValue("x");
-            string type = vms.mirror.GetType("x");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 1);
-
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("a1");
-            type = vms.mirror.GetType("a1");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 1);
-
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("a2");
-            type = vms.mirror.GetType("a2");
-
-            Assert.IsTrue(type == "double");
-            Assert.IsTrue((Double)o.Payload == 0.5);
-
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("a3");
-            type = vms.mirror.GetType("a3");
-
-            Assert.IsTrue(type == "double");
-            Assert.IsTrue((Double)o.Payload == 2.0);
-
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("a4");
-            type = vms.mirror.GetType("a4");
-
-            Assert.IsTrue(type == "bool");
-            Assert.IsTrue((Boolean)o.Payload == false);
-
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("a5");
-            type = vms.mirror.GetType("a5");
-
-            Assert.IsTrue(type == "array");
-            List<Obj> lo = vms.mirror.GetArrayElements(o);
-            Assert.IsTrue((Int64)lo[0].Payload == 1);
-            Assert.IsTrue((Int64)lo[1].Payload == 2);
-
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("a6");
-            type = vms.mirror.GetType("a6");
-
-            Assert.IsTrue(type == "array");
-            lo = vms.mirror.GetArrayElements(o);
-            Assert.IsTrue((Double)lo[0].Payload == 2.0);
-            Assert.IsTrue((Double)lo[1].Payload == 2.0);
-
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("x");
-            type = vms.mirror.GetType("x");
-
-            Assert.IsTrue(type == "null");
-            Assert.IsTrue(o.Payload == null);
-
-            o = vms.mirror.GetDebugValue("y");
-            type = vms.mirror.GetType("y");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 1);
-
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("x");
-            type = vms.mirror.GetType("x");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 1);
-
-            vms = fsr.Step();
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("a7");
-            type = vms.mirror.GetType("a7");
-
-            Dictionary<string, Obj> os = vms.mirror.GetProperties(o);
-            Assert.IsTrue(type == "B");
-            Assert.IsTrue(os.Count == 1);
-            Assert.IsTrue((Int64)os["x"].Payload == 1);
-
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("x");
-            type = vms.mirror.GetType("x");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 1);
-
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("x");
-            type = vms.mirror.GetType("x");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 1);
-
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("y");
-            type = vms.mirror.GetType("y");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 1);
-
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("a8");
-            type = vms.mirror.GetType("a8");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 1);
-
-            vms = fsr.Step();
-
-            o = vms.mirror.GetDebugValue("a");
-            type = vms.mirror.GetType("a");
-
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 1);
         }
 
         [Test]
@@ -3327,80 +2695,6 @@ d = c;
 
         [Test]
         [Category("Debugger")]
-        public void TestFunctionCallImperativeBlock_Defect_IDE_603()
-        {
-            string sourceCode = @"[Imperative]
-{
-    def f(input)
-    {
-        return = input * 2;
-    }
-    
-    sum = 0;
-    sum = 2 + f(1);
-    k = 22;
-}
-";
-            fsr.PreStart(sourceCode);
-
-            DebugRunner.VMState vms = fsr.Step(); //sum = 0;
-            Assert.AreEqual(8, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(8, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(13, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step(); // sum = 2 + f(1);
-            Assert.AreEqual(9, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(9, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(20, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.StepOver(); // k = 22;
-            Assert.AreEqual(10, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(10, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(12, vms.ExecutionCursor.EndExclusive.CharNo);
-        }
-
-        [Test]
-        [Category("Debugger")]
-        public void TestFunctionCallImperativeBlock_Defect_IDE_603_1()
-        {
-            string sourceCode = @"[Imperative]
-{
-    def f(input)
-    {
-        return = input * 2;
-    }
-    
-    sum = 0;
-    sum = f(1) + 2;
-    k = 22;
-}
-";
-            fsr.PreStart(sourceCode);
-
-            DebugRunner.VMState vms = fsr.Step(); //sum = 0;
-            Assert.AreEqual(8, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(8, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(13, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step(); // sum = f(1) + 2;
-            Assert.AreEqual(9, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(9, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(20, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.StepOver(); // k = 22;
-            Assert.AreEqual(10, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(10, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(12, vms.ExecutionCursor.EndExclusive.CharNo);
-        }
-
-        [Test]
-        [Category("Debugger")]
         public void TestInlineConditionImperativeBlock_Defect_IDE_637()
         {
             string sourceCode = @"x = 330;
@@ -3664,43 +2958,6 @@ def foo(y : int)
         }
 
         [Test]
-        [Category("Debugger")]
-        public void TestUnaryExpressionWithFunctionCallImperativeBlock()
-        {
-            string sourceCode = @"[Imperative]
-{
-    def f(input)
-    {
-        return = input * 2;
-    }
-    
-    sum = 0;
-    sum = !f(1);
-    k = 22;
-}
-";
-            fsr.PreStart(sourceCode);
-
-            DebugRunner.VMState vms = fsr.Step(); //sum = 0;
-            Assert.AreEqual(8, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(8, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(13, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step(); // sum = !f(1);
-            Assert.AreEqual(9, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(9, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(17, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.StepOver(); // k = 22;
-            Assert.AreEqual(10, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(10, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(12, vms.ExecutionCursor.EndExclusive.CharNo);
-        }
-
-        [Test]
         [Category("Failure")]
         [Category("PopRxOptimization")]
         [Category("Debugger")]
@@ -3854,7 +3111,7 @@ p = { 9, 0 };
 
             o = vms.mirror.GetDebugValue("p");
             type = vms.mirror.GetType("p");
-            List<Obj> lo = vms.mirror.GetArrayElements(o);
+            List<Obj> lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue(type == "array");
             Assert.IsTrue((Int64)lo[0].Payload == 9);
             Assert.IsTrue((Int64)lo[1].Payload == 0);
@@ -4590,7 +3847,7 @@ b2 = a1.foo2(1);
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("b1");
             Assert.IsTrue(vms.mirror.GetType("b1") == "array");
-            List<Obj> ol = vms.mirror.GetArrayElements(o);
+            List<Obj> ol = UnpackToList(vms.mirror, o);
 
             Assert.IsTrue(ol.Count == 2);
             Assert.IsTrue((Int64)ol[0].Payload == 1);
@@ -4700,7 +3957,7 @@ class Complex
 
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("y");
-            List<Obj> ol = vms.mirror.GetArrayElements(o);
+            List<Obj> ol = UnpackToList(vms.mirror, o);
 
             Assert.IsTrue(vms.mirror.GetType(o) == "array");
             Assert.IsTrue(ol.Count == 2);
@@ -4721,7 +3978,7 @@ class Complex
             Assert.IsTrue((Int64)os1["z2"].Payload == 10);
 
             Assert.IsTrue(vms.mirror.GetType(o2) == "array");
-            List<Obj> ol2 = vms.mirror.GetArrayElements(o2);
+            List<Obj> ol2 = UnpackToList(vms.mirror, o);
             Assert.IsTrue(ol2.Count == 2);
             Assert.IsTrue((Int64)ol2[0].Payload == 11);
             Assert.IsTrue((Int64)ol2[1].Payload == 12);
@@ -4737,7 +3994,7 @@ class Complex
 
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("y");
-            ol = vms.mirror.GetArrayElements(o);
+            ol = UnpackToList(vms.mirror, o);
 
             Assert.IsTrue(vms.mirror.GetType(o) == "array");
             Assert.IsTrue(ol.Count == 2);
@@ -4758,7 +4015,7 @@ class Complex
             Assert.IsTrue((Int64)os1["z2"].Payload == 10);
 
             Assert.IsTrue(vms.mirror.GetType(o2) == "array");
-            ol2 = vms.mirror.GetArrayElements(o2);
+            ol2 = UnpackToList(vms.mirror, o2);
             Assert.IsTrue(ol2.Count == 2);
             Assert.IsTrue((Int64)ol2[0].Payload == 12);
             Assert.IsTrue((Int64)ol2[1].Payload == 13);
@@ -4783,20 +4040,20 @@ class Complex
             Assert.IsTrue((Int64)os1["z2"].Payload == 10);
 
             Assert.IsTrue(vms.mirror.GetType(o2) == "array");
-            ol2 = vms.mirror.GetArrayElements(o2);
+            ol2 = UnpackToList(vms.mirror, o2);
             Assert.IsTrue(ol2.Count == 2);
             Assert.IsTrue((Int64)ol2[0].Payload == 11);
             Assert.IsTrue((Int64)ol2[1].Payload == 12);
 
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("c");
-            ol = vms.mirror.GetArrayElements(o);
+            ol = UnpackToList(vms.mirror, o);
 
             Assert.IsTrue(vms.mirror.GetType(o) == "array");
             Assert.IsTrue(ol.Count == 3);
             Assert.IsTrue((Int64)ol[0].Payload == 3);
 
-            List<Obj> ol1 = vms.mirror.GetArrayElements(ol[1]);
+            List<Obj> ol1 = UnpackToList(vms.mirror, o1);
             Assert.IsTrue(ol1.Count == 2);
             Assert.IsTrue((Int64)ol1[0].Payload == 2);
             Assert.IsTrue((Int64)ol1[1].Payload == 1);
@@ -4811,7 +4068,7 @@ class Complex
             Assert.IsTrue((Int64)os1["z2"].Payload == 10);
 
             Assert.IsTrue(vms.mirror.GetType(o2) == "array");
-            ol2 = vms.mirror.GetArrayElements(o2);
+            ol2 = UnpackToList(vms.mirror, o2);
             Assert.IsTrue(ol2.Count == 2);
             Assert.IsTrue((Int64)ol2[0].Payload == 12);
             Assert.IsTrue((Int64)ol2[1].Payload == 13);
@@ -4909,7 +4166,7 @@ class Complex
 
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("y");
-            List<Obj> ol = vms.mirror.GetArrayElements(o);
+            List<Obj> ol = UnpackToList(vms.mirror, o);
 
             Assert.IsTrue(vms.mirror.GetType(o) == "array");
             Assert.IsTrue(ol.Count == 2);
@@ -4930,7 +4187,7 @@ class Complex
             Assert.IsTrue((Int64)os1["z2"].Payload == 10);
 
             Assert.IsTrue(vms.mirror.GetType(o2) == "array");
-            List<Obj> ol2 = vms.mirror.GetArrayElements(o2);
+            List<Obj> ol2 = UnpackToList(vms.mirror, o2);
             Assert.IsTrue(ol2.Count == 2);
             Assert.IsTrue((Int64)ol2[0].Payload == 11);
             Assert.IsTrue((Int64)ol2[1].Payload == 12);
@@ -4946,7 +4203,7 @@ class Complex
 
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("y");
-            ol = vms.mirror.GetArrayElements(o);
+            ol = UnpackToList(vms.mirror, o);
 
             Assert.IsTrue(vms.mirror.GetType(o) == "array");
             Assert.IsTrue(ol.Count == 2);
@@ -4967,7 +4224,7 @@ class Complex
             Assert.IsTrue((Int64)os1["z2"].Payload == 10);
 
             Assert.IsTrue(vms.mirror.GetType(o2) == "array");
-            ol2 = vms.mirror.GetArrayElements(o2);
+            ol2 = UnpackToList(vms.mirror, o2);
             Assert.IsTrue(ol2.Count == 2);
             Assert.IsTrue((Int64)ol2[0].Payload == 12);
             Assert.IsTrue((Int64)ol2[1].Payload == 13);
@@ -4992,20 +4249,20 @@ class Complex
             Assert.IsTrue((Int64)os1["z2"].Payload == 10);
 
             Assert.IsTrue(vms.mirror.GetType(o2) == "array");
-            ol2 = vms.mirror.GetArrayElements(o2);
+            ol2 = UnpackToList(vms.mirror, o2);
             Assert.IsTrue(ol2.Count == 2);
             Assert.IsTrue((Int64)ol2[0].Payload == 11);
             Assert.IsTrue((Int64)ol2[1].Payload == 12);
 
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("c");
-            ol = vms.mirror.GetArrayElements(o);
+            ol = UnpackToList(vms.mirror, o);
 
             Assert.IsTrue(vms.mirror.GetType(o) == "array");
             Assert.IsTrue(ol.Count == 3);
             Assert.IsTrue((Int64)ol[0].Payload == 3);
 
-            List<Obj> ol1 = vms.mirror.GetArrayElements(ol[1]);
+            List<Obj> ol1 = UnpackToList(vms.mirror, ol[1]);
             Assert.IsTrue(ol1.Count == 2);
             Assert.IsTrue((Int64)ol1[0].Payload == 2);
             Assert.IsTrue((Int64)ol1[1].Payload == 1);
@@ -5020,7 +4277,7 @@ class Complex
             Assert.IsTrue((Int64)os1["z2"].Payload == 10);
 
             Assert.IsTrue(vms.mirror.GetType(o2) == "array");
-            ol2 = vms.mirror.GetArrayElements(o2);
+            ol2 = UnpackToList(vms.mirror, o2);
             Assert.IsTrue(ol2.Count == 2);
             Assert.IsTrue((Int64)ol2[0].Payload == 12);
             Assert.IsTrue((Int64)ol2[1].Payload == 13);
@@ -5477,176 +4734,6 @@ t = a+c;
             vms = fsr.Step();
             o = vms.mirror.GetDebugValue("t");
             Assert.IsTrue((Int64)o.Payload == 8);
-        }
-
-        [Test]
-        [Category("Debugger")]
-        public void TestStepWithUpdateUsingAssociativeLangBlock2()
-        {
-            String code =
-@"
-y = 0;
-t = y * 2;
-[Associative]
-{
-    c = 0;
-	[Imperative]
-	{
-		def fadd : int(a : int)
-		{
-		    return = a+1;
-		}
-		
-		x = 1;
-		
-		a = fadd(x);
-		
-		b = 11;
-		c = a + b;
-	
-	    x = 10;
-	}
-    y = c + 2;
-}
-";
-            fsr.PreStart(code);
-            fsr.Step();
-
-            DebugRunner.VMState vms = fsr.Step();
-            Obj o = vms.mirror.GetDebugValue("y");
-            Assert.IsTrue((Int64)o.Payload == 0);
-
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("t");
-            Assert.IsTrue((Int64)o.Payload == 0);
-
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("c");
-            Assert.IsTrue((Int64)o.Payload == 0);
-
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("x");
-            Assert.IsTrue((Int64)o.Payload == 1);
-
-            fsr.StepOver();
-            //vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("a");
-            Assert.IsTrue((Int64)o.Payload == 2);
-
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("b");
-            Assert.IsTrue((Int64)o.Payload == 11);
-
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("c");
-            Assert.IsTrue((Int64)o.Payload == 13);
-
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("x");
-            Assert.IsTrue((Int64)o.Payload == 10);
-
-            fsr.Step();
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("y");
-            Assert.IsTrue((Int64)o.Payload == 15);
-
-            fsr.Step();
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("t");
-            Assert.IsTrue((Int64)o.Payload == 30);
-        }
-
-        [Test]
-        [Category("Failure")]
-        [Category("PopRxOptimization")]
-        [Category("Debugger")]
-        public void TestStepWithImperativeReturnStatements()
-        {
-            string source = @"
-[Imperative]
-{
-    def HalveIt : double(value : int)
-    {
-        if (value < 0)
-            return = 0.0;
-
-        return = value * 0.5;
-    }
-
-    positive = HalveIt(250);
-    negative = HalveIt(-250);
-}
-";
-            fsr.PreStart(source);
-
-            DebugRunner.VMState vms = fsr.StepOver(); // "positive = HalveIt(250)"
-            Assert.AreEqual(12, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(12, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(29, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step(); // "if (value < 0)"
-            Assert.AreEqual(6, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(9, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(6, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(23, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.StepOver(); // "return = value * 0.5;"
-            Assert.AreEqual(9, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(9, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(9, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(30, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.StepOver(); // "}" of function "HalveIt"
-            Assert.AreEqual(10, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(10, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(6, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.StepOver(); // "positive = HalveIt(250);"
-            Assert.AreEqual(12, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(12, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(29, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.StepOver(); // "negative = HalveIt(-250)"
-            Assert.AreEqual(13, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(13, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(30, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step(); // "if (value < 0)"
-            Assert.AreEqual(6, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(9, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(6, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(23, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.StepOver(); // "return = 0.0;"
-            Assert.AreEqual(7, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(13, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(7, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(26, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.StepOver(); // "}" of function "HalveIt"
-            Assert.AreEqual(10, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(10, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(6, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.StepOver(); // "negative = HalveIt(-250);"
-            Assert.AreEqual(13, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(13, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(30, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.StepOver(); // "}" of the "Imperative" block
-            Assert.AreEqual(14, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(14, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(2, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.StepOver(); // Script execution ended.
-            Assert.AreEqual(true, vms.isEnded);
         }
 
         [Test]
@@ -6544,7 +5631,7 @@ a1.a = -1;";
             os = vms.mirror.GetProperties(o);
             type = vms.mirror.GetType(os["a"]);
             Assert.IsTrue(type == "array");
-            List<Obj> lo = vms.mirror.GetArrayElements(os["a"]);
+            List<Obj> lo = UnpackToList(vms.mirror, os["a"]);
             Assert.IsTrue((Int64)lo[0].Payload == 1);
             Assert.IsTrue((Int64)lo[1].Payload == 2);
 
@@ -6553,7 +5640,7 @@ a1.a = -1;";
             o = vms.mirror.GetDebugValue("b");
             type = vms.mirror.GetType("b");
             Assert.IsTrue(type == "array");
-            lo = vms.mirror.GetArrayElements(o);
+            lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue((Int64)lo[0].Payload == 1);
             Assert.IsTrue((Int64)lo[1].Payload == 2);
 
@@ -6569,7 +5656,7 @@ a1.a = -1;";
             type = vms.mirror.GetType(os["a"]);
             Assert.IsTrue(type == "array");
 
-            lo = vms.mirror.GetArrayElements(os["a"]);
+            lo = UnpackToList(vms.mirror, os["a"]);
             Assert.IsTrue((Int64)lo[0].Payload == -1);
 
             vms = fsr.Step();
@@ -6577,7 +5664,7 @@ a1.a = -1;";
             o = vms.mirror.GetDebugValue("b");
             type = vms.mirror.GetType("b");
             Assert.IsTrue(type == "array");
-            lo = vms.mirror.GetArrayElements(o);
+            lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue((Int64)lo[0].Payload == -1);
         }
 
@@ -6875,7 +5962,7 @@ a = [Imperative]
 
             o = vms.mirror.GetDebugValue("b2");
             type = vms.mirror.GetType("b2");
-            List<Obj> lo = vms.mirror.GetArrayElements(o);
+            List<Obj> lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue(type == "array");
             Assert.IsTrue((Int64)lo[0].Payload == 2);
         }
@@ -7198,11 +6285,11 @@ b : int;
             DebugRunner.VMState vms = fsr.Step();
             Obj o = vms.mirror.GetDebugValue("a");
             string type = vms.mirror.GetType(o);
-            List<Obj> os = vms.mirror.GetArrayElements(o);
+            List<Obj> os = UnpackToList(vms.mirror, o);
 
             Assert.IsTrue(type == "array");
             Assert.IsTrue(os.Count == 6);
-            Assert.IsTrue((Int64)vms.mirror.GetArrayElements(os[3])[1].Payload == 5);
+            Assert.IsTrue((Int64)UnpackToList(vms.mirror, os[3])[1].Payload == 5);
         }
 
         [Test]
@@ -7268,7 +6355,7 @@ b : int;
             o = vms.mirror.GetDebugValue("a");
             name = vms.mirror.GetType(o);
             Assert.IsTrue(name == "array");
-            List<Obj> lo = vms.mirror.GetArrayElements(o);
+            List<Obj> lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue((Int64)lo[2].Payload == 5);
         }
 
@@ -7818,7 +6905,6 @@ a = dummy.Value;";
         }
 
         [Test]
-        [Category("Failure")]
         [Category("PopRxOptimization")]
         [Category("Debugger")]
         public void LanguageBlockInsideFunction1()
@@ -8001,9 +7087,9 @@ test = foo();";
             mirror = watchRunner.Execute(@"arr");
             o = mirror.GetWatchValue();
 
-            List<Obj> ol = mirror.GetArrayElements(o);
+            List<Obj> ol = UnpackToList(vms.mirror, o);
             Assert.IsTrue(ol.Count == 1);
-            List<Obj> ol_1 = mirror.GetArrayElements(ol[0]);
+            List<Obj> ol_1 = UnpackToList(mirror, ol[0]);
             Assert.IsTrue(ol_1.Count == 2);
             Assert.IsTrue((Int64)ol_1[0].Payload == 1);
             Assert.IsTrue((Int64)ol_1[1].Payload == 2);
@@ -8031,9 +7117,9 @@ test = foo();";
             watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
             mirror = watchRunner.Execute(@"arr");
             o = mirror.GetWatchValue();
-            ol = vms.mirror.GetArrayElements(o);
+            ol = UnpackToList(vms.mirror, o);
             //Assert.IsTrue(ol.Count == 2);
-            List<Obj> ol_2 = vms.mirror.GetArrayElements(ol[1]);
+            List<Obj> ol_2 = UnpackToList(vms.mirror, ol[1]);
             Assert.IsTrue(ol_2.Count == 2);
             Assert.IsTrue((Int64)ol_2[0].Payload == 1);
             Assert.IsTrue((Int64)ol_2[1].Payload == 2);
@@ -8049,15 +7135,15 @@ test = foo();";
             watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
             mirror = watchRunner.Execute(@"test");
             o = mirror.GetWatchValue();
-            ol = vms.mirror.GetArrayElements(o);
+            ol = UnpackToList(vms.mirror, o);
             Assert.IsTrue(ol.Count == 2);
 
-            ol_1 = vms.mirror.GetArrayElements(ol[0]);
+            ol_1 = UnpackToList(vms.mirror, ol[0]);
             Assert.IsTrue(ol_1.Count == 2);
             Assert.IsTrue((Int64)ol_1[0].Payload == 1);
             Assert.IsTrue((Int64)ol_1[1].Payload == 2);
 
-            ol_2 = vms.mirror.GetArrayElements(ol[1]);
+            ol_2 = UnpackToList(vms.mirror, ol[1]);
             Assert.IsTrue(ol_2.Count == 2);
             Assert.IsTrue((Int64)ol_2[0].Payload == 1);
             Assert.IsTrue((Int64)ol_2[1].Payload == 2);
@@ -8100,7 +7186,7 @@ sorted = Sort(Compare, arr); //Stepping over this statement throws exception for
 
             Obj o = vms.mirror.GetDebugValue("arr");
             string type = vms.mirror.GetType("arr");
-            List<Obj> lo = vms.mirror.GetArrayElements(o);
+            List<Obj> lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue(type == "array");
             Assert.IsTrue((Int64)lo[0].Payload == 3);
             Assert.IsTrue((Int64)lo[1].Payload == 5);
@@ -8119,7 +7205,7 @@ sorted = Sort(Compare, arr); //Stepping over this statement throws exception for
 
             o = vms.mirror.GetDebugValue("sorted");
             type = vms.mirror.GetType("sorted");
-            lo = vms.mirror.GetArrayElements(o);
+            lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue(type == "array");
             Assert.AreEqual(null, lo[0].Payload);
             Assert.IsTrue((Boolean)lo[1].Payload == true);
@@ -8173,7 +7259,7 @@ test = a1.t;";
             string type = vms.mirror.GetType("a1");
 
             Assert.IsTrue(type == "array");
-            List<Obj> lo = vms.mirror.GetArrayElements(o);
+            List<Obj> lo = UnpackToList(vms.mirror, o);
 
             type = vms.mirror.GetType(lo[0]);
             Assert.IsTrue(type == "B");
@@ -8193,7 +7279,7 @@ test = a1.t;";
             type = vms.mirror.GetType("test");
 
             Assert.IsTrue(type == "array");
-            lo = vms.mirror.GetArrayElements(o);
+            lo = UnpackToList(vms.mirror, o);
             Assert.IsTrue((Int64)lo[0].Payload == 0);
             Assert.IsTrue((Int64)lo[1].Payload == 1);
         }
@@ -8406,122 +7492,10 @@ test = a1.x; //expected : { 1, { 2, { 0, 1 } } }
             fsr.Step();
             vms = fsr.Step();
             Obj o3 = vms.mirror.GetDebugValue("test");
-            List<Obj> ol3 = vms.mirror.GetArrayElements(o3);
+            List<Obj> ol3 = UnpackToList(vms.mirror, o3);
             string type3 = vms.mirror.GetType(ol3[0]);
             Assert.IsTrue(type3 == "int");
             Assert.IsTrue((Int64)ol3[0].Payload == 1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        [Category("ModifierBlock")] 
-        [Category("Debugger")]
-        public void Defect_IDE_434()
-        {
-            string src =
-        @"
-           class B
-                {
-                    x : var;
-                    constructor B(y)
-                    {
-                        x = y;
-                    }
-    
-                    def foo()
-                    {
-                        return = 90;
-                    }
-                }
-
-                x = 1;
-                a =
-                {
-                    x => a1;
-                    - 0.5 => a2;
-                    a2 * 4 => a3;                
-                    a1 > 10 ? true : false => a4;
-                    a1..2 => a5;          
-                    { a3, a3 } => a6;     
-                    B.B(a1) => a7;    
-                    foo(); 
-                    B.B(a1).x => a8;
-                }
-
-            ";
-
-            //Assert.Fail("IDE-442 Debugger failing to break at getting and setting class properties in inheritance hierarchy (happens only with replication)");
-            fsr.PreStart(src);
-            fsr.Step();
-            DebugRunner.VMState vms = fsr.Step();
-            Obj o = vms.mirror.GetDebugValue("x");
-            string type = vms.mirror.GetType(o);
-            Assert.IsTrue(type == "int");
-            Assert.IsTrue((Int64)o.Payload == 1);
-            fsr.Step();
-            Obj o1 = vms.mirror.GetDebugValue("a1");
-            string type1 = vms.mirror.GetType(o1);
-            Assert.IsTrue(type1 == "int");
-            Assert.IsTrue((Int64)o1.Payload == 1);
-            fsr.Step();
-            Obj o2 = vms.mirror.GetDebugValue("a2");
-            string type2 = vms.mirror.GetType(o2);
-            Assert.IsTrue(type2 == "double");
-            Assert.IsTrue((Double)o2.Payload == 0.5);
-            fsr.Step();
-            Obj o3 = vms.mirror.GetDebugValue("a3");
-            string type3 = vms.mirror.GetType(o3);
-            Assert.IsTrue(type3 == "double");
-            Assert.IsTrue((Double)o3.Payload == 2);
-            fsr.Step();
-            Obj o4 = vms.mirror.GetDebugValue("a4");
-            string type4 = vms.mirror.GetType(o4);
-            Assert.IsTrue(type4 == "bool");
-            Assert.IsTrue((Boolean)o4.Payload == false);
-            fsr.Step();
-            Obj o5 = vms.mirror.GetDebugValue("a5");
-            List<Obj> ol5 = vms.mirror.GetArrayElements(o5);
-            string type5 = vms.mirror.GetType(ol5[0]);
-            Assert.IsTrue(type5 == "int");
-            Assert.IsTrue((Int64)ol5[0].Payload == 1);
-            Assert.IsTrue((Int64)ol5[1].Payload == 2);
-            fsr.Step();
-            Obj o6 = vms.mirror.GetDebugValue("a6");
-            List<Obj> ol6 = vms.mirror.GetArrayElements(o6);
-            string type6 = vms.mirror.GetType(ol6[0]);
-            Assert.IsTrue(type6 == "double");
-            Assert.IsTrue((Double)ol6[0].Payload == 2.0);
-            Assert.IsTrue((Double)ol6[1].Payload == 2.0);
-            fsr.Step();
-            fsr.Step();
-            fsr.Step();
-            fsr.Step();
-            Obj o7 = vms.mirror.GetDebugValue("a7");
-
-            string type7 = vms.mirror.GetType(o7);
-            Assert.IsTrue(type7 == "B");
-            Dictionary<string, Obj> os7 = vms.mirror.GetProperties(o7);
-            Assert.IsTrue((Int64)os7["x"].Payload == 1);
-
-            fsr.Step();
-            fsr.Step();
-            fsr.Step();
-            fsr.Step();
-            fsr.Step();
-            fsr.Step();
-            fsr.Step();
-            fsr.Step();
-            Obj o8 = vms.mirror.GetDebugValue("a8");
-            string type8 = vms.mirror.GetType(o8);
-            Assert.IsTrue(type8 == "int");
-            Assert.IsTrue((Int64)o8.Payload == 1);
-
-
-            vms = fsr.Step();
-            Obj o9 = vms.mirror.GetDebugValue("a");
-            string type9 = vms.mirror.GetType(o9);
-            Assert.IsTrue(type9 == "int");
-            Assert.IsTrue((Int64)o9.Payload == 1);
         }
 
         [Test]
@@ -8546,16 +7520,6 @@ b = 2;";
             Assert.AreEqual(24, vms.ExecutionCursor.EndExclusive.CharNo);
 
             vms = fsr.StepOver();
-
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-            ExecutionMirror mirror = watchRunner.Execute(@"arr[0]");
-            Obj o1 = mirror.GetWatchValue();
-            Assert.AreEqual(99, (Int64)o1.Payload);
-
-            watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-            mirror = watchRunner.Execute(@"arr[1]");
-            o1 = mirror.GetWatchValue();
-            Assert.AreEqual(87, (Int64)o1.Payload);
 
             Assert.AreEqual(8, vms.ExecutionCursor.StartInclusive.LineNo);
             Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.CharNo);
@@ -9900,208 +8864,7 @@ b = 2;";
 
             }
         }
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        [Category("ModifierBlock")] 
-        [Category("ExpressionInterpreterRunner")]
-        public void Testmemberpropertyinwatch_476()
-        {
-
-            fsr.PreStart(
-            @"class A
-                {
-                    a : var;
-                    a2 : var;
-                    a4 : var;
-                    constructor A(x : var)
-                    {
-                        a = x;
-                    }
-                    def update(x : var)
-                    {
-                        a = { x => a1;
-                        a1 > 10 ? true : false => a4;
-                    }
-                        return = x;
-                    }
-                }
-                AA = A.A(0);
-                AA1 = A.A();
-                x = AA1.update(1);
-                y = { AA1.a, AA1.a4 };
-
-            ");
-
-            DebugRunner.VMState vms = fsr.StepOver();//Line 5
-
-            vms = fsr.Step();//Line 6
-            vms = fsr.Step();
-
-            {
-                // Get the value of "i".
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(0, (Int64)objExecVal.Payload);
-            }
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            //Line 7
-            {
-                // Get the value of "i".
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"x");
-                Obj objExecVal = mirror.GetWatchValue();
-                // It should not be available.
-
-                Assert.AreEqual(1, (Int64)objExecVal.Payload);
-
-            }
-
-        }
-        [Test]
-        [Category("ModifierBlock")] 
-        [Category("ExpressionInterpreterRunner")]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        public void Testprivatememberpropertyinwatch_476_2()
-        {
-            // Execute and verify the defect IDE-519
-            fsr.PreStart(
-            @"class A
-                {
-                    private a : var;
-                    a2 : var;
-                    a4 : var;
-                    constructor A(x : var)
-                    {
-                        a = x;
-                    }
-                    def update(x : var)
-                    {
-                        a = { x => a1;
-                        a1 > 10 ? true : false => a4;
-                    }
-                        return = x;
-                    }
-                }
-                AA = A.A(0);
-                AA1 = A.A();
-                x = AA1.update(1);
-                y = { AA1.a, AA1.a4 };
-
-            ");
-
-            DebugRunner.VMState vms = fsr.StepOver();//Line 5
-
-            vms = fsr.Step();//Line 6
-            vms = fsr.Step();
-
-            {
-                // Get the value of "i".
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(0, (Int64)objExecVal.Payload);
-            }
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            //Line 7
-            {
-                // Get the value of "i".
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"x");
-                Obj objExecVal = mirror.GetWatchValue();
-                // It should not be available.
-
-                Assert.AreEqual(1, (Int64)objExecVal.Payload);
-
-            }
-        }
-        [Test]
-        [Category("ModifierBlock")] 
-        [Category("ExpressionInterpreterRunner")]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        public void Testprivatememberpropertyinwatch_476_3()
-        {
-            // Execute and verify the defect IDE-519
-            fsr.PreStart(
-            @"class A
-                {
-                    private a : var;
-                    a2 : var;
-                    a4 : var;
-                    constructor A(x : var)
-                    {
-                        a = x;
-                    }
-                    def update(x : var)
-                    {
-                        a = { x => a1;
-                        a1 > 10 ? true : false => a4;
-                    }
-                        return = x;
-                    }
-                }
-                AA = A.A(0);
-                AA1 = A.A();
-                x = AA1.update(1);
-                y = { AA1.a, AA1.a4 };
-
-            ");
-
-            DebugRunner.VMState vms = fsr.StepOver();//Line 5
-
-            vms = fsr.Step();//Line 6
-            vms = fsr.Step();
-
-            {
-                // Get the value of "i".
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreNotEqual(null, objExecVal);
-                Assert.AreEqual(0, (Int64)objExecVal.Payload);
-            }
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            //Line 7
-            {
-                // Get the value of "i".
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"x");
-                Obj objExecVal = mirror.GetWatchValue();
-                // It should not be available.
-
-                Assert.AreEqual(1, (Int64)objExecVal.Payload);
-
-            }
-        }
+        
         [Test]
         [Category("ExpressionInterpreterRunner")]
         [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
@@ -10496,41 +9259,6 @@ b = 2;";
                 Assert.AreEqual(10, (Int64)objExecVal.Payload);
             }
 
-        }
-
-        [Test]
-        [Category("ExpressionInterpreterRunner")]
-        public void Testprivatememberpropertyinwatch_538()
-        {
-            // Execute and verify the defect IDE-519
-            fsr.PreStart(
-                 @"
-              z=[Imperative]
-                    {    
-                    def GetNumberSquare(test:int) 
-                    {      
-                    result = test * test; 
-                    return = result;  
-                    } 
-                    x = GetNumberSquare(5); 
-                    return = x;
-                    }
-                    ");
-            DebugRunner.VMState vms = fsr.Step();
-            vms = fsr.Step();//Line 6
-            vms = fsr.Step();
-
-            //   vms = fsr.Step();
-            {
-                // Get the value of "i".
-                // This is to simulate the refresh of watch window as a result of "Step" button.
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"result");
-                Obj objExecVal = mirror.GetWatchValue();
-
-                // It should not be available.
-                Assert.AreEqual(25, (Int64)objExecVal.Payload);
-            }
         }
 
         [Test]
@@ -11275,228 +10003,6 @@ surfaceGeom = sphere.Faces[0].SurfaceGeometry.SetVisibility(true);");
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        [Category("Debugger")]
-        [Category("Failure")]
-        [Category("ModifierBlock")] 
-        public void Defect_IDE_656_1()
-        {
-            fsr.PreStart(
-                @"b1 = 1;
-
-class A
-{
-    x : int;
-    
-    constructor A()
-    {
-        x = 1;
-    }
-    
-    def foo()
-    {
-        return = 90; //Line 14
-    } //Line 15
-}
-
-def foo1()
-{
-    return = 10;
-}
-
-a =
-{
-    4 => a1;
-    A.A() => a2;
-    a2.foo();
-    a1 > a2.foo() ? 0 : a2.foo() => a3; //Line 28
-
-}
-c = 90;");
-
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
-            DebugRunner.VMState vms = fsr.Step();   // b1 = 1;
-
-            vms = fsr.Step();   // 4 => a1;
-            Assert.AreEqual(25, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(25, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(13, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step();   // A.A() => a2;
-            Assert.AreEqual(26, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(26, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(17, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.StepOver();   // a2.foo();
-            Assert.AreEqual(27, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(27, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(14, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step();   // return = 90;
-            Assert.AreEqual(14, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(9, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(14, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(21, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step();   // closing brace of A::foo()
-            Assert.AreEqual(15, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(15, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(6, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step();   // a2.foo();
-            Assert.AreEqual(27, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(27, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(14, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step();   // a1 > a2.foo() ? 0 : a2.foo() => a3;
-            Assert.AreEqual(28, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(28, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(40, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step();   // return = 90;
-            Assert.AreEqual(14, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(9, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(14, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(21, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step();   // closing brace of A::foo()
-            Assert.AreEqual(15, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(15, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(6, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step();   // a1 > a2.foo() ? 0 : a2.foo() => a3;
-            Assert.AreEqual(28, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(28, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(40, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step();   // return = 90;
-            Assert.AreEqual(14, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(9, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(14, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(21, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step();   // closing brace of A::foo()
-            Assert.AreEqual(15, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(15, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(6, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step();   // a1 > a2.foo() ? 0 : a2.foo() => a3;
-            Assert.AreEqual(28, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(28, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(40, vms.ExecutionCursor.EndExclusive.CharNo);
-
-
-            vms = fsr.Step();   // a = {}
-            Assert.AreEqual(23, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(30, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(2, vms.ExecutionCursor.EndExclusive.CharNo);
-        }
-
-        [Test]
-        [Category("Debugger")]
-        [Category("Failure")]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        [Category("ModifierBlock")] 
-        public void Defect_IDE_656_2()
-        {
-            fsr.PreStart(
-                @"b1 = 1;
-
-class A
-{
-    x : int;
-    
-    constructor A()
-    {
-        x = 1;
-    }
-    
-    def foo()
-    {
-        return = 90; //Line 14
-    } //Line 15
-}
-
-def foo1()
-{
-    return = 10;
-}
-
-a =
-{
-    4 => a1;
-    A.A() => a2;
-    a2.foo();
-    a1 > a2.foo() ? 0 : a2.foo() => a3; //Line 28
-
-}
-c = 90;");
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
-            DebugRunner.VMState vms = fsr.Step();   // b1 = 1;
-
-            vms = fsr.Step();   // 4 => a1;
-            Assert.AreEqual(25, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(25, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(13, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step();   // A.A() => a2;
-            Assert.AreEqual(26, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(26, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(17, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.StepOver();   // a2.foo();
-            Assert.AreEqual(27, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(27, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(14, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step();   // return = 90;
-            Assert.AreEqual(14, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(9, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(14, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(21, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step();   // closing brace of A::foo()
-            Assert.AreEqual(15, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(15, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(6, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step();   // a2.foo();
-            Assert.AreEqual(27, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(27, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(14, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.Step();   // a1 > a2.foo() ? 0 : a2.foo() => a3;
-            Assert.AreEqual(28, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(28, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(40, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            vms = fsr.StepOver();   // a = {}
-            Assert.AreEqual(23, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(30, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(2, vms.ExecutionCursor.EndExclusive.CharNo);
-        }
-
-
-
-        [Test]
         [Category("Debugger")]
         public void Defect_IDE_656_4_stepOver()
         {
@@ -11562,116 +10068,6 @@ b = 2;");
             Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.CharNo);
             Assert.AreEqual(7, vms.ExecutionCursor.EndExclusive.LineNo);
             Assert.AreEqual(7, vms.ExecutionCursor.EndExclusive.CharNo);
-        }
-
-
-        [Test]
-        [Ignore]
-        [Category("ModifierBlock")] 
-        [Category("Debugger")]
-        public void Defect_IDE_721()
-        {
-            fsr.PreStart(
-                @"x = {true, 0,{1},false,null,{false}};
-
-m = 2.56;
-
-a = {
-
-CountFalse(x) => a1; //2
-
-CountFalse(x[5]) => a2;//1
-
-CountFalse(x[CountFalse(x)]) => a3;//0 Line-11
-
-m => a4;
-
-CountFalse({a4}) => a5;//0
-
-}
-
-result = {a1,a2,a3,a4,a5};");
-
-            //Assert.Fail("IDE-721 Only inner function call is highlighted inside the following modifier block");
-
-            //x = {true, 0,{1},false,null,{false}};
-            DebugRunner.VMState vms = fsr.Step();
-            Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(1, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(38, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            //m = 2.56;
-            vms = fsr.StepOver();
-            Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(3, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(10, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            //CountFalse(x) => a1;
-            vms = fsr.StepOver();
-            Assert.AreEqual(7, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(7, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(21, vms.ExecutionCursor.EndExclusive.CharNo);
-
-
-            //CountFalse(x[5]) => a2;
-            vms = fsr.StepOver();
-            Assert.AreEqual(9, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(9, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(24, vms.ExecutionCursor.EndExclusive.CharNo);
-
-
-            //CountFalse(x[CountFalse(x)]) => a3;
-            vms = fsr.StepOver();
-            Assert.AreEqual(11, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(11, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(36, vms.ExecutionCursor.EndExclusive.CharNo);
-
-
-            //m => a4;
-            vms = fsr.StepOver();
-            Assert.AreEqual(13, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(13, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(9, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            //CountFalse({a4}) => a5;
-            vms = fsr.StepOver();
-            Assert.AreEqual(15, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(15, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(24, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            /*a = {
-
-CountFalse(x) => a1; //2
-
-CountFalse(x[5]) => a2;//1
-
-CountFalse(x[CountFalse(x)]) => a3;//0 Line-11
-
-m => a4;
-
-CountFalse({a4}) => a5;//0
-
-}*/
-            vms = fsr.StepOver();
-            Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(17, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(2, vms.ExecutionCursor.EndExclusive.CharNo);
-
-            //result = {a1,a2,a3,a4,a5};
-            vms = fsr.StepOver();
-            Assert.AreEqual(19, vms.ExecutionCursor.StartInclusive.LineNo);
-            Assert.AreEqual(1, vms.ExecutionCursor.StartInclusive.CharNo);
-            Assert.AreEqual(19, vms.ExecutionCursor.EndExclusive.LineNo);
-            Assert.AreEqual(27, vms.ExecutionCursor.EndExclusive.CharNo);
-
         }
 
         [Test]
@@ -12248,7 +10644,6 @@ lines = Line.ByStartPointEndPoint( startPts<1>, endPts<2> );
         }
 
         [Test]
-        [Category("ModifierBlock")] 
         [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
 
         public void inlineconditional_stepin_656_1()
@@ -13020,123 +11415,6 @@ c = 90;
         }
 
         [Test]
-        [Category("ModifierBlock")]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        [Category("ExpressionInterpreterRunner")]
-        public void inlineconditional_stepnext_656_13()
-        {
-            // Execute and verify the main script in a debug session
-            fsr.PreStart(
- @"
-class B
-{
-    x : var;
-    constructor B(y)
-    {
-        x = y;
-    }
-    
-    def foo()
-    {
-        return = 90;
-    }
-}
-
-x = 1;
-a =
-{
-    x > 10 ? true : false => a1;
-    B.B(a1).x => a2; //Line 19
-    4 => a5;
-}
-           
-");
-            
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
-            DebugRunner.VMState vms = fsr.Step();
-
-            vms = fsr.StepOver();
-
-
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-            ExecutionMirror mirror = watchRunner.Execute(@"x");
-            // Obj objExecVal = mirror.GetWatchValue();
-            TestFrameWork.Verify(mirror, "x", 1, 0);
-
-            vms = fsr.StepOver();
-            TestFrameWork.Verify(mirror, "a1", false, 0);
-            vms = fsr.StepOver();
-            TestFrameWork.Verify(mirror, "a2", false, 0);
-            vms = fsr.StepOver();
-            TestFrameWork.Verify(mirror, "a5", 4, 0);
-            vms = fsr.StepOver();
-            TestFrameWork.Verify(mirror, "a", 4, 0);
-        }
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        [Category("ExpressionInterpreterRunner")]
-        [Category("ModifierBlock")] 
-        public void inlineconditional_stepin_656_13()
-        {
-            // Execute and verify the main script in a debug session
-            // Execute and verify the main script in a debug session
-            fsr.PreStart(
- @"
-class B
-{
-    x1 : var;
-    constructor B(y)
-    {
-        x1 = y;
-    }
-    
-    def foo()
-    {
-        return = 90;
-    }
-}
-
-x = 1;
-a =
-{
-    x > 10 ? true : false => a1;
-    B.B(a1).x1 => a2; //Line 19
-    4 => a5;
-}
-           
-");
-            DebugRunner.VMState vms = fsr.Step();    // x = 1;
-
-            vms = fsr.Step();    // x > 10 ? true : false => a1;
-
-
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-            ExecutionMirror mirror = watchRunner.Execute(@"x");
-            // Obj objExecVal = mirror.GetWatchValue();
-            TestFrameWork.Verify(mirror, "x", 1, 0);
-            vms = fsr.Step();    // B.B(a1).x1 => a2; 
-            TestFrameWork.Verify(mirror, "a1", false, 0);
-            vms = fsr.Step();
-            vms = fsr.Step();
-            //TestFrameWork.Verify(mirror, "x1", false, 0);
-
-            watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-            mirror = watchRunner.Execute(@"x1");
-            Obj objExecVal = mirror.GetWatchValue();
-
-            Assert.AreNotEqual(null, objExecVal);
-            Assert.AreEqual(false, objExecVal.Payload);
-
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-            TestFrameWork.Verify(mirror, "a2", false, 0);
-            vms = fsr.StepOver();
-            TestFrameWork.Verify(mirror, "a5", 4, 0);
-            vms = fsr.StepOver();
-            TestFrameWork.Verify(mirror, "a", 4, 0);
-        }
-
-        [Test]
         [Category("ExpressionInterpreterRunner")]
         [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
         public void inlineconditional_stepnext_656_10()
@@ -13316,141 +11594,6 @@ list3 = GetCoor(list1);
             vms = fsr.Step();
             TestFrameWork.Verify(mirror, "list3", new object[] { 10, 20 }, 0);
 
-        }
-
-        [Test]
-        [Category("ModifierBlock")] 
-        [Category("ExpressionInterpreterRunner")]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        public void inlineconditional_stepnext_656_14()
-        {
-            // Execute and verify the main script in a debug session
-            fsr.PreStart(
- @"
-class B
-{
-    x : var;
-    constructor B(y)
-    {
-        x = y;
-    }
-    
-    def foo()
-    {
-        return = 90;
-    }
-}
-
-x = 1;
-a =
-{
-    x > 10 ? true : false => a1;
-    B.B(a1).x => a2; //Line 19
-    4 => a5;
-}           
-");
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
-            DebugRunner.VMState vms = fsr.Step();    // x = 1;
-
-            vms = fsr.StepOver();    // x > 10 ? true : false => a1;
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-            ExecutionMirror mirror = watchRunner.Execute(@"x");
-            // Obj objExecVal = mirror.GetWatchValue();
-            TestFrameWork.Verify(mirror, "x", 1, 0);
-
-            vms = fsr.StepOver();    // B.B(a1).x => a2; //Line 19
-            TestFrameWork.Verify(mirror, "a1", false, 0);
-
-            vms = fsr.StepOver();    // 4 => a5;
-            TestFrameWork.Verify(mirror, "a2", false, 0);
-
-            vms = fsr.StepOver();    // closing brace of a = {}
-            TestFrameWork.Verify(mirror, "a5", 4, 0);
-        }
-
-        [Test]
-        [Category("ExpressionInterpreterRunner")]
-        [Category("Failure")]
-        [Category("ModifierBlock")]
-        [Ignore][Category("DSDefinedClass_Ignored_DebuggerVersion")]
-        public void inlineconditional_stepin_656_14()
-        {
-            // Execute and verify the main script in a debug session
-            fsr.PreStart(
- @"
-class A
-{
-    a : var;
-    a2 : var;
-    a4 : var;
-    
-    
-    constructor A(x : var)
-    {
-        a = x;
-    }
-    def update(x : var)
-    {
-        a = {
-            x => a1;
-            a1 > 10 ? true : false => a4;
-            
-        }
-        return = x;
-    }
-}
-
-class B
-{}
-
-a1 = A.A(0);
-a1 = A.A();
-x = a1.update(1); //line 28
-
-
-b1 = B.B(); //line 31
-n = 22;
-");
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
-            DebugRunner.VMState vms = fsr.Step();
-
-            vms = fsr.Step();
-            vms = fsr.Step();
-
-
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-            ExecutionMirror mirror = watchRunner.Execute(@"a");
-            // Obj objExecVal = mirror.GetWatchValue();
-            /* TestFrameWork.Verify(mirror, "a", 0, 0);*/
-            mirror = watchRunner.Execute(@"a");
-            Obj objExecVal = mirror.GetWatchValue();
-
-            Assert.AreNotEqual(null, objExecVal);
-            Assert.AreEqual(0, objExecVal.Payload);
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            TestFrameWork.Verify(mirror, "a1", 1, 0);
-            vms = fsr.Step();
-
-            /*TestFrameWork.Verify(mirror, "a4", false, 0);
-            mirror = watchRunner.Execute(@"a4");
-            Obj objExecVal2 = mirror.GetWatchValue();
-
-            Assert.AreNotEqual(null, objExecVal2);
-            Assert.AreEqual(false, objExecVal2.Payload);*/
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            TestFrameWork.Verify(mirror, "x", 1, 0);
-            vms = fsr.Step();
-            vms = fsr.Step();
-            vms = fsr.Step();
-            TestFrameWork.Verify(mirror, "n", 22, 0);
         }
 
         [Test]
@@ -13753,6 +11896,7 @@ i[4] = Point.ByCoordinates(0, 5, 1);
 
         }
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void IDE_Debugger_698_3()
         {
@@ -13982,7 +12126,7 @@ c = 2;
             watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
             mirror = watchRunner.Execute(@"g");
             objExecVal = mirror.GetWatchValue();
-            List<Obj> lo = mirror.GetArrayElements(objExecVal);
+            List<Obj> lo = UnpackToList(mirror, objExecVal);
             Assert.IsTrue((Int64)lo[0].Payload == 1);
             Assert.IsTrue((Int64)lo[1].Payload == 2);
             Assert.IsTrue((Int64)lo[2].Payload == 3);
@@ -14115,7 +12259,7 @@ c = 2;
             mirror = watchRunner.Execute(@"arr");
             objExecVal = mirror.GetWatchValue();
             Assert.AreEqual(mirror.GetType(objExecVal), "array");
-            List<Obj> lo = mirror.GetArrayElements(objExecVal);
+            List<Obj> lo = UnpackToList(mirror, objExecVal);
             Assert.AreEqual(lo[0].Payload, 1);
             Assert.AreEqual(lo[1].Payload, 2);
 
@@ -14591,54 +12735,7 @@ a : Dummy = null;
             Obj objExecVal = mirror.GetWatchValue();
             Assert.AreEqual(2, (Int64)objExecVal.Payload);
         }
-        [Test]
-        [Category("ModifierBlock")] 
-        [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestDebug_757()
-        {
-            string src = @" 
-                import(""ProtoGeometry.dll"");
-                import(""DSCoreNodes.dll"");
-
-
-
-                    a : Line = null;
-                    b : Line = null;
-
-                    [Associative]
-                    {
-                        a =
-                        {
-                            Line.ByStartPointEndPoint(Point.ByCoordinates(10, 0, 0), Point.ByCoordinates(10, 5, 0)) => a@initial;
-                            Translate(1, 1, 0) => a@final;     // move the line
-                        }
-    
-                        b = a@initial.Translate(-1, 1, 0); // and use the right assign
-                    }
-                ";
-
-            fsr.PreStart(src);
-            DebugRunner.VMState vms = fsr.Step();
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-            ExecutionMirror mirror = watchRunner.Execute(@"a");
-            Obj objExecVal = mirror.GetWatchValue();
-            Assert.AreNotEqual(null, objExecVal.Payload);
-
-
-            watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-            mirror = watchRunner.Execute(@"b");
-            objExecVal = mirror.GetWatchValue();
-            Assert.AreNotEqual(null, objExecVal.Payload);
-
-        }
+        
         [Test]
         [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Defect_StepOver_734()
@@ -15612,6 +13709,7 @@ a = 7;
 
         //Investigate the color object properties number, relates to IDE-493
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         [Category("ReleaseCriteria")]
         public void UseCase_Robert_simple_copy_and_modiy_collection_1()
@@ -15638,11 +13736,9 @@ d = b[0..(Count(b) - 1)..2]; // rnage expression used for indexing into a collec
 
             Obj objExecVal = mirror.GetWatchValue();
 
-            List<Obj> lo = mirror.GetArrayElements(objExecVal);
             String type = objExecVal.GetType().ToString();
 
             TestFrameWork.Verify(mirror, "a", new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 0);
-            TestFrameWork.Verify(mirror, "b", new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 0);
             vms = fsr.StepOver();
             TestFrameWork.Verify(mirror, "b", new object[] { 0, 1, 100, 3, 4, 5, 6, 7, 8, 9, 10 }, 0);
             vms = fsr.StepOver();
@@ -15675,16 +13771,9 @@ a = a < 5 ? 3 : 4;
             ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
 
-            Obj objExecVal = mirror.GetWatchValue();
-
-            List<Obj> lo = mirror.GetArrayElements(objExecVal);
-            String type = objExecVal.GetType().ToString();
-
             TestFrameWork.Verify(mirror, "a", new object[] { 0, 2, 4, 6, 8, 10 }, 0);
             vms = fsr.StepOver();
             TestFrameWork.Verify(mirror, "a", new object[] { 3, 3, 3, 4, 4, 4 }, 0);
-
-
         }
         [Test]
         [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]

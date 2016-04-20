@@ -121,27 +121,5 @@ f0;f1;f2;f3;t0;t1;t2;t3;t4;t5;t6;t7;
             thisTest.Verify("t6", true);
             thisTest.Verify("t7", true);
         }
-
-        [Test]
-        public void FuncWithDec()
-        {
-            String code =
-@"y;[Imperative]
-{
-        def sum:int( x:int, y:int )
-        {
-	        s = x + y;
-	        return = s;
-        }
-        
-	    y = 57;
-}
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
-            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 57);
-        }
-
-
     }
 }

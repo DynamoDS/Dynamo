@@ -18,6 +18,12 @@ namespace Dynamo
     /// </summary>
     public class CustomNodeDefinition : IFunctionDescriptor
     {
+        /// <summary>
+        /// This function creates CustomNodeDefinition.
+        /// </summary>
+        /// <param name="functionId">Custom node unique ID</param>
+        /// <param name="displayName">Custom node name</param>
+        /// <param name="nodeModels">Nodes inside custom node</param>
         public CustomNodeDefinition(
             Guid functionId,
             string displayName="",
@@ -218,11 +224,17 @@ namespace Dynamo
 
         #region Dependencies
 
+        /// <summary>
+        /// Returns all custom node definitions.
+        /// </summary>
         public IEnumerable<CustomNodeDefinition> Dependencies
         {
             get { return FindAllDependencies(new HashSet<CustomNodeDefinition>()); }
         }
 
+        /// <summary>
+        /// Returns custom node definitions for direct dependencies.
+        /// </summary>
         public IEnumerable<CustomNodeDefinition> DirectDependencies { get; private set; }
         
         private IEnumerable<CustomNodeDefinition> FindAllDependencies(ISet<CustomNodeDefinition> dependencySet)
@@ -258,6 +270,15 @@ namespace Dynamo
     /// </summary>
     public class CustomNodeInfo
     {
+        /// <summary>
+        /// This function creates CustomNodeInfo.
+        /// </summary>
+        /// <param name="functionId">Custom node unique ID</param>
+        /// <param name="name">Custom node name</param>
+        /// <param name="category">Custom node category</param>
+        /// <param name="description">Custom node description</param>
+        /// <param name="path">Path to custom node</param>
+        /// <param name="isVisibleInDynamoLibrary">Bool value controls the visibility in library search</param>
         public CustomNodeInfo(Guid functionId, string name, string category, string description, string path, bool isVisibleInDynamoLibrary = true)
         {
             if (functionId == Guid.Empty)
@@ -274,12 +295,41 @@ namespace Dynamo
                 Category = Dynamo.Properties.Resources.DefaultCustomNodeCategory;
         }
 
+        /// <summary>
+        /// Returns custom node unique ID
+        /// </summary>
         public Guid FunctionId { get; set; }
+
+        /// <summary>
+        /// Returns custom node name
+        /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Returns custom node category
+        /// </summary>
         public string Category { get; set; }
+
+        /// <summary>
+        /// Returns custom node description
+        /// </summary>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Returns path to custom node
+        /// </summary>
         public string Path { get; set; }
+
+        /// <summary>
+        /// Indicates if custom node is part of the package.
+        /// If true, then custom node is part of package manager.
+        /// </summary>
         public bool IsPackageMember { get; set; }
+
+        /// <summary>
+        /// Indicates if custom node is part of the library search.
+        /// If true, then custom node is part of library search.
+        /// </summary>
         public bool IsVisibleInDynamoLibrary { get; private set; }
     }
 }
