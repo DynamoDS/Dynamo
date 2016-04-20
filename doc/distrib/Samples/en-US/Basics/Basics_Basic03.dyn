@@ -37,6 +37,6 @@
   <Annotations />
   <Presets />
   <Cameras>
-    <Camera Name="Background Preview" eyeX="-52.9205544635546" eyeY="59.8301006325637" eyeZ="255.782679907181" lookX="52.9205544635546" lookY="-57.3306006688508" lookZ="-255.782679907181" upX="0" upY="1" upZ="0" />
+    <Camera Name="Background Preview" eyeX="-16.9655136013663" eyeY="24.341577725171" eyeZ="50.6494323150915" lookX="12.4441040333119" lookY="-13.0110656299395" lookZ="-58.5449065206009" upX="-0.0812375695793365" upY="0.920504853452448" upZ="0.38219271586380" />
   </Cameras>
 </Workspace>
