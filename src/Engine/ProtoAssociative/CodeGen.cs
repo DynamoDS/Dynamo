@@ -2913,11 +2913,9 @@ namespace ProtoAssociative
             {
                 Name = ProtoCore.DSASM.Constants.kGetterPrefix + prop.name,
                 Signature = new ArgumentSignatureNode(),
-                Pattern = null,
                 ReturnType = prop.datatype,
                 FunctionBody = new CodeBlockNode(),
                 IsExternLib = false,
-                IsDNI = false,
                 ExternLibName = null,
                 Access = prop.access,
                 IsStatic = prop.isStatic,
@@ -2946,11 +2944,9 @@ namespace ProtoAssociative
             {
                 Name = ProtoCore.DSASM.Constants.kSetterPrefix + prop.name,
                 Signature = argumentSingature,
-                Pattern = null,
                 ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Null, 0),
                 FunctionBody = new CodeBlockNode(),
                 IsExternLib = false,
-                IsDNI = false,
                 ExternLibName = null,
                 Access = prop.access,
                 IsStatic = prop.isStatic,
@@ -3160,11 +3156,9 @@ namespace ProtoAssociative
                 {
                     Name = ProtoCore.DSASM.Constants.kStaticPropertiesInitializer,
                     Signature = new ArgumentSignatureNode(),
-                    Pattern = null,
                     ReturnType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)PrimitiveType.Null), UID = (int)PrimitiveType.Null },
                     FunctionBody = new CodeBlockNode(),
                     IsExternLib = false,
-                    IsDNI = false,
                     ExternLibName = null,
                     Access = ProtoCore.CompilerDefinitions.AccessModifier.Public,
                     IsStatic = true
@@ -3178,42 +3172,11 @@ namespace ProtoAssociative
             unPopulatedClasses.Remove(thisClassIndex);
         }
 
-        /// <summary>
-        /// Determines if a class is allowed to be codegened based on certain conditions in the class node
-        /// </summary>
-        /// <param name="classNode"></param>
-        /// <returns></returns>
-        private bool IsClassAllowed(ClassDeclNode classDecl)
-        {
-            // If its an FFI class, it is allowed
-            if (classDecl.IsExternLib)
-            {
-                return true;
-            }
-
-            // Check the class attributes
-            if (classDecl.Attributes != null)
-            {
-                // If at least one attribute is internal then the class is allowed
-                List<AttributeEntry> attributesList = PopulateAttributes(classDecl.Attributes);
-                if (attributesList.Where(a => a.IsInternalClassAttribute()).Count() > 0)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         private void EmitClassDeclNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None,
             GraphNode graphNode = null)
         {
             ClassDeclNode classDecl = node as ClassDeclNode;
-            
-            // Restrict classes 
-            if (!IsClassAllowed(classDecl))
-            {
-                return;
-            }
+
             // Handling n-pass on class declaration
             if (ProtoCore.CompilerDefinitions.Associative.CompilePass.ClassName == compilePass)
             {
@@ -3662,9 +3625,6 @@ namespace ProtoAssociative
                 localProcedure = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.Procedures[globalProcIndex];
 
                 Validity.Assert(null != localProcedure);
-                localProcedure.Attributes = PopulateAttributes(funcDef.Attributes);
-                // Its only on the parse body pass where the real pc is determined. Update this procedures' pc
-                //Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == localProcedure.pc);
                 localProcedure.PC = pc;
 
                 EmitInstrConsole(ProtoCore.DSASM.kw.newobj, localProcedure.Name);
@@ -4020,9 +3980,7 @@ namespace ProtoAssociative
                 Validity.Assert(null != localProcedure);
 
                 // code gen the attribute 
-                localProcedure.Attributes = PopulateAttributes(funcDef.Attributes);
                 // Its only on the parse body pass where the real pc is determined. Update this procedures' pc
-                //Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == localProcedure.pc);
                 localProcedure.PC = pc;
 
                 // Copy the active function to the core so nested language blocks can refer to it
@@ -4128,7 +4086,6 @@ namespace ProtoAssociative
                     record.FunctionName = funcDef.Name;
                     record.ModuleName = funcDef.ExternLibName;
                     record.ModuleType = "dll";
-                    record.IsDNI = funcDef.IsDNI;
                     record.ReturnType = funcDef.ReturnType;
                     record.ParameterTypes = localProcedure.ArgumentTypes;
                     fep = new ProtoCore.Lang.FFIFunctionEndPoint(record);

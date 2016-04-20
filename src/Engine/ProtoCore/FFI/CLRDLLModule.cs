@@ -657,12 +657,10 @@ namespace ProtoFFI
 
             ProtoCore.AST.AssociativeAST.FunctionDefinitionNode func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
             func.Name = string.Format("%get_{0}", f.Name);
-            func.Pattern = null;
             func.Signature = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
             func.ReturnType = CLRModuleType.GetProtoCoreType(f.FieldType, Module);
             func.FunctionBody = null;
             func.Access = ProtoCore.CompilerDefinitions.AccessModifier.Public;
-            func.IsDNI = false;
             func.IsExternLib = true;
             func.ExternLibName = Module.Name;
             func.IsStatic = f.IsStatic;
@@ -704,7 +702,6 @@ namespace ProtoFFI
             {
                 func.Name = string.Format("{0}{1}", prefix, method.Name);
             }
-            func.Pattern = null;
             func.Signature = ParseArgumentSignature(method);
 
             if ((retype.IsIndexable && mattrs.AllowRankReduction)
@@ -715,7 +712,6 @@ namespace ProtoFFI
             func.ReturnType = retype;
             func.FunctionBody = null;
             func.Access = ProtoCore.CompilerDefinitions.AccessModifier.Public;
-            func.IsDNI = false;
             func.IsExternLib = true;
             func.ExternLibName = Module.Name;
             func.IsStatic = method.IsStatic;

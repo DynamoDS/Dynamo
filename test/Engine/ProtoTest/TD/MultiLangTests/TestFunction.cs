@@ -4934,28 +4934,6 @@ def collectioninc: int[]( a : int[] )
 
         [Test]
         [Category("SmokeTest")]
-        public void TV72_Defect_1454541()
-        {
-            string code = @"
-d1;d2;
-[Associative]
-{
-    def singleLine1 : int( a:int ) = a * 10;
-    d1 = singleLine1( 2 );
-}
-def singleLine2 : int( a:int ) = a * 10;
-[Imperative]
-{
-    d2 = singleLine2( 2 );
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("d1", 20);
-            thisTest.Verify("d2", 20);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
         public void TV72_Defect_1454541_1()
         {
             string code = @"
@@ -4975,23 +4953,6 @@ def singleLine2 : int( a:int ) { return = a * 10; }
             thisTest.Verify("d1", 20);
             thisTest.Verify("d2", 20);
         }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void TV72_Defect_1454541_2()
-        {
-            string code = @"
-def singleLine1 : int( a:int[] ) = a[0] ;
-d = singleLine1( {20,20} );
-def singleLine2 : int[]( a:int[] ) = a ;
-d1 = singleLine2( {20,20} );
-d2 = d1[1];
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("d", 20);
-            thisTest.Verify("d2", 20);
-        }
-
 
         [Test]
         [Category("SmokeTest")]
@@ -8039,8 +8000,7 @@ result3 =
         public void T63_Function_notDeclared()
         {
             String code = @"
-            import(""DSCoreNodes.dll"");
-            def foo : double(arg : double) = arg + 1;
+            def foo : double(arg : double) { return = arg + 1 ;}
             a = foo(""a""); ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
