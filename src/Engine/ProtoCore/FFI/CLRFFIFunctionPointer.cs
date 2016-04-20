@@ -96,6 +96,20 @@ namespace ProtoFFI
 
         public string Name { get { return Info.Name; } }
 
+        private bool? keepReferenceThis;
+        public bool KeepReferenceThis
+        {
+            get
+            {
+                if (keepReferenceThis.HasValue)
+                {
+                    return keepReferenceThis.Value;
+                }
+                keepReferenceThis = Info.GetCustomAttribute<KeepReferenceThisAttribute>() != null;
+                return keepReferenceThis.Value;
+            }
+        }
+
         public static FFIMemberInfo CreateFrom(MemberInfo info)
         {
             MethodInfo m = info as MethodInfo;
@@ -504,6 +518,11 @@ namespace ProtoFFI
             }
 
             var ret =  InvokeFunctionPointerNoThrow(c, dsi, thisObject, parameters.Count > 0 ? parameters.ToArray() : null);
+            if (ReflectionInfo.KeepReferenceThis && thisObject != null)
+            {
+                referencedParameters.Add(s.Last());
+            }
+
             int count = referencedParameters.Count;
             if (count > 0 && (ret is StackValue))
             {
@@ -513,37 +532,73 @@ namespace ProtoFFI
                 // wrapper object is out of scope, we shouldn't dispose it;
                 // otherwise that C# object will reference to an invalid object.
                 //
-                // The hack here is to treat it like a property in the return
+                // Similarly, if the method has attribute [KeepReferenceThis],
+                // it means the return object will reference to this object
+                // internally, so we shouldn't dispose this object.
+                //
+                // The hack here is to treat them like properties in the return
                 // object. Note all DS wrapper objects are dummy objects who
                 // haven't any members. By allocating extra space on the heap,
                 // we store the reference in the return object so that the
                 // parameter will have the same lifecycle as the return object.
-                var pointer = (StackValue)ret;
-                if (pointer.IsPointer)
+                //
+                // One case need to consider about is the type of return value.
+                // If the return value is an array, we have to recursively go 
+                // into the array and expand the element, instead of setting
+                // these hidden information directly on the array.
+                try
                 {
-                    var dsObject = dsi.runtime.rmem.Heap.ToHeapObject<DSObject>(pointer);
-                    if (dsObject != null)
-                    {
-                        int startIndex = dsObject.Count;
-                        try
-                        {
-                            dsObject.ExpandBySize(count);
-                            Validity.Assert(dsObject.Count >= referencedParameters.Count);
-
-                            for (int i = 0; i < referencedParameters.Count; i++)
-                            {
-                                dsObject.SetValueAtIndex(startIndex + i, referencedParameters[i], dsi.runtime.RuntimeCore);
-                            }
-                        }
-                        catch (RunOutOfMemoryException)
-                        {
-                            dsi.runtime.RuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
-                            return StackValue.Null;
-                        }
-                    }
-                } 
+                    SetReferenceObjects((StackValue)ret, referencedParameters, dsi.runtime);
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    dsi.runtime.RuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
             }
+
             return ret;
+        }
+
+        /// <summary>
+        /// If dsValue is a pointer (object), expand the size of this object and
+        /// add references to referencedObjects; if dsValue is an array, then
+        /// recursively do the travelling.
+        ///
+        /// Exception: ProtoCore.Exception.RunOutOfMemoryException if the engine
+        /// fails to expand the size of object.
+        /// </summary>
+        /// <param name="dsValue"></param>
+        /// <param name="referencedObjects"></param>
+        /// <param name="exec"></param>
+        private void SetReferenceObjects(StackValue dsValue, List<StackValue> referencedObjects, Executive exec)
+        {
+            if (dsValue.IsPointer)
+            {
+                var dsObject = exec.rmem.Heap.ToHeapObject<DSObject>(dsValue);
+                if (dsObject != null)
+                {
+                    int startIndex = dsObject.Count;
+                    dsObject.ExpandBySize(referencedObjects.Count);
+                    Validity.Assert(dsObject.Count >= referencedObjects.Count);
+
+                    for (int i = 0; i < referencedObjects.Count; i++)
+                    {
+                        dsObject.SetValueAtIndex(startIndex + i, referencedObjects[i], exec.RuntimeCore);
+                    }
+                }
+            }
+            else if (dsValue.IsArray)
+            {
+                var dsArray = exec.rmem.Heap.ToHeapObject<DSArray>(dsValue);
+                if (dsArray != null)
+                {
+                    foreach (var element in dsArray.Values)
+                    {
+                        SetReferenceObjects(element, referencedObjects, exec);
+                    }
+                }
+            }
         }
     }
 
