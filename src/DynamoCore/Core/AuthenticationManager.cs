@@ -10,7 +10,7 @@ namespace Dynamo.Core
 {
     /// <summary>
     ///     This is a wrapper for <see cref="IAuthProvider"/> functionality.
-    ///     It's used for oxygen authentication.
+    ///     It is used for oxygen authentication.
     /// </summary>
     public class AuthenticationManager
     {
