@@ -1100,7 +1100,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Query all function instances directly or indirectly depends on the 
+        /// Returns all function instances directly or indirectly depends on the 
         /// specified function definition and mark them as modified so that 
         /// their values will be re-queried.
         /// </summary>

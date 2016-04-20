@@ -71,7 +71,7 @@ namespace Dynamo.Engine
         public static CompilationServices CompilationServices;
 
         /// <summary>
-        /// Query DesignScript core.
+        /// Returns DesignScript core.
         /// </summary>
         public ProtoCore.Core LiveRunnerCore
         {
@@ -82,7 +82,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Query DesignScript runtime core.
+        /// Returns DesignScript runtime core.
         /// </summary>
         public ProtoCore.RuntimeCore LiveRunnerRuntimeCore
         {
@@ -176,7 +176,7 @@ namespace Dynamo.Engine
         #region Value queries
 
         /// <summary>
-        /// Query runtime mirror for variable.
+        /// Returns runtime mirror for variable.
         /// </summary>
         /// <param name="variableName">Unique ID of AST node</param>
         /// <returns>RuntimeMirror object that reflects status of a single designscript variable</returns>
@@ -204,7 +204,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Query a list of IGraphicItem of variable if it is a geometry object;
+        /// Returns a list of IGraphicItem of variable if it is a geometry object;
         /// otherwise returns null.
         /// </summary>
         /// <param name="variableName"></param>

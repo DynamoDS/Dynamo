@@ -103,7 +103,7 @@ namespace Dynamo.Engine
         }
         
         /// <summary>
-        ///     Query a list of imported libraries.
+        ///     Returns a list of imported libraries.
         /// </summary>
         public IEnumerable<string> ImportedLibraries
         {
@@ -111,7 +111,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        ///     Query built-in function groups.
+        ///     Returns built-in function groups.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<FunctionGroup> BuiltinFunctionGroups
@@ -120,7 +120,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        ///     Query all imported function groups.
+        ///     Returns all imported function groups.
         /// </summary>
         public IEnumerable<FunctionGroup> ImportedFunctionGroups
         {
@@ -294,7 +294,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        ///     Query function groups from an imported library.
+        ///     Returns function groups from an imported library.
         /// </summary>
         /// <param name="library">Library path</param>
         /// <returns></returns>
@@ -322,7 +322,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        ///     Query function descriptor from the managled function name.
+        ///     Returns function descriptor from the managled function name.
         ///     name.
         /// </summary>
         /// <param name="library">Library path</param>
@@ -346,7 +346,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        ///     Query function descriptor from the managed function name.
+        ///     Returns function descriptor from the managed function name.
         /// </summary>
         /// <param name="managledName"></param>
         /// <returns></returns>
