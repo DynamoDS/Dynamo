@@ -22715,4 +22715,39 @@
         CTj9OT6LmPUyCPMfESutZFaBwAdR9UVa+Tz5MAAAAABJRU5ErkJggg==
 </value>
   </data>
+  <data name="Autodesk.DesignScript.Geometry.Curve.SplitByPoints.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAADyklEQVR4Xu2cvU0cQRiGKYES
+        EA1AAQQ4I6QEOoCchA6QLBEjUQAUQEBKRuwI0QCUcH7f1XzrudEMxrqZRfI9j/TK5m42eeZnv53dvR0A
+        AAAAAAAAAAAAAAD4w4+fv86UK/+bPoKlkPQXZZXlJX0Fo5Fsj/xcfoSZsAQS7WWn1gFXqQmMxKIL8XTA
+        kkj0QyE+cpGawEgk+qkQHzlOTWAkEv1RiI8cpiYwCkneK6TPSU1gJBJ9WopP4TpgCST6uhAfuU1NYCQS
+        /VqIj1ABjUaSDwvpefZSMxiFJLeWn9fUBEZi0YX4yHVqAqOQ5NYGnEP9PxpJbo1+ys/RSPJno58t6NFI
+        cmv0f6Qm0Iv9/f1d5Ul5SB+5A2ryHbafeyLph8qLskqZqhuJru1+elbsTgfC5kj2qfKRyY94/fcFWL4D
+        6v+fpkNhUyT5Ipd+c3OzOjg4iL/dKe6AXcWd4XDV2wvJvU2iJ+mPj4+r9/f31fPzc9kJLDc9sVBlXu9P
+        Tk4m6ZYfubu7iw5w3JZO6IVkXofco6Oj1dvb25r8yOXlZd4JbDn3QjLXZoBHe60DiqXIYdu5F5K5p0yV
+        jyWXS5DPB4V8ZsC/kCqXY8W3Ef0sjx8niXLSdbzrfmcSnC9FxfrvMPKNpSkuBS3UF0hO6ymFv8XHeRac
+        hWifjM/Pz3PxniHbW/NLUNTf+ejtmWlkS/J8Us7yqmznVrPEeOm4zUSNyrybKdkPmXzvB21f2SkhFt96
+        8qx3PKNmyRauuDL6/0+2tdElGV5qaqJGxM/3b+fy4hGWRtrcCZLhtb4matNYtGeUlzOfuD3DtveKNsmP
+        ddadMI3CJKYmsBZL9RMKF4qP457sV5DsudzLku821mRHXAV5idre0bsJkrxWa3vLN/5WohPKFx98kvRn
+        bP9uguTO8vNL/srVpke4lxRL9/KC+E2RVF/qN/db7u/vy/0WnjLohWR+Kj9S2XHkdl8PJPJLe+7c+BiI
+        ZK7d8itnQSHfswX5vZHU+aZ33gneb4/PlakSSodAbyR3rRKqPXmQmkJPVErGTZG1ffcivN45Akl3XZ/v
+        4ft8MFdGKZSdI5Ds1uucPh9EJyB/FBZdiI88+XvJp9oZiUSXv6cT4cmC0Uhy821yhRPuaCS5tfzwNuES
+        SHTr51x4m3AJJLr1+AibbKORZN9Yqcnn10SWQKL5NZHvRKLL24oRys8lkOjWCZg3CpdAoltPtVH/L4FE
+        0wHfiUS33ipnv38JJLo6A9LXMBrJrj1gyxXwkki4rwU8ExyqHwAAAAAAAAAAAAAAgJmdnd9T+YILsRSP
+        FgAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.Curve.SplitByPoints.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAABOElEQVRYR+2WMQ6CQBBFOYJH
+        MMSKBmNsbIjewNqKeAGoLA2dMRYmXsADWHgACkqJjbUVR+AI6/9mNsFoBw7G8JOfDQvyZmZnV5xOnf5e
+        s8O9ByccZUpXAjccZUpXAO/bDuAmAUxlSk+Acv0Jp/V7AFC7/plM6ch13SENcCkBhHLr+wJ4DpdwEWwu
+        R8DPcuv7AjT0fd+kaWqiKDK41ik9smSzTUeLdcjs8zy3ARRwXx6rL0D6cAxnsF3fF3vBPAGU8Btcv/Px
+        Eq4pMyT4DVgx9/tRftPMnseLWNJnNsH2yqwJ4hjCzZX2kwAdsqHseg48v5isTnqnGbOvBsAqwHqnGUuM
+        rs4A5Z7WhVMIoIDNeLmL24DzGGXDcavpwilA7ZbTO0arAvhnvmL0/sWqApg90N6HZKdOenKcB2bL3GqS
+        WH+mAAAAAElFTkSuQmCC
+</value>
+  </data>
 </root>
