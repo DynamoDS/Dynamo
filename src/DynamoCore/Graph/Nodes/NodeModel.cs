@@ -585,7 +585,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        ///     Query the description from type information
+        ///     Returns the description from type information
         /// </summary>
         /// <returns>The value or "No description provided"</returns>
         public string GetDescriptionStringFromAttributes()
@@ -737,7 +737,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Queries the downstream nodes for the given node.
+        /// Returns the downstream nodes for the given node.
         /// </summary>
         /// <param name="node">The node.</param>
         /// <param name="gathered">The gathered.</param>
@@ -796,7 +796,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Queries the most recent value of this node stored in an EngineController that has evaluated it.
+        /// Returns the most recent value of this node stored in an EngineController that has evaluated it.
         /// </summary>
         /// <param name="outPortIndex"></param>
         /// <param name="engine"></param>
@@ -2022,7 +2022,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Queries list of drawable Ids as registered with visualization manager 
+        /// Returns list of drawable Ids as registered with visualization manager 
         /// for all the output port of the given node.
         /// </summary>
         /// <returns>List of Drawable Ids</returns>
@@ -2040,7 +2040,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Queries the drawable Id as registered with visualization manager for
+        /// Returns the drawable Id as registered with visualization manager for
         /// the given output port on the given node.
         /// </summary>
         /// <param name="outPortIndex">Output port index</param>

@@ -1533,7 +1533,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Return the nodes in the graph that have no inputs or have none of their inputs filled
+        /// Returns the nodes in the graph that have no inputs or have none of their inputs filled
         /// </summary>
         /// <returns></returns>
         internal IEnumerable<NodeModel> GetSourceNodes()

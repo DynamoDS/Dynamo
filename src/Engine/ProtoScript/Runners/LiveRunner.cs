@@ -809,7 +809,7 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Queries the only the modified nodes from the subtree by checking of the previous cached instance
+        /// Returns the only the modified nodes from the subtree by checking of the previous cached instance
         /// </summary>
         /// <param name="subtree"></param>
         /// <returns></returns>
@@ -891,7 +891,7 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Query the ASTs from the previous list that no longer exist in the new list
+        /// Returns the ASTs from the previous list that no longer exist in the new list
         /// </summary>
         /// <param name="prevASTList"></param>
         /// <param name="newASTList"></param>
@@ -921,7 +921,7 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Query the ASTs from the previous list that that still exist in the new list
+        /// Returns the ASTs from the previous list that that still exist in the new list
         /// </summary>
         /// <param name="prevASTList"></param>
         /// <param name="newASTList"></param>

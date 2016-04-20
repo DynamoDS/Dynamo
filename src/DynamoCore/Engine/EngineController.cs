@@ -94,7 +94,7 @@ namespace Dynamo.Engine
 
 
         /// <summary>
-        /// Return libary service instance.
+        /// Returns library service instance.
         /// </summary>
         public LibraryServices LibraryServices
         {
@@ -155,7 +155,7 @@ namespace Dynamo.Engine
         #region Function Groups
 
         /// <summary>
-        /// Return all function groups.
+        /// Returns all function groups.
         /// </summary>
         internal IEnumerable<FunctionGroup> GetFunctionGroups()
         {
@@ -303,7 +303,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Return true if there are graph sync data in the queue waiting to be executed.
+        /// Returns true if there are graph sync data in the queue waiting to be executed.
         /// </summary>
         /// <returns></returns>
         public bool HasPendingGraphSyncData
@@ -325,7 +325,7 @@ namespace Dynamo.Engine
 
         /// <summary>
         /// Generate graph sync data based on the input Dynamo custom node information.
-        /// Return false if all nodes are clean.
+        /// Returns false if all nodes are clean.
         /// </summary>
         /// <param name="nodes"></param>
         /// <param name="definition"></param>

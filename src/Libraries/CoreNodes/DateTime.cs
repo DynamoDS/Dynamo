@@ -167,7 +167,7 @@ namespace DSCore
         }
 
         /// <summary>
-        /// Queries the Day of the Week from a given DateTime.
+        /// Returns the Day of the Week from a given DateTime.
         /// </summary>
         /// <param name="dateTime">A DateTime object.</param>
         /// <returns name="dayOfWeek">Day of the week</returns>

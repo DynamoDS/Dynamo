@@ -46,7 +46,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        ///     Query function descriptor from mangled function name
+        ///     Returns function descriptor from mangled function name
         /// </summary>
         /// <param name="managledName"></param>
         /// <returns></returns>

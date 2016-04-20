@@ -314,7 +314,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Return all function groups.
+        /// Returns all function groups.
         /// </summary>
         internal IEnumerable<FunctionGroup> GetAllFunctionGroups()
         {

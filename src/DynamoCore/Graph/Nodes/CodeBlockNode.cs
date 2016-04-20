@@ -401,7 +401,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Return possible type of the output at specified output port.
+        /// Returns possible type of the output at specified output port.
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
@@ -1043,7 +1043,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Queries variables from AST nodes.
+        /// Returns variables from AST nodes.
         /// E.g. a+5. Here "a" is variable.
         /// </summary>
         /// <param name="astNode"><see cref="Node"/></param>
@@ -1143,7 +1143,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Queries statement type.
+        /// Returns statement type.
         /// </summary>
         /// <param name="astNode"><see cref="Node"/></param>
         /// <returns>StatementType</returns>

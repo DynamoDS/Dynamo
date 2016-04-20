@@ -20,7 +20,7 @@ namespace Dynamo.Events
         public static event ExecutionStateHandler GraphPostExecution;
 
         /// <summary>
-        /// Queries active session for the execution, when Graph is executing. 
+        /// Returns active session for the execution, when Graph is executing. 
         /// This property is set to null if graph is not executing.
         /// </summary>
         public static IExecutionSession ActiveSession { get; private set; }

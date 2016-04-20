@@ -131,13 +131,13 @@ namespace Dynamo.Updates
     public interface IDynamoLookUp
     {
         /// <summary>
-        /// Queries installation path for all version of this Dynamo Product
+        /// Returns installation path for all version of this Dynamo Product
         /// installed on this system.
         /// </summary>
         IEnumerable<string> GetDynamoInstallLocations();
 
         /// <summary>
-        /// Queries a list of user data folders on this system.
+        /// Returns a list of user data folders on this system.
         /// </summary>
         /// <returns>
         /// The implementation of this interface method should return a list of user 
@@ -147,7 +147,7 @@ namespace Dynamo.Updates
         IEnumerable<string> GetDynamoUserDataLocations();
 
         /// <summary>
-        /// Queries the version of latest installed product
+        /// Returns the version of latest installed product
         /// </summary>
         BinaryVersion LatestProduct { get; }
     }
@@ -178,12 +178,12 @@ namespace Dynamo.Updates
         bool ForceUpdate { get; set; }
 
         /// <summary>
-        /// Queries the base name of the installer to be used for upgrade.
+        /// Returns the base name of the installer to be used for upgrade.
         /// </summary>
         string InstallerNameBase { get; set; }
 
         /// <summary>
-        /// Queries IDynamoLookUp interface to search Dynamo installations on the system.
+        /// Returns IDynamoLookUp interface to search Dynamo installations on the system.
         /// </summary>
         IDynamoLookUp DynamoLookUp { get; set; }
     }
@@ -353,7 +353,7 @@ namespace Dynamo.Updates
         public bool ForceUpdate { get; set; }
 
         /// <summary>
-        /// Queries the base name of the installer to be used for upgrade.
+        /// Returns the base name of the installer to be used for upgrade.
         /// </summary>
         public string InstallerNameBase { get; set; }
 
@@ -472,7 +472,7 @@ namespace Dynamo.Updates
         }
 
         /// <summary>
-        /// Queries the update manager config file path.
+        /// Returns the update manager config file path.
         /// </summary>
         /// <param name="filePath">Full path for the config file</param>
         /// <returns>True if file exists.</returns>
@@ -912,7 +912,7 @@ namespace Dynamo.Updates
         #region Private Class Helper Methods
 
         /// <summary>
-        /// Query the file name of the latest build on S3
+        /// Returns the file name of the latest build on S3
         /// </summary>
         /// <param name="request"></param>
         /// <param name="checkDailyBuilds"></param>
@@ -969,7 +969,7 @@ namespace Dynamo.Updates
         }
 
         /// <summary>
-        /// Query a build time from a file path.
+        /// Returns a build time from a file path.
         /// </summary>
         /// <param name="installNameBase"></param>
         /// <param name="filePath"></param>
@@ -1007,7 +1007,7 @@ namespace Dynamo.Updates
         }
 
         /// <summary>
-        /// Query a binary version for the executing assembly
+        /// Returns a binary version for the executing assembly
         /// </summary>
         /// <returns>A BinaryVersion</returns>
         internal static BinaryVersion GetCurrentBinaryVersion()
@@ -1019,7 +1019,7 @@ namespace Dynamo.Updates
         }
 
         /// <summary>
-        /// Query a BinaryVersion from a file path.
+        /// Returns a BinaryVersion from a file path.
         /// </summary>
         /// <param name="installNameBase">The base install name.</param>
         /// <param name="filePath">The path name of the file.</param>
@@ -1213,7 +1213,7 @@ namespace Dynamo.Updates
     internal abstract class DynamoLookUp : IDynamoLookUp
     {
         /// <summary>
-        /// Queries the version of latest product
+        /// Returns the version of latest product
         /// </summary>
         public BinaryVersion LatestProduct { get { return GetLatestInstallVersion(); } }
 
@@ -1232,13 +1232,13 @@ namespace Dynamo.Updates
         }
 
         /// <summary>
-        /// Queries all dynamo install path on the system by looking into the Windows registry. 
+        /// Returns all dynamo install path on the system by looking into the Windows registry. 
         /// </summary>
         /// <returns>List of Dynamo install path</returns>
         public abstract IEnumerable<string> GetDynamoInstallLocations();
 
         /// <summary>
-        /// Queries the full path of user data location of all version of this
+        /// Returns the full path of user data location of all version of this
         /// Dynamo product installed on this system. The default implementation
         /// returns list of all subfolders in %appdata%\Dynamo as well as 
         /// %appdata%\Dynamo\Dynamo Core\ folders.

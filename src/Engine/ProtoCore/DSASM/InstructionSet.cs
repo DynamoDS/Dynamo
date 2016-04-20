@@ -163,7 +163,7 @@ namespace ProtoCore.DSASM
 
         #region Get raw values
         /// <summary>
-        /// Query raw data without checking its type or do type conversion.
+        /// Returns raw data without checking its type or do type conversion.
         /// Use with caution.
         /// </summary>
         public long RawData
@@ -960,7 +960,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Query an array's next key
+        /// Returns an array's next key
         /// </summary>
         /// <param name="key"></param>
         /// <param name="core"></param>

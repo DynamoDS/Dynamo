@@ -20,7 +20,7 @@ using Type = ProtoCore.Type;
 namespace Dynamo.Engine.CodeGeneration
 {
     /// <summary>
-    /// Query notification for AST compilation events.                                                 
+    /// Returns notification for AST compilation events.                                                 
     /// </summary>
     public interface IAstNodeContainer
     {
