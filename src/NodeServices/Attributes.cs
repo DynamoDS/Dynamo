@@ -312,7 +312,8 @@ namespace Autodesk.DesignScript.Runtime
     /// of scope. The life-cycle of parameter will have the same life-cycle as
     /// the return object.
     /// 
-    /// Note the return object should be reference type.
+    /// Note the type of return object should be reference type, either a
+    /// pointer or an array.
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter)]
     public class KeepReferenceAttribute : Attribute
@@ -320,9 +321,13 @@ namespace Autodesk.DesignScript.Runtime
     }
 
     /// <summary>
-    /// This attribute indicates the return object should reference to this object.
+    /// This attribute is applied to member function of zero touch libary.
+    /// It indicates the return object should keep a reference to "this"
+    /// object so that even "this" object is out of scope, it will not be
+    /// disposed.
     ///
-    /// Note the return object should be reference type.
+    /// Note the type of return object should be reference type, either a
+    /// pointer or an array.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public class KeepReferenceThisAttribute : Attribute

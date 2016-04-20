@@ -97,6 +97,11 @@ namespace ProtoFFI
         public string Name { get { return Info.Name; } }
 
         private bool? keepReferenceThis;
+        /// <summary>
+        /// If the member has "KeepReferenceThis" attribute, the returned
+        /// DS object will be expanded and be added a reference to "this"
+        /// object.
+        /// </summary>
         public bool KeepReferenceThis
         {
             get
