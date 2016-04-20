@@ -6,7 +6,7 @@ using Dynamo.Utilities;
 namespace Dynamo.Graph.Connectors
 {
     /// <summary>
-    /// Idicates which type of connector's should be displayed on canvas.
+    /// Returns the Type of connector.
     /// </summary>
     public enum ConnectorType
     {
@@ -22,7 +22,7 @@ namespace Dynamo.Graph.Connectors
     };
 
     /// <summary>
-    /// Represents a connector between nodes. Connector can be a bezier or polyline type.
+    /// Represents a connector between nodes. Connector can be a bezier or polyline <see cref="ConnectorType"/>.
     /// </summary>
     public class ConnectorModel : ModelBase
     {

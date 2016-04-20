@@ -6,7 +6,7 @@ using Dynamo.Graph.Nodes;
 namespace Dynamo.Graph.Workspaces
 {
     /// <summary>
-    /// An interface of Workspace Model
+    /// Exposes workspace model.
     /// </summary>
     public interface IWorkspaceModel
     {

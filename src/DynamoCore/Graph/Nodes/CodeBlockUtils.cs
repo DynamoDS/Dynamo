@@ -7,7 +7,7 @@ using Dynamo.Configuration;
 namespace Dynamo.Graph.Nodes
 {
     /// <summary>
-    /// Contains helper methods to adjust content of CodeBlock node.
+    /// Contains helper methods to adjust the contents of codeblock node.
     /// </summary>
     public static class CodeBlockUtils
     {

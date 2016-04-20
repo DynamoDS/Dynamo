@@ -3,7 +3,7 @@
 namespace Dynamo.Search
 {
     /// <summary>
-    ///     This class represents "descendant" of browser element
+    ///     This class represents internal elements of browser item
     /// </summary>
     public class BrowserInternalElement : BrowserItem
     {

@@ -16,7 +16,7 @@ using ProtoCore.Namespace;
 namespace Dynamo.Graph.Workspaces
 {
     /// <summary>
-    /// Extension of standard WorkspaceModel. Represents workspace of CustomNode inner functionality.
+    /// This class contains methods and properties that defines a customnodeworkspace.
     /// </summary>
     public class CustomNodeWorkspaceModel : WorkspaceModel, ICustomNodeWorkspaceModel
     {

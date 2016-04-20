@@ -260,7 +260,8 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     }
 
     /// <summary>
-    ///     Represents input of Custom Node instance.
+    ///     Represents function entry point.
+    ///     It contains functionality to manage expressions and applies input values to function logic.
     /// </summary>
     [NodeName("Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
@@ -474,7 +475,8 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     }
 
     /// <summary>
-    /// Represents output of CustomNode
+    ///     Represents function output.
+    ///     It contains functionality to manage expressions and store function's node value to pass. 
     /// </summary>
     [NodeName("Output")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]

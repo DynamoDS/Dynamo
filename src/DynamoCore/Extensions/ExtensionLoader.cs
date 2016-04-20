@@ -13,7 +13,15 @@ using System.Xml;
 namespace Dynamo.Extensions
 {
     /// <summary>
-    /// Provides functionality for loading Dynamo's extensions
+    /// Provides functionality for loading Dynamo's extensions.
+    /// This class loads particulary formatted XMLs which contain information about
+    /// *Extension.dll and type name of IExtension inheritor.
+    /// 
+    /// Example:
+    /// <ViewExtensionDefinition>
+    ///   <AssemblyPath>..\ExtansionName.dll</AssemblyPath>
+    ///   <TypeName>Dynamo.ExtansionName.ExtansionTypeName</TypeName>
+    /// </ViewExtensionDefinition>
     /// </summary>
     public class ExtensionLoader: IExtensionLoader, ILogSource
     {
