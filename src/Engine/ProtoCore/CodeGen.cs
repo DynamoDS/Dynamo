@@ -1018,18 +1018,31 @@ namespace ProtoCore
 
             if (classScope != Constants.kGlobalScope)
             {
-                if (IsInLanguageBlockDefinedInFunction())
+                if (currentCodeBlock.blockType != CodeBlockType.Function)
                 {
-                    symbolIndex = currentCodeBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
-                    if (symbolIndex != Constants.kInvalidIndex)
+                    // step 1: go through nested language block chain till the top one
+                    while (symbolIndex == Constants.kInvalidIndex && currentCodeBlock.parent != null)
                     {
-                        symbol = currentCodeBlock.symbolTable.symbolList[symbolIndex];
-                        isAccessible = true;
-                        return true;
+                        symbolIndex = currentCodeBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
+                        if (symbolIndex == Constants.kInvalidIndex)
+                        {
+                            currentCodeBlock = currentCodeBlock.parent;
+                            if (currentCodeBlock.parent == null)
+                            {
+                                // currentCodeBlock is top language block. Break here.
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            symbol = currentCodeBlock.symbolTable.symbolList[symbolIndex];
+                            isAccessible = true;
+                            return true;
+                        }
                     }
                 }
 
-                if ((int)ProtoCore.PrimitiveType.Void == classScope)
+                if ((int)PrimitiveType.Void == classScope)
                 {
                     return false;
                 }
@@ -1043,8 +1056,6 @@ namespace ProtoCore
                         // correct symbol if the same symbol exists in different contexts such as inside a function defined in a lang block,
                         // inside the lang block itself and in a function in the global scope etc.
                         // TODO: We can later consider replacing GetSymbolInFunction with GetFirstVisibleSymbol consistently in all occurrences 
-                        
-                        //symbol = core.GetSymbolInFunction(name, classScope, functionScope, currentCodeBlock);
                         symbol = core.GetFirstVisibleSymbol(name, classScope, functionScope, currentCodeBlock);
                         if (symbol != null)
                         {
@@ -1074,10 +1085,7 @@ namespace ProtoCore
                     isAccessible = true;
                 }
 
-                if (hasThisSymbol)
-                {
-                    return true;
-                }
+                return hasThisSymbol;
             }
             else
             {
@@ -2489,6 +2497,8 @@ namespace ProtoCore
             
         protected bool InsideFunction()
         {
+            return localProcedure != null;
+            /*
             ProtoCore.DSASM.CodeBlock cb = codeBlock;
             while (cb != null)
             {
@@ -2500,6 +2510,7 @@ namespace ProtoCore
                 cb = cb.parent;
             }
             return false;
+            */
         }
 
         // used to manully emit "return = null" instruction if a function or language block does not have a return statement

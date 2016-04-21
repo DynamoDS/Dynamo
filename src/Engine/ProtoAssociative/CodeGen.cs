@@ -2209,7 +2209,7 @@ namespace ProtoAssociative
 
                 inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
                 hasReturnStatement = EmitCodeBlock(codeblock.Body, ref inferedType, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier, false);
-                if (compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.GlobalScope && !hasReturnStatement)
+                if (compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.GlobalFuncBody && !hasReturnStatement)
                 {
                     EmitReturnNull(); 
                 }
