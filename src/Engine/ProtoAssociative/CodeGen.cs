@@ -2209,7 +2209,7 @@ namespace ProtoAssociative
 
                 inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
                 hasReturnStatement = EmitCodeBlock(codeblock.Body, ref inferedType, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier, false);
-                if (compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.GlobalFuncBody && !hasReturnStatement)
+                if (compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.GlobalScope && !hasReturnStatement)
                 {
                     EmitReturnNull(); 
                 }
@@ -6683,20 +6683,20 @@ namespace ProtoAssociative
 
         private bool IsParsingGlobal()
         {
-            return localProcedure == null &&
-                   ProtoCore.CompilerDefinitions.Associative.CompilePass.GlobalScope == compilePass;
+            return !InsideFunction() &&
+                   compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.GlobalScope;
         }
 
         private bool IsParsingGlobalFunctionBody()
         {
-            return localProcedure != null &&
-                   globalClassIndex == Constants.kGlobalScope &&
-                   ProtoCore.CompilerDefinitions.Associative.CompilePass.GlobalFuncBody == compilePass;
+            return InsideFunction() &&
+                   compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.GlobalFuncBody;
         }
 
         private bool IsParsingMemberFunctionBody()
         {
-            return (ProtoCore.DSASM.Constants.kGlobalScope != globalClassIndex) && (ProtoCore.CompilerDefinitions.Associative.CompilePass.ClassMemFuncBody == compilePass);
+            return Constants.kGlobalScope != globalClassIndex && 
+                   compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.ClassMemFuncBody;
         }
 
         private bool IsParsingGlobalFunctionSig()

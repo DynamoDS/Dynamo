@@ -2497,9 +2497,7 @@ namespace ProtoCore
             
         protected bool InsideFunction()
         {
-            return localProcedure != null;
-            /*
-            ProtoCore.DSASM.CodeBlock cb = codeBlock;
+            CodeBlock cb = codeBlock;
             while (cb != null)
             {
                 if (cb.blockType == ProtoCore.DSASM.CodeBlockType.Function)
@@ -2510,7 +2508,6 @@ namespace ProtoCore
                 cb = cb.parent;
             }
             return false;
-            */
         }
 
         // used to manully emit "return = null" instruction if a function or language block does not have a return statement
