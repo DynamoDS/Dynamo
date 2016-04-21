@@ -6683,12 +6683,15 @@ namespace ProtoAssociative
 
         private bool IsParsingGlobal()
         {
-            return (!InsideFunction()) && (ProtoCore.CompilerDefinitions.Associative.CompilePass.GlobalScope == compilePass);
+            return localProcedure == null &&
+                   ProtoCore.CompilerDefinitions.Associative.CompilePass.GlobalScope == compilePass;
         }
 
         private bool IsParsingGlobalFunctionBody()
         {
-            return (InsideFunction()) && (ProtoCore.CompilerDefinitions.Associative.CompilePass.GlobalFuncBody == compilePass);
+            return localProcedure != null &&
+                   globalClassIndex == Constants.kGlobalScope &&
+                   ProtoCore.CompilerDefinitions.Associative.CompilePass.GlobalFuncBody == compilePass;
         }
 
         private bool IsParsingMemberFunctionBody()
