@@ -365,7 +365,7 @@ namespace ProtoImperative
             ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, 
             ProtoCore.AST.Node bnode = null)
         {
-            if (!IsParsingGlobal() && !IsParsingGlobalFunctionBody())
+            if (!IsParsingGlobal())
             {
                 return null;
             }
@@ -721,43 +721,37 @@ namespace ProtoImperative
 
             this.localCodeBlockNode = codeBlockNode;
             ProtoCore.AST.ImperativeAST.CodeBlockNode codeblock = codeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode;
-            bool isTopBlock = null == codeBlock.parent;
-            if (!isTopBlock)
-            {
-                // If this is an inner block where there can be no classes, we can start at parsing at the global function state
-                compilePass = ProtoCore.CompilerDefinitions.Imperative.CompilePass.GlobalFuncSig;
-            }
+            // Imperative language block would never be the top language block.
+            compilePass = ProtoCore.CompilerDefinitions.Imperative.CompilePass.GlobalScope;
 
             bool hasReturnStatement = false;
             ProtoCore.Type type = new ProtoCore.Type();
-            while (ProtoCore.CompilerDefinitions.Imperative.CompilePass.Done != compilePass)
+
+            foreach (ImperativeNode node in codeblock.Body)
             {
-                foreach (ImperativeNode node in codeblock.Body)
+                type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
+
+                if (node is LanguageBlockNode)
                 {
-                    type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
-
-                    if (node is LanguageBlockNode)
-                    {
-                        // Build a binary node with a temporary lhs for every stand-alone language block
-                        var iNode = nodeBuilder.BuildIdentfier(core.GenerateTempLangageVar());
-                        var langBlockNode = nodeBuilder.BuildBinaryExpression(iNode, node);
-                        DfsTraverse(langBlockNode, ref type, false, graphNode);
-                    }
-                    else
-                    {
-                        DfsTraverse(node, ref type, false, graphNode);
-                    }                    
-
-                    if (ProtoCore.Utils.NodeUtils.IsReturnExpressionNode(node))
-                        hasReturnStatement = true;
+                    // Build a binary node with a temporary lhs for every stand-alone language block
+                    var iNode = nodeBuilder.BuildIdentfier(core.GenerateTempLangageVar());
+                    var langBlockNode = nodeBuilder.BuildBinaryExpression(iNode, node);
+                    DfsTraverse(langBlockNode, ref type, false, graphNode);
                 }
-                if (compilePass == ProtoCore.CompilerDefinitions.Imperative.CompilePass.GlobalScope && !hasReturnStatement)
+                else
                 {
-                    EmitReturnNull();
+                    DfsTraverse(node, ref type, false, graphNode);
                 }
 
-                compilePass++;
+                if (ProtoCore.Utils.NodeUtils.IsReturnExpressionNode(node))
+                    hasReturnStatement = true;
             }
+
+            if (!hasReturnStatement)
+            {
+                EmitReturnNull();
+            }
+
 
             core.InferedType = type;
 
@@ -934,7 +928,7 @@ namespace ProtoImperative
 
         private void EmitLanguageBlockNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode propogateUpdateGraphNode = null)
         {
-            if (IsParsingGlobal() || IsParsingGlobalFunctionBody())
+            if (IsParsingGlobal())
             {
                 LanguageBlockNode langblock = node as LanguageBlockNode;
                 //(Fuqiang, Ayush) : Throwing an assert stops NUnit. Negative tests expect to catch a 
@@ -1039,7 +1033,7 @@ namespace ProtoImperative
                 return;
             }
 
-            if (IsParsingGlobal() || IsParsingGlobalFunctionBody())
+            if (IsParsingGlobal())
             {
                 /*
                                 def backpatch(bp, pc)
@@ -1306,7 +1300,7 @@ namespace ProtoImperative
                 return;
             }
 
-            if (IsParsingGlobal() || IsParsingGlobalFunctionBody())
+            if (IsParsingGlobal())
             {
                 /*
                    
@@ -1395,7 +1389,7 @@ namespace ProtoImperative
         private void EmitBinaryExpressionNode(ImperativeNode node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null,
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode parentNode = null)
         {
-            if (!IsParsingGlobal() && !IsParsingGlobalFunctionBody())
+            if (!IsParsingGlobal())
                 return;
 
             bool isBooleanOperation = false;
@@ -1794,7 +1788,7 @@ namespace ProtoImperative
 
         private void EmitUnaryExpressionNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AST.ImperativeAST.BinaryExpressionNode parentNode)
         {
-            if (IsParsingGlobal() || IsParsingGlobalFunctionBody())
+            if (IsParsingGlobal())
             {
                 UnaryExpressionNode u = node as UnaryExpressionNode;
                 bool isPrefixOperation = ProtoCore.DSASM.UnaryOperator.Increment == u.Operator || ProtoCore.DSASM.UnaryOperator.Decrement == u.Operator;
@@ -1833,7 +1827,7 @@ namespace ProtoImperative
                 return;
             }
 
-            if (IsParsingGlobal() || IsParsingGlobalFunctionBody())
+            if (IsParsingGlobal())
             {
                 /*
                 x = 0;
@@ -2515,14 +2509,9 @@ namespace ProtoImperative
             return (!InsideFunction()) && (ProtoCore.CompilerDefinitions.Imperative.CompilePass.GlobalScope == compilePass);
         }
 
-        private bool IsParsingGlobalFunctionBody()
-        {
-            return (InsideFunction()) && (ProtoCore.CompilerDefinitions.Imperative.CompilePass.GlobalFuncBody == compilePass);
-        }
-
         protected void EmitIdentifierListNode(ProtoCore.AST.ImperativeAST.ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.AST.Node parentNode = null)
         {
-            if (parentNode == null && !IsParsingGlobal() && !IsParsingGlobalFunctionBody())
+            if (parentNode == null && !IsParsingGlobal())
                 return;
 
             EmitIdentifierListNode(node, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);

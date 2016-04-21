@@ -22,10 +22,9 @@ namespace ProtoCore
                 ClassMemFuncSig,
                 GlobalFuncSig,
 
-                GlobalScope,
-
                 ClassMemFuncBody,
                 GlobalFuncBody,
+                GlobalScope,
                 Done
             }
 
@@ -42,9 +41,7 @@ namespace ProtoCore
         {
             public enum CompilePass
             {
-                GlobalFuncSig,
                 GlobalScope,
-                GlobalFuncBody,
                 Done
             }
         }

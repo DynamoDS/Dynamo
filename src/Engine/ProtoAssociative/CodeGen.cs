@@ -2177,7 +2177,7 @@ namespace ProtoAssociative
             if (!isTopBlock)
             {
                 // If this is an inner block where there can be no classes, we can start at parsing at the global function state
-                compilePass = ProtoCore.CompilerDefinitions.Associative.CompilePass.GlobalFuncSig;
+                compilePass = ProtoCore.CompilerDefinitions.Associative.CompilePass.GlobalScope;
             }
 
             codeblock.Body = ApplyTransform(codeblock.Body);
