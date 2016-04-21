@@ -1544,9 +1544,12 @@ namespace ProtoScript.Runners
                 System.Diagnostics.Debug.WriteLine(code);
             }
 
-            ResetForDeltaExecution();
-            CompileAndExecute(dispatchASTList);
-            PostExecution();
+            if (dispatchASTList.Any())
+            {
+                ResetForDeltaExecution();
+                CompileAndExecute(dispatchASTList);
+                PostExecution();
+            }
         }
 
         private List<Guid> PreviewInternal(GraphSyncData syncData)
