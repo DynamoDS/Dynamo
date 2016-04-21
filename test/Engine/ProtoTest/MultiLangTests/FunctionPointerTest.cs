@@ -43,11 +43,6 @@ c = foo(2, 4.0); //c = 6.0";
         public void T03_GlobalFunctionInAssocBlk()
         {
             string code = @"
-a;
-b;
-c;
-[Associative]
-{
 	def foo:double(x:int, y:double = 2.0)
 	{
 		return = x + y;
@@ -55,7 +50,7 @@ c;
 	a = foo;
 	b = foo(3); //b=5.0;
 	c = foo(2, 4.0); //c = 6.0
-}";
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object b = 5.0;
             object c = 6.0;

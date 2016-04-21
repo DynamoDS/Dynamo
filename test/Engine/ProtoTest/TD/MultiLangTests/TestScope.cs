@@ -609,12 +609,12 @@ z_2;
         {
             string src = @"z_1;
 z_2;
-[Associative]
-{
 	def foo : int(a : int, b : int)
 	{
 		return = a - b;
 	}
+[Associative]
+{
 	[Imperative]	
 	{
 		x_1 = 20;
@@ -641,13 +641,13 @@ z_2;
         public void T023_LanguageBlockScope_AssociativeParallelImperative_Function()
         {
             string src = @"z;
-[Associative]
-{
 	def foo : int(a : int, b : int)
 	{
 		return = a - b;
 	}
 	 
+[Associative]
+{
 	a = 10;
 	
 }
@@ -705,15 +705,14 @@ z_2;
             //Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             //{
             string src = @"z;
-[Associative]
-{
 	def foo : int(a : int, b : int)
 	{
 		return = a - b;
 	}
 	 
+[Associative]
+{
 	a = 10;
-	
 }
 [Associative]	
 {
@@ -765,15 +764,14 @@ z_2;
             //{
             string src = @"z_1;
 z_2;
-[Associative]
-{
 	def foo : int(a : int, b : int)
 	{
 		return = a - b;
 	}
 	 
+[Associative]
+{
 	a = 10;
-	
 }
 [Imperative]	
 {
@@ -840,13 +838,13 @@ z_2;
 z_I2;
 z_A1;
 z_A2;
-[Associative]
-{
 	def foo : int(a : int, b : int)
 	{
 		return = a - b;
 	}
 	 
+[Associative]
+{
 	[Imperative]
 	{
 	x_I1 = 50;

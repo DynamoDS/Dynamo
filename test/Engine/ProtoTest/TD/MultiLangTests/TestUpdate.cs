@@ -3070,34 +3070,6 @@ c = Print(b);
 
         [Test]
         [Category("SmokeTest")]
-        public void T62_update_wrongsequnce_1467484_10()
-        {
-            String code = @"
-a;
-b;
-c;
-m;
-n;
-def foo()
-{
-a = 1;
-b = a;
-c = b;
-return =true;
-}
-z = foo();
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a", 1);
-            thisTest.Verify("b", 1);
-            thisTest.Verify("c", 1);
-            thisTest.Verify("z", true);
-
-        }
-
-        [Test]
-        [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_11()
         {
             String code = @"
@@ -3163,70 +3135,6 @@ a = 3;
     n = m;
     a = 2;
 ";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a", 2);
-            thisTest.Verify("b", 2);
-            thisTest.Verify("c", 2);
-            thisTest.Verify("m", 6);
-            thisTest.Verify("n", 6);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T62_update_wrongsequnce_1467484_14()
-        {
-            String code = @"
-a;
-b;
-c;
-m;
-n;
-def foo()
-{
-    a = 1;
-    b = a;
-    c = b;
-    m = a + b + c;
-    n = m;
-    a = 2;
-    return =true;
-}
-z = foo();
-   
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a", 2);
-            thisTest.Verify("b", 2);
-            thisTest.Verify("c", 2);
-            thisTest.Verify("m", 6);
-            thisTest.Verify("n", 6);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T62_update_wrongsequnce_1467484_15()
-        {
-            String code = @"
-                        a;
-                        b;
-                        c;
-                        m;
-                        n;
-                        def foo()
-                        {
-                            a = 1;
-                            b = a;
-                            c = b;
-                            m = a + b + c;
-                            n = m;
-                            a = 2;
-                            return =true;
-                        }
-                        z = foo();
-   
-                        ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 2);

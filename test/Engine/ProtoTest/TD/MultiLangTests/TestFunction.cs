@@ -1052,13 +1052,13 @@ b1;
         {
             string code = @"
 b2;
-[Associative]
-{ 
 	 def foo2 : double ( a : double )
 	 {
 	    return = 5;
 	 }
 	 
+[Associative]
+{ 
 	dummyArg = 1.5;
 	
 	b2 = foo2 ( dummyArg );
@@ -1077,13 +1077,13 @@ b2;
             //{
             string code = @"
 b2;
-[Associative]
-{ 
 	 def foo3 : int ( a : double )
 	 {
 	    return = 5.5;
 	 }
 	 
+[Associative]
+{ 
 	dummyArg = 1.5;
 	
 	b2 = foo3 ( dummyArg );
@@ -1106,14 +1106,15 @@ b2;
             //Assert.Fail("1467156 - Sprint 25 - Rev 3026 type checking of return types at run time ");
             string code = @"
 import(""FFITarget.dll"");
-b2 = [Associative]
-{ 
 	 def foo3 : int ( a : double )
 	 {
 	    temp = ClassFunctionality.ClassFunctionality(1);
 		return = temp;
 	 }
-	 
+	
+b2 = [Associative]
+{ 
+ 
 	dummyArg = 1.5;
 	
 	return = foo3 ( dummyArg );	
@@ -1132,13 +1133,13 @@ b2 = [Associative]
             //Assert.Fail("1467156 - Sprint 25 - Rev 3026 type checking of return types at run time ");
             string code = @"
 b2;
-[Associative]
-{ 
 	 def foo3 : int[] ( a : double )
 	 {
 	    return = a;
 	 }
 	 
+[Associative]
+{ 
 	dummyArg = 1.5;
 	
 	b2 = foo3 ( dummyArg );	
@@ -1155,13 +1156,13 @@ b2;
             //Assert.Fail("1467156 - Sprint 25 - Rev 3026 type checking of return types at run time ");
             string code = @"
 b2;
-[Associative]
-{ 
 	 def foo3 : int ( a : double )
 	 {
 	    return = {1, 2};
 	 }
 	 
+[Associative]
+{ 
 	dummyArg = 1.5;
 	
 	b2 = foo3 ( dummyArg );	
@@ -1177,13 +1178,13 @@ b2;
         public void T40_Function_With_Mismatching_Return_Type()
         {
             string code = @"
-[Associative]
-{ 
 	 def foo3 : int[][] ( a : double )
 	 {
 	    return = { {2.5}, {3.5}};
 	 }
 	 
+[Associative]
+{ 
 	dummyArg = 1.5;
 	
 	b2 = foo3 ( dummyArg );	
@@ -1198,13 +1199,12 @@ b2;
         public void T41_Function_With_Mismatching_Return_Type()
         {
             string code = @"
-[Associative]
-{ 
 	 def foo3 : int[][] ( a : double )
 	 {
 	    return = { {2.5}, 3};
 	 }
-	 
+[Associative]
+{ 
 	dummyArg = 1.5;
 	
 	b2 = foo3 ( dummyArg );	
@@ -1220,13 +1220,13 @@ b2;
         {
             string code = @"
 b2;
-[Associative]
-{ 
 	 def foo3 : bool[]..[] ( a : double )
 	 {
 	    return = { {2}, 3};
 	 }
 	 
+[Associative]
+{ 
 	dummyArg = 1.5;
 	
 	b2 = foo3 ( dummyArg );	
@@ -1242,13 +1242,13 @@ b2;
         {
             string code = @"
 b2;
-[Associative]
-{ 
 	 def foo3 : int[]..[] ( a : double )
 	 {
 	    return = { { 0, 2 }, { 1 } };
 	 }
 	 
+[Associative]
+{ 
 	dummyArg = 1.5;
 	
 	b2 = foo3 ( dummyArg )[0][0];	
@@ -1283,13 +1283,13 @@ b2;
         {
             string code = @"
 b2;
-[Associative]
-{ 
 	 def foo : double ( a : double )
 	 {
 	    return = 1.5;
      }
 	
+[Associative]
+{ 
 	 b2 = foo ( 1 );	
 }
 ";
@@ -1324,13 +1324,13 @@ c;
         {
             string code = @"
 c;
-[Associative]
-{ 
 	 def foo : double ( a : double )
 	 {
 	    return = 1.5;
      }
 	
+[Associative]
+{ 
 	 b2 = foo ( true);	
 	 c = 3;	
 }
@@ -1354,12 +1354,12 @@ class A
 	    a = a1;
 	}
 }
-[Associative]
-{ 
 	 def foo : double ( a : int )
 	 {
 	    return = 1.5;
      }
+[Associative]
+{ 
 	 a = A.A1(1);
 	 b2 = foo ( a);	
 	 c = 3;	
@@ -1376,12 +1376,13 @@ class A
         {
             string code = @"
 import(""FFITarget.dll"");
-c = [Associative]
-{ 
 	 def foo : ClassFunctionality ( x : ClassFunctionality )
 	 {
 	    return = x;
      }
+c = [Associative]
+{ 
+
 	 aa = ClassFunctionality.ClassFunctionality(1);
 	 b2 = foo ( aa).IntVal;
 	 return = 3;	
@@ -1398,12 +1399,12 @@ c = [Associative]
         {
             string code = @"
 c;
-[Associative]
-{ 
 	 def foo : double ( a : int[] )
 	 {
 	    return = 1.5;
      }
+[Associative]
+{ 
 	 aa = { };
 	 b2 = foo ( aa );	
 	 c = 3;	
@@ -1419,12 +1420,12 @@ c;
         {
             string code = @"
 c;
-[Associative]
-{ 
 	 def foo : double ( a : double[] )
 	 {
 	    return = 1.5;
      }
+[Associative]
+{ 
 	 aa = {1, 2 };
 	 b2 = foo ( aa );	
 	 c = 3;	
@@ -1440,12 +1441,12 @@ c;
         {
             string code = @"
 c;
-[Associative]
-{ 
 	 def foo : double ( a : double[] )
 	 {
 	    return = 1.5;
      }
+[Associative]
+{ 
 	 aa = 1.5;
 	 b2 = foo ( aa );	
 	 c = 3;	
@@ -1461,13 +1462,13 @@ c;
         {
             string code = @"
 aa;b2;c;
-[Associative]
-{ 
 	 def foo : double ( a : double )
 	 {
 	    a = 4.5;
 		return = a;
      }
+[Associative]
+{ 
 	 aa = 1.5;
 	 b2 = foo ( aa );	
 	 c = 3;	
@@ -1534,13 +1535,13 @@ aa;b2;c;
         {
             string code = @"
 aa;bb;c;
-[Associative]
-{ 
 	 def foo : int[] ( a : int[] )
 	 {
 	    a[0] = 0;
 		return = a;
      }
+[Associative]
+{ 
 	 aa = { 1, 2 };
 	 bb = foo ( aa );	
 	 
@@ -1561,8 +1562,6 @@ aa;bb;c;
         {
             string code = @"
 aa;bb;c;
-[Associative]
-{ 
 	 def foo : int ( a : int )
 	 {
 	    a = 3;
@@ -1570,6 +1569,8 @@ aa;bb;c;
 		return = b;
      }
 	 
+[Associative]
+{ 
 	 aa = 1;
 	 bb = foo ( aa );
      c = 3;	 
@@ -3683,8 +3684,6 @@ def recursion: int ( a : int )
         {
             string code = @"
 x;y;
-[Associative]
-{
 	def recursion  : int( a : int)
 	{
 		temp = [Imperative]
@@ -3697,6 +3696,8 @@ x;y;
 		}		 
 		return = temp;
 	}
+[Associative]
+{
 	x = recursion( 4 );
 	y = recursion( -1 );
 }";
@@ -3712,8 +3713,6 @@ x;y;
             string code = @"
 result;
 a;
-[Associative]
-{
  def Level1 : int (a : int)
  {
   return = Level2(a+1);
@@ -3723,6 +3722,9 @@ a;
  {
   return = a + 1;
  }
+[Associative]
+{
+
  input = 3;
  result = Level1(input); 
 }
@@ -3789,13 +3791,13 @@ def foo2 ( a )
             string code = @"
 a1;b1;c1;
 a2;b2;c2;
-[Associative]
-{ 
 	 def foo1 : int[] ( a : int[] )
 	 {
 	    a[0] = 0;
             return = a;
          }
+[Associative]
+{ 
 	 aa = { 1, 2 };
 	 bb = foo1 ( aa );	
 	 a1 = aa[0];
@@ -3860,8 +3862,6 @@ a;b;
         {
             string code = @"
 b1;b2;
-[Associative]
-{
     def foo : int ( a : int )
 	{
 		c = [Imperative]
@@ -3876,6 +3876,8 @@ b1;b2;
 		return  = a + c;
 	}
 	
+[Associative]
+{
 	a = 2;
 	b1 = foo (a );	
 }

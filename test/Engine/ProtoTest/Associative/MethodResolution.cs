@@ -50,37 +50,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void SimpleMethodOverload2()
-        {
-            String code =
-@"
-	x : var;
-	y : var;
-    def scale : int()
-	{
-		x = x * 2;
-		y = y * 2;
-        return = 0;
-	}
-    def scale : int(s: int)
-	{
-		x = x * s;
-		y = y * s;
-        return = 0;
-	}
-
-	x = 10;
-    y = 40;
-	n = scale();
-	n = scale(10);
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 200);
-            thisTest.Verify("y", 800);
-        }
-
-        [Test]
         [Ignore][Category("DSDefinedClass_Ignored")]
         public void SimpleCtorResolution04()
         {

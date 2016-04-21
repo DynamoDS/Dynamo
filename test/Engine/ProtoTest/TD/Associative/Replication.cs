@@ -1289,14 +1289,13 @@ c;
             String code =
 @"
 test;
-[Associative]
-{
     def mult : int( s : int )	
 	{
 		return = s * 2;
 	}
+[Associative]
+{
     test = mult({5});
-    
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);

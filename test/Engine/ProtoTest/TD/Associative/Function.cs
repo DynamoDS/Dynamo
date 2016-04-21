@@ -14,20 +14,17 @@ namespace ProtoTest.TD.Associative
 a;
 b;
 sum;
-[Associative]
-{
 	def Sum : int(a : int, b : int)
 	{
 	
 		return = a + b;
 	}
-	
+[Associative]
+{
 	a = 1;
 	b = 10;
 	
 	sum = Sum (a, b);
-	
-	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", 1);
@@ -43,12 +40,12 @@ sum;
         {
             string code = @"
 d;
-[Associative]
-{
 	def singleLine : int(a:int, b:int) 
     {
         return = 10;
     }
+[Associative]
+{
 	d = singleLine(1,3);
 	
 }";
