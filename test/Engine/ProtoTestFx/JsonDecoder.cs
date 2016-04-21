@@ -69,7 +69,7 @@ namespace ProtoTestFx
         }
 
         /// <summary>
-        /// Get a single verification pair from the current state of the reader
+        /// Returns a single verification pair from the current state of the reader
         /// </summary>
         /// <param name="reader"></param>
         /// <returns></returns>

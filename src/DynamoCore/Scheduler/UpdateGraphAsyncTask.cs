@@ -150,7 +150,7 @@ namespace Dynamo.Scheduler
         }
 
         /// <summary>
-        /// Return if this task's graph sync data is a super set of the other
+        /// Returns true if this task's graph sync data is a super set of the other
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
@@ -233,7 +233,7 @@ namespace Dynamo.Scheduler
 
         /// <summary>
         /// Call this method to recursively gather downstream nodes of a given node.
-        /// Get only those nodes that are in RUN state.
+        /// Returns only those nodes that are in RUN state.
         /// </summary>
         /// <param name="node">A NodeModel whose downstream nodes are to be gathered.</param>
         /// <param name="gathered">A list of all downstream nodes.</param>

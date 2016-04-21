@@ -118,17 +118,17 @@ namespace ProtoCore.Namespace
         }
 
         /// <summary>
-        /// Gets fully qualified symbol name.
+        /// Returns fully qualified symbol name.
         /// </summary>
         public string FullName { get; private set; }
 
         /// <summary>
-        /// Gets symbol name
+        /// Returns symbol name
         /// </summary>
         public string Name { get { return symbolname; } }
 
         /// <summary>
-        /// Gets symbol id
+        /// Returns symbol id
         /// </summary>
         public int Id { get; set; }
 
@@ -264,7 +264,7 @@ namespace ProtoCore.Namespace
         }
 
         /// <summary>
-        /// Gets hascode based on FullName
+        /// Returns hascode based on FullName
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()
@@ -336,7 +336,7 @@ namespace ProtoCore.Namespace
         }
 
         /// <summary>
-        /// Gets all matching symbols for the given partially qualified symbol.
+        /// Returns all matching symbols for the given partially qualified symbol.
         /// </summary>
         /// <param name="partialName">Partially qualified symbol</param>
         /// <returns>An array of all matched symbols</returns>
@@ -417,7 +417,7 @@ namespace ProtoCore.Namespace
         }
 
         /// <summary>
-        /// Gets total symbol count in the table
+        /// Returns total symbol count in the table
         /// </summary>
         /// <returns>Symbol count</returns>
         public int GetSymbolCount()
@@ -431,7 +431,7 @@ namespace ProtoCore.Namespace
         }
 
         /// <summary>
-        /// Gets all symbols for the given name that satisfies the input predicate
+        /// Returns all symbols for the given name that satisfies the input predicate
         /// </summary>
         /// <param name="name">symbol name for lookup</param>
         /// <param name="predicate">predicate for lookup</param>
@@ -457,7 +457,7 @@ namespace ProtoCore.Namespace
         }
 
         /// <summary>
-        /// Gets set of all symbols in this table for the given symbol name
+        /// Returns set of all symbols in this table for the given symbol name
         /// </summary>
         /// <param name="name">Symbol name</param>
         /// <returns>HashSet of Symbol</returns>

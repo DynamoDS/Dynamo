@@ -77,6 +77,7 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AtLevelTest.cs" />
+    <Compile Include="AttributeTest.cs" />
     <Compile Include="MultiOutputNodeTest.cs" />
     <Compile Include="NodeExecutionTest.cs" />
     <Compile Include="AnnotationModelTest.cs" />

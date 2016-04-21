@@ -125,7 +125,7 @@ namespace ProtoCore
             private ClassMirror classMirror = null;
             
             /// <summary>
-            /// Gets the Class info mirror for this data.
+            /// Returns the Class info mirror for this data.
             /// </summary>
             /// <returns></returns>
             private ClassMirror GetClass()
@@ -150,7 +150,7 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Gets the list of MirrorData if this data represents a collection,
+            /// Returns the list of MirrorData if this data represents a collection,
             /// else null.
             /// </summary>
             /// <returns>List of MirrorData represented by this data.</returns>
@@ -201,7 +201,7 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Return string representation of data
+            /// Returns string representation of data
             /// </summary>
             public string StringData
             {
@@ -232,7 +232,7 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Gets the CLR object for all the value type or FFI objects, else null
+            /// Returns the CLR object for all the value type or FFI objects, else null
             /// </summary>
             public object Data
             {
@@ -246,7 +246,7 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Gets if this data points to null.
+            /// Returns if this data points to null.
             /// </summary>
             public bool IsNull
             {

@@ -14,14 +14,14 @@ namespace Dynamo.Session
         string CurrentWorkspacePath { get; }
 
         /// <summary>
-        /// Gets session parameter value for the given parameter name.
+        /// Returns session parameter value for the given parameter name.
         /// </summary>
         /// <param name="parameter">Name of session parameter</param>
         /// <returns>Session parameter value as object</returns>
         object GetParameterValue(string parameter);
 
         /// <summary>
-        /// Gets list of session parameter keys available in the session.
+        /// Returns list of session parameter keys available in the session.
         /// </summary>
         /// <returns></returns>
         IEnumerable<string> GetParameterKeys();

@@ -423,7 +423,7 @@ namespace DSOffice
 
         #endregion
         /// <summary>
-        /// return data from given worksheet (GetDataFromExcelWorksheet node)
+        /// Returns data from given worksheet (GetDataFromExcelWorksheet node)
         /// </summary>
         internal object[][] Data
         {

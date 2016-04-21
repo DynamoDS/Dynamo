@@ -240,7 +240,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Get string from the string table.
+        /// Returns string from the string table.
         /// </summary>
         /// <param name="pointer">The index of HeapElement that represents the string</param>
         /// <param name="s"></param>
@@ -251,7 +251,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Get the index of HeapElement that represents the string
+        /// Returns the index of HeapElement that represents the string
         /// </summary>
         /// <param name="s"></param>
         /// <param name="pointer"></param>
@@ -464,7 +464,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Get string that pointer represents.
+        /// Returns string that pointer represents.
         /// </summary>
         /// <param name="pointer"></param>
         /// <returns></returns>
@@ -797,7 +797,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Return if the heap is waiting for GC root objects.
+        /// Returns true if the heap is waiting for GC root objects.
         /// </summary>
         public bool IsWaitingForRoots
         {

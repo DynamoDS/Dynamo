@@ -1100,9 +1100,9 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Get all function instances or directly or indrectly dependo on the 
+        /// Returns all function instances directly or indirectly depends on the 
         /// specified function definition and mark them as modified so that 
-        /// their values will be re-queryed.
+        /// their values will be re-queried.
         /// </summary>
         /// <param name="def"></param>
         /// <returns></returns>
@@ -1484,7 +1484,7 @@ namespace Dynamo.Models
             string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
             string fullFileName = Path.Combine(pathManager.LogDirectory, fileName);
 
-            SearchModel.DumpLibraryToXml(fullFileName);
+            SearchModel.DumpLibraryToXml(fullFileName, PathManager.DynamoCoreDirectory);
 
             Logger.Log(string.Format(Resources.LibraryIsDumped, fullFileName));
         }

@@ -459,7 +459,7 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
-        /// Return if an array is an empty list or all its elements are empty lists.
+        /// Returns true if an array is an empty list or all its elements are empty lists.
         /// </summary>
         /// <param name="arrayPointer"></param>
         /// <param name="runtimeCore"></param>
