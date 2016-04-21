@@ -39,17 +39,17 @@ namespace Dynamo.Graph
         }
 
         /// <summary>
-        /// Name of the property whose value needs to be updated.
+        /// Returns name of the property whose value needs to be updated.
         /// </summary>
         public string PropertyName { get; private set; }
 
         /// <summary>
-        /// String representation of value to update specified node property
+        /// Returns string representation of value to update specified node property
         /// </summary>
         public string PropertyValue { get; private set; }
 
         /// <summary>
-        /// ElementResolver object responsible for resolving class namespaces
+        /// Returns <see cref="ElementResolver"/> object responsible for resolving class namespaces
         /// </summary>
         public ElementResolver ElementResolver { get; private set; }
     }

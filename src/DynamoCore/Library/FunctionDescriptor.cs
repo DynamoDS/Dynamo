@@ -68,22 +68,22 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        ///     Full path to the assembly the defined this function
+        ///     Returns full path to the assembly the defined this function
         /// </summary>
         public string Assembly { get; set; }
 
         /// <summary>
-        ///     Class name of this function. If the functinon is global, return String.Empty.
+        ///     Returns class name of this function. If the functinon is global, return String.Empty.
         /// </summary>
         public string ClassName { get; set; }
 
         /// <summary>
-        ///     Function name.
+        ///     Returns function name.
         /// </summary>
         public string FunctionName { get; set; }
 
         /// <summary>
-        ///     A comment describing the function along with the signature
+        ///     Returns comment describing the function along with the signature
         /// </summary>
         public string Summary { get; set; }
 
@@ -93,7 +93,7 @@ namespace Dynamo.Engine
         public string ObsoleteMsg { get; set; }
 
         /// <summary>
-        /// Function parameters data
+        /// Returns function parameters data
         /// </summary>
         public IEnumerable<TypedParameter> Parameters { get; set; }
 
@@ -124,7 +124,7 @@ namespace Dynamo.Engine
         public IEnumerable<string> ReturnKeys { get; set; }
 
         /// <summary>
-        ///     Instance of IPathManager
+        ///     Returns instance of IPathManager
         /// </summary>
         public IPathManager PathManager { get; set; }
 
@@ -270,7 +270,7 @@ namespace Dynamo.Engine
         public FunctionType Type { get; private set; }
 
         /// <summary>
-        ///     Summary of the function from its documentation xml 
+        ///     Returns summary of the function from its documentation xml 
         /// using the corresponding FunctionDescriptor object.
         /// </summary>
         public string Summary
@@ -477,7 +477,7 @@ namespace Dynamo.Engine
         public bool CanUpdatePeriodically { get; private set; }
 
         /// <summary>
-        ///     Class name without namespace
+        ///     Returns class name without namespace
         /// </summary>
         public string UnqualifedClassName
         {
@@ -492,7 +492,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        ///     Namespace where the function is specified
+        ///     Returns namespace where the function is specified
         /// </summary>
         public string Namespace
         {
@@ -507,7 +507,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        ///     Instance of IPathManager
+        ///     Returns instance of IPathManager
         /// </summary>
         public IPathManager PathManager { get { return pathManager; } }
 

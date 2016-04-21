@@ -132,57 +132,57 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Version of Dynamo where the workspace was created
+        /// Returns version of Dynamo where the workspace was created
         /// </summary>
         public string Version { get; internal set; }
 
         /// <summary>
-        /// Description of the workspace
+        /// Returns description of the workspace
         /// </summary>
         public string Description { get; internal set; }
 
         /// <summary>
-        /// Full category name of custom node
+        /// Returns full category name of custom node
         /// </summary>
         public string Category { get; internal set; }
 
         /// <summary>
-        /// X coordinate of top left corner of visible workspace part
+        /// Returns X coordinate of top left corner of visible workspace part
         /// </summary>
         public double X { get; internal set; }
 
         /// <summary>
-        /// Y coordinate of top left corner of visible workspace part
+        /// Returns Y coordinate of top left corner of visible workspace part
         /// </summary>
         public double Y { get; internal set; }
 
         /// <summary>
-        /// Zoom value of the workspace
+        /// Returns zoom value of the workspace
         /// </summary>
         public double Zoom { get; internal set; }
 
         /// <summary>
-        /// Name of the workspace
+        /// Returns name of the workspace
         /// </summary>
         public string Name { get; internal set; }
         
         /// <summary>
-        /// <see cref="System.Guid"/> identifier string value of custom node workspace 
+        /// Returns <see cref="System.Guid"/> identifier string value of custom node workspace 
         /// </summary>
         public string ID { get; internal set; }
 
         /// <summary>
-        /// File name of the workspace
+        /// Returns file name of the workspace
         /// </summary>
         public string FileName { get; internal set; }
 
         /// <summary>
-        /// Run type of the home workspace
+        /// Returns run type of the home workspace
         /// </summary>
         public RunType RunType { get; internal set; }
 
         /// <summary>
-        /// Run period value of the home workspace if RunType is Periodic
+        /// Returns run period value of the home workspace if RunType is Periodic
         /// </summary>
         public int RunPeriod { get; internal set; }
 

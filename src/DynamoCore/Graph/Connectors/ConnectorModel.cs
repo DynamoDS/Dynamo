@@ -29,12 +29,12 @@ namespace Dynamo.Graph.Connectors
         #region properties
 
         /// <summary>
-        /// Represents start port model.
+        /// Returns start port model.
         /// </summary>
         public PortModel Start { get; private set; }
 
         /// <summary>
-        /// Represents end port model.
+        /// Returns end port model.
         /// </summary>
         public PortModel End { get; private set; }
 

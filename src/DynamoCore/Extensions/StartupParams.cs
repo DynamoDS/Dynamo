@@ -17,31 +17,31 @@ namespace Dynamo.Extensions
     public class StartupParams
     {
         /// <summary>
-        /// <see cref="IAuthProvider"/> for DynamoModel
+        /// Returns <see cref="IAuthProvider"/> for DynamoModel
         /// </summary>
         public IAuthProvider AuthProvider { get { return authProvider; } }
         private readonly IAuthProvider authProvider;
 
         /// <summary>
-        /// <see cref="IPreferences"/> for DynamoModel
+        /// Returns <see cref="IPreferences"/> for DynamoModel
         /// </summary>
         public IPreferences Preferences { get { return preferences; } }
         private readonly IPreferences preferences;
 
         /// <summary>
-        /// <see cref="IPathManager"/> for DynamoModel
+        /// Returns <see cref="IPathManager"/> for DynamoModel
         /// </summary>
         public IPathManager PathManager { get { return pathManager; } }
         private readonly IPathManager pathManager;
 
         /// <summary>
-        /// <see cref="ILibraryLoader"/> for DynamoModel
+        /// Returns <see cref="ILibraryLoader"/> for DynamoModel
         /// </summary>
         public ILibraryLoader LibraryLoader { get { return libraryLoader; } }
         private readonly ILibraryLoader libraryLoader;
 
         /// <summary>
-        /// <see cref="ICustomNodeManager"/> for DynamoModel
+        /// Returns <see cref="ICustomNodeManager"/> for DynamoModel
         /// </summary>
         public ICustomNodeManager CustomNodeManager { get { return customNodeManager; } }
         private readonly ICustomNodeManager customNodeManager;

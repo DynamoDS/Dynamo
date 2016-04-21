@@ -26,7 +26,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Indicates the maximum number of files shown in Recent Files
         /// </summary>
-        public const int DefaultMaxNumRecentFiles = 10;
+        internal const int DefaultMaxNumRecentFiles = 10;
 
         /// <summary>
         /// Temp PreferenceSetting Location for testing

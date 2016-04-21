@@ -42,12 +42,12 @@ namespace Dynamo.Scheduler
         }
 
         /// <summary>
-        /// AsyncTask object to execute
+        /// Returns AsyncTask object to execute
         /// </summary>
         internal AsyncTask Task { get; private set; }
 
         /// <summary>
-        /// Actual state of task
+        /// Returns Actual state of task
         /// </summary>
         internal State CurrentState { get; private set; }
 

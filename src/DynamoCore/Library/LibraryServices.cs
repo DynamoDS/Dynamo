@@ -44,7 +44,7 @@ namespace Dynamo.Engine
         private readonly IPathManager pathManager;
 
         /// <summary>
-        /// Core which is used for parsing code and loading libraries
+        /// Returns core which is used for parsing code and loading libraries
         /// </summary>
         public ProtoCore.Core LibraryManagementCore { get; private set; }
         private ProtoCore.Core liveRunnerCore = null;

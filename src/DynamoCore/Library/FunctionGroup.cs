@@ -22,12 +22,12 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Qualified name of the corresponding functions
+        /// Returns qualified name of the corresponding functions
         /// </summary>
         public string QualifiedName { get; private set; }
 
         /// <summary>
-        /// Collection of functions with common qualified name
+        /// Returns collection of functions with common qualified name
         /// </summary>
         public IEnumerable<FunctionDescriptor> Functions
         {

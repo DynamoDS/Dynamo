@@ -15,7 +15,7 @@ namespace Dynamo.Search
     public abstract class BrowserItem : NotificationObject
     {
         /// <summary>
-        ///     The items inside of the browser item
+        ///     Returns items inside of the browser item
         /// </summary>
         public abstract ObservableCollection<BrowserItem> Items { get; set; }
 

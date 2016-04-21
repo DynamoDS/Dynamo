@@ -19,7 +19,7 @@ namespace Dynamo.Search.SearchElements
         private string path;
 
         /// <summary>
-        ///     Identifier of the custom node
+        ///     Returns identifier of the custom node
         /// </summary>
         public Guid ID { get; private set; }
 
