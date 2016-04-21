@@ -256,7 +256,7 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Return PreferenceSettings from XML path if possible,
+        /// Returns PreferenceSettings from XML path if possible,
         /// else return PreferenceSettings with default values
         /// </summary>
         /// <param name="filePath">Path of the XML File</param>

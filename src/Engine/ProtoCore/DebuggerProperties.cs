@@ -220,7 +220,7 @@ namespace ProtoCore
             };
 
         /// <summary>
-        /// Gets the Program counter. This is only valid when the executive is suspended
+        /// Returns the Program counter. This is only valid when the executive is suspended
         /// </summary>
         public int DebugEntryPC { get; set; }
         // used by the code gen to insert the file name to the instruction

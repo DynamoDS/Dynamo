@@ -10,7 +10,7 @@ namespace ProtoCore.AssociativeEngine
     public class Utils
     {
         /// <summary>
-        /// Gets the dirty graphnode of the given pc
+        /// Returns the dirty graphnode of the given pc
         /// </summary>
         /// <param name="pc"></param>
         /// <param name="classIndex"></param>
@@ -23,7 +23,7 @@ namespace ProtoCore.AssociativeEngine
         }
 
         /// <summary>
-        /// Gets the first dirty graphnode starting from the given pc
+        /// Returns the first dirty graphnode starting from the given pc
         /// </summary>
         /// <param name="pc"></param>
         /// <param name="classIndex"></param>
@@ -647,7 +647,7 @@ namespace ProtoCore.AssociativeEngine
         ///     [1] a = b + c
         ///     [2] a = d
         /// Statement [1] has been redefined by statment [2]    
-        /// Return true if this has occured
+        /// Returns true if this has occured
         /// 
         /// </summary>
         /// <param name="executingGraphNode"></param>

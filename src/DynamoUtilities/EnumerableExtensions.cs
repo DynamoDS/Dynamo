@@ -29,7 +29,7 @@ namespace Dynamo.Utilities
     public static class ExtensionMethods
     {
         /// <summary>
-        /// Get the index of an element in an IEnumerable
+        /// Returns the index of an element in an IEnumerable
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="source">The IEnumerable</param>
@@ -48,7 +48,7 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Gets all the tags of an ITree.
+        ///     Returns all the tags of an ITree.
         /// </summary>
         /// <typeparam name="TNodeTag"></typeparam>
         /// <typeparam name="TLeaf"></typeparam>
@@ -356,7 +356,7 @@ namespace Dynamo.Utilities
         }
         
         /// <summary>
-        /// Get the longest list of arguments.
+        /// Returns the longest list of arguments.
         /// For a set List of Lists like {a} {b1,b2,b3} {c1,c2}
         /// This will return a List of Lists of objects like:
         /// {a,b1,c1} {a,b2,c2} {a,b3,c2}

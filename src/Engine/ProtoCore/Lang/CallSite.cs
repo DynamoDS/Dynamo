@@ -603,7 +603,7 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Get all serializables that were created historically, but
+        /// Returns all serializables that were created historically, but
         /// were not re-created in the most recent graph update.
         /// </summary>
         public IList<ISerializable> GetOrphanedSerializables()
@@ -969,7 +969,7 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Get complete match attempts to locate a function endpoint where 1 FEP matches all of the requirements for dispatch
+        /// Returns complete match attempts to locate a function endpoint where 1 FEP matches all of the requirements for dispatch
         /// </summary>
         /// <param name="context"></param>
         /// <param name="arguments"></param>
@@ -1013,7 +1013,7 @@ namespace ProtoCore
         }
 
        /// <summary>
-        /// Get the function group associated with this callsite
+        /// Returns the function group associated with this callsite
         /// </summary>
         /// <param name="core"></param>
         /// <returns></returns>
@@ -1971,7 +1971,7 @@ namespace ProtoCore
         #endregion
 
         /// <summary>
-        /// Get a flat collection of ISerializable objects from a serialized representation of a SingleRunTraceData object.
+        /// Returns a flat collection of ISerializable objects from a serialized representation of a SingleRunTraceData object.
         /// </summary>
         /// <param name="callSiteData">The serialized representation of a SingleRunTraceData object.</param>
         /// <returns>A flat collection of ISerializable objects.</returns>

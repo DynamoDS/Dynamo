@@ -27,13 +27,13 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="MouseClickManager"/> is clicked.
+        /// Returns or sets a value indicating whether this <see cref="MouseClickManager"/> is clicked.
         /// </summary>
         /// <value><c>true</c> if clicked; otherwise, <c>false</c>.</value>
         private bool Clicked { get; set; }
 
         /// <summary>
-        /// Gets or sets the timeout.
+        /// Returns or sets the timeout.
         /// </summary>
         /// <value>The timeout.</value>
         public int DoubleClickTimeout { get; set; }

@@ -63,7 +63,7 @@ namespace ProtoFFI
         public abstract object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type type);
 
         /// <summary>
-        /// Gets the marshaled Type of DS object for a given FFI object type
+        /// Returns the marshaled Type of DS object for a given FFI object type
         /// </summary>
         /// <param name="type">Type of FFI object</param>
         /// <returns>Type of DS object</returns>
@@ -80,7 +80,7 @@ namespace ProtoFFI
         public abstract void OnDispose(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi); //callback method
 
         /// <summary>
-        /// Gets a string representation for given DS object
+        /// Returns a string representation for given DS object
         /// </summary>
         /// <param name="dsObject">DS Object</param>
         /// <returns>string representation of a DS object</returns>
