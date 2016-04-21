@@ -43,7 +43,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
-        /// CustomNode definition.
+        /// Returns customNode definition.
         /// </summary>
         public CustomNodeDefinition Definition { get { return Controller.Definition; } }
         
@@ -277,7 +277,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
         /// <summary>
         ///     Responsible for resolving 
-        /// a partial class name to its fully resolved name
+        ///     a partial class name to its fully resolved name
         /// </summary>
         public ElementResolver ElementResolver { get; set; }
         
@@ -347,7 +347,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
-        ///     A tuple of Input parameter and its type.
+        ///     Returns tuple of Input parameter and its type.
         /// </summary>
         public TypedParameter Parameter
         {

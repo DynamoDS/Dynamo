@@ -11,7 +11,7 @@ namespace Dynamo.Graph.Workspaces
     public interface IWorkspaceModel
     {
         /// <summary>
-        /// Name of the workspace
+        /// Returns name of the workspace
         /// </summary>
         string Name { get; }
 
@@ -41,12 +41,12 @@ namespace Dynamo.Graph.Workspaces
         IEnumerable<NodeModel> CurrentSelection { get; }
 
         /// <summary>
-        /// X coordinate of center point of visible workspace part
+        /// Returns X coordinate of center point of visible workspace part
         /// </summary>
         double CenterX { get; }
 
         /// <summary>
-        /// Y coordinate of center point of visible workspace part
+        /// Returns Y coordinate of center point of visible workspace part
         /// </summary>
         double CenterY { get; }
 

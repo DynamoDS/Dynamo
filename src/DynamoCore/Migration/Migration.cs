@@ -1375,12 +1375,12 @@ namespace Dynamo.Migration
     public class WorkspaceMigrationAttribute : Attribute
     {
         /// <summary>
-        /// Version which workspace should be migrated from.
+        /// Returns version which workspace should be migrated from.
         /// </summary>
         public Version From { get; private set; }
 
         /// <summary>
-        /// Version which workspace should be migrated to.
+        /// Returns version which workspace should be migrated to.
         /// </summary>
         public Version To { get; private set; }
 

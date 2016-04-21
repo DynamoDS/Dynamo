@@ -14,7 +14,7 @@ namespace Dynamo.Extensions
 {
     /// <summary>
     /// Provides functionality for loading Dynamo's extensions.
-    /// This class loads particulary formatted XMLs which contain information about
+    /// This class loads formatted XMLs which contain information about
     /// *Extension.dll and type name of IExtension inheritor.
     /// 
     /// Example:
@@ -44,7 +44,7 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// Loads <see cref="IExtension"/> from assembly by passed path
+        /// Loads <see cref="IExtension"/> from assembly.
         /// </summary>
         /// <param name="extensionPath">Assembly full path</param>
         /// <returns>Loaded <see cref="IExtension"/></returns>
@@ -106,7 +106,7 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// Logs messages
+        /// This event is used for logging messages.
         /// </summary>
         public event Action<ILogMessage> MessageLogged;
 

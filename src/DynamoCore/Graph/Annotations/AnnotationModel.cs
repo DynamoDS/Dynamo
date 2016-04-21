@@ -37,7 +37,7 @@ namespace Dynamo.Graph.Annotations
         public double InitialHeight { get; set; }
 
         /// <summary>
-        /// Default background of the group
+        /// Returns default background of the group
         /// </summary>
         public string GroupBackground = "#FFC1D676";
 
@@ -54,7 +54,7 @@ namespace Dynamo.Graph.Annotations
 
         private double width;
         /// <summary>
-        /// Width of the group
+        /// Returns width of the group
         /// </summary>
         public override double Width
         {
@@ -71,7 +71,7 @@ namespace Dynamo.Graph.Annotations
 
         private double height;
         /// <summary>
-        /// Height of the group
+        /// Returns height of the group
         /// </summary>
         public override double Height
         {
@@ -89,7 +89,7 @@ namespace Dynamo.Graph.Annotations
         private string text;
 
         /// <summary>
-        /// Text of the group
+        /// Returns text of the group
         /// </summary>
         public string Text
         {
@@ -103,7 +103,7 @@ namespace Dynamo.Graph.Annotations
 
         private string annotationText;
         /// <summary>
-        /// Title of the group
+        /// Returns title of the group
         /// </summary>
         public string AnnotationText
         {
@@ -118,7 +118,7 @@ namespace Dynamo.Graph.Annotations
 
         private string background;
         /// <summary>
-        /// Background of the group
+        /// Returns background of the group
         /// </summary>
         public string Background
         {
@@ -132,7 +132,7 @@ namespace Dynamo.Graph.Annotations
               
         private IEnumerable<ModelBase> selectedModels;
         /// <summary>
-        /// Collection of models (nodes and notes) which the group contains
+        /// Returns collection of models (nodes and notes) which the group contains
         /// </summary>
         public IEnumerable<ModelBase> SelectedModels
         {
@@ -163,7 +163,7 @@ namespace Dynamo.Graph.Annotations
 
         private double textBlockHeight;
         /// <summary>
-        /// Height of the text area of the group
+        /// Returns height of the text area of the group
         /// </summary>
         public double TextBlockHeight
         {
@@ -181,7 +181,7 @@ namespace Dynamo.Graph.Annotations
 
         private double fontSize = 14;
         /// <summary>
-        /// Font size of the text of the group
+        /// Returns font size of the text of the group
         /// </summary>
         public double FontSize
         {

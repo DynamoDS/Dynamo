@@ -12,7 +12,7 @@ namespace Dynamo.Interfaces
     public interface IPreferences
     {
         /// <summary>
-        /// Height of console
+        /// Returns height of console
         /// </summary>
         int ConsoleHeight { get; set; }
 
@@ -38,7 +38,7 @@ namespace Dynamo.Interfaces
         bool IsBackgroundGridVisible { get; set; }
 
         /// <summary>
-        /// The decimal precision used to display numbers.
+        /// Returns the decimal precision used to display numbers.
         /// </summary>
         string NumberFormat { get; set; }
 
@@ -58,48 +58,48 @@ namespace Dynamo.Interfaces
         bool IsFirstRun { get; set; }
 
         /// <summary>
-        /// The last X coordinate of the Dynamo window.
+        /// Returns the last X coordinate of the Dynamo window.
         /// </summary>
         double WindowX { get; set; }
 
         /// <summary>
-        /// The last Y coordinate of the Dynamo window.
+        /// Returns the last Y coordinate of the Dynamo window.
         /// </summary>
         double WindowY { get; set; }
 
         /// <summary>
-        /// The last height of the Dynamo window.
+        /// Returns the last height of the Dynamo window.
         /// </summary>
         double WindowH { get; set; }
 
         /// <summary>
-        /// The last width of the Dynamo window.
+        /// Returns the last width of the Dynamo window.
         /// </summary>
         double WindowW { get; set; }
 
         /// <summary>
-        /// Maximal count of recent files which can be displayed
+        /// Returns maximal count of recent files which can be displayed
         /// </summary>
         int MaxNumRecentFiles { get; set; }
 
         /// <summary>
-        /// List of recent files
+        /// Returns list of recent files
         /// </summary>
         List<string> RecentFiles { get; set; }
 
         /// <summary>
-        /// List of backup files
+        /// Returns list of backup files
         /// </summary>
         List<string> BackupFiles { get; set; }
 
         /// <summary>
-        /// A list of packages used by the Package Manager to determine
+        /// Returns list of packages used by the Package Manager to determine
         /// which packages are marked for deletion.
         /// </summary>
         List<string> PackageDirectoriesToUninstall { get; set; }
 
         /// <summary>
-        /// A list of folders containing zero-touch nodes and custom nodes.
+        /// Returns list of folders containing zero-touch nodes and custom nodes.
         /// </summary>
         List<string> CustomPackageFolders { get; set; }
 

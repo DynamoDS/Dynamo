@@ -290,7 +290,7 @@ namespace Dynamo.Search.SearchElements
     public class DragDropNodeSearchElementInfo
     {
         /// <summary>
-        /// <see cref="NodeSearchElement"/> to drag and drop.
+        /// Returns <see cref="NodeSearchElement"/> to drag and drop.
         /// </summary>
         public NodeSearchElement SearchElement { get; private set; }
 

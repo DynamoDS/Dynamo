@@ -28,7 +28,7 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// List of workspaces
+        /// Returns list of workspaces
         /// </summary>
         public IEnumerable<IWorkspaceModel> WorkspaceModels
         {
@@ -39,7 +39,7 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// Current workspace
+        /// Returns current workspace
         /// </summary>
         public IWorkspaceModel CurrentWorkspaceModel
         {

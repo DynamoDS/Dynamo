@@ -53,7 +53,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        ///     <see cref="ElementResolver"/> for CodeBlock node
+        ///     Returns <see cref="ElementResolver"/> for CodeBlock node
         /// </summary>
         public ElementResolver ElementResolver { get; set; }
 
@@ -216,7 +216,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        ///     String content of CodeBlock node.
+        ///     Returns string content of CodeBlock node.
         /// </summary>
         public string Code
         {

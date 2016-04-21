@@ -336,7 +336,7 @@ namespace Dynamo.Models
         private readonly List<WorkspaceModel> _workspaces = new List<WorkspaceModel>();
 
         /// <summary>
-        ///     The collection of visible workspaces in Dynamo
+        ///     Returns collection of visible workspaces in Dynamo
         /// </summary>
         public IEnumerable<WorkspaceModel> Workspaces 
         {
@@ -350,7 +350,7 @@ namespace Dynamo.Models
         public ITraceReconciliationProcessor TraceReconciliationProcessor { get; set; }
 
         /// <summary>
-        /// Authentication manager object for oxygen authentication.
+        /// Returns authentication manager object for oxygen authentication.
         /// </summary>
         public AuthenticationManager AuthenticationManager { get; set; }
 

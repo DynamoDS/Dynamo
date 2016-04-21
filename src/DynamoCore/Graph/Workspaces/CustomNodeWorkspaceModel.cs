@@ -21,7 +21,7 @@ namespace Dynamo.Graph.Workspaces
     public class CustomNodeWorkspaceModel : WorkspaceModel, ICustomNodeWorkspaceModel
     {
         /// <summary>
-        /// Identifier of the custom node
+        /// Returns identifier of the custom node
         /// </summary>
         public Guid CustomNodeId
         {

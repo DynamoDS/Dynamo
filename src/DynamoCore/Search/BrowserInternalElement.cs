@@ -15,17 +15,17 @@ namespace Dynamo.Search
         public override ObservableCollection<BrowserItem> Items { get { return _items; } set { _items = value; } }
 
         /// <summary>
-        ///     The items which are in the same category as the browser item
+        ///     Returns items which are in the same category as the browser item
         /// </summary>
         public ObservableCollection<BrowserItem> Siblings { get { return this.Parent.Items; } }
 
         /// <summary>
-        ///     Browser item representing category which this element belongs to
+        ///     Returns browser item representing category which this element belongs to
         /// </summary>
         public BrowserItem Parent { get; set; }
 
         /// <summary>
-        ///     Previous parent item 
+        ///     Returns previous parent item 
         /// </summary>
         public BrowserItem OldParent { get; set; }
 
@@ -54,7 +54,7 @@ namespace Dynamo.Search
         private string _name;
         
         /// <summary>
-        ///     Name of the node
+        ///     Returns name of the node
         /// </summary>
         public override string Name
         {
@@ -62,7 +62,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Full category name consisting of root and all sub categories names
+        ///     Returns full category name consisting of root and all sub categories names
         /// </summary>
         public string FullCategoryName { get; set; }
 

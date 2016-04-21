@@ -46,17 +46,17 @@ namespace Dynamo.Updates
         }
 
         /// <summary>
-        /// Flag which indicates if update has been downloaded.
+        /// Returns flag which indicates if update has been downloaded.
         /// </summary>
         public bool UpdateAvailable { get; private set; }
 
         /// <summary>
-        /// Location where the update has been downloaded to.
+        /// Returns location where the update has been downloaded to.
         /// </summary>
         public string UpdateFileLocation { get; private set; }
 
         /// <summary>
-        /// The exception thrown during downloading update. 
+        /// Returns exception thrown during downloading update. 
         /// Null if update is downloaded successfully.
         /// </summary>
         public Exception Error { get; private set; }
@@ -265,23 +265,23 @@ namespace Dynamo.Updates
     public class AppVersionInfo : IAppVersionInfo
     {
         /// <summary>
-        /// Current Dynamo version
+        /// Returns current Dynamo version
         /// </summary>
         public BinaryVersion Version { get; set; }
 
         /// <summary>
-        /// URL where one can get information about 
+        /// Returns URL where one can get information about 
         /// current Dynamo version
         /// </summary>
         public string VersionInfoURL { get; set; }
         
         /// <summary>
-        /// URL where Dynamo installer can be downloaded from
+        /// Returns URL where Dynamo installer can be downloaded from
         /// </summary>
         public string InstallerURL { get; set; }
 
         /// <summary>
-        /// URL where signature file to validate the new installer can be downloaded from
+        /// Returns URL where signature file to validate the new installer can be downloaded from
         /// </summary>
         public string SignatureURL { get; set; }
     }

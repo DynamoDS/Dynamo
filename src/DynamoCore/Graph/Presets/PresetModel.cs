@@ -18,22 +18,22 @@ namespace Dynamo.Graph.Presets
         # region properties
 
         /// <summary>
-        /// Name of the preset
+        /// Returns name of the preset
         /// </summary>
         public string Name { get; private set; }
         
         /// <summary>
-        /// Description of the preset
+        /// Returns description of the preset
         /// </summary>
         public string Description { get; private set; }
 
         /// <summary>
-        /// List of nodemodels that this state serializes
+        /// Returns list of nodemodels that this state serializes
         /// </summary>
         public IEnumerable<NodeModel> Nodes { get { return nodes; } }
 
         /// <summary>
-        /// List of serialized nodes
+        /// Returns list of serialized nodes
         /// </summary>
         public IEnumerable<XmlElement> SerializedNodes { get { return serializedNodes; } }
         

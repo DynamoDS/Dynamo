@@ -496,7 +496,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     All of the notes currently present in the workspace.
+        ///     Returns all of the notes currently present in the workspace.
         /// </summary>
         public IEnumerable<NoteModel> Notes
         {
@@ -513,7 +513,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     All of the annotations currently present in the workspace.
+        ///     Returns all of the annotations currently present in the workspace.
         /// </summary>
         public IEnumerable<AnnotationModel> Annotations
         {

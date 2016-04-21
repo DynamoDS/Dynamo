@@ -19,7 +19,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         }
 
         /// <summary>
-        /// User friendly name of not found custom node.
+        /// Returns user friendly name of not found custom node.
         /// </summary>
         public string FunctionName { get; private set; }
     }

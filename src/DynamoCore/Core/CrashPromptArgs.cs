@@ -16,28 +16,28 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Flag which indicates whether args contain default text overriden,
+        ///     Returns <see cref="Dispalyoptions"/> flag which indicates whether args contain default text overriden,
         ///     has details or has file path
         /// </summary>
         public DisplayOptions Options { get; private set; }
 
         /// <summary>
-        ///     Details of crash
+        ///     Returns details of crash
         /// </summary>
         public string Details { get; private set; }
 
         /// <summary>
-        ///     Crash message
+        ///     Returns crash message
         /// </summary>
         public string OverridingText { get; private set; }
 
         /// <summary>
-        ///     Preference file path
+        ///     Returns preference file path
         /// </summary>
         public string FilePath { get; private set; }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CrashPromptArgs"/> class.
+        ///     Returns initializes a new instance of the <see cref="CrashPromptArgs"/> class.
         /// </summary>
         /// <param name="details">Details of crash</param>
         /// <param name="overridingText">Crash message</param>

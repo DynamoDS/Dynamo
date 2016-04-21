@@ -78,7 +78,7 @@ namespace Dynamo.Logging
         private StringBuilder ConsoleWriter { get; set; }
 
         /// <summary>
-        /// Warning level for log messages.
+        /// Returns warning level for log messages.
         /// </summary>
         public WarningLevel WarningLevel
         {
@@ -94,7 +94,7 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
-        /// Warning message text
+        /// Returns warning message text
         /// </summary>
         public string Warning
         {
@@ -111,7 +111,7 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
-        /// Full path to log file
+        /// Returns full path to log file
         /// </summary>
         public string LogPath 
         {

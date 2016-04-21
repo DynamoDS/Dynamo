@@ -32,7 +32,7 @@ namespace Dynamo.Graph.Workspaces
         private IEnumerable<KeyValuePair<Guid, List<string>>> historicalTraceData;
 
         /// <summary>
-        ///     <see cref="EngineController"/> object assosiated with this home workspace
+        ///     Returns <see cref="EngineController"/> object assosiated with this home workspace
         /// to coordinate the interactions between some DesignScript
         /// sub components like library managment, live runner and so on.
         /// </summary>
@@ -63,7 +63,7 @@ namespace Dynamo.Graph.Workspaces
         public readonly bool VerboseLogging;
 
         /// <summary>
-        ///     <see cref="EngineController"/> object containing properties to control
+        ///     Returns <see cref="EngineController"/> object containing properties to control
         /// how execution is carried out.
         /// </summary>
         public readonly RunSettings RunSettings;
