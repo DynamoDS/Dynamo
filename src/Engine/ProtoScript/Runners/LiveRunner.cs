@@ -1544,12 +1544,9 @@ namespace ProtoScript.Runners
                 System.Diagnostics.Debug.WriteLine(code);
             }
 
-            if (dispatchASTList.Any())
-            {
-                ResetForDeltaExecution();
-                CompileAndExecute(dispatchASTList);
-                PostExecution();
-            }
+            ResetForDeltaExecution();
+            CompileAndExecute(dispatchASTList);
+            PostExecution();
         }
 
         private List<Guid> PreviewInternal(GraphSyncData syncData)
@@ -1578,9 +1575,12 @@ namespace ProtoScript.Runners
             changeSetComputer.UpdateCachedASTFromSubtrees(syncData.ModifiedSubtrees);
 
             // Prior to execution, apply state modifications to the VM given the delta AST's
+            bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
             changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
-
-            CompileAndExecuteForDeltaExecution(finalDeltaAstList);
+            if (finalDeltaAstList.Any() || anyForcedExecutedNodes)
+            {
+                CompileAndExecuteForDeltaExecution(finalDeltaAstList);
+            }
 
             var guids = runtimeCore.ExecutedAstGuids.ToList();
             executedAstGuids[syncData.SessionID] = guids;

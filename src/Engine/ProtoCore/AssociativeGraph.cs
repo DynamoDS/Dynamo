@@ -384,7 +384,7 @@ namespace ProtoCore.AssociativeEngine
             {
                 foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
                 {
-                    if (graphNode.isDirty)
+                    if (graphNode.isDirty && graphNode.isActive)
                     {
                         return true;
                     }
