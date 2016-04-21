@@ -568,7 +568,7 @@ namespace ProtoFFI
         /// <summary>
         /// If dsValue is a pointer (object), expand the size of this object and
         /// add references to referencedObjects; if dsValue is an array, then
-        /// recursively do the travelling.
+        /// traverse recursively.
         ///
         /// Exception: ProtoCore.Exception.RunOutOfMemoryException if the engine
         /// fails to expand the size of object.
