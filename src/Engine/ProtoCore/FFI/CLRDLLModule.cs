@@ -42,7 +42,7 @@ namespace ProtoFFI
         #region PUBLIC_METHODS_AND_PROPERTIES
 
         /// <summary>
-        /// Gets CLRModuleType for given Type. If CLRModuleType instance for the
+        /// Returns CLRModuleType for given Type. If CLRModuleType instance for the
         /// given type is not found, it creates a new one. If CLRDLLModule is
         /// passed as null, it creates empty CLRModuleType.
         /// </summary>
@@ -83,7 +83,7 @@ namespace ProtoFFI
         }
 
         /// <summary>
-        /// Gets all the types, which was referenced by other types but were not
+        /// Returns all the types, which was referenced by other types but were not
         /// imported explicitly. These are empty types and corresponding DS Type
         /// don't contain any methods, constructors, properties or fields
         /// </summary>
@@ -95,7 +95,7 @@ namespace ProtoFFI
 
 
         /// <summary>
-        /// Gets all the types for the given predicate.
+        /// Returns all the types for the given predicate.
         /// </summary>
         /// <param name="predicate">A delegate for defining criteria</param>
         /// <returns>List of CLRModuleType</returns>

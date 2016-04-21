@@ -98,7 +98,7 @@ namespace Dynamo.Updates
         bool CheckNewerDailyBuilds { get; set; }
 
         /// <summary>
-        /// Defines whether to force update.
+        /// Specifies whether to force update.
         /// </summary>
         bool ForceUpdate { get; set; }
 
@@ -131,13 +131,13 @@ namespace Dynamo.Updates
     public interface IDynamoLookUp
     {
         /// <summary>
-        /// Gets installation path for all version of this Dynamo Product
+        /// Returns installation path for all version of this Dynamo Product
         /// installed on this system.
         /// </summary>
         IEnumerable<string> GetDynamoInstallLocations();
 
         /// <summary>
-        /// Get a list of user data folders on this system.
+        /// Returns a list of user data folders on this system.
         /// </summary>
         /// <returns>
         /// The implementation of this interface method should return a list of user 
@@ -147,7 +147,7 @@ namespace Dynamo.Updates
         IEnumerable<string> GetDynamoUserDataLocations();
 
         /// <summary>
-        /// Gets the version of latest installed product
+        /// Returns the version of latest installed product
         /// </summary>
         BinaryVersion LatestProduct { get; }
     }
@@ -158,32 +158,32 @@ namespace Dynamo.Updates
     public interface IUpdateManagerConfiguration
     {
         /// <summary>
-        /// Defines download location for new installer
+        /// Specifies download location for new installer
         /// </summary>
         string DownloadSourcePath { get; set; }
 
         /// <summary>
-        /// Defines location for signature file to validate the new installer.
+        /// Specifies location for signature file to validate the new installer.
         /// </summary>
         string SignatureSourcePath { get; set; }
 
         /// <summary>
-        /// Defines whether to consider daily builds for update, default is false.
+        /// Specifies whether to consider daily builds for update, default is false.
         /// </summary>
         bool CheckNewerDailyBuild { get; set; }
 
         /// <summary>
-        /// Defines whether to force update, default vlaue is false.
+        /// Specifies whether to force update, default value is false.
         /// </summary>
         bool ForceUpdate { get; set; }
 
         /// <summary>
-        /// Gets the base name of the installer to be used for upgrade.
+        /// Returns the base name of the installer to be used for upgrade.
         /// </summary>
         string InstallerNameBase { get; set; }
 
         /// <summary>
-        /// Gets IDynamoLookUp interface to search Dynamo installations on the system.
+        /// Returns IDynamoLookUp interface to search Dynamo installations on the system.
         /// </summary>
         IDynamoLookUp DynamoLookUp { get; set; }
     }
@@ -202,7 +202,7 @@ namespace Dynamo.Updates
 
     /// <summary>
     /// An interface to describe an asynchronous web
-    /// request for update data.
+    /// request for updating data.
     /// </summary>
     public interface IAsynchronousRequest
     {
@@ -323,7 +323,7 @@ namespace Dynamo.Updates
     }
 
     /// <summary>
-    /// Defines Update Manager Configuration settings.
+    /// Specifies Update Manager Configuration settings.
     /// </summary>
     public class UpdateManagerConfiguration : IUpdateManagerConfiguration
     {
@@ -333,27 +333,27 @@ namespace Dynamo.Updates
         private const string INSTALL_NAME_BASE = "DynamoInstall";
 
         /// <summary>
-        /// Defines download location for new installer
+        /// Specifies download location for new installer
         /// </summary>
         public string DownloadSourcePath { get; set; }
         
         /// <summary>
-        /// Defines location for signature file to validate the new installer.
+        /// Specifies location for signature file to validate the new installer.
         /// </summary>
         public string SignatureSourcePath { get; set; }
 
         /// <summary>
-        /// Defines whether to consider daily builds for update, default is false.
+        /// Specifies whether to consider daily builds for update, default is false.
         /// </summary>
         public bool CheckNewerDailyBuild { get; set; }
 
         /// <summary>
-        /// Defines whether to force update, default value is false.
+        /// Specifies whether to force update, default value is false.
         /// </summary>
         public bool ForceUpdate { get; set; }
 
         /// <summary>
-        /// Gets the base name of the installer to be used for upgrade.
+        /// Returns the base name of the installer to be used for upgrade.
         /// </summary>
         public string InstallerNameBase { get; set; }
 
@@ -472,7 +472,7 @@ namespace Dynamo.Updates
         }
 
         /// <summary>
-        /// Gets the update manager config file path.
+        /// Returns the update manager config file path.
         /// </summary>
         /// <param name="filePath">Full path for the config file</param>
         /// <returns>True if file exists.</returns>
@@ -912,7 +912,7 @@ namespace Dynamo.Updates
         #region Private Class Helper Methods
 
         /// <summary>
-        /// Get the file name of the latest build on S3
+        /// Returns the file name of the latest build on S3
         /// </summary>
         /// <param name="request"></param>
         /// <param name="checkDailyBuilds"></param>
@@ -969,7 +969,7 @@ namespace Dynamo.Updates
         }
 
         /// <summary>
-        /// Get a build time from a file path.
+        /// Returns a build time from a file path.
         /// </summary>
         /// <param name="installNameBase"></param>
         /// <param name="filePath"></param>
@@ -1007,7 +1007,7 @@ namespace Dynamo.Updates
         }
 
         /// <summary>
-        /// Get a binary version for the executing assembly
+        /// Returns a binary version for the executing assembly
         /// </summary>
         /// <returns>A BinaryVersion</returns>
         internal static BinaryVersion GetCurrentBinaryVersion()
@@ -1019,7 +1019,7 @@ namespace Dynamo.Updates
         }
 
         /// <summary>
-        /// Get a BinaryVersion from a file path.
+        /// Returns a BinaryVersion from a file path.
         /// </summary>
         /// <param name="installNameBase">The base install name.</param>
         /// <param name="filePath">The path name of the file.</param>
@@ -1213,7 +1213,7 @@ namespace Dynamo.Updates
     internal abstract class DynamoLookUp : IDynamoLookUp
     {
         /// <summary>
-        /// Gets the version of latest product
+        /// Returns the version of latest product
         /// </summary>
         public BinaryVersion LatestProduct { get { return GetLatestInstallVersion(); } }
 
@@ -1232,13 +1232,13 @@ namespace Dynamo.Updates
         }
 
         /// <summary>
-        /// Gets all dynamo install path on the system by looking into the Windows registry. 
+        /// Returns all dynamo install path on the system by looking into the Windows registry. 
         /// </summary>
         /// <returns>List of Dynamo install path</returns>
         public abstract IEnumerable<string> GetDynamoInstallLocations();
 
         /// <summary>
-        /// Gets the full path of user data location of all version of this
+        /// Returns the full path of user data location of all version of this
         /// Dynamo product installed on this system. The default implementation
         /// returns list of all subfolders in %appdata%\Dynamo as well as 
         /// %appdata%\Dynamo\Dynamo Core\ folders.

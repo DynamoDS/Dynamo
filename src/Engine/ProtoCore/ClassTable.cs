@@ -488,7 +488,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Gets Class Id for the given fully qualified class name.
+        /// Returns Class Id for the given fully qualified class name.
         /// </summary>
         /// <param name="fullname">Fully qualified class name</param>
         /// <returns>Class Id if found, else ProtoCore.DSASM.Constants.kInvalidIndex</returns>

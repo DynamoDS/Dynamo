@@ -29,7 +29,7 @@ namespace Dynamo.Engine
 
     /// <summary>
     /// A controller to coordinate the interactions between some DesignScript
-    /// sub components like library managment, live runner and so on.
+    /// sub components like library management, live runner and so on.
     /// </summary>
     public class EngineController : LogSourceBase, IAstNodeContainer, IDisposable
     {
@@ -71,7 +71,7 @@ namespace Dynamo.Engine
         public static CompilationServices CompilationServices;
 
         /// <summary>
-        /// Get DesignScript core.
+        /// Returns DesignScript core.
         /// </summary>
         public ProtoCore.Core LiveRunnerCore
         {
@@ -82,7 +82,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Get DesignScript runtime core.
+        /// Returns DesignScript runtime core.
         /// </summary>
         public ProtoCore.RuntimeCore LiveRunnerRuntimeCore
         {
@@ -94,7 +94,7 @@ namespace Dynamo.Engine
 
 
         /// <summary>
-        /// Return libary service instance.
+        /// Returns library service instance.
         /// </summary>
         public LibraryServices LibraryServices
         {
@@ -155,7 +155,7 @@ namespace Dynamo.Engine
         #region Function Groups
 
         /// <summary>
-        /// Return all function groups.
+        /// Returns all function groups.
         /// </summary>
         internal IEnumerable<FunctionGroup> GetFunctionGroups()
         {
@@ -176,7 +176,7 @@ namespace Dynamo.Engine
         #region Value queries
 
         /// <summary>
-        /// Get runtime mirror for variable.
+        /// Returns runtime mirror for variable.
         /// </summary>
         /// <param name="variableName">Unique ID of AST node</param>
         /// <returns>RuntimeMirror object that reflects status of a single designscript variable</returns>
@@ -204,7 +204,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Get a list of IGraphicItem of variable if it is a geometry object;
+        /// Returns a list of IGraphicItem of variable if it is a geometry object;
         /// otherwise returns null.
         /// </summary>
         /// <param name="variableName"></param>
@@ -303,8 +303,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Return true if there are graph sync data in the queue waiting for
-        /// being executed.
+        /// Returns true if there are graph sync data in the queue waiting to be executed.
         /// </summary>
         /// <returns></returns>
         public bool HasPendingGraphSyncData
@@ -326,7 +325,7 @@ namespace Dynamo.Engine
 
         /// <summary>
         /// Generate graph sync data based on the input Dynamo custom node information.
-        /// Return false if all nodes are clean.
+        /// Returns false if all nodes are clean.
         /// </summary>
         /// <param name="nodes"></param>
         /// <param name="definition"></param>

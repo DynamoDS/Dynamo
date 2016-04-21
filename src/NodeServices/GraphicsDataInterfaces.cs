@@ -203,7 +203,7 @@ namespace Autodesk.DesignScript.Interfaces
     public interface IGraphicItem
     {
         /// <summary>
-        /// Gets the graphics/tesselation data in given render package object.
+        /// Returns the graphics/tesselation data in given render package object.
         /// </summary>
         /// <param name="package">The render package, where graphics data to be
         /// pushed.</param>
@@ -254,7 +254,7 @@ namespace Autodesk.DesignScript.Interfaces
         List<IGraphicItem> GetGraphicItems(Object obj);
 
         /// <summary>
-        /// Gets the Graphics/Render data into the given render package.
+        /// Returns the Graphics/Render data into the given render package.
         /// </summary>
         /// <param name="objects">Objects which owns some graphics items</param>
         /// <param name="package">RenderPackage where graphics/render data can

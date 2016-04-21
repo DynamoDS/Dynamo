@@ -181,7 +181,7 @@ namespace Dynamo.Scheduler
         }
 
         /// <summary>
-        /// Flag determining whether or not the scheduleed task will be
+        /// Flag determining whether or not the scheduled task will be
         /// processed immediately or not. 
         /// </summary>
         public TaskProcessMode ProcessMode { get; set; }

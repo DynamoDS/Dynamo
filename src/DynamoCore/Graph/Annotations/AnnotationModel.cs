@@ -107,7 +107,7 @@ namespace Dynamo.Graph.Annotations
 
         /// <summary>
         /// Overriding the Rect from Modelbase
-        /// This gets the actual RECT of the group. 
+        /// This queries the actual RECT of the group. 
         /// This is required to make the group as ILocatable.
         /// </summary>      
         public override Rect2D Rect

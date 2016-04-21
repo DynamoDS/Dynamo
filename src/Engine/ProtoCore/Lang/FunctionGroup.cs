@@ -107,7 +107,7 @@ namespace ProtoCore
 
 
         /// <summary>
-        /// Get a list of all the function end points that are type compliant, there maybe more than one due to pattern matches
+        /// Returns a list of all the function end points that are type compliant, there maybe more than one due to pattern matches
         /// </summary>
         /// <returns></returns>
         public List<FunctionEndPoint> GetExactTypeMatches(ProtoCore.Runtime.Context context,
@@ -159,7 +159,7 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Get a dictionary of the function end points that are type compatible
+        /// Returns a dictionary of the function end points that are type compatible
         /// with the costs of the associated conversions
         /// </summary>
         /// <param name="context"></param>

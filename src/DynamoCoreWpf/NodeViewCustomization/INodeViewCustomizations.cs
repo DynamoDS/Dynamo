@@ -8,7 +8,7 @@ namespace Dynamo.Wpf
     public interface INodeViewCustomizations
     {
         /// <summary>
-        /// Get a dictionary of collections of INodeViewCustomization types.
+        /// Returns a dictionary of collections of INodeViewCustomization types.
         /// </summary>
         /// <param name="logger">An ILogger used for logging exceptions when loading INodeViewCustomizations from assemblies.</param>
         /// <returns>A dictionary of collections of INodeViewCustomization types.</returns>
