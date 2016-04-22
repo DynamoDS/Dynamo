@@ -4,21 +4,59 @@ using System.Threading;
 
 namespace Dynamo.Scheduler
 {
+    /// <summary>
+    /// Provides data for DynamoScheduler.TaskStateChanged events.
+    /// </summary>
     public class TaskStateChangedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Describes the state that a task can be in.
+        /// </summary>
         public enum State
         {
+            /// <summary>
+            /// Task is added to the scheduler
+            /// </summary>
             Scheduled,
+            /// <summary>
+            /// Task is dropped from the scheduler due to compacting process
+            /// </summary>
             Discarded,
+            /// <summary>
+            /// Task is about to be executed
+            /// </summary>
             ExecutionStarting,
+            /// <summary>
+            /// Task execution is completed with errors
+            /// </summary>
             ExecutionFailed,
+            /// <summary>
+            /// Task execution is completed successfully
+            /// </summary>
             ExecutionCompleted,
+            /// <summary>
+            /// Post-execute action of task is completed and 
+            /// registered event handlers of task completion are notified.
+            /// </summary>
             CompletionHandled
         }
 
+        /// <summary>
+        /// Returns AsyncTask object to execute
+        /// </summary>
         internal AsyncTask Task { get; private set; }
+
+        /// <summary>
+        /// Returns Actual state of task
+        /// </summary>
         internal State CurrentState { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TaskStateChangedEventArgs"/> class 
+        /// with the task and its current state
+        /// </summary>
+        /// <param name="task"><see cref="AsyncTask"/> object</param>
+        /// <param name="state">Current state of the <see cref="AsyncTask"/> object</param>
         internal TaskStateChangedEventArgs(AsyncTask task, State state)
         {
             Task = task;
@@ -26,8 +64,12 @@ namespace Dynamo.Scheduler
         }
     }
 
-    public delegate void TaskStateChangedEventHandler(
-        DynamoScheduler sender, TaskStateChangedEventArgs e);
+    /// <summary>
+    /// Represents the method that will handle <see cref="DynamoScheduler.TaskStateChanged"/> events.
+    /// </summary>
+    /// <param name="sender">The object where the event handler is attached.</param>
+    /// <param name="e">The event data.</param>
+    public delegate void TaskStateChangedEventHandler(DynamoScheduler sender, TaskStateChangedEventArgs e);
 
     /// <summary>
     /// This interface provides methods and properties used for Dynamo Scheduler.
@@ -71,6 +113,9 @@ namespace Dynamo.Scheduler
         IEnumerable<AsyncTask> Tasks { get; }
     }
 
+    /// <summary>
+    /// Describes the way a scheduled task will be processed.
+    /// </summary>
     public enum TaskProcessMode
     {
         /// <summary>

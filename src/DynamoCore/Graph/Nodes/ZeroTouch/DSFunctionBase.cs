@@ -15,6 +15,10 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     public abstract class DSFunctionBase 
         : FunctionCallBase<ZeroTouchNodeController<FunctionDescriptor>, FunctionDescriptor>
     {
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="DSFunctionBase"/> class.
+        /// </summary>
+        /// <param name="controller">Function descritor.</param>
         protected DSFunctionBase(ZeroTouchNodeController<FunctionDescriptor> controller)
             : base(controller)
         {
@@ -32,12 +36,20 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                 signature = Controller.Definition.Signature;
             Description = String.IsNullOrEmpty(Controller.Description) ? signature : Controller.Description + "\n\n" + signature;
         }
-        
+
+        /// <summary>
+        ///     Indicates if this node is allowed to be converted to AST node in nodes to code conversion.
+        /// </summary>
         public override bool IsConvertible
         {
             get { return !IsPartiallyApplied; }
         }
 
+        /// <summary>
+        ///     Fetches the ProtoAST Identifier for a given output index.
+        /// </summary>
+        /// <param name="outputIndex">Index of the output port.</param>
+        /// <returns>Identifier corresponding to the given output port.</returns>
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
         {
             if (Controller.ReturnKeys != null && Controller.ReturnKeys.Any())
@@ -72,6 +84,11 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             return Controller.BuildAst(this, inputAstNodes);
         }
 
+        /// <summary>
+        ///     Returns the possible type of output at specified port.
+        /// </summary>
+        /// <param name="index">Index of the port</param>
+        /// <returns>The type</returns>
         public override ProtoCore.Type GetTypeHintForOutput(int index)
         {
             return Controller.Definition.ReturnType;
@@ -84,6 +101,12 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     /// </summary>
     public class ZeroTouchNodeController<T> : FunctionCallNodeController<T> where T : FunctionDescriptor
     {
+        /// <summary>
+        ///     Initializes a new instance of 
+        /// the <see cref="ZeroTouchNodeController"/> class with FunctionDescriptor.
+        /// </summary>
+        /// <param name="zeroTouchDef">FunctionDescriptor describing the function 
+        /// that this controller will call.</param>
         public ZeroTouchNodeController(T zeroTouchDef) : base(zeroTouchDef) { }
 
         /// <summary>
@@ -195,6 +218,11 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             }
         }
         
+        /// <summary>
+        /// Serializes data into given <see cref="XmlElement"/> object.
+        /// </summary>
+        /// <param name="element"><see cref="XmlElement"/> object to store data.</param>
+        /// <param name="context">Saving context.</param>
         public override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context);
@@ -211,6 +239,10 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             element.SetAttribute("function", Definition.MangledName ?? "");
         }
 
+        /// <summary>
+        /// Syncronizes custom node instance with its definition
+        /// </summary>
+        /// <param name="model">The custom node instance</param>
         public override void SyncNodeWithDefinition(NodeModel model)
         {
             base.SyncNodeWithDefinition(model);

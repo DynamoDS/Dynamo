@@ -11,8 +11,12 @@ namespace Dynamo.Search.SearchElements
     /// </summary>
     public class NodeModelSearchElement : NodeModelSearchElementBase
     {
-        private readonly Func<NodeModel> constructor; 
+        private readonly Func<NodeModel> constructor;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NodeModelSearchElement"/> class.
+        /// </summary>
+        /// <param name="typeLoadData">Data to load.</param>
         internal NodeModelSearchElement(TypeLoadData typeLoadData) : base(typeLoadData)
         {
             constructor = typeLoadData.Type.GetDefaultConstructor<NodeModel>();
