@@ -79,10 +79,6 @@ namespace ProtoImperative
         }
 
         /// <summary>
-        /// Emits a block of code for the following cases:
-        ///     if elseif else body
-        ///     while body
-        ///     for body
         /// </summary>
         /// <param name="codeBlock"></param>
         /// <param name="inferedType"></param>
@@ -216,14 +212,14 @@ namespace ProtoImperative
             }
         }
 
-        private ProtoCore.DSASM.SymbolNode Allocate(string ident, int funcIndex, ProtoCore.Type datatype)
+        private SymbolNode Allocate(string ident, int funcIndex, ProtoCore.Type datatype)
         {
             if (core.ClassTable.IndexOf(ident) != ProtoCore.DSASM.Constants.kInvalidIndex)
                 buildStatus.LogSemanticError(String.Format(Resources.ClassNameAsVariableError,ident));
 
-            ProtoCore.DSASM.SymbolNode symbolnode = new ProtoCore.DSASM.SymbolNode(
+            SymbolNode symbolnode = new SymbolNode(
                 ident, 
-                ProtoCore.DSASM.Constants.kInvalidIndex, 
+                Constants.kInvalidIndex, 
                 funcIndex, 
                 datatype,
                 false,
@@ -234,11 +230,11 @@ namespace ProtoImperative
                 false,
                 codeBlock.codeBlockId);
 
-            if (this.isEmittingImportNode)
+            if (isEmittingImportNode)
                 symbolnode.ExternLib = core.CurrentDSFileName;
 
 
-            Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == symbolnode.symbolTableIndex);
+            Validity.Assert(Constants.kInvalidIndex == symbolnode.symbolTableIndex);
             AllocateVar(symbolnode);
 
             // This is to handle that a variable is defined in a language
@@ -250,8 +246,8 @@ namespace ProtoImperative
                 symbolnode.functionIndex = Constants.kGlobalScope;
             }
 
-            int symbolindex = ProtoCore.DSASM.Constants.kInvalidIndex;
-            if (ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex && !IsInLanguageBlockDefinedInFunction())
+            int symbolindex = Constants.kInvalidIndex;
+            if (Constants.kInvalidIndex != globalClassIndex && !IsInLanguageBlockDefinedInFunction())
             {
                 symbolindex = core.ClassTable.ClassNodes[globalClassIndex].Symbols.Append(symbolnode);
             }
@@ -262,37 +258,6 @@ namespace ProtoImperative
 
             symbolnode.symbolTableIndex = symbolindex;
             return symbolnode;
-        }
-
-        private int AllocateArg(string ident, int funcIndex, ProtoCore.Type datatype)
-        {
-            ProtoCore.DSASM.SymbolNode symbolnode = new ProtoCore.DSASM.SymbolNode(
-                ident,
-                ProtoCore.DSASM.Constants.kInvalidIndex,
-                funcIndex,
-                datatype,
-                true,
-                codeBlock.symbolTable.RuntimeIndex,
-                MemoryRegion.MemStack);
-            symbolnode.codeBlockId = codeBlock.codeBlockId;
-            if (this.isEmittingImportNode)
-                symbolnode.ExternLib = core.CurrentDSFileName;
-
-            int symbolindex = ProtoCore.DSASM.Constants.kInvalidIndex;
-            if (ProtoCore.DSASM.Constants.kInvalidIndex != codeBlock.symbolTable.IndexOf(symbolnode))
-            {
-                buildStatus.LogSemanticError(String.Format(Resources.IdentifierRedefinition,ident));
-            }
-            else
-            {
-                int locOffset = localProcedure.LocalCount;
-                locOffset = localProcedure.LocalCount;
-                symbolnode.index = -1 - ProtoCore.DSASM.StackFrame.StackFrameSize - (locOffset + argOffset);
-                ++argOffset;
-
-                symbolindex = codeBlock.symbolTable.Append(symbolnode);
-            }
-            return symbolindex;
         }
 
         protected override void EmitReturn(int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
@@ -1791,32 +1756,11 @@ namespace ProtoImperative
             if (IsParsingGlobal())
             {
                 UnaryExpressionNode u = node as UnaryExpressionNode;
-                bool isPrefixOperation = ProtoCore.DSASM.UnaryOperator.Increment == u.Operator || ProtoCore.DSASM.UnaryOperator.Decrement == u.Operator;
-                //(Ayush) In case of prefix, apply prefix operation first
-                if (isPrefixOperation)
-                {
-                    if (u.Expression is IdentifierListNode || u.Expression is IdentifierNode)
-                    {
-                        BinaryExpressionNode binRight = new BinaryExpressionNode();
-                        BinaryExpressionNode bin = new BinaryExpressionNode();
-                        binRight.LeftNode = u.Expression;
-                        binRight.RightNode = new IntNode(1);
-                        binRight.Optr = (ProtoCore.DSASM.UnaryOperator.Increment == u.Operator) ? ProtoCore.DSASM.Operator.add : ProtoCore.DSASM.Operator.sub;
-                        bin.LeftNode = u.Expression; bin.RightNode = binRight; bin.Optr = ProtoCore.DSASM.Operator.assign;
-                        EmitBinaryExpressionNode(bin, ref inferedType);
-                    }
-                    else
-                        throw new BuildHaltException("Invalid use of prefix operation (15BB9C10).");
-                }
-
                 DfsTraverse(u.Expression, ref inferedType, false, null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
 
-                if (!isPrefixOperation)
-                {
-                    string op = Op.GetUnaryOpName(u.Operator);
-                    EmitInstrConsole(op);
-                    EmitUnary(Op.GetUnaryOpCode(u.Operator));
-                }
+                string op = Op.GetUnaryOpName(u.Operator);
+                EmitInstrConsole(op);
+                EmitUnary(Op.GetUnaryOpCode(u.Operator));
             }
         }
 

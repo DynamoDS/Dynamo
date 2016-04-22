@@ -4631,28 +4631,9 @@ namespace ProtoAssociative
         private void EmitUnaryExpressionNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
         {
             UnaryExpressionNode u = node as UnaryExpressionNode;
-            bool isPrefixOperation = ProtoCore.DSASM.UnaryOperator.Increment == u.Operator || ProtoCore.DSASM.UnaryOperator.Decrement == u.Operator;
-
-            //(Ayush) In case of prefix, apply prefix operation first
-            if (isPrefixOperation)
-            {
-                if (u.Expression is IdentifierListNode || u.Expression is IdentifierNode)
-                {
-                    BinaryExpressionNode binRight = new BinaryExpressionNode();
-                    BinaryExpressionNode bin = new BinaryExpressionNode();
-                    binRight.LeftNode = u.Expression;
-                    binRight.RightNode = new IntNode(1);
-                    binRight.Optr = (ProtoCore.DSASM.UnaryOperator.Increment == u.Operator) ? ProtoCore.DSASM.Operator.add : ProtoCore.DSASM.Operator.sub;
-                    bin.LeftNode = u.Expression; bin.RightNode = binRight; bin.Optr = ProtoCore.DSASM.Operator.assign;
-                    EmitBinaryExpressionNode(bin, ref inferedType, false, graphNode, subPass);
-                }
-                else
-                    throw new BuildHaltException("Invalid use of prefix operation (DCDDEEF1).");
-            }
-
             DfsTraverse(u.Expression, ref inferedType, false, graphNode, subPass);
 
-            if (!isPrefixOperation && subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
+            if (subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
             {
                 string op = Op.GetUnaryOpName(u.Operator);
                 EmitInstrConsole(op);
