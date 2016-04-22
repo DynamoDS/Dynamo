@@ -664,7 +664,7 @@ namespace Dynamo.Migration
         }
 
         /// <summary>
-        /// Call this method to create an empty CodeBlockNodeModel node that contains 
+        /// This method creates an empty CodeBlockNodeModel node that contains 
         /// basic code block node information.
         /// </summary>
         /// <param name="document">The XmlDocument to create the node in.</param>
@@ -700,7 +700,7 @@ namespace Dynamo.Migration
         }
 
         /// <summary>
-        /// Call this method to create an empty NodeModel node that contains 
+        /// This method creates an empty NodeModel node that contains 
         /// basic code block node information.
         /// </summary>
         /// <param name="document">The XmlDocument to create the node in.</param>
@@ -852,7 +852,7 @@ namespace Dynamo.Migration
         }
 
         /// <summary>
-        /// Call this method to create a duplicated XmlElement representing DSVarArgFunction
+        /// This method creates a duplicated XmlElement representing DSVarArgFunction
         /// with all the attributes found from the source XmlElement.
         /// </summary>
         /// <param name="srcElement">The source XmlElement to duplicate.</param>

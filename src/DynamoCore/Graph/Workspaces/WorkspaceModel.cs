@@ -496,7 +496,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Returns all of the notes currently present in the workspace.
+        ///     Returns the notes <see cref="NoteModel"/> collection.
         /// </summary>
         public IEnumerable<NoteModel> Notes
         {
@@ -681,7 +681,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Responsible for resolving a partial class name to its fully resolved name
+        /// Returns <see cref="ElementResolver"/>. This property resolves partial class name to fully resolved name.
         /// </summary>
         public ElementResolver ElementResolver { get; protected set; }
 
@@ -1594,7 +1594,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Call this method to notify listeners that workspace position is changed.
+        ///     Called when workspace position is changed. This method notifyies all the listeners when a workspace is changed.
         /// </summary>
         public void ReportPosition()
         {
@@ -2479,7 +2479,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Gets model by GUID
+        /// Returns model by GUID
         /// </summary>
         /// <param name="modelGuid">Identifier of the requested model.</param>
         /// <returns>Found <see cref="ModelBase"/> object.</returns>
