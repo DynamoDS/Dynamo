@@ -1052,16 +1052,9 @@ namespace ProtoCore
                     //Search local variables in the class member function first
                     if (functionScope != Constants.kGlobalScope)
                     {
-                        // Aparajit: This function is found to not work well in the expression interpreter as it doesn't return the
-                        // correct symbol if the same symbol exists in different contexts such as inside a function defined in a lang block,
-                        // inside the lang block itself and in a function in the global scope etc.
-                        // TODO: We can later consider replacing GetSymbolInFunction with GetFirstVisibleSymbol consistently in all occurrences 
                         symbol = core.GetFirstVisibleSymbol(name, classScope, functionScope, currentCodeBlock);
-                        if (symbol != null)
-                        {
-                            isAccessible = true;
-                            return true;
-                        }
+                        isAccessible = symbol != null;
+                        return isAccessible;
                     }
                 }
 
@@ -1090,11 +1083,8 @@ namespace ProtoCore
             else if (functionScope != Constants.kGlobalScope)
             {
                 symbol = core.GetFirstVisibleSymbol(name, Constants.kGlobalScope, functionScope, currentCodeBlock);
-                if (symbol != null)
-                {
-                    isAccessible = true;
-                    return true;
-                }
+                isAccessible = symbol != null;
+                return symbol != null;
             }
 
             CodeBlock searchBlock = currentCodeBlock;
