@@ -1,9 +1,17 @@
 ﻿namespace Dynamo.Updates
 {
+    /// <summary>
+    /// This class represents current version of the product.
+    /// </summary>
     public class BinaryVersion
     {
         #region Public Class Operational Methods
 
+        /// <summary>
+        /// Parses a given string version representation 
+        /// </summary>
+        /// <param name="version">Version to parse</param>
+        /// <returns>Result <see cref="BinaryVersion"/> object</returns>
         public static BinaryVersion FromString(string version)
         {
             if (string.IsNullOrEmpty(version))
@@ -29,6 +37,10 @@
             return new BinaryVersion(major, minor, build, priv);
         }
 
+        /// <summary>
+        /// Returns string representation of the <see cref="BinaryVersion"/>
+        /// </summary>
+        /// <returns>String representation of the version</returns>
         public override string ToString()
         {
             return string.Format("{0}.{1}.{2}.{3}",
@@ -38,6 +50,10 @@
                 this.FilePrivate.ToString());
         }
 
+        /// <summary>
+        /// Returns the hash code for this <see cref="BinaryVersion"/>
+        /// </summary>
+        /// <returns>The hash code</returns>
         public override int GetHashCode()
         {
             int high = (int)((this.Value & 0xffffffff00000000) >> 32);
@@ -45,12 +61,25 @@
             return high ^ low;
         }
 
+        /// <summary>
+        /// Determines whether this instance and another specified 
+        /// <see cref="BinaryVersion"/> object are equal by reference
+        /// </summary>
+        /// <param name="other">The <see cref="BinaryVersion"/> to compare to this instance.</param>
+        /// <returns>True if references are equal</returns>
         public override bool Equals(object other)
         {
             BinaryVersion rhs = other as BinaryVersion;
             return (this == rhs);
         }
 
+        /// <summary>
+        /// Compares two <see cref="BinaryVersion"/> objects. The result specifies 
+        /// if the first given version is older than the second one 
+        /// </summary>
+        /// <param name="lhs">A <see cref="BinaryVersion"/> to compare.</param>
+        /// <param name="rhs">A <see cref="BinaryVersion"/> to compare.</param>
+        /// <returns>True if the first version is older than the second one</returns>
         public static bool operator <(BinaryVersion lhs, BinaryVersion rhs)
         {
             if (System.Object.ReferenceEquals(lhs, rhs))
@@ -62,6 +91,13 @@
             return lhs.Value < rhs.Value;
         }
 
+        /// <summary>
+        /// Compares two <see cref="BinaryVersion"/> objects. The result specifies 
+        /// if the first given version is older or the same as the second one 
+        /// </summary>
+        /// <param name="lhs">A <see cref="BinaryVersion"/> to compare.</param>
+        /// <param name="rhs">A <see cref="BinaryVersion"/> to compare.</param>
+        /// <returns>True if the first version is older or the same as the second one</returns>
         public static bool operator <=(BinaryVersion lhs, BinaryVersion rhs)
         {
             if (System.Object.ReferenceEquals(lhs, rhs))
@@ -73,6 +109,13 @@
             return lhs.Value <= rhs.Value;
         }
 
+        /// <summary>
+        /// Compares two <see cref="BinaryVersion"/> objects. The result specifies 
+        /// if the first given version is newer than the second one 
+        /// </summary>
+        /// <param name="lhs">A <see cref="BinaryVersion"/> to compare.</param>
+        /// <param name="rhs">A <see cref="BinaryVersion"/> to compare.</param>
+        /// <returns>True if the first version is newer than the second one</returns>
         public static bool operator >(BinaryVersion lhs, BinaryVersion rhs)
         {
             if (System.Object.ReferenceEquals(lhs, rhs))
@@ -84,6 +127,13 @@
             return lhs.Value > rhs.Value;
         }
 
+        /// <summary>
+        /// Compares two <see cref="BinaryVersion"/> objects. The result specifies 
+        /// if the first given version is newer or the same as the second one 
+        /// </summary>
+        /// <param name="lhs">A <see cref="BinaryVersion"/> to compare.</param>
+        /// <param name="rhs">A <see cref="BinaryVersion"/> to compare.</param>
+        /// <returns>True if the first version is newer or the same as the second one</returns>
         public static bool operator >=(BinaryVersion lhs, BinaryVersion rhs)
         {
             if (System.Object.ReferenceEquals(lhs, rhs))
@@ -95,6 +145,13 @@
             return lhs.Value >= rhs.Value;
         }
 
+        /// <summary>
+        /// Compares two <see cref="BinaryVersion"/> objects. The result specifies 
+        /// if the versions are the same
+        /// </summary>
+        /// <param name="lhs">A <see cref="BinaryVersion"/> to compare.</param>
+        /// <param name="rhs">A <see cref="BinaryVersion"/> to compare.</param>
+        /// <returns>True if the versions are the same</returns>
         public static bool operator ==(BinaryVersion lhs, BinaryVersion rhs)
         {
             if (System.Object.ReferenceEquals(lhs, rhs))
@@ -106,6 +163,13 @@
             return lhs.Value == rhs.Value;
         }
 
+        /// <summary>
+        /// Compares two <see cref="BinaryVersion"/> objects. The result specifies 
+        /// if the versions are different
+        /// </summary>
+        /// <param name="lhs">A <see cref="BinaryVersion"/> to compare.</param>
+        /// <param name="rhs">A <see cref="BinaryVersion"/> to compare.</param>
+        /// <returns>True if the versions are different</returns>
         public static bool operator !=(BinaryVersion lhs, BinaryVersion rhs)
         {
             return !(lhs == rhs);

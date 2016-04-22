@@ -10,44 +10,67 @@ namespace Dynamo.Graph.Presets
     /// This class references a set of nodemodels, and a set of serialized versions of those nodemodels
     /// a client can use this class to store the state of a set of nodes from a graph
     /// </summary>
-    public class PresetModel:ModelBase
+    public class PresetModel : ModelBase
     {
-       
         private List<NodeModel> nodes;
         private List<XmlElement> serializedNodes;
 
         # region properties
 
+        /// <summary>
+        /// Returns name of the preset
+        /// </summary>
         public string Name { get; private set; }
+        
+        /// <summary>
+        /// Returns description of the preset
+        /// </summary>
         public string Description { get; private set; }
-       
-        /// <summary>
-        /// list of nodemodels that this state serializes
-        /// </summary>
-        public IEnumerable<NodeModel> Nodes { get{return nodes;}}
 
         /// <summary>
-        /// list of serialized nodes
+        /// Returns list of nodemodels that this state serializes
         /// </summary>
-        public IEnumerable<XmlElement> SerializedNodes { get { return serializedNodes; }}
+        public IEnumerable<NodeModel> Nodes { get { return nodes; } }
 
-       
+        /// <summary>
+        /// Returns list of serialized nodes
+        /// </summary>
+        public IEnumerable<XmlElement> SerializedNodes { get { return serializedNodes; } }
+        
+        /// <summary>
+        /// Guid attribute name used during serialization
+        /// </summary>
         public const string GuidAttributeName = "guid";
+
+        /// <summary>
+        /// Name attribute name used during serialization
+        /// </summary>
         public const string NameAttributeName = "Name";
+
+        /// <summary>
+        /// Description attribute name used during serialization
+        /// </summary>
         public const string DescriptionAttributeName = "Description";
+
+        /// <summary>
+        /// Nickname attribute name used during serialization
+        /// </summary>
         public const string NicknameAttributeName = "nickname";
 
         #endregion
 
         #region constructor
+
         /// <summary>
-        /// create a new presetsState, this will serialize all the referenced nodes by calling their serialize method, 
-        /// the resulting XML elements will be used to save this state when the presetModel is saved on workspace save
+        /// Create a new presetsState, this will serialize all the referenced nodes 
+        /// by calling their serialize method, the resulting XML elements will be used 
+        /// to save this state when the presetModel is saved on workspace save
         /// </summary>
-        /// <param name="name">name for the state, must not be null </param>
-        /// <param name="description">description of the state, can be null</param>
-        /// <param name="inputsToSave">set of nodeModels, must not be null</param>
-        public PresetModel(string name, string description, IEnumerable<NodeModel> inputsToSave):base()
+        /// <param name="name">Name for the state, must not be null </param>
+        /// <param name="description">Description of the state, can be null</param>
+        /// <param name="inputsToSave">Set of nodeModels, must be not null</param>
+        public PresetModel(string name, string description, IEnumerable<NodeModel> inputsToSave)
+            : base()
         {
             if (String.IsNullOrEmpty(name))
             {
@@ -57,14 +80,12 @@ namespace Dynamo.Graph.Presets
             if (inputsToSave == null || inputsToSave.Count() < 1)
             {
                 throw new ArgumentNullException("inputsToSave");
-            } 
+            }
 
-           
             Name = name;
             Description = description;
             nodes = inputsToSave.ToList();
 
-           
             var tempdoc = new XmlDocument();
             serializedNodes = new List<XmlElement>();
             foreach (var node in Nodes)
@@ -72,8 +93,10 @@ namespace Dynamo.Graph.Presets
                 serializedNodes.Add(node.Serialize(tempdoc, SaveContext.Preset));
             }
         }
-        
-        //this overload is used for loading
+
+        /// <summary>
+        /// this overload is used for loading
+        /// </summary>
         private PresetModel(string name, string description, List<NodeModel> nodes, List<XmlElement> serializedNodes, Guid id)
         {
             Name = name;
@@ -87,15 +110,13 @@ namespace Dynamo.Graph.Presets
         /// this overload is used for loading with deserializeCore, we must pass the nodesInTheGraph to the instance of the Preset so that
         /// we can detect missing nodes
         /// </summary>
-        /// <param name="nodesInGraph"></param>
- 
+        /// <param name="nodesInGraph"></param> 
         internal PresetModel(IEnumerable<NodeModel> nodesInGraph)
         {
             this.nodes = nodesInGraph.ToList();
         }
+
         #endregion
-
-
 
         #region serialization / deserialzation
 
@@ -113,7 +134,6 @@ namespace Dynamo.Graph.Presets
             }
         }
 
-        
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             var stateName = nodeElement.GetAttribute(NameAttributeName);
@@ -164,6 +184,7 @@ namespace Dynamo.Graph.Presets
             //we now replace it with the found nodes that this preset serializes
             this.nodes = foundNodes;
         }
+
         #endregion
     }
 }

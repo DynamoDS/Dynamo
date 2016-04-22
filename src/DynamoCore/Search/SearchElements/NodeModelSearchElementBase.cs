@@ -12,6 +12,10 @@ namespace Dynamo.Search.SearchElements
     /// </summary>
     public abstract class NodeModelSearchElementBase : NodeSearchElement
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NodeModelSearchElementBase"/> class.
+        /// </summary>
+        /// <param name="typeLoadData">Data to load.</param>
         protected NodeModelSearchElementBase(TypeLoadData typeLoadData)
         {
             Name = typeLoadData.Name;

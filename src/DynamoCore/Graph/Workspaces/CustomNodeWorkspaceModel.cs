@@ -15,8 +15,14 @@ using ProtoCore.Namespace;
 
 namespace Dynamo.Graph.Workspaces
 {
+    /// <summary>
+    /// This class contains methods and properties that defines a customnodeworkspace.
+    /// </summary>
     public class CustomNodeWorkspaceModel : WorkspaceModel, ICustomNodeWorkspaceModel
     {
+        /// <summary>
+        /// Returns identifier of the custom node
+        /// </summary>
         public Guid CustomNodeId
         {
             get { return customNodeId; }
@@ -33,15 +39,19 @@ namespace Dynamo.Graph.Workspaces
                 RaisePropertyChanged("CustomNodeId");
             }
         }
+
         private Guid customNodeId;
 
         #region Contructors
 
-        public CustomNodeWorkspaceModel( 
-            WorkspaceInfo info, 
-            NodeFactory factory)
-            : this(
-                factory,
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomNodeWorkspaceModel"/> class
+        /// by given information about it and node factory
+        /// </summary>
+        /// <param name="info">Information for creating custom node workspace</param>
+        /// <param name="factory">Node factory to create nodes</param>
+        public CustomNodeWorkspaceModel(WorkspaceInfo info, NodeFactory factory)
+            : this(factory,
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 Enumerable.Empty<AnnotationModel>(),
@@ -49,6 +59,18 @@ namespace Dynamo.Graph.Workspaces
                 new ElementResolver(),
                 info) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomNodeWorkspaceModel"/> class
+        /// by given information about it and specified item collections
+        /// </summary>
+        /// <param name="factory">Node factory to create nodes</param>
+        /// <param name="nodes">Node collection of the workspace</param>
+        /// <param name="notes">Note collection of the workspace</param>
+        /// <param name="annotations">Group collection of the workspace</param>
+        /// <param name="presets">Preset collection of the workspace</param>
+        /// <param name="elementResolver">ElementResolver responsible for resolving 
+        /// a partial class name to its fully resolved name</param>
+        /// <param name="info">Information for creating custom node workspace</param>
         public CustomNodeWorkspaceModel( 
             NodeFactory factory,
             IEnumerable<NodeModel> nodes, 
@@ -57,7 +79,7 @@ namespace Dynamo.Graph.Workspaces
             IEnumerable<PresetModel> presets,
             ElementResolver elementResolver, 
             WorkspaceInfo info)
-            : base(nodes, notes,annotations, info, factory,presets, elementResolver)
+            : base(nodes, notes, annotations, info, factory, presets, elementResolver)
         {
             HasUnsavedChanges = false;
 
@@ -81,7 +103,6 @@ namespace Dynamo.Graph.Workspaces
                 OnInfoChanged();
             }
         }
-
 
         /// <summary>
         ///     All CustomNodeDefinitions which this Custom Node depends on.
@@ -122,6 +143,10 @@ namespace Dynamo.Graph.Workspaces
 
         // This is being used to remove mismatching related to shared custom nodes
         // described here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-9333
+        /// <summary>
+        ///     Gets appropriate name of workspace for sharing.
+        /// </summary>
+        /// <returns>The name of workspace for sharing</returns>
         public override string GetSharedName()
         {
             string result;
@@ -138,17 +163,28 @@ namespace Dynamo.Graph.Workspaces
             return result;
         }
 
+        /// <summary>
+        /// Updates custom node information by given data
+        /// </summary>
+        /// <param name="newName">New name of the workspace. 
+        /// The name will not change if the parameter is omitted.</param>
+        /// <param name="newCategory">New category of the workspace. 
+        /// The category will not change if the parameter is omitted.</param>
+        /// <param name="newDescription">New description of the workspace. 
+        /// The description will not change if the parameter is omitted.</param>
+        /// <param name="newFilename">New file name of the workspace. 
+        /// The file name will not change if the parameter is omitted.</param>
         public void SetInfo(string newName = null, string newCategory = null, string newDescription = null, string newFilename = null)
         {
             PropertyChanged -= OnPropertyChanged;
-            
-            Name = newName??Name;
-            Category = newCategory??Category;
-            Description = newDescription??Description;
-            FileName = newFilename??FileName;
-            
+
+            Name = newName ?? Name;
+            Category = newCategory ?? Category;
+            Description = newDescription ?? Description;
+            FileName = newFilename ?? FileName;
+
             PropertyChanged += OnPropertyChanged;
-            
+
             if (newName != null || newCategory != null || newDescription != null || newFilename != null)
                 OnInfoChanged();
         }
@@ -165,6 +201,7 @@ namespace Dynamo.Graph.Workspaces
                 RaisePropertyChanged("Category");
             }
         }
+
         private string category;
 
         /// <summary>
@@ -179,6 +216,7 @@ namespace Dynamo.Graph.Workspaces
                 RaisePropertyChanged("Description");
             }
         }
+
         private string description;
 
         /// <summary>
@@ -192,6 +230,7 @@ namespace Dynamo.Graph.Workspaces
                 isVisibleInDynamoLibrary = value;
             }
         }
+
         private bool isVisibleInDynamoLibrary;
 
         protected override void RequestRun()
@@ -207,6 +246,9 @@ namespace Dynamo.Graph.Workspaces
             RequestRun();
         }
 
+        /// <summary>
+        /// Notifies listeners that custom node workspace has changed
+        /// </summary>
         public event Action InfoChanged;
         protected virtual void OnInfoChanged()
         {
@@ -220,6 +262,9 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         internal bool SilenceDefinitionUpdated { get; set; }
 
+        /// <summary>
+        /// Notifies all custom node instances that definition has changed
+        /// </summary>
         public event Action DefinitionUpdated;
         internal virtual void OnDefinitionUpdated()
         {
@@ -229,6 +274,9 @@ namespace Dynamo.Graph.Workspaces
             if (handler != null) handler();
         }
 
+        /// <summary>
+        /// Notifies listeners that custom node identifier has changed
+        /// </summary>
         public event Action<Guid> FunctionIdChanged;
         protected virtual void OnFunctionIdChanged(Guid oldId)
         {
@@ -236,6 +284,15 @@ namespace Dynamo.Graph.Workspaces
             if (handler != null) handler(oldId);
         }
 
+        /// <summary>
+        /// Saves custom node workspace to a file
+        /// </summary>
+        /// <param name="newPath">New location to save the workspace.</param>
+        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object 
+        /// to obtain serialized trace data for node list to save.</param>
+        /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
+        /// we should add it to recent files. Otherwise leave it.</param>
+        /// <returns></returns>
         public override bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackUp = false)
         {
             if (isBackUp)

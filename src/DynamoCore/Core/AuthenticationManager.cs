@@ -8,10 +8,17 @@ using Greg.AuthProviders;
 
 namespace Dynamo.Core
 {
+    /// <summary>
+    ///     This is a wrapper for <see cref="IAuthProvider"/> functionality.
+    ///     It is used for oxygen authentication.
+    /// </summary>
     public class AuthenticationManager
     {
         private readonly IAuthProvider authProvider;
 
+        /// <summary>
+        ///     Occurs when login state is changed
+        /// </summary>
         public event Action<LoginState> LoginStateChanged;
 
         /// <summary>
@@ -46,6 +53,10 @@ namespace Dynamo.Core
             get { return authProvider; }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthenticationManager"/> class.
+        /// </summary>
+        /// <param name="authProvider">IAuthProvider functionality</param>
         public AuthenticationManager(IAuthProvider authProvider)
         {
             this.authProvider = authProvider;
