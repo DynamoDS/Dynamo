@@ -75,7 +75,7 @@ namespace Dynamo.Models
         public event EventHandler RequestLayoutUpdate;
 
         /// <summary>
-        /// Requests to update UI
+        /// Called when Requests to update UI is made.
         /// </summary>
         /// <param name="sender">Object which caused the event</param>
         /// <param name="e">The event data</param>
@@ -119,7 +119,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Occurs when a workspace is added
+        /// Called when a workspace is added.
         /// </summary>
         public event Action<WorkspaceModel> WorkspaceAdded;
         protected virtual void OnWorkspaceAdded(WorkspaceModel obj)
@@ -160,7 +160,7 @@ namespace Dynamo.Models
         public event Action DeletionStarted;
 
         /// <summary>
-        /// Triggers DeletionStarted event
+        /// Called when Deletion started.
         /// </summary>
         public virtual void OnDeletionStarted()
         {
@@ -199,7 +199,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Occurs when current state of a node needs to be canceled
+        /// Called when current state of a node is canelled.
         /// </summary>
         public event NodeHandler RequestCancelActiveStateForNode;
         private void OnRequestCancelActiveStateForNode(NodeModel node)
