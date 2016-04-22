@@ -1086,28 +1086,28 @@ namespace ProtoCore
                 isAccessible = symbol != null;
                 return symbol != null;
             }
-
-            CodeBlock searchBlock = currentCodeBlock;
-            while (symbolIndex == Constants.kInvalidIndex && searchBlock != null)
+            else
             {
-                symbolIndex = searchBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
-                if (symbolIndex != Constants.kInvalidIndex)
+                CodeBlock searchBlock = currentCodeBlock;
+                while (symbolIndex == Constants.kInvalidIndex && searchBlock != null)
                 {
-                    symbol = searchBlock.symbolTable.symbolList[symbolIndex];
-
-                    bool ignoreImportedSymbols = !string.IsNullOrEmpty(symbol.ExternLib) && core.IsParsingCodeBlockNode;
-                    if (ignoreImportedSymbols)
+                    symbolIndex = searchBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
+                    if (symbolIndex != Constants.kInvalidIndex)
                     {
-                        searchBlock = searchBlock.parent;
-                        continue;
+                        symbol = searchBlock.symbolTable.symbolList[symbolIndex];
+                        bool ignoreImportedSymbols = !string.IsNullOrEmpty(symbol.ExternLib) && core.IsParsingCodeBlockNode;
+                        if (ignoreImportedSymbols)
+                        {
+                            return false;
+                        }
+                        isAccessible = true;
+                        return true;
                     }
-                    isAccessible = true;
-                    return true;
+                    searchBlock = searchBlock.parent;
                 }
-                searchBlock = searchBlock.parent;
-            }
 
-            return false;
+                return false;
+            }
         }
 
         protected bool VerifyAllocation(string name,string arrayName, int classScope, int functionScope, out ProtoCore.DSASM.SymbolNode symbol, out bool isAccessible)
