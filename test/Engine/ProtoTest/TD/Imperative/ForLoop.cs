@@ -154,28 +154,28 @@ namespace ProtoTest.TD.Imperative
         [Category("SmokeTest")]
         public void T08_TestForLoopInsideFunctionDeclaration()
         {
-            string src = @"y;
+            string src = @"
+y;
 z;
-	def sum : double ( a : double, b : double, c : double )
-	{   
-return = [Imperative] {
+def sum : double ( a : double, b : double, c : double )
+{   
+    return = [Imperative] {
 		x = 0;
 	    z = {a, b, c};
 		for(y in z)
 		{
 			x = x + y;
 		}
-		
 		return = x;
+    }
 }
-	}
 [Imperative]
 {
 	y = sum ( 1.0, 2.5, -3.5 );
 	z = sum ( -4.0, 5.0, 6.0 );
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("y", 6);
+            thisTest.Verify("y", 0);
             thisTest.Verify("z", 7);
         }
 

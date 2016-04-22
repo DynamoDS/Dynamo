@@ -10494,7 +10494,7 @@ r = 0;
             vms = fsr.Step();
 
             TestFrameWork.Verify(mirror, "k", 1, 0);
-            TestFrameWork.Verify(mirror, "r", 1, 0);
+            TestFrameWork.Verify(mirror, "r", 0, 0);
 
         }
         [Test]

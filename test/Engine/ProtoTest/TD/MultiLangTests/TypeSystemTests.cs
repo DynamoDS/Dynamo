@@ -524,27 +524,26 @@ def foo:bool( a  )
         {
             string code =
                 @"
-                     a = { 1, 2 };
-                        b = 0;
-                        def foo(a)
-                        {
-                         d=   [Imperative]
-                            {
-                                if (a!= null)
-                                {
-                                    b = 1;
-                                }
-                                return = b;
-                            }
-                            return = d;
-                        }
-                        z;
-                        [Imperative]
-                        {
-                            z = foo(a);
-                        }
-                        
-                        ";
+def foo(a)
+{
+    b = 0;
+    d= [Imperative]
+    {
+        if (a!= null)
+        {
+            b = 1;
+        }
+        return = b;
+    }
+    return = d;
+}
+z;
+[Imperative]
+{
+  a = { 1, 2 };
+  z = foo(a);
+}
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("z", new object[] { 1, 1 });
         }
@@ -556,11 +555,9 @@ def foo:bool( a  )
         {
             string code =
                 @"
-a = { 1, 2 };
-b = 0;
-
 def foo(a)
 {
+    b = 0;
     d = [Imperative]
     {
         if (a!= null)
@@ -575,6 +572,7 @@ def foo(a)
 z;
 [Imperative]
 {
+    a = { 1, 2 };
     z = foo(a);
 }
                         
@@ -590,11 +588,9 @@ z;
         {
             string code =
                 @"
-a = { 1, 2 };
-b = 0;
-
 def foo(a)
 {
+    b = 0;
     d = [Imperative]
     {
         if (a!= null)
@@ -606,9 +602,9 @@ def foo(a)
     return = d;
 }
 
+a = { 1, 2 };
 z = foo(a);
-                        
-                        ";
+";
             thisTest.RunScriptSource(code);
             thisTest.Verify("z", new object[] { 1, 1 });
         }
@@ -619,10 +615,9 @@ z = foo(a);
         {
             string code =
                 @"
-                     a = { 1, 2 };
-                        b = 0;
                         def foo(a)
                         {
+                         b = 0;
                          d=   [Imperative]
                             {
                                 if (a!= null)
@@ -634,10 +629,8 @@ z = foo(a);
                             return = d;
                         }
                         z;
-                        
-                            z = foo(a);
-                        
-                        
+                        a = { 1, 2 };
+                        z = foo(a);
                         ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("z", new object[] { 1, 1 });

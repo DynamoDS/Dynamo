@@ -123,10 +123,10 @@ a[1] = a[1] + 1;";
             Object[] v1 = new Object[] { 13, 12, 12, 13, 14 };
             Object[] v2 = new Object[] { 14, 13, 13, 14, 15 };
             Object[] v3 = new Object[] { 10, 12, 12, 13, 14 };
-            thisTest.Verify("a", v3, 0);
-            thisTest.Verify("e1", v1, 0);
-            thisTest.Verify("b", v1, 0);
-            thisTest.Verify("c", v2, 0);
+            thisTest.Verify("a", v3);
+            thisTest.Verify("e1", v1);
+            thisTest.Verify("b", 10);
+            thisTest.Verify("c", 11);
         }
 
         [Test]

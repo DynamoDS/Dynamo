@@ -660,10 +660,6 @@ def foo ()
 {
 	return = { 0, 1, 2 };
 }
-
-
-t1;
-t2;	
 def test ()
 {
     c = 0;
@@ -689,24 +685,16 @@ def test ()
 }
 
 x = test();
-x1 = t1;
-x2 = t2;
-y;y1;y2;
+y;
 [Imperative]
 {
 	y = test();
-	y1 = t1;
-	y2 = t2;
 }";
             thisTest.VerifyRunScriptSource(src, errmsg);
             Object[] v1 = new Object[] { 1, 3, 4 };
 
             thisTest.Verify("x", v1);
-            thisTest.Verify("x1", v1);
-            thisTest.Verify("x2", 0);
             thisTest.Verify("y", v1);
-            thisTest.Verify("y1", v1);
-            thisTest.Verify("y2", 0);
         }
 
         [Test]

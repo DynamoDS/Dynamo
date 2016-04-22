@@ -2516,7 +2516,7 @@ sort = Sort(sorterFunction,a1);
                     sort = Sort(sorterFunction, a);
                     return = sort;
                 }
-                d = foo(a1);
+                sort = foo(a1);
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { 1, 2, 2, 3, 4, 4, 5, 6, 8 });

@@ -1330,8 +1330,7 @@ def foo(i : int[])
 		return = count;
 	}
 	return = count;
-	
-}
+}	
     
 arr = 0.0..3.0;//{0.0,1.0,2.0,3.0};
 c;x;
@@ -1349,7 +1348,7 @@ c;x;
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("c", 4);
-            thisTest.Verify("x", 3);
+            thisTest.Verify("x", 6);
         }
 
         [Test]

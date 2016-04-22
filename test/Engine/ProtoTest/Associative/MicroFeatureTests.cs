@@ -2270,12 +2270,7 @@ c = f(a<1L>,b<2>);
         public void TestReplicationGuidesOnDotOps01()
         {
             string code = @"
-v : var[];
-def A()
-{
-    v = {1,2};
-}
-A();
+v = {1,2};
 c = v<1> + v<2>;
 x = c[0];
 y = c[1];

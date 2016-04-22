@@ -2016,7 +2016,7 @@ r = Equals(x, {41, 42});
                 "def f(i : int) { return = i + 10;}",
                 "x = f();",
                 "y = f(2);",
-                "def f() { return = 10}",
+                "def f() { return = 10; }",
                 "def f(i : int) { return = i + 100; }"
             };
 
@@ -2059,7 +2059,7 @@ r = Equals(x, {41, 42});
             liveRunner.UpdateGraph(syncData);
 
             // Verify that the call to the function f has not re-executed
-            AssertValue("x", 12);
+            AssertValue("x", 10);
 
             // Verify that the call to the overload function f(i) has re-executed
             AssertValue("y", 102);

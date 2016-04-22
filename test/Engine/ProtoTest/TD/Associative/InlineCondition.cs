@@ -315,7 +315,7 @@ x = 1 > 2 ? foo(a) + 1 : foo(a) + 2;
 ";
             string err = "MAGN-4026 Execution of both true and false statements in Associative inline condition";
             ExecutionMirror mirror = thisTest.RunScriptSource(src, err);
-            thisTest.Verify("x", 2);
+            thisTest.Verify("x", 3);
         }
 
 
@@ -962,10 +962,12 @@ a = 1;
             string code = @"
 def foo ()
 {
+    a;
     z =  (a > 0) ? a : 0;
     a = 1;
+    return = z;
 }
-test = foo();
+z = foo();
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);

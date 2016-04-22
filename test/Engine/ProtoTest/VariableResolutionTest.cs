@@ -53,8 +53,6 @@ class Foo
 {
     x1 = 1;
     static x2 = 20;
-
-    x2 = x0;
     x3 = x0;
 
     def foo1()

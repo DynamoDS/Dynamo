@@ -479,8 +479,6 @@ a;b;
         [Category("SmokeTest")]
         public void T17_Function_From_Parallel_Blocks()
         {
-            //Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            //{
             string code = @"
 a;b;
 def foo : int( n : int )
@@ -493,7 +491,7 @@ def foo : int( n : int )
 	b = foo (a );
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("b", null);
+            thisTest.Verify("b", 9);
         }
 
         [Test]
@@ -1688,7 +1686,7 @@ x = [Imperative]
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 2, 3 };
+            Object[] v1 = new Object[] { 1, 3 };
             thisTest.Verify("x", v1);
 
         }
@@ -6127,7 +6125,7 @@ foo();
 b1 = a;	
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("b1", null);
+            thisTest.Verify("b1", 3);
         }
 
         [Test]
@@ -6560,7 +6558,7 @@ x = [Imperative]
         {
             string code = @"
 a;
-	def foo : int  ( )    
+	def foo : int  (a)    
 	{        
     return = [Imperative]{
 	    c = 0;
@@ -6578,12 +6576,12 @@ a;
 x = [Imperative]
 {    
         a = 2;    
-	b = foo();        
+	b = foo(a);        
 	return = { a, b };    
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 3, 1 };
+            Object[] v1 = new Object[] { 2, 1 };
             thisTest.Verify("x", v1);
         }
 
@@ -6593,7 +6591,7 @@ x = [Imperative]
         {
             string code = @"
 a;
-	def foo : int  ( )    
+	def foo : int  (a:var[]..[])    
 	{        
     return = [Imperative]{
 	    c = 0;
@@ -6610,13 +6608,13 @@ a;
 }   
 x = [Imperative]
 {    
-        a = { { 1, 2 } , { 3, 4 } };    
-	b = foo();        
+    a = { { 1, 2 } , { 3, 4 } };    
+	b = foo(a);        
 	return = { a, b };    
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { new Object[] { 2, 2 }, new Object[] { 3, 4 } };
+            Object[] v1 = new Object[] { new Object[] { 1, 2 }, new Object[] { 3, 4 } };
             Object[] v2 = new Object[] { v1, 1 };
             thisTest.Verify("x", v2);
         }

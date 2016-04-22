@@ -942,67 +942,6 @@ z_I2;
 
         [Test]
         [Category("SmokeTest")]
-        public void T031_Defect_1450594()
-        {
-            string src = @"f;p;q;x;y1;z;y2;
-[Imperative]
-{
-   a = 2;
-    [Associative]
-    {
-        
-        i = 3;
-    }
-    f = i;
-}
-def foo1 ( i )
-{
-    x = 1;
-    return = x;
-}
-[Associative]
-{
-	p = x;
-	q = a;
-}
-y = 1;
-def foo ( i )
-   {
-    return = [Imperative]{
-		x = 2;
-		if( i < x ) 
-		{
-		    y = 3;
-			return = y * i;
-		}
-		return = y;
-}
-	}
-[Imperative]
-{
-	x = y;
-	y1 = foo ( 1 );
-	y2 = foo ( 3 );
-	z = x * 2;
-	
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
-
-            thisTest.Verify("f", null);
-            
-            thisTest.Verify("p", 2);
-            thisTest.Verify("q", null);
-            thisTest.Verify("x", 2);
-            thisTest.Verify("y1", 3);
-            thisTest.Verify("z", 4);
-            thisTest.Verify("y2", 3);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.IdUnboundIdentifier);
-
-        }
-
-        [Test]
-        [Category("SmokeTest")]
         public void T032_Cross_Language_Variables()
         {
             string src = @"
