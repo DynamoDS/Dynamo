@@ -902,7 +902,7 @@ namespace ProtoTest.Associative
         [Category("DSDefinedClass_Ported")]
         public void TestReferenceCount70_TemporaryArrayIndexing03()
         {
-            string code = @"import(""FFITarget.dll"");DisposeTestClassD.Reset();t = [Associative]{    def foo()    {        return = {DisposeTestClassD.DisposeTestClassD(), DisposeTestClassD.DisposeTestClassD(), DisposeTestClassD.DisposeTestClassD()};    }    a = (foo())[1];    return = a;}__GC();
+            string code = @"import(""FFITarget.dll"");DisposeTestClassD.Reset();    def foo()    {        return = {DisposeTestClassD.DisposeTestClassD(), DisposeTestClassD.DisposeTestClassD(), DisposeTestClassD.DisposeTestClassD()};    }t = [Associative]{    a = (foo())[1];    return = a;}__GC();
 d = DisposeTestClassD.count;
 ";
             string errorString = "";

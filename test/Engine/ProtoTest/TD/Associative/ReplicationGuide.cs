@@ -2669,12 +2669,12 @@ def foo: int[] ()
 {
     return = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];
 }
-a = {1,2,3,4};
-b = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];
 c = foo2();
 d = foo();
 f = [Associative]
 {
+    a = {1,2,3,4};
+    b = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];
     return = [Imperative]
     {
          return = [Associative]

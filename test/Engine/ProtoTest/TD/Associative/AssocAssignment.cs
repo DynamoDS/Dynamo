@@ -993,51 +993,6 @@ d;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("SmokeTest")]
-        public void T48_MultipleAssignments()
-        {
-            string code = @"
-i : int;
-def A (a : int)
-{
-	t1 = t2 = 2;
-	i = t1 + t2 + a;
-}
-def B : int ()
-{
-	t1 = t2 = 2;
-	t3 = t1 + t2 + i;
-	return = t3;		
-}
-def C : int (a : int)
-{
-    t1 = t2 = 2;
-	return = t1 + t2 + a;
-}
-a;
-b;
-x;
-y;
-a1;
-b1;
-[Associative]
-{
-	a = b = 4;
-	x = y = C(1);
-	a1 = A(1);
-	b1 = B();
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 4);
-            thisTest.Verify("b", 4);
-            thisTest.Verify("x", 5);
-            thisTest.Verify("y", 5);
-            thisTest.Verify("b1", 9);
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T49_Defect_1455264()
         {
@@ -1684,56 +1639,6 @@ x = foo();
             thisTest.Verify("x", 3);
 
         }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void T66_Defect_1467597()
-        {
-            String code =
-            @"
-a = { }; ;
-b : int[]; ;
-c = 4..6; ;
-d = { 0, 2 }; ;
-f : var[]; ;
-def con(x)
-{
-    a = { x }; ;
-    i = 2..3; ;
-    b[i] = i; ;
-    c[i] = i; ;
-    d[i] = i; ;
-    f[i] = d[i]; ;
-}
-def foo()
-{
-    returnValue = 0;
-    [Imperative]
-    {
-        for(i in { 0,1 })
-        {
-            returnValue = returnValue + i; ;
-            b[i] = i;;
-            c[i] = i;;
-            d[i] = i;;
-            f[i] = d[i]; ;
-                
-        }
-    }
-    return = returnValue;
-}
-con(1); ;
-y6 = foo(); ;
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a", new Object[] { 1 });
-            thisTest.Verify("b", new Object[] { 0, 1, 2, 3 });
-            thisTest.Verify("c", new Object[] { 0, 1, 2, 3 });
-            thisTest.Verify("d", new Object[] { 0, 1, 2, 3 });
-            thisTest.Verify("f", new Object[] { 0, 1, 2, 3 });
-            thisTest.Verify("y6", 1);
-        }
-
     }
 }
 

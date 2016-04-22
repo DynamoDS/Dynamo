@@ -1995,18 +1995,18 @@ a = 4;
         {
             string code = @"
 c;d;
-[Associative]
-{
 def foo : int ( a : int, b : int )
 {
 	a = a + b;
 	b = 2 * b;
 	return = a + b;
 }
-a = 1;
-b = 2;
-c = foo (a, b ); // expected 9, received -3
-d = a + b;
+[Associative]
+{
+    a = 1;
+    b = 2;
+    c = foo (a, b ); // expected 9, received -3
+    d = a + b;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2673,7 +2673,6 @@ c = foo();
             Object n1 = null;
             thisTest.Verify("c", 2);
             thisTest.Verify("b", 2);
-
         }
 
         [Test]

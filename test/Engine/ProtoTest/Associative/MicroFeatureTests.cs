@@ -3612,17 +3612,14 @@ t = {1,2,3};
         {
             String code =
 @"
-t:int[];
 def foo() {
     t = {1,2,3};
     return = t;
 }
 b = foo();
-ret = t;
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("b", new Object[] { 1, 2, 3 });
-            thisTest.Verify("ret", new Object[] { 1, 2, 3 });
         }
 
         [Test]

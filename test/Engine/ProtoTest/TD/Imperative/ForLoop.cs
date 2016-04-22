@@ -172,7 +172,6 @@ return = [Imperative] {
 [Imperative]
 {
 	y = sum ( 1.0, 2.5, -3.5 );
-	
 	z = sum ( -4.0, 5.0, 6.0 );
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
@@ -873,31 +872,27 @@ sum;
         {
             string code = @"
 b;
+a = { {1, 2, 3}, {4}, {5,6} };
+
+def forloop :int ( a: int[]..[] )
+{
+    sum = 0;
+    sum = [Imperative]
+    {
+        for(i in a )
+        {
+            for (  j in i )
+            {
+                sum = sum + j;
+            }
+        }
+        return = sum;
+    }
+    return = sum;
+}
 [Associative]
 {
-	a = { {1, 2, 3}, {4}, {5,6} };
-	
-	def forloop :int ( a: int[]..[] )
-	{
-		sum = 0;
-		sum = [Imperative]
-		{
-			for(i in a )
-			{
-				for (  j in i )
-				{
-					sum = sum + j;
-				}
-			}
-			return = sum;
-		}
-		return = sum;
-	}
-	
 	b =forloop(a);
-	
-	
-	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", 21, 0);

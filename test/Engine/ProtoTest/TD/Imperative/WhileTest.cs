@@ -655,38 +655,38 @@ y;y1;y2;
         public void T22_Defect_1463683_3()
         {
             string errmsg = "1467318 - Cannot return an array from a function whose return type is var with undefined rank (-2)";
-            string src = @"def foo ()
+            string src = @"
+def foo ()
 {
 	return = { 0, 1, 2 };
 }
 
 
-    t1;
-	t2;	
-	def test ()
-	{
-		c = 0;
-		temp = [Imperative]
-		{
-			t1 = foo();
-			t2 = 0;
-			for ( i in t1 )
-			{
-				if (i < ( t2 + 1 ) )
-				{
-					t1[c] = i + 1;
-				}
-				else
-				{
-					t1[c] = i +2 ;
-				}
-				c = c + 1 ;
-			}
-			return = t1;		
-		}
-		return = temp;
-	}
-
+t1;
+t2;	
+def test ()
+{
+    c = 0;
+    temp = [Imperative]
+    {
+        t1 = foo();
+        t2 = 0;
+        for ( i in t1 )
+        {
+            if (i < ( t2 + 1 ) )
+            {
+                t1[c] = i + 1;
+            }
+            else
+            {
+                t1[c] = i +2 ;
+            }
+            c = c + 1 ;
+        }
+        return = t1;		
+    }
+    return = temp;
+}
 
 x = test();
 x1 = t1;

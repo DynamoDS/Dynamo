@@ -44,7 +44,7 @@ namespace ProtoTest.Associative
         {
             //DNL-1467221 Sprint 26 - Rev 3345 type conversion to array as return type does not get converted
             String code =
-                @"{          def foo3 : int[] ( a : double )         {            return = a;         }                 dummyArg = 1.5;                b2 = foo3 ( dummyArg ); ";
+                @"         def foo3 : int[] ( a : double )         {            return = a;         }                 dummyArg = 1.5;                b2 = foo3 ( dummyArg ); ";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b2", new object[] { 2 });
         }

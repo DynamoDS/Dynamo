@@ -2293,14 +2293,14 @@ sort = Sort(sorterFunction, c);
             String code =
 @"
 sort;
-[Associative]
-{
 a = { 3, 1, 2 };
 def sorterFunction(a : double, b : int)
 {
     return = a > b ? 1 : -1;
 }
-sort = Sort(sorterFunction, a);
+[Associative]
+{
+    sort = Sort(sorterFunction, a);
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2450,6 +2450,10 @@ sort = Sort(sorterFunction,a1);
             @"
                 sort;
                 a1;
+                def sorterFunction(a : double, b : int)
+                {
+                    return = a > b ? 1 : -1;
+                }
                 [Imperative]
                 {
                 [Associative]
@@ -2460,10 +2464,7 @@ sort = Sort(sorterFunction,a1);
                 {
                 a1 = { 3, 1, 2 };
                 // c = Flatten(a1);
-                def sorterFunction(a : double, b : int)
-                {
-                    return = a > b ? 1 : -1;
-                }
+               
                 sort = Sort(sorterFunction, a1);
                 }
                 }
@@ -2506,7 +2507,6 @@ sort = Sort(sorterFunction,a1);
                 sort;
                 a1;
                 a1 = {  4, 2, 3 ,2, 5, 1 , 8, 4, 6  };
-                // c = Flatten(a1);
                 def sorterFunction(a : int, b : int)
                 {
                     return = a > b ? 1 : -1;
