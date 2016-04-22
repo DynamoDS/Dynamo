@@ -1087,22 +1087,13 @@ namespace ProtoCore
 
                 return hasThisSymbol;
             }
-            else
+            else if (functionScope != Constants.kGlobalScope)
             {
-                if (functionScope != Constants.kGlobalScope)
+                symbol = core.GetFirstVisibleSymbol(name, Constants.kGlobalScope, functionScope, currentCodeBlock);
+                if (symbol != null)
                 {
-                    // Aparajit: This function is found to not work well in the expression interpreter as it doesn't return the
-                    // correct symbol if the same symbol exists in different contexts such as inside a function defined in a lang block,
-                    // inside the lang block itself and in a function in the global scope etc.
-                    // TODO: We can later consider replacing GetSymbolInFunction with GetFirstVisibleSymbol consistently in all occurrences 
-                    
-                    //symbol = core.GetSymbolInFunction(name, Constants.kGlobalScope, functionScope, currentCodeBlock);
-                    symbol = core.GetFirstVisibleSymbol(name, Constants.kGlobalScope, functionScope, currentCodeBlock);
-                    if (symbol != null)
-                    {
-                        isAccessible = true;
-                        return true;
-                    }
+                    isAccessible = true;
+                    return true;
                 }
             }
 
@@ -2543,7 +2534,7 @@ namespace ProtoCore
 
         protected bool IsInLanguageBlockDefinedInFunction()
         {
-            return (localProcedure != null && localProcedure.RuntimeIndex != codeBlock.codeBlockId);
+            return localProcedure != null && localProcedure.RuntimeIndex != codeBlock.codeBlockId && codeBlock.blockType != CodeBlockType.Function;
         }
     }
 }
