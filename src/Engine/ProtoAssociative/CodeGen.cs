@@ -405,16 +405,13 @@ namespace ProtoAssociative
             ProtoCore.Type datatype, 
             bool isStatic = false,
             ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public,
-            MemoryRegion region = MemoryRegion.MemStack,
             int line = -1,
-            int col = -1,
-            GraphNode graphNode = null
-            )
+            int col = -1)
         {
             bool allocateForBaseVar = classScope < classIndex;
             bool isProperty = classIndex != Constants.kInvalidIndex && funcIndex == Constants.kInvalidIndex;
             if (!allocateForBaseVar && !isProperty && core.ClassTable.IndexOf(ident) != ProtoCore.DSASM.Constants.kInvalidIndex)
-                buildStatus.LogSemanticError(String.Format(Resources.ClassNameAsVariableError, ident), null, line, col, graphNode);
+                buildStatus.LogSemanticError(String.Format(Resources.ClassNameAsVariableError, ident), null, line, col);
 
             ProtoCore.DSASM.SymbolNode symbolnode = new ProtoCore.DSASM.SymbolNode();
             symbolnode.name = ident;
@@ -424,14 +421,14 @@ namespace ProtoAssociative
             symbolnode.absoluteFunctionIndex = funcIndex;
             symbolnode.datatype = datatype;
             symbolnode.isArgument = false;
-            symbolnode.memregion = region;
+            symbolnode.memregion = MemoryRegion.MemStack;
             symbolnode.classScope = classScope;
             symbolnode.absoluteClassScope = classScope;
             symbolnode.runtimeTableIndex = codeBlock.symbolTable.RuntimeIndex;
             symbolnode.isStatic = isStatic;
             symbolnode.access = access;
             symbolnode.codeBlockId = codeBlock.codeBlockId;
-            if (this.isEmittingImportNode)
+            if (isEmittingImportNode)
                 symbolnode.ExternLib = core.CurrentDSFileName;
 
             int symbolindex = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -444,17 +441,6 @@ namespace ProtoAssociative
 
             if (ProtoCore.DSASM.Constants.kInvalidIndex != classIndex && !IsInLanguageBlockDefinedInFunction())
             {
-                // NOTE: the following comment and code is OBSOLETE - member
-                // variable is not supported now
-                // 
-                // Yu Ke: it is possible that class table contains same-named 
-                // symbols if a class inherits some member variables from base 
-                // class, so we need to check name + class index + function 
-                // index.
-                // 
-                //if (core.classTable.list[classIndex].symbols.IndexOf(ident, classIndex, funcIndex) != (int)ProtoCore.DSASM.Constants.kInvalidIndex)
-                //    return null;
-
                 symbolindex = core.ClassTable.ClassNodes[classIndex].Symbols.IndexOf(ident);
                 if (symbolindex != ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
@@ -480,7 +466,7 @@ namespace ProtoAssociative
                     staticSymbolnode.functionIndex = funcIndex;
                     staticSymbolnode.datatype = datatype;
                     staticSymbolnode.isArgument = false;
-                    staticSymbolnode.memregion = region;
+                    staticSymbolnode.memregion = MemoryRegion.MemStack;
                     staticSymbolnode.classScope = classScope;
                     staticSymbolnode.runtimeTableIndex = codeBlock.symbolTable.RuntimeIndex;
                     staticSymbolnode.isStatic = isStatic;
@@ -513,14 +499,12 @@ namespace ProtoAssociative
             else
             {               
                 AllocateVar(symbolnode);
-
                 symbolindex = codeBlock.symbolTable.Append(symbolnode);
                 if (symbolindex == ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
                     return null;
                 }
                 symbolnode.symbolTableIndex = symbolindex;
-                
             }
 
             if (ProtoCore.DSASM.Constants.kInvalidIndex == symbolindex)
@@ -2400,7 +2384,7 @@ namespace ProtoAssociative
                         ProtoCore.Type varType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
 
                         // TODO Jun: Refactor Allocate() to just return the symbol node itself
-                        unboundVariable = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Value, varType, line: t.line, col: t.col, graphNode: graphNode); 
+                        unboundVariable = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Value, varType, line: t.line, col: t.col); 
                         Validity.Assert(unboundVariable != null);
 
                         int symbolindex = unboundVariable.symbolTableIndex;
