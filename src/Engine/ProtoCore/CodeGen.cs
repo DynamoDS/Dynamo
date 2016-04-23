@@ -59,9 +59,7 @@ namespace ProtoCore
         protected ProtoCore.AST.Node localFunctionDefNode;
         protected ProtoCore.AST.Node localCodeBlockNode;
         protected bool emitDebugInfo = true;
-        protected int tryLevel;
 
-        protected int currentBinaryExprUID = ProtoCore.DSASM.Constants.kInvalidIndex;
         protected List<ProtoCore.DSASM.ProcedureNode> functionCallStack;
         protected bool IsAssociativeArrayIndexing { get; set; }
 
@@ -84,9 +82,6 @@ namespace ProtoCore
 
         // The first graphnode of the SSA'd identifier
         protected ProtoCore.AssociativeGraph.GraphNode firstSSAGraphNode = null;
-
-        // These variables hold data when backtracking static SSA'd calls
-        protected string staticClass = null;
 
         public CodeGen(Core coreObj, ProtoCore.DSASM.CodeBlock parentBlock = null)
         {
@@ -112,8 +107,6 @@ namespace ProtoCore
 
             localProcedure = core.ProcNode;
             globalProcIndex = null != localProcedure ? localProcedure.ID : ProtoCore.DSASM.Constants.kGlobalScope;
-
-            tryLevel = 0;
 
             functionCallStack = new List<DSASM.ProcedureNode>();
 
@@ -1108,130 +1101,6 @@ namespace ProtoCore
 
                 return false;
             }
-        }
-
-        protected bool VerifyAllocation(string name,string arrayName, int classScope, int functionScope, out ProtoCore.DSASM.SymbolNode symbol, out bool isAccessible)
-        {
-            int symbolIndex = Constants.kInvalidIndex;
-            symbol = null;
-            isAccessible = false;
-
-            if (classScope != Constants.kGlobalScope)
-            {
-                if ((int)ProtoCore.PrimitiveType.Void == classScope)
-                {
-                    return false;
-                }
-                ClassNode thisClass = core.ClassTable.ClassNodes[classScope];
-
-                bool hasThisSymbol;
-                AddressType addressType;
-                symbolIndex = ClassUtils.GetSymbolIndex(thisClass, name, classScope, functionScope, codeBlock.codeBlockId, core.CompleteCodeBlockList, out hasThisSymbol, out addressType);
-
-                if (Constants.kInvalidIndex != symbolIndex)
-                {
-                    // It is static member, then get node from code block
-                    if (AddressType.StaticMemVarIndex == addressType)
-                    {
-                        symbol = core.CodeBlockList[0].symbolTable.symbolList[symbolIndex];
-                    }
-                    else
-                    {
-                        symbol = thisClass.Symbols.symbolList[symbolIndex];
-                    }
-
-                    isAccessible = true;
-                }
-
-                if (hasThisSymbol)
-                {
-                    if (symbol != null)
-                    {
-                        symbol.forArrayName = arrayName;
-                    }
-                    return true;
-                }
-                else
-                {
-                    symbolIndex = codeBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
-                    if (symbolIndex != Constants.kInvalidIndex)
-                    {
-                        symbol = codeBlock.symbolTable.symbolList[symbolIndex];
-                        isAccessible = true;
-                        if (symbol != null)
-                        {
-                            symbol.forArrayName = arrayName;
-                        }
-                        return true;
-                    }
-                }
-            }
-            else
-            {
-                if (functionScope != Constants.kGlobalScope)
-                {
-                    symbol = core.GetSymbolInFunction(name, Constants.kGlobalScope, functionScope, codeBlock);
-                    if (symbol != null)
-                    {
-                        isAccessible = true;
-                         symbol.forArrayName = arrayName;
-                        return true;
-                    }
-                }
-
-                CodeBlock searchBlock = codeBlock;
-                while (symbolIndex == Constants.kInvalidIndex && searchBlock != null)
-                {
-                    symbolIndex = searchBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
-                    if (symbolIndex != Constants.kInvalidIndex)
-                    {
-                        symbol = searchBlock.symbolTable.symbolList[symbolIndex];
-
-                        bool ignoreImportedSymbols = !string.IsNullOrEmpty(symbol.ExternLib) && core.IsParsingCodeBlockNode;
-                        if (ignoreImportedSymbols)
-                        {
-                            searchBlock = searchBlock.parent;
-                            continue;
-                        }
-
-                        isAccessible = true;
-                        if (symbol != null)
-                        {
-                            symbol.forArrayName = arrayName;
-                        }
-                        return true;
-                    }
-                    searchBlock = searchBlock.parent;
-                }
-
-                //Fix IDE-448
-                //Search current running block as well.
-                searchBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(core.CodeBlockList, 0);
-                symbolIndex = searchBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
-                if (symbolIndex != Constants.kInvalidIndex)
-                {
-                    symbol = searchBlock.symbolTable.symbolList[symbolIndex];
-
-                    if (symbol != null)
-                    {
-                        symbol.forArrayName = arrayName;
-                    }
-
-                    bool ignoreImportedSymbols = !string.IsNullOrEmpty(symbol.ExternLib) && core.IsParsingCodeBlockNode;
-                    if (ignoreImportedSymbols)
-                    {
-                        return false;
-                    }
-
-                    isAccessible = true;                    
-                    return true;
-                }
-            }
-            if (symbol != null)
-            {
-                symbol.forArrayName = arrayName;
-            }
-            return false;
         }
 
         protected bool IsProperty(string name)
@@ -2501,10 +2370,7 @@ namespace ProtoCore
         protected static int staticPc;
         static int blk = 0;
         public static void setBlkId(int b){ blk = b; }
-        public static int getBlkId() { return blk; }
-
        
-        //public void updatePcDictionary(ProtoCore.AST.Node node, int blk)
         public void updatePcDictionary(int line, int col)
         {
             blk = codeBlock.codeBlockId;

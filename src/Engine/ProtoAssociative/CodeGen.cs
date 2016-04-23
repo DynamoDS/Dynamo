@@ -5791,8 +5791,6 @@ namespace ProtoAssociative
                 graphNode.updateBlock.startpc = pc;
             }
 
-            currentBinaryExprUID = bnode.ExpressionUID;
-
             // These have been integrated into "EmitGetterSetterForIdentList" so 
             // that stepping through class properties can be supported. Setting 
             // these values here will cause issues with statements like this to 

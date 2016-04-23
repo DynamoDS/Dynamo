@@ -25,9 +25,7 @@ namespace ProtoImperative
     public class CodeGen : ProtoCore.CodeGen
     {
         private ProtoCore.CompilerDefinitions.Imperative.CompilePass compilePass;
-
         private readonly BackpatchMap backpatchMap;
-
         private NodeBuilder nodeBuilder;
 
         public CodeGen(Core coreObj, ProtoCore.CompileTime.Context callContext, ProtoCore.DSASM.CodeBlock parentBlock = null) : base(coreObj, parentBlock)
