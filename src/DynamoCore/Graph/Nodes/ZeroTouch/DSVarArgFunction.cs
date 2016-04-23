@@ -18,6 +18,10 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     [AlsoKnownAs("Dynamo.Nodes.DSVarArgFunction")]
     public class DSVarArgFunction : DSFunctionBase
     {
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="DSVarArgFunction"/> class.
+        /// </summary>
+        /// <param name="descriptor">Function descritor.</param>
         public DSVarArgFunction(FunctionDescriptor descriptor)
             : base(new ZeroTouchVarArgNodeController<FunctionDescriptor>(descriptor))
         {
@@ -99,8 +103,13 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     public class ZeroTouchVarArgNodeController<T> : ZeroTouchNodeController<T> 
         where T : FunctionDescriptor
     {
-        public ZeroTouchVarArgNodeController(T zeroTouchDef)
-            : base(zeroTouchDef) { }
+        /// <summary>
+        ///     Initializes a new instance of 
+        /// the <see cref="ZeroTouchVarArgNodeController"/> class with FunctionDescriptor.
+        /// </summary>
+        /// <param name="zeroTouchDef">FunctionDescriptor describing the function 
+        /// that this controller will call.</param>
+        public ZeroTouchVarArgNodeController(T zeroTouchDef) : base(zeroTouchDef) { }
 
         protected override void InitializeFunctionParameters(NodeModel model, IEnumerable<TypedParameter> parameters)
         {

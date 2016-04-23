@@ -127,43 +127,40 @@ namespace Dynamo.Search
             }
 
             var assemblyName = Path.GetFileNameWithoutExtension(entry.Assembly);
+            const string resourcesPath = @"src\Resources\";
 
             // Get icon paths.
             string pathToSmallIcon = Path.Combine(
-                dynamoPath,
-                @"..\..\..\src\Resources\",
+                resourcesPath,
                 assemblyName,
                 "SmallIcons", entry.IconName + ".Small.png");
 
             string pathToLargeIcon = Path.Combine(
-               dynamoPath,
-               @"..\..\..\src\Resources\",
+               resourcesPath,
                assemblyName,
                "LargeIcons", entry.IconName + ".Large.png");
 
-            if (!File.Exists(pathToSmallIcon))
+            if (!File.Exists(Path.Combine(dynamoPath, @"..\..\..\", pathToSmallIcon)))
             {
                 // Try DynamoCore path.
                 pathToSmallIcon = Path.Combine(
-                    dynamoPath,
-                    @"..\..\..\src\Resources\",
+                   resourcesPath,
                     "DynamoCore",
                     "SmallIcons", entry.IconName + ".Small.png");
             }
 
-            if (!File.Exists(pathToLargeIcon))
+            if (!File.Exists(Path.Combine(dynamoPath, @"..\..\..\", pathToLargeIcon)))
             {
                 // Try DynamoCore path.
-                pathToSmallIcon = Path.Combine(
-                    dynamoPath,
-                    @"..\..\..\src\Resources\",
+                pathToLargeIcon = Path.Combine(
+                    resourcesPath,
                     "DynamoCore",
                     "LargeIcons", entry.IconName + ".Large.png");
             }
 
             // Dump icons.
-            XmlHelper.AddNode(element, "SmallIcon", File.Exists(pathToSmallIcon) ? pathToSmallIcon : "Not found");
-            XmlHelper.AddNode(element, "LargeIcon", File.Exists(pathToLargeIcon) ? pathToLargeIcon : "Not found");
+            XmlHelper.AddNode(element, "SmallIcon", File.Exists(Path.Combine(dynamoPath, @"..\..\..\", pathToSmallIcon)) ? pathToSmallIcon : "Not found");
+            XmlHelper.AddNode(element, "LargeIcon", File.Exists(Path.Combine(dynamoPath, @"..\..\..\", pathToLargeIcon)) ? pathToLargeIcon : "Not found");
         }
 
         private static void AddCategoryToXml(
