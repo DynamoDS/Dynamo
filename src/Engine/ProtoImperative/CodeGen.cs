@@ -24,7 +24,6 @@ namespace ProtoImperative
 
     public class CodeGen : ProtoCore.CodeGen
     {
-        private ProtoCore.CompilerDefinitions.Imperative.CompilePass compilePass;
         private readonly BackpatchMap backpatchMap;
         private NodeBuilder nodeBuilder;
 
@@ -656,7 +655,6 @@ namespace ProtoImperative
         private int EmitExpressionInterpreter(ProtoCore.AST.Node codeBlockNode)
         {
             core.watchStartPC = this.pc;
-            compilePass = ProtoCore.CompilerDefinitions.Imperative.CompilePass.GlobalScope;
             ProtoCore.AST.ImperativeAST.CodeBlockNode codeblock = codeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode;
 
             ProtoCore.Type inferedType = new ProtoCore.Type();
@@ -685,7 +683,6 @@ namespace ProtoImperative
             this.localCodeBlockNode = codeBlockNode;
             ProtoCore.AST.ImperativeAST.CodeBlockNode codeblock = codeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode;
             // Imperative language block would never be the top language block.
-            compilePass = ProtoCore.CompilerDefinitions.Imperative.CompilePass.GlobalScope;
 
             bool hasReturnStatement = false;
             ProtoCore.Type type = new ProtoCore.Type();
@@ -2446,7 +2443,7 @@ namespace ProtoImperative
 
         private bool IsParsingGlobal()
         {
-            return (!InsideFunction()) && (ProtoCore.CompilerDefinitions.Imperative.CompilePass.GlobalScope == compilePass);
+            return !InsideFunction();
         }
 
         protected void EmitIdentifierListNode(ProtoCore.AST.ImperativeAST.ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.AST.Node parentNode = null)
