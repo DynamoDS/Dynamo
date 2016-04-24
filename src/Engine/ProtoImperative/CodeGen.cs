@@ -324,7 +324,7 @@ namespace ProtoImperative
         }
 
         public override ProtoCore.DSASM.ProcedureNode TraverseFunctionCall(ProtoCore.AST.Node node, ProtoCore.AST.Node parentNode, int lefttype, int depth, ref ProtoCore.Type inferedType, 
-            ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, 
+            ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None, 
             ProtoCore.AST.Node bnode = null)
         {
             if (!IsParsingGlobal())
@@ -346,7 +346,7 @@ namespace ProtoImperative
                 // f(2) -> type check disabled - param is typed as int
                 enforceTypeCheck = !(paramNode is BinaryExpressionNode);
 
-                DfsTraverse(paramNode, ref paramType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, bnode);
+                DfsTraverse(paramNode, ref paramType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, bnode);
                 enforceTypeCheck = true;
 
                 arglist.Add(paramType);
@@ -973,7 +973,7 @@ namespace ProtoImperative
         {
             FunctionCallNode fnode = node as FunctionCallNode;
 
-            TraverseFunctionCall(node, null, ProtoCore.DSASM.Constants.kInvalidIndex, 0, ref inferedType, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, bnode);
+            TraverseFunctionCall(node, null, ProtoCore.DSASM.Constants.kInvalidIndex, 0, ref inferedType, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, bnode);
             if (fnode != null && fnode.ArrayDimensions != null)
             {
                 int dimensions = DfsEmitArrayIndexHeap(fnode.ArrayDimensions);
@@ -1034,7 +1034,7 @@ namespace ProtoImperative
 
                 // If-expr
                 IfStmtNode ifnode = node as IfStmtNode;
-                DfsTraverse(ifnode.IfExprNode, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
+                DfsTraverse(ifnode.IfExprNode, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
 
                 L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
                 bp = pc;
@@ -1076,7 +1076,7 @@ namespace ProtoImperative
                 {
                     inferedType = new ProtoCore.Type();
                     inferedType.UID = (int)PrimitiveType.Var;
-                    DfsTraverse(ifBody, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
+                    DfsTraverse(ifBody, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
                 }
 
                 if (!isForInlineCondition)
@@ -1227,7 +1227,7 @@ namespace ProtoImperative
                     {
                         inferedType = new ProtoCore.Type();
                         inferedType.UID = (int)PrimitiveType.Var;
-                        DfsTraverse(elseBody, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
+                        DfsTraverse(elseBody, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
                     }
 
                     if (!isForInlineCondition)
@@ -1372,7 +1372,7 @@ namespace ProtoImperative
                     || ProtoCore.DSASM.Operator.and == b.Optr
                     || ProtoCore.DSASM.Operator.or == b.Optr;
 
-                DfsTraverse(b.LeftNode, ref inferedType, isBooleanOperation, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
+                DfsTraverse(b.LeftNode, ref inferedType, isBooleanOperation, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
 
                 if (inferedType.UID == (int)PrimitiveType.FunctionPointer && emitDebugInfo)
                 {
@@ -1397,7 +1397,7 @@ namespace ProtoImperative
                     {
                         NodeUtils.SetNodeLocation(lnode, b, b);
                     }
-                    EmitGetterSetterForIdentList(lnode, ref inferedType, null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, out isCollapsed, b.RightNode);
+                    EmitGetterSetterForIdentList(lnode, ref inferedType, null, ProtoCore.CompilerDefinitions.SubCompilePass.None, out isCollapsed, b.RightNode);
 
 
                     // Get the lhs symbol list
@@ -1450,11 +1450,11 @@ namespace ProtoImperative
 
             if (parentNode != null)
             {
-                DfsTraverse(b.RightNode, ref inferedType, isBooleanOperation, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
+                DfsTraverse(b.RightNode, ref inferedType, isBooleanOperation, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
             }
             else
             {
-                DfsTraverse(b.RightNode, ref inferedType, isBooleanOperation, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, b);
+                DfsTraverse(b.RightNode, ref inferedType, isBooleanOperation, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, b);
             }
 
             rightType.UID = inferedType.UID;
@@ -1749,7 +1749,7 @@ namespace ProtoImperative
             if (IsParsingGlobal())
             {
                 UnaryExpressionNode u = node as UnaryExpressionNode;
-                DfsTraverse(u.Expression, ref inferedType, false, null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
+                DfsTraverse(u.Expression, ref inferedType, false, null, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
 
                 string op = Op.GetUnaryOpName(u.Operator);
                 EmitInstrConsole(op);
@@ -2247,7 +2247,7 @@ namespace ProtoImperative
             ProtoCore.AST.Node node,
             ref ProtoCore.Type inferedType,
             ProtoCore.AssociativeGraph.GraphNode graphNode,
-            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass,
+            ProtoCore.CompilerDefinitions.SubCompilePass subPass,
             out bool isCollapsed,
             ProtoCore.AST.Node setterArgument = null)
         {
@@ -2451,7 +2451,7 @@ namespace ProtoImperative
             if (parentNode == null && !IsParsingGlobal())
                 return;
 
-            EmitIdentifierListNode(node, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
+            EmitIdentifierListNode(node, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
 
             if(parentNode == null)
                 EmitSetExpressionUID(core.ExpressionUID++);
@@ -2462,7 +2462,7 @@ namespace ProtoImperative
             ref ProtoCore.Type inferedType, 
             bool isBooleanOp = false, 
             ProtoCore.AssociativeGraph.GraphNode graphNode = null, 
-            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, 
+            ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None, 
             ProtoCore.AST.Node parentNode = null)
         {
             ImperativeNode node = pNode as ImperativeNode;
@@ -2506,7 +2506,7 @@ namespace ProtoImperative
                     EmitWhileStmtNode(node, ref inferedType, isBooleanOp, graphNode);
                     break;
                 case AstKind.ExpressionList:
-                    EmitExprListNode(node, ref inferedType, null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
+                    EmitExprListNode(node, ref inferedType, null, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
                     break;
                 case AstKind.IdentifierList:
                     EmitIdentifierListNode(node, ref inferedType, graphNode, parentNode as BinaryExpressionNode);
