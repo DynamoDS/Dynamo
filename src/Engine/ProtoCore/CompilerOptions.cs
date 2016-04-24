@@ -32,17 +32,6 @@ namespace ProtoCore
             {
                 None,
                 UnboundIdentifier,
-                GlobalInstanceFunctionBody,
-                All
-            }
-        }
-
-        namespace Imperative
-        {
-            public enum CompilePass
-            {
-                GlobalScope,
-                Done
             }
         }
     }
