@@ -42,7 +42,11 @@ namespace Dynamo.Engine
         private readonly List<string> packagedLibraries = new List<string>();
 
         private readonly IPathManager pathManager;
-        public ProtoCore.Core LibraryManagementCore{get; private set;}
+
+        /// <summary>
+        /// Returns core which is used for parsing code and loading libraries
+        /// </summary>
+        public ProtoCore.Core LibraryManagementCore { get; private set; }
         private ProtoCore.Core liveRunnerCore = null;
 
         internal void SetLiveCore(ProtoCore.Core core)
@@ -83,6 +87,11 @@ namespace Dynamo.Engine
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LibraryServices"/> class.
+        /// </summary>
+        /// <param name="libraryManagementCore">Core which is used for parsing code and loading libraries</param>
+        /// <param name="pathManager">Instance of IPathManager containing neccessary Dynamo paths</param>
         public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager)
         {
             LibraryManagementCore = libraryManagementCore;
@@ -95,6 +104,9 @@ namespace Dynamo.Engine
             LibraryLoadFailed += new EventHandler<LibraryLoadFailedEventArgs>(LibraryLoadFailureHandler);
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources
+        /// </summary>
         public void Dispose()
         {
             builtinFunctionGroups.Clear();
@@ -127,8 +139,19 @@ namespace Dynamo.Engine
             get { return importedFunctionGroups.SelectMany(d => d.Value).Select(p => p.Value); }
         }
 
+        /// <summary>
+        /// Occurs before a library is loaded
+        /// </summary>
         public event EventHandler<LibraryLoadingEventArgs> LibraryLoading;
+        
+        /// <summary>
+        /// Occurs if a library cannot be loaded
+        /// </summary>
         public event EventHandler<LibraryLoadFailedEventArgs> LibraryLoadFailed;
+        
+        /// <summary>
+        /// Occurs after a library is successfully loaded
+        /// </summary>
         public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
 
         private void LibraryLoadFailureHandler(object sender, LibraryLoadFailedEventArgs args)
