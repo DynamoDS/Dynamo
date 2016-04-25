@@ -661,8 +661,24 @@ namespace ProtoCore
             // For variables defined nested language block, their function index
             // is always Constants.kGlobalScope 
             CodeBlock searchBlock = codeblock;
-            while (searchBlock != null && searchBlock.blockType != CodeBlockType.Function)
+            while (searchBlock != null)
             {
+                // For imported node, it is possbile that the block is not the
+                // topmost block.
+                // 
+                // For expression interpreter, as the code has been compiled, the
+                // outmost block wouldn't be function block (CodeBlockType.Function).
+                // CodeBlockType.Function is a temporary block type which is set when
+                // the compile is generating code for function defintion node and will
+                // be set back to Associative.
+                var isSearchBoundry = searchBlock.blockType == CodeBlockType.Function ||
+                    (Options.RunMode == InterpreterMode.Expression && searchBlock.parent == null);
+
+                if (isSearchBoundry)
+                {
+                    break;
+                }
+
                 symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, Constants.kGlobalScope);
                 if (symbolIndex == Constants.kInvalidIndex)
                 {
@@ -678,7 +694,7 @@ namespace ProtoCore
             // If we are not in class defintion, then just stop here, otherwise
             // we should search global block's symbol table.
             if (searchBlock != null && 
-                searchBlock.blockType == CodeBlockType.Function && 
+                (searchBlock.blockType == CodeBlockType.Function || (Options.RunMode == InterpreterMode.Expression && searchBlock.parent == null)) && 
                 classscope == Constants.kGlobalScope)
             {
                 symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, function);
