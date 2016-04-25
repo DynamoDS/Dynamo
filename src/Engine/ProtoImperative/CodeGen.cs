@@ -31,15 +31,7 @@ namespace ProtoImperative
         {
             context = callContext;
 
-            // Comment Jun: Get the codeblock to use for this codegenerator
-            if (core.Options.IsDeltaExecution)
-            {
-                codeBlock = GetDeltaCompileCodeBlock();
-            }
-            else
-            {
-                codeBlock = BuildNewCodeBlock();
-            }
+            codeBlock = BuildNewCodeBlock();
 
             if (null == parentBlock)
             {
@@ -65,14 +57,6 @@ namespace ProtoImperative
             backpatchMap = new BackpatchMap();
 
             nodeBuilder = new NodeBuilder(core);
-        }
-
-        private ProtoCore.DSASM.CodeBlock GetDeltaCompileCodeBlock()
-        {
-            ProtoCore.DSASM.CodeBlock cb = null;
-            cb = BuildNewCodeBlock();
-            Validity.Assert(null != cb);
-            return cb;
         }
 
         /// <summary>
