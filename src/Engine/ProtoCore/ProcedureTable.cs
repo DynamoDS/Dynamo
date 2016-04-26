@@ -173,10 +173,6 @@ namespace ProtoCore.DSASM
         {
             get; set;
         }
-        public Stack<UpdateNodeRef> UpdatedProperties
-        {
-            get; set;
-        }
         /// <summary>
         /// The list of graphnodes that this function owns
         /// </summary>
@@ -199,7 +195,6 @@ namespace ProtoCore.DSASM
             IsActive = true;
             ChildCodeBlocks = new List<int>();
 
-            UpdatedProperties = new Stack<AssociativeGraph.UpdateNodeRef>();
             GraphNodeList = new List<GraphNode>();
         }
 
@@ -228,7 +223,6 @@ namespace ProtoCore.DSASM
             ChildCodeBlocks = new List<int>(rhs.ChildCodeBlocks);
 
             // Runtime properties are initialized
-            UpdatedProperties = new Stack<AssociativeGraph.UpdateNodeRef>();
             GraphNodeList = new List<GraphNode>();
         }
 

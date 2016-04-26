@@ -1518,8 +1518,6 @@ namespace ProtoImperative
                             type.UID = globalClassIndex;
                             ProtoCore.AssociativeGraph.UpdateNodeRef leftNodeRef = new ProtoCore.AssociativeGraph.UpdateNodeRef();
                             DFSGetSymbolList(b.LeftNode, ref type, leftNodeRef);
-
-                            localProcedure.UpdatedProperties.Push(leftNodeRef);
                         }
                     }
 
