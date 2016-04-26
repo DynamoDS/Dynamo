@@ -305,18 +305,17 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4026
             string src = @"
 a = 0;
-def foo ( )
+def foo (a)
 {
     a = a + 1;
     return = a;
 }
-x = 1 > 2 ? foo() + 1 : foo() + 2;
+x = 1 > 2 ? foo(a) + 1 : foo(a) + 2;
 	
 ";
             string err = "MAGN-4026 Execution of both true and false statements in Associative inline condition";
             ExecutionMirror mirror = thisTest.RunScriptSource(src, err);
-            thisTest.Verify("x", 4);
-            thisTest.Verify("a", 2);
+            thisTest.Verify("x", 3);
         }
 
 
@@ -963,11 +962,12 @@ a = 1;
             string code = @"
 def foo ()
 {
-    z = z + ((a > 0) ? a : 0);
+    a;
+    z =  (a > 0) ? a : 0;
     a = 1;
+    return = z;
 }
-z = 0;
-test = foo();
+z = foo();
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);

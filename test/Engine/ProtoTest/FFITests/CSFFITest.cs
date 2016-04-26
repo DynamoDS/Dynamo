@@ -834,18 +834,13 @@ a12;
             String code =
             @"
                 import(""FFITarget.dll"");
-              
                 pt1=DummyPoint.ByCoordinates(1,1,1);
-a11;
-                [Associative]
+                def foo : DummyPoint( a:DummyPoint)
                 {
-                    def foo : DummyPoint( a:DummyPoint)
-                    {
-                        return = a;
-                    }
-                    a = foo( pt1);
-                    a11={a.X,a.Y,a.Z};
-}
+                    return = a;
+                }
+                a = foo( pt1);
+                a11={a.X,a.Y,a.Z};
             ";
             object[] c = new object[] { 1.0, 1.0, 1.0 };
             ValidationData[] data = { new ValidationData { ValueName = "a11", ExpectedValue = c, BlockIndex = 0 } };

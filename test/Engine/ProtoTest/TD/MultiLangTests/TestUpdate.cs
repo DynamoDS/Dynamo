@@ -1995,18 +1995,18 @@ a = 4;
         {
             string code = @"
 c;d;
-[Associative]
-{
 def foo : int ( a : int, b : int )
 {
 	a = a + b;
 	b = 2 * b;
 	return = a + b;
 }
-a = 1;
-b = 2;
-c = foo (a, b ); // expected 9, received -3
-d = a + b;
+[Associative]
+{
+    a = 1;
+    b = 2;
+    c = foo (a, b ); // expected 9, received -3
+    d = a + b;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2659,21 +2659,16 @@ test = foo();
         public void T58_Defect_1467396_Update_In_Global_Variables_2()
         {
             String code = @"
-def foo()
-{
-    a = 1;
-    return = a + 1;
-}
 a = 2;
 b = a + 1;
-c = foo();
+a = 1;
+c = a + 1;
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;
             thisTest.Verify("c", 2);
             thisTest.Verify("b", 2);
-
         }
 
         [Test]
@@ -2880,13 +2875,9 @@ z2 = a.Z;
             String code = @"
 x = 1;
 g = 10;
-def f()
-{
-    g = g + 1;
-    return = g;
-}
 a = x; 
-c = f(); 
+g = g + 1;
+c = g;
 b = 2; 
 t = a+c; 
 c = a + b; 
@@ -2907,16 +2898,10 @@ a=0;
 b=0;
 c=0;
 m=0;
-    
-def foo()
-{
 a = 1;
 b = 2;
 c = 3;
 m = a + b + c;
-    return =true;
-}
-z = foo();
 ";
             string errmsg = "1467484 - wrong execution sequence for update ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -2932,15 +2917,9 @@ z = foo();
 a;
 b;
 c;
-    
-def foo()
-{
 a = 1;
 b = a;
 c = b;
-    return =true;
-}
-z = foo();
 ";
             string errmsg = "1467484 - wrong execution sequence for update ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3008,13 +2987,9 @@ a = 1;
         public void T62_update_wrongsequnce_1467484_7()
         {
             String code = @"
-def foo()
-{
-    g = g + 1;
-    return = g;
-}
 g = 1;
-c = foo();
+g = g + 1;
+c = g;
 a = 1;
 c = a;
 a = 1;
@@ -3070,34 +3045,6 @@ c = Print(b);
 
         [Test]
         [Category("SmokeTest")]
-        public void T62_update_wrongsequnce_1467484_10()
-        {
-            String code = @"
-a;
-b;
-c;
-m;
-n;
-def foo()
-{
-a = 1;
-b = a;
-c = b;
-return =true;
-}
-z = foo();
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a", 1);
-            thisTest.Verify("b", 1);
-            thisTest.Verify("c", 1);
-            thisTest.Verify("z", true);
-
-        }
-
-        [Test]
-        [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_11()
         {
             String code = @"
@@ -3106,17 +3053,12 @@ b;
 c;
 m;
 n;
-def foo()
-{
-    a = 1;
-    b = a;
-    c = b;
-    m = a + b + c;
-    n = m;
-    a = 2;
-    return =true;
-}
-z = foo();
+a = 1;
+b = a;
+c = b;
+m = a + b + c;
+n = m;
+a = 2;
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
@@ -3125,7 +3067,6 @@ z = foo();
             thisTest.Verify("c", 2);
             thisTest.Verify("m", 6);
             thisTest.Verify("n", 6);
-            thisTest.Verify("z", true);
         }
 
         [Test]
@@ -3163,70 +3104,6 @@ a = 3;
     n = m;
     a = 2;
 ";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a", 2);
-            thisTest.Verify("b", 2);
-            thisTest.Verify("c", 2);
-            thisTest.Verify("m", 6);
-            thisTest.Verify("n", 6);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T62_update_wrongsequnce_1467484_14()
-        {
-            String code = @"
-a;
-b;
-c;
-m;
-n;
-def foo()
-{
-    a = 1;
-    b = a;
-    c = b;
-    m = a + b + c;
-    n = m;
-    a = 2;
-    return =true;
-}
-z = foo();
-   
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a", 2);
-            thisTest.Verify("b", 2);
-            thisTest.Verify("c", 2);
-            thisTest.Verify("m", 6);
-            thisTest.Verify("n", 6);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T62_update_wrongsequnce_1467484_15()
-        {
-            String code = @"
-                        a;
-                        b;
-                        c;
-                        m;
-                        n;
-                        def foo()
-                        {
-                            a = 1;
-                            b = a;
-                            c = b;
-                            m = a + b + c;
-                            n = m;
-                            a = 2;
-                            return =true;
-                        }
-                        z = foo();
-   
-                        ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", 2);
@@ -3571,27 +3448,6 @@ pt3 = XPlusY(pt2);
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("pt3", 0.0);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T66_1467483_CyclicDependancy()
-        {
-            String code = @"
-                a = 1;
-                b = a;
-                def foo(x)
-                {
-                a = b+1;
-                return = a;
-                }
-                r = foo(b);
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-
-            thisTest.VerifyRuntimeWarningCount(1);
-
         }
 
         [Test]
@@ -5103,7 +4959,7 @@ x = n.X;
  
         def foo()
         {
-            return = a + 7;
+            return = 7;
         }
         def bar()
         {
@@ -5115,11 +4971,11 @@ x = n.X;
         }
         a = 10;
         t = ding(a);
-        z=t();
-        a = 50;
+        z = t();
+        a = 200;
 ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code);
-            thisTest.Verify("z", 57);
+            thisTest.Verify("z", 3);
         }
 
         [Test]
@@ -5170,7 +5026,7 @@ e1 = d1(b1);
  
         def foo()
         {
-            return = a + 7;
+            return = 7;
         }
         def bar()
         {
@@ -5186,13 +5042,13 @@ a;
         {
             a = 10;
             t = ding(a);
-            z=t();
-            a = 50;
+            z = t();
+            a = 200;
         }
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("z", 17);
+            thisTest.Verify("z", 7);
         }
 
         [Test]
@@ -5203,7 +5059,7 @@ a;
  
         def foo()
         {
-            return = a + 7;
+            return = 7;
         }
         def bar()
         {
@@ -5219,13 +5075,13 @@ a;
         {
             a = 10;
             t = ding(a);
-            z=t();
-            a = 50;
+            z = t();
+            a = 200;
         }
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("z", 57);
+            thisTest.Verify("z", 3);
         }
 
         [Test]

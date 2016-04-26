@@ -1330,8 +1330,7 @@ def foo(i : int[])
 		return = count;
 	}
 	return = count;
-	
-}
+}	
     
 arr = 0.0..3.0;//{0.0,1.0,2.0,3.0};
 c;x;
@@ -1345,12 +1344,11 @@ c;x;
 	}
 	x1 = 0..3;
 	c = foo(x1);
-	
 }
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("c", 4);
-            thisTest.Verify("x", 3);
+            thisTest.Verify("x", 6);
         }
 
         [Test]
@@ -1450,27 +1448,27 @@ x;a;b;f;g;h;j;k;l;m;
             // 1467121
             string code = @"
 x;a;b;f;g;h;j;k;l;m;
+def square : double ( x: double ) 
+{
+    return = x * x;
+}
 [Associative]
 {
-	def square : double ( x: double ) 
-	{
-		return = x * x;
-	}
-[Imperative]
-{
-	x = 0.1; 
-	a = 0..2..~0.5;
-	b = 0..0.1..~square(0.1);
-	f = 0..0.1..~x;      
-	g = 0.2..0.3..~x;    
-	h = 0.3..0.2..~-0.1; 
-	
-	j = 0.8..0.5..~-0.3;
-	k = 0.5..0.8..~0.3; 
-	l = 0.2..0.3..~0.0;
-	m = 0.2..0.3..~1/2; // division 
+    [Imperative]
+    {
+        x = 0.1; 
+        a = 0..2..~0.5;
+        b = 0..0.1..~square(0.1);
+        f = 0..0.1..~x;      
+        g = 0.2..0.3..~x;    
+        h = 0.3..0.2..~-0.1; 
+        
+        j = 0.8..0.5..~-0.3;
+        k = 0.5..0.8..~0.3; 
+        l = 0.2..0.3..~0.0;
+        m = 0.2..0.3..~1/2; // division 
+    }
 }
-	}
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] a = new Object[] { 0.000000, 0.500000, 1.000000, 1.500000, 2.000000 };
@@ -1550,12 +1548,12 @@ x;a;b;f;g;h;j;k;l;m;
         {
             string code = @"
 z1;
+def twice : double( a : double )
+{
+    return = 2 * a;
+}
 [Associative]
 {
-	def twice : double( a : double )
-	{
-		return = 2 * a;
-	}
 	z1 = 1..twice(4)..twice(1);
 }
 ";
@@ -1570,16 +1568,15 @@ z1;
 
             string code = @"
 c;
+def twice : int []( a : double )
+{
+    c=1..a;
+    return = c;
+}
 [Associative]
 {
-	def twice : int []( a : double )
-	{
-		c=1..a;
-		return = c;
-	}
-d=1..4;
-c=twice(4);
-//	z1 = 1..twice(4)..twice(1);
+    d=1..4;
+    c=twice(4);
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1592,13 +1589,13 @@ c=twice(4);
         {
             string code = @"
 c;
+def twice : int []( a : double )
+{
+    c=1..a;
+    return = c;
+}
 [Associative]
 {
-	def twice : int []( a : double )
-	{
-		c=1..a;
-		return = c;
-	}
 d=1..4;
 c=twice(4);
 //	z1 = 1..twice(4)..twice(1);
@@ -1638,13 +1635,13 @@ c=a.twice(4);
         {
             string code = @"
 z1;
+def twice : int[]( a : int )
+{
+    c=2*(1..a);
+    return = c;
+}
 [Associative]
 {
-	def twice : int[]( a : int )
-	{
-		c=2*(1..a);
-		return = c;
-	}
     d={1,2,3,4};
 	z1=twice(d);
 //	z1 = 1..twice(4)..twice(1);

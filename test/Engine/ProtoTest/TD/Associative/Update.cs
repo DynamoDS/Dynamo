@@ -99,7 +99,8 @@ e1 = foo3(a);
         public void T004_Update_In_Function_Call_2()
         {
             string errmsg = "";//1467302 - rev 3778 : invalid cyclic dependency detected";
-            string src = @"def foo1 ( a : int ) 
+            string src = @"
+def foo1 ( a : int ) 
 {
     return = a + 1;
 }
@@ -122,10 +123,10 @@ a[1] = a[1] + 1;";
             Object[] v1 = new Object[] { 13, 12, 12, 13, 14 };
             Object[] v2 = new Object[] { 14, 13, 13, 14, 15 };
             Object[] v3 = new Object[] { 10, 12, 12, 13, 14 };
-            thisTest.Verify("a", v3, 0);
-            thisTest.Verify("e1", v1, 0);
-            thisTest.Verify("b", v1, 0);
-            thisTest.Verify("c", v2, 0);
+            thisTest.Verify("a", v3);
+            thisTest.Verify("e1", v1);
+            thisTest.Verify("b", 10);
+            thisTest.Verify("c", 11);
         }
 
         [Test]
@@ -1329,21 +1330,13 @@ c1 = x.c;
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4020
             string errmsg = "MAGN-4020 Update of global variables from inside function call is not happening as expected";
-            string src = @"def foo ()
-{
-	a = 0..4..1;
-	b = a;
-	c = b[2];
-	a = 10..14..1;
-	b[2] = b[2] + 1;
-	a[2] = a[2] + 1;
-	return = true;
-	
-}
-a :int[];
-b : int[];
-c : int;
-test = foo();
+            string src = @"
+a = 0..4..1;
+b = a;
+c = b[2];
+a = 10..14..1;
+b[2] = b[2] + 1;
+a[2] = a[2] + 1;
 ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(src, errmsg);
             //Verification   

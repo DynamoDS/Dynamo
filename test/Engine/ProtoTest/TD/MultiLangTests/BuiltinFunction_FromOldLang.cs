@@ -130,35 +130,19 @@ t15 = testNormalizeDepth();
 	b12;
 	b13;
 	b14;
-	def TestBuiltIn()
-	{
-		b = Flatten({1..4,0});
-	
-		a = {true,{false,false},true};
-		b1 = Count(a);
-	
-		b2 = Contains(a,{false,false});
-	
-		b3 = CountFalse(a);
-		
-		b4 = CountTrue(a);
-		
-		b5 = SomeFalse(a);
-		
-		b6 = SomeTrue(a);
-		
-		b7 = __ToStringFromArray(a);
-		
-		a1 = {{3,-4},{4,5}};
-		
-		b8 = Transpose(a1);
-		
-		a2 = 3.5;
-		
-		b14 = NormalizeDepth({{1.1},{{2.3,3}},""5"",{{{{true}}}}},2);
-		
-	}
-test = TestBuiltIn();
+b = Flatten({1..4,0});
+a = {true,{false,false},true};
+b1 = Count(a);
+b2 = Contains(a,{false,false});
+b3 = CountFalse(a);
+b4 = CountTrue(a);
+b5 = SomeFalse(a);
+b6 = SomeTrue(a);
+b7 = __ToStringFromArray(a);
+a1 = {{3,-4},{4,5}};
+b8 = Transpose(a1);
+a2 = 3.5;
+b14 = NormalizeDepth({{1.1},{{2.3,3}},""5"",{{{{true}}}}},2);
 t0 = b;
 t1 = b1;
 t2 = b2;
