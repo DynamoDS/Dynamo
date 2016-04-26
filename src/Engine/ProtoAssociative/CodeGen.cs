@@ -5126,47 +5126,20 @@ namespace ProtoAssociative
                     continue;
                 }
 
-                if (firstProc.ClassID == Constants.kGlobalScope)
+                // For each property modified
+                foreach (ProtoCore.AssociativeGraph.UpdateNodeRef updateRef in firstProc.UpdatedProperties)
                 {
-                    graphNode.updateNodeRefList.AddRange(firstProc.UpdatedGlobalVariables);
-                }
-                else
-                {
-                    // For each property modified
-                    foreach (ProtoCore.AssociativeGraph.UpdateNodeRef updateRef in firstProc.UpdatedProperties)
+                    int index = graphNode.firstProcRefIndex;
+
+                    // Is it a global function
+                    if (ProtoCore.DSASM.Constants.kInvalidIndex != index)
                     {
-                        int index = graphNode.firstProcRefIndex;
-
-                        // Is it a global function
-                        if (ProtoCore.DSASM.Constants.kInvalidIndex != index)
+                        if (core.Options.GenerateSSA)
                         {
-                            if (core.Options.GenerateSSA)
-                            {
-                                foreach (ProtoCore.AssociativeGraph.GraphNode dependent in graphNode.dependentList)
-                                {
-                                    // Do this only if first proc is a member function...
-                                    ProtoCore.AssociativeGraph.UpdateNodeRef autogenRef = new ProtoCore.AssociativeGraph.UpdateNodeRef(dependent.updateNodeRefList[0]);
-                                    autogenRef = autogenRef.GetUntilFirstProc();
-
-                                    // ... and the first symbol is an instance of a user-defined type
-                                    int last = autogenRef.nodeList.Count - 1;
-                                    Validity.Assert(autogenRef.nodeList[last].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.Method && null != autogenRef.nodeList[last].symbol);
-                                    if (autogenRef.nodeList[last].symbol.datatype.UID >= (int)PrimitiveType.MaxPrimitive)
-                                    {
-                                        autogenRef.PushUpdateNodeRef(updateRef);
-                                        graphNode.updateNodeRefList.Add(autogenRef);
-
-                                        if (graphNode.lastGraphNode != null)
-                                        {
-                                            graphNode.lastGraphNode.updateNodeRefList.Add(autogenRef);
-                                        }
-                                    }
-                                }
-                            }
-                            else
+                            foreach (ProtoCore.AssociativeGraph.GraphNode dependent in graphNode.dependentList)
                             {
                                 // Do this only if first proc is a member function...
-                                ProtoCore.AssociativeGraph.UpdateNodeRef autogenRef = new ProtoCore.AssociativeGraph.UpdateNodeRef(graphNode.dependentList[0].updateNodeRefList[0]);
+                                ProtoCore.AssociativeGraph.UpdateNodeRef autogenRef = new ProtoCore.AssociativeGraph.UpdateNodeRef(dependent.updateNodeRefList[0]);
                                 autogenRef = autogenRef.GetUntilFirstProc();
 
                                 // ... and the first symbol is an instance of a user-defined type
@@ -5176,7 +5149,27 @@ namespace ProtoAssociative
                                 {
                                     autogenRef.PushUpdateNodeRef(updateRef);
                                     graphNode.updateNodeRefList.Add(autogenRef);
+
+                                    if (graphNode.lastGraphNode != null)
+                                    {
+                                        graphNode.lastGraphNode.updateNodeRefList.Add(autogenRef);
+                                    }
                                 }
+                            }
+                        }
+                        else
+                        {
+                            // Do this only if first proc is a member function...
+                            ProtoCore.AssociativeGraph.UpdateNodeRef autogenRef = new ProtoCore.AssociativeGraph.UpdateNodeRef(graphNode.dependentList[0].updateNodeRefList[0]);
+                            autogenRef = autogenRef.GetUntilFirstProc();
+
+                            // ... and the first symbol is an instance of a user-defined type
+                            int last = autogenRef.nodeList.Count - 1;
+                            Validity.Assert(autogenRef.nodeList[last].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.Method && null != autogenRef.nodeList[last].symbol);
+                            if (autogenRef.nodeList[last].symbol.datatype.UID >= (int)PrimitiveType.MaxPrimitive)
+                            {
+                                autogenRef.PushUpdateNodeRef(updateRef);
+                                graphNode.updateNodeRefList.Add(autogenRef);
                             }
                         }
                     }
@@ -6094,18 +6087,6 @@ namespace ProtoAssociative
                 // Dependency graph construction is complete for this expression
                 if (!isTempExpression)
                 {
-                    if (null != leftNodeGlobalRef)
-                    {
-                        if (null != localProcedure)
-                        {
-                            // Track for updated globals only in user defined functions
-                            if (!localProcedure.IsAssocOperator && !localProcedure.IsAutoGenerated)
-                            {
-                                localProcedure.UpdatedGlobalVariables.Push(leftNodeGlobalRef);
-                            }
-                        }
-                    }
-
                     {
                         if (!graphNode.IsSSANode() && !ProtoCore.AssociativeEngine.Utils.IsTempVarLHS(graphNode))
                         {
