@@ -5174,138 +5174,10 @@ namespace ProtoAssociative
                         }
                     }
                 }
-
-                if (graphNode.updatedArguments.Count > 0)
-                {
-                    // For each argument modified
-                    int n = 0;
-
-                    // Create the current modified argument
-                    foreach (KeyValuePair<string, List<ProtoCore.AssociativeGraph.UpdateNodeRef>> argNameModifiedStatementsPair in firstProc.UpdatedArgumentProperties)
-                    {
-                        // For every single arguments' modified statements
-                        foreach (ProtoCore.AssociativeGraph.UpdateNodeRef nodeRef in argNameModifiedStatementsPair.Value)
-                        {
-                            if (core.Options.GenerateSSA)
-                            {
-                                //
-                                // We just trigger update from whichever statement is dependent on the first pointer associatied with this SSA stmt
-                                // Given:
-                                //      p = C.C();
-                                //      a = p.x;
-                                //      i = f(p);
-                                //
-                                //      %t0 = C.C()
-                                //      p = %t0
-                                //      %t1 = p
-                                //      %t2 = %t1.x
-                                //      a = %t2
-                                //      %t3 = p
-                                //      %t4 = f(%t3)    -> Assume that function 'f' modifies the property 'x' of its argument
-                                //                      -> The graph node of this stmt has 2 updatenoderefs 
-                                //                      ->  there are %t4 and p ('p' because it is the first pointer of %t3
-                                //      i = %t4
-                                //
-                                
-                                // Get the modified property name 
-                                string argname = graphNode.updatedArguments[n].nodeList[0].symbol.name;
-                                if (ProtoCore.Utils.CoreUtils.IsSSATemp(argname) && ssaTempToFirstPointerMap.ContainsKey(argname))
-                                {
-                                    // The property is an SSA temp, Get the SSA first pointer associated with this temp
-                                    argname = ssaTempToFirstPointerMap[argname];
-                                }
-
-                                bool isAccessible = false;
-                                SymbolNode symbol = null;
-                                bool isAllocated = VerifyAllocation(argname, globalClassIndex, globalProcIndex, out symbol, out isAccessible);
-                                if (isAllocated)
-                                {
-                                    ProtoCore.AssociativeGraph.UpdateNode updateNode = new UpdateNode();
-                                    updateNode.symbol = symbol;
-                                    updateNode.nodeType = ProtoCore.AssociativeGraph.UpdateNodeType.Symbol;
-
-                                    ProtoCore.AssociativeGraph.UpdateNodeRef argNodeRef = new ProtoCore.AssociativeGraph.UpdateNodeRef();
-                                    argNodeRef.PushUpdateNode(updateNode);
-                                    graphNode.updateNodeRefList.Add(argNodeRef);
-                                }
-                                
-                            }
-                            else
-                            {
-                                ProtoCore.AssociativeGraph.UpdateNodeRef argNodeRef = new ProtoCore.AssociativeGraph.UpdateNodeRef();
-                                argNodeRef.PushUpdateNodeRef(graphNode.updatedArguments[n]);
-                                argNodeRef.PushUpdateNodeRef(nodeRef);
-                                graphNode.updateNodeRefList.Add(argNodeRef);
-                            }
-                        }
-                        ++n;
-                    }
-                }
             }
         }
 
         
-        // 
-        //  proc TraverseFunctionDef(node)
-        //      ...
-        //      def argList
-        //      foreach arg in node.argdefinition
-        //          ; Store not just the argument types, but also the argument identifier
-        //          def argtype = buildtype(arg)
-        //          argtype.name = arg.identname
-        //          argList.push(argtype)
-        //      end
-        //      ...
-        //  end
-        //  
-
-        private ProtoCore.AssociativeGraph.UpdateNodeRef __To__Deprecate__AutoGenerateUpdateArgumentReference(AssociativeNode node, ProtoCore.AssociativeGraph.GraphNode graphNode)
-        {
-            // Get the lhs symbol list
-            ProtoCore.Type type = new ProtoCore.Type();
-            type.UID = globalClassIndex;
-            ProtoCore.AssociativeGraph.UpdateNodeRef leftNodeRef = new ProtoCore.AssociativeGraph.UpdateNodeRef();
-            DFSGetSymbolList(node, ref type, leftNodeRef);
-
-            ProtoCore.DSASM.SymbolNode firstSymbol = null;
-
-
-            // Check if we are inside a procedure
-            if (null != localProcedure)
-            {
-                // Check if there are at least 2 symbols in the list
-                if (leftNodeRef.nodeList.Count >= 2)
-                {
-                    firstSymbol = leftNodeRef.nodeList[0].symbol;
-                    if (null != firstSymbol && leftNodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.Method)
-                    {
-                        // Now check if the first element of the identifier list is an argument
-                        foreach (ProtoCore.DSASM.ArgumentInfo argInfo in localProcedure.ArgumentInfos)
-                        {
-                            if (argInfo.Name == firstSymbol.name)
-                            {
-                                leftNodeRef.nodeList.RemoveAt(0);
-
-                                List<ProtoCore.AssociativeGraph.UpdateNodeRef> refList = null;
-                                bool found = localProcedure.UpdatedArgumentProperties.TryGetValue(argInfo.Name, out refList);
-                                if (found)
-                                {
-                                    refList.Add(leftNodeRef);
-                                }
-                                else
-                                {
-                                    refList = new List<ProtoCore.AssociativeGraph.UpdateNodeRef>();
-                                    refList.Add(leftNodeRef);
-                                    localProcedure.UpdatedArgumentProperties.Add(argInfo.Name, refList);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return leftNodeRef;
-        }
-
         private ProtoCore.AssociativeGraph.UpdateNodeRef GetUpdatedNodeRef(AssociativeNode node)
         {
             if (null == localProcedure)
@@ -5406,7 +5278,6 @@ namespace ProtoAssociative
             }
 
             ProtoCore.AssociativeGraph.UpdateNodeRef leftNodeRef = AutoGenerateUpdateReference(binaryExpr.LeftNode, graphNode);
-            ProtoCore.AssociativeGraph.UpdateNodeRef leftNodeArgRef = __To__Deprecate__AutoGenerateUpdateArgumentReference(binaryExpr.LeftNode, graphNode);
 
             ProtoCore.AST.Node lnode = binaryExpr.LeftNode;
             NodeUtils.CopyNodeLocation(lnode, binaryExpr);
@@ -5423,12 +5294,6 @@ namespace ProtoAssociative
                 // Dependency graph top level symbol 
                 graphNode.updateNodeRefList.Add(leftNodeRef);
                 graphNode.updateNodeRefList[0].nodeList[0].dimensionNodeList = graphNode.dimensionNodeList;
-
-                // @keyu: foo.id = 42; will generate same leftNodeRef and leftNodeArgRef
-                if (!isThisPtr && !leftNodeRef.Equals(leftNodeArgRef))
-                {
-                    graphNode.updateNodeRefList.Add(leftNodeArgRef);
-                }
 
                 ProtoCore.DSASM.SymbolNode firstSymbol = leftNodeRef.nodeList[0].symbol;
                 if (null != firstSymbol)
