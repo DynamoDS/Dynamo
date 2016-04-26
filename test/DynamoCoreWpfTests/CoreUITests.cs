@@ -762,12 +762,11 @@ namespace DynamoCoreWpfTests
             // open context menu
             RightClick(currentWs.zoomBorder);
 
+            // set dummy content for search text
+            currentWs.ViewModel.InCanvasSearchViewModel.SearchText = "dummy";
             Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
             Assert.IsFalse(currentWs.InCanvasSearchBar.IsOpen);
             Assert.IsTrue(currentWs.ViewModel.InCanvasSearchViewModel.SearchText.Equals(string.Empty));
-
-            // set dummy content for search text
-            currentWs.ViewModel.InCanvasSearchViewModel.SearchText = "dummy";
 
             // show in-canvas search
             ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
