@@ -875,7 +875,6 @@ namespace ProtoCore.AssociativeGraph
         public bool isLHSNode { get; set; }
         public bool IsLHSIdentList { get; set; }
         public ProcedureNode firstProc { get; set; }
-        public int firstProcRefIndex { get; set; }
         public bool isCyclic { get; set; }
         public bool isInlineConditional { get; set; }
         public GraphNode cyclePoint { get; set; }
@@ -932,7 +931,6 @@ namespace ProtoCore.AssociativeGraph
             isLHSNode = false;
             IsLHSIdentList = false;
             firstProc = null;
-            firstProcRefIndex = Constants.kInvalidIndex;
             isCyclic = false;
             isInlineConditional = false;
             counter = 0;

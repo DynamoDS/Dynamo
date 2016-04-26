@@ -856,10 +856,6 @@ namespace ProtoCore
                     if (!procnode.IsConstructor && !procnode.Name.Equals(ProtoCore.DSASM.Constants.kStaticPropertiesInitializer))
                     {
                         functionCallStack.Add(procnode);
-                        if (null != graphNode)
-                        {
-                            graphNode.firstProcRefIndex = graphNode.dependentList.Count - 1;
-                        }
                     }
                 }
 

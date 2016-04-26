@@ -4234,7 +4234,6 @@ namespace ProtoAssociative
                 if (null != graphNode)
                 {
                     graphNode.firstProc = procNode;
-                    graphNode.firstProcRefIndex = graphNode.dependentList.Count - 1;
 
                     // Memoize the graphnode that contains a user-defined function call in the global scope
                     bool inGlobalScope = ProtoCore.DSASM.Constants.kGlobalScope == globalProcIndex && ProtoCore.DSASM.Constants.kInvalidIndex == globalClassIndex;
