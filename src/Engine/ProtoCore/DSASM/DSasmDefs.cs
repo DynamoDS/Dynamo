@@ -335,8 +335,6 @@ namespace ProtoCore.DSASM
         private static void initUnaryOpSymbolTable()
         {
             unaryOpSymbolTable = new Dictionary<UnaryOperator, string>();
-            unaryOpSymbolTable.Add(UnaryOperator.Decrement, "--");
-            unaryOpSymbolTable.Add(UnaryOperator.Increment, "++");
             unaryOpSymbolTable.Add(UnaryOperator.Neg, "-");
             unaryOpSymbolTable.Add(UnaryOperator.Not, "!");
         }

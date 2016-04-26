@@ -1884,10 +1884,6 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		Associative_unaryop(out op);
 		Associative_Factor(out exprNode);
 		node = GenerateUnaryOperatorMethodCallNode(op, exprNode);
-		if (op == UnaryOperator.Increment || op == UnaryOperator.Decrement)
-		{
-		   node = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(){ LeftNode = exprNode, Optr = Operator.assign, RightNode = node }; 
-		}
 		
 	}
 

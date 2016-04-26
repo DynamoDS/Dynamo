@@ -178,15 +178,12 @@ e;
         public void T10_TestInFunctionScope()
         {
             string src = @"test;
-[Associative]
-{
 	 def add:double( n1:int, n2:double )
 	 {
 		  
 		  return = n1 + n2;
 	 }
 	 test = add(2,2.5);
-}
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("test", 4.5);
@@ -360,13 +357,6 @@ c3;
         public void T18_TestMethodCallInExpr()
         {
             string src = @"test0;
-test1;
-test2;
-test3;
-test4;
-test5;
-[Associative]
-{
 	def mul : double ( n1 : int, n2 : int )
     {
       	return = n1 * n2;
@@ -381,7 +371,6 @@ test5;
     test3 = add (add(1.5,0.5), 4.5 ) ;  
     test4 = add (1+1, 4.5 ) ;
     test5 = add ( add(1,1) + add(1,0.5), 3.0 ) ;
-}
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("test0", 6.5);
@@ -700,8 +689,6 @@ e;
         public void T32_Defect_1449877_2()
         {
             string src = @"d;
-[Associative]
-{
 	def func:int(a:int,b:int)
 	{
 	return = b + a;
@@ -709,7 +696,7 @@ e;
 	a = 3;
 	b = -1;
 	d = func(a,b);
-} ";
+ ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("d", 2);
         }
@@ -718,11 +705,7 @@ e;
         [Category("SmokeTest")]
         public void T33_Defect_1450003()
         {
-            string src = @"_a_test;
-_b;
-_c;
-[Associative]
-{
+            string src = @"
 	def check:double( _a:double, _b:int )
 	{
 	_c = _a * _b;
@@ -731,7 +714,7 @@ _c;
 	_a_test = check(2.5,5);
 	_b = 4.5;
 	_c = true;
-}";
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("_a_test", 12.5);
             thisTest.Verify("_b", 4.5);
@@ -760,8 +743,6 @@ _c;
         public void T35_Defect_1450727_2()
         {
             string src = @"z;
-[Associative]
-{
 	def neg_float:double(x:double,y:double)
 	{
 	a = x;
@@ -769,8 +750,7 @@ _c;
 	return = a + b;
 	}
 	z = neg_float(-2.3,-5.8);
- 
-}";
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("z", -8.1);
         }
@@ -1010,51 +990,6 @@ d;
                 ExecutionMirror mirror = thisTest.RunScriptSource(src);
                 thisTest.Verify("d", 0);
             });
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("SmokeTest")]
-        public void T48_MultipleAssignments()
-        {
-            string code = @"
-i : int;
-def A (a : int)
-{
-	t1 = t2 = 2;
-	i = t1 + t2 + a;
-}
-def B : int ()
-{
-	t1 = t2 = 2;
-	t3 = t1 + t2 + i;
-	return = t3;		
-}
-def C : int (a : int)
-{
-    t1 = t2 = 2;
-	return = t1 + t2 + a;
-}
-a;
-b;
-x;
-y;
-a1;
-b1;
-[Associative]
-{
-	a = b = 4;
-	x = y = C(1);
-	a1 = A(1);
-	b1 = B();
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 4);
-            thisTest.Verify("b", 4);
-            thisTest.Verify("x", 5);
-            thisTest.Verify("y", 5);
-            thisTest.Verify("b1", 9);
         }
 
         [Test]
@@ -1704,56 +1639,6 @@ x = foo();
             thisTest.Verify("x", 3);
 
         }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void T66_Defect_1467597()
-        {
-            String code =
-            @"
-a = { }; ;
-b : int[]; ;
-c = 4..6; ;
-d = { 0, 2 }; ;
-f : var[]; ;
-def con(x)
-{
-    a = { x }; ;
-    i = 2..3; ;
-    b[i] = i; ;
-    c[i] = i; ;
-    d[i] = i; ;
-    f[i] = d[i]; ;
-}
-def foo()
-{
-    returnValue = 0;
-    [Imperative]
-    {
-        for(i in { 0,1 })
-        {
-            returnValue = returnValue + i; ;
-            b[i] = i;;
-            c[i] = i;;
-            d[i] = i;;
-            f[i] = d[i]; ;
-                
-        }
-    }
-    return = returnValue;
-}
-con(1); ;
-y6 = foo(); ;
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a", new Object[] { 1 });
-            thisTest.Verify("b", new Object[] { 0, 1, 2, 3 });
-            thisTest.Verify("c", new Object[] { 0, 1, 2, 3 });
-            thisTest.Verify("d", new Object[] { 0, 1, 2, 3 });
-            thisTest.Verify("f", new Object[] { 0, 1, 2, 3 });
-            thisTest.Verify("y6", 1);
-        }
-
     }
 }
 

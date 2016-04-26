@@ -7,6 +7,8 @@ namespace ProtoCore.DSASM
     public class SymbolNode
     {
         public string           name;
+        // To be deleted when implicit dependency is disabled.
+        // It is for dependency var <-> forloop expression
         public string           forArrayName;
         public int              index;
         public int              classScope;

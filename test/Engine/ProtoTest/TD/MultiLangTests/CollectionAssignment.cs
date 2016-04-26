@@ -1527,19 +1527,13 @@ b = a;";
         public void T26_Defct_DNL_1459616_3()
         {
             string code = @"
-a={1,2};
-[Imperative]
-{
-    a={a,2};
-}
-b = { 1, 2 };
-def foo ( )
+def foo (b:var[]..[])
 {
     b =  { b[1], b[1] };
-    return = null;
+    return = b;
 }
-dummy = foo ();
-c = b;";
+c = foo({1, 2});
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2, 2 };
             thisTest.Verify("c", v1);
@@ -1717,23 +1711,18 @@ count = -2..-1;";
         public void T27_defect_1464429_DynamicArray_2()
         {
             string code = @"
-
-
-y ={};
 def CreateArray (  i :int)
 {
+    y ={};
 	y[i] = i;
 	return = y;
 }
 count = 0..2;
-t2 = CreateArray(  count );
-
+t2 = CreateArray(count );
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] count = new Object[] { 0, 1, 2 };
-            Object[] t2 = new Object[] { new Object[] { 0 }, new Object[] { 0, 1 }, new Object[] { 0, 1, 2 } };
-            thisTest.Verify("count", count);
-            thisTest.Verify("t2", t2);
+            thisTest.Verify("t2", new object [] { new object [] { 0 }, new object [] { null, 1 }, new object[] { null, null, 2 } });
+            thisTest.Verify("count", new[] { 0, 1, 2 });
         }
 
 
@@ -3342,9 +3331,9 @@ test = foo();
         {
             String code =
 @"
-arr = { {}, {}};
 def foo ()
 {
+    arr = { {}, {}};
     t = [Imperative]
     {
         //arr = null ;    
@@ -3373,12 +3362,11 @@ test = foo();
         {
             String code =
 @"
-arr;
 def foo ()
 {
+    arr;
     t = [Imperative]
     {
-        //arr  ;    
         for(i in (0..1))
         {
             arr[i][i] = i;
@@ -3405,12 +3393,11 @@ test = foo();
             String code =
 @"
 import(""FFITarget.dll"");
-arr = { {}, {}};
 def foo ()
 {
+    arr = { {}, {}};
     t = [Imperative]
     {
-        //arr = null ;    
         for(i in (0..1))
         {
             arr[i][i] = ClassFunctionality.ClassFunctionality(0);
@@ -3534,9 +3521,9 @@ test = foo().IntVal;
             String code =
 @"
 import(""FFITarget.dll"");
-arr;
 def foo ()
 {
+    arr;
     t = [Imperative]
     {
         for(i in (0..1))

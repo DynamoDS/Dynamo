@@ -1,0 +1,25 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <Target Name="CleanupNodesFolder" AfterTargets="CleanupCoreFolder">
+    <Message Text="Removing unwanted assemblies from nodes folder..." Importance="high"/>
+    <ItemGroup>
+      <FilesToDelete Include="$(OutputPath)nodes\Greg*"/>
+      <FilesToDelete Include="$(OutputPath)nodes\Assimp*"/>
+      <FilesToDelete Include="$(OutputPath)nodes\SharpDX*"/>
+      <FilesToDelete Include="$(OutputPath)nodes\HelixToolkit*"/>
+      <FilesToDelete Include="$(OutputPath)nodes\Cyotek*"/>
+    </ItemGroup> 
+    <Delete Files="@(FilesToDelete)"/>
+  </Target>
+  
+  <Target Name="CleanupCoreFolder" AfterTargets="AfterBuild">
+    <Message Text="Removing unwanted from core folder..." Importance="high"/>
+    <ItemGroup>
+      <FilesToDelete Include="$(OutputPath)Assimp*.xml"/>
+      <FilesToDelete Include="$(OutputPath)Helix*.xml"/>
+      <FilesToDelete Include="$(OutputPath)Sharpdx*.xml"/>
+    </ItemGroup> 
+    <Delete Files="@(FilesToDelete)"/>
+  </Target>
+  
+</Project>
