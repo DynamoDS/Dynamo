@@ -415,11 +415,8 @@ namespace Dynamo.Controls
             // Always set old ZIndex to the last value, even if mouse is not over the node.
             oldZIndex = NodeViewModel.StaticZIndex;
 
-            // Preview is hidden.
-            // Or preview shouldn't be shown for some nodes (e.g. number sliders, watch nodes etc.)
-            // Or node is frozen.
             // There is no need run further.
-            if (!previewEnabled || !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen) return; 
+            if (IsPreviewDisabled()) return; 
 
             if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
@@ -435,6 +432,18 @@ namespace Dynamo.Controls
             }
 
             Dispatcher.DelayInvoke(previewDelay, BringToFront);
+        }
+
+        private bool IsPreviewDisabled()
+        {
+            // True if a connector is being created now
+            // Or the user is selecting nodes
+            // Or preview is disabled for this node
+            // Or preview shouldn't be shown for some nodes (e.g. number sliders, watch nodes etc.)
+            // Or node is frozen.
+            return ViewModel.WorkspaceViewModel.IsConnecting || 
+                ViewModel.WorkspaceViewModel.IsSelecting || !previewEnabled ||
+                !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen;
         }
 
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
