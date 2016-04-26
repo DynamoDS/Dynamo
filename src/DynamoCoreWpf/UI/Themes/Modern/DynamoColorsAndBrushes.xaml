@@ -107,5 +107,5 @@
     <SolidColorBrush x:Key="PinnedIconForegroundColor" Color="#FFFFFF" />
     <SolidColorBrush x:Key="UnpinnedIconBackgroundColor" Color="White" />
     <SolidColorBrush x:Key="PinnedIconBackgroundColor" Color="#FF5E5C5A" />
-    <SolidColorBrush x:Key="PinnedIconHoverBackgroundColor" Color="#E6E6E6" />
+    <SolidColorBrush x:Key="PinnedIconHoverBackgroundColor" Color="#c6c6c6" />
 </ResourceDictionary>

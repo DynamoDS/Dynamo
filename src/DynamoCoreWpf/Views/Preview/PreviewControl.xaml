@@ -220,7 +220,7 @@
                 <Border BorderThickness="0"
                         MouseLeftButtonDown="OnMapPinMouseClick">
                     <fa:ImageAwesome Name="PinnIcon"
-                                     Icon="MapPin"
+                                     Icon="ThumbTack"
                                      Foreground="{Binding RelativeSource={RelativeSource FindAncestor, 
                                                           AncestorType={x:Type uicontrols:PreviewControl}}, 
                                                           Path=StaysOpen,
