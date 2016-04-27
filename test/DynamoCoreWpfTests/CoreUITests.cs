@@ -766,12 +766,10 @@ namespace DynamoCoreWpfTests
             currentWs.ViewModel.InCanvasSearchViewModel.SearchText = "dummy";
             Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
             Assert.IsFalse(currentWs.InCanvasSearchBar.IsOpen);
-            Assert.IsTrue(currentWs.ViewModel.InCanvasSearchViewModel.SearchText.Equals(string.Empty));
 
             // show in-canvas search
             ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
-            Assert.IsFalse(currentWs.ContextMenuPopup.IsOpen);
 
             // check if search text is still empty
             Assert.IsTrue(currentWs.ViewModel.InCanvasSearchViewModel.SearchText.Equals(string.Empty));
