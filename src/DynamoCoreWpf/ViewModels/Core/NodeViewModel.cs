@@ -1013,6 +1013,20 @@ namespace Dynamo.ViewModels
             DynamoViewModel.GoToWorkspace((NodeLogic as Function).Definition.FunctionId);
         }
 
+        private void Expand(object parameters)
+        {
+            var function = nodeLogic as Function;
+            var workspaceModel = DynamoViewModel.CurrentSpaceViewModel.Model;
+            DynamoViewModel.Model.CustomNodeManager.Expand(function, WorkspaceModel);
+        }
+
+        private void ExpandToWorkspace(object parameters)
+        {
+            var function = nodeLogic as Function;
+            var workspaceModel = DynamoViewModel.CurrentSpaceViewModel.Model;
+            DynamoViewModel.Model.CustomNodeManager.Expand(function, WorkspaceModel);
+        }
+
         private bool CanGotoWorkspace(object parameters)
         {
             if (NodeLogic is Function)
@@ -1021,6 +1035,16 @@ namespace Dynamo.ViewModels
             }
 
             return false;
+        }
+
+        private bool CanExpand(object parameters)
+        {
+            return NodeLogic is Function;
+        }
+
+        private bool CanExpandToWorkspace(object parameters)
+        {
+            return NodeLogic is Function;
         }
 
         private void CreateGroup(object parameters)

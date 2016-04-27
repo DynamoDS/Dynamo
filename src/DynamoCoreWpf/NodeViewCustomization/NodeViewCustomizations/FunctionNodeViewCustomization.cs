@@ -26,7 +26,7 @@ namespace Dynamo.Wpf
                 IsCheckable = false
             };
             nodeView.MainContextMenu.Items.Add(expandCustomNode);
-            // expandCustomNode.Click += (sender, args) => GoToWorkspace(nodeView.ViewModel);
+            expandCustomNode.Click += (sender, args) => Expand(nodeView.ViewModel);
 
             var expandCustomNodeToWorkspace = new MenuItem
             {
@@ -34,7 +34,7 @@ namespace Dynamo.Wpf
                 IsCheckable = false
             };
             nodeView.MainContextMenu.Items.Add(expandCustomNodeToWorkspace);
-            // expandCustomNodeToWorkspace.Click += (sender, args) => GoToWorkspace(nodeView.ViewModel);
+            expandCustomNodeToWorkspace.Click += (sender, args) => ExpandToWorkspace(nodeView.ViewModel);
 
             nodeView.MainContextMenu.Items.Add(new Separator());
 
@@ -117,6 +117,23 @@ namespace Dynamo.Wpf
             if (viewModel.GotoWorkspaceCommand.CanExecute(null))
             {
                 viewModel.GotoWorkspaceCommand.Execute(null);
+            }
+        }
+
+
+        private static void Expand(NodeViewModel viewModel)
+        {
+            if (viewModel != null && viewModel.ExpandCommand.CanExecute(null))
+            {
+                viewModel.ExpandCommand.Execute(null);
+            }
+        }
+
+        private static void ExpandToWorkspace(NodeViewModel viewModel)
+        {
+            if (viewModel != null && viewModel.ExpandToWorkspaceCommand.CanExecute(null))
+            {
+                viewModel.ExpandToWorkspaceCommand.Execute(null);
             }
         }
 

@@ -728,6 +728,14 @@ namespace Dynamo.Core
             return info != null;
         }
 
+        internal void Expand(Function instance, WorkspaceModel targetWorkspace)
+        {
+            if (!LoadedDefinitions.Contains(instance.Definition))
+            {
+                return;
+            }
+        }
+
         /// <summary>
         ///     Collapse a set of nodes in a given workspace.
         /// </summary>
