@@ -20,6 +20,23 @@ namespace Dynamo.Wpf
             dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
             nodeView.MainContextMenu.Items.Add(new Separator());
+            var expandCustomNode = new MenuItem
+            {
+                Header = Resources.ContextMenuExpandCustomNode,
+                IsCheckable = false
+            };
+            nodeView.MainContextMenu.Items.Add(expandCustomNode);
+            // expandCustomNode.Click += (sender, args) => GoToWorkspace(nodeView.ViewModel);
+
+            var expandCustomNodeToWorkspace = new MenuItem
+            {
+                Header = Resources.ContextMenuExpandCustomNodeToWorkspace,
+                IsCheckable = false
+            };
+            nodeView.MainContextMenu.Items.Add(expandCustomNodeToWorkspace);
+            // expandCustomNodeToWorkspace.Click += (sender, args) => GoToWorkspace(nodeView.ViewModel);
+
+            nodeView.MainContextMenu.Items.Add(new Separator());
 
             // edit contents
             var editItem = new MenuItem

@@ -1993,4 +1993,10 @@ Next assemblies were loaded several times:
     <value>Failed to add file: {0}</value>
     <comment>Message box content</comment>
   </data>
+  <data name="ContextMenuExpandCustomNode" xml:space="preserve">
+    <value>Expand Custom Node...</value>
+  </data>
+  <data name="ContextMenuExpandCustomNodeToWorkspace" xml:space="preserve">
+    <value>Expand Custom Node to Workspace...</value>
+  </data>
 </root>

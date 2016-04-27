@@ -377,6 +377,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expand Custom Node....
+        /// </summary>
+        public static string ContextMenuExpandCustomNode {
+            get {
+                return ResourceManager.GetString("ContextMenuExpandCustomNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expand Custom Node to Workspace....
+        /// </summary>
+        public static string ContextMenuExpandCustomNodeToWorkspace {
+            get {
+                return ResourceManager.GetString("ContextMenuExpandCustomNodeToWorkspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Fit to Screen.
         /// </summary>
         public static string ContextMenuFitToScreen {
