@@ -1501,10 +1501,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 labelPlaces[nodeId] = new List<Tuple<string, Vector3>>();
             }
 
-            //if the renderPackage as a transform use it to transform the text
-            //labels
-            var transformedPos = rp.Transform.ToMatrix3D().Transform(
-                         (pos).ToPoint3D()).ToVector3();
+            //if the renderPackage has a transform property use it to transform the text
+            //labels, a HelixRenderPackage created here should always have a transform so
+            //we check the type to make sure before trying to access Transform
+            //TODO(Dynamo 2.0) we can remove this check
+            SharpDX.Vector3 transformedPos = pos;
+            if (rp is HelixRenderPackage)
+            {
+                transformedPos = (rp as HelixRenderPackage)
+                   .Transform.ToMatrix3D().Transform((pos).ToPoint3D()).ToVector3();
+            }
+            
 
             labelPlaces[nodeId].Add(new Tuple<string, Vector3>(rp.Description, transformedPos));
             if (rp.DisplayLabels)

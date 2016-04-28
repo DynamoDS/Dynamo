@@ -49,10 +49,13 @@ namespace Autodesk.DesignScript.Interfaces
         /// </summary>
         int MeshVertexCount { get; }
 
-        /// <summary>
-        /// a 4x4 matrix which is used to transform all geometry in the render packaage
-        /// </summary>
-        double[] Transform  { get; } 
+        //TODO(mike) uncomment this code when we decide to add transforms to the public API
+        //and increment our major version number
+        ///// <summary>
+        ///// a 4x4 matrix which is used to transform all geometry in the render packaage
+        ///// </summary>
+        //double[] Transform  { get; } 
+      
 
         /// <summary>
         /// A collection of int values representing how many vertices
@@ -195,6 +198,9 @@ namespace Autodesk.DesignScript.Interfaces
         /// <param name="colors"></param>
         void SetColors(byte[] colors);
 
+        //TODO(mike) uncomment this code when we decide to add transforms to the public API
+        //and increment our major version number
+        /*
         /// <summary>
         /// sets the transform as a series of doubles that will be applied to all geometry in the renderPackage
         /// </summary>
@@ -219,11 +225,14 @@ namespace Autodesk.DesignScript.Interfaces
            double m31, double m32, double m33, double m34,
            double m41, double m42, double m43, double m44);
 
+    
+
         /// <summary>
         /// sets the transform as a double array, this transform will be applied to all geometry in the renderPackage
         /// </summary>
         /// <param name="matrix"></param>
         void SetTransform(double[] matrix);
+        */
 
         /// <summary>
         /// Clear all render data from the render package.

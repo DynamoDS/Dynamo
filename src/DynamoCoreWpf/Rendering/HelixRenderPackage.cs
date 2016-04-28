@@ -74,7 +74,7 @@ namespace Dynamo.Wpf.Rendering
         /// sets the transform that will be applied to all geometry in the renderPackage
         /// </summary>
         /// <param name="transform"></param>
-        public void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem transform)
+        private void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem transform)
         {
             var xaxis = transform.XAxis;
             var yaxis = transform.YAxis;
@@ -96,7 +96,7 @@ namespace Dynamo.Wpf.Rendering
         /// </summary>
         /// <param name="from"></param>
         /// <param name="to"></param>
-        public void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem from, Autodesk.DesignScript.Geometry.CoordinateSystem to)
+        private void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem from, Autodesk.DesignScript.Geometry.CoordinateSystem to)
         {
             var inverse = from.Inverse();
             var final = inverse.PreMultiplyBy(to);
@@ -131,7 +131,7 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="m42"></param>
         /// <param name="m43"></param>
         /// <param name="m44"></param>
-        public void SetTransform(double m11,double m12, double m13, double m14,
+        private void SetTransform(double m11,double m12, double m13, double m14,
             double m21, double m22, double m23, double m24,
             double m31, double m32, double m33, double m34,
             double m41, double m42, double m43, double m44 )
@@ -146,7 +146,7 @@ namespace Dynamo.Wpf.Rendering
         /// sets the transform as a double array, this transform will be applied to all geometry in the renderPackage
         /// </summary>
         /// <param name="matrix"></param>
-        public void SetTransform(double[] matrix)
+        private void SetTransform(double[] matrix)
         {
             this.Transform = matrix;
         }
