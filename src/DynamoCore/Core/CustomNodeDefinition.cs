@@ -38,7 +38,7 @@ namespace Dynamo
 
             // Find output elements for the node
 
-            var outputs = nodeModels.OfType<Output>().ToList();
+            OutputNodes = nodeModels.OfType<Output>().ToList();
 
             var topMost = new List<Tuple<int, NodeModel>>();
 
@@ -47,11 +47,11 @@ namespace Dynamo
 
             // if we found output nodes, add select their inputs
             // these will serve as the function output
-            if (outputs.Any())
+            if (OutputNodes.Any())
             {
                 topMost.AddRange(
-                    outputs.Where(x => x.HasInput(0)).Select(x => Tuple.Create(0, x as NodeModel)));
-                returns = outputs.Select(x => x.Return).ToList();
+                    OutputNodes.Where(x => x.HasInput(0)).Select(x => Tuple.Create(0, x as NodeModel)));
+                returns = OutputNodes.Select(x => x.Return).ToList();
             }
             else
             {
@@ -122,14 +122,14 @@ namespace Dynamo
             #region Find inputs
 
             //Find function entry point, and then compile
-            var inputNodes = nodeModels.OfType<Symbol>().ToList();
-            var parameters = inputNodes.Select(x => new TypedParameter(
+            InputNodes = nodeModels.OfType<Symbol>().ToList();
+            var parameters = InputNodes.Select(x => new TypedParameter(
                                                    x.GetAstIdentifierForOutputIndex(0).Value,
                                                    x.Parameter.Type, 
                                                    x.Parameter.DefaultValue,
                                                    null,
                                                    x.Parameter.Summary));
-            var displayParameters = inputNodes.Select(x => x.Parameter.Name);
+            var displayParameters = InputNodes.Select(x => x.Parameter.Name);
 
             #endregion
 
@@ -200,6 +200,16 @@ namespace Dynamo
         /// </summary>
         public IEnumerable<AssociativeNode> OutputIdentifiers { get; private set; }
         
+        /// <summary>
+        ///     Input nodes.
+        /// </summary>
+        public IEnumerable<Symbol> InputNodes { get; private set; }
+
+        /// <summary>
+        ///     Output nodes.
+        /// </summary>
+        public IEnumerable<Output> OutputNodes { get; private set; }
+
         /// <summary>
         ///     User friendly name on UI.
         /// </summary>
