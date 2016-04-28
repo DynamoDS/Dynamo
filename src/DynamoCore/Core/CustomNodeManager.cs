@@ -849,6 +849,17 @@ namespace Dynamo.Core
             }
             #endregion
 
+            #region put all nodes in a group
+            var annotationModel = new AnnotationModel(modelLookup.Values, Enumerable.Empty<NoteModel>())
+            {
+                GUID = Guid.NewGuid(),
+                AnnotationText = "CustomNode",
+            };
+            targetWorkspace.AddAnnotation(annotationModel);
+            createdModels.Add(annotationModel);
+            #endregion
+
+            #region record all changes for undo
             UndoRedoRecorder undoRecorder = targetWorkspace.UndoRecorder;
             using (undoRecorder.BeginActionGroup())
             {
@@ -863,9 +874,12 @@ namespace Dynamo.Core
                     connector.Delete(); 
                 }
 
+                undoRecorder.RecordCreationForUndo(annotationModel);
+
                 undoRecorder.RecordDeletionForUndo(instance);
                 targetWorkspace.RemoveNode(instance);
             };
+            #endregion
         }
 
         /// <summary>
