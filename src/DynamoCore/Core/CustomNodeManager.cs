@@ -728,12 +728,144 @@ namespace Dynamo.Core
             return info != null;
         }
 
-        internal void Expand(Function instance, WorkspaceModel targetWorkspace)
+        public void Expand(Function instance, WorkspaceModel targetWorkspace, DynamoModel dynamoModel)
         {
-            if (!LoadedDefinitions.Contains(instance.Definition))
+            CustomNodeWorkspaceModel customNodeWorkspace;
+            if (!TryGetFunctionWorkspace(instance.Definition.FunctionId, false, out customNodeWorkspace))
             {
                 return;
             }
+
+            // Create the new NodeModel's
+            var newNodeModels = new List<NodeModel>();
+
+            #region copy nodes from custom node to workspace
+            //make a lookup table to store the guids of the
+            //old models and the guids of their pasted versions
+            var modelLookup = new Dictionary<Guid, NodeModel>();
+
+            var nodes = customNodeWorkspace.Nodes.OfType<NodeModel>().Where(n => !(n is Symbol || n is Output)).ToList();
+            foreach (var node in nodes)
+            {
+                NodeModel newNode;
+
+                var xmlDoc = new XmlDocument();
+                var dynEl = node.Serialize(xmlDoc, SaveContext.Copy);
+                newNode = dynamoModel.NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy, targetWorkspace.ElementResolver);
+
+                var lacing = node.ArgumentLacing.ToString();
+                newNode.UpdateValue(new UpdateValueParams("ArgumentLacing", lacing));
+                if (!string.IsNullOrEmpty(node.NickName) && !(node is Symbol) && !(node is Output))
+                    newNode.NickName = node.NickName;
+
+                newNode.Width = node.Width;
+                newNode.Height = node.Height;
+
+                modelLookup.Add(node.GUID, newNode);
+                newNodeModels.Add(newNode);
+            }
+
+            var shiftX = instance.X - newNodeModels.Min(item => item.X);
+            var shiftY = instance.Y - newNodeModels.Min(item => item.Y);
+            foreach (var model in newNodeModels)
+            {
+                model.X = model.X + shiftX;
+                model.Y = model.Y + shiftY;
+            }
+
+            //make a list of all newly created models so that their
+            //creations can be recorded in the undo recorder.
+            var createdModels = new List<ModelBase>();
+            foreach (var newNode in newNodeModels)
+            {
+                targetWorkspace.AddAndRegisterNode(newNode, false);
+                createdModels.Add(newNode);
+            }
+            #endregion
+
+            #region restore connectors among nodes from custom node
+            var connectors = customNodeWorkspace.Connectors.Where(
+                c => nodes.Contains(c.Start.Owner) && nodes.Contains(c.End.Owner));
+            foreach (var connector in connectors)
+            {
+                NodeModel start = null, end = null;
+                modelLookup.TryGetValue(connector.Start.Owner.GUID, out start);
+                modelLookup.TryGetValue(connector.End.Owner.GUID, out end);
+
+                if (start != null && end != null)
+                {
+                    var newConnector = ConnectorModel.Make(start, end, connector.Start.Index, connector.End.Index);
+                    createdModels.Add(newConnector);
+                }
+            }
+            #endregion
+
+            #region restore connectors to input
+            var inputConnectors = targetWorkspace.Connectors.Where(c => c.End.Owner == instance).ToList();
+            var inputs = instance.Definition.InputNodes.ToList();
+
+            foreach (var connector in inputConnectors)
+            {
+                var inputNode = inputs[connector.End.Index];
+
+                HashSet<Tuple<int, NodeModel>> outputSet;
+                if (!inputNode.OutputNodes.TryGetValue(0, out outputSet))
+                {
+                    continue;
+                }
+
+                foreach (var outputTuple in outputSet)
+                {
+                    NodeModel newNode;
+                    if (modelLookup.TryGetValue(outputTuple.Item2.GUID, out newNode))
+                    {
+                        var newConnector = ConnectorModel.Make(connector.Start.Owner, newNode, connector.Start.Index, outputTuple.Item1);
+                        createdModels.Add(newConnector);
+                    }
+                }
+            }
+            #endregion
+
+            #region restore connectors to output
+            var outputConnectors = targetWorkspace.Connectors.Where(c => c.Start.Owner == instance).ToList();
+            var outputs = instance.Definition.OutputNodes.ToList();
+
+            foreach (var connector in outputConnectors)
+            {
+                var outputNode = outputs[connector.Start.Index];
+
+                Tuple<int, NodeModel> inputTuple;
+                if (!outputNode.InputNodes.TryGetValue(0, out inputTuple))
+                {
+                    continue;
+                }
+
+                NodeModel newNode;
+                if (modelLookup.TryGetValue(inputTuple.Item2.GUID, out newNode))
+                {
+                    var newConnector = ConnectorModel.Make(newNode, connector.End.Owner, inputTuple.Item1, connector.End.Index);
+                    createdModels.Add(newConnector);
+                }
+            }
+            #endregion
+
+            UndoRedoRecorder undoRecorder = targetWorkspace.UndoRecorder;
+            using (undoRecorder.BeginActionGroup())
+            {
+                foreach (var model in createdModels)
+                {
+                    undoRecorder.RecordCreationForUndo(model);
+                }
+
+                foreach (var connector in inputConnectors.Concat(outputConnectors))
+                {
+                    undoRecorder.RecordDeletionForUndo(connector);
+                    connector.Delete(); 
+                }
+
+                undoRecorder.RecordDeletionForUndo(instance);
+                targetWorkspace.RemoveNode(instance);
+            };
         }
 
         /// <summary>

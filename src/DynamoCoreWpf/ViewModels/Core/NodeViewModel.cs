@@ -1017,14 +1017,14 @@ namespace Dynamo.ViewModels
         {
             var function = nodeLogic as Function;
             var workspaceModel = DynamoViewModel.CurrentSpaceViewModel.Model;
-            DynamoViewModel.Model.CustomNodeManager.Expand(function, WorkspaceModel);
+            DynamoViewModel.Model.CustomNodeManager.Expand(function, workspaceModel, DynamoViewModel.Model);
         }
 
         private void ExpandToWorkspace(object parameters)
         {
             var function = nodeLogic as Function;
             var workspaceModel = DynamoViewModel.CurrentSpaceViewModel.Model;
-            DynamoViewModel.Model.CustomNodeManager.Expand(function, WorkspaceModel);
+            DynamoViewModel.Model.CustomNodeManager.Expand(function, workspaceModel, DynamoViewModel.Model);
         }
 
         private bool CanGotoWorkspace(object parameters)
