@@ -36,7 +36,7 @@ namespace Dynamo.Wpf.Rendering
     /// <summary>
     /// A Helix-specifc IRenderPackage implementation.
     /// </summary>
-    public class HelixRenderPackage : IRenderPackage
+    public class HelixRenderPackage : IRenderPackage, Autodesk.DesignScript.Interfaces.ITransformable
     {
         #region private members
 
@@ -62,19 +62,13 @@ namespace Dynamo.Wpf.Rendering
 
         #endregion
 
-        #region IRenderPackage implementation
 
-        public void SetColors(byte[] colors)
-        {
-            this.colors = colors;
-        }
-
-       
+        #region ITransformable implementation
         /// <summary>
         /// sets the transform that will be applied to all geometry in the renderPackage
         /// </summary>
         /// <param name="transform"></param>
-        private void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem transform)
+        public void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem transform)
         {
             var xaxis = transform.XAxis;
             var yaxis = transform.YAxis;
@@ -96,7 +90,7 @@ namespace Dynamo.Wpf.Rendering
         /// </summary>
         /// <param name="from"></param>
         /// <param name="to"></param>
-        private void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem from, Autodesk.DesignScript.Geometry.CoordinateSystem to)
+        public void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem from, Autodesk.DesignScript.Geometry.CoordinateSystem to)
         {
             var inverse = from.Inverse();
             var final = inverse.PreMultiplyBy(to);
@@ -131,12 +125,12 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="m42"></param>
         /// <param name="m43"></param>
         /// <param name="m44"></param>
-        private void SetTransform(double m11,double m12, double m13, double m14,
+        public void SetTransform(double m11, double m12, double m13, double m14,
             double m21, double m22, double m23, double m24,
             double m31, double m32, double m33, double m34,
-            double m41, double m42, double m43, double m44 )
+            double m41, double m42, double m43, double m44)
         {
-            this.Transform =  new System.Windows.Media.Media3D.Matrix3D(m11, m12, m13, m14,
+            this.Transform = new System.Windows.Media.Media3D.Matrix3D(m11, m12, m13, m14,
                 m21, m22, m23, m24,
                 m31, m32, m33, m34,
                 m41, m42, m43, m44).ToArray();
@@ -146,9 +140,17 @@ namespace Dynamo.Wpf.Rendering
         /// sets the transform as a double array, this transform will be applied to all geometry in the renderPackage
         /// </summary>
         /// <param name="matrix"></param>
-        private void SetTransform(double[] matrix)
+        public void SetTransform(double[] matrix)
         {
             this.Transform = matrix;
+        }
+        #endregion
+
+        #region IRenderPackage implementation
+
+        public void SetColors(byte[] colors)
+        {
+            this.colors = colors;
         }
 
         public void Clear()
@@ -615,7 +617,7 @@ namespace Dynamo.Wpf.Rendering
         private static Vector3 Vector3ForYUp(double x, double y, double z)
         {
             return new Vector3((float)x, (float)z, (float)-y);
-        } 
+        }
     }
 
     internal static class HelixRenderExtensions
