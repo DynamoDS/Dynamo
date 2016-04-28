@@ -139,7 +139,7 @@ namespace Dynamo
             Parameters = parameters;
             ReturnKeys = returnKeys;
             DisplayParameters = displayParameters;
-            OutputNodes = topMost.Select(x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1));
+            OutputIdentifiers = topMost.Select(x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1));
             DirectDependencies = nodeModels
                 .OfType<Function>()
                 .Select(node => node.Definition)
@@ -198,7 +198,7 @@ namespace Dynamo
         /// <summary>
         ///     Identifiers associated with the outputs of the custom node.
         /// </summary>
-        public IEnumerable<AssociativeNode> OutputNodes { get; private set; }
+        public IEnumerable<AssociativeNode> OutputIdentifiers { get; private set; }
         
         /// <summary>
         ///     User friendly name on UI.
