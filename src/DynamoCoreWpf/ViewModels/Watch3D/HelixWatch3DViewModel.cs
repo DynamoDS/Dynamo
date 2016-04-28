@@ -267,7 +267,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public PhongMaterial SelectedMaterial { get; set; }
 
-        public Transform3D StaticTransform
+        public Transform3D BaseTransform
         {
             get
             {
@@ -1079,7 +1079,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             gridModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Grid,
-                Transform = StaticTransform,
+                Transform = BaseTransform,
                 Color = Color.White,
                 Thickness = 0.3,
                 IsHitTestVisible = false,
@@ -1096,7 +1096,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var axesModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Axes,
-                Transform = StaticTransform,
+                Transform = BaseTransform,
                 Color = Color.White,
                 Thickness = 0.3,
                 IsHitTestVisible = false,
@@ -1501,14 +1501,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 labelPlaces[nodeId] = new List<Tuple<string, Vector3>>();
             }
 
-            //if the renderPackage has a transform property use it to transform the text
-            //labels, a HelixRenderPackage created here should always have a transform so
-            //we check the type to make sure before trying to access Transform
-            //TODO(Dynamo 2.0) we can remove this check
+            //if the renderPackage also implements ITransformable then 
+            // use the transform property to transform the text labels
+           
             SharpDX.Vector3 transformedPos = pos;
-            if (rp is HelixRenderPackage)
+            if (rp is HelixRenderPackage && rp is Autodesk.DesignScript.Interfaces.ITransformable)
             {
-                transformedPos = (rp as HelixRenderPackage)
+                transformedPos = (rp as Autodesk.DesignScript.Interfaces.ITransformable)
                    .Transform.ToMatrix3D().Transform((pos).ToPoint3D()).ToVector3();
             }
             
