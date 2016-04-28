@@ -46,6 +46,7 @@ namespace Dynamo.Wpf.Rendering
         private bool hasData;
         private List<int> lineStripVertexCounts;
         private byte[] colors;
+        private System.Windows.Media.Media3D.Matrix3D transform;
 
         #endregion
 
@@ -57,6 +58,7 @@ namespace Dynamo.Wpf.Rendering
             lines = InitLineGeometry();
             mesh = InitMeshGeometry();
             lineStripVertexCounts = new List<int>();
+            transform = System.Windows.Media.Media3D.Matrix3D.Identity;
         }
 
         #endregion
@@ -66,6 +68,79 @@ namespace Dynamo.Wpf.Rendering
         public void SetColors(byte[] colors)
         {
             this.colors = colors;
+        }
+
+       
+        /// <summary>
+        /// sets the transform that will be applied to all geometry in the renderPackage
+        /// </summary>
+        /// <param name="transform"></param>
+        public void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem transform)
+        {
+            var xaxis = transform.XAxis;
+            var yaxis = transform.YAxis;
+            var zaxis = transform.ZAxis;
+            var org = transform.Origin;
+
+            var csAsMat = new System.Windows.Media.Media3D.Matrix3D(xaxis.X, xaxis.Z, -xaxis.Y, 0,
+                                                                    zaxis.X, zaxis.Z, -zaxis.Y, 0,
+                                                                    -yaxis.X, -yaxis.Z, yaxis.Y, 0,
+                                                                      org.X, org.Z, -org.Y, 1);
+
+
+            this.transform = csAsMat;
+        }
+
+        /// <summary>
+        /// sets the transform that will be applied to all geometry in the renderPackage
+        /// by computing the matrix that transforms between from and to
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        public void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem from, Autodesk.DesignScript.Geometry.CoordinateSystem to)
+        {
+            var inverse = from.Inverse();
+            var final = inverse.PreMultiplyBy(to);
+
+            this.SetTransform(final);
+        }
+
+
+        /// <summary>
+        /// sets the transform that will be applied to all geometry in the renderPackage
+        /// as this is a helix specific implementation it should be noted that the this matrix
+        /// should be as follows when converting from a ProtoGeometry/Dynamo CoordinateSystem
+        /// [ xaxis.X, xaxis.Z, -xaxis.Y, 0,
+        /// zaxis.X, zaxis.Z, -zaxis.Y, 0,
+        /// -yaxis.X, -yaxis.Z, yaxis.Y, 0,
+        /// org.X, org.Z, -org.Y, 1 ]
+        /// as Helix and Dynamo have their Y and Z axes reversed
+        /// </summary>
+        /// <param name="m11"></param>
+        /// <param name="m12"></param>
+        /// <param name="m13"></param>
+        /// <param name="m14"></param>
+        /// <param name="m21"></param>
+        /// <param name="m22"></param>
+        /// <param name="m23"></param>
+        /// <param name="m24"></param>
+        /// <param name="m31"></param>
+        /// <param name="m32"></param>
+        /// <param name="m33"></param>
+        /// <param name="m34"></param>
+        /// <param name="m41"></param>
+        /// <param name="m42"></param>
+        /// <param name="m43"></param>
+        /// <param name="m44"></param>
+        public void SetTransform(double m11,double m12, double m13, double m14,
+            double m21, double m22, double m23, double m24,
+            double m31, double m32, double m33, double m34,
+            double m41, double m42, double m43, double m44 )
+        {
+            this.transform =  new System.Windows.Media.Media3D.Matrix3D(m11, m12, m13, m14,
+                m21, m22, m23, m24,
+                m31, m32, m33, m34,
+                m41, m42, m43, m44);
         }
 
         public void Clear()
@@ -80,6 +155,8 @@ namespace Dynamo.Wpf.Rendering
             lines = InitLineGeometry();
 
             lineStripVertexCounts.Clear();
+
+            transform = System.Windows.Media.Media3D.Matrix3D.Identity;
 
             IsSelected = false;
             DisplayLabels = false;
@@ -337,6 +414,16 @@ namespace Dynamo.Wpf.Rendering
                     lines.Positions.Count > 0 ||
                     mesh.Positions.Count > 0;
                 return hasData;
+            }
+        }
+        /// <summary>
+        /// a 4x4 matrix which is used to transform all geometry in the render packaage
+        /// </summary>
+        public System.Windows.Media.Media3D.Matrix3D Transform
+        {
+            get
+            {
+                return transform;
             }
         }
 

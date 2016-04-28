@@ -37,6 +37,7 @@ using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
+using System.Windows.Threading;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -266,8 +267,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public PhongMaterial SelectedMaterial { get; set; }
 
-        public Transform3D Model1Transform { get; private set; }
-
+        public Transform3D StaticTransform
+        {
+            get
+            {
+                return new TranslateTransform3D(0, -0, 0);
+            }
+        }
         public RenderTechnique RenderTechnique
         {
             get
@@ -1038,8 +1044,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 SpecularShininess = 12.8f,
             };
 
-            Model1Transform = new TranslateTransform3D(0, -0, 0);
-
             // camera setup
             Camera = new PerspectiveCamera();
 
@@ -1075,7 +1079,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             gridModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Grid,
-                Transform = Model1Transform,
+                Transform = StaticTransform,
                 Color = Color.White,
                 Thickness = 0.3,
                 IsHitTestVisible = false,
@@ -1092,7 +1096,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var axesModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Axes,
-                Transform = Model1Transform,
+                Transform = StaticTransform,
                 Color = Color.White,
                 Thickness = 0.3,
                 IsHitTestVisible = false,
@@ -1290,7 +1294,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     foreach (var id_position in requestedLabelPlaces)
                     {
                         var text = HelixRenderPackage.CleanTag(id_position.Item1);
-                        var textPosition = id_position.Item2 + defaultLabelOffset;
+                        var textPosition = geom.Transform.Transform(
+                            id_position.Item2.ToPoint3D()).ToVector3() + defaultLabelOffset;
+                            
                         var textInfo = new TextInfo(text, textPosition);
                         textGeometry.TextInfo.Add(textInfo);
                     }
@@ -1662,21 +1668,27 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Model3DDictionary.Add(textId, bbText);
             }
             var geom = bbText.Geometry as BillboardText3D;
+            //use the transform of the render package to transform the text position
+            var textPosition = (rp as HelixRenderPackage).Transform.Transform(
+                           (pt).ToPoint3D()).ToVector3()
+                           + defaultLabelOffset;
+
             geom.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description),
-                pt + defaultLabelOffset));
+               textPosition));
         }
 
         private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp)
         {
-            var meshGeometry3D = new DynamoGeometryModel3D(renderTechnique)
-            {
-                Transform = Model1Transform,
-                Material = WhiteMaterial,
-                IsHitTestVisible = false,
-                RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
-                IsSelected = rp.IsSelected
-            };
-
+          
+                var meshGeometry3D = new DynamoGeometryModel3D(renderTechnique)
+                {
+                    Transform = new MatrixTransform3D(rp.Transform),
+                    Material = WhiteMaterial,
+                    IsHitTestVisible = false,
+                    RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
+                    IsSelected = rp.IsSelected
+                };
+            
             if (rp.Colors != null)
             {
                 var pf = PixelFormats.Bgra32;
@@ -1712,7 +1724,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var lineGeometry3D = new DynamoLineGeometryModel3D()
             {
                 Geometry = HelixRenderPackage.InitLineGeometry(),
-                Transform = Model1Transform,
+                Transform = new MatrixTransform3D(rp.Transform),
                 Color = Color.White,
                 Thickness = thickness,
                 IsHitTestVisible = false,
@@ -1726,7 +1738,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var pointGeometry3D = new DynamoPointGeometryModel3D
             {
                 Geometry = HelixRenderPackage.InitPointGeometry(),
-                Transform = Model1Transform,
+                Transform = new MatrixTransform3D(rp.Transform),
                 Color = Color.White,
                 Figure = PointGeometryModel3D.PointFigure.Ellipse,
                 Size = defaultPointSize,
