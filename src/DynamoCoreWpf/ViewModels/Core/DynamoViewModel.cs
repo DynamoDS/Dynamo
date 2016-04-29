@@ -241,6 +241,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Indicates if preview bubbles should be displayed on nodes.
+        /// </summary>
         public bool ShowPreviewBubbles
         {
             get
@@ -250,7 +253,6 @@ namespace Dynamo.ViewModels
             set
             {
                 model.PreferenceSettings.ShowPreviewBubbles = value;
-
                 RaisePropertyChanged("ShowPreviewBubbles");
             }
         }
@@ -1834,6 +1836,10 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        /// <summary>
+        /// Toggles Showing Preview Bubbles globally
+        /// </summary>
+        /// <param name="parameter">Command parameter</param>
         public void TogglePreviewBubblesShowing(object parameter)
         {
             ShowPreviewBubbles = !ShowPreviewBubbles;
