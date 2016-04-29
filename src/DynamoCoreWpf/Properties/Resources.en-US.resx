@@ -1996,8 +1996,8 @@ Next assemblies were loaded several times:
   <data name="ContextMenuExpandCustomNode" xml:space="preserve">
     <value>Expand Custom Node...</value>
   </data>
-  <data name="ContextMenuExpandCustomNodeToWorkspace" xml:space="preserve">
-    <value>Expand Custom Node to Workspace...</value>
+  <data name="ContextMenuExpandCustomNodeToGroup" xml:space="preserve">
+    <value>Expand Custom Node to group...</value>
   </data>
   <data name="ContextMenuCollapseBackToCustomNode" xml:space="preserve">
     <value>Collapse back to custom node instance</value>

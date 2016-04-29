@@ -1024,7 +1024,7 @@ namespace Dynamo.ViewModels
         {
             var function = nodeLogic as Function;
             var workspaceModel = DynamoViewModel.CurrentSpaceViewModel.Model;
-            DynamoViewModel.Model.CustomNodeManager.Expand(function, workspaceModel, DynamoViewModel.Model);
+            DynamoViewModel.Model.CustomNodeManager.ExpandToGroup(function, workspaceModel, DynamoViewModel.Model);
         }
 
         private bool CanGotoWorkspace(object parameters)

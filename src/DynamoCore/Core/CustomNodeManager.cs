@@ -728,7 +728,30 @@ namespace Dynamo.Core
             return info != null;
         }
 
+        /// <summary>
+        /// Expand custom node instance and put all nodes in a special group
+        /// which is in sync with custom node definition.
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="targetWorkspace"></param>
+        /// <param name="dynamoModel"></param>
         public void Expand(Function instance, WorkspaceModel targetWorkspace, DynamoModel dynamoModel)
+        {
+            ExpandInternal(instance, targetWorkspace, dynamoModel, false);
+        }
+
+        /// <summary>
+        /// Expand custom node instance and put all nodes in a normal group.
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="targetWorkspace"></param>
+        /// <param name="dynamoModel"></param>
+        public void ExpandToGroup(Function instance, WorkspaceModel targetWorkspace, DynamoModel dynamoModel)
+        {
+            ExpandInternal(instance, targetWorkspace, dynamoModel, true);
+        }
+
+        private void ExpandInternal(Function instance, WorkspaceModel targetWorkspace, DynamoModel dynamoModel, bool expandToGroup)
         {
             CustomNodeWorkspaceModel customNodeWorkspace;
             if (!TryGetFunctionWorkspace(instance.Definition.FunctionId, false, out customNodeWorkspace))
@@ -850,11 +873,24 @@ namespace Dynamo.Core
             #endregion
 
             #region put all nodes in a group
-            var annotationModel = new CustomNodeAnnotationModel(modelLookup.Values, Enumerable.Empty<NoteModel>())
+            AnnotationModel annotationModel = null;
+            if (expandToGroup)
             {
-                GUID = Guid.NewGuid(),
-                AnnotationText = "CustomNode",
-            };
+                annotationModel = new AnnotationModel(modelLookup.Values, Enumerable.Empty<NoteModel>())
+                {
+                    GUID = Guid.NewGuid(),
+                    AnnotationText = instance.Definition.DisplayName
+                };
+            }
+            else
+            {
+                annotationModel = new CustomNodeAnnotationModel(instance.Definition, modelLookup.Values)
+                {
+                    GUID = Guid.NewGuid(),
+                    AnnotationText = instance.Definition.DisplayName
+                };
+
+            }
             targetWorkspace.AddAnnotation(annotationModel);
             createdModels.Add(annotationModel);
             #endregion

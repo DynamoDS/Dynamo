@@ -30,7 +30,7 @@ namespace Dynamo.Wpf
 
             var expandCustomNodeToWorkspace = new MenuItem
             {
-                Header = Resources.ContextMenuExpandCustomNodeToWorkspace,
+                Header = Resources.ContextMenuExpandCustomNodeToGroup,
                 IsCheckable = false
             };
             nodeView.MainContextMenu.Items.Add(expandCustomNodeToWorkspace);

@@ -395,11 +395,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expand Custom Node to Workspace....
+        ///   Looks up a localized string similar to Expand Custom Node to group....
         /// </summary>
-        public static string ContextMenuExpandCustomNodeToWorkspace {
+        public static string ContextMenuExpandCustomNodeToGroup {
             get {
-                return ResourceManager.GetString("ContextMenuExpandCustomNodeToWorkspace", resourceCulture);
+                return ResourceManager.GetString("ContextMenuExpandCustomNodeToGroup", resourceCulture);
             }
         }
         
