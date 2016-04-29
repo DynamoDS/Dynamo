@@ -39,6 +39,7 @@
     <Reference Include="DynamoCoreWpf">
       <HintPath>..\..\bin\AnyCPU\Debug\DynamoCoreWpf.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
