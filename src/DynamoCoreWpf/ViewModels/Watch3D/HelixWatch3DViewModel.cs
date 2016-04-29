@@ -1276,9 +1276,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 // and it will select var_guid:0:0, var_guid:0:1, var_guid:0:2 and so on.
                 // if there is a geometry to add label(s)
                 List<Tuple<string, Vector3>> requestedLabelPlaces;
-                if (labelPlaces.ContainsKey(nodePath) && 
-                        (requestedLabelPlaces = labelPlaces[nodePath]
-                            .Where(pair => pair.Item1.StartsWith(path)).ToList()).Any())
+                if (labelPlaces.ContainsKey(nodePath) &&
+                    (requestedLabelPlaces = labelPlaces[nodePath]
+                        .Where(pair => pair.Item1 == path || pair.Item1.StartsWith(path + ":")).ToList()).Any())
                 {
                     // second, add requested labels
                     var textGeometry = HelixRenderPackage.InitText3D();
