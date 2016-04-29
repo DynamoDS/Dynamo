@@ -22,6 +22,11 @@ namespace Dynamo.Interfaces
         bool ShowConnector { get; set; }
 
         /// <summary>
+        /// Indicates if preview bubbles should be displayed on nodes.
+        /// </summary>
+        bool ShowPreviewBubbles { get; set; }
+
+        /// <summary>
         /// Indicates which type of connector's should be displayed on canvas.
         /// I.e. bezier or polyline
         /// </summary>

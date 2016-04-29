@@ -241,6 +241,20 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool ShowPreviewBubbles
+        {
+            get
+            {
+                return model.PreferenceSettings.ShowPreviewBubbles;
+            }
+            set
+            {
+                model.PreferenceSettings.ShowPreviewBubbles = value;
+
+                RaisePropertyChanged("ShowPreviewBubbles");
+            }
+        }
+
         public int LibraryWidth
         {
             get
@@ -1818,6 +1832,11 @@ namespace Dynamo.ViewModels
         internal bool CanToggleConsoleShowing(object parameter)
         {
             return true;
+        }
+
+        public void TogglePreviewBubblesShowing(object parameter)
+        {
+            ShowPreviewBubbles = !ShowPreviewBubbles;
         }
 
         public void SelectNeighbors(object parameters)

@@ -74,6 +74,11 @@ namespace Dynamo.Configuration
         public int ConsoleHeight { get; set; }
 
         /// <summary>
+        /// Indicates if preview bubbles should be displayed on nodes.
+        /// </summary>
+        public bool ShowPreviewBubbles { get; set; }
+
+        /// <summary>
         /// Should connectors be visible?
         /// </summary>
         public bool ShowConnector { get; set; }
@@ -221,6 +226,7 @@ namespace Dynamo.Configuration
             IsUsageReportingApproved = false;
             LibraryWidth = 304;
             ConsoleHeight = 0;
+            ShowPreviewBubbles = true;
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
             IsBackgroundPreviewActive = true;

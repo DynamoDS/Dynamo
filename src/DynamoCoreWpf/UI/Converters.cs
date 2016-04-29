@@ -971,6 +971,25 @@ namespace Dynamo.Controls
         #endregion
     }
 
+    public class ShowHidePreviewBubblesConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool) value
+                ? Resources.DynamoViewSettingsMenuHidePreviewBubbles
+                : Resources.DynamoViewSettingsMenuShowPreviewBubbles;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (string)value == Resources.DynamoViewSettingsMenuHidePreviewBubbles;
+        }
+
+        #endregion
+    }
+
     public class ShowHideFullscreenWatchMenuItemConverter : IValueConverter
     {
         #region IValueConverter Members
