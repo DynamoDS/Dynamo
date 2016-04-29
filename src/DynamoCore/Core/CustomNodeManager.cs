@@ -850,7 +850,7 @@ namespace Dynamo.Core
             #endregion
 
             #region put all nodes in a group
-            var annotationModel = new AnnotationModel(modelLookup.Values, Enumerable.Empty<NoteModel>())
+            var annotationModel = new CustomNodeAnnotationModel(modelLookup.Values, Enumerable.Empty<NoteModel>())
             {
                 GUID = Guid.NewGuid(),
                 AnnotationText = "CustomNode",

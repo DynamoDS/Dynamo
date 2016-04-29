@@ -114,6 +114,7 @@ limitations under the License.
     <Compile Include="Configuration\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
     <Compile Include="Exceptions\LibraryLoadFailedException.cs" />
+    <Compile Include="Graph\Annotations\CustomNodeAnnotationModel.cs" />
     <Compile Include="Scheduler\Disposable.cs" />
     <Compile Include="Engine\LinkedListOfList.cs" />
     <Compile Include="Extensions\EnumExtension.cs" />

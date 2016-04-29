@@ -27,4 +27,7 @@
         <nodes:AnnotationView></nodes:AnnotationView>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type viewModels:CustomNodeAnnotationViewModel}">
+        <nodes:CustomNodeAnnotationView></nodes:CustomNodeAnnotationView>
+    </DataTemplate>
 </ResourceDictionary>

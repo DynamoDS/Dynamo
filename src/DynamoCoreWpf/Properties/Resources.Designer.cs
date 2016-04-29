@@ -341,6 +341,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collapse back to custom node instance.
+        /// </summary>
+        public static string ContextMenuCollapseBackToCustomNode {
+            get {
+                return ResourceManager.GetString("ContextMenuCollapseBackToCustomNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
         public static string ContextMenuCopy {

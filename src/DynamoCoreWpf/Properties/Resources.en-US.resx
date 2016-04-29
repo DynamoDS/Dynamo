@@ -1999,4 +1999,7 @@ Next assemblies were loaded several times:
   <data name="ContextMenuExpandCustomNodeToWorkspace" xml:space="preserve">
     <value>Expand Custom Node to Workspace...</value>
   </data>
+  <data name="ContextMenuCollapseBackToCustomNode" xml:space="preserve">
+    <value>Collapse back to custom node instance</value>
+  </data>
 </root>
