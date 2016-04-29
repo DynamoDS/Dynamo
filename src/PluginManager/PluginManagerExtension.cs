@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace PluginManager
+namespace Dynamo.PluginManager
 {
     public class PluginManagerExtension : IViewExtension, ILogSource
     {
