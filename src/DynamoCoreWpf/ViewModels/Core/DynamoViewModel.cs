@@ -1453,6 +1453,22 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
         }
 
+        public void CollapseBackToCustomNodeInstance(object parameter)
+        {
+            if (parameter == null)
+            {
+                return;
+            }
+
+            CustomNodeAnnotationModel model = parameter as CustomNodeAnnotationModel;
+            if (model == null)
+            {
+                return;
+            }
+
+            Model.CustomNodeManager.CollapseBackToCustomNodeInstance(model, this.currentWorkspaceViewModel.Model);
+        }
+
         /// <summary>
         /// Returns the selected nodes that are "input" nodes, and makes an 
         /// exception for CodeBlockNodes as these are marked false so they 

@@ -373,7 +373,7 @@ namespace Dynamo.ViewModels
         private void Model_AnnotationAdded(AnnotationModel annotation)
         {
             var viewModel = annotation is CustomNodeAnnotationModel ? 
-                new CustomNodeAnnotationViewModel(this, annotation) :
+                new CustomNodeAnnotationViewModel(this, annotation as CustomNodeAnnotationModel) :
                 new AnnotationViewModel(this, annotation);
             _annotations.Add(viewModel);
         }

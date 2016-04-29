@@ -193,7 +193,7 @@
                 </Separator>
                 <MenuItem Header="{x:Static p:Resources.ContextMenuCollapseBackToCustomNode}"
                           Name="CollapseBack"
-                          Click="OnDeleteAnnotation"/>
+                          Command="{Binding Path=CollapseBackToCustomNodeInstanceCommand}"/>
             </ContextMenu>
         </Grid.ContextMenu>
         <Rectangle Name="selectionBorder"                  
