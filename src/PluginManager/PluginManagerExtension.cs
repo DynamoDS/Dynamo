@@ -1,7 +1,7 @@
 ﻿using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Wpf.Extensions;
-using Microsoft.Win32;
+using PluginManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,8 +62,6 @@ namespace Dynamo.PluginManager
         public void Dispose()
         {
             loadedParams.CurrentWorkspaceChanged -= CurrentWorkspaceChanged;
-
-         //   ClearMenuItem(extensionMenuItem, inviteMenuItem, manageCustomizersMenuItem, separator);
         }
         #endregion
 
@@ -86,37 +84,10 @@ namespace Dynamo.PluginManager
             item.Header = "Load Python Script";
            
 
-           item.Click += (sender, args) => { ImportPythonScript(); };
+         item.Click += (sender, args) => { PluginManagerImportScript.ImportPythonScript(); };
            return item;
         }
-        private void ImportPythonScript()
-        {
-            //MessageBox.Show("Hello World!");
-            string[] fileFilter = { string.Format("Python Files", "*.py") };//; *.ds" ), string.Format(Resources.FileDialogAssemblyFiles, "*.dll"),
-                                 //  string.Format(Resources.FileDialogDesignScriptFiles, "*.ds"), string.Format(Resources.FileDialogAllFiles,"*.*")};
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = String.Join("|", fileFilter);
-            openFileDialog.Title = "Import Python File";
-            //openFileDialog.Multiselect = true;
-            openFileDialog.RestoreDirectory = true;
-/*
-            DialogResult result = openFileDialog.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                try
-                {
-                    foreach (var file in openFileDialog.FileNames)
-                    {
-                        EngineController.ImportLibrary(file);
-                    }
-                    SearchViewModel.SearchAndUpdateResults();
-                }
-                catch (LibraryLoadFailedException ex)
-                {
-                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
-                }
-            }*/
-        }
+       
 
         #endregion
 
