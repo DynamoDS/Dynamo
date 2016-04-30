@@ -64,8 +64,14 @@ namespace Dynamo.Wpf.Rendering
 
 
         #region ITransformable implementation
+
         /// <summary>
-        /// sets the transform that will be applied to all geometry in the renderPackage
+        /// A 4x4 matrix which is used to transform all geometry in the render packaage
+        /// </summary>
+        public double[] Transform { get; private set; }
+
+        /// <summary>
+        /// Sets the transform that will be applied to all geometry in the renderPackage
         /// </summary>
         /// <param name="transform"></param>
         public void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem transform)
@@ -85,7 +91,7 @@ namespace Dynamo.Wpf.Rendering
         }
 
         /// <summary>
-        /// sets the transform that will be applied to all geometry in the renderPackage
+        /// Sets the transform that will be applied to all geometry in the renderPackage
         /// by computing the matrix that transforms between from and to
         /// </summary>
         /// <param name="from"></param>
@@ -100,7 +106,7 @@ namespace Dynamo.Wpf.Rendering
 
 
         /// <summary>
-        /// sets the transform that will be applied to all geometry in the renderPackage
+        /// Sets the transform that will be applied to all geometry in the renderPackage
         /// as this is a helix specific implementation it should be noted that the this matrix
         /// should be as follows when converting from a ProtoGeometry/Dynamo CoordinateSystem
         /// [ xaxis.X, xaxis.Z, -xaxis.Y, 0,
@@ -137,7 +143,7 @@ namespace Dynamo.Wpf.Rendering
         }
 
         /// <summary>
-        /// sets the transform as a double array, this transform will be applied to all geometry in the renderPackage
+        /// Sets the transform as a double array, this transform will be applied to all geometry in the renderPackage
         /// </summary>
         /// <param name="matrix"></param>
         public void SetTransform(double[] matrix)
@@ -461,11 +467,6 @@ namespace Dynamo.Wpf.Rendering
         {
             get { return mesh.Positions.Count; }
         }
-
-        /// <summary>
-        /// a 4x4 matrix which is used to transform all geometry in the render packaage
-        /// </summary>
-        public double[] Transform { get; private set; }
 
         public IEnumerable<int> LineStripVertexCounts
         {

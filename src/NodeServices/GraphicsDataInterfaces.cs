@@ -212,17 +212,17 @@ namespace Autodesk.DesignScript.Interfaces
     }
 
     /// <summary>
-    /// an interface that defines items which have a transform property which is a 4x4 matrix
+    /// An interface that defines items which have a transform property which is a 4x4 matrix
     /// </summary>
     public interface ITransformable
     {
         /// <summary>
-        /// a 4x4 matrix which is used to transform all geometry in the render packaage
+        /// A 4x4 matrix which is used to transform all geometry in the render packaage
         /// </summary>
         double[] Transform  { get; } 
         
         /// <summary>
-        /// sets the transform as a series of doubles that will be applied to all geometry in the renderPackage
+        /// Sets the transform as a series of doubles that will be applied to all geometry in the renderPackage
         /// </summary>
         /// <param name="m11"></param>
         /// <param name="m12"></param>
@@ -246,7 +246,7 @@ namespace Autodesk.DesignScript.Interfaces
            double m41, double m42, double m43, double m44);
 
         /// <summary>
-        /// sets the transform as a double array, this transform will be applied to all geometry in the renderPackage
+        /// Sets the transform as a double array, this transform will be applied to all geometry in the renderPackage
         /// </summary>
         /// <param name="matrix"></param>
         void SetTransform(double[] matrix);

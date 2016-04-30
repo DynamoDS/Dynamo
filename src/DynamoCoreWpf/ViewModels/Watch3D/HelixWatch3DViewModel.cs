@@ -37,7 +37,6 @@ using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
-using System.Windows.Threading;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
