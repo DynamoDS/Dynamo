@@ -81,10 +81,14 @@ namespace Dynamo.PluginManager
         private MenuItem GenerateMenuItem()
         {
             MenuItem item = new MenuItem();
+            //item.InputGestureText = "Alt+D";
             item.Header = "Load Python Script";
-           
+           //  = PluginManagerImportScript.ImportPythonScript();
+           // item.CommandBindings.Add()
+          
 
-         item.Click += (sender, args) => { PluginManagerImportScript.ImportPythonScript(); };
+
+        // item.Click += (sender, args) => { PluginManagerImportScript.ImportPythonScript(); };
            return item;
         }
        
