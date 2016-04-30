@@ -15,10 +15,10 @@ namespace PluginManager
             //string[] fileFilter = { string.Format("Python Files", "*.py") };//; *.ds" ), string.Format(Resources.FileDialogAssemblyFiles, "*.dll"),
                                                                             //  string.Format(Resources.FileDialogDesignScriptFiles, "*.ds"), string.Format(Resources.FileDialogAllFiles,"*.*")};
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Python files (*.py)|*py.";
+            openFileDialog.Filter = "Python files (*.py)|*.py";
             //openFileDialog.Filter = String.Join("|", fileFilter);
             openFileDialog.Title = "Import Python File";
-            //openFileDialog.Multiselect = true;
+            openFileDialog.Multiselect = true;
             openFileDialog.RestoreDirectory = true;
             
                         DialogResult result = openFileDialog.ShowDialog();
@@ -31,11 +31,15 @@ namespace PluginManager
                                     EngineController.ImportLibrary(file);
                                 }
                                 SearchViewModel.SearchAndUpdateResults();*/
+                                foreach(var file in openFileDialog.FileNames)
+                               {
+                                        PluginManagerIronPythonEvaluator.EvaluatePythonFile(file);
+                               }
                             }
-                            catch (Exception e)
+                            catch (Exception ex)
                             {
-                       MessageBox.Show("Error!");
-                    //System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+                      
+                   System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
                              }   
                         }
         }

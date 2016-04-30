@@ -39,6 +39,14 @@
     <Reference Include="DynamoCoreWpf">
       <HintPath>..\..\bin\AnyCPU\Debug\DynamoCoreWpf.dll</HintPath>
     </Reference>
+    <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\IronPython\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\IronPython\Microsoft.Scripting.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -54,6 +62,7 @@
   <ItemGroup>
     <Compile Include="PluginManagerExtension.cs" />
     <Compile Include="PluginManagerImportScript.cs" />
+    <Compile Include="PluginManagerIronPythonEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
