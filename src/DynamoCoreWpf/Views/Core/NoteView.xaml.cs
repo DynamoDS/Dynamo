@@ -27,6 +27,7 @@ namespace Dynamo.Nodes
                         ViewModel.UpdateSizeFromView(noteText.ActualWidth, noteText.ActualHeight);
                 };
             noteText.PreviewMouseDown += OnNoteTextPreviewMouseDown;
+            noteText.TouchDown += OnNoteTextPreviewTouchDown;
 
             Loaded += OnNoteViewLoaded;
             Unloaded += OnNoteViewUnloaded;
@@ -73,6 +74,13 @@ namespace Dynamo.Nodes
         }
 
         void OnNoteTextPreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            System.Guid noteGuid = this.ViewModel.Model.GUID;
+            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.SelectModelCommand(noteGuid, Keyboard.Modifiers.AsDynamoType()));
+        }
+
+        void OnNoteTextPreviewTouchDown(object sender, TouchEventArgs e)
         {
             System.Guid noteGuid = this.ViewModel.Model.GUID;
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(

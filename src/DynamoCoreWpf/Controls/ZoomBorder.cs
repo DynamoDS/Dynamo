@@ -92,6 +92,65 @@ namespace Dynamo.Controls
             this.MouseDown += child_MouseDown;
             this.MouseUp += child_MouseUp;
             this.MouseMove += child_MouseMove;
+
+            this.IsManipulationEnabled = true;
+            this.ManipulationStarted += child_ManipulationStarted;
+            this.ManipulationCompleted += child_ManipulationCompleted;
+            this.ManipulationDelta += child_ManipulationDelta;
+        }
+
+        private double lastZoom;
+        private bool zoomManipulated;
+        private void child_ManipulationStarted(object sender, ManipulationStartedEventArgs e)
+        {
+            WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
+            lastZoom = vm.Zoom;
+            zoomManipulated = false;
+
+            var tt = GetTranslateTransform(child);
+            origin = new Point(tt.X, tt.Y);
+        }
+
+        private void child_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
+        {
+            if (e.TotalManipulation.Translation.X == 0 && e.TotalManipulation.Translation.Y == 0)
+            {
+                e.Cancel();
+            }
+
+            WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
+            vm.HandleTouchRelease(sender, e);
+        }
+
+        private void child_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
+        {
+            WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
+            if (e.Manipulators.Count() == 1 && vm.HandleTouchDrag(sender, e)) return;
+
+            if (e.Manipulators.Count() == 1 && !zoomManipulated)
+            {
+                // Touch one finger to pan
+                var tr = e.CumulativeManipulation.Translation;
+                SetTranslateTransformOrigin(new Point2D(
+                    origin.X + tr.X,
+                    origin.Y + tr.Y));
+                vm.SetCurrentOffsetCommand.Execute(GetTranslateTransformOrigin());
+            }
+            else
+            {
+                // Touch two or more fingers to zoom
+                var sc = e.CumulativeManipulation.Scale;
+                var newZoom = lastZoom * Math.Sqrt(sc.X * sc.Y);
+                var anchorX = (e.Manipulators.Average(m => m.GetPosition(this).X) - vm.Model.X) / vm.Zoom;
+                var anchorY = (e.Manipulators.Average(m => m.GetPosition(this).Y) - vm.Model.Y) / vm.Zoom;
+
+                vm.OnRequestZoomPinch(this, new ZoomEventArgs(
+                    newZoom, new Point2D(anchorX, anchorY)));
+                zoomManipulated = true;
+            }
+
+            if (vm.ResetFitViewToggleCommand.CanExecute(null))
+                vm.ResetFitViewToggleCommand.Execute(null);
         }
 
         public Point GetTranslateTransformOrigin()
