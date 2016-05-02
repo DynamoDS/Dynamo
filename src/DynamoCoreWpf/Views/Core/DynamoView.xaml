@@ -705,6 +705,14 @@
                     <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenu}"
                               Focusable="False">
                         <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.StartPageWhatsNew}"
+                                  Command="{Binding ShowGalleryCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/DynamoCoreWpf;component/UI/Images/icon-whats-new-small.png"
+                                       Width="13" Height="14" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewHepMenuSamples}"
                                   Name="SamplesMenu"
                                   IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunEnabled}">
