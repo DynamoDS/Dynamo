@@ -278,7 +278,10 @@ namespace Dynamo.Graph.Nodes
                     {
                         // While the current number of ports doesn't match
                         // the desired number of ports, add or remove ports
-                        // as appropriate.
+                        // as appropriate.  This is intentionally a "best effort"
+                        // operation, as the node may reject attempts to create
+                        // or remove too many ports.  As such, we ignore any
+                        // failures to add or remove ports.
                         for (int current = model.InPortData.Count; current != value; )
                         {
                             if (current < value)
