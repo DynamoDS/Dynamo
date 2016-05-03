@@ -801,53 +801,41 @@ namespace Dynamo.Tests
             Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.Connectors.Any());
         }
 
-        [Test]
-        [Category("UnitTests")]
-        public void ValidateSetInPortCountCreation()
+        private void CreateNodeAndPorts(int count)
         {
-            // Based on the test for the following issue, but using SetInPortCount
-            // instead of AddInPort.
-            //MAGN-7334 Add test case for checking wrong connector is not created
-
-            var numberGuid = Guid.NewGuid().ToString();
-            var numberName = "Number";
             var pointGuid = Guid.NewGuid().ToString();
-            var pointName = "List.Create";
-            var unexistingNodeGuid = Guid.NewGuid().ToString();
+            const string pointName = "List.Create";
 
             var commands = new List<DynamoModel.ModelBasedRecordableCommand>
             {
-                new DynamoModel.CreateNodeCommand(numberGuid,
-                    numberName, 0, 0, false, false),
                 new DynamoModel.CreateNodeCommand(pointGuid,
                     pointName, 0, 0, false, false),
-                new DynamoModel.ModelEventCommand(pointGuid, "SetInPortCount", 2),
-
-                new DynamoModel.MakeConnectionCommand(numberGuid, 0, PortType.Output,
-                    DynamoModel.MakeConnectionCommand.Mode.Begin),
-                new DynamoModel.MakeConnectionCommand(unexistingNodeGuid, 0,
-                    PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
-
-                new DynamoModel.MakeConnectionCommand(unexistingNodeGuid, 0,
-                    PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
-                new DynamoModel.MakeConnectionCommand(pointGuid, 0, PortType.Input,
-                    DynamoModel.MakeConnectionCommand.Mode.End)
+                new DynamoModel.ModelEventCommand(pointGuid, "SetInPortCount", count),
             };
 
-            commands.ForEach(c =>
-            {
-                try
-                {
-                    CurrentDynamoModel.ExecuteCommand(c);
-                }
-                catch
-                {
-                    // Make sure that only MakeConnectionCommand throws an exception
-                    Assert.IsInstanceOf<DynamoModel.MakeConnectionCommand>(c);
-                }
-            });
+            commands.ForEach(c => { CurrentDynamoModel.ExecuteCommand(c); });
+        }
 
-            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.Connectors.Any());
+        [Test]
+        [Category("UnitTests")]
+        public void ModelEventCommand_SetInPortCount_nPortsRequested_nPortsCreated()
+        {
+            CreateNodeAndPorts(2);
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
+            Assert.NotNull(node);
+            Assert.AreEqual(node.InPorts.Count, 2);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ModelEventCommand_SetInPortCount_Zero_LeavesOnePort()
+        {
+            CreateNodeAndPorts(0);
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
+            Assert.NotNull(node);
+            Assert.AreEqual(node.InPorts.Count, 1);
         }
 
         [Test]
