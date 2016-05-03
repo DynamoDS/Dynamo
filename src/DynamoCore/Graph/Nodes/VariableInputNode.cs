@@ -279,15 +279,17 @@ namespace Dynamo.Graph.Nodes
                         // While the current number of ports doesn't match
                         // the desired number of ports, add or remove ports
                         // as appropriate.
-                        while (model.InPortData.Count != value)
+                        for (int current = model.InPortData.Count; current != value; )
                         {
-                            if (model.InPortData.Count < value)
+                            if (current < value)
                             {
                                 AddInputToModel();
+                                ++current;
                             }
                             else
                             {
                                 RemoveInputFromModel();
+                                --current;
                             }
                         }
                         model.RegisterAllPorts();
