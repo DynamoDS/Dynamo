@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dynamo.PluginManager;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,9 +10,9 @@ namespace PluginManager
 {
     public class PluginManagerImportScript
     {
-        public static void ImportPythonScript()
+        public static void ImportPythonScript(PluginManagerExtension pluginManagerContext)
         {
-            PluginManagerIronPythonEvaluator.EvaluatePythonFile("C:\\Users\\t_laksr\\Desktop\\pyTest");
+            PluginManagerIronPythonEvaluator.EvaluatePythonFile("C:\\Users\\t_laksr\\Desktop\\pyTest\\helloWorld.py", pluginManagerContext);
             //MessageBox.Show("Hello World!");
             //string[] fileFilter = { string.Format("Python Files", "*.py") };//; *.ds" ), string.Format(Resources.FileDialogAssemblyFiles, "*.dll"),
             /*                                                                  //  string.Format(Resources.FileDialogDesignScriptFiles, "*.ds"), string.Format(Resources.FileDialogAllFiles,"*.*")};

@@ -1,4 +1,5 @@
-﻿using Dynamo.Graph.Workspaces;
+﻿using Dynamo.Extensions;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Wpf.Extensions;
 using PluginManager;
@@ -21,7 +22,24 @@ namespace Dynamo.PluginManager
         private Menu dynamoMenu;
         private MenuItem loadPythonScriptMenuItem;
         private Separator separator = new Separator();
+        private IWorkspaceModel workspaceModel;
+        internal IWorkspaceModel WorkspaceModel
+        {
+            get { return workspaceModel; }
+            private set { SetWorkSpaceModel(value); }
+        }
+        
+        internal ICommandExecutive CommandExecutive { get; private set; }
 
+
+        /// <summary>
+        /// Sets the workspace model property and updates event handlers accordingly.
+        /// </summary>
+        /// <param name="wsm">Workspace Model to set</param>
+        private void SetWorkSpaceModel(IWorkspaceModel wsm)
+        {
+            workspaceModel = wsm;
+        }
         #region IViewExtension implementation
 
 
@@ -40,13 +58,15 @@ namespace Dynamo.PluginManager
         public void Loaded(ViewLoadedParams p)
         {
             this.loadedParams = p;
-
+            
             dynamoMenu = p.dynamoMenu;
             loadPythonScriptMenuItem = GenerateMenuItem();
             p.AddMenuItem(MenuBarType.File, loadPythonScriptMenuItem, 11);
-
+           
             p.CurrentWorkspaceChanged += CurrentWorkspaceChanged;
 
+            CommandExecutive = p.CommandExecutive;
+            WorkspaceModel = p.CurrentWorkspaceModel;
         }
 
         private void CurrentWorkspaceChanged(IWorkspaceModel ws)
@@ -88,7 +108,7 @@ namespace Dynamo.PluginManager
           
 
 
-        // item.Click += (sender, args) => { PluginManagerImportScript.ImportPythonScript(); };
+         item.Click += (sender, args) => { PluginManagerImportScript.ImportPythonScript(this); };
            return item;
         }
        
