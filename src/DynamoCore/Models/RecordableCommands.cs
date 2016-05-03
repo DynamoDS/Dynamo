@@ -378,7 +378,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// Construct a <see cref="PausePlaybackCommand"/> specifying the duration to pause.
+            /// 
             /// </summary>
             /// <param name="pauseDurationInMs">The duration to pause the playback in milliseconds.</param>
             public PausePlaybackCommand(int pauseDurationInMs)
@@ -447,7 +447,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// Construct a <see cref="OpenFileCommand"/> specifying a path.
+            /// 
             /// </summary>
             /// <param name="xmlFilePath">The path to the file.</param>
             /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
@@ -524,7 +524,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// Construct a <see cref="RunCancelCommand"/> specifying whether to show errors or cancel execution.
+            /// 
             /// </summary>
             /// <param name="showErrors">Should errors be shown?</param>
             /// <param name="cancelRun">True to cancel execution. False to execute.</param>
@@ -578,7 +578,7 @@ namespace Dynamo.Models
         public class ForceRunCancelCommand : RunCancelCommand
         {
             /// <summary>
-            /// Construct a <see cref="ForceRunCancelCommand"/> specifying whether errors should be shown or execution should be cancelled.
+            /// 
             /// </summary>
             /// <param name="showErrors">Should errors be shown?</param>
             /// <param name="cancelRun">True to cancel execution. False to execute.</param>
@@ -621,7 +621,6 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// Construct a CreateNodeCommand.
             /// </summary>
             /// <param name="node">The node.</param>
             /// <param name="x">The x location.</param>
@@ -636,6 +635,14 @@ namespace Dynamo.Models
                 SetProperties(x, y, defaultPosition, transformCoordinates);
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="node"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="defaultPosition"></param>
+            /// <param name="transformCoordinates"></param>
             private CreateNodeCommand(
                XmlElement node, double x, double y, bool defaultPosition, bool transformCoordinates)
                 : base(new[] { Guid.Empty })
@@ -644,6 +651,15 @@ namespace Dynamo.Models
                 SetProperties(x, y, defaultPosition, transformCoordinates);
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="nodeId"></param>
+            /// <param name="nodeName"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="defaultPosition"></param>
+            /// <param name="transformCoordinates"></param>
             public CreateNodeCommand(IEnumerable<Guid> nodeId, string nodeName,
                 double x, double y, bool defaultPosition, bool transformCoordinates)
                 : base(nodeId)
@@ -652,6 +668,15 @@ namespace Dynamo.Models
                 SetProperties(x, y, defaultPosition, transformCoordinates);
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="nodeId"></param>
+            /// <param name="nodeName"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="defaultPosition"></param>
+            /// <param name="transformCoordinates"></param>
             [JsonConstructor]
             public CreateNodeCommand(string nodeId, string nodeName,
                 double x, double y, bool defaultPosition, bool transformCoordinates)
@@ -866,7 +891,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// Construct a <see cref="CreateProxyNodeCommand"/>.
+            /// 
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="nodeName"></param>
@@ -959,7 +984,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// Construct a <see cref="CreateNoteCommand"/>
+            /// 
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="noteText"></param>
@@ -974,7 +999,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// Construct a <see cref="CreateNoteCommand"/>
+            /// 
             /// </summary>
             /// <param name="nodeIds"></param>
             /// <param name="noteText"></param>
@@ -989,7 +1014,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// Construct a <see cref="CreateNoteCommand"/>
+            /// 
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="noteText"></param>
@@ -1063,7 +1088,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// Construct a <see cref="SelectModelCommand"/>
+            /// 
             /// </summary>
             /// <param name="modelGuid"></param>
             /// <param name="modifiers"></param>
@@ -1075,7 +1100,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// Construct a <see cref="SelectModelCommand"/>
+            /// 
             /// </summary>
             /// <param name="modelGuid"></param>
             /// <param name="modifiers"></param>
@@ -1086,7 +1111,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// Construct a <see cref="SelectModelCommand"/>
+            /// 
             /// </summary>
             /// <param name="modelGuids"></param>
             /// <param name="modifiers"></param>
@@ -1141,7 +1166,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// Construct a <see cref="SelectInRegionCommand"/>
+            /// 
             /// </summary>
             /// <param name="region"></param>
             /// <param name="isCrossSelection"></param>
@@ -1218,7 +1243,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// Construct a <see cref="DragSelectionCommand"/>
+            /// 
             /// </summary>
             /// <param name="mouseCursor"></param>
             /// <param name="operation"></param>
@@ -1393,20 +1418,20 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// Construct a <see cref="DeleteModelCommand"/>
+            /// 
             /// </summary>
             /// <param name="modelGuid"></param>
             [JsonConstructor]
             public DeleteModelCommand(string modelGuid) : base(new[] { Guid.Parse(modelGuid) }) { }
 
             /// <summary>
-            /// Construct a <see cref="DeleteModelCommand"/>
+            /// 
             /// </summary>
             /// <param name="modelGuid"></param>
             public DeleteModelCommand(Guid modelGuid) : base(new[] { modelGuid }) { }
 
             /// <summary>
-            /// Construct a <see cref="DeleteModelCommand"/>
+            /// 
             /// </summary>
             /// <param name="modelGuids"></param>
             public DeleteModelCommand(IEnumerable<Guid> modelGuids) : base(modelGuids) { }
