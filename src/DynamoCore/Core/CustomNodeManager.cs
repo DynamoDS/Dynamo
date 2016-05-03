@@ -932,6 +932,46 @@ namespace Dynamo.Core
             #endregion
         }
 
+        /// <summary>
+        /// input1, outputport1, <inputport1, node1>
+        ///                       <inputport2, node2>
+        /// input2, outputport2, <inputport3, node3>
+        ///                       <inputport4, node4>
+        /// </summary>
+        /// <param name="selectedNodeSet"></param>
+        /// <returns></returns>
+        private HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>> GetInputNodes(HashSet<NodeModel> selectedNodeSet)
+        {
+            return new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
+                   selectedNodeSet.SelectMany(
+                       node =>
+                           Enumerable.Range(0, node.InPorts.Count)
+                           .Where(node.HasConnectedInput)
+                           .Select(data => Tuple.Create(node, data, node.InputNodes[data]))
+                           .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
+        }
+
+        /// <summary>
+        /// output1, outputport1, <inputport1, node1>
+        ///                       <inputport2, node2>
+        /// output2, outputport2, <inputport3, node3>
+        ///                       <inputport4, node4>
+        /// </summary>
+        /// <param name="selectedNodeSet"></param>
+        /// <returns></returns>
+        private HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>> GetOutputNodes(HashSet<NodeModel> selectedNodeSet)
+        {
+            return new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
+                    selectedNodeSet.SelectMany(
+                        node =>
+                            Enumerable.Range(0, node.OutPorts.Count)
+                            .Where(node.HasOutput)
+                            .SelectMany(
+                                data =>
+                                    node.OutputNodes[data].Where(
+                                        output => !selectedNodeSet.Contains(output.Item2))
+                                    .Select(output => Tuple.Create(node, data, output)))));
+        }
 
         internal void UpdateCustomNode(CustomNodeAnnotationModel model, WorkspaceModel currentWorkspace, DynamoModel dynamoModel)
         {
@@ -948,26 +988,8 @@ namespace Dynamo.Core
             #region Determine Inputs and Outputs
 
             //Step 1: determine which nodes will be inputs to the new node
-            var inputs =
-                new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
-                    selectedNodeSet.SelectMany(
-                        node =>
-                            Enumerable.Range(0, node.InPorts.Count)
-                            .Where(node.HasConnectedInput)
-                            .Select(data => Tuple.Create(node, data, node.InputNodes[data]))
-                            .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
-
-            var outputs =
-                new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
-                    selectedNodeSet.SelectMany(
-                        node =>
-                            Enumerable.Range(0, node.OutPorts.Count)
-                            .Where(node.HasOutput)
-                            .SelectMany(
-                                data =>
-                                    node.OutputNodes[data].Where(
-                                        output => !selectedNodeSet.Contains(output.Item2))
-                                    .Select(output => Tuple.Create(node, data, output)))));
+            var inputs = GetInputNodes(selectedNodeSet);
+            var outputs = GetOutputNodes(selectedNodeSet);
 
             #endregion
 
@@ -1223,26 +1245,8 @@ namespace Dynamo.Core
                 #region Determine Inputs and Outputs
 
                 //Step 1: determine which nodes will be inputs to the new node
-                var inputs =
-                    new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
-                        selectedNodeSet.SelectMany(
-                            node =>
-                                Enumerable.Range(0, node.InPorts.Count)
-                                .Where(node.HasConnectedInput)
-                                .Select(data => Tuple.Create(node, data, node.InputNodes[data]))
-                                .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
-
-                var outputs =
-                    new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
-                        selectedNodeSet.SelectMany(
-                            node =>
-                                Enumerable.Range(0, node.OutPorts.Count)
-                                .Where(node.HasOutput)
-                                .SelectMany(
-                                    data =>
-                                        node.OutputNodes[data].Where(
-                                            output => !selectedNodeSet.Contains(output.Item2))
-                                        .Select(output => Tuple.Create(node, data, output)))));
+                var inputs = GetInputNodes(selectedNodeSet);
+                var outputs = GetOutputNodes(selectedNodeSet);
 
                 #endregion
 
@@ -1441,27 +1445,8 @@ namespace Dynamo.Core
                 #region Determine Inputs and Outputs
 
                 //Step 1: determine which nodes will be inputs to the new node
-                var inputs =
-                    new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
-                        selectedNodeSet.SelectMany(
-                            node =>
-                                Enumerable.Range(0, node.InPorts.Count)
-                                .Where(node.HasConnectedInput)
-                                .Select(data => Tuple.Create(node, data, node.InputNodes[data]))
-                                .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
-
-                var outputs =
-                    new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
-                        selectedNodeSet.SelectMany(
-                            node =>
-                                Enumerable.Range(0, node.OutPorts.Count)
-                                .Where(node.HasOutput)
-                                .SelectMany(
-                                    data =>
-                                        node.OutputNodes[data].Where(
-                                            output => !selectedNodeSet.Contains(output.Item2))
-                                        .Select(output => Tuple.Create(node, data, output)))));
-
+                var inputs = GetInputNodes(selectedNodeSet);
+                var outputs = GetOutputNodes(selectedNodeSet);
                 #endregion
 
                 #region Detect 1-node holes (higher-order function extraction)
