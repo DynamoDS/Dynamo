@@ -1466,7 +1466,7 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            Model.CustomNodeManager.CollapseBackToCustomNodeInstance(model, this.currentWorkspaceViewModel.Model);
+            Model.CustomNodeManager.UpdateCustomNode(model, this.currentWorkspaceViewModel.Model, this.Model);
         }
 
         /// <summary>
