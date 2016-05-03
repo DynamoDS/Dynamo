@@ -18,8 +18,8 @@ namespace Dynamo.Graph.Annotations
         /// </summary>
         /// <param name="definition"></param>
         /// <param name="nodes"></param>
-        public CustomNodeAnnotationModel(CustomNodeDefinition definition, IEnumerable<NodeModel> nodes):
-            base(nodes, Enumerable.Empty<NoteModel>())
+        public CustomNodeAnnotationModel(CustomNodeDefinition definition, IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes):
+            base(nodes, notes)
         {
             Definition = definition;
         }

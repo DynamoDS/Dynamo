@@ -759,10 +759,10 @@ namespace Dynamo.Core
                 return;
             }
 
+            #region copy nodes from custom node to workspace
             // Create the new NodeModel's
             var newNodeModels = new List<NodeModel>();
 
-            #region copy nodes from custom node to workspace
             //make a lookup table to store the guids of the
             //old models and the guids of their pasted versions
             var modelLookup = new Dictionary<Guid, NodeModel>();
@@ -788,9 +788,17 @@ namespace Dynamo.Core
                 newNodeModels.Add(newNode);
             }
 
-            var shiftX = instance.X - newNodeModels.Min(item => item.X);
-            var shiftY = instance.Y - newNodeModels.Min(item => item.Y);
-            foreach (var model in newNodeModels)
+            var newNoteModels = new List<NoteModel>();
+            foreach (var note in customNodeWorkspace.Notes)
+            {
+                var noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid());
+                newNoteModels.Add(noteModel);
+            }
+
+            var newItems = newNodeModels.Concat<ModelBase>(newNoteModels);
+            var shiftX = instance.X - newItems.Min(item => item.X);
+            var shiftY = instance.Y - newItems.Min(item => item.Y);
+            foreach (var model in newItems)
             {
                 model.X = model.X + shiftX;
                 model.Y = model.Y + shiftY;
@@ -803,6 +811,12 @@ namespace Dynamo.Core
             {
                 targetWorkspace.AddAndRegisterNode(newNode, false);
                 createdModels.Add(newNode);
+            }
+
+            foreach (var newNote in newNoteModels)
+            {
+                targetWorkspace.AddNote(newNote, false);
+                createdModels.Add(newNote);
             }
             #endregion
 
@@ -884,7 +898,7 @@ namespace Dynamo.Core
             }
             else
             {
-                annotationModel = new CustomNodeAnnotationModel(instance.Definition, modelLookup.Values)
+                annotationModel = new CustomNodeAnnotationModel(instance.Definition, modelLookup.Values, newNoteModels)
                 {
                     GUID = Guid.NewGuid(),
                     AnnotationText = instance.Definition.DisplayName
@@ -925,6 +939,9 @@ namespace Dynamo.Core
             {
                 return;
             }
+
+            // clear all nodes in custom node workspace
+            customNodeWorkspace.Clear();
 
             var selectedNodes = model.SelectedModels.Where(s => s is NodeModel).Cast<NodeModel>();
             var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
@@ -1027,20 +1044,13 @@ namespace Dynamo.Core
                     undoRecorder.RecordDeletionForUndo(node);
                     currentWorkspace.RemoveNode(node);
 
-                    // Assign a new guid to this node, otherwise when node is
-                    // compiled to AST, literally it is still in global scope
-                    // instead of in function scope.
                     node.GUID = Guid.NewGuid();
-
-                    // shift nodes
                     node.X = node.X - leftShift;
                     node.Y = node.Y - topMost;
-
                     newNodes.Add(node);
                 }
 
-                /*
-                foreach (var note in selectedNotes)
+                foreach (var note in model.SelectedModels.OfType<NoteModel>())
                 {
                     undoRecorder.RecordDeletionForUndo(note);
                     currentWorkspace.RemoveNote(note);
@@ -1050,7 +1060,6 @@ namespace Dynamo.Core
                     note.Y = note.Y - topMost;
                     newNotes.Add(note);
                 }
-                */
 
                 //Copy the group from newNodes
                 foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
@@ -1235,10 +1244,14 @@ namespace Dynamo.Core
 
                 #endregion
 
-                customNodeWorkspace.Clear();
                 foreach (var newNode in newNodes)
                 {
                     customNodeWorkspace.AddAndRegisterNode(newNode);
+                }
+
+                foreach (var newNote in newNotes)
+                {
+                    customNodeWorkspace.AddNote(newNote, false);
                 }
                 
                 var collapsedNode = CreateCustomNodeInstance(model.Definition.FunctionId, isTestMode: false);
