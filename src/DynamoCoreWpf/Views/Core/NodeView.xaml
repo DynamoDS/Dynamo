@@ -19,6 +19,11 @@
           x:FieldModifier="public"
           HorizontalAlignment="Left">
 
+        <Grid.RenderTransform>
+            <ScaleTransform ScaleX="{Binding DisplayScale}"
+                            ScaleY="{Binding DisplayScale}" />
+        </Grid.RenderTransform>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto" MaxHeight="{StaticResource NodeNickNameHeight}"></RowDefinition>

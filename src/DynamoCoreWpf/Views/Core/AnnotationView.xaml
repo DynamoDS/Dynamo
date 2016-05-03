@@ -294,6 +294,23 @@
                 </EventTrigger>
             </Grid.Triggers>
         </Grid>              
+
+        <Thumb Name ="resizeThumb" 
+               Width="14" Height="14" 
+               HorizontalAlignment="Right" 
+               VerticalAlignment="Bottom" 
+               Margin="0"
+               PreviewMouseDown="OnAnnotationResizeStarted"
+               DragDelta="OnAnnotationResizeDelta"
+               Visibility="Visible"
+               Cursor="/DynamoCoreWpf;component/UI/Images/resize_diagonal.cur">
+            <Thumb.Template>
+                <ControlTemplate TargetType="Thumb">
+                    <Image Source="/DynamoCoreWpf;component/UI/Images/resize_corner.png"
+                           RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                </ControlTemplate>
+            </Thumb.Template>
+        </Thumb>
     </Grid>
     
 </UserControl>

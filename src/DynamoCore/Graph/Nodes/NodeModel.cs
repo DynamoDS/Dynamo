@@ -9,6 +9,7 @@ using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
+using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
@@ -1159,6 +1160,16 @@ namespace Dynamo.Graph.Nodes
                 DynamoSelection.Instance.Selection.Add(c.Start.Owner);
         }
 
+        public override Rect2D Rect
+        {
+            get
+            {
+                var sc = OwningGroup != null ?
+                    OwningGroup.DisplayScale : 1;
+                return new Rect2D(X, Y, Width * sc, Height * sc);
+            }
+        }
+
         #region Node State
 
         public void ValidateConnections()
@@ -1888,6 +1899,17 @@ namespace Dynamo.Graph.Nodes
 
         private ExecutionHints executionHint;
 
+        private AnnotationModel owningGroup;
+        public AnnotationModel OwningGroup
+        {
+            get { return owningGroup; }
+            set
+            {
+                owningGroup = value;
+                RaisePropertyChanged("DisplayScale");
+            }
+        }
+        
         public bool IsModified
         {
             get { return GetExecutionHintsCore().HasFlag(ExecutionHints.Modified); }

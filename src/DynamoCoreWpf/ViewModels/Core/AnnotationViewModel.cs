@@ -14,6 +14,7 @@ using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.Views;
 using Color = System.Windows.Media.Color;
+using System.Windows;
 
 namespace Dynamo.ViewModels
 {
@@ -32,6 +33,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public double DisplayScale
+        {
+            get { return annotationModel.DisplayScale; }
+        }
+        
         public Double Width
         {
             get { return annotationModel.Width; }
@@ -241,6 +247,54 @@ namespace Dynamo.ViewModels
             //Select all the models inside the group - This avoids some performance bottleneck 
             //with many nodes selected at the same time - which makes moving the group very slow
             DynamoSelection.Instance.Selection.AddRange(this.AnnotationModel.SelectedModels);
+        }
+
+        private double resize_zoom, resize_contentWidth, resize_contentHeight;
+        private Point resize_mousePos;
+        private List<Tuple<ModelBase, double, double>> resize_modelPos;
+        private const double resize_extendSize = 10;
+
+        internal void OnAnnotationResizeStarted(Point mousePosition)
+        {
+            var g = annotationModel;
+            resize_mousePos = mousePosition;
+
+            resize_contentWidth = g.Width - resize_extendSize;
+            resize_contentHeight = g.Height - resize_extendSize - g.TextBlockHeight;
+
+            resize_zoom = g.DisplayScale;
+            resize_modelPos = new List<Tuple<ModelBase, double, double>>();
+
+            foreach (var m in g.SelectedModels)
+            {
+                // Tuple = <ModelBase, X multiplier, Y multiplier>
+                resize_modelPos.Add(
+                    new Tuple<ModelBase, double, double>(
+                        m, (m.X - g.X - resize_extendSize) / resize_zoom,
+                        (m.Y - g.Y - resize_extendSize - g.TextBlockHeight) / resize_zoom));
+            }
+        }
+
+        internal void OnAnnotationResizeDelta(Point mousePosition)
+        {
+            var g = annotationModel;
+            var mouseDelta = mousePosition - resize_mousePos;
+            if ((-mouseDelta.X > resize_contentWidth) || (-mouseDelta.Y > resize_contentHeight)) return;
+
+            var newZoom = resize_zoom * Math.Sqrt(
+                (mouseDelta.X / resize_contentWidth + 1) *
+                (mouseDelta.Y / resize_contentHeight + 1));
+            if ((newZoom < 0.2) || (newZoom > 1)) return;
+
+            foreach (var t in resize_modelPos)
+            {
+                // Tuple = <ModelBase, X multiplier, Y multiplier>
+                t.Item1.X = t.Item2 * newZoom + resize_extendSize + g.X;
+                t.Item1.Y = t.Item3 * newZoom + resize_extendSize + g.Y + g.TextBlockHeight;
+            }
+            g.DisplayScale = newZoom;
+
+            g.UpdateBoundaryFromSelection();
         }
     }
 }

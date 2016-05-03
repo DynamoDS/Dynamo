@@ -379,6 +379,7 @@ namespace Dynamo.ViewModels
         private void Model_AnnotationRemoved(AnnotationModel annotation)
         {
             _annotations.Remove(_annotations.First(x => x.AnnotationModel == annotation));
+            _nodes.Select(n => n.NodeModel.OwningGroup);
         }
 
         private void Model_AnnotationsCleared()

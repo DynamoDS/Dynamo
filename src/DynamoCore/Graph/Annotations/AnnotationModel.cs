@@ -19,6 +19,13 @@ namespace Dynamo.Graph.Annotations
         private const double ExtendSize = 10.0;
         private const double ExtendYHeight = 5.0;
 
+        private double displayScale = 1;
+        public double DisplayScale
+        {
+            get { return displayScale; }
+            set { displayScale = value; }
+        }
+
         #region Properties
 
         /// <summary>
@@ -239,6 +246,14 @@ namespace Dynamo.Graph.Annotations
             }
         }
       
+        public void ELLENSI_UpdateZoomFactor()
+        {
+            foreach (var item in selectedModels.OfType<NodeModel>())
+            {
+                item.OwningGroup = this;
+            }
+        }
+
         /// <summary>
         /// Updates the group boundary based on the nodes / notes selection.
         /// </summary>      
@@ -319,6 +334,11 @@ namespace Dynamo.Graph.Annotations
                 this.Width = 0;
                 this.height = 0;               
             }
+
+            if (loadFromXML)
+            {
+                ELLENSI_UpdateZoomFactor();
+            }
         }
 
         /// <summary>
@@ -336,7 +356,9 @@ namespace Dynamo.Graph.Annotations
             if (ygroup.Last() is NodeModel)
                 yheight = yheight + ExtendYHeight;
 
-            return Tuple.Create(xgroup.Last().Width, yheight);
+            return Tuple.Create(
+                this.DisplayScale * xgroup.Last().Width,
+                this.DisplayScale * yheight);
         }
               
         #region Serialization/Deserialization Methods
@@ -377,6 +399,8 @@ namespace Dynamo.Graph.Annotations
             helper.SetAttribute("InitialHeight", this.InitialHeight);
             helper.SetAttribute("TextblockHeight", this.TextBlockHeight);
             helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));        
+            helper.SetAttribute("displayScale", this.displayScale);
+
             //Serialize Selected models
             XmlDocument xmlDoc = element.OwnerDocument;            
             foreach (var guids in this.SelectedModels.Select(x => x.GUID))
@@ -405,6 +429,11 @@ namespace Dynamo.Graph.Annotations
             this.textBlockHeight = helper.ReadDouble("TextblockHeight", DoubleValue);
             this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);
             this.InitialHeight = helper.ReadDouble("InitialHeight", DoubleValue);
+            if (!string.IsNullOrEmpty(element.GetAttribute("displayScale")))
+                this.displayScale = helper.ReadDouble("displayScale", DoubleValue);
+
+            this.loadFromXML = true;
+
             //Deserialize Selected models
             if (element.HasChildNodes)
             {
