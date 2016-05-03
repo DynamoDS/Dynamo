@@ -1174,11 +1174,6 @@ namespace Dynamo.Core
                             NodeModel outputSenderNode = output.Item1;
                             int outputSenderData = output.Item2;
 
-                            //NodeModel outputReceiverNode = output.Item3.Item2;
-
-                            //if (curriedNodeArgs.Any(x => x.OuterNode == outputReceiverNode))
-                            //    continue;
-
                             outportList.Add(Tuple.Create(outputSenderNode, outputSenderData));
 
                             //Create Symbol Node
@@ -1240,14 +1235,13 @@ namespace Dynamo.Core
 
                 #endregion
 
-
                 customNodeWorkspace.Clear();
                 foreach (var newNode in newNodes)
                 {
                     customNodeWorkspace.AddAndRegisterNode(newNode);
                 }
                 
-                var collapsedNode = CreateCustomNodeInstance(customNodeWorkspace.Guid, isTestMode: false);
+                var collapsedNode = CreateCustomNodeInstance(model.Definition.FunctionId, isTestMode: false);
                 collapsedNode.X = avgX;
                 collapsedNode.Y = avgY;
                 currentWorkspace.AddAndRegisterNode(collapsedNode, centered: false);
