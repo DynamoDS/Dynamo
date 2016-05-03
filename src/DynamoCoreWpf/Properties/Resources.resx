@@ -2004,4 +2004,7 @@ Next assemblies were loaded several times:
   <data name="ContextMenuExpandCustomNodeToGroup" xml:space="preserve">
     <value>Expand Custom Node to group...</value>
   </data>
+  <data name="ContextMenuRestoreToCustomNodeInstance" xml:space="preserve">
+    <value>Restore to Custom Node Instance</value>
+  </data>
 </root>

@@ -548,6 +548,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Restore to Custom Node Instance.
+        /// </summary>
+        public static string ContextMenuRestoreToCustomNodeInstance {
+            get {
+                return ResourceManager.GetString("ContextMenuRestoreToCustomNodeInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show all geometry preview.
         /// </summary>
         public static string ContextMenuShowAllGeometry {

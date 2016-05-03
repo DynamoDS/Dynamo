@@ -192,8 +192,11 @@
                 <Separator>
                 </Separator>
                 <MenuItem Header="{x:Static p:Resources.ContextMenuUpdateCustomNodeDefintion}"
-                          Name="CollapseBack"
+                          Name="UpdateCustomNode"
                           Command="{Binding Path=UpdateCustomNodeDefinitionCommand}"/>
+                <MenuItem Header="{x:Static p:Resources.ContextMenuRestoreToCustomNodeInstance}"
+                          Name="RestoreCustomNodeInstance"
+                          Command="{Binding Path=RestoreCustomNodeInstanceCommand}"/>
             </ContextMenu>
         </Grid.ContextMenu>
         <Rectangle Name="selectionBorder"                  

@@ -1206,16 +1206,13 @@ namespace Dynamo.Core
             #endregion
         }
 
-        internal void CollapseBackToCustomNodeInstance(CustomNodeAnnotationModel model, WorkspaceModel currentWorkspace)
+        internal void RestoreCustomNodeInstance(CustomNodeAnnotationModel model, WorkspaceModel currentWorkspace)
         {
             CustomNodeWorkspaceModel customNodeWorkspace;
             if (!TryGetFunctionWorkspace(model.Definition.FunctionId, false, out customNodeWorkspace))
             {
                 return;
             }
-
-            // clear all nodes in custom node workspace
-            customNodeWorkspace.Clear();
 
             var selectedNodes = model.SelectedModels.Where(s => s is NodeModel).Cast<NodeModel>();
             var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
@@ -1305,34 +1302,16 @@ namespace Dynamo.Core
                 #endregion
 
                 #region Transfer nodes and connectors to new workspace
-
-                var newNodes = new List<NodeModel>();
-                var newNotes = new List<NoteModel>();
-                var newAnnotations = new List<AnnotationModel>();
-
-                // Step 4: move all nodes and notes to new workspace remove from old
-                // PB: This could be more efficiently handled by a copy paste, but we
-                // are preservering the node 
                 foreach (var node in selectedNodeSet)
                 {
                     undoRecorder.RecordDeletionForUndo(node);
                     currentWorkspace.RemoveNode(node);
-
-                    node.GUID = Guid.NewGuid();
-                    node.X = node.X - leftShift;
-                    node.Y = node.Y - topMost;
-                    newNodes.Add(node);
                 }
 
                 foreach (var note in model.SelectedModels.OfType<NoteModel>())
                 {
                     undoRecorder.RecordDeletionForUndo(note);
                     currentWorkspace.RemoveNote(note);
-
-                    note.GUID = Guid.NewGuid();
-                    note.X = note.X - leftShift;
-                    note.Y = note.Y - topMost;
-                    newNotes.Add(note);
                 }
 
                 //Copy the group from newNodes
@@ -1340,102 +1319,25 @@ namespace Dynamo.Core
                 {
                     undoRecorder.RecordDeletionForUndo(group);
                     currentWorkspace.RemoveGroup(group);
-
-                    group.GUID = Guid.NewGuid();
-                    group.SelectedModels = group.DeletedModelBases;
-                    newAnnotations.Add(group);
                 }
-
-                // Now all selected nodes already moved to custom workspace,
-                // clear the selection.
-                DynamoSelection.Instance.ClearSelection();
-
-                foreach (var conn in fullySelectedConns)
-                {
-                    ConnectorModel.Make(conn.Start.Owner, conn.End.Owner, conn.Start.Index, conn.End.Index);
-                }
-
                 #endregion
 
                 #region Process inputs
 
                 var inConnectors = new List<Tuple<NodeModel, int>>();
-                var uniqueInputSenders = new Dictionary<Tuple<NodeModel, int>, Symbol>();
-
+                var uniqueInputSenders = new Dictionary<Tuple<NodeModel, int>, bool>();
                 //Step 3: insert variables (reference step 1)
                 foreach (var input in Enumerable.Range(0, inputs.Count).Zip(inputs, Tuple.Create))
                 {
-                    int inputIndex = input.Item1;
-
-                    NodeModel inputReceiverNode = input.Item2.Item1;
-                    int inputReceiverData = input.Item2.Item2;
-
                     NodeModel inputNode = input.Item2.Item3.Item2;
                     int inputData = input.Item2.Item3.Item1;
 
-                    Symbol node;
-
                     var key = Tuple.Create(inputNode, inputData);
-                    if (uniqueInputSenders.ContainsKey(key))
-                    {
-                        node = uniqueInputSenders[key];
-                    }
-                    else
+                    if (!uniqueInputSenders.ContainsKey(key))
                     {
                         inConnectors.Add(Tuple.Create(inputNode, inputData));
-
-                        node = new Symbol
-                        {
-                            InputSymbol = inputReceiverNode.InPorts[inputReceiverData].PortName,
-                            X = 0
-                        };
-
-                        // Try to figure out the type of input of custom node 
-                        // from the type of input of selected node. There are
-                        // two kinds of nodes whose input type are available:
-                        // function node and custom node. 
-                        List<Library.TypedParameter> parameters = null;
-
-                        if (inputReceiverNode is Function)
-                        {
-                            var func = inputReceiverNode as Function;
-                            parameters = func.Controller.Definition.Parameters.ToList();
-                        }
-                        else if (inputReceiverNode is DSFunctionBase)
-                        {
-                            var dsFunc = inputReceiverNode as DSFunctionBase;
-                            var funcDesc = dsFunc.Controller.Definition;
-                            parameters = funcDesc.Parameters.ToList();
-
-                            if (funcDesc.Type == Engine.FunctionType.InstanceMethod ||
-                                funcDesc.Type == Engine.FunctionType.InstanceProperty)
-                            {
-                                var dummyType = new ProtoCore.Type() { Name = funcDesc.ClassName };
-                                var instanceParam = new TypedParameter(funcDesc.ClassName, dummyType);
-                                parameters.Insert(0, instanceParam);
-                            }
-                        }
-
-                        // so the input of custom node has format 
-                        //    input_var_name : type
-                        if (parameters != null && parameters.Count() > inputReceiverData)
-                        {
-                            var typeName = parameters[inputReceiverData].DisplayTypeName;
-                            if (!string.IsNullOrEmpty(typeName))
-                            {
-                                node.InputSymbol += " : " + typeName;
-                            }
-                        }
-
-                        node.SetNickNameFromAttribute();
-                        node.Y = inputIndex * (50 + node.Height);
-
-                        uniqueInputSenders[key] = node;
-
-                        newNodes.Add(node);
+                        uniqueInputSenders[key] = true;
                     }
-
-                    ConnectorModel.Make(node, inputReceiverNode, 0, inputReceiverData);
                 }
 
                 #endregion
@@ -1444,90 +1346,30 @@ namespace Dynamo.Core
 
                 //List of all inner nodes to connect an output. Unique.
                 var outportList = new List<Tuple<NodeModel, int>>();
-
                 var outConnectors = new List<Tuple<NodeModel, int, int>>();
-
-                int i = 0;
-                if (outputs.Any())
+                foreach (var output in outputs)
                 {
-                    foreach (var output in outputs)
+                    if (outportList.All(x => !(x.Item1 == output.Item1 && x.Item2 == output.Item2)))
                     {
-                        if (outportList.All(x => !(x.Item1 == output.Item1 && x.Item2 == output.Item2)))
-                        {
-                            NodeModel outputSenderNode = output.Item1;
-                            int outputSenderData = output.Item2;
-
-                            outportList.Add(Tuple.Create(outputSenderNode, outputSenderData));
-
-                            //Create Symbol Node
-                            var node = new Output
-                            {
-                                Symbol = outputSenderNode.OutPorts[outputSenderData].PortName,
-                                X = rightMost + 75 - leftShift
-                            };
-
-                            node.Y = i * (50 + node.Height);
-
-                            node.SetNickNameFromAttribute();
-
-                            newNodes.Add(node);
-                            ConnectorModel.Make(outputSenderNode, node, outputSenderData, 0);
-
-                            i++;
-                        }
-                    }
-
-                    //Connect outputs to new node
-                    outConnectors.AddRange(
-                        from output in outputs
-                        let outputSenderNode = output.Item1
-                        let outputSenderData = output.Item2
-                        let outputReceiverData = output.Item3.Item1
-                        let outputReceiverNode = output.Item3.Item2
-                        select
-                            Tuple.Create(
-                                outputReceiverNode,
-                                outportList.FindIndex(
-                                    x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
-                                outputReceiverData));
-                }
-                else
-                {
-                    foreach (var hanging in
-                        selectedNodeSet.SelectMany(
-                            node =>
-                                Enumerable.Range(0, node.OutPortData.Count)
-                                .Where(port => !node.HasOutput(port))
-                                .Select(port => new { node, port })).Distinct())
-                    {
-                        //Create Symbol Node
-                        var node = new Output
-                        {
-                            Symbol = hanging.node.OutPortData[hanging.port].NickName,
-                            X = rightMost + 75 - leftShift
-                        };
-                        node.Y = i * (50 + node.Height);
-                        node.SetNickNameFromAttribute();
-
-                        newNodes.Add(node);
-                        ConnectorModel.Make(hanging.node, node, hanging.port, 0);
-
-                        i++;
+                        outportList.Add(Tuple.Create(output.Item1, output.Item2));
                     }
                 }
+
+                //Connect outputs to new node
+                outConnectors.AddRange(
+                    from output in outputs
+                    let outputSenderNode = output.Item1
+                    let outputSenderData = output.Item2
+                    let outputReceiverData = output.Item3.Item1
+                    let outputReceiverNode = output.Item3.Item2
+                    select
+                        Tuple.Create(
+                            outputReceiverNode,
+                            outportList.FindIndex(
+                                x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
+                            outputReceiverData));
 
                 #endregion
-
-                foreach (var newNode in newNodes)
-                {
-                    customNodeWorkspace.AddAndRegisterNode(newNode);
-                }
-
-                foreach (var newNote in newNotes)
-                {
-                    customNodeWorkspace.AddNote(newNote, false);
-                }
-                
                 var collapsedNode = CreateCustomNodeInstance(model.Definition.FunctionId, isTestMode: false);
                 collapsedNode.X = avgX;
                 collapsedNode.Y = avgY;

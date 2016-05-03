@@ -45,5 +45,31 @@ namespace Dynamo.ViewModels
                 this.WorkspaceViewModel.DynamoViewModel.UpdateCustomNodeDefinition(annotationModel);
             }
         }
+
+        private DelegateCommand _restoreCustomNodeInstanceCommand;
+        public DelegateCommand RestoreCustomNodeInstanceCommand 
+        {
+            get
+            {
+                if (_restoreCustomNodeInstanceCommand == null)
+                    _restoreCustomNodeInstanceCommand =
+                        new DelegateCommand(RestoreCustomNodeInstance, CanRestoreCustomNodeInstance);
+
+                return _restoreCustomNodeInstanceCommand;
+            }
+        }
+
+        private bool CanRestoreCustomNodeInstance(object obj)
+        {
+            return annotationModel.IsSelected;
+        }
+
+        private void RestoreCustomNodeInstance(object obj)
+        {
+            if (annotationModel.IsSelected)
+            {
+                this.WorkspaceViewModel.DynamoViewModel.RestoreCustomNodeInstance(annotationModel);
+            }
+        }
     }
 }

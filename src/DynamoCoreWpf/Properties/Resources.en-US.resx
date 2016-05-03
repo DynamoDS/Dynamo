@@ -2002,4 +2002,7 @@ Next assemblies were loaded several times:
   <data name="ContextMenuUpdateCustomNodeDefintion" xml:space="preserve">
     <value>Update custom node</value>
   </data>
+  <data name="ContextMenuRestoreToCustomNodeInstance" xml:space="preserve">
+    <value>Restore to Custom Node Instance</value>
+  </data>
 </root>
