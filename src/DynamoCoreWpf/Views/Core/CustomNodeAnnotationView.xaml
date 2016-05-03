@@ -191,9 +191,9 @@
                 </ListBox>
                 <Separator>
                 </Separator>
-                <MenuItem Header="{x:Static p:Resources.ContextMenuCollapseBackToCustomNode}"
+                <MenuItem Header="{x:Static p:Resources.ContextMenuUpdateCustomNodeDefintion}"
                           Name="CollapseBack"
-                          Command="{Binding Path=CollapseBackToCustomNodeInstanceCommand}"/>
+                          Command="{Binding Path=UpdateCustomNodeDefinitionCommand}"/>
             </ContextMenu>
         </Grid.ContextMenu>
         <Rectangle Name="selectionBorder"                  

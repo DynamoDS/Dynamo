@@ -20,29 +20,29 @@ namespace Dynamo.ViewModels
         }
 
 
-        private DelegateCommand _collapseBackToCustomNodeInstanceCommand;
-        public DelegateCommand CollapseBackToCustomNodeInstanceCommand
+        private DelegateCommand _updateCustomNodeDefinitionCommand;
+        public DelegateCommand UpdateCustomNodeDefinitionCommand
         {
             get
             {
-                if (_collapseBackToCustomNodeInstanceCommand == null)
-                    _collapseBackToCustomNodeInstanceCommand =
-                        new DelegateCommand(CollapseBackToCustomNodeInstance, CanCollapseBackToCustomNodeInstance);
+                if (_updateCustomNodeDefinitionCommand == null)
+                    _updateCustomNodeDefinitionCommand =
+                        new DelegateCommand(UpdateCustomNodeDefintion, CanUpdateCustomNodeDefinition);
 
-                return _collapseBackToCustomNodeInstanceCommand;
+                return _updateCustomNodeDefinitionCommand;
             }
         }
 
-        private bool CanCollapseBackToCustomNodeInstance(object obj)
+        private bool CanUpdateCustomNodeDefinition(object obj)
         {
             return annotationModel.IsSelected;
         }
 
-        private void CollapseBackToCustomNodeInstance(object obj)
+        private void UpdateCustomNodeDefintion(object obj)
         {
             if (annotationModel.IsSelected)
             {
-                this.WorkspaceViewModel.DynamoViewModel.CollapseBackToCustomNodeInstance(annotationModel);
+                this.WorkspaceViewModel.DynamoViewModel.UpdateCustomNodeDefinition(annotationModel);
             }
         }
     }

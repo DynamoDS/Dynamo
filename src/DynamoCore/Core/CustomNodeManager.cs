@@ -1267,7 +1267,7 @@ namespace Dynamo.Core
                                 ConnectorModel.Make(
                                     nodeTuple.node,
                                     collapsedNode,
-                                    nodeTuple.@from,
+                                    nodeTuple.from,
                                     nodeTuple.to))
                         .Where(connector => connector != null))
                 {

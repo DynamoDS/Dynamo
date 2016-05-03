@@ -1453,7 +1453,7 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
         }
 
-        public void CollapseBackToCustomNodeInstance(object parameter)
+        public void UpdateCustomNodeDefinition(object parameter)
         {
             if (parameter == null)
             {
