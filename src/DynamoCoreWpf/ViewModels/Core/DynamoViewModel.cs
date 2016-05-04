@@ -241,6 +241,22 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Indicates if preview bubbles should be displayed on nodes.
+        /// </summary>
+        public bool ShowPreviewBubbles
+        {
+            get
+            {
+                return model.PreferenceSettings.ShowPreviewBubbles;
+            }
+            set
+            {
+                model.PreferenceSettings.ShowPreviewBubbles = value;
+                RaisePropertyChanged("ShowPreviewBubbles");
+            }
+        }
+
         public int LibraryWidth
         {
             get
@@ -1818,6 +1834,15 @@ namespace Dynamo.ViewModels
         internal bool CanToggleConsoleShowing(object parameter)
         {
             return true;
+        }
+
+        /// <summary>
+        /// Toggles Showing Preview Bubbles globally
+        /// </summary>
+        /// <param name="parameter">Command parameter</param>
+        public void TogglePreviewBubblesShowing(object parameter)
+        {
+            ShowPreviewBubbles = !ShowPreviewBubbles;
         }
 
         public void SelectNeighbors(object parameters)

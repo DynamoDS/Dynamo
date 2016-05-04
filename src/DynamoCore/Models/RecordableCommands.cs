@@ -312,6 +312,9 @@ namespace Dynamo.Models
         [DataContract]
         public abstract class ModelBasedRecordableCommand : RecordableCommand
         {
+            /// <summary>
+            /// The first <see cref="Guid"/> in the <seealso cref="ModelGuid"/> collection, or an empty <see cref="Guid"/>.
+            /// </summary>
             public Guid ModelGuid
             {
                 get
@@ -320,8 +323,15 @@ namespace Dynamo.Models
                 }
             }
 
+            /// <summary>
+            /// A collection of <see cref="Guid"/>.
+            /// </summary>
             public IEnumerable<Guid> ModelGuids { get; private set; }
 
+            /// <summary>
+            /// A collection of <see cref="Guid"/> identifying the objects on which to operate.
+            /// </summary>
+            /// <param name="guids"></param>
             protected ModelBasedRecordableCommand(IEnumerable<Guid> guids)
             {
                 ModelGuids = guids;
@@ -359,12 +369,18 @@ namespace Dynamo.Models
             }
         }
 
-
+        /// <summary>
+        /// A command used to pause command playback.
+        /// </summary>
         [DataContract]
         public class PausePlaybackCommand : RecordableCommand
         {
             #region Public Class Methods
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="pauseDurationInMs">The duration to pause the playback in milliseconds.</param>
             public PausePlaybackCommand(int pauseDurationInMs)
                 : base(GenerateRandomTag())
             {
@@ -422,18 +438,26 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command to open a file.
+        /// </summary>
         [DataContract]
         public class OpenFileCommand : RecordableCommand
         {
             #region Public Class Methods
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="xmlFilePath">The path to the file.</param>
+            /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
             public OpenFileCommand(string xmlFilePath, bool forceManualExecutionMode = false)
             {
                 XmlFilePath = xmlFilePath;
                 ForceManualExecutionMode = forceManualExecutionMode;
             }
 
-            static string TryFindFile(string xmlFilePath, string uriString = null)
+            private static string TryFindFile(string xmlFilePath, string uriString = null)
             {
                 if (File.Exists(xmlFilePath))
                     return xmlFilePath;
@@ -491,11 +515,19 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command used to execute or cancel execution.
+        /// </summary>
         [DataContract]
         public class RunCancelCommand : RecordableCommand
         {
             #region Public Class Methods
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="showErrors">Should errors be shown?</param>
+            /// <param name="cancelRun">True to cancel execution. False to execute.</param>
             public RunCancelCommand(bool showErrors, bool cancelRun)
             {
                 ShowErrors = showErrors;
@@ -539,9 +571,17 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command used to force cancellation of execution.
+        /// </summary>
         [DataContract]
         public class ForceRunCancelCommand : RunCancelCommand
         {
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="showErrors">Should errors be shown?</param>
+            /// <param name="cancelRun">True to cancel execution. False to execute.</param>
             public ForceRunCancelCommand(bool showErrors, bool cancelRun)
                 : base(showErrors, cancelRun) { }
 
@@ -551,18 +591,22 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// A command used to mutate commands during testing.
+        /// </summary>
         public class MutateTestCommand : RecordableCommand
         {
-
             protected override void ExecuteCore(DynamoModel dynamoModel) { }
 
             protected override void SerializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
             }
-
         }
 
+        /// <summary>
+        /// A command used to create a node.
+        /// </summary>
         [DataContract]
         public class CreateNodeCommand : ModelBasedRecordableCommand
         {
@@ -576,6 +620,13 @@ namespace Dynamo.Models
                 TransformCoordinates = transformCoordinates;
             }
 
+            /// <summary>
+            /// </summary>
+            /// <param name="node">The node.</param>
+            /// <param name="x">The x location.</param>
+            /// <param name="y">The y location.</param>
+            /// <param name="defaultPosition"></param>
+            /// <param name="transformCoordinates"></param>
             public CreateNodeCommand(
                 NodeModel node, double x, double y, bool defaultPosition, bool transformCoordinates)
                 : base(node != null ? new[] { node.GUID } : new[] { Guid.Empty })
@@ -584,6 +635,14 @@ namespace Dynamo.Models
                 SetProperties(x, y, defaultPosition, transformCoordinates);
             }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="node"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="defaultPosition"></param>
+            /// <param name="transformCoordinates"></param>
             private CreateNodeCommand(
                XmlElement node, double x, double y, bool defaultPosition, bool transformCoordinates)
                 : base(new[] { Guid.Empty })
@@ -592,6 +651,15 @@ namespace Dynamo.Models
                 SetProperties(x, y, defaultPosition, transformCoordinates);
             }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="nodeId"></param>
+            /// <param name="nodeName"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="defaultPosition"></param>
+            /// <param name="transformCoordinates"></param>
             public CreateNodeCommand(IEnumerable<Guid> nodeId, string nodeName,
                 double x, double y, bool defaultPosition, bool transformCoordinates)
                 : base(nodeId)
@@ -600,6 +668,15 @@ namespace Dynamo.Models
                 SetProperties(x, y, defaultPosition, transformCoordinates);
             }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="nodeId"></param>
+            /// <param name="nodeName"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="defaultPosition"></param>
+            /// <param name="transformCoordinates"></param>
             [JsonConstructor]
             public CreateNodeCommand(string nodeId, string nodeName,
                 double x, double y, bool defaultPosition, bool transformCoordinates)
@@ -695,7 +772,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Command used to create a new upstream/downstream node and connect
+        /// A command used to create a new upstream/downstream node and connect
         /// it to an existing node in a single step
         /// </summary>
         [DataContract]
@@ -806,13 +883,25 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Contains additional information needed for creating proxy custom node
+        /// A command containing additional information needed for creating a proxy custom node.
         /// </summary>
         [DataContract]
         public class CreateProxyNodeCommand : CreateNodeCommand
         {
             #region Public Class Methods
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="nodeId"></param>
+            /// <param name="nodeName"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="defaultPosition"></param>
+            /// <param name="transformCoordinates"></param>
+            /// <param name="nickName"></param>
+            /// <param name="inputs"></param>
+            /// <param name="outputs"></param>
             [JsonConstructor]
             public CreateProxyNodeCommand(string nodeId, string nodeName,
                 double x, double y,
@@ -874,6 +963,9 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command to create a note.
+        /// </summary>
         [DataContract]
         public class CreateNoteCommand : ModelBasedRecordableCommand
         {
@@ -891,6 +983,14 @@ namespace Dynamo.Models
                 DefaultPosition = defaultPosition;
             }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="nodeId"></param>
+            /// <param name="noteText"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="defaultPosition"></param>
             public CreateNoteCommand(Guid nodeId, string noteText,
                 double x, double y, bool defaultPosition)
                 : base(new[] { nodeId })
@@ -898,6 +998,14 @@ namespace Dynamo.Models
                 SetProperties(noteText, x, y, defaultPosition);
             }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="nodeIds"></param>
+            /// <param name="noteText"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="defaultPosition"></param>
             public CreateNoteCommand(IEnumerable<Guid> nodeIds, string noteText,
                 double x, double y, bool defaultPosition)
                 : base(nodeIds)
@@ -905,6 +1013,14 @@ namespace Dynamo.Models
                 SetProperties(noteText, x, y, defaultPosition);
             }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="nodeId"></param>
+            /// <param name="noteText"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="defaultPosition"></param>
             [JsonConstructor]
             public CreateNoteCommand(string nodeId, string noteText,
                 double x, double y, bool defaultPosition)
@@ -963,11 +1079,19 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command to select a model object.
+        /// </summary>
         [DataContract]
         public class SelectModelCommand : ModelBasedRecordableCommand
         {
             #region Public Class Methods
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="modelGuid"></param>
+            /// <param name="modifiers"></param>
             [JsonConstructor]
             public SelectModelCommand(string modelGuid, ModifierKeys modifiers)
                 : base(new[] { Guid.Parse(modelGuid) })
@@ -975,12 +1099,22 @@ namespace Dynamo.Models
                 Modifiers = modifiers;
             }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="modelGuid"></param>
+            /// <param name="modifiers"></param>
             public SelectModelCommand(Guid modelGuid, ModifierKeys modifiers)
                 : base(new[] { modelGuid })
             {
                 Modifiers = modifiers;
             }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="modelGuids"></param>
+            /// <param name="modifiers"></param>
             public SelectModelCommand(IEnumerable<Guid> modelGuids, ModifierKeys modifiers)
                 : base(modelGuids)
             {
@@ -1023,11 +1157,19 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command to select model objects within a region.
+        /// </summary>
         [DataContract]
         public class SelectInRegionCommand : RecordableCommand
         {
             #region Public Class Methods
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="region"></param>
+            /// <param name="isCrossSelection"></param>
             public SelectInRegionCommand(Rect2D region, bool isCrossSelection)
             {
                 redundant = true; // High-frequency command.
@@ -1077,13 +1219,34 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command to begin or end dragging a selection.
+        /// </summary>
         [DataContract]
         public class DragSelectionCommand : RecordableCommand
         {
             #region Public Class Methods
 
-            public enum Operation { BeginDrag, EndDrag }
+            /// <summary>
+            /// The operation to perform.
+            /// </summary>
+            public enum Operation
+            {
+                /// <summary>
+                /// Begin dragging.
+                /// </summary>
+                BeginDrag,
+                /// <summary>
+                /// End dragging.
+                /// </summary>
+                EndDrag
+            }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="mouseCursor"></param>
+            /// <param name="operation"></param>
             public DragSelectionCommand(Point2D mouseCursor, Operation operation)
             {
                 MouseCursor = mouseCursor;
@@ -1126,12 +1289,32 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command used to create a connection.
+        /// </summary>
         [DataContract]
         public class MakeConnectionCommand : ModelBasedRecordableCommand
         {
             #region Public Class Methods
 
-            public enum Mode { Begin, End, Cancel }
+            /// <summary>
+            /// The connection mode.
+            /// </summary>
+            public enum Mode
+            {
+                /// <summary>
+                /// Begin connection.
+                /// </summary>
+                Begin,
+                /// <summary>
+                /// End connection.
+                /// </summary>
+                End,
+                /// <summary>
+                /// Cancel connection.
+                /// </summary>
+                Cancel
+            }
 
             void setProperties(int portIndex, PortType portType, Mode mode)
             {
@@ -1140,6 +1323,13 @@ namespace Dynamo.Models
                 ConnectionMode = mode;
             }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="nodeId"></param>
+            /// <param name="portIndex"></param>
+            /// <param name="portType"></param>
+            /// <param name="mode"></param>
             [JsonConstructor]
             public MakeConnectionCommand(string nodeId, int portIndex, PortType portType, Mode mode)
                 : base(new[] { Guid.Parse(nodeId) })
@@ -1147,12 +1337,26 @@ namespace Dynamo.Models
                 setProperties(portIndex, portType, mode);
             }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="nodeId"></param>
+            /// <param name="portIndex"></param>
+            /// <param name="portType"></param>
+            /// <param name="mode"></param>
             public MakeConnectionCommand(Guid nodeId, int portIndex, PortType portType, Mode mode)
                 : base(new[] { nodeId })
             {
                 setProperties(portIndex, portType, mode);
             }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="nodeId"></param>
+            /// <param name="portIndex"></param>
+            /// <param name="portType"></param>
+            /// <param name="mode"></param>
             public MakeConnectionCommand(IEnumerable<Guid> nodeId, int portIndex, PortType portType, Mode mode)
                 : base(nodeId)
             {
@@ -1205,16 +1409,31 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command used to delete a model object.
+        /// </summary>
         [DataContract]
         public class DeleteModelCommand : ModelBasedRecordableCommand
         {
             #region Public Class Methods
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="modelGuid"></param>
             [JsonConstructor]
             public DeleteModelCommand(string modelGuid) : base(new[] { Guid.Parse(modelGuid) }) { }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="modelGuid"></param>
             public DeleteModelCommand(Guid modelGuid) : base(new[] { modelGuid }) { }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="modelGuids"></param>
             public DeleteModelCommand(IEnumerable<Guid> modelGuids) : base(modelGuids) { }
 
             internal static DeleteModelCommand DeserializeCore(XmlElement element)
@@ -1241,13 +1460,33 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command used to trigger an undo or redo operation.
+        /// </summary>
         [DataContract]
         public class UndoRedoCommand : RecordableCommand
         {
             #region Public Class Methods
 
-            public enum Operation { Undo, Redo }
+            /// <summary>
+            /// The operation to perform.
+            /// </summary>
+            public enum Operation
+            {
+                /// <summary>
+                /// Undo.
+                /// </summary>
+                Undo,
+                /// <summary>
+                /// Redo.
+                /// </summary>
+                Redo
+            }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="operation">The operation to perform.</param>
             public UndoRedoCommand(Operation operation)
             {
                 CmdOperation = operation;
@@ -1285,6 +1524,9 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command used
+        /// </summary>
         [DataContract]
         public class ModelEventCommand : ModelBasedRecordableCommand
         {
@@ -1351,6 +1593,9 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command used to update the value of a property on a model object.
+        /// </summary>
         [DataContract]
         public class UpdateModelValueCommand : ModelBasedRecordableCommand
         {
@@ -1367,6 +1612,11 @@ namespace Dynamo.Models
             public UpdateModelValueCommand(Guid workspaceGuid, Guid modelGuid, string name, string value)
                 : this(workspaceGuid, new[] { modelGuid }, name, value) { }
 
+            /// <summary>
+            /// </summary>
+            /// <param name="modelGuid"></param>
+            /// <param name="name"></param>
+            /// <param name="value"></param>
             [JsonConstructor]
             public UpdateModelValueCommand(string modelGuid, string name, string value)
                 : base(new[] { Guid.Parse(modelGuid) })
@@ -1376,14 +1626,23 @@ namespace Dynamo.Models
                 Value = value;
             }
 
+            /// <summary>
+            /// </summary>
+            /// <param name="modelGuid"></param>
+            /// <param name="name"></param>
+            /// <param name="value"></param>
             public UpdateModelValueCommand(Guid modelGuid, string name, string value)
                 : this(Guid.Empty, new[] { modelGuid }, name, value) { }
 
+            /// <summary>
+            /// </summary>
+            /// <param name="modelGuid"></param>
+            /// <param name="name"></param>
+            /// <param name="value"></param>
             public UpdateModelValueCommand(IEnumerable<Guid> modelGuid, string name, string value)
                 : this(Guid.Empty, modelGuid, name, value) { }
 
             /// <summary>
-            ///
             /// </summary>
             /// <param name="workspaceGuid">Guid of the target workspace. Guid.Empty means current workspace</param>
             /// <param name="modelGuid"></param>
@@ -1422,13 +1681,23 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
+            /// <summary>
+            /// A collection of <see cref="Guid"/> which identify the model objects to update.
+            /// </summary>
             public IEnumerable<Guid> ModelGuids { get { return modelGuids; } }
 
+            /// <summary>
+            /// The name of the property to update.
+            /// </summary>
             [DataMember]
             public string Name { get; private set; }
 
+            /// <summary>
+            /// The new value to apply to the property.
+            /// </summary>
             [DataMember]
             public string Value { get; private set; }
+
             internal Guid WorkspaceGuid { get; private set; }
 
             #endregion
@@ -1458,6 +1727,9 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command to convert nodes to code.
+        /// </summary>
         [DataContract]
         public class ConvertNodesToCodeCommand : RecordableCommand
         {
@@ -1488,6 +1760,9 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command to create a custom node.
+        /// </summary>
         [DataContract]
         public class CreateCustomNodeCommand : ModelBasedRecordableCommand
         {
@@ -1502,6 +1777,13 @@ namespace Dynamo.Models
                 MakeCurrent = makeCurrent;
             }
 
+            /// <summary>
+            /// </summary>
+            /// <param name="nodeId"></param>
+            /// <param name="name"></param>
+            /// <param name="category"></param>
+            /// <param name="description"></param>
+            /// <param name="makeCurrent"></param>
             [JsonConstructor]
             public CreateCustomNodeCommand(string nodeId, string name,
                 string category, string description, bool makeCurrent)
@@ -1510,6 +1792,14 @@ namespace Dynamo.Models
                 SetProperties(name, category, description, makeCurrent);
             }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="nodeId"></param>
+            /// <param name="name"></param>
+            /// <param name="category"></param>
+            /// <param name="description"></param>
+            /// <param name="makeCurrent"></param>
             public CreateCustomNodeCommand(Guid nodeId, string name,
                 string category, string description, bool makeCurrent)
                 : base(new[] { nodeId })
@@ -1517,6 +1807,14 @@ namespace Dynamo.Models
                 SetProperties(name, category, description, makeCurrent);
             }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="nodeId"></param>
+            /// <param name="name"></param>
+            /// <param name="category"></param>
+            /// <param name="description"></param>
+            /// <param name="makeCurrent"></param>
             public CreateCustomNodeCommand(IEnumerable<Guid> nodeId, string name,
                 string category, string description, bool makeCurrent)
                 : base(nodeId)
@@ -1575,11 +1873,18 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command to switch tabs.
+        /// </summary>
         [DataContract]
         public class SwitchTabCommand : RecordableCommand
         {
             #region Public Class Methods
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="modelIndex"></param>
             [JsonConstructor]
             public SwitchTabCommand(int modelIndex)
             {
@@ -1617,10 +1922,21 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command to create a group.
+        /// </summary>
         public class CreateAnnotationCommand : ModelBasedRecordableCommand
         {
             #region Public Class Methods
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="annotationId"></param>
+            /// <param name="annotationText"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="defaultPosition"></param>
             public CreateAnnotationCommand(Guid annotationId, string annotationText,
                 double x, double y, bool defaultPosition)
                 : base(new List<Guid> { annotationId })
@@ -1634,6 +1950,14 @@ namespace Dynamo.Models
                 DefaultPosition = defaultPosition;
             }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="annotationId"></param>
+            /// <param name="annotationText"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="defaultPosition"></param>
             public CreateAnnotationCommand(IEnumerable<Guid> annotationId, string annotationText,
                 double x, double y, bool defaultPosition)
                 : base(annotationId)
@@ -1690,16 +2014,31 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command to ungroup model objects.
+        /// </summary>
         [DataContract]
         public class UngroupModelCommand : ModelBasedRecordableCommand
         {
             #region Public Class Methods
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="modelGuid"></param>
             [JsonConstructor]
             public UngroupModelCommand(string modelGuid) : base(new[] { Guid.Parse(modelGuid) }) { }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="modelGuid"></param>
             public UngroupModelCommand(Guid modelGuid) : base(new[] { modelGuid }) { }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="modelGuid"></param>
             public UngroupModelCommand(IEnumerable<Guid> modelGuid) : base(modelGuid) { }
 
             internal static UngroupModelCommand DeserializeCore(XmlElement element)
@@ -1726,16 +2065,31 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command to add a model object to a group.
+        /// </summary>
         [DataContract]
         public class AddModelToGroupCommand : ModelBasedRecordableCommand
         {
             #region Public Class Methods
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="modelGuid"></param>
             [JsonConstructor]
             public AddModelToGroupCommand(string modelGuid) : base(new[] { Guid.Parse(modelGuid) }) { }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="modelGuid"></param>
             public AddModelToGroupCommand(Guid modelGuid) : base(new[] { modelGuid }) { }
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="modelGuid"></param>
             public AddModelToGroupCommand(IEnumerable<Guid> modelGuid) : base(modelGuid) { }
 
             internal static AddModelToGroupCommand DeserializeCore(XmlElement element)
@@ -1762,13 +2116,22 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// A command to add a preset.
+        /// </summary>
         [DataContract]
         public class AddPresetCommand : ModelBasedRecordableCommand
         {
             #region Public Class Methods
 
-            public AddPresetCommand(string name, string description, IEnumerable<Guid> currentSelectionIDS )
-                :base(currentSelectionIDS)
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="name"></param>
+            /// <param name="description"></param>
+            /// <param name="currentSelectionIds"></param>
+            public AddPresetCommand(string name, string description, IEnumerable<Guid> currentSelectionIds )
+                :base(currentSelectionIds)
             {
                 PresetStateName = name;
                 PresetStateDescription = description;
@@ -1815,11 +2178,19 @@ namespace Dynamo.Models
               #endregion
         }
 
+        /// <summary>
+        /// A command to apply a preset.
+        /// </summary>
         [DataContract]
         public class ApplyPresetCommand : RecordableCommand
         {
             #region Public Class Methods
 
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="workspaceID"></param>
+            /// <param name="stateID"></param>
             public ApplyPresetCommand(Guid workspaceID, Guid stateID)
             {
                 StateID = stateID;
