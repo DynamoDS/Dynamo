@@ -417,7 +417,7 @@ namespace Dynamo.Models
         {
             foreach (var guid in command.ModelGuids)
             {
-                CurrentWorkspace.SendModelEvent(guid, command.EventName);
+                CurrentWorkspace.SendModelEvent(guid, command.EventName, command.Value);
             }
         }
 
