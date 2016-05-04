@@ -940,7 +940,7 @@ namespace Dynamo.Core
         /// </summary>
         /// <param name="selectedNodeSet"></param>
         /// <returns></returns>
-        private HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>> GetInputNodes(HashSet<NodeModel> selectedNodeSet)
+        private HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>> GetInputNodes(IEnumerable<NodeModel> selectedNodeSet)
         {
             return new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
                    selectedNodeSet.SelectMany(
@@ -959,7 +959,7 @@ namespace Dynamo.Core
         /// </summary>
         /// <param name="selectedNodeSet"></param>
         /// <returns></returns>
-        private HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>> GetOutputNodes(HashSet<NodeModel> selectedNodeSet)
+        private HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>> GetOutputNodes(IEnumerable<NodeModel> selectedNodeSet)
         {
             return new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
                     selectedNodeSet.SelectMany(
@@ -1236,77 +1236,34 @@ namespace Dynamo.Core
                 return;
             }
 
-            var selectedNodes = model.SelectedModels.Where(s => s is NodeModel).Cast<NodeModel>();
-            var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
             UndoRedoRecorder undoRecorder = currentWorkspace.UndoRecorder;
-
             using (undoRecorder.BeginActionGroup())
             {
                 #region Determine Inputs and Outputs
 
-                //Step 1: determine which nodes will be inputs to the new node
-                var inputs = GetInputNodes(selectedNodeSet);
-                var outputs = GetOutputNodes(selectedNodeSet);
+                var selectedNodes = model.SelectedModels.OfType<NodeModel>().ToList();
+                var inputs = GetInputNodes(selectedNodes);
+                var outputs = GetOutputNodes(selectedNodes);
 
                 #endregion
 
                 #region UI Positioning Calculations
-
-                double avgX = selectedNodeSet.Average(node => node.X);
-                double avgY = selectedNodeSet.Average(node => node.Y);
-
-                double leftMost = selectedNodeSet.Min(node => node.X);
-                double topMost = selectedNodeSet.Min(node => node.Y);
-                double rightMost = selectedNodeSet.Max(node => node.X + node.Width);
-
-                double leftShift = leftMost - 250;
-
+                double avgX = selectedNodes.Average(node => node.X);
+                double avgY = selectedNodes.Average(node => node.Y);
                 #endregion
 
-                #region Handle full selected connectors
-
-                // Step 2: Determine all the connectors whose start/end owners are 
-                // both in the selection set, and then move them from the current 
-                // workspace into the new workspace.
-
-                var fullySelectedConns = new HashSet<ConnectorModel>(
-                    currentWorkspace.Connectors.Where(
-                        conn =>
-                        {
-                            bool startSelected = selectedNodeSet.Contains(conn.Start.Owner);
-                            bool endSelected = selectedNodeSet.Contains(conn.End.Owner);
-                            return startSelected && endSelected;
-                        }));
-
-                foreach (var connector in fullySelectedConns)
+                #region Handle connectors
+                var connectors = currentWorkspace.Connectors.Where(c =>
+                    selectedNodes.Contains(c.Start.Owner) || selectedNodes.Contains(c.End.Owner)).ToList();
+                foreach (var connector in connectors)
                 {
                     undoRecorder.RecordDeletionForUndo(connector);
                     connector.Delete();
                 }
-
                 #endregion
 
-                #region Handle partially selected connectors
-
-                // Step 3: Partially selected connectors (either one of its start 
-                // and end owners is in the selection) are to be destroyed.
-
-                var partiallySelectedConns =
-                    currentWorkspace.Connectors.Where(
-                        conn =>
-                            selectedNodeSet.Contains(conn.Start.Owner)
-                                || selectedNodeSet.Contains(conn.End.Owner)).ToList();
-
-                foreach (var connector in partiallySelectedConns)
-                {
-                    undoRecorder.RecordDeletionForUndo(connector);
-                    connector.Delete();
-                }
-
-                #endregion
-
-                #region Transfer nodes and connectors to new workspace
-                foreach (var node in selectedNodeSet)
+                #region Remove all nodes and notes in the group
+                foreach (var node in selectedNodes)
                 {
                     undoRecorder.RecordDeletionForUndo(node);
                     currentWorkspace.RemoveNode(node);
@@ -1318,7 +1275,6 @@ namespace Dynamo.Core
                     currentWorkspace.RemoveNote(note);
                 }
 
-                //Copy the group from newNodes
                 foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
                 {
                     undoRecorder.RecordDeletionForUndo(group);
@@ -1330,7 +1286,6 @@ namespace Dynamo.Core
 
                 var inConnectors = new List<Tuple<NodeModel, int>>();
                 var uniqueInputSenders = new Dictionary<Tuple<NodeModel, int>, bool>();
-                //Step 3: insert variables (reference step 1)
                 foreach (var input in Enumerable.Range(0, inputs.Count).Zip(inputs, Tuple.Create))
                 {
                     NodeModel inputNode = input.Item2.Item3.Item2;
@@ -1374,35 +1329,22 @@ namespace Dynamo.Core
                             outputReceiverData));
 
                 #endregion
+
                 var collapsedNode = CreateCustomNodeInstance(model.Definition.FunctionId, isTestMode: false);
                 collapsedNode.X = avgX;
                 collapsedNode.Y = avgY;
                 currentWorkspace.AddAndRegisterNode(collapsedNode, centered: false);
                 undoRecorder.RecordCreationForUndo(collapsedNode);
 
-                foreach (var connector in
-                    inConnectors.Select((x, idx) => new { node = x.Item1, from = x.Item2, to = idx })
-                        .Select(
-                            nodeTuple =>
-                                ConnectorModel.Make(
-                                    nodeTuple.node,
-                                    collapsedNode,
-                                    nodeTuple.from,
-                                    nodeTuple.to))
-                        .Where(connector => connector != null))
+                for (int idx = 0; idx < inConnectors.Count; idx++)
                 {
+                    var connector = ConnectorModel.Make(inConnectors[idx].Item1, collapsedNode, inConnectors[idx].Item2, idx); 
                     undoRecorder.RecordCreationForUndo(connector);
                 }
 
-                foreach (var connector in
-                    outConnectors.Select(
-                        nodeTuple =>
-                            ConnectorModel.Make(
-                                collapsedNode,
-                                nodeTuple.Item1,
-                                nodeTuple.Item2,
-                                nodeTuple.Item3)).Where(connector => connector != null))
+                foreach (var outConnector in outConnectors)
                 {
+                    var connector = ConnectorModel.Make(collapsedNode, outConnector.Item1, outConnector.Item2, outConnector.Item3);
                     undoRecorder.RecordCreationForUndo(connector);
                 }
             }
