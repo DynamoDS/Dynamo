@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Xml;
-using Dynamo.Core;
+﻿using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Engine.NodeToCode;
@@ -24,6 +17,13 @@ using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.Namespace;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Xml;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
 namespace Dynamo.Graph.Workspaces
