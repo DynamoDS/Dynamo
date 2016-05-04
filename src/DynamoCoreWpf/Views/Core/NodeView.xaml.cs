@@ -14,6 +14,7 @@ using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using System.Windows.Threading;
 
 using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -410,13 +411,21 @@ namespace Dynamo.Controls
 
         private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
+            // if the node is located under "Hide preview bubbles" menu item and the item is clicked,
+            // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
+            // so, wait while ShowPreviewBubbles binding updates value
+            Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
+        }
+
+        private void TryShowPreviewBubbles()
+        {
             nodeWasClicked = false;
 
             // Always set old ZIndex to the last value, even if mouse is not over the node.
             oldZIndex = NodeViewModel.StaticZIndex;
 
             // There is no need run further.
-            if (IsPreviewDisabled()) return; 
+            if (IsPreviewDisabled()) return;
 
             if (PreviewControl.IsInTransition) // In transition state, come back later.
                 return;
@@ -436,12 +445,14 @@ namespace Dynamo.Controls
 
         private bool IsPreviewDisabled()
         {
-            // True if a connector is being created now
+            // True if preview bubbles are turned off globally 
+            // Or a connector is being created now
             // Or the user is selecting nodes
             // Or preview is disabled for this node
             // Or preview shouldn't be shown for some nodes (e.g. number sliders, watch nodes etc.)
             // Or node is frozen.
-            return ViewModel.WorkspaceViewModel.IsConnecting || 
+            return !ViewModel.DynamoViewModel.ShowPreviewBubbles ||
+                ViewModel.WorkspaceViewModel.IsConnecting ||
                 ViewModel.WorkspaceViewModel.IsSelecting || !previewEnabled ||
                 !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen;
         }
