@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dynamo.Engine;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Models;
 using ProtoScript.Runners;
 
 namespace Dynamo.Scheduler
@@ -33,10 +31,10 @@ namespace Dynamo.Scheduler
 
         #region Public Class Operational Methods
 
-        internal PreviewGraphAsyncTask(IScheduler scheduler, bool verboseLogging1)
+        internal PreviewGraphAsyncTask(IScheduler scheduler, bool useVerboseLogging)
             : base(scheduler)
         {
-            verboseLogging = verboseLogging;
+            verboseLogging = useVerboseLogging;
         }
 
         /// <summary>
