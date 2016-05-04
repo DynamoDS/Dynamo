@@ -17,7 +17,11 @@ using XmlDocToMarkdown;
 namespace Dynamo.Docs
 {
     class Program
-    {                    
+    {
+        /// <summary>
+        /// Construct the markdown files
+        /// </summary>
+        /// <param name="args">The arguments.</param>
         static void Main(string[] args)
         {
             var asm = Assembly.LoadFrom(args[0]);
@@ -31,7 +35,6 @@ namespace Dynamo.Docs
 
                 Helper.HandleConstructors(xml);
                 Helper.HandleGenerics(xml);
-
                 foreach (var ns in namespaces)
                 {
                     var cleanNamespace = ns.Replace('.', '_');
@@ -40,8 +43,8 @@ namespace Dynamo.Docs
                     {
                         Directory.CreateDirectory(outputDir);
                     }
-                    var publicTypes = asm.GetTypes().Where(t => t.Namespace == ns).Where(t => t.IsPublic);
-                   
+                    var publicTypes = asm.GetTypes().Where(t => t.Namespace == ns).Where(t => t.IsPublic || t.IsNestedPublic);
+
                     foreach (var t in publicTypes)
                     {
                         MarkDownLibrary.GenerateMarkdownDocumentForType(t, outputDir, xml);
