@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ITransformable = Autodesk.DesignScript.Interfaces.ITransformable;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Interfaces;
 using Dynamo.Visualization;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
@@ -36,7 +36,7 @@ namespace Dynamo.Wpf.Rendering
     /// <summary>
     /// A Helix-specifc IRenderPackage implementation.
     /// </summary>
-    public class HelixRenderPackage : IRenderPackage, Autodesk.DesignScript.Interfaces.ITransformable
+    public class HelixRenderPackage : IRenderPackage, ITransformable
     {
         #region private members
 
@@ -143,12 +143,21 @@ namespace Dynamo.Wpf.Rendering
         }
 
         /// <summary>
-        /// Sets the transform as a double array, this transform will be applied to all geometry in the renderPackage
+        /// Sets the transform as a double array, this transform will be applied to all geometry in the renderPackage.
+        /// NOTE: this matrix is assumed to be in row vector form, and will be transformed into the neccesary form
+        /// for helix
         /// </summary>
         /// <param name="matrix"></param>
         public void SetTransform(double[] matrix)
         {
-            this.Transform = matrix;
+            this.Transform = new double[]
+            {
+                matrix[0],matrix[2],-matrix[1],matrix[3],
+                matrix[8],matrix[10],-matrix[9],matrix[7],
+                -matrix[4],-matrix[6],matrix[5],matrix[11],
+                matrix[12],matrix[14],-matrix[13],matrix[15]
+            };
+
         }
         #endregion
 
@@ -671,22 +680,30 @@ namespace Dynamo.Wpf.Rendering
 
         public static double[] ToArray(this System.Windows.Media.Media3D.Matrix3D mat)
         {
+            if(mat == null)
+            {
+                throw new ArgumentNullException("matrix");
+            }
+
             return new double[] {mat.M11,mat.M12,mat.M13,mat.M14,
                 mat.M21,mat.M22,mat.M23,mat.M24,
                 mat.M31,mat.M32,mat.M33,mat.M34,
                 mat.OffsetX,mat.OffsetY,mat.OffsetZ,mat.M44,
             };
-
         }
 
         public static System.Windows.Media.Media3D.Matrix3D ToMatrix3D(this double[] matArray)
         {
+            if (matArray == null || matArray.Count() < 16)
+            {
+                throw new ArgumentNullException("matArray");
+            }
+
             return new System.Windows.Media.Media3D.Matrix3D(
                 matArray[0], matArray[1], matArray[2], matArray[3],
                 matArray[4], matArray[5], matArray[6], matArray[7],
                 matArray[8], matArray[9], matArray[10], matArray[11],
                 matArray[12], matArray[13], matArray[14], matArray[15]);
-
         }
     }
 }

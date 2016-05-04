@@ -266,7 +266,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public PhongMaterial SelectedMaterial { get; set; }
 
-        public Transform3D BaseTransform
+        /// <summary>
+        /// This is the initial transform applied to 
+        /// elements of the scene, like the grid and world axes.
+        /// </summary>
+        public Transform3D SceneTransform
         {
             get
             {
@@ -1078,7 +1082,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             gridModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Grid,
-                Transform = BaseTransform,
+                Transform = SceneTransform,
                 Color = Color.White,
                 Thickness = 0.3,
                 IsHitTestVisible = false,
@@ -1095,7 +1099,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var axesModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Axes,
-                Transform = BaseTransform,
+                Transform = SceneTransform,
                 Color = Color.White,
                 Thickness = 0.3,
                 IsHitTestVisible = false,
