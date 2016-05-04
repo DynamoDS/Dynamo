@@ -251,9 +251,9 @@ namespace Autodesk.DesignScript.Interfaces
         /// <summary>
         /// Sets the transform as a double array, this transform will be applied to all geometry in the renderPackage.
         /// This matrix should be laid out as follows in row vector order:
-        /// [Xx,Xy,Xz, scalar,
-        ///  Yx, Yy, Yz, scalar,
-        ///  Zx, Zy, Zz, scalar,
+        /// [Xx,Xy,Xz, 0,
+        ///  Yx, Yy, Yz, 0,
+        ///  Zx, Zy, Zz, 0,
         ///  offsetX, offsetY, offsetZ, W]
         /// ]
         ///NOTE: This method should transform the matrix from row vector order to whatever form is needed by the implementation
