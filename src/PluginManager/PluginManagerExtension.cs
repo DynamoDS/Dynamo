@@ -1,7 +1,9 @@
 ﻿using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
+using Dynamo.PluginManager.View;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using PluginManager;
 using System;
 using System.Collections.Generic;
@@ -19,6 +21,7 @@ namespace Dynamo.PluginManager
         private ViewStartupParams startupParams;
         private ViewLoadedParams loadedParams;
 
+        internal IWatch3DViewModel BackgroundPreviewViewModel { get; private set; }
         private Menu dynamoMenu;
         private MenuItem loadPythonScriptMenuItem;
         private Separator separator = new Separator();
@@ -102,16 +105,23 @@ namespace Dynamo.PluginManager
         {
             MenuItem item = new MenuItem();
             //item.InputGestureText = "Alt+D";
-            item.Header = "Load Python Script";
-           //  = PluginManagerImportScript.ImportPythonScript();
-           // item.CommandBindings.Add()
+            item.Header = "Plugin Manager";
           
+            //  = PluginManagerImportScript.ImportPythonScript();
+            // item.CommandBindings.Add()
 
 
-         item.Click += (sender, args) => { PluginManagerImportScript.ImportPythonScript(this); };
+           
+           item.Click += ShowPluginManagerWindow ;
+           //item.Click += (sender, args) => { PluginManagerImportScript.ImportPythonScript(this); };
            return item;
         }
-       
+        private void ShowPluginManagerWindow(object sender, RoutedEventArgs e)
+        {
+            PluginManagerView pluginManagerView = new PluginManagerView();
+            //OnRequestPluginManagerWindow(this, EventArgs.Empty);
+            pluginManagerView.Show();
+        }
 
         #endregion
 
