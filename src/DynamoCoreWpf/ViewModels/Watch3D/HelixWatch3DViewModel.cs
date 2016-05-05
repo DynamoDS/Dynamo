@@ -266,8 +266,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public PhongMaterial SelectedMaterial { get; set; }
 
-        public Transform3D Model1Transform { get; private set; }
-
+        /// <summary>
+        /// This is the initial transform applied to 
+        /// elements of the scene, like the grid and world axes.
+        /// </summary>
+        public Transform3D SceneTransform
+        {
+            get
+            {
+                return new TranslateTransform3D(0, -0, 0);
+            }
+        }
         public RenderTechnique RenderTechnique
         {
             get
@@ -1038,8 +1047,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 SpecularShininess = 12.8f,
             };
 
-            Model1Transform = new TranslateTransform3D(0, -0, 0);
-
             // camera setup
             Camera = new PerspectiveCamera();
 
@@ -1075,7 +1082,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             gridModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Grid,
-                Transform = Model1Transform,
+                Transform = SceneTransform,
                 Color = Color.White,
                 Thickness = 0.3,
                 IsHitTestVisible = false,
@@ -1092,7 +1099,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var axesModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Axes,
-                Transform = Model1Transform,
+                Transform = SceneTransform,
                 Color = Color.White,
                 Thickness = 0.3,
                 IsHitTestVisible = false,
@@ -1276,9 +1283,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 // and it will select var_guid:0:0, var_guid:0:1, var_guid:0:2 and so on.
                 // if there is a geometry to add label(s)
                 List<Tuple<string, Vector3>> requestedLabelPlaces;
-                if (labelPlaces.ContainsKey(nodePath) && 
-                        (requestedLabelPlaces = labelPlaces[nodePath]
-                            .Where(pair => pair.Item1.StartsWith(path)).ToList()).Any())
+                if (labelPlaces.ContainsKey(nodePath) &&
+                    (requestedLabelPlaces = labelPlaces[nodePath]
+                        .Where(pair => pair.Item1 == path || pair.Item1.StartsWith(path + ":")).ToList()).Any())
                 {
                     // second, add requested labels
                     var textGeometry = HelixRenderPackage.InitText3D();
@@ -1291,6 +1298,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     {
                         var text = HelixRenderPackage.CleanTag(id_position.Item1);
                         var textPosition = id_position.Item2 + defaultLabelOffset;
+
                         var textInfo = new TextInfo(text, textPosition);
                         textGeometry.TextInfo.Add(textInfo);
                     }
@@ -1496,10 +1504,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 labelPlaces[nodeId] = new List<Tuple<string, Vector3>>();
             }
 
-            labelPlaces[nodeId].Add(new Tuple<string, Vector3>(rp.Description, pos));
+            //if the renderPackage also implements ITransformable then 
+            // use the transform property to transform the text labels
+           
+            SharpDX.Vector3 transformedPos = pos;
+            if (rp is HelixRenderPackage && rp is Autodesk.DesignScript.Interfaces.ITransformable)
+            {
+                transformedPos = (rp as Autodesk.DesignScript.Interfaces.ITransformable)
+                   .Transform.ToMatrix3D().Transform((pos).ToPoint3D()).ToVector3();
+            }
+            
+
+            labelPlaces[nodeId].Add(new Tuple<string, Vector3>(rp.Description, transformedPos));
             if (rp.DisplayLabels)
             {
-                CreateOrUpdateText(nodeId, pos, rp);
+                CreateOrUpdateText(nodeId, transformedPos, rp);
             }
         }
 
@@ -1662,21 +1681,23 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Model3DDictionary.Add(textId, bbText);
             }
             var geom = bbText.Geometry as BillboardText3D;
+           
             geom.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description),
-                pt + defaultLabelOffset));
+               pt + defaultLabelOffset));
         }
 
         private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp)
         {
-            var meshGeometry3D = new DynamoGeometryModel3D(renderTechnique)
-            {
-                Transform = Model1Transform,
-                Material = WhiteMaterial,
-                IsHitTestVisible = false,
-                RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
-                IsSelected = rp.IsSelected
-            };
-
+          
+                var meshGeometry3D = new DynamoGeometryModel3D(renderTechnique)
+                {
+                    Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
+                    Material = WhiteMaterial,
+                    IsHitTestVisible = false,
+                    RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
+                    IsSelected = rp.IsSelected
+                };
+            
             if (rp.Colors != null)
             {
                 var pf = PixelFormats.Bgra32;
@@ -1712,7 +1733,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var lineGeometry3D = new DynamoLineGeometryModel3D()
             {
                 Geometry = HelixRenderPackage.InitLineGeometry(),
-                Transform = Model1Transform,
+                Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
                 Color = Color.White,
                 Thickness = thickness,
                 IsHitTestVisible = false,
@@ -1726,7 +1747,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var pointGeometry3D = new DynamoPointGeometryModel3D
             {
                 Geometry = HelixRenderPackage.InitPointGeometry(),
-                Transform = Model1Transform,
+                Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
                 Color = Color.White,
                 Figure = PointGeometryModel3D.PointFigure.Ellipse,
                 Size = defaultPointSize,

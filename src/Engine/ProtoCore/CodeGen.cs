@@ -360,61 +360,6 @@ namespace ProtoCore
             ProtoCore.AST.Node setterArgument = null
             );
 
-        /// <summary>
-        /// Assigns the modified pointers in a function argument to the graphNode
-        /// This enables associative update when a pointer that is an argument is modified within a function
-        /// </summary>
-        /// <param name="nodeRef"></param>
-        /// <param name="graphNode"></param>
-        protected void AutoGenerateUpdateArgumentReference(
-            ProtoCore.AssociativeGraph.UpdateNodeRef nodeRef, ProtoCore.AssociativeGraph.GraphNode graphNode)
-        {
-
-            ProtoCore.DSASM.SymbolNode firstSymbol = null;
-
-            // This is only valid within a function as we are dealing with function args
-            if(localProcedure == null)
-            {
-                return;
-            }
-            
-            // Check if there are at least 2 symbols in the list
-            if (nodeRef.nodeList.Count < 2)
-            {
-                return;
-            }
-
-            firstSymbol = nodeRef.nodeList[0].symbol;
-
-            bool isValidNodeRef = null != firstSymbol && nodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.Method;
-            if (!isValidNodeRef)
-            {
-                return;
-            }
-            
-            // Now check if the first element of the identifier list is an argument
-            foreach (ProtoCore.DSASM.ArgumentInfo argInfo in localProcedure.ArgumentInfos)
-            {
-                if (argInfo.Name == firstSymbol.name)
-                {
-                    nodeRef.nodeList.RemoveAt(0);
-
-                    List<ProtoCore.AssociativeGraph.UpdateNodeRef> refList = null;
-                    bool found = localProcedure.UpdatedArgumentProperties.TryGetValue(argInfo.Name, out refList);
-                    if (found)
-                    {
-                        refList.Add(nodeRef);
-                    }
-                    else
-                    {
-                        refList = new List<ProtoCore.AssociativeGraph.UpdateNodeRef>();
-                        refList.Add(nodeRef);
-                        localProcedure.UpdatedArgumentProperties.Add(argInfo.Name, refList);
-                    }
-                }
-            }
-        }
-
         public void DFSGetSymbolList(Node pNode, ref ProtoCore.Type lefttype, ProtoCore.AssociativeGraph.UpdateNodeRef nodeRef)
         {
             dynamic node = pNode;
@@ -911,10 +856,6 @@ namespace ProtoCore
                     if (!procnode.IsConstructor && !procnode.Name.Equals(ProtoCore.DSASM.Constants.kStaticPropertiesInitializer))
                     {
                         functionCallStack.Add(procnode);
-                        if (null != graphNode)
-                        {
-                            graphNode.firstProcRefIndex = graphNode.dependentList.Count - 1;
-                        }
                     }
                 }
 
@@ -2088,8 +2029,6 @@ namespace ProtoCore
                     {
                         graphNode.updateNodeRefList.Add(nodeRef);
                         graphNode.IsLHSIdentList = true;
-
-                        AutoGenerateUpdateArgumentReference(nodeRef, graphNode);
                     }
                 }
             }

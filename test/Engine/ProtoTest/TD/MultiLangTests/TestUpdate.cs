@@ -1190,14 +1190,9 @@ a1 = foo ( a1);
             string errmsg = "";
             string code = @"
 import(""FFITarget.dll"");
-def foo ( x1 : ClassFunctionality)
-{
-    x1.IntVal = -1;
-    return = x1;
-}
 a1 = ClassFunctionality.ClassFunctionality();
 b = a1.IntVal;
-dummy = foo ( a1);
+a1.IntVal = -1;
 ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object n1 = null;

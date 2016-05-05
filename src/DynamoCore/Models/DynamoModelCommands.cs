@@ -67,7 +67,9 @@ namespace Dynamo.Models
         {
             var node = GetNodeFromCommand(command);
             if (node == null)
-                return;
+            {
+                throw new Exception("Could not create node: " + command.Name);
+            }
 
             node.X = command.X;
             node.Y = command.Y;
@@ -415,7 +417,7 @@ namespace Dynamo.Models
         {
             foreach (var guid in command.ModelGuids)
             {
-                CurrentWorkspace.SendModelEvent(guid, command.EventName);
+                CurrentWorkspace.SendModelEvent(guid, command.EventName, command.Value);
             }
         }
 

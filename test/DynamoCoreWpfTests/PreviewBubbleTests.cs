@@ -55,11 +55,7 @@ namespace DynamoCoreWpfTests
             var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
 
-            View.Dispatcher.Invoke(() =>
-            {
-                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
-            });
-            DispatcherUtil.DoEvents();
+            RaiseMouseEnterOnNode(nodeView);
 
             Assert.IsTrue(nodeView.PreviewControl.IsCondensed);
         }
@@ -71,11 +67,7 @@ namespace DynamoCoreWpfTests
             var nodeView = NodeViewWithGuid("9ce91e89-c087-49cd-9fd9-540cca086475");
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
 
-            View.Dispatcher.Invoke(() =>
-            {
-                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
-            });
-            DispatcherUtil.DoEvents();
+            RaiseMouseEnterOnNode(nodeView);
 
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
@@ -86,23 +78,12 @@ namespace DynamoCoreWpfTests
             Open(@"core\DetailedPreviewMargin_Test.dyn");
             var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
-
-
-            // Raise mouse enter event.
-            View.Dispatcher.Invoke(() =>
-            {
-                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
-            });
-            DispatcherUtil.DoEvents();
+            
+            RaiseMouseEnterOnNode(nodeView);
 
             Assert.IsTrue(nodeView.PreviewControl.IsCondensed);
 
-            // Raise mouse leave event.
-            View.Dispatcher.Invoke(() =>
-            {
-                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseLeaveEvent });
-            });
-            DispatcherUtil.DoEvents();
+            RaiseMouseLeaveNode(nodeView);
 
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
@@ -115,11 +96,7 @@ namespace DynamoCoreWpfTests
             nodeView.ViewModel.IsFrozen = true;
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
 
-            View.Dispatcher.Invoke(() =>
-            {
-                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
-            });
-            DispatcherUtil.DoEvents();
+            RaiseMouseEnterOnNode(nodeView);
 
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
@@ -301,12 +278,7 @@ namespace DynamoCoreWpfTests
 
             var nodeView = NodeViewWithGuid("456e57f3-d06f-4a53-9771-27188ee9cb40");
 
-            // Raise mouse enter event.
-            View.Dispatcher.Invoke(() =>
-            {
-                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
-            });
-            DispatcherUtil.DoEvents();
+            RaiseMouseEnterOnNode(nodeView);
 
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
@@ -344,13 +316,57 @@ namespace DynamoCoreWpfTests
 
             // preview is expanded
             Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView));
-        }        
+        }
+
+        [Test]
+        public void PreviewBubble_ToggleShowPreviewBubbles()
+        {
+            Open(@"core\DetailedPreviewMargin_Test.dyn");
+            var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
+            Assert.IsTrue(ViewModel.ShowPreviewBubbles, "Preview bubbles are turned off");
+
+            nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            RaiseMouseEnterOnNode(nodeView);
+            Assert.IsTrue(nodeView.PreviewControl.IsCondensed, "Cmpact preview bubble is not shown");
+
+            RaiseMouseLeaveNode(nodeView);
+            Assert.IsTrue(nodeView.PreviewControl.IsHidden, "Preview bubble is not hidden");
+
+            // turn off preview bubbles
+            ViewModel.TogglePreviewBubblesShowingCommand.Execute(null);
+            Assert.IsFalse(ViewModel.ShowPreviewBubbles, "Preview bubbles have not been turned off");
+
+            RaiseMouseEnterOnNode(nodeView);
+
+            Assert.IsTrue(nodeView.PreviewControl.IsHidden, "Preview bubble is not hidden");
+        }
 
         private bool ElementIsInContainer(FrameworkElement element, FrameworkElement container)
         {
             var relativePosition = element.TranslatePoint(new Point(), container);
             
             return (relativePosition.X == 0) && (element.ActualWidth <= container.ActualWidth);
+        }
+
+        private void RaiseMouseEnterOnNode(NodeView nv)
+        {
+            View.Dispatcher.Invoke(() =>
+            {
+                nv.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
+            });
+
+            DispatcherUtil.DoEvents();
+        }
+
+        private void RaiseMouseLeaveNode(NodeView nv)
+        {
+            View.Dispatcher.Invoke(() =>
+            {
+                nv.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseLeaveEvent });
+            });
+
+            DispatcherUtil.DoEvents();
         }
     }
 }

@@ -45,6 +45,7 @@ Thumbs.db
 *.cache
 *.suo
 *.user
+.vs
 
 # PYTHON #
 ###############

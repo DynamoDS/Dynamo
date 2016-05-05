@@ -21,11 +21,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 ###Cyotek.Drawing.BitmapFont###
 https://github.com/cyotek/Cyotek.Drawing.BitmapFont
-https://github.com/cyotek/Cyotek.Drawing.BitmapFont/blob/master/LICENSE.txt
+https://github.com/cyotek/Cyotek.Drawing.BitmapFont/blob/master/LICENSE.txt 
+  (MIT license)
 
 ###Fontawesome###
 https://www.nuget.org/packages/FontAwesome.WPF/
-https://github.com/charri/Font-Awesome-WPF/blob/master/LICENSE
+https://github.com/charri/Font-Awesome-WPF/blob/master/LICENSE 
+  (MIT license)
 
 ###GNU gettext (libintl)###
 https://www.gnu.org/software/gettext/
@@ -33,7 +35,8 @@ https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL
 
 ###Helix Toolkit###
 https://helixtoolkit.codeplex.com/
-https://helixtoolkit.codeplex.com/license
+https://helixtoolkit.codeplex.com/license 
+  (MIT license)
 
 ###Iron Python###
 http://ironpython.net/
@@ -45,9 +48,18 @@ https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL
 
 ###libgcc, libstdc++, libgomp###
 https://gcc.gnu.org/onlinedocs/libgomp/
+https://gcc.gnu.org/onlinedocs/gcc-4.3.3/libgomp/Copying.html#Copying
+  (GPL-3.0 license)
+https://gcc.gnu.org/libstdc++/ 
+https://gcc.gnu.org/onlinedocs/libstdc++/manual/license.html
+  (GPL-3.0 license, w/ GCC Runtime Library Exception version 3.1, see below)
 https://gcc.gnu.org/onlinedocs/gccint/Libgcc.html
-https://gcc.gnu.org/libstdc++/
-http://www.gnu.org/licenses/gcc-exception.html
+  (GPL-3.0 license, w/ GCC Runtime Library Exception version 3.1; see 
+  http://wiki.osdev.org/Libgcc#What_is_the_libgcc_license.3F and
+  see the runtime library exception below) 
+The GCC Runtime Library Exception, version 3.1:
+  (http://www.gnu.org/licenses/gcc-exception.html
+  see also http://www.gnu.org/licenses/gcc-exception-3.1-faq.en.html)
 
 ###Lucene.Net###
 http://lucenenet.apache.org/
@@ -55,6 +67,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 ###Microsoft 2012 C Runtime DLLS, msvcp110.dll and msvcr110.dll###
 http://msdn.microsoft.com/en-us/vstudio/dn501987
+  (Not open source, but redistribution is permitted; see above)
 
 ###Moq###
 http://www.nuget.org/packages/Moq/
@@ -63,21 +76,26 @@ http://opensource.org/licenses/bsd-license.php
 ###MiConvexHull###
 http://miconvexhull.codeplex.com/
 http://miconvexhull.codeplex.com/license
+  (MIT license)
 
 ###NCalc###
 http://ncalc.codeplex.com/
 http://ncalc.codeplex.com/license
+  (MIT license)
 
 ###NDesk Options###
 http://ndesk.org/Options#License
+  (MIT license)
 
 ###Newtonsoft JSON###
 https://github.com/JamesNK/Newtonsoft.Json
 https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md
+  (MIT license)
 
 ###NUnit####
 http://www.nunit.org/
 http://www.nunit.org/index.php?p=license&r=2.6.2
+  (Zlib license, https://opensource.org/licenses/Zlib)
 
 ###OpenSans font from Google###
 http://www.google.com/fonts/specimen/Open+Sans
@@ -86,6 +104,11 @@ http://www.apache.org/licenses/LICENSE-2.0.html
 ###Prism###
 http://msdn.microsoft.com/en-us/library/gg406140.aspx
 http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx
+  (Microsoft patterns & practices License.  Note that this is not
+   the same as https://opensource.org/licenses/MS-PL, the Microsoft
+   Public License, though clearly related.  The "patterns & practices"
+   license looks a lot like an open source license, it does not appear
+   to be OSI-approved as of 2016-02-24.)
 
 ###Revit Test Framework###
 https://github.com/DynamoDS/RevitTestFramework
@@ -94,3 +117,5 @@ http://opensource.org/licenses/MIT
 ###Winpthreads###
 http://mingw-w64.sourceforge.net/
 http://www.mingw.org/license
+  (Hybrid licensing -- different license terms for different parts.
+  It ends up being a combination of MIT-style, GPL-2.0, and GPL-3.0)

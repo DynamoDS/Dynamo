@@ -1724,11 +1724,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide Preview Bubbles.
+        /// </summary>
+        public static string DynamoViewSettingsMenuHidePreviewBubbles {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsMenuHidePreviewBubbles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Edges.
         /// </summary>
         public static string DynamoViewSettingsMenuShowEdges {
             get {
                 return ResourceManager.GetString("DynamoViewSettingsMenuShowEdges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Preview Bubbles.
+        /// </summary>
+        public static string DynamoViewSettingsMenuShowPreviewBubbles {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsMenuShowPreviewBubbles", resourceCulture);
             }
         }
         
