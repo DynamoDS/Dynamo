@@ -898,7 +898,7 @@ namespace Dynamo.Core
             }
             else
             {
-                annotationModel = new CustomNodeAnnotationModel(instance.Definition, modelLookup.Values, newNoteModels)
+                annotationModel = new CustomNodeAnnotationModel(instance.Definition.FunctionId, modelLookup.Values, newNoteModels)
                 {
                     GUID = Guid.NewGuid(),
                     AnnotationText = instance.Definition.DisplayName
@@ -976,7 +976,7 @@ namespace Dynamo.Core
         internal void UpdateCustomNode(CustomNodeAnnotationModel model, WorkspaceModel currentWorkspace, DynamoModel dynamoModel)
         {
             CustomNodeWorkspaceModel customNodeWorkspace;
-            if (!TryGetFunctionWorkspace(model.Definition.FunctionId, false, out customNodeWorkspace))
+            if (!TryGetFunctionWorkspace(model.FunctionID, false, out customNodeWorkspace))
             {
                 return;
             }
@@ -987,7 +987,7 @@ namespace Dynamo.Core
 
             #region Determine Inputs and Outputs
 
-            //Step 1: determine which nodes will be inputs to the new node
+            // Determine which nodes will be inputs to the new node
             var inputs = GetInputNodes(selectedNodeSet);
             var outputs = GetOutputNodes(selectedNodeSet);
 
@@ -995,13 +995,9 @@ namespace Dynamo.Core
 
             #region UI Positioning Calculations
 
-            double avgX = selectedNodeSet.Average(node => node.X);
-            double avgY = selectedNodeSet.Average(node => node.Y);
-
             double leftMost = selectedNodeSet.Min(node => node.X);
             double topMost = selectedNodeSet.Min(node => node.Y);
             double rightMost = selectedNodeSet.Max(node => node.X + node.Width);
-
             double leftShift = leftMost - 250;
 
             #endregion
@@ -1011,7 +1007,7 @@ namespace Dynamo.Core
             var modelLookup = new Dictionary<Guid, NodeModel>();
             var createdModels = new List<ModelBase>();
 
-            // Step 4: move all nodes and notes to new workspace remove from old
+            // Move all nodes and notes to new workspace remove from old
             foreach (var node in selectedNodeSet)
             {
                 NodeModel newNode;
@@ -1231,7 +1227,7 @@ namespace Dynamo.Core
         internal void RestoreCustomNodeInstance(CustomNodeAnnotationModel model, WorkspaceModel currentWorkspace)
         {
             CustomNodeWorkspaceModel customNodeWorkspace;
-            if (!TryGetFunctionWorkspace(model.Definition.FunctionId, false, out customNodeWorkspace))
+            if (!TryGetFunctionWorkspace(model.FunctionID, false, out customNodeWorkspace))
             {
                 return;
             }
@@ -1330,7 +1326,7 @@ namespace Dynamo.Core
 
                 #endregion
 
-                var collapsedNode = CreateCustomNodeInstance(model.Definition.FunctionId, isTestMode: false);
+                var collapsedNode = CreateCustomNodeInstance(model.FunctionID, isTestMode: false);
                 collapsedNode.X = avgX;
                 collapsedNode.Y = avgY;
                 currentWorkspace.AddAndRegisterNode(collapsedNode, centered: false);

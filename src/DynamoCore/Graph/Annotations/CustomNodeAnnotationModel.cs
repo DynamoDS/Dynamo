@@ -1,10 +1,12 @@
 ﻿using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
+using Dynamo.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Dynamo.Graph.Annotations
 {
@@ -16,20 +18,33 @@ namespace Dynamo.Graph.Annotations
         /// <summary>
         /// Construct CustomNodeAnnotationModel with custom node definition and nodes
         /// </summary>
-        /// <param name="definition"></param>
+        /// <param name="functionID"></param>
         /// <param name="nodes"></param>
-        public CustomNodeAnnotationModel(CustomNodeDefinition definition, IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes):
+        public CustomNodeAnnotationModel(Guid functionID, IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes):
             base(nodes, notes)
         {
-            Definition = definition;
+            FunctionID = functionID; 
         }
         
         /// <summary>
-        /// Custom node definition
+        /// Function ID of custom node definition
         /// </summary>
-        public CustomNodeDefinition Definition
+        public Guid FunctionID 
         {
-            get;set;
+            get; private set;
+        }
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            XmlElementHelper helper = new XmlElementHelper(element);
+            helper.SetAttribute("functionID", this.FunctionID);
+            base.SerializeCore(element, context);
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            XmlElementHelper helper = new XmlElementHelper(element);
+            base.DeserializeCore(element, context);
         }
     }
 }
