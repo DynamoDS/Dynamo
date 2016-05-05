@@ -5,6 +5,7 @@ using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Graph.Connectors;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Graph.Nodes
@@ -31,6 +32,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Returns the connectors between the specified ports.
         /// </summary>
+        [JsonIgnore]
         public ObservableCollection<ConnectorModel> Connectors
         {
             get { return connectors; }
@@ -40,6 +42,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Name of the port.
         /// </summary>
+        [JsonIgnore]
         public string PortName
         {
             get { return portData.NickName; }
@@ -48,6 +51,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Tooltip of the port.
         /// </summary>
+        [JsonIgnore]
         public string ToolTipContent
         {
             get
@@ -63,6 +67,7 @@ namespace Dynamo.Graph.Nodes
         /// Type of the port.
         /// It can be incoming or outcoming.
         /// </summary>
+        [JsonIgnore]
         public PortType PortType
         {
             get;
@@ -72,6 +77,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Returns the Node.
         /// </summary>
+        [JsonIgnore]
         public NodeModel Owner
         {
             get;
@@ -89,6 +95,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Returns the LineIndex of that port. The vertical position of PortModel is dependent on LineIndex.
         /// </summary>
+        [JsonIgnore]
         public int LineIndex
         {
             get { return portData.LineIndex; }
@@ -98,6 +105,7 @@ namespace Dynamo.Graph.Nodes
         /// A flag indicating whether the port is considered connected.
         /// </summary>
         [Obsolete("Please use NodeModel.HasConnectedInput instead.")]
+        [JsonIgnore]
         public bool IsConnected
         {
             get;
@@ -107,6 +115,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Indicates whether the port is enabled or not.
         /// </summary>
+        [JsonIgnore]
         public bool IsEnabled
         {
             get
@@ -126,6 +135,7 @@ namespace Dynamo.Graph.Nodes
         /// offsets from the node origin based on the port's index in the 
         /// ports collection.
         /// </summary>
+        [JsonIgnore]
         public Point2D Center
         {
             get
@@ -165,6 +175,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Controls whether the Use Default Value option is available.
         /// </summary>
+        [JsonIgnore]
         public bool DefaultValueEnabled
         {
             get { return portData.DefaultValue != null; }
@@ -173,6 +184,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Default value for port.
         /// </summary>
+        [JsonIgnore]
         public AssociativeNode DefaultValue
         {
             get { return portData.DefaultValue; }
@@ -181,6 +193,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Controls the space between successive output ports
         /// </summary>
+        [JsonIgnore]
         public Thickness MarginThickness
         {
             get;
@@ -190,6 +203,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Based on extensionEdges port is aligned in UI.
         /// </summary>
+        [JsonIgnore]
         public SnapExtensionEdges extensionEdges { get; set; }
 
         #endregion

@@ -15,7 +15,9 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Newtonsoft.Json;
 using NUnit.Framework;
+using ProtoCore.DSASM;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
@@ -725,6 +727,25 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void SerializationTest()
+        {
+            var openPath = Path.Combine(TestDirectory, @"core\input_nodes\NumberNodeAndNumberSlider.dyn");
+            OpenModel(openPath);
+
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+            //settings.Converters.Add(new WorkspaceConverter());
+            var json = JsonConvert.SerializeObject(CurrentDynamoModel.CurrentWorkspace, settings);
+            Assert.IsNotNullOrEmpty(json);
+        }
+
+        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_3166()
         {
@@ -816,6 +837,24 @@ namespace Dynamo.Tests
 
 
 
+        }
+    }
+
+    internal class WorkspaceConverter : JsonConverter
+    {
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            //
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            return string.Empty;
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType != typeof (StackValue);
         }
     }
 }

@@ -13,6 +13,7 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Models;
 using Dynamo.Scheduler;
+using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.Namespace;
 
@@ -36,11 +37,13 @@ namespace Dynamo.Graph.Workspaces
         /// to coordinate the interactions between some DesignScript
         /// sub components like library managment, live runner and so on.
         /// </summary>
+        [JsonIgnore]
         public EngineController EngineController { get; private set; }
 
         /// <summary>
         ///     Flag specifying if this workspace is operating in "test mode".
         /// </summary>
+        [JsonIgnore]
         public bool IsTestMode { get; set; }
 
         /// <summary>
@@ -60,6 +63,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Indicates if detailed descriptions should be logged
         /// </summary>
+        [JsonIgnore]
         public readonly bool VerboseLogging;
 
         /// <summary>
@@ -72,6 +76,7 @@ namespace Dynamo.Graph.Workspaces
         /// Evaluation count is incremented whenever the graph is evaluated. 
         /// It is set to zero when the graph is Cleared.
         /// </summary>
+        [JsonIgnore]
         public long EvaluationCount { get; private set; }
 
         /// <summary>

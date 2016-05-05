@@ -17,6 +17,7 @@ using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Visualization;
+using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
@@ -121,17 +122,20 @@ namespace Dynamo.Graph.Nodes
         ///     Definitions for the Input Ports of this NodeModel.
         /// </summary>
         [Obsolete("InPortData is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
+        [JsonIgnore]
         public ObservableCollection<PortData> InPortData { get; private set; }
 
         /// <summary>
         ///     Definitions for the Output Ports of this NodeModel.
         /// </summary>
         [Obsolete("OutPortData is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute, and OutPortTypesAttribute instead.")]
+        [JsonIgnore]
         public ObservableCollection<PortData> OutPortData { get; private set; }
 
         /// <summary>
         ///     All of the connectors entering and exiting the NodeModel.
         /// </summary>
+        [JsonIgnore]
         public IEnumerable<ConnectorModel> AllConnectors
         {
             get
@@ -143,6 +147,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Returns whether this node represents a built-in or custom function.
         /// </summary>
+        [JsonIgnore]
         public bool IsCustomFunction
         {
             get { return this is Function; }
@@ -172,6 +177,7 @@ namespace Dynamo.Graph.Nodes
         ///     Returns whether the node aggregates its upstream connections
         ///     for visualizations.
         /// </summary>
+        [JsonIgnore]
         public bool IsUpstreamVisible
         {
             get
@@ -194,6 +200,7 @@ namespace Dynamo.Graph.Nodes
         /// strings, bool, code blocks and custom nodes, which don't specify path. This property 
         /// is true for nodes that are potential inputs for Customizers and Presets.
         /// </summary>
+        [JsonIgnore]
         public virtual bool IsInputNode
         {
             get
@@ -207,6 +214,7 @@ namespace Dynamo.Graph.Nodes
         /// This property is user-controllable via a checkbox and is set to true when a user wishes to include
         /// this node in a Customizer as an interactive control.
         /// </summary>
+        [JsonIgnore]
         public bool IsSetAsInput
         {
             get
@@ -226,6 +234,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     The Node's state, which determines the coloring of the Node in the canvas.
         /// </summary>
+        [JsonIgnore]
         public ElementState State
         {
             get { return state; }
@@ -246,6 +255,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///   If the state of node is Error or AstBuildBroken
         /// </summary>
+        [JsonIgnore]
         public bool IsInErrorState
         {
             get
@@ -257,11 +267,13 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Indicates if node preview is pinned
         /// </summary>
+        [JsonIgnore]
         public bool PreviewPinned { get; internal set; }
 
         /// <summary>
         ///     Text that is displayed as this Node's tooltip.
         /// </summary>
+        [JsonIgnore]
         public string ToolTipText
         {
             get { return toolTipText; }
@@ -275,6 +287,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Should we override the displayed name with this Node's NickName property?
         /// </summary>
+        [JsonIgnore]
         public bool OverrideNameWithNickName
         {
             get { return overrideNameWithNickName; }
@@ -324,11 +337,13 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        [JsonIgnore]
         public IDictionary<int, Tuple<int, NodeModel>> InputNodes
         {
             get { return inputNodes; }
         }
 
+        [JsonIgnore]
         public IDictionary<int, HashSet<Tuple<int, NodeModel>>> OutputNodes
         {
             get { return outputNodes; }
@@ -400,6 +415,7 @@ namespace Dynamo.Graph.Nodes
         /// <value>
         ///     If the node has a category, return it.  Other wise return empty string.
         /// </value>
+        [JsonIgnore]
         public string Category
         {
             get
@@ -436,6 +452,7 @@ namespace Dynamo.Graph.Nodes
         /// to access this value without using the active Scheduler. Use the Scheduler to 
         /// remove the possibility of race conditions.
         /// </summary>
+        [JsonIgnore]
         public MirrorData CachedValue
         {
             get
@@ -475,6 +492,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Search tags for this Node.
         /// </summary>
+        [JsonIgnore]
         public List<string> Tags
         {
             get
@@ -519,6 +537,7 @@ namespace Dynamo.Graph.Nodes
         ///     ProtoAST Identifier for result of the node before any output unpacking has taken place.
         ///     If there is only one output for the node, this is equivalent to GetAstIdentifierForOutputIndex(0).
         /// </summary>
+        [JsonIgnore]
         public IdentifierNode AstIdentifierForPreview
         {
             get { return AstFactory.BuildIdentifier(AstIdentifierBase); }
@@ -527,6 +546,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     If this node is allowed to be converted to AST node in nodes to code conversion.
         /// </summary>
+        [JsonIgnore]
         public virtual bool IsConvertible
         {
             get
@@ -541,6 +561,7 @@ namespace Dynamo.Graph.Nodes
         ///     of this node. E.g., code block node may want to display the value
         ///     of the left hand side variable of last statement.
         /// </summary>
+        [JsonIgnore]
         public virtual string AstIdentifierBase
         {
             get
@@ -552,6 +573,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     A unique ID that will be appended to all identifiers of this node.
         /// </summary>
+        [JsonIgnore]
         public string AstIdentifierGuid
         {
             get
@@ -563,6 +585,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Enable or disable label display. Default is false.
         /// </summary>
+        [JsonIgnore]
         public bool DisplayLabels
         {
             get { return displayLabels; }
@@ -579,6 +602,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Is this node being applied partially, resulting in a partial function?
         /// </summary>
+        [JsonIgnore]
         public bool IsPartiallyApplied //TODO(Steve): Move to Graph level -- MAGN-5710
         {
             get { return !Enumerable.Range(0, InPorts.Count).All(HasInput); }
@@ -824,6 +848,7 @@ namespace Dynamo.Graph.Nodes
         ///     always should be true, unless is temporarily set to false to 
         ///     avoid flood of Modified event. 
         /// </summary>
+        [JsonIgnore]
         public bool RaisesModificationEvents { get; set; }
 
         /// <summary>
@@ -1022,6 +1047,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// If node is connected to some other node(other than Output) then it is not a 'top' node
         /// </summary>
+        [JsonIgnore]
         public bool IsTopMostNode
         {
             get
@@ -1888,11 +1914,13 @@ namespace Dynamo.Graph.Nodes
 
         private ExecutionHints executionHint;
 
+        [JsonIgnore]
         public bool IsModified
         {
             get { return GetExecutionHintsCore().HasFlag(ExecutionHints.Modified); }
         }
 
+        [JsonIgnore]
         public bool NeedsForceExecution
         {
             get { return GetExecutionHintsCore().HasFlag(ExecutionHints.ForceExecute); }
@@ -2091,6 +2119,7 @@ namespace Dynamo.Graph.Nodes
 
         #endregion
 
+        [JsonIgnore]
         public bool ShouldDisplayPreview
         {
             get
