@@ -15,11 +15,11 @@
         MinHeight="450"
         d:DesignHeight="300"
         d:DesignWidth="300"
-        Background="#515151"
+        Background="#FF272727"
         Style="{DynamicResource DynamoWindowStyle}"
        
         >
-   <!-- d:DataContext="{d:DesignInstance ViewModels:InstalledPackagesViewModel, IsDesignTimeCreatable=False}"-->
+    <!-- d:DataContext="{d:DesignInstance ViewModels:InstalledPackagesViewModel, IsDesignTimeCreatable=False}"-->
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -62,7 +62,7 @@
                                 <TextBlock Text="{Binding}"
                                            Margin="6,7,0,8"
                                            VerticalAlignment="Center" />
-                            <!--    <TextBlock Grid.Column="1"
+                                <!--    <TextBlock Grid.Column="1"
                                            Text="..."
                                            Cursor="Hand"
                                            MouseLeftButtonUp="OnEllipsisClicked"
@@ -129,10 +129,10 @@
             <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"></ColumnDefinition>
+           <!-- <ColumnDefinition Width="auto"></ColumnDefinition>-->
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-<!--
+        <!--
         <StackPanel Orientation="Vertical"
                     Grid.Row="0"
                     Grid.Column="0"
@@ -144,7 +144,7 @@
                        Text="Hello World" />
         </StackPanel>
         -->
-<!--
+        <!--
         <TextBlock Grid.Row="1"
                    Grid.Column="1"
                    Margin="0,10,0,5"
@@ -202,20 +202,19 @@
 
         </StackPanel>
 -->
-       <!-- SelectionChanged="OnPathSelectionChanged"-->
+        <!-- SelectionChanged="OnPathSelectionChanged"-->
         <ListBox x:Name="PathListBox"
                  Grid.Row="2"
-                 Grid.Column="1"
                  SelectionMode="Single"
                 
                  Style="{StaticResource PathListBoxStyle}"
-                 ItemContainerStyle="{StaticResource PathListBoxItemStyle}">
+                 ItemContainerStyle="{StaticResource PathListBoxItemStyle}" Grid.ColumnSpan="2">
             <ListBox.ItemsSource>
                 <Binding Path="DataContext.RootLocations"
                          RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Window}}" />
             </ListBox.ItemsSource>
         </ListBox>
-<!--
+        <!--
         <StackPanel Grid.Row="3"
                     Grid.Column="1"
                     Orientation="Horizontal"
