@@ -1281,17 +1281,11 @@ namespace Dynamo.Core
                 #region Process inputs
 
                 var inConnectors = new List<Tuple<NodeModel, int>>();
-                var uniqueInputSenders = new Dictionary<Tuple<NodeModel, int>, bool>();
-                foreach (var input in Enumerable.Range(0, inputs.Count).Zip(inputs, Tuple.Create))
+                foreach (var input in inputs)
                 {
-                    NodeModel inputNode = input.Item2.Item3.Item2;
-                    int inputData = input.Item2.Item3.Item1;
-
-                    var key = Tuple.Create(inputNode, inputData);
-                    if (!uniqueInputSenders.ContainsKey(key))
+                    if (!inConnectors.Any(x => x.Item1 == input.Item3.Item2 && x.Item2 == input.Item3.Item1))
                     {
-                        inConnectors.Add(Tuple.Create(inputNode, inputData));
-                        uniqueInputSenders[key] = true;
+                        inConnectors.Add(Tuple.Create(input.Item3.Item2, input.Item3.Item1));
                     }
                 }
 
@@ -1317,11 +1311,8 @@ namespace Dynamo.Core
                     let outputSenderData = output.Item2
                     let outputReceiverData = output.Item3.Item1
                     let outputReceiverNode = output.Item3.Item2
-                    select
-                        Tuple.Create(
-                            outputReceiverNode,
-                            outportList.FindIndex(
-                                x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
+                    select Tuple.Create(outputReceiverNode,
+                            outportList.FindIndex(x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
                             outputReceiverData));
 
                 #endregion
