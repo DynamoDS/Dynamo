@@ -197,6 +197,9 @@
                 <MenuItem Header="{x:Static p:Resources.ContextMenuRestoreToCustomNodeInstance}"
                           Name="RestoreCustomNodeInstance"
                           Command="{Binding Path=RestoreCustomNodeInstanceCommand}"/>
+                <MenuItem Header="{x:Static p:Resources.ContextMenuSyncWithCustomNodeDefinition}"
+                          Name="SyncWithCustomNodeDefinition"
+                          Command="{Binding Path=SyncWithCustomNodeDefinitionCommand}"/>
             </ContextMenu>
         </Grid.ContextMenu>
         <Rectangle Name="selectionBorder"                  

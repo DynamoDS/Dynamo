@@ -59,6 +59,19 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private DelegateCommand _syncWithCustomNodeDefinitionCommand;
+        public DelegateCommand SyncWithCustomNodeDefinitionCommand
+        {
+            get
+            {
+                if (_syncWithCustomNodeDefinitionCommand == null)
+                    _syncWithCustomNodeDefinitionCommand =
+                        new DelegateCommand(SyncWithCustomNodeDefinition, CanRestoreCustomNodeInstance);
+
+                return _syncWithCustomNodeDefinitionCommand;
+            }
+        }
+
         private bool CanRestoreCustomNodeInstance(object obj)
         {
             return annotationModel.IsSelected;
@@ -69,6 +82,19 @@ namespace Dynamo.ViewModels
             if (annotationModel.IsSelected)
             {
                 this.WorkspaceViewModel.DynamoViewModel.RestoreCustomNodeInstance(annotationModel);
+            }
+        }
+
+        private bool CanSyncWithCustomNodeDefinition(object obj)
+        {
+            return annotationModel.IsSelected;
+        }
+
+        private void SyncWithCustomNodeDefinition(object obj)
+        {
+            if (annotationModel.IsSelected)
+            {
+                this.WorkspaceViewModel.DynamoViewModel.SyncWithCustomNodeDefinition(annotationModel);
             }
         }
     }
