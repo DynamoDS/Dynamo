@@ -212,17 +212,17 @@ namespace Autodesk.DesignScript.Interfaces
     }
 
     /// <summary>
-    /// An interface that defines items which have a transform property which is a 4x4 matrix
+    /// An interface that defines items which have a transform property, which is a 4x4 matrix.
     /// </summary>
     public interface ITransformable
     {
         /// <summary>
-        /// A 4x4 matrix which is used to transform all geometry in the render packaage
+        /// A 4x4 matrix that is used to transform all geometry in the render packaage.
         /// </summary>
         double[] Transform  { get; } 
         
         /// <summary>
-        /// Sets the transform as a series of doubles that will be applied to all geometry in the renderPackage.
+        /// Set the transform using a series of doubles. The resulting transform is applied to all geometry in the renderPackage.
         /// Following conventional matrix notation, m11 is the value of the first row and first column, and m12
         /// is the value of the first row and second column.
         /// NOTE: This method should set the matrix exactly as described by the caller.
@@ -249,14 +249,13 @@ namespace Autodesk.DesignScript.Interfaces
            double m41, double m42, double m43, double m44);
 
         /// <summary>
-        /// Sets the transform as a double array, this transform will be applied to all geometry in the renderPackage.
+        /// Set the transform as a double array, this transform is applied to all geometry in the renderPackage.
         /// This matrix should be laid out as follows in row vector order:
         /// [Xx,Xy,Xz, 0,
         ///  Yx, Yy, Yz, 0,
         ///  Zx, Zy, Zz, 0,
         ///  offsetX, offsetY, offsetZ, W]
-        /// ]
-        ///NOTE: This method should transform the matrix from row vector order to whatever form is needed by the implementation
+        ///NOTE: This method should transform the matrix from row vector order to whatever form is needed by the implementation.
         /// </summary>
         /// <param name="matrix"></param>
         void SetTransform(double[] matrix);
