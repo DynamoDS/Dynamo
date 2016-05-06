@@ -2,6 +2,7 @@
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PluginManager.View;
+using Dynamo.PluginManager.ViewModel;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using PluginManager;
@@ -20,8 +21,8 @@ namespace Dynamo.PluginManager
     {
         private ViewStartupParams startupParams;
         private ViewLoadedParams loadedParams;
+       internal HelixWatch3DViewModel Watch3DViewModel { get; set; }
 
-        internal IWatch3DViewModel BackgroundPreviewViewModel { get; private set; }
         private Menu dynamoMenu;
         private MenuItem loadPythonScriptMenuItem;
         private Separator separator = new Separator();
@@ -70,6 +71,8 @@ namespace Dynamo.PluginManager
 
             CommandExecutive = p.CommandExecutive;
             WorkspaceModel = p.CurrentWorkspaceModel;
+            Watch3DViewModel = (HelixWatch3DViewModel) p.BackgroundPreviewViewModel;
+
         }
 
         private void CurrentWorkspaceChanged(IWorkspaceModel ws)
@@ -112,8 +115,8 @@ namespace Dynamo.PluginManager
 
 
            
-           item.Click += ShowPluginManagerWindow ;
-           //item.Click += (sender, args) => { PluginManagerImportScript.ImportPythonScript(this); };
+          // item.Click += ShowPluginManagerWindow ;
+           item.Click += (sender, args) => { PluginManagerImportScript.ImportPythonScript(this); };
            return item;
         }
         private void ShowPluginManagerWindow(object sender, RoutedEventArgs e)

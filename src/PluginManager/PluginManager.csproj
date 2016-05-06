@@ -66,9 +66,11 @@
     <Compile Include="PluginManagerExtension.cs" />
     <Compile Include="PluginManagerImportScript.cs" />
     <Compile Include="PluginManagerIronPythonEvaluator.cs" />
+    <Compile Include="PluginManagerModel.cs" />
     <Compile Include="PluginManagerView.xaml.cs">
       <DependentUpon>PluginManagerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PluginManagerViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
