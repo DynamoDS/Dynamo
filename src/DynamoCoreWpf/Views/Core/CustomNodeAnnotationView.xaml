@@ -202,6 +202,17 @@
                           Command="{Binding Path=SyncWithCustomNodeDefinitionCommand}"/>
             </ContextMenu>
         </Grid.ContextMenu>
+        <Rectangle Name="hightlightBorder"                  
+                   Fill="Transparent"
+                   Width="{Binding Width}" 
+                   Height= "{Binding Height}"  
+                   Stroke="Firebrick"
+                   StrokeThickness="5"
+                   StrokeDashArray="1 1"
+                   SnapsToDevicePixels="True"
+                   Canvas.ZIndex="41"
+                   Margin="-1">
+       </Rectangle>
         <Rectangle Name="selectionBorder"                  
                    Fill="Transparent"
                    Width="{Binding Width}" 
