@@ -548,7 +548,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Restore to Custom Node Instance.
+        ///   Looks up a localized string similar to Restore to custom node instance.
         /// </summary>
         public static string ContextMenuRestoreToCustomNodeInstance {
             get {
@@ -593,7 +593,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update custom node.
+        ///   Looks up a localized string similar to Update custom node definition.
         /// </summary>
         public static string ContextMenuUpdateCustomNodeDefintion {
             get {
