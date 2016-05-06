@@ -37,6 +37,7 @@ using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
+using Dynamo.Graph.Annotations;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -1315,14 +1316,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="packages">An <see cref="IEnumerable"/> of <see cref="HelixRenderPackage"/>.</param>
         private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages)
         {
-            IEnumerable<string> customNodeIdents = null;
-            if (InCustomNode())
+            var isInCustomNode = InCustomNode();
+            IEnumerable<string> nodeIdents = null;
+            var hs = model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            if (hs != null)
             {
-                var hs = model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
-                if (hs != null)
-                {
-                    customNodeIdents = FindIdentifiersForCustomNodes(hs);
-                }
+                nodeIdents = isInCustomNode ? FindIdentifiersForCustomNodes(hs) : FindIdentifiersForCustomAnnotationModels(hs);
             }
 
             lock (Model3DDictionaryMutex)
@@ -1349,7 +1348,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     if (UpdateGeometryModelForSpecialRenderPackage(rp, baseId))
                         continue;
 
-                    var drawDead = InCustomNode() && !customNodeIdents.Contains(baseId);
+                    var drawDead = (isInCustomNode && !nodeIdents.Contains(baseId)) || (!isInCustomNode && nodeIdents.Contains(baseId));
 
                     string id;
                     var p = rp.Points;
@@ -1871,6 +1870,42 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 else
                 {
                     idents.AddRange(n.OutPorts.Select(p => rgx.Replace(n.GetAstIdentifierForOutputIndex(p.Index).Value, "")));
+                }
+            }
+            return idents;
+        }
+
+        internal static IEnumerable<string> FindIdentifiersForCustomAnnotationModels(HomeWorkspaceModel workspace)
+        {
+            if (workspace == null)
+            {
+                return null;
+            }
+
+            // Remove the output identifier appended to the custom node outputs.
+            var rgx = new Regex("_out[0-9]");
+
+            var customNodeAnnotationModels = workspace.Annotations.OfType<CustomNodeAnnotationModel>();
+            var idents = new List<string>();
+            foreach (var annotationModel in customNodeAnnotationModels)
+            {
+                foreach (var n in annotationModel.SelectedModels.OfType<NodeModel>())
+                {
+                    if (n.IsPartiallyApplied)
+                    {
+                        // Find output identifiers for the connected map node
+                        var mapOutportsIdents =
+                            n.OutPorts.SelectMany(
+                                np => np.Connectors.SelectMany(
+                                        c => c.End.Owner.OutPorts.Select(
+                                                mp => rgx.Replace(mp.Owner.GetAstIdentifierForOutputIndex(mp.Index).Value, ""))));
+
+                        idents.AddRange(mapOutportsIdents);
+                    }
+                    else
+                    {
+                        idents.AddRange(n.OutPorts.Select(p => rgx.Replace(n.GetAstIdentifierForOutputIndex(p.Index).Value, "")));
+                    }
                 }
             }
             return idents;
