@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace Dynamo.PluginManager.ViewModel
 {
+ 
     class PluginManagerViewModel
     {
+      
+        public PluginManagerViewModel()
+        {
+
+        }
+        
     }
 }
