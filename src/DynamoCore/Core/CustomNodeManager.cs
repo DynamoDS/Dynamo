@@ -1195,10 +1195,12 @@ namespace Dynamo.Core
                             .Where(port => !node.HasOutput(port))
                             .Select(port => new { node, port })).Distinct())
                 {
+                    var hangingNode = modelLookup[hanging.node.GUID];
+
                     //Create Symbol Node
                     var node = new Output
                     {
-                        Symbol = hanging.node.OutPortData[hanging.port].NickName,
+                        Symbol = hangingNode.OutPortData[hanging.port].NickName,
                         X = rightMost + 75 - leftShift
                     };
                     node.Y = i * (50 + node.Height);
@@ -1206,7 +1208,7 @@ namespace Dynamo.Core
 
                     createdModels.Add(node);
                     customNodeWorkspace.AddAndRegisterNode(node);
-                    ConnectorModel.Make(hanging.node, node, hanging.port, 0);
+                    ConnectorModel.Make(hangingNode, node, hanging.port, 0);
 
                     i++;
                 }
