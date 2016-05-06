@@ -1067,6 +1067,7 @@ namespace Dynamo.Graph.Workspaces
                     GUID = id,
                     AnnotationText = text
                 };
+                annotationModel.UpdateGroupOwnership();
                 annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
                 annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
                 AddNewAnnotation(annotationModel);

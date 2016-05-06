@@ -85,6 +85,7 @@ namespace Dynamo.Nodes
         {
             if (ViewModel != null)
             {
+                ViewModel.AnnotationModel.ReleaseGroupOwnership();
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);               
             }
         }

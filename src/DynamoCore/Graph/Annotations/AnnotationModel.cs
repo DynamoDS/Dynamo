@@ -246,12 +246,23 @@ namespace Dynamo.Graph.Annotations
             }
         }
       
-        public void ELLENSI_UpdateZoomFactor()
+        public void UpdateGroupOwnership()
         {
+            if (annotationText == null) return;
+
             foreach (var item in selectedModels.OfType<NodeModel>())
             {
                 item.OwningGroup = this;
             }
+        }
+
+        public void ReleaseGroupOwnership()
+        {
+            foreach (var item in selectedModels.OfType<NodeModel>())
+            {
+                item.OwningGroup = null;
+            }
+            this.displayScale = 1;
         }
 
         /// <summary>
@@ -335,10 +346,7 @@ namespace Dynamo.Graph.Annotations
                 this.height = 0;               
             }
 
-            if (loadFromXML)
-            {
-                ELLENSI_UpdateZoomFactor();
-            }
+            UpdateGroupOwnership();
         }
 
         /// <summary>
@@ -378,6 +386,9 @@ namespace Dynamo.Graph.Annotations
                     break;  
                 case "TextBlockText":
                     AnnotationText = value;
+                    break;
+                case "DisplayScale":
+                    DisplayScale = Convert.ToDouble(value);
                     break;
             }
 
@@ -432,8 +443,6 @@ namespace Dynamo.Graph.Annotations
             if (!string.IsNullOrEmpty(element.GetAttribute("displayScale")))
                 this.displayScale = helper.ReadDouble("displayScale", DoubleValue);
 
-            this.loadFromXML = true;
-
             //Deserialize Selected models
             if (element.HasChildNodes)
             {
@@ -464,6 +473,7 @@ namespace Dynamo.Graph.Annotations
             RaisePropertyChanged("FontSize");
             RaisePropertyChanged("AnnotationText");
             RaisePropertyChanged("SelectedModels");
+            RaisePropertyChanged("DisplayScale");
         }
 
         /// <summary>

@@ -273,6 +273,16 @@ namespace Dynamo.ViewModels
                         m, (m.X - g.X - resize_extendSize) / resize_zoom,
                         (m.Y - g.Y - resize_extendSize - g.TextBlockHeight) / resize_zoom));
             }
+
+            WorkspaceViewModel.Model.RecordModelsForModification(SelectedModels);
+
+            WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                new DynamoModel.UpdateModelValueCommand(
+                    Guid.Empty,
+                    annotationModel.GUID,
+                    "DisplayScale",
+                    DisplayScale.ToString()
+                ));
         }
 
         internal void OnAnnotationResizeDelta(Point mousePosition)

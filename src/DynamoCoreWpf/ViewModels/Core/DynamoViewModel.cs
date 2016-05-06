@@ -977,6 +977,7 @@ namespace Dynamo.ViewModels
             //Check for multiple groups - Delete the group and not the nodes.
             foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>().ToList())
             {
+                group.ReleaseGroupOwnership();
                 var command = new DynamoModel.DeleteModelCommand(group.GUID);
                 this.ExecuteCommand(command);
             }            

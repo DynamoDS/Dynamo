@@ -2240,6 +2240,28 @@ namespace Dynamo.Controls
         }
     }
 
+    public class ZoomLevelToNodeCoverBooleanConverter : IMultiValueConverter
+    {
+        private const double MinZoomFactor = 0.3;
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            var zoom = System.Convert.ToDouble(values[0]);
+            var displayscale = System.Convert.ToDouble(values[1]);
+
+            if (displayscale > 0.95) return false;
+
+            if (zoom * displayscale < MinZoomFactor) return true;
+
+            return false;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class GroupFontSizeToEditorEnabledConverter : IMultiValueConverter
     {
         private const double MinFontFactor = 7.0;
