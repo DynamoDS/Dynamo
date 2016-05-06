@@ -1251,6 +1251,12 @@ namespace Dynamo.Core
                 #endregion
 
                 #region Handle connectors
+                foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
+                {
+                    undoRecorder.RecordDeletionForUndo(group);
+                    currentWorkspace.RemoveGroup(group);
+                }
+
                 var connectors = currentWorkspace.Connectors.Where(c =>
                     selectedNodes.Contains(c.Start.Owner) || selectedNodes.Contains(c.End.Owner)).ToList();
                 foreach (var connector in connectors)
@@ -1273,11 +1279,6 @@ namespace Dynamo.Core
                     currentWorkspace.RemoveNote(note);
                 }
 
-                foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
-                {
-                    undoRecorder.RecordDeletionForUndo(group);
-                    currentWorkspace.RemoveGroup(group);
-                }
                 #endregion
 
                 #region Process inputs
@@ -1384,6 +1385,14 @@ namespace Dynamo.Core
             using (undoRecorder.BeginActionGroup())
             {
                 #region Remove all nods/notes/connectors in custom node annotation
+                var title = string.Empty;
+                foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
+                {
+                    title = group.AnnotationText;
+                    undoRecorder.RecordDeletionForUndo(group);
+                    currentWorkspace.RemoveGroup(group);
+                }
+
                 var connectors = currentWorkspace.Connectors.Where(c =>
                     selectedNodes.Contains(c.Start.Owner) || selectedNodes.Contains(c.End.Owner)).ToList();
                 foreach (var connector in connectors)
@@ -1404,13 +1413,6 @@ namespace Dynamo.Core
                     currentWorkspace.RemoveNote(note);
                 }
 
-                var title = string.Empty;
-                foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
-                {
-                    title = group.AnnotationText;
-                    undoRecorder.RecordDeletionForUndo(group);
-                    currentWorkspace.RemoveGroup(group);
-                }
                 #endregion
 
                 #region copy nodes/notes/connectors from custom node to workspace
