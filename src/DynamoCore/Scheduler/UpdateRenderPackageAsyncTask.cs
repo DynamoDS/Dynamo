@@ -177,6 +177,14 @@ namespace Dynamo.Scheduler
                         package.RequiresPerVertexColoration = true;
                     }
 
+                    //If the package has a transform that is not the identity matrix
+                    //then set requiresCustomTransform to true.
+                    if (package is ITransformable && (package as ITransformable).Transform.SequenceEqual(
+                        new double[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }) == false)
+                    {
+                        (package as ITransformable).RequiresCustomTransform = true;
+                    }
+
                     if (factory.TessellationParameters.ShowEdges)
                     {
                         var surf = graphicItem as Surface;
