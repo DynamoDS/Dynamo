@@ -18,7 +18,7 @@ namespace PluginManager
         {
             try {
                 var engine = Python.CreateEngine();
-                ScriptSource script = engine.CreateScriptSourceFromFile(path);
+                ScriptSource script = engine.CreateScriptSourceFromString(path);
                 CompiledCode code = script.Compile();
                 ScriptScope scope = engine.CreateScope();
                //pluginManagerContext.WorkspaceModel.

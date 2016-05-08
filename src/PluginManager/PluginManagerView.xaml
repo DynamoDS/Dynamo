@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
         xmlns:uictrl="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
-        xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+        xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         xmlns:ViewModel ="clr-namespace:Dynamo.PluginManager.ViewModel"
         Title="Plugin Manager"
         Height="450"
@@ -243,20 +243,21 @@
                     Margin="10,0,0,0"
                     HorizontalAlignment="Left">
             <Button Margin="0,0,10,0"
-                    
-                    Background="#cccccc"
-                    TextBlock.Foreground="Blue"
-                    Style="{StaticResource STextButtonDefault}"
+                    Style="{StaticResource STextButton}"
+                    Command="{Binding AddPluginCommand}"
                     Content="Add" RenderTransformOrigin="-13.283,0.5" Width="118">
             </Button>
             <Button 
                     Margin="10,0,0,0"
             	Style="{StaticResource STextButton}"
-            	Content="Remove" Width="120"/>
+            	Content="Remove" Width="120"
+             CommandParameter="{Binding Path=SelectedIndex}"
+                Command="{Binding RemovePluginCommand}"/>
             <Button 
                     Margin="10,0,0,0"
             	Style="{StaticResource STextButton}"
-            	Content="New" Width="120"/>
+                Click="OnEditScriptClicked"
+            	Content="Edit Script" Width="120"/>
             <Button 
                     Margin="10,0,0,0"
             	Style="{StaticResource STextButton}"
