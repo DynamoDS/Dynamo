@@ -12,7 +12,7 @@ namespace PluginManager
     {
         public static void ImportPythonScript(PluginManagerExtension pluginManagerContext)
         {
-            PluginManagerIronPythonEvaluator.EvaluatePythonFile("C:\\Users\\t_laksr\\Desktop\\pyTest\\helloWorld.py", pluginManagerContext);
+            PluginManagerIronPythonEvaluator.EvaluatePythonFile("C:\\Users\\Laksh\\Desktop\\pyTest\\helloPy.py", pluginManagerContext);
             //MessageBox.Show("Hello World!");
             //string[] fileFilter = { string.Format("Python Files", "*.py") };//; *.ds" ), string.Format(Resources.FileDialogAssemblyFiles, "*.dll"),
             /*                                                                  //  string.Format(Resources.FileDialogDesignScriptFiles, "*.ds"), string.Format(Resources.FileDialogAllFiles,"*.*")};

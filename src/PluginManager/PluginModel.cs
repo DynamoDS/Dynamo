@@ -4,17 +4,41 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dynamo.Core;
 
 namespace Dynamo.PluginManager.Model
 {
-    class Plugin
+    [Serializable]
+    public class PluginModel :NotificationObject
     {
-        public string Path { get; set; }
-        public string Name { get; set; }
-        public string ShortcutKey { get; set; }
+        public PluginModel(string file, string shortcutKey){
+            FilePath = file;
+            ShortcutKey = shortcutKey;
+        }
+        
+        private string filePath;
+        public string FilePath {
+            get{
+            return filePath;
+                } set {
+             filePath = value;
+             RaisePropertyChanged("FilePath");
+           }
+        }
+        private string shortcutKey;
+        public string ShortcutKey {
+            get
+            {
+                return shortcutKey;
+            }
+            set{
+                shortcutKey = value;
+                RaisePropertyChanged("ShortcutKey");
+            }
+        }
     }
     class PluginManagerModel
-    {
+    {/*
         private List<Plugin> PluginsList;
         public PluginManagerModel()
         {
@@ -39,7 +63,8 @@ namespace Dynamo.PluginManager.Model
                     }
                 }
             }
+    
 
-        }
+        }  * */
     }
 }

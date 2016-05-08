@@ -10,11 +10,10 @@
         xmlns:ViewModel ="clr-namespace:Dynamo.PluginManager.ViewModel"
         Title="Plugin Manager"
         Height="450"
-        Width="550"
+        Width="805"
         MinWidth="550"
         MinHeight="450"
         d:DesignHeight="300"
-        d:DesignWidth="300"
         Background="#FF272727"
         Style="{DynamicResource DynamoWindowStyle}"
        d:DataContext="{d:DesignInstance ViewModel:PluginManagerViewModel, IsDesignTimeCreatable=False}"
@@ -58,9 +57,14 @@
                                     <ColumnDefinition Width="*"></ColumnDefinition>
                                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding}"
+                                <TextBlock Text="{Binding FilePath}"
                                            Margin="6,7,0,8"
                                            VerticalAlignment="Center" />
+                                <!--  <TextBox Text=" "
+                                         VerticalAlignment="Center"
+                                         Cursor="Hand"
+                                         />-->
+
                                 <!--    <TextBlock Grid.Column="1"
                                            Text="..."
                                            Cursor="Hand"
@@ -128,7 +132,7 @@
             <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-           <!-- <ColumnDefinition Width="auto"></ColumnDefinition>-->
+            <!-- <ColumnDefinition Width="auto"></ColumnDefinition>-->
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <!--
@@ -207,9 +211,10 @@
                  SelectionMode="Single"
                 
                  Style="{StaticResource PathListBoxStyle}"
-                 ItemContainerStyle="{StaticResource PathListBoxItemStyle}" Grid.ColumnSpan="2">
+                 ItemContainerStyle="{StaticResource PathListBoxItemStyle}" Margin="0,0,0,23">
             <ListBox.ItemsSource>
-                <Binding Path="DataContext.RootLocations"
+
+                <Binding Path="DataContext.PluginModelList"
                          RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Window}}" />
             </ListBox.ItemsSource>
         </ListBox>
@@ -235,7 +240,7 @@
         <StackPanel Grid.Row="3"
                     Grid.Column="0"
                     Orientation="Horizontal"
-                    Margin="0,10,0,0"
+                    Margin="10,0,0,0"
                     HorizontalAlignment="Left">
             <Button Margin="0,0,10,0"
                     
@@ -245,8 +250,17 @@
                     Content="Add" RenderTransformOrigin="-13.283,0.5" Width="118">
             </Button>
             <Button 
+                    Margin="10,0,0,0"
             	Style="{StaticResource STextButton}"
             	Content="Remove" Width="120"/>
+            <Button 
+                    Margin="10,0,0,0"
+            	Style="{StaticResource STextButton}"
+            	Content="New" Width="120"/>
+            <Button 
+                    Margin="10,0,0,0"
+            	Style="{StaticResource STextButton}"
+            	Content="Edit Shortcut" Width="120"/>
         </StackPanel>
     </Grid>
 

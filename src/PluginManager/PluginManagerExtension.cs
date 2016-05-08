@@ -22,7 +22,8 @@ namespace Dynamo.PluginManager
         private ViewStartupParams startupParams;
         private ViewLoadedParams loadedParams;
        internal HelixWatch3DViewModel Watch3DViewModel { get; set; }
-
+       private PluginManagerViewModel pluginManagerViewModel;
+       private PluginManagerView pluginManagerView;
         private Menu dynamoMenu;
         private MenuItem loadPythonScriptMenuItem;
         private Separator separator = new Separator();
@@ -57,6 +58,9 @@ namespace Dynamo.PluginManager
         public void Startup(ViewStartupParams p)
         {
             this.startupParams = p;
+           pluginManagerViewModel = new PluginManagerViewModel();
+           pluginManagerView = new PluginManagerView(pluginManagerViewModel);
+
         }
 
         public void Loaded(ViewLoadedParams p)
@@ -115,13 +119,13 @@ namespace Dynamo.PluginManager
 
 
            
-          // item.Click += ShowPluginManagerWindow ;
-           item.Click += (sender, args) => { PluginManagerImportScript.ImportPythonScript(this); };
+          item.Click += ShowPluginManagerWindow ;
+         //  item.Click += (sender, args) => { PluginManagerImportScript.ImportPythonScript(this); };
            return item;
         }
         private void ShowPluginManagerWindow(object sender, RoutedEventArgs e)
         {
-            PluginManagerView pluginManagerView = new PluginManagerView();
+           
             //OnRequestPluginManagerWindow(this, EventArgs.Empty);
             pluginManagerView.Show();
         }
