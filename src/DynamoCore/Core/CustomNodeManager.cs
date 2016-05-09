@@ -729,7 +729,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Expand custom node instance and put all nodes in a special group
+        /// Expand custom node instance and put all nodes in custom node annotation 
         /// which is in sync with custom node definition.
         /// </summary>
         /// <param name="instance"></param>
@@ -741,7 +741,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Expand custom node instance and put all nodes in a normal group.
+        /// Expand custom node instance and put all nodes in an annotation.
         /// </summary>
         /// <param name="instance"></param>
         /// <param name="targetWorkspace"></param>
@@ -770,22 +770,7 @@ namespace Dynamo.Core
             var nodes = customNodeWorkspace.Nodes.OfType<NodeModel>().Where(n => !(n is Symbol || n is Output)).ToList();
             foreach (var node in nodes)
             {
-                NodeModel newNode;
-
-                var xmlDoc = new XmlDocument();
-                var dynEl = node.Serialize(xmlDoc, SaveContext.Copy);
-                newNode = dynamoModel.NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy, targetWorkspace.ElementResolver);
-
-                var lacing = node.ArgumentLacing.ToString();
-                newNode.UpdateValue(new UpdateValueParams("ArgumentLacing", lacing));
-                if (!string.IsNullOrEmpty(node.NickName) && !(node is Symbol) && !(node is Output))
-                    newNode.NickName = node.NickName;
-
-                newNode.X = node.X;
-                newNode.Y = node.Y;
-                newNode.Width = node.Width;
-                newNode.Height = node.Height;
-
+                var newNode = dynamoModel.NodeFactory.CopyNode(node, targetWorkspace);
                 modelLookup.Add(node.GUID, newNode);
                 newNodeModels.Add(newNode);
             }
@@ -1012,22 +997,7 @@ namespace Dynamo.Core
             // Move all nodes and notes to new workspace remove from old
             foreach (var node in selectedNodeSet)
             {
-                NodeModel newNode;
-
-                var xmlDoc = new XmlDocument();
-                var dynEl = node.Serialize(xmlDoc, SaveContext.Copy);
-                newNode = dynamoModel.NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy, customNodeWorkspace.ElementResolver);
-
-                var lacing = node.ArgumentLacing.ToString();
-                newNode.UpdateValue(new UpdateValueParams("ArgumentLacing", lacing));
-                if (!string.IsNullOrEmpty(node.NickName) && !(node is Symbol) && !(node is Output))
-                    newNode.NickName = node.NickName;
-
-                newNode.Width = node.Width;
-                newNode.Height = node.Height;
-                newNode.X = node.X - leftShift;
-                newNode.Y = node.Y - topMost;
-
+                var newNode = dynamoModel.NodeFactory.CopyNode(node, customNodeWorkspace);
                 createdModels.Add(newNode);
                 modelLookup.Add(node.GUID, newNode);
                 customNodeWorkspace.AddAndRegisterNode(newNode);
@@ -1428,22 +1398,7 @@ namespace Dynamo.Core
                 var nodes = customNodeWorkspace.Nodes.OfType<NodeModel>().Where(n => !(n is Symbol || n is Output)).ToList();
                 foreach (var node in nodes)
                 {
-                    NodeModel newNode;
-
-                    var xmlDoc = new XmlDocument();
-                    var dynEl = node.Serialize(xmlDoc, SaveContext.Copy);
-                    newNode = dynamoModel.NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy, currentWorkspace.ElementResolver);
-
-                    var lacing = node.ArgumentLacing.ToString();
-                    newNode.UpdateValue(new UpdateValueParams("ArgumentLacing", lacing));
-                    if (!string.IsNullOrEmpty(node.NickName) && !(node is Symbol) && !(node is Output))
-                        newNode.NickName = node.NickName;
-
-                    newNode.X = node.X;
-                    newNode.Y = node.Y;
-                    newNode.Width = node.Width;
-                    newNode.Height = node.Height;
-
+                    var newNode = dynamoModel.NodeFactory.CopyNode(node, currentWorkspace);
                     modelLookup.Add(node.GUID, newNode);
                     newNodeModels.Add(newNode);
                 }
