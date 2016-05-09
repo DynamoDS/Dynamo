@@ -16,6 +16,7 @@
 		5)Analysis.dll
 		6)DSCoreNodes.dll
 		7)DynamoInstallDetective.dll
+		8)DSIronPython.dll
 	</description>
     <summary>This package contains the core assemblies for Dynamo.</summary>
     <copyright>Copyright Autodesk 2016</copyright>

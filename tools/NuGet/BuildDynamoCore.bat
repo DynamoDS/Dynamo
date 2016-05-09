@@ -28,4 +28,6 @@ copy %base%\DynamoUtilities.dll .\%core%\lib\%framework%\DynamoUtilities.dll
 
 copy %base%\DynamoInstallDetective.dll .\%core%\lib\%framework%\DynamoInstallDetective.dll
 
+copy %base%\DSIronPython.dll .\%core%\lib\%framework%\DSIronPython.dll
+
 nuget pack .\%core%\Core.nuspec
