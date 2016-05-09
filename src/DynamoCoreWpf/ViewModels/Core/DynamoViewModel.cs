@@ -1082,6 +1082,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Returns the file-save dialog with customized file types of Dynamo.
+        /// </summary>
+        /// <param name="workspace"></param>
+        /// <returns>A customized file-save dialog</returns>
         public FileDialog GetSaveDialog(WorkspaceModel workspace)
         {
             FileDialog fileDialog = new SaveFileDialog
