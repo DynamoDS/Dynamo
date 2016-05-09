@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>DynamoVisualProgramming.Core</id>
-    <version>1.0.0-beta3</version>
+    <version>1.0.0</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
@@ -13,6 +13,9 @@
 		2)ProtoCore.dll
 		3)DynamoShapeManager.dll 
 		4)DynamoUtilities.dll
+		5)Analysis.dll
+		6)DSCoreNodes.dll
+		7)DynamoInstallDetective.dll
 	</description>
     <summary>This package contains the core assemblies for Dynamo.</summary>
     <copyright>Copyright Autodesk 2016</copyright>
@@ -20,7 +23,7 @@
     <dependencies>
         <dependency id="Prism" version="4.1"/>
         <dependency id="NUnit" version="2.6.3"/>
-		<dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="1.0.0-beta3"/>
+		<dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="1.0.0"/>
     </dependencies>
   </metadata>
 </package>

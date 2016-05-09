@@ -16,8 +16,16 @@ mkdir .\%core%\tools
 copy %base%\DynamoCore.dll .\%core%\lib\%framework%\DynamoCore.dll
 copy %base%\DynamoCore.xml .\%core%\build\%framework%\DynamoCore.xml
 
+copy %base%\Analysis.dll .\%core%\lib\%framework%\Analysis.dll
+copy %base%\Analysis.xml .\%core%\build\%framework%\Analysis.xml
+
+copy %base%\DSCoreNodes.dll .\%core%\lib\%framework%\DSCoreNodes.dll
+copy %base%\DSCoreNodes.xml .\%core%\build\%framework%\DSCoreNodes.xml
+
 copy %base%\ProtoCore.dll .\%core%\lib\%framework%\ProtoCore.dll
 copy %base%\DynamoShapeManager.dll .\%core%\lib\%framework%\DynamoShapeManager.dll
 copy %base%\DynamoUtilities.dll .\%core%\lib\%framework%\DynamoUtilities.dll
+
+copy %base%\DynamoInstallDetective.dll .\%core%\lib\%framework%\DynamoInstallDetective.dll
 
 nuget pack .\%core%\Core.nuspec
