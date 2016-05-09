@@ -584,7 +584,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sync with Custom Node Definition.
+        ///   Looks up a localized string similar to Sync with Custom Node.
         /// </summary>
         public static string ContextMenuSyncWithCustomNodeDefinition {
             get {
@@ -593,7 +593,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update Custom Node Definition.
+        ///   Looks up a localized string similar to Update Custom Node.
         /// </summary>
         public static string ContextMenuUpdateCustomNodeDefintion {
             get {

@@ -72,6 +72,20 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private DelegateCommand _editCustomNodeCommand;
+        public DelegateCommand EditCustomNodeCommand
+        {
+            get
+            {
+                if (_editCustomNodeCommand == null)
+                {
+                    _editCustomNodeCommand = new DelegateCommand(EditCustomNode, CanEditCustomNode);
+                }
+
+                return _editCustomNodeCommand;
+            }
+        }
+
         private bool CanRestoreCustomNodeInstance(object obj)
         {
             return annotationModel.IsSelected;
@@ -95,6 +109,19 @@ namespace Dynamo.ViewModels
             if (annotationModel.IsSelected)
             {
                 this.WorkspaceViewModel.DynamoViewModel.SyncWithCustomNodeDefinition(annotationModel);
+            }
+        }
+
+        private bool CanEditCustomNode(object obj)
+        {
+            return this.annotationModel.FunctionID != Guid.Empty;
+        }
+
+        private void EditCustomNode(object obj)
+        {
+            if (annotationModel.IsSelected)
+            {
+                WorkspaceViewModel.DynamoViewModel.GoToWorkspace(this.annotationModel.FunctionID);
             }
         }
     }

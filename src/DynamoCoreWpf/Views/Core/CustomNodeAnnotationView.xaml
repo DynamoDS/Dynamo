@@ -189,8 +189,11 @@
                         <Rectangle Fill="#d8d8d8" />
                     </ListBox.Items>
                 </ListBox>
-                <Separator>
-                </Separator>
+                <Separator/>
+                <MenuItem Header="{x:Static p:Resources.ContextMenuEditCustomNode}"
+                          Name="EditCustomNode"
+                          Command="{Binding Path=EditCustomNodeCommand}"/>
+                <Separator/>
                 <MenuItem Header="{x:Static p:Resources.ContextMenuUpdateCustomNodeDefintion}"
                           Name="UpdateCustomNode"
                           Command="{Binding Path=UpdateCustomNodeDefinitionCommand}"/>

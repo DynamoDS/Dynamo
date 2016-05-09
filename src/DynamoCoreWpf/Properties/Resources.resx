@@ -1999,7 +1999,7 @@ Next assemblies were loaded several times:
     <value>Expand Custom Node</value>
   </data>
   <data name="ContextMenuUpdateCustomNodeDefintion" xml:space="preserve">
-    <value>Update Custom Node Definition</value>
+    <value>Update Custom Node</value>
   </data>
   <data name="ContextMenuExpandCustomNodeToGroup" xml:space="preserve">
     <value>Expand Custom Node to Group</value>
@@ -2008,6 +2008,6 @@ Next assemblies were loaded several times:
     <value>Restore to Custom Node Instance</value>
   </data>
   <data name="ContextMenuSyncWithCustomNodeDefinition" xml:space="preserve">
-    <value>Sync with Custom Node Definition</value>
+    <value>Sync with Custom Node</value>
   </data>
 </root>
