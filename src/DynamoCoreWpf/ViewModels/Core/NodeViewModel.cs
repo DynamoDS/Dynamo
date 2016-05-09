@@ -423,8 +423,8 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return NodeModel.OwningGroup != null
-                    ? NodeModel.OwningGroup.DisplayScale : 1;
+                return nodeLogic.OwningGroup != null
+                    ? nodeLogic.OwningGroup.DisplayScale : 1;
             }
         }
 

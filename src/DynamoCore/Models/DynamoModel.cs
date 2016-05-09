@@ -1477,6 +1477,10 @@ namespace Dynamo.Models
                 {
                     (model as NodeModel).OwningGroup = null;
                 }
+                else if (model is NoteModel)
+                {
+                    (model as NoteModel).OwningGroup = null;
+                }
             }
            
             if(emptyGroup.Any())

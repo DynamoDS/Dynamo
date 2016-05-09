@@ -250,17 +250,31 @@ namespace Dynamo.Graph.Annotations
         {
             if (annotationText == null) return;
 
-            foreach (var item in selectedModels.OfType<NodeModel>())
+            foreach (var item in selectedModels)
             {
-                item.OwningGroup = this;
+                if (item is NodeModel)
+                {
+                    (item as NodeModel).OwningGroup = this;
+                }
+                else if (item is NoteModel)
+                {
+                    (item as NoteModel).OwningGroup = this;
+                }
             }
         }
 
         public void ReleaseGroupOwnership()
         {
-            foreach (var item in selectedModels.OfType<NodeModel>())
+            foreach (var item in selectedModels)
             {
-                item.OwningGroup = null;
+                if (item is NodeModel)
+                {
+                    (item as NodeModel).OwningGroup = null;
+                }
+                else if (item is NoteModel)
+                {
+                    (item as NoteModel).OwningGroup = null;
+                }
             }
             this.displayScale = 1;
         }

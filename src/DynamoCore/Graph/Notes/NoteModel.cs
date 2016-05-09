@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml;
 using Dynamo.Utilities;
+using Dynamo.Graph.Annotations;
 
 namespace Dynamo.Graph.Notes
 {
@@ -37,6 +38,27 @@ namespace Dynamo.Graph.Notes
             Y = y;
             Text = text;
             GUID = guid;
+        }
+
+        public override Rect2D Rect
+        {
+            get
+            {
+                var sc = OwningGroup != null ?
+                    OwningGroup.DisplayScale : 1;
+                return new Rect2D(X, Y, Width * sc, Height * sc);
+            }
+        }
+
+        private AnnotationModel owningGroup;
+        public AnnotationModel OwningGroup
+        {
+            get { return owningGroup; }
+            set
+            {
+                owningGroup = value;
+                RaisePropertyChanged("DisplayScale");
+            }
         }
 
         #region Command Framework Supporting Methods

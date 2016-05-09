@@ -133,7 +133,9 @@ namespace Dynamo.ViewModels
                 case "IsSelected":
                     RaisePropertyChanged("IsSelected");
                     break;
-
+                case "DisplayScale":
+                    RaisePropertyChanged("DisplayScale");
+                    break;
             }
         }
 
@@ -195,6 +197,15 @@ namespace Dynamo.ViewModels
                 return !(groups.ContainsModel(Model.GUID));
             }
             return false;
+        }
+
+        public double DisplayScale
+        {
+            get
+            {
+                return _model.OwningGroup != null
+                    ? _model.OwningGroup.DisplayScale : 1;
+            }
         }
     }
 }
