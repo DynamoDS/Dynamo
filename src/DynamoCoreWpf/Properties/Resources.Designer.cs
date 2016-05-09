@@ -377,7 +377,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expand Custom Node....
+        ///   Looks up a localized string similar to Expand Custom Node.
         /// </summary>
         public static string ContextMenuExpandCustomNode {
             get {
@@ -386,7 +386,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expand Custom Node to group....
+        ///   Looks up a localized string similar to Expand Custom Node to Group.
         /// </summary>
         public static string ContextMenuExpandCustomNodeToGroup {
             get {
@@ -548,7 +548,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Restore to custom node instance.
+        ///   Looks up a localized string similar to Restore to Custom Node Instance.
         /// </summary>
         public static string ContextMenuRestoreToCustomNodeInstance {
             get {
@@ -584,7 +584,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sync with custom node definition.
+        ///   Looks up a localized string similar to Sync with Custom Node Definition.
         /// </summary>
         public static string ContextMenuSyncWithCustomNodeDefinition {
             get {
@@ -593,7 +593,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update custom node definition.
+        ///   Looks up a localized string similar to Update Custom Node Definition.
         /// </summary>
         public static string ContextMenuUpdateCustomNodeDefintion {
             get {

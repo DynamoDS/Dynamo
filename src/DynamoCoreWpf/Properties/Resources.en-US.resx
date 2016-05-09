@@ -1994,18 +1994,18 @@ Next assemblies were loaded several times:
     <comment>Message box content</comment>
   </data>
   <data name="ContextMenuExpandCustomNode" xml:space="preserve">
-    <value>Expand Custom Node...</value>
+    <value>Expand Custom Node</value>
   </data>
   <data name="ContextMenuExpandCustomNodeToGroup" xml:space="preserve">
-    <value>Expand Custom Node to group...</value>
+    <value>Expand Custom Node to Group</value>
   </data>
   <data name="ContextMenuUpdateCustomNodeDefintion" xml:space="preserve">
-    <value>Update custom node definition</value>
+    <value>Update Custom Node Definition</value>
   </data>
   <data name="ContextMenuRestoreToCustomNodeInstance" xml:space="preserve">
-    <value>Restore to custom node instance</value>
+    <value>Restore to Custom Node Instance</value>
   </data>
   <data name="ContextMenuSyncWithCustomNodeDefinition" xml:space="preserve">
-    <value>Sync with custom node definition</value>
+    <value>Sync with Custom Node Definition</value>
   </data>
 </root>
