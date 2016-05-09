@@ -1318,10 +1318,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             var isInCustomNode = InCustomNode();
             IEnumerable<string> nodeIdents = null;
+            IDictionary<string, Color4> identColorMap = null;
             var hs = model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
             if (hs != null)
             {
-                nodeIdents = isInCustomNode ? FindIdentifiersForCustomNodes(hs) : FindIdentifiersForCustomAnnotationModels(hs);
+                if (isInCustomNode)
+                {
+                    nodeIdents = FindIdentifiersForCustomNodes(hs);
+                }
+                else
+                {
+                    identColorMap = FindIdentifiersForCustomAnnotationModels(hs);
+                }
             }
 
             lock (Model3DDictionaryMutex)
@@ -1348,7 +1356,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     if (UpdateGeometryModelForSpecialRenderPackage(rp, baseId))
                         continue;
 
-                    var drawDead = (isInCustomNode && !nodeIdents.Contains(baseId)) || (!isInCustomNode && nodeIdents.Contains(baseId));
+                    var drawDead = isInCustomNode && !nodeIdents.Contains(baseId);
+                    var drawCustomAnnotation = !drawDead && !isInCustomNode && identColorMap.ContainsKey(baseId);
 
                     string id;
                     var p = rp.Points;
@@ -1376,6 +1385,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         if (drawDead)
                         {
                             points.Colors.AddRange(Enumerable.Repeat(defaultDeadColor, points.Positions.Count));
+                        }
+                        else if (drawCustomAnnotation)
+                        {
+                            points.Colors.AddRange(Enumerable.Repeat(identColorMap[baseId], points.Positions.Count));
                         }
                         else
                         {
@@ -1416,6 +1429,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         if (drawDead)
                         {
                             lineSet.Colors.AddRange(Enumerable.Repeat(defaultDeadColor, l.Positions.Count));
+                        }
+                        else if (drawCustomAnnotation)
+                        {
+                            lineSet.Colors.AddRange(Enumerable.Repeat(identColorMap[baseId], l.Positions.Count));
                         }
                         else
                         {
@@ -1464,6 +1481,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     {
                         meshGeometry3D.RequiresPerVertexColoration = true;
                         mesh.Colors.AddRange(m.Colors.Select(c=>new Color4(c.Red, c.Green, c.Blue, c.Alpha * defaultDeadAlphaScale)));
+                    }
+                    else if (drawCustomAnnotation)
+                    {
+                        var color = identColorMap[baseId];
+                        meshGeometry3D.RequiresPerVertexColoration = true;
+                        mesh.Colors.AddRange(m.Colors.Select(c => new Color4(color.Red, color.Green, color.Blue, color.Alpha * defaultDeadAlphaScale)));
                     }
                     else
                     {
@@ -1875,20 +1898,29 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return idents;
         }
 
-        internal static IEnumerable<string> FindIdentifiersForCustomAnnotationModels(HomeWorkspaceModel workspace)
+        internal static IDictionary<string, Color4> FindIdentifiersForCustomAnnotationModels(HomeWorkspaceModel workspace)
         {
+            Dictionary<string, Color4> identColorMap = new Dictionary<string, Color4>();
             if (workspace == null)
             {
-                return null;
+                return identColorMap;
             }
 
             // Remove the output identifier appended to the custom node outputs.
             var rgx = new Regex("_out[0-9]");
 
             var customNodeAnnotationModels = workspace.Annotations.OfType<CustomNodeAnnotationModel>();
-            var idents = new List<string>();
             foreach (var annotationModel in customNodeAnnotationModels)
             {
+                var color = defaultDeadColor;
+                var brushConverter = new BrushConverter();
+                var solidColorBrush = brushConverter.ConvertFromString(annotationModel.Background) as SolidColorBrush; 
+                if (solidColorBrush != null)
+                {
+                    var gbColor = solidColorBrush.Color;
+                    color = new Color4(new Color3(gbColor.R / (float)255.0, gbColor.G / (float)255.0, gbColor.B / (float)255.0));
+                }
+
                 foreach (var n in annotationModel.SelectedModels.OfType<NodeModel>())
                 {
                     if (n.IsPartiallyApplied)
@@ -1900,15 +1932,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                                         c => c.End.Owner.OutPorts.Select(
                                                 mp => rgx.Replace(mp.Owner.GetAstIdentifierForOutputIndex(mp.Index).Value, ""))));
 
-                        idents.AddRange(mapOutportsIdents);
+                        foreach (var ident in mapOutportsIdents)
+                        {
+                            identColorMap[ident] = color;
+                        }
                     }
                     else
                     {
-                        idents.AddRange(n.OutPorts.Select(p => rgx.Replace(n.GetAstIdentifierForOutputIndex(p.Index).Value, "")));
+                        foreach (var ident in n.OutPorts.Select(p => rgx.Replace(n.GetAstIdentifierForOutputIndex(p.Index).Value, "")))
+                        {
+                            identColorMap[ident] = color;
+                        }
                     }
                 }
             }
-            return idents;
+            return identColorMap;
         }
 
         internal static IEnumerable<string> AllOutputIdentifiersInWorkspace(HomeWorkspaceModel workspace)
