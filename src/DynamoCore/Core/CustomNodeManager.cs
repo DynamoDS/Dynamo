@@ -759,20 +759,19 @@ namespace Dynamo.Core
                 return;
             }
 
-            #region copy nodes from custom node to workspace
-            // Create the new NodeModel's
-            var newNodeModels = new List<NodeModel>();
-
+            #region Copy nodes and notes from custom node workspace to target workspace
             //make a lookup table to store the guids of the
             //old models and the guids of their pasted versions
             var modelLookup = new Dictionary<Guid, NodeModel>();
 
+            var newNodeModels = new List<NodeModel>();
             var nodes = customNodeWorkspace.Nodes.OfType<NodeModel>().Where(n => !(n is Symbol || n is Output)).ToList();
             foreach (var node in nodes)
             {
                 var newNode = dynamoModel.NodeFactory.CopyNode(node, targetWorkspace);
                 modelLookup.Add(node.GUID, newNode);
                 newNodeModels.Add(newNode);
+                targetWorkspace.AddAndRegisterNode(newNode, false);
             }
 
             var newNoteModels = new List<NoteModel>();
@@ -780,36 +779,21 @@ namespace Dynamo.Core
             {
                 var noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid());
                 newNoteModels.Add(noteModel);
+                targetWorkspace.AddNote(noteModel, false);
             }
 
-            var newItems = newNodeModels.Concat<ModelBase>(newNoteModels);
-            var shiftX = instance.X - newItems.Min(item => item.X);
-            var shiftY = instance.Y - newItems.Min(item => item.Y);
-            foreach (var model in newItems)
+            var createdModels = newNodeModels.Concat<ModelBase>(newNoteModels).ToList();
+            var shiftX = instance.X - createdModels.Min(item => item.X);
+            var shiftY = instance.Y - createdModels.Min(item => item.Y);
+            foreach (var model in createdModels)
             {
                 model.X = model.X + shiftX;
                 model.Y = model.Y + shiftY;
             }
-
-            //make a list of all newly created models so that their
-            //creations can be recorded in the undo recorder.
-            var createdModels = new List<ModelBase>();
-            foreach (var newNode in newNodeModels)
-            {
-                targetWorkspace.AddAndRegisterNode(newNode, false);
-                createdModels.Add(newNode);
-            }
-
-            foreach (var newNote in newNoteModels)
-            {
-                targetWorkspace.AddNote(newNote, false);
-                createdModels.Add(newNote);
-            }
             #endregion
 
-            #region restore connectors among nodes from custom node
-            var connectors = customNodeWorkspace.Connectors.Where(
-                c => nodes.Contains(c.Start.Owner) && nodes.Contains(c.End.Owner));
+            #region restore connectors among nodes from custom node workspace
+            var connectors = customNodeWorkspace.Connectors.Where(c => nodes.Contains(c.Start.Owner) && nodes.Contains(c.End.Owner));
             foreach (var connector in connectors)
             {
                 NodeModel start = null, end = null;
@@ -920,10 +904,11 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// input1, outputport1, <inputport1, node1>
-        ///                       <inputport2, node2>
-        /// input2, outputport2, <inputport3, node3>
-        ///                       <inputport4, node4>
+        /// Get the upstream nodes of nodes. Return Tuple in the following format.
+        /// 
+        /// inputNode, output port, <input port, node1>
+        ///                         <input port, node2>
+        //
         /// </summary>
         /// <param name="selectedNodeSet"></param>
         /// <returns></returns>
@@ -939,10 +924,10 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// output1, outputport1, <inputport1, node1>
-        ///                       <inputport2, node2>
-        /// output2, outputport2, <inputport3, node3>
-        ///                       <inputport4, node4>
+        /// Get the downstream nodes of nodes. Return Tuple in the following format.
+        ///
+        /// outputNode, output port, <input port, node1>
+        ///                          <input port, node2>
         /// </summary>
         /// <param name="selectedNodeSet"></param>
         /// <returns></returns>
@@ -960,6 +945,12 @@ namespace Dynamo.Core
                                     .Select(output => Tuple.Create(node, data, output)))));
         }
 
+        /// <summary>
+        /// Copy all nodes in CustomNodeAnnotationModel to custom workspace.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="currentWorkspace"></param>
+        /// <param name="dynamoModel"></param>
         internal void UpdateCustomNode(CustomNodeAnnotationModel model, WorkspaceModel currentWorkspace, DynamoModel dynamoModel)
         {
             CustomNodeWorkspaceModel customNodeWorkspace;
@@ -1010,8 +1001,7 @@ namespace Dynamo.Core
                 createdModels.Add(newNote);
             }
 
-            var connectors = currentWorkspace.Connectors.Where(
-                c => selectedNodeSet.Contains(c.Start.Owner) && selectedNodeSet.Contains(c.End.Owner));
+            var connectors = currentWorkspace.Connectors.Where(c => selectedNodeSet.Contains(c.Start.Owner) && selectedNodeSet.Contains(c.End.Owner));
             foreach (var connector in connectors)
             {
                 NodeModel start = null, end = null;
