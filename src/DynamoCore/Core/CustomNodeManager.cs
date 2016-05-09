@@ -1348,9 +1348,11 @@ namespace Dynamo.Core
             {
                 #region Remove all nods/notes/connectors in custom node annotation
                 var title = string.Empty;
+                var background = string.Empty;
                 foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
                 {
                     title = group.AnnotationText;
+                    background = group.Background;
                     undoRecorder.RecordDeletionForUndo(group);
                     currentWorkspace.RemoveGroup(group);
                 }
@@ -1490,7 +1492,8 @@ namespace Dynamo.Core
                 var annotationModel = new CustomNodeAnnotationModel(model.FunctionID, modelLookup.Values, newNoteModels)
                 {
                     GUID = Guid.NewGuid(),
-                    AnnotationText = title
+                    AnnotationText = title,
+                    Background = background
                 };
                 currentWorkspace.AddAnnotation(annotationModel);
                 createdModels.Add(annotationModel);
