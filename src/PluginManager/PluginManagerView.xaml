@@ -60,10 +60,10 @@
                                 <TextBlock Text="{Binding FilePath}"
                                            Margin="6,7,0,8"
                                            VerticalAlignment="Center" />
-                                <!--  <TextBox Text=" "
-                                         VerticalAlignment="Center"
-                                         Cursor="Hand"
-                                         />-->
+                                 <TextBlock Text= "{Binding ShortcutKey}"
+                                           Margin="6,7,0,8"
+                                         HorizontalAlignment="Right"
+                                         />
 
                                 <!--    <TextBlock Grid.Column="1"
                                            Text="..."
