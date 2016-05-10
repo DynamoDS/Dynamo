@@ -77,7 +77,7 @@ namespace PluginManager
         }
         private void OnRunClicked(object sender, RoutedEventArgs e)
         {
-            PluginManagerIronPythonEvaluator.EvaluatePythonFile(editText.Text,pluginManagerContext);
+            PluginManagerIronPythonEvaluator.EvaluatePythonString(editText.Text,pluginManagerContext);
             this.WindowState = WindowState.Normal;
         }
 

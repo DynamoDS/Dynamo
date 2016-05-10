@@ -10,13 +10,15 @@ using System.IO;
 using System.Xml;
 using Dynamo.UI.Commands;
 using System.Windows.Forms;
+using PluginManager;
 
 namespace Dynamo.PluginManager.ViewModel
 {
 
     public class PluginManagerViewModel : NotificationObject
     {
-
+        private PluginManagerExtension pluginManagerContext;
+        public DelegateCommand RunScriptCommand { get; private set; }
         public DelegateCommand RemovePluginCommand { get; private set; }
         public DelegateCommand AddPluginCommand { get; private set; }
         private int selectedIndex;
@@ -37,13 +39,19 @@ namespace Dynamo.PluginManager.ViewModel
         private string PluginPreferenceFile;
         private string PluginFolder;
         public ObservableCollection<PluginModel> PluginModelList { get; private set; }
-        public PluginManagerViewModel()
+        public PluginManagerViewModel(PluginManagerExtension pluginManagerContext)
         {
+            this.pluginManagerContext = pluginManagerContext;
             PluginModelList = new ObservableCollection<PluginModel>();
             // ImportPlugins();
             TempPopulateList();
+            RunScriptCommand = new DelegateCommand(p => RunScript((string)p));
             RemovePluginCommand = new DelegateCommand(p => RemovePluginAt((int)p), CanRemove);
             AddPluginCommand = new DelegateCommand(p => AddPlugin());
+        }
+        private void RunScript(string filePath)
+        {
+            PluginManagerIronPythonEvaluator.EvaluatePythonFile(filePath, pluginManagerContext);
         }
         private void AddPlugin()
         {
@@ -61,6 +69,7 @@ namespace Dynamo.PluginManager.ViewModel
                     foreach (var file in openFileDialog.FileNames)
                     {
                         PluginModelList.Add(new PluginModel(file, null));
+                        pluginManagerContext.AddPluginMenuItem(new PluginModel(file, "Ctrl + Y"));
                     }
                 }
                 catch (Exception ex)

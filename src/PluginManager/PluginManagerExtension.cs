@@ -14,6 +14,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.ComponentModel;
+using Dynamo.Controls;
+using System.Collections.Generic;
+using Dynamo.PluginManager.Model;
+using System.Windows.Input;
 
 namespace Dynamo.PluginManager
 {
@@ -23,9 +28,10 @@ namespace Dynamo.PluginManager
         private ViewLoadedParams loadedParams;
        internal HelixWatch3DViewModel Watch3DViewModel { get; set; }
        private PluginManagerViewModel pluginManagerViewModel;
-        private Menu dynamoMenu;
-        private MenuItem loadPythonScriptMenuItem;
+        internal Menu dynamoMenu;
+        private MenuItem pluginManagerMainMenuItem;
         private Separator separator = new Separator();
+        DynamoView dynamoView;
         private IWorkspaceModel workspaceModel;
         internal IWorkspaceModel WorkspaceModel
         {
@@ -57,24 +63,62 @@ namespace Dynamo.PluginManager
         public void Startup(ViewStartupParams p)
         {
             this.startupParams = p;
-           pluginManagerViewModel = new PluginManagerViewModel();
+           pluginManagerViewModel = new PluginManagerViewModel(this);
 
         }
 
         public void Loaded(ViewLoadedParams p)
         {
             this.loadedParams = p;
-            
             dynamoMenu = p.dynamoMenu;
-            loadPythonScriptMenuItem = GenerateMenuItem();
-            p.AddMenuItem(MenuBarType.File, loadPythonScriptMenuItem, 11);
-           
+            pluginManagerMainMenuItem = GenerateMenuItem();
+            //p.AddMenuItem(MenuBarType.File, loadPythonScriptMenuItem, 11);
+            dynamoMenu.Items.Add(pluginManagerMainMenuItem);
+            MenuItem pluginManagerSetting = new MenuItem();
+
+            pluginManagerSetting.Header = "Pluging Manager Settings";
+            pluginManagerSetting.Click += ShowPluginManagerWindow;
+
+            var dynamoItem = SearchForMenuItem();
+            dynamoItem.Items.Add(pluginManagerSetting);
+
+
             p.CurrentWorkspaceChanged += CurrentWorkspaceChanged;
 
             CommandExecutive = p.CommandExecutive;
             WorkspaceModel = p.CurrentWorkspaceModel;
             Watch3DViewModel = (HelixWatch3DViewModel) p.BackgroundPreviewViewModel;
 
+            dynamoView = (DynamoView) p.DynamoWindow;
+            MenuItem item = new MenuItem();
+            //item.InputGestureText = "Alt+D";
+            item.Header = "lalalal";
+            
+        }
+        internal void AddPluginMenuItem(PluginModel pluginModel)
+        {
+            MenuItem newItem = new MenuItem();
+            newItem.Header = pluginModel.PluginName;
+            newItem.Command = pluginManagerViewModel.RunScriptCommand;
+            newItem.CommandParameter = pluginModel.FilePath;
+            KeyGestureConverter keyConverter = new KeyGestureConverter();
+            KeyGesture key = (KeyGesture)keyConverter.ConvertFromString("Ctrl+A"/*pluginModel.PluginName*/);
+            KeyBinding keyBinding = new KeyBinding(pluginManagerViewModel.RunScriptCommand,key );
+
+            keyBinding.CommandParameter = pluginModel.FilePath;
+            newItem.InputGestureText = pluginModel.ShortcutKey;
+
+            dynamoView.InputBindings.Add(keyBinding);
+            //TODO: Implement a with a sorted list
+            var dynamoItem = SearchForMenuItem();
+            dynamoItem.Items.Add(newItem);
+
+
+        }
+        private MenuItem SearchForMenuItem()
+        {
+            var dynamoMenuItems = dynamoMenu.Items.OfType<MenuItem>();
+            return dynamoMenuItems.First(item => item.Header.ToString() == pluginManagerMainMenuItem.Header);
         }
 
         private void CurrentWorkspaceChanged(IWorkspaceModel ws)
@@ -117,7 +161,7 @@ namespace Dynamo.PluginManager
 
 
            
-          item.Click += ShowPluginManagerWindow ;
+       //   item.Click += ShowPluginManagerWindow ;
          //  item.Click += (sender, args) => { PluginManagerImportScript.ImportPythonScript(this); };
            return item;
         }

@@ -7,6 +7,8 @@ using System.Windows;
 using Dynamo.PluginManager.ViewModel;
 using System.ComponentModel;
 using PluginManager;
+using System.Windows.Controls;
+using Dynamo.PluginManager.Model;
 
 namespace Dynamo.PluginManager.View
 {
@@ -40,7 +42,13 @@ namespace Dynamo.PluginManager.View
             pluginScriptEditor.Show();
             this.WindowState = System.Windows.WindowState.Normal;
         }
-        
+        void OnPluginSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count <= 0)
+                return;
+            var selected = e.AddedItems[0] as PluginModel;
+            ViewModel.SelectedIndex = ViewModel.PluginModelList.IndexOf(selected);
+        }
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName.Equals("SelectedIndex"))

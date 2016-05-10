@@ -9,16 +9,17 @@ using Microsoft.Scripting.Hosting;
 using System.Windows.Forms;
 using Dynamo.PluginManager;
 using Dynamo.Graph.Workspaces;
+using System.IO;
 
 namespace PluginManager
 {
     public static class PluginManagerIronPythonEvaluator
     {
-        public static void EvaluatePythonFile(string path, PluginManagerExtension pluginManagerContext)
+        public static void EvaluatePythonString(string str, PluginManagerExtension pluginManagerContext)
         {
             try {
                 var engine = Python.CreateEngine();
-                ScriptSource script = engine.CreateScriptSourceFromString(path);
+                ScriptSource script = engine.CreateScriptSourceFromString(str);
                 CompiledCode code = script.Compile();
                 ScriptScope scope = engine.CreateScope();
                //pluginManagerContext.WorkspaceModel.
@@ -32,6 +33,10 @@ namespace PluginManager
             {
                 System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
             }
+        }
+        public static void EvaluatePythonFile(string path, PluginManagerExtension pluginManagerContext)
+        {
+            EvaluatePythonString(File.ReadAllText(path), pluginManagerContext);
         }
     }
 }

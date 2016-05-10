@@ -209,7 +209,7 @@
         <ListBox x:Name="PathListBox"
                  Grid.Row="2"
                  SelectionMode="Single"
-                
+                SelectionChanged="OnPluginSelectionChanged"
                  Style="{StaticResource PathListBoxStyle}"
                  ItemContainerStyle="{StaticResource PathListBoxItemStyle}" Margin="0,0,0,23">
             <ListBox.ItemsSource>

@@ -14,6 +14,12 @@ namespace Dynamo.PluginManager.Model
         public PluginModel(string file, string shortcutKey){
             FilePath = file;
             ShortcutKey = shortcutKey;
+            
+        }
+        public string PluginName{
+            get{
+                return Path.GetFileNameWithoutExtension(FilePath);
+            }
         }
         
         private string filePath;
