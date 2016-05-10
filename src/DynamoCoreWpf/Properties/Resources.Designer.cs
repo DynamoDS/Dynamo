@@ -377,6 +377,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expand Custom Node.
+        /// </summary>
+        public static string ContextMenuExpandCustomNode {
+            get {
+                return ResourceManager.GetString("ContextMenuExpandCustomNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expand Custom Node to Group.
+        /// </summary>
+        public static string ContextMenuExpandCustomNodeToGroup {
+            get {
+                return ResourceManager.GetString("ContextMenuExpandCustomNodeToGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Fit to Screen.
         /// </summary>
         public static string ContextMenuFitToScreen {
@@ -530,6 +548,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Restore to Custom Node Instance.
+        /// </summary>
+        public static string ContextMenuRestoreToCustomNodeInstance {
+            get {
+                return ResourceManager.GetString("ContextMenuRestoreToCustomNodeInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show all geometry preview.
         /// </summary>
         public static string ContextMenuShowAllGeometry {
@@ -553,6 +580,24 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextMenuShowUpstreamPreview {
             get {
                 return ResourceManager.GetString("ContextMenuShowUpstreamPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sync with Custom Node.
+        /// </summary>
+        public static string ContextMenuSyncWithCustomNodeDefinition {
+            get {
+                return ResourceManager.GetString("ContextMenuSyncWithCustomNodeDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Custom Node.
+        /// </summary>
+        public static string ContextMenuUpdateCustomNodeDefintion {
+            get {
+                return ResourceManager.GetString("ContextMenuUpdateCustomNodeDefintion", resourceCulture);
             }
         }
         

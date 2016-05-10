@@ -5,6 +5,7 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Logging;
 using Dynamo.Utilities;
 using ProtoCore.Namespace;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Graph.Nodes.NodeLoaders
 {
@@ -354,6 +355,34 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
 
             node = null;
             return false;
+        }
+
+        /// <summary>
+        /// Copy a node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="workspace"></param>
+        /// <returns></returns>
+        internal NodeModel CopyNode(NodeModel node, WorkspaceModel workspace)
+        {
+            NodeModel newNode;
+
+            var xmlDoc = new XmlDocument();
+            var dynEl = node.Serialize(xmlDoc, SaveContext.Copy);
+            newNode = CreateNodeFromXml(dynEl, SaveContext.Copy, workspace.ElementResolver);
+
+            var lacing = node.ArgumentLacing.ToString();
+            newNode.UpdateValue(new UpdateValueParams("ArgumentLacing", lacing));
+            if (!string.IsNullOrEmpty(node.NickName) && !(node is CustomNodes.Symbol) && !(node is Output))
+            {
+                newNode.NickName = node.NickName;
+            }
+
+            newNode.X = node.X;
+            newNode.Y = node.Y;
+            newNode.Width = node.Width;
+            newNode.Height = node.Height;
+            return newNode;
         }
     }
 }

@@ -394,6 +394,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        /// <summary>
+        /// Forces a regeneration of the render packages for nodes.
+        /// </summary>
+        /// <param name="nodes"></param>
+        public void RegeneratePackagesForNode(IEnumerable<NodeModel> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController,
+                        renderPackageFactory, true);
+            }
+        }
+
         protected virtual void OnWorkspaceCleared(WorkspaceModel workspace)
         {
             OnClear();

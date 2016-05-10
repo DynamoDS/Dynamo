@@ -37,6 +37,7 @@ using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
+using Dynamo.Graph.Annotations;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -1323,13 +1324,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="packages">An <see cref="IEnumerable"/> of <see cref="HelixRenderPackage"/>.</param>
         private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages)
         {
-            IEnumerable<string> customNodeIdents = null;
-            if (InCustomNode())
+            var isInCustomNode = InCustomNode();
+            IEnumerable<string> nodeIdents = null;
+            IDictionary<string, Color4> identColorMap = null;
+            var hs = model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            if (hs != null)
             {
-                var hs = model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
-                if (hs != null)
+                if (isInCustomNode)
                 {
-                    customNodeIdents = FindIdentifiersForCustomNodes(hs);
+                    nodeIdents = FindIdentifiersForCustomNodes(hs);
+                }
+                else
+                {
+                    identColorMap = FindIdentifiersForCustomAnnotationModels(hs);
                 }
             }
 
@@ -1357,7 +1364,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     if (UpdateGeometryModelForSpecialRenderPackage(rp, baseId))
                         continue;
 
-                    var drawDead = InCustomNode() && !customNodeIdents.Contains(baseId);
+                    var drawDead = isInCustomNode && !nodeIdents.Contains(baseId);
+                    var drawCustomAnnotation = !drawDead && !isInCustomNode && identColorMap.ContainsKey(baseId);
 
                     string id;
                     var p = rp.Points;
@@ -1385,6 +1393,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         if (drawDead)
                         {
                             points.Colors.AddRange(Enumerable.Repeat(defaultDeadColor, points.Positions.Count));
+                        }
+                        else if (drawCustomAnnotation)
+                        {
+                            points.Colors.AddRange(Enumerable.Repeat(identColorMap[baseId], points.Positions.Count));
                         }
                         else
                         {
@@ -1425,6 +1437,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         if (drawDead)
                         {
                             lineSet.Colors.AddRange(Enumerable.Repeat(defaultDeadColor, l.Positions.Count));
+                        }
+                        else if (drawCustomAnnotation)
+                        {
+                            lineSet.Colors.AddRange(Enumerable.Repeat(identColorMap[baseId], l.Positions.Count));
                         }
                         else
                         {
@@ -1473,6 +1489,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     {
                         meshGeometry3D.RequiresPerVertexColoration = true;
                         mesh.Colors.AddRange(m.Colors.Select(c=>new Color4(c.Red, c.Green, c.Blue, c.Alpha * defaultDeadAlphaScale)));
+                    }
+                    else if (drawCustomAnnotation)
+                    {
+                        var color = identColorMap[baseId];
+                        meshGeometry3D.RequiresPerVertexColoration = true;
+                        mesh.Colors.AddRange(m.Colors.Select(c => new Color4(color.Red, color.Green, color.Blue, color.Alpha * defaultDeadAlphaScale)));
                     }
                     else
                     {
@@ -1895,6 +1917,57 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
             }
             return idents;
+        }
+
+        internal static IDictionary<string, Color4> FindIdentifiersForCustomAnnotationModels(HomeWorkspaceModel workspace)
+        {
+            Dictionary<string, Color4> identColorMap = new Dictionary<string, Color4>();
+            if (workspace == null)
+            {
+                return identColorMap;
+            }
+
+            // Remove the output identifier appended to the custom node outputs.
+            var rgx = new Regex("_out[0-9]");
+
+            var customNodeAnnotationModels = workspace.Annotations.OfType<CustomNodeAnnotationModel>();
+            foreach (var annotationModel in customNodeAnnotationModels)
+            {
+                var color = defaultDeadColor;
+                var brushConverter = new BrushConverter();
+                var solidColorBrush = brushConverter.ConvertFromString(annotationModel.Background) as SolidColorBrush; 
+                if (solidColorBrush != null)
+                {
+                    var gbColor = solidColorBrush.Color;
+                    color = new Color4(new Color3(gbColor.R / (float)255.0, gbColor.G / (float)255.0, gbColor.B / (float)255.0));
+                }
+
+                foreach (var n in annotationModel.SelectedModels.OfType<NodeModel>())
+                {
+                    if (n.IsPartiallyApplied)
+                    {
+                        // Find output identifiers for the connected map node
+                        var mapOutportsIdents =
+                            n.OutPorts.SelectMany(
+                                np => np.Connectors.SelectMany(
+                                        c => c.End.Owner.OutPorts.Select(
+                                                mp => rgx.Replace(mp.Owner.GetAstIdentifierForOutputIndex(mp.Index).Value, ""))));
+
+                        foreach (var ident in mapOutportsIdents)
+                        {
+                            identColorMap[ident] = color;
+                        }
+                    }
+                    else
+                    {
+                        foreach (var ident in n.OutPorts.Select(p => rgx.Replace(n.GetAstIdentifierForOutputIndex(p.Index).Value, "")))
+                        {
+                            identColorMap[ident] = color;
+                        }
+                    }
+                }
+            }
+            return identColorMap;
         }
 
         internal static IEnumerable<string> AllOutputIdentifiersInWorkspace(HomeWorkspaceModel workspace)

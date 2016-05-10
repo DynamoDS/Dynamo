@@ -23,6 +23,8 @@ namespace Dynamo.ViewModels
         private DelegateCommand _ungroupCommand;
         private DelegateCommand _addToGroupCommand;
         private DelegateCommand _computeRunStateOfTheNodeCommand;
+        private DelegateCommand _expandCommand;
+        private DelegateCommand _expandToWorkspaceCommand;
 
         public DelegateCommand RenameCommand
         {
@@ -159,6 +161,27 @@ namespace Dynamo.ViewModels
                 if (_gotoWorkspaceCommand == null)
                     _gotoWorkspaceCommand = new DelegateCommand(GotoWorkspace, CanGotoWorkspace);
                 return _gotoWorkspaceCommand;
+            }
+        }
+
+        public DelegateCommand ExpandCommand
+        {
+            get
+            {
+                if (_expandCommand == null)
+                    _expandCommand = new DelegateCommand(Expand, CanExpand);
+                return _expandCommand;
+            }
+        }
+
+
+        public DelegateCommand ExpandToWorkspaceCommand
+        {
+            get
+            {
+                if (_expandToWorkspaceCommand == null)
+                    _expandToWorkspaceCommand = new DelegateCommand(ExpandToWorkspace, CanExpandToWorkspace);
+                return _expandToWorkspaceCommand;
             }
         }
 

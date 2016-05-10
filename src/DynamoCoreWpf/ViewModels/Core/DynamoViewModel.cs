@@ -1474,6 +1474,54 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
         }
 
+        public void UpdateCustomNodeDefinition(object parameter)
+        {
+            if (parameter == null)
+            {
+                return;
+            }
+
+            CustomNodeAnnotationModel model = parameter as CustomNodeAnnotationModel;
+            if (model == null)
+            {
+                return;
+            }
+
+            Model.CustomNodeManager.UpdateCustomNode(model, this.currentWorkspaceViewModel.Model, this.Model);
+        }
+
+        public void RestoreCustomNodeInstance(object parameter)
+        {
+            if (parameter == null)
+            {
+                return;
+            }
+
+            CustomNodeAnnotationModel model = parameter as CustomNodeAnnotationModel;
+            if (model == null)
+            {
+                return;
+            }
+
+            Model.CustomNodeManager.RestoreCustomNodeInstance(model, this.currentWorkspaceViewModel.Model);
+        }
+
+        public void SyncWithCustomNodeDefinition(object parameter)
+        {
+            if (parameter == null)
+            {
+                return;
+            }
+
+            CustomNodeAnnotationModel model = parameter as CustomNodeAnnotationModel;
+            if (model == null)
+            {
+                return;
+            }
+
+            Model.CustomNodeManager.UpdateCustomNodeAnnotationModel(model, this.currentWorkspaceViewModel.Model, this.Model);
+        }
+
         /// <summary>
         /// Returns the selected nodes that are "input" nodes, and makes an 
         /// exception for CodeBlockNodes as these are marked false so they 
