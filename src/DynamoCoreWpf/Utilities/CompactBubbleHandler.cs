@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Dynamo.Extensions;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
@@ -71,7 +72,7 @@ namespace Dynamo.Wpf.Utilities
 
             return new CompactBubbleViewModel
             {
-                NodeLabel = list.Count == 0 ? "Empty List" : "List",
+                NodeLabel = list.Any() ? "List" : "Empty List",
                 IsCollection = true
             };
         }
