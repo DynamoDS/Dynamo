@@ -80,6 +80,11 @@ namespace PluginManager
             PluginManagerIronPythonEvaluator.EvaluatePythonString(editText.Text,pluginManagerContext);
             this.WindowState = WindowState.Normal;
         }
+        private void OnSaveClicked(object sender, RoutedEventArgs e)
+        {
+            System.IO.File.WriteAllText(filePath, string.Empty);
+            System.IO.File.WriteAllText(filePath, editText.Text);
+        }
 
         private void OnTextAreaTextEntered(object sender, TextCompositionEventArgs e)
         {

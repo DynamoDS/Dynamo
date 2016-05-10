@@ -92,7 +92,7 @@ namespace Dynamo.PluginManager
             Watch3DViewModel = (HelixWatch3DViewModel) p.BackgroundPreviewViewModel;
 
             dynamoView = (DynamoView) p.DynamoWindow;
-            MenuItem item = new MenuItem();
+            pluginManagerViewModel.ImportPlugins();
             
         }
         internal void AddPluginMenuItem(PluginModel pluginModel)
@@ -101,10 +101,10 @@ namespace Dynamo.PluginManager
             newItem.Header = pluginModel.PluginName;
             newItem.Command = pluginManagerViewModel.RunScriptCommand;
             newItem.CommandParameter = pluginModel.FilePath;
-            if (String.IsNullOrWhiteSpace(pluginModel.ShortcutKey))
+            if (!String.IsNullOrWhiteSpace(pluginModel.ShortcutKey))
             {
                 AddKeyBinding(pluginModel.ShortcutKey, pluginModel.FilePath);
-                newItem.InputGestureText = pluginModel.FilePath;
+                newItem.InputGestureText = pluginModel.ShortcutKey;
             }
             //TODO: Implement a with a sorted list
             var dynamoItem = SearchForMenuItem();
