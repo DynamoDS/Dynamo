@@ -6,75 +6,74 @@ using ProtoCore.Mirror;
 
 namespace Dynamo.Wpf.Utilities
 {
-    public class CompactBubbleHandler
+    /// <summary>
+    /// Helper class to process node output
+    /// </summary>
+    public static class CompactBubbleHandler
     {
-        private static int levels;
         private static int items;
 
-        public static CompactBubbleViewModel Process(dynamic value)
+        /// <summary>
+        /// Creates an instance of <cref name="CompactBubbleViewModel"/> class
+        /// from given node value
+        /// </summary>
+        /// <param name="value">Node value</param>
+        /// <returns>Instance of <cref name="CompactBubbleViewModel"/> class</returns>
+        public static CompactBubbleViewModel Process(MirrorData value)
         {
-            levels = -1;
             items = 0;
-            return Object.ReferenceEquals(value, null)
-                ? new CompactBubbleViewModel(Resources.NullString, 0, 0)
-                : ProcessThing(value);
+            var viewModel = ProcessThing(value, true);
+            viewModel.NumberOfItems = items;
+            return viewModel;
         }        
 
-        private static CompactBubbleViewModel ProcessThing(MirrorData mirrorData)
+        private static CompactBubbleViewModel ProcessThing(MirrorData mirrorData, bool generateVm)
         {
-            var viewModel = new CompactBubbleViewModel();            
+            if (mirrorData == null) return generateVm ? new CompactBubbleViewModel(Resources.NullString, 0) : null;
 
-            if (mirrorData != null)
+            if (mirrorData.IsCollection) return ProcessCollection(mirrorData, generateVm);
+
+            items++;
+
+            // generateVm is a flag to not create unused view models
+            if (!generateVm) return null;
+
+            var viewModel = new CompactBubbleViewModel();
+            if (mirrorData.Data == null && !mirrorData.IsNull && mirrorData.Class != null)
             {
-                if (mirrorData.IsCollection)
-                {
-                    viewModel = ProcessCollection(mirrorData);
-                    levels--;
-                }
-                else if (mirrorData.Data == null && !mirrorData.IsNull && mirrorData.Class != null)
-                {
-                    viewModel.NodeLabel = mirrorData.Class.ClassName;
-                    items++;
-                }
-                else if (mirrorData.Data is Enum)
-                {
-                    viewModel.NodeLabel = ((Enum)mirrorData.Data).GetDescription();
-                    items++;
-                }
-                else
-                {
-                    items++;
-                    if (String.IsNullOrEmpty(mirrorData.StringData))
-                    {
-                        viewModel.NodeLabel = String.Empty;
-                    }
-                    else
-                    {
-
-                        int index = mirrorData.StringData.IndexOf('(');
-                        viewModel.NodeLabel = index != -1 ? mirrorData.StringData.Substring(0, index) : mirrorData.StringData;
-                    }
-                }
+                viewModel.NodeLabel = mirrorData.Class.ClassName;
+            }
+            else if (mirrorData.Data is Enum)
+            {
+                viewModel.NodeLabel = ((Enum)mirrorData.Data).GetDescription();
+            }
+            else
+            {
+                viewModel.NodeLabel = string.IsNullOrEmpty(mirrorData.StringData)
+                    ? string.Empty
+                    : mirrorData.StringData.Split('(')[0];
             }
 
-            viewModel.NumberOfItems = items;
-            viewModel.NumberOfLevels = levels;
             return viewModel;
         }
 
-        private static CompactBubbleViewModel ProcessCollection(MirrorData mirrorData)
+        private static CompactBubbleViewModel ProcessCollection(MirrorData mirrorData, bool generateVm)
         {
-            var viewModel = new CompactBubbleViewModel();
-
             var list = mirrorData.GetElements();
 
-            viewModel.NodeLabel = list.Count == 0 ? "Empty List" : "List";
             foreach (var item in list)
             {
-                ProcessThing(item);
+                ProcessThing(item, false);
             }
 
-            return viewModel;
+            // generateVm is a flag to not create unused view models
+            if (!generateVm) return null;
+
+            return new CompactBubbleViewModel
+            {
+                NodeLabel = list.Count == 0 ? "Empty List" : "List",
+                IsCollection = true
+            };
         }
     }
 }

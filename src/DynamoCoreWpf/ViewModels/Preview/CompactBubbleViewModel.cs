@@ -1,12 +1,16 @@
-﻿
-
-namespace Dynamo.ViewModels
+﻿namespace Dynamo.ViewModels
 {
+    /// <summary>
+    /// Class containing data to display in compact preview bubble
+    /// </summary>
     public class CompactBubbleViewModel : ViewModelBase
     {
         #region Properties
 
         private string nodeLabel;
+        /// <summary>
+        /// Represents type of node output
+        /// </summary>
         public string NodeLabel
         {
             get { return nodeLabel; }
@@ -17,18 +21,10 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private int numberOfLevels;
-        public int NumberOfLevels
-        {
-            get { return numberOfLevels; }
-            set
-            {
-                numberOfLevels = value;
-                RaisePropertyChanged("NumberOfLevels");
-            }
-        }
-
         private int numberOfItems;
+        /// <summary>
+        /// Number of items in the overall list if node output is a list
+        /// </summary>
         public int NumberOfItems
         {
             get { return numberOfItems; }
@@ -40,23 +36,36 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Indicates if number of list items is shown
+        /// </summary>
         public bool ShowNumberOfItems
         {
-            get { return NumberOfItems >= 1 && NumberOfLevels < -1; }
+            get { return NumberOfItems > 0 && IsCollection; }
         }
+
+        /// <summary>
+        /// Indicates if number of list items is shown
+        /// </summary>
+        public bool IsCollection { get; set; }
 
         #endregion
 
         #region Public Methods
 
-        public CompactBubbleViewModel()
-        {
-        }
+        /// <summary>
+        /// Creates an instance of <cref name="CompactBubbleViewModel"/> class with empty data
+        /// </summary>
+        public CompactBubbleViewModel() { }
 
-        public CompactBubbleViewModel(string nodeLabel, int levels, int items)
+        /// <summary>
+        /// Creates an instance of <cref name="CompactBubbleViewModel"/> class with specified data
+        /// </summary>
+        /// <param name="nodeLabel">Text representing type of node output</param>
+        /// <param name="items">Number of items in the overall list if node output is a list</param>
+        public CompactBubbleViewModel(string nodeLabel, int items)
         {
             NodeLabel = nodeLabel;
-            NumberOfLevels = levels;
             NumberOfItems = items;
         }
 

@@ -15,39 +15,18 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="15" />
         </Grid.ColumnDefinitions>
-        <TextBlock Name="label"
-                   Grid.Column="0"
-                   Margin="5,5,0,5"
-                   FontFamily="Consolas"
-                   Text="{Binding Path=NodeLabel}" />
-        <TextBlock Name="levels"
-                   Grid.Column="1"
-                   Margin="0,3,0,7"
-                   Foreground="Gray"
-                   FontStyle="Italic"
-                   Visibility="{Binding ShowNumberOfItems,Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"><Run Text="@" /><Run Text="{Binding NumberOfLevels}" />
+        <TextBlock Name="Label" Grid.Column="0" Margin="5,5,0,5" FontFamily="Consolas" Text="{Binding Path=NodeLabel}" />
+
+        <TextBlock Name="Items" Grid.Column="2" Margin="0,3,0,7" Foreground="Gray" FontStyle="Italic"
+                   Visibility="{Binding ShowNumberOfItems, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            {<Run Foreground="DarkRed" Text="{Binding NumberOfItems}" />}
         </TextBlock>
 
-        <TextBlock Name="items"
-                   Grid.Column="3"
-                   Margin="0,3,0,7"
-                   Foreground="Gray"
-                   FontStyle="Italic"
-                   Visibility="{Binding ShowNumberOfItems,Converter={StaticResource BooleanToVisibilityCollapsedConverter},ConverterParameter=''}"><Run Text="{}{" /><Run Foreground="DarkRed" Text="{Binding NumberOfItems}" /><Run Text="{}}" />
-        </TextBlock>
-
-
-        <Image x:Name="ExpandIcon"
-               Grid.Column="4"
-               Source="/DynamoCoreWpf;component/UI/Images/bubble-arrow.png"
-               VerticalAlignment="Bottom"
-               Height="6"
-               Width="6"
-               Margin="0,5,5,5" />
+        <Image x:Name="ExpandIcon" Grid.Column="3" VerticalAlignment="Bottom" Height="6" Width="6" Margin="0,5,5,5"
+               Source="/DynamoCoreWpf;component/UI/Images/bubble-arrow.png"/>
     </Grid>
 </UserControl>
