@@ -261,7 +261,9 @@
             <Button 
                     Margin="10,0,0,0"
             	Style="{StaticResource STextButton}"
-            	Content="Edit Shortcut" Width="120"/>
+            	Content="Edit Shortcut" Width="120"
+             CommandParameter="{Binding Path=SelectedIndex}"
+                Command ="{Binding EditShortcutKeyCommand}"/>
         </StackPanel>
     </Grid>
 

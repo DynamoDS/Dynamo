@@ -40,7 +40,6 @@ namespace Dynamo.PluginManager.View
             pluginScriptEditor.Initialize();
             this.WindowState = System.Windows.WindowState.Minimized;
             pluginScriptEditor.Show();
-            this.WindowState = System.Windows.WindowState.Normal;
         }
         void OnPluginSelectionChanged(object sender, SelectionChangedEventArgs e)
         {

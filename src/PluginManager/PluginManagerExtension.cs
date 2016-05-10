@@ -26,8 +26,8 @@ namespace Dynamo.PluginManager
     {
         private ViewStartupParams startupParams;
         private ViewLoadedParams loadedParams;
-       internal HelixWatch3DViewModel Watch3DViewModel { get; set; }
-       private PluginManagerViewModel pluginManagerViewModel;
+        internal HelixWatch3DViewModel Watch3DViewModel { get; set; }
+        private PluginManagerViewModel pluginManagerViewModel;
         internal Menu dynamoMenu;
         private MenuItem pluginManagerMainMenuItem;
         private Separator separator = new Separator();
@@ -70,6 +70,8 @@ namespace Dynamo.PluginManager
         public void Loaded(ViewLoadedParams p)
         {
             this.loadedParams = p;
+
+            //TODO: Shift to GenerateMenuItem
             dynamoMenu = p.dynamoMenu;
             pluginManagerMainMenuItem = GenerateMenuItem();
             //p.AddMenuItem(MenuBarType.File, loadPythonScriptMenuItem, 11);
@@ -91,8 +93,6 @@ namespace Dynamo.PluginManager
 
             dynamoView = (DynamoView) p.DynamoWindow;
             MenuItem item = new MenuItem();
-            //item.InputGestureText = "Alt+D";
-            item.Header = "lalalal";
             
         }
         internal void AddPluginMenuItem(PluginModel pluginModel)
@@ -101,24 +101,85 @@ namespace Dynamo.PluginManager
             newItem.Header = pluginModel.PluginName;
             newItem.Command = pluginManagerViewModel.RunScriptCommand;
             newItem.CommandParameter = pluginModel.FilePath;
-            KeyGestureConverter keyConverter = new KeyGestureConverter();
-            KeyGesture key = (KeyGesture)keyConverter.ConvertFromString("Ctrl+A"/*pluginModel.PluginName*/);
-            KeyBinding keyBinding = new KeyBinding(pluginManagerViewModel.RunScriptCommand,key );
-
-            keyBinding.CommandParameter = pluginModel.FilePath;
-            newItem.InputGestureText = pluginModel.ShortcutKey;
-
-            dynamoView.InputBindings.Add(keyBinding);
+            if (String.IsNullOrWhiteSpace(pluginModel.ShortcutKey))
+            {
+                AddKeyBinding(pluginModel.ShortcutKey, pluginModel.FilePath);
+                newItem.InputGestureText = pluginModel.FilePath;
+            }
             //TODO: Implement a with a sorted list
             var dynamoItem = SearchForMenuItem();
             dynamoItem.Items.Add(newItem);
 
 
         }
+        internal void RemovePluginMenuItem(PluginModel pluginModel)
+        {
+            //Remove the inputBinding first
+            RemoveDynamoViewKeyBinding(pluginModel);
+            //Remove the menuItem
+            var dynamoItem = SearchForMenuItem();
+            foreach(MenuItem item in dynamoItem.Items)
+            {
+                if(item.HasHeader && item.Header.Equals(pluginModel.PluginName))
+                {
+                    dynamoItem.Items.Remove(item);
+                    break;
+                }
+            }
+        }
+        internal void ChangeShortcutKey(PluginModel pluginModel, string newShortcutKey)
+        {
+                        //remove the binding first
+                   if(pluginModel.ShortcutKey!= null)
+            {
+                RemoveDynamoViewKeyBinding(pluginModel);
+            }
+                    //add new binding
+            if (!String.IsNullOrWhiteSpace(newShortcutKey))
+            {
+                AddKeyBinding(newShortcutKey, pluginModel.FilePath);
+            }
+            //change InputGestureText of the corresponding menuItem
+            MenuItem dynamoItem = SearchForMenuItem();
+            for(int i = 0; i< dynamoItem.Items.Count;i++)
+            {
+                MenuItem item = (MenuItem)dynamoItem.Items.GetItemAt(i);
+                if (item.HasHeader && item.Header.Equals(pluginModel.PluginName))
+                {
+                    ((MenuItem)dynamoItem.Items.GetItemAt(i)).InputGestureText = newShortcutKey;
+                    break;
+                }
+            }
+        }
+        private void RemoveDynamoViewKeyBinding(PluginModel pluginModel)
+        {
+            foreach(var item in dynamoView.InputBindings)
+            {
+                if(item.GetType() == typeof( KeyBinding))
+                {
+                    if (pluginModel.FilePath.Equals(((KeyBinding)item).CommandParameter))
+                    { 
+                        dynamoView.InputBindings.Remove((KeyBinding)item);
+                        break;
+                    }
+                }
+                
+            }
+          //  dynamoView.InputBindings.Remove(keyBinding);
+
+        }
+        private void AddKeyBinding(string shortcutKey, string commandParam)
+        {
+            KeyGestureConverter keyConverter = new KeyGestureConverter();
+            KeyGesture key = (KeyGesture)keyConverter.ConvertFromString(shortcutKey);
+            KeyBinding keyBinding = new KeyBinding(pluginManagerViewModel.RunScriptCommand, key);
+            keyBinding.CommandParameter =commandParam;
+            dynamoView.InputBindings.Add(keyBinding);
+        }
         private MenuItem SearchForMenuItem()
         {
             var dynamoMenuItems = dynamoMenu.Items.OfType<MenuItem>();
-            return dynamoMenuItems.First(item => item.Header.ToString() == pluginManagerMainMenuItem.Header);
+            return dynamoMenuItems.First(item => item.Header.ToString() == (string)pluginManagerMainMenuItem.Header);
         }
 
         private void CurrentWorkspaceChanged(IWorkspaceModel ws)
@@ -156,12 +217,12 @@ namespace Dynamo.PluginManager
             //item.InputGestureText = "Alt+D";
             item.Header = "Plugin Manager";
           
-            //  = PluginManagerImportScript.ImportPythonScript();
+            //= PluginManagerImportScript.ImportPythonScript();
             // item.CommandBindings.Add()
 
 
            
-       //   item.Click += ShowPluginManagerWindow ;
+       //    item.Click += ShowPluginManagerWindow ;
          //  item.Click += (sender, args) => { PluginManagerImportScript.ImportPythonScript(this); };
            return item;
         }

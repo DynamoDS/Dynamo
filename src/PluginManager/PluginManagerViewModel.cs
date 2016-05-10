@@ -18,6 +18,7 @@ namespace Dynamo.PluginManager.ViewModel
     public class PluginManagerViewModel : NotificationObject
     {
         private PluginManagerExtension pluginManagerContext;
+        public DelegateCommand EditShortcutKeyCommand { get; private set; }
         public DelegateCommand RunScriptCommand { get; private set; }
         public DelegateCommand RemovePluginCommand { get; private set; }
         public DelegateCommand AddPluginCommand { get; private set; }
@@ -48,6 +49,20 @@ namespace Dynamo.PluginManager.ViewModel
             RunScriptCommand = new DelegateCommand(p => RunScript((string)p));
             RemovePluginCommand = new DelegateCommand(p => RemovePluginAt((int)p), CanRemove);
             AddPluginCommand = new DelegateCommand(p => AddPlugin());
+            EditShortcutKeyCommand = new DelegateCommand(p => EditShortcutKey((int)p), CanEditShortcutKey);
+        }
+        private bool CanEditShortcutKey(object param)
+        {
+            return (PluginModelList.Count > 0);
+        }
+        private void EditShortcutKey(int index)
+        {
+            //TODO: Validity test for the shortcut && add property firing
+                string newShortCutKey = TextBoxPromptDialog.ShowDialog("Enter Shortcut key(e.g Ctrl+A)", "Shortcut Key");
+            pluginManagerContext.ChangeShortcutKey(PluginModelList.ElementAt(index), newShortCutKey);
+            PluginModelList.ElementAt(index).ShortcutKey = newShortCutKey;
+
+
         }
         private void RunScript(string filePath)
         {
@@ -56,7 +71,7 @@ namespace Dynamo.PluginManager.ViewModel
         private void AddPlugin()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Python files (*.py)|*.py";
+            openFileDialog.Filter = "Python files (*.py)|*.py|All Files(*.*)|*.*";
             openFileDialog.Title = "Import Python File";
             openFileDialog.Multiselect = true;
             openFileDialog.RestoreDirectory = true;
@@ -80,12 +95,12 @@ namespace Dynamo.PluginManager.ViewModel
         }
         private void RemovePluginAt(int index)
         {
+            pluginManagerContext.RemovePluginMenuItem(PluginModelList.ElementAt(SelectedIndex));
             PluginModelList.RemoveAt(index);
             if (index <= SelectedIndex && SelectedIndex > 0)
             {
                 SelectedIndex--;
             }
-            //  RaiseCanExecuteChanged();
         }
         private bool CanRemove(object param)
         {
@@ -104,8 +119,9 @@ namespace Dynamo.PluginManager.ViewModel
         }
         private void ImportPlugins()
         {
+            //TODO:Shift this import to separate class
             var appDatafolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var PluginFolder = Path.Combine(appDatafolder, "Dynamo", "Plugins");
+            var PluginFolder = Path.Combine(appDatafolder, "Dynamo","Dynamo Core", "Plugins");
             var PluginPreferenceFile = Path.Combine(appDatafolder, "PluginPreference.xml");
             if (!Directory.Exists(PluginFolder))
             {
@@ -115,14 +131,20 @@ namespace Dynamo.PluginManager.ViewModel
                 doc.AppendChild(docNode);
 
                 doc.Save(PluginPreferenceFile);
-                //System.IO.File.Create(PluginPreferenceFile);
+                System.IO.File.Create(PluginPreferenceFile);
             }
             else
             {
                 XmlDocument doc = new XmlDocument();
-                doc.Load(PluginPreferenceFile);
-                // foreach
+                if (Directory.Exists(PluginPreferenceFile))
+                {
+                    doc.Load(PluginPreferenceFile);
 
+                }
+                else
+                {
+
+                }
 
             }
         }
