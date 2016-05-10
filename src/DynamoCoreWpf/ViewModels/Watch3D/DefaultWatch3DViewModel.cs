@@ -142,6 +142,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        private bool selectivePreview;
+        public bool SelectivePreview
+        {
+            get
+            {
+                return selectivePreview;
+            }
+            set
+            {
+                selectivePreview = value;
+                RaisePropertyChanged("SelectivePreview");
+            }
+        }
+
         /// <summary>
         /// A flag which indicates whether the user is holding the
         /// navigation override key (ESC).
@@ -292,7 +306,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         handler(CanNavigateBackground);
                     }
                     break;
+                case "SelectivePreview":
+                    OnSelectivePreviewUpdated();
+                    break;
             }
+        }
+
+        protected virtual void OnSelectivePreviewUpdated()
+        {
+            // Override in inherited classes.
         }
 
         private void UnregisterEventHandlers()
