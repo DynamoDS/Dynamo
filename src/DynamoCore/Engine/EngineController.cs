@@ -351,7 +351,7 @@ namespace Dynamo.Engine
                     definition.ReturnKeys,
                     definition.FunctionName,
                     definition.FunctionBody,
-                    definition.OutputNodes,
+                    definition.OutputIdentifiers,
                     definition.Parameters,
                     verboseLogging);
 
