@@ -40,6 +40,10 @@
     <Reference Include="DynamoCoreWpf">
       <HintPath>..\..\bin\AnyCPU\Debug\DynamoCoreWpf.dll</HintPath>
     </Reference>
+    <Reference Include="DynamoUtilities, Version=1.0.1.1311, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\AnyCPU\Debug\DynamoUtilities.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=4.3.1.9429, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>

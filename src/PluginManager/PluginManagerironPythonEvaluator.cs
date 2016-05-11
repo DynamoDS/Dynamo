@@ -11,6 +11,7 @@ using Dynamo.PluginManager;
 using Dynamo.Graph.Workspaces;
 using System.IO;
 using Dynamo.Views;
+using Dynamo.ViewModels;
 
 namespace PluginManager
 {
@@ -31,6 +32,8 @@ namespace PluginManager
                 scope.SetVariable("Logger", pluginManagerContext.DynamoViewModel.Model.Logger);
                 scope.SetVariable("dynamoViewModel", pluginManagerContext.DynamoViewModel);
                 scope.SetVariable("dynamoView",pluginManagerContext.DynamoView);
+                scope.SetVariable("workspaceView", pluginManagerContext.WorkspaceView);
+                scope.SetVariable("workspaceViewModel", (WorkspaceViewModel)pluginManagerContext.DynamoViewModel.CurrentSpaceViewModel);
                // System.Windows.MessageBox.Show(String.Format(pluginManagerContext.WorkspaceModel.FileName, MessageBoxButtons.OK, MessageBoxIcon.Warning));
                 code.Execute(scope);
             }

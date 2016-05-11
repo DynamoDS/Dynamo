@@ -21,6 +21,7 @@ using Dynamo.PluginManager.Model;
 using System.Windows.Input;
 using Dynamo.ViewModels;
 using Dynamo.Views;
+using Dynamo.Utilities;
 
 namespace Dynamo.PluginManager
 {
@@ -73,7 +74,8 @@ namespace Dynamo.PluginManager
         public void Loaded(ViewLoadedParams p)
         {
             this.loadedParams = p;
-
+            //TODO: Create Folders for view, viewmodel & model
+            //TODO: Important implement listener to pluginManagerViewModel
             //TODO: Shift to GenerateMenuItem
             dynamoMenu = p.dynamoMenu;
             pluginManagerMainMenuItem = GenerateMenuItem();
@@ -95,6 +97,8 @@ namespace Dynamo.PluginManager
             Watch3DViewModel = (HelixWatch3DViewModel) p.BackgroundPreviewViewModel;
             DynamoViewModel = (DynamoViewModel) p.DynamoWindow.DataContext;
             DynamoView = (DynamoView) p.DynamoWindow;
+
+            WorkspaceView = DynamoView.ChildOfType<WorkspaceView>();
 
             pluginManagerViewModel.ImportPlugins();
             
