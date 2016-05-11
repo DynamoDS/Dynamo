@@ -10,6 +10,7 @@ using System.Xml;
 using Dynamo.PluginManager;
 using PythonNodeModelsWpf;
 using System.IO;
+using Dynamo.ViewModels;
 
 namespace PluginManager
 {
@@ -24,10 +25,11 @@ namespace PluginManager
         private readonly IronPythonCompletionProvider completionProvider;
         private string filePath;
         private PluginManagerExtension pluginManagerContext;
+        private DynamoViewModel dynamoViewModel;
         public PluginScriptEditor(string filePath, PluginManagerExtension pluginManagerContext)
         {
             this.filePath = filePath;
-           // this.dynamoViewModel = dynamoViewModel;
+            this.dynamoViewModel = pluginManagerContext.DynamoViewModel;
             completionProvider = new IronPythonCompletionProvider();
             //completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
             this.pluginManagerContext = pluginManagerContext;
@@ -70,15 +72,20 @@ namespace PluginManager
             }
             catch (Exception ex)
             {
-              //  dynamoViewModel.Model.Logger.Log("Failed to perform python autocomplete with exception:");
-               // dynamoViewModel.Model.Logger.Log(ex.Message);
-               // dynamoViewModel.Model.Logger.Log(ex.StackTrace);
+               dynamoViewModel.Model.Logger.Log("Failed to perform python autocomplete with exception:");
+            dynamoViewModel.Model.Logger.Log(ex.Message);
+               dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
         }
         private void OnRunClicked(object sender, RoutedEventArgs e)
         {
             PluginManagerIronPythonEvaluator.EvaluatePythonString(editText.Text,pluginManagerContext);
             this.WindowState = WindowState.Normal;
+        }
+        private void OnSaveClicked(object sender, RoutedEventArgs e)
+        {
+            System.IO.File.WriteAllText(filePath, string.Empty);
+            System.IO.File.WriteAllText(filePath, editText.Text);
         }
 
         private void OnTextAreaTextEntered(object sender, TextCompositionEventArgs e)
@@ -108,9 +115,9 @@ namespace PluginManager
             }
             catch (Exception ex)
             {
- //               dynamoViewModel.Model.Logger.Log("Failed to perform python autocomplete with exception:");
-//                dynamoViewModel.Model.Logger.Log(ex.Message);
-  //              dynamoViewModel.Model.Logger.Log(ex.StackTrace);
+            dynamoViewModel.Model.Logger.Log("Failed to perform python autocomplete with exception:");
+               dynamoViewModel.Model.Logger.Log(ex.Message);
+            dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
         }
     }

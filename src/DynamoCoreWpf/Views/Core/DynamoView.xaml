@@ -217,7 +217,7 @@
                 <!--Menu-->
                 <Menu IsMainMenu="True"
                       Name="menu1"
-                      Style="{StaticResource MainMenu}" HorizontalAlignment="Right" Width="1016">
+                      Style="{StaticResource MainMenu}">
                  <!--Accessor key = false. This is to include underscore in header(only for SubMenuItem-->
                     <Menu.Resources>
                         <Style x:Key="SubMenuItemOverride"

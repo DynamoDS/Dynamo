@@ -11,6 +11,7 @@ namespace Dynamo.PluginManager.Model
     [Serializable]
     public class PluginModel :NotificationObject
     {
+        public PluginModel() { }
         public PluginModel(string file, string shortcutKey){
             FilePath = file;
             ShortcutKey = shortcutKey;

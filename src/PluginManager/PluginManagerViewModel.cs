@@ -37,19 +37,21 @@ namespace Dynamo.PluginManager.ViewModel
             }
         }
 
-        private string PluginPreferenceFile;
-        private string PluginFolder;
+        private string PluginPreferenceFilePath;
+        private string PluginFolderPath;
         public ObservableCollection<PluginModel> PluginModelList { get; private set; }
         public PluginManagerViewModel(PluginManagerExtension pluginManagerContext)
         {
             this.pluginManagerContext = pluginManagerContext;
             PluginModelList = new ObservableCollection<PluginModel>();
-            // ImportPlugins();
-            TempPopulateList();
+            
+            //TempPopulateList();
             RunScriptCommand = new DelegateCommand(p => RunScript((string)p));
             RemovePluginCommand = new DelegateCommand(p => RemovePluginAt((int)p), CanRemove);
             AddPluginCommand = new DelegateCommand(p => AddPlugin());
             EditShortcutKeyCommand = new DelegateCommand(p => EditShortcutKey((int)p), CanEditShortcutKey);
+           // ImportPlugins();
+
         }
         private bool CanEditShortcutKey(object param)
         {
@@ -61,8 +63,7 @@ namespace Dynamo.PluginManager.ViewModel
                 string newShortCutKey = TextBoxPromptDialog.ShowDialog("Enter Shortcut key(e.g Ctrl+A)", "Shortcut Key");
             pluginManagerContext.ChangeShortcutKey(PluginModelList.ElementAt(index), newShortCutKey);
             PluginModelList.ElementAt(index).ShortcutKey = newShortCutKey;
-
-
+            UpdatePluginManagerPreferenceXMLFile();
         }
         private void RunScript(string filePath)
         {
@@ -84,7 +85,7 @@ namespace Dynamo.PluginManager.ViewModel
                     foreach (var file in openFileDialog.FileNames)
                     {
                         PluginModelList.Add(new PluginModel(file, null));
-                        pluginManagerContext.AddPluginMenuItem(new PluginModel(file, "Ctrl + Y"));
+                        pluginManagerContext.AddPluginMenuItem(new PluginModel(file, null));
                     }
                 }
                 catch (Exception ex)
@@ -92,6 +93,7 @@ namespace Dynamo.PluginManager.ViewModel
                     System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
                 }
             }
+            UpdatePluginManagerPreferenceXMLFile();
         }
         private void RemovePluginAt(int index)
         {
@@ -101,6 +103,7 @@ namespace Dynamo.PluginManager.ViewModel
             {
                 SelectedIndex--;
             }
+            UpdatePluginManagerPreferenceXMLFile();
         }
         private bool CanRemove(object param)
         {
@@ -109,46 +112,59 @@ namespace Dynamo.PluginManager.ViewModel
         private void TempPopulateList()
         {
             var appDatafolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var PluginFolder = Path.Combine(appDatafolder, "Dynamo", "Plugins");
-            var PluginPreferenceFile = Path.Combine(appDatafolder, "PluginPreference.xml");
-            string[] fileList = Directory.GetFiles(PluginFolder);
+             PluginFolderPath = Path.Combine(appDatafolder, "Dynamo", "Plugins");
+            PluginPreferenceFilePath = Path.Combine(appDatafolder, "PluginPreference.xml");
+            string[] fileList = Directory.GetFiles(PluginFolderPath);
             for (int i = 0; i < fileList.Count(); i++)
             {
                 PluginModelList.Add(new PluginModel(fileList[i], null));
             }
         }
-        private void ImportPlugins()
+       internal void ImportPlugins()
         {
             //TODO:Shift this import to separate class
             var appDatafolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var PluginFolder = Path.Combine(appDatafolder, "Dynamo","Dynamo Core", "Plugins");
-            var PluginPreferenceFile = Path.Combine(appDatafolder, "PluginPreference.xml");
-            if (!Directory.Exists(PluginFolder))
+            PluginFolderPath = Path.Combine(appDatafolder, "Dynamo","Dynamo Core", "Plugins");
+             PluginPreferenceFilePath = Path.Combine(appDatafolder,PluginFolderPath, "PluginPreference.xml");
+            if (!Directory.Exists(PluginFolderPath))
             {
-                System.IO.Directory.CreateDirectory(PluginFolder);
-                XmlDocument doc = new XmlDocument();
+                System.IO.Directory.CreateDirectory(PluginFolderPath);
+                /*XmlDocument doc = new XmlDocument();
                 XmlNode docNode = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
                 doc.AppendChild(docNode);
 
-                doc.Save(PluginPreferenceFile);
-                System.IO.File.Create(PluginPreferenceFile);
+                doc.Save(PluginPreferenceFilePath);
+                System.IO.File.Create(PluginPreferenceFilePath);*/
             }
             else
             {
-                XmlDocument doc = new XmlDocument();
-                if (Directory.Exists(PluginPreferenceFile))
+                ReadPluginManagerPreferenceXMLFile();
+                foreach (PluginModel model in PluginModelList)
                 {
-                    doc.Load(PluginPreferenceFile);
-
+                    pluginManagerContext.AddPluginMenuItem(model);
                 }
-                else
-                {
-
-                }
-
             }
         }
+        private void UpdatePluginManagerPreferenceXMLFile()
+        {
+            System.IO.File.WriteAllText(PluginPreferenceFilePath, string.Empty);
+            FileStream fileStream = new FileStream(PluginPreferenceFilePath,FileMode.OpenOrCreate);
+            System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(ObservableCollection<PluginModel>));
+            serializer.Serialize(fileStream, PluginModelList);
+            fileStream.Close();
 
+        }
+        private void ReadPluginManagerPreferenceXMLFile()
+        {
+            if (File.Exists(PluginPreferenceFilePath))
+            {
+                System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(ObservableCollection<PluginModel>));
+                StreamReader reader = new StreamReader(PluginPreferenceFilePath);
+                PluginModelList = (ObservableCollection<PluginModel>)serializer.Deserialize(reader);
+                reader.Close();
+            }
+
+        }
 
         /* 
           if (!Directory.Exists(pluginFolder))

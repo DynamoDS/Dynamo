@@ -22,8 +22,8 @@
         </Border>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
            <Button Content ="Run" Style="{DynamicResource ResourceKey=STextButton}" Name="button2" Click="OnRunClicked" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2"/>
-          <!--  <Button Content="Save As" Style="{DynamicResource ResourceKey=STextButton}" Name="button1" Click="OnCancelClicked" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="2"/>
-            -->
+            <Button Content="Save" Style="{DynamicResource ResourceKey=STextButton}" Name="button1" Click="OnSaveClicked" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="2"/>
+            
         </StackPanel>
     </Grid>
 </Window>
