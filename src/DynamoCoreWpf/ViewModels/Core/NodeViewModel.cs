@@ -419,6 +419,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public double DisplayScale
+        {
+            get
+            {
+                return nodeLogic.OwningGroup != null
+                    ? nodeLogic.OwningGroup.DisplayScale : 1;
+            }
+        }
+
         #endregion
 
         #region events
@@ -654,6 +663,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsFrozen":
                     RaiseFrozenPropertyChanged();
+                    break;
+                case "DisplayScale":
+                    RaisePropertyChanged("DisplayScale");
                     break;
             }
         }

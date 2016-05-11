@@ -5,6 +5,7 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
+             xmlns:views="clr-namespace:Dynamo.Views"
              Height="Auto"
              Width="Auto"
              Name="topControl"
@@ -19,6 +20,11 @@
           x:FieldModifier="public"
           HorizontalAlignment="Left">
 
+        <Grid.RenderTransform>
+            <ScaleTransform ScaleX="{Binding DisplayScale}"
+                            ScaleY="{Binding DisplayScale}" />
+        </Grid.RenderTransform>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto" MaxHeight="{StaticResource NodeNickNameHeight}"></RowDefinition>
@@ -327,6 +333,62 @@
               Visibility="Collapsed">
             <!--DO NOT ERASE THIS GRID TO BE USED FOR PRESENTING IMAGES, 3D VIEWS, ETC.-->
         </Grid>
+
+        <Rectangle Name="nodeCover"
+                   Grid.Row="1"
+                   Grid.ColumnSpan="3"
+                   Grid.RowSpan="3"
+                   IsHitTestVisible="False"
+                   Canvas.ZIndex="35">
+            <Rectangle.Style>
+                <Style TargetType="{x:Type Rectangle}">
+                    <Setter Property="Opacity" Value="0.0" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsFrozen}" Value="True">
+                            <Setter Property="Opacity" Value="0"/>
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Value="True">
+                                    <Condition.Binding>
+                                        <MultiBinding Converter="{StaticResource ZoomLevelToNodeCoverBooleanConverter}">
+                                            <Binding Path="DataContext.Zoom" FallbackValue="1.0" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type views:WorkspaceView}}" />
+                                            <Binding Path="DisplayScale" FallbackValue="1.0" />
+                                        </MultiBinding>
+                                    </Condition.Binding>
+                                </Condition>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                         To="1.0"
+                                                         Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
+                            <MultiDataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                         To="0.0"
+                                                         Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.ExitActions>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Rectangle.Style>
+            <Rectangle.Fill>
+                <Binding Path="State"
+                         UpdateSourceTrigger="PropertyChanged"
+                         Mode="OneWay"
+                         ConverterParameter="BodyBackground"
+                         Converter="{StaticResource StateToColorConverter}">
+                </Binding>
+            </Rectangle.Fill>
+        </Rectangle>
 
         <Rectangle Name="nodeBorder"
                    Grid.Row="1"

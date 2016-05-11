@@ -12,6 +12,8 @@ using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.Selection;
 using Dynamo.UI.Prompts;
 using TextBox = System.Windows.Controls.TextBox;
+using System.Windows.Controls.Primitives;
+using System.Collections.Generic;
 
 namespace Dynamo.Nodes
 {
@@ -83,6 +85,7 @@ namespace Dynamo.Nodes
         {
             if (ViewModel != null)
             {
+                ViewModel.AnnotationModel.ReleaseGroupOwnership();
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);               
             }
         }
@@ -239,5 +242,14 @@ namespace Dynamo.Nodes
             }
         }
 
+        private void OnAnnotationResizeStarted(object sender, MouseEventArgs e)
+        {
+            ViewModel.OnAnnotationResizeStarted(Mouse.GetPosition(this));
+        }
+
+        private void OnAnnotationResizeDelta(object sender, DragDeltaEventArgs e)
+        {
+            ViewModel.OnAnnotationResizeDelta(Mouse.GetPosition(this));
+        }
     }
 }

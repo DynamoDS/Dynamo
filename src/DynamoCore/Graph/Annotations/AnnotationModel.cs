@@ -19,6 +19,13 @@ namespace Dynamo.Graph.Annotations
         private const double ExtendSize = 10.0;
         private const double ExtendYHeight = 5.0;
 
+        private double displayScale = 1;
+        public double DisplayScale
+        {
+            get { return displayScale; }
+            set { displayScale = value; }
+        }
+
         #region Properties
 
         /// <summary>
@@ -239,6 +246,39 @@ namespace Dynamo.Graph.Annotations
             }
         }
       
+        public void UpdateGroupOwnership()
+        {
+            if (annotationText == null) return;
+
+            foreach (var item in selectedModels)
+            {
+                if (item is NodeModel)
+                {
+                    (item as NodeModel).OwningGroup = this;
+                }
+                else if (item is NoteModel)
+                {
+                    (item as NoteModel).OwningGroup = this;
+                }
+            }
+        }
+
+        public void ReleaseGroupOwnership()
+        {
+            foreach (var item in selectedModels)
+            {
+                if (item is NodeModel)
+                {
+                    (item as NodeModel).OwningGroup = null;
+                }
+                else if (item is NoteModel)
+                {
+                    (item as NoteModel).OwningGroup = null;
+                }
+            }
+            this.displayScale = 1;
+        }
+
         /// <summary>
         /// Updates the group boundary based on the nodes / notes selection.
         /// </summary>      
@@ -319,6 +359,8 @@ namespace Dynamo.Graph.Annotations
                 this.Width = 0;
                 this.height = 0;               
             }
+
+            UpdateGroupOwnership();
         }
 
         /// <summary>
@@ -336,7 +378,9 @@ namespace Dynamo.Graph.Annotations
             if (ygroup.Last() is NodeModel)
                 yheight = yheight + ExtendYHeight;
 
-            return Tuple.Create(xgroup.Last().Width, yheight);
+            return Tuple.Create(
+                this.DisplayScale * xgroup.Last().Width,
+                this.DisplayScale * yheight);
         }
               
         #region Serialization/Deserialization Methods
@@ -356,6 +400,9 @@ namespace Dynamo.Graph.Annotations
                     break;  
                 case "TextBlockText":
                     AnnotationText = value;
+                    break;
+                case "DisplayScale":
+                    DisplayScale = Convert.ToDouble(value);
                     break;
             }
 
@@ -377,6 +424,8 @@ namespace Dynamo.Graph.Annotations
             helper.SetAttribute("InitialHeight", this.InitialHeight);
             helper.SetAttribute("TextblockHeight", this.TextBlockHeight);
             helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));        
+            helper.SetAttribute("displayScale", this.displayScale);
+
             //Serialize Selected models
             XmlDocument xmlDoc = element.OwnerDocument;            
             foreach (var guids in this.SelectedModels.Select(x => x.GUID))
@@ -405,6 +454,9 @@ namespace Dynamo.Graph.Annotations
             this.textBlockHeight = helper.ReadDouble("TextblockHeight", DoubleValue);
             this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);
             this.InitialHeight = helper.ReadDouble("InitialHeight", DoubleValue);
+            if (!string.IsNullOrEmpty(element.GetAttribute("displayScale")))
+                this.displayScale = helper.ReadDouble("displayScale", DoubleValue);
+
             //Deserialize Selected models
             if (element.HasChildNodes)
             {
@@ -435,6 +487,7 @@ namespace Dynamo.Graph.Annotations
             RaisePropertyChanged("FontSize");
             RaisePropertyChanged("AnnotationText");
             RaisePropertyChanged("SelectedModels");
+            RaisePropertyChanged("DisplayScale");
         }
 
         /// <summary>

@@ -1462,6 +1462,7 @@ namespace Dynamo.Models
                             if (list.Remove(model))
                             {
                                 annotation.SelectedModels = list;
+                                annotation.UpdateGroupOwnership();
                                 annotation.UpdateBoundaryFromSelection();
                             }
                         }
@@ -1470,6 +1471,15 @@ namespace Dynamo.Models
                             emptyGroup.Add(annotation);                            
                         }                        
                     }
+                }
+
+                if (model is NodeModel)
+                {
+                    (model as NodeModel).OwningGroup = null;
+                }
+                else if (model is NoteModel)
+                {
+                    (model as NoteModel).OwningGroup = null;
                 }
             }
            

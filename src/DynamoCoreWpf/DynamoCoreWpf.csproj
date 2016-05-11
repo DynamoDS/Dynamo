@@ -816,6 +816,9 @@
     <Resource Include="UI\Images\redo_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\resize_corner.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="UI\Images\resize_diagonal.cur" />
   </ItemGroup>
   <ItemGroup>

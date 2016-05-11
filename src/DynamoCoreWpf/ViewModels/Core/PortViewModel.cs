@@ -136,6 +136,9 @@ namespace Dynamo.ViewModels
                 case "ToolTipContent":
                     RaisePropertyChanged("ToolTipContent");
                     break;
+                case "DisplayScale":
+                    RaisePropertyChanged("Center");
+                    break;
             }
         }
 
