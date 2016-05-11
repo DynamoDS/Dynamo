@@ -9,7 +9,7 @@ using System.Windows.Threading;
 
 namespace Dynamo.Utilities
 {
-    static class WpfUtilities
+    public static class WpfUtilities
     {
         // walk up the visual tree to find object of type T, starting from initial object
         public static T FindUpVisualTree<T>(DependencyObject initial) where T : DependencyObject
