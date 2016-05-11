@@ -8,7 +8,7 @@
              d:DesignHeight="200" d:DesignWidth="200" 
              MinWidth="20"
              MinHeight="20"
-             Height="Auto" Width="Auto" Visibility="Visible">
+             Height="Auto" Width="Auto">
     <UserControl.Resources>
         <local:ExecutionPercentConverter x:Key="PercentConverter"/>
         <local:IntToStringConverter x:Key="TimeConverter" Prefix="(" Suffix="ms)"/>
@@ -32,8 +32,10 @@
                     <TextBlock Text="{Binding ExecutionTime, Converter={StaticResource TimeConverter}}" FontSize="12" Foreground="White" />
                 </StackPanel>
             </Grid>
-            <local:BarChart Height="150" Width="300" LegendPropertyName="Type" VerticalPropertyName="Time" HorizontalPropertyName="Size" FontFamily="Tahoma"
-                        ItemsSource="{Binding Statistics, Converter={StaticResource StatisticsChartConverter}}" 
+            <local:BarChart Height="150" Width="300" LegendPropertyName="Type"
+                            VerticalPropertyName="Time" HorizontalPropertyName="Size" FontFamily="Tahoma"
+                            LegendsVisibility="Collapsed"
+                            ItemsSource="{Binding Statistics, Converter={StaticResource StatisticsChartConverter}}" 
                             Visibility="{Binding Converter={StaticResource BraChartVisibilityConverter}}">
             </local:BarChart>
         </StackPanel>

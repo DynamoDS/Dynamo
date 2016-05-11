@@ -65,6 +65,9 @@ namespace Dynamo.Diagnostics
         private void RecordEvaluationState(object data)
         {
             var size = Count(data);
+            if(size > 0 && Node.IsInputNode && !executionStartTime.HasValue) //For input node start notification may not come
+                executionStartTime = DateTime.Now;
+                
             if (!executionStartTime.HasValue)
             {
                 RegisterTraceListener();
@@ -79,7 +82,7 @@ namespace Dynamo.Diagnostics
                 executionTime = DateTime.Now.Subtract(executionStartTime.Value);
                 executionStartTime = null;
                 OutputDataSize = size;
-                
+                OutputPortsDataSize = (data as IEnumerable).Cast<object>().Select(Count);
                 UnRegisterTraceListener();
 
                 RaisePropertyChanged("OutputDataSize");
@@ -151,5 +154,7 @@ namespace Dynamo.Diagnostics
         public NodeModel Node { get; private set; }
 
         public IEnumerable<PerformanceData> Statistics { get { return DiagnosticsExtension.NodePerformance.GetNodePerformance(Node); } }
+
+        public IEnumerable<int> OutputPortsDataSize { get; set; }
     }
 }
