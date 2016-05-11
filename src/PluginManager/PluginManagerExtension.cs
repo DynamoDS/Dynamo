@@ -197,7 +197,7 @@ namespace Dynamo.PluginManager
 
         public void Shutdown()
         {
-            throw new NotImplementedException();
+
         }
 
         public void Dispose()

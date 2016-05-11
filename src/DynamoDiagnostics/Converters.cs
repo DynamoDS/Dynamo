@@ -149,6 +149,10 @@ namespace Dynamo.Diagnostics
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
+            var data = value as NodeData;
+            if (data != null && (data.Node.IsInputNode || data.ExecutionTime < 5))
+                return System.Windows.Visibility.Collapsed;
+
             if (DiagnosticsExtension.InputDiagnostics || DiagnosticsExtension.OutputDiagnostics)
                 return System.Windows.Visibility.Visible;
 
@@ -160,5 +164,23 @@ namespace Dynamo.Diagnostics
             throw new NotImplementedException();
         }
     }
+
+    public class NodeViewVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var data = value as NodeData;
+            if (data == null || data.Node.IsInputNode)
+                return System.Windows.Visibility.Collapsed;
+
+            return System.Windows.Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 
 }

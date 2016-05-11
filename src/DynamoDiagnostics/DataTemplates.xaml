@@ -11,6 +11,7 @@
         <DataTemplate.Resources>
             <local:NodeDataToPositionConverter x:Key="CenterXConverter" X="True"/>
             <local:NodeDataToPositionConverter x:Key="CenterYConverter" X="False"/>
+            <local:NodeViewVisibilityConverter x:Key="NodeViewVisibilityConverter"/>
             <DataTemplate x:Key="NodeViewDataTemplate" DataType="{x:Type local:NodeData}">
                 <local:NodeView></local:NodeView>
             </DataTemplate>
@@ -25,6 +26,7 @@
                 <Style TargetType="ContentPresenter">
                     <Setter Property="Canvas.Left" Value="{Binding Converter={StaticResource CenterXConverter}}"/>
                     <Setter Property="Canvas.Top" Value="{Binding Converter={StaticResource CenterYConverter}}"/>
+                    <Setter Property="Visibility" Value="{Binding Converter={StaticResource NodeViewVisibilityConverter}}"/>
                 </Style>
             </ItemsControl.ItemContainerStyle>
         </ItemsControl>
