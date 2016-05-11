@@ -561,6 +561,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void LargeModel_Intersection_MAGN_9320()
         {
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-9320
