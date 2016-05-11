@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Dynamo.PluginManager;
 using Dynamo.Graph.Workspaces;
 using System.IO;
+using Dynamo.Views;
 
 namespace PluginManager
 {
@@ -17,21 +18,29 @@ namespace PluginManager
     {
         public static void EvaluatePythonString(string str, PluginManagerExtension pluginManagerContext)
         {
+            var engine = Python.CreateEngine();
             try {
-                var engine = Python.CreateEngine();
+                
                 ScriptSource script = engine.CreateScriptSourceFromString(str);
                 CompiledCode code = script.Compile();
                 ScriptScope scope = engine.CreateScope();
                //pluginManagerContext.WorkspaceModel.
                 scope.SetVariable("workspaceModel", (WorkspaceModel) pluginManagerContext.WorkspaceModel);
-                scope.SetVariable("dynamoViewModel", pluginManagerContext.CommandExecutive);
-                scope.SetVariable("watchViewModel",pluginManagerContext.Watch3DViewModel);
+                scope.SetVariable("commandExecutive", pluginManagerContext.CommandExecutive);
+                scope.SetVariable("watch3DViewModel",pluginManagerContext.Watch3DViewModel);
+                scope.SetVariable("Logger", pluginManagerContext.DynamoViewModel.Model.Logger);
+                scope.SetVariable("dynamoViewModel", pluginManagerContext.DynamoViewModel);
+                scope.SetVariable("dynamoView",pluginManagerContext.DynamoView);
                // System.Windows.MessageBox.Show(String.Format(pluginManagerContext.WorkspaceModel.FileName, MessageBoxButtons.OK, MessageBoxIcon.Warning));
                 code.Execute(scope);
             }
-            catch(Exception ex)
+            catch(Exception e)
             {
-                System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+
+                var eo = engine.GetService<ExceptionOperations>();
+                string error = eo.FormatException(e);
+                pluginManagerContext.DynamoViewModel.Model.Logger.Log(error);
+//                System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
             }
         }
         public static void EvaluatePythonFile(string path, PluginManagerExtension pluginManagerContext)

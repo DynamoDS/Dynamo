@@ -19,6 +19,8 @@ using Dynamo.Controls;
 using System.Collections.Generic;
 using Dynamo.PluginManager.Model;
 using System.Windows.Input;
+using Dynamo.ViewModels;
+using Dynamo.Views;
 
 namespace Dynamo.PluginManager
 {
@@ -31,7 +33,8 @@ namespace Dynamo.PluginManager
         internal Menu dynamoMenu;
         private MenuItem pluginManagerMainMenuItem;
         private Separator separator = new Separator();
-        DynamoView dynamoView;
+        internal DynamoView DynamoView;
+        internal WorkspaceView WorkspaceView;
         private IWorkspaceModel workspaceModel;
         internal IWorkspaceModel WorkspaceModel
         {
@@ -40,7 +43,7 @@ namespace Dynamo.PluginManager
         }
         
         internal ICommandExecutive CommandExecutive { get; private set; }
-
+        internal DynamoViewModel DynamoViewModel;
 
         /// <summary>
         /// Sets the workspace model property and updates event handlers accordingly.
@@ -90,8 +93,9 @@ namespace Dynamo.PluginManager
             CommandExecutive = p.CommandExecutive;
             WorkspaceModel = p.CurrentWorkspaceModel;
             Watch3DViewModel = (HelixWatch3DViewModel) p.BackgroundPreviewViewModel;
+            DynamoViewModel = (DynamoViewModel) p.DynamoWindow.DataContext;
+            DynamoView = (DynamoView) p.DynamoWindow;
 
-            dynamoView = (DynamoView) p.DynamoWindow;
             pluginManagerViewModel.ImportPlugins();
             
         }
@@ -153,13 +157,13 @@ namespace Dynamo.PluginManager
         }
         private void RemoveDynamoViewKeyBinding(PluginModel pluginModel)
         {
-            foreach(var item in dynamoView.InputBindings)
+            foreach(var item in DynamoView.InputBindings)
             {
                 if(item.GetType() == typeof( KeyBinding))
                 {
                     if (pluginModel.FilePath.Equals(((KeyBinding)item).CommandParameter))
                     { 
-                        dynamoView.InputBindings.Remove((KeyBinding)item);
+                        DynamoView.InputBindings.Remove((KeyBinding)item);
                         break;
                     }
                 }
@@ -174,7 +178,7 @@ namespace Dynamo.PluginManager
             KeyGesture key = (KeyGesture)keyConverter.ConvertFromString(shortcutKey);
             KeyBinding keyBinding = new KeyBinding(pluginManagerViewModel.RunScriptCommand, key);
             keyBinding.CommandParameter =commandParam;
-            dynamoView.InputBindings.Add(keyBinding);
+            DynamoView.InputBindings.Add(keyBinding);
         }
         private MenuItem SearchForMenuItem()
         {
