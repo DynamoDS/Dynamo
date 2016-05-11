@@ -97,7 +97,7 @@ namespace Dynamo.Diagnostics
             executionTime = DateTime.Now.Subtract(executionStartTime);
             DiagnosticsSession.TotalExecutionTime = this.ExecutionTime;
 
-            DiagnosticsSession.MaxExecutionTime = 0;
+            DiagnosticsSession.MaxExecutionTime = 1;
             EvaluatedNodes.Clear();
             foreach (var item in data)
             {
