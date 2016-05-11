@@ -22,6 +22,7 @@ namespace Dynamo.Wpf.Extensions
                 case MenuBarType.Edit: return Properties.Resources.DynamoViewEditMenu;
                 case MenuBarType.View: return Properties.Resources.DynamoViewViewMenu;
                 case MenuBarType.Help: return Properties.Resources.DynamoViewHelpMenu;
+                case MenuBarType.Settings: return Properties.Resources.DynamoViewSettingMenu;
 
                 default: throw new ArgumentOutOfRangeException("type");
             }

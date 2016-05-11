@@ -14,11 +14,92 @@ using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
 using Type = ProtoCore.Type;
-
 #endregion
 
 namespace Dynamo.Engine.CodeGeneration
 {
+    public class CompilationEventArgs : EventArgs
+    {
+        private List<AssociativeNode> additionalAsts = new List<AssociativeNode>();
+        
+        /// <summary>
+        /// Creates CompilationEventArgs
+        /// </summary>
+        /// <param name="node">The node being compiled.</param>
+        /// <param name="inputNodes">List of input ast nodes.</param>
+        /// <param name="context">Compilation context.</param>
+        public CompilationEventArgs(Guid node, IEnumerable<AssociativeNode> inputNodes, CompilationContext context)
+        {
+            Node = node;
+            InputAstNodes = inputNodes;
+            Context = context;
+        }
+
+        /// <summary>
+        /// Returns Guid of the node being compiled.
+        /// </summary>
+        public Guid Node { get; private set; }
+
+        /// <summary>
+        /// Returns a list of additional ast nodes as added by the event handlers.
+        /// </summary>
+        public IEnumerable<AssociativeNode> AdditionalAstNodes { get { return additionalAsts; } }
+
+        /// <summary>
+        /// Returns input ast nodes as passed to the node being compiled.
+        /// </summary>
+        public IEnumerable<AssociativeNode> InputAstNodes { get; private set; }
+
+        /// <summary>
+        /// Provides an oppotunity to the event handlers to add additional AST nodes
+        /// during the compilation.
+        /// </summary>
+        /// <param name="node">Additonal AST node to add.</param>
+        public void AddAstNode(AssociativeNode node)
+        {
+            additionalAsts.Add(node);
+        }
+
+        /// <summary>
+        /// Compilation context
+        /// </summary>
+        public CompilationContext Context { get; private set; }
+    }
+
+    /// <summary>
+    /// Provides AST compilation related events. Clients can provide more AST
+    /// to be included during compilation events.
+    /// </summary>
+    public static class AstCompilationEvents
+    {
+        /// <summary>
+        /// Compilation for a node has begun.
+        /// </summary>
+        public static event EventHandler<CompilationEventArgs> PreCompilation;
+
+        /// <summary>
+        /// Compilation for a node has completed.
+        /// </summary>
+        public static event EventHandler<CompilationEventArgs> PostCompilation;
+
+        /// <summary>
+        /// Notifies pre compilation event
+        /// </summary>
+        internal static void NotifyPreCompilation(object sender, CompilationEventArgs args)
+        {
+            if (PreCompilation != null)
+                PreCompilation(sender, args);
+        }
+
+        /// <summary>
+        /// Notifies post compilation event.
+        /// </summary>
+        internal static void NotifyPostCompilation(object sender, CompilationEventArgs args)
+        {
+            if (PostCompilation != null)
+                PostCompilation(sender, args);
+        }
+    }
     /// <summary>
     /// Get notification for AST compilation events.                                                 
     /// </summary>
@@ -320,6 +401,10 @@ namespace Dynamo.Engine.CodeGeneration
             if (context == CompilationContext.DeltaExecution || context == CompilationContext.PreviewGraph)
                 OnAstNodeBuilding(node.GUID);
 
+            var preCompilationArgs = new CompilationEventArgs(node.GUID, inputAstNodes, context);
+            AstCompilationEvents.NotifyPreCompilation(this, preCompilationArgs);
+            resultList.AddRange(preCompilationArgs.AdditionalAstNodes);
+            
 #if DEBUG
             Validity.Assert(inputAstNodes.All(n => n != null), 
                 "Shouldn't have null nodes in the AST list");
@@ -331,24 +416,24 @@ namespace Dynamo.Engine.CodeGeneration
                     ? scopedNode.BuildAstInScope(inputAstNodes, verboseLogging, this)
                     : node.BuildAst(inputAstNodes, context);
 
-            if (verboseLogging)
+            var postCompilationArgs = new CompilationEventArgs(node.GUID, inputAstNodes, context);
+            AstCompilationEvents.NotifyPostCompilation(this, postCompilationArgs);
+            
+            if (null == astNodes)
             {
-                foreach (var n in astNodes)
-                {
-                    Log(n.ToString());
-                }
-            }
-
-            if(null == astNodes)
                 resultList.AddRange(new AssociativeNode[0]);
+                resultList.AddRange(postCompilationArgs.AdditionalAstNodes);
+            }
             else if (context == CompilationContext.DeltaExecution || context == CompilationContext.PreviewGraph)
             {
-                OnAstNodeBuilt(node.GUID, astNodes);
                 resultList.AddRange(astNodes);
+                resultList.AddRange(postCompilationArgs.AdditionalAstNodes);
+                OnAstNodeBuilt(node.GUID, resultList);
             }
             else if (context == CompilationContext.NodeToCode)
             {
                 resultList.AddRange(astNodes);
+                resultList.AddRange(postCompilationArgs.AdditionalAstNodes);
             }
             else //Inside custom node compilation.
             {
@@ -367,6 +452,14 @@ namespace Dynamo.Engine.CodeGeneration
                     }
                     else
                         resultList.Add(item);
+                }
+                resultList.AddRange(postCompilationArgs.AdditionalAstNodes);
+            }
+            if (verboseLogging)
+            {
+                foreach (var n in resultList)
+                {
+                    Log(n.ToString());
                 }
             }
         }
