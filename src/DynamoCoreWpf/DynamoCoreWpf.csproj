@@ -606,6 +606,12 @@
     <Resource Include="UI\Images\Canvas\canvas-button-fit-view-states.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-preview-check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-preview-states.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="UI\Images\Canvas\canvas-button-geom-check.png" />
   </ItemGroup>
   <ItemGroup>

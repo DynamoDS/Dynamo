@@ -608,9 +608,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Reset:
-                    Model3DDictionary.Values.
-                        Where(v => v is GeometryModel3D).
-                        Cast<GeometryModel3D>().ToList().ForEach(g => g.SetValue(AttachedProperties.ShowSelectedProperty, false));
+                    Model3DDictionary.Values.OfType<GeometryModel3D>().ToList().
+                        ForEach(g => {
+                            g.SetValue(AttachedProperties.ShowSelectedProperty, false);
+                            g.SetValue(AttachedProperties.DisplayTransparentProperty, SelectivePreview);
+                        });
                     return;
 
                 case NotifyCollectionChangedAction.Remove:
@@ -798,6 +800,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        protected override void OnSelectivePreviewUpdated()
+        {
+            Model3DDictionary.Values.OfType<GeometryModel3D>().ToList().
+                ForEach(g => g.SetValue(AttachedProperties.DisplayTransparentProperty, 
+                SelectivePreview && !(bool)g.GetValue(AttachedProperties.ShowSelectedProperty)));
+        }
+
         protected override void ZoomToFit(object parameter)
         {
             var idents = FindIdentifiersForContext();
@@ -964,7 +973,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 foreach(GeometryModel3D g in modelValues)
                 {
-                    g.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
+                    g.SetValue(AttachedProperties.ShowSelectedProperty, isSelected && !SelectivePreview);
+                    g.SetValue(AttachedProperties.DisplayTransparentProperty, !isSelected && SelectivePreview);
+                }
+
+                if (isSelected && SelectivePreview)
+                {
+                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true);
                 }
             }
         }

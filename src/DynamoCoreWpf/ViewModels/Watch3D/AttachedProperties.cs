@@ -12,6 +12,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     public static class AttachedProperties
     {
         private const float alphaPropertyFactor = 0.5f;
+        private const float transparentFactor = 0.1f;
+
         /// <summary>
         /// A flag indicating whether the geometry renders as selected.
         /// </summary>
@@ -106,6 +108,68 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 for (int i = 0; i < colors.Length; i++)
                 {
                     colors[i].Alpha = colors[i].Alpha * alphaPropertyFactor;
+                }
+
+                geom.Geometry.Colors.Clear();
+                geom.Geometry.Colors.AddRange(colors);
+
+                var dynamoGeom3D = geom as DynamoGeometryModel3D;
+                if (dynamoGeom3D != null)
+                {
+                    dynamoGeom3D.RequiresPerVertexColoration = true;
+                    geom = dynamoGeom3D;
+                }
+
+                if (geom.IsAttached)
+                {
+                    var host = geom.RenderHost;
+                    geom.Detach();
+                    geom.Attach(host);
+                }
+            }
+        }
+
+        public static readonly DependencyProperty DisplayTransparentProperty = DependencyProperty.RegisterAttached(
+            "DisplayTransparent",
+            typeof(bool),
+            typeof(GeometryModel3D),
+            new PropertyMetadata(false, DisplayTransparentPropertyChanged));
+
+        public static void SetDisplayTransparent(UIElement element, bool value)
+        {
+            element.SetValue(DisplayTransparentProperty, value);
+        }
+
+        public static bool GetDisplayTransparent(UIElement element)
+        {
+            return (bool)element.GetValue(DisplayTransparentProperty) &&
+                !IsSpecialRenderPackage(element);
+        }
+        
+        private static void DisplayTransparentPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            obj.SetValue(HasTransparencyProperty, e.NewValue);
+
+            if (obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D))
+            {
+                var geom = (GeometryModel3D)obj;
+                if (geom.Geometry == null || geom.Geometry.Colors == null)
+                {
+                    return;
+                }
+
+                var colors = geom.Geometry.Colors.ToArray();
+
+                for (int i = 0; i < colors.Length; i++)
+                {
+                    if ((bool)e.NewValue)
+                    {
+                        colors[i].Alpha = colors[i].Alpha * transparentFactor;
+                    }
+                    else
+                    {
+                        colors[i].Alpha = colors[i].Alpha / transparentFactor;
+                    }
                 }
 
                 geom.Geometry.Colors.Clear();
