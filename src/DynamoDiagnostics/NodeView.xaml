@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="Dynamo.Diagnostics.NodeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Dynamo.Diagnostics"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="200" 
+             MinWidth="20"
+             MinHeight="20"
+             Height="Auto" Width="Auto" Visibility="Visible">
+    <UserControl.Resources>
+        <local:ExecutionPercentConverter x:Key="PercentConverter"/>
+        <local:IntToStringConverter x:Key="TimeConverter" Prefix="(" Suffix="ms)"/>
+        <local:ExecutionTimeToRadiusConverter x:Key="InnerRadiusConverter" Offset="0"/>
+        <local:ExecutionTimeToRadiusConverter x:Key="OuterRadiusConverter" Offset="10"/>
+        <local:EmptyStringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        <local:PerformanceDataToChartItemConverter x:Key="StatisticsChartConverter"/>
+        <local:BarChartVisibilityConverter x:Key="BraChartVisibilityConverter"/>
+    </UserControl.Resources>
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
+            <Grid>
+                <Ellipse Height="{Binding Path=ExecutionTime, Converter={StaticResource OuterRadiusConverter}}" 
+                         Width="{Binding Path=ExecutionTime, Converter={StaticResource OuterRadiusConverter}}"
+                         Stroke="#FF8888" StrokeThickness="3" Opacity="0.6"/>
+                <Ellipse Height="{Binding Path=ExecutionTime, Converter={StaticResource InnerRadiusConverter}}"
+                         Width="{Binding Path=ExecutionTime, Converter={StaticResource InnerRadiusConverter}}"
+                         Fill="#FF5555" Opacity="0.6"/>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding ExecutionTime, Converter={StaticResource PercentConverter}}" FontSize="18" Foreground="White"/>
+                    <TextBlock Text="{Binding ExecutionTime, Converter={StaticResource TimeConverter}}" FontSize="12" Foreground="White" />
+                </StackPanel>
+            </Grid>
+            <local:BarChart Height="150" Width="300" LegendPropertyName="Type" VerticalPropertyName="Time" HorizontalPropertyName="Size" FontFamily="Tahoma"
+                        ItemsSource="{Binding Statistics, Converter={StaticResource StatisticsChartConverter}}" 
+                            Visibility="{Binding Converter={StaticResource BraChartVisibilityConverter}}">
+            </local:BarChart>
+        </StackPanel>
+        <TextBlock Text="{Binding TraceData}" FontSize="12" Visibility="{Binding TraceData, Converter={StaticResource StringToVisibilityConverter}}" />
+    </StackPanel>
+</UserControl>
