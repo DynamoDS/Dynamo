@@ -1,0 +1,32 @@
+﻿<ResourceDictionary   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+                      xmlns:local="clr-namespace:Dynamo.Diagnostics">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <DataTemplate x:Key="DiagnosticsSessionTemplate">
+        <DataTemplate.Resources>
+            <local:NodeDataToPositionConverter x:Key="CenterXConverter" X="True"/>
+            <local:NodeDataToPositionConverter x:Key="CenterYConverter" X="False"/>
+            <DataTemplate x:Key="NodeViewDataTemplate" DataType="{x:Type local:NodeData}">
+                <local:NodeView></local:NodeView>
+            </DataTemplate>
+        </DataTemplate.Resources>
+        <ItemsControl ItemsSource="{Binding}" ItemTemplate="{StaticResource NodeViewDataTemplate}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="Canvas.Left" Value="{Binding Converter={StaticResource CenterXConverter}}"/>
+                    <Setter Property="Canvas.Top" Value="{Binding Converter={StaticResource CenterYConverter}}"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+        </ItemsControl>
+    </DataTemplate>
+</ResourceDictionary>

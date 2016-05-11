@@ -128,6 +128,7 @@ namespace ProtoCore
             var warningMsg = string.Format(Resources.kConsoleWarningMessage,
                                            message, filename, line, col);
 
+            System.Diagnostics.Trace.WriteLine(message);
             if (runtimeCore.Options.Verbose)
             {
                 System.Console.WriteLine(warningMsg);
