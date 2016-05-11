@@ -1,11 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Windows;
-
-using SystemTestServices;
-using CoreNodeModels.Input;
+﻿using CoreNodeModels.Input;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Connectors;
@@ -13,18 +6,21 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using NUnit.Framework;
-using DynamoCoreWpfTests.Utility;
 using Dynamo.Views;
+using DynamoCoreWpfTests.Utility;
+using NUnit.Framework;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Windows;
 using System.Windows.Input;
-using ModifierKeys = System.Windows.Input.ModifierKeys;
-using System.Windows.Controls;
+using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {
@@ -755,6 +751,28 @@ namespace DynamoCoreWpfTests
 
             Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
             Assert.IsFalse(currentWs.InCanvasSearchBar.IsOpen);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WorkspaceContextMenu_TestIfSearchTextClearsOnOpeningContextMenu()
+        {
+            var currentWs = View.ChildOfType<WorkspaceView>();
+
+            // open context menu
+            RightClick(currentWs.zoomBorder);
+
+            // set dummy content for search text
+            currentWs.ViewModel.InCanvasSearchViewModel.SearchText = "dummy";
+            Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
+            Assert.IsFalse(currentWs.InCanvasSearchBar.IsOpen);
+
+            // show in-canvas search
+            ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+
+            // check if search text is still empty
+            Assert.IsTrue(currentWs.ViewModel.InCanvasSearchViewModel.SearchText.Equals(string.Empty));
         }
 
         [Test]

@@ -42,8 +42,17 @@ namespace Dynamo.Graph.Nodes
         public const string IO_HARDWARE = "Input/Output.Hardware";
     }
 
+    /// <summary>
+    /// Service class for formatting node text data
+    /// </summary>
     public static class Utilities
     {
+        /// <summary>
+        /// Returns cut version of a given <see cref="System.String"/> value
+        /// </summary>
+        /// <param name="value"><see cref="System.String"/> value to cut</param>
+        /// <param name="desiredLength">Max allowed number of symbols</param>
+        /// <returns>Cut version of a given <see cref="System.String"/> value</returns>
         internal static string Ellipsis(string value, int desiredLength)
         {
             return desiredLength > value.Length ? value : value.Remove(desiredLength - 1) + "...";
@@ -153,6 +162,13 @@ namespace Dynamo.Graph.Nodes
             return overridePrefix + "." + builder.ToString();
         }
 
+        /// <summary>
+        /// Returns formatted category name replacing delimeters and 
+        /// if category is too long leaving only first and last subcategories.
+        /// </summary>
+        /// <param name="fullCategoryName">Full category name 
+        /// including all parent categories up to root one.</param>
+        /// <returns>Formatted category name.</returns>
         internal static string ShortenCategoryName(string fullCategoryName)
         {
             if (string.IsNullOrEmpty(fullCategoryName))
@@ -431,7 +447,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Gets words from text, e.g. ImportFromCSV to ("Import","From","CSV")
+        /// Returns words from text, e.g. ImportFromCSV to ("Import","From","CSV")
         /// </summary>
         /// <param name="text">incoming string</param>
         /// <param name="maxCharacters">Max number of characters per row</param>
@@ -565,6 +581,12 @@ namespace Dynamo.Graph.Nodes
             return results;
         }
 
+        /// <summary>
+        /// Returns formatted <see cref="System.String"/> value 
+        /// leaving only letters, numbers, dots and dashes.
+        /// </summary>
+        /// <param name="resource"><see cref="System.String"/> value to format</param>
+        /// <returns>Formatted <see cref="System.String"/> value</returns>
         internal static string NormalizeAsResourceName(string resource)
         {
             if (string.IsNullOrWhiteSpace(resource))

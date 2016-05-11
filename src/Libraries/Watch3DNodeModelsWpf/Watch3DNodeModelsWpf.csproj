@@ -4,7 +4,7 @@
     <Import Project="$(SolutionDir)Config/CS.props" />
     <Import Project="..\..\packages\SharpDX.2.6.3\build\SharpDX.targets" Condition="Exists('..\..\packages\SharpDX.2.6.3\build\SharpDX.targets')" />
     <Import Project="..\..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets" Condition="Exists('..\..\packages\SharpDX.Toolkit.2.6.3\build\SharpDX.Toolkit.targets')" />
-    <Import Project="$(SolutionDir)Config/DynamoWpf.targets" />
+    <Import Project="$(SolutionDir)Config/Cleanup.targets" />
   </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>

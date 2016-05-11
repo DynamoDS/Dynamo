@@ -267,7 +267,10 @@ t3 = lines[2].StartPoint.X;";
 
             string code = @"
 import(""FFITarget.dll"");
-def drawUniqueLines (points : DummyPoint[], start : int, end : int) = DummyLine.ByStartPointEndPoint(points[(0..start..1)],points[end]); 
+def drawUniqueLines (points : DummyPoint[], start : int, end : int)
+{
+    return = DummyLine.ByStartPointEndPoint(points[(0..start..1)],points[end]); 
+}
 circlePoints = DummyPoint.ByCoordinates( 10..13, 4..7, 0.0 );
 lines = drawUniqueLines(circlePoints, (1..(Count(circlePoints)-2)..1), (2..(Count(circlePoints)-1)..1));
 lines_StartPoint_X = lines.Start.X; 
@@ -677,7 +680,10 @@ x3 = side_c_a.MidPoint.X;
         {
             string code = @"
 import(""FFITarget.dll"");
-def sumCollection(arr : double[]) = sumCollectionInternal(arr, Count(arr)-1);
+def sumCollection(arr : double[])
+{
+    return = sumCollectionInternal(arr, Count(arr)-1);
+}
 def sumCollectionInternal(arr : double[], i : int ) 
 {
     return = [Imperative]
@@ -693,8 +699,15 @@ def sumCollectionInternal(arr : double[], i : int )
     }
 }
 
-def average(arr : double[]) = sumCollection(arr) / Count(arr);
-def centroid(points : DummyPoint[]) = DummyPoint.ByCoordinates( average(points.X), average(points.Y),  average(points.Z) );
+def average(arr : double[])
+{
+    return = sumCollection(arr) / Count(arr);
+}
+
+def centroid(points : DummyPoint[])
+{
+    return = DummyPoint.ByCoordinates( average(points.X), average(points.Y),  average(points.Z) );
+}
 // [2] create some points
 point_1 = DummyPoint.ByCoordinates( 30.0, 80.0, 0.0 );
 point_2 = DummyPoint.ByCoordinates( 10.0, 50.0, 0.0 );

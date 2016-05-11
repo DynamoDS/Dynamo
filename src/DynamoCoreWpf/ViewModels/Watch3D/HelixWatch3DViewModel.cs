@@ -37,6 +37,7 @@ using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
+using Dynamo.Graph.Annotations;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -266,8 +267,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public PhongMaterial SelectedMaterial { get; set; }
 
-        public Transform3D Model1Transform { get; private set; }
-
+        /// <summary>
+        /// This is the initial transform applied to 
+        /// elements of the scene, like the grid and world axes.
+        /// </summary>
+        public Transform3D SceneTransform
+        {
+            get
+            {
+                return new TranslateTransform3D(0, -0, 0);
+            }
+        }
         public RenderTechnique RenderTechnique
         {
             get
@@ -598,9 +608,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Reset:
-                    Model3DDictionary.Values.
-                        Where(v => v is GeometryModel3D).
-                        Cast<GeometryModel3D>().ToList().ForEach(g => g.SetValue(AttachedProperties.ShowSelectedProperty, false));
+                    Model3DDictionary.Values.OfType<GeometryModel3D>().ToList().
+                        ForEach(g => {
+                            g.SetValue(AttachedProperties.ShowSelectedProperty, false);
+                            g.SetValue(AttachedProperties.DisplayTransparentProperty, SelectivePreview);
+                        });
                     return;
 
                 case NotifyCollectionChangedAction.Remove:
@@ -788,6 +800,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        protected override void OnSelectivePreviewUpdated()
+        {
+            Model3DDictionary.Values.OfType<GeometryModel3D>().ToList().
+                ForEach(g => g.SetValue(AttachedProperties.DisplayTransparentProperty, 
+                SelectivePreview && !(bool)g.GetValue(AttachedProperties.ShowSelectedProperty)));
+        }
+
         protected override void ZoomToFit(object parameter)
         {
             var idents = FindIdentifiersForContext();
@@ -954,7 +973,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 foreach(GeometryModel3D g in modelValues)
                 {
-                    g.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
+                    g.SetValue(AttachedProperties.ShowSelectedProperty, isSelected && !SelectivePreview);
+                    g.SetValue(AttachedProperties.DisplayTransparentProperty, !isSelected && SelectivePreview);
+                }
+
+                if (isSelected && SelectivePreview)
+                {
+                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true);
                 }
             }
         }
@@ -1038,8 +1063,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 SpecularShininess = 12.8f,
             };
 
-            Model1Transform = new TranslateTransform3D(0, -0, 0);
-
             // camera setup
             Camera = new PerspectiveCamera();
 
@@ -1075,7 +1098,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             gridModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Grid,
-                Transform = Model1Transform,
+                Transform = SceneTransform,
                 Color = Color.White,
                 Thickness = 0.3,
                 IsHitTestVisible = false,
@@ -1092,7 +1115,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var axesModel3D = new DynamoLineGeometryModel3D
             {
                 Geometry = Axes,
-                Transform = Model1Transform,
+                Transform = SceneTransform,
                 Color = Color.White,
                 Thickness = 0.3,
                 IsHitTestVisible = false,
@@ -1276,9 +1299,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 // and it will select var_guid:0:0, var_guid:0:1, var_guid:0:2 and so on.
                 // if there is a geometry to add label(s)
                 List<Tuple<string, Vector3>> requestedLabelPlaces;
-                if (labelPlaces.ContainsKey(nodePath) && 
-                        (requestedLabelPlaces = labelPlaces[nodePath]
-                            .Where(pair => pair.Item1.StartsWith(path)).ToList()).Any())
+                if (labelPlaces.ContainsKey(nodePath) &&
+                    (requestedLabelPlaces = labelPlaces[nodePath]
+                        .Where(pair => pair.Item1 == path || pair.Item1.StartsWith(path + ":")).ToList()).Any())
                 {
                     // second, add requested labels
                     var textGeometry = HelixRenderPackage.InitText3D();
@@ -1291,6 +1314,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     {
                         var text = HelixRenderPackage.CleanTag(id_position.Item1);
                         var textPosition = id_position.Item2 + defaultLabelOffset;
+
                         var textInfo = new TextInfo(text, textPosition);
                         textGeometry.TextInfo.Add(textInfo);
                     }
@@ -1315,13 +1339,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="packages">An <see cref="IEnumerable"/> of <see cref="HelixRenderPackage"/>.</param>
         private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages)
         {
-            IEnumerable<string> customNodeIdents = null;
-            if (InCustomNode())
+            var isInCustomNode = InCustomNode();
+            IEnumerable<string> nodeIdents = null;
+            IDictionary<string, Color4> identColorMap = null;
+            var hs = model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            if (hs != null)
             {
-                var hs = model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
-                if (hs != null)
+                if (isInCustomNode)
                 {
-                    customNodeIdents = FindIdentifiersForCustomNodes(hs);
+                    nodeIdents = FindIdentifiersForCustomNodes(hs);
+                }
+                else
+                {
+                    identColorMap = FindIdentifiersForCustomAnnotationModels(hs);
                 }
             }
 
@@ -1349,7 +1379,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     if (UpdateGeometryModelForSpecialRenderPackage(rp, baseId))
                         continue;
 
-                    var drawDead = InCustomNode() && !customNodeIdents.Contains(baseId);
+                    var drawDead = isInCustomNode && !nodeIdents.Contains(baseId);
+                    var drawCustomAnnotation = !drawDead && !isInCustomNode && identColorMap.ContainsKey(baseId);
 
                     string id;
                     var p = rp.Points;
@@ -1377,6 +1408,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         if (drawDead)
                         {
                             points.Colors.AddRange(Enumerable.Repeat(defaultDeadColor, points.Positions.Count));
+                        }
+                        else if (drawCustomAnnotation)
+                        {
+                            points.Colors.AddRange(Enumerable.Repeat(identColorMap[baseId], points.Positions.Count));
                         }
                         else
                         {
@@ -1417,6 +1452,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         if (drawDead)
                         {
                             lineSet.Colors.AddRange(Enumerable.Repeat(defaultDeadColor, l.Positions.Count));
+                        }
+                        else if (drawCustomAnnotation)
+                        {
+                            lineSet.Colors.AddRange(Enumerable.Repeat(identColorMap[baseId], l.Positions.Count));
                         }
                         else
                         {
@@ -1466,6 +1505,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         meshGeometry3D.RequiresPerVertexColoration = true;
                         mesh.Colors.AddRange(m.Colors.Select(c=>new Color4(c.Red, c.Green, c.Blue, c.Alpha * defaultDeadAlphaScale)));
                     }
+                    else if (drawCustomAnnotation)
+                    {
+                        var color = identColorMap[baseId];
+                        meshGeometry3D.RequiresPerVertexColoration = true;
+                        mesh.Colors.AddRange(m.Colors.Select(c => new Color4(color.Red, color.Green, color.Blue, color.Alpha * defaultDeadAlphaScale)));
+                    }
                     else
                     {
                         mesh.Colors.AddRange(m.Colors);
@@ -1496,10 +1541,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 labelPlaces[nodeId] = new List<Tuple<string, Vector3>>();
             }
 
-            labelPlaces[nodeId].Add(new Tuple<string, Vector3>(rp.Description, pos));
+            //if the renderPackage also implements ITransformable then 
+            // use the transform property to transform the text labels
+           
+            SharpDX.Vector3 transformedPos = pos;
+            if (rp is HelixRenderPackage && rp is Autodesk.DesignScript.Interfaces.ITransformable)
+            {
+                transformedPos = (rp as Autodesk.DesignScript.Interfaces.ITransformable)
+                   .Transform.ToMatrix3D().Transform((pos).ToPoint3D()).ToVector3();
+            }
+            
+
+            labelPlaces[nodeId].Add(new Tuple<string, Vector3>(rp.Description, transformedPos));
             if (rp.DisplayLabels)
             {
-                CreateOrUpdateText(nodeId, pos, rp);
+                CreateOrUpdateText(nodeId, transformedPos, rp);
             }
         }
 
@@ -1662,21 +1718,23 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Model3DDictionary.Add(textId, bbText);
             }
             var geom = bbText.Geometry as BillboardText3D;
+           
             geom.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description),
-                pt + defaultLabelOffset));
+               pt + defaultLabelOffset));
         }
 
         private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp)
         {
-            var meshGeometry3D = new DynamoGeometryModel3D(renderTechnique)
-            {
-                Transform = Model1Transform,
-                Material = WhiteMaterial,
-                IsHitTestVisible = false,
-                RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
-                IsSelected = rp.IsSelected
-            };
-
+          
+                var meshGeometry3D = new DynamoGeometryModel3D(renderTechnique)
+                {
+                    Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
+                    Material = WhiteMaterial,
+                    IsHitTestVisible = false,
+                    RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
+                    IsSelected = rp.IsSelected
+                };
+            
             if (rp.Colors != null)
             {
                 var pf = PixelFormats.Bgra32;
@@ -1712,7 +1770,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var lineGeometry3D = new DynamoLineGeometryModel3D()
             {
                 Geometry = HelixRenderPackage.InitLineGeometry(),
-                Transform = Model1Transform,
+                Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
                 Color = Color.White,
                 Thickness = thickness,
                 IsHitTestVisible = false,
@@ -1726,7 +1784,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var pointGeometry3D = new DynamoPointGeometryModel3D
             {
                 Geometry = HelixRenderPackage.InitPointGeometry(),
-                Transform = Model1Transform,
+                Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
                 Color = Color.White,
                 Figure = PointGeometryModel3D.PointFigure.Ellipse,
                 Size = defaultPointSize,
@@ -1874,6 +1932,57 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
             }
             return idents;
+        }
+
+        internal static IDictionary<string, Color4> FindIdentifiersForCustomAnnotationModels(HomeWorkspaceModel workspace)
+        {
+            Dictionary<string, Color4> identColorMap = new Dictionary<string, Color4>();
+            if (workspace == null)
+            {
+                return identColorMap;
+            }
+
+            // Remove the output identifier appended to the custom node outputs.
+            var rgx = new Regex("_out[0-9]");
+
+            var customNodeAnnotationModels = workspace.Annotations.OfType<CustomNodeAnnotationModel>();
+            foreach (var annotationModel in customNodeAnnotationModels)
+            {
+                var color = defaultDeadColor;
+                var brushConverter = new BrushConverter();
+                var solidColorBrush = brushConverter.ConvertFromString(annotationModel.Background) as SolidColorBrush; 
+                if (solidColorBrush != null)
+                {
+                    var gbColor = solidColorBrush.Color;
+                    color = new Color4(new Color3(gbColor.R / (float)255.0, gbColor.G / (float)255.0, gbColor.B / (float)255.0));
+                }
+
+                foreach (var n in annotationModel.SelectedModels.OfType<NodeModel>())
+                {
+                    if (n.IsPartiallyApplied)
+                    {
+                        // Find output identifiers for the connected map node
+                        var mapOutportsIdents =
+                            n.OutPorts.SelectMany(
+                                np => np.Connectors.SelectMany(
+                                        c => c.End.Owner.OutPorts.Select(
+                                                mp => rgx.Replace(mp.Owner.GetAstIdentifierForOutputIndex(mp.Index).Value, ""))));
+
+                        foreach (var ident in mapOutportsIdents)
+                        {
+                            identColorMap[ident] = color;
+                        }
+                    }
+                    else
+                    {
+                        foreach (var ident in n.OutPorts.Select(p => rgx.Replace(n.GetAstIdentifierForOutputIndex(p.Index).Value, "")))
+                        {
+                            identColorMap[ident] = color;
+                        }
+                    }
+                }
+            }
+            return identColorMap;
         }
 
         internal static IEnumerable<string> AllOutputIdentifiersInWorkspace(HomeWorkspaceModel workspace)

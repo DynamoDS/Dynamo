@@ -189,7 +189,7 @@ namespace Dynamo.Visualization
             this.colors = colors;
             Colors = this.colors;
         }
-
+        
         /// <summary>
         /// Clear all render data from the render package.
         /// </summary>

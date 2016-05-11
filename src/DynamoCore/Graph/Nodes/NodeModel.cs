@@ -9,6 +9,7 @@ using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
+using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
@@ -74,7 +75,7 @@ namespace Dynamo.Graph.Nodes
         public virtual string CreationName { get { return this.Name; } }
 
         /// <summary>
-        /// This property gets all the Upstream Nodes  for a given node, ONLY after the graph is loaded. 
+        /// This property queries all the Upstream Nodes  for a given node, ONLY after the graph is loaded. 
         /// This property is computed in ComputeUpstreamOnDownstreamNodes function
         /// </summary>
         internal HashSet<NodeModel> UpstreamCache = new HashSet<NodeModel>();
@@ -585,7 +586,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        ///     Get the description from type information
+        ///     Returns the description from type information
         /// </summary>
         /// <returns>The value or "No description provided"</returns>
         public string GetDescriptionStringFromAttributes()
@@ -737,7 +738,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Gets the downstream nodes for the given node.
+        /// Returns the downstream nodes for the given node.
         /// </summary>
         /// <param name="node">The node.</param>
         /// <param name="gathered">The gathered.</param>
@@ -796,7 +797,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        ///     Gets the most recent value of this node stored in an EngineController that has evaluated it.
+        /// Returns the most recent value of this node stored in an EngineController that has evaluated it.
         /// </summary>
         /// <param name="outPortIndex"></param>
         /// <param name="engine"></param>
@@ -1157,6 +1158,16 @@ namespace Dynamo.Graph.Nodes
 
             foreach (var c in inConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.Start.Owner)))
                 DynamoSelection.Instance.Selection.Add(c.Start.Owner);
+        }
+
+        public override Rect2D Rect
+        {
+            get
+            {
+                var sc = OwningGroup != null ?
+                    OwningGroup.DisplayScale : 1;
+                return new Rect2D(X, Y, Width * sc, Height * sc);
+            }
         }
 
         #region Node State
@@ -1888,6 +1899,17 @@ namespace Dynamo.Graph.Nodes
 
         private ExecutionHints executionHint;
 
+        private AnnotationModel owningGroup;
+        public AnnotationModel OwningGroup
+        {
+            get { return owningGroup; }
+            set
+            {
+                owningGroup = value;
+                RaisePropertyChanged("DisplayScale");
+            }
+        }
+        
         public bool IsModified
         {
             get { return GetExecutionHintsCore().HasFlag(ExecutionHints.Modified); }
@@ -2022,7 +2044,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Gets list of drawable Ids as registered with visualization manager 
+        /// Returns list of drawable Ids as registered with visualization manager 
         /// for all the output port of the given node.
         /// </summary>
         /// <returns>List of Drawable Ids</returns>
@@ -2040,7 +2062,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Gets the drawable Id as registered with visualization manager for
+        /// Returns the drawable Id as registered with visualization manager for
         /// the given output port on the given node.
         /// </summary>
         /// <param name="outPortIndex">Output port index</param>
@@ -2112,6 +2134,9 @@ namespace Dynamo.Graph.Nodes
         }
     }
 
+    /// <summary>
+    /// Represents nodes states.
+    /// </summary>
     public enum ElementState
     {
         Dead,

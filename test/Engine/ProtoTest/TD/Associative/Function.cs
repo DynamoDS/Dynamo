@@ -14,20 +14,17 @@ namespace ProtoTest.TD.Associative
 a;
 b;
 sum;
+def Sum : int(a : int, b : int)
+{
+
+    return = a + b;
+}
 [Associative]
 {
-	def Sum : int(a : int, b : int)
-	{
-	
-		return = a + b;
-	}
-	
 	a = 1;
 	b = 10;
 	
 	sum = Sum (a, b);
-	
-	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a", 1);
@@ -42,10 +39,13 @@ sum;
         public void T002_Associative_Function_SinglelineFunction()
         {
             string code = @"
+def singleLine : int(a:int, b:int) 
+{
+    return = 10;
+}
 d;
 [Associative]
 {
-	def singleLine : int(a:int, b:int) = 10;
 	d = singleLine(1,3);
 	
 }";
@@ -59,15 +59,14 @@ d;
         public void T003_Associative_Function_MultilineFunction()
         {
             string code = @"
+def Divide : int(a:int, b:int)
+{
+    return = a/b;
+}
 d;
 [Associative]
 {
-	def Divide : int(a:int, b:int)
-	{
-		return = a/b;
-	}
 	d = Divide (1,3);
-	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", 0);
@@ -78,13 +77,13 @@ d;
         public void T004_Associative_Function_SpecifyReturnType()
         {
             string code = @"
+def Divide : double (a:int, b:int)
+{
+    return = a/b;
+}
 d;
 [Associative]
 {
-	def Divide : double (a:int, b:int)
-	{
-		return = a/b;
-	}
 	d = Divide (1,3);
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -96,18 +95,16 @@ d;
         public void T005_Associative_Function_SpecifyArgumentType()
         {
             string code = @"
+def myFunction : int (a:int, b:int)
+{
+    return = a + b;
+}
 result;
 [Associative]
 {
-	def myFunction : int (a:int, b:int)
-	{
-		return = a + b;
-	}
 	d1 = 1.12;
 	d2 = 0.5;
-	
 	result = myFunction (d1, d2);
-	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result", 2);
@@ -119,17 +116,15 @@ result;
         public void T006_Associative_Function_PassingNullAsArgument()
         {
             string code = @"
+def myFunction : double (a: double, b: double)
+{
+    return = a + b;
+}
+d1 = null;
+d2 = 0.5;
 [Associative]
 {
-	def myFunction : double (a: double, b: double)
-	{
-		return = a + b;
-	}
-	d1 = null;
-	d2 = 0.5;
-	
 	result = myFunction (d1, d2);
-	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //thisTest.Verify("d", 0);
@@ -141,21 +136,19 @@ result;
         {
             string code = @"
 result;
+def ChildFunction : double (r1 : double)
+{
+return = r1;
+
+}
+def ParentFunction : double (r1 : double)
+{
+    return = ChildFunction (r1)*2;
+}
 [Associative]
 {
-	def ChildFunction : double (r1 : double)
-	{
-	return = r1;
-	
-	}
-	def ParentFunction : double (r1 : double)
-	{
-		return = ChildFunction (r1)*2;
-	}
 	d1 = 1.05;
-	
 	result = ParentFunction (d1);
-	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result", 2.1);
@@ -168,19 +161,16 @@ result;
         {
             string code = @"
 sum;
+def Sum : int(a : int, b : int)
+{
+
+    return = a + b;
+}
 [Associative]
 {
     a = 1;
-	b = 10;
-	def Sum : int(a : int, b : int)
-	{
-	
-		return = a + b;
-	}
-	
+    b = 10;
 	sum = Sum (a, b);
-	
-	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sum", 11);
@@ -191,16 +181,15 @@ sum;
         public void T009_Associative_Function_DeclareVariableInsideFunction()
         {
             string code = @"
+def Foo : int(input : int)
+{
+    multiply = 5;
+    divide = 10;
+
+    return = {input*multiply, input/divide};
+}
 [Associative]
 {
-	def Foo : int(input : int)
-	{
-		multiply = 5;
-		divide = 10;
-	
-		return = {input*multiply, input/divide};
-	}
-	
 	input = 20;
 	sum = Foo (input);
 }";
@@ -215,13 +204,12 @@ sum;
             string code = @"
 result1;
 result2;
+def Foo : bool (input : bool)
+{
+    return = input;
+}
 [Associative]
 {
-	def Foo : bool (input : bool)
-	{
-		return = input;
-	}
-	
 	input = false;
 	result1 = Foo (input);
 	result2 = Foo (true);
@@ -237,15 +225,13 @@ result2;
         {
             string code = @"
 result1;
+def Foo1 : int ()
+{
+    return = 5;
+}
 [Associative]
 {
-	def Foo1 : int ()
-	{
-		return = 5;
-	}
-	
 	result1 = Foo1 ();
-	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result1", 5);
@@ -258,24 +244,19 @@ result1;
             string code = @"
 result1;
 result2;
+def Foo1 : int ()
+{
+    return = 5;
+}
+
+def Foo2 : int ()
+{
+    return = 6;
+}
 [Associative]
 {
-	def Foo1 : int ()
-	{
-		return = 5;
-	}
-	
-	
-	def Foo2 : int ()
-	{
-		return = 6;
-	}
-	
-	
 	result1 = Foo1 ();
 	result2 = Foo2 ();
-	
-	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("result1", 5);
@@ -287,25 +268,19 @@ result2;
         public void T013_Associative_Function_FunctionWithSameName_Negative()
         {
             string code = @"
+def Foo1 : int ()
+{
+    return = 5;
+}
+
+def Foo1 : int ()
+{
+    return = 6;
+}
+
 [Associative]
 {
-	def Foo1 : int ()
-	{
-		return = 5;
-	}
-	
-	
-	
-	def Foo1 : int ()
-	{
-		return = 6;
-	}
-	
-	
-	
 	result2 = Foo2 ();
-	
-	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
@@ -316,15 +291,13 @@ result2;
         public void T014_Associative_Function_DuplicateVariableAndFunctionName_Negative()
         {
             string code = @"
+def Foo : int ()
+{
+    return = 4;
+}
+Foo = 5;
 [Associative]
 {
-	def Foo : int ()
-	{
-		return = 4;
-	}
-	Foo = 5;
-	
-	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
@@ -336,16 +309,14 @@ result2;
         {
 
             string code = @"
-[Associative]
-{
 	def Foo : int (a : int)
 	{
 		return = 5;
 	}
 	
+[Associative]
+{
 	result = Foo(1,2); 
-	
-	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
@@ -359,17 +330,16 @@ result2;
 input;
 result;
 originalInput;
+def Foo : int (a : int)
+{
+    a = a + 1;
+    return = a;
+}
 [Associative]
 {
-	def Foo : int (a : int)
-	{
-		a = a + 1;
-		return = a;
-	}
 	input = 3;
 	result = Foo(input); 
 	originalInput = input;
-	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("input", 3);
@@ -385,17 +355,17 @@ originalInput;
             string code = @"
 input;
 result;
+def Level1 : int (a : int)
+{
+    return = Level2(a+1);
+}
+
+def Level2 : int (a : int)
+{
+    return = a + 1;
+}
 [Associative]
 {
-	def Level1 : int (a : int)
-	{
-		return = Level2(a+1);
-	}
-	
-	def Level2 : int (a : int)
-	{
-		return = a + 1;
-	}
 	input = 3;
 	result = Level1(input);
 }";

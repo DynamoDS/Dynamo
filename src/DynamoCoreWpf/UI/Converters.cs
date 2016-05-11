@@ -971,6 +971,25 @@ namespace Dynamo.Controls
         #endregion
     }
 
+    public class ShowHidePreviewBubblesConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool) value
+                ? Resources.DynamoViewSettingsMenuHidePreviewBubbles
+                : Resources.DynamoViewSettingsMenuShowPreviewBubbles;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (string)value == Resources.DynamoViewSettingsMenuHidePreviewBubbles;
+        }
+
+        #endregion
+    }
+
     public class ShowHideFullscreenWatchMenuItemConverter : IValueConverter
     {
         #region IValueConverter Members
@@ -2221,6 +2240,28 @@ namespace Dynamo.Controls
         }
     }
 
+    public class ZoomLevelToNodeCoverBooleanConverter : IMultiValueConverter
+    {
+        private const double MinZoomFactor = 0.3;
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            var zoom = System.Convert.ToDouble(values[0]);
+            var displayscale = System.Convert.ToDouble(values[1]);
+
+            if (displayscale > 0.95) return false;
+
+            if (zoom * displayscale < MinZoomFactor) return true;
+
+            return false;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class GroupFontSizeToEditorEnabledConverter : IMultiValueConverter
     {
         private const double MinFontFactor = 7.0;
@@ -2705,7 +2746,7 @@ namespace Dynamo.Controls
         /// Converter is used in Library Views.
         /// Create - green.
         /// Action - pink.
-        /// Query - blue.
+        /// Returns - blue.
         /// </summary>
         public class ElementGroupToColorConverter : IValueConverter
         {

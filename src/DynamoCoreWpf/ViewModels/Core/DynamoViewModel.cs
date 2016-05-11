@@ -173,7 +173,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Get the workspace view model whose workspace model is the model's current workspace
+        /// Returns the workspace view model whose workspace model is the model's current workspace
         /// </summary>
         public WorkspaceViewModel CurrentSpaceViewModel
         {
@@ -238,6 +238,22 @@ namespace Dynamo.ViewModels
                 model.PreferenceSettings.ConsoleHeight = value;
 
                 RaisePropertyChanged("ConsoleHeight");
+            }
+        }
+
+        /// <summary>
+        /// Indicates if preview bubbles should be displayed on nodes.
+        /// </summary>
+        public bool ShowPreviewBubbles
+        {
+            get
+            {
+                return model.PreferenceSettings.ShowPreviewBubbles;
+            }
+            set
+            {
+                model.PreferenceSettings.ShowPreviewBubbles = value;
+                RaisePropertyChanged("ShowPreviewBubbles");
             }
         }
 
@@ -961,6 +977,7 @@ namespace Dynamo.ViewModels
             //Check for multiple groups - Delete the group and not the nodes.
             foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>().ToList())
             {
+                group.ReleaseGroupOwnership();
                 var command = new DynamoModel.DeleteModelCommand(group.GUID);
                 this.ExecuteCommand(command);
             }            
@@ -1066,6 +1083,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Returns the file-save dialog with customized file types of Dynamo.
+        /// </summary>
+        /// <param name="workspace"></param>
+        /// <returns>A customized file-save dialog</returns>
         public FileDialog GetSaveDialog(WorkspaceModel workspace)
         {
             FileDialog fileDialog = new SaveFileDialog
@@ -1453,8 +1475,56 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
         }
 
+        public void UpdateCustomNodeDefinition(object parameter)
+        {
+            if (parameter == null)
+            {
+                return;
+            }
+
+            CustomNodeAnnotationModel model = parameter as CustomNodeAnnotationModel;
+            if (model == null)
+            {
+                return;
+            }
+
+            Model.CustomNodeManager.UpdateCustomNode(model, this.currentWorkspaceViewModel.Model, this.Model);
+        }
+
+        public void RestoreCustomNodeInstance(object parameter)
+        {
+            if (parameter == null)
+            {
+                return;
+            }
+
+            CustomNodeAnnotationModel model = parameter as CustomNodeAnnotationModel;
+            if (model == null)
+            {
+                return;
+            }
+
+            Model.CustomNodeManager.RestoreCustomNodeInstance(model, this.currentWorkspaceViewModel.Model);
+        }
+
+        public void SyncWithCustomNodeDefinition(object parameter)
+        {
+            if (parameter == null)
+            {
+                return;
+            }
+
+            CustomNodeAnnotationModel model = parameter as CustomNodeAnnotationModel;
+            if (model == null)
+            {
+                return;
+            }
+
+            Model.CustomNodeManager.UpdateCustomNodeAnnotationModel(model, this.currentWorkspaceViewModel.Model, this.Model);
+        }
+
         /// <summary>
-        /// Gets the selected nodes that are "input" nodes, and makes an 
+        /// Returns the selected nodes that are "input" nodes, and makes an 
         /// exception for CodeBlockNodes as these are marked false so they 
         /// do not expose a IsInput checkbox
         /// </summary>
@@ -1818,6 +1888,15 @@ namespace Dynamo.ViewModels
         internal bool CanToggleConsoleShowing(object parameter)
         {
             return true;
+        }
+
+        /// <summary>
+        /// Toggles Showing Preview Bubbles globally
+        /// </summary>
+        /// <param name="parameter">Command parameter</param>
+        public void TogglePreviewBubblesShowing(object parameter)
+        {
+            ShowPreviewBubbles = !ShowPreviewBubbles;
         }
 
         public void SelectNeighbors(object parameters)

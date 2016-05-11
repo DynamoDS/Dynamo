@@ -101,7 +101,7 @@ namespace Dynamo.Engine.CodeGeneration
         }
     }
     /// <summary>
-    /// Get notification for AST compilation events.                                                 
+    /// Returns notification for AST compilation events.                                                 
     /// </summary>
     public interface IAstNodeContainer
     {
@@ -323,7 +323,7 @@ namespace Dynamo.Engine.CodeGeneration
             var nodeFlags = nodes.ToDictionary(node => node, _ => MarkFlag.NoMark);
             var sortedNodes = new Queue<NodeModel>();
 
-            // Get roots of these nodes
+            // Returns roots of these nodes
             var roots = nodes.Where(n => !n.OutputNodes.Any());
             foreach (NodeModel candidate in roots)
                 BfsTraverse(candidate, nodeFlags, sortedNodes);

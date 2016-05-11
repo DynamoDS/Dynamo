@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Xml;
-using Dynamo.Graph;
+﻿using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -13,17 +8,19 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Interfaces;
+using Dynamo.Library;
+using Dynamo.Logging;
 using Dynamo.Migration;
 using Dynamo.Models;
+using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.Logging;
-using ProtoCore.AST;
-using ProtoCore.Namespace;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml;
 using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
-using Dynamo.Library;
-using Dynamo.Properties;
 
 namespace Dynamo.Core
 {
@@ -81,7 +78,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Gets custom node workspace by a specified custom node ID
+        /// Returns custom node workspace by a specified custom node ID
         /// </summary>
         /// <param name="customNodeId">Custom node ID of a requested workspace</param>
         /// <returns>Custom node workspace by a specified ID</returns>
@@ -223,7 +220,7 @@ namespace Dynamo.Core
         }
 
         /// <summary> 
-        ///     Get a function id from a guid assuming that the file is already loaded.
+        ///     Returns a function id from a guid assuming that the file is already loaded.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -381,7 +378,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Get the function workspace from a guid
+        ///     Returns the function workspace from a guid
         /// </summary>
         /// <param name="id">The unique id for the node.</param>
         /// <param name="isTestMode">
@@ -406,7 +403,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Gets the function workspace.
+        /// Returns the function workspace.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="isTestMode">if set to <c>true</c> [is test mode].</param>
@@ -421,7 +418,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Get the function definition from a guid.
+        ///     Returns the function definition from a guid.
         /// </summary>
         /// <param name="id">Custom node identifier.</param>
         /// <param name="isTestMode">
@@ -445,7 +442,7 @@ namespace Dynamo.Core
         }
         
         /// <summary>
-        ///     Tells whether the custom node's unique identifier is inside of the manager (initialized or not)
+        ///     Returns true if the custom node's unique identifier is inside of the manager (initialized or not)
         /// </summary>
         /// <param name="guid">The FunctionId</param>
         public bool Contains(Guid guid)
@@ -454,7 +451,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Tells whether the custom node's name is inside of the manager (initialized or not)
+        ///     Returns true if the custom node's name is inside the manager (initialized or not)
         /// </summary>
         /// <param name="name">The name of the custom node.</param>
         public bool Contains(string name)
@@ -464,7 +461,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Tells whether the custom node is initialized in the manager
+        ///     Indicates whether the custom node is initialized in the manager
         /// </summary>
         /// <param name="name">The name of the node</param>
         /// <returns>The name of the </returns>
@@ -475,7 +472,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Tells whether the custom node is initialized in the manager
+        ///     Indicates whether the custom node is initialized in the manager
         /// </summary>
         /// <param name="guid">Whether the definition is stored with the manager.</param>
         internal bool IsInitialized(Guid guid)
@@ -484,7 +481,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Get a guid from a specific path, internally this first calls GetDefinitionFromPath
+        ///     Returns a guid from a specific path, internally this first calls GetDefinitionFromPath
         /// </summary>
         /// <param name="path">The path from which to get the guid</param>
         /// <param name="isTestMode">
@@ -729,6 +726,788 @@ namespace Dynamo.Core
         }
 
         /// <summary>
+        /// Expand custom node instance and put all nodes in custom node annotation 
+        /// which is in sync with custom node definition.
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="targetWorkspace"></param>
+        /// <param name="dynamoModel"></param>
+        public void Expand(Function instance, WorkspaceModel targetWorkspace, DynamoModel dynamoModel)
+        {
+            ExpandInternal(instance, targetWorkspace, dynamoModel, false);
+        }
+
+        /// <summary>
+        /// Expand custom node instance and put all nodes in an annotation.
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="targetWorkspace"></param>
+        /// <param name="dynamoModel"></param>
+        public void ExpandToGroup(Function instance, WorkspaceModel targetWorkspace, DynamoModel dynamoModel)
+        {
+            ExpandInternal(instance, targetWorkspace, dynamoModel, true);
+        }
+
+        private void ExpandInternal(Function instance, WorkspaceModel targetWorkspace, DynamoModel dynamoModel, bool expandToGroup)
+        {
+            CustomNodeWorkspaceModel customNodeWorkspace;
+            if (!TryGetFunctionWorkspace(instance.Definition.FunctionId, false, out customNodeWorkspace))
+            {
+                return;
+            }
+
+            #region Copy nodes and notes from custom node workspace to target workspace
+            //make a lookup table to store the guids of the
+            //old models and the guids of their pasted versions
+            var modelLookup = new Dictionary<Guid, NodeModel>();
+
+            var newNodeModels = new List<NodeModel>();
+            var nodes = customNodeWorkspace.Nodes.OfType<NodeModel>().Where(n => !(n is Symbol || n is Output)).ToList();
+            foreach (var node in nodes)
+            {
+                var newNode = dynamoModel.NodeFactory.CopyNode(node, targetWorkspace);
+                modelLookup.Add(node.GUID, newNode);
+                newNodeModels.Add(newNode);
+                targetWorkspace.AddAndRegisterNode(newNode, false);
+            }
+
+            var newNoteModels = new List<NoteModel>();
+            foreach (var note in customNodeWorkspace.Notes)
+            {
+                var noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid());
+                newNoteModels.Add(noteModel);
+                targetWorkspace.AddNote(noteModel, false);
+            }
+
+            var createdModels = newNodeModels.Concat<ModelBase>(newNoteModels).ToList();
+            var shiftX = instance.X - createdModels.Min(item => item.X);
+            var shiftY = instance.Y - createdModels.Min(item => item.Y);
+            foreach (var model in createdModels)
+            {
+                model.X = model.X + shiftX;
+                model.Y = model.Y + shiftY;
+            }
+            #endregion
+
+            #region restore connectors among nodes from custom node workspace
+            var connectors = customNodeWorkspace.Connectors.Where(c => nodes.Contains(c.Start.Owner) && nodes.Contains(c.End.Owner));
+            foreach (var connector in connectors)
+            {
+                NodeModel start = null, end = null;
+                modelLookup.TryGetValue(connector.Start.Owner.GUID, out start);
+                modelLookup.TryGetValue(connector.End.Owner.GUID, out end);
+
+                if (start != null && end != null)
+                {
+                    var newConnector = ConnectorModel.Make(start, end, connector.Start.Index, connector.End.Index);
+                    createdModels.Add(newConnector);
+                }
+            }
+            #endregion
+
+            #region restore connectors to input
+            var inputConnectors = targetWorkspace.Connectors.Where(c => c.End.Owner == instance).ToList();
+            var inputs = instance.Definition.InputNodes.ToList();
+
+            foreach (var connector in inputConnectors)
+            {
+                var inputNode = inputs[connector.End.Index];
+
+                HashSet<Tuple<int, NodeModel>> outputSet;
+                if (!inputNode.OutputNodes.TryGetValue(0, out outputSet))
+                {
+                    continue;
+                }
+
+                foreach (var outputTuple in outputSet)
+                {
+                    NodeModel newNode;
+                    if (modelLookup.TryGetValue(outputTuple.Item2.GUID, out newNode))
+                    {
+                        var newConnector = ConnectorModel.Make(connector.Start.Owner, newNode, connector.Start.Index, outputTuple.Item1);
+                        createdModels.Add(newConnector);
+                    }
+                }
+            }
+            #endregion
+
+            #region restore connectors to output
+            var outputConnectors = targetWorkspace.Connectors.Where(c => c.Start.Owner == instance).ToList();
+            var outputs = instance.Definition.OutputNodes.ToList();
+
+            foreach (var connector in outputConnectors)
+            {
+                var outputNode = outputs[connector.Start.Index];
+
+                Tuple<int, NodeModel> inputTuple;
+                if (!outputNode.InputNodes.TryGetValue(0, out inputTuple))
+                {
+                    continue;
+                }
+
+                NodeModel newNode;
+                if (modelLookup.TryGetValue(inputTuple.Item2.GUID, out newNode))
+                {
+                    var newConnector = ConnectorModel.Make(newNode, connector.End.Owner, inputTuple.Item1, connector.End.Index);
+                    createdModels.Add(newConnector);
+                }
+            }
+            #endregion
+
+            #region put all nodes in a group
+            AnnotationModel annotationModel = null;
+            if (expandToGroup)
+            {
+                annotationModel = new AnnotationModel(modelLookup.Values, Enumerable.Empty<NoteModel>())
+                {
+                    GUID = Guid.NewGuid(),
+                    AnnotationText = instance.Definition.DisplayName
+                };
+            }
+            else
+            {
+                annotationModel = new CustomNodeAnnotationModel(instance.Definition.FunctionId, modelLookup.Values, newNoteModels)
+                {
+                    GUID = Guid.NewGuid(),
+                    AnnotationText = instance.Definition.DisplayName
+                };
+
+            }
+            targetWorkspace.AddAnnotation(annotationModel);
+            createdModels.Add(annotationModel);
+            #endregion
+
+            #region record all changes for undo
+            UndoRedoRecorder undoRecorder = targetWorkspace.UndoRecorder;
+            using (undoRecorder.BeginActionGroup())
+            {
+                foreach (var model in createdModels)
+                {
+                    undoRecorder.RecordCreationForUndo(model);
+                }
+
+                foreach (var connector in inputConnectors.Concat(outputConnectors))
+                {
+                    undoRecorder.RecordDeletionForUndo(connector);
+                    connector.Delete(); 
+                }
+
+                undoRecorder.RecordCreationForUndo(annotationModel);
+
+                undoRecorder.RecordDeletionForUndo(instance);
+                targetWorkspace.RemoveNode(instance);
+            };
+            #endregion
+        }
+
+        /// <summary>
+        /// Get the upstream nodes of nodes. Return Tuple in the following format.
+        /// 
+        /// inputNode, output port, <input port, node1>
+        ///                         <input port, node2>
+        //
+        /// </summary>
+        /// <param name="selectedNodeSet"></param>
+        /// <returns></returns>
+        private HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>> GetInputNodes(IEnumerable<NodeModel> selectedNodeSet)
+        {
+            return new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
+                   selectedNodeSet.SelectMany(
+                       node =>
+                           Enumerable.Range(0, node.InPorts.Count)
+                           .Where(node.HasConnectedInput)
+                           .Select(data => Tuple.Create(node, data, node.InputNodes[data]))
+                           .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
+        }
+
+        /// <summary>
+        /// Get the downstream nodes of nodes. Return Tuple in the following format.
+        ///
+        /// outputNode, output port, <input port, node1>
+        ///                          <input port, node2>
+        /// </summary>
+        /// <param name="selectedNodeSet"></param>
+        /// <returns></returns>
+        private HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>> GetOutputNodes(IEnumerable<NodeModel> selectedNodeSet)
+        {
+            return new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
+                    selectedNodeSet.SelectMany(
+                        node =>
+                            Enumerable.Range(0, node.OutPorts.Count)
+                            .Where(node.HasOutput)
+                            .SelectMany(
+                                data =>
+                                    node.OutputNodes[data].Where(
+                                        output => !selectedNodeSet.Contains(output.Item2))
+                                    .Select(output => Tuple.Create(node, data, output)))));
+        }
+
+        /// <summary>
+        /// Copy all nodes in CustomNodeAnnotationModel to custom workspace.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="currentWorkspace"></param>
+        /// <param name="dynamoModel"></param>
+        internal void UpdateCustomNode(CustomNodeAnnotationModel model, WorkspaceModel currentWorkspace, DynamoModel dynamoModel)
+        {
+            CustomNodeWorkspaceModel customNodeWorkspace;
+            if (!TryGetFunctionWorkspace(model.FunctionID, false, out customNodeWorkspace))
+            {
+                return;
+            }
+            customNodeWorkspace.Clear();
+
+            var selectedNodes = model.SelectedModels.Where(s => s is NodeModel).Cast<NodeModel>();
+            var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
+
+            #region Determine Inputs and Outputs
+
+            // Determine which nodes will be inputs to the new node
+            var inputs = GetInputNodes(selectedNodeSet);
+            var outputs = GetOutputNodes(selectedNodeSet);
+
+            #endregion
+
+            #region UI Positioning Calculations
+
+            double leftMost = selectedNodeSet.Min(node => node.X);
+            double topMost = selectedNodeSet.Min(node => node.Y);
+            double rightMost = selectedNodeSet.Max(node => node.X + node.Width);
+            double leftShift = leftMost - 250;
+
+            #endregion
+
+            #region Recreate nodes and connectors in custom workspace 
+
+            var modelLookup = new Dictionary<Guid, NodeModel>();
+            var createdModels = new List<ModelBase>();
+
+            // Move all nodes and notes to new workspace remove from old
+            foreach (var node in selectedNodeSet)
+            {
+                var newNode = dynamoModel.NodeFactory.CopyNode(node, customNodeWorkspace);
+                createdModels.Add(newNode);
+                modelLookup.Add(node.GUID, newNode);
+                customNodeWorkspace.AddAndRegisterNode(newNode);
+            }
+
+            foreach (var note in model.SelectedModels.OfType<NoteModel>())
+            {
+                var newNote = new NoteModel(note.X - leftShift, note.Y - topMost, note.Text, Guid.NewGuid());
+                customNodeWorkspace.AddNote(newNote, false);
+                createdModels.Add(newNote);
+            }
+
+            var connectors = currentWorkspace.Connectors.Where(c => selectedNodeSet.Contains(c.Start.Owner) && selectedNodeSet.Contains(c.End.Owner));
+            foreach (var connector in connectors)
+            {
+                NodeModel start = null, end = null;
+                modelLookup.TryGetValue(connector.Start.Owner.GUID, out start);
+                modelLookup.TryGetValue(connector.End.Owner.GUID, out end);
+
+                if (start != null && end != null)
+                {
+                    var newConnector = ConnectorModel.Make(start, end, connector.Start.Index, connector.End.Index);
+                    createdModels.Add(newConnector);
+                }
+            }
+            #endregion
+
+            var uniqueInputSenders = new Dictionary<Tuple<NodeModel, int>, Symbol>();
+            // insert variables 
+            foreach (var input in Enumerable.Range(0, inputs.Count).Zip(inputs, Tuple.Create))
+            {
+                int inputIndex = input.Item1;
+
+                NodeModel inputReceiverNode = modelLookup[input.Item2.Item1.GUID];
+                int inputReceiverData = input.Item2.Item2;
+
+                NodeModel inputNode = input.Item2.Item3.Item2;
+                int inputData = input.Item2.Item3.Item1;
+
+                Symbol node;
+
+                var key = Tuple.Create(inputNode, inputData);
+                if (uniqueInputSenders.ContainsKey(key))
+                {
+                    node = uniqueInputSenders[key];
+                }
+                else
+                {
+                    node = new Symbol
+                    {
+                        InputSymbol = inputReceiverNode.InPorts[inputReceiverData].PortName,
+                        X = 0
+                    };
+
+                    // Try to figure out the type of input of custom node 
+                    // from the type of input of selected node. There are
+                    // two kinds of nodes whose input type are available:
+                    // function node and custom node. 
+                    List<Library.TypedParameter> parameters = null;
+
+                    if (inputReceiverNode is Function)
+                    {
+                        var func = inputReceiverNode as Function;
+                        parameters = func.Controller.Definition.Parameters.ToList();
+                    }
+                    else if (inputReceiverNode is DSFunctionBase)
+                    {
+                        var dsFunc = inputReceiverNode as DSFunctionBase;
+                        var funcDesc = dsFunc.Controller.Definition;
+                        parameters = funcDesc.Parameters.ToList();
+
+                        if (funcDesc.Type == Engine.FunctionType.InstanceMethod ||
+                            funcDesc.Type == Engine.FunctionType.InstanceProperty)
+                        {
+                            var dummyType = new ProtoCore.Type() { Name = funcDesc.ClassName };
+                            var instanceParam = new TypedParameter(funcDesc.ClassName, dummyType);
+                            parameters.Insert(0, instanceParam);
+                        }
+                    }
+
+                    // so the input of custom node has format 
+                    //    input_var_name : type
+                    if (parameters != null && parameters.Count() > inputReceiverData)
+                    {
+                        var typeName = parameters[inputReceiverData].DisplayTypeName;
+                        if (!string.IsNullOrEmpty(typeName))
+                        {
+                            node.InputSymbol += " : " + typeName;
+                        }
+                    }
+
+                    node.SetNickNameFromAttribute();
+                    node.Y = inputIndex * (50 + node.Height);
+
+                    uniqueInputSenders[key] = node;
+
+                    customNodeWorkspace.AddAndRegisterNode(node);
+                    createdModels.Add(node);
+                }
+
+                var connector = ConnectorModel.Make(node, inputReceiverNode, 0, inputReceiverData);
+                createdModels.Add(connector);
+            }
+
+            #region Process outputs
+
+            //List of all inner nodes to connect an output. Unique.
+            var outportList = new List<Tuple<NodeModel, int>>();
+
+            var outConnectors = new List<Tuple<NodeModel, int, int>>();
+
+            int i = 0;
+            if (outputs.Any())
+            {
+                foreach (var output in outputs)
+                {
+                    if (outportList.All(x => !(x.Item1 == modelLookup[output.Item1.GUID] && x.Item2 == output.Item2)))
+                    {
+                        NodeModel outputSenderNode = modelLookup[output.Item1.GUID];
+                        int outputSenderData = output.Item2;
+
+                        outportList.Add(Tuple.Create(outputSenderNode, outputSenderData));
+
+                        //Create Symbol Node
+                        var node = new Output
+                        {
+                            Symbol = outputSenderNode.OutPorts[outputSenderData].PortName,
+                            X = rightMost + 75 - leftShift
+                        };
+
+                        node.Y = i * (50 + node.Height);
+
+                        node.SetNickNameFromAttribute();
+
+                        customNodeWorkspace.AddAndRegisterNode(node);
+                        createdModels.Add(node);
+                        var connector = ConnectorModel.Make(outputSenderNode, node, outputSenderData, 0);
+                        createdModels.Add(connector);
+
+                        i++;
+                    }
+                }
+
+                //Connect outputs to new node
+                outConnectors.AddRange(
+                    from output in outputs
+                    let outputSenderNode = output.Item1
+                    let outputSenderData = output.Item2
+                    let outputReceiverData = output.Item3.Item1
+                    let outputReceiverNode = output.Item3.Item2
+                    select
+                        Tuple.Create(
+                            outputReceiverNode,
+                            outportList.FindIndex(
+                                x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
+                            outputReceiverData));
+            }
+            else
+            {
+                foreach (var hanging in
+                    selectedNodeSet.SelectMany(
+                        node =>
+                            Enumerable.Range(0, node.OutPortData.Count)
+                            .Where(port => !node.HasOutput(port))
+                            .Select(port => new { node, port })).Distinct())
+                {
+                    var hangingNode = modelLookup[hanging.node.GUID];
+
+                    //Create Symbol Node
+                    var node = new Output
+                    {
+                        Symbol = hangingNode.OutPortData[hanging.port].NickName,
+                        X = rightMost + 75 - leftShift
+                    };
+                    node.Y = i * (50 + node.Height);
+                    node.SetNickNameFromAttribute();
+
+                    createdModels.Add(node);
+                    customNodeWorkspace.AddAndRegisterNode(node);
+                    ConnectorModel.Make(hangingNode, node, hanging.port, 0);
+
+                    i++;
+                }
+            }
+
+            #endregion
+
+            #region record all changes for undo
+            UndoRedoRecorder undoRecorder = customNodeWorkspace.UndoRecorder;
+            using (undoRecorder.BeginActionGroup())
+            {
+                foreach (var newModel in createdModels)
+                {
+                    undoRecorder.RecordCreationForUndo(newModel);
+                }
+            };
+            #endregion
+        }
+
+        internal void RestoreCustomNodeInstance(CustomNodeAnnotationModel model, WorkspaceModel currentWorkspace)
+        {
+            CustomNodeWorkspaceModel customNodeWorkspace;
+            if (!TryGetFunctionWorkspace(model.FunctionID, false, out customNodeWorkspace))
+            {
+                return;
+            }
+
+            UndoRedoRecorder undoRecorder = currentWorkspace.UndoRecorder;
+            using (undoRecorder.BeginActionGroup())
+            {
+                #region Determine Inputs and Outputs
+
+                var selectedNodes = model.SelectedModels.OfType<NodeModel>().ToList();
+                var inputs = GetInputNodes(selectedNodes);
+                var outputs = GetOutputNodes(selectedNodes);
+
+                #endregion
+
+                #region UI Positioning Calculations
+                double avgX = selectedNodes.Average(node => node.X);
+                double avgY = selectedNodes.Average(node => node.Y);
+                #endregion
+
+                #region Handle connectors
+                foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
+                {
+                    undoRecorder.RecordDeletionForUndo(group);
+                    currentWorkspace.RemoveGroup(group);
+                }
+
+                var connectors = currentWorkspace.Connectors.Where(c =>
+                    selectedNodes.Contains(c.Start.Owner) || selectedNodes.Contains(c.End.Owner)).ToList();
+                foreach (var connector in connectors)
+                {
+                    undoRecorder.RecordDeletionForUndo(connector);
+                    connector.Delete();
+                }
+                #endregion
+
+                #region Remove all nodes and notes in the group
+                foreach (var node in selectedNodes)
+                {
+                    undoRecorder.RecordDeletionForUndo(node);
+                    currentWorkspace.RemoveNode(node);
+                }
+
+                foreach (var note in model.SelectedModels.OfType<NoteModel>())
+                {
+                    undoRecorder.RecordDeletionForUndo(note);
+                    currentWorkspace.RemoveNote(note);
+                }
+
+                #endregion
+
+                #region Process inputs
+
+                var inConnectors = new List<Tuple<NodeModel, int>>();
+                foreach (var input in inputs)
+                {
+                    if (!inConnectors.Any(x => x.Item1 == input.Item3.Item2 && x.Item2 == input.Item3.Item1))
+                    {
+                        inConnectors.Add(Tuple.Create(input.Item3.Item2, input.Item3.Item1));
+                    }
+                }
+
+                #endregion
+
+                #region Process outputs
+
+                //List of all inner nodes to connect an output. Unique.
+                var outportList = new List<Tuple<NodeModel, int>>();
+                var outConnectors = new List<Tuple<NodeModel, int, int>>();
+                foreach (var output in outputs)
+                {
+                    if (outportList.All(x => !(x.Item1 == output.Item1 && x.Item2 == output.Item2)))
+                    {
+                        outportList.Add(Tuple.Create(output.Item1, output.Item2));
+                    }
+                }
+
+                //Connect outputs to new node
+                outConnectors.AddRange(
+                    from output in outputs
+                    let outputSenderNode = output.Item1
+                    let outputSenderData = output.Item2
+                    let outputReceiverData = output.Item3.Item1
+                    let outputReceiverNode = output.Item3.Item2
+                    select Tuple.Create(outputReceiverNode,
+                            outportList.FindIndex(x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
+                            outputReceiverData));
+
+                #endregion
+
+                var collapsedNode = CreateCustomNodeInstance(model.FunctionID, isTestMode: false);
+                collapsedNode.X = avgX;
+                collapsedNode.Y = avgY;
+                currentWorkspace.AddAndRegisterNode(collapsedNode, centered: false);
+                undoRecorder.RecordCreationForUndo(collapsedNode);
+
+                for (int idx = 0; idx < inConnectors.Count; idx++)
+                {
+                    var connector = ConnectorModel.Make(inConnectors[idx].Item1, collapsedNode, inConnectors[idx].Item2, idx); 
+                    undoRecorder.RecordCreationForUndo(connector);
+                }
+
+                foreach (var outConnector in outConnectors)
+                {
+                    var connector = ConnectorModel.Make(collapsedNode, outConnector.Item1, outConnector.Item2, outConnector.Item3);
+                    undoRecorder.RecordCreationForUndo(connector);
+                }
+            }
+        }
+
+        internal void UpdateCustomNodeAnnotationModel(CustomNodeAnnotationModel model, WorkspaceModel currentWorkspace, DynamoModel dynamoModel)
+        {
+            CustomNodeWorkspaceModel customNodeWorkspace;
+            if (!TryGetFunctionWorkspace(model.FunctionID, false, out customNodeWorkspace))
+            {
+                return;
+            }
+
+            CustomNodeDefinition defintion;
+            if (!TryGetFunctionDefinition(model.FunctionID, false, out defintion))
+            {
+                return;
+            }
+
+            #region get a list of input and output nodes, we'll restore connectors later on
+            var selectedNodes = model.SelectedModels.OfType<NodeModel>().ToList();
+            var inputs = GetInputNodes(selectedNodes);
+            var inConnectors = new List<Tuple<NodeModel, int>>();
+            foreach (var input in inputs)
+            {
+                if (!inConnectors.Any(x => x.Item1 == input.Item3.Item2 && x.Item2 == input.Item3.Item1))
+                {
+                    inConnectors.Add(Tuple.Create(input.Item3.Item2, input.Item3.Item1));
+                }
+            }
+
+            var outputs = GetOutputNodes(selectedNodes);
+            var outportList = new List<Tuple<NodeModel, int>>();
+            foreach (var output in outputs)
+            {
+                if (!outportList.Any(x => x.Item1 == output.Item1 && x.Item2 == output.Item2))
+                {
+                    outportList.Add(Tuple.Create(output.Item1, output.Item2));
+                }
+            }
+            var outConnector = outputs.Select(output => 
+                Tuple.Create(output.Item3.Item2,
+                        outportList.FindIndex(x => x.Item1 == output.Item1 && x.Item2 == output.Item2),
+                        output.Item3.Item1)).ToList();
+            #endregion
+
+            UndoRedoRecorder undoRecorder = currentWorkspace.UndoRecorder;
+            using (undoRecorder.BeginActionGroup())
+            {
+                #region Remove all nods/notes/connectors in custom node annotation
+                var title = string.Empty;
+                var background = string.Empty;
+                foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
+                {
+                    title = group.AnnotationText;
+                    background = group.Background;
+                    undoRecorder.RecordDeletionForUndo(group);
+                    currentWorkspace.RemoveGroup(group);
+                }
+
+                var connectors = currentWorkspace.Connectors.Where(c =>
+                    selectedNodes.Contains(c.Start.Owner) || selectedNodes.Contains(c.End.Owner)).ToList();
+                foreach (var connector in connectors)
+                {
+                    undoRecorder.RecordDeletionForUndo(connector);
+                    connector.Delete();
+                }
+
+                foreach (var node in selectedNodes)
+                {
+                    undoRecorder.RecordDeletionForUndo(node);
+                    currentWorkspace.RemoveNode(node);
+                }
+
+                foreach (var note in model.SelectedModels.OfType<NoteModel>())
+                {
+                    undoRecorder.RecordDeletionForUndo(note);
+                    currentWorkspace.RemoveNote(note);
+                }
+
+                #endregion
+
+                #region copy nodes/notes/connectors from custom node to workspace
+                // Create the new NodeModel's
+                var newNodeModels = new List<NodeModel>();
+
+                //make a lookup table to store the guids of the
+                //old models and the guids of their pasted versions
+                var modelLookup = new Dictionary<Guid, NodeModel>();
+
+                var nodes = customNodeWorkspace.Nodes.OfType<NodeModel>().Where(n => !(n is Symbol || n is Output)).ToList();
+                foreach (var node in nodes)
+                {
+                    var newNode = dynamoModel.NodeFactory.CopyNode(node, currentWorkspace);
+                    modelLookup.Add(node.GUID, newNode);
+                    newNodeModels.Add(newNode);
+                }
+
+                var newNoteModels = new List<NoteModel>();
+                foreach (var note in customNodeWorkspace.Notes)
+                {
+                    var noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid());
+                    newNoteModels.Add(noteModel);
+                }
+
+                var newItems = newNodeModels.Concat<ModelBase>(newNoteModels);
+                var shiftX = model.X - newItems.Min(item => item.X);
+                var shiftY = model.Y - newItems.Min(item => item.Y);
+                foreach (var m in newItems)
+                {
+                    m.X = m.X + shiftX;
+                    m.Y = m.Y + shiftY;
+                }
+
+                //make a list of all newly created models so that their
+                //creations can be recorded in the undo recorder.
+                var createdModels = new List<ModelBase>();
+                foreach (var newNode in newNodeModels)
+                {
+                    currentWorkspace.AddAndRegisterNode(newNode, false);
+                    createdModels.Add(newNode);
+                }
+
+                foreach (var newNote in newNoteModels)
+                {
+                    currentWorkspace.AddNote(newNote, false);
+                    createdModels.Add(newNote);
+                }
+
+                var newConnectors = customNodeWorkspace.Connectors.Where(
+                    c => nodes.Contains(c.Start.Owner) && nodes.Contains(c.End.Owner));
+                foreach (var connector in newConnectors)
+                {
+                    NodeModel start = null, end = null;
+                    modelLookup.TryGetValue(connector.Start.Owner.GUID, out start);
+                    modelLookup.TryGetValue(connector.End.Owner.GUID, out end);
+
+                    if (start != null && end != null)
+                    {
+                        var newConnector = ConnectorModel.Make(start, end, connector.Start.Index, connector.End.Index);
+                        createdModels.Add(newConnector);
+                    }
+                }
+                #endregion
+
+                #region restore input and output connectors
+
+                var customInputNodes = defintion.InputNodes.ToList();
+                for (int idx = 0; idx < inConnectors.Count; idx++)
+                {
+                    var inputNode = customInputNodes[idx];
+                    var inputTuple = inConnectors[idx];
+
+                    HashSet<Tuple<int, NodeModel>> outputSet;
+                    if (!inputNode.OutputNodes.TryGetValue(0, out outputSet))
+                    {
+                        continue;
+                    }
+
+                    foreach (var outputTuple in outputSet)
+                    {
+                        NodeModel newNode;
+                        if (modelLookup.TryGetValue(outputTuple.Item2.GUID, out newNode))
+                        {
+                            var newConnector = ConnectorModel.Make(inputTuple.Item1, newNode, inputTuple.Item2, outputTuple.Item1);
+                            createdModels.Add(newConnector);
+                        }
+                    }
+                }
+
+                var customOutputNodes = defintion.OutputNodes.ToList();
+                for (int idx = 0; idx < outConnector.Count; idx++)
+                {
+                    var outputTuple = outConnector[idx];
+                    var outputNode = customOutputNodes[outputTuple.Item2];
+
+                    Tuple<int, NodeModel> inputTuple;
+                    if (!outputNode.InputNodes.TryGetValue(0, out inputTuple))
+                    {
+                        continue;
+                    }
+
+                    NodeModel newNode;
+                    if (modelLookup.TryGetValue(inputTuple.Item2.GUID, out newNode))
+                    {
+                        var newConnector = ConnectorModel.Make(newNode, outputTuple.Item1, inputTuple.Item1, outputTuple.Item3);
+                        createdModels.Add(newConnector);
+                    }
+                }
+                #endregion
+
+                #region put all nodes in a group
+                var annotationModel = new CustomNodeAnnotationModel(model.FunctionID, modelLookup.Values, newNoteModels)
+                {
+                    GUID = Guid.NewGuid(),
+                    AnnotationText = title,
+                    Background = background
+                };
+                currentWorkspace.AddAnnotation(annotationModel);
+                createdModels.Add(annotationModel);
+                #endregion
+
+                #region record all changes for undo
+                foreach (var m in createdModels)
+                {
+                    undoRecorder.RecordCreationForUndo(m);
+                }
+
+                undoRecorder.RecordCreationForUndo(annotationModel);
+                #endregion
+            }
+        }
+
+        /// <summary>
         ///     Collapse a set of nodes in a given workspace.
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
@@ -765,27 +1544,8 @@ namespace Dynamo.Core
                 #region Determine Inputs and Outputs
 
                 //Step 1: determine which nodes will be inputs to the new node
-                var inputs =
-                    new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
-                        selectedNodeSet.SelectMany(
-                            node =>
-                                Enumerable.Range(0, node.InPorts.Count)
-                                .Where(node.HasConnectedInput)
-                                .Select(data => Tuple.Create(node, data, node.InputNodes[data]))
-                                .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
-
-                var outputs =
-                    new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
-                        selectedNodeSet.SelectMany(
-                            node =>
-                                Enumerable.Range(0, node.OutPorts.Count)
-                                .Where(node.HasOutput)
-                                .SelectMany(
-                                    data =>
-                                        node.OutputNodes[data].Where(
-                                            output => !selectedNodeSet.Contains(output.Item2))
-                                        .Select(output => Tuple.Create(node, data, output)))));
-
+                var inputs = GetInputNodes(selectedNodeSet);
+                var outputs = GetOutputNodes(selectedNodeSet);
                 #endregion
 
                 #region Detect 1-node holes (higher-order function extraction)
@@ -822,7 +1582,7 @@ namespace Dynamo.Core
                 //                            .ToList();
 
                 //                    var nodeInputs =
-                //                        outputs.Where(output => output.Item3.Item2 == outerNode)
+                //                        outputs.Where(output => output.I.tem3.Item2 == outerNode)
                 //                            .Select(
                 //                                output =>
                 //                                    new

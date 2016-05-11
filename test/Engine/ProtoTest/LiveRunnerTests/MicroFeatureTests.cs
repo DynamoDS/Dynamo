@@ -1955,8 +1955,7 @@ r = Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                "global = 0;",
-                "def f() { global = global + 1; return = global;}",
+                "def f() { return = 1;}",
                 "def f(i : int) { return = i + 10;}",
                 "x = f();",
                 "y = f(2);",
@@ -1965,28 +1964,23 @@ r = Equals(x, {41, 42});
 
             List<Subtree> added = new List<Subtree>();
 
-
-            // A new CBN for a global
-            Guid guid = System.Guid.NewGuid();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
-
             // A CBN with function def f
             Guid guid_func1 = System.Guid.NewGuid();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func1, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func1, codes[0]));
 
 
             // A CBN with function overload def f(i)
             Guid guid_func2 = System.Guid.NewGuid();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func2, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func2, codes[1]));
 
             // CBN for calling function f
-            guid = System.Guid.NewGuid();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[3]));
+            var guid = System.Guid.NewGuid();
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[2]));
 
 
             // CBN for calling overload function f(i)
             guid = System.Guid.NewGuid();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[4]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[3]));
 
 
             var syncData = new GraphSyncData(null, added, null);
@@ -1999,7 +1993,7 @@ r = Equals(x, {41, 42});
             // Redefine the CBN
             List<Subtree> modified = new List<Subtree>();
 
-            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func2, codes[5]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func2, codes[4]));
 
             syncData = new GraphSyncData(null, null, modified);
             liveRunner.UpdateGraph(syncData);
@@ -2018,39 +2012,34 @@ r = Equals(x, {41, 42});
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4229
             List<string> codes = new List<string>() 
             {
-                "global = 0;",
-                "def f() { global = global + 1; return = global;}",
+                "def f() { return = 1;}",
                 "def f(i : int) { return = i + 10;}",
                 "x = f();",
                 "y = f(2);",
-                "def f() { global = global + 1; return = global + 10;}",
+                "def f() { return = 10; }",
                 "def f(i : int) { return = i + 100; }"
             };
 
             List<Subtree> added = new List<Subtree>();
 
 
-            // A new CBN for a global
-            Guid guid = System.Guid.NewGuid();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
-
             // A CBN with function def f
             Guid guid_func1 = System.Guid.NewGuid();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func1, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func1, codes[0]));
 
 
             // A CBN with function overload def f(i)
             Guid guid_func2 = System.Guid.NewGuid();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func2, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func2, codes[1]));
 
             // CBN for calling function f
-            guid = System.Guid.NewGuid();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[3]));
+            var guid = System.Guid.NewGuid();
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[2]));
 
 
             // CBN for calling overload function f(i)
             guid = System.Guid.NewGuid();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[4]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[3]));
 
 
             var syncData = new GraphSyncData(null, added, null);
@@ -2063,14 +2052,14 @@ r = Equals(x, {41, 42});
             // Redefine both functions
             List<Subtree> modified = new List<Subtree>();
 
-            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func1, codes[5]));
-            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func2, codes[6]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func1, codes[4]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func2, codes[5]));
 
             syncData = new GraphSyncData(null, null, modified);
             liveRunner.UpdateGraph(syncData);
 
             // Verify that the call to the function f has not re-executed
-            AssertValue("x", 12);
+            AssertValue("x", 10);
 
             // Verify that the call to the overload function f(i) has re-executed
             AssertValue("y", 102);
@@ -2352,53 +2341,6 @@ r = Equals(x, {41, 42});
                 liveRunner.UpdateGraph(syncData);
                 AssertValue("r", 45);
             }
-        }
-
-        [Test]
-        public void TestCodeblockModification01()
-        {
-            List<string> codes = new List<string>() 
-            {
-                "g = 0;",
-                "def f() { g = g + 1; return = 1;}",
-                "x = f(); a = 10;",  // CBN 1
-                "x = f(); a = 11;"   // Simulate modifiying CBN 1
-            };
-
-            List<Subtree> added = new List<Subtree>();
-
-            // CBN for global
-            Guid guid_global = System.Guid.NewGuid();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_global, codes[0]));
-
-            // A CBN with function def f
-            Guid guid_func = System.Guid.NewGuid();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[1]));
-
-            // A new CBN that uses function f
-            Guid guid = System.Guid.NewGuid();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[2]));
-
-            var syncData = new GraphSyncData(null, added, null);
-            liveRunner.UpdateGraph(syncData);
-
-            AssertValue("g", 1);
-            AssertValue("a", 10);
-
-
-            // Redefine the CBN
-            List<Subtree> modified = new List<Subtree>();
-
-            // Mark the CBN that uses f as modified
-            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[3]));
-
-            syncData = new GraphSyncData(null, null, modified);
-            liveRunner.UpdateGraph(syncData);
-
-            // Verify that x must have automatically re-executed
-            AssertValue("g", 1);    // This should not increment
-            AssertValue("a", 11);
-
         }
 
         [Test]

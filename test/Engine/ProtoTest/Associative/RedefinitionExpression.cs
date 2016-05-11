@@ -139,9 +139,9 @@ y = a[1];
 @"
 def f(i : int)
 {
+    list = {1, 2, 3, 4};
     return = i + list[i];
 }
-list = {1, 2, 3, 4};
 a = 1;
 a = {f(f(a)), f(a)};
 x = a[0];

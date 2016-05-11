@@ -35,7 +35,7 @@ namespace Dynamo.Scheduler
         }
 
         /// <summary>
-        /// Return true if task queue is not empty.
+        /// Returns true if task queue is not empty.
         /// </summary>
         public bool HasPendingTasks
         {

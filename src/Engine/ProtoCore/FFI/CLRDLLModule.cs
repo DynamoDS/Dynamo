@@ -42,7 +42,7 @@ namespace ProtoFFI
         #region PUBLIC_METHODS_AND_PROPERTIES
 
         /// <summary>
-        /// Gets CLRModuleType for given Type. If CLRModuleType instance for the
+        /// Returns CLRModuleType for given Type. If CLRModuleType instance for the
         /// given type is not found, it creates a new one. If CLRDLLModule is
         /// passed as null, it creates empty CLRModuleType.
         /// </summary>
@@ -83,7 +83,7 @@ namespace ProtoFFI
         }
 
         /// <summary>
-        /// Gets all the types, which was referenced by other types but were not
+        /// Returns all the types, which was referenced by other types but were not
         /// imported explicitly. These are empty types and corresponding DS Type
         /// don't contain any methods, constructors, properties or fields
         /// </summary>
@@ -95,7 +95,7 @@ namespace ProtoFFI
 
 
         /// <summary>
-        /// Gets all the types for the given predicate.
+        /// Returns all the types for the given predicate.
         /// </summary>
         /// <param name="predicate">A delegate for defining criteria</param>
         /// <returns>List of CLRModuleType</returns>
@@ -657,12 +657,10 @@ namespace ProtoFFI
 
             ProtoCore.AST.AssociativeAST.FunctionDefinitionNode func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
             func.Name = string.Format("%get_{0}", f.Name);
-            func.Pattern = null;
             func.Signature = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
             func.ReturnType = CLRModuleType.GetProtoCoreType(f.FieldType, Module);
             func.FunctionBody = null;
             func.Access = ProtoCore.CompilerDefinitions.AccessModifier.Public;
-            func.IsDNI = false;
             func.IsExternLib = true;
             func.ExternLibName = Module.Name;
             func.IsStatic = f.IsStatic;
@@ -704,7 +702,6 @@ namespace ProtoFFI
             {
                 func.Name = string.Format("{0}{1}", prefix, method.Name);
             }
-            func.Pattern = null;
             func.Signature = ParseArgumentSignature(method);
 
             if ((retype.IsIndexable && mattrs.AllowRankReduction)
@@ -715,7 +712,6 @@ namespace ProtoFFI
             func.ReturnType = retype;
             func.FunctionBody = null;
             func.Access = ProtoCore.CompilerDefinitions.AccessModifier.Public;
-            func.IsDNI = false;
             func.IsExternLib = true;
             func.ExternLibName = Module.Name;
             func.IsStatic = method.IsStatic;

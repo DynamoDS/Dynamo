@@ -655,71 +655,52 @@ namespace ProtoCore
 
         public SymbolNode GetFirstVisibleSymbol(string name, int classscope, int function, CodeBlock codeblock)
         {
-            //  
-            //
-
             Validity.Assert(null != codeblock);
-            if (null == codeblock)
-            {
-                return null;
-            }
-
             int symbolIndex = Constants.kInvalidIndex;
-            bool stillInsideFunction = function != Constants.kInvalidIndex;
+
+            // For variables defined nested language block, their function index
+            // is always Constants.kGlobalScope 
             CodeBlock searchBlock = codeblock;
-            // TODO(Jiong): Code Duplication, Consider moving this if else block inside the while loop 
-            if (stillInsideFunction)
+            while (searchBlock != null)
             {
-                symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, function);
+                // For imported node, it is possbile that the block is not the
+                // topmost block.
+                // 
+                // For expression interpreter, as the code has been compiled, the
+                // outmost block wouldn't be function block (CodeBlockType.Function).
+                // CodeBlockType.Function is a temporary block type which is set when
+                // the compile is generating code for function defintion node and will
+                // be set back to Associative.
+                var isSearchBoundry = searchBlock.blockType == CodeBlockType.Function ||
+                    (Options.RunMode == InterpreterMode.Expression && searchBlock.parent == null);
 
-                if (function != Constants.kInvalidIndex &&
-                    searchBlock.procedureTable != null &&
-                    searchBlock.procedureTable.Procedures.Count > function &&   // Note: This check assumes we can not define functions inside a fucntion 
-                    symbolIndex == Constants.kInvalidIndex)
-                    symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, Constants.kInvalidIndex);
-            }
-            else
-            {
-                symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, Constants.kInvalidIndex);
-            }
-            while (Constants.kInvalidIndex == symbolIndex)
-            {
-                // if the search block is of type function, it means our search has gone out of the function itself
-                // so, we should ignore the given function index and only search its parent block's global variable
-                if (searchBlock.blockType == CodeBlockType.Function)
-                    stillInsideFunction = false;
-
-                searchBlock = searchBlock.parent;
-                if (null == searchBlock)
+                if (isSearchBoundry)
                 {
-                    return null;
+                    break;
                 }
 
-                // Continue searching
-                if (stillInsideFunction)
+                symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, Constants.kGlobalScope);
+                if (symbolIndex == Constants.kInvalidIndex)
                 {
-                    // we are still inside a function, first search the local variable defined in this function 
-                    // if not found, then search the enclosing block by specifying the function index as -1
-                    symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, function);
-
-                    // this check is to avoid unnecessary search
-                    // for example if we have a for loop inside an imperative block which is further inside a function
-                    // when we are searching inside the for loop or language block, there is no need to search twice
-                    // we need to search twice only when we are searching directly inside the function, 
-                    if (function != Constants.kInvalidIndex &&
-                        searchBlock.procedureTable != null &&
-                        searchBlock.procedureTable.Procedures.Count > function && // Note: This check assumes we can not define functions inside a fucntion 
-                        symbolIndex == Constants.kInvalidIndex)
-
-                        symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, Constants.kInvalidIndex);
-
+                    searchBlock = searchBlock.parent;
                 }
                 else
                 {
-                    symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, Constants.kInvalidIndex);
+                    return searchBlock.symbolTable.symbolList[symbolIndex];
                 }
             }
-            return searchBlock.symbolTable.symbolList[symbolIndex];
+
+            // Search variable might be defined in function. 
+            // If we are not in class defintion, then just stop here, otherwise
+            // we should search global block's symbol table.
+            if (searchBlock != null && 
+                (searchBlock.blockType == CodeBlockType.Function || (Options.RunMode == InterpreterMode.Expression && searchBlock.parent == null)) && 
+                classscope == Constants.kGlobalScope)
+            {
+                symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, function);
+            }
+
+            return symbolIndex == Constants.kInvalidIndex ? null : searchBlock.symbolTable.symbolList[symbolIndex];
         }
 
         public bool IsFunctionCodeBlock(CodeBlock cblock)

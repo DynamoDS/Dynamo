@@ -2,17 +2,31 @@
 
 namespace Dynamo.Search
 {
+    /// <summary>
+    ///     This class represents internal elements of browser item
+    /// </summary>
     public class BrowserInternalElement : BrowserItem
     {
+        private ObservableCollection<BrowserItem> _items = new ObservableCollection<BrowserItem>();
+        
         /// <summary>
         ///     The items inside of the browser item
         /// </summary>
-        private ObservableCollection<BrowserItem> _items = new ObservableCollection<BrowserItem>();
         public override ObservableCollection<BrowserItem> Items { get { return _items; } set { _items = value; } }
 
+        /// <summary>
+        ///     Returns items which are in the same category as the browser item
+        /// </summary>
         public ObservableCollection<BrowserItem> Siblings { get { return this.Parent.Items; } }
 
+        /// <summary>
+        ///     Returns browser item representing category which this element belongs to
+        /// </summary>
         public BrowserItem Parent { get; set; }
+
+        /// <summary>
+        ///     Returns previous parent item 
+        /// </summary>
         public BrowserItem OldParent { get; set; }
 
         internal void ReturnToOldParent()
@@ -37,15 +51,20 @@ namespace Dynamo.Search
             }
         }
 
-        /// <summary>
-        /// Name property </summary>
-        /// <value>
-        /// The name of the node </value>
         private string _name;
+        
+        /// <summary>
+        ///     Returns name of the node
+        /// </summary>
         public override string Name
         {
             get { return _name; }
         }
+
+        /// <summary>
+        ///     Returns full category name consisting of root and all sub categories names
+        /// </summary>
+        public string FullCategoryName { get; set; }
 
         internal BrowserInternalElement()
         {
@@ -54,15 +73,17 @@ namespace Dynamo.Search
             this.OldParent = null;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BrowserInternalElement"/> class.
+        /// </summary>
+        /// <param name="name">Name of element.</param>
+        /// <param name="parent">Parent element.</param>
         internal BrowserInternalElement(string name, BrowserItem parent)
         {
             this._name = name;
             this.Parent = parent;
             this.OldParent = null;
         }
-
-
-        public string FullCategoryName { get; set; }
 
         internal override void Execute()
         {

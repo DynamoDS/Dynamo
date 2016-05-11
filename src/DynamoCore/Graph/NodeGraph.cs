@@ -145,7 +145,17 @@ namespace Dynamo.Graph
 
         internal static AnnotationModel LoadAnnotationFromXml(XmlNode annotation, IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes)
         {
-            var instance = new AnnotationModel(nodes,notes);             
+            AnnotationModel instance = null;
+            var idAttr = annotation.Attributes["functionID"];
+            Guid functionID;
+            if (idAttr == null || string.IsNullOrEmpty(idAttr.Value) || !Guid.TryParse(idAttr.Value, out functionID))
+            {
+                instance = new AnnotationModel(nodes, notes);
+            }
+            else
+            {
+                instance = new CustomNodeAnnotationModel(functionID, nodes, notes);
+            }
             instance.Deserialize(annotation as XmlElement, SaveContext.File);
             return instance;
         }

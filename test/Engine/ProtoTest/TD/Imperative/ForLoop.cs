@@ -154,29 +154,28 @@ namespace ProtoTest.TD.Imperative
         [Category("SmokeTest")]
         public void T08_TestForLoopInsideFunctionDeclaration()
         {
-            string src = @"y;
+            string src = @"
+y;
 z;
-	def sum : double ( a : double, b : double, c : double )
-	{   
-return = [Imperative] {
+def sum : double ( a : double, b : double, c : double )
+{   
+    return = [Imperative] {
 		x = 0;
 	    z = {a, b, c};
 		for(y in z)
 		{
 			x = x + y;
 		}
-		
 		return = x;
+    }
 }
-	}
 [Imperative]
 {
 	y = sum ( 1.0, 2.5, -3.5 );
-	
 	z = sum ( -4.0, 5.0, 6.0 );
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("y", 6);
+            thisTest.Verify("y", 0);
             thisTest.Verify("z", 7);
         }
 
@@ -873,31 +872,27 @@ sum;
         {
             string code = @"
 b;
+a = { {1, 2, 3}, {4}, {5,6} };
+
+def forloop :int ( a: int[]..[] )
+{
+    sum = 0;
+    sum = [Imperative]
+    {
+        for(i in a )
+        {
+            for (  j in i )
+            {
+                sum = sum + j;
+            }
+        }
+        return = sum;
+    }
+    return = sum;
+}
 [Associative]
 {
-	a = { {1, 2, 3}, {4}, {5,6} };
-	
-	def forloop :int ( a: int[]..[] )
-	{
-		sum = 0;
-		sum = [Imperative]
-		{
-			for(i in a )
-			{
-				for (  j in i )
-				{
-					sum = sum + j;
-				}
-			}
-			return = sum;
-		}
-		return = sum;
-	}
-	
 	b =forloop(a);
-	
-	
-	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", 21, 0);

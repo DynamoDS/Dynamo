@@ -364,7 +364,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Gets a value indicating whether this model is frozen.
+        /// Returns a value indicating whether this model is frozen.
         /// </summary>
         /// <value>
         ///   <c>true</c> if this instance is frozen; otherwise, <c>false</c>.
@@ -416,6 +416,15 @@ namespace Dynamo.ViewModels
             get
             {
                 return !NodeModel.IsAnyUpstreamFrozen();
+            }
+        }
+
+        public double DisplayScale
+        {
+            get
+            {
+                return nodeLogic.OwningGroup != null
+                    ? nodeLogic.OwningGroup.DisplayScale : 1;
             }
         }
 
@@ -654,6 +663,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsFrozen":
                     RaiseFrozenPropertyChanged();
+                    break;
+                case "DisplayScale":
+                    RaisePropertyChanged("DisplayScale");
                     break;
             }
         }
@@ -1013,6 +1025,20 @@ namespace Dynamo.ViewModels
             DynamoViewModel.GoToWorkspace((NodeLogic as Function).Definition.FunctionId);
         }
 
+        private void Expand(object parameters)
+        {
+            var function = nodeLogic as Function;
+            var workspaceModel = DynamoViewModel.CurrentSpaceViewModel.Model;
+            DynamoViewModel.Model.CustomNodeManager.Expand(function, workspaceModel, DynamoViewModel.Model);
+        }
+
+        private void ExpandToWorkspace(object parameters)
+        {
+            var function = nodeLogic as Function;
+            var workspaceModel = DynamoViewModel.CurrentSpaceViewModel.Model;
+            DynamoViewModel.Model.CustomNodeManager.ExpandToGroup(function, workspaceModel, DynamoViewModel.Model);
+        }
+
         private bool CanGotoWorkspace(object parameters)
         {
             if (NodeLogic is Function)
@@ -1021,6 +1047,16 @@ namespace Dynamo.ViewModels
             }
 
             return false;
+        }
+
+        private bool CanExpand(object parameters)
+        {
+            return NodeLogic is Function;
+        }
+
+        private bool CanExpandToWorkspace(object parameters)
+        {
+            return NodeLogic is Function;
         }
 
         private void CreateGroup(object parameters)

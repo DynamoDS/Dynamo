@@ -38,6 +38,9 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public virtual IEnumerable<string> ReturnKeys { get { return Definition.ReturnKeys; } }
 
+        /// <summary>
+        ///     Default constructor.
+        /// </summary>
         protected FunctionCallNodeController(T def)
         {
             Definition = def;

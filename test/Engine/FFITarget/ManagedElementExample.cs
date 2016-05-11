@@ -1,10 +1,7 @@
-﻿using System;
+﻿using DynamoServices;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-
-using DynamoServices;
 
 namespace FFITarget
 {
@@ -28,7 +25,7 @@ namespace FFITarget
         }
 
         /// <summary>
-        /// Get the LifecycleManager for the specific type
+        /// Returns the LifecycleManager for the specific type
         /// WARNING: This is only a singleton for a given TypeArg
         /// </summary>
         /// <returns></returns>
@@ -121,7 +118,7 @@ namespace FFITarget
         }
 
         /// <summary>
-        /// Get the number of wrappers that are registered
+        /// Returns the number of wrappers that are registered
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -155,7 +152,7 @@ namespace FFITarget
 
 
         /// <summary>
-        /// This method tells the life cycle 
+        /// Set deletion state of Revit element
         /// </summary>
         /// <param name="id">The element that needs to be deleted></param>
         public void NotifyOfRevitDeletion(T id)

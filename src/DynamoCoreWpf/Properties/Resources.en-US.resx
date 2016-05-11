@@ -1672,7 +1672,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Publish Online</value>
   </data>
   <data name="StartPageWhatsNew" xml:space="preserve">
-    <value>What's New</value>
+    <value>Getting Started</value>
   </data>
   <data name="TermsOfUseAcceptButton" xml:space="preserve">
     <value>I Accept</value>
@@ -1727,6 +1727,14 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
     <value>Show Edges</value>
+  </data>
+  <data name="DynamoViewSettingsMenuHidePreviewBubbles" xml:space="preserve">
+    <value>Hide Preview Bubbles</value>
+    <comment>Settings menu | Hide preview bubbles</comment>
+  </data>
+  <data name="DynamoViewSettingsMenuShowPreviewBubbles" xml:space="preserve">
+    <value>Show Preview Bubbles</value>
+    <comment>Settings menu | Show preview bubbles</comment>
   </data>
   <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
     <value>Visualization Settings</value>
@@ -1992,5 +2000,20 @@ Next assemblies were loaded several times:
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Failed to add file: {0}</value>
     <comment>Message box content</comment>
+  </data>
+  <data name="ContextMenuExpandCustomNode" xml:space="preserve">
+    <value>Expand Custom Node</value>
+  </data>
+  <data name="ContextMenuExpandCustomNodeToGroup" xml:space="preserve">
+    <value>Expand Custom Node to Group</value>
+  </data>
+  <data name="ContextMenuUpdateCustomNodeDefintion" xml:space="preserve">
+    <value>Update Custom Node</value>
+  </data>
+  <data name="ContextMenuRestoreToCustomNodeInstance" xml:space="preserve">
+    <value>Restore to Custom Node Instance</value>
+  </data>
+  <data name="ContextMenuSyncWithCustomNodeDefinition" xml:space="preserve">
+    <value>Sync with Custom Node</value>
   </data>
 </root>

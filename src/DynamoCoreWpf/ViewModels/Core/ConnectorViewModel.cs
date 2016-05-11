@@ -294,6 +294,10 @@ namespace Dynamo.ViewModels
                 case "ShowExecutionPreview":
                     RaisePropertyChanged("PreviewState");
                     break;
+                case "DisplayScale":
+                    RaisePropertyChanged("CurvePoint0");
+                    Redraw();
+                    break;
             }
         }
 
@@ -319,6 +323,10 @@ namespace Dynamo.ViewModels
                     break;
                 case "ShowExecutionPreview":
                     RaisePropertyChanged("PreviewState");
+                    break;
+                case "DisplayScale":
+                    RaisePropertyChanged("CurvePoint0");
+                    Redraw();
                     break;
             }
         }

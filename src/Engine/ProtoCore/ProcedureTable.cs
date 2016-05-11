@@ -173,18 +173,6 @@ namespace ProtoCore.DSASM
         {
             get; set;
         }
-        public Stack<UpdateNodeRef> UpdatedGlobalVariables
-        {
-            get; set;
-        }
-        public Stack<UpdateNodeRef> UpdatedProperties
-        {
-            get; set;
-        }
-        public Dictionary<string, List<UpdateNodeRef>> UpdatedArgumentProperties
-        {
-            get; set;
-        }
         /// <summary>
         /// The list of graphnodes that this function owns
         /// </summary>
@@ -207,9 +195,6 @@ namespace ProtoCore.DSASM
             IsActive = true;
             ChildCodeBlocks = new List<int>();
 
-            UpdatedGlobalVariables = new Stack<AssociativeGraph.UpdateNodeRef>();
-            UpdatedProperties = new Stack<AssociativeGraph.UpdateNodeRef>();
-            UpdatedArgumentProperties = new Dictionary<string, List<AssociativeGraph.UpdateNodeRef>>();
             GraphNodeList = new List<GraphNode>();
         }
 
@@ -238,9 +223,6 @@ namespace ProtoCore.DSASM
             ChildCodeBlocks = new List<int>(rhs.ChildCodeBlocks);
 
             // Runtime properties are initialized
-            UpdatedGlobalVariables = new Stack<AssociativeGraph.UpdateNodeRef>();
-            UpdatedProperties = new Stack<AssociativeGraph.UpdateNodeRef>();
-            UpdatedArgumentProperties = new Dictionary<string, List<AssociativeGraph.UpdateNodeRef>>();
             GraphNodeList = new List<GraphNode>();
         }
 
@@ -259,7 +241,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Return true if two procedure nodes have same signature.
+        /// Returns true if two procedure nodes have same signature.
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
@@ -335,7 +317,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Return function with specified name. 
+        /// Returns function with specified name. 
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -345,7 +327,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Return all functions with specified name and the number of argument.
+        /// Returns all functions with specified name and the number of argument.
         ///
         /// It also returns function that has default arguments but the total 
         /// parameter number is larger that the specified argument number.
@@ -365,7 +347,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Return function with specified signature.
+        /// Returns function with specified signature.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="args"></param>

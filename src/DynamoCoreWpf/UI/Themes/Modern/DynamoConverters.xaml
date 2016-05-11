@@ -88,6 +88,7 @@
     <controls:PathToSaveStateConverter x:Key="PathToSaveStateConverter" />
     <controls:InverseBooleanConverter x:Key="InverseBooleanConverter" />
     <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter" />
+    <controls:ShowHidePreviewBubblesConverter x:Key="ShowHidePreviewBubblesConverter" />
     <controls:ShowHideFullscreenWatchMenuItemConverter x:Key="ShowHideFullscreenWatchMenuConverter" />
     <controls:PackageSearchStateToStringConverter x:Key="PackageSearchStateToStringConverter" />
     <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
@@ -148,6 +149,7 @@
                                       TrueBrush="#cccccc"
                                       FalseBrush="#666666" />
     <controls:GroupFontSizeToEditorEnabledConverter x:Key="GroupFontSizeToEditorEnabledConverter"/>
+    <controls:ZoomLevelToNodeCoverBooleanConverter x:Key="ZoomLevelToNodeCoverBooleanConverter"/>
     <controls:ElementTypeToShortConverter x:Key="ElementTypeToShortConverter" />
     <controls:GroupTitleVisibilityConverter x:Key="GroupTitleVisibilityConverter"/>
     <controls:LibraryViewModeToBoolConverter x:Key="LibraryViewModeToBoolConverter" />
