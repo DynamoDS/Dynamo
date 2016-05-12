@@ -17,6 +17,7 @@ using System.Windows.Media.Animation;
 using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Models;
+using System.Threading.Tasks;
 
 namespace Dynamo.UI.Controls
 {
@@ -535,11 +536,24 @@ namespace Dynamo.UI.Controls
 
         #region Private Class Methods - Transition Helpers
 
-        private void BeginFadeInTransition()
+        private async void BeginFadeInTransition()
         {
             if (this.IsHidden == false)
                 throw new InvalidOperationException();
 
+            var delayTimer = new DispatcherTimer(DispatcherPriority.Normal);
+            delayTimer.Interval = TimeSpan.FromMilliseconds(1000);
+            this.nodeViewModel.OnMouseLeave += () => delayTimer.Stop();
+            delayTimer.Tick += (obj, e) =>
+            {
+                 Dispatcher.Invoke(() => ProcessFadeIn());
+                delayTimer.Stop();
+            };
+            await Task.Run(() => delayTimer.Start());
+        }
+
+        private void ProcessFadeIn()
+        {
             // To prevent another transition from being started and
             // indicate a new transition is about to be started
             SetCurrentStateAndNotify(State.PreTransition);

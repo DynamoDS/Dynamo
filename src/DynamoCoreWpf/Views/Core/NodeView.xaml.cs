@@ -59,6 +59,11 @@ namespace Dynamo.Controls
             private set
             {
                 viewModel = value;
+                this.MouseLeave += (s, e) =>
+                {
+                    if (viewModel.OnMouseLeave != null)
+                        viewModel.OnMouseLeave();
+                };
                 if (viewModel.PreviewPinned)
                 {
                     CreatePreview(viewModel);
@@ -531,7 +536,6 @@ namespace Dynamo.Controls
                     }
             };
         }
-
         /// <summary>
         /// If mouse is over node or preview control, then preview control is expanded.
         /// </summary>
