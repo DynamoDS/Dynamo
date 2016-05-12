@@ -97,17 +97,17 @@
                             BorderBrush="{StaticResource BubblePreviewBorderColor}"
                             MouseLeftButtonDown="OnMapPinMouseClick">
                     <StackPanel Orientation="Horizontal">
-                        <StackPanel.Resources>
-                            <Style TargetType="fa:ImageAwesome">
-                                <Setter Value="{Binding RelativeSource={RelativeSource FindAncestor, 
-                                            AncestorType={x:Type uicontrols:PreviewControl}}, 
-                                            Path=StaysOpen,
-                                            Converter={StaticResource PinIconForegroundConverter}}" Property="Foreground"/>
-                            </Style>
-                        </StackPanel.Resources>
-                        <fa:ImageAwesome Icon="EllipsisHorizontal" 
-                                             VerticalAlignment="Bottom" Margin="4,0,0,7" Width="9"/>
-                        <fa:ImageAwesome Name="PinnIcon" Icon="ThumbTack" Height="12" Width="9" Margin="4" />
+                        <TextBlock VerticalAlignment="Bottom" Margin="4,0,0,4" Text="..."
+                            Foreground="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                                 AncestorType={x:Type uicontrols:PreviewControl}}, 
+                                                 Path=StaysOpen,
+                                                 Converter={StaticResource PinIconForegroundConverter}}"/>
+
+                        <fa:ImageAwesome Name="PinnIcon" Icon="ThumbTack" Height="12" Width="9" Margin="4" 
+                            Foreground="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                                 AncestorType={x:Type uicontrols:PreviewControl}}, 
+                                                 Path=StaysOpen,
+                                                 Converter={StaticResource PinIconForegroundConverter}}"/>
                     </StackPanel>
                     <Border.Style>
                         <Style TargetType="Border">
