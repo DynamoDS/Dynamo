@@ -1284,6 +1284,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="UI\Images\bubble-arrow.png" />
+    <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Content Include="ViewModels\Watch3D\Shaders\BillboardText.fx" />
     <Content Include="ViewModels\Watch3D\Shaders\Common.fx" />
     <Content Include="ViewModels\Watch3D\Shaders\Custom.fx" />

@@ -81,6 +81,7 @@ namespace Dynamo.UI.Controls
             this.nodeViewModel = nodeViewModel;
             InitializeComponent();
             Loaded += PreviewControl_Loaded;
+            SizeChanged += (s, e) => UpdateMargin();
             if (this.nodeViewModel.PreviewPinned)
             {
                 StaysOpen = true;
@@ -92,6 +93,18 @@ namespace Dynamo.UI.Controls
             {
                 StaysOpen = false;
             }
+        }
+
+        private void UpdateMargin()
+        {
+            var nodeWidth = smallContentGrid.MinWidth;
+            var previewWidth = Math.Max(centralizedGrid.ActualWidth, nodeWidth);
+            var margin = (previewWidth - nodeWidth)/2;
+            Margin = new System.Windows.Thickness {Left = -margin };
+            bubbleTools.Margin = new System.Windows.Thickness
+            {
+                Right = margin
+            };
         }
 
         /// <summary>
@@ -262,6 +275,8 @@ namespace Dynamo.UI.Controls
             {
                 StateChanged(this, EventArgs.Empty);
             }
+
+            UpdateMargin();
         }
 
         private void ResetContentViews()
@@ -566,8 +581,6 @@ namespace Dynamo.UI.Controls
             if (StaysOpen) return;
             if (!IsCondensed) throw new InvalidOperationException();
 
-            bubbleTools.Visibility = Visibility.Collapsed;
-
             SetCurrentStateAndNotify(State.InTransition);
 
             thisPreviewControl.Visibility = Visibility.Collapsed;
@@ -584,9 +597,8 @@ namespace Dynamo.UI.Controls
             SetCurrentStateAndNotify(State.PreTransition);
 
             RefreshCondensedDisplay(() =>
-            {
-                smallContentGrid.Visibility = Visibility.Visible;
-                bubbleTools.Visibility = Visibility.Collapsed;
+                {
+                    smallContentGrid.Visibility = Visibility.Visible;
 
                 // The real transition starts
                 SetCurrentStateAndNotify(State.InTransition);
@@ -614,7 +626,6 @@ namespace Dynamo.UI.Controls
         {
             smallContentGrid.Visibility = Visibility.Collapsed;
             largeContentGrid.Visibility = Visibility.Visible;
-            bubbleTools.Visibility = Visibility.Visible;
 
             // The real transition starts
             SetCurrentStateAndNotify(State.InTransition);
