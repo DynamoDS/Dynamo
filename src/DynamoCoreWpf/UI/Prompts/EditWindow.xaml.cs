@@ -8,6 +8,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
+using System.Windows.Input;
 
 namespace Dynamo.UI.Prompts
 {
@@ -29,7 +30,7 @@ namespace Dynamo.UI.Prompts
             
             // do not accept value if user closes 
             this.Closing += (sender, args) => this.DialogResult = false;
-
+            PreviewKeyDown += OnEditWindowPreviewKeyDown;
             if (false != updateSourceOnTextChange)
             {
                 this.editText.TextChanged += delegate
@@ -38,6 +39,15 @@ namespace Dynamo.UI.Prompts
                     if (expr != null)
                         expr.UpdateSource();
                 };
+            }
+        }
+        private void OnEditWindowPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Return ||e.Key == Key.Enter)
+            {
+                UpdateNodeName();
+                e.Handled = true;
+                
             }
         }
 
@@ -52,6 +62,10 @@ namespace Dynamo.UI.Prompts
 
         private void OkClick(object sender, RoutedEventArgs e)
         {
+            UpdateNodeName();
+        }
+        private void UpdateNodeName()
+        {
             var expr = editText.GetBindingExpression(TextBox.TextProperty);
             if (expr != null)
             {
@@ -62,7 +76,7 @@ namespace Dynamo.UI.Prompts
                     new DynCmd.UpdateModelValueCommand(
                         System.Guid.Empty, model.GUID, propName, editText.Text));
             }
-           
+
             this.DialogResult = true;
         }
 
