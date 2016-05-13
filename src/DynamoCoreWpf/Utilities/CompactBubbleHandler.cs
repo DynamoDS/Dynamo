@@ -26,20 +26,45 @@ namespace Dynamo.Wpf.Utilities
             var viewModel = ProcessThing(value, true);
             viewModel.NumberOfItems = items;
             return viewModel;
-        }        
+        }
 
-        private static CompactBubbleViewModel ProcessThing(MirrorData mirrorData, bool generateVm)
+        /// <summary>
+        /// Counts the number of all collection items of node output and if specified 
+        /// it generates appropriate view model for compact preview bubble
+        /// </summary>
+        /// <param name="mirrorData">Data which represents the value of node output</param>
+        /// <param name="generateViewModel">Flag to not create unused view models</param>
+        /// <returns><cref name="CompactBubbleViewModel"/> instance 
+        /// if <paramref name="generateViewModel"/> is specified. Otherwise, null</returns>
+        private static CompactBubbleViewModel ProcessThing(MirrorData mirrorData, bool generateViewModel)
         {
-            if (mirrorData == null) return generateVm ? new CompactBubbleViewModel(Resources.NullString, 0) : null;
+            if (mirrorData == null)
+            {
+                return generateViewModel ? new CompactBubbleViewModel(Resources.NullString, 0) : null;
+            }
 
-            if (mirrorData.IsCollection) return ProcessCollection(mirrorData, generateVm);
+            if (mirrorData.IsCollection)
+            {
+                var list = mirrorData.GetElements();
+
+                foreach (var item in list)
+                {
+                    ProcessThing(item, false);
+                }
+
+                return generateViewModel
+                    ? new CompactBubbleViewModel(true)
+                    {
+                        NodeLabel = list.Any() ? "List" : "Empty List"
+                    }
+                    : null;
+            }
 
             items++;
 
-            // generateVm is a flag to not create unused view models
-            if (!generateVm) return null;
+            if (!generateViewModel) return null;
 
-            var viewModel = new CompactBubbleViewModel();
+            var viewModel = new CompactBubbleViewModel(false);
             if (mirrorData.Data == null && !mirrorData.IsNull && mirrorData.Class != null)
             {
                 viewModel.NodeLabel = mirrorData.Class.ClassName;
@@ -50,31 +75,14 @@ namespace Dynamo.Wpf.Utilities
             }
             else
             {
+                // Cut StringData so that only the type name remains
+                // for example, "Point (Z = 0.000, Y = 0.000, Z = 0.000)" -> "Point"
                 viewModel.NodeLabel = string.IsNullOrEmpty(mirrorData.StringData)
                     ? string.Empty
                     : mirrorData.StringData.Split('(')[0];
             }
 
             return viewModel;
-        }
-
-        private static CompactBubbleViewModel ProcessCollection(MirrorData mirrorData, bool generateVm)
-        {
-            var list = mirrorData.GetElements();
-
-            foreach (var item in list)
-            {
-                ProcessThing(item, false);
-            }
-
-            // generateVm is a flag to not create unused view models
-            if (!generateVm) return null;
-
-            return new CompactBubbleViewModel
-            {
-                NodeLabel = list.Any() ? "List" : "Empty List",
-                IsCollection = true
-            };
         }
     }
 }

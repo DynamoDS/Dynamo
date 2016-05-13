@@ -47,7 +47,7 @@
         /// <summary>
         /// Indicates if number of list items is shown
         /// </summary>
-        public bool IsCollection { get; set; }
+        internal bool IsCollection { get; private set; }
 
         #endregion
 
@@ -56,7 +56,10 @@
         /// <summary>
         /// Creates an instance of <cref name="CompactBubbleViewModel"/> class with empty data
         /// </summary>
-        public CompactBubbleViewModel() { }
+        public CompactBubbleViewModel(bool isCollection)
+        {
+            IsCollection = isCollection;
+        }
 
         /// <summary>
         /// Creates an instance of <cref name="CompactBubbleViewModel"/> class with specified data
