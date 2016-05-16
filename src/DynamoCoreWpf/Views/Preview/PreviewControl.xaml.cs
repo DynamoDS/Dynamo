@@ -324,7 +324,9 @@ namespace Dynamo.UI.Controls
                 () =>
                 {
                     var mirrorData = nodeViewModel.NodeModel.CachedValue;
-                    newContent = CompactBubbleHandler.Process(mirrorData);                },                (m) =>
+                    newContent = CompactBubbleHandler.Process(mirrorData);
+                },
+                (m) =>
                 {
                     cachedSmallContent = newContent;
                     var smallContentView = smallContentGrid.Children[0] as PreviewCompactView;
@@ -508,6 +510,15 @@ namespace Dynamo.UI.Controls
         {
             if (!IsHidden) throw new InvalidOperationException();
 
+            // do not use delay in tests
+            if (DynamoModel.IsTestMode)
+            {
+                ProcessFadeIn();
+                return;
+            }
+
+            // show preview bubble only if mouse stays over node longer than delay time
+            // so that during quick mouse moving preview bubbles won't be shown
             var delayTimer = new DispatcherTimer(DispatcherPriority.Normal)
             {
                 Interval = TimeSpan.FromMilliseconds(500)

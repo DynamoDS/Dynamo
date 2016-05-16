@@ -584,7 +584,6 @@ namespace Dynamo.Controls
             }
         }
 
-
         private void OnNodeViewMouseMove(object sender, MouseEventArgs e)
         {
             if (Mouse.Captured == null) return;
