@@ -217,6 +217,12 @@ namespace Autodesk.DesignScript.Interfaces
     public interface ITransformable
     {
         /// <summary>
+        /// A flag indicating whether the render package has had its Transform property set
+        /// explicitly.
+        /// </summary>
+        bool RequiresCustomTransform { get; set; }
+
+        /// <summary>
         /// A 4x4 matrix that is used to transform all geometry in the render packaage.
         /// </summary>
         double[] Transform  { get; } 

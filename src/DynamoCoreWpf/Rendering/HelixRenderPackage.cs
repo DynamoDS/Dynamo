@@ -66,6 +66,11 @@ namespace Dynamo.Wpf.Rendering
         #region ITransformable implementation
 
         /// <summary>
+        /// A flag indicating whether the render package has had its Transform property set
+        /// explicitly.
+        /// </summary>
+        public bool RequiresCustomTransform { get; set; }
+        /// <summary>
         /// A 4x4 matrix that is used to transform all geometry in the render packaage.
         /// </summary>
         public double[] Transform { get; private set; }

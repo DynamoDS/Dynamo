@@ -1363,7 +1363,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var p = rp.Points;
                     if (p.Positions.Any())
                     {
-                        id = baseId + PointsKey;
+                        //if we require a custom transform then we need to create a new Geometry3d object.
+                        id = ((rp.RequiresCustomTransform) ? rp.Description : baseId) + PointsKey;
 
                         PointGeometryModel3D pointGeometry3D;
 
@@ -1402,7 +1403,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var l = rp.Lines;
                     if (l.Positions.Any())
                     {
-                        id = baseId + LinesKey;
+                        //if we require a custom transform then we need to create a new Geometry3d object.
+                        id = ((rp.RequiresCustomTransform) ? rp.Description : baseId) + LinesKey;
 
                         LineGeometryModel3D lineGeometry3D;
 
@@ -1445,7 +1447,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var m = rp.Mesh;
                     if (!m.Positions.Any()) continue;
 
-                    id = ((rp.RequiresPerVertexColoration || rp.Colors != null) ? rp.Description : baseId) + MeshKey;
+                    //if we require a custom transform or vertex coloration then we need to create a new Geometry3d object.
+                    id = ((rp.RequiresPerVertexColoration || rp.Colors != null || rp.RequiresCustomTransform) ? rp.Description : baseId) + MeshKey;
 
                     DynamoGeometryModel3D meshGeometry3D;
 
