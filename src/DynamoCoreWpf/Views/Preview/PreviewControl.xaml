@@ -11,7 +11,9 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
-             mc:Ignorable="d" Canvas.Top="-20">
+             mc:Ignorable="d"  Canvas.Top="-20"
+             MouseEnter="PreviewControl_MouseEnter"
+             MouseLeave="PreviewControl_MouseLeave">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -31,26 +33,6 @@
         </ResourceDictionary>
 
     </UserControl.Resources>
-    <UserControl.Triggers>
-        <EventTrigger RoutedEvent="MouseEnter">
-            <BeginStoryboard>
-                <Storyboard>
-                    <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetName="bubbleTools" Storyboard.TargetProperty="Visibility">
-                        <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
-                    </ObjectAnimationUsingKeyFrames>
-                </Storyboard>
-            </BeginStoryboard>
-        </EventTrigger>
-        <EventTrigger RoutedEvent="MouseLeave">
-            <BeginStoryboard>
-                <Storyboard>
-                    <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetName="bubbleTools" Storyboard.TargetProperty="Visibility">
-                        <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}" />
-                    </ObjectAnimationUsingKeyFrames>
-                </Storyboard>
-            </BeginStoryboard>
-        </EventTrigger>
-    </UserControl.Triggers>
     <Grid Name="outerContainer"
           HorizontalAlignment="Left"
           VerticalAlignment="Top">

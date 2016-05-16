@@ -659,6 +659,16 @@ namespace Dynamo.UI.Controls
             e.Handled = true;
         }
 
+        private void PreviewControl_MouseEnter(object sender, MouseEventArgs e)
+        {
+            bubbleTools.Visibility = Visibility.Visible;
+        }
+
+        private void PreviewControl_MouseLeave(object sender, MouseEventArgs e)
+        {
+            bubbleTools.Visibility = Visibility.Collapsed;
+        }
+
         #endregion
     }
 }
