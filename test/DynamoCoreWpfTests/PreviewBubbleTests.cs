@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
@@ -340,6 +341,20 @@ namespace DynamoCoreWpfTests
             RaiseMouseEnterOnNode(nodeView);
 
             Assert.IsTrue(nodeView.PreviewControl.IsHidden, "Preview bubble is not hidden");
+        }
+
+        [Test]
+        public void PreviewBubble_ShownForColorRange()
+        {
+            var colorRange = new ColorRange();
+            Model.AddNodeToCurrentWorkspace(colorRange, true);
+            DispatcherUtil.DoEvents();
+            var nodeView = NodeViewWithGuid(colorRange.GUID.ToString());
+            nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            // open preview bubble
+            RaiseMouseEnterOnNode(nodeView);
+            Assert.IsFalse(nodeView.PreviewControl.IsHidden, "Preview bubble for color range should be shown");
         }
 
         private bool ElementIsInContainer(FrameworkElement element, FrameworkElement container)
