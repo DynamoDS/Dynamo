@@ -59,16 +59,17 @@ namespace Dynamo.Controls
             private set
             {
                 viewModel = value;
-                this.MouseLeave += (s, e) =>
-                {
-                    if (viewModel.OnMouseLeave != null)
-                        viewModel.OnMouseLeave();
-                };
                 if (viewModel.PreviewPinned)
                 {
                     CreatePreview(viewModel);
                 }                
             }
+        }
+
+        private void NodeView_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (viewModel!=null && viewModel.OnMouseLeave != null)
+                viewModel.OnMouseLeave();
         }
 
         internal PreviewControl PreviewControl
@@ -122,6 +123,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
+            MouseLeave -= NodeView_MouseLeave;
 
             if (previewControl != null)
             {
@@ -194,6 +196,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
+            MouseLeave += NodeView_MouseLeave;
         }
 
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

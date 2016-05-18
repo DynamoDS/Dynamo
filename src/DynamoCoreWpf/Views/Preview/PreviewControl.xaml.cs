@@ -23,10 +23,9 @@ using System.Threading.Tasks;
 namespace Dynamo.UI.Controls
 {
     /// <summary>
-    /// Event to be sent when PreviewControl goes into a stable 
-    /// state (e.g. when all on-going storyboards have been completed).
+    /// Event to be sent when state of PreviewControl is changed
     /// </summary>
-    /// <param name="sender"><cref name="PreviewControl"/> instance which state has changed</param>
+    /// <param name="sender"><cref name="PreviewControl"/> instance whose state has changed</param>
     /// <param name="e">The event data</param>
     public delegate void StateChangedEventHandler(object sender, EventArgs e);
 
@@ -81,7 +80,7 @@ namespace Dynamo.UI.Controls
             this.scheduler = nodeViewModel.DynamoViewModel.Model.Scheduler;
             this.nodeViewModel = nodeViewModel;
             InitializeComponent();
-            Loaded += (s, e) => BeginNextTransition();
+            Loaded += PreviewControl_Loaded;
             if (this.nodeViewModel.PreviewPinned)
             {
                 StaysOpen = true;
@@ -524,10 +523,12 @@ namespace Dynamo.UI.Controls
                 Interval = TimeSpan.FromMilliseconds(500)
             };
 
-            nodeViewModel.OnMouseLeave += delayTimer.Stop;
+            var onMouseLeave = new Action(delayTimer.Stop);
+            nodeViewModel.OnMouseLeave += onMouseLeave;
             delayTimer.Tick += (obj, e) =>
             {
                 Dispatcher.Invoke(ProcessFadeIn);
+                nodeViewModel.OnMouseLeave -= onMouseLeave;
                 delayTimer.Stop();
             };
 
@@ -627,6 +628,12 @@ namespace Dynamo.UI.Controls
         #endregion
 
         #region Private Event Handlers
+
+        private void PreviewControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            BeginNextTransition();
+            Loaded -= PreviewControl_Loaded;
+        }
 
         private void OnMapPinMouseClick(object sender, MouseButtonEventArgs e)
         {
