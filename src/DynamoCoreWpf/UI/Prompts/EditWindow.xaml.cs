@@ -30,7 +30,6 @@ namespace Dynamo.UI.Prompts
             
             // do not accept value if user closes 
             this.Closing += (sender, args) => this.DialogResult = false;
-            PreviewKeyDown += OnEditWindowPreviewKeyDown;
             if (false != updateSourceOnTextChange)
             {
                 this.editText.TextChanged += delegate
