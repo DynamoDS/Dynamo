@@ -81,7 +81,8 @@ namespace Dynamo.UI.Controls
             this.nodeViewModel = nodeViewModel;
             InitializeComponent();
             Loaded += PreviewControl_Loaded;
-            SizeChanged += (s, e) => UpdateMargin();
+            SizeChanged += UpdateMargin;
+            Unloaded += PreviewControl_Unloaded;
             if (this.nodeViewModel.PreviewPinned)
             {
                 StaysOpen = true;
@@ -93,18 +94,6 @@ namespace Dynamo.UI.Controls
             {
                 StaysOpen = false;
             }
-        }
-
-        private void UpdateMargin()
-        {
-            var nodeWidth = smallContentGrid.MinWidth;
-            var previewWidth = Math.Max(centralizedGrid.ActualWidth, nodeWidth);
-            var margin = (previewWidth - nodeWidth)/2;
-            Margin = new System.Windows.Thickness {Left = -margin };
-            bubbleTools.Margin = new System.Windows.Thickness
-            {
-                Right = margin
-            };
         }
 
         /// <summary>
@@ -276,7 +265,7 @@ namespace Dynamo.UI.Controls
                 StateChanged(this, EventArgs.Empty);
             }
 
-            UpdateMargin();
+            UpdateMargin(this, null);
         }
 
         private void ResetContentViews()
@@ -597,8 +586,9 @@ namespace Dynamo.UI.Controls
             SetCurrentStateAndNotify(State.PreTransition);
 
             RefreshCondensedDisplay(() =>
-                {
-                    smallContentGrid.Visibility = Visibility.Visible;
+            {
+                smallContentGrid.Visibility = Visibility.Visible;
+                largeContentGrid.Visibility = Visibility.Collapsed;
 
                 // The real transition starts
                 SetCurrentStateAndNotify(State.InTransition);
@@ -657,6 +647,34 @@ namespace Dynamo.UI.Controls
 
             // Handle event here is order not to bubble it to parent control like DragCanvas.
             e.Handled = true;
+        }
+
+        private void PreviewControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            SizeChanged -= UpdateMargin;
+            Unloaded -= PreviewControl_Unloaded;
+        }
+
+        private void UpdateMargin(object sender, SizeChangedEventArgs e)
+        {
+            // Compute margin for the preview bubble, 
+            // so that it is centered relatively to the node
+            //       ------
+            //       |node|
+            //       ------
+            //    ------------
+            //    |  bubble  |
+            //    ------------
+            // and margin for pin icon, so that it is under node's right bottom 
+            // independently from preview bubble width     
+            var nodeWidth = smallContentGrid.MinWidth;
+            var previewWidth = Math.Max(centralizedGrid.ActualWidth, nodeWidth);
+            var margin = (previewWidth - nodeWidth) / 2;
+            Margin = new System.Windows.Thickness { Left = -margin };
+            bubbleTools.Margin = new System.Windows.Thickness
+            {
+                Right = margin
+            };
         }
 
         private void PreviewControl_MouseEnter(object sender, MouseEventArgs e)

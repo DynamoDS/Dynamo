@@ -68,6 +68,7 @@
             <Border Background="White"
                     BorderThickness="1"
                     BorderBrush="{StaticResource BubblePreviewBorderColor}" />
+            <!--bubbleTools is a pin icon which expands large preview bubble on mouse hover -->
             <Border Name="bubbleTools"
                     VerticalAlignment="Top"
                     HorizontalAlignment="Right"

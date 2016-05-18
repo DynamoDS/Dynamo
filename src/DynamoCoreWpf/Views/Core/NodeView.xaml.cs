@@ -538,6 +538,7 @@ namespace Dynamo.Controls
                     }
             };
         }
+
         /// <summary>
         /// Sets ZIndex of node the maximum value.
         /// </summary>
