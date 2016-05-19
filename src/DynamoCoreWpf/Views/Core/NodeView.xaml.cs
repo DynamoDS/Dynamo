@@ -66,6 +66,12 @@ namespace Dynamo.Controls
             }
         }
 
+        private void NodeView_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (viewModel!=null && viewModel.OnMouseLeave != null)
+                viewModel.OnMouseLeave();
+        }
+
         internal PreviewControl PreviewControl
         {
             get
@@ -117,6 +123,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
+            MouseLeave -= NodeView_MouseLeave;
 
             if (previewControl != null)
             {
@@ -189,6 +196,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
+            MouseLeave += NodeView_MouseLeave;
         }
 
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -531,7 +539,6 @@ namespace Dynamo.Controls
                     }
             };
         }
-
         /// <summary>
         /// If mouse is over node or preview control, then preview control is expanded.
         /// </summary>
@@ -579,7 +586,6 @@ namespace Dynamo.Controls
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             }
         }
-
 
         private void OnNodeViewMouseMove(object sender, MouseEventArgs e)
         {

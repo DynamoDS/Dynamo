@@ -10,6 +10,7 @@ using Dynamo.Wpf.Utilities;
 using ProtoCore.Mirror;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -17,14 +18,18 @@ using System.Windows.Media.Animation;
 using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Models;
+using System.Threading.Tasks;
 
 namespace Dynamo.UI.Controls
 {
-    // Event to be sent when PreviewControl goes into a stable 
-    // state (e.g. when all on-going storyboards have been completed).
+    /// <summary>
+    /// Event to be sent when state of PreviewControl is changed
+    /// </summary>
+    /// <param name="sender"><cref name="PreviewControl"/> instance whose state has changed</param>
+    /// <param name="e">The event data</param>
     public delegate void StateChangedEventHandler(object sender, EventArgs e);
 
-    public partial class PreviewControl : UserControl
+    public partial class PreviewControl
     {
         #region Class Data Members and Configurations
 
@@ -33,43 +38,17 @@ namespace Dynamo.UI.Controls
             Hidden, Condensed, Expanded, InTransition, PreTransition
         }
 
-        public enum SizeAnimator
-        {
-            PhaseIn, Expansion, Condensation, Resizing
-        }
-
-        private struct Element
-        {
-            public const string PhaseInWidthAnimator = "phaseInWidthAnimator";
-            public const string PhaseInHeightAnimator = "phaseInHeightAnimator";
-            public const string ExpandWidthAnimator = "expandWidthAnimator";
-            public const string ExpandHeightAnimator = "expandHeightAnimator";
-            public const string CondenseWidthAnimator = "condenseWidthAnimator";
-            public const string CondenseHeightAnimator = "condenseHeightAnimator";
-            public const string GridWidthAnimator = "gridWidthAnimator";
-            public const string GridHeightAnimator = "gridHeightAnimator";
-        }
-
         private readonly IScheduler scheduler;
         private readonly NodeViewModel nodeViewModel;
 
         private State currentState = State.Hidden;
-        private Queue<State> queuedRequest = new Queue<State>();
-        private Canvas hostingCanvas = null;
+        private readonly Queue<State> queuedRequest = new Queue<State>();
 
         // Data source and display.
-        private CompactBubbleViewModel cachedSmallContent = null;
-        private WatchViewModel cachedLargeContent = null;
+        private CompactBubbleViewModel cachedSmallContent;
+        private WatchViewModel cachedLargeContent;
 
-        // Animation storyboards.
-        private Storyboard phaseInStoryboard = null;
-        private Storyboard phaseOutStoryboard = null;
-        private Storyboard expandStoryboard = null;
-        private Storyboard condenseStoryboard = null;
-        private Storyboard resizingStoryboard = null;
-        private Dictionary<string, DoubleAnimation> sizeAnimators = null;
-
-        public event StateChangedEventHandler StateChanged = null;
+        public event StateChangedEventHandler StateChanged;
 
         // Queued data refresh
         private bool queuedRefresh;
@@ -101,7 +80,7 @@ namespace Dynamo.UI.Controls
             this.scheduler = nodeViewModel.DynamoViewModel.Model.Scheduler;
             this.nodeViewModel = nodeViewModel;
             InitializeComponent();
-            Loaded += OnPreviewControlLoaded;
+            Loaded += PreviewControl_Loaded;
             if (this.nodeViewModel.PreviewPinned)
             {
                 StaysOpen = true;
@@ -145,7 +124,7 @@ namespace Dynamo.UI.Controls
             // 
             // If Dynamo is in test mode, preview control is not loaded.
             // You should RaiseEvent inside test manually in order to test this control.
-            if (this.IsLoaded || DynamoModel.IsTestMode)
+            if (IsLoaded || DynamoModel.IsTestMode)
                 BeginNextTransition();
         }
 
@@ -157,30 +136,46 @@ namespace Dynamo.UI.Controls
         /// the display will immediately be refreshed. Since this method deals 
         /// with UI elements internally, it must be called from the UI thread.
         /// </summary>
-        /// <param name="mirrorData">The mirror data to bind the preview control
-        /// to. This value can be null to reset the preview control to its 
-        /// initial state.</param>
-        /// 
         internal void BindToDataSource()
         {
             // First detach the bound data from its view.
             ResetContentViews();
-
-            this.cachedLargeContent = null; // Reset expanded content.
-            this.cachedSmallContent = null; // Reset condensed content.
+            
+            // Reset expanded content.
+            cachedLargeContent = null;
+            // Reset condensed content.
+            cachedSmallContent = null;
 
             // If at the time of data binding the preview control is within the 
             // following states, then its contents need to be updated immediately.
-            if (this.IsCondensed)
+            if (IsCondensed)
             {
-                RefreshCondensedDisplay(delegate { BeginViewSizeTransition(ComputeSmallContentSize()); });
+                RefreshCondensedDisplay(null);
             }
-            else if (this.IsExpanded)
+            else if (IsExpanded)
             {
-                RefreshExpandedDisplay(delegate { BeginViewSizeTransition(ComputeLargeContentSize()); });
+                RefreshExpandedDisplay(null);
             }
 
             IsDataBound = true;
+        }
+
+        /// <summary>
+        /// Hides preview bubble if it is not pinned
+        /// </summary>
+        internal void HidePreviewBubble()
+        {
+            if (StaysOpen) return;
+
+            if (IsExpanded)
+            {
+                TransitionToState(State.Condensed);
+            }
+
+            if (IsCondensed)
+            {
+                TransitionToState(State.Hidden);
+            }
         }
 
         /// <summary>
@@ -190,7 +185,7 @@ namespace Dynamo.UI.Controls
         /// </summary>
         internal void RequestForRefresh()
         {
-            this.queuedRefresh = true;
+            queuedRefresh = true;
         }
 
         #endregion
@@ -226,14 +221,15 @@ namespace Dynamo.UI.Controls
                 return;
             }
 
-            if (this.IsInTransition || queuedRequest.Count <= 0)
-                return; // Nothing else to do.
+            // Nothing else to do.
+            if (IsInTransition || queuedRequest.Count <= 0) return; 
 
-            State requestedState = queuedRequest.Dequeue();
-            while (requestedState == this.currentState)
+            var requestedState = queuedRequest.Dequeue();
+            while (requestedState == currentState)
             {
-                if (queuedRequest.Count <= 0)
-                    return; // There's no more request for now.
+                // There's no more request for now.
+                if (queuedRequest.Count <= 0) return;
+
                 requestedState = queuedRequest.Dequeue();
             }
 
@@ -243,10 +239,14 @@ namespace Dynamo.UI.Controls
             }
             else if (requestedState == State.Condensed)
             {
-                if (this.IsHidden != false)
+                if (IsHidden)
+                {
                     BeginFadeInTransition();
-                else if (this.IsExpanded != false)
+                }
+                else if (IsExpanded)
+                {
                     BeginCondenseTransition();
+                }
             }
             else if (requestedState == State.Expanded)
             {
@@ -256,10 +256,12 @@ namespace Dynamo.UI.Controls
 
         private void SetCurrentStateAndNotify(State newState)
         {
-            this.currentState = newState;
+            currentState = newState;
 
-            if (this.StateChanged != null)
-                this.StateChanged(this, EventArgs.Empty);
+            if (StateChanged != null)
+            {
+                StateChanged(this, EventArgs.Empty);
+            }
         }
 
         private void ResetContentViews()
@@ -289,7 +291,7 @@ namespace Dynamo.UI.Controls
         private void RunOnSchedulerSync(Action a, AsyncTaskCompletedHandler h)
         {
             var task = new DelegateBasedAsyncTask(scheduler, a);
-            task.ThenPost(h, DispatcherSynchronizationContext.Current);
+            task.ThenPost(h, SynchronizationContext.Current);
             scheduler.ScheduleForExecution(task);
         }
 
@@ -321,7 +323,8 @@ namespace Dynamo.UI.Controls
                 () =>
                 {
                     var mirrorData = nodeViewModel.NodeModel.CachedValue;
-                    newContent = CompactBubbleHandler.Process(mirrorData);                },
+                    newContent = CompactBubbleHandler.Process(mirrorData);
+                },
                 (m) =>
                 {
                     cachedSmallContent = newContent;
@@ -339,8 +342,7 @@ namespace Dynamo.UI.Controls
         /// <summary>
         ///     Obtain the expanded preview values for this control.  Must not be called from 
         ///     Scheduler thread or this could cause a live-lock.
-        /// </summary>
-        /// 
+        /// </summary> 
         private void RefreshExpandedDisplay(Action refreshDisplay)
         {
             // The preview control will not have its content refreshed unless 
@@ -451,14 +453,14 @@ namespace Dynamo.UI.Controls
 
         private Size ComputeSmallContentSize()
         {
-            var maxSize = new Size()
+            var maxSize = new Size
             {
                 Width = Configurations.MaxCondensedPreviewWidth,
                 Height = Configurations.MaxCondensedPreviewHeight
             };
 
             smallContentGrid.Measure(maxSize);
-            Size smallContentGridSize = smallContentGrid.DesiredSize;
+            var smallContentGridSize = smallContentGrid.DesiredSize;
 
             // Don't make it smaller then min width.
             smallContentGridSize.Width = smallContentGridSize.Width < smallContentGrid.MinWidth
@@ -472,13 +474,13 @@ namespace Dynamo.UI.Controls
         private Size ComputeLargeContentSize()
         {
             largeContentGrid.UpdateLayout();
-            largeContentGrid.Measure(new Size()
+            largeContentGrid.Measure(new Size
             {
                 Width = Configurations.MaxExpandedPreviewWidth,
                 Height = Configurations.MaxExpandedPreviewHeight
             });
 
-            Size largeContentGridSize = largeContentGrid.DesiredSize;
+            var largeContentGridSize = largeContentGrid.DesiredSize;
 
             // Don't make it smaller then min width.
             largeContentGridSize.Width = largeContentGridSize.Width < largeContentGrid.MinWidth
@@ -489,7 +491,7 @@ namespace Dynamo.UI.Controls
             return ContentToControlSize(largeContentGridSize);
         }
 
-        private Size ContentToControlSize(Size size)
+        private static Size ContentToControlSize(Size size)
         {
             if (size.Width < Configurations.DefCondensedContentWidth)
                 size.Width = Configurations.DefCondensedContentWidth;
@@ -499,143 +501,107 @@ namespace Dynamo.UI.Controls
             return size;
         }
 
-        private void UpdateAnimatorTargetSize(SizeAnimator animator, Size targetSize)
-        {
-            string widthAnimator = string.Empty;
-            string heightAnimator = string.Empty;
-
-            switch (animator)
-            {
-                case SizeAnimator.PhaseIn:
-                    widthAnimator = Element.PhaseInWidthAnimator;
-                    heightAnimator = Element.PhaseInHeightAnimator;
-                    break;
-
-                case SizeAnimator.Expansion:
-                    widthAnimator = Element.ExpandWidthAnimator;
-                    heightAnimator = Element.ExpandHeightAnimator;
-                    break;
-
-                case SizeAnimator.Condensation:
-                    widthAnimator = Element.CondenseWidthAnimator;
-                    heightAnimator = Element.CondenseHeightAnimator;
-                    break;
-
-                case SizeAnimator.Resizing:
-                    widthAnimator = Element.GridWidthAnimator;
-                    heightAnimator = Element.GridHeightAnimator;
-                    break;
-            }
-
-            sizeAnimators[widthAnimator].To = targetSize.Width;
-            sizeAnimators[heightAnimator].To = targetSize.Height;
-        }
-
         #endregion
 
         #region Private Class Methods - Transition Helpers
 
-        private void BeginFadeInTransition()
+        private async void BeginFadeInTransition()
         {
-            if (this.IsHidden == false)
-                throw new InvalidOperationException();
+            if (!IsHidden) throw new InvalidOperationException();
 
+            // do not use delay in tests
+            if (DynamoModel.IsTestMode)
+            {
+                ProcessFadeIn();
+                return;
+            }
+
+            // show preview bubble only if mouse stays over node longer than delay time
+            // so that during quick mouse moving preview bubbles won't be shown
+            var delayTimer = new DispatcherTimer(DispatcherPriority.Normal)
+            {
+                Interval = TimeSpan.FromMilliseconds(500)
+            };
+
+            var onMouseLeave = new Action(delayTimer.Stop);
+            nodeViewModel.OnMouseLeave += onMouseLeave;
+            delayTimer.Tick += (obj, e) =>
+            {
+                Dispatcher.Invoke(ProcessFadeIn);
+                nodeViewModel.OnMouseLeave -= onMouseLeave;
+                delayTimer.Stop();
+            };
+
+            await Task.Run(() => delayTimer.Start());
+        }
+
+        private void ProcessFadeIn()
+        {
             // To prevent another transition from being started and
             // indicate a new transition is about to be started
             SetCurrentStateAndNotify(State.PreTransition);
 
             RefreshCondensedDisplay(() =>
-                {
-                    // Update size before fading in to view.
-                    var smallContentSize = ComputeSmallContentSize();
-                    UpdateAnimatorTargetSize(SizeAnimator.PhaseIn, smallContentSize);
+            {
+                // Update size before fading in to view.
+                var smallContentSize = ComputeSmallContentSize();
 
-                    centralizedGrid.Opacity = 0.0;
-                    centralizedGrid.Visibility = Visibility.Visible;
-                    smallContentGrid.Visibility = Visibility.Visible;
+                centralizedGrid.Visibility = Visibility.Visible;
+                smallContentGrid.Visibility = Visibility.Visible;
+                largeContentGrid.Visibility = Visibility.Collapsed;
+                thisPreviewControl.Visibility = Visibility.Visible;
 
-                    // The real transition starts
-                    SetCurrentStateAndNotify(State.InTransition);
+                // The real transition starts
+                SetCurrentStateAndNotify(State.InTransition);
 
-                    // If it's test mode - skip storyboard.
-                    if (!DynamoModel.IsTestMode)
-                    {
-                        phaseInStoryboard.Begin(this, true);
-                    }
-                    else
-                    {
-                        centralizedGrid.Opacity = 1.0;
-                        centralizedGrid.Width = smallContentSize.Width;
-                        centralizedGrid.Height = smallContentSize.Height;
-                        OnPreviewControlPhasedIn(null, null);
-                    }
-                }
-            );
+                centralizedGrid.Width = smallContentSize.Width;
+                centralizedGrid.Height = smallContentSize.Height;
+                SetCurrentStateAndNotify(State.Condensed);
+                BeginNextTransition(); // See if there's any more requests.
+            });
         }
 
         private void BeginFadeOutTransition()
         {
             if (StaysOpen) return;
-            if (this.IsCondensed == false)
-                throw new InvalidOperationException();
+            if (!IsCondensed) throw new InvalidOperationException();
 
             bubbleTools.Visibility = Visibility.Collapsed;
 
             SetCurrentStateAndNotify(State.InTransition);
 
-            // If it's test mode - skip storyboard.
-            if (!DynamoModel.IsTestMode)
-            {
-                phaseOutStoryboard.Begin(this, true);
-            }
-            else
-            {
-                centralizedGrid.Opacity = 0;
-                thisPreviewControl.Visibility = Visibility.Collapsed;
-                OnPreviewControlPhasedOut(null, null);
-            }
+            thisPreviewControl.Visibility = Visibility.Collapsed;
+            SetCurrentStateAndNotify(State.Hidden);
+            BeginNextTransition(); // See if there's any more requests.
         }
 
         private void BeginCondenseTransition()
         {
-            if (this.IsExpanded == false)
-                throw new InvalidOperationException();
+            if (!IsExpanded) throw new InvalidOperationException();
 
             // To prevent another transition from being started and
             // indicate a new transition is about to be started
             SetCurrentStateAndNotify(State.PreTransition);
 
             RefreshCondensedDisplay(() =>
-                {
-                    smallContentGrid.Visibility = Visibility.Visible;
-                    bubbleTools.Visibility = Visibility.Collapsed;
+            {
+                smallContentGrid.Visibility = Visibility.Visible;
+                bubbleTools.Visibility = Visibility.Collapsed;
 
-                    // The real transition starts
-                    SetCurrentStateAndNotify(State.InTransition);
-                    var smallContentSize = ComputeSmallContentSize();
-                    UpdateAnimatorTargetSize(SizeAnimator.Condensation, smallContentSize);                    
+                // The real transition starts
+                SetCurrentStateAndNotify(State.InTransition);
+                var smallContentSize = ComputeSmallContentSize();
 
-                    // If it's test mode - skip storyboard.
-                    if (!DynamoModel.IsTestMode)
-                    {
-                        condenseStoryboard.Begin(this, true);
-                    }
-                    else
-                    {
-                        largeContentGrid.Opacity = 0.0;
-                        smallContentGrid.Opacity = 1.0;
-                        centralizedGrid.Width = smallContentSize.Width;
-                        centralizedGrid.Height = smallContentSize.Height;
-                        OnPreviewControlCondensed(null, null);
-                    }
-                }
-            );
+                centralizedGrid.Width = smallContentSize.Width;
+                centralizedGrid.Height = smallContentSize.Height;
+                SetCurrentStateAndNotify(State.Condensed);
+                BeginNextTransition(); // See if there's any more requests.
+            });
         }
 
         private void BeginExpandTransition()
         {
-            if (this.IsCondensed == false)
-                throw new InvalidOperationException();
+            if (!IsCondensed) throw new InvalidOperationException();
 
             // To prevent another transition from being started and
             // indicate a new transition is about to be started
@@ -646,115 +612,33 @@ namespace Dynamo.UI.Controls
 
         private void RefreshExpandedDisplayAction()
         {
+            smallContentGrid.Visibility = Visibility.Collapsed;
             largeContentGrid.Visibility = Visibility.Visible;
             bubbleTools.Visibility = Visibility.Visible;
 
             // The real transition starts
             SetCurrentStateAndNotify(State.InTransition);
             var largeContentSize = ComputeLargeContentSize();
-            UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
-
-            // If it's test mode - skip storyboard.
-            if (!DynamoModel.IsTestMode)
-            {
-                expandStoryboard.Begin(this, true);
-            }
-            else
-            {
-                largeContentGrid.Opacity = 1.0;
-                smallContentGrid.Opacity = 0.0;
-                centralizedGrid.Width = largeContentSize.Width;
-                centralizedGrid.Height = largeContentSize.Height;
-                OnPreviewControlExpanded(null, null);
-            }
-        }
-
-        private void BeginViewSizeTransition(Size targetSize)
-        {
-            UpdateAnimatorTargetSize(SizeAnimator.Resizing, targetSize);
-            resizingStoryboard.Begin(this, true);
+            centralizedGrid.Width = largeContentSize.Width;
+            centralizedGrid.Height = largeContentSize.Height;
+            SetCurrentStateAndNotify(State.Expanded);
+            BeginNextTransition(); // See if there's any more requests.
         }
 
         #endregion
 
         #region Private Event Handlers
 
-        private void OnPreviewControlLoaded(object sender, RoutedEventArgs e)
+        private void PreviewControl_Loaded(object sender, RoutedEventArgs e)
         {
-            phaseInStoryboard = this.Resources["phaseInStoryboard"] as Storyboard;
-            phaseOutStoryboard = this.Resources["phaseOutStoryboard"] as Storyboard;
-            expandStoryboard = this.Resources["expandStoryboard"] as Storyboard;
-            condenseStoryboard = this.Resources["condenseStoryboard"] as Storyboard;
-            resizingStoryboard = this.Resources["resizingStoryboard"] as Storyboard;
-
-            var children = new List<Timeline>();
-            children.AddRange(phaseInStoryboard.Children);
-            children.AddRange(expandStoryboard.Children);
-            children.AddRange(condenseStoryboard.Children);
-            children.AddRange(resizingStoryboard.Children);
-
-            this.sizeAnimators = new Dictionary<string, DoubleAnimation>();
-
-            foreach (var child in children)
-            {
-                if (string.IsNullOrEmpty(child.Name))
-                    continue;
-
-                switch (child.Name)
-                {
-                    case Element.PhaseInWidthAnimator:
-                    case Element.PhaseInHeightAnimator:
-                    case Element.ExpandWidthAnimator:
-                    case Element.ExpandHeightAnimator:
-                    case Element.CondenseWidthAnimator:
-                    case Element.CondenseHeightAnimator:
-                    case Element.GridWidthAnimator:
-                    case Element.GridHeightAnimator:
-                        sizeAnimators.Add(child.Name, child as DoubleAnimation);
-                        break;
-                }
-            }
-
-            if (this.sizeAnimators.Count != 8)
-            {
-                var message = "One or more DoubleAnimation timeline not found";
-                throw new InvalidOperationException(message);
-            }
-
-            // If there was a request queued before this control is loaded, 
-            // then process the request as we now have the right width.
             BeginNextTransition();
-        }
-
-        private void OnPreviewControlPhasedIn(object sender, EventArgs e)
-        {
-            SetCurrentStateAndNotify(State.Condensed);
-            BeginNextTransition(); // See if there's any more requests.
-        }
-
-        private void OnPreviewControlPhasedOut(object sender, EventArgs e)
-        {
-            SetCurrentStateAndNotify(State.Hidden);
-            BeginNextTransition(); // See if there's any more requests.
-        }
-
-        private void OnPreviewControlExpanded(object sender, EventArgs e)
-        {
-            SetCurrentStateAndNotify(State.Expanded);
-            BeginNextTransition(); // See if there's any more requests.
-        }
-
-        private void OnPreviewControlCondensed(object sender, EventArgs e)
-        {
-            SetCurrentStateAndNotify(State.Condensed);
-            BeginNextTransition(); // See if there's any more requests.
+            Loaded -= PreviewControl_Loaded;
         }
 
         private void OnMapPinMouseClick(object sender, MouseButtonEventArgs e)
         {
             StaysOpen = !StaysOpen;
             nodeViewModel.PreviewPinned = StaysOpen;
-
 
             // Select node.
             nodeViewModel.DynamoViewModel.ExecuteCommand(
@@ -765,6 +649,5 @@ namespace Dynamo.UI.Controls
         }
 
         #endregion
-
     }
 }
