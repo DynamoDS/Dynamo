@@ -528,6 +528,8 @@ namespace Dynamo.ViewModels
         {
             watch3DViewModel.Setup(this, factory);
             watch3DViewModels.Add(watch3DViewModel);
+            watch3DViewModel.Active = PreferenceSettings
+                .GetIsBackgroundPreviewActive(watch3DViewModel.PreferenceWatchName);
             RaisePropertyChanged("Watch3DViewModels");
         }
 

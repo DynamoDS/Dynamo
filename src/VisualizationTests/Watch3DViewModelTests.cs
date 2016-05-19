@@ -9,13 +9,15 @@ namespace WpfVisualizationTests
         [Test]
         public void Watch3DViewModel_Active_InSyncWithPreferences()
         {
-            Assert.AreEqual(ViewModel.BackgroundPreviewViewModel.Active,ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
+            var backgroundPreviewName = ViewModel.BackgroundPreviewViewModel.PreferenceWatchName;
+            Assert.AreEqual(ViewModel.BackgroundPreviewViewModel.Active,
+                ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName));
 
             ViewModel.BackgroundPreviewViewModel.Active = false;
-            Assert.False(ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
+            Assert.False(ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName));
 
             ViewModel.BackgroundPreviewViewModel.Active = true;
-            Assert.True(ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
+            Assert.True(ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName));
         }
     }
 }

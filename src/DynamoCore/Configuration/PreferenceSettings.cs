@@ -89,9 +89,46 @@ namespace Dynamo.Configuration
         public ConnectorType ConnectorType { get; set; }
 
         /// <summary>
-        /// Should the background 3D preview be shown?
+        /// Collection of pairs [BackgroundPreviewName;isActive]
         /// </summary>
-        public bool IsBackgroundPreviewActive { get; set; }
+        public List<BackgroundPreviewActiveState> BackgroundPreviews { get; set; }
+
+        /// <summary>
+         /// Returns active state of specified background preview 
+         /// </summary>
+         /// <param name="name">Background preview name</param>
+         /// <returns>The active state</returns>
+        public bool GetIsBackgroundPreviewActive(string name)
+        {
+            var pair = GetBackgroundPreviewData(name);
+
+            return pair.IsActive;
+        }
+
+        /// <summary>
+        /// Sets active state of specified background preview 
+        /// </summary>
+        /// <param name="name">Background preview name</param>
+        /// <param name="value">Active state</param>
+        public void SetIsBackgroundPreviewActive(string name, bool value)
+        {
+            var pair = GetBackgroundPreviewData(name);
+
+            pair.IsActive = value;
+        }
+
+        private BackgroundPreviewActiveState GetBackgroundPreviewData(string name)
+        {
+            // find or create BackgroundPreviewActiveState instance in list by name
+            var pair = BackgroundPreviews.FirstOrDefault(p => p.Name == name)
+                ?? new BackgroundPreviewActiveState { Name = name };
+            if (!BackgroundPreviews.Contains(pair))
+            {
+                BackgroundPreviews.Add(pair);
+            }
+
+            return pair;
+        }
 
         /// <summary>
         /// Should the background grid be shown?
@@ -220,6 +257,7 @@ namespace Dynamo.Configuration
             WindowW = 1024;
             WindowY = 0.0;
             WindowX = 0.0;
+            BackgroundPreviews = new List<BackgroundPreviewActiveState>();
 
             // Default Settings
             IsFirstRun = true;
@@ -229,7 +267,6 @@ namespace Dynamo.Configuration
             ShowPreviewBubbles = true;
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
-            IsBackgroundPreviewActive = true;
             IsBackgroundGridVisible = true;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
