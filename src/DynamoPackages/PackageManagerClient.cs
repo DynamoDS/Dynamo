@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Dynamo.Core;
-using Dynamo.Utilities;
-using Greg;
-using Greg.AuthProviders;
+﻿using Greg;
 using Greg.Requests;
 using Greg.Responses;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Dynamo.PackageManager
 {

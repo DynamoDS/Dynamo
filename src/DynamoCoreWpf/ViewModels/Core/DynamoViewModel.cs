@@ -1178,7 +1178,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Present the open dialogue and open the workspace that is selected.
+        /// Present the open dialog and open the workspace that is selected.
         /// </summary>
         /// <param name="parameter"></param>
         private void ShowOpenDialogAndOpenResult(object parameter)
@@ -1245,7 +1245,14 @@ namespace Dynamo.ViewModels
         private void Save(object parameter)
         {
             if (!String.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
-                SaveAs(Model.CurrentWorkspace.FileName);
+            {
+                // For read-only file, re-direct save to save-as
+                if (this.CurrentSpace.IsReadOnly)//DynamoUtilities.PathHelper.IsReadOnlyPath(this.CurrentSpace.FileName))
+                    ShowSaveDialogAndSaveResult(parameter);
+                else
+                    SaveAs(Model.CurrentWorkspace.FileName);      
+            }
+                
         }
 
         private bool CanSave(object parameter)

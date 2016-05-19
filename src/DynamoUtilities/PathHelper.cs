@@ -31,5 +31,21 @@ namespace DynamoUtilities
         {
             return (!string.IsNullOrEmpty(folderPath) && (File.Exists(folderPath)));
         }
+
+        /// <summary>
+        /// Check if the file path string is readonly privilege.
+        /// </summary>
+        /// <param name="folderPath"></param>
+        /// <returns></returns>
+        public static bool IsReadOnlyPath(string folderPath)
+        {
+            if (IsValidPath(folderPath))
+            {
+                FileInfo Finfo = new FileInfo(folderPath);
+                return Finfo.IsReadOnly;
+            }
+            else
+                return false;
+        }
     }
 }

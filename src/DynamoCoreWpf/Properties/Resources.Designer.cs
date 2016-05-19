@@ -2758,6 +2758,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to We can&apos;t save &quot;{0}&quot; because the file is read only. To keep your changes, you&apos;ll need to save it with a new name or in a different location..
+        /// </summary>
+        public static string MessageConfirmToSaveReadOnlyCustomNode {
+            get {
+                return ResourceManager.GetString("MessageConfirmToSaveReadOnlyCustomNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to uninstall {0} ?  This will delete the packages root directory.
         ///
         ///You can always redownload the package..
