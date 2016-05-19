@@ -158,7 +158,7 @@ def main():
     shutil.rmtree(test_result_path)
 
     # get a signature
-    url = "http://52.77.246.67/payload"
+    url = os.environ.get('DYNAMO_BENCHMARK_SERVER')
     key = os.environ.get('DYNAMO_BENCHMARK_KEY')
     post_to_server(url, benchmark_file, key, logfile)
     log(logfile, 'Done')
