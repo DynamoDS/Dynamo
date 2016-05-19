@@ -11,7 +11,9 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
-             mc:Ignorable="d" Canvas.Top="-20">
+             mc:Ignorable="d"  Canvas.Top="-20"
+             MouseEnter="PreviewControl_MouseEnter"
+             MouseLeave="PreviewControl_MouseLeave">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -31,13 +33,11 @@
         </ResourceDictionary>
 
     </UserControl.Resources>
-
     <Grid Name="outerContainer"
           HorizontalAlignment="Left"
           VerticalAlignment="Top">
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
@@ -68,7 +68,53 @@
             <Border Background="White"
                     BorderThickness="1"
                     BorderBrush="{StaticResource BubblePreviewBorderColor}" />
+            <!--bubbleTools is a pin icon which expands large preview bubble on mouse hover -->
+            <Border Name="bubbleTools"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Right"
+                    Padding="3"
+                    Visibility="Collapsed"
+                    Panel.ZIndex="1">
+                <Border BorderThickness="1"
+                            CornerRadius="4"
+                            BorderBrush="{StaticResource BubblePreviewBorderColor}"
+                            MouseLeftButtonDown="OnMapPinMouseClick">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Bottom" Margin="4,0,0,4" Text="..."
+                            Foreground="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                                 AncestorType={x:Type uicontrols:PreviewControl}}, 
+                                                 Path=StaysOpen,
+                                                 Converter={StaticResource PinIconForegroundConverter}}"/>
 
+                        <fa:ImageAwesome Name="PinnIcon" Icon="ThumbTack" Height="12" Width="9" Margin="4" 
+                            Foreground="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                                 AncestorType={x:Type uicontrols:PreviewControl}}, 
+                                                 Path=StaysOpen,
+                                                 Converter={StaticResource PinIconForegroundConverter}}"/>
+                    </StackPanel>
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Value="True" Binding="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                                          AncestorType={x:Type uicontrols:PreviewControl}}, 
+                                                          Path=StaysOpen}">
+                                    <Setter Property="Background" Value="{StaticResource PinnedIconBackgroundColor}" />
+                                </DataTrigger>
+                                <DataTrigger Value="False" Binding="{Binding Path=StaysOpen, 
+                                                            RelativeSource={RelativeSource FindAncestor, 
+                                                            AncestorType={x:Type uicontrols:PreviewControl}}}">
+                                    <Setter Property="Background"
+                                            Value="{StaticResource UnpinnedIconBackgroundColor}" />
+                                </DataTrigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background"
+                                            Value="{StaticResource PinnedIconHoverBackgroundColor}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
+            </Border>
             <Grid Name="smallContentGrid"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Center"
@@ -87,68 +133,5 @@
                   Visibility="Collapsed">
             </Grid>
         </Grid>
-
-        <Border Grid.Column="1"
-                Grid.Row="1"
-                Name="bubbleTools"
-                Background="White"
-                BorderThickness="0,1,1,1"
-                BorderBrush="{StaticResource BubblePreviewBorderColor}"
-                VerticalAlignment="Top"
-                Visibility="Collapsed">
-            <StackPanel Orientation="Vertical">
-                <!--<fa:ImageAwesome Name="SearchIcon"
-                                 Icon="search"
-                                 Height="10"
-                                 Width="10"
-                                 Margin="5,5,5,5"
-                                 Foreground="{StaticResource BubblePreviewIconColor}" />-->
-                <Border BorderThickness="0"
-                        MouseLeftButtonDown="OnMapPinMouseClick">
-                    <fa:ImageAwesome Name="PinnIcon"
-                                     Icon="ThumbTack"
-                                     Foreground="{Binding RelativeSource={RelativeSource FindAncestor, 
-                                                          AncestorType={x:Type uicontrols:PreviewControl}}, 
-                                                          Path=StaysOpen,
-                                                          Converter={StaticResource PinIconForegroundConverter}}"
-                                     Height="16"
-                                     Width="12"
-                                     Margin="6,6,6,6" />
-                    <Border.Style>
-                        <Style TargetType="Border">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, 
-                                                          AncestorType={x:Type uicontrols:PreviewControl}}, 
-                                                          Path=StaysOpen}"
-                                             Value="True">
-                                    <Setter Property="Background"
-                                            Value="{StaticResource PinnedIconBackgroundColor}" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, 
-                                                          AncestorType={x:Type uicontrols:PreviewControl}}, 
-                                                          Path=StaysOpen}"
-                                             Value="False">
-                                    <Setter Property="Background"
-                                            Value="{StaticResource UnpinnedIconBackgroundColor}" />
-                                </DataTrigger>
-                                <Trigger Property="IsMouseOver"
-                                         Value="True">
-                                    <Setter Property="Background"
-                                            Value="{StaticResource PinnedIconHoverBackgroundColor}" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                </Border>
-                <!--<fa:ImageAwesome Name="ArrowIcon"
-                                 Icon="ArrowCircleRight"
-                                 Height="10"
-                                 Width="10"
-                                 Margin="5,5,5,5"
-                                 Foreground="{StaticResource BubblePreviewIconColor}" />-->
-            </StackPanel>
-        </Border>
-
     </Grid>
-
 </UserControl>
