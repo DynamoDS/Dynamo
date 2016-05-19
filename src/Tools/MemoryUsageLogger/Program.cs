@@ -15,7 +15,9 @@ namespace Dynamo.Utils
     {
         private Process _process;
         private PerformanceCounter _memoryCounter;
+        private PerformanceCounter _privateWorkingSet;
         private const string CATEGORY_NET_CLR_MEMORY = ".NET CLR Memory";
+        private const string CATEGORY_PROCESS = "Process";
         private const string PROCESS_ID = "Process ID";
 
         public ManagedMemoryCounter(int processId)
@@ -33,6 +35,7 @@ namespace Dynamo.Utils
             _process = p;
             string processInstanceName = GetInstanceNameForProcess(p);
             _memoryCounter = new PerformanceCounter(CATEGORY_NET_CLR_MEMORY, "# Bytes in all Heaps", processInstanceName);
+            _privateWorkingSet = new PerformanceCounter(CATEGORY_PROCESS, "Working Set - Private", processInstanceName);
         }
 
         public long BytesInAllHeaps
@@ -40,6 +43,14 @@ namespace Dynamo.Utils
             get
             {
                 return _memoryCounter.NextSample().RawValue;
+            }
+        }
+
+        public long PrivateWorkingSet
+        {
+            get
+            {
+                return _privateWorkingSet.NextSample().RawValue;
             }
         }
         
@@ -83,7 +94,6 @@ namespace Dynamo.Utils
             {
                 instanceName = "nunit-agent";
             }
-            Thread.Sleep(2000);
             return instanceName;
         }
 
@@ -92,6 +102,7 @@ namespace Dynamo.Utils
         public void Dispose()
         {
             _memoryCounter.Dispose();
+            _privateWorkingSet.Dispose();
         }
 
         #endregion
@@ -109,8 +120,9 @@ namespace Dynamo.Utils
 
             ProcessStartInfo processStartInfo = new ProcessStartInfo(args[0]);
             processStartInfo.Arguments = String.Join(" ", args.Skip(1)); 
-            // processStartInfo.UseShellExecute = false;
             var process = Process.Start(processStartInfo);
+            long maxNetMemory = 0;
+            long maxPrivateWorkingSet = 0;
 
             using (ManagedMemoryCounter counter = new ManagedMemoryCounter(process))
             {
@@ -119,15 +131,16 @@ namespace Dynamo.Utils
 
                 while (!counter.HasProcessExited())
                 {
-                    var bytesInHeap = counter.BytesInAllHeaps;
+                    var bytesInHeap = counter.BytesInAllHeaps / 1024;
+                    maxNetMemory = Math.Max(maxNetMemory, bytesInHeap);
 
-                    Console.WriteLine(bytesInHeap);
+                    var privateWorkingSet = counter.PrivateWorkingSet / 1024;
+                    maxPrivateWorkingSet = Math.Max(maxPrivateWorkingSet, privateWorkingSet);
                     Thread.Sleep(100);
                 }
 
                 timer.Stop();
-                var seconds = timer.ElapsedMilliseconds / 1000;
-                Console.WriteLine("Elapsed time: {0} seconds.", seconds);
+                Console.WriteLine("{0},{1},{2}", timer.ElapsedMilliseconds, maxNetMemory, maxPrivateWorkingSet);
             }
         }
     }
