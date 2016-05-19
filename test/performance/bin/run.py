@@ -7,6 +7,7 @@ import glob
 import subprocess
 import json
 import shutil
+import urllib2
 
 def run(profiler, dynamocli, test_case, test_output):
     # memlog DynamoCLI /o test.dyn
@@ -66,7 +67,9 @@ def harvest(test_result_path, output_path, pull_requests, logfile):
 
     os.chdir(curdir)
     with open(benchmark_file, 'w') as data_file:
-        data_file.write(json.dumps(benchmark))
+        data_file.write(json.dumps(benchmark, separators=(',', ':')))
+
+    return benchmark_file
 
 def log(logfile, msg):
     if logfile is None:
@@ -76,6 +79,27 @@ def log(logfile, msg):
         f = open(logfile, 'a')
         f.write(msg + '\n')
         f.close()
+
+def post_to_server(url, benchmark_file, key, logfile):
+    from hashlib import sha1
+    import hmac
+
+    with open(benchmark_file, 'rb') as bf:
+        jsondata = json.load(bf)
+    data = json.dumps(jsondata, separators=(',', ':'))
+
+    hashed = hmac.new(key, data, sha1)
+    signature = hashed.digest().encode("hex").rstrip('\n')
+
+    req = urllib2.Request(url, data, {'Content-Type': 'application/json', 'Content-Length':len(data), 'x-dynamo-signature':signature})
+    try:
+        resp = urllib2.urlopen(req)
+    except urllib2.HTTPError as e:
+        log(logfile, e)
+    except urllib2.URLError as e:
+        log(logfile, e)
+    else:
+        log(logfile, 'Send benchmark ' + benchmark_file + ' to server')
 
 def main():
     parser = argparse.ArgumentParser(description="DesignScript performance test runner")
@@ -130,8 +154,13 @@ def main():
         except:
             log(logfile, 'Error: Failed to run test case ' + test_case_name)
 
-    harvest(test_result_path, output_path, pull_requests, logfile)
+    benchmark_file = harvest(test_result_path, output_path, pull_requests, logfile)
     shutil.rmtree(test_result_path)
+
+    # get a signature
+    url = "http://52.77.246.67/payload"
+    key = os.environ.get('DYNAMO_BENCHMARK_KEY')
+    post_to_server(url, benchmark_file, key, logfile)
     log(logfile, 'Done')
 
 if __name__ == "__main__":
