@@ -1247,7 +1247,7 @@ namespace Dynamo.ViewModels
             if (!String.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
             {
                 // For read-only file, re-direct save to save-as
-                if (this.CurrentSpace.IsReadOnly)//DynamoUtilities.PathHelper.IsReadOnlyPath(this.CurrentSpace.FileName))
+                if (this.CurrentSpace.IsReadOnly)
                     ShowSaveDialogAndSaveResult(parameter);
                 else
                     SaveAs(Model.CurrentWorkspace.FileName);      

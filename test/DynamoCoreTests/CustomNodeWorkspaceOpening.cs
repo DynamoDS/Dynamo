@@ -41,6 +41,8 @@ namespace Dynamo.Tests
         public void CanLoadReadOnlyNode()
         {
             // Open a read-only custom node
+            Assert.IsFalse(DynamoUtilities.PathHelper.IsReadOnlyPath(@"core\CustomNodes\add_Read_only.dyf"));
+
             OpenTestFile(@"core\CustomNodes", "add_Read_only.dyf");
             var nodeWorkspace = CurrentDynamoModel.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
             Assert.IsNotNull(nodeWorkspace);
@@ -50,6 +52,9 @@ namespace Dynamo.Tests
             var homeWorkspace = CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel;
             Assert.NotNull(homeWorkspace);
             homeWorkspace.Run();
+
+            var funcNode = homeWorkspace.Nodes.OfType<Function>().First();
+            Assert.IsTrue(funcNode.Definition.IsProxy);
         }
 
         [Test]

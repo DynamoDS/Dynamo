@@ -26,27 +26,27 @@ namespace DynamoUtilities
         /// <summary>
         /// Checks if the file path string is valid and file exist.
         /// </summary>
-        /// <param name="folderPath"></param>
+        /// <param name="filePath">File path</param>
         /// <returns></returns>
-        public static bool IsValidPath(string folderPath)
+        public static bool IsValidPath(string filePath)
         {
-            return (!string.IsNullOrEmpty(folderPath) && (File.Exists(folderPath)));
+            return (!string.IsNullOrEmpty(filePath) && (File.Exists(filePath)));
         }
 
         /// <summary>
         /// Check if user has readonly privilege to the folder path.
         /// </summary>
-        /// <param name="folderPath">Folder path</param>
+        /// <param name="filePath">File path</param>
         /// <returns></returns>
-        public static bool IsReadOnlyPath(string folderPath)
+        public static bool IsReadOnlyPath(string filePath)
         {
-            if (IsValidPath(folderPath))
+            if (IsValidPath(filePath))
             {
-                FileInfo Finfo = new FileInfo(folderPath);
+                FileInfo Finfo = new FileInfo(filePath);
                 // We mark the path read only when
                 // 1. file read-only
                 // 2. user does not have write access to the folder
-                return Finfo.IsReadOnly || !HasWritePermissionOnDir(folderPath);
+                return Finfo.IsReadOnly || !HasWritePermissionOnDir(Finfo.Directory.ToString());
             }
             else
                 return false;
@@ -71,6 +71,7 @@ namespace DynamoUtilities
 
             foreach (FileSystemAccessRule rule in accessRules)
             {
+                // When current rule does not contain setting related to WRITE, skip.
                 if ((FileSystemRights.Write & rule.FileSystemRights) != FileSystemRights.Write)
                     continue;
 
