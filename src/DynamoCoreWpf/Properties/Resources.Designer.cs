@@ -4563,6 +4563,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [Read-Only] .
+        /// </summary>
+        public static string TabFileNameReadOnlyPrefix {
+            get {
+                return ResourceManager.GetString("TabFileNameReadOnlyPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to I Accept.
         /// </summary>
         public static string TermsOfUseAcceptButton {

@@ -403,7 +403,7 @@ namespace Dynamo.Controls
             {
                 // Convert to path, get file name. If read-only file, append [Read-Only].
                 if (DynamoUtilities.PathHelper.IsReadOnlyPath((string)value))
-                    return "[Read-Only] "+ Path.GetFileName((string)value);
+                    return Resources.TabFileNameReadOnlyPrefix + Path.GetFileName((string)value);
                 else
                     return Path.GetFileName((string)value);
             }
