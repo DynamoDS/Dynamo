@@ -54,7 +54,7 @@ namespace Dynamo.Tests
             homeWorkspace.Run();
 
             var funcNode = homeWorkspace.Nodes.OfType<Function>().First();
-            Assert.IsTrue(funcNode.Definition.IsProxy);
+            Assert.AreEqual(2.0, GetPreviewValue(funcNode.GUID));
         }
 
         [Test]
