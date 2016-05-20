@@ -603,7 +603,10 @@ namespace Dynamo.UI.Controls
 
         private void BeginExpandTransition()
         {
-            if (!IsCondensed) throw new InvalidOperationException();
+            if (!IsCondensed)
+            {
+                return;
+            }
 
             // To prevent another transition from being started and
             // indicate a new transition is about to be started
