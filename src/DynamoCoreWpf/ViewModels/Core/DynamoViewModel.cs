@@ -1147,8 +1147,8 @@ namespace Dynamo.ViewModels
             {
                 if (!DynamoModel.IsTestMode)
                 {
-                    // Catch all the IO exceptions here. The message provided by .Net is clear enough to indicate the problem in this case.
-                    if (e is IOException)
+                    // Catch all the IO exceptions and file access here. The message provided by .Net is clear enough to indicate the problem in this case.
+                    if (e is IOException || e is System.UnauthorizedAccessException)
                     {
                         System.Windows.MessageBox.Show(String.Format(e.Message, xmlFilePath));
                     }
