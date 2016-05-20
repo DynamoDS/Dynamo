@@ -16,6 +16,7 @@
         </StackPanel.Background>
 
         <TextBox 
+                PreviewKeyDown="OnEditWindowPreviewKeyDown"
                 Margin="10"
                 x:FieldModifier="private" 
                 Style="{DynamicResource ResourceKey=SDarkTextBox}"
