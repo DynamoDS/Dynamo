@@ -511,7 +511,10 @@ namespace Dynamo.UI.Controls
 
         private async void BeginFadeInTransition()
         {
-            if (!IsHidden) throw new InvalidOperationException();
+            if (!IsHidden)
+            {
+                return;
+            }
 
             // do not use delay in tests
             if (DynamoModel.IsTestMode)
@@ -568,7 +571,7 @@ namespace Dynamo.UI.Controls
         private void BeginFadeOutTransition()
         {
             if (StaysOpen) return;
-            if (!IsCondensed) throw new InvalidOperationException();
+            if (!IsCondensed) return;
 
             SetCurrentStateAndNotify(State.InTransition);
 
@@ -579,7 +582,7 @@ namespace Dynamo.UI.Controls
 
         private void BeginCondenseTransition()
         {
-            if (!IsExpanded) throw new InvalidOperationException();
+            if (!IsExpanded) return;
 
             // To prevent another transition from being started and
             // indicate a new transition is about to be started
