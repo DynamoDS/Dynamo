@@ -42,10 +42,10 @@ namespace Dynamo.Tests
         {
             // Open a read-only custom node
             OpenTestFile(@"core\CustomNodes", "add_Read_only.dyf");
-            var funcNode = (CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel).Nodes.OfType<Function>().First();
-            Assert.IsFalse(funcNode.Definition.IsProxy);
+            var nodeWorkspace = CurrentDynamoModel.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
+            Assert.IsNotNull(nodeWorkspace);
 
-            // a file with a missing custom node definition is opened
+            // a file with a read-only custom node definition is opened
             OpenTestFile(@"core\CustomNodes", "TestAdd.dyn");
             var homeWorkspace = CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel;
             Assert.NotNull(homeWorkspace);
