@@ -156,7 +156,7 @@ namespace Dynamo.UI.Controls
             }
             else if (IsExpanded)
             {
-                RefreshExpandedDisplay(null);
+                RefreshExpandedDisplay(RefreshExpandedDisplayAction);
             }
 
             IsDataBound = true;
