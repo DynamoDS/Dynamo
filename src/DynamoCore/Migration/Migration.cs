@@ -1,19 +1,18 @@
-﻿using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Xml;
-using Dynamo.Models;
-using Dynamo.Utilities;
-using Dynamo.Logging;
-using System.Collections.Generic;
-using System.IO;
-using Dynamo.Configuration;
-using Dynamo.Graph;
+﻿using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
+using Dynamo.Models;
+using Dynamo.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Xml;
 
 namespace Dynamo.Migration
 {
@@ -374,12 +373,11 @@ namespace Dynamo.Migration
                 backupPath = destFileName;
                 return true;
             }
-            catch (IOException)
-            {
-                // If we caught an IO exception, fall through and let the rest handle this 
-                // (by saving to other locations). Any other exception will be thrown to the 
-                // caller for handling.
-            }
+            // If we caught an IO exception or UnauthorizedAccessException, fall through and let the rest handle this 
+            // (by saving to other locations). Any other exception will be thrown to the 
+            // caller for handling.
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
 
             try
             {
@@ -421,7 +419,7 @@ namespace Dynamo.Migration
         /// already exist).
         /// </summary>
         /// <param name="baseFolder">This is a directory inside which a new 
-        /// backup sub-directory will be created. If this paramter does not 
+        /// backup sub-directory will be created. If this parameter does not 
         /// represent a valid directory name, an exception will be thrown.
         /// </param>
         /// <param name="create">Set this parameter to false if the creation of 
@@ -447,7 +445,6 @@ namespace Dynamo.Migration
             var subFolder = Path.Combine(baseFolder, backupFolderName);
             if (create && (Directory.Exists(subFolder) == false))
                 Directory.CreateDirectory(subFolder);
-
             return subFolder;
         }
 

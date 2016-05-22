@@ -79,6 +79,7 @@ namespace Dynamo.Graph.Workspaces
         private string author = "None provided";
         private string description;
         private bool hasUnsavedChanges;
+        private bool isReadOnly;
         private readonly List<NodeModel> nodes;
         private readonly List<NoteModel> notes;
         private readonly List<AnnotationModel> annotations;
@@ -427,6 +428,18 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// Returns if current workspace is readonly.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return isReadOnly; }
+            set
+            {
+                isReadOnly = value;
+            }
+        }
+
+        /// <summary>
         ///     All of the nodes currently in the workspace.
         /// </summary>
         public IEnumerable<NodeModel> Nodes
@@ -722,6 +735,7 @@ namespace Dynamo.Graph.Workspaces
             Zoom = info.Zoom;
 
             HasUnsavedChanges = false;
+            IsReadOnly = DynamoUtilities.PathHelper.IsReadOnlyPath(fileName);
             LastSaved = DateTime.Now;
 
             WorkspaceVersion = AssemblyHelper.GetDynamoVersion();

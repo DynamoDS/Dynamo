@@ -401,8 +401,11 @@ namespace Dynamo.Controls
         {
             if (value is string && !string.IsNullOrEmpty(value as string))
             {
-                // convert to path, get file name
-                return Path.GetFileName((string)value);
+                // Convert to path, get file name. If read-only file, append [Read-Only].
+                if (DynamoUtilities.PathHelper.IsReadOnlyPath((string)value))
+                    return Resources.TabFileNameReadOnlyPrefix + Path.GetFileName((string)value);
+                else
+                    return Path.GetFileName((string)value);
             }
 
             return "Unsaved";

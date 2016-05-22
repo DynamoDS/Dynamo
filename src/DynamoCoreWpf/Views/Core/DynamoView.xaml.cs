@@ -746,19 +746,27 @@ namespace Dynamo.Controls
         void DynamoViewModelRequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
             var dialogText = "";
-            if (e.Workspace is CustomNodeWorkspaceModel)
+            // If the file is read only, display a different message.
+            if (e.Workspace.IsReadOnly)
             {
-                dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveCustomNode, e.Workspace.Name);
+                dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveReadOnlyCustomNode, e.Workspace.FileName);
             }
-            else // homeworkspace
+            else
             {
-                if (string.IsNullOrEmpty(e.Workspace.FileName))
+                if (e.Workspace is CustomNodeWorkspaceModel)
                 {
-                    dialogText = Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveHomeWorkSpace;
+                    dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveCustomNode, e.Workspace.Name);
                 }
-                else
+                else // home workspace
                 {
-                    dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveNamedHomeWorkSpace, Path.GetFileName(e.Workspace.FileName));
+                    if (string.IsNullOrEmpty(e.Workspace.FileName))
+                    {
+                        dialogText = Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveHomeWorkSpace;
+                    }
+                    else
+                    {
+                        dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveNamedHomeWorkSpace, Path.GetFileName(e.Workspace.FileName));
+                    }
                 }
             }
 
@@ -769,7 +777,11 @@ namespace Dynamo.Controls
 
             if (result == MessageBoxResult.Yes)
             {
-                e.Success = dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
+                // If the file is read-only, redirect yes to save-as.
+                if (e.Workspace.IsReadOnly)
+                    dynamoViewModel.ShowSaveDialogAndSaveResult(e.Workspace);
+                else
+                    e.Success = dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
             }
             else if (result == MessageBoxResult.Cancel)
             {
