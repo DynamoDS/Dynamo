@@ -67,7 +67,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         protected bool active;
         protected bool isGridVisible;
-        private readonly List<IRenderPackage> currentTaggedPackages = new List<IRenderPackage>();
+
+        /// <summary>
+        /// Represents the name of current Watch3DViewModel which will be saved in preference settings
+        /// </summary>
+        public virtual string PreferenceWatchName { get { return "IsBackgroundPreviewActive"; } }
 
         /// <summary>
         /// A flag which indicates whether this Watch3DView should process
@@ -85,8 +89,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 active = value;
-                preferences.IsBackgroundPreviewActive = active;
-
+                preferences.SetIsBackgroundPreviewActive(PreferenceWatchName, value);
                 RaisePropertyChanged("Active");
 
                 OnActiveStateChanged();
@@ -217,7 +220,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             engineManager = parameters.EngineControllerManager;
 
             Name = Resources.BackgroundPreviewDefaultName;
-            Active = parameters.Preferences.IsBackgroundPreviewActive;
             isGridVisible = parameters.Preferences.IsBackgroundGridVisible;
             logger = parameters.Logger;
 
@@ -257,8 +259,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void OnActiveStateChanged()
         {
-            preferences.IsBackgroundPreviewActive = active;
-
             UnregisterEventHandlers();
             OnClear();
         }
