@@ -891,7 +891,7 @@ namespace Dynamo.Graph.Workspaces
                 Log(ex.Message);
                 Log(ex.StackTrace);
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                return false;
+                throw (ex);
             }
 
             return true;
@@ -1742,9 +1742,13 @@ namespace Dynamo.Graph.Workspaces
                 Utils.SetDocumentXmlPath(document, string.Empty);
                 document.Save(targetFilePath);
             }
-            catch (IOException)
+            catch (IOException ex)
             {
-                return false;
+                throw (ex);
+            }
+            catch (System.UnauthorizedAccessException ex)
+            {
+                throw (ex);
             }
 
             FileName = targetFilePath;
