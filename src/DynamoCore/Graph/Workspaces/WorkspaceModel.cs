@@ -1742,7 +1742,11 @@ namespace Dynamo.Graph.Workspaces
                 Utils.SetDocumentXmlPath(document, string.Empty);
                 document.Save(targetFilePath);
             }
-            catch (System.Exception ex)
+            catch (IOException ex)
+            {
+                throw (ex);
+            }
+            catch (System.UnauthorizedAccessException ex)
             {
                 throw (ex);
             }
