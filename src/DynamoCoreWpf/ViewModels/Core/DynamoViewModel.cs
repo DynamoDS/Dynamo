@@ -1289,7 +1289,15 @@ namespace Dynamo.ViewModels
         /// <param name="path">The path to save to</param>
         internal void SaveAs(string path)
         {
-            Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
+            try
+            {
+                Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
+            }
+            catch (System.Exception ex)
+            {
+                if (ex is IOException || ex is System.UnauthorizedAccessException)
+                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+            }
         }
 
         /// <summary>
