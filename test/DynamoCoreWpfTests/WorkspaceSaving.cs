@@ -982,7 +982,10 @@ namespace Dynamo.Tests
             var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
 
             var tempPath1 = Path.Combine(TempFolder, nodeName + ".dyf");
-            var tempPath2 = Path.Combine(TempFolder, nodeName + "_v1.dyf");
+            
+            // Create the folder first incase it does not exist
+            Directory.CreateDirectory(Path.Combine(TempFolder, nodeName, nodeName));
+            var tempPath2 = Path.Combine(TempFolder, nodeName, nodeName + ".dyf");
 
             var res = def.SaveAs(tempPath1, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
             Assert.IsTrue(res);
