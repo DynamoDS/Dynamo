@@ -248,6 +248,12 @@ namespace Dynamo.Configuration
         public bool OpenFileInManualExecutionMode { get; set; }
 
         /// <summary>
+        /// A list of assembly names, which the user has marked for supression
+        /// of a warning during assembly load.
+        /// </summary>
+        public List<string> DoNotShowAgainLoadWarningAssemblies { get; set; }
+        
+        /// <summary>
         /// Initializes a new instance of the <see cref="PreferenceSettings"/> class.
         /// </summary>
         public PreferenceSettings()
@@ -282,6 +288,7 @@ namespace Dynamo.Configuration
             BackupFiles = new List<string>();
 
             CustomPackageFolders = new List<string>();
+            DoNotShowAgainLoadWarningAssemblies = new List<string>();
         }
 
         /// <summary>
