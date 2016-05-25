@@ -137,12 +137,23 @@ namespace Dynamo.Interfaces
         /// <returns>Returns true if the serialization is successful, or false 
         /// otherwise.</returns>
         bool Save(string filePath);
+    }
 
+    /// <summary>
+    /// Interface defining user preferences for pre load warnings. 
+    /// </summary>
+    public interface IPreLoadWarningPreferences
+    {
         /// <summary>
         /// A list of assembly names, which the user has marked for supression
         /// of a warning during assembly load.
         /// </summary>
         List<string> DoNotShowAgainLoadWarningAssemblies { get; set; }
+
+        /// <summary>
+        /// Intention to supress all pre load warnings.
+        /// </summary>
+        bool SuppressAllWarnings { get; set; }
     }
 
     /// <summary>

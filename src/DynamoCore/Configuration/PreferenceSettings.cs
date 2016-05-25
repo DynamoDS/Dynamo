@@ -17,7 +17,7 @@ namespace Dynamo.Configuration
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings into the XML file.
     /// </summary>
-    public class PreferenceSettings : NotificationObject, IPreferences
+    public class PreferenceSettings : NotificationObject, IPreferences,IPreLoadWarningPreferences
     {
         private string numberFormat;
         private string lastUpdateDownloadPath;
@@ -252,7 +252,12 @@ namespace Dynamo.Configuration
         /// of a warning during assembly load.
         /// </summary>
         public List<string> DoNotShowAgainLoadWarningAssemblies { get; set; }
-        
+
+        /// <summary>
+        /// Intention to supress all pre load warnings.
+        /// </summary>
+        public bool SuppressAllWarnings { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PreferenceSettings"/> class.
         /// </summary>

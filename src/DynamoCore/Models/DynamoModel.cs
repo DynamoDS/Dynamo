@@ -351,6 +351,11 @@ namespace Dynamo.Models
         /// Returns authentication manager object for oxygen authentication.
         /// </summary>
         public AuthenticationManager AuthenticationManager { get; set; }
+        /// <summary>
+        /// Data a host application has passed to Dynamo about events
+        /// that occured before or during Dynamo load.
+        /// </summary>
+        public IPreLoadData PreloadData;
 
         #endregion
 
@@ -425,10 +430,48 @@ namespace Dynamo.Models
             TaskProcessMode ProcessMode { get; set; }
         }
 
+        public interface IPreLoadStartConfig
+        {
+            /// <summary>
+            /// Warnings that a 
+            /// </summary>
+            IPreLoadData PreloadWarnings { get; set; }
+        }
+        /// <summary>
+        /// Interface defines a set of data that a host may pass to Dynamo
+        /// about events that occured before or during load of Dynamo.
+        /// </summary>
+        public interface IPreLoadData
+        {
+            /// <summary>
+            /// Messages that Host may pass to Dynamo.
+            /// </summary>
+            List<IPreloadMessage> Messages { get; set; }
+            /// <summary>
+            /// Exceptions that Host may pass to Dynamo.
+            /// </summary>
+            List<Exception> Exceptions { get; set; }
+        }
+        /// <summary>
+        /// Defines simple message Host may pass to Dynamo
+        /// about events that occured before or during Dynamo loading.
+        /// </summary>
+        public interface IPreloadMessage
+        {
+            /// <summary>
+            /// Short description.
+            /// </summary>
+            string ShortMessage { get; }
+            /// <summary>
+            /// A more detailed message.
+            /// </summary>
+            string DetailedMessage { get; }
+
+        }
         /// <summary>
         /// Initialization settings for DynamoModel.
         /// </summary>
-        public struct DefaultStartConfiguration : IStartConfiguration
+        public struct DefaultStartConfiguration : IStartConfiguration,IPreLoadStartConfig
         {
             public string Context { get; set; }
             public string DynamoCorePath { get; set; }
@@ -442,6 +485,7 @@ namespace Dynamo.Models
             public IAuthProvider AuthProvider { get; set; }
             public IEnumerable<IExtension> Extensions { get; set; }
             public TaskProcessMode ProcessMode { get; set; }
+            public IPreLoadData PreloadWarnings {get;set;}
         }
 
         /// <summary>
@@ -473,6 +517,13 @@ namespace Dynamo.Models
         /// <param name="config">Start configuration</param>
         protected DynamoModel(IStartConfiguration config)
         {
+            //if the configuration has the preloadData property then set it
+            //TODO merge this interface with IStartConfig eventually
+            if(config is IPreLoadStartConfig)
+            {
+                PreloadData = (config as IPreLoadStartConfig).PreloadWarnings;
+            }
+
             ClipBoard = new ObservableCollection<ModelBase>();
 
             pathManager = new PathManager(new PathManagerParams

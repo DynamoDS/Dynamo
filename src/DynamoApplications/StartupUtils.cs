@@ -15,7 +15,6 @@ using System.Threading;
 using System.Globalization;
 using NDesk.Options;
 
-
 namespace Dynamo.Applications
 {
     public class StartupUtils
@@ -227,6 +226,56 @@ namespace Dynamo.Applications
             sb.Append(libgLocale.Replace("-", "_"));
             return sb.ToString();
         }
+
+        /// <summary>
+        /// Handler for an assembly load event into a host's appdomain - we need to make sure
+        /// that another addin or package has not loadead another version of a .dll that we require.
+        /// If this happens Dynamo will most likely crash. We should alert the user they
+        /// have an incompatible addin installed.
+        /// TODO it seems a view extension is a modular way to deal with handling the warnings we catch here
+        /// 
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <param name="assemblyNamesToIgnore"></param>
+        /// <returns></returns>
+        public static DynamoModel.IPreLoadData AppDomainHasMismatchedReferences(Assembly assembly, String[] assemblyNamesToIgnore)
+        {
+            //get all assemblies that are currently loaded into the appdomain.
+            var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().Select(x => x.GetName()).ToList();
+            // ignore some assemblies(revit assemblies) that we know work and have changed their version number format or do not align
+            // with semantic versioning.
+            loadedAssemblies.RemoveAll(x => assemblyNamesToIgnore.Contains(x.Name));
+            //build dict- ignore those with duplicate names.
+            var loadedAssemblyDict = loadedAssemblies.GroupBy(assm => assm.Name).ToDictionary(g => g.Key, g => g.First());
+
+            foreach (var currentAssembly in assembly.GetReferencedAssemblies().Concat(new AssemblyName[] { assembly.GetName() }))
+            {
+                if (loadedAssemblyDict.ContainsKey(currentAssembly.Name))
+                {
+                    //if the dll is already loadead, then check that our required version is not greater than the currently loaded one.
+                    var loadedAssembly = loadedAssemblyDict[currentAssembly.Name];
+                    if (currentAssembly.Version.Major > loadedAssembly.Version.Major)
+                    {
+
+                        //TODO generate some IPreloadData and return it
+
+                       // var window = new AssemblyLoadWarning(new AssemblyName(assembly.FullName), currentAssembly);
+                       // window.ShowDialog();
+                        //if (window.DialogResult == true)
+                        {
+                            //write the result into the settings file for this currentAssembly(the one that is already loaded by something else)
+                            //and check this at the start of the method
+                        }
+
+                        // MessageBox.Show( string.Format(Resources.MismatchedAssemblyVersion ,assembly.FullName,currentAssembly.FullName));
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+
 
     }
 }
