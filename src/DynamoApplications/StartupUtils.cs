@@ -238,7 +238,7 @@ namespace Dynamo.Applications
         /// <param name="assembly"></param>
         /// <param name="assemblyNamesToIgnore"></param>
         /// <returns></returns>
-        public static DynamoModel.IPreLoadData AppDomainHasMismatchedReferences(Assembly assembly, String[] assemblyNamesToIgnore)
+        public static Exception AppDomainHasMismatchedReferences(Assembly assembly, String[] assemblyNamesToIgnore)
         {
             //get all assemblies that are currently loaded into the appdomain.
             var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().Select(x => x.GetName()).ToList();
@@ -266,13 +266,14 @@ namespace Dynamo.Applications
                             //write the result into the settings file for this currentAssembly(the one that is already loaded by something else)
                             //and check this at the start of the method
                         }
-
+                        
                         // MessageBox.Show( string.Format(Resources.MismatchedAssemblyVersion ,assembly.FullName,currentAssembly.FullName));
-                        return true;
+                        //TODO make a new exception class and return that or some type of warning or message class
+                        return new FileLoadException(assembly.FullName + " put the full message here", currentAssembly.FullName);
                     }
                 }
             }
-            return false;
+            return null;
         }
 
 

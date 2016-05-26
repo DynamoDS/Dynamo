@@ -355,7 +355,7 @@ namespace Dynamo.Models
         /// Data a host application has passed to Dynamo about events
         /// that occured before or during Dynamo load.
         /// </summary>
-        public IPreLoadData PreloadData;
+        public IPreLoadData PreloadData { get; private set; }
 
         #endregion
 
@@ -443,15 +443,23 @@ namespace Dynamo.Models
         /// </summary>
         public interface IPreLoadData
         {
-            /// <summary>
-            /// Messages that Host may pass to Dynamo.
-            /// </summary>
-            List<IPreloadMessage> Messages { get; set; }
+         
             /// <summary>
             /// Exceptions that Host may pass to Dynamo.
             /// </summary>
             List<Exception> Exceptions { get; set; }
         }
+
+        public class HostPreLoadData : IPreLoadData
+        {
+            /// <summary>
+            /// Exceptions that Host may pass to Dynamo.
+            /// </summary>
+            public List<Exception> Exceptions { get; set; }
+
+        }
+
+
         /// <summary>
         /// Defines simple message Host may pass to Dynamo
         /// about events that occured before or during Dynamo loading.
@@ -466,8 +474,9 @@ namespace Dynamo.Models
             /// A more detailed message.
             /// </summary>
             string DetailedMessage { get; }
-
         }
+
+
         /// <summary>
         /// Initialization settings for DynamoModel.
         /// </summary>
