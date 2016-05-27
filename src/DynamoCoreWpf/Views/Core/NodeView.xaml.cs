@@ -94,6 +94,14 @@ namespace Dynamo.Controls
             }
         }
 
+        internal bool HasPreviewControl
+        {
+            get
+            {
+                return previewControl != null;
+            }
+        }
+
         #region constructors
 
         public NodeView()
