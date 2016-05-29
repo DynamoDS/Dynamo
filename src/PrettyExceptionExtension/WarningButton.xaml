@@ -1,0 +1,33 @@
+﻿<Window x:Class="Dynamo.WarningHelper.WarningButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             WindowStartupLocation="Manual"
+             ResizeMode="NoResize"
+             SizeToContent="Height"
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="200"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    Style="{DynamicResource DynamoWindowStyle}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <StackPanel Background="DarkSlateGray" MouseDown="StackPanel_MouseDown">
+
+        <StackPanel>
+            <TextBox Style="{DynamicResource ResourceKey =SDarkTextBox }" Name="WarningsExistMessage" IsReadOnly="True" TextWrapping="Wrap" Visibility="Visible" Grid.Row="0" Grid.Column="0" ></TextBox>
+        </StackPanel>
+
+        <StackPanel>
+            <Button Margin="20,20,20,20" Click="DismissButtonClick">Dismiss All</Button>
+        </StackPanel>
+    </StackPanel>
+
+</Window>

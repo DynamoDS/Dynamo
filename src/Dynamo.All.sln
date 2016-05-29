@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -213,7 +213,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watch3DNodeModels", "Librar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoManipulation", "DynamoManipulation\DynamoManipulation.csproj", "{33F88E8C-CC3C-4237-8AA9-CC891EFCABFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrettyExceptionExtension", "PrettyExceptionExtension\PrettyExceptionExtension.csproj", "{09F48994-BB2F-4A26-8CCD-469FE3F7F904}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarningHelper", "PrettyExceptionExtension\WarningHelper.csproj", "{09F48994-BB2F-4A26-8CCD-469FE3F7F904}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

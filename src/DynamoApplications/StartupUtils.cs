@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Globalization;
 using NDesk.Options;
+using DynamoApplications.Properties;
 
 namespace Dynamo.Applications
 {
@@ -232,48 +233,59 @@ namespace Dynamo.Applications
         /// that another addin or package has not loadead another version of a .dll that we require.
         /// If this happens Dynamo will most likely crash. We should alert the user they
         /// have an incompatible addin installed.
-        /// TODO it seems a view extension is a modular way to deal with handling the warnings we catch here
         /// 
         /// </summary>
         /// <param name="assembly"></param>
         /// <param name="assemblyNamesToIgnore"></param>
         /// <returns></returns>
-        public static Exception AppDomainHasMismatchedReferences(Assembly assembly, String[] assemblyNamesToIgnore)
+        public static List<Exception> AppDomainHasMismatchedReferences(Assembly assembly, String[] assemblyNamesToIgnore)
         {
             //get all assemblies that are currently loaded into the appdomain.
-            var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().Select(x => x.GetName()).ToList();
+            var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
             // ignore some assemblies(revit assemblies) that we know work and have changed their version number format or do not align
             // with semantic versioning.
-            loadedAssemblies.RemoveAll(x => assemblyNamesToIgnore.Contains(x.Name));
-            //build dict- ignore those with duplicate names.
-            var loadedAssemblyDict = loadedAssemblies.GroupBy(assm => assm.Name).ToDictionary(g => g.Key, g => g.First());
 
-            foreach (var currentAssembly in assembly.GetReferencedAssemblies().Concat(new AssemblyName[] { assembly.GetName() }))
+            var loadedAssembllyNames = loadedAssemblies.Select(assem => assem.GetName()).ToList();
+            loadedAssembllyNames.RemoveAll(assemblyName =>assemblyNamesToIgnore.Contains(assemblyName.Name));
+
+            //build dict- ignore those with duplicate names.
+            var loadedAssemblyDict = loadedAssembllyNames.GroupBy(assm => assm.Name).ToDictionary(g => g.Key, g => g.First());
+
+            var output = new List<Exception>();
+
+            foreach (var currentReferencedAssembly in assembly.GetReferencedAssemblies().Concat(new AssemblyName[] { assembly.GetName() }))
             {
-                if (loadedAssemblyDict.ContainsKey(currentAssembly.Name))
+                if (loadedAssemblyDict.ContainsKey(currentReferencedAssembly.Name))
                 {
                     //if the dll is already loadead, then check that our required version is not greater than the currently loaded one.
-                    var loadedAssembly = loadedAssemblyDict[currentAssembly.Name];
-                    if (currentAssembly.Version.Major > loadedAssembly.Version.Major)
+                    var loadedAssembly = loadedAssemblyDict[currentReferencedAssembly.Name];
+                    if (currentReferencedAssembly.Version.Major > loadedAssembly.Version.Major)
                     {
+                        //there must exist a loaded assembly which references the newer version of the assembly which we require - lets find it:
 
-                        //TODO generate some IPreloadData and return it
-
-                       // var window = new AssemblyLoadWarning(new AssemblyName(assembly.FullName), currentAssembly);
-                       // window.ShowDialog();
-                        //if (window.DialogResult == true)
+                        var referencingNewerVersions = new List<AssemblyName>();
+                        foreach(var originalLoadedAssembly in loadedAssemblies )
                         {
-                            //write the result into the settings file for this currentAssembly(the one that is already loaded by something else)
-                            //and check this at the start of the method
+                            foreach(var refedAssembly in originalLoadedAssembly.GetReferencedAssemblies())
+                            {
+                                //if the version matches then this is one our guys
+                                if(refedAssembly.Version == loadedAssembly.Version)
+                                {
+                                    referencingNewerVersions.Add(originalLoadedAssembly.GetName());
+                                }
+                            }
                         }
-                        
-                        // MessageBox.Show( string.Format(Resources.MismatchedAssemblyVersion ,assembly.FullName,currentAssembly.FullName));
-                        //TODO make a new exception class and return that or some type of warning or message class
-                        return new FileLoadException(assembly.FullName + " put the full message here", currentAssembly.FullName);
+
+                        //TODO move this window into the view extension from Revit
+                        output.Add(new FileLoadException(
+                            string.Format(Resources.MismatchedAssemblyVersion, assembly.FullName, currentReferencedAssembly.FullName)
+                            + "it is likely one of the following assemblies that loaded the incompatible version" +
+                            String.Join(", ", referencingNewerVersions.Select(x => x.Name).ToArray())));
+                       
                     }
                 }
             }
-            return null;
+            return output;
         }
 
 
