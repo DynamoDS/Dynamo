@@ -57,6 +57,9 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="NotificationsMenuItem.xaml.cs">
+      <DependentUpon>NotificationsMenuItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WarningButton.xaml.cs">
       <DependentUpon>WarningButton.xaml</DependentUpon>
     </Compile>
@@ -89,6 +92,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="NotificationsMenuItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WarningButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
