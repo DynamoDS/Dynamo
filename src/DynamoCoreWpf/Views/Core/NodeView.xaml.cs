@@ -94,6 +94,11 @@ namespace Dynamo.Controls
             }
         }
 
+        /// <summary>
+        /// Returns a boolean value of whether this node view already has its PreviewControl field
+        /// constructed (not null), in order to avoid calling the PreviewControl constructor
+        /// whenever the accessor property is queried.
+        /// </summary>
         internal bool HasPreviewControl
         {
             get
