@@ -60,11 +60,8 @@
     <Compile Include="NotificationsMenuItem.xaml.cs">
       <DependentUpon>NotificationsMenuItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WarningButton.xaml.cs">
-      <DependentUpon>WarningButton.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WarningView.xaml.cs">
-      <DependentUpon>WarningView.xaml</DependentUpon>
+    <Compile Include="NotificationsView.xaml.cs">
+      <DependentUpon>NotificationsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="WarningViewExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -96,13 +93,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WarningButton.xaml">
+    <Page Include="NotificationsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WarningView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
