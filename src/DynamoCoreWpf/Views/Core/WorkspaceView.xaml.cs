@@ -512,8 +512,9 @@ namespace Dynamo.Views
 
             if (!ViewModel.IsDragging) return;
 
-            var nodesToHidePreview = this.ChildrenOfType<NodeView>()
-                .Where(view => !view.PreviewControl.IsHidden && !view.PreviewControl.StaysOpen);
+            var nodesToHidePreview = this.ChildrenOfType<NodeView>().Where(view =>
+                view.HasPreviewControl && !view.PreviewControl.IsHidden && !view.PreviewControl.StaysOpen);
+
             foreach (var node in nodesToHidePreview)
             {
                 node.PreviewControl.HidePreviewBubble();
