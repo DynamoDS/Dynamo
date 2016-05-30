@@ -401,8 +401,11 @@ namespace Dynamo.Controls
         {
             if (value is string && !string.IsNullOrEmpty(value as string))
             {
-                // convert to path, get file name
-                return Path.GetFileName((string)value);
+                // Convert to path, get file name. If read-only file, append [Read-Only].
+                if (DynamoUtilities.PathHelper.IsReadOnlyPath((string)value))
+                    return Resources.TabFileNameReadOnlyPrefix + Path.GetFileName((string)value);
+                else
+                    return Path.GetFileName((string)value);
             }
 
             return "Unsaved";
@@ -966,6 +969,25 @@ namespace Dynamo.Controls
             System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
+    public class ShowHidePreviewBubblesConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool) value
+                ? Resources.DynamoViewSettingsMenuHidePreviewBubbles
+                : Resources.DynamoViewSettingsMenuShowPreviewBubbles;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (string)value == Resources.DynamoViewSettingsMenuHidePreviewBubbles;
         }
 
         #endregion

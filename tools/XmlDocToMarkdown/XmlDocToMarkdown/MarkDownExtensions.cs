@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -40,7 +41,7 @@ namespace XmlDocToMarkdown
             var elements = new Dictionary<XElement, int>();
             foreach (var node in listOfNodes)
             {
-                var element = (XElement)node;
+                var element =  node as XElement;
                 if (element != null)
                 {
                     if (nodeDictionary.ContainsKey(element.Name.LocalName))
@@ -127,29 +128,32 @@ namespace XmlDocToMarkdown
         public static string MarkDownFormat(this string name, string format)
         {
             var returnString = String.Empty;
-            switch (format)
+            if (!String.IsNullOrEmpty(name))
             {
-                case "Bold" :
-                    //string can be Test or Test | stability.
-                    var splits = name.Split('|');
-                    if (splits.Count() > 1)
-                    {
-                        returnString = "**" + splits[0].Trim() + "**";
-                        returnString = returnString + " | " + splits[1];
-                    }
-                    else
-                    {
-                        returnString = "**" + name + "**";
-                    }
-                    break;
+                switch (format)
+                {
+                    case "Bold":
+                        //string can be Test or Test | stability.
+                        var splits = name.Split('|');
+                        if (splits.Count() > 1)
+                        {
+                            returnString = "**" + splits[0].Trim() + "**";
+                            returnString = returnString + " | " + splits[1];
+                        }
+                        else
+                        {
+                            returnString = "**" + name + "**";
+                        }
+                        break;
 
-                case "Italic":
-                    if(name!= null || name.Length > 0)
-                    {
-                        returnString = "*" + name.Trim() + "*";
-                    }
-                    break;
+                    case "Italic":
+                        if (!string.IsNullOrEmpty(name))
+                        {
+                            returnString = "*" + name.Trim() + "*";
+                        }
+                        break;
 
+                }
             }
 
             return returnString;

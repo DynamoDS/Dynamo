@@ -24,25 +24,14 @@ namespace ProtoImperative
 
     public class CodeGen : ProtoCore.CodeGen
     {
-        private ProtoCore.CompilerDefinitions.Imperative.CompilePass compilePass;
-
         private readonly BackpatchMap backpatchMap;
-
         private NodeBuilder nodeBuilder;
 
         public CodeGen(Core coreObj, ProtoCore.CompileTime.Context callContext, ProtoCore.DSASM.CodeBlock parentBlock = null) : base(coreObj, parentBlock)
         {
             context = callContext;
 
-            // Comment Jun: Get the codeblock to use for this codegenerator
-            if (core.Options.IsDeltaExecution)
-            {
-                codeBlock = GetDeltaCompileCodeBlock();
-            }
-            else
-            {
-                codeBlock = BuildNewCodeBlock();
-            }
+            codeBlock = BuildNewCodeBlock();
 
             if (null == parentBlock)
             {
@@ -70,19 +59,7 @@ namespace ProtoImperative
             nodeBuilder = new NodeBuilder(core);
         }
 
-        private ProtoCore.DSASM.CodeBlock GetDeltaCompileCodeBlock()
-        {
-            ProtoCore.DSASM.CodeBlock cb = null;
-            cb = BuildNewCodeBlock();
-            Validity.Assert(null != cb);
-            return cb;
-        }
-
         /// <summary>
-        /// Emits a block of code for the following cases:
-        ///     if elseif else body
-        ///     while body
-        ///     for body
         /// </summary>
         /// <param name="codeBlock"></param>
         /// <param name="inferedType"></param>
@@ -216,14 +193,14 @@ namespace ProtoImperative
             }
         }
 
-        private ProtoCore.DSASM.SymbolNode Allocate(string ident, int funcIndex, ProtoCore.Type datatype)
+        private SymbolNode Allocate(string ident, int funcIndex, ProtoCore.Type datatype)
         {
             if (core.ClassTable.IndexOf(ident) != ProtoCore.DSASM.Constants.kInvalidIndex)
                 buildStatus.LogSemanticError(String.Format(Resources.ClassNameAsVariableError,ident));
 
-            ProtoCore.DSASM.SymbolNode symbolnode = new ProtoCore.DSASM.SymbolNode(
+            SymbolNode symbolnode = new SymbolNode(
                 ident, 
-                ProtoCore.DSASM.Constants.kInvalidIndex, 
+                Constants.kInvalidIndex, 
                 funcIndex, 
                 datatype,
                 false,
@@ -234,11 +211,11 @@ namespace ProtoImperative
                 false,
                 codeBlock.codeBlockId);
 
-            if (this.isEmittingImportNode)
+            if (isEmittingImportNode)
                 symbolnode.ExternLib = core.CurrentDSFileName;
 
 
-            Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == symbolnode.symbolTableIndex);
+            Validity.Assert(Constants.kInvalidIndex == symbolnode.symbolTableIndex);
             AllocateVar(symbolnode);
 
             // This is to handle that a variable is defined in a language
@@ -250,8 +227,8 @@ namespace ProtoImperative
                 symbolnode.functionIndex = Constants.kGlobalScope;
             }
 
-            int symbolindex = ProtoCore.DSASM.Constants.kInvalidIndex;
-            if (ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex && !IsInLanguageBlockDefinedInFunction())
+            int symbolindex = Constants.kInvalidIndex;
+            if (Constants.kInvalidIndex != globalClassIndex && !IsInLanguageBlockDefinedInFunction())
             {
                 symbolindex = core.ClassTable.ClassNodes[globalClassIndex].Symbols.Append(symbolnode);
             }
@@ -262,37 +239,6 @@ namespace ProtoImperative
 
             symbolnode.symbolTableIndex = symbolindex;
             return symbolnode;
-        }
-
-        private int AllocateArg(string ident, int funcIndex, ProtoCore.Type datatype)
-        {
-            ProtoCore.DSASM.SymbolNode symbolnode = new ProtoCore.DSASM.SymbolNode(
-                ident,
-                ProtoCore.DSASM.Constants.kInvalidIndex,
-                funcIndex,
-                datatype,
-                true,
-                codeBlock.symbolTable.RuntimeIndex,
-                MemoryRegion.MemStack);
-            symbolnode.codeBlockId = codeBlock.codeBlockId;
-            if (this.isEmittingImportNode)
-                symbolnode.ExternLib = core.CurrentDSFileName;
-
-            int symbolindex = ProtoCore.DSASM.Constants.kInvalidIndex;
-            if (ProtoCore.DSASM.Constants.kInvalidIndex != codeBlock.symbolTable.IndexOf(symbolnode))
-            {
-                buildStatus.LogSemanticError(String.Format(Resources.IdentifierRedefinition,ident));
-            }
-            else
-            {
-                int locOffset = localProcedure.LocalCount;
-                locOffset = localProcedure.LocalCount;
-                symbolnode.index = -1 - ProtoCore.DSASM.StackFrame.StackFrameSize - (locOffset + argOffset);
-                ++argOffset;
-
-                symbolindex = codeBlock.symbolTable.Append(symbolnode);
-            }
-            return symbolindex;
         }
 
         protected override void EmitReturn(int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
@@ -362,10 +308,10 @@ namespace ProtoImperative
         }
 
         public override ProtoCore.DSASM.ProcedureNode TraverseFunctionCall(ProtoCore.AST.Node node, ProtoCore.AST.Node parentNode, int lefttype, int depth, ref ProtoCore.Type inferedType, 
-            ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, 
+            ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None, 
             ProtoCore.AST.Node bnode = null)
         {
-            if (!IsParsingGlobal() && !IsParsingGlobalFunctionBody())
+            if (!IsParsingGlobal())
             {
                 return null;
             }
@@ -384,7 +330,7 @@ namespace ProtoImperative
                 // f(2) -> type check disabled - param is typed as int
                 enforceTypeCheck = !(paramNode is BinaryExpressionNode);
 
-                DfsTraverse(paramNode, ref paramType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, bnode);
+                DfsTraverse(paramNode, ref paramType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, bnode);
                 enforceTypeCheck = true;
 
                 arglist.Add(paramType);
@@ -693,7 +639,6 @@ namespace ProtoImperative
         private int EmitExpressionInterpreter(ProtoCore.AST.Node codeBlockNode)
         {
             core.watchStartPC = this.pc;
-            compilePass = ProtoCore.CompilerDefinitions.Imperative.CompilePass.GlobalScope;
             ProtoCore.AST.ImperativeAST.CodeBlockNode codeblock = codeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode;
 
             ProtoCore.Type inferedType = new ProtoCore.Type();
@@ -721,43 +666,36 @@ namespace ProtoImperative
 
             this.localCodeBlockNode = codeBlockNode;
             ProtoCore.AST.ImperativeAST.CodeBlockNode codeblock = codeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode;
-            bool isTopBlock = null == codeBlock.parent;
-            if (!isTopBlock)
-            {
-                // If this is an inner block where there can be no classes, we can start at parsing at the global function state
-                compilePass = ProtoCore.CompilerDefinitions.Imperative.CompilePass.GlobalFuncSig;
-            }
+            // Imperative language block would never be the top language block.
 
             bool hasReturnStatement = false;
             ProtoCore.Type type = new ProtoCore.Type();
-            while (ProtoCore.CompilerDefinitions.Imperative.CompilePass.Done != compilePass)
+
+            foreach (ImperativeNode node in codeblock.Body)
             {
-                foreach (ImperativeNode node in codeblock.Body)
+                type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
+
+                if (node is LanguageBlockNode)
                 {
-                    type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
-
-                    if (node is LanguageBlockNode)
-                    {
-                        // Build a binary node with a temporary lhs for every stand-alone language block
-                        var iNode = nodeBuilder.BuildIdentfier(core.GenerateTempLangageVar());
-                        var langBlockNode = nodeBuilder.BuildBinaryExpression(iNode, node);
-                        DfsTraverse(langBlockNode, ref type, false, graphNode);
-                    }
-                    else
-                    {
-                        DfsTraverse(node, ref type, false, graphNode);
-                    }                    
-
-                    if (ProtoCore.Utils.NodeUtils.IsReturnExpressionNode(node))
-                        hasReturnStatement = true;
+                    // Build a binary node with a temporary lhs for every stand-alone language block
+                    var iNode = nodeBuilder.BuildIdentfier(core.GenerateTempLangageVar());
+                    var langBlockNode = nodeBuilder.BuildBinaryExpression(iNode, node);
+                    DfsTraverse(langBlockNode, ref type, false, graphNode);
                 }
-                if (compilePass == ProtoCore.CompilerDefinitions.Imperative.CompilePass.GlobalScope && !hasReturnStatement)
+                else
                 {
-                    EmitReturnNull();
+                    DfsTraverse(node, ref type, false, graphNode);
                 }
 
-                compilePass++;
+                if (ProtoCore.Utils.NodeUtils.IsReturnExpressionNode(node))
+                    hasReturnStatement = true;
             }
+
+            if (!hasReturnStatement)
+            {
+                EmitReturnNull();
+            }
+
 
             core.InferedType = type;
 
@@ -934,7 +872,7 @@ namespace ProtoImperative
 
         private void EmitLanguageBlockNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode propogateUpdateGraphNode = null)
         {
-            if (IsParsingGlobal() || IsParsingGlobalFunctionBody())
+            if (IsParsingGlobal())
             {
                 LanguageBlockNode langblock = node as LanguageBlockNode;
                 //(Fuqiang, Ayush) : Throwing an assert stops NUnit. Negative tests expect to catch a 
@@ -1019,7 +957,7 @@ namespace ProtoImperative
         {
             FunctionCallNode fnode = node as FunctionCallNode;
 
-            TraverseFunctionCall(node, null, ProtoCore.DSASM.Constants.kInvalidIndex, 0, ref inferedType, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, bnode);
+            TraverseFunctionCall(node, null, ProtoCore.DSASM.Constants.kInvalidIndex, 0, ref inferedType, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, bnode);
             if (fnode != null && fnode.ArrayDimensions != null)
             {
                 int dimensions = DfsEmitArrayIndexHeap(fnode.ArrayDimensions);
@@ -1039,7 +977,7 @@ namespace ProtoImperative
                 return;
             }
 
-            if (IsParsingGlobal() || IsParsingGlobalFunctionBody())
+            if (IsParsingGlobal())
             {
                 /*
                                 def backpatch(bp, pc)
@@ -1080,7 +1018,7 @@ namespace ProtoImperative
 
                 // If-expr
                 IfStmtNode ifnode = node as IfStmtNode;
-                DfsTraverse(ifnode.IfExprNode, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
+                DfsTraverse(ifnode.IfExprNode, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
 
                 L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
                 bp = pc;
@@ -1122,7 +1060,7 @@ namespace ProtoImperative
                 {
                     inferedType = new ProtoCore.Type();
                     inferedType.UID = (int)PrimitiveType.Var;
-                    DfsTraverse(ifBody, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
+                    DfsTraverse(ifBody, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
                 }
 
                 if (!isForInlineCondition)
@@ -1273,7 +1211,7 @@ namespace ProtoImperative
                     {
                         inferedType = new ProtoCore.Type();
                         inferedType.UID = (int)PrimitiveType.Var;
-                        DfsTraverse(elseBody, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
+                        DfsTraverse(elseBody, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
                     }
 
                     if (!isForInlineCondition)
@@ -1306,7 +1244,7 @@ namespace ProtoImperative
                 return;
             }
 
-            if (IsParsingGlobal() || IsParsingGlobalFunctionBody())
+            if (IsParsingGlobal())
             {
                 /*
                    
@@ -1395,7 +1333,7 @@ namespace ProtoImperative
         private void EmitBinaryExpressionNode(ImperativeNode node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null,
             ProtoCore.AST.ImperativeAST.BinaryExpressionNode parentNode = null)
         {
-            if (!IsParsingGlobal() && !IsParsingGlobalFunctionBody())
+            if (!IsParsingGlobal())
                 return;
 
             bool isBooleanOperation = false;
@@ -1418,7 +1356,7 @@ namespace ProtoImperative
                     || ProtoCore.DSASM.Operator.and == b.Optr
                     || ProtoCore.DSASM.Operator.or == b.Optr;
 
-                DfsTraverse(b.LeftNode, ref inferedType, isBooleanOperation, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
+                DfsTraverse(b.LeftNode, ref inferedType, isBooleanOperation, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
 
                 if (inferedType.UID == (int)PrimitiveType.FunctionPointer && emitDebugInfo)
                 {
@@ -1443,7 +1381,7 @@ namespace ProtoImperative
                     {
                         NodeUtils.SetNodeLocation(lnode, b, b);
                     }
-                    EmitGetterSetterForIdentList(lnode, ref inferedType, null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, out isCollapsed, b.RightNode);
+                    EmitGetterSetterForIdentList(lnode, ref inferedType, null, ProtoCore.CompilerDefinitions.SubCompilePass.None, out isCollapsed, b.RightNode);
 
 
                     // Get the lhs symbol list
@@ -1496,11 +1434,11 @@ namespace ProtoImperative
 
             if (parentNode != null)
             {
-                DfsTraverse(b.RightNode, ref inferedType, isBooleanOperation, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
+                DfsTraverse(b.RightNode, ref inferedType, isBooleanOperation, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
             }
             else
             {
-                DfsTraverse(b.RightNode, ref inferedType, isBooleanOperation, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, b);
+                DfsTraverse(b.RightNode, ref inferedType, isBooleanOperation, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, b);
             }
 
             rightType.UID = inferedType.UID;
@@ -1550,21 +1488,19 @@ namespace ProtoImperative
                     bool isAccessible = false;
                     bool isAllocated = false;
                     bool isLocalDeclaration = t.IsLocal;
-                    // if it's forloop, verify allocation with its original arrayname
-                    if (t.ArrayName != null && !t.ArrayName.Equals(""))
+                    if (isLocalDeclaration)
                     {
-                        isAllocated = VerifyAllocation(t.Value, t.ArrayName, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                        isAllocated = VerifyAllocationInScope(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
                     }
                     else
                     {
-                        if (isLocalDeclaration)
-                        {
-                            isAllocated = VerifyAllocationInScope(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-                        }
-                        else
-                        {
-                            isAllocated = VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-                        }
+                        isAllocated = VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                    }
+
+                    if (!string.IsNullOrEmpty(t.ArrayName) && symbolnode != null)
+                    {
+                        // if it's forloop, verify allocation with its original arrayname
+                        symbolnode.forArrayName = t.ArrayName;
                     }
                    
                     int runtimeIndex = (!isAllocated) ? codeBlock.symbolTable.RuntimeIndex : symbolnode.runtimeTableIndex;
@@ -1582,8 +1518,6 @@ namespace ProtoImperative
                             type.UID = globalClassIndex;
                             ProtoCore.AssociativeGraph.UpdateNodeRef leftNodeRef = new ProtoCore.AssociativeGraph.UpdateNodeRef();
                             DFSGetSymbolList(b.LeftNode, ref type, leftNodeRef);
-
-                            localProcedure.UpdatedProperties.Push(leftNodeRef);
                         }
                     }
 
@@ -1794,35 +1728,14 @@ namespace ProtoImperative
 
         private void EmitUnaryExpressionNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AST.ImperativeAST.BinaryExpressionNode parentNode)
         {
-            if (IsParsingGlobal() || IsParsingGlobalFunctionBody())
+            if (IsParsingGlobal())
             {
                 UnaryExpressionNode u = node as UnaryExpressionNode;
-                bool isPrefixOperation = ProtoCore.DSASM.UnaryOperator.Increment == u.Operator || ProtoCore.DSASM.UnaryOperator.Decrement == u.Operator;
-                //(Ayush) In case of prefix, apply prefix operation first
-                if (isPrefixOperation)
-                {
-                    if (u.Expression is IdentifierListNode || u.Expression is IdentifierNode)
-                    {
-                        BinaryExpressionNode binRight = new BinaryExpressionNode();
-                        BinaryExpressionNode bin = new BinaryExpressionNode();
-                        binRight.LeftNode = u.Expression;
-                        binRight.RightNode = new IntNode(1);
-                        binRight.Optr = (ProtoCore.DSASM.UnaryOperator.Increment == u.Operator) ? ProtoCore.DSASM.Operator.add : ProtoCore.DSASM.Operator.sub;
-                        bin.LeftNode = u.Expression; bin.RightNode = binRight; bin.Optr = ProtoCore.DSASM.Operator.assign;
-                        EmitBinaryExpressionNode(bin, ref inferedType);
-                    }
-                    else
-                        throw new BuildHaltException("Invalid use of prefix operation (15BB9C10).");
-                }
+                DfsTraverse(u.Expression, ref inferedType, false, null, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
 
-                DfsTraverse(u.Expression, ref inferedType, false, null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
-
-                if (!isPrefixOperation)
-                {
-                    string op = Op.GetUnaryOpName(u.Operator);
-                    EmitInstrConsole(op);
-                    EmitUnary(Op.GetUnaryOpCode(u.Operator));
-                }
+                string op = Op.GetUnaryOpName(u.Operator);
+                EmitInstrConsole(op);
+                EmitUnary(Op.GetUnaryOpCode(u.Operator));
             }
         }
 
@@ -1833,7 +1746,7 @@ namespace ProtoImperative
                 return;
             }
 
-            if (IsParsingGlobal() || IsParsingGlobalFunctionBody())
+            if (IsParsingGlobal())
             {
                 /*
                 x = 0;
@@ -2316,7 +2229,7 @@ namespace ProtoImperative
             ProtoCore.AST.Node node,
             ref ProtoCore.Type inferedType,
             ProtoCore.AssociativeGraph.GraphNode graphNode,
-            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass,
+            ProtoCore.CompilerDefinitions.SubCompilePass subPass,
             out bool isCollapsed,
             ProtoCore.AST.Node setterArgument = null)
         {
@@ -2512,20 +2425,15 @@ namespace ProtoImperative
 
         private bool IsParsingGlobal()
         {
-            return (!InsideFunction()) && (ProtoCore.CompilerDefinitions.Imperative.CompilePass.GlobalScope == compilePass);
-        }
-
-        private bool IsParsingGlobalFunctionBody()
-        {
-            return (InsideFunction()) && (ProtoCore.CompilerDefinitions.Imperative.CompilePass.GlobalFuncBody == compilePass);
+            return !InsideFunction();
         }
 
         protected void EmitIdentifierListNode(ProtoCore.AST.ImperativeAST.ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.AST.Node parentNode = null)
         {
-            if (parentNode == null && !IsParsingGlobal() && !IsParsingGlobalFunctionBody())
+            if (parentNode == null && !IsParsingGlobal())
                 return;
 
-            EmitIdentifierListNode(node, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
+            EmitIdentifierListNode(node, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
 
             if(parentNode == null)
                 EmitSetExpressionUID(core.ExpressionUID++);
@@ -2536,7 +2444,7 @@ namespace ProtoImperative
             ref ProtoCore.Type inferedType, 
             bool isBooleanOp = false, 
             ProtoCore.AssociativeGraph.GraphNode graphNode = null, 
-            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, 
+            ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None, 
             ProtoCore.AST.Node parentNode = null)
         {
             ImperativeNode node = pNode as ImperativeNode;
@@ -2580,7 +2488,7 @@ namespace ProtoImperative
                     EmitWhileStmtNode(node, ref inferedType, isBooleanOp, graphNode);
                     break;
                 case AstKind.ExpressionList:
-                    EmitExprListNode(node, ref inferedType, null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, parentNode);
+                    EmitExprListNode(node, ref inferedType, null, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
                     break;
                 case AstKind.IdentifierList:
                     EmitIdentifierListNode(node, ref inferedType, graphNode, parentNode as BinaryExpressionNode);

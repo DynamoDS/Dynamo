@@ -124,7 +124,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Default width of tab
         /// </summary>
-        public static readonly int TabDefaultWidth = 200;
+        public static readonly int TabDefaultWidth = 250;
         #endregion
 
         #region Information Bubble

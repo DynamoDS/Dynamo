@@ -1724,11 +1724,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide Preview Bubbles.
+        /// </summary>
+        public static string DynamoViewSettingsMenuHidePreviewBubbles {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsMenuHidePreviewBubbles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Edges.
         /// </summary>
         public static string DynamoViewSettingsMenuShowEdges {
             get {
                 return ResourceManager.GetString("DynamoViewSettingsMenuShowEdges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Preview Bubbles.
+        /// </summary>
+        public static string DynamoViewSettingsMenuShowPreviewBubbles {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsMenuShowPreviewBubbles", resourceCulture);
             }
         }
         
@@ -2740,6 +2758,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to We can&apos;t save &quot;{0}&quot; because the file is read only. To keep your changes, you&apos;ll need to save it with a new name or in a different location..
+        /// </summary>
+        public static string MessageConfirmToSaveReadOnlyCustomNode {
+            get {
+                return ResourceManager.GetString("MessageConfirmToSaveReadOnlyCustomNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to uninstall {0} ?  This will delete the packages root directory.
         ///
         ///You can always redownload the package..
@@ -3207,6 +3234,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NoteViewContextMenuEdit {
             get {
                 return ResourceManager.GetString("NoteViewContextMenuEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to null.
+        /// </summary>
+        public static string NullString {
+            get {
+                return ResourceManager.GetString("NullString", resourceCulture);
             }
         }
         
@@ -4523,6 +4559,15 @@ namespace Dynamo.Wpf.Properties {
         public static string StringInputNodeEditMenu {
             get {
                 return ResourceManager.GetString("StringInputNodeEditMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [Read-Only] .
+        /// </summary>
+        public static string TabFileNameReadOnlyPrefix {
+            get {
+                return ResourceManager.GetString("TabFileNameReadOnlyPrefix", resourceCulture);
             }
         }
         

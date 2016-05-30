@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Xml;
-using Dynamo.Graph;
+﻿using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -13,17 +8,19 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Interfaces;
+using Dynamo.Library;
+using Dynamo.Logging;
 using Dynamo.Migration;
 using Dynamo.Models;
+using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.Logging;
-using ProtoCore.AST;
-using ProtoCore.Namespace;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml;
 using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
-using Dynamo.Library;
-using Dynamo.Properties;
 
 namespace Dynamo.Core
 {

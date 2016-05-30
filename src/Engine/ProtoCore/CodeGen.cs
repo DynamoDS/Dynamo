@@ -59,9 +59,7 @@ namespace ProtoCore
         protected ProtoCore.AST.Node localFunctionDefNode;
         protected ProtoCore.AST.Node localCodeBlockNode;
         protected bool emitDebugInfo = true;
-        protected int tryLevel;
 
-        protected int currentBinaryExprUID = ProtoCore.DSASM.Constants.kInvalidIndex;
         protected List<ProtoCore.DSASM.ProcedureNode> functionCallStack;
         protected bool IsAssociativeArrayIndexing { get; set; }
 
@@ -84,9 +82,6 @@ namespace ProtoCore
 
         // The first graphnode of the SSA'd identifier
         protected ProtoCore.AssociativeGraph.GraphNode firstSSAGraphNode = null;
-
-        // These variables hold data when backtracking static SSA'd calls
-        protected string staticClass = null;
 
         public CodeGen(Core coreObj, ProtoCore.DSASM.CodeBlock parentBlock = null)
         {
@@ -112,8 +107,6 @@ namespace ProtoCore
 
             localProcedure = core.ProcNode;
             globalProcIndex = null != localProcedure ? localProcedure.ID : ProtoCore.DSASM.Constants.kGlobalScope;
-
-            tryLevel = 0;
 
             functionCallStack = new List<DSASM.ProcedureNode>();
 
@@ -362,65 +355,10 @@ namespace ProtoCore
             ProtoCore.AST.Node node, 
             ref ProtoCore.Type inferedType, 
             ProtoCore.AssociativeGraph.GraphNode graphNode,
-            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass, 
+            ProtoCore.CompilerDefinitions.SubCompilePass subPass, 
             out bool isCollapsed, 
             ProtoCore.AST.Node setterArgument = null
             );
-
-        /// <summary>
-        /// Assigns the modified pointers in a function argument to the graphNode
-        /// This enables associative update when a pointer that is an argument is modified within a function
-        /// </summary>
-        /// <param name="nodeRef"></param>
-        /// <param name="graphNode"></param>
-        protected void AutoGenerateUpdateArgumentReference(
-            ProtoCore.AssociativeGraph.UpdateNodeRef nodeRef, ProtoCore.AssociativeGraph.GraphNode graphNode)
-        {
-
-            ProtoCore.DSASM.SymbolNode firstSymbol = null;
-
-            // This is only valid within a function as we are dealing with function args
-            if(localProcedure == null)
-            {
-                return;
-            }
-            
-            // Check if there are at least 2 symbols in the list
-            if (nodeRef.nodeList.Count < 2)
-            {
-                return;
-            }
-
-            firstSymbol = nodeRef.nodeList[0].symbol;
-
-            bool isValidNodeRef = null != firstSymbol && nodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.Method;
-            if (!isValidNodeRef)
-            {
-                return;
-            }
-            
-            // Now check if the first element of the identifier list is an argument
-            foreach (ProtoCore.DSASM.ArgumentInfo argInfo in localProcedure.ArgumentInfos)
-            {
-                if (argInfo.Name == firstSymbol.name)
-                {
-                    nodeRef.nodeList.RemoveAt(0);
-
-                    List<ProtoCore.AssociativeGraph.UpdateNodeRef> refList = null;
-                    bool found = localProcedure.UpdatedArgumentProperties.TryGetValue(argInfo.Name, out refList);
-                    if (found)
-                    {
-                        refList.Add(nodeRef);
-                    }
-                    else
-                    {
-                        refList = new List<ProtoCore.AssociativeGraph.UpdateNodeRef>();
-                        refList.Add(nodeRef);
-                        localProcedure.UpdatedArgumentProperties.Add(argInfo.Name, refList);
-                    }
-                }
-            }
-        }
 
         public void DFSGetSymbolList(Node pNode, ref ProtoCore.Type lefttype, ProtoCore.AssociativeGraph.UpdateNodeRef nodeRef)
         {
@@ -685,7 +623,7 @@ namespace ProtoCore
             ref Type finalType, 
             bool isLeftidentList, 
             AssociativeGraph.GraphNode graphNode = null,
-            CompilerDefinitions.Associative.SubCompilePass subPass = CompilerDefinitions.Associative.SubCompilePass.None,
+            CompilerDefinitions.SubCompilePass subPass = CompilerDefinitions.SubCompilePass.None,
             Node binaryExpNode = null)
         {
             dynamic node = pNode;
@@ -918,10 +856,6 @@ namespace ProtoCore
                     if (!procnode.IsConstructor && !procnode.Name.Equals(ProtoCore.DSASM.Constants.kStaticPropertiesInitializer))
                     {
                         functionCallStack.Add(procnode);
-                        if (null != graphNode)
-                        {
-                            graphNode.firstProcRefIndex = graphNode.dependentList.Count - 1;
-                        }
                     }
                 }
 
@@ -938,7 +872,7 @@ namespace ProtoCore
         }
 
 
-        protected int DfsEmitArrayIndexHeap(Node node, AssociativeGraph.GraphNode graphNode = null, ProtoCore.AST.Node parentNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
+        protected int DfsEmitArrayIndexHeap(Node node, AssociativeGraph.GraphNode graphNode = null, ProtoCore.AST.Node parentNode = null, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None)
         {
             int indexCnt = 0;
             Validity.Assert(node is ProtoCore.AST.AssociativeAST.ArrayNode || node is ProtoCore.AST.ImperativeAST.ArrayNode);
@@ -1018,18 +952,31 @@ namespace ProtoCore
 
             if (classScope != Constants.kGlobalScope)
             {
-                if (IsInLanguageBlockDefinedInFunction())
+                if (currentCodeBlock.blockType != CodeBlockType.Function)
                 {
-                    symbolIndex = currentCodeBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
-                    if (symbolIndex != Constants.kInvalidIndex)
+                    // step 1: go through nested language block chain till the top one
+                    while (symbolIndex == Constants.kInvalidIndex && currentCodeBlock.parent != null)
                     {
-                        symbol = currentCodeBlock.symbolTable.symbolList[symbolIndex];
-                        isAccessible = true;
-                        return true;
+                        symbolIndex = currentCodeBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
+                        if (symbolIndex == Constants.kInvalidIndex)
+                        {
+                            currentCodeBlock = currentCodeBlock.parent;
+                            if (currentCodeBlock.parent == null)
+                            {
+                                // currentCodeBlock is top language block. Break here.
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            symbol = currentCodeBlock.symbolTable.symbolList[symbolIndex];
+                            isAccessible = true;
+                            return true;
+                        }
                     }
                 }
 
-                if ((int)ProtoCore.PrimitiveType.Void == classScope)
+                if ((int)PrimitiveType.Void == classScope)
                 {
                     return false;
                 }
@@ -1039,18 +986,9 @@ namespace ProtoCore
                     //Search local variables in the class member function first
                     if (functionScope != Constants.kGlobalScope)
                     {
-                        // Aparajit: This function is found to not work well in the expression interpreter as it doesn't return the
-                        // correct symbol if the same symbol exists in different contexts such as inside a function defined in a lang block,
-                        // inside the lang block itself and in a function in the global scope etc.
-                        // TODO: We can later consider replacing GetSymbolInFunction with GetFirstVisibleSymbol consistently in all occurrences 
-                        
-                        //symbol = core.GetSymbolInFunction(name, classScope, functionScope, currentCodeBlock);
                         symbol = core.GetFirstVisibleSymbol(name, classScope, functionScope, currentCodeBlock);
-                        if (symbol != null)
-                        {
-                            isAccessible = true;
-                            return true;
-                        }
+                        isAccessible = symbol != null;
+                        return isAccessible;
                     }
                 }
 
@@ -1074,175 +1012,36 @@ namespace ProtoCore
                     isAccessible = true;
                 }
 
-                if (hasThisSymbol)
-                {
-                    return true;
-                }
+                return hasThisSymbol;
+            }
+            else if (functionScope != Constants.kGlobalScope)
+            {
+                symbol = core.GetFirstVisibleSymbol(name, Constants.kGlobalScope, functionScope, currentCodeBlock);
+                isAccessible = symbol != null;
+                return symbol != null;
             }
             else
             {
-                if (functionScope != Constants.kGlobalScope)
-                {
-                    // Aparajit: This function is found to not work well in the expression interpreter as it doesn't return the
-                    // correct symbol if the same symbol exists in different contexts such as inside a function defined in a lang block,
-                    // inside the lang block itself and in a function in the global scope etc.
-                    // TODO: We can later consider replacing GetSymbolInFunction with GetFirstVisibleSymbol consistently in all occurrences 
-                    
-                    //symbol = core.GetSymbolInFunction(name, Constants.kGlobalScope, functionScope, currentCodeBlock);
-                    symbol = core.GetFirstVisibleSymbol(name, Constants.kGlobalScope, functionScope, currentCodeBlock);
-                    if (symbol != null)
-                    {
-                        isAccessible = true;
-                        return true;
-                    }
-                }
-            }
-
-            CodeBlock searchBlock = currentCodeBlock;
-            while (symbolIndex == Constants.kInvalidIndex && searchBlock != null)
-            {
-                symbolIndex = searchBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
-                if (symbolIndex != Constants.kInvalidIndex)
-                {
-                    symbol = searchBlock.symbolTable.symbolList[symbolIndex];
-
-                    bool ignoreImportedSymbols = !string.IsNullOrEmpty(symbol.ExternLib) && core.IsParsingCodeBlockNode;
-                    if (ignoreImportedSymbols)
-                    {
-                        searchBlock = searchBlock.parent;
-                        continue;
-                    }
-                    isAccessible = true;
-                    return true;
-                }
-                searchBlock = searchBlock.parent;
-            }
-
-            return false;
-        }
-
-        protected bool VerifyAllocation(string name,string arrayName, int classScope, int functionScope, out ProtoCore.DSASM.SymbolNode symbol, out bool isAccessible)
-        {
-            int symbolIndex = Constants.kInvalidIndex;
-            symbol = null;
-            isAccessible = false;
-
-            if (classScope != Constants.kGlobalScope)
-            {
-                if ((int)ProtoCore.PrimitiveType.Void == classScope)
-                {
-                    return false;
-                }
-                ClassNode thisClass = core.ClassTable.ClassNodes[classScope];
-
-                bool hasThisSymbol;
-                AddressType addressType;
-                symbolIndex = ClassUtils.GetSymbolIndex(thisClass, name, classScope, functionScope, codeBlock.codeBlockId, core.CompleteCodeBlockList, out hasThisSymbol, out addressType);
-
-                if (Constants.kInvalidIndex != symbolIndex)
-                {
-                    // It is static member, then get node from code block
-                    if (AddressType.StaticMemVarIndex == addressType)
-                    {
-                        symbol = core.CodeBlockList[0].symbolTable.symbolList[symbolIndex];
-                    }
-                    else
-                    {
-                        symbol = thisClass.Symbols.symbolList[symbolIndex];
-                    }
-
-                    isAccessible = true;
-                }
-
-                if (hasThisSymbol)
-                {
-                    if (symbol != null)
-                    {
-                        symbol.forArrayName = arrayName;
-                    }
-                    return true;
-                }
-                else
-                {
-                    symbolIndex = codeBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
-                    if (symbolIndex != Constants.kInvalidIndex)
-                    {
-                        symbol = codeBlock.symbolTable.symbolList[symbolIndex];
-                        isAccessible = true;
-                        if (symbol != null)
-                        {
-                            symbol.forArrayName = arrayName;
-                        }
-                        return true;
-                    }
-                }
-            }
-            else
-            {
-                if (functionScope != Constants.kGlobalScope)
-                {
-                    symbol = core.GetSymbolInFunction(name, Constants.kGlobalScope, functionScope, codeBlock);
-                    if (symbol != null)
-                    {
-                        isAccessible = true;
-                         symbol.forArrayName = arrayName;
-                        return true;
-                    }
-                }
-
-                CodeBlock searchBlock = codeBlock;
+                CodeBlock searchBlock = currentCodeBlock;
                 while (symbolIndex == Constants.kInvalidIndex && searchBlock != null)
                 {
                     symbolIndex = searchBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
                     if (symbolIndex != Constants.kInvalidIndex)
                     {
                         symbol = searchBlock.symbolTable.symbolList[symbolIndex];
-
                         bool ignoreImportedSymbols = !string.IsNullOrEmpty(symbol.ExternLib) && core.IsParsingCodeBlockNode;
                         if (ignoreImportedSymbols)
                         {
-                            searchBlock = searchBlock.parent;
-                            continue;
+                            return false;
                         }
-
                         isAccessible = true;
-                        if (symbol != null)
-                        {
-                            symbol.forArrayName = arrayName;
-                        }
                         return true;
                     }
                     searchBlock = searchBlock.parent;
                 }
 
-                //Fix IDE-448
-                //Search current running block as well.
-                searchBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(core.CodeBlockList, 0);
-                symbolIndex = searchBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
-                if (symbolIndex != Constants.kInvalidIndex)
-                {
-                    symbol = searchBlock.symbolTable.symbolList[symbolIndex];
-
-                    if (symbol != null)
-                    {
-                        symbol.forArrayName = arrayName;
-                    }
-
-                    bool ignoreImportedSymbols = !string.IsNullOrEmpty(symbol.ExternLib) && core.IsParsingCodeBlockNode;
-                    if (ignoreImportedSymbols)
-                    {
-                        return false;
-                    }
-
-                    isAccessible = true;                    
-                    return true;
-                }
+                return false;
             }
-            if (symbol != null)
-            {
-                symbol.forArrayName = arrayName;
-            }
-            return false;
         }
 
         protected bool IsProperty(string name)
@@ -1292,7 +1091,7 @@ namespace ProtoCore
             }
         }
 
-        public abstract ProtoCore.DSASM.ProcedureNode TraverseFunctionCall(Node node, Node parentNode, int lefttype, int depth, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, ProtoCore.AST.Node bnode = null);
+        public abstract ProtoCore.DSASM.ProcedureNode TraverseFunctionCall(Node node, Node parentNode, int lefttype, int depth, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None, ProtoCore.AST.Node bnode = null);
 
         protected void EmitBounceIntrinsic(int blockId, int entry)
         {
@@ -1764,9 +1563,9 @@ namespace ProtoCore
             AppendInstruction(instr, line, col);
         }
 
-        protected void EmitIntNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
+        protected void EmitIntNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier) 
+            if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier) 
             {
                 return;
             }
@@ -1835,9 +1634,9 @@ namespace ProtoCore
             }
         }
 
-        protected void EmitCharNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
+        protected void EmitCharNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
@@ -1865,9 +1664,9 @@ namespace ProtoCore
             Node node, 
             ref Type inferedType, 
             AssociativeGraph.GraphNode graphNode = null,
-            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
+            ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
@@ -1895,9 +1694,9 @@ namespace ProtoCore
             }
         }
         
-        protected void EmitDoubleNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
+        protected void EmitDoubleNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
@@ -1959,9 +1758,9 @@ namespace ProtoCore
             }
         }
 
-        protected void EmitBooleanNode(Node node, ref ProtoCore.Type inferedType, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
+        protected void EmitBooleanNode(Node node, ref ProtoCore.Type inferedType, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
@@ -1989,9 +1788,9 @@ namespace ProtoCore
             EmitOpWithEmptyAtLevelAndGuides(emitReplicationGuide, StackValue.BuildBoolean(value), value.ToString(), node);
         }
 
-        protected void EmitNullNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
+        protected void EmitNullNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
@@ -2046,12 +1845,12 @@ namespace ProtoCore
         }
 
 
-        protected void EmitExprListNode(Node node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, ProtoCore.AST.Node parentNode = null)
+        protected void EmitExprListNode(Node node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None, ProtoCore.AST.Node parentNode = null)
         {
             dynamic exprlist = node;
             int rank = 0;
 
-            if (subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
+            if (subPass != ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier)
             {
                 //get the rank
                 dynamic ltNode = exprlist;
@@ -2095,7 +1894,7 @@ namespace ProtoCore
             inferedType.UID = commonType;
             inferedType.rank = rank;
 
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
@@ -2230,8 +2029,6 @@ namespace ProtoCore
                     {
                         graphNode.updateNodeRefList.Add(nodeRef);
                         graphNode.IsLHSIdentList = true;
-
-                        AutoGenerateUpdateArgumentReference(nodeRef, graphNode);
                     }
                 }
             }
@@ -2239,10 +2036,10 @@ namespace ProtoCore
 
         protected void EmitIdentifierListNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, 
             ProtoCore.AssociativeGraph.GraphNode graphNode = null, 
-            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, 
+            ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None, 
             ProtoCore.AST.Node bnode = null)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier)
             {
                 //to process all unbounded parameters if any
                 dynamic iNode = node;
@@ -2254,7 +2051,7 @@ namespace ProtoCore
                         foreach (dynamic paramNode in rightNode.FormalArguments)
                         {
                             ProtoCore.Type paramType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
-                            DfsTraverse(paramNode, ref paramType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier);
+                            DfsTraverse(paramNode, ref paramType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier);
                         }
                     }
                     iNode = iNode.LeftNode;
@@ -2290,9 +2087,9 @@ namespace ProtoCore
             }
         }
 
-        protected void EmitDefaultArgNode(ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
+        protected void EmitDefaultArgNode(ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
@@ -2337,9 +2134,9 @@ namespace ProtoCore
             EmitPush(opdim);
         }
 
-        protected void EmitDynamicNode(ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
+        protected void EmitDynamicNode(ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
@@ -2349,9 +2146,9 @@ namespace ProtoCore
             EmitPush(op);
         }
 
-        protected void EmitThisPointerNode(ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None)
+        protected void EmitThisPointerNode(ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None)
         {
-            if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.UnboundIdentifier)
+            if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier)
             {
                 return;
             }
@@ -2489,7 +2286,7 @@ namespace ProtoCore
             
         protected bool InsideFunction()
         {
-            ProtoCore.DSASM.CodeBlock cb = codeBlock;
+            CodeBlock cb = codeBlock;
             while (cb != null)
             {
                 if (cb.blockType == ProtoCore.DSASM.CodeBlockType.Function)
@@ -2507,15 +2304,12 @@ namespace ProtoCore
         protected abstract void EmitReturnNull();
 
         protected abstract void DfsTraverse(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, 
-            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.None, ProtoCore.AST.Node parentNode = null);
+            ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None, ProtoCore.AST.Node parentNode = null);
         
         protected static int staticPc;
         static int blk = 0;
         public static void setBlkId(int b){ blk = b; }
-        public static int getBlkId() { return blk; }
-
        
-        //public void updatePcDictionary(ProtoCore.AST.Node node, int blk)
         public void updatePcDictionary(int line, int col)
         {
             blk = codeBlock.codeBlockId;
@@ -2535,7 +2329,7 @@ namespace ProtoCore
 
         protected bool IsInLanguageBlockDefinedInFunction()
         {
-            return (localProcedure != null && localProcedure.RuntimeIndex != codeBlock.codeBlockId);
+            return localProcedure != null && localProcedure.RuntimeIndex != codeBlock.codeBlockId && codeBlock.blockType != CodeBlockType.Function;
         }
     }
 }

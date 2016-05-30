@@ -1046,12 +1046,12 @@ b1;
             //Assert.Fail("1455594 - Sprint15 : Rev 804: String object type is missing in the new language ");
             string code = @"
 b;
+def foo : string (x : string )
+{
+   return = x; 		
+}
 [Associative]
 {
-    def foo : string (x : string )
-	{
-	   return = x; 		
-	}
     a = ""sarmistha"";
     b = foo ( a );	
 }
@@ -1364,9 +1364,9 @@ x2;
         {
             string code = @"
 import (""FFITarget.dll"");
-	a=1;
 	def CreateNewVal ( )
 	{
+	    a=1;
 		y = [Imperative]
 		{
 			if ( a  < 10 )
@@ -1380,7 +1380,6 @@ import (""FFITarget.dll"");
 		return = a + y;
 	}
 
-   
 	b1 = CreateNewVal(); 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1582,31 +1581,6 @@ a = null + 1;
             {
                 ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
             });
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void T67_DNL_1467458()
-        {
-            String code =
-            @"
-x;  
-    def foo(a : int) 
-    { 
-        x = a; 
-         return = x; 
-    } 
-
- b; 
- [Imperative] 
- { 
-      
-     foo(9); 
-      
- } 
-            ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 9);
         }
 
 

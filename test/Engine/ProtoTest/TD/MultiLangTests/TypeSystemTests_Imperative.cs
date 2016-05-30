@@ -1766,10 +1766,10 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"a;
-                [Associative]
-                { 
                     def foo(i : int[])
                     { return=i; }
+                [Associative]
+                { 
                     a = foo(3);
                 }
                                                 ";
@@ -1783,10 +1783,10 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"a;
-                [Associative]
-                { 
                     def foo:int[]()
                     { return=3; }
+                [Associative]
+                { 
                     a = foo();
                 }
                                                ";
