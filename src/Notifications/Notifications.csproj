@@ -9,8 +9,8 @@
     <ProjectGuid>{09F48994-BB2F-4A26-8CCD-469FE3F7F904}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WarningHelper</RootNamespace>
-    <AssemblyName>WarningHelper</AssemblyName>
+    <RootNamespace>Notifications</RootNamespace>
+    <AssemblyName>Notifications</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -63,7 +63,7 @@
     <Compile Include="NotificationsView.xaml.cs">
       <DependentUpon>NotificationsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WarningViewExtension.cs" />
+    <Compile Include="NotificationsViewExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
