@@ -276,12 +276,10 @@ namespace Dynamo.Applications
                             }
                         }
 
-                        //TODO move this window into the view extension from Revit
                         output.Add(new FileLoadException(
                             string.Format(Resources.MismatchedAssemblyVersion, assembly.FullName, currentReferencedAssembly.FullName)
-                            + "it is likely one of the following assemblies that loaded the incompatible version" +
+                            + Environment.NewLine + Resources.MismatchedAssemblyList + Environment.NewLine +
                             String.Join(", ", referencingNewerVersions.Select(x => x.Name).ToArray())));
-                       
                     }
                 }
             }

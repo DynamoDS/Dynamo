@@ -60,8 +60,8 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// Event that is raised when the Dynamo Logger logs a notification
-        /// the notification string 
+        /// Event that is raised when the Dynamo Logger logs a notification.
+        /// This event passes the notificationMessage to any subscribers
         /// </summary>
         public event Action<Logging.NotificationMessage> NotificationRecieved;
         private void OnNotificationRecieved(Logging.NotificationMessage notification)

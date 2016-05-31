@@ -61,6 +61,15 @@ namespace DynamoApplications.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to It is likely one of the following assemblies loaded the incompatible version:.
+        /// </summary>
+        public static string MismatchedAssemblyList {
+            get {
+                return ResourceManager.GetString("MismatchedAssemblyList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to While loading assembly {0}, Dynamo detected that the dependency {1} was already loaded with an incompatiable version. It is likely that another Revit Addin has loadead this assembly, please try uninstalling other Addins, and starting Dynamo again. Dynamo may be unstable in this state..
         /// </summary>
         public static string MismatchedAssemblyVersion {

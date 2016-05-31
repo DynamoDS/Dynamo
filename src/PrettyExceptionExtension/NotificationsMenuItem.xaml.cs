@@ -13,16 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Dynamo.WarningHelper
+namespace Dynamo.Notifications
 {
     /// <summary>
     /// Interaction logic for NotificationsMenuItem.xaml
     /// </summary>
     public partial class NotificationsMenuItem : UserControl
     {
-        WarningHelperViewExtension notificationsModel;
+        NotificationsViewExtension notificationsModel;
 
-        public NotificationsMenuItem(WarningHelper.WarningHelperViewExtension notificationsExtension)
+        public NotificationsMenuItem(Notifications.NotificationsViewExtension notificationsExtension)
         {
             this.notificationsModel = notificationsExtension;
             InitializeComponent();

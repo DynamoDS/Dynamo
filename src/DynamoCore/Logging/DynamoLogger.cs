@@ -236,7 +236,7 @@ namespace Dynamo.Logging
         /// <param name="detailedMessage"></param>
         public void LogNotification(string sender,string title, string shortMessage, string detailedMessage)
         {
-            var notificationMessage = string.Format("{0}: /n {1}: /n {2}", title, shortMessage, detailedMessage);
+            var notificationMessage = string.Format("{0}:{3} {1}: {3} {2}", title, shortMessage, detailedMessage,Environment.NewLine);
             Log("notification",notificationMessage );
             NotificationLogged(new NotificationMessage(sender, shortMessage, detailedMessage,title));
         }

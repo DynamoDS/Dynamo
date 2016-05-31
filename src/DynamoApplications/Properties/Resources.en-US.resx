@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="MismatchedAssemblyList" xml:space="preserve">
+    <value>It is likely one of the following assemblies loaded the incompatible version:</value>
+  </data>
   <data name="MismatchedAssemblyVersion" xml:space="preserve">
     <value>While loading assembly {0}, Dynamo detected that the dependency {1} was already loaded with an incompatiable version. It is likely that another Revit Addin has loadead this assembly, please try uninstalling other Addins, and starting Dynamo again. Dynamo may be unstable in this state.</value>
   </data>

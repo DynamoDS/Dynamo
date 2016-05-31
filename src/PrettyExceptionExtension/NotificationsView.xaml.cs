@@ -13,15 +13,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Dynamo.WarningHelper
+namespace Dynamo.Notifications
 {
     /// <summary>
     /// Interaction logic for NotificationsView.xaml
     /// </summary>
     public partial class NotificationsView : Window
     {
-        private WarningHelperViewExtension model;
-        public NotificationsView(WarningHelperViewExtension model)
+        private NotificationsViewExtension model;
+        public NotificationsView(NotificationsViewExtension model)
         {
             this.model = model;
             DataContext = model;

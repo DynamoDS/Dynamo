@@ -15,9 +15,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Dynamo.WarningHelper
+namespace Dynamo.Notifications
 {
-    public class WarningHelperViewExtension : IViewExtension
+    public class NotificationsViewExtension : IViewExtension
     {
         public ObservableCollection<Logging.NotificationMessage> Notifications { get; private set; }
      

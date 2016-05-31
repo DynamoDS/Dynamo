@@ -1,4 +1,4 @@
 <ViewExtensionDefinition>
-  <AssemblyPath>..\WarningHelper.dll</AssemblyPath>
-  <TypeName>Dynamo.WarningHelper.WarningHelperViewExtension</TypeName>
+  <AssemblyPath>..\Notifications.dll</AssemblyPath>
+  <TypeName>Dynamo.Notifications.NotificationsViewExtension</TypeName>
 </ViewExtensionDefinition>
