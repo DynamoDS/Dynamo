@@ -37,6 +37,8 @@ namespace Dynamo.Notifications
             }
         }
 
+        internal Window dynamoWindow;
+        
         public void Dispose()
         {
            // UnregisterEventHandlers();
@@ -44,7 +46,7 @@ namespace Dynamo.Notifications
 
         public void Loaded(ViewLoadedParams p)
         {
-
+            dynamoWindow = p.DynamoWindow;
 
             p.NotificationRecieved += (notificationMessage) =>
             {

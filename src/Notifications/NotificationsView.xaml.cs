@@ -26,6 +26,7 @@ namespace Dynamo.Notifications
             this.model = model;
             DataContext = model;
             InitializeComponent();
+            this.Owner = model.dynamoWindow;
         }
 
         private void ShowDetails_ButtonClick(object sender, RoutedEventArgs e)

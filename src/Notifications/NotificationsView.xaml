@@ -13,6 +13,7 @@
         MinWidth="400"
         MaxWidth="400"
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+        d:DataContext="{d:DesignInstance Type = local:NotificationsViewExtension}"
                 mc:Ignorable="d">
 
     <Window.Resources>
@@ -49,7 +50,7 @@
                                          Color="#000" />
                     </Style.Resources>
                     <Setter Property="Padding"
-                            Value="0,0,0,0" />
+                            Value="0,0,0,10" />
                 </Style>
 
             </ListBox.ItemContainerStyle>
@@ -62,7 +63,7 @@
                             <SolidColorBrush Color="{DynamicResource ResourceKey=BorderDarkColor}"></SolidColorBrush>
                         </StackPanel.Background>
                         
-                        <StackPanel Margin="10,10,10,10">
+                        <StackPanel Margin="10,10,20,10">
                             <TextBox Style="{DynamicResource ResourceKey =SDarkTextBox }" Name="Title" Text="{Binding Path=Title, Mode=OneWay}" FontWeight="Bold" IsReadOnly="True" TextWrapping="Wrap" Visibility="Visible" Grid.Row="0" Grid.Column="0" ></TextBox>
                             <TextBox Style="{DynamicResource ResourceKey =SDarkTextBox }" Name="ShortErrorMessage" Text="{Binding Path= ShortMessage,Mode=OneWay}" FontSize="11" IsReadOnly="True" TextWrapping="Wrap" Visibility="Visible" Grid.Row="0" Grid.Column="0" ></TextBox>
                         </StackPanel>
@@ -77,7 +78,8 @@
                             <Button Margin="50,20,20,20" HorizontalAlignment="Right" Style="{DynamicResource ResourceKey=STextButton}" Click="OKButton_Click">OK</Button>
                     </StackPanel>
                     </Border>
-                    <StackPanel>
+                    <StackPanel Margin="0,0,20,0">
+                        
                             <StackPanel.Background>
                                 <SolidColorBrush Color="{DynamicResource ResourceKey=BorderMediumColor}"></SolidColorBrush>
                             </StackPanel.Background>
