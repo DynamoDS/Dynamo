@@ -28,7 +28,7 @@ namespace Dynamo.Notifications
             InitializeComponent();
 
             var showItem = new MenuItem();
-            showItem.Header = "Display All Notifications";
+            showItem.Header = Properties.Resources.Display;
             showItem.Click += (o, e) =>
             {
                 //create a window to display the list of notificationsModels
@@ -37,7 +37,7 @@ namespace Dynamo.Notifications
             };
 
             var dismissItem = new MenuItem();
-            dismissItem.Header = "Dismiss All Notifications";
+            dismissItem.Header = Properties.Resources.Dismiss;
             dismissItem.Click += (o, e) => { this.notificationsModel.Notifications.Clear(); };
 
             this.MenuItem.Items.Add(showItem);
@@ -48,15 +48,19 @@ namespace Dynamo.Notifications
             this.imageicon.Source = FontAwesome.WPF.ImageAwesome.CreateImageSource(FontAwesome.WPF.FontAwesomeIcon.ExclamationCircle, color);
 
             //create some bindings
-            //attach the visibility of the badge to the number of notifications without a binding...
+            //attach the visibility of the badge and menuItems enabledState to the number of notifications without a binding...
             this.notificationsModel.Notifications.CollectionChanged += (o, e) => {
                 if (this.notificationsModel.Notifications.Count > 0)
                 {
                     BadgeGrid.Visibility = Visibility.Visible;
+                    dismissItem.IsEnabled = true;
+                    showItem.IsEnabled = true;
                 }
                 else
                 {
                     BadgeGrid.Visibility = Visibility.Hidden;
+                    dismissItem.IsEnabled = false;
+                    showItem.IsEnabled = false;
                 }
             };
 
