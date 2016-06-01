@@ -350,10 +350,6 @@ namespace Dynamo.Models
         /// Returns authentication manager object for oxygen authentication.
         /// </summary>
         public AuthenticationManager AuthenticationManager { get; set; }
-        /// <summary>
-        /// Data a host application has passed to Dynamo about events
-        /// that occured before or during Dynamo load.
-        /// </summary>
 
         #endregion
 
