@@ -40,6 +40,11 @@ namespace Dynamo.Notifications
             dismissItem.Header = Properties.Resources.Dismiss;
             dismissItem.Click += (o, e) => { this.notificationsModel.Notifications.Clear(); };
 
+            //set some defaults
+            dismissItem.IsEnabled = false;
+            showItem.IsEnabled = false;
+            BadgeGrid.Visibility = Visibility.Hidden;
+
             this.MenuItem.Items.Add(showItem);
             this.MenuItem.Items.Add(dismissItem);
 

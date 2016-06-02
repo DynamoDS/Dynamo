@@ -229,27 +229,35 @@ namespace Dynamo.Applications
         }
 
         /// <summary>
+        /// Checks that an assembly does not have any dependencies that have already been loaded into the 
+        /// appDomain with an incompatible to the one Dynamo requires.
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <returns>returns a list of fileLoad exceptions - if the list is empty no mismatched assemblies were encountered </returns>
+        public static List<Exception> CheckAssemblyForVersionMismatches(Assembly assembly)
+        {
+            return GetVersionMismatchedReferencesInAppDomain(assembly, new string[] { });
+        }
+
+        /// <summary>
         /// Handler for an assembly load event into a host's appdomain - we need to make sure
         /// that another addin or package has not loadead another version of a .dll that we require.
         /// If this happens Dynamo will most likely crash. We should alert the user they
-        /// have an incompatible addin installed.
+        /// have an incompatible addin/package installed.. this is only called if the host calls or
+        /// subscribes to it during AppDomain.AssemblyLoad event.
         /// 
-        /// </summary>
-        /// <param name="assembly"></param>
-        /// <param name="assemblyNamesToIgnore"></param>
-        /// <returns></returns>
-        public static List<Exception> AppDomainHasMismatchedReferences(Assembly assembly, String[] assemblyNamesToIgnore)
+        private static List<Exception> GetVersionMismatchedReferencesInAppDomain(Assembly assembly, String[] assemblyNamesToIgnore)
         {
             //get all assemblies that are currently loaded into the appdomain.
             var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
             // ignore some assemblies(revit assemblies) that we know work and have changed their version number format or do not align
             // with semantic versioning.
 
-            var loadedAssembllyNames = loadedAssemblies.Select(assem => assem.GetName()).ToList();
-            loadedAssembllyNames.RemoveAll(assemblyName =>assemblyNamesToIgnore.Contains(assemblyName.Name));
+            var loadedAssemblyNames = loadedAssemblies.Select(assem => assem.GetName()).ToList();
+            loadedAssemblyNames.RemoveAll(assemblyName =>assemblyNamesToIgnore.Contains(assemblyName.Name));
 
             //build dict- ignore those with duplicate names.
-            var loadedAssemblyDict = loadedAssembllyNames.GroupBy(assm => assm.Name).ToDictionary(g => g.Key, g => g.First());
+            var loadedAssemblyDict = loadedAssemblyNames.GroupBy(assm => assm.Name).ToDictionary(g => g.Key, g => g.First());
 
             var output = new List<Exception>();
 
