@@ -73,7 +73,6 @@ namespace Dynamo.Models
         #endregion
 
         #region events
-
         internal delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
         internal event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
         internal void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
@@ -425,6 +424,7 @@ namespace Dynamo.Models
             TaskProcessMode ProcessMode { get; set; }
         }
 
+      
         /// <summary>
         /// Initialization settings for DynamoModel.
         /// </summary>
