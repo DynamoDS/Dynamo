@@ -19,6 +19,8 @@ namespace Dynamo.Notifications
 {
     public class NotificationsViewExtension : IViewExtension
     {
+        private ViewLoadedParams viewLoadedParams;
+        private Action<Logging.NotificationMessage> notificationHandler;
         public ObservableCollection<Logging.NotificationMessage> Notifications { get; private set; }
      
         public string Name
@@ -41,17 +43,24 @@ namespace Dynamo.Notifications
         
         public void Dispose()
         {
-           // UnregisterEventHandlers();
+           UnregisterEventHandlers();
+        }
+
+        private void UnregisterEventHandlers()
+        {
+            viewLoadedParams.NotificationRecieved -= notificationHandler;
         }
 
         public void Loaded(ViewLoadedParams p)
         {
+            viewLoadedParams = p;
             dynamoWindow = p.DynamoWindow;
 
-            p.NotificationRecieved += (notificationMessage) =>
-            {
-                Notifications.Add(notificationMessage);
-            };
+             notificationHandler = new Action<Logging.NotificationMessage>((notificationMessage) =>
+           {
+               Notifications.Add(notificationMessage);
+           });
+            p.NotificationRecieved += notificationHandler;
              
            
             Notifications = new ObservableCollection<Logging.NotificationMessage>();
@@ -67,7 +76,7 @@ namespace Dynamo.Notifications
 
         public void Shutdown()
         {
-            throw new NotImplementedException();
+
         }
 
         public void Startup(ViewStartupParams p)
