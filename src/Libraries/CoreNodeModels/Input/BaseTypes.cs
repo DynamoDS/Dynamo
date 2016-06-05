@@ -14,6 +14,7 @@ using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using CoreNodeModels.Properties;
+using System.Net;
 
 namespace CoreNodeModels.Input
 {
@@ -100,7 +101,7 @@ namespace CoreNodeModels.Input
                         select attr;
 
             foreach (XmlAttribute attr in query)
-                attr.Value = HttpUtility.UrlDecode(attr.Value);
+                attr.Value = WebUtility.UrlDecode(attr.Value);
 
             migrationData.AppendNode(newNode as XmlElement);
             return migrationData;
