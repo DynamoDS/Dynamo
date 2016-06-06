@@ -378,12 +378,12 @@
                                   Header="{x:Static p:Resources.DynamoViewEditMenuUndo}"
                                   Command="{Binding UndoCommand}"
                                   Name="undo"
-                                  InputGestureText="Ctrl+Z" />
+                                  InputGestureText="Ctrl + Z" />
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuRedo}"
                                   Command="{Binding RedoCommand}"
                                   Name="redo"
-                                  InputGestureText="Ctrl+Y" />
+                                  InputGestureText="Ctrl + Y" />
                         <Separator />
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCopy}"
