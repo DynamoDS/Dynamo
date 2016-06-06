@@ -2522,7 +2522,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
             <summary>
-            Construct a Polygon Curve by connecting Points.
+            Construct an inscribed Polygon Curve within a circle.
             </summary>
             <param name="circle">  </param>
             <param name="numberSides">  </param>
