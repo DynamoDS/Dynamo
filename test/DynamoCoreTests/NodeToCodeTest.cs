@@ -1348,7 +1348,6 @@ namespace Dynamo.Tests
         }
 
         [Test, TestCaseSource("GetFilesForMutation")]
-        [Category("Failure")]
         public void TestMutation(string fileName)
         {
             MutationTest(fileName);

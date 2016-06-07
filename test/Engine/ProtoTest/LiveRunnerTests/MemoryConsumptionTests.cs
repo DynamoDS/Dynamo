@@ -36,7 +36,6 @@ namespace ProtoTest.LiveRunner
 
 
         [Test]
-        [Category("Failure")]
         public void TestInstructionStreamMemory_SimpleWorkflow01()
         {
             List<string> codes = new List<string>() 
@@ -74,7 +73,6 @@ namespace ProtoTest.LiveRunner
 
 
         [Test]
-        [Category("Failure")]
         public void TestPeriodicUpdate01()
         {
             int rhs = 0;
@@ -114,7 +112,6 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Category("Failure")]
         public void TestInstructionStreamMemory_FunctionRedefinition01()
         {
             List<string> codes = new List<string>() 

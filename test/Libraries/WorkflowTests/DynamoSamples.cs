@@ -553,7 +553,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
             //Todo Ritesh: Locally passing but failing on CI.
             //After fixing issue with this test case add Smoke Test Category.
         public void ImportExport_Excel_to_Dynamo()
