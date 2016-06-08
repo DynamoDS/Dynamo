@@ -1430,7 +1430,7 @@ namespace ProtoCore.Lang
         internal static StackValue Flatten(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
             if (!sv.IsArray)
-                return DSASM.StackValue.Null;
+                return sv;
 
             List<StackValue> newElements = new List<DSASM.StackValue>();
             GetFlattenedArrayElements(sv, runtime, ref newElements);
