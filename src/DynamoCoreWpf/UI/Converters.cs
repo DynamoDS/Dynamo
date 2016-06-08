@@ -31,6 +31,7 @@ using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using Point = System.Windows.Point;
 using TabControl = System.Windows.Controls.TabControl;
 using Thickness = System.Windows.Thickness;
+using System.Net;
 
 namespace Dynamo.Controls
 {
@@ -1603,7 +1604,7 @@ namespace Dynamo.Controls
             if (value == null)
                 return Resources.FilePathConverterNoFileSelected;
 
-            var str = HttpUtility.UrlDecode(value.ToString());
+            var str = WebUtility.UrlDecode(value.ToString());
 
             if (string.IsNullOrEmpty(str))
                 return Resources.FilePathConverterNoFileSelected;
@@ -1658,7 +1659,7 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return HttpUtility.UrlEncode(value.ToString());
+            return WebUtility.UrlEncode(value.ToString());
         }
     }
 

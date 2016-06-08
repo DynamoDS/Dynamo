@@ -47,6 +47,7 @@ namespace Dynamo.Notifications
            UnregisterEventHandlers();
             //for some reason the menuItem was not being gc'd in tests without manually removing it
             viewLoadedParams.dynamoMenu.Items.Remove(notificationsMenuItem.MenuItem);
+            BindingOperations.ClearAllBindings(notificationsMenuItem.CountLabel);
             notificationsMenuItem = null;
         }
 
