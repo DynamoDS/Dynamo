@@ -18,14 +18,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public DynamoEffectsManager(IRenderTechniquesManager renderTechniquesManager) : base(renderTechniquesManager) { }
 
         /// <summary>
-        /// Required destructor for disposing unmanaged memory.
-        /// </summary>
-        ~DynamoEffectsManager()
-        {
-            Dispose();
-        }
-
-        /// <summary>
         /// Override the DefaultEffectsManager's InitEffects method to load
         /// effects used by Dynamo for rendering. Custom input layouts are
         /// created which specify extra COLOR components used to hold data 

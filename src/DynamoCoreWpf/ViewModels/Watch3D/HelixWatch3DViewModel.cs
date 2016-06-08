@@ -88,7 +88,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private LineGeometry3D worldAxes;
         private RenderTechnique renderTechnique;
         private PerspectiveCamera camera;
-        private Vector3 directionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
+        private readonly Vector3 directionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
         private DirectionalLight3D directionalLight;
 
         private readonly Color4 directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
@@ -1965,6 +1965,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         #endregion
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                var effectsManager = EffectsManager as DynamoEffectsManager;
+                if (effectsManager != null) effectsManager.Dispose();
+
+                foreach (var sceneItem in SceneItems)
+                {
+                    sceneItem.Dispose();
+                }
+            }
+        }
     }
 
     /// <summary>
