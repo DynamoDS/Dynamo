@@ -1,16 +1,10 @@
-using System;
-using System.ComponentModel;
-using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Diagnostics;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
+using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Notes;
+using Dynamo.Graph.Presets;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Prompts;
@@ -18,33 +12,37 @@ using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Search;
 using Dynamo.Selection;
+using Dynamo.Services;
+using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Views;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Authentication;
 using Dynamo.Wpf.Controls;
-
-using String = System.String;
-using System.Windows.Data;
-using Dynamo.UI.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media;
-using Dynamo.Configuration;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Notes;
-using Dynamo.Graph.Presets;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Services;
+using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Utilities;
-using Dynamo.Logging;
-
-using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Gallery;
-using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Views.PackageManager;
-using Dynamo.Views;
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
+using String = System.String;
 
 namespace Dynamo.Controls
 {
@@ -748,19 +746,27 @@ namespace Dynamo.Controls
         void DynamoViewModelRequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
             var dialogText = "";
-            if (e.Workspace is CustomNodeWorkspaceModel)
+            // If the file is read only, display a different message.
+            if (e.Workspace.IsReadOnly)
             {
-                dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveCustomNode, e.Workspace.Name);
+                dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveReadOnlyCustomNode, e.Workspace.FileName);
             }
-            else // homeworkspace
+            else
             {
-                if (string.IsNullOrEmpty(e.Workspace.FileName))
+                if (e.Workspace is CustomNodeWorkspaceModel)
                 {
-                    dialogText = Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveHomeWorkSpace;
+                    dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveCustomNode, e.Workspace.Name);
                 }
-                else
+                else // home workspace
                 {
-                    dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveNamedHomeWorkSpace, Path.GetFileName(e.Workspace.FileName));
+                    if (string.IsNullOrEmpty(e.Workspace.FileName))
+                    {
+                        dialogText = Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveHomeWorkSpace;
+                    }
+                    else
+                    {
+                        dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveNamedHomeWorkSpace, Path.GetFileName(e.Workspace.FileName));
+                    }
                 }
             }
 
@@ -771,7 +777,11 @@ namespace Dynamo.Controls
 
             if (result == MessageBoxResult.Yes)
             {
-                e.Success = dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
+                // If the file is read-only, redirect yes to save-as.
+                if (e.Workspace.IsReadOnly)
+                    dynamoViewModel.ShowSaveDialogAndSaveResult(e.Workspace);
+                else
+                    e.Success = dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
             }
             else if (result == MessageBoxResult.Cancel)
             {

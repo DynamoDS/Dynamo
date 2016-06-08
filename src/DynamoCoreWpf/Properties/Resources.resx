@@ -869,6 +869,7 @@ It does not contain your graph or any personal data</value>
     <value>You have unsaved changes to custom node workspace: "{0}".
 
 Would you like to save your changes?</value>
+    <comment>Message box content</comment>
   </data>
   <data name="MessageConfirmToSaveHomeWorkSpace" xml:space="preserve">
     <value>You have unsaved changes to the Home workspace.
@@ -1733,6 +1734,14 @@ Do you want to install the latest Dynamo update?</value>
   <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
     <value>Show Edges</value>
   </data>
+  <data name="DynamoViewSettingsMenuHidePreviewBubbles" xml:space="preserve">
+    <value>Hide Preview Bubbles</value>
+    <comment>Settings menu | Hide preview bubbles</comment>
+  </data>
+  <data name="DynamoViewSettingsMenuShowPreviewBubbles" xml:space="preserve">
+    <value>Show Preview Bubbles</value>
+    <comment>Settings menu | Show preview bubbles</comment>
+  </data>
   <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
     <value>Visualization Settings</value>
   </data>
@@ -1983,6 +1992,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PreviewListLabel" xml:space="preserve">
     <value>List</value>
   </data>
+  <data name="NullString" xml:space="preserve">
+    <value>null</value>
+  </data>
   <data name="InvalidTimeZoneMessage" xml:space="preserve">
     <value>Could not sign in at this moment. Check the date, time and time zone settings and try to sign in again.</value>
   </data>
@@ -1994,5 +2006,12 @@ Next assemblies were loaded several times:
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Failed to add file: {0}</value>
     <comment>Message box content</comment>
+  </data>
+  <data name="MessageConfirmToSaveReadOnlyCustomNode" xml:space="preserve">
+    <value>We can't save "{0}" because the file is read only. To keep your changes, you'll need to save it with a new name or in a different location.</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="TabFileNameReadOnlyPrefix" xml:space="preserve">
+    <value>[Read-Only] </value>
   </data>
 </root>

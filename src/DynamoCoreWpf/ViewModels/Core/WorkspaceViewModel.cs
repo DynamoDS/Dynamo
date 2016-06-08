@@ -1,3 +1,14 @@
+using Dynamo.Configuration;
+using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Notes;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
+using Dynamo.Selection;
+using Dynamo.Utilities;
+using Dynamo.Wpf.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,21 +17,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using Dynamo.Models;
-using Dynamo.Selection;
-using Dynamo.UI;
-using Dynamo.Utilities;
 using System.Windows.Input;
-using Dynamo.Configuration;  
-using Dynamo.Graph;
-using Dynamo.Graph.Annotations;
-using Dynamo.Graph.Connectors;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Notes;
-using Dynamo.Graph.Workspaces;
- 
-using Dynamo.Wpf.ViewModels;
-
 using Function = Dynamo.Graph.Nodes.CustomNodes.Function;
 
 namespace Dynamo.ViewModels

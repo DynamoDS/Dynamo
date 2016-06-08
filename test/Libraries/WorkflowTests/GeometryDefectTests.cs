@@ -560,5 +560,34 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        [Category("Failure")]
+        public void LargeModel_Intersection_MAGN_9320()
+        {
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-9320
+
+            string openPath = Path.Combine(TestDirectory,
+            @"core\WorkflowTestFiles\GeometryDefects\LargeModel_Intersection_MAGN_9320.dyn");
+
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            // Surface created using NurbsSurface.ByControlPointsWeightsKnots
+            var intersectAllResults = GetFlattenedPreviewValues("ecc1a8ed-7f70-45b6-9e57-d72c6774b2fe");
+            Assert.AreEqual(42, intersectAllResults.Count);
+            foreach (var x in intersectAllResults)
+            {
+                Assert.IsTrue(x.GetType() == typeof(Point));
+            }
+            
+            var doesIntersectResult = GetFlattenedPreviewValues("be1b4b66-fc41-4240-a79f-f2345439ee33");
+            Assert.AreEqual(42, doesIntersectResult.Count);
+            foreach (var x in doesIntersectResult)
+            {
+                Assert.IsTrue((bool)x);
+            }
+        }
+
     }
 }

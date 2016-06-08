@@ -2661,20 +2661,21 @@ def foo (x,y,z)
 {
     return = x + y + z;
 }
-def foo2 : int[] ()
+def foo2 : int[] (a:var[]..[])
 {
     return = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];
 }
-def foo: int[] ()
+def foo: int[] (a:var[]..[])
 {
     return = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];
 }
 a = {1,2,3,4};
-b = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];
-c = foo2();
-d = foo();
+c = foo2(a);
+d = foo(a);
+b;
 f = [Associative]
 {
+    b = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];
     return = [Imperative]
     {
          return = [Associative]

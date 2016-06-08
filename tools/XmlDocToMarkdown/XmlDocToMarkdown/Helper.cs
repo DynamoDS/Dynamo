@@ -99,9 +99,16 @@ namespace XmlDocToMarkdown
             {
                 foreach (var constructor in constructors)
                 {
+                    int pos = 3; //this is the default position of ctor.
                     var text = constructor.Attribute("name").Value;
                     var name = text.Split('.').ToArray();
-                    text = new StringBuilder(text).Replace("#ctor", name[2]).ToString();
+                    //replace the string "ctor" with actual method name
+                    string ctorName =  name.First(x => x.Contains("ctor"));
+                    if (!String.IsNullOrEmpty(ctorName))
+                    {
+                        pos = Array.IndexOf(name, ctorName);
+                    }
+                    text = new StringBuilder(text).Replace("#ctor", name[pos - 1]).ToString();
                     constructor.Attribute("name").Value = text;
                 }
             }

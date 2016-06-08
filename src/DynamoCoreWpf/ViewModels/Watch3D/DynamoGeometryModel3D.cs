@@ -149,6 +149,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             Disposer.RemoveAndDispose(ref texDiffuseMapView);
             Disposer.RemoveAndDispose(ref texNormalMapView);
             Disposer.RemoveAndDispose(ref bHasInstances);
+            Disposer.RemoveAndDispose(ref rasterState);
 
             renderTechnique = null;
             phongMaterial = null;

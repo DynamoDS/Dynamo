@@ -1289,14 +1289,13 @@ c;
             String code =
 @"
 test;
-[Associative]
-{
     def mult : int( s : int )	
 	{
 		return = s * 2;
 	}
+[Associative]
+{
     test = mult({5});
-    
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -1940,18 +1939,18 @@ xdata = { 1.5, 2 };
             String code =
 @"
 y;
+def foo : int ( a : int, b : int )
+{
+    return = a + b;
+}
 [Associative]
 {
-    def foo : int ( a : int, b : int )
-    {
-        return = a + b;
-    }
     x1 = { 1, 2, 3 };
     x2 = { 1, 2, 3 };
     y = foo ( x1, x2 );
 }
                             ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2, 4, 6 };
             thisTest.Verify("y", v1);
         }
@@ -1971,8 +1970,7 @@ two = foo (arr, arr);
 t1 = two[0];
 t2 = two[1];
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
+            thisTest.RunScriptSource(code);
             thisTest.Verify("t1", 5.0);
             thisTest.Verify("t2", 3.0);
         }
@@ -1984,18 +1982,18 @@ t2 = two[1];
             String code =
 @"
 y;
+def foo : int ( a : int, b : int )
+{
+    return = a + b;
+}
 [Associative]
 {
-    def foo : int ( a : int, b : int )
-    {
-        return = a + b;
-    }
     x1 = { 1 };
     x2 = { 1, 2, 3 };
     y = foo ( x1, x2 );
 }
                             ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2 };
             thisTest.Verify("y", v1);
         }
@@ -2007,18 +2005,18 @@ y;
             String code =
 @"
 y;
+def foo : int ( a : int, b : int )
+{
+    return = a + b;
+}
 [Associative]
 {
-    def foo : int ( a : int, b : int )
-    {
-        return = a + b;
-    }
     x1 = { 1, 2.5, null };
     x2 = { 1 };
     y = foo ( x1, x2 );
 }
                             ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2 };
             thisTest.Verify("y", v1);
         }
@@ -2030,18 +2028,18 @@ y;
             String code =
 @"
 y;
+def foo : int ( a : int, b : int )
+{
+    return = a + b;
+}
 [Associative]
 {
-    def foo : int ( a : int, b : int )
-    {
-        return = a + b;
-    }
     x1 = { 1, 2.5, null };
     x2 =  1 ;
     y = foo ( x1, x2 );
 }
                             ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2, 4, null };
             thisTest.Verify("y", v1);
         }
@@ -2053,18 +2051,17 @@ y;
             String code =
 @"
 y;
+def foo : int ( a : int, b : int )
+{
+    return = a + b;
+}
 [Associative]
 {
-    def foo : int ( a : int, b : int )
-    {
-        return = a + b;
-    }
     x1 = 0;
     x2 =  { 1, 2.5, null };
     y = foo ( x1, x2 );
-}
-                            ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+} ";
+            thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1, 3, null };
             thisTest.Verify("y", v1);
         }
@@ -2243,9 +2240,7 @@ z1 = { 0, 1 };
 pts = DummyPoint.ByCoordinates(x1, y1, z1);
 c1 = Count ( pts );
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object n1 = null;
+            thisTest.RunScriptSource(code);
             thisTest.Verify("c1", 1); // this depends on new replication logic : please check
         }
 
@@ -2281,8 +2276,7 @@ y1 = 3;
 pts = DummyPoint.ByCoordinates(x1, y1);
 c1 = Count ( pts );
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("c1", 3); // this depends on new replication logic : please check
         }
 
@@ -2299,8 +2293,7 @@ list2 = { { 1, 2, 3, 4 }, { 1, 2, 3, 4 } };
 list3 = Point_2D.ValueCtor(list1, list2);
 list2_0_0 = list3[0][0].GetValue(); 
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             thisTest.Verify("list2_0_0", 1);
         }
@@ -2347,7 +2340,7 @@ yLowFrequency = DummyMath.Sin(-5..185..#yCount)*lowFrequencyAmpitude;
 sinRange = {0.0, 10, 20, 30, 40 ,50, 60 ,70 ,80 , 90 ,100, 110 ,120, 130, 140, 150, 160, 170};
 xHighFrequency = DummyMath.Sin(sinRange) * highFrequencyAmpitude;
 y = Count(xHighFrequency);";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("y", 18);
         }
 
@@ -2358,8 +2351,7 @@ y = Count(xHighFrequency);";
             String code =
 @"def fun : double(arg: double) { return = 4.0; }
 a = fun({{1.0}, {2.0}});";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             thisTest.Verify("a", new Object[] { new Object[] { 4.0 }, new Object[] { 4.0 } });
         }
@@ -2382,10 +2374,8 @@ a = fun({{1.0}, {2.0}});";
     d = foo ( c ) ;
 }";
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string err = "MAGN-4092 Replication should not be supported in Imperative scope";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
-
+            thisTest.RunScriptSource(code, err);
             thisTest.Verify("d", null);
         }
 
@@ -2396,18 +2386,17 @@ a = fun({{1.0}, {2.0}});";
             String code =
 @"
 d;
+def foo( a )
+{
+    a = a + 1;
+    return = a;
+}
 [Associative]
 {
-    def foo( a )
-    {
-        a = a + 1;
-        return = a;
-    }
     c = { 1,2,3 };
     d = foo ( c ) ;
 }";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("d", new Object[] { 2, 3, 4 });
         }
 
@@ -2422,8 +2411,7 @@ return = 0;
 }
 arr1 = {1,2,3,4};
 sum1 = foo2(arr1);";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("sum1", new Object[] { 0.0, 0.0, 0.0, 0.0 });
         }
 
@@ -2444,8 +2432,7 @@ arr1 = {1,2.0,3,4};
 sum1 = foo2(arr1);
 arr2 = {1,2.0,3,4};
 sum2 = foo(arr1);";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("sum1", new Object[] { 2, 3.0, 4, 5 });
             thisTest.Verify("sum2", new Object[] { 2.0, 3.0, 4.0, 5.0 });
         }
@@ -2468,10 +2455,8 @@ rab = foo(a, b);
 rac = foo(a, c);
 rad = foo(a, d);
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string err = "1467125 - Sprint 24 - Rev 2877 replication does not work with higher ranks , throws error Method resolution failure";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
-
+            thisTest.RunScriptSource(code, err);
             Object[] v1 = new Object[] { 10, 11 };
             Object[] v2 = new Object[] { 20, 22 };
             Object[] v3 = new Object[] { v1, v2 };

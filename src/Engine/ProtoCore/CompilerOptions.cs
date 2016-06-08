@@ -10,43 +10,26 @@ namespace ProtoCore
             Private
         }
 
-        namespace Associative
+        public enum CompilePass
         {
-            public enum CompilePass
-            {
-                ClassName,
-                ClassBaseClass,
-                ClassHierarchy,
-                ClassMemVar,
+            ClassName,
+            ClassBaseClass,
+            ClassHierarchy,
+            ClassMemVar,
 
-                ClassMemFuncSig,
-                GlobalFuncSig,
+            ClassMemFuncSig,
+            GlobalFuncSig,
 
-                GlobalScope,
-
-                ClassMemFuncBody,
-                GlobalFuncBody,
-                Done
-            }
-
-            public enum SubCompilePass
-            {
-                None,
-                UnboundIdentifier,
-                GlobalInstanceFunctionBody,
-                All
-            }
+            ClassMemFuncBody,
+            GlobalFuncBody,
+            GlobalScope,
+            Done
         }
 
-        namespace Imperative
+        public enum SubCompilePass
         {
-            public enum CompilePass
-            {
-                GlobalFuncSig,
-                GlobalScope,
-                GlobalFuncBody,
-                Done
-            }
+            None,
+            UnboundIdentifier,
         }
     }
 }

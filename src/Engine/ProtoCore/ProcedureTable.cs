@@ -173,18 +173,6 @@ namespace ProtoCore.DSASM
         {
             get; set;
         }
-        public Stack<UpdateNodeRef> UpdatedGlobalVariables
-        {
-            get; set;
-        }
-        public Stack<UpdateNodeRef> UpdatedProperties
-        {
-            get; set;
-        }
-        public Dictionary<string, List<UpdateNodeRef>> UpdatedArgumentProperties
-        {
-            get; set;
-        }
         /// <summary>
         /// The list of graphnodes that this function owns
         /// </summary>
@@ -207,9 +195,6 @@ namespace ProtoCore.DSASM
             IsActive = true;
             ChildCodeBlocks = new List<int>();
 
-            UpdatedGlobalVariables = new Stack<AssociativeGraph.UpdateNodeRef>();
-            UpdatedProperties = new Stack<AssociativeGraph.UpdateNodeRef>();
-            UpdatedArgumentProperties = new Dictionary<string, List<AssociativeGraph.UpdateNodeRef>>();
             GraphNodeList = new List<GraphNode>();
         }
 
@@ -238,9 +223,6 @@ namespace ProtoCore.DSASM
             ChildCodeBlocks = new List<int>(rhs.ChildCodeBlocks);
 
             // Runtime properties are initialized
-            UpdatedGlobalVariables = new Stack<AssociativeGraph.UpdateNodeRef>();
-            UpdatedProperties = new Stack<AssociativeGraph.UpdateNodeRef>();
-            UpdatedArgumentProperties = new Dictionary<string, List<AssociativeGraph.UpdateNodeRef>>();
             GraphNodeList = new List<GraphNode>();
         }
 

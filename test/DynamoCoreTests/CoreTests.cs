@@ -105,7 +105,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(0, CurrentDynamoModel.Logger.LogText.Length);
         }
 
-        // Clearworkspace 
+        // Clearworkspace
 
         [Test]
         [Category("UnitTests")]
@@ -367,9 +367,9 @@ namespace Dynamo.Tests
             CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(node, false);
 
             // Here we check to see if we do get a DSVarArgFunction node (which
-            // is what this test case is written for, other nodes will render the 
+            // is what this test case is written for, other nodes will render the
             // test case meaningless).
-            // 
+            //
             Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             CurrentDynamoModel.AddToSelection(node); // Select the only DSVarArgFunction node.
@@ -436,7 +436,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.CanUndo);
             Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.CanRedo);
 
-            //Assert HasUnsavedChanges is false 
+            //Assert HasUnsavedChanges is false
             Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
 
             Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
@@ -773,25 +773,25 @@ namespace Dynamo.Tests
                 new DynamoModel.CreateNodeCommand(pointGuid,
                     pointName, 0, 0, false, false),
                 new DynamoModel.ModelEventCommand(pointGuid, "AddInPort"),
-            
+
                 new DynamoModel.MakeConnectionCommand(numberGuid, 0, PortType.Output,
                     DynamoModel.MakeConnectionCommand.Mode.Begin),
-                new DynamoModel.MakeConnectionCommand(unexistingNodeGuid, 0, 
+                new DynamoModel.MakeConnectionCommand(unexistingNodeGuid, 0,
                     PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
 
-                new DynamoModel.MakeConnectionCommand(unexistingNodeGuid, 0, 
+                new DynamoModel.MakeConnectionCommand(unexistingNodeGuid, 0,
                     PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
-                new DynamoModel.MakeConnectionCommand(pointGuid, 0, PortType.Input, 
+                new DynamoModel.MakeConnectionCommand(pointGuid, 0, PortType.Input,
                     DynamoModel.MakeConnectionCommand.Mode.End)
             };
 
-            commands.ForEach(c => 
+            commands.ForEach(c =>
             {
                 try
                 {
                     CurrentDynamoModel.ExecuteCommand(c);
                 }
-                catch 
+                catch
                 {
                     // Make sure that only MakeConnectionCommand throws an exception
                     Assert.IsInstanceOf<DynamoModel.MakeConnectionCommand>(c);
@@ -801,13 +801,50 @@ namespace Dynamo.Tests
             Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.Connectors.Any());
         }
 
+        private void CreateNodeAndPorts(int count)
+        {
+            var pointGuid = Guid.NewGuid().ToString();
+            const string pointName = "List.Create";
+
+            var commands = new List<DynamoModel.ModelBasedRecordableCommand>
+            {
+                new DynamoModel.CreateNodeCommand(pointGuid,
+                    pointName, 0, 0, false, false),
+                new DynamoModel.ModelEventCommand(pointGuid, "SetInPortCount", count),
+            };
+
+            commands.ForEach(c => { CurrentDynamoModel.ExecuteCommand(c); });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ModelEventCommand_SetInPortCount_nPortsRequested_nPortsCreated()
+        {
+            CreateNodeAndPorts(2);
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
+            Assert.NotNull(node);
+            Assert.AreEqual(node.InPorts.Count, 2);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ModelEventCommand_SetInPortCount_Zero_LeavesOnePort()
+        {
+            CreateNodeAndPorts(0);
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
+            Assert.NotNull(node);
+            Assert.AreEqual(node.InPorts.Count, 1);
+        }
+
         [Test]
         public void UpstreamNodesComputedCorrectly()
         {
             string openPath = Path.Combine(TestDirectory, @"core\transpose.dyn");
             //this should compute all upstream nodes on each node from the roots down
             OpenModel(openPath);
-            
+
             //this asserts that each node's UpstreamCache contains the same list as the recursively computed AllUpstreamNodes
             foreach(var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
             {

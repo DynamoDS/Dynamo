@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
@@ -55,11 +56,7 @@ namespace DynamoCoreWpfTests
             var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
 
-            View.Dispatcher.Invoke(() =>
-            {
-                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
-            });
-            DispatcherUtil.DoEvents();
+            RaiseMouseEnterOnNode(nodeView);
 
             Assert.IsTrue(nodeView.PreviewControl.IsCondensed);
         }
@@ -71,11 +68,7 @@ namespace DynamoCoreWpfTests
             var nodeView = NodeViewWithGuid("9ce91e89-c087-49cd-9fd9-540cca086475");
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
 
-            View.Dispatcher.Invoke(() =>
-            {
-                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
-            });
-            DispatcherUtil.DoEvents();
+            RaiseMouseEnterOnNode(nodeView);
 
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
@@ -86,23 +79,12 @@ namespace DynamoCoreWpfTests
             Open(@"core\DetailedPreviewMargin_Test.dyn");
             var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
-
-
-            // Raise mouse enter event.
-            View.Dispatcher.Invoke(() =>
-            {
-                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
-            });
-            DispatcherUtil.DoEvents();
+            
+            RaiseMouseEnterOnNode(nodeView);
 
             Assert.IsTrue(nodeView.PreviewControl.IsCondensed);
 
-            // Raise mouse leave event.
-            View.Dispatcher.Invoke(() =>
-            {
-                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseLeaveEvent });
-            });
-            DispatcherUtil.DoEvents();
+            RaiseMouseLeaveNode(nodeView);
 
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
@@ -115,11 +97,7 @@ namespace DynamoCoreWpfTests
             nodeView.ViewModel.IsFrozen = true;
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
 
-            View.Dispatcher.Invoke(() =>
-            {
-                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
-            });
-            DispatcherUtil.DoEvents();
+            RaiseMouseEnterOnNode(nodeView);
 
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
@@ -301,12 +279,7 @@ namespace DynamoCoreWpfTests
 
             var nodeView = NodeViewWithGuid("456e57f3-d06f-4a53-9771-27188ee9cb40");
 
-            // Raise mouse enter event.
-            View.Dispatcher.Invoke(() =>
-            {
-                nodeView.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
-            });
-            DispatcherUtil.DoEvents();
+            RaiseMouseEnterOnNode(nodeView);
 
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
@@ -344,13 +317,95 @@ namespace DynamoCoreWpfTests
 
             // preview is expanded
             Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView));
-        }        
+        }
+
+        [Test]
+        public void PreviewBubble_ToggleShowPreviewBubbles()
+        {
+            Open(@"core\DetailedPreviewMargin_Test.dyn");
+            var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
+            Assert.IsTrue(ViewModel.ShowPreviewBubbles, "Preview bubbles are turned off");
+
+            nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            RaiseMouseEnterOnNode(nodeView);
+            Assert.IsTrue(nodeView.PreviewControl.IsCondensed, "Compact preview bubble is not shown");
+
+            RaiseMouseLeaveNode(nodeView);
+            Assert.IsTrue(nodeView.PreviewControl.IsHidden, "Preview bubble is not hidden");
+
+            // turn off preview bubbles
+            ViewModel.TogglePreviewBubblesShowingCommand.Execute(null);
+            Assert.IsFalse(ViewModel.ShowPreviewBubbles, "Preview bubbles have not been turned off");
+
+            RaiseMouseEnterOnNode(nodeView);
+
+            Assert.IsTrue(nodeView.PreviewControl.IsHidden, "Preview bubble is not hidden");
+        }
+
+        [Test]
+        public void PreviewBubble_ShowExpandedPreviewOnPinIconHover()
+        {
+            Open(@"core\DetailedPreviewMargin_Test.dyn");
+            var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
+
+            var previewBubble = nodeView.PreviewControl;
+            previewBubble.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+            previewBubble.bubbleTools.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            // open preview bubble
+            RaiseMouseEnterOnNode(nodeView);
+            Assert.IsTrue(previewBubble.IsCondensed, "Compact preview bubble should be shown");
+            Assert.AreEqual(Visibility.Collapsed, previewBubble.bubbleTools.Visibility, "Pin icon should not be shown");
+
+            // hover preview bubble to see pin icon
+            RaiseMouseEnterOnNode(previewBubble);
+            Assert.AreEqual(Visibility.Visible, previewBubble.bubbleTools.Visibility, "Pin icon should be shown");
+
+            // expand preview bubble
+            RaiseMouseEnterOnNode(previewBubble.bubbleTools);
+            Assert.IsTrue(previewBubble.IsExpanded, "Expanded preview bubble should be shown");
+        }
+
+        [Test]
+        public void PreviewBubble_ShownForColorRange()
+        {
+            var colorRange = new ColorRange();
+            Model.AddNodeToCurrentWorkspace(colorRange, true);
+            DispatcherUtil.DoEvents();
+            var nodeView = NodeViewWithGuid(colorRange.GUID.ToString());
+            nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            // open preview bubble
+            RaiseMouseEnterOnNode(nodeView);
+            Assert.IsFalse(nodeView.PreviewControl.IsHidden, "Preview bubble for color range should be shown");
+        }
 
         private bool ElementIsInContainer(FrameworkElement element, FrameworkElement container)
         {
             var relativePosition = element.TranslatePoint(new Point(), container);
             
             return (relativePosition.X == 0) && (element.ActualWidth <= container.ActualWidth);
+        }
+
+        private void RaiseMouseEnterOnNode(IInputElement nv)
+        {
+            View.Dispatcher.Invoke(() =>
+            {
+                nv.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseEnterEvent });
+            });
+
+            DispatcherUtil.DoEvents();
+        }
+
+        private void RaiseMouseLeaveNode(IInputElement nv)
+        {
+            View.Dispatcher.Invoke(() =>
+            {
+                nv.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseLeaveEvent });
+            });
+
+            DispatcherUtil.DoEvents();
         }
     }
 }

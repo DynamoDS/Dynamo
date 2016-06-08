@@ -167,6 +167,7 @@ namespace Dynamo.Scheduler
                 }
 
                 var package = factory.CreateRenderPackage();
+                var packageWithTransform = package as ITransformable;
                 package.Description = tag;
 
                 try
@@ -175,6 +176,14 @@ namespace Dynamo.Scheduler
                     if (package.MeshVertexColors.Count() > 0)
                     {
                         package.RequiresPerVertexColoration = true;
+                    }
+
+                    //If the package has a transform that is not the identity matrix
+                    //then set requiresCustomTransform to true.
+                    if (packageWithTransform != null && packageWithTransform.Transform.SequenceEqual(
+                        new double[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }) == false)
+                    {
+                        (packageWithTransform).RequiresCustomTransform = true;
                     }
 
                     if (factory.TessellationParameters.ShowEdges)

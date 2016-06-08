@@ -1,32 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using Dynamo.Models;
-using Dynamo.Selection;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.UI;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls.Primitives;
-using System.Windows.Documents;
-using System.Windows.Interactivity;
-using Dynamo.Controls;
+﻿using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Wpf.Utilities;
+using Dynamo.Models;
 using Dynamo.Search.SearchElements;
-using Dynamo.UI.Controls;
+using Dynamo.Selection;
+using Dynamo.UI;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.UI;
-using ModifierKeys = System.Windows.Input.ModifierKeys;
+using Dynamo.Wpf.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using ModifierKeys = System.Windows.Input.ModifierKeys;
 
 namespace Dynamo.Views
 {
@@ -162,6 +159,7 @@ namespace Dynamo.Views
                 case ShowHideFlags.Show:
                     // Show InCanvas search just in case, when mouse is over workspace.
                     popup.IsOpen = DynamoModel.IsTestMode || IsMouseOver;
+                    ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
                     ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
                     break;
             }
@@ -510,6 +508,16 @@ namespace Dynamo.Views
             else if (Keyboard.Modifiers != ModifierKeys.Control)
             {
                 ViewModel.HandleLeftButtonDown(workBench, e);
+            }
+
+            if (!ViewModel.IsDragging) return;
+
+            var nodesToHidePreview = this.ChildrenOfType<NodeView>().Where(view =>
+                view.HasPreviewControl && !view.PreviewControl.IsHidden && !view.PreviewControl.StaysOpen);
+
+            foreach (var node in nodesToHidePreview)
+            {
+                node.PreviewControl.HidePreviewBubble();
             }
         }
 

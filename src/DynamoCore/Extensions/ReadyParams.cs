@@ -25,6 +25,7 @@ namespace Dynamo.Extensions
         {
             dynamoModel = dynamoM;
             dynamoModel.PropertyChanged += OnDynamoModelPropertyChanged;
+            dynamoM.Logger.NotificationLogged += OnNotificationRecieved;
         }
 
         /// <summary>
@@ -56,6 +57,17 @@ namespace Dynamo.Extensions
         public virtual ICommandExecutive CommandExecutive 
         {
             get { return commandExecutive ?? (commandExecutive = new ExtensionCommandExecutive(dynamoModel)); }
+        }
+
+        /// <summary>
+        /// Event that is raised when the Dynamo Logger logs a notification.
+        /// This event passes the notificationMessage to any subscribers
+        /// </summary>
+        public event Action<Logging.NotificationMessage> NotificationRecieved;
+        private void OnNotificationRecieved(Logging.NotificationMessage notification)
+        {
+            if (NotificationRecieved != null)
+                NotificationRecieved(notification);
         }
 
         /// <summary>
