@@ -33,14 +33,12 @@ namespace ProtoScript.Runners
         public List<AssociativeNode> AstNodes;
         public List<AssociativeNode> ModifiedAstNodes;
         public bool ForceExecution;
-        public bool IsInput;
 
         public Subtree(List<AssociativeNode> astNodes, System.Guid guid)
         {
             GUID = guid;
             AstNodes = astNodes;
             ForceExecution = false;
-            IsInput = false;
             ModifiedAstNodes = new List<AssociativeNode>();
         }
 
@@ -63,6 +61,15 @@ namespace ProtoScript.Runners
     /// </summary>
     public class GraphSyncData
     {
+        /// <summary>
+        /// Session ID
+        /// </summary>
+        public Guid SessionID
+        {
+            get;
+            private set;
+        }
+
         /// <summary>
         /// Deleted sub trees.
         /// </summary>
@@ -134,8 +141,14 @@ namespace ProtoScript.Runners
             }
         }
 
-        public GraphSyncData(List<Subtree> deleted, List<Subtree> added, List<Subtree> modified)
+        public GraphSyncData(List<Subtree> deleted, List<Subtree> added, List<Subtree> modified):
+            this(Guid.Empty, deleted, added, modified)
         {
+        }
+
+        public GraphSyncData(Guid sessionID, List<Subtree> deleted, List<Subtree> added, List<Subtree> modified)
+        {
+            SessionID = sessionID;
             DeletedSubtrees = deleted ?? new List<Subtree>();
             AddedSubtrees = added ?? new List<Subtree>();
             ModifiedSubtrees = modified ?? new List<Subtree>();
@@ -168,7 +181,6 @@ namespace ProtoScript.Runners
         public List<AssociativeNode> DeletedBinaryExprASTNodes;
         public List<AssociativeNode> DeletedFunctionDefASTNodes;
         public List<AssociativeNode> RemovedBinaryNodesFromModification;
-        public List<AssociativeNode> ModifiedNodesForRuntimeSetValue;
         public List<AssociativeNode> RemovedFunctionDefNodesFromModification;
         public List<AssociativeNode> ForceExecuteASTList;
         public List<AssociativeNode> ModifiedFunctions;
@@ -205,9 +217,6 @@ namespace ProtoScript.Runners
 
             DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
 
-            // Set new value for modified ASTs
-            SetValueForModifiedNodes(changeSet.ModifiedNodesForRuntimeSetValue);
-            
             // Undefine a function that was removed 
             UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
 
@@ -237,55 +246,6 @@ namespace ProtoScript.Runners
                 }
             }
         }
-
-        /// <summary>
-        /// Get the StackValue to be set at runtime
-        /// The StackValue can be a primitive or an object
-        /// Currently, only primitives are supported
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        private StackValue GetStackValueForRuntime(AssociativeNode node)
-        {
-            BinaryExpressionNode bnode = node as BinaryExpressionNode;
-            Validity.Assert(bnode != null);
-            Validity.Assert(bnode.Optr == Operator.assign);
-
-            StackValue svSet = StackValue.BuildNull();
-            if (ProtoCore.Utils.CoreUtils.IsPrimitiveASTNode(bnode.RightNode))
-            {
-                svSet = ProtoCore.Utils.CoreUtils.BuildStackValueForPrimitive(bnode.RightNode);
-            }
-            else
-            {
-                // Build or retrieve a DS Pointer (object) and set it here
-                // DS Pointer must be created and set on the DS heap)
-                svSet = StackValue.BuildNull();
-            }
-            return svSet;
-        }
-
-        /// <summary>
-        /// Sets a new rhs for binary asts that were modified
-        /// Sets the VM entry point
-        /// </summary>
-        /// <param name="modifiedNodes"></param>
-        private void SetValueForModifiedNodes(List<AssociativeNode> modifiedNodes)
-        {
-            // Currently only supports 1 input node
-            Validity.Assert(modifiedNodes.Count <= 1);
-
-            if (modifiedNodes.Count > 0)
-            {
-                AssociativeNode node = modifiedNodes[0];
-
-                StackValue sv = GetStackValueForRuntime(node);
-                int startPC = runtimeCore.SetValue(modifiedNodes, sv);
-                Validity.Assert(startPC != Constants.kInvalidIndex);
-                runtimeCore.SetStartPC(startPC);
-            }
-        }
-
 
         /// <summary>
         /// Deactivate a single graphnode regardless of its associated dependencies
@@ -392,7 +352,6 @@ namespace ProtoScript.Runners
             comp.csData.DeletedBinaryExprASTNodes = new List<AssociativeNode>(csData.DeletedBinaryExprASTNodes);
             comp.csData.DeletedFunctionDefASTNodes = new List<AssociativeNode>(csData.DeletedFunctionDefASTNodes);
             comp.csData.RemovedBinaryNodesFromModification = new List<AssociativeNode>(csData.RemovedBinaryNodesFromModification);
-            comp.csData.ModifiedNodesForRuntimeSetValue = new List<AssociativeNode>(csData.ModifiedNodesForRuntimeSetValue);
             comp.csData.RemovedFunctionDefNodesFromModification = new List<AssociativeNode>(csData.RemovedFunctionDefNodesFromModification);
             comp.csData.ForceExecuteASTList = new List<AssociativeNode>(csData.ForceExecuteASTList);
             comp.csData.ModifiedFunctions = new List<AssociativeNode>(csData.ModifiedFunctions);
@@ -415,7 +374,6 @@ namespace ProtoScript.Runners
                     executingNode,
                     rt.CurrentExecutive.CurrentDSASMExec,
                     executingNode.exprUID,
-                    executingNode.modBlkUID,
                     executingNode.IsSSANode(),
                     true,
                     0,
@@ -465,9 +423,11 @@ namespace ProtoScript.Runners
             {
                 foreach (var st in deletedSubTrees)
                 {
+                    var deletedBinaryExpressions = new List<AssociativeNode>();
+
                     if (st.AstNodes != null && st.AstNodes.Count > 0)
                     {
-                        csData.DeletedBinaryExprASTNodes.AddRange(st.AstNodes);
+                        deletedBinaryExpressions.AddRange(st.AstNodes);
                     }
                     else
                     {
@@ -478,7 +438,7 @@ namespace ProtoScript.Runners
                         {
                             if (removeSubTree.AstNodes != null)
                             {
-                                csData.DeletedBinaryExprASTNodes.AddRange(removeSubTree.AstNodes);
+                                deletedBinaryExpressions.AddRange(removeSubTree.AstNodes);
                             }
                         }
                     }
@@ -495,10 +455,8 @@ namespace ProtoScript.Runners
                     }
 
                     // Build the nullify ASTs
-                    var nullNodes = BuildNullAssignments(csData.DeletedBinaryExprASTNodes);
-                    deltaAstList.AddRange(nullNodes);
-
-                    foreach (AssociativeNode node in deltaAstList)
+                    var nullNodes = BuildNullAssignments(deletedBinaryExpressions);
+                    foreach (AssociativeNode node in nullNodes)
                     {
                         var bnode = node as BinaryExpressionNode;
                         if (bnode != null)
@@ -506,10 +464,12 @@ namespace ProtoScript.Runners
                             bnode.guid = st.GUID;
                         }
                     }
+                    deltaAstList.AddRange(nullNodes);
 
                     core.BuildStatus.ClearWarningsForGraph(st.GUID);
 
                     runtimeCore.RuntimeStatus.ClearWarningsForGraph(st.GUID);
+                    csData.DeletedBinaryExprASTNodes.AddRange(deletedBinaryExpressions);
                 }
             }
             return deltaAstList;
@@ -534,7 +494,6 @@ namespace ProtoScript.Runners
                             if (bnode != null)
                             {
                                 bnode.guid = st.GUID;
-                                bnode.IsInputExpression = st.IsInput;
                             }
 
                             SetNestedLanguageBlockASTGuids(st.GUID, new List<ProtoCore.AST.Node>() { bnode });
@@ -632,12 +591,7 @@ namespace ProtoScript.Runners
             if (cachedTreeExists && oldSubTree.AstNodes != null)
             {
                 List<AssociativeNode> removedNodes = null;
-                if (st.IsInput)
-                {
-                    removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
-                    (modifiedASTList[0] as BinaryExpressionNode).OriginalAstID = (removedNodes[0] as BinaryExpressionNode).OriginalAstID;
-                }
-                else if (!st.ForceExecution)
+                if (!st.ForceExecution)
                 {
                     removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
                     // We only need the removed binary ASTs
@@ -712,7 +666,6 @@ namespace ProtoScript.Runners
         {
             var deltaAstList = new List<AssociativeNode>();
             csData.RemovedBinaryNodesFromModification = new List<AssociativeNode>();
-            csData.ModifiedNodesForRuntimeSetValue = new List<AssociativeNode>();
             csData.RemovedFunctionDefNodesFromModification = new List<AssociativeNode>();
             csData.ModifiedFunctions = new List<AssociativeNode>();
             csData.ForceExecuteASTList = new List<AssociativeNode>();
@@ -731,10 +684,9 @@ namespace ProtoScript.Runners
                 }
 
                 // Get modified statements
-                var modifiedASTList = GetModifiedNodes(modifiedSubTrees[n], out csData.ModifiedNodesForRuntimeSetValue);
+                var modifiedASTList = GetModifiedNodes(modifiedSubTrees[n]);
                 modifiedSubTrees[n].ModifiedAstNodes.Clear();
                 modifiedSubTrees[n].ModifiedAstNodes.AddRange(modifiedASTList);
-                modifiedSubTrees[n].ModifiedAstNodes.AddRange(csData.ModifiedNodesForRuntimeSetValue);
                 deltaAstList.AddRange(modifiedASTList);
 
                 foreach (AssociativeNode node in modifiedASTList)
@@ -743,20 +695,8 @@ namespace ProtoScript.Runners
                     if (bnode != null)
                     {
                         bnode.guid = modifiedSubTrees[n].GUID;
-                        bnode.IsInputExpression = modifiedSubTrees[n].IsInput;
                     }
                     SetNestedLanguageBlockASTGuids(modifiedSubTrees[n].GUID, new List<ProtoCore.AST.Node>() { bnode });
-                }
-
-                // Handle modified primitives
-                foreach (AssociativeNode node in csData.ModifiedNodesForRuntimeSetValue)
-                {
-                    var bnode = node as BinaryExpressionNode;
-                    Validity.Assert(bnode != null);
-                    {
-                        bnode.guid = modifiedSubTrees[n].GUID;
-                        bnode.IsInputExpression = true;
-                    }
                 }
             }
             return deltaAstList;
@@ -869,13 +809,12 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Gets the only the modified nodes from the subtree by checking of the previous cached instance
+        /// Returns the only the modified nodes from the subtree by checking of the previous cached instance
         /// </summary>
         /// <param name="subtree"></param>
         /// <returns></returns>
-        private List<AssociativeNode> GetModifiedNodes(Subtree subtree, out List<AssociativeNode> modifiedInputAST)
+        private List<AssociativeNode> GetModifiedNodes(Subtree subtree)
         {
-            modifiedInputAST = new List<AssociativeNode>();
             Subtree st;
             if (!currentSubTreeList.TryGetValue(subtree.GUID, out st) || st.AstNodes == null)
             {
@@ -905,53 +844,44 @@ namespace ProtoScript.Runners
                     // It can then be handled normally regardless of its ForceExecution state
                     subtree.ForceExecution = false;
 
-                    if (st.IsInput)
+                    modifiedASTList.Add(node);
+                    BinaryExpressionNode bnode = node as BinaryExpressionNode;
+                    if (null != bnode)
                     {
-                        // An input node is not re-compiled and executed
-                        // It is handled by the ChangeSetApply by re-executing the modified node with the updated changes
-                        modifiedInputAST.Add(node);
-                    }
-                    else
-                    {
-                        modifiedASTList.Add(node);
-                        BinaryExpressionNode bnode = node as BinaryExpressionNode;
-                        if (null != bnode)
+                        if (bnode.RightNode is LanguageBlockNode)
                         {
-                            if (bnode.RightNode is LanguageBlockNode)
+                            csData.ModifiedNestedLangBlock.Add(bnode);
+                        }
+                        else if (bnode.LeftNode is IdentifierNode)
+                        {
+                            string lhsName = (bnode.LeftNode as IdentifierNode).Name;
+                            Validity.Assert(null != lhsName && string.Empty != lhsName);
+                            if (CoreUtils.IsSSATemp(lhsName))
                             {
-                                csData.ModifiedNestedLangBlock.Add(bnode);
-                            }
-                            else if (bnode.LeftNode is IdentifierNode)
-                            {
-                                string lhsName = (bnode.LeftNode as IdentifierNode).Name;
-                                Validity.Assert(null != lhsName && string.Empty != lhsName);
-                                if (CoreUtils.IsSSATemp(lhsName))
+                                // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
+                                // this means that it was a modified variable within the previous expression.
+                                // Inherit its expression ID 
+                                foreach (AssociativeNode prevNode in st.AstNodes)
                                 {
-                                    // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
-                                    // this means that it was a modified variable within the previous expression.
-                                    // Inherit its expression ID 
-                                    foreach (AssociativeNode prevNode in st.AstNodes)
+                                    BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
+                                    if (null != prevBinaryNode)
                                     {
-                                        BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
-                                        if (null != prevBinaryNode)
+                                        IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
+                                        if (null != prevIdent)
                                         {
-                                            IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
-                                            if (null != prevIdent)
+                                            if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
                                             {
-                                                if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
-                                                {
-                                                    bnode.InheritID(prevBinaryNode.ID);
-                                                    bnode.ExpressionUID = prevBinaryNode.ExpressionUID;
-                                                }
+                                                bnode.InheritID(prevBinaryNode.ID);
+                                                bnode.ExpressionUID = prevBinaryNode.ExpressionUID;
                                             }
                                         }
                                     }
                                 }
-                                else
-                                {
-                                    // Handle re-defined lhs expressions
-                                    HandleRedefinedLHS(bnode, st.AstNodes);
-                                }
+                            }
+                            else
+                            {
+                                // Handle re-defined lhs expressions
+                                HandleRedefinedLHS(bnode, st.AstNodes);
                             }
                         }
                     }
@@ -961,7 +891,7 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Get the ASTs from the previous list that no longer exist in the new list
+        /// Returns the ASTs from the previous list that no longer exist in the new list
         /// </summary>
         /// <param name="prevASTList"></param>
         /// <param name="newASTList"></param>
@@ -991,7 +921,7 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Get the ASTs from the previous list that that still exist in the new list
+        /// Returns the ASTs from the previous list that that still exist in the new list
         /// </summary>
         /// <param name="prevASTList"></param>
         /// <param name="newASTList"></param>
@@ -1128,7 +1058,6 @@ namespace ProtoScript.Runners
         void UpdateGraph(GraphSyncData syncData);
         List<Guid> PreviewGraph(GraphSyncData syncData);
         void UpdateCmdLineInterpreter(string code);
-        ProtoCore.Mirror.RuntimeMirror QueryNodeValue(Guid nodeId);
         ProtoCore.Mirror.RuntimeMirror InspectNodeValue(string nodeName);
 
         void UpdateGraph(AssociativeNode astNode);
@@ -1140,6 +1069,8 @@ namespace ProtoScript.Runners
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
+        IEnumerable<Guid> GetExecutedAstGuids(Guid sessionID);
+        void RemoveRecordedAstGuidsForSession(Guid SessionID);
     }
 
     public partial class LiveRunner : ILiveRunner, IDisposable
@@ -1203,9 +1134,8 @@ namespace ProtoScript.Runners
         }
 
         private ProtoScriptRunner runner;
-        private ProtoRunner.ProtoVMState vmState;
-        private ProtoCore.Core runnerCore = null;
-        public ProtoCore.Core Core
+        private Core runnerCore = null;
+        public Core Core
         {
             get
             {
@@ -1234,11 +1164,10 @@ namespace ProtoScript.Runners
         private Configuration configuration = null;
         private int deltaSymbols = 0;
         private ProtoCore.CompileTime.Context staticContext = null;
-        private Queue<Task> taskQueue;
-        private Thread workerThread;
-        private bool terminating;
+        private readonly object mutexObject = new object();
         private ChangeSetComputer changeSetComputer;
         private ChangeSetApplier changeSetApplier;
+        private Dictionary<Guid, List<Guid>> executedAstGuids = new Dictionary<Guid, List<Guid>>();
 
         public LiveRunner()
             : this(new Configuration())
@@ -1253,15 +1182,8 @@ namespace ProtoScript.Runners
 
             InitCore();
 
-            taskQueue = new Queue<Task>();
-
-            workerThread = new Thread(new ThreadStart(TaskExecMethod));
-            workerThread.IsBackground = true;
-            workerThread.Start();
-
             staticContext = new ProtoCore.CompileTime.Context();
 
-            terminating = false;
             changeSetComputer = new ChangeSetComputer(runnerCore, runtimeCore);
             changeSetApplier = new ChangeSetApplier();
         }
@@ -1285,24 +1207,6 @@ namespace ProtoScript.Runners
                 {
                     runtimeCore.Cleanup();
                 }
-
-                terminating = true;
-
-                lock (taskQueue)
-                {
-                    taskQueue.Clear();
-                }
-
-                if (workerThread != null)
-                {
-                    // waiting for thread to finish
-                    if (workerThread.IsAlive)
-                    {
-                        workerThread.Join();
-                    }
-
-                    workerThread = null;
-                }
             }
         }
 
@@ -1310,7 +1214,6 @@ namespace ProtoScript.Runners
         {
             coreOptions = new Options
             {
-                GenerateExprID = true,
                 IsDeltaExecution = true,
                 BuildOptErrorAsWarning = true,
                 ExecutionMode = ExecutionMode.Serial
@@ -1326,8 +1229,6 @@ namespace ProtoScript.Runners
             {
                 runnerCore.Configurations[item.Key] = item.Value;
             }
-
-            vmState = null;
 
             CreateRuntimeCore();
         }
@@ -1363,36 +1264,6 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Query for a node value given its UID. This will block until the value is available.
-        /// This uses the expression interpreter to evaluate a node variable's value.
-        /// It will only serviced when all ASync calls have been completed
-        /// </summary>
-        /// <param name="nodeId"></param>
-        /// <returns></returns>
-        public ProtoCore.Mirror.RuntimeMirror QueryNodeValue(Guid nodeGuid)
-        {
-            while (true)
-            {
-                lock (taskQueue)
-                {
-                    //Spin waiting for the queue to be empty
-                    if (taskQueue.Count == 0)
-                    {
-
-                        //No entries and we have the lock
-                        //Synchronous query to get the node
-
-                        return InternalGetNodeValue(nodeGuid);
-                    }
-                }
-                Thread.Sleep(0);
-            }
-
-        }
-
-
-
-        /// <summary>
         /// Inspects the VM for the value of a node given its variable name. 
         /// As opposed to QueryNodeValue, this does not use the Expression Interpreter
         /// This will block until the value is available.
@@ -1403,20 +1274,9 @@ namespace ProtoScript.Runners
         ///
         public ProtoCore.Mirror.RuntimeMirror InspectNodeValue(string nodeName)
         {
-            while (true)
+            lock (mutexObject)
             {
-                lock (taskQueue)
-                {
-                    //Spin waiting for the queue to be empty
-                    if (taskQueue.Count == 0)
-                    {
-                        //return GetWatchValue(nodeName);
-                        const int blockID = 0;
-                        ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(nodeName, blockID, runtimeCore, runnerCore);
-                        return runtimeMirror;
-                    }
-                }
-                Thread.Sleep(0);
+                return Reflection.Reflect(nodeName, 0, runtimeCore, runnerCore);
             }
         }
 
@@ -1470,16 +1330,9 @@ namespace ProtoScript.Runners
         /// <param name="syncData"></param>
         public List<Guid> PreviewGraph(GraphSyncData syncData)
         {
-            while (true)
+            lock (mutexObject)
             {
-                lock (taskQueue)
-                {
-                    if (taskQueue.Count == 0)
-                    {
-                        return PreviewInternal(syncData);                       
-                    }
-                }
-                Thread.Sleep(1);
+                return PreviewInternal(syncData);
             }
         }
 
@@ -1489,17 +1342,9 @@ namespace ProtoScript.Runners
         /// <param name="syncData"></param>
         public void UpdateGraph(GraphSyncData syncData)
         {
-            while (true)
+            lock (mutexObject)
             {
-                lock (taskQueue)
-                {
-                    if (taskQueue.Count == 0)
-                    {
-                        SynchronizeInternal(syncData);
-                        return;
-                    }
-                }
-                Thread.Sleep(0);
+                SynchronizeInternal(syncData);
             }
         }
 
@@ -1542,73 +1387,13 @@ namespace ProtoScript.Runners
         /// <param name="code"></param>
         public void UpdateCmdLineInterpreter(string code)
         {
-            while (true)
+            lock (mutexObject)
             {
-                lock (taskQueue)
-                {
-                    //Spin waiting for the queue to be empty
-                    if (taskQueue.Count == 0)
-                    {
-                        SynchronizeInternal(code);
-                        return;
-                    }
-                }
-                Thread.Sleep(0);
+                SynchronizeInternal(code);
             }
         }
-
-        //Secondary thread
-        private void TaskExecMethod()
-        {
-            while (!terminating)
-            {
-                Task task = null;
-
-                lock (taskQueue)
-                {
-                    if (taskQueue.Count > 0)
-                        task = taskQueue.Dequeue();
-
-                    //The task has to be executed inside the critical region
-                    //otherwise it will race with the sync based on the taskQueue count
-
-                    //TODO: This should be seperated into two seperate mutexes, one of the
-                    //queue and the other protecting execution
-                    if (task != null)
-                    {
-                        task.Execute();
-                        continue;
-
-                    }
-                }
-                Thread.Sleep(1);
-            }
-        }
-
-
 
         #region Internal Implementation
-
-        /// <summary>
-        /// This is being called currently as it uses the Expression interpreter which does not
-        /// work well with delta execution. Instead we are currently inspecting into the VM using Mirrors
-        /// </summary>
-        /// <param name="varname"></param>
-        /// <returns></returns>
-        private ProtoCore.Mirror.RuntimeMirror InternalGetNodeValue(string varname)
-        {
-            Validity.Assert(null != vmState);
-
-            // Comment Jun: all symbols are in the global block as there is no notion of scoping the the graphUI yet.
-            const int blockID = 0;
-
-            return vmState.LookupName(varname, blockID);
-        }
-
-        private ProtoCore.Mirror.RuntimeMirror InternalGetNodeValue(Guid nodeGuid)
-        {
-            throw new NotImplementedException();
-        }
 
         private bool Compile(List<AssociativeNode> astList, Core targetCore)
         {
@@ -1622,19 +1407,25 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
-        private ProtoRunner.ProtoVMState Execute(bool isCodeCompiled)
+        private void Execute(bool isCodeCompiled)
         {
             try
             {
                 SetupRuntimeCoreForExecution(isCodeCompiled);
-                runner.ExecuteLive(runnerCore, runtimeCore);
+                if (isCodeCompiled)
+                {
+                    // If isCodeCompiled is false, nothing to execute but still
+                    // bounce and push stack frame. Need to investigate why 
+                    // previouslsy ExecuteLive() is called when isCodeCompiled is
+                    // false.
+                    runner.ExecuteLive(runnerCore, runtimeCore);
+                }
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
                 runtimeCore.Cleanup();
                 ReInitializeLiveRunner();
             }
-            return new ProtoRunner.ProtoVMState(runnerCore, runtimeCore);
         }
 
         private bool CompileAndExecute(string code)
@@ -1643,7 +1434,7 @@ namespace ProtoScript.Runners
             bool succeeded = runner.CompileAndGenerateExe(code, runnerCore, new ProtoCore.CompileTime.Context());
             if (succeeded)
             {
-                vmState = Execute(!string.IsNullOrEmpty(code));
+                Execute(!string.IsNullOrEmpty(code));
             }
             return succeeded;
         }
@@ -1653,7 +1444,7 @@ namespace ProtoScript.Runners
             bool succeeded = Compile(astList, runnerCore);
             if (succeeded)
             {
-                vmState = Execute(astList.Count > 0);
+                Execute(astList.Count > 0);
             }
             return succeeded;
         }
@@ -1698,6 +1489,14 @@ namespace ProtoScript.Runners
                 ResetForDeltaExecution();
                 runnerCore.Options.ApplyUpdate = true;
                 Execute(true);
+
+                // Execute() will push a stack frame in SetupAndBounceStackFrame().
+                // In normal execution, that stack frame will pop in RETB. But in
+                // ApplyUpdate(), there is no RETB instruciton, so need to manually
+                // cleanup stack frame.
+                StackValue restoreFramePointer = runtimeCore.RuntimeMemory.GetAtRelative(ProtoCore.DSASM.StackFrame.FrameIndexFramePointer);
+                runtimeCore.RuntimeMemory.FramePointer = (int)restoreFramePointer.IntegerValue;
+                runtimeCore.RuntimeMemory.PopFrame(ProtoCore.DSASM.StackFrame.StackFrameSize);
             }
             ForceGC();
         }
@@ -1776,9 +1575,16 @@ namespace ProtoScript.Runners
             changeSetComputer.UpdateCachedASTFromSubtrees(syncData.ModifiedSubtrees);
 
             // Prior to execution, apply state modifications to the VM given the delta AST's
+            bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
             changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
+            if (finalDeltaAstList.Any() || anyForcedExecutedNodes)
+            {
+                CompileAndExecuteForDeltaExecution(finalDeltaAstList);
+            }
 
-            CompileAndExecuteForDeltaExecution(finalDeltaAstList);
+            var guids = runtimeCore.ExecutedAstGuids.ToList();
+            executedAstGuids[syncData.SessionID] = guids;
+            runtimeCore.RemoveExecutedAstGuids();
         }
 
         private void SynchronizeInternal(string code)
@@ -1920,10 +1726,14 @@ namespace ProtoScript.Runners
                                      .OrderBy(w => w.GraphNodeGuid)
                                      .GroupBy(w => w.GraphNodeGuid);
 
-            foreach (var w in warnings)
+            foreach (var warningGroup in warnings)
             {
-                Guid guid = w.FirstOrDefault().GraphNodeGuid;
-                ret[guid] = new List<ProtoCore.Runtime.WarningEntry>(w);
+                Guid guid = warningGroup.FirstOrDefault().GraphNodeGuid;
+                // If there are two warnings in the same expression, take the first one.
+                var trimmedWarnings = warningGroup.OrderBy(w => w.ExpressionID)
+                                                  .GroupBy(w => w.ExpressionID)
+                                                  .Select(g => g.FirstOrDefault());
+                ret[guid] = new List<ProtoCore.Runtime.WarningEntry>(trimmedWarnings);
             }
 
             return ret;
@@ -1956,6 +1766,23 @@ namespace ProtoScript.Runners
             return ret;
         }
 
+        public IEnumerable<Guid> GetExecutedAstGuids(Guid sessionID)
+        {
+            List<Guid> guids = null;
+            if (executedAstGuids.TryGetValue(sessionID, out guids))
+            {
+                return guids;
+            }
+            else
+            {
+                return new List<Guid>();
+            }
+        }
+
+        public void RemoveRecordedAstGuidsForSession(Guid SessionID)
+        {
+            executedAstGuids.Remove(SessionID);
+        }
         #endregion
     }
 

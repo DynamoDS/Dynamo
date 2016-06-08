@@ -181,7 +181,7 @@ namespace Dynamo.Tests
                     Assert.Fail(e.Message);
                 }
             }
-            else if (data.IsPointer && data.Class.ClassName == "_SingleFunctionObject")
+            else if (data.IsPointer && data.Class.ClassName == "Function")
             {
                 Assert.AreEqual(data.Class.ClassName, value);
             }
@@ -192,7 +192,7 @@ namespace Dynamo.Tests
         private void AssertCollection(MirrorData data, IEnumerable collection)
         {
             Assert.IsTrue(data.IsCollection);
-            List<MirrorData> elements = data.GetElements();
+            List<MirrorData> elements = data.GetElements().ToList();
             int i = 0;
             foreach (var item in collection)
             {
@@ -234,7 +234,7 @@ namespace Dynamo.Tests
 
             if (data.IsCollection)
             {
-                List<MirrorData> elements = data.GetElements();
+                List<MirrorData> elements = data.GetElements().ToList();
                 foreach (var pair in selectedValues)
                 {
                     AssertValue(elements[pair.Key], pair.Value);
@@ -274,7 +274,7 @@ namespace Dynamo.Tests
 
             var data = mirror.GetData();
             Assert.IsTrue(data.IsCollection, "preview data is not a list");
-            Assert.AreEqual(count, data.GetElements().Count);
+            Assert.AreEqual(count, data.GetElements().ToList().Count);
         }
 
         protected object GetPreviewValueAtIndex(string guid, int index)
@@ -283,7 +283,7 @@ namespace Dynamo.Tests
             var mirror = GetRuntimeMirror(varname);
             Assert.IsNotNull(mirror);
 
-            return mirror.GetData().GetElements()[index].Data;
+            return mirror.GetData().GetElements().ToList()[index].Data;
         }
 
         protected void AssertInfinity(string dsVariable, int startBlock = 0)
@@ -324,6 +324,14 @@ namespace Dynamo.Tests
             return mirror.GetData().Data;
         }
 
+        protected string GetPreviewValueInString(string guid)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+            return mirror.GetStringData();
+        }
+
         private void AssertMirrorData(MirrorData data1, MirrorData data2)
         {
             if (data1.IsNull)
@@ -331,8 +339,8 @@ namespace Dynamo.Tests
             else if (data1.IsCollection)
             {
                 Assert.True(data2.IsCollection);
-                List<MirrorData> elems1 = data1.GetElements();
-                List<MirrorData> elems2 = data2.GetElements();
+                List<MirrorData> elems1 = data1.GetElements().ToList();
+                List<MirrorData> elems2 = data2.GetElements().ToList();
                 Assert.AreEqual(elems1.Count, elems2.Count);
                 int i = 0;
                 foreach (var item in elems1)

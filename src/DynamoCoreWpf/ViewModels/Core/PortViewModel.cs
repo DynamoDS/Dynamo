@@ -45,6 +45,11 @@ namespace Dynamo.ViewModels
             get { return _port.IsConnected; }
         }
 
+        public bool IsEnabled
+        {
+            get { return _port.IsEnabled; }
+        }
+
         public double Height
         {
             get { return _port.Height; }
@@ -71,47 +76,25 @@ namespace Dynamo.ViewModels
             set { _port.UsingDefaultValue = value; }
         }
 
+        /// <summary>
+        /// IsHitTestVisible property gets a value that declares whether 
+        /// a Snapping rectangle can possibly be returned as a hit test result.
+        /// When ActiveConnector is not null, Snapping rectangle handles click events.
+        /// When ActiveConnector is null, Snapping rectangle does not handle click events 
+        /// and user can "click though invisible snapping area".
+        /// </summary>
+        public bool IsHitTestVisible
+        {
+            get { return _node.WorkspaceViewModel.ActiveConnector != null; }
+        }
+
         public System.Windows.Thickness MarginThickness
         {
             get { return _port.MarginThickness.AsWindowsType(); }
         }
 
         public PortEventType EventType { get; set; }
-      
-        public PortPosition Position
-        {
-            get
-            {
-                if (PortType == PortType.Input)
-                {
-                    if (_node.InPorts.Count > 1)
-                    {
-                        int pos = _node.InPorts.IndexOf(this);
-                        if (pos == 0) //first port 
-                            return PortPosition.Top;
-                        if (pos == _node.InPorts.Count - 1)
-                            return PortPosition.Last;
-                        return PortPosition.Middle;
-                    }
-                }
 
-                if (PortType == PortType.Output)
-                {
-                    if (_node.OutPorts.Count > 1)
-                    {
-                        int pos = _node.OutPorts.IndexOf(this);                      
-                        if (pos == 0) //first port 
-                            return PortPosition.Top;
-                        if (pos == _node.OutPorts.Count - 1)
-                            return PortPosition.Last;
-                        return PortPosition.Middle;
-                    }
-                }
-
-                return PortPosition.First;
-            }
-
-        }
         #endregion
 
         #region events
@@ -124,9 +107,20 @@ namespace Dynamo.ViewModels
         {
             _node = node;
             _port = port;
-           
+
             _port.PropertyChanged += _port_PropertyChanged;
-            _node.PropertyChanged += _node_PropertyChanged;          
+            _node.PropertyChanged += _node_PropertyChanged;
+            _node.WorkspaceViewModel.PropertyChanged += Workspace_PropertyChanged;
+        }
+
+        private void Workspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "ActiveConnector":
+                    RaisePropertyChanged("IsHitTestVisible");
+                    break;
+            }
         }
 
         void _node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -160,6 +154,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsConnected":
                     RaisePropertyChanged("IsConnected");
+                    break;
+                case "IsEnabled":
+                    RaisePropertyChanged("IsEnabled");
                     break;
                 case "Center":
                     RaisePropertyChanged("Center");

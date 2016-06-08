@@ -18,6 +18,12 @@ namespace Dynamo
     /// </summary>
     public class CustomNodeDefinition : IFunctionDescriptor
     {
+        /// <summary>
+        /// This function creates CustomNodeDefinition.
+        /// </summary>
+        /// <param name="functionId">Custom node unique ID</param>
+        /// <param name="displayName">Custom node name</param>
+        /// <param name="nodeModels">Nodes inside custom node</param>
         public CustomNodeDefinition(
             Guid functionId,
             string displayName="",
@@ -37,6 +43,7 @@ namespace Dynamo
             var topMost = new List<Tuple<int, NodeModel>>();
 
             List<string> outNames;
+            returns = new List<Tuple<string, string>>();
 
             // if we found output nodes, add select their inputs
             // these will serve as the function output
@@ -44,12 +51,10 @@ namespace Dynamo
             {
                 topMost.AddRange(
                     outputs.Where(x => x.HasInput(0)).Select(x => Tuple.Create(0, x as NodeModel)));
-                outNames = outputs.Select(x => x.Symbol).ToList();
+                returns = outputs.Select(x => x.Return).ToList();
             }
             else
             {
-                outNames = new List<string>();
-
                 // if there are no explicitly defined output nodes
                 // get the top most nodes and set THEM as the output
                 IEnumerable<NodeModel> topMostNodes = nodeModels.Where(node => node.IsTopMostNode);
@@ -72,12 +77,13 @@ namespace Dynamo
                 foreach (var rtnAndIndex in rtnPorts.Select((rtn, i) => new {rtn, idx = i}))
                 {
                     topMost.Add(Tuple.Create(rtnAndIndex.rtn.portIndex, rtnAndIndex.rtn.node));
-                    outNames.Add(rtnAndIndex.rtn.name ?? rtnAndIndex.idx.ToString());
+                    var outName = rtnAndIndex.rtn.name ?? rtnAndIndex.idx.ToString();
+                    returns.Add(new Tuple<string, string>(outName, string.Empty));
                 }
             }
 
             var nameDict = new Dictionary<string, int>();
-            foreach (var name in outNames)
+            foreach (var name in returns.Select(p => p.Item1))
             {
                 if (nameDict.ContainsKey(name))
                     nameDict[name]++;
@@ -87,22 +93,29 @@ namespace Dynamo
 
             nameDict = nameDict.Where(x => x.Value != 0).ToDictionary(x => x.Key, x => x.Value);
 
-            outNames.Reverse();
+            returns.Reverse();
 
             var returnKeys = new List<string>();
-            foreach (var name in outNames)
+            for (int i = 0; i < returns.Count(); ++i)
             {
+                var info = returns[i];
                 int amt;
+                var name = info.Item1;
+
                 if (nameDict.TryGetValue(name, out amt))
                 {
                     nameDict[name] = amt - 1;
-                    returnKeys.Add(name == "" ? amt + ">" : name + amt);
+                    var newName = string.IsNullOrEmpty(name) ? amt + ">" : name + amt;
+
+                    returnKeys.Add(newName);
+                    returns[i] = new Tuple<string, string>(newName, info.Item2);
                 }
                 else
                     returnKeys.Add(name);
             }
 
             returnKeys.Reverse();
+            returns.Reverse();
 
             #endregion
 
@@ -132,10 +145,10 @@ namespace Dynamo
                 .Select(node => node.Definition)
                 .Where(def => def.FunctionId != functionId)
                 .Distinct();
-            ReturnType = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+            ReturnType = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
         }
 
-        public static CustomNodeDefinition MakeProxy(Guid functionId, string displayName)
+        internal static CustomNodeDefinition MakeProxy(Guid functionId, string displayName)
         {
             var def = new CustomNodeDefinition(functionId, displayName);
             def.IsProxy = true;
@@ -196,14 +209,32 @@ namespace Dynamo
         ///     Return type.
         /// </summary>
         public ProtoCore.Type ReturnType { get; private set; }
-        
+
+        private List<Tuple<string, string>> returns;
+        /// <summary>
+        ///     The collection of output name and its description.
+        /// </summary>
+        public IEnumerable<Tuple<string, string>> Returns
+        {
+            get
+            {
+                return returns;
+            }
+        }
+
         #region Dependencies
 
+        /// <summary>
+        /// Returns all custom node definitions.
+        /// </summary>
         public IEnumerable<CustomNodeDefinition> Dependencies
         {
             get { return FindAllDependencies(new HashSet<CustomNodeDefinition>()); }
         }
 
+        /// <summary>
+        /// Returns custom node definitions for direct dependencies.
+        /// </summary>
         public IEnumerable<CustomNodeDefinition> DirectDependencies { get; private set; }
         
         private IEnumerable<CustomNodeDefinition> FindAllDependencies(ISet<CustomNodeDefinition> dependencySet)
@@ -239,6 +270,15 @@ namespace Dynamo
     /// </summary>
     public class CustomNodeInfo
     {
+        /// <summary>
+        /// This function creates CustomNodeInfo.
+        /// </summary>
+        /// <param name="functionId">Custom node unique ID</param>
+        /// <param name="name">Custom node name</param>
+        /// <param name="category">Custom node category</param>
+        /// <param name="description">Custom node description</param>
+        /// <param name="path">Path to custom node</param>
+        /// <param name="isVisibleInDynamoLibrary">Bool value controls the visibility in library search</param>
         public CustomNodeInfo(Guid functionId, string name, string category, string description, string path, bool isVisibleInDynamoLibrary = true)
         {
             if (functionId == Guid.Empty)
@@ -255,12 +295,41 @@ namespace Dynamo
                 Category = Dynamo.Properties.Resources.DefaultCustomNodeCategory;
         }
 
+        /// <summary>
+        /// Returns custom node unique ID
+        /// </summary>
         public Guid FunctionId { get; set; }
+
+        /// <summary>
+        /// Returns custom node name
+        /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Returns custom node category
+        /// </summary>
         public string Category { get; set; }
+
+        /// <summary>
+        /// Returns custom node description
+        /// </summary>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Returns path to custom node
+        /// </summary>
         public string Path { get; set; }
+
+        /// <summary>
+        /// Indicates if custom node is part of the package.
+        /// If true, then custom node is part of package manager.
+        /// </summary>
         public bool IsPackageMember { get; set; }
+
+        /// <summary>
+        /// Indicates if custom node is part of the library search.
+        /// If true, then custom node is part of library search.
+        /// </summary>
         public bool IsVisibleInDynamoLibrary { get; private set; }
     }
 }

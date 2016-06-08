@@ -402,7 +402,7 @@ namespace DSOffice
                             if (((StackValue)item).IsPointer)
                             {
                                 string message = string.Format(Properties.Resources.kMethodResolutionFailureWithTypes,
-                                    "Excel.WriteToFile", "_SingleFunctionObject");
+                                    "Excel.WriteToFile", "Function");
                                 LogWarningMessageEvents.OnLogWarningMessage(message);
                                 return null;
                             }
@@ -423,7 +423,7 @@ namespace DSOffice
 
         #endregion
         /// <summary>
-        /// return data from given worksheet (GetDataFromExcelWorksheet node)
+        /// Returns data from given worksheet (GetDataFromExcelWorksheet node)
         /// </summary>
         internal object[][] Data
         {
@@ -499,7 +499,7 @@ namespace DSOffice
         /// instance method, write data to existing worksheet, (WriteDataToExcelWorksheet node)
         /// </summary>
         /// <param name="startRow"></param>
-        /// <param name="startCol"></param>
+        /// <param name="startColumn"></param>
         /// <param name="data"></param>
         /// <returns></returns>
         internal WorkSheet WriteData(int startRow, int startColumn, object[][] data)

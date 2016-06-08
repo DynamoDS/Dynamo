@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-
 using Dynamo;
+using Dynamo.Events;
+using Dynamo.Session;
 using Dynamo.Tests;
-
-using DynamoServices;
-
 using NUnit.Framework;
 
 namespace IntegrationTests
@@ -21,13 +19,22 @@ namespace IntegrationTests
         private static bool postSeen = false;
 
 
-        private static void PreSeen()
+        private static void PreSeen(IExecutionSession session)
         {
+            Assert.IsNotNull(session);
+            var filepath = "ExecutionEvents.dyn";
+            Assert.IsTrue(session.ResolveFilePath(ref filepath));
+            Assert.IsTrue(Path.IsPathRooted(filepath));
+
+            filepath = @"xyz\DoNotExist.file";
+            Assert.IsFalse(session.ResolveFilePath(ref filepath));
+            Assert.AreEqual(@"xyz\DoNotExist.file", filepath);
             preSeen = true;
         }
 
-        private static void PostSeen()
+        private static void PostSeen(IExecutionSession session)
         {
+            Assert.IsNotNull(session);
             postSeen = true;
         }
 

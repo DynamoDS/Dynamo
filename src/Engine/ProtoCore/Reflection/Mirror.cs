@@ -46,7 +46,6 @@ namespace ProtoCore
             //
             private ProtoCore.DSASM.Mirror.ExecutionMirror deprecateThisMirror;
 
-
             /// <summary>
             ///  The runtime executive that we are reflecting on
             /// </summary>
@@ -56,20 +55,6 @@ namespace ProtoCore
             // TODO Jun: Determin if these properties can just be retrived from the symbolNode associated with the stackvalue
             private string variableName = string.Empty;
             private int blockDeclaration = ProtoCore.DSASM.Constants.kInvalidIndex;
-
-            /// <summary>
-            /// This consutructor is for instantiating a Runtime mirror object where we already have the mirrorData
-            /// </summary>
-            /// <param name="mirrorData"></param>
-            /// <param name="core"></param>
-            public RuntimeMirror(MirrorData mirrorData, ProtoCore.RuntimeCore runtimeCoreReflect, ProtoCore.Core staticCore = null)
-                : base(runtimeCoreReflect, staticCore)
-            {
-                Validity.Assert(this.runtimeCore != null);
-                TargetExecutive = runtimeCoreReflect.CurrentExecutive.CurrentDSASMExec;
-                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, runtimeCoreReflect);
-                this.mirrorData = mirrorData;
-            }
 
             public RuntimeMirror(string varname, int blockDecl, ProtoCore.RuntimeCore runtimeCore, ProtoCore.Core staticCore = null)
                 : base(runtimeCore, staticCore)
@@ -81,22 +66,10 @@ namespace ProtoCore
 
                 variableName = varname;
                 blockDeclaration = blockDecl;
-                StackValue svData = deprecateThisMirror.GetValue(variableName, blockDeclaration).DsasmValue;
+                StackValue svData = deprecateThisMirror.GetValue(variableName);
 
                 mirrorData = new MirrorData(staticCore, this.runtimeCore, svData);
             }
-
-            /// <summary>
-            ///  This is a helper function to be able to retrive the data inspection capabilities of the 
-            ///  soon to be deprecated ExecutionMirror
-            /// </summary>
-            /// <returns></returns>
-            public ProtoCore.DSASM.Mirror.ExecutionMirror GetUtils()
-            {
-                Validity.Assert(deprecateThisMirror != null);
-                return deprecateThisMirror;
-            }
-
 
             /// <summary>
             ///  Retrieve the data associated with this RuntimeMirror
@@ -116,124 +89,6 @@ namespace ProtoCore
                 Validity.Assert(this.runtimeCore != null);
                 Validity.Assert(TargetExecutive != null);
                 return deprecateThisMirror.GetStringValue(mirrorData.GetStackValue(), TargetExecutive.rmem.Heap, blockDeclaration);
-            }
-
-            // Returns a list of unique types in the input array
-            //private List<string> GetArrayTypes(StackValue svData)
-            private Dictionary<string, List<string>> GetArrayTypes(StackValue svData)
-            {
-                Dictionary<string, List<string>> asmTypes = new Dictionary<string, List<string>>();
-                //List<string> types = new List<string>();
-
-                Validity.Assert(svData.IsArray);
-
-                DSArray hs = runtimeCore.RuntimeMemory.Heap.ToHeapObject<DSArray>(svData);
-                foreach (var sv in hs.Values)
-                {
-                    if (sv.IsArray)
-                    {
-                        Dictionary<string, List<string>> types = GetArrayTypes(sv);
-                        foreach (var kvp in types)
-                        {
-                            if (!asmTypes.ContainsKey(kvp.Key))
-                            {
-                                asmTypes.Add(kvp.Key, kvp.Value);
-                            }
-                            else
-                            {
-                                List<string> cTypes = asmTypes[kvp.Key];
-                                // Check if each type in kvp.Value is not in cTypes
-                                foreach (string s in kvp.Value)
-                                {
-                                    if (!cTypes.Contains(s))
-                                        cTypes.Add(s);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Dictionary<string, List<string>> asmType = GetType(sv);
-                        var iter = asmType.GetEnumerator();
-                        iter.MoveNext();
-                        KeyValuePair<string, List<string>> kvp = iter.Current;
-                        if (!asmTypes.ContainsKey(kvp.Key))
-                        {
-                            asmTypes.Add(kvp.Key, kvp.Value);
-                        }
-                        else
-                        {
-                            List<string> cTypes = asmTypes[kvp.Key];
-                            cTypes.AddRange(kvp.Value);
-                        }
-                    }
-                }
-
-                //return types;
-                return asmTypes;
-            }
-
-            // If the type is an array, it returns a list of unique types in the array
-            // corresponding to one assembly and a list of assemblies if the types belong to more than one assembly
-            private Dictionary<string, List<string>> GetType(StackValue sv)
-            {
-                Dictionary<string, List<string>> asmType = new Dictionary<string, List<string>>();
-                if (sv.IsPointer)
-                {
-                    ClassNode classNode = runtimeCore.DSExecutable.classTable.ClassNodes[sv.metaData.type];
-                    List<string> types = new List<string>();
-                    types.Add(classNode.Name);
-                    asmType.Add(classNode.ExternLib, types);
-
-                    return asmType;
-                }
-                else
-                {
-                    List<string> type = new List<string>();
-                    switch (sv.optype)
-                    {
-                        case AddressType.ArrayPointer:
-                            {
-                                //List<string> types = GetArrayTypes(sv);
-                                //return "array";
-                                //return GetTypesHelper(types);
-                                asmType = GetArrayTypes(sv);
-                                break;
-                            }
-                        case AddressType.Int:
-                            type.Add("int");
-                            asmType.Add("", type);
-                            break;
-                        case AddressType.Double:
-                            type.Add("double");
-                            asmType.Add("", type);
-                            break;
-                        case AddressType.Null:
-                            type.Add("null");
-                            asmType.Add("", type);
-                            break;
-                        case AddressType.Boolean:
-                            type.Add("bool");
-                            asmType.Add("", type);
-                            break;
-                        case AddressType.String:
-                            type.Add("string");
-                            asmType.Add("", type);
-                            break;
-                        case AddressType.Char:
-                            type.Add("char");
-                            asmType.Add("", type);
-                            break;
-                        case AddressType.FunctionPointer:
-                            type.Add("function pointer");
-                            asmType.Add("", type);
-                            break;
-                        default:
-                            break;
-
-                    }
-                    return asmType;
-                }
             }
         }
 
@@ -265,31 +120,6 @@ namespace ProtoCore
                 Name = name;
             }
 
-            protected static MethodMirror FindMethod(string methodName, List<ProtoCore.Type> arguments, List<ProcedureNode> procNodes)
-            {
-                foreach (var procNode in procNodes)
-                {
-                    if (procNode.Name == methodName)
-                    {
-                        if (procNode.ArgumentInfos.Count == arguments.Count)
-                        {
-                            bool isEqual = true;
-                            for (int i = 0; i < arguments.Count; ++i)
-                            {
-                                if (!arguments[i].Equals(procNode.ArgumentTypes[i]))
-                                {
-                                    isEqual = false;
-                                    break;
-                                }
-                            }
-                            if (isEqual)
-                                return new MethodMirror(procNode);
-                        }
-                    }
-                }
-                return null;
-            }
-
             /// <summary>
             /// Returns list of overloads (one or more) for a given built-in method
             /// </summary>
@@ -306,7 +136,7 @@ namespace ProtoCore
 
             public static IEnumerable<ClassMirror> GetClasses(Core core)
             {
-                return core.ClassTable.ClassNodes.Skip((int)PrimitiveType.kMaxPrimitives).
+                return core.ClassTable.ClassNodes.Skip((int)PrimitiveType.MaxPrimitive).
                     Where(x => !CoreUtils.StartsWithSingleUnderscore(x.Name)).
                     Select(x => new ClassMirror(core, x));
             }
@@ -442,19 +272,6 @@ namespace ProtoCore
                 libraryMirror = new LibraryMirror(classNode.ExternLib, core);
             }
 
-            public ClassMirror(int classIndex, ProtoCore.Core core)
-            {
-                if (classIndex == Constants.kInvalidIndex)
-                {
-                    throw new ArgumentException("classIndex is invalid");
-                }
-
-                ProtoCore.DSASM.ClassTable classTable = core.ClassTable;
-                classNode = classTable.ClassNodes[classIndex];
-                libraryMirror = new LibraryMirror(classNode.ExternLib, core);
-                ClassName = classNode.Name;
-            }
-
             internal ClassMirror(ProtoCore.Core core, ProtoCore.DSASM.ClassNode classNode,
                 LibraryMirror libraryMirror = null)
                 : base(core, classNode.Name)
@@ -489,15 +306,6 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Returns the library mirror of the assembly that the class belongs to
-            /// </summary>
-            /// <returns></returns>
-            public LibraryMirror GetAssembly()
-            {
-                return libraryMirror;
-            }
-
-            /// <summary>
             /// Returns the constructors and static methods and properties 
             /// belonging to the type and its base types
             /// </summary>
@@ -518,23 +326,6 @@ namespace ProtoCore
                 members.AddRange(this.GetFunctions().Where(m => m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
                 members.AddRange(this.GetProperties().Where(m => m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
                 return members;
-            }
-
-
-            /// <summary>
-            ///  Get the super class of this class
-            /// </summary>
-            /// <returns></returns>
-            public ClassMirror GetSuperClass()
-            {
-                Validity.Assert(!string.IsNullOrEmpty(ClassName));
-                Validity.Assert(staticCore != null);
-
-                int ci = ClassNode.Bases[0];
-                Validity.Assert(ci != ProtoCore.DSASM.Constants.kInvalidIndex);
-
-                return new ClassMirror(staticCore, staticCore.ClassTable.ClassNodes[ci], this.libraryMirror);
-
             }
 
             /// <summary>
@@ -701,14 +492,6 @@ namespace ProtoCore
                 members.AddRange(this.GetFunctions().Where(m => !m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
                 members.AddRange(this.GetProperties().Where(m => !m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
                 return members;
-            }
-
-            public MethodMirror GetDeclaredMethod(string methodName, List<ProtoCore.Type> argumentTypes)
-            {
-                ProcedureTable procedureTable = ClassNode.ProcTable;
-                List<ProcedureNode> procList = procedureTable.Procedures;
-
-                return StaticMirror.FindMethod(methodName, argumentTypes, procList);
             }
 
             public ClassAttributes GetClassAttributes()
@@ -889,46 +672,6 @@ namespace ProtoCore
             public List<ClassMirror> GetClasses()
             {
                 return classMirrors;
-            }
-
-            /// <summary>
-            /// Returns list of global methods defined in an imported DS file
-            /// </summary>
-            /// <returns></returns>
-            public List<MethodMirror> GetGlobalMethods()
-            {
-                if (globalMethods == null)
-                {
-                    List<MethodMirror> methods = new List<MethodMirror>();
-
-                    Validity.Assert(staticCore != null);
-
-                    Validity.Assert(staticCore.CodeBlockList.Count > 0);
-
-                    List<ProcedureNode> procNodes = staticCore.CodeBlockList[0].procedureTable.Procedures;
-
-                    int numNewMethods = procNodes.Count - numBuiltInMethods;
-                    Validity.Assert(numNewMethods >= 0);
-
-                    for (int i = numBuiltInMethods; i < procNodes.Count; ++i)
-                    {
-                        MethodMirror method = new MethodMirror(procNodes[i]);
-                        methods.Add(method);
-                    }
-
-                    numBuiltInMethods = procNodes.Count;
-
-                    globalMethods = methods;
-                }
-
-                return globalMethods;
-            }
-
-            public enum LibraryType
-            {
-                kDSfile = 0,
-                kDLL,
-                kEXE
             }
         }
     }

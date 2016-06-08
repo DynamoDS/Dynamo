@@ -229,6 +229,10 @@ b = ""world"";
 c = { a, b };
 j = 0;
 s = { };
+	def String(x : string)
+	{
+	    return = x;
+}
 r = 
 [Imperative]
 {
@@ -238,10 +242,6 @@ r =
 	    j = j + 1;
 	}
 	
-	def String(x : string)
-	{
-	    return = x;
-}
     return = s;
   
 }
@@ -387,158 +387,6 @@ def foo(x:var)
             Object[] v1 = new Object[] { v2, "11!!", "2!!", v2, v2, "whileLoop!!", "whileLoop!!", v2, v2, " - 2!!", "10!!" };
             thisTest.Verify("r", v1);
 
-        }
-
-        [Test]
-        [Category("ModifierBlock")]
-        [Category("SmokeTest")]
-        public void T10_String_ModifierStack()
-        {
-            string code = @"
-a =
-{
-    ""a"";
-    + ""1"" => a1;
-    + { ""2"", ""3"" } => a2;
-    ""b"" => b;
-}
-r = a;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //Assert.Fail("1467201 - Sprint 25 - rev 3239:Replication doesn't work in modifier stack");
-            Object[] v1 = new Object[] { "a12", "a13" };
-            thisTest.Verify("a2", v1);
-            thisTest.Verify("a", "b");
-            thisTest.Verify("r", "b");
-        }
-
-        [Test]
-        [Category("ModifierBlock")]
-        public void TV1467201_Replicate_ModifierStack_1()
-        {
-            String code =
-                @"
-                a =
-                {
-                    1;
-                    + 1 => a1;
-                    + { ""2"", ""3"" } => a2;
-                    4 => b;
-                }
-                r = a;
-    
-                ";
-            thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { "22", "23" };
-            thisTest.Verify("a1", 2);
-            thisTest.Verify("a2", v1);
-            thisTest.Verify("r", 4);
-        }
-
-        [Test]
-        [Category("ModifierBlock")]
-        public void TV1467201_Replicate_ModifierStack_2()
-        {
-            String code =
-                @"
-                a =
-                {
-                    1;
-                    + 1 => a1;
-                    + { 10, -20 } => a2;
-                100;
-                }
-                r = a;
-    
-                ";
-            thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 12, -18 };
-            thisTest.Verify("a1", 2);
-            thisTest.Verify("a2", v1);
-            thisTest.Verify("r", 100);
-        }
-
-        [Test]
-        [Category("ModifierBlock")]
-        public void TV1467201_Replicate_ModifierStack_3()
-        {
-            String code =
-                @"
-                a =
-                {
-                    1;
-                    + 1 => a1;
-                    + { 10, -20 } => a2;
-                    +{""m"",""n"",""o""} => a3;
-                }
-                r = a;
-    
-                ";
-            thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 12, -18 };
-            Object[] v2 = new Object[] { "12m", "-18n" };
-            thisTest.Verify("a1", 2);
-            thisTest.Verify("a2", v1);
-            thisTest.Verify("a3", v2);
-            thisTest.Verify("r", v2);
-        }
-
-        [Test]
-        [Category("ModifierBlock")]
-        public void TV1467201_Replicate_ModifierStack_4()
-        {
-            String code =
-                @"
-                a =
-                {
-                    1;
-                    + 1 => a1;
-                    + { 10, -20 } => a2;
-                    +{""m"",""n"",""o""} => a3;
-                    + {} =>a4;
-                }
-                r = a;
-    
-                ";
-            thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 12, -18 };
-            Object[] v2 = new Object[] { "12m", "-18n" };
-            Object[] v3 = new Object[] { };
-            thisTest.Verify("a1", 2);
-            thisTest.Verify("a2", v1);
-            thisTest.Verify("a3", v2);
-            thisTest.Verify("a4", v3);
-            thisTest.Verify("r", v3);
-        }
-
-        [Test]
-        [Category("ModifierBlock")]
-        public void TV1467201_Replicate_ModifierStack_5()
-        {
-            String code =
-                @"
-                a =
-                {
-                    1;
-                    + 1 => a1;
-                    + { 10, -20 } => a2;
-                    +{""m"",""n"",""o""} => a3;
-                     {{1,2},{3,4}} =>a4;
-                      + {{10},{20}} => a5;
-                }
-                r = a;
-    
-                ";
-            thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 12, -18 };
-            Object[] v2 = new Object[] { "12m", "-18n" };
-            Object[] v3 = new Object[] { 11 };
-            Object[] v4 = new Object[] { 23 };
-            Object[] v5 = new Object[] { v3, v4 };
-            thisTest.Verify("a1", 2);
-            thisTest.Verify("a2", v1);
-            thisTest.Verify("a3", v2);
-            thisTest.Verify("a5", v5);
-            thisTest.Verify("r", v5);
         }
 
         [Test]
@@ -709,22 +557,6 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        public void Test()
-        {
-            string code = @"
-a =
-{
-    ""a"";
-    + { ""2"", ""3"" } => aReplicate;//{""a12"",""a13""}?
-}
-r = a;
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-
-        }
-
-
-        [Test]
         public void TestStringIndexing01()
         {
             String code =
@@ -782,7 +614,7 @@ r = a;
                 ";
             thisTest.RunScriptSource(code);
             // Will get an index out of range runtime warning
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kOverIndexing);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.OverIndexing);
         }
 
         [Test]

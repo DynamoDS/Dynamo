@@ -25,8 +25,8 @@ bO = b.Foo();
 );
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1947
             string defectID = "MAGN-1947 IntegrationTests.NamespaceConflictTest.DupImportTest";
-            Assert.IsTrue((Int64)mirror.GetFirstValue("aO").Payload == 1, defectID);
-            Assert.IsTrue((Int64)mirror.GetFirstValue("bO").Payload == 2, defectID);
+            thisTest.Verify("aO", 1);
+            thisTest.Verify("bO", 2);
 
         }
 
@@ -39,7 +39,7 @@ a = DupTargetTest.DupTargetTest();
 aO = a.Foo();
 "
 );
-            thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.kMultipleSymbolFoundFromName, 1);
+            thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.MultipleSymbolFoundFromName, 1);
         }
 
         [Test]
@@ -51,8 +51,8 @@ a = DupTargetTest.DupTargetTest();
 p = a;
 "
 );
-            thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.kMultipleSymbolFoundFromName, 1);
-            Assert.IsTrue(mirror.GetValue("p").DsasmValue.optype == ProtoCore.DSASM.AddressType.Null);
+            thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.MultipleSymbolFoundFromName, 1);
+            thisTest.Verify("p", null);
         }
 
 
@@ -66,12 +66,6 @@ a = DupTargetTest.DupTargetTest();
 aO = a.Foo();
 "
 );
-            Assert.Throws<NotImplementedException>(() =>
-            {
-                mirror.GetFirstValue("a0");
-            });
-
-
         }
     }
 }

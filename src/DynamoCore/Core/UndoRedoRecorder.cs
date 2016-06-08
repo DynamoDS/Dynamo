@@ -16,7 +16,7 @@ namespace Dynamo.Core
     /// client to delete, reload or create the corresponding model. To qualify
     /// as an undo client, a class must implement this interface.
     /// </summary>
-    public interface IUndoRedoRecorderClient
+    internal interface IUndoRedoRecorderClient
     {
         /// <summary>
         /// UndoRedoRecorder calls this method to delete a model in the client.

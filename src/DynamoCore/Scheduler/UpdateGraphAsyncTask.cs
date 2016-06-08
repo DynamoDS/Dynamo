@@ -26,6 +26,8 @@ namespace Dynamo.Scheduler
         }
 
         public IEnumerable<NodeModel> ModifiedNodes { get; protected set; }
+        private List<NodeModel> executedNodes;
+        public IEnumerable<NodeModel> ExecutedNodes { get { return executedNodes; } }
 
         #endregion
 
@@ -124,18 +126,31 @@ namespace Dynamo.Scheduler
                 // restored to warning state when task completion handler sets the 
                 // corresponding build/runtime warning on it.
                 // 
-                foreach (var modifiedNode in ModifiedNodes)
+                executedNodes = new List<NodeModel>();
+                var executedNodeGuids = engineController.GetExecutedAstGuids(graphSyncData.SessionID);
+                foreach (var guid in executedNodeGuids)
                 {
-                    modifiedNode.WasInvolvedInExecution = true;
-                    modifiedNode.WasRenderPackageUpdatedAfterExecution = false;
-                    if (modifiedNode.State == ElementState.Warning)
-                        modifiedNode.ClearRuntimeError();
+                    var node = TargetedWorkspace.Nodes.FirstOrDefault(n => n.GUID.Equals(guid));
+                    if (node != null)
+                    {
+                        executedNodes.Add(node);
+                    }
                 }
+
+                foreach (var node in executedNodes)
+                {
+                    node.WasInvolvedInExecution = true;
+                    node.WasRenderPackageUpdatedAfterExecution = false;
+                    if (node.State == ElementState.Warning)
+                        node.ClearRuntimeError();
+                }
+
+                engineController.RemoveRecordedAstGuidsForSession(graphSyncData.SessionID);
             }
         }
 
         /// <summary>
-        /// Return if this task's graph sync data is a super set of the other
+        /// Returns true if this task's graph sync data is a super set of the other
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
@@ -218,7 +233,7 @@ namespace Dynamo.Scheduler
 
         /// <summary>
         /// Call this method to recursively gather downstream nodes of a given node.
-        /// Get only those nodes that are in RUN state.
+        /// Returns only those nodes that are in RUN state.
         /// </summary>
         /// <param name="node">A NodeModel whose downstream nodes are to be gathered.</param>
         /// <param name="gathered">A list of all downstream nodes.</param>

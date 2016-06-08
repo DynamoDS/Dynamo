@@ -67,7 +67,7 @@ namespace DynamoCoreWpfTests
         {
             Assert.IsNotNull(mirrorData);
             if (mirrorData.IsCollection)
-                AssertWatchTreeBranchContent(watch.Children, mirrorData.GetElements());
+                AssertWatchTreeBranchContent(watch.Children, mirrorData.GetElements().ToList());
             else if (mirrorData.IsNull)
                 Assert.AreEqual("null", watch.NodeLabel);
             else
@@ -192,7 +192,7 @@ namespace DynamoCoreWpfTests
                 ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
                 watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
 
-            Assert.AreEqual("_SingleFunctionObject", watchVM.NodeLabel);
+            Assert.AreEqual("Function", watchVM.NodeLabel);
         }
 
         [Test]
@@ -228,7 +228,7 @@ namespace DynamoCoreWpfTests
                ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
                 watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
 
-            Assert.AreEqual("_SingleFunctionObject", watchVM.NodeLabel);
+            Assert.AreEqual("Function", watchVM.NodeLabel);
         }
     }
 }

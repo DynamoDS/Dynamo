@@ -80,7 +80,7 @@ namespace NodeDocumentationUtility
         }
 
         /// <summary>
-        /// Gets the given type if exists in this module and is imported
+        /// Returns the given type if exists in this module and is imported
         /// into the engine.
         /// </summary>
         /// <param name="typename">Fully qualified class name</param>
@@ -98,7 +98,7 @@ namespace NodeDocumentationUtility
         {
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
-            var core = new Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
+            var core = new Core(new Options());
             core.Compilers.Add(Language.Associative, new ProtoAssociative.Compiler(core));
             core.ParsingMode = ParseMode.AllowNonAssignment;
             return core;

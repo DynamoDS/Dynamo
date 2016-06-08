@@ -9,7 +9,7 @@ using Microsoft.Win32;
 namespace DynamoInstallDetective
 {
     /// <summary>
-    /// Defines an installed product
+    /// Specifies an installed product
     /// </summary>
     public interface IInstalledProduct : IComparable
     {
@@ -40,21 +40,21 @@ namespace DynamoInstallDetective
     public interface IProductLookUp
     {
         /// <summary>
-        /// Gets installed product from the installation path
+        /// Returns installed product from the installation path
         /// </summary>
         /// <param name="path">Installation path</param>
         /// <returns>Installed product</returns>
         IInstalledProduct GetProductFromInstallPath(string path);
 
         /// <summary>
-        /// Gets installed product from it's name
+        /// Returns installed product from it's name
         /// </summary>
         /// <param name="name">Product Name for lookup</param>
         /// <returns>Installed product</returns>
         IInstalledProduct GetProductFromProductName(string name);
 
         /// <summary>
-        /// Gets installed product from it's product id
+        /// Returns installed product from it's product id
         /// </summary>
         /// <param name="productCode">Product guid string such as 
         /// {6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B}</param>
@@ -82,7 +82,7 @@ namespace DynamoInstallDetective
         string GetCoreFilePathFromInstallation(string installPath);
 
         /// <summary>
-        /// Gets file version info from the given path.
+        /// Returns file version info from the given path.
         /// </summary>
         /// <param name="filePath">File path</param>
         /// <returns>Version info as Tuple</returns>
@@ -96,18 +96,18 @@ namespace DynamoInstallDetective
     public interface IProductCollection
     {
         /// <summary>
-        /// Gets list of installed products
+        /// Returns list of installed products
         /// </summary>
         IEnumerable<IInstalledProduct> Products { get; }
 
         /// <summary>
-        /// Gets latest product from installation
+        /// Returns latest product from installation
         /// </summary>
         /// <returns>Installed product</returns>
         IInstalledProduct GetLatestProduct();
 
         /// <summary>
-        /// Gets all installed product on the system using the given lookUp 
+        /// Returns all installed product on the system using the given lookUp 
         /// and initializes itself.
         /// </summary>
         /// <param name="lookUp">LookUp interface</param>
@@ -126,7 +126,7 @@ namespace DynamoInstallDetective
         /// Product name for lookup
         /// </summary>
         public string ProductLookUpName { get; private set; }
-        private readonly string fileLookup;
+        private readonly Func<string, string> fileLocator;
 
         static RegistryKey OpenKey(string key)
         {
@@ -158,7 +158,13 @@ namespace DynamoInstallDetective
         public InstalledProductLookUp(string lookUpName, string fileLookup)
         {
             this.ProductLookUpName = lookUpName;
-            this.fileLookup = fileLookup;
+            this.fileLocator = (path) => Directory.GetFiles(path, fileLookup).FirstOrDefault();
+        }
+
+        public InstalledProductLookUp(string lookUpName, Func<string, string> fileLocator)
+        {
+            this.ProductLookUpName = lookUpName;
+            this.fileLocator = fileLocator;
         }
 
         public IInstalledProduct GetProductFromInstallPath(string path)
@@ -202,7 +208,7 @@ namespace DynamoInstallDetective
             if (string.IsNullOrEmpty(basePath))
                 return false;
 
-            return Directory.Exists(basePath) && Directory.GetFiles(basePath, fileLookup).Any();
+            return Directory.Exists(basePath) && File.Exists(fileLocator(basePath));
         }
 
         public virtual string GetInstallLocationFromProductName(string name)
@@ -226,7 +232,7 @@ namespace DynamoInstallDetective
 
         public virtual string GetCoreFilePathFromInstallation(string installPath)
         {
-            return Directory.GetFiles(installPath, fileLookup).FirstOrDefault();
+            return fileLocator(installPath);
         }
 
         public virtual Tuple<int, int, int, int> GetVersionInfoFromFile(string filePath)

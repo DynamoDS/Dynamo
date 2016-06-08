@@ -6,6 +6,9 @@ using Dynamo.Configuration;
 
 namespace Dynamo.Graph.Nodes
 {
+    /// <summary>
+    /// Contains helper methods to adjust the contents of codeblock node.
+    /// </summary>
     public static class CodeBlockUtils
     {
         /// <summary>
@@ -15,7 +18,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="text">The text to be normalized</param>
         /// <returns>Returns the normalized string.</returns>
         /// 
-        public static string NormalizeLineBreaks(string text)
+        internal static string NormalizeLineBreaks(string text)
         {
             text = text.Replace("\r\n", "\n");
             return text.Replace("\r", "\n");
@@ -32,7 +35,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns>Returns a list of input port data generated based on the 
         /// input unbound identifier list.</returns>
         /// 
-        public static IEnumerable<PortData> GenerateInputPortData(
+        internal static IEnumerable<PortData> GenerateInputPortData(
             IEnumerable<string> unboundIdents)
         {
             if (unboundIdents == null)
@@ -69,7 +72,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns>Returns a list of lists of variables defined by the given 
         /// set of Statement objects.</returns>
         /// 
-        public static IEnumerable<IEnumerable<string>> GetStatementVariables(
+        internal static IEnumerable<IEnumerable<string>> GetStatementVariables(
             IEnumerable<Statement> statements, bool onlyTopLevel)
         {
             if (statements == null)
@@ -99,7 +102,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns>Returns true if an output port is required, or false 
         /// otherwise.</returns>
         /// 
-        public static bool DoesStatementRequireOutputPort(
+        internal static bool DoesStatementRequireOutputPort(
             IEnumerable<IEnumerable<string>> statementVariables, int index)
         {
             if (statementVariables == null)
@@ -153,7 +156,7 @@ namespace Dynamo.Graph.Nodes
         /// </param>
         /// <returns>Returns the formatted code with the above process.</returns>
         /// 
-        public static string FormatUserText(string inputCode)
+        internal static string FormatUserText(string inputCode)
         {
             if (inputCode == null)
                 return string.Empty;
@@ -231,7 +234,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <returns>Returns a map between defined variables and the line index on 
         /// which they are defined last.</returns>
-        public static IOrderedEnumerable<KeyValuePair<string, int>> GetDefinitionLineIndexMap(IEnumerable<Statement> codeStatements)
+        internal static IOrderedEnumerable<KeyValuePair<string, int>> GetDefinitionLineIndexMap(IEnumerable<Statement> codeStatements)
         {
             // Get all defined variables and their locations
             var definedVars = codeStatements.Select(s => new KeyValuePair<Variable, int>(s.FirstDefinedVariable, s.StartLine))

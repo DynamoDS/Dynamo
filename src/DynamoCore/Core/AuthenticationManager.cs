@@ -8,10 +8,17 @@ using Greg.AuthProviders;
 
 namespace Dynamo.Core
 {
+    /// <summary>
+    ///     This is a wrapper for <see cref="IAuthProvider"/> functionality.
+    ///     It is used for oxygen authentication.
+    /// </summary>
     public class AuthenticationManager
     {
         private readonly IAuthProvider authProvider;
 
+        /// <summary>
+        ///     Occurs when login state is changed
+        /// </summary>
         public event Action<LoginState> LoginStateChanged;
 
         /// <summary>
@@ -25,7 +32,7 @@ namespace Dynamo.Core
         /// <summary>
         ///     Specifies whether the user is logged in or not.
         /// </summary>
-        public LoginState LoginState
+        internal LoginState LoginState
         {
             get { return HasAuthProvider ? authProvider.LoginState : LoginState.LoggedOut; }
         }
@@ -33,7 +40,7 @@ namespace Dynamo.Core
         /// <summary>
         ///     The username of the current user, if logged in.  Otherwise null
         /// </summary>
-        public string Username
+        internal string Username
         {
             get { return HasAuthProvider ? authProvider.Username : ""; }
         }
@@ -46,6 +53,10 @@ namespace Dynamo.Core
             get { return authProvider; }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthenticationManager"/> class.
+        /// </summary>
+        /// <param name="authProvider">IAuthProvider functionality</param>
         public AuthenticationManager(IAuthProvider authProvider)
         {
             this.authProvider = authProvider;
@@ -62,7 +73,7 @@ namespace Dynamo.Core
         /// <summary>
         /// Toggle current login state
         /// </summary>
-        public void ToggleLoginState(object o)
+        internal void ToggleLoginState(object o)
         {
             if (LoginState == LoginState.LoggedIn)
             {
@@ -77,7 +88,7 @@ namespace Dynamo.Core
         /// <summary>
         /// Check if able to toggle login state
         /// </summary>
-        public bool CanToggleLoginState(object o)
+        internal bool CanToggleLoginState(object o)
         {
             return this.LoginState == LoginState.LoggedOut || this.LoginState == LoginState.LoggedIn;
         }

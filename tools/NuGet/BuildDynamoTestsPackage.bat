@@ -1,4 +1,4 @@
-SET base=..\..\bin\AnyCPU\Debug
+SET base=..\..\bin\AnyCPU\Release
 SET framework=net45
 
 SET test=DynamoVisualProgramming.Tests

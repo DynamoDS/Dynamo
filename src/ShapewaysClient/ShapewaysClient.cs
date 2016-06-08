@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using RestSharp;
-using RestSharp.Contrib;
+using RestSharp.Extensions.MonoHttp;
 
 namespace ShapewaysClient
 {
@@ -48,7 +48,7 @@ namespace ShapewaysClient
         }
 
         /// <summary>
-        /// Get Oauth request token to authorized with Shapeways service
+        /// Returns Oauth request token to authorized with Shapeways service
         /// </summary>
         public void RequestToken()
         {

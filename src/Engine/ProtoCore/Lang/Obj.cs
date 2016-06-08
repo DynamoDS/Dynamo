@@ -26,10 +26,6 @@ namespace ProtoCore.Lang
 
         }
 
-        //Payloads are objects, or Array
-
         public Object Payload;
-        public ProtoCore.Type Type;
-
     }
 }

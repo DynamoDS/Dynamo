@@ -9,7 +9,7 @@ namespace ProtoCore.Utils
     public static class ClassUtils
     {
         /// <summary>
-        /// Get the list of classes that this can be upcast to
+        /// Returns the list of classes that this can be upcast to
         /// It includes the class itself
         /// </summary>
         /// <param name="cn"></param>
@@ -31,15 +31,15 @@ namespace ProtoCore.Utils
                 target = runtimeCore.DSExecutable.classTable.ClassNodes[target.Bases[0]];
             }
 
-            if (!ret.Contains((int)(PrimitiveType.kTypeVar)))
-                ret.Add((int)PrimitiveType.kTypeVar);
+            if (!ret.Contains((int)(PrimitiveType.Var)))
+                ret.Add((int)PrimitiveType.Var);
 
 
             return ret;
         }
 
         /// <summary>
-        /// Get the number of upcasts that need to be performed to turn a class into another class in its upcast chain
+        /// Returns the number of upcasts that need to be performed to turn a class into another class in its upcast chain
         /// </summary>
         /// <param name="from"></param>
         /// <param name="to"></param>
@@ -140,13 +140,13 @@ namespace ProtoCore.Utils
                 bool isAccessible = false;
                 if (isInMemberFunctionContext)
                 {
-                    isAccessible = (symbol.classScope == myself) || (symbol.access != ProtoCore.CompilerDefinitions.AccessModifier.kPrivate);
+                    isAccessible = (symbol.classScope == myself) || (symbol.access != ProtoCore.CompilerDefinitions.AccessModifier.Private);
                     if (isInStaticFunction)
                         isAccessible = isAccessible && symbol.isStatic;
                 }
                 else
                 {
-                    isAccessible = symbol.access == ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
+                    isAccessible = symbol.access == ProtoCore.CompilerDefinitions.AccessModifier.Public;
                 }
 
                 if (isAccessible)

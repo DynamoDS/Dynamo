@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace Dynamo.Scheduler
 {
+    /// <summary>
+    /// This delegate is used in AsyncTask events: Completed and Discarded.
+    /// </summary>
+    /// <param name="asyncTask"><see cref="AsyncTask"/></param>
     public delegate void AsyncTaskCompletedHandler(AsyncTask asyncTask);
 
     /// <summary>
@@ -20,10 +24,16 @@ namespace Dynamo.Scheduler
         }
     }
 
+    /// <summary>
+    /// This is the base class for async tasks, that are running on Dynamo Scheduler.
+    /// </summary>
     public abstract class AsyncTask
     {
         #region Private Class Data Members
 
+        /// <summary>
+        /// Returns priority of the <see cref="AsyncTask"/>.
+        /// </summary>
         public enum TaskPriority
         {
             Critical,
@@ -58,6 +68,9 @@ namespace Dynamo.Scheduler
             KeepOther
         }
 
+        /// <summary>
+        /// Dynamo Scheduler.
+        /// </summary>
         internal readonly IScheduler scheduler;
 
         #endregion
@@ -71,9 +84,9 @@ namespace Dynamo.Scheduler
         internal Exception Exception { get; private set; }
 
         /// <summary>
-        /// DynamoScheduler sorts tasks base on two key factors: the priority of
-        /// a task, and the relative importance between two tasks that has the 
-        /// same priority. During task reprioritization process, DynamoScheduler 
+        /// DynamoScheduler sorts tasks based on two key factors: the priority of
+        /// a task, and the relative importance between two tasks that have the 
+        /// same priority. During task re-prioritizing process, DynamoScheduler 
         /// first sorts the tasks in accordance to their AsyncTask.Priority
         /// property. The resulting ordered list is then sorted again by calling
         /// AsyncTask.Compare method to determine the relative importance among
@@ -83,9 +96,8 @@ namespace Dynamo.Scheduler
         public abstract TaskPriority Priority { get; }
 
         /// <summary>
-        /// This event is raised when the AsyncTask is completed. The event is 
-        /// being raised in the context of ISchedulerThread, any UI element 
-        /// access that is needed should be dispatched onto the UI dispatcher.
+        /// This event is raised when the AsyncTask is completed, in the context of ISchedulerThread, 
+        /// any UI element access that is needed should be dispatched onto the UI dispatcher.
         /// </summary>
         /// 
         public event AsyncTaskCompletedHandler Completed;

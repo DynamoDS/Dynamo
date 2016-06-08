@@ -4,23 +4,23 @@ namespace ProtoCore.DSASM
 {
     public enum InterpreterMode
     {
-        kExpressionInterpreter,
-        kNormal,
+        Expression,
+        Normal,
     }
 
     namespace CallingConvention
     {
         public enum BounceType
         {
-            kExplicit,  // Explicit bounce is using the same executive for the bounce target
-            kImplicit,  // Implicit bounce is using a new executive for the bounce target
+            Explicit,  // Explicit bounce is using the same executive for the bounce target
+            Implicit,  // Implicit bounce is using a new executive for the bounce target
         }
 
         public enum CallType
         {
-            kExplicit,      // Explicit call is using the same executive for the function call
-            kExplicitBase,  // Explicit call to the base class
-            kImplicit,      // Implicit call is using a new executive for the function call
+            Explicit,      // Explicit call is using the same executive for the function call
+            ExplicitBase,  // Explicit call to the base class
+            Implicit,      // Implicit call is using a new executive for the function call
         }
     }
 
@@ -92,43 +92,33 @@ namespace ProtoCore.DSASM
         public const string cjmp = "cjmp";
         public const string jdep = "jdep";
         public const string bounce = "bounce";
-        public const string alloca = "alloca";
-        public const string allocc = "allocc";
+        public const string newarr = "newarr";
+        public const string newobj = "newobj";
         public const string push = "push";
-        public const string pushg = "pushg";
         public const string pushm = "pushm";
         public const string pushw = "pushw";
-        public const string pushindex = "pushindex";
         public const string pushdep = "pushdep";
-        public const string pushlist = "pushlist";
-        public const string ret = "ret";
-        public const string retc = "retc";
+        public const string pushrepguide = "pushguide";
+        public const string pushlevel = "pushlevel";
+        public const string ret = "return";
         public const string retb = "retb";
         public const string retcn = "retcn";
         public const string pop = "pop";
         public const string popw = "popw";
-        public const string popg = "popg";
         public const string popm = "popm";
-        public const string poplist = "poplist";
-        public const string not = "not";
-        public const string negate = "negate";
+        public const string poprepguides = "popguides";
+        public const string poplevel = "poplevel";
         public const string dep = "dep";
         public const string setexpuid = "setexpuid";
         public const string pushb = "pushb";
-
-        // TODO Jun: these are temporary instruction 
         public const string pushvarsize = "pushvarsize";
+        public const string loadelement = "loadelement";
+        public const string setelement = "setelement";
+        public const string setmemelement = "setmemelement";
+        public const string cast = "cast";
 
-        public const string regAX = "_ax";
-        public const string regBX = "_bx";
-        public const string regCX = "_cx";
-        public const string regDX = "_dx";
-        public const string regEX = "_ex";
-        public const string regFX = "_fx";
         public const string regRX = "_rx";
-        public const string regSX = "_sx";
         public const string regLX = "_lx";
-        public const string regTX = "_tx";
 
         // TODO: Replace with ProtoCore.DSDefinitions.Keyword struct
         public const string associative = "Associative";
@@ -149,7 +139,7 @@ namespace ProtoCore.DSASM
     public class Op
     {
         /// <summary>
-        /// Return the corresponding opcode of an operator.
+        /// Returns the corresponding opcode of an operator.
         /// </summary>
         /// <param name="op"></param>
         /// <returns></returns>
@@ -163,7 +153,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Return the corresponding opcode of an unary operator.
+        /// Returns the corresponding opcode of an unary operator.
         /// </summary>
         /// <param name="op"></param>
         /// <returns></returns>
@@ -177,7 +167,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Return the symbol representation of an operator. E.g., return "+"
+        /// Returns the symbol representation of an operator. E.g., return "+"
         /// for Operator.add.
         /// </summary>
         /// <param name="op">Operator</param>
@@ -192,7 +182,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Return the symbol representation of an unary operator. E.g., return
+        /// Returns the symbol representation of an unary operator. E.g., return
         /// "-" for UnaryOperator.neg
         /// </summary>
         /// <param name="op"></param>
@@ -207,7 +197,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Return the string representation of an operator. E.g., return "add"
+        /// Returns the string representation of an operator. E.g., return "add"
         /// for Operator.add.
         /// </summary>
         /// <param name="op"></param>
@@ -222,7 +212,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Return the string representation of an unary operator. E.g., return 
+        /// Returns the string representation of an unary operator. E.g., return 
         /// "not" for UnaryOperator.not.
         /// </summary>
         /// <param name="op"></param>
@@ -237,7 +227,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Return the internal function name for operator.
+        /// Returns the internal function name for operator.
         /// </summary>
         /// <param name="op"></param>
         /// <returns></returns>
@@ -247,7 +237,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Return the internal function name for unary operator
+        /// Returns the internal function name for unary operator
         /// </summary>
         /// <param name="op"></param>
         /// <returns></returns>
@@ -269,7 +259,6 @@ namespace ProtoCore.DSASM
             unaryOpCodeTable = new Dictionary<UnaryOperator, OpCode>();
             unaryOpCodeTable.Add(UnaryOperator.None, ProtoCore.DSASM.OpCode.NONE);
             unaryOpCodeTable.Add(UnaryOperator.Not, ProtoCore.DSASM.OpCode.NOT);
-            unaryOpCodeTable.Add(UnaryOperator.Negate, ProtoCore.DSASM.OpCode.NEGATE);
             unaryOpCodeTable.Add(UnaryOperator.Neg, ProtoCore.DSASM.OpCode.NEG);
         }
 
@@ -278,7 +267,6 @@ namespace ProtoCore.DSASM
             unaryOpNameTable = new Dictionary<UnaryOperator, string>();
             unaryOpNameTable.Add(UnaryOperator.None, "none");
             unaryOpNameTable.Add(UnaryOperator.Not, "not");
-            unaryOpNameTable.Add(UnaryOperator.Negate, "negate");
             unaryOpNameTable.Add(UnaryOperator.Neg, "neg");
         }
  
@@ -291,9 +279,6 @@ namespace ProtoCore.DSASM
             opNameTable.Add(Operator.and, "and");
             opNameTable.Add(Operator.or, "or");
             opNameTable.Add(Operator.dot, "dot");
-            opNameTable.Add(Operator.bitwiseand, "bitand");
-            opNameTable.Add(Operator.bitwiseor, "biteor");
-            opNameTable.Add(Operator.bitwisexor, "bitxor");
 
             opNameTable.Add(Operator.lt, ProtoCore.DSASM.kw.lt);
             opNameTable.Add(Operator.gt, ProtoCore.DSASM.kw.gt);
@@ -326,9 +311,6 @@ namespace ProtoCore.DSASM
             opCodeTable.Add(Operator.mod, ProtoCore.DSASM.OpCode.MOD);
             opCodeTable.Add(Operator.and, ProtoCore.DSASM.OpCode.AND);
             opCodeTable.Add(Operator.or, ProtoCore.DSASM.OpCode.OR);
-            opCodeTable.Add(Operator.bitwiseand, ProtoCore.DSASM.OpCode.BITAND);
-            opCodeTable.Add(Operator.bitwiseor, ProtoCore.DSASM.OpCode.BITOR);
-            opCodeTable.Add(Operator.bitwisexor, ProtoCore.DSASM.OpCode.BITXOR);
         }
 
         private static void initOpSymbolTable()
@@ -339,9 +321,6 @@ namespace ProtoCore.DSASM
             opSymbolTable.Add(Operator.mul, "*");
             opSymbolTable.Add(Operator.div, "/");
             opSymbolTable.Add(Operator.mod, "%");
-            opSymbolTable.Add(Operator.bitwiseand, "&");
-            opSymbolTable.Add(Operator.bitwiseor, "|");
-            opSymbolTable.Add(Operator.bitwisexor, "^");
             opSymbolTable.Add(Operator.eq, "==");
             opSymbolTable.Add(Operator.nq, "!=");
             opSymbolTable.Add(Operator.ge, ">=");
@@ -356,10 +335,7 @@ namespace ProtoCore.DSASM
         private static void initUnaryOpSymbolTable()
         {
             unaryOpSymbolTable = new Dictionary<UnaryOperator, string>();
-            unaryOpSymbolTable.Add(UnaryOperator.Decrement, "--");
-            unaryOpSymbolTable.Add(UnaryOperator.Increment, "++");
             unaryOpSymbolTable.Add(UnaryOperator.Neg, "-");
-            unaryOpSymbolTable.Add(UnaryOperator.Negate, "~");
             unaryOpSymbolTable.Add(UnaryOperator.Not, "!");
         }
     }
@@ -399,7 +375,7 @@ namespace ProtoCore.DSASM
         public const string kTempDefaultArg = "%tmpDefaultArg";
         public const string kTempArg = "%targ";
         public const string kTempVar = "%tvar";
-        public const string kTempPropertyVar = "%tvar_property";
+        public const string kTempPropertyVar = "%t_property";
         public const string kTempLangBlock = "%tempLangBlock";
         public const string kForLoopExpression = "%forloop_expr_";
         public const string kForLoopKey = "%forloop_key_";
@@ -411,13 +387,11 @@ namespace ProtoCore.DSASM
         public const string kGetTypeMethodName = "%get_type";
         public const string kNodeAstFailed = "%nodeAstFailed";
         public const string kWatchResultVar = "watch_result_var";
-        public const string kSSATempPrefix = "%tSSA_";
+        public const string kSSATempPrefix = "%t_";
         public const string kThisPointerArgName = "%thisPtrArg";
-        public const string kTempModifierStateNamePrefix = "%tmp_modifierState_";
-        public const string kTempProcConstant = "temp_proc_var_";
-        public const string kTempProcLeftVar = "%" + kTempProcConstant;
+        public const string kTempProcLeftVar = "%temp_proc_var_";
         public const string kImportData = "ImportData";
-        public const string kTempVarForNonAssignment = "temp6BBA4B28C5E54CF89F300D510499A00E_";
+        public const string kTempVarForNonAssignment = "t6BBA4B28C5E54CF89F300D510499A00E_";
         public const char kLongestPostfix = 'L';
         public const string kDoubleUnderscores = "__";
         public const string kSingleUnderscore = "_";
@@ -426,10 +400,8 @@ namespace ProtoCore.DSASM
 
     public enum MemoryRegion
     {
-        kInvalidRegion = -1,
-        kMemStatic,
-        kMemStack,
-        kMemHeap,
-        kMemRegionTypes
+        InvalidRegion = -1,
+        MemStatic,
+        MemStack,
     }
 }

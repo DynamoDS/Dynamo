@@ -1025,58 +1025,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
             thisTest.RunScriptSource(code);
         }
 
-        [Test]
-        public void R001_Replicator_Internal_ReductionsToGuides_SimpleCartesian()
-        {
-
-            List<int> reductionC0 = new List<int>() { 1 };
-            List<ReplicationInstruction> instructionsC0 = Replicator.ReductionToInstructions(reductionC0);
-            Assert.IsTrue(instructionsC0.Count == 1);
-            Assert.IsTrue(instructionsC0[0].CartesianIndex == 0);
-            Assert.IsTrue(instructionsC0[0].Zipped == false);
-        }
-
-        [Test]
-        public void R001_Replicator_Internal_ReductionsToGuides_SimpleCartesian2()
-        {
-            List<int> reductionC0 = new List<int>() { 2 };
-            List<ReplicationInstruction> instructionsC0 = Replicator.ReductionToInstructions(reductionC0);
-            Assert.IsTrue(instructionsC0.Count == 2);
-            Assert.IsTrue(instructionsC0[0].CartesianIndex == 0);
-            Assert.IsTrue(instructionsC0[0].Zipped == false);
-            Assert.IsTrue(instructionsC0[1].CartesianIndex == 0);
-            Assert.IsTrue(instructionsC0[1].Zipped == false);
-
-        }
-
-        [Test]
-        public void R002_Replicator_Internal_ReductionsToGuides_SimpleZipped()
-        {
-            List<int> reductionZ01 = new List<int>() { 1, 1 };
-            List<ReplicationInstruction> instructionsZ01 = Replicator.ReductionToInstructions(reductionZ01);
-            Assert.IsTrue(instructionsZ01.Count == 1);
-            Assert.IsTrue(instructionsZ01[0].ZipIndecies.Count == 2);
-            Assert.IsTrue(instructionsZ01[0].ZipIndecies.Contains(0));
-            Assert.IsTrue(instructionsZ01[0].ZipIndecies.Contains(1));
-            Assert.IsTrue(instructionsZ01[0].Zipped == true);
-        }
-
-        [Test]
-        public void R002_Replicator_Internal_ReductionsToGuides_SimpleZipped2()
-        {
-            List<int> reductionZ01 = new List<int>() { 2, 2 };
-            List<ReplicationInstruction> instructionsZ01 = Replicator.ReductionToInstructions(reductionZ01);
-            Assert.IsTrue(instructionsZ01.Count == 2);
-            Assert.IsTrue(instructionsZ01[0].ZipIndecies.Count == 2);
-            Assert.IsTrue(instructionsZ01[0].ZipIndecies.Contains(0));
-            Assert.IsTrue(instructionsZ01[0].ZipIndecies.Contains(1));
-            Assert.IsTrue(instructionsZ01[0].Zipped == true);
-            Assert.IsTrue(instructionsZ01[1].ZipIndecies.Contains(0));
-            Assert.IsTrue(instructionsZ01[1].ZipIndecies.Contains(1));
-            Assert.IsTrue(instructionsZ01[1].Zipped == true);
-        }
-        /*
-[Test]        public void T039_Inheritance_()        {            String code =@"class A extends var{    fx = 0;    constructor A() : base var();    {        fx = 1;    }}a = A.A();b = a.fx;";            thisTest.RunScriptSource(code);            thisTest.Verify("fx", 1);        }*/
 
         [Test]
         [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
@@ -1577,7 +1525,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
             @"                import(""FFITarget.dll"");                a : M = DummyPoint.ByCoordinates(10, 20, 30);            ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kConversionNotPossible);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.ConversionNotPossible);
         }
 
         [Test]
@@ -1588,7 +1536,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
             @"                                import(""FFITarget.dll"");                a : DummyVector = DummyPoint.ByCoordinates(10, 20, 30);            ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kConversionNotPossible);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.ConversionNotPossible);
         }
 
         [Test]
@@ -1599,7 +1547,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
             @"                class A                {                    fa = 1;                }                class M extends A{};                a:M = A.A();            ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kConversionNotPossible);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.ConversionNotPossible);
         }
 
         [Test]

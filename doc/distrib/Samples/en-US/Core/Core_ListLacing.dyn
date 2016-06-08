@@ -1,4 +1,4 @@
-<Workspace Version="0.8.0.684" X="95.1961321370455" Y="213.640435043387" zoom="0.297603728620001" Name="Home" RunType="Automatic" RunPeriod="100">
+<Workspace Version="0.8.0.684" X="95.1961321370455" Y="213.640435043387" zoom="0.297603728620001" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <Dynamo.Nodes.CodeBlockNodeModel guid="cb7a2190-3551-4a0a-b484-b546a7387e46" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="225" y="210" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..9;" ShouldFocus="false" />

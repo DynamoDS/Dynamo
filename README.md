@@ -13,7 +13,7 @@ Looking to learn or download Dynamo?  Check out [dynamobim.org](http://dynamobim
 ### Create a Node Library for Dynamo ###
 If you're interested in developing a Node library for Dynamo, the easiest place to start is by browsing the [DynamoSamples](https://github.com/DynamoDS/DynamoSamples).  
 These samples use the [Dynamo NuGet packages](https://www.nuget.org/packages?q=DynamoVisualProgramming) which can be installed using the NuGet package manager in Visual Studio.
-[![NuGet](https://img.shields.io/nuget/v/DynamoVisualProgramming.ZeroTouchLibrary.svg)]()  
+
 The [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document explains changes made to the Dynamo API with every version.
 
 You can learn more about developing libraries for Dynamo on the [Dynamo wiki](https://github.com/DynamoDS/Dynamo/wiki/Zero-Touch-Plugin-Development).
@@ -21,10 +21,9 @@ You can learn more about developing libraries for Dynamo on the [Dynamo wiki](ht
 ### Build Dynamo from Source ###
 You will need the following to build Dynamo:
 
-- Microsoft Visual Studio 2013
+- Microsoft Visual Studio 2015
 - [GitHub for Windows](https://windows.github.com/)
-- [Microsoft .NET Framework 3.5 with SP1](http://www.microsoft.com/en-sg/download/details.aspx?id=25150)
-- Microsoft .NET Framework 4.0 and above (included with Visual Studio 2013)
+- Microsoft .NET Framework 4.5.
 - Microsoft DirectX (install from %GitHub%\Dynamo\tools\install\Extra\DirectX\DXSETUP.exe)
 
 Directions for building Dynamo on other platforms (e.g. Linux or OS X) can be found [here](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-on-Linux,-Mac).  
@@ -39,6 +38,29 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
+### 1.0.0 ###
+
+- API Stabilization:  1.0.0 is a commitment to stable code that allows for smoother and more reliable movements from one version to another.  To more clearly express this, we have been moving to “semantic versioning” to illustrate the nature of changes in each release. We will be using the fairly standard version naming with an x.y.z system, where x incrementing represents breaks to the API (requiring developer refactors), y indicates changes that are still backwards compatible, and z are smaller bug fixes.  Package creators and maintainers are encouraged to assess changes to the previous code, which can be found here  
+
+  https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Node-Changes  
+
+  https://github.com/DynamoDS/Dynamo/wiki/API-Changes
+- Graphics performance enhancements:  see this post for details  
+  https://github.com/DynamoDS/Dynamo/pull/6356
+- Documentation: Along with new sections of the DynamoPrimer (http://DynamoPrimer.com), we have started an online documentation of the Dynamo API with a searchable index of public API calls for core functionality. This will be expanded to include regular nodes and Revit functionality.  http://dynamods.github.io/DynamoAPI/
+- Licensing:  Dynamo Studio is now using a new version of the Autodesk installer that allows for easier access to network and token flex licensing tools
+- Install:  we have created a separate installation for "core" Dynamo functionality, those tools used by all implementations of Dynamo, and Revit, and Studio installations.  This allows for the sharing of a common core of Dynamo code and packages.
+- List Management:  Changes to "replication" or automated matching of different data streams in nodes and Code Block nodes eliminates the need for List.Map and List.Combine in many situations
+- Send to Web: formerly known as Share Workspace, we have improved the ability to view and interact with Dynamo online with Customizers
+- File Export:  Users can now author DWG files in the Translation section of Dynamo Studio.
+- Direct Shape:  Dynamo in Revit 2017 can now take advantage of faster and more sophisticated direct shape creation.  In most cases, solid and surface geometry can be sent directly into the Revit environment as smooth (rather than tesselated) surfaces and solids, categorized to whatever is needed.  In the cases where a smooth element cannot be created, a tesselated (mesh) object is created, as was the case previously.
+
+Bug Fixes
+- An extensive list can be found here: http://dynamobim.org/incoming-bug-fixes-for-dynamo-1-0-0
+
+Known Issues
+- Listed here: https://github.com/DynamoDS/Dynamo/wiki/Known-Issues
+
 ### 0.9.1 ###
 
 Dynamo Core
@@ -51,20 +73,22 @@ Dynamo Core
 - More forgiving DesignScript syntax:  Users can now write instance methods (ex. MyCurve.PointAtParameter(0.5)) as Static Methods (ex. - Curve.PointAtParameter(MyCurve, 0.5))
 
 Known issues
-- No backwards compatibility with 0.9.0 and before
+- No backwards compatibility with 0.9.0 and before. This is due to neccessary changes to the Dynamo API in advance of 1.0. These changes can be found in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document
+- In some situations, placement of Adaptive components requires a change in list structure.  The AC placement nodes now expect to receive lists of lists of placement coordinates.  In the past, the nodes expected to only place one AC, now it expects to place many. If you are going to only place a single component, it needs to be nesting into a list.
+- With Win10 the Dynamo Background Preview is blank. If your Win10 workstation contains a graphics card that used to work with Dynamo running Win7 or 8 and you experience an inability to render graphics you may wish to consult:
+
+  https://github.com/helix-toolkit/helix-toolkit/issues/257#issuecomment-194145932
 
 Dynamo Studio
 - Share your work online:  Share interactive parametric models online.  Just publish your Dynamo graph and send a link to your colleagues or the whole world.  People can view and interact with your designs in a regular web browser with no Dynamo installed
 - ImportExport: Read directly from DWG files and only pull out those pieces of the file that you want.  
+- When a user downloads a dyn from the Customizer (or Shared Workspace), the dyn's Run setting is automatically set to "Manual". This may be confusing to some users when they open the dyn in Dynamo and see all Nulls in the outputs: simply click the Run button.
+- Users have been reporting that the Customizer (Shared Workspaces) functionality is missing in Studio 0.9.1. If this is happening to you, please try uninstalling Studio 0.9.1 and reinstalling it. We are aware of the bug and a fix will be available soon. Please reach out to us if you experience any other related issues.
 
-Known issues
-- Customizer not using  Display.SurfaceGeometry
 
 Dynamo for Revit
-- Batch placement of adaptive components : Huge improvements to the speed and reliability of placing large numbers of adaptive components.
+- Batch placement of adaptive components : Huge improvements to the speed and reliability of placing large numbers of adaptive components. Note that the nodes now expect lists of lists as inputs, so you may have to update your 9.0 graphs.
 
-Known issues:
-- In some situations, placement of Adaptive components requires a change in list structure.  The AC placement nodes now expect to receive lists of lists of placement coordinates.  In the past, the nodes expected to only place one AC, now it expects to place many. If you are going to only place a single component, it needs to be nesting into a list.
 
 ### 0.9.0 ###
 

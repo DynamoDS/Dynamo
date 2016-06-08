@@ -193,13 +193,13 @@ namespace CoreNodeModels
 
             var functionDef = new FunctionDefinitionNode
             {
-                Name = "__formula_" + GUID.ToString().Replace("-", string.Empty),
+                Name = "__formula_" + AstIdentifierGuid, 
                 Signature =
                     new ArgumentSignatureNode
                     {
                         Arguments = inputs.Select(AstFactory.BuildParamNode).ToList()
                     },
-                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
+                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var),
                 FunctionBody =
                     new CodeBlockNode
                     {

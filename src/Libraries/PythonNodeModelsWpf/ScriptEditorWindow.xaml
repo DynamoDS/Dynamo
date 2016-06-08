@@ -13,16 +13,16 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    
+
     <Grid Background="Black">
 
         <Border Margin="0,0,0,44" BorderThickness="0" Background="Black" >
             <avalonedit:TextEditor Name="editText" FontFamily="Consolas" FontSize="10pt" ShowLineNumbers="True" Background="#272822" Foreground="#F8F8F2" HorizontalScrollBarVisibility="Disabled"/>
         </Border>
-
-        <Button Content="{x:Static p:Resources.PythonScriptEditoCancelButton}" Style="{DynamicResource ResourceKey=STextButton}" HorizontalAlignment="Right" Margin="2" Name="button1" VerticalAlignment="Bottom" Width="75" Click="OnCancelClicked" />
-        <Button Content="{x:Static p:Resources.PythonScriptEditorAcceptChangesButton}" Style="{DynamicResource ResourceKey=STextButton}" HorizontalAlignment="Right" Margin="2 2 80 2" Name="button2" VerticalAlignment="Bottom" Width="130" Click="OnAcceptClicked" />
-
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="{x:Static p:Resources.PythonScriptEditorAcceptChangesButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button2" Click="OnAcceptClicked" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2"/>
+            <Button Content="{x:Static p:Resources.PythonScriptEditoCancelButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button1" Click="OnCancelClicked" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="2"/>
+        </StackPanel>
     </Grid>
-    
+
 </Window>

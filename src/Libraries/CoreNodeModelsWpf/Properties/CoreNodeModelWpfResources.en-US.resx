@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DateTimeInputToolTip" xml:space="preserve">
-    <value>Enter time and date in the format 'dd MMMM yyyy h:mm tt'</value>
+    <value>Enter time and date in the format 'MMMM dd, yyyy h:mm tt'</value>
   </data>
 </root>

@@ -84,10 +84,6 @@ namespace DSCore
         ///     Ex. the range \"0..3\" with an offset of 2 will yield
         ///     {0,1,2,3}{2,3,4,5}{4,5,6,7}...
         /// </param>
-        /// <param name="keepIncomplete">
-        ///     Determines if ranges where some indices are out of bounds are kept.
-        ///     If true (default): All ranges are kept, out of bounds indices are ommitted.
-        ///     If false: Any ranges with out of bounds indices are ommitted.</param>
         /// <returns name="lists">Sublists of the given list.</returns>
         /// <search>sublists,build sublists,subset,</search>
         public static IList Sublists(IList list, IList ranges, int offset)
@@ -326,7 +322,7 @@ namespace DSCore
         /// <summary>
         ///     Adds an item to the beginning of a list.
         /// </summary>
-        /// <param name="item">Item to be added.</param>
+        /// <param name="item">Item to be added. Item could be an object or a list.</param>
         /// <param name="list">List to add on to.</param>
         /// <returns name="list">New list.</returns>
         /// <search>insert,add,item,front,start,begin</search>
@@ -340,10 +336,10 @@ namespace DSCore
         /// <summary>
         ///     Adds an item to the end of a list.
         /// </summary>
-        /// <param name="item">Item to be added.</param>
+        /// <param name="item">Item to be added.Item could be an object or a list.</param>
         /// <param name="list">List to add on to.</param>
         /// <search>insert,add,item,end</search>
-        public static IList AddItemToEnd(object item, IList list)
+        public static IList AddItemToEnd([ArbitraryDimensionArrayImport] object item, IList list)
         {
             return new ArrayList(list) //Clone original list
             {
@@ -393,8 +389,12 @@ namespace DSCore
         /// <search>shift,offset</search>
         public static IList ShiftIndices(IList list, int amount)
         {
-            if (amount == 0)
-                return list;
+            var count = list.Count;
+            if (count > 0 && System.Math.Abs(amount) > count)
+            {
+                amount = amount % count;
+            }
+            if (amount == 0) return list;
 
             IEnumerable<object> genList = list.Cast<object>();
             return
@@ -405,7 +405,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Gets an item from the given list that's located at the specified index.
+        /// Returns an item from the given list that's located at the specified index.
         /// </summary>
         /// <param name="list">List to fetch an item from.</param>
         /// <param name="index">Index of the item to be fetched.</param>
@@ -443,7 +443,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Gets a single sub-list from the given list, based on starting index, ending index,
+        ///     Returns a single sub-list from the given list, based on starting index, ending index,
         ///     and a step amount.
         /// </summary>
         /// <param name="list">List to take a slice of.</param>
@@ -551,7 +551,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Gets the number of items stored in the given list.
+        ///     Returns the number of items stored in the given list.
         /// </summary>
         /// <param name="list">List to get the item count of.</param>
         /// <returns name="count">List length.</returns>
@@ -576,7 +576,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Gets the first item in a list.
+        ///     Returns the first item in a list.
         /// </summary>
         /// <param name="list">List to get the first item from.</param>
         /// <returns name="item">First item in the list.</returns>

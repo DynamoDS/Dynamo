@@ -38,6 +38,9 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public virtual IEnumerable<string> ReturnKeys { get { return Definition.ReturnKeys; } }
 
+        /// <summary>
+        ///     Default constructor.
+        /// </summary>
         protected FunctionCallNodeController(T def)
         {
             Definition = def;
@@ -118,7 +121,7 @@ namespace Dynamo.Graph.Nodes
                 let outputIdentiferNode = model.GetAstIdentifierForOutputIndex(item.idx)
                 let outputIdentifier = outputIdentiferNode.ToString()
                 let getValueCall = AstFactory.BuildFunctionCall(
-                    BuiltInMethods.GetMethodName(BuiltInMethods.MethodID.kTryGetValueFromNestedDictionaries),
+                    BuiltInMethods.GetMethodName(BuiltInMethods.MethodID.TryGetValueFromNestedDictionaries),
                     new List<AssociativeNode> {model.AstIdentifierForPreview, AstFactory.BuildStringNode(item.key)})
                 select
                 AstFactory.BuildAssignment(outputIdentiferNode, getValueCall));

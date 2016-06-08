@@ -49,8 +49,6 @@ namespace CoreNodeModels
             {
                 port.Connectors.CollectionChanged += Connectors_CollectionChanged;
             }
-
-            ShouldDisplayPreviewCore = false;
         }
 
         void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

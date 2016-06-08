@@ -6,13 +6,14 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
+using Dynamo.Configuration;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Models;
-using System.Windows; 
+using System.Windows;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
-using Dynamo.Graph.Workspaces; 
+using Dynamo.Graph.Workspaces;
 using Dynamo.Selection;
 using Dynamo.Wpf.ViewModels.Core;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -29,18 +30,21 @@ namespace Dynamo.ViewModels
         public delegate void SetToolTipDelegate(string message);
         public delegate void NodeDialogEventHandler(object sender, NodeDialogEventArgs e);
         public delegate void SnapInputEventHandler(PortViewModel portViewModel);
+        public delegate void PreviewPinStatusHandler(bool pinned);
         #endregion
 
         #region events
-        public event SnapInputEventHandler SnapInputEvent;        
+        public event SnapInputEventHandler SnapInputEvent;
         #endregion
+
+        public Action OnMouseLeave;
 
         #region private members
 
         ObservableCollection<PortViewModel> inPorts = new ObservableCollection<PortViewModel>();
         ObservableCollection<PortViewModel> outPorts = new ObservableCollection<PortViewModel>();
         NodeModel nodeLogic;
-        private double zIndex = 3;
+        private int zIndex = Configurations.NodeStartZIndex;
         private string astText = string.Empty;
         private bool isexplictFrozen;
         private bool canToggleFrozen = true;
@@ -51,6 +55,20 @@ namespace Dynamo.ViewModels
         public readonly DynamoViewModel DynamoViewModel;
         public readonly WorkspaceViewModel WorkspaceViewModel;
         public readonly Size? PreferredSize;
+
+        private bool previewPinned;
+        public bool PreviewPinned {
+            get { return previewPinned; }
+            set
+            {
+                if (previewPinned == value) return;
+                previewPinned = value;
+
+                DynamoViewModel.ExecuteCommand(
+              new DynamoModel.UpdateModelValueCommand(
+                        System.Guid.Empty, NodeModel.GUID, "PreviewPinned", previewPinned.ToString()));
+            }
+        }
 
         public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; } }
 
@@ -170,11 +188,28 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public double ZIndex
-         {
+        /// <summary>
+        /// ZIndex is used to order nodes, when some node is clicked.
+        /// This selected node should be moved above others.
+        /// Start value of zIndex is 3, because 1 is for groups and 2 is for connectors.
+        /// Nodes should be always at the top.
+        /// 
+        /// Static is used because every node should know what is the highest z-index right now.
+        /// </summary>
+        internal static int StaticZIndex = Configurations.NodeStartZIndex;
+
+        /// <summary>
+        /// ZIndex represents the order on the z-plane in which nodes appear.
+        /// </summary>
+        public int ZIndex
+        {
             get { return zIndex; }
-            set { zIndex = value; RaisePropertyChanged("ZIndex"); }
-         }
+            set
+            {
+                zIndex = value;
+                RaisePropertyChanged("ZIndex");
+            }
+        }
 
         /// <summary>
         /// Input grid's enabled state is now bound to this property
@@ -331,7 +366,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Gets a value indicating whether this model is frozen.
+        /// Returns a value indicating whether this model is frozen.
         /// </summary>
         /// <value>
         ///   <c>true</c> if this instance is frozen; otherwise, <c>false</c>.
@@ -424,9 +459,10 @@ namespace Dynamo.ViewModels
         {
             WorkspaceViewModel = workspaceViewModel;
             DynamoViewModel = workspaceViewModel.DynamoViewModel;
-           
+
             nodeLogic = logic;
-            
+            previewPinned = logic.PreviewPinned;
+
             //respond to collection changed events to add
             //and remove port model views
             logic.InPorts.CollectionChanged += inports_collectionChanged;
@@ -453,7 +489,8 @@ namespace Dynamo.ViewModels
 
             ShowExecutionPreview = workspaceViewModel.DynamoViewModel.ShowRunPreview;
             IsNodeAddedRecently = true;
-            DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;             
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
+            ZIndex = ++StaticZIndex;
         }
  
         public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic, Size preferredSize)

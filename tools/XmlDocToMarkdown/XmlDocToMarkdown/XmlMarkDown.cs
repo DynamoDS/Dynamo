@@ -316,10 +316,30 @@ namespace XmlDocToMarkdown
                 string str = "";
                 switch (vals.Length)
                 {
-                    case 1: str = string.Format(templates[name], vals[0]); break;
+                    case 1:
+                        str = string.Format(templates[name], vals[0]);
+                        if (name.Equals("returns") && (e.Parent != null))
+                        {
+                            switch((string)vals[0])
+                            {
+                                case "":
+                                case "none":
+                                    Console.WriteLine(e.Parent.FirstAttribute.Value);
+                                    break;
+                            }
+                        }
+                        break;
                     case 2:
                         //return empty row for TypeParam.
                         str = (string) vals[0] == "" ? "| &nbsp;\n" : string.Format(templates[name], vals[0], vals[1]);
+
+                        if (name.Equals("param"))
+                        {
+                            if (String.IsNullOrEmpty((string)vals[1]))
+                            {
+                                Console.WriteLine(e.Parent.FirstAttribute.Value);
+                            }
+                        }
                         break;
                     case 3: str = string.Format(templates[name], vals[0], vals[1], vals[2]); break;
                     case 4: str = string.Format(templates[name], vals[0], vals[1], vals[2], vals[3]); break;

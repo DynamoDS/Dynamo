@@ -1,4 +1,4 @@
-<Workspace Version="0.8.1.976" X="189.421828301832" Y="305.164831697055" zoom="0.467640139924576" Name="Home" RunType="Manual" RunPeriod="100" HasRunWithoutCrash="True">
+<Workspace Version="0.8.1.976" X="189.421828301832" Y="305.164831697055" zoom="0.467640139924576" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <Dynamo.Nodes.DSFunction guid="ecb2936d-6ee9-4b99-9ab1-24269ffedfc5" type="Dynamo.Nodes.DSFunction" nickname="Element.OverrideColorInView" x="2782.70064191332" y="635.102760274287" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="RevitNodes.dll" function="Revit.Elements.Element.OverrideColorInView@DSCore.Color" />
@@ -76,7 +76,7 @@
     <Dynamo.Models.NoteModel guid="92f526cb-3758-48cb-b8b1-09a923f1a09f" text="or" x="1570.75045297809" y="607.326634244679" />
     <Dynamo.Models.NoteModel guid="b08290fb-4e69-41d5-a01c-10bad979b0db" text="Get Walls" x="19.2314877849641" y="557.511150003813" />
     <Dynamo.Models.NoteModel guid="2e6ef76c-6bc9-4fd8-8634-9a35c9504d40" text="Extract Surface Area of Geometry" x="1081.8569802703" y="487.074542902389" />
-    <Dynamo.Models.NoteModel guid="46696f9e-5987-4509-9faa-07e651896032" text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\(Your Dynamo Version)\samples\Revit" x="18.2593162591187" y="369.046267698358" />
+    <Dynamo.Models.NoteModel guid="46696f9e-5987-4509-9faa-07e651896032" text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\Dynamo Revit\(Your Dynamo Version)\samples\Revit" x="18.2593162591187" y="369.046267698358" />
     <Dynamo.Models.NoteModel guid="6173a9ee-c7ff-4f03-a05a-33f5b72bc7fd" text="Color Revit Elements based on some measurable criteria" x="18.7578060147432" y="462.762341755763" />
   </Notes>
   <Annotations />

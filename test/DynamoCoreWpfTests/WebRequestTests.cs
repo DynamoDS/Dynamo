@@ -12,11 +12,12 @@ using Dynamo.Tests;
 using NUnit.Framework;
 
 using WebRequest = CoreNodeModels.WebRequest;
+using Dynamo.Graph.Nodes.ZeroTouch;
 
 namespace DynamoCoreWpfTests
 {
     [TestFixture]
-    public class WebRequestTests : SystemTestBase
+    public class PeriodicUpdateTest : SystemTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -65,6 +66,36 @@ namespace DynamoCoreWpfTests
 
             Assert.Pass("There were {0} evaluations.", ws.EvaluationCount);
         }
+
+        [Test]
+        public void DateTimeNow()
+        {
+            var openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\periodic_update\datetimenow.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var ws = Model.CurrentWorkspace as HomeWorkspaceModel;
+            var dateTimeNow = ws.FirstNodeFromWorkspace<DSFunction>();
+            var guid = dateTimeNow.GUID.ToString();
+
+            Assert.NotNull(dateTimeNow);
+
+            var time1 = GetPreviewValue(guid).ToString();
+
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
+            // Switch to periodic mode
+            ws.RunSettings.RunPeriod = 100;
+            ws.RunSettings.RunType = RunType.Periodic;
+
+            while (stopWatch.Elapsed.Seconds <= 1) { }
+
+            stopWatch.Stop();
+            var time2 = GetPreviewValue(guid).ToString();
+
+            Assert.AreNotEqual(time1, time2);
+        }
+
 
         public static bool CheckForInternetConnection()
         {

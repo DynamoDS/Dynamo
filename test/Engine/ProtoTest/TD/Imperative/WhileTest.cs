@@ -90,10 +90,9 @@ while( i < 5 )
         public void T05_WithinFunction()
         {
             string src = @"testvar;
-[Imperative]
-{
 	def fn1 : int (a : int)
 	{   
+return = [Imperative]{
 		i = 0;
 		temp = 1;
 		while ( i < a )
@@ -102,13 +101,16 @@ while( i < 5 )
 		    i = i + 1;
 		}
 		return = temp;
+}
 	}
+[Imperative]
+{
 	testvar = fn1(5);
 } 
 	
 	";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("testvar").Payload == 6);
+            thisTest.Verify("testvar", 6);
         }
 
         [Test]
@@ -137,9 +139,9 @@ b;
       
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("temp").Payload == 7);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 7);
-            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 14);
+            thisTest.Verify("temp", 7);
+            thisTest.Verify("a", 7);
+            thisTest.Verify("b", 14);
         }
 
         [Test]
@@ -161,8 +163,8 @@ i;
 		}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("temp").Payload == 2);
-            Assert.IsTrue((Int64)mirror.GetValue("i").Payload == 3);
+            thisTest.Verify("temp", 2);
+            thisTest.Verify("i", 3);
         }
 
         [Test]
@@ -187,8 +189,8 @@ i;
 		}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("temp").Payload == 3);
-            Assert.IsTrue((Int64)mirror.GetValue("i").Payload == 6);
+            thisTest.Verify("temp", 3);
+            thisTest.Verify("i", 6);
         }
 
         [Test]
@@ -224,10 +226,10 @@ p;
 	}
 }  ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("temp").Payload == 125);
-            Assert.IsTrue((Int64)mirror.GetValue("i").Payload == 6);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 6);
-            Assert.IsTrue((Int64)mirror.GetValue("p").Payload == 6);
+            thisTest.Verify("temp", 125);
+            thisTest.Verify("i", 6);
+            thisTest.Verify("a", 6);
+            thisTest.Verify("p", 6);
         }
 
         [Test]
@@ -294,10 +296,10 @@ p;
 }		
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("temp1").Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetValue("temp2").Payload == 5);
-            Assert.IsTrue((Int64)mirror.GetValue("temp3").Payload == 3);
-            Assert.IsTrue((Int64)mirror.GetValue("temp4").Payload == 4);
+            thisTest.Verify("temp1", 1);
+            thisTest.Verify("temp2", 5);
+            thisTest.Verify("temp3", 3);
+            thisTest.Verify("temp4", 4);
         }
 
         [Test]
@@ -305,10 +307,9 @@ p;
         public void T12_WhileWithFunctionCall()
         {
             string src = @"testvar;
-[Imperative]
-{ 
 	def fn1 :int ( a : int )
 	{   
+    return = [Imperative]{
 		i = 0;
 		temp = 1;
 		while ( i < a )
@@ -317,7 +318,10 @@ p;
 			i = i + 1;
 		}
 		return = temp;
+    }
 	}
+[Imperative]
+{ 
 	testvar = 8;
 	
 	while ( testvar != fn1(6) )
@@ -326,7 +330,7 @@ p;
 	}
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("testvar").Payload == 7);
+            thisTest.Verify("testvar", 7);
         }
 
         [Test]
@@ -369,8 +373,8 @@ factorial_a;
 	factorial_a = b * a;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 6);
-            Assert.IsTrue((Int64)mirror.GetValue("factorial_a").Payload == 720);
+            thisTest.Verify("a", 6);
+            thisTest.Verify("factorial_a", 720);
         }
 
         [Test]
@@ -390,8 +394,8 @@ factorial_a;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((double)mirror.GetValue("a").Payload == 6.5);
-            Assert.IsTrue((double)mirror.GetValue("b").Payload == 324.84375);
+            thisTest.Verify("a", 6.5);
+            thisTest.Verify("b", 324.84375);
         }
 
         [Test]
@@ -411,8 +415,8 @@ factorial_a;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
 
-            Assert.IsTrue((double)mirror.GetValue("a").Payload == 5.5);
-            Assert.IsTrue((double)mirror.GetValue("b").Payload == 59.0625);
+            thisTest.Verify("a", 5.5);
+            thisTest.Verify("b", 59.0625);
         }
 
         [Test]
@@ -431,7 +435,7 @@ factorial_a;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 1);
+            thisTest.Verify("a", 1);
 
         }
 
@@ -461,9 +465,9 @@ factorial_a;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 2);
-            Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 1);
-            Assert.IsTrue(mirror.GetValue("b").DsasmValue.IsNull);
+            thisTest.Verify("a", 2);
+            thisTest.Verify("c", 1);
+            thisTest.Verify("b", null);
         }
 
         [Test]
@@ -491,8 +495,8 @@ factorial_a;
 	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 5);
-            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 15);
+            thisTest.Verify("a", 5);
+            thisTest.Verify("b", 15);
 
         }
 
@@ -651,58 +655,46 @@ y;y1;y2;
         public void T22_Defect_1463683_3()
         {
             string errmsg = "1467318 - Cannot return an array from a function whose return type is var with undefined rank (-2)";
-            string src = @"def foo ()
+            string src = @"
+def foo ()
 {
 	return = { 0, 1, 2 };
 }
-
-
-    t1;
-	t2;	
-	def test ()
-	{
-		c = 0;
-		temp = [Imperative]
-		{
-			t1 = foo();
-			t2 = 0;
-			for ( i in t1 )
-			{
-				if (i < ( t2 + 1 ) )
-				{
-					t1[c] = i + 1;
-				}
-				else
-				{
-					t1[c] = i +2 ;
-				}
-				c = c + 1 ;
-			}
-			return = t1;		
-		}
-		return = temp;
-	}
-
+def test ()
+{
+    c = 0;
+    temp = [Imperative]
+    {
+        t1 = foo();
+        t2 = 0;
+        for ( i in t1 )
+        {
+            if (i < ( t2 + 1 ) )
+            {
+                t1[c] = i + 1;
+            }
+            else
+            {
+                t1[c] = i +2 ;
+            }
+            c = c + 1 ;
+        }
+        return = t1;		
+    }
+    return = temp;
+}
 
 x = test();
-x1 = t1;
-x2 = t2;
-y;y1;y2;
+y;
 [Imperative]
 {
 	y = test();
-	y1 = t1;
-	y2 = t2;
 }";
             thisTest.VerifyRunScriptSource(src, errmsg);
             Object[] v1 = new Object[] { 1, 3, 4 };
 
             thisTest.Verify("x", v1);
-            thisTest.Verify("x1", v1);
-            thisTest.Verify("x2", 0);
             thisTest.Verify("y", v1);
-            thisTest.Verify("y1", v1);
-            thisTest.Verify("y2", 0);
         }
 
         [Test]

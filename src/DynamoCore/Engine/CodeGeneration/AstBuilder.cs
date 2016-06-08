@@ -20,7 +20,7 @@ using Type = ProtoCore.Type;
 namespace Dynamo.Engine.CodeGeneration
 {
     /// <summary>
-    /// Get notification for AST compilation events.                                                 
+    /// Returns notification for AST compilation events.                                                 
     /// </summary>
     public interface IAstNodeContainer
     {
@@ -66,7 +66,7 @@ namespace Dynamo.Engine.CodeGeneration
         /// </summary>
         /// <param name="node"></param>
         /// <param name="astNodes"></param>
-        public CompiledEventArgs(Guid node, IEnumerable<AssociativeNode> astNodes)
+        internal CompiledEventArgs(Guid node, IEnumerable<AssociativeNode> astNodes)
         {
             Node = node;
             AstNodes = astNodes;
@@ -120,7 +120,7 @@ namespace Dynamo.Engine.CodeGeneration
         /// Construct a AstBuilder with AST node contiainer.
         /// </summary>
         /// <param name="nodeContainer"></param>
-        public AstBuilder(IAstNodeContainer nodeContainer)
+        internal AstBuilder(IAstNodeContainer nodeContainer)
         {
             this.nodeContainer = nodeContainer;
         }
@@ -157,7 +157,7 @@ namespace Dynamo.Engine.CodeGeneration
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
-        public static IEnumerable<NodeModel> TopologicalSort(IEnumerable<NodeModel> nodes)
+        internal static IEnumerable<NodeModel> TopologicalSort(IEnumerable<NodeModel> nodes)
         {
             if (nodes == null)
                 throw new ArgumentNullException("nodes");
@@ -234,7 +234,7 @@ namespace Dynamo.Engine.CodeGeneration
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
-        public static IEnumerable<NodeModel> TopologicalSortForGraph(IEnumerable<NodeModel> nodes)
+        internal static IEnumerable<NodeModel> TopologicalSortForGraph(IEnumerable<NodeModel> nodes)
         {
             if (nodes == null)
                 throw new ArgumentNullException("nodes");
@@ -242,7 +242,7 @@ namespace Dynamo.Engine.CodeGeneration
             var nodeFlags = nodes.ToDictionary(node => node, _ => MarkFlag.NoMark);
             var sortedNodes = new Queue<NodeModel>();
 
-            // Get roots of these nodes
+            // Returns roots of these nodes
             var roots = nodes.Where(n => !n.OutputNodes.Any());
             foreach (NodeModel candidate in roots)
                 BfsTraverse(candidate, nodeFlags, sortedNodes);
@@ -426,7 +426,7 @@ namespace Dynamo.Engine.CodeGeneration
         /// <param name="outputNodes"></param>
         /// <param name="parameters"></param>
         /// <param name="verboseLogging"></param>
-        public void CompileCustomNodeDefinition(
+        internal void CompileCustomNodeDefinition(
             Guid functionId, IEnumerable<string> returnKeys, string functionName,
             IEnumerable<NodeModel> funcBody, IEnumerable<AssociativeNode> outputNodes,
             IEnumerable<TypedParameter> parameters, bool verboseLogging)
@@ -476,7 +476,7 @@ namespace Dynamo.Engine.CodeGeneration
                 functionBody.Body.Add(AstFactory.BuildReturnStatement(returnValue));
             }
 
-            Type allTypes = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+            Type allTypes = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
 
             //Create a new function definition
             var functionDef = new FunctionDefinitionNode

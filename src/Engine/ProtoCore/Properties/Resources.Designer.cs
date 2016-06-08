@@ -566,6 +566,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No item exists at specified index address.
+        /// </summary>
+        public static string IndexIntoNonArrayObject {
+            get {
+                return ResourceManager.GetString("IndexIntoNonArrayObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inserts an element into a list at specified index.
         /// </summary>
         public static string InsertsAnElementIntoList {
@@ -1565,15 +1574,6 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is over indexed.
-        /// </summary>
-        public static string kSymbolOverIndexed {
-            get {
-                return ResourceManager.GetString("kSymbolOverIndexed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Type &apos;{0}&apos; is not defined.
         /// </summary>
         public static string kTypeUndefined {
@@ -1853,20 +1853,20 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Modifier Blocks are not supported currently.
-        /// </summary>
-        public static string ModifierBlockNotSupported {
-            get {
-                return ResourceManager.GetString("ModifierBlockNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Integer modulo by zero.
         /// </summary>
         public static string ModuloByZero {
             get {
                 return ResourceManager.GetString("ModuloByZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only one dominant list is allowed.
+        /// </summary>
+        public static string MoreThanOneDominantList {
+            get {
+                return ResourceManager.GetString("MoreThanOneDominantList", resourceCulture);
             }
         }
         
@@ -2106,6 +2106,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The number of items in range expression is over limit.
+        /// </summary>
+        public static string RangeExpressionOutOfMemory {
+            get {
+                return ResourceManager.GetString("RangeExpressionOutOfMemory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to rangeop expected.
         /// </summary>
         public static string rangeop_expected {
@@ -2246,6 +2255,15 @@ namespace ProtoCore.Properties {
         public static string ReturnsTheNumberOfTrueValue {
             get {
                 return ResourceManager.GetString("ReturnsTheNumberOfTrueValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is not enough memory to finish the operation..
+        /// </summary>
+        public static string RunOutOfMemory {
+            get {
+                return ResourceManager.GetString("RunOutOfMemory", resourceCulture);
             }
         }
         

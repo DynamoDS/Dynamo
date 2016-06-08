@@ -6,11 +6,13 @@ namespace Dynamo.Scheduler
     /// DelegateBasedAsyncTask allows for a delegate or System.Action object 
     /// to be scheduled for asynchronous execution on the ISchedulerThread. 
     /// </summary>
-    /// 
     public class DelegateBasedAsyncTask : AsyncTask
     {
         private Action actionToPerform;
 
+        /// <summary>
+        /// Returns priority of the <see cref="DelegateBasedAsyncTask"/>.
+        /// </summary>
         public override TaskPriority Priority
         {
             get { return TaskPriority.Normal; }
@@ -18,11 +20,20 @@ namespace Dynamo.Scheduler
 
         #region Public Class Operational Methods
 
-        internal DelegateBasedAsyncTask(IScheduler scheduler)
+        /// <summary>
+        /// construct a new empty DelegateBasedAsyncTask
+        /// </summary>
+        /// <param name="scheduler"> the scheduler to run the task on</param>
+        public DelegateBasedAsyncTask(IScheduler scheduler)
             : base(scheduler)
         {
         }
-        
+        /// <summary>
+        /// construct a new DelegateBasedAsyncTask by supplying an action delegate that will run
+        /// on the scheduler specified
+        /// </summary>
+        /// <param name="scheduler"> the scheduler to run the task on</param>
+        /// <param name="action"> the action to perform when this task is executed</param>
         public DelegateBasedAsyncTask(IScheduler scheduler, Action action)
             : base(scheduler)
         {

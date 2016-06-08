@@ -5,48 +5,31 @@ namespace ProtoCore
     {
         public enum AccessModifier
         {
-            kPublic,
-            kProtected,
-            kPrivate
+            Public,
+            Protected,
+            Private
         }
 
-        namespace Associative
+        public enum CompilePass
         {
-            public enum CompilePass
-            {
-                kClassName,
-                kClassBaseClass,
-                kClassHierarchy,
-                kClassMemVar,
+            ClassName,
+            ClassBaseClass,
+            ClassHierarchy,
+            ClassMemVar,
 
-                kClassMemFuncSig,
-                kGlobalFuncSig,
+            ClassMemFuncSig,
+            GlobalFuncSig,
 
-                kGlobalScope,
-
-                kClassMemFuncBody,
-                kGlobalFuncBody,
-                kDone
-            }
-
-            public enum SubCompilePass
-            {
-                kNone,
-                kUnboundIdentifier,
-                kGlobalInstanceFunctionBody,
-                kAll
-            }
+            ClassMemFuncBody,
+            GlobalFuncBody,
+            GlobalScope,
+            Done
         }
 
-        namespace Imperative
+        public enum SubCompilePass
         {
-            public enum CompilePass
-            {
-                kGlobalFuncSig,
-                kGlobalScope,
-                kGlobalFuncBody,
-                kDone
-            }
+            None,
+            UnboundIdentifier,
         }
     }
 }

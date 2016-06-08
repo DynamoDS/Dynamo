@@ -53,6 +53,7 @@ namespace Dynamo.UI.Controls
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
             this.InnerTextEditor.TextChanged += OnTextChanged;
+            this.InnerTextEditor.TextArea.GotFocus+= OnTextAreaGotFocus; 
             this.InnerTextEditor.TextArea.LostFocus += OnTextAreaLostFocus;
             this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
             this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
@@ -117,6 +118,15 @@ namespace Dynamo.UI.Controls
         /// Derived class overrides this function to handle the commit of code.
         /// </summary>
         protected virtual void OnCommitChange()
+        {
+        }
+        
+        /// <summary>
+        /// Derived class overrides this function to handle the event of getting focus. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected virtual void OnTextAreaGotFocus(object sender, RoutedEventArgs e)
         {
         }
 

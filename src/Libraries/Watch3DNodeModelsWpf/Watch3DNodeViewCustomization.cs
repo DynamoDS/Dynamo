@@ -137,7 +137,7 @@ namespace Watch3DNodeModelsWpf
 
         private void RenderData(object data)
         {
-            watch3DViewModel.OnRequestCreateModels(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem));
+            watch3DViewModel.AddGeometryForRenderPackages(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)

@@ -122,7 +122,7 @@ namespace ProtoTestFx
             if (instruction.op1.IsRegister)
                 return;
 
-            SymbolNode symbolNode = GetSymbolNode(blockId, (int)instruction.op2.opdata, (int)instruction.op1.opdata);
+            SymbolNode symbolNode = GetSymbolNode(blockId, instruction.op2.ClassIndex, instruction.op1.SymbolIndex);
             string symbolName = symbolNode.name;
 
             bool isTemp = ProtoCore.Utils.CoreUtils.IsPropertyTemp(symbolName);
@@ -140,7 +140,7 @@ namespace ProtoTestFx
             {
                 int lineNo = instruction.debug.Location.StartInclusive.LineNo;
 
-                if (RuntimeCore.Options.IDEDebugMode && RuntimeCore.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                if (RuntimeCore.Options.IDEDebugMode && RuntimeCore.Options.RunMode != ProtoCore.DSASM.InterpreterMode.Expression)
                 {
                     RuntimeCore.DebugProps.IsPopmCall = false;
                     RuntimeCore.DebugProps.CurrentSymbolName = symbolName;
@@ -166,15 +166,15 @@ namespace ProtoTestFx
                 SymbolNode symbolNode = null;
                 if (instruction.op1.IsStaticVariableIndex)
                 {
-                    symbolNode = exe.runtimeSymbols[blockId].symbolList[(int)instruction.op1.opdata];
+                    symbolNode = exe.runtimeSymbols[blockId].symbolList[instruction.op1.StaticVariableIndex];
                 }
                 else
                 {
-                    symbolNode = exe.classTable.ClassNodes[ci].Symbols.symbolList[(int)instruction.op1.opdata];
+                    symbolNode = exe.classTable.ClassNodes[ci].Symbols.symbolList[instruction.op1.MemberVariableIndex];
                 }
                 string symbolName = symbolNode.name;
 
-                if (RuntimeCore.Options.IDEDebugMode && RuntimeCore.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                if (RuntimeCore.Options.IDEDebugMode && RuntimeCore.Options.RunMode != ProtoCore.DSASM.InterpreterMode.Expression)
                 {
                     if (!RuntimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsReplicating))
                     {
@@ -213,7 +213,7 @@ namespace ProtoTestFx
 
             if (instruction.debug != null)
             {
-                if (RuntimeCore.Options.IDEDebugMode && RuntimeCore.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                if (RuntimeCore.Options.IDEDebugMode && RuntimeCore.Options.RunMode != ProtoCore.DSASM.InterpreterMode.Expression)
                 {
                     RuntimeCore.DebugProps.IsPopmCall = false;
                 }
@@ -344,7 +344,6 @@ namespace ProtoTestFx
             // Specify some of the requirements of IDE.
 
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            core.Options.SuppressBuildOutput = false;
             core.Options.WatchTestMode = true;
             core.Options.GCTempVarsOnDebug = false;
 
@@ -393,7 +392,6 @@ namespace ProtoTestFx
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
             options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
             options.GCTempVarsOnDebug = false;
             
             // Cyclic dependency threshold is lowered from the default (2000)
@@ -470,7 +468,7 @@ namespace ProtoTestFx
                         {
                             if (runtimeCore.DebugProps.IsPopmCall)
                             {
-                                int ci = (int)currentVms.mirror.MirrorTarget.rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
+                                int ci = currentVms.mirror.MirrorTarget.rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.FrameIndexClassIndex).ClassIndex;
                                 VerifyWatch_Run(InjectionExecutive.callrLineNo, runtimeCore.DebugProps.CurrentSymbolName, core, runtimeCore, map, watchNestedMode, ci, defectID);
                             }
                         }

@@ -112,7 +112,7 @@ namespace ProtoScript.Runners
 
                     // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                     // Register TX is used for this.
-                    StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
+                    StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.Implicit);
                     stackFrame.TX = svCallConvention;
 
                     // Initialize the entry point interpreter
@@ -121,11 +121,11 @@ namespace ProtoScript.Runners
                     runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
                     runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, stackFrame, locals);
                 }
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionEnd);
             }
             catch
             {
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionEnd);
                 throw;
             }
             return runtimeCore;
@@ -158,7 +158,7 @@ namespace ProtoScript.Runners
 
                 // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                 // Register TX is used for this.
-                StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
+                StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.Implicit);
                 stackFrame.TX = svCallConvention;
 
                 // Initialize the entry point interpreter
@@ -176,11 +176,11 @@ namespace ProtoScript.Runners
                     stackFrame,
                     locals);
 
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionEnd);
             }
             catch
             {
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionEnd);
                 throw;
             }
             return runtimeCore;
@@ -222,7 +222,7 @@ namespace ProtoScript.Runners
             }
             runtimeCoreOut = runtimeCore;
 
-            if (isTest && !core.Options.CompileToLib)
+            if (isTest)
             {
                 return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             }
@@ -237,7 +237,7 @@ namespace ProtoScript.Runners
         /// <param name="core"></param>
         /// <param name="isTest"></param>
         /// <returns></returns>
-        public ExecutionMirror Execute(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, ProtoCore.Core core, bool isTest = true)
+        public ProtoCore.RuntimeCore Execute(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, ProtoCore.Core core, bool isTest = true)
         {
             ProtoCore.RuntimeCore runtimeCore = null;
             bool succeeded = CompileAndGenerateExe(astList, core, new ProtoCore.CompileTime.Context());
@@ -254,12 +254,11 @@ namespace ProtoScript.Runners
                 throw new ProtoCore.Exceptions.CompileErrorsOccured();
             }
 
-            if (isTest && !core.Options.CompileToLib)
+            if (isTest)
             {
-                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
+                runtimeCore.Mirror = new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             }
-
-            return null;
+            return runtimeCore;
         }
 
 
@@ -295,7 +294,7 @@ namespace ProtoScript.Runners
                 throw new ProtoCore.Exceptions.CompileErrorsOccured();
             }
 
-            if (isTest && !core.Options.CompileToLib)
+            if (isTest)
             {
                 runtimeCore.Mirror = new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             }

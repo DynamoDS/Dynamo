@@ -29,8 +29,7 @@ namespace ProtoCore
 
         public List<StackValue> functionCallArguments { get; set; }
         public List<StackValue> functionCallDotCallDimensions { get; set; }
-
-        public UpdateStatus updateStatus { get; set; }
+        public DominantListStructure DominantStructure { get; set; }
 
         public InterpreterProperties()
         {
@@ -43,7 +42,7 @@ namespace ProtoCore
             nodeIterations = rhs.nodeIterations;
             functionCallArguments = rhs.functionCallArguments;
             functionCallDotCallDimensions = rhs.functionCallDotCallDimensions;
-            updateStatus = rhs.updateStatus;
+            DominantStructure = rhs.DominantStructure;
         }
 
         public void Reset()
@@ -52,7 +51,6 @@ namespace ProtoCore
             nodeIterations = new List<GraphNode>();
             functionCallArguments = new List<StackValue>();
             functionCallDotCallDimensions = new List<StackValue>();
-            updateStatus = UpdateStatus.kNormalUpdate;
         }
     }
 
@@ -76,9 +74,11 @@ namespace ProtoCore
 
             InterpreterProps = new Stack<InterpreterProperties>();
             ReplicationGuides = new List<List<ReplicationGuide>>();
+            AtLevels = new List<AtLevel>();
+            executedAstGuids = new HashSet<Guid>();
 
             RunningBlock = 0;
-            ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
+            ExecutionState = (int)ExecutionStateEventArgs.State.Invalid; //not yet started
 
             ContinuationStruct = new ContinuationStructure();
 
@@ -121,7 +121,7 @@ namespace ProtoCore
             WatchSymbolList = compileCore.watchSymbolList;
             SetProperties(compileCore.Options, compileCore.DSExecutable, compileCore.DebuggerProperties, null, compileCore.ExprInterpreterExe);
             RegisterDllTypes(compileCore.DllTypesToLoad);
-            NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
+            NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionBegin);
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
@@ -188,6 +188,17 @@ namespace ProtoCore
         // Cached replication guides for the current call. 
         // TODO Jun: Store this in the dynamic table node
         public List<List<ReplicationGuide>> ReplicationGuides;
+
+        // Cached at levels for the current call.
+        public List<AtLevel> AtLevels;
+
+        private HashSet<Guid> executedAstGuids; 
+        // GUIDs of executed ASTs.
+        public IEnumerable<Guid> ExecutedAstGuids
+        {
+            get { return executedAstGuids; }
+        }
+
         
         public ProtoCore.DSASM.Mirror.ExecutionMirror Mirror { get; set; }
 
@@ -210,7 +221,7 @@ namespace ProtoCore
         // Continuation properties used for Serial mode execution and Debugging of Replicated calls
         public ContinuationStructure ContinuationStruct { get; set; }
         /// <summary>
-        /// Gets the reason why the execution was last suspended
+        /// Returns the reason why the execution was last suspended
         /// </summary>
         public ReasonForExecutionSuspend ReasonForExecutionSuspend { get; internal set; }
 
@@ -248,7 +259,7 @@ namespace ProtoCore
         public void ResetForDeltaExecution()
         {
             RunningBlock = 0;
-            ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
+            ExecutionState = (int)ExecutionStateEventArgs.State.Invalid;
             StartPC = Constants.kInvalidPC;
         }
 
@@ -270,18 +281,18 @@ namespace ProtoCore
         {
             switch (state)
             {
-                case ExecutionStateEventArgs.State.kExecutionBegin:
-                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.kInvalid, "Invalid Execution state being notified.");
+                case ExecutionStateEventArgs.State.ExecutionBegin:
+                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.Invalid, "Invalid Execution state being notified.");
                     break;
-                case ExecutionStateEventArgs.State.kExecutionEnd:
-                    if (ExecutionState == (int)ExecutionStateEventArgs.State.kInvalid) //execution never begun.
+                case ExecutionStateEventArgs.State.ExecutionEnd:
+                    if (ExecutionState == (int)ExecutionStateEventArgs.State.Invalid) //execution never begun.
                         return;
                     break;
-                case ExecutionStateEventArgs.State.kExecutionBreak:
-                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.kExecutionBegin || ExecutionState == (int)ExecutionStateEventArgs.State.kExecutionResume, "Invalid Execution state being notified.");
+                case ExecutionStateEventArgs.State.ExecutionBreak:
+                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.ExecutionBegin || ExecutionState == (int)ExecutionStateEventArgs.State.ExecutionResume, "Invalid Execution state being notified.");
                     break;
-                case ExecutionStateEventArgs.State.kExecutionResume:
-                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.kExecutionBreak, "Invalid Execution state being notified.");
+                case ExecutionStateEventArgs.State.ExecutionResume:
+                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.ExecutionBreak, "Invalid Execution state being notified.");
                     break;
                 default:
                     Validity.Assert(false, "Invalid Execution state being notified.");
@@ -292,30 +303,6 @@ namespace ProtoCore
                 ExecutionEvent(this, new ExecutionStateEventArgs(state));
         }
         
-        public bool IsEvalutingPropertyChanged()
-        {
-            foreach (var prop in InterpreterProps)
-            {
-                if (prop.updateStatus == UpdateStatus.kPropertyChangedUpdate)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public void RequestCancellation()
-        {
-            if (cancellationPending)
-            {
-                var message = "Cancellation cannot be requested twice";
-                throw new InvalidOperationException(message);
-            }
-
-            cancellationPending = true;
-        }
-
         public int GetCurrentBlockId()
         {
             int constructBlockId = RuntimeMemory.CurrentConstructBlockId;
@@ -323,7 +310,7 @@ namespace ProtoCore
                 return DebugProps.CurrentBlockId;
 
             CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(DSExecutable.CodeBlocks, constructBlockId);
-            while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
+            while (null != constructBlock && constructBlock.blockType == CodeBlockType.Construct)
             {
                 constructBlock = constructBlock.parent;
             }
@@ -351,22 +338,6 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Set the value of a variable at runtime
-        /// Returns the entry pc
-        /// </summary>
-        /// <param name="astID"></param>
-        /// <param name="sv"></param>
-        /// <returns></returns>
-        public int SetValue(List<AssociativeNode> modifiedNodes, StackValue sv)
-        {
-            ExecutionInstance.CurrentDSASMExec.SetAssociativeUpdateRegister(sv);
-            AssociativeGraph.GraphNode gnode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope
-(this, modifiedNodes);
-            Validity.Assert(gnode != null);
-            return gnode.updateBlock.startpc;
-        }
-
-        /// <summary>
         /// This function determines what the starting pc should be for the next execution session
         /// The StartPC takes precedence if set. Otherwise, the entry pc in the global codeblock is the entry point
         /// StartPC is assumed to be reset to kInvalidPC after each execution session
@@ -387,6 +358,26 @@ namespace ProtoCore
         public void SetStartPC(int pc)
         {
             StartPC = pc;
+        }
+
+        /// <summary>
+        /// Record the GUID of executed graph node.
+        /// </summary>
+        /// <param name="graphNode"></param>
+        public void RecordExtecutedGraphNode(GraphNode graphNode)
+        {
+            if (graphNode != null && !graphNode.guid.Equals(Guid.Empty))
+            {
+                executedAstGuids.Add(graphNode.guid);
+            }
+        }
+
+        /// <summary>
+        /// Clear all recorded AST guids
+        /// </summary>
+        public void RemoveExecutedAstGuids()
+        {
+            executedAstGuids.Clear();
         }
     }
 }

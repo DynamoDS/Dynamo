@@ -63,7 +63,12 @@ namespace ProtoCore
                 return value;
             }
 
-            public void PushFrame(int size)
+            /// <summary>
+            /// Reserve specified number of stack slots for local variables
+            /// and initialize them to Null.
+            /// </summary>
+            /// <param name="size"></param>
+            public void PushFrameForLocals(int size)
             {
                 for (int n = 0; n < size; ++n)
                 {
@@ -78,88 +83,44 @@ namespace ProtoCore
             public void PushFrameForGlobals(int size)
             {
                 GlobOffset = size;
-                PushFrame(size);
+                PushFrameForLocals(size);
                 startFramePointer = Stack.Count;
             }
 
+            /// <summary>
+            /// Remove the specified number of items from the stack.
+            /// </summary>
+            /// <param name="size"></param>
             public void PopFrame(int size)
             {
-                for (int n = 0; n < size; ++n)
-                {
-                    int last = Stack.Count - 1;
-                    Stack.RemoveAt(last);
-                }
-            }
-
-            public void PushStackFrame(StackValue svThisPtr, int classIndex, int funcIndex, int pc, int functionBlockDecl, int functionBlockCaller, StackFrameType callerType, StackFrameType type, int depth, int fp, List<StackValue> registers, int locsize, int executionStates)
-            {
-                // TODO Jun: Performance
-                // Push frame should only require adjusting the frame index instead of pushing dummy elements
-                PushFrame(locsize);
-                Push(StackValue.BuildInt(fp));
-                PushRegisters(registers);
-                Push(StackValue.BuildInt(executionStates));
-                Push(StackValue.BuildInt(0));
-                Push(StackValue.BuildInt(depth));
-                Push(StackValue.BuildFrameType((int)type));
-                Push(StackValue.BuildFrameType((int)callerType));
-                Push(StackValue.BuildBlockIndex(functionBlockCaller));
-                Push(StackValue.BuildBlockIndex(functionBlockDecl));
-                Push(StackValue.BuildInt(pc));
-                Push(StackValue.BuildInt(funcIndex));
-                Push(StackValue.BuildInt(classIndex));
-                Push(svThisPtr);
-                FramePointer = Stack.Count;
+                Stack.RemoveRange(Stack.Count - size, size);
             }
 
             public void PushStackFrame(StackFrame stackFrame)
             {
-                // TODO Jun: Performance
-                // Push frame should only require adjusting the frame index instead of pushing dummy elements
-                Validity.Assert(StackFrame.kStackFrameSize == stackFrame.Frame.Length);
-
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kFramePointer]);
-
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kRegisterTX]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kRegisterSX]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kRegisterRX]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kRegisterLX]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kRegisterFX]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kRegisterEX]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kRegisterDX]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kRegisterCX]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kRegisterBX]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kRegisterAX]);
-
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kExecutionStates]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kLocalVariables]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kStackFrameDepth]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kStackFrameType]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kCallerStackFrameType]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kFunctionCallerBlock]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kFunctionBlock]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kReturnAddress]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kFunction]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kClass]);
-                Push(stackFrame.Frame[(int)StackFrame.AbsoluteIndex.kThisPtr]);
-
+                Validity.Assert(StackFrame.StackFrameSize == stackFrame.Frame.Length);
+                for (int i = StackFrame.StackFrameSize - 1; i >= 0; i--)
+                {
+                    Push(stackFrame.Frame[i]);
+                }
                 FramePointer = Stack.Count;
             }
 
             public bool ValidateStackFrame()
             {
-                return Stack[GetRelative(StackFrame.kFrameIndexThisPtr)].IsPointer
-                    && Stack[GetRelative(StackFrame.kFrameIndexClass)].IsInteger
-                    && Stack[GetRelative(StackFrame.kFrameIndexFunction)].IsInteger
-                    && Stack[GetRelative(StackFrame.kFrameIndexReturnAddress)].IsInteger
-                    && Stack[GetRelative(StackFrame.kFrameIndexFunctionBlock)].IsBlockIndex
-                    && Stack[GetRelative(StackFrame.kFrameIndexFunctionCallerBlock)].IsBlockIndex
-                    && Stack[GetRelative(StackFrame.kFrameIndexCallerStackFrameType)].IsFrameType
-                    && Stack[GetRelative(StackFrame.kFrameIndexStackFrameType)].IsFrameType
-                    && Stack[GetRelative(StackFrame.kFrameIndexLocalVariables)].IsInteger
-                    && Stack[GetRelative(StackFrame.kFrameIndexExecutionStates)].IsInteger
-                    && Stack[GetRelative(StackFrame.kFrameIndexStackFrameDepth)].IsInteger
-                    && Stack[GetRelative(StackFrame.kFrameIndexFramePointer)].IsInteger;
+                return Stack[GetRelative(StackFrame.FrameIndexThisPtr)].IsPointer
+                    && Stack[GetRelative(StackFrame.FrameIndexClassIndex)].IsClassIndex
+                    && Stack[GetRelative(StackFrame.FrameIndexFunctionIndex)].IsFunctionIndex
+                    && Stack[GetRelative(StackFrame.FrameIndexReturnAddress)].IsInteger
+                    && Stack[GetRelative(StackFrame.FrameIndexFunctionBlockIndex)].IsBlockIndex
+                    && Stack[GetRelative(StackFrame.FrameIndexCallerBlockIndex)].IsBlockIndex
+                    && Stack[GetRelative(StackFrame.FrameIndexCallerStackFrameType)].IsFrameType
+                    && Stack[GetRelative(StackFrame.FrameIndexStackFrameType)].IsFrameType
+                    && Stack[GetRelative(StackFrame.FrameIndexLocalVariableCount)].IsInteger
+                    && Stack[GetRelative(StackFrame.FrameIndexExecutionStates)].IsInteger
+                    && Stack[GetRelative(StackFrame.FrameIndexStackFrameDepth)].IsInteger
+                    && Stack[GetRelative(StackFrame.FrameIndexFramePointer)].IsInteger
+                    && Stack[GetRelative(StackFrame.FrameIndexBlockIndex)].IsBlockIndex;
             }
 
             private void PushRegisters(List<StackValue> registers)
@@ -182,9 +143,8 @@ namespace ProtoCore
 
             private StackValue GetAtRelative(int relativeOffset, int framePointer)
             {
-                return relativeOffset >= 0
-                    ? Stack[relativeOffset]
-                    : Stack[framePointer + relativeOffset];
+                int index = relativeOffset >= 0 ? relativeOffset : framePointer + relativeOffset;
+                return Stack[index];
             }
             
             public void SetAtRelative(int offset, StackValue data)
@@ -194,7 +154,7 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Return the value of symbol on current stack frame.
+            /// Returns the value of symbol on current stack frame.
             /// </summary>
             /// <param name="symbol"></param>
             /// <returns></returns>
@@ -204,7 +164,7 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Return the value of symbol on specified frame. 
+            /// Returns the value of symbol on specified frame. 
             /// </summary>
             /// <param name="symbol"></param>
             /// <param name="framePointer"></param>
@@ -229,15 +189,15 @@ namespace ProtoCore
             // TO BE DELETED
             public int GetStackIndex(int offset)
             {
-                int depth = (int)GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).opdata;
-                int blockOffset = depth * StackFrame.kStackFrameSize;
+                int depth = (int)GetAtRelative(StackFrame.FrameIndexStackFrameDepth).IntegerValue;
+                int blockOffset = depth * StackFrame.StackFrameSize;
 
                 offset -= blockOffset;
                 return offset;
             }
 
             /// <summary>
-            /// Return stack index of symbol for specified frame.
+            /// Returns stack index of symbol for specified frame.
             /// </summary>
             /// <param name="symbol"></param>
             /// <param name="framePointer"></param>
@@ -249,8 +209,8 @@ namespace ProtoCore
                 if (symbol.absoluteClassScope != Constants.kGlobalScope ||
                     symbol.absoluteFunctionIndex != Constants.kGlobalScope)
                 {
-                    int depth = (int)GetAtRelative(StackFrame.kFrameIndexStackFrameDepth, framePointer).opdata;
-                    int blockOffset = depth * StackFrame.kStackFrameSize;
+                    int depth = (int)GetAtRelative(StackFrame.FrameIndexStackFrameDepth, framePointer).IntegerValue;
+                    int blockOffset = depth * StackFrame.StackFrameSize;
                     offset -= blockOffset;
                 }
 
@@ -282,7 +242,6 @@ namespace ProtoCore
                 }
 
                 StackValue nextPtr = sv;
-                Validity.Assert(nextPtr.opdata >= 0);
                 obj = Heap.ToHeapObject<DSObject>(nextPtr);
 
                 if (obj.Values.Any()) 
@@ -342,40 +301,25 @@ namespace ProtoCore
             {
                 get
                 {
-                    var stackFrames = GetStackFrames();
-                    if (stackFrames.Any())
+                    var fp = FramePointer;
+
+                    // Note the first stack frame starts after the space for global 
+                    // variables, so here we need to check the frame pointer is 
+                    // large enought to contain a stack frame and all global variables
+                    if (fp - StackFrame.StackFrameSize >= startFramePointer)
                     {
-                        return stackFrames.First();
+                        var frame = new StackValue[StackFrame.StackFrameSize];
+                        for (int sourceIndex = fp - 1, destIndex = 0; sourceIndex >= fp - StackFrame.StackFrameSize; sourceIndex--, destIndex++)
+                        {
+                            frame[destIndex] = Stack[sourceIndex];
+                        }
+                        var stackFrame = new StackFrame(frame);
+                        return stackFrame;
                     }
                     else
                     {
                         return null;
                     }
-                }
-            }
-
-            /// <summary>
-            /// Get all stack frames. 
-            /// </summary>
-            /// <returns></returns>
-            public IEnumerable<StackFrame> GetStackFrames()
-            {
-                var fp = FramePointer;
-                
-                // Note the first stack frame starts after the space for global 
-                // variables, so here we need to check the frame pointer is 
-                // large enought to contain a stack frame and all global variables
-                while (fp - StackFrame.kStackFrameSize >= startFramePointer)
-                {
-                    var frame = new StackValue[StackFrame.kStackFrameSize];
-                    for (int sourceIndex = fp - StackFrame.kStackFrameSize; sourceIndex < fp; sourceIndex++)
-                    {
-                        int destIndex = fp - sourceIndex - 1;
-                        frame[destIndex] = Stack[sourceIndex];
-                    }
-                    var stackFrame = new StackFrame(frame);
-                    fp = stackFrame.FramePointer;
-                    yield return stackFrame;
                 }
             }
         }

@@ -20,7 +20,9 @@ namespace Dynamo.Search.SearchElements
         private string assembly;
         private bool isVisibleInSearch = true;
 
-
+        /// <summary>
+        /// Event is fired when a node visibility in library search was changed.
+        /// </summary>
         public Action VisibilityChanged;
         private void OnVisibilityChanged()
         {
@@ -29,7 +31,7 @@ namespace Dynamo.Search.SearchElements
         }
 
         /// <summary>
-        ///     Specified whether or not this entry should appear in search.
+        ///     Specifies whether or not this entry should appear in search.
         /// </summary>
         public bool IsVisibleInSearch
         {
@@ -56,14 +58,14 @@ namespace Dynamo.Search.SearchElements
             get { return SplitCategoryName(FullCategoryName).ToList(); }
         }
 
-        public const char CATEGORY_DELIMITER = '.';
+        private const char CATEGORY_DELIMITER = '.';
 
         /// <summary>
         ///     Split a category name into individual category names splitting be DEFAULT_DELIMITER
         /// </summary>
         /// <param name="categoryName">The name</param>
         /// <returns>A list of output</returns>
-        public static IEnumerable<string> SplitCategoryName(string categoryName)
+        internal static IEnumerable<string> SplitCategoryName(string categoryName)
         {
             if (String.IsNullOrEmpty(categoryName))
                 return Enumerable.Empty<string>();
@@ -147,6 +149,9 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
+        /// <summary>
+        /// Returns the name of the node icon.
+        /// </summary>
         public string IconName
         {
             get { return iconName; }
@@ -239,12 +244,12 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         ///     Produces a new Node, via the ItemProduced event.
         /// </summary>
-        public void ProduceNode()
+        internal void ProduceNode()
         {
             OnItemProduced(ConstructNewNodeModel());
         }
 
-        public NodeModel CreateNode()
+        internal NodeModel CreateNode()
         {
             return ConstructNewNodeModel();
         }
@@ -267,21 +272,32 @@ namespace Dynamo.Search.SearchElements
 
         protected virtual IEnumerable<string> GenerateOutputParameters()
         {
-            outputParameters.Add("none");
+            outputParameters.Add(Properties.Resources.NoneString);
             return outputParameters;
         }
 
         protected virtual IEnumerable<Tuple<string, string>> GenerateInputParameters()
         {
-            inputParameters.Add(Tuple.Create("", "none"));
+            inputParameters.Add(Tuple.Create(String.Empty, Properties.Resources.NoneString));
             return inputParameters;
         }
     }
 
+    /// <summary>
+    /// This class returns <see cref="NodeSearchElement"/> which is used 
+    /// for creating a node, when the element is drag and dropped.
+    /// </summary>
     public class DragDropNodeSearchElementInfo
     {
+        /// <summary>
+        /// Returns <see cref="NodeSearchElement"/> to drag and drop.
+        /// </summary>
         public NodeSearchElement SearchElement { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DragDropNodeSearchElementInfo"/> class.
+        /// </summary>
+        /// <param name="searchElement">Element to drag on the canvas</param>
         public DragDropNodeSearchElementInfo(NodeSearchElement searchElement)
         {
             this.SearchElement = searchElement;

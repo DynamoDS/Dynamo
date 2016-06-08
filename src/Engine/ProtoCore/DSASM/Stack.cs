@@ -1,321 +1,231 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using ProtoCore.Utils;
-using ProtoCore.Properties;
 
 namespace ProtoCore.DSASM
 {
-
+    /// <summary>
+    /// Stack frame type.
+    /// </summary>
     public enum StackFrameType
     {
-        kTypeFunction = 0,
-        kTypeLanguage,
-        kTypeInvalid
+        Function,
+        LanguageBlock,
     }
 
+    /// <summary>
+    /// Stack frame.
+    /// </summary>
     public class StackFrame
     {
-        public const int kFrameIndexThisPtr                 = -1;
-        public const int kFrameIndexClass                   = -2;
-        public const int kFrameIndexFunction                = -3;
-        public const int kFrameIndexReturnAddress           = -4;
-        public const int kFrameIndexFunctionBlock           = -5;
-        public const int kFrameIndexFunctionCallerBlock     = -6;
-        public const int kFrameIndexCallerStackFrameType    = -7;
-        public const int kFrameIndexStackFrameType          = -8;
-        public const int kFrameIndexStackFrameDepth         = -9;
-        public const int kFrameIndexLocalVariables          = -10;
-        public const int kFrameIndexExecutionStates         = -11;
+        public const int FrameIndexThisPtr = -1;
+        public const int FrameIndexClassIndex = -2;
+        public const int FrameIndexFunctionIndex = -3;
+        public const int FrameIndexReturnAddress = -4;
+        public const int FrameIndexFunctionBlockIndex = -5;
+        public const int FrameIndexCallerBlockIndex = -6;
+        public const int FrameIndexCallerStackFrameType = -7;
+        public const int FrameIndexStackFrameType = -8;
+        public const int FrameIndexStackFrameDepth = -9;
+        public const int FrameIndexLocalVariableCount = -10;
+        public const int FrameIndexExecutionStates = -11;
+        public const int FrameIndexBlockIndex = -12;
+        public const int FrameIndexRX = -13;
+        public const int FrameIndexTX = -14;
+        public const int FrameIndexFramePointer = -15;
+        public const int StackFrameSize = 15;
 
-        public const int kLastFrameIndex = kFrameIndexExecutionStates;
-
-        // Relative idnex of each register
-        public const int kFrameIndexRegisterAX = kLastFrameIndex - 1;
-        public const int kFrameIndexRegisterBX = kLastFrameIndex - 2;
-        public const int kFrameIndexRegisterCX = kLastFrameIndex - 3;
-        public const int kFrameIndexRegisterDX = kLastFrameIndex - 4;
-        public const int kFrameIndexRegisterEX = kLastFrameIndex - 5;
-        public const int kFrameIndexRegisterFX = kLastFrameIndex - 6;
-        public const int kFrameIndexRegisterLX = kLastFrameIndex - 7;
-        public const int kFrameIndexRegisterRX = kLastFrameIndex - 8;
-        public const int kFrameIndexRegisterSX = kLastFrameIndex - 9;
-        public const int kFrameIndexRegisterTX = kLastFrameIndex - 10;
-
-        // Relative index of the frame pointer
-        public const int kFrameIndexFramePointer = -(kPointersSize + kRegistrySize);
-
-
-        public enum AbsoluteIndex
+        private struct AbsoluteIndex
         {
-            kThisPtr = 0,
-            kClass,
-            kFunction,
-            kReturnAddress,
-            kFunctionBlock,
-            kFunctionCallerBlock,
-            kCallerStackFrameType,
-            kStackFrameType,
-            kStackFrameDepth,
-            kLocalVariables,
-            kExecutionStates,
-            kRegisterAX,
-            kRegisterBX,
-            kRegisterCX,
-            kRegisterDX,
-            kRegisterEX,
-            kRegisterFX,
-            kRegisterLX,
-            kRegisterRX,
-            kRegisterSX,
-            kRegisterTX,
-            kFramePointer,
-            kSize
+            public const int ThisPtr = -FrameIndexThisPtr - 1;
+            public const int ClassIndex = -FrameIndexClassIndex - 1;
+            public const int FunctionIndex = -FrameIndexFunctionIndex - 1;
+            public const int ReturnAddress = -FrameIndexReturnAddress - 1;
+            public const int FunctionBlockIndex = -FrameIndexFunctionBlockIndex - 1;
+            public const int CallerBlockIndex = -FrameIndexCallerBlockIndex - 1;
+            public const int CallerStackFrameType = -FrameIndexCallerStackFrameType - 1;
+            public const int StackFrameType = -FrameIndexStackFrameType - 1;
+            public const int StackFrameDepth = -FrameIndexStackFrameDepth - 1;
+            public const int LocalVariableCount  = -FrameIndexLocalVariableCount - 1;
+            public const int ExecutionStates = -FrameIndexExecutionStates - 1;
+            public const int BlockIndex = -FrameIndexBlockIndex - 1;
+            public const int RX = -FrameIndexRX - 1;
+            public const int TX = -FrameIndexTX - 1;
+            public const int FramePointer = -FrameIndexFramePointer - 1;
         }
-
-
-        public const int kRegistrySize = 10;
-        public const int kPointersSize = 12;
-        public const int kStackFrameSize = kPointersSize + kRegistrySize;
 
         public StackValue[] Frame { get; set; }
         public StackValue[] ExecutionStates { get; set; }
 
-        private void Init(StackValue svThisPtr, int classIndex, int funcIndex, int pc, int functionBlockDecl, int functionBlockCaller, StackFrameType callerType, StackFrameType type, int depth,
-           int framePointer, List<StackValue> stack, List<bool> execStates)
+        private void Init(
+            StackValue thisPtr, 
+            int classIndex, 
+            int functionIndex, 
+            int returnAddress, 
+            int functionBlockIndex,
+            int callerBlockIndex,
+            StackFrameType callerStackFrameType,
+            StackFrameType stackFrameType,
+            int depth,
+            int framePointer,
+            int blockIndex,
+            List<StackValue> registers,
+            int execStateSize)
         {
-            Validity.Assert((int)StackFrame.AbsoluteIndex.kSize == kStackFrameSize);
+            Frame = new StackValue[StackFrameSize];
 
-            Frame = new StackValue[kStackFrameSize];
-
-            Frame[(int)AbsoluteIndex.kFramePointer] = StackValue.BuildInt(framePointer);
-            Frame[(int)AbsoluteIndex.kStackFrameType] = StackValue.BuildFrameType((int)type);
-            Frame[(int)AbsoluteIndex.kCallerStackFrameType] = StackValue.BuildFrameType((int)callerType);
-            Frame[(int)AbsoluteIndex.kStackFrameDepth] = StackValue.BuildInt(depth);
-            Frame[(int)AbsoluteIndex.kFunctionCallerBlock] = StackValue.BuildBlockIndex(functionBlockCaller);
-            Frame[(int)AbsoluteIndex.kFunctionBlock] = StackValue.BuildBlockIndex(functionBlockDecl);
-            Frame[(int)AbsoluteIndex.kReturnAddress] = StackValue.BuildInt(pc);
-            Frame[(int)AbsoluteIndex.kFunction] = StackValue.BuildInt(funcIndex);
-            Frame[(int)AbsoluteIndex.kClass] = StackValue.BuildInt(classIndex);
-            Frame[(int)AbsoluteIndex.kThisPtr] = svThisPtr;
-
-            Frame[(int)AbsoluteIndex.kRegisterAX] = stack[0];
-            Frame[(int)AbsoluteIndex.kRegisterBX] = stack[1];
-            Frame[(int)AbsoluteIndex.kRegisterCX] = stack[2];
-            Frame[(int)AbsoluteIndex.kRegisterDX] = stack[3];
-            Frame[(int)AbsoluteIndex.kRegisterEX] = stack[4];
-            Frame[(int)AbsoluteIndex.kRegisterFX] = stack[5];
-            Frame[(int)AbsoluteIndex.kRegisterLX] = stack[6];
-            Frame[(int)AbsoluteIndex.kRegisterRX] = stack[7];
-            Frame[(int)AbsoluteIndex.kRegisterSX] = stack[8];
-            Frame[(int)AbsoluteIndex.kRegisterTX] = stack[9];
-
-            int execStateSize = 0;
-            if (null != execStates)
-            {
-                execStateSize = execStates.Count;
-                ExecutionStates = new StackValue[execStateSize];
-                for (int n = 0; n < execStateSize; ++n)
-                {
-                    ExecutionStates[n] = StackValue.BuildBoolean(execStates[n]);
-                }
-            }
-
-            Frame[(int)AbsoluteIndex.kExecutionStates] = StackValue.BuildInt(execStateSize);
-            Frame[(int)AbsoluteIndex.kLocalVariables] = StackValue.BuildInt(0);
-            
-            Validity.Assert(kStackFrameSize == Frame.Length);
+            Frame[AbsoluteIndex.ThisPtr] = thisPtr;
+            Frame[AbsoluteIndex.ClassIndex] = StackValue.BuildClassIndex(classIndex);
+            Frame[AbsoluteIndex.FunctionIndex] = StackValue.BuildFunctionIndex(functionIndex);
+            Frame[AbsoluteIndex.ReturnAddress] = StackValue.BuildInt(returnAddress);
+            Frame[AbsoluteIndex.FunctionBlockIndex] = StackValue.BuildBlockIndex(functionBlockIndex);
+            Frame[AbsoluteIndex.CallerBlockIndex] = StackValue.BuildBlockIndex(callerBlockIndex);
+            Frame[AbsoluteIndex.CallerStackFrameType] = StackValue.BuildFrameType((int)callerStackFrameType);
+            Frame[AbsoluteIndex.StackFrameType] = StackValue.BuildFrameType((int)stackFrameType);
+            Frame[AbsoluteIndex.StackFrameDepth] = StackValue.BuildInt(depth);
+            Frame[AbsoluteIndex.LocalVariableCount] = StackValue.BuildInt(0);
+            Frame[AbsoluteIndex.ExecutionStates] = StackValue.BuildInt(execStateSize);
+            Frame[AbsoluteIndex.BlockIndex] = StackValue.BuildBlockIndex(blockIndex);
+            Frame[AbsoluteIndex.RX] = registers[0];
+            Frame[AbsoluteIndex.TX] = registers[1];
+            Frame[AbsoluteIndex.FramePointer] = StackValue.BuildInt(framePointer);
         }
 
-        public StackFrame(StackValue svThisPtr, int classIndex, int funcIndex, int pc, int functionBlockDecl, int functionBlockCaller, StackFrameType callerType, StackFrameType type, int depth, int framePointer, List<StackValue> stack, List<bool> execStates) 
+        public StackFrame(
+            StackValue thisPtr, 
+            int classIndex,
+            int functionIndex,
+            int returnAddress,
+            int functionBlockIndex,
+            int callerBlockIndex,
+            StackFrameType callerStackFrameType,
+            StackFrameType stackFrameType,
+            int depth,
+            int framePointer,
+            int blockIndex,
+            List<StackValue> registers,
+            int executionStateSize) 
         {
-            Init(svThisPtr, classIndex, funcIndex, pc, functionBlockDecl, functionBlockCaller, callerType, type, depth, framePointer, stack, execStates);
+            Init(thisPtr, classIndex, functionIndex, returnAddress, functionBlockIndex, callerBlockIndex, callerStackFrameType, stackFrameType, depth, framePointer, blockIndex, registers, executionStateSize);
         }
 
         public StackFrame(StackValue[] frame)
         {
-            Validity.Assert(frame.Count() == kStackFrameSize);
+            Validity.Assert(frame.Count() == StackFrameSize);
             Frame = frame;
         }
 
         public StackFrame(int globalOffset)
         {
-            StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(Constants.kInvalidPointer);
-            int ci = Constants.kInvalidIndex;
-            int fi = Constants.kInvalidIndex;
-            int returnAddr = Constants.kInvalidIndex;
-            int blockDecl = Constants.kInvalidIndex;
-            int blockCaller = 0;
-
-            StackFrameType callerType = DSASM.StackFrameType.kTypeLanguage;
-            StackFrameType type = DSASM.StackFrameType.kTypeLanguage;
-            int depth = -1;
-            int framePointer = globalOffset;
-
-            Init(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, StackValue.BuildInvalidRegisters(), new List<bool>());
-        }
-
-        private StackValue GetAt(AbsoluteIndex index)
-        {
-            return Frame[(int)index];
-        }
-
-        private void SetAt(AbsoluteIndex index, StackValue sv)
-        {
-            Frame[(int)index] = sv;
+            Init(StackValue.BuildPointer(Constants.kInvalidPointer), 
+                Constants.kInvalidIndex,
+                Constants.kInvalidIndex, 
+                Constants.kInvalidIndex,
+                Constants.kInvalidIndex,
+                0, 
+                StackFrameType.LanguageBlock,
+                StackFrameType.LanguageBlock, 
+                Constants.kInvalidIndex, 
+                globalOffset,
+                Constants.kInvalidIndex,
+                StackValue.BuildInvalidRegisters(), 
+                0);
         }
 
         public StackValue ThisPtr
         {
-            get { return GetAt(AbsoluteIndex.kThisPtr); }
-            set { SetAt(AbsoluteIndex.kThisPtr, value);}
+            get { return Frame[AbsoluteIndex.ThisPtr]; }
+            set { Frame[AbsoluteIndex.ThisPtr] = value;}
         }
 
         public int ClassScope
         {
-            get { return (int)GetAt(AbsoluteIndex.kClass).opdata; }
-            set { SetAt(AbsoluteIndex.kClass, StackValue.BuildClassIndex(value)); }
+            get { return Frame[AbsoluteIndex.ClassIndex].ClassIndex; }
+            set { Frame[AbsoluteIndex.ClassIndex] = StackValue.BuildClassIndex(value); }
         }
 
         public int FunctionScope
         {
-            get { return (int)GetAt(AbsoluteIndex.kFunction).opdata; }
-            set { SetAt(AbsoluteIndex.kFunction, StackValue.BuildFunctionIndex(value)); }
+            get { return Frame[AbsoluteIndex.FunctionIndex].FunctionIndex; }
+            set { Frame[AbsoluteIndex.FunctionIndex] = StackValue.BuildFunctionIndex(value); }
         }
 
         public int ReturnPC
         {
-            get { return (int)GetAt(AbsoluteIndex.kReturnAddress).opdata; }
-            set { SetAt(AbsoluteIndex.kReturnAddress, StackValue.BuildInt(value));}
+            get { return (int)Frame[AbsoluteIndex.ReturnAddress].IntegerValue; }
+            set { Frame[AbsoluteIndex.ReturnAddress] = StackValue.BuildInt(value);}
         }
 
         public int FunctionBlock
         {
-            get { return (int)GetAt(AbsoluteIndex.kFunctionBlock).opdata; }
-            set { SetAt(AbsoluteIndex.kFunctionBlock, StackValue.BuildBlockIndex(value)); }
+            get { return Frame[AbsoluteIndex.FunctionBlockIndex].BlockIndex; }
+            set { Frame[AbsoluteIndex.FunctionBlockIndex] = StackValue.BuildBlockIndex(value); }
         }
 
         public int FunctionCallerBlock
         {
-            get { return (int)GetAt(AbsoluteIndex.kFunctionCallerBlock).opdata; }
-            set { SetAt(AbsoluteIndex.kFunctionCallerBlock, StackValue.BuildBlockIndex(value)); }
+            get { return Frame[AbsoluteIndex.CallerBlockIndex].BlockIndex; }
+            set { Frame[AbsoluteIndex.CallerBlockIndex] = StackValue.BuildBlockIndex(value); }
         }
 
         public StackFrameType CallerStackFrameType
         {
-            get { return (StackFrameType)GetAt(AbsoluteIndex.kCallerStackFrameType).opdata; }
-            set { SetAt(AbsoluteIndex.kCallerStackFrameType, StackValue.BuildInt((int)value));}
+            get { return Frame[AbsoluteIndex.CallerStackFrameType].FrameType; }
+            set { Frame[AbsoluteIndex.CallerStackFrameType] = StackValue.BuildFrameType((int)value);}
         }
 
         public StackFrameType StackFrameType
         {
-            get { return (StackFrameType)GetAt(AbsoluteIndex.kStackFrameType).opdata; }
-            set { SetAt(AbsoluteIndex.kStackFrameType, StackValue.BuildInt((int)value)); }
+            get { return Frame[AbsoluteIndex.StackFrameType].FrameType; }
+            set { Frame[AbsoluteIndex.StackFrameType] = StackValue.BuildFrameType((int)value); }
         }
 
         public int Depth
         {
-            get { return (int)GetAt(AbsoluteIndex.kStackFrameDepth).opdata; }
-            set { SetAt(AbsoluteIndex.kStackFrameDepth, StackValue.BuildInt(value)); }
+            get { return (int)Frame[AbsoluteIndex.StackFrameDepth].IntegerValue; }
+            set { Frame[AbsoluteIndex.StackFrameDepth] = StackValue.BuildInt(value); }
         }
 
         public int FramePointer
         {
-            get { return (int)GetAt(AbsoluteIndex.kFramePointer).opdata; }
-            set { SetAt(AbsoluteIndex.kFramePointer, StackValue.BuildInt(value));}
+            get { return (int)Frame[AbsoluteIndex.FramePointer].IntegerValue; }
+            set { Frame[AbsoluteIndex.FramePointer] = StackValue.BuildInt(value);}
         }
 
         public int ExecutionStateSize
         {
-            get { return (int)GetAt(AbsoluteIndex.kExecutionStates).opdata; }
-            set { SetAt(AbsoluteIndex.kExecutionStates, StackValue.BuildInt(value)); }
+            get { return (int)Frame[AbsoluteIndex.ExecutionStates].IntegerValue; }
+            set { Frame[AbsoluteIndex.ExecutionStates] = StackValue.BuildInt(value); }
         }
 
-        public StackValue AX
+        public StackValue BlockIndex
         {
-            get { return GetAt(AbsoluteIndex.kRegisterAX); }
-            set { SetAt(AbsoluteIndex.kRegisterAX, value);}
-        }
-
-        public StackValue BX
-        {
-            get { return GetAt(AbsoluteIndex.kRegisterBX); }
-            set { SetAt(AbsoluteIndex.kRegisterBX, value);}
-        }
-
-        public StackValue CX
-        {
-            get { return GetAt(AbsoluteIndex.kRegisterCX); }
-            set { SetAt(AbsoluteIndex.kRegisterCX, value); }
-        }
-
-        public StackValue DX
-        {
-            get { return GetAt(AbsoluteIndex.kRegisterDX); }
-            set { SetAt(AbsoluteIndex.kRegisterDX, value); }
-        }
-
-        public StackValue EX
-        {
-            get { return GetAt(AbsoluteIndex.kRegisterEX); }
-            set { SetAt(AbsoluteIndex.kRegisterEX, value); }
-        }
-
-        public StackValue FX
-        {
-            get { return GetAt(AbsoluteIndex.kRegisterFX); }
-            set { SetAt(AbsoluteIndex.kRegisterFX, value); }
-        }
-
-        public StackValue LX
-        {
-            get { return GetAt(AbsoluteIndex.kRegisterLX); }
-            set { SetAt(AbsoluteIndex.kRegisterLX, value); }
+            get { return Frame[AbsoluteIndex.BlockIndex]; }
+            set { Frame[AbsoluteIndex.BlockIndex] = value; }
         }
 
         public StackValue RX
         {
-            get { return GetAt(AbsoluteIndex.kRegisterRX); }
-            set { SetAt(AbsoluteIndex.kRegisterRX, value); }
-        }
-
-        public StackValue SX
-        {
-            get { return GetAt(AbsoluteIndex.kRegisterSX); }
-            set { SetAt(AbsoluteIndex.kRegisterSX, value); }
+            get { return Frame[AbsoluteIndex.RX]; }
+            set { Frame[AbsoluteIndex.RX] = value; }
         }
 
         public StackValue TX
         {
-            get { return GetAt(AbsoluteIndex.kRegisterTX); }
-            set { SetAt(AbsoluteIndex.kRegisterTX, value); }
+            get { return Frame[AbsoluteIndex.TX]; }
+            set { Frame[AbsoluteIndex.TX] = value; }
         }
 
         public List<StackValue> GetRegisters()
         {
             List<StackValue> registers = new List<StackValue>();
 
-            registers.Add(Frame[(int)AbsoluteIndex.kRegisterAX]);
-            registers.Add(Frame[(int)AbsoluteIndex.kRegisterBX]);
-            registers.Add(Frame[(int)AbsoluteIndex.kRegisterCX]);
-            registers.Add(Frame[(int)AbsoluteIndex.kRegisterDX]);
-            registers.Add(Frame[(int)AbsoluteIndex.kRegisterEX]);
-            registers.Add(Frame[(int)AbsoluteIndex.kRegisterFX]);
-            registers.Add(Frame[(int)AbsoluteIndex.kRegisterLX]);
-            registers.Add(Frame[(int)AbsoluteIndex.kRegisterRX]);
-            registers.Add(Frame[(int)AbsoluteIndex.kRegisterSX]);
-            registers.Add(Frame[(int)AbsoluteIndex.kRegisterTX]);
+            registers.Add(Frame[AbsoluteIndex.RX]);
+            registers.Add(Frame[AbsoluteIndex.TX]);
 
             return registers;
         }
-    }
-    
-    public struct RTSymbol
-    {
-        public StackValue Sv;
-        public int BlockId;
-        public int[] Dimlist;
     }
     
     public static class StackUtils
@@ -342,21 +252,21 @@ namespace ProtoCore.DSASM
             {
                 case AddressType.Invalid:
                     return true;
-
                 case AddressType.Int:
+                    return sv1.IntegerValue == sv2.IntegerValue;
                 case AddressType.Char:
-                    return sv1.opdata == sv2.opdata;
+                    return sv1.CharValue == sv2.CharValue;
                 case AddressType.Double:
-                    var value1 = sv1.RawDoubleValue;
-                    var value2 = sv2.RawDoubleValue;
+                    var value1 = sv1.DoubleValue;
+                    var value2 = sv2.DoubleValue;
 
                     if(Double.IsInfinity(value1) && Double.IsInfinity(value2))
                         return true;
                     return MathUtils.Equals(value1, value2);
                 case AddressType.Boolean:
-                    return (sv1.opdata > 0 && sv2.opdata > 0) || (sv1.opdata == 0 && sv2.opdata == 0);
+                    return sv1.BooleanValue == sv2.BooleanValue;
                 case AddressType.ArrayPointer:
-                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.opdata == sv2.opdata) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
+                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.ArrayPointer == sv2.ArrayPointer) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
                         return true;
 
                     DSArray array1 = rtCore1.Heap.ToHeapObject<DSArray>(sv1);
@@ -364,7 +274,7 @@ namespace ProtoCore.DSASM
                     return DSArray.CompareFromDifferentCore(array1, array2, rtCore1, rtCore2, context);
 
                 case AddressType.String:
-                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.opdata == sv2.opdata) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
+                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.StringPointer == sv2.StringPointer) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
                         return true;
                     DSString s1 = rtCore1.Heap.ToHeapObject<DSString>(sv1);
                     DSString s2 = rtCore1.Heap.ToHeapObject<DSString>(sv2);
@@ -372,7 +282,7 @@ namespace ProtoCore.DSASM
                 case AddressType.Pointer:
                     if (sv1.metaData.type != sv2.metaData.type) //if the type of class is different, then stack values can never be equal
                         return false;
-                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.opdata == sv2.opdata) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
+                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.Pointer == sv2.Pointer) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
                         return true;
                     ClassNode classnode = rtCore1.DSExecutable.classTable.ClassNodes[sv1.metaData.type];
                     if (classnode.IsImportedClass)
@@ -403,7 +313,7 @@ namespace ProtoCore.DSASM
                         return ComparePointerFromHeap(sv1, sv2, rtCore1, rtCore2, context);
                     }
                 default :
-                    return sv1.opdata == sv2.opdata;
+                    return sv1.Equals(sv2);
             }
         }
 

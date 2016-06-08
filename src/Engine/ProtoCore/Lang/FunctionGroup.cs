@@ -1,4 +1,4 @@
-using System;
+using System.Linq;
 using System.Collections.Generic;
 using ProtoCore.DSASM;
 using ProtoCore.Lang.Replication;
@@ -36,7 +36,7 @@ namespace ProtoCore
             foreach (FunctionEndPoint fep in rhs)
             {
                 Validity.Assert(null != fep.procedureNode);
-                if (fep.procedureNode.AccessModifier != CompilerDefinitions.AccessModifier.kPrivate && !fep.procedureNode.IsConstructor)
+                if (fep.procedureNode.AccessModifier != CompilerDefinitions.AccessModifier.Private && !fep.procedureNode.IsConstructor)
                 {
                     if (!FunctionEndPoints.Contains(fep))
                     {
@@ -54,7 +54,7 @@ namespace ProtoCore
             foreach (FunctionEndPoint fep in rhs)
             {
                 Validity.Assert(null != fep.procedureNode);
-                if (fep.procedureNode.AccessModifier == CompilerDefinitions.AccessModifier.kPublic)
+                if (fep.procedureNode.AccessModifier == CompilerDefinitions.AccessModifier.Public)
                 {
                     if (!FunctionEndPoints.Contains(fep))
                     {
@@ -74,7 +74,7 @@ namespace ProtoCore
         /// <param name="unresolvable">The number of argument sets that couldn't be resolved</param>
         /// <returns></returns>
         public Dictionary<FunctionEndPoint, int> GetExactMatchStatistics(
-            ProtoCore.Runtime.Context context,
+            Runtime.Context context,
             List<List<StackValue>> reducedFormalParams, StackFrame stackFrame, RuntimeCore runtimeCore, out int unresolvable)
         {
             List<ReplicationInstruction> replicationInstructions = new List<ReplicationInstruction>(); //We've already done the reduction before calling this
@@ -89,7 +89,6 @@ namespace ProtoCore
                                                                   runtimeCore);
                 if (feps.Count == 0)
                 {
-                    
                     //We have an arugment set that couldn't be resolved
                     unresolvable++;
                 }
@@ -101,41 +100,32 @@ namespace ProtoCore
                     else
                         ret.Add(fep, 1);
                 }
-                
+             }
 
-
-            }
-
-            return ret;
+             return ret;
         }
 
 
         /// <summary>
-        /// Get a list of all the function end points that are type compliant, there maybe more than one due to pattern matches
+        /// Returns a list of all the function end points that are type compliant, there maybe more than one due to pattern matches
         /// </summary>
         /// <returns></returns>
         public List<FunctionEndPoint> GetExactTypeMatches(ProtoCore.Runtime.Context context,
             List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, StackFrame stackFrame, RuntimeCore runtimeCore)
         {
             List<FunctionEndPoint> ret = new List<FunctionEndPoint>();
-
-
             List<List<StackValue>> allReducedParamSVs = Replicator.ComputeAllReducedParams(formalParams, replicationInstructions, runtimeCore);
-
             
             //@TODO(Luke): Need to add type statistics checks to the below if it is an array to stop int[] matching char[]
             
             //Now test the reduced Params over all of the available end points
             StackValue thisptr = stackFrame.ThisPtr;
-            bool isInstance = thisptr.IsPointer && thisptr.opdata != Constants.kInvalidIndex;
-            bool isGlobal = thisptr.IsPointer && thisptr.opdata == Constants.kInvalidIndex;
+            bool isInstance = thisptr.IsPointer && thisptr.Pointer!= Constants.kInvalidIndex;
+            bool isGlobal = thisptr.IsPointer && thisptr.Pointer == Constants.kInvalidIndex;
                                   
             foreach (FunctionEndPoint fep in FunctionEndPoints)
             {
                 var proc = fep.procedureNode;
-
-
-
 
                 // Member functions are overloaded with thisptr as the first
                 // parameter, so if member function replicates on the left hand
@@ -163,23 +153,22 @@ namespace ProtoCore
 
                 if (typesOK)
                     ret.Add(fep);
-
             }
 
             return ret;
         }
 
         /// <summary>
-        /// Get a dictionary of the function end points that are type compatible
+        /// Returns a dictionary of the function end points that are type compatible
         /// with the costs of the associated conversions
         /// </summary>
         /// <param name="context"></param>
         /// <param name="formalParams"></param>
         /// <param name="replicationInstructions"></param>
         /// <returns></returns>
-        public Dictionary<FunctionEndPoint, int> GetConversionDistances(ProtoCore.Runtime.Context context,
+        public Dictionary<FunctionEndPoint, int> GetConversionDistances(Runtime.Context context,
             List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, 
-            ProtoCore.DSASM.ClassTable classTable, RuntimeCore runtimeCore, bool allowArrayPromotion = false)
+            ClassTable classTable, RuntimeCore runtimeCore, bool allowArrayPromotion = false)
         {
             Dictionary<FunctionEndPoint, int> ret = new Dictionary<FunctionEndPoint, int>();
 
@@ -191,7 +180,7 @@ namespace ProtoCore
             {
                 int distance = fep.GetConversionDistance(reducedParamSVs, classTable, allowArrayPromotion, runtimeCore);
                 if (distance != 
-                    (int)ProcedureDistance.kInvalidDistance)
+                    (int)ProcedureDistance.InvalidDistance)
                     ret.Add(fep, distance);
             }
 
@@ -204,7 +193,7 @@ namespace ProtoCore
             for (int i = 0; i < reducedSVs.Count; i++)
             {
                 Type typ = fep.FormalParams[i];
-                if (typ.UID == (int)ProtoCore.PrimitiveType.kInvalidType)
+                if (typ.UID == (int)ProtoCore.PrimitiveType.InvalidType)
                     return true;
 
                 if (!typ.IsIndexable)
@@ -238,7 +227,7 @@ namespace ProtoCore
                 {
                     //This was an empty array
                     Validity.Assert(cn == null, "If it was an empty array, there shouldn't be a type node");
-                    cn = runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.kTypeNull];
+                    cn = runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.Null];
                 }
                 else if (arrayTypes.Count == 1)
                 {
@@ -267,8 +256,8 @@ namespace ProtoCore
 
 
                 bool isNotExactTypeMatch = cn != argTypeNode;
-                bool argumentsNotNull = cn != runtimeCore.DSExecutable.classTable.ClassNodes[(int) PrimitiveType.kTypeNull];
-                bool recievingTypeNotAVar = argTypeNode != runtimeCore.DSExecutable.classTable.ClassNodes[(int) PrimitiveType.kTypeVar];
+                bool argumentsNotNull = cn != runtimeCore.DSExecutable.classTable.ClassNodes[(int) PrimitiveType.Null];
+                bool recievingTypeNotAVar = argTypeNode != runtimeCore.DSExecutable.classTable.ClassNodes[(int) PrimitiveType.Var];
                 bool isNotConvertible = !cn.ConvertibleTo(typ.UID);
                 
                 //bool isCalleeVar = cn == core.classTable.list[(int) PrimitiveType.kTypeVar];

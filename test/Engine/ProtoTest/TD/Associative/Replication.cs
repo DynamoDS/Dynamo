@@ -24,15 +24,15 @@ list6 = list2 / list1; // { 5, 2, 0, 3 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1456568 - Sprint 16 : Rev 982 : Replication does not work on operators ");
             List<Object> _list3 = new List<Object> { 6, 12, 10, 8 };
-            Assert.IsTrue(mirror.CompareArrays("list3", _list3, typeof(System.Int64)));
+            thisTest.Verify("list3", _list3);
             List<Object> _list4 = new List<Object> { -4, -4, 4, -4 }
     ;
-            Assert.IsTrue(mirror.CompareArrays("list4", _list4, typeof(System.Int64)));
+            thisTest.Verify("list4", _list4);
             List<Object> _list5 = new List<Object> { 5, 32, 21, 12 }
     ;
-            Assert.IsTrue(mirror.CompareArrays("list5", _list5, typeof(System.Int64)));
+            thisTest.Verify("list5", _list5);
             List<Object> _list6 = new List<Object> { 5, 2, 0, 3 };
-            Assert.IsTrue(mirror.CompareArrays("list6", _list6, typeof(System.Int64)));
+            thisTest.Verify("list6", _list6);
         }
 
         [Test]
@@ -109,21 +109,21 @@ list8 = list9 || list6; // { true, false, true }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list3 = new List<Object> { false, true, false, true, true }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list3", _list3, typeof(System.Boolean)));
+            thisTest.Verify("list3", _list3);
             List<Object> _list4 = new List<Object> { true, false, false, false, false }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list4", _list4, typeof(System.Boolean)));
+            thisTest.Verify("list4", _list4);
             List<Object> _list5 = new List<Object> { false, true, true, true, true }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list5", _list5, typeof(System.Boolean)));
+            thisTest.Verify("list5", _list5);
             List<Object> _list6 = new List<Object> { true, false, true, false, false }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list6", _list6, typeof(System.Boolean)));
+            thisTest.Verify("list6", _list6);
             List<Object> _list7 = new List<Object> { false, false, true }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list7", _list7, typeof(System.Boolean)));
+            thisTest.Verify("list7", _list7);
             List<Object> _list8 = new List<Object> { true, false, true };
-            Assert.IsTrue(mirror.CompareArrays("list8", _list8, typeof(System.Boolean)));
+            thisTest.Verify("list8", _list8);
         }
 
         [Test]
@@ -143,22 +143,22 @@ list8 = list4 || list6; // { true, false, true, false, false }
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list3 = new List<Object> { false, true, false, true, true }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list3", _list3, typeof(System.Boolean)));
+            thisTest.Verify("list3", _list3);
             List<Object> _list4 = new List<Object> { true, false, false, false, false }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list4", _list4, typeof(System.Boolean)));
+            thisTest.Verify("list4", _list4);
             List<Object> _list5 = new List<Object> { false, true, true, true, true }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list5", _list5, typeof(System.Boolean)));
+            thisTest.Verify("list5", _list5);
             List<Object> _list6 = new List<Object> { true, false, true, false, false }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list6", _list6, typeof(System.Boolean)));
+            thisTest.Verify("list6", _list6);
             List<Object> _list7 = new List<Object> { false, true, false, true, true }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list7", _list7, typeof(System.Boolean)));
+            thisTest.Verify("list7", _list7);
             List<Object> _list8 = new List<Object> { true, false, true, false, false }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list8", _list8, typeof(System.Boolean)));
+            thisTest.Verify("list8", _list8);
         }
 
         [Test]
@@ -171,7 +171,7 @@ list2 = { 4, 1, 6, 3 };
 list3 = (list1 > 1) && (list2 > list1) || (list2 < 5); // { true, true, false , true }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list3 = new List<Object> { true, true, false, true };
-            Assert.IsTrue(mirror.CompareArrays("list3", _list3, typeof(System.Boolean)));
+            thisTest.Verify("list3", _list3);
         }
 
         [Test]
@@ -196,39 +196,39 @@ list13 = false || list2; // { true, true, false, false, false }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { true, true, false, false, false }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list2", _list2, typeof(System.Boolean)));
+            thisTest.Verify("list2", _list2);
             List<Object> _list3 = new List<Object> { false, false, false, true, true }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list3", _list3, typeof(System.Boolean)));
+            thisTest.Verify("list3", _list3);
             List<Object> _list4 = new List<Object> { true, true, true, false, false }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list4", _list4, typeof(System.Boolean)));
+            thisTest.Verify("list4", _list4);
             List<Object> _list5 = new List<Object> { false, false, true, true, true }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list5", _list5, typeof(System.Boolean)));
+            thisTest.Verify("list5", _list5);
             List<Object> _list6 = new List<Object> { false, false, false, true, true }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list6", _list6, typeof(System.Boolean)));
+            thisTest.Verify("list6", _list6);
             List<Object> _list7 = new List<Object> { true, true, false, false, false }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list7", _list7, typeof(System.Boolean)));
+            thisTest.Verify("list7", _list7);
             List<Object> _list8 = new List<Object> { false, false, true, true, true }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list8", _list8, typeof(System.Boolean)));
+            thisTest.Verify("list8", _list8);
             List<Object> _list9 = new List<Object> { true, true, true, false, false }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list9", _list9, typeof(System.Boolean)));
+            thisTest.Verify("list9", _list9);
             List<Object> _list10 = new List<Object> { true, true, false, false, false }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list10", _list10, typeof(System.Boolean)));
+            thisTest.Verify("list10", _list10);
             List<Object> _list11 = new List<Object> { false, false, false, false, false }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list11", _list11, typeof(System.Boolean)));
+            thisTest.Verify("list11", _list11);
             List<Object> _list12 = new List<Object> { true, true, true, true, true }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list12", _list12, typeof(System.Boolean)));
+            thisTest.Verify("list12", _list12);
             List<Object> _list13 = new List<Object> { true, true, false, false, false };
-            Assert.IsTrue(mirror.CompareArrays("list13", _list13, typeof(System.Boolean)));
+            thisTest.Verify("list13", _list13);
         }
 
         [Test]
@@ -458,7 +458,7 @@ list2 = GetPointIndex(Point_1D.ValueCtor(list1)); // { 1, 2, 3, 4, 5, 6 }
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { 1, 2, 3, 4, 5, 6 }
 ;
-            Assert.IsTrue(mirror.CompareArrays("list2", _list2, typeof(System.Int64)));
+            thisTest.Verify("list2", _list2);
         }
 
         [Test]
@@ -535,7 +535,7 @@ i = Integer.ValueCtor(2);
 m = i.Mul(list, i); // { 16, 20, 28 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _m = new List<Object> { 16, 20, 28 };
-            Assert.IsTrue(mirror.CompareArrays("m", _m, typeof(System.Int64)));
+            thisTest.Verify("m", _m);
         }
 
         [Test]
@@ -559,7 +559,7 @@ i = Integer.ValueCtor(2);
 m = i.Mul(list1, list2); // { 8, 20 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _m = new List<Object> { 8, 20 };
-            Assert.IsTrue(mirror.CompareArrays("m", _m, typeof(System.Int64)));
+            thisTest.Verify("m", _m);
         }
 
         [Ignore]
@@ -575,7 +575,7 @@ list3 = m.Div(list1, list2);  // { { 1, 2, 3 }, { 4, 5, 6 } }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             // List<List<Object>> _list3 = new List<List<Object>>() { { 1, 2, 3 }, { 4, 5, 6 } }
-            // Assert.IsTrue(mirror.CompareArrays("list3", _list3, typeof(System.Int64)));
+            // thisTest.Verify("list3", _list3);
         }
 
         [Test]
@@ -626,7 +626,7 @@ m = DummyMath.ValueCtor(4);
 list4 = m.Mul(list1, list2, list3); // { 252, 264, 276, 288, 300, 312, 324, 336, 348, 360 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list4 = new List<Object> { 252, 264, 276, 288, 300, 312, 324, 336, 348, 360 };
-            Assert.IsTrue(mirror.CompareArrays("list4", _list4, typeof(System.Int64)));
+            thisTest.Verify("list4", _list4);
         }
 
         [Test]
@@ -658,7 +658,7 @@ m = DummyMath.ValueCtor(10);
 list2 = m.Mul(m.Mul(list1));  // { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 };
-            Assert.IsTrue(mirror.CompareArrays("list2", _list2, typeof(System.Int64)));
+            thisTest.Verify("list2", _list2);
         }
 
         [Test]
@@ -677,7 +677,7 @@ m = DummyMath.ValueCtor(10);
 list2 = m.Mul(foo(list1));  // { 10, 40, 90, 160, 250, 360, 490, 640, 810, 1000 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { 10, 40, 90, 160, 250, 360, 490, 640, 810, 1000 };
-            Assert.IsTrue(mirror.CompareArrays("list2", _list2, typeof(System.Int64)));
+            thisTest.Verify("list2", _list2);
         }
 
         [Test]
@@ -696,7 +696,7 @@ m = DummyMath.ValueCtor(10);
 list2 = foo(m.Mul(list1));  // { 100, 400, 900, 1600, 2500, 3600, 4900, 6400, 8100, 10000 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { 100, 400, 900, 1600, 2500, 3600, 4900, 6400, 8100, 10000 };
-            Assert.IsTrue(mirror.CompareArrays("list2", _list2, typeof(System.Int64)));
+            thisTest.Verify("list2", _list2);
         }
 
         [Test]
@@ -711,7 +711,7 @@ m = DummyMath.ValueCtor(10);
 list2 = m.Mul(list1);  // { { 10, 20, 30 }, { 40, 50, 60 }, { 70, 80, 90 } }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             // List<List<Object>> _list2 = new List<List<Object>>() { { 10, 20, 30 }, { 40, 50, 60 }, { 70, 80, 90 } };
-            // Assert.IsTrue(mirror.CompareArrays("list2", _list2, typeof(System.Int64)));
+            // thisTest.Verify("list2", _list2);
         }
 
         [Test]
@@ -726,7 +726,7 @@ m = DummyMath.ValueCtor(10.0);
 list2 = m.Mul(list1);  // { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
-            Assert.IsTrue(mirror.CompareArrays("list2", _list2, typeof(System.Int64)));
+            thisTest.Verify("list2", _list2);
         }
 
         [Test]
@@ -741,7 +741,7 @@ m = DummyMath.ValueCtor(5);
 list2 = m.Mul(list1, 12, 17); // {300,305,310,315,320,325,330,335,340,345}";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { 300, 305, 310, 315, 320, 325, 330, 335, 340, 345 };
-            Assert.IsTrue(mirror.CompareArrays("list2", _list2, typeof(System.Int64)));
+            thisTest.Verify("list2", _list2);
         }
 
         [Test]
@@ -798,7 +798,7 @@ list = 	{
 list2 = Square(list); // { 4, 9, 16, 25 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { 4, 9, 16, 25 };
-            Assert.IsTrue(mirror.CompareArrays("list2", _list2, typeof(System.Int64)));
+            thisTest.Verify("list2", _list2);
         }
 
         [Test]
@@ -859,7 +859,7 @@ list2 = {
 list3 = Sum(list1, list2, 10); // { 15, 21, 27 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list3 = new List<Object> { 15, 21, 27 };
-            Assert.IsTrue(mirror.CompareArrays("list3", _list3, typeof(System.Int64)));
+            thisTest.Verify("list3", _list3);
         }
 
         [Test]
@@ -886,7 +886,7 @@ list2 = {
 list3 = Sum(list1, list2, Integer.ValueCtor(10)); // { 15, 21, 27 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list3 = new List<Object> { 15, 21, 27 };
-            Assert.IsTrue(mirror.CompareArrays("list3", _list3, typeof(System.Int64)));
+            thisTest.Verify("list3", _list3);
         }
 
         [Test]
@@ -943,8 +943,8 @@ y = list3[1];";
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             List<Object> _list1 = new List<Object>() { 1, 4, 9 };
             List<Object> _list2 = new List<Object>() { 20, 30, 42 };
-            Assert.IsTrue(mirror.CompareArrays("x", _list1, typeof(System.Int64)));
-            Assert.IsTrue(mirror.CompareArrays("y", _list2, typeof(System.Int64)));
+            thisTest.Verify("x", _list1);
+            thisTest.Verify("y", _list2);
         }
 
         [Test]
@@ -962,7 +962,7 @@ list3 = {1, 4, 7, 2, 5, 8, 3 };
 list4 = foo(list1, list2, list3); // { 9, 14, 17, 26, 25, 22, 25 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list4 = new List<Object> { 9, 14, 17, 26, 25, 22, 25 };
-            Assert.IsTrue(mirror.CompareArrays("list4", _list4, typeof(System.Int64)));
+            thisTest.Verify("list4", _list4);
         }
 
         [Test]
@@ -998,7 +998,7 @@ list3 = {1, 4, 7, 2, 5, 8, 3, 6, 9, 0 };
 list4 = foo(list1, list2, list3); // { 9, 14, 17, 26, 25, 22, 25, 18, 9, 10 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list4 = new List<Object> { 9, 14, 17, 26, 25, 22, 25, 18, 9, 10 };
-            Assert.IsTrue(mirror.CompareArrays("list4", _list4, typeof(System.Int64)));
+            thisTest.Verify("list4", _list4);
         }
 
         [Test]
@@ -1016,7 +1016,7 @@ list3 = {1, 4, 7, 2, 5, 8, 3, 6, 9, 0 };
 list4 = foo(list1, list2, list3, 26, 43); // { 27, -43, -115, 19, -57, -135, -7, -89, -173, 53 }  ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list4 = new List<Object> { 27, -43, -115, 19, -57, -135, -7, -89, -173, 53 };
-            Assert.IsTrue(mirror.CompareArrays("list4", _list4, typeof(System.Int64)));
+            thisTest.Verify("list4", _list4);
         }
 
         [Test]
@@ -1032,7 +1032,7 @@ list1 = { 1, 2, 3, 4, 5 };
 list3 = foo(foo(foo(list1))); // { 1, 256, 6561, 65536, 390625 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list3 = new List<Object> { 1, 256, 6561, 65536, 390625 };
-            Assert.IsTrue(mirror.CompareArrays("list3", _list3, typeof(System.Int64)));
+            thisTest.Verify("list3", _list3);
         }
 
         [Test]
@@ -1049,7 +1049,7 @@ list2 = foo(list1); // { { 1, 4, 9 }, { 16, 25, 36 }, { 49, 64, 81 } }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             // List<List<Object>> _list2 = new List<List<Object>>() { { 1, 4, 9 }, { 16, 25, 36 }, { 49, 64, 81 } }
-            //Assert.IsTrue(mirror.CompareArrays("list2", _list2, typeof(System.Int64)));
+            //thisTest.Verify("list2", _list2);
         }
 
         [Test]
@@ -1065,7 +1065,7 @@ list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 list2 = foo(list1);  // { 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 };
-            Assert.IsTrue(mirror.CompareArrays("list2", _list2, typeof(System.Int64)));
+            thisTest.Verify("list2", _list2);
         }
 
         [Test]
@@ -1081,7 +1081,7 @@ list1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 list2 = foo(list1, 34, 18); // { 16, 50, 84, 118, 152, 186, 220, 254, 288, 322 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { 16, 50, 84, 118, 152, 186, 220, 254, 288, 322 };
-            Assert.IsTrue(mirror.CompareArrays("list2", _list2, typeof(System.Int64)));
+            thisTest.Verify("list2", _list2);
         }
 
         [Test]
@@ -1216,7 +1216,7 @@ list2 = !list1; // { false, false, true, true, false, true }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             List<Object> _list2 = new List<Object> { false, false, true, true, false, true };
-            Assert.IsTrue(mirror.CompareArrays("list2", _list2, typeof(System.Boolean)));
+            thisTest.Verify("list2", _list2);
         }
 
         [Test]
@@ -1224,18 +1224,19 @@ list2 = !list1; // { false, false, true, true, false, true }
         public void T50_Replication_Imperative_Scope()
         {
             string code = @"
-c;
-[Imperative]
-{
 	def even : int (a : int) 
 	{	
+return =[Imperative]{
 		if(( a % 2 ) > 0 )
 			return = a + 1;		
 		else 
 			return = a;
-		
-		return = 0;
+}
 	}
+c;
+[Imperative]
+{
+
     x = { 1, 2, 3 };
 	c = even(x);
 	
@@ -1260,10 +1261,8 @@ c;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            ProtoCore.Lang.Obj o = mirror.GetValue("x");
-            Assert.IsTrue((Int64)o.Payload == 5);
-            ProtoCore.Lang.Obj o2 = mirror.GetValue("test");
-            Assert.IsTrue((Int64)o2.Payload == 10);
+            thisTest.Verify("x",5);
+            thisTest.Verify("test",10);
         }
 
         [Test]
@@ -1279,14 +1278,8 @@ c;
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            ProtoCore.Lang.Obj o = mirror.GetValue("foo");
-            ProtoCore.DSASM.Mirror.DsasmArray a = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
-            Assert.IsTrue(a.members.Length == 1);
-            Assert.IsTrue((Int64)a.members[0].Payload == 5);
-            ProtoCore.Lang.Obj o2 = mirror.GetValue("test");
-            ProtoCore.DSASM.Mirror.DsasmArray a2 = (ProtoCore.DSASM.Mirror.DsasmArray)o2.Payload;
-            Assert.IsTrue(a2.members.Length == 1);
-            Assert.IsTrue((Int64)a2.members[0].Payload == 10);
+            thisTest.Verify("foo", new [] { 5});
+            thisTest.Verify("test", new [] { 10});
         }
 
         [Test]
@@ -1296,21 +1289,17 @@ c;
             String code =
 @"
 test;
-[Associative]
-{
     def mult : int( s : int )	
 	{
 		return = s * 2;
 	}
+[Associative]
+{
     test = mult({5});
-    
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            ProtoCore.Lang.Obj o = mirror.GetValue("test");
-            ProtoCore.DSASM.Mirror.DsasmArray a = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
-            Assert.IsTrue(a.members.Length == 1);
-            Assert.IsTrue((Int64)a.members[0].Payload == 10);
+            thisTest.Verify("test", new object[] {10});
         }
 
         [Test]
@@ -1331,7 +1320,7 @@ a = {12.0,13.0,14.0};
 x = f(a);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((double)mirror.GetValue("x").Payload == 14);
+            thisTest.Verify("x", 14);
         }
 
         [Test]
@@ -1352,9 +1341,9 @@ x2 = t[1];
 x3 = t[2];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((double)mirror.GetValue("x1").Payload == 12);
-            Assert.IsTrue((double)mirror.GetValue("x2").Payload == 13);
-            Assert.IsTrue((double)mirror.GetValue("x3").Payload == 14);
+            thisTest.Verify("x1", 12);
+            thisTest.Verify("x2", 13);
+            thisTest.Verify("x3", 14);
         }
 
         [Test]
@@ -1372,7 +1361,7 @@ x = f(list);
 y = x[0] + x[1];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 32);
+            thisTest.Verify("y", 32);
         }
 
         [Test]
@@ -1384,8 +1373,7 @@ y = x[0] + x[1];
 a = fun();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Double)o.Payload == 4);
+            thisTest.Verify("a",4);
         }
 
         [Test]
@@ -1400,8 +1388,7 @@ a;
 a = fun();
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Double)o.Payload == 4);
+            thisTest.Verify("a",4);
         }
 
         [Test]
@@ -1413,8 +1400,7 @@ a = fun();
 a = fun(1.0);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue((Double)o.Payload == 4);
+            thisTest.Verify("a",4);
         }
 
         [Test]
@@ -1512,9 +1498,7 @@ a = fun({{1.0, 2.0, 3.0, 4.0}, {5.0, 6.0}});
 a = fun(1.0, 2.0);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Obj o = mirror.GetValue("a");
-            Assert.IsTrue(!o.Type.IsIndexable);
-            Assert.IsTrue((Double)o.Payload == 4);
+            thisTest.Verify("a", 4);
         }
 
         [Test]
@@ -1955,18 +1939,18 @@ xdata = { 1.5, 2 };
             String code =
 @"
 y;
+def foo : int ( a : int, b : int )
+{
+    return = a + b;
+}
 [Associative]
 {
-    def foo : int ( a : int, b : int )
-    {
-        return = a + b;
-    }
     x1 = { 1, 2, 3 };
     x2 = { 1, 2, 3 };
     y = foo ( x1, x2 );
 }
                             ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2, 4, 6 };
             thisTest.Verify("y", v1);
         }
@@ -1986,8 +1970,7 @@ two = foo (arr, arr);
 t1 = two[0];
 t2 = two[1];
 ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
+            thisTest.RunScriptSource(code);
             thisTest.Verify("t1", 5.0);
             thisTest.Verify("t2", 3.0);
         }
@@ -1999,18 +1982,18 @@ t2 = two[1];
             String code =
 @"
 y;
+def foo : int ( a : int, b : int )
+{
+    return = a + b;
+}
 [Associative]
 {
-    def foo : int ( a : int, b : int )
-    {
-        return = a + b;
-    }
     x1 = { 1 };
     x2 = { 1, 2, 3 };
     y = foo ( x1, x2 );
 }
                             ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2 };
             thisTest.Verify("y", v1);
         }
@@ -2022,18 +2005,18 @@ y;
             String code =
 @"
 y;
+def foo : int ( a : int, b : int )
+{
+    return = a + b;
+}
 [Associative]
 {
-    def foo : int ( a : int, b : int )
-    {
-        return = a + b;
-    }
     x1 = { 1, 2.5, null };
     x2 = { 1 };
     y = foo ( x1, x2 );
 }
                             ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2 };
             thisTest.Verify("y", v1);
         }
@@ -2045,18 +2028,18 @@ y;
             String code =
 @"
 y;
+def foo : int ( a : int, b : int )
+{
+    return = a + b;
+}
 [Associative]
 {
-    def foo : int ( a : int, b : int )
-    {
-        return = a + b;
-    }
     x1 = { 1, 2.5, null };
     x2 =  1 ;
     y = foo ( x1, x2 );
 }
                             ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2, 4, null };
             thisTest.Verify("y", v1);
         }
@@ -2068,18 +2051,17 @@ y;
             String code =
 @"
 y;
+def foo : int ( a : int, b : int )
+{
+    return = a + b;
+}
 [Associative]
 {
-    def foo : int ( a : int, b : int )
-    {
-        return = a + b;
-    }
     x1 = 0;
     x2 =  { 1, 2.5, null };
     y = foo ( x1, x2 );
-}
-                            ";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+} ";
+            thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1, 3, null };
             thisTest.Verify("y", v1);
         }
@@ -2258,9 +2240,7 @@ z1 = { 0, 1 };
 pts = DummyPoint.ByCoordinates(x1, y1, z1);
 c1 = Count ( pts );
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object n1 = null;
+            thisTest.RunScriptSource(code);
             thisTest.Verify("c1", 1); // this depends on new replication logic : please check
         }
 
@@ -2296,8 +2276,7 @@ y1 = 3;
 pts = DummyPoint.ByCoordinates(x1, y1);
 c1 = Count ( pts );
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("c1", 3); // this depends on new replication logic : please check
         }
 
@@ -2314,8 +2293,7 @@ list2 = { { 1, 2, 3, 4 }, { 1, 2, 3, 4 } };
 list3 = Point_2D.ValueCtor(list1, list2);
 list2_0_0 = list3[0][0].GetValue(); 
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             thisTest.Verify("list2_0_0", 1);
         }
@@ -2362,7 +2340,7 @@ yLowFrequency = DummyMath.Sin(-5..185..#yCount)*lowFrequencyAmpitude;
 sinRange = {0.0, 10, 20, 30, 40 ,50, 60 ,70 ,80 , 90 ,100, 110 ,120, 130, 140, 150, 160, 170};
 xHighFrequency = DummyMath.Sin(sinRange) * highFrequencyAmpitude;
 y = Count(xHighFrequency);";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("y", 18);
         }
 
@@ -2373,8 +2351,7 @@ y = Count(xHighFrequency);";
             String code =
 @"def fun : double(arg: double) { return = 4.0; }
 a = fun({{1.0}, {2.0}});";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             //Assert.Fail("1467075 - Sprint23 : rev 2660 : replication with nested array is not working as expected");
             thisTest.Verify("a", new Object[] { new Object[] { 4.0 }, new Object[] { 4.0 } });
         }
@@ -2397,10 +2374,8 @@ a = fun({{1.0}, {2.0}});";
     d = foo ( c ) ;
 }";
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4092
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string err = "MAGN-4092 Replication should not be supported in Imperative scope";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
-
+            thisTest.RunScriptSource(code, err);
             thisTest.Verify("d", null);
         }
 
@@ -2411,18 +2386,17 @@ a = fun({{1.0}, {2.0}});";
             String code =
 @"
 d;
+def foo( a )
+{
+    a = a + 1;
+    return = a;
+}
 [Associative]
 {
-    def foo( a )
-    {
-        a = a + 1;
-        return = a;
-    }
     c = { 1,2,3 };
     d = foo ( c ) ;
 }";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("d", new Object[] { 2, 3, 4 });
         }
 
@@ -2437,8 +2411,7 @@ return = 0;
 }
 arr1 = {1,2,3,4};
 sum1 = foo2(arr1);";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("sum1", new Object[] { 0.0, 0.0, 0.0, 0.0 });
         }
 
@@ -2459,72 +2432,9 @@ arr1 = {1,2.0,3,4};
 sum1 = foo2(arr1);
 arr2 = {1,2.0,3,4};
 sum2 = foo(arr1);";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("sum1", new Object[] { 2, 3.0, 4, 5 });
             thisTest.Verify("sum2", new Object[] { 2.0, 3.0, 4.0, 5.0 });
-        }
-
-        [Test]
-        [Category("Replication")]
-        [Category("SmokeTest")]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void T65_Defect_1467125_Geo_Replication()
-        {
-            string code = @"
-import(""ProtoGeometry.dll"");
-WCS = CoordinateSystem.Identity();
-// create initialPoints
-diafac1 = 1;
-h1 = 15;
-hL1=10;
-pt0 = Point.ByCartesianCoordinates(WCS,-5*diafac1,-5*diafac1,0);
-pt1 = Point.ByCartesianCoordinates(WCS,5*diafac1,-5*diafac1,0);
-pt2 = Point.ByCartesianCoordinates(WCS,5*diafac1,5*diafac1,0);
-pt3 = Point.ByCartesianCoordinates(WCS,-5*diafac1,5*diafac1,0);
-pt4 = Point.ByCartesianCoordinates(WCS,-5*diafac1,-5*diafac1,hL1);
-pt5 = Point.ByCartesianCoordinates(WCS,5*diafac1,-5*diafac1,hL1);
-pt6 = Point.ByCartesianCoordinates(WCS,5*diafac1,5*diafac1,hL1);
-pt7 = Point.ByCartesianCoordinates(WCS,-5*diafac1,5*diafac1,hL1);
-pt8 = Point.ByCartesianCoordinates(WCS,-15,-15,h1);
-pt9 = Point.ByCartesianCoordinates(WCS,15,-15,h1);
-pt10= Point.ByCartesianCoordinates(WCS,15,15,h1);
-pt11 = Point.ByCartesianCoordinates(WCS,-15,15,h1);
-pointGroup = {pt0,pt1,pt2,pt3,pt4,pt5,pt6,pt7,pt8,pt9,pt10,pt11};
-facesIndices = {{0,1,5,4},{1,2,6,5},{2,3,7,6},{3,0,4,7},{4,5,9,8},{5,6,10,9},{6,7,11,10},{7,4,8,11}};
-groupOfPointGroups =  { { pt0, pt1, pt2 }, { pt3, pt4, pt5 }, { pt6, pt7, pt8 }, { pt9, pt10, pt11 } };
-simplePointGroup = {pt5, pt6, pt10, pt9};
-// note: Polygon.ByVertices expects a 1D array of points.. so let`s test this 
-controlPolyA = Polygon.ByVertices({pt0, pt1, pt5, pt4}); // OK with 1D collection
-controlPolyB = Polygon.ByVertices(simplePointGroup); // OK with 1D collection
-	controlPolyC = Polygon.ByVertices({{pt1, pt2, pt6, pt5},{pt2, pt3, pt7, pt6}}); // not OK with literal 2D collection
-														// get compiler error `unable to locate mamaged object for given dsObject`
-	controlPolyD = Polygon.ByVertices(pointGroup[3]);    // not OK with a 1D subcollection a a member indexed from a 2D collection
-														// controlPolyD = null
-	controlPolyE = Polygon.ByVertices(pointGroup[facesIndices]); // not OK with an array of indices
-																// controlPolyE = null
-controlPolyF = Polygon.ByVertices(groupOfPointGroups);
-// result = foo({ controlPolyA, controlPolyB, controlPolyC, controlPolyD, controlPolyE });
-/*def foo(x:Polygon)
-{
-	if (x!= null)
-	{
-	    return = true;
-	}
-	else return = false;
-}*/
-//a simple case
-c=2 * {{1},{2}};";
-            string error = "";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //Object[] v1 = new Object[] {true,true,true,false,false};
-            Object v1 = null;
-            Assert.IsTrue(mirror.GetValue("controlPolyA").Payload != v1);
-            Assert.IsTrue(mirror.GetValue("controlPolyB").Payload != v1);
-            Assert.IsTrue(mirror.GetValue("controlPolyC").Payload != v1);
-            Assert.IsTrue(mirror.GetValue("controlPolyD").Payload == v1);
-            Assert.IsTrue(mirror.GetValue("controlPolyE").Payload != v1);
-            //thisTest.Verify("controlPolyA",v2);
         }
 
         [Test]
@@ -2545,10 +2455,8 @@ rab = foo(a, b);
 rac = foo(a, c);
 rad = foo(a, d);
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             string err = "1467125 - Sprint 24 - Rev 2877 replication does not work with higher ranks , throws error Method resolution failure";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
-
+            thisTest.RunScriptSource(code, err);
             Object[] v1 = new Object[] { 10, 11 };
             Object[] v2 = new Object[] { 20, 22 };
             Object[] v3 = new Object[] { v1, v2 };
@@ -2646,7 +2554,6 @@ rad = foo(a, d);
 
         [Test]
         [Category("Replication")]
-        [Category("Failure")]
         public void T66_Defect_1467198_Inline_Condition_With_Jagged_Array()
         {
             String code =
@@ -2833,12 +2740,12 @@ test3 = a1.X[0][0];
         {
             string code = @"
 x1;x2;x3;
-[Imperative]
-{
     def foo()
     {
         return = (0..9);
     }
+[Imperative]
+{
     x1 = ({1,2,3})[1];
     x2 = (0..9)[3];
     x3 = (foo())[4];
@@ -3457,31 +3364,20 @@ y = sum(a, b);
             String errmsg = "";//DNL-1467315 rev 3830 : System.NotImplementedException : only <1> and <2> are supported as replication guides";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             // verification 
-            thisTest.Verify("x", new Object[] { new Object[] { new Object[] { new Object[] { 5, 6 }, new Object[] { 5, 6 } }, new Object[] { new Object[] { 6, 7 }, new Object[] { 6, 7 } } }, new Object[] { new Object[] { new Object[] { 5, 6 }, new Object[] { 5, 6 } }, new Object[] { new Object[] { 6, 7 }, new Object[] { 6, 7 } } } });
+            thisTest.Verify("x", new Object[] 
+            {
+                new Object[] 
+                {
+                    new Object[] { new Object[] { 5, 6 }, new Object[] { 6, 7 } },
+                    new Object[] { new Object[] { 5, 6 }, new Object[] { 6, 7 } }
+                },
+                new Object[] 
+                {
+                    new Object[] { new Object[] { 5, 6 }, new Object[] { 6, 7 } },
+                    new Object[] { new Object[] { 5, 6 }, new Object[] { 6, 7 } }
+                }
+            });
             thisTest.Verify("y", new Object[] { new Object[] { 5, 7 }, new Object[] { 5, 7 } });
-        }
-
-        [Test]
-        [Category("Replication")]
-        public void T75_Defect_1467282_3()
-        {
-            String code =
-@"
-def sum ( a : int, b : int)
-{
-    return = a + b;
-}
-a = { {5, 6}, {5,6} };
-b = { {0, 1}, {0,1} };
-test = sum(a<1><2>, b<3><4> );
-//expected :   test = { { { { 5, 6 }, { 5, 6 } }, { { 6, 7 }, { 6, 7 } } }, { { { 5, 6 }, { 5, 6 } }, { { 6, 7 }, { 6, 7 } } } }
-//recieved :   System.NotImplemented exception
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";//DNL-1467315 rev 3830 : System.NotImplementedException : only <1> and <2> are supported as replication guides";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            // verification 
-            thisTest.Verify("test", new Object[] { new Object[] { new Object[] { new Object[] { 5, 6 }, new Object[] { 5, 6 } }, new Object[] { new Object[] { 6, 7 }, new Object[] { 6, 7 } } }, new Object[] { new Object[] { new Object[] { 5, 6 }, new Object[] { 5, 6 } }, new Object[] { new Object[] { 6, 7 }, new Object[] { 6, 7 } } } });
         }
 
         [Test]
@@ -4972,7 +4868,6 @@ a = { 5, 6, 7, 8 };
 
         [Test]
         [Category("Replication")]
-        [Category("Failure")]
         public void T92_add()
         {
             String code =
@@ -4985,28 +4880,6 @@ c = foo(a,b);
             string errmsg = "MAGN-1673 Sprint 27 - Rev4014 - function argument with jagged array - its expected to replicate for the attached code";
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("c", new object[] { new object[] { 6, 7 }, new object[] { 9, 10 } });
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("Replication")]
-        public void T93_Defect_1467315()
-        {
-            String code =
-@"
-def foo(a : int, b : int)
-{
-    return = a + b;
-}
-a = { {5, 6}, {5,6} };
-b = { {0, 1}, {0,1} };
-y = foo(a<1><2>,b<3><4>);
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";//DNL-1467315 rev 3830 : System.NotImplementedException : only <1> and <2> are supported as replication guides";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            // verification 
-            thisTest.Verify("y", new Object[] { new Object[] { new Object[] { new Object[] { 5, 6 }, new Object[] { 5, 6 } }, new Object[] { new Object[] { 6, 7 }, new Object[] { 6, 7 } } }, new Object[] { new Object[] { new Object[] { 5, 6 }, new Object[] { 5, 6 } }, new Object[] { new Object[] { 6, 7 }, new Object[] { 6, 7 } } } });
         }
 
         [Test]

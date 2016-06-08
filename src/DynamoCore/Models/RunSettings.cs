@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-using Dynamo.Core;
+﻿using Dynamo.Core;
 
 namespace Dynamo.Models
 {
@@ -22,6 +20,9 @@ namespace Dynamo.Models
         private RunType runType;
         private bool runEnabled;
 
+        /// <summary>
+        /// Default milliseconds number for the period in periodic run.
+        /// </summary>
         public const int DefaultRunPeriod = 1000;
 
         /// <summary>
@@ -41,7 +42,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// The current RunType.
+        /// Returns or sets the current Run Type. E.g. Manual, Automatic, Periodic
         /// </summary>
         public RunType RunType
         {
@@ -76,6 +77,9 @@ namespace Dynamo.Models
 
         #region Constructors
 
+        /// <summary>
+        /// This method creates default RunSettings with DefaultRunPeriod, Manual run type and run is enabled.
+        /// </summary>
         public RunSettings()
         {
             RunPeriod = DefaultRunPeriod;
@@ -83,6 +87,11 @@ namespace Dynamo.Models
             RunEnabled = true;
         }
 
+        /// <summary>
+        /// This function creates RunSettings with specified run type and run period.
+        /// </summary>
+        /// <param name="runType">RunType</param>
+        /// <param name="period">milliseconds</param>
         public RunSettings(RunType runType, int period)
         {
             RunPeriod = period;
@@ -94,7 +103,7 @@ namespace Dynamo.Models
 
         #region Public Operational Methods
 
-        public void Reset()
+        internal void Reset()
         {
             RunEnabled = true;
             RunType = RunType.Automatic;

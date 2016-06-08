@@ -141,69 +141,6 @@
             This attribute indicates the node is obsolete
             </summary> 
         </member>
-        <member name="T:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions">
-            <summary>
-            Provides extension methods for reading XML comments from reflected members.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions.#cctor">
-            <summary>
-            Static constructor.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions.GetMemberElementName(System.Reflection.MemberInfo)">
-            <summary>
-            Returns the expected name for a member element in the XML documentation file.
-            </summary>
-            <param name="member">The reflected member.</param>
-            <returns>The name of the member element.</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions.GetXmlDocumentation(System.Reflection.MemberInfo)">
-            <summary>
-            Returns the XML documentation (summary tag) for the specified member.
-            </summary>
-            <param name="member">The reflected member.</param>
-            <returns>The contents of the summary tag for the member.</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions.GetXmlDocumentation(System.Reflection.MemberInfo,System.String)">
-            <summary>
-            Returns the XML documentation (summary tag) for the specified member.
-            </summary>
-            <param name="member">The reflected member.</param>
-            <param name="pathToXmlFile">Path to the XML documentation file.</param>
-            <returns>The contents of the summary tag for the member.</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions.GetXmlDocumentation(System.Reflection.MemberInfo,System.Xml.Linq.XDocument)">
-            <summary>
-            Returns the XML documentation (summary tag) for the specified member.
-            </summary>
-            <param name="member">The reflected member.</param>
-            <param name="xml">XML documentation.</param>
-            <returns>The contents of the summary tag for the member.</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions.GetXmlDocumentation(System.Reflection.ParameterInfo)">
-            <summary>
-            Returns the XML documentation (returns/param tag) for the specified parameter.
-            </summary>
-            <param name="parameter">The reflected parameter (or return value).</param>
-            <returns>The contents of the returns/param tag for the parameter.</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions.GetXmlDocumentation(System.Reflection.ParameterInfo,System.String)">
-            <summary>
-            Returns the XML documentation (returns/param tag) for the specified parameter.
-            </summary>
-            <param name="parameter">The reflected parameter (or return value).</param>
-            <param name="pathToXmlFile">Path to the XML documentation file.</param>
-            <returns>The contents of the returns/param tag for the parameter.</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions.GetXmlDocumentation(System.Reflection.ParameterInfo,System.Xml.Linq.XDocument)">
-            <summary>
-            Returns the XML documentation (returns/param tag) for the specified parameter.
-            </summary>
-            <param name="parameter">The reflected parameter (or return value).</param>
-            <param name="xml">XML documentation.</param>
-            <returns>The contents of the returns/param tag for the parameter.</returns>
-        </member>
         <member name="T:Autodesk.DesignScript.Interfaces.IDesignScriptEntity">
             <summary>
             This interface represents internal data model for a design script 
@@ -211,16 +148,16 @@
             a kernal specific data model that implements this or derived interface.
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IDesignScriptEntity.Owner">
-            <summary>
-            Gets user facing DesignScript object that owns this entity data.
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IDesignScriptEntity.SetOwner(System.Object)">
             <summary>
             Sets the owner of this entity for back reference.
             </summary>
             <param name="owner">Owner object</param>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IDesignScriptEntity.Owner">
+            <summary>
+            Gets user facing DesignScript object that owns this entity data.
+            </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.ITransformableEntity.Translate(System.Double,System.Double,System.Double)">
             <summary>
@@ -332,11 +269,6 @@
             </summary>
             <search>NearestPoint</search>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IGeometryEntity.ContextCoordinateSystem">
-            <summary>
-            The CoordinateSystem that this Geometry is defined in
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryEntity.DoesIntersect(Autodesk.DesignScript.Interfaces.IGeometryEntity)">
             <summary>
             Determine if another Geometry object intersects with this one
@@ -368,36 +300,20 @@
             parts.
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IGeometryEntity.BoundingBox">
-            <summary>
-            Get the BoundingBox containing the given piece of Geometry
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryEntity.IsAlmostEqualTo(Autodesk.DesignScript.Interfaces.IGeometryEntity)">
             <summary>
             Check if the two objects have the same representational geometry or numerical values
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IVectorEntity.X">
+        <member name="P:Autodesk.DesignScript.Interfaces.IGeometryEntity.ContextCoordinateSystem">
             <summary>
-            Get the X component of a Vector
+            The CoordinateSystem that this Geometry is defined in
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IVectorEntity.Y">
+        <member name="P:Autodesk.DesignScript.Interfaces.IGeometryEntity.BoundingBox">
             <summary>
-            Get the Y component of a Vector
+            Get the BoundingBox containing the given piece of Geometry
             </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IVectorEntity.Z">
-            <summary>
-            Get the Z component of a Vector
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IVectorEntity.Length">
-            <summary>
-            Get the length of the vector - otherwise known as the Euclidean norm
-            </summary>
-            <search>magnitude</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IVectorEntity.AsPoint">
             <summary>
@@ -495,20 +411,26 @@
             </summary>
             <search>rotation angle,</search>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IPointEntity.X">
+        <member name="P:Autodesk.DesignScript.Interfaces.IVectorEntity.X">
             <summary>
-            Get the X component of a Point
+            Get the X component of a Vector
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IPointEntity.Y">
+        <member name="P:Autodesk.DesignScript.Interfaces.IVectorEntity.Y">
             <summary>
-            Get the Y component of a Point
+            Get the Y component of a Vector
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IPointEntity.Z">
+        <member name="P:Autodesk.DesignScript.Interfaces.IVectorEntity.Z">
             <summary>
-            Get the Z component of a Point
+            Get the Z component of a Vector
             </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IVectorEntity.Length">
+            <summary>
+            Get the length of the vector - otherwise known as the Euclidean norm
+            </summary>
+            <search>magnitude</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IPointEntity.AsVector">
             <summary>
@@ -533,15 +455,36 @@
             Project another piece of Geometry onto this along a given direction Vector
             </summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IPointEntity.X">
+            <summary>
+            Get the X component of a Point
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IPointEntity.Y">
+            <summary>
+            Get the Y component of a Point
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IPointEntity.Z">
+            <summary>
+            Get the Z component of a Point
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IUVEntity.U">
             <summary>
             Get the U component of a UV
             </summary>
+            <search>
+            uv,uvs
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IUVEntity.V">
             <summary>
             Get the V component of a V
             </summary>
+            <search>
+            uv,uvs
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity.Inverse">
             <summary>
@@ -556,6 +499,16 @@
         <member name="M:Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity.PreMultiplyBy(Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity)">
             <summary>
             Apply the argument CoordinateSystem before this one - Result = other * this
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity.ScaleFactor">
+            <summary>
+            Returns a Vector containing the X, Y, and Z scale factors
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity.IsEqualTo(Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity)">
+            <summary>
+            Determine if two CoordinateSystems are equal
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity.IsSingular">
@@ -576,16 +529,6 @@
         <member name="P:Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity.Determinant">
             <summary>
             Obtain the Determinant of this CoordinateSystem
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity.ScaleFactor">
-            <summary>
-            Returns a Vector containing the X, Y, and Z scale factors
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity.IsEqualTo(Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity)">
-            <summary>
-            Determine if two CoordinateSystems are equal
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity.Origin">
@@ -663,16 +606,6 @@
             The fourth index
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IBoundingBoxEntity.MinPoint">
-            <summary>
-            The minimum point
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IBoundingBoxEntity.MaxPoint">
-            <summary>
-            The maximum point
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IBoundingBoxEntity.Intersection(Autodesk.DesignScript.Interfaces.IBoundingBoxEntity)">
             <summary>
             Get the intersection of two BoundingBoxes
@@ -689,11 +622,6 @@
             Determine if the BoundingBox is empty
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IBoundingBoxEntity.ContextCoordinateSystem">
-            <summary>
-            The CoordinateSystem that this BoundingBox is defined in
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IBoundingBoxEntity.Contains(Autodesk.DesignScript.Interfaces.IPointEntity)">
             <summary>
             Determine if a point is inside of the BoundingBox
@@ -707,7 +635,8 @@
             Get the BoundingBox as a Solid Cuboid
             </summary>
             <returns>A Cuboid representation of the BoundingBox</returns>
-            <search>converttosolid,bb2cube,bb2cub,bounding tosolid</search>
+            <search>converttosolid,bb2cube,bb2cub,bounding tosolid,cubes</search>
+            <weights>0.5,0.4,0.3,0.5,0.3</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IBoundingBoxEntity.ToPolySurface">
             <summary>
@@ -715,6 +644,21 @@
             </summary>
             <returns>A PolySurface representation of the BoundingBox</returns>
             <search>converttosurfaces,convert2surfaces,bbtosrfs,bbtosrfs,bounding to surfaces,bound to poly,convert2poly</search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IBoundingBoxEntity.MinPoint">
+            <summary>
+            The minimum point
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IBoundingBoxEntity.MaxPoint">
+            <summary>
+            The maximum point
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IBoundingBoxEntity.ContextCoordinateSystem">
+            <summary>
+            The CoordinateSystem that this BoundingBox is defined in
+            </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.ICurveEntity.PointAtParameter(System.Double)">
             <summary>
@@ -827,12 +771,6 @@
             <returns>The end of the domain in which the curve can be evaluated</returns>
             <search>end domain,curveend</search>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.ICurveEntity.Length">
-            <summary>
-            The total arc length of the curve
-            </summary>
-            <search>distance</search>
-        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.ICurveEntity.LengthBetweenParameters(System.Double,System.Double)">
             <summary>
             Get the arc length between two parameter points on the curve
@@ -857,36 +795,6 @@
             <returns>A new Curve with the opposite direction</returns>
             <search>flip</search>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.ICurveEntity.IsPlanar">
-            <summary>
-            Determine whether a Curve is planar or not
-            </summary>
-            <search>flat,liesinplane</search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.ICurveEntity.IsClosed">
-            <summary>
-            Determine if the Curve is closed or not
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.ICurveEntity.StartPoint">
-            <summary>
-            Get the start Point along the Curve
-            </summary>
-            <search>begin,curvestart,startpt</search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.ICurveEntity.EndPoint">
-            <summary>
-            Get the end Point along the Curve
-            </summary>
-            <search>end,curveend,endpt</search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.ICurveEntity.Normal">
-            <summary>
-            The normal to the plane where the curve is contained.  Only
-            valid for planar curves.
-            </summary>
-            <search>perpendicular</search>
-        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.ICurveEntity.Offset(System.Double)">
             <summary>
             Offset a Curve by a specified amount. Curve must be planar, and, if
@@ -894,7 +802,8 @@
             </summary>
             <param name="distance">A positive or negative distance to offset</param>
             <returns>new offsetted curves</returns>
-            <search>thicken</search>
+            <search>thicken,lines</search>
+            <weights>0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.ICurveEntity.PullOntoPlane(Autodesk.DesignScript.Interfaces.IPlaneEntity)">
             <summary>
@@ -926,21 +835,21 @@
             <returns>An Array of Curves after dividing</returns>
             <search>divide by chordlength,chord,segment,chopcurve</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.ICurveEntity.DivideByLengthFromParameter(System.Double,System.Double)">
+        <member name="M:Autodesk.DesignScript.Interfaces.ICurveEntity.SplitBySegmentLength(System.Double,System.Double)">
             <summary>
-            Divides curve into curves of given length measuring from given location
+            Divides curve into curves of given length measured from the given parameter location
             </summary>
-            <param name="length">Length of  curves after division </param>
-            <param name="parameter">Justification location for measuring from </param>
-            <returns>An Array of Curves after dividing</returns>
+            <param name="length">Length of  curves after division</param>
+            <param name="parameter">Parameter location for measuring from</param>
+            <returns>Array of Curves after dividing</returns>
             <search>divide by chordlength,chord,segment,chopcurve</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.ICurveEntity.DivideByDistanceFromParameter(System.Double,System.Double)">
+        <member name="M:Autodesk.DesignScript.Interfaces.ICurveEntity.SplitByChordLength(System.Double,System.Double)">
             <summary>
-            Divides curve into curves of given distances between start and end (chords) measuring from given location
+            Divides curve into curves of given chord length measured from given parameter location
             </summary>
-            <param name="distance">Distance between start and end of each curve after division </param>
-            <param name="parameter">Justification location for measuring from </param>
+            <param name="distance">Chord length of each curve obtained from splitting</param>
+            <param name="parameter">Parameter location for measuring from</param>
             <returns>An Array of Curves after dividing</returns>
             <search>divide by chordlength,chord,segment,chopcurve</search>
         </member>
@@ -995,7 +904,7 @@
             <returns>An Array of curves disgarding 2nd, 4th, 6th ... segments if the bool is true</returns>
             <search>rem,removeparts,remparts,cutout,trimcurv,interior,even</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.ICurveEntity.ParameterSplit(System.Double)">
+        <member name="M:Autodesk.DesignScript.Interfaces.ICurveEntity.SplitByParameter(System.Double)">
             <summary>
             Split a Curve into two pieces at the given parameter
             </summary>
@@ -1003,12 +912,12 @@
             <returns>Two Curves remaining after the split</returns>
             <search>cutinto,divide,curve2curves,cut</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.ICurveEntity.ParameterSplit(System.Double[])">
+        <member name="M:Autodesk.DesignScript.Interfaces.ICurveEntity.SplitByParameter(System.Double[])">
             <summary>
             Split a Curve into multiple pieces at the given parameters
             </summary>
             <param name="parameters">A list of parameters at which to split the curve</param>
-            <returns>The two Curves remaining after the split</returns>
+            <returns>Curves created from splitting</returns>
             <search>cutinto,divide,curve2curves,cut,cut multiple,splitmultiple</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.ICurveEntity.Join(Autodesk.DesignScript.Interfaces.ICurveEntity)">
@@ -1106,14 +1015,16 @@
             Approximate a Curve with a collection of Arcs and Lines
             </summary>
             <returns>An Array of Arcs and Lines approximating the curve</returns>
-            <search>rationalizecurve,fitarcs,fitlines</search>
+            <search>rationalizecurve,fitarcs,fitlines,arcs,lines</search>
+            <weights>0.5,0.5,0.5,0.4,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.ICurveEntity.ToNurbsCurve">
             <summary>
             Converts the Curve to a NurbsCurve approximation
             </summary>
             <returns>A NurbsCurve approximating the Curve</returns>
-            <search>curve2spline,convertcurve,tospline</search>
+            <search>curve2spline,convertcurve,tospline,lines</search>
+            <weights>0.5,0.5,0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.ICurveEntity.Patch">
             <summary>
@@ -1145,10 +1056,47 @@
             </summary>
             <search>fitcurve,reducecurve,simplecurve,approximate</search>
         </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICurveEntity.Length">
+            <summary>
+            The total arc length of the curve
+            </summary>
+            <search>distance</search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICurveEntity.IsPlanar">
+            <summary>
+            Determine whether a Curve is planar or not
+            </summary>
+            <search>flat,liesinplane</search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICurveEntity.IsClosed">
+            <summary>
+            Determine if the Curve is closed or not
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICurveEntity.StartPoint">
+            <summary>
+            Get the start Point along the Curve
+            </summary>
+            <search>begin,curvestart,startpt</search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICurveEntity.EndPoint">
+            <summary>
+            Get the end Point along the Curve
+            </summary>
+            <search>end,curveend,endpt</search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICurveEntity.Normal">
+            <summary>
+            The normal to the plane where the curve is contained.  Only
+            valid for planar curves.
+            </summary>
+            <search>perpendicular</search>
+        </member>
         <member name="P:Autodesk.DesignScript.Interfaces.ILineEntity.Direction">
             <summary>
             The direction of the Curve
             </summary>
+            <search>lines</search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IHelixEntity.Angle">
             <summary>
@@ -1190,26 +1138,41 @@
             <summary>
             The center of the Ellipse
             </summary>
+            <search>
+            ellipsearc,arcs
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IEllipseArcEntity.MajorAxis">
             <summary>
             The major axis of the Ellipse.  This is the longer axis.  The length of the Vector is the Major radius.
             </summary>
+            <search>
+            ellipsearc,arcs
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IEllipseArcEntity.MinorAxis">
             <summary>
             The minor axis of the Ellipse.  This is the shorter axis.  The length of the Vector is the Minor radius.
             </summary>
+            <search>
+            ellipsearc,arcs
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IEllipseArcEntity.StartAngle">
             <summary>
             The start angle in degrees
             </summary>
+            <search>
+            ellipsearc,arcs
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IEllipseArcEntity.SweepAngle">
             <summary>
             The total sweep angle in degrees
             </summary>
+            <search>
+            ellipsearc,arcs
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IEllipseEntity.CenterPoint">
             <summary>
@@ -1230,22 +1193,25 @@
             <summary>
             The center point of the arc
             </summary>
-            <search>midpoint</search>
+            <search>midpoint,arcs,arc</search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IArcEntity.Radius">
             <summary>
             The radius of the arc
             </summary>
+            <search>arc,arcs</search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IArcEntity.StartAngle">
             <summary>
             The start angle in degrees
             </summary>
+            <search>arc,arcs</search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IArcEntity.SweepAngle">
             <summary>
             The total sweep angle in degrees
             </summary>
+            <search>arc,arcs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.INurbsCurveEntity.ControlPoints">
             <summary>
@@ -1280,12 +1246,6 @@
             <summary>
             Whether the NurbsCurve is rational or not.  This defines whether any of the weights are not 1.0.
             </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IPolyCurveEntity.NumberOfCurves">
-            <summary>
-            Number of curves of the polycurve
-            </summary>
-            <search>curvecount,subcurvecount,numbersubcurves</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IPolyCurveEntity.Curves">
             <summary>
@@ -1328,13 +1288,17 @@
             <summary>
             Close polycurve by line connecting start and end points
             </summary>
+            <search>lines</search>
+            <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IPolyCurveEntity.CloseWithLineAndTangentArcs(System.Double,System.Double)">
             <summary>
             Close polycurve by tangent chain of arc, line, and arc
             </summary>
             <param name="radiusAtStart">Radius of arc at start of polycurve</param> 
-            <param name="radiusAtEnd">Radius of arc at end of polycurve</param> 
+            <param name="radiusAtEnd">Radius of arc at end of polycurve</param>
+            <search>lines</search> 
+            <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IPolyCurveEntity.Offset(System.Double,System.Boolean)">
             <summary>
@@ -1351,27 +1315,11 @@
             <param name="rightSide">If right side which to fillet</param> 
             <search>round,smooth,radius</search>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IRectangleEntity.Width">
+        <member name="P:Autodesk.DesignScript.Interfaces.IPolyCurveEntity.NumberOfCurves">
             <summary>
-            The width of the Rectangle
+            Number of curves of the polycurve
             </summary>
-            <search>rectX,rectx</search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IRectangleEntity.Height">
-            <summary>
-            The height of the Rectangle
-            </summary>
-            <search>rectY,recty</search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IPolygonEntity.Points">
-            <summary>
-            Returns all the segment start / end points.
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IPolygonEntity.PlaneDeviation">
-            <summary>
-            Returns maximum deviation from average plane of polygon.
-            </summary>
+            <search>curvecount,subcurvecount,numbersubcurves</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IPolygonEntity.Corners">
             <summary>
@@ -1395,6 +1343,46 @@
             Checks if point is inside planar polygon without self intersections.
             </summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IPolygonEntity.Points">
+            <summary>
+            Returns all the segment start / end points.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IPolygonEntity.PlaneDeviation">
+            <summary>
+            Returns maximum deviation from average plane of polygon.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRectangleEntity.Width">
+            <summary>
+            The width of the Rectangle
+            </summary>
+            <search>rectX,rectx</search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRectangleEntity.Height">
+            <summary>
+            The height of the Rectangle
+            </summary>
+            <search>rectY,recty</search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ITopologyEntity.Vertices">
+            <summary>
+            The Vertices of the Topology
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ITopologyEntity.Edges">
+            <summary>
+            The Edges of the Topology
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ITopologyEntity.Faces">
+            <summary>
+            The Faces of the Topology
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.ISurfaceEntity.SubtractFrom(Autodesk.DesignScript.Interfaces.ISolidEntity)">
             <summary>
             Subtract the input tools from this Surface.
@@ -1405,7 +1393,8 @@
             <summary>
             Return the UV parameter pair at the input Point. This is the inverse of Point at parameter.
             </summary>
-            <search>evaluateatpoint,surfaceatpoint,uvatpoint</search>
+            <search>evaluateatpoint,surfaceatpoint,uvatpoint,uvs</search>
+            <weights>0.5,0.5,0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.ISurfaceEntity.TrimWithEdgeLoops(Autodesk.DesignScript.Interfaces.IPolyCurveEntity[])">
             <summary>
@@ -1506,6 +1495,51 @@
             </summary>
             <search>surfacepoint</search>
         </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.ISurfaceEntity.PerimeterCurves">
+            <summary>
+            Return all the boundary Curves of the Surface.
+            </summary>
+            <search>edges</search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.ISurfaceEntity.GetIsoline(System.Int32,System.Double)">
+             <summary>
+             Create a parameter line curve on the given surface.
+            
+             Create a Curve that represents a u or v parameter line on the Surface. A 
+             parameter line runs in the direction of increasing u or v parameter at a 
+             constant opposite u or v parameter. The resulting Curve will match the 
+             Surface parameterisation and its range will be bounded by the Surface 
+             parameter range. The type of Curve returned will depend on the Surface 
+             type.
+             </summary>
+             <param name="isoDirection">If direction == 0, creates a U parameter line, if direction == 1, creates a V parameter line.</param>
+             <search>lines</search>
+             <weights>0.4</weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.ISurfaceEntity.FlipNormalDirection">
+            <summary>
+            Returns a new Surface with the Normal flipped. Leaves this surface
+            unchanged.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.ISurfaceEntity.Join(Autodesk.DesignScript.Interfaces.ISurfaceEntity)">
+            <summary>
+            Combines this Surface and input Surface into a PolySurface
+            </summary>
+            <search>topolysurface</search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.ISurfaceEntity.Join(Autodesk.DesignScript.Interfaces.ISurfaceEntity[])">
+            <summary>
+            Combines this Surface and input Surfaces into a PolySurface
+            </summary>
+            <search>join multiple,joinmany,joinall,topolysurface</search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.ISurfaceEntity.ProjectInputOnto(Autodesk.DesignScript.Interfaces.IGeometryEntity,Autodesk.DesignScript.Interfaces.IVectorEntity)">
+            <summary>
+            Projects the input Geometry onto this Surface in the input Vector direction
+            </summary>
+            <search>projecttosurface,projectonto</search>
+        </member>
         <member name="P:Autodesk.DesignScript.Interfaces.ISurfaceEntity.Area">
             <summary>
             Returns the total surface area.
@@ -1532,48 +1566,26 @@
             Returns true if the Surface is closed in U or V directions
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.ISurfaceEntity.PerimeterCurves">
+        <member name="M:Autodesk.DesignScript.Interfaces.INurbsSurfaceEntity.ControlPoints">
             <summary>
-            Return all the boundary Curves of the Surface.
-            </summary>
-            <search>edges</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.ISurfaceEntity.GetIsoline(System.Int32,System.Double)">
-             <summary>
-             Create a parameter line curve on the given surface.
-            
-             Create a Curve that represents a u or v parameter line on the Surface. A 
-             parameter line runs in the direction of increasing u or v parameter at a 
-             constant opposite u or v parameter. The resulting Curve will match the 
-             Surface parameterisation and its range will be bounded by the Surface 
-             parameter range. The type of Curve returned will depend on the Surface 
-             type.
-             </summary>
-             <param name="isoDirection">If direction == 0, creates a U parameter line, if direction == 1, creates a V parameter line.</param>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.ISurfaceEntity.FlipNormalDirection">
-            <summary>
-            Returns a new Surface with the Normal flipped. Leaves this surface
-            unchanged.
+            Returns NurbsSurface control points (poles).
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.ISurfaceEntity.Join(Autodesk.DesignScript.Interfaces.ISurfaceEntity)">
+        <member name="M:Autodesk.DesignScript.Interfaces.INurbsSurfaceEntity.Weights">
             <summary>
-            Combines this Surface and input Surface into a PolySurface
+            Returns NurbsSurface control point weights.
             </summary>
-            <search>topolysurface</search>
+            <search>ptweights</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.ISurfaceEntity.Join(Autodesk.DesignScript.Interfaces.ISurfaceEntity[])">
+        <member name="M:Autodesk.DesignScript.Interfaces.INurbsSurfaceEntity.UKnots">
             <summary>
-            Combines this Surface and input Surfaces into a PolySurface
+             Surface knots in U direction.
             </summary>
-            <search>join multiple,joinmany,joinall,topolysurface</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.ISurfaceEntity.ProjectInputOnto(Autodesk.DesignScript.Interfaces.IGeometryEntity,Autodesk.DesignScript.Interfaces.IVectorEntity)">
+        <member name="M:Autodesk.DesignScript.Interfaces.INurbsSurfaceEntity.VKnots">
             <summary>
-            Projects the input Geometry onto this Surface in the input Vector direction
+            Surface knots in V direction.
             </summary>
-            <search>projecttosurface,projectonto</search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.INurbsSurfaceEntity.DegreeU">
             <summary>
@@ -1614,39 +1626,6 @@
             Returns true if the Surface is rational.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.INurbsSurfaceEntity.ControlPoints">
-            <summary>
-            Returns NurbsSurface control points (poles).
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.INurbsSurfaceEntity.Weights">
-            <summary>
-            Returns NurbsSurface control point weights.
-            </summary>
-            <search>ptweights</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.INurbsSurfaceEntity.UKnots">
-            <summary>
-             Surface knots in U direction.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.INurbsSurfaceEntity.VKnots">
-            <summary>
-            Surface knots in V direction.
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IPlaneEntity.Origin">
-            <summary>
-            Returns the origin of the Plane.
-            </summary>
-            <search>position,planecenter</search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IPlaneEntity.Normal">
-            <summary>
-            Returns the normal direction of the Plane.
-            </summary>
-            <search>perpendicular</search>
-        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IPlaneEntity.ToCoordinateSystem">
             <summary>
             Produces a new CoordinateSystem representing this plane. It is based on 
@@ -1661,6 +1640,18 @@
             the specified distance.
             </summary>
             <search>alongnormal,moveplane</search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IPlaneEntity.Origin">
+            <summary>
+            Returns the origin of the Plane.
+            </summary>
+            <search>position,planecenter</search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IPlaneEntity.Normal">
+            <summary>
+            Returns the normal direction of the Plane.
+            </summary>
+            <search>perpendicular</search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IPlaneEntity.XAxis">
             <summary>
@@ -1689,7 +1680,8 @@
             <summary>
             Locate Surfaces by Line. Takes all surfaces hit by line.  
             </summary>
-            <search>surfacesonline,findsurfaces,extractsurfaces</search>
+            <search>surfacesonline,findsurfaces,extractsurfaces,lines</search>
+            <weights>0.5,0.5,0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IPolySurfaceEntity.UnconnectedBoundaries">
             <summary>
@@ -1727,16 +1719,6 @@
             Chamfers a PolySurface along input Edges with a given offset from the edge corner.
             </summary>
             <search>bevel,flattenedges</search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.ISolidEntity.Area">
-            <summary>
-            Returns the surface area -- sum of all the areas of all faces
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.ISolidEntity.Volume">
-            <summary>
-            The total volume of the Solid
-            </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.ISolidEntity.Centroid">
             <summary>
@@ -1794,35 +1776,63 @@
             </summary>
             <search>bevel,flattenedges</search>
         </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ISolidEntity.Area">
+            <summary>
+            Returns the surface area -- sum of all the areas of all faces
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ISolidEntity.Volume">
+            <summary>
+            The total volume of the Solid
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IConeEntity.StartPoint">
             <summary>
             The start point
             </summary>
+            <search>
+            cone,cones
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IConeEntity.EndPoint">
             <summary>
             The end point
             </summary>
+            <search>
+            cone,cones
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IConeEntity.RadiusRatio">
             <summary>
             Ratio between the top and bottom radius
             </summary>
+            <search>
+            cone,cones
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IConeEntity.StartRadius">
             <summary>
             The radius at the base
             </summary>
+            <search>
+            cone,cones
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IConeEntity.EndRadius">
             <summary>
             The radius at the bottom
             </summary>
+            <search>
+            cone,cones
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IConeEntity.Height">
             <summary>
             The total height
             </summary>
+            <search>
+            cone,cones
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.ICylinderEntity.Radius">
             <summary>
@@ -1875,24 +1885,6 @@
             Return the radius of the Sphere.
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.ITopologyEntity.Vertices">
-            <summary>
-            The Vertices of the Topology
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.ITopologyEntity.Edges">
-            <summary>
-            The Edges of the Topology
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.ITopologyEntity.Faces">
-            <summary>
-            The Faces of the Topology
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IFaceEntity.SurfaceGeometry">
             <summary>
             The underlying Surface making up the Face
@@ -1903,11 +1895,21 @@
             <summary>
             All of the Edges around this Face in counterclockwise order
             </summary>
+            <search>faces</search>
+            <weights>1</weights>
             <returns></returns>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IFaceEntity.Vertices">
             <summary>
             All of the Vertices around this Face in counterclockwise order
+            </summary>
+            <search>faces</search>
+            <weights>1</weights>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IFaceEntity.Loops">
+            <summary>
+            All of the Loops contained by this Face 
             </summary>
             <returns></returns>
         </member>
@@ -1953,20 +1955,93 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IEdgeEntity.CoEdges">
+            <summary>
+            The CoEdges associated with this Edge
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ILoopEntity.Face">
+            <summary>
+            The containing Face of the Loop
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ILoopEntity.CoEdges">
+            <summary>
+            The CoEdges contained in the Loop
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICoEdgeEntity.Previous">
+            <summary>
+            The previous CoEdge in the containing Loop
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICoEdgeEntity.Next">
+            <summary>
+            The next CoEdge in the containing Loop
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICoEdgeEntity.Partner">
+            <summary>
+            The neighbouring CoEdge in the reverse direction
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICoEdgeEntity.Edge">
+            <summary>
+            The adjacent Edge associated with the CoEdge
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICoEdgeEntity.Loop">
+            <summary>
+            The containing Loop to which the CoEdge belongs
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICoEdgeEntity.StartVertex">
+            <summary>
+            The Vertex at which this Edge starts
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICoEdgeEntity.EndVertex">
+            <summary>
+            The Vertex at which this Edge ends
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ICoEdgeEntity.Reversed">
+            <summary>
+            The sense of the CoEdge with respect to its Edge
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IMeshEntity.FaceIndices">
             <summary>
             The vertex indices that make up each face in a counterclockwise fashion
             </summary>
+            <search>mesh,meshes</search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IMeshEntity.VertexNormals">
             <summary>
             The normal vector at this vertex
             </summary>
+            <search>
+            mesh,meshes
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IMeshEntity.VertexPositions">
             <summary>
             The positions of the vertices
             </summary>
+            <search>
+            mesh,meshes
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IShellEntity.SolidGeometry">
             <summary>
@@ -1986,14 +2061,14 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.ITextEntity.Height">
-            <summary>
-            Returns the height in absolute units;
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.ITextEntity.GetEncoding">
             <summary>
             Gets the encoding of the underlying text
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.ITextEntity.Height">
+            <summary>
+            Returns the height in absolute units;
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.ICellEntity.SolidGeometry">
@@ -2058,7 +2133,7 @@
             <param name="secondPoint">Second point along the curve</param>
             <param name="thirdPoint">Third point along the curve</param>
             <returns>An Arc</returns>
-            <search>arc</search>
+            <search>arc,arcs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.ArcByCenterPointRadiusAngle(Autodesk.DesignScript.Interfaces.IPointEntity,System.Double,System.Double,System.Double,Autodesk.DesignScript.Interfaces.IVectorEntity)">
             <summary>
@@ -2070,7 +2145,7 @@
             <param name="endAngle">End angle in degrees</param>
             <param name="normal">A vector defining the normal of the arc</param>
             <returns>An Arc</returns>
-            <search>arc,center</search>
+            <search>arc,center,arcs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.ArcByCenterPointStartPointSweepAngle(Autodesk.DesignScript.Interfaces.IPointEntity,Autodesk.DesignScript.Interfaces.IPointEntity,System.Double,Autodesk.DesignScript.Interfaces.IVectorEntity)">
             <summary>
@@ -2081,7 +2156,7 @@
             <param name="sweepAngle">The angle to sweep out</param>
             <param name="normal">The normal to the arc</param>
             <returns>An Arc</returns>
-            <search>arc,center</search>
+            <search>arc,center,arcs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.ArcByCenterPointStartPointEndPoint(Autodesk.DesignScript.Interfaces.IPointEntity,Autodesk.DesignScript.Interfaces.IPointEntity,Autodesk.DesignScript.Interfaces.IPointEntity)">
             <summary>
@@ -2091,7 +2166,7 @@
             <param name="startPoint">The start point on the arc</param>
             <param name="endPoint">The end point of the arc</param>
             <returns>An Arc</returns>
-            <search>arc,center</search>
+            <search>arc,center,arcs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.ArcByFillet(Autodesk.DesignScript.Interfaces.ICurveEntity,Autodesk.DesignScript.Interfaces.ICurveEntity,System.Double)">
             <summary>
@@ -2101,7 +2176,7 @@
             <param name="curve2">Second curve</param>
             <param name="radius">The radius of the fillet arc</param>
             <returns>An Arc</returns>
-            <search>arc,fillet,round,smooth</search>
+            <search>arc,fillet,round,smooth,arcs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.ArcByFilletTangentToCurve(Autodesk.DesignScript.Interfaces.ICurveEntity,Autodesk.DesignScript.Interfaces.ICurveEntity,Autodesk.DesignScript.Interfaces.ICurveEntity)">
             <summary>
@@ -2118,7 +2193,7 @@
             best fit arc through points
             </summary>
             <param name="points">Points to fit</param> 
-            <search>arc,approximate</search>
+            <search>arc,approximate,arcs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.ArcByStartEndAndTangencies(Autodesk.DesignScript.Interfaces.IPointEntity,Autodesk.DesignScript.Interfaces.IVectorEntity,Autodesk.DesignScript.Interfaces.IPointEntity,Autodesk.DesignScript.Interfaces.IVectorEntity)">
             <summary>
@@ -2134,7 +2209,7 @@
             <summary>
             Create an Arc from start Point to end Point with start tangent to Vector
             </summary>
-            <search>arc,tangent</search>
+            <search>arc,tangent,arcs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.BoundingBoxByGeometry(Autodesk.DesignScript.Interfaces.IGeometryEntity)">
             <summary>
@@ -2217,7 +2292,7 @@
             Create a Cone with given base radius at start Point, extending to a 
             apex at end Point.
             </summary>
-            <search>cone</search>
+            <search>cone,cones</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.ConeByPointsRadii(Autodesk.DesignScript.Interfaces.IPointEntity,Autodesk.DesignScript.Interfaces.IPointEntity,System.Double,System.Double)">
             <summary>
@@ -2225,7 +2300,7 @@
             radiuses at start and end. This object does not have an apex, and
             can be thought of as a trimmed Cone.
             </summary>
-            <search>trimmed cone,cone</search>
+            <search>trimmed cone,cone,cones</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.ConeByCoordinateSystemHeightRadius(Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity,System.Double,System.Double)">
             <summary>
@@ -2240,7 +2315,7 @@
             in the CoordinateSystem Z axis deriction length amount, with a 
             circular bases in the CoordinateSystem XY Plane. 
             </summary>
-            <search>cone,cone by height</search>
+            <search>cone,cone by height,cones</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.CylinderByRadiusHeight(Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity,System.Double,System.Double)">
             <summary>
@@ -2318,27 +2393,27 @@
             <summary>
             Create a Cuboid centered at WCS origin, with width, length, and height.
             </summary>
-            <search>box,cube</search>
+            <search>box,cube,cubes</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.CuboidByLengths(Autodesk.DesignScript.Interfaces.IPointEntity,System.Double,System.Double,System.Double)">
             <summary>
             Create a Cuboid centered at input Point, with specified width, length, 
             and height.
             </summary>
-            <search>box,cube,cubebysize,bycenter</search>
+            <search>box,cube,cubebysize,bycenter,cubes</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.CuboidByLengths(Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity,System.Double,System.Double,System.Double)">
             <summary>
             Create a Cuboid centered and oriented to input CoordinateSystem, with 
             specified width, length, and height.
             </summary>
-            <search>box,cube,cubebysize,bycoord</search>
+            <search>box,cube,cubebysize,bycoord,cubes</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.CuboidByCorners(Autodesk.DesignScript.Interfaces.IPointEntity,Autodesk.DesignScript.Interfaces.IPointEntity)">
             <summary>
             Create an Cuboid spanning from low Point to high Point.
             </summary>
-            <search>box,cube,byminmax,by corners,by points</search>
+            <search>box,cube,byminmax,by corners,by points,cubes</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.CurveByParameterLineOnSurface(Autodesk.DesignScript.Interfaces.ISurfaceEntity,Autodesk.DesignScript.Interfaces.IUVEntity,Autodesk.DesignScript.Interfaces.IUVEntity)">
             <summary>
@@ -2347,7 +2422,8 @@
             <param name="baseSurface"> Surface to use </param> 
             <param name="startParams"> Starting uv at which curve will start </param>
             <param name="endParams"> Ending uv at which curve will end </param> 
-            <search>isocurve,curvebyuv</search>
+            <search>isocurve,curvebyuv,lines,uvs</search>
+            <weights>0.5,0.5,0.4,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.CurveByBlendBetweenCurves(Autodesk.DesignScript.Interfaces.ICurveEntity,Autodesk.DesignScript.Interfaces.ICurveEntity,System.Boolean,System.Boolean)">
             <summary>
@@ -2366,7 +2442,8 @@
             <param name="baseSurface"> Base surface </param> 
             <param name="direction"> if 0 isoline is along u direction, if 1 along v direction </param>
             <param name="parameter"> fixed for the curve value of other surface parameter </param> 
-            <search>isocurve,curvebydir</search>
+            <search>isocurve,curvebydir,lines</search>
+            <weights>0.5,0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.EllipseArcByPlaneRadiiStartAngleSweepAngle(Autodesk.DesignScript.Interfaces.IPlaneEntity,System.Double,System.Double,System.Double,System.Double)">
             <summary>
@@ -2378,7 +2455,7 @@
             <param name="startAngle">The start angle of the arc in degrees</param>
             <param name="sweepAngle">The angle to sweep from the start angle in degrees</param>
             <returns></returns>
-            <search>ellipsearc</search>
+            <search>ellipsearc,arcs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.EllipseByOriginRadii(Autodesk.DesignScript.Interfaces.IPointEntity,System.Double,System.Double)">
             <summary>
@@ -2424,39 +2501,39 @@
             <summary>
             Create an IndexGroup storing four indices
             </summary>
-            <search>quad,polygon,mesh</search>
+            <search>quad,polygon,mesh,meshes</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.IndexGroupByIndices(System.UInt32,System.UInt32,System.UInt32)">
             <summary>
             Create an IndexGroup storing three indices
             </summary>
-            <search>tri,polygon,mesh</search>
+            <search>tri,polygon,mesh,meshes</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.LineByStartPointEndPoint(Autodesk.DesignScript.Interfaces.IPointEntity,Autodesk.DesignScript.Interfaces.IPointEntity)">
             <summary>
             Creates a straight Line between two input Points.
             </summary>
-            <search>line,linebypoints</search>
+            <search>line,linebypoints,lines</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.LineByBestFitThroughPoints(Autodesk.DesignScript.Interfaces.IPointEntity[])">
             <summary>
             Creates a Line best approximating a scatter plot of Points. 
             </summary>
-            <search>line,approximate</search>
+            <search>line,approximate,lines</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.LineByTangency(Autodesk.DesignScript.Interfaces.ICurveEntity,System.Double)">
             <summary>
             Create a Line tangent to the input Curve, positioned at the parameter
             Point of the input Curve.
             </summary>
-            <search>tangentline,tangentto</search>
+            <search>tangentline,tangentto,lines</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.LineByStartPointDirectionLength(Autodesk.DesignScript.Interfaces.IPointEntity,Autodesk.DesignScript.Interfaces.IVectorEntity,System.Double)">
             <summary>
             Create a straight Line starting at start Point, extending in Vector
             direction by specified length.
             </summary>
-            <search>linebyvector</search>
+            <search>linebyvector,lines</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.NurbsCurveByControlPoints(Autodesk.DesignScript.Interfaces.IPointEntity[])">
              <summary>
@@ -2469,7 +2546,8 @@
              NOTE 2: If the curve is periodic (closed), then the first and last
                      points MUST be the same.
              </summary>
-             <search>nurbscurve,spline</search>
+             <search>nurbscurve,spline,lines</search>
+             <weights>0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.NurbsCurveByControlPoints(Autodesk.DesignScript.Interfaces.IPointEntity[],System.Int32)">
              <summary>
@@ -2482,7 +2560,8 @@
              NOTE 2: If the curve is periodic (closed), then the first and last
                      points MUST be the same.
              </summary>
-             <search>nurbscurve,spline,degree</search>
+             <search>nurbscurve,spline,degree,lines</search>
+             <weights>0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.NurbsCurveByControlPoints(Autodesk.DesignScript.Interfaces.IPointEntity[],System.Int32,System.Boolean)">
              <summary>
@@ -2495,7 +2574,8 @@
              NOTE 2: If the curve is periodic (closed), then the first and last
                      points MUST be the same.
              </summary>
-             <search>nurbscurve,spline,degree,smoothness</search>
+             <search>nurbscurve,spline,degree,smoothness,lines</search>
+             <weights>0.5,0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.NurbsCurveByControlPointsWeightsKnots(Autodesk.DesignScript.Interfaces.IPointEntity[],System.Double[],System.Double[],System.Int32)">
              <summary>
@@ -2518,13 +2598,15 @@
             
              knot array: the array size must be num_control_points + degree + 1
              </summary>
-             <search>explicit,nurbscurve,spline,degree,spline byarray</search>
+             <search>explicit,nurbscurve,spline,degree,spline byarray,lines</search>
+             <weights>0.5,0.5,0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.NurbsCurveByPoints(Autodesk.DesignScript.Interfaces.IPointEntity[])">
             <summary>
             Create a BSplineCurve by interpolating between points.
             </summary>
-            <search>fit,approximate,spline</search>
+            <search>fit,approximate,spline,lines</search>
+            <weights>0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.NurbsCurveByPoints(Autodesk.DesignScript.Interfaces.IPointEntity[],System.Boolean)">
              <summary>
@@ -2533,19 +2615,22 @@
              NOTE 2: If the curve is periodic (closed), then the first and last
                     points MUST be the same.
              </summary>
-             <search>fit,approximate,spline</search>
+             <search>fit,approximate,spline,lines</search>
+             <weights>0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.NurbsCurveByPoints(Autodesk.DesignScript.Interfaces.IPointEntity[],System.Int32)">
             <summary>
             Create a BSplineCurve by interpolating between points with specified degree.
             </summary>
-            <search>fit,approximate,spline,smoothness</search>
+            <search>fit,approximate,spline,smoothness,lines</search>
+            <weights>0.5,0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.NurbsCurveByPointsTangents(Autodesk.DesignScript.Interfaces.IPointEntity[],Autodesk.DesignScript.Interfaces.IVectorEntity,Autodesk.DesignScript.Interfaces.IVectorEntity)">
             <summary>
             Returns a BSplineCurve through the points, with tangent directions.
             </summary>
-            <search>spline by tangent,tangents,</search>
+            <search>spline by tangent,tangents,lines</search>
+            <weights>0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.NurbsSurfaceByPoints(Autodesk.DesignScript.Interfaces.IPointEntity[][],System.Int32,System.Int32)">
             <summary>
@@ -2603,6 +2688,8 @@
              be converted to clamped ones, with the corresponding changes applied to the 
              control point/weight data.
              </summary>
+             <search>lines</search>
+             <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.PlaneByOriginNormal(Autodesk.DesignScript.Interfaces.IPointEntity,Autodesk.DesignScript.Interfaces.IVectorEntity)">
             <summary>
@@ -2634,6 +2721,8 @@
             Create the Plane containing the input Line and external Point. Point
             cannot lie on the Line or in the Line axis.
             </summary>
+            <search>lines</search>
+            <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.PlaneByThreePoints(Autodesk.DesignScript.Interfaces.IPointEntity,Autodesk.DesignScript.Interfaces.IPointEntity,Autodesk.DesignScript.Interfaces.IPointEntity)">
             <summary>
@@ -2732,7 +2821,8 @@
             </summary>
             <param name="points"> Points to make polycurve </param> 
             <param name="connectLastToFirst">make  close or open polycurve</param> 
-            <search>segments,joincurves</search>
+            <search>segments,joincurves,lines</search>
+            <weights>0.5,0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.PolyCurveByThickeningCurve(Autodesk.DesignScript.Interfaces.ICurveEntity,System.Double,Autodesk.DesignScript.Interfaces.IVectorEntity)">
             <summary>
@@ -2788,7 +2878,8 @@
             Create a Surface by lofting between input cross section Lines.  This is slightly faster
             and produces a less smooth result than Surface.ByLoft.  
             </summary>
-            <search>ruledsurface</search>
+            <search>ruledsurface,lines</search>
+            <weights>0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.SurfaceByLoft(Autodesk.DesignScript.Interfaces.ICurveEntity[],Autodesk.DesignScript.Interfaces.ICurveEntity)">
              <summary>
@@ -2918,7 +3009,7 @@
             <summary>
             Create a UV from two doubles.
             </summary>
-            <search>surfaceparam,parameters,uv</search>
+            <search>surfaceparam,parameters,uv,uvs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.VectorByCoordinates(System.Double,System.Double,System.Double)">
             <summary>
@@ -3030,7 +3121,7 @@
             <param name="vertexPositions"></param>
             <param name="indices"></param>
             <returns></returns>
-            <search>mesh</search>
+            <search>mesh,meshes</search>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.LoadSAT(System.String)">
             <summary>
@@ -3081,12 +3172,6 @@
             notifications required by the host application to update itself.
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IGraphEditorHostApplication.Configurations">
-            <summary>
-            Name value pair for configuration parameters. Mostly the 
-            configuration keys are used from ConfigurationKeys class.
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGraphEditorHostApplication.PostGraphUpdate">
             <summary>
             This method is called by the graph controller to notify host app
@@ -3102,19 +3187,15 @@
             </summary>
             <param name="graphId"></param>
         </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IGraphEditorHostApplication.Configurations">
+            <summary>
+            Name value pair for configuration parameters. Mostly the 
+            configuration keys are used from ConfigurationKeys class.
+            </summary>
+        </member>
         <member name="T:Autodesk.DesignScript.Interfaces.IConfiguration">
             <summary>
             Provides application configuration
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IConfiguration.RootModulePath">
-            <summary>
-            Provides the path of main executing script
-            </summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IConfiguration.IncludeDirectories">
-            <summary>
-            Provides list of include directories.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IConfiguration.GetConfigValue(System.String)">
@@ -3130,6 +3211,16 @@
             </summary>
             <param name="config">Configuration name</param>
             <param name="value">Configuration value</param>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IConfiguration.RootModulePath">
+            <summary>
+            Provides the path of main executing script
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IConfiguration.IncludeDirectories">
+            <summary>
+            Provides list of include directories.
+            </summary>
         </member>
         <member name="F:Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory">
             <summary>
@@ -3210,11 +3301,6 @@
             Represents a session object for current execution.
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IExecutionSession.Configuration">
-            <summary>
-            Gets the configuration object for this execution session.
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IExecutionSession.SearchFile(System.String)">
             <summary>
             Searches the given file and returns full path, if found.
@@ -3222,6 +3308,11 @@
             <param name="filename">File name to search.</param>
             <returns>Full path of given filename or empty string if file not 
             found.</returns>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IExecutionSession.Configuration">
+            <summary>
+            Gets the configuration object for this execution session.
+            </summary>
         </member>
         <member name="T:Autodesk.DesignScript.Interfaces.IExtensionApplication">
             <summary>
@@ -3308,11 +3399,6 @@
             interactively.
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IContextDataProvider.Name">
-            <summary>
-            Gets the name of this data provider to identify it uniquely.
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IContextDataProvider.ImportData(System.Collections.Generic.Dictionary{System.String,System.Object})">
             <summary>
             Imports specific the context data using the given identifier string.
@@ -3355,6 +3441,11 @@
             assigned.</param>
             <returns>DesignScript expression string</returns>
         </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IContextDataProvider.Name">
+            <summary>
+            Gets the name of this data provider to identify it uniquely.
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IPersistentObject.Erase">
             <summary>
             Erases the persisted object from database.
@@ -3386,13 +3477,6 @@
             <param name="handle">Handle to persistent object</param>
             <returns>IPersistentObject identified from input handle</returns>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IPersistenceManager.GeometryFactory">
-            <summary>
-            Get's Geometry factory that design script system is using.
-            This property will be set by the system, once GeometryFactory 
-            is instanciated.
-            </summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IPersistenceManager.SupportsGeometryCapture">
             <summary>
             Checks if the host application supports geometry selection or
@@ -3415,9 +3499,89 @@
             <param name="ptr"></param>
             <returns></returns>
         </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IPersistenceManager.GeometryFactory">
+            <summary>
+            Get's Geometry factory that design script system is using.
+            This property will be set by the system, once GeometryFactory 
+            is instanciated.
+            </summary>
+        </member>
         <member name="T:Autodesk.DesignScript.Interfaces.IRenderPackage">
             <summary>
             This interface caches render specific data.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddPointVertex(System.Double,System.Double,System.Double)">
+            <summary>
+            Add a point vertex to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddPointVertexColor(System.Byte,System.Byte,System.Byte,System.Byte)">
+            <summary>
+            Add a point color to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddTriangleVertex(System.Double,System.Double,System.Double)">
+            <summary>
+            Add a triangle vertex location to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddTriangleVertexNormal(System.Double,System.Double,System.Double)">
+            <summary>
+            Add a triangle vertex normal to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddTriangleVertexUV(System.Double,System.Double)">
+            <summary>
+            Add a triangle texture coordinate to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddTriangleVertexColor(System.Byte,System.Byte,System.Byte,System.Byte)">
+            <summary>
+            Add a triangle vertex color to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddLineStripVertex(System.Double,System.Double,System.Double)">
+            <summary>
+            Add a line vertex to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddLineStripVertexCount(System.Int32)">
+            <summary>
+            Add a line strip vertex count to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddLineStripVertexColor(System.Byte,System.Byte,System.Byte,System.Byte)">
+            <summary>
+            Add a line strip vertex color to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.ApplyPointVertexColors(System.Byte[])">
+            <summary>
+            Apply a color to each point vertex.
+            </summary>
+            <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.ApplyLineVertexColors(System.Byte[])">
+            <summary>
+            Apply a color to a sequence of line vertices.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.ApplyMeshVertexColors(System.Byte[])">
+            <summary>
+            Apply a color to each mesh vertex.
+            </summary>
+            <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.SetColors(System.Byte[])">
+            <summary>
+            Set a an array of bytes to be used as a color map.
+            </summary>
+            <param name="colors"></param>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.Clear">
+            <summary>
+            Clear all render data from the render package.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.Description">
@@ -3534,79 +3698,6 @@
             The size of one dimension of the Colors collection.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddPointVertex(System.Double,System.Double,System.Double)">
-            <summary>
-            Add a point vertex to the render package.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddPointVertexColor(System.Byte,System.Byte,System.Byte,System.Byte)">
-            <summary>
-            Add a point color to the render package.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddTriangleVertex(System.Double,System.Double,System.Double)">
-            <summary>
-            Add a triangle vertex location to the render package.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddTriangleVertexNormal(System.Double,System.Double,System.Double)">
-            <summary>
-            Add a triangle vertex normal to the render package.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddTriangleVertexUV(System.Double,System.Double)">
-            <summary>
-            Add a triangle texture coordinate to the render package.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddTriangleVertexColor(System.Byte,System.Byte,System.Byte,System.Byte)">
-            <summary>
-            Add a triangle vertex color to the render package.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddLineStripVertex(System.Double,System.Double,System.Double)">
-            <summary>
-            Add a line vertex to the render package.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddLineStripVertexCount(System.Int32)">
-            <summary>
-            Add a line strip vertex count to the render package.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddLineStripVertexColor(System.Byte,System.Byte,System.Byte,System.Byte)">
-            <summary>
-            Add a line strip vertex color to the render package.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.ApplyPointVertexColors(System.Byte[])">
-            <summary>
-            Apply a color to each point vertex.
-            </summary>
-            <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.ApplyLineVertexColors(System.Byte[])">
-            <summary>
-            Apply a color to a sequence of line vertices.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.ApplyMeshVertexColors(System.Byte[])">
-            <summary>
-            Apply a color to each mesh vertex.
-            </summary>
-            <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.SetColors(System.Byte[])">
-            <summary>
-            Set a an array of bytes to be used as a color map.
-            </summary>
-            <param name="colors"></param>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.Clear">
-            <summary>
-            Clear all render data from the render package.
-            </summary>
-        </member>
         <member name="T:Autodesk.DesignScript.Interfaces.IGraphicItem">
             <summary>
             Represents a graphics item object, that can provide tesselated data
@@ -3661,6 +3752,69 @@
             <param name="package">RenderPackage where graphics/render data can
             be pushed/set.</param>
             <param name="parameters">A TessellationParameters object.</param>
+        </member>
+        <member name="T:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions">
+            <summary>
+            Provides extension methods for reading XML comments from reflected members.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions.#cctor">
+            <summary>
+            Static constructor.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions.GetMemberElementName(System.Reflection.MemberInfo)">
+            <summary>
+            Returns the expected name for a member element in the XML documentation file.
+            </summary>
+            <param name="member">The reflected member.</param>
+            <returns>The name of the member element.</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions.GetXmlDocumentation(System.Reflection.MemberInfo)">
+            <summary>
+            Returns the XML documentation (summary tag) for the specified member.
+            </summary>
+            <param name="member">The reflected member.</param>
+            <returns>The contents of the summary tag for the member.</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions.GetXmlDocumentation(System.Reflection.MemberInfo,System.String)">
+            <summary>
+            Returns the XML documentation (summary tag) for the specified member.
+            </summary>
+            <param name="member">The reflected member.</param>
+            <param name="pathToXmlFile">Path to the XML documentation file.</param>
+            <returns>The contents of the summary tag for the member.</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions.GetXmlDocumentation(System.Reflection.MemberInfo,System.Xml.Linq.XDocument)">
+            <summary>
+            Returns the XML documentation (summary tag) for the specified member.
+            </summary>
+            <param name="member">The reflected member.</param>
+            <param name="xml">XML documentation.</param>
+            <returns>The contents of the summary tag for the member.</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions.GetXmlDocumentation(System.Reflection.ParameterInfo)">
+            <summary>
+            Returns the XML documentation (returns/param tag) for the specified parameter.
+            </summary>
+            <param name="parameter">The reflected parameter (or return value).</param>
+            <returns>The contents of the returns/param tag for the parameter.</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions.GetXmlDocumentation(System.Reflection.ParameterInfo,System.String)">
+            <summary>
+            Returns the XML documentation (returns/param tag) for the specified parameter.
+            </summary>
+            <param name="parameter">The reflected parameter (or return value).</param>
+            <param name="pathToXmlFile">Path to the XML documentation file.</param>
+            <returns>The contents of the returns/param tag for the parameter.</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions.GetXmlDocumentation(System.Reflection.ParameterInfo,System.Xml.Linq.XDocument)">
+            <summary>
+            Returns the XML documentation (returns/param tag) for the specified parameter.
+            </summary>
+            <param name="parameter">The reflected parameter (or return value).</param>
+            <param name="xml">XML documentation.</param>
+            <returns>The contents of the returns/param tag for the parameter.</returns>
         </member>
     </members>
 </doc>

@@ -27,8 +27,8 @@ namespace ProtoTest.TD.Associative
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             // expected "StatementUsedInAssignment" warning
-            Assert.IsTrue((Int64)mirror.GetValue("smallest2").Payload == 100);
-            Assert.IsTrue((Int64)mirror.GetValue("largest2").Payload == 400);
+            thisTest.Verify("smallest2", 100);
+            thisTest.Verify("largest2", 400);
         }
 
 
@@ -44,7 +44,7 @@ import(""DSCoreNodes.dll"");
 	smallest   =   Math.Sqrt(b)	< a  ?   Math.Sqrt(a)	:	Math.Sqrt(b);	
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Double)mirror.GetValue("smallest").Payload == 3);
+            thisTest.Verify("smallest", 3);
         }
 
 
@@ -68,7 +68,7 @@ import(""DSCoreNodes.dll"");
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             // expected "StatementUsedInAssignment" warning
             List<Object> result = new List<object>() { 1, 0, 1, 1, 0, };
-            Assert.IsTrue(mirror.CompareArrays("Results", result, typeof(System.Int64)));
+            thisTest.Verify("Results", result);
         }
 
 
@@ -93,9 +93,9 @@ import(""DSCoreNodes.dll"");
             List<Object> c1 = new List<object>() { false, false, false };
             List<Object> c2 = new List<object>() { false, false, false };
             List<Object> c3 = new List<object>() { false, false, false };
-            Assert.IsTrue(mirror.CompareArrays("c1", c1, typeof(System.Boolean)));
-            Assert.IsTrue(mirror.CompareArrays("c2", c2, typeof(System.Boolean)));
-            Assert.IsTrue(mirror.CompareArrays("c3", c3, typeof(System.Boolean)));
+            thisTest.Verify("c1", c1);
+            thisTest.Verify("c2", c2);
+            thisTest.Verify("c3", c3);
         }
 
 
@@ -187,7 +187,7 @@ number = { 3, -3 };
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             // expected "StatementUsedInAssignment" warning
             List<Object> values = new List<object>() { true, false };
-            Assert.IsTrue(mirror.CompareArrays("values", values, typeof(System.Boolean)));
+            thisTest.Verify("values", values);
         }
 
 
@@ -305,18 +305,17 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4026
             string src = @"
 a = 0;
-def foo ( )
+def foo (a)
 {
     a = a + 1;
     return = a;
 }
-x = 1 > 2 ? foo() + 1 : foo() + 2;
+x = 1 > 2 ? foo(a) + 1 : foo(a) + 2;
 	
 ";
             string err = "MAGN-4026 Execution of both true and false statements in Associative inline condition";
             ExecutionMirror mirror = thisTest.RunScriptSource(src, err);
-            thisTest.Verify("x", 4);
-            thisTest.Verify("a", 2);
+            thisTest.Verify("x", 3);
         }
 
 
@@ -963,11 +962,12 @@ a = 1;
             string code = @"
 def foo ()
 {
-    z = z + ((a > 0) ? a : 0);
+    a;
+    z =  (a > 0) ? a : 0;
     a = 1;
+    return = z;
 }
-z = 0;
-test = foo();
+z = foo();
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);

@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
@@ -43,13 +45,11 @@ namespace Dynamo.Manipulation
         private readonly DynamoManipulationExtension manipulatorContext;
         private const double NewNodeOffsetX = 350;
         private const double NewNodeOffsetY = 50;
-        private Point newPosition;
+        private bool active;
 
         protected const double gizmoScale = 1.2;
 
         #region properties
-
-        protected bool Active { get; set; }
 
         protected IWorkspaceModel WorkspaceModel
         {
@@ -76,7 +76,8 @@ namespace Dynamo.Manipulation
         internal NodeModel Node { get; private set; }
 
         /// <summary>
-        /// Base location of geometry being manipulated by manipulator
+        /// Base position of geometry being manipulated by manipulator
+        /// Derived classes should update this value in UpdatePosition and OnGizmoMoved
         /// </summary>
         internal abstract Point Origin { get; }
 
@@ -113,9 +114,11 @@ namespace Dynamo.Manipulation
         protected abstract void AssignInputNodes();
 
         /// <summary>
-        /// Implement to update the position(s) of all manipulator inputs when the node is updated
+        /// Implement to update the position(s) of the manipulator including Origin
+        /// when the node is updated
         /// </summary>
-        protected abstract void UpdatePosition();
+        /// <returns>return true if position is updated successfully else return false</returns>
+        protected abstract bool UpdatePosition();
 
         /// <summary>
         /// This method is called when a gizmo provided by derived class is hit.
@@ -128,13 +131,12 @@ namespace Dynamo.Manipulation
 
         /// <summary>
         /// This method is called when the Gizmo in action is moved during mouse
-        /// move event. Derived class can use this notification to update the 
-        /// input nodes.
+        /// move event. Derived class must use this notification to update the 
+        /// input nodes AND update the manipulator Origin based on the mouse move.
         /// </summary>
         /// <param name="gizmoInAction">The Gizmo in action.</param>
         /// <param name="offset">Offset amount by which Gizmo has moved.</param>
-        /// <returns>New expected position of the Gizmo</returns>
-        protected abstract Point OnGizmoMoved(IGizmo gizmoInAction, Vector offset);
+        protected abstract void OnGizmoMoved(IGizmo gizmoInAction, Vector offset);
 
         #endregion
 
@@ -147,23 +149,6 @@ namespace Dynamo.Manipulation
         protected virtual void Dispose(bool disposing)
         {
             if (Origin != null) Origin.Dispose();
-
-            if (newPosition != null) newPosition.Dispose();
-        }
-
-        /// <summary>
-        /// This method is called when mouse is moved, to check if the
-        /// Gizmo in action can be moved successfully. If it returns true
-        /// then this manipulator will compute the movement and call
-        /// OnGizmoMoved.
-        /// </summary>
-        /// <param name="gizmo">Gizmo in action.</param>
-        /// <returns>True if Gizmo is ready to move.</returns>
-        protected virtual bool CanMoveGizmo(IGizmo gizmo)
-        {
-            //Wait until node has been evaluated and has got new origin
-            //as expected position.
-            return gizmo != null && newPosition.DistanceTo(Origin) < 0.01;
         }
 
         /// <summary>
@@ -173,12 +158,13 @@ namespace Dynamo.Manipulation
         /// <param name="mouseButtonEventArgs"></param>
         protected virtual void MouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
-            UpdatePosition();
+            
+            active = UpdatePosition();
 
             GizmoInAction = null; //Reset Drag.
 
             var gizmos = GetGizmos(false);
-            if (!Active || !IsEnabled() || null == gizmos || !gizmos.Any()) return;
+            if (!IsEnabled() || null == gizmos || !gizmos.Any()) return;
 
             var ray = BackgroundPreviewViewModel.GetClickRay(mouseButtonEventArgs);
             if (ray == null) return;
@@ -198,7 +184,6 @@ namespace Dynamo.Manipulation
                         {
                             WorkspaceModel.RecordModelsForModification(nodes);
                         }
-                        newPosition = Origin;
                         return;
                     }
                 }
@@ -214,7 +199,7 @@ namespace Dynamo.Manipulation
         {
             GizmoInAction = null;
 
-            //Delete all transient graphics for gizmos
+            //Update gizmo graphics after every camera view change
             var gizmos = GetGizmos(false);
             foreach (var gizmo in gizmos)
             {
@@ -240,12 +225,16 @@ namespace Dynamo.Manipulation
                 return;
             }
 
-            if (!CanMoveGizmo(GizmoInAction)) return;
-
             var offset = GizmoInAction.GetOffset(clickRay.GetOriginPoint(), clickRay.GetDirectionVector());
             if (offset.Length < 0.01) return;
 
-            newPosition = OnGizmoMoved(GizmoInAction, offset);
+            // Update input nodes attached to manipulator node 
+            // Doing this triggers a graph update on scheduler thread
+            OnGizmoMoved(GizmoInAction, offset);
+
+            // redraw manipulator at new position synchronously
+            var packages = BuildRenderPackage();
+            BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages);
         }
 
         /// <summary>
@@ -397,13 +386,18 @@ namespace Dynamo.Manipulation
         }
 
         /// <summary>
-        /// Method to draw manipulator
+        /// Method to draw manipulator. 
+        /// It's always called on the UI thread
         /// </summary>
         private void DrawManipulator()
         {
+            Debug.Assert(IsMainThread());
+
             var packages = GenerateRenderPackages();
 
-            BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages);
+            // Add manipulator geometry to view asynchronously 
+            // since it has to be queued up in UI dispatcher after drawing node geometry
+            BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages, true);
         }
 
         /// <summary>
@@ -423,27 +417,34 @@ namespace Dynamo.Manipulation
         /// Before actually generating the render packages it ensures that this
         /// object is properly updated. This method is called when the output 
         /// of the node is rendered.
+        /// This function can only be called on the UI thread if there's a node selection OR
+        /// called on the scheduler thread if there's a node update
         /// </summary>
         /// <returns>List of render packages</returns>
         private IEnumerable<IRenderPackage> GenerateRenderPackages()
         {
-
             var packages = new List<IRenderPackage>();
 
-            AssignInputNodes();
-
+            // This can happen only when the node is updating along with the manipulator
+            // and meanwhile it is deselected in the UI before the manipulator is killed
             if (!Node.IsSelected)
             {
                 return packages;
             }
+            
+            AssignInputNodes();
+            
+            active = UpdatePosition();
 
-            UpdatePosition();
-
-            if (!Active || !IsEnabled())
+            if (!IsEnabled())
             {
                 return packages;
             }
-
+            
+            // Blocking call to build render packages only in UI thread
+            // to avoid race condition with gizmo members b/w scheduler and UI threads.
+            // Race condition can occur if say one gizmo is moving due to another gizmo
+            // and it is highlighted when it comes near the mouse pointer.
             IEnumerable<IRenderPackage> result = null;
             BackgroundPreviewViewModel.Invoke(() => result = BuildRenderPackage());
             return result;
@@ -480,6 +481,8 @@ namespace Dynamo.Manipulation
         /// <param name="clickRay"></param>
         private void HighlightGizmoOnRollOver(IRay clickRay)
         {
+            Debug.Assert((IsMainThread()));
+
             var gizmos = GetGizmos(false);
             foreach (var item in gizmos)
             {
@@ -496,6 +499,17 @@ namespace Dynamo.Manipulation
                     }
                 }
             }
+        }
+
+        internal static bool IsMainThread()
+        {
+            if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA &&
+                !Thread.CurrentThread.IsThreadPoolThread && Thread.CurrentThread.IsAlive)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         #endregion
@@ -516,6 +530,8 @@ namespace Dynamo.Manipulation
         /// <returns>List of render packages</returns>
         public IEnumerable<IRenderPackage> BuildRenderPackage()
         {
+            Debug.Assert(IsMainThread());
+
             var packages = new List<IRenderPackage>();
             var gizmos = GetGizmos(true);
             foreach (var item in gizmos)
@@ -533,14 +549,14 @@ namespace Dynamo.Manipulation
         /// <returns>True if enabled and can be manipulated.</returns>
         public bool IsEnabled()
         {
-            if (Node.IsFrozen) return false;
+            if (Node.IsFrozen || !Node.IsVisible) return false;
 
             if (Node.CachedValue == null || Node.CachedValue.IsNull)
             {
                 return false;
             }
 
-            return true;
+            return active;
         }
         #endregion
     }

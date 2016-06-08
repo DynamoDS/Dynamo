@@ -3,6 +3,9 @@ using System.Threading;
 
 namespace Dynamo.Scheduler
 {
+    /// <summary>
+    /// This class is used to set creation time of async task in Dynamo Scheduler.
+    /// </summary>
     public struct TimeStamp
     {
         #region Private Class Data Members
@@ -61,12 +64,12 @@ namespace Dynamo.Scheduler
 
         /// <summary>
         /// The public usage of time stamps should be restricted to these
-        /// methods used to ensure an ordering on timestamps
+        /// methods which are used to ensure an ordering on timestamps
         /// </summary>
         /// <param name="timeStamp0">The first time stamp in comparison.</param>
         /// <param name="timeStamp1">The second time stamp in comparison.</param>
         /// <returns>Return true if the first time stamp was created later than 
-        /// the second time steamp, or false otherwise.</returns>
+        /// the second time stamp, or false otherwise.</returns>
         /// 
         public static bool operator >(TimeStamp timeStamp0, TimeStamp timeStamp1)
         {
@@ -75,12 +78,12 @@ namespace Dynamo.Scheduler
 
         /// <summary>
         /// The public usage of time stamps should be restricted to these
-        /// methods used to ensure an ordering on timestamps
+        /// methods which are used to ensure an ordering on timestamps
         /// </summary>
         /// <param name="timeStamp0">The first time stamp in comparison.</param>
         /// <param name="timeStamp1">The second time stamp in comparison.</param>
         /// <returns>Return true if the first time stamp was created earlier than 
-        /// the second time steamp, or false otherwise.</returns>
+        /// the second time stamp, or false otherwise.</returns>
         /// 
         public static bool operator <(TimeStamp timeStamp0, TimeStamp timeStamp1)
         {

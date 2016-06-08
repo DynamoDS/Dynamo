@@ -5,10 +5,21 @@ using System.Threading;
 
 namespace DynamoServices
 {
+    /// <summary>
+    /// This attribute can be applied to methods that register callsite with
+    /// trace mechanism.
+    /// </summary>
+    public class RegisterForTraceAttribute : Attribute
+    {
+    }
+
+    /// <summary>
+    /// Utility class to Get/Set TraceData
+    /// </summary>
     public static class TraceUtils
     {
         /// <summary>
-        /// Get the data that is bound to a particular key
+        /// Returns the data that is bound to a particular key
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>

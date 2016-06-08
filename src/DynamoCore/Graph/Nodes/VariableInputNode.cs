@@ -7,6 +7,10 @@ using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Graph.Nodes
 {
+    /// <summary>
+    /// Base class for nodes that have dynamic incoming ports.
+    /// E.g. list.create.
+    /// </summary>
     public abstract class VariableInputNode : NodeModel
     {
         protected VariableInputNode()
@@ -101,13 +105,16 @@ namespace Dynamo.Graph.Nodes
             VariableInputController.DeserializeCore(nodeElement, context);
         }
 
-        internal override bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
+        internal override bool HandleModelEventCore(string eventName, int value, UndoRedoRecorder recorder)
         {
-            return VariableInputController.HandleModelEventCore(eventName, recorder)
-                || base.HandleModelEventCore(eventName, recorder);
+            return VariableInputController.HandleModelEventCore(eventName, value, recorder)
+                || base.HandleModelEventCore(eventName, value, recorder);
         }
     }
 
+    /// <summary>
+    /// This is a helper class that processess inputs of VariableInputNode.
+    /// </summary>
     public abstract class VariableInputNodeController
     {
         private readonly NodeModel model;
@@ -166,18 +173,41 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Set the number of inputs.  
+        /// Set the number of inputs.
         /// </summary>
         /// <param name="numInputs"></param>
         public void SetNumInputs(int numInputs)
         {
-            while (model.InPortData.Count < numInputs)
-                AddInputToModel();
+            // Ignore negative values, as those are impossible.
+            if (numInputs < 0)
+            {
+                return;
+            }
 
-            while (model.InPortData.Count > numInputs)
-                RemoveInputFromModel();
+            // While the current number of ports doesn't match
+            // the desired number of ports, add or remove ports
+            // as appropriate.  This is intentionally a "best effort"
+            // operation, as the node may reject attempts to create
+            // or remove too many ports.  As such, we ignore any
+            // failures to add or remove ports.
+            for (int current = model.InPortData.Count; current != numInputs; )
+            {
+                if (current < numInputs)
+                {
+                    AddInputToModel();
+                    ++current;
+                }
+                else
+                {
+                    RemoveInputFromModel();
+                    --current;
+                }
+            }
         }
 
+        /// <summary>
+        /// This is called when a node is built.
+        /// </summary>
         public void OnBuilt()
         {
             inputAmtLastBuild = model.InPortData.Count;
@@ -195,15 +225,25 @@ namespace Dynamo.Graph.Nodes
         {
             nodeElement.SetAttribute("inputcount", amount.ToString());
         }
-        
+
         #region Serialization/Deserialization Methods
 
+        /// <summary>
+        /// Serializes object
+        /// </summary>
+        /// <param name="element">xml node</param>
+        /// <param name="context">save context</param>
         public void SerializeCore(XmlElement element, SaveContext context)
         {
             //base.SerializeCore(element, context); //Base implementation must be called
             SerializeInputCount(element, model.InPortData.Count);
         }
 
+        /// <summary>
+        /// Deserializes object
+        /// </summary>
+        /// <param name="element">xml node</param>
+        /// <param name="context">save context</param>
         public void DeserializeCore(XmlElement element, SaveContext context)
         {
             //base.DeserializeCore(element, context); //Base implementation must be called
@@ -240,7 +280,7 @@ namespace Dynamo.Graph.Nodes
                 WorkspaceModel.RecordModelForModification(model, recorder);
         }
 
-        internal bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
+        internal bool HandleModelEventCore(string eventName, int value, UndoRedoRecorder recorder)
         {
             switch (eventName)
             {
@@ -251,6 +291,11 @@ namespace Dynamo.Graph.Nodes
                 case "RemoveInPort":
                     RemoveInputFromModel();
                     model.RegisterAllPorts();
+                    return true; // Handled here.
+                case "SetInPortCount":
+                    SetNumInputs(value);
+                    model.RegisterAllPorts();
+
                     return true; // Handled here.
             }
 

@@ -4,19 +4,26 @@ using System.Linq;
 
 using Dynamo.Core;
 using Dynamo.Search.SearchElements;
+using ProtoCore.AST.AssociativeAST;
 
 
 namespace Dynamo.Search
 {
+    /// <summary>
+    ///     Base class for all browser items in search area.
+    /// </summary>
     public abstract class BrowserItem : NotificationObject
     {
+        /// <summary>
+        ///     Returns items inside of the browser item
+        /// </summary>
         public abstract ObservableCollection<BrowserItem> Items { get; set; }
 
         /// <summary>
         ///     If this is a leaf and visible, add to items, otherwise, recurse on children
         /// </summary>
         /// <param name="items">The accumulator</param>
-        public void GetVisibleLeaves(ref List<BrowserItem> items)
+        internal void GetVisibleLeaves(ref List<BrowserItem> items)
         {
             if (this.Visibility == true && this.Items.Count == 0)
             {
@@ -40,10 +47,11 @@ namespace Dynamo.Search
         /// </summary>
         public abstract string Name { get; }
 
+        private int _height = 30;
+
         /// <summary>
         /// The height of the element in search
         /// </summary>
-        private int _height = 30;
         public int Height
         {
             get { return _height; }
@@ -72,7 +80,7 @@ namespace Dynamo.Search
         /// <summary>
         /// Collapse element and all its children
         /// </summary>
-        public void CollapseToLeaves()
+        internal void CollapseToLeaves()
         {
             this.IsExpanded = false;
             foreach (var ele in Items)
@@ -84,7 +92,7 @@ namespace Dynamo.Search
         /// <summary>
         /// Hide element and all its children
         /// </summary>
-        public void SetVisibilityToLeaves(bool visibility)
+        internal void SetVisibilityToLeaves(bool visibility)
         {
             this.Visibility = visibility;
             foreach (var ele in Items)
@@ -93,10 +101,11 @@ namespace Dynamo.Search
             }
         }
 
+        private bool _visibility = true;
+
         /// <summary>
         /// Whether the item is visible or not
         /// </summary>
-        private bool _visibility = true;
         public bool Visibility
         {
             get
@@ -110,10 +119,11 @@ namespace Dynamo.Search
             }
         }
 
+        private bool _isSelected = false;
+        
         /// <summary>
         /// Whether the item is selected or not
         /// </summary>
-        private bool _isSelected = false;
         public bool IsSelected
         {
             get { return _isSelected; }
@@ -124,10 +134,11 @@ namespace Dynamo.Search
             }
         }
 
+        private bool _isExpanded = false;
+        
         /// <summary>
         /// Is the element expanded in the browser
         /// </summary>
-        private bool _isExpanded = false;
         public bool IsExpanded
         {
             get { return _isExpanded; }
@@ -138,9 +149,17 @@ namespace Dynamo.Search
             }
         }
 
-        public abstract void Execute();
+        internal abstract void Execute();
 
+        /// <summary>
+        /// Represents the method that will handle the Executed event of the <see cref="BrowserItem"/> class.
+        /// </summary>
+        /// <param name="ele"><see cref="BrowserItem"/> object to execute</param>
         public delegate void BrowserItemHandler(BrowserItem ele);
+
+        /// <summary>
+        /// Occurs when corresponding node is created
+        /// </summary>
         public event BrowserItemHandler Executed;
         protected void OnExecuted()
         {

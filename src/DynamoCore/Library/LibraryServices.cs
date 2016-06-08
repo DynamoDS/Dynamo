@@ -19,6 +19,7 @@ using ProtoFFI;
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore;
 using ProtoCore.Namespace;
+using Dynamo.Exceptions;
 
 namespace Dynamo.Engine
 {
@@ -41,9 +42,14 @@ namespace Dynamo.Engine
         private readonly List<string> packagedLibraries = new List<string>();
 
         private readonly IPathManager pathManager;
-        public ProtoCore.Core LibraryManagementCore{get; private set;}
+
+        /// <summary>
+        /// Returns core which is used for parsing code and loading libraries
+        /// </summary>
+        public ProtoCore.Core LibraryManagementCore { get; private set; }
         private ProtoCore.Core liveRunnerCore = null;
-        public void SetLiveCore(ProtoCore.Core core)
+
+        internal void SetLiveCore(ProtoCore.Core core)
         {
             liveRunnerCore = core;
         }
@@ -71,7 +77,7 @@ namespace Dynamo.Engine
         /// Copy properties from the liveCore
         /// The properties to copy are only those used by the library core
         /// </summary>
-        public void UpdateLibraryCoreData()
+        internal void UpdateLibraryCoreData()
         {
             // If a liverunner core is provided, sync the library core data
             if (liveRunnerCore != null)
@@ -81,6 +87,11 @@ namespace Dynamo.Engine
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LibraryServices"/> class.
+        /// </summary>
+        /// <param name="libraryManagementCore">Core which is used for parsing code and loading libraries</param>
+        /// <param name="pathManager">Instance of IPathManager containing neccessary Dynamo paths</param>
         public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager)
         {
             LibraryManagementCore = libraryManagementCore;
@@ -90,8 +101,12 @@ namespace Dynamo.Engine
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();
+            LibraryLoadFailed += new EventHandler<LibraryLoadFailedEventArgs>(LibraryLoadFailureHandler);
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources
+        /// </summary>
         public void Dispose()
         {
             builtinFunctionGroups.Clear();
@@ -100,7 +115,7 @@ namespace Dynamo.Engine
         }
         
         /// <summary>
-        ///     Get a list of imported libraries.
+        ///     Returns a list of imported libraries.
         /// </summary>
         public IEnumerable<string> ImportedLibraries
         {
@@ -108,7 +123,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        ///     Get builtin function groups.
+        ///     Returns built-in function groups.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<FunctionGroup> BuiltinFunctionGroups
@@ -117,16 +132,34 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        ///     Get all imported function groups.
+        ///     Returns all imported function groups.
         /// </summary>
         public IEnumerable<FunctionGroup> ImportedFunctionGroups
         {
             get { return importedFunctionGroups.SelectMany(d => d.Value).Select(p => p.Value); }
         }
 
+        /// <summary>
+        /// Occurs before a library is loaded
+        /// </summary>
         public event EventHandler<LibraryLoadingEventArgs> LibraryLoading;
+        
+        /// <summary>
+        /// Occurs if a library cannot be loaded
+        /// </summary>
         public event EventHandler<LibraryLoadFailedEventArgs> LibraryLoadFailed;
+        
+        /// <summary>
+        /// Occurs after a library is successfully loaded
+        /// </summary>
         public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
+
+        private void LibraryLoadFailureHandler(object sender, LibraryLoadFailedEventArgs args)
+        {
+            LibraryLoadFailedException ex = new LibraryLoadFailedException(args.LibraryPath, args.Reason);
+            Log(ex.Message, WarningLevel.Moderate);
+            throw ex;
+        }
 
         private void PreloadLibraries(IEnumerable<string> preloadLibraries)
         {
@@ -136,7 +169,7 @@ namespace Dynamo.Engine
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
         }
 
-        public bool FunctionSignatureNeedsAdditionalAttributes(string functionSignature)
+        internal bool FunctionSignatureNeedsAdditionalAttributes(string functionSignature)
         {
             if (functionSignature == null)
             {
@@ -148,7 +181,7 @@ namespace Dynamo.Engine
             return priorNameHints[functionSignature].AdditionalAttributes.Count > 0;
         }
 
-        public bool FunctionSignatureNeedsAdditionalElements(string functionSignature)
+        internal bool FunctionSignatureNeedsAdditionalElements(string functionSignature)
         {
             if (functionSignature == null)
             {
@@ -160,7 +193,7 @@ namespace Dynamo.Engine
             return priorNameHints[functionSignature].AdditionalElements.Count > 0;
         }
 
-        public void AddAdditionalAttributesToNode(string functionSignature, XmlElement nodeElement)
+        internal void AddAdditionalAttributesToNode(string functionSignature, XmlElement nodeElement)
         {
             var shortKey = GetQualifiedFunction(functionSignature);
             if (!FunctionSignatureNeedsAdditionalAttributes(functionSignature)
@@ -184,7 +217,7 @@ namespace Dynamo.Engine
             }
         }
 
-        public void AddAdditionalElementsToNode(string functionSignature, XmlElement nodeElement)
+        internal void AddAdditionalElementsToNode(string functionSignature, XmlElement nodeElement)
         {
             var shortKey = GetQualifiedFunction(functionSignature);
             if (!FunctionSignatureNeedsAdditionalElements(functionSignature)
@@ -201,7 +234,7 @@ namespace Dynamo.Engine
             }
         }
 
-        public string NicknameFromFunctionSignatureHint(string functionSignature)
+        internal string NicknameFromFunctionSignatureHint(string functionSignature)
         {
             string[] splitted = null;
             string newName = null;
@@ -245,7 +278,7 @@ namespace Dynamo.Engine
             return splitted[splitted.Length - 2] + "." + splitted[splitted.Length - 1];
         }
 
-        public string FunctionSignatureFromFunctionSignatureHint(string functionSignature)
+        internal string FunctionSignatureFromFunctionSignatureHint(string functionSignature)
         {
             // if the hint is explicit, we can simply return the mapped function
             if (priorNameHints.ContainsKey(functionSignature))
@@ -284,11 +317,11 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        ///     Get function groups from an imported library.
+        ///     Returns function groups from an imported library.
         /// </summary>
         /// <param name="library">Library path</param>
         /// <returns></returns>
-        public IEnumerable<FunctionGroup> GetFunctionGroups(string library)
+        internal IEnumerable<FunctionGroup> GetFunctionGroups(string library)
         {
             if (null == library)
                 throw new ArgumentNullException();
@@ -304,21 +337,21 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Return all function groups.
+        /// Returns all function groups.
         /// </summary>
-        public IEnumerable<FunctionGroup> GetAllFunctionGroups()
+        internal IEnumerable<FunctionGroup> GetAllFunctionGroups()
         {
             return BuiltinFunctionGroups.Union(ImportedLibraries.SelectMany(GetFunctionGroups));
         }
 
         /// <summary>
-        ///     Get function descriptor from the managled function name.
+        ///     Returns function descriptor from the managled function name.
         ///     name.
         /// </summary>
         /// <param name="library">Library path</param>
         /// <param name="mangledName">Mangled function name</param>
         /// <returns></returns>
-        public FunctionDescriptor GetFunctionDescriptor(string library, string mangledName)
+        internal FunctionDescriptor GetFunctionDescriptor(string library, string mangledName)
         {
             if (null == library || null == mangledName)
                 throw new ArgumentNullException();
@@ -336,11 +369,11 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        ///     Get function descriptor from the managed function name.
+        ///     Returns function descriptor from the managed function name.
         /// </summary>
         /// <param name="managledName"></param>
         /// <returns></returns>
-        public FunctionDescriptor GetFunctionDescriptor(string managledName)
+        internal FunctionDescriptor GetFunctionDescriptor(string managledName)
         {
             if (string.IsNullOrEmpty(managledName))
                 throw new ArgumentException("Invalid arguments");
@@ -364,7 +397,7 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="library"> can be either the full path or the assembly name </param>
         /// <returns> true even if the same library name is loaded from different paths </returns>
-        public bool IsLibraryLoaded(string library)
+        internal bool IsLibraryLoaded(string library)
         {
             return importedFunctionGroups.ContainsKey(library);
         }
@@ -397,7 +430,7 @@ namespace Dynamo.Engine
         ///     Import a library (if it hasn't been imported yet).
         /// </summary>
         /// <param name="library"></param>
-        public bool ImportLibrary(string library)
+        internal bool ImportLibrary(string library)
         {
             if (null == library)
                 throw new ArgumentNullException();
@@ -449,8 +482,7 @@ namespace Dynamo.Engine
                         errorMessage += error.Message + "\n";
                     }
 
-                    OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
-                    return false;
+                    throw new Exception(errorMessage);
                 }
 
                 LoadLibraryMigrations(library);
@@ -687,13 +719,13 @@ namespace Dynamo.Engine
 
         private static IEnumerable<TypedParameter> GetBinaryFuncArgs()
         {
-            yield return new TypedParameter("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar));
-            yield return new TypedParameter("y", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar));
+            yield return new TypedParameter("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var));
+            yield return new TypedParameter("y", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var));
         }
 
         private static IEnumerable<TypedParameter> GetUnaryFuncArgs()
         {
-            return new List<TypedParameter> { new TypedParameter("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)), };
+            return new List<TypedParameter> { new TypedParameter("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var)), };
         }
 
         /// <summary>

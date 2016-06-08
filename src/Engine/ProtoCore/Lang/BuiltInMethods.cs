@@ -11,69 +11,69 @@ namespace ProtoCore.Lang
     {
         public enum MethodID
         {
-            kInvalidMethodID = -1,
-            kAllFalse,
-            kAllTrue,
-            kAverage,
-            kConcat,
-            kContains,
-            kCount,
-            kCountTrue,
-            kCountFalse,
-            kDifference,
-            kDot,
-            kEquals,
-            kGetElapsedTime,
-            kGetType,
-            kFlatten,
-            kImportData,
-            kIndexOf,
-            kInsert,
-            kIntersection,
-            kIsUniformDepth,
-            kIsRectangular,
-            kIsHomogeneous,
-            kLoadCSVWithMode,
-            kLoadCSV,
-            kMap,
-            kMapTo,
-            kNormalizeDepth,
-            kNormalizeDepthWithRank,
-            kPrint,
-            kPrintIndexable,
-            kRank,
-            kRemove,
-            kRemoveDuplicates,
-            kRemoveNulls,
-            kRemoveIfNot,
-            kReverse,
-            kSleep,
-            kSomeFalse,
-            kSomeNulls,
-            kSomeTrue,
-            kSort,
-            kSortWithMode,
-            kSortIndexByValue,
-            kSortIndexByValueWithMode,
-            kSortPointer,
-            kReorder,
-            kRangeExpression,
-            kSum,
-            kToString,
-            kToStringFromObject,
-            kToStringFromArray,
-            kTranspose,
-            kUnion,
-            kInlineConditional,
-            kBreak,
-            kGetKeys,
-            kGetValues,
-            kRemoveKey,
-            kContainsKey,
-            kEvaluate,
-            kTryGetValueFromNestedDictionaries,
-            kNodeAstFailed,
-            kGC,
+            InvalidMethodID = -1,
+            AllFalse,
+            AllTrue,
+            Average,
+            Concat,
+            Contains,
+            Count,
+            CountTrue,
+            CountFalse,
+            Difference,
+            Dot,
+            Equals,
+            GetElapsedTime,
+            GetType,
+            Flatten,
+            ImportData,
+            IndexOf,
+            Insert,
+            Intersection,
+            IsUniformDepth,
+            IsRectangular,
+            IsHomogeneous,
+            LoadCSVWithMode,
+            LoadCSV,
+            Map,
+            MapTo,
+            NormalizeDepth,
+            NormalizeDepthWithRank,
+            Print,
+            PrintIndexable,
+            Rank,
+            Remove,
+            RemoveDuplicates,
+            RemoveNulls,
+            RemoveIfNot,
+            Reverse,
+            Sleep,
+            SomeFalse,
+            SomeNulls,
+            SomeTrue,
+            Sort,
+            SortWithMode,
+            SortIndexByValue,
+            SortIndexByValueWithMode,
+            SortPointer,
+            Reorder,
+            RangeExpression,
+            Sum,
+            ToString,
+            ToStringFromObject,
+            ToStringFromArray,
+            Transpose,
+            Union,
+            InlineConditional,
+            Break,
+            GetKeys,
+            GetValues,
+            RemoveKey,
+            ContainsKey,
+            Evaluate,
+            TryGetValueFromNestedDictionaries,
+            NodeAstFailed,
+            GC,
         }
 
         private static string[] methodNames = new string[]
@@ -165,12 +165,12 @@ namespace ProtoCore.Lang
             {
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kCount,
+                    ID = BuiltInMethods.MethodID.Count,
                     MethodAttributes = new MethodAttributes(){Description  = Resources.ReturnsNumberOfItems}
                    
 
@@ -178,819 +178,819 @@ namespace ProtoCore.Lang
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kSomeNulls,
+                    ID = BuiltInMethods.MethodID.SomeNulls,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kRank,
+                    ID = BuiltInMethods.MethodID.Rank,
                     MethodAttributes = new MethodAttributes(){Description  = Resources.ReturnsTheDeepestDepthOfTheList}
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                    new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                    new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kFlatten,
+                    ID = BuiltInMethods.MethodID.Flatten,
                     MethodAttributes = new MethodAttributes(){Description  = Resources.ReturnsTheFlattened1DList}
                 },
                 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>("list2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("list2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kConcat,
+                    ID = BuiltInMethods.MethodID.Concat,
                     MethodAttributes = new MethodAttributes(true, false, Resources.UseListJoinNode){Description  = Resources.ReturnsConcatenatingList}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
-                        new KeyValuePair<string, ProtoCore.Type>("list2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1))
+                        new KeyValuePair<string, ProtoCore.Type>("list1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("list2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1))
                     },
-                    ID = BuiltInMethods.MethodID.kIntersection, 
+                    ID = BuiltInMethods.MethodID.Intersection, 
                     MethodAttributes = new MethodAttributes(){Description  = Resources.ProducesTheSetIntersection}
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
-                        new KeyValuePair<string, ProtoCore.Type>("list2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1))
+                        new KeyValuePair<string, ProtoCore.Type>("list1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("list2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1))
                     },
-                    ID = BuiltInMethods.MethodID.kUnion,
+                    ID = BuiltInMethods.MethodID.Union,
                      MethodAttributes = new MethodAttributes(){Description  = Resources.ProducesTheSetUnion}
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1), 
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1), 
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
-                        new KeyValuePair<string, ProtoCore.Type>("list2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1))
+                        new KeyValuePair<string, ProtoCore.Type>("list1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("list2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1))
                     },
-                    ID = BuiltInMethods.MethodID.kDifference,
+                    ID = BuiltInMethods.MethodID.Difference,
                     MethodAttributes = new MethodAttributes(){Description  = Resources.ObjectsContainsInList1NotInList2}
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kCountTrue,
+                    ID = BuiltInMethods.MethodID.CountTrue,
                     MethodAttributes = new MethodAttributes(){Description = Resources.ReturnsTheNumberOfTrueValue}
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kCountFalse,
+                    ID = BuiltInMethods.MethodID.CountFalse,
                      MethodAttributes = new MethodAttributes(){Description  = Resources.ReturnsTheNumberOfFalseValueInList}
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kAllFalse,
+                    ID = BuiltInMethods.MethodID.AllFalse,
                      MethodAttributes = new MethodAttributes(){Description  = Resources.ChecksIfTheListIsAllFalse}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kAllTrue,
+                    ID = BuiltInMethods.MethodID.AllTrue,
                     MethodAttributes = new MethodAttributes(){Description  = Resources.ChecksIfTheListIsAllTrue}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kIsHomogeneous,
+                    ID = BuiltInMethods.MethodID.IsHomogeneous,
                     MethodAttributes = new MethodAttributes(){Description  = Resources.CheckIfTheElementsInListAreSameType}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kSum,
+                    ID = BuiltInMethods.MethodID.Sum,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kSum,
+                    ID = BuiltInMethods.MethodID.Sum,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kAverage,
+                    ID = BuiltInMethods.MethodID.Average,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kAverage,
+                    ID = BuiltInMethods.MethodID.Average,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kSomeTrue,
+                    ID = BuiltInMethods.MethodID.SomeTrue,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod()
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Void, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("milliseconds", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("milliseconds", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0)),
                     },
-                    ID = BuiltInMethods.MethodID.kSleep,
+                    ID = BuiltInMethods.MethodID.Sleep,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kSomeFalse,
+                    ID = BuiltInMethods.MethodID.SomeFalse,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>("index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0))
                     },
-                    ID = BuiltInMethods.MethodID.kRemove,
+                    ID = BuiltInMethods.MethodID.Remove,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kRemoveDuplicates,
+                    ID = BuiltInMethods.MethodID.RemoveDuplicates,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kRemoveNulls,
+                    ID = BuiltInMethods.MethodID.RemoveNulls,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>("type", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("type", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0))
                     },
-                    ID = BuiltInMethods.MethodID.kRemoveIfNot,
+                    ID = BuiltInMethods.MethodID.RemoveIfNot,
                     MethodAttributes = new MethodAttributes(){Description  = Resources.RemovesTheMembersofTheList}
                     //MAGN-3382  MethodAttributes = new MethodAttributes(true), 
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kReverse,
+                    ID = BuiltInMethods.MethodID.Reverse,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("ObjectA", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("ObjectB", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("ObjectA", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("ObjectB", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
                     },
-                    ID = BuiltInMethods.MethodID.kEquals,
+                    ID = BuiltInMethods.MethodID.Equals,
                     MethodAttributes = new MethodAttributes(){Description = Resources.DeterminesObjectsAreEqual}
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("ObjectA", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>("ObjectB", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("ObjectA", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("ObjectB", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
                     },
-                    ID = BuiltInMethods.MethodID.kEquals,
+                    ID = BuiltInMethods.MethodID.Equals,
                     MethodAttributes = new MethodAttributes(true){Description = Resources.DeterminesObjectsAreEqual}
                    
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>("element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kContains,
+                    ID = BuiltInMethods.MethodID.Contains,
                     MethodAttributes = new MethodAttributes(){Description  = Resources.ChecksIfListContainsTheElement}
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>("element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0))
                     },
-                    ID = BuiltInMethods.MethodID.kContains,
+                    ID = BuiltInMethods.MethodID.Contains,
                     MethodAttributes = new MethodAttributes(){Description  = Resources.ChecksIfListContainsTheElement}
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>("member", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("member", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0))
                     },
-                    ID = BuiltInMethods.MethodID.kIndexOf,
+                    ID = BuiltInMethods.MethodID.IndexOf,
                     MethodAttributes = new MethodAttributes(true),
                 }, 
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>("element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kIndexOf,
+                    ID = BuiltInMethods.MethodID.IndexOf,
                     MethodAttributes = new MethodAttributes(){Description  = Resources.ReturnsTheIndex}
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>("element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0))
                     },
-                    ID = BuiltInMethods.MethodID.kInsert,
+                    ID = BuiltInMethods.MethodID.Insert,
                     MethodAttributes = new MethodAttributes(){Description  = Resources.InsertsAnElementIntoList}
 
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>("element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>("index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0))
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0))
                     },
-                    ID = BuiltInMethods.MethodID.kInsert,
+                    ID = BuiltInMethods.MethodID.Insert,
                     MethodAttributes = new MethodAttributes(){Description  = Resources.InsertsAnElementIntoList}
                 },
 
             //Sort, SortWithMode, SortIndexByValue & SortIndexByValueWithMode
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 1)),
                     },
-                    ID = BuiltInMethods.MethodID.kSort,
+                    ID = BuiltInMethods.MethodID.Sort,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1)),
-                        new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0)),
                     },
-                    ID = BuiltInMethods.MethodID.kSortWithMode,
+                    ID = BuiltInMethods.MethodID.SortWithMode,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 1)),
                     },
-                    ID = BuiltInMethods.MethodID.kSort,
+                    ID = BuiltInMethods.MethodID.Sort,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
-                        new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0)),
                     },
-                    ID = BuiltInMethods.MethodID.kSortWithMode,
+                    ID = BuiltInMethods.MethodID.SortWithMode,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("comparerFunction", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeFunctionPointer, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("comparerFunction", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.FunctionPointer, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1)),
                     },
-                    ID = BuiltInMethods.MethodID.kSortPointer,
+                    ID = BuiltInMethods.MethodID.SortPointer,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 1)),
                     },
-                    ID = BuiltInMethods.MethodID.kSortIndexByValue,
+                    ID = BuiltInMethods.MethodID.SortIndexByValue,
                     MethodAttributes = new MethodAttributes(){Description = Resources.SortsListByValueInAscending}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),  
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 1),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
-                        new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0)),
                     },
-                    ID = BuiltInMethods.MethodID.kSortIndexByValueWithMode,
+                    ID = BuiltInMethods.MethodID.SortIndexByValueWithMode,
                      MethodAttributes = new MethodAttributes(){Description = Resources.SortsListByValue}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true), 
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
-                        new KeyValuePair<string, ProtoCore.Type>("indice", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1)),
+                        new KeyValuePair<string, ProtoCore.Type>("indice", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1)),
                     },
-                    ID = BuiltInMethods.MethodID.kReorder,
+                    ID = BuiltInMethods.MethodID.Reorder,
                      MethodAttributes = new MethodAttributes(){Description = Resources.ReordersList}
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
                     },
-                    ID = BuiltInMethods.MethodID.kIsUniformDepth,
+                    ID = BuiltInMethods.MethodID.IsUniformDepth,
                     MethodAttributes = new MethodAttributes(){Description = Resources.ChecksListWithUniformDepth}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
                     },
-                    ID = BuiltInMethods.MethodID.kIsRectangular,
+                    ID = BuiltInMethods.MethodID.IsRectangular,
                     MethodAttributes = new MethodAttributes(){Description = Resources.ChecksIfLengthsAreSameInMultiDimentionalList}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 }, 
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
                     },
-                    ID = BuiltInMethods.MethodID.kNormalizeDepth,
+                    ID = BuiltInMethods.MethodID.NormalizeDepth,
                      MethodAttributes = new MethodAttributes(){Description = Resources.ReturnsListWithUniformDepth}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>("rank", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("rank", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
                     },
-                    ID = BuiltInMethods.MethodID.kNormalizeDepthWithRank,
+                    ID = BuiltInMethods.MethodID.NormalizeDepthWithRank,
                     MethodAttributes = new MethodAttributes(){Description = Resources.ReturnsListWithRankDepth}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 }, 
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("rangeMin", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("rangeMax", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("inputValue", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("rangeMin", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("rangeMax", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("inputValue", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0)),
                         },
-                    ID = BuiltInMethods.MethodID.kMap,
+                    ID = BuiltInMethods.MethodID.Map,
                     MethodAttributes = new MethodAttributes(){Description = Resources.MapsValueIntoInputRange}
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("rangeMin", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("rangeMax", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("inputValue", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("targetRangeMin", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("targetRangeMax", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("rangeMin", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("rangeMax", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("inputValue", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("targetRangeMin", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("targetRangeMax", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0)),
                     },
-                    ID = BuiltInMethods.MethodID.kMapTo,
+                    ID = BuiltInMethods.MethodID.MapTo,
                      MethodAttributes = new MethodAttributes(){Description = Resources.MapsValueFromOneRangeToAnotherRange}
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
                     },
-                    ID = BuiltInMethods.MethodID.kTranspose,
+                    ID = BuiltInMethods.MethodID.Transpose,
                     MethodAttributes = new MethodAttributes(true)
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeArray, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Array, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("start", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("end", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("step", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("op", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("nostep", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("hasAmountOp", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0))
+                        new KeyValuePair<string, ProtoCore.Type>("start", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("end", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("step", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("op", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("nostep", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("hasAmountOp", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0))
                     },
-                    ID = BuiltInMethods.MethodID.kRangeExpression
+                    ID = BuiltInMethods.MethodID.RangeExpression
                 },
 
                 new BuiltInMethod()
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("filePath", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("filePath", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0)),
                     },
-                    ID = BuiltInMethods.MethodID.kLoadCSV,
+                    ID = BuiltInMethods.MethodID.LoadCSV,
                      MethodAttributes = new MethodAttributes(){Description = Resources.ImportFileByGivenFilePath}
                 },
 
                 new BuiltInMethod()
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("filePath", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("transpose", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("filePath", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("transpose", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0)),
                     },
-                    ID = BuiltInMethods.MethodID.kLoadCSVWithMode,
+                    ID = BuiltInMethods.MethodID.LoadCSVWithMode,
                     MethodAttributes = new MethodAttributes(){Description = Resources.ImportFileByGivenFilePathWithMode}
                 },
 
                 new BuiltInMethod()
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Void, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("msg", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),                    
+                        new KeyValuePair<string, ProtoCore.Type>("msg", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),                    
                     },
-                    ID = BuiltInMethods.MethodID.kPrint,
+                    ID = BuiltInMethods.MethodID.Print,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod()
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Void, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("msg", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),                    
+                        new KeyValuePair<string, ProtoCore.Type>("msg", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),                    
                     },
-                    ID = BuiltInMethods.MethodID.kPrintIndexable,
+                    ID = BuiltInMethods.MethodID.PrintIndexable,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod()
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>> { },
-                    ID = BuiltInMethods.MethodID.kGetElapsedTime,
+                    ID = BuiltInMethods.MethodID.GetElapsedTime,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("lhsPtr", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("lhsPtr", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
                     },
-                    ID = BuiltInMethods.MethodID.kDot
+                    ID = BuiltInMethods.MethodID.Dot
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("condition", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("dyn1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("dyn2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
+                        new KeyValuePair<string, ProtoCore.Type>("condition", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("dyn1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("dyn2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0))
                     },
-                    ID = BuiltInMethods.MethodID.kInlineConditional
+                    ID = BuiltInMethods.MethodID.InlineConditional
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>> 
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
                     },
-                    ID = BuiltInMethods.MethodID.kGetType,
+                    ID = BuiltInMethods.MethodID.GetType,
                     MethodAttributes = new MethodAttributes(){Description = Resources.Gettypes}
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>> 
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
                     },
-                    ID = BuiltInMethods.MethodID.kGetType,
+                    ID = BuiltInMethods.MethodID.GetType,
                     MethodAttributes = new MethodAttributes(){Description = Resources.Gettypes}
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0),
 
                     Parameters = new [] 
                     {
-                        new KeyValuePair<string, Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
+                        new KeyValuePair<string, Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var)),
                     }.ToList(),
-                    ID = BuiltInMethods.MethodID.kToString,
+                    ID = BuiltInMethods.MethodID.ToString,
                     MethodAttributes = new MethodAttributes(true, false, "This node is obsolete, please use \"String from Object\""),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>> 
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
                     },
-                    ID = BuiltInMethods.MethodID.kToStringFromObject,
+                    ID = BuiltInMethods.MethodID.ToStringFromObject,
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0),
 
                     Parameters = new [] 
                     {
-                        new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
+                        new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var)),
                     }.ToList(),
-                    ID = BuiltInMethods.MethodID.kToStringFromArray
+                    ID = BuiltInMethods.MethodID.ToStringFromArray
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Void, 0),
                     Parameters = new List<KeyValuePair<string,Type>>(),
-                    ID = BuiltInMethods.MethodID.kBreak,
+                    ID = BuiltInMethods.MethodID.Break,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("appname", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("connectionParameters", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("appname", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("connectionParameters", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kImportData,
+                    ID = BuiltInMethods.MethodID.ImportData,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, Type>> 
                     {
-                        new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = MethodID.kGetKeys,
+                    ID = MethodID.GetKeys,
                      MethodAttributes = new MethodAttributes(){Description = Resources.GetKeys}
                     //MAGN_3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, Type>> 
                     {
-                        new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
-                    ID = MethodID.kGetValues,
+                    ID = MethodID.GetValues,
                      MethodAttributes = new MethodAttributes(){Description = Resources.GetValues}
                     //MAGN_3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
                     Parameters = new List<KeyValuePair<string, Type>> 
                     {
-                        new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
+                        new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0))
                     },
-                    ID = MethodID.kRemoveKey,
+                    ID = MethodID.RemoveKey,
                     MethodAttributes = new MethodAttributes(){Description = Resources.RemoveKeys}
                     //MethodAttributes = new MethodAttributes(true), MAGN-3382
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
                     Parameters = new List<KeyValuePair<string, Type>> 
                     {
-                        new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
+                        new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0))
                     },
-                    ID = MethodID.kContainsKey,
+                    ID = MethodID.ContainsKey,
                     MethodAttributes = new MethodAttributes(){Description = Resources.ContainsKeys}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, Type>>
                     {
-                        new KeyValuePair<string, Type>("functionPointer", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeFunctionPointer, 0)),
-                        new KeyValuePair<string, Type>("params", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, Type>("unpackParams", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0))
+                        new KeyValuePair<string, Type>("functionPointer", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.FunctionPointer, 0)),
+                        new KeyValuePair<string, Type>("params", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, Type>("unpackParams", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0))
                     },
-                    ID = MethodID.kEvaluate,
+                    ID = MethodID.Evaluate,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string,Type>>
                     {
-                        new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
-                        new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar))
+                        new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var)),
+                        new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var))
                     },
-                    ID = MethodID.kTryGetValueFromNestedDictionaries,
+                    ID = MethodID.TryGetValueFromNestedDictionaries,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Void, 0),
                     Parameters = new []
                     {
-                        new KeyValuePair<string, Type>("nodeType", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0))
+                        new KeyValuePair<string, Type>("nodeType", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0))
                     }.ToList(),
-                    ID = MethodID.kNodeAstFailed,
+                    ID = MethodID.NodeAstFailed,
                     MethodAttributes = new MethodAttributes(true),
                  },
 
                  new BuiltInMethod
                  {
-                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
+                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Void, 0),
                      Parameters = new List<KeyValuePair<string,Type>>(),
-                     ID = MethodID.kGC,
+                     ID = MethodID.GC,
                      MethodAttributes  = new MethodAttributes(true),
                  }
             };

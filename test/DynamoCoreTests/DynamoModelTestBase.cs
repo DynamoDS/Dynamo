@@ -20,7 +20,7 @@ namespace Dynamo
 {
     public class DynamoModelTestBase : DSEvaluationUnitTestBase
     {
-        protected DynamoModel CurrentDynamoModel { get; private set; }
+        protected DynamoModel CurrentDynamoModel { get; set; }
 
         protected Preloader preloader;
         protected TestPathResolver pathResolver;

@@ -1,17 +1,10 @@
-using System;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Diagnostics;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
+using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Notes;
+using Dynamo.Graph.Presets;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Prompts;
@@ -19,36 +12,37 @@ using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Search;
 using Dynamo.Selection;
-using Dynamo.UI;
+using Dynamo.Services;
+using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Views;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Authentication;
 using Dynamo.Wpf.Controls;
-
-using String = System.String;
-using System.Windows.Data;
-using Dynamo.UI.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media;
-using Dynamo.Configuration;
-using Dynamo.Graph;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Notes;
-using Dynamo.Graph.Presets;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Services;
+using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Utilities;
-using Dynamo.Logging;
-
-using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Gallery;
-using Dynamo.Wpf.Extensions;
-using Dynamo.Interfaces;
 using Dynamo.Wpf.Views.PackageManager;
-using Dynamo.Views;
-using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
+using String = System.String;
 
 namespace Dynamo.Controls
 {
@@ -138,7 +132,12 @@ namespace Dynamo.Controls
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
             }
 
-            var viewExtensions = viewExtensionManager.ExtensionLoader.LoadDirectory(dynamoViewModel.Model.PathManager.ViewExtensionsDirectory);
+            var viewExtensions = new List<IViewExtension>();
+            foreach (var dir in dynamoViewModel.Model.PathManager.ViewExtensionsDirectories)
+            {
+                viewExtensions.AddRange(viewExtensionManager.ExtensionLoader.LoadDirectory(dir));
+            }
+
             viewExtensionManager.MessageLogged += Log;
 
             var startupParams = new ViewStartupParams(dynamoViewModel);
@@ -178,17 +177,15 @@ namespace Dynamo.Controls
             var clipBoard = dynamoViewModel.Model.ClipBoard;
             var locatableModels = clipBoard.Where(item => item is NoteModel || item is NodeModel);
 
-            // Find node views, that were copied. Translate them into rect.
-            var nodeBounds = this.ChildrenOfType<NodeView>()
-                            .Where(nodeView => locatableModels
-                                .Any(locatable => locatable.GUID == nodeView.ViewModel.NodeModel.GUID))
-                                .Select(view => view.BoundsRelativeTo(this));
+            var modelBounds = locatableModels.Select(lm =>
+                new Rect {X = lm.X, Y = lm.Y, Height = lm.Height, Width = lm.Width});
 
             // Find workspace view.
             var workspace = this.ChildOfType<WorkspaceView>();
-            var workspaceBounds = workspace.BoundsRelativeTo(this);
+            var workspaceBounds = workspace.GetVisibleBounds();
 
-            bool outOfView = nodeBounds.Any(node => !workspaceBounds.Contains(node));
+            // is at least one note/node located out of visible workspace part
+            var outOfView = modelBounds.Any(m => !workspaceBounds.Contains(m));
 
             // If copied nodes are out of view, we paste their copies under mouse cursor or at the center of workspace.
             if (outOfView)
@@ -202,6 +199,7 @@ namespace Dynamo.Controls
                 {
                     PasteNodeAtTheCenter(workspace);
                 }
+
                 return;
             }
 
@@ -219,7 +217,7 @@ namespace Dynamo.Controls
             var shiftY = rightMostItem.Y - leftMostItem.Y;
 
             // Find new node bounds.
-            var newNodeBounds = nodeBounds
+            var newNodeBounds = modelBounds
                 .Select(node => new Rect(node.X + shiftX + workspace.ViewModel.Model.CurrentPasteOffset,
                                          node.Y + shiftY + workspace.ViewModel.Model.CurrentPasteOffset,
                                          node.Width, node.Height));
@@ -247,9 +245,8 @@ namespace Dynamo.Controls
         /// <param name="workspace">workspace view</param>
         private void PasteNodeAtTheCenter(WorkspaceView workspace)
         {
-            var centerX = (workspace.ActualWidth / 2 - workspace.ViewModel.Model.X) / workspace.ViewModel.Zoom;
-            var centerY = (workspace.ActualHeight / 2 - workspace.ViewModel.Model.Y) / workspace.ViewModel.Zoom;
-            dynamoViewModel.Model.Paste(new Point2D(centerX, centerY));
+            var centerPoint = workspace.GetCenterPoint().AsDynamoType();
+            dynamoViewModel.Model.Paste(centerPoint);
         }
 
         #region NodeViewCustomization
@@ -749,19 +746,27 @@ namespace Dynamo.Controls
         void DynamoViewModelRequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
             var dialogText = "";
-            if (e.Workspace is CustomNodeWorkspaceModel)
+            // If the file is read only, display a different message.
+            if (e.Workspace.IsReadOnly)
             {
-                dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveCustomNode, e.Workspace.Name);
+                dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveReadOnlyCustomNode, e.Workspace.FileName);
             }
-            else // homeworkspace
+            else
             {
-                if (string.IsNullOrEmpty(e.Workspace.FileName))
+                if (e.Workspace is CustomNodeWorkspaceModel)
                 {
-                    dialogText = Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveHomeWorkSpace;
+                    dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveCustomNode, e.Workspace.Name);
                 }
-                else
+                else // home workspace
                 {
-                    dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveNamedHomeWorkSpace, Path.GetFileName(e.Workspace.FileName));
+                    if (string.IsNullOrEmpty(e.Workspace.FileName))
+                    {
+                        dialogText = Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveHomeWorkSpace;
+                    }
+                    else
+                    {
+                        dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveNamedHomeWorkSpace, Path.GetFileName(e.Workspace.FileName));
+                    }
                 }
             }
 
@@ -772,7 +777,11 @@ namespace Dynamo.Controls
 
             if (result == MessageBoxResult.Yes)
             {
-                e.Success = dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
+                // If the file is read-only, redirect yes to save-as.
+                if (e.Workspace.IsReadOnly)
+                    dynamoViewModel.ShowSaveDialogAndSaveResult(e.Workspace);
+                else
+                    e.Success = dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
             }
             else if (result == MessageBoxResult.Cancel)
             {
@@ -1712,15 +1721,6 @@ namespace Dynamo.Controls
             {
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin -= loginService.ShowLogin;
             }
-        }
-    }
-
-    public static class DispatcherExtension
-    {
-        public static async void DelayInvoke(this Dispatcher ds, int delay, Action callback)
-        {
-            await Task.Delay(delay);
-            await ds.BeginInvoke(callback);
         }
     }
 }

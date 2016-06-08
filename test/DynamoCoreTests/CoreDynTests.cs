@@ -1,13 +1,12 @@
-﻿using System.Collections;
+﻿using CoreNodeModels;
+using CoreNodeModels.Input;
+using Dynamo.Graph.Nodes;
+using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using CoreNodeModels;
-using CoreNodeModels.Input;
-using Dynamo.Graph.Nodes;
-using NUnit.Framework;
-
 using String = System.String;
 
 
@@ -118,7 +117,7 @@ namespace Dynamo.Tests
         {
             RunModel(@"core\sequence\DefaultSequence.dyn");
             AssertPreviewValue("6d7f8652-6cf2-4749-b398-922992fa484b",
-                "_SingleFunctionObject");
+                "Function");
         }
 
         [Test]
@@ -126,7 +125,7 @@ namespace Dynamo.Tests
         {
             RunModel(@"core\range\DefaultRange.dyn");
             AssertPreviewValue("24323e5c-6d36-4b18-b99d-fa953eafeb73",
-                "_SingleFunctionObject");
+                "Function");
         }
 
         [Test]
@@ -384,6 +383,21 @@ namespace Dynamo.Tests
             BeginRun();
 
             AssertPreviewValue("4744f516-c6b5-421c-b7f1-1731610667bb", 25);
+        }
+
+        [Test]
+        public void CanOpenBadFile()
+        {
+            var examplePath = Path.Combine(TestDirectory, @"core\files");
+            string openPath = Path.Combine(examplePath, "Dummy.dyn");
+            try
+            {
+                OpenModel(openPath);
+            }
+            catch (System.Exception e)
+            {
+                Assert.IsTrue(e is System.Xml.XmlException);
+            }
         }
 
         [Test]

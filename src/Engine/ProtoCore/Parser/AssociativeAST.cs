@@ -13,6 +13,45 @@ using System.Globalization;
 
 namespace ProtoCore.AST.AssociativeAST
 {
+    public enum AstKind
+    {
+        Array,
+        ArrayName,
+        ArgumentSignature,
+        AtLevel,
+        BinaryExpression,
+        Boolean,
+        Char,
+        ClassDeclaration,
+        CodeBlock,
+        Comment,
+        Constructor,
+        DefaultArgument,
+        Double,
+        Dynamic,
+        DynamicBlock,
+        ExpressionList,
+        FunctionCall,
+        FunctionDefintion,
+        FunctionDotCall,
+        GroupExpression,
+        IdentifierList,
+        Identifier,
+        If,
+        Import,
+        InlineConditional,
+        Integer,
+        LanguageBlock,
+        Null,
+        RangeExpression,
+        ReplicationGuide,
+        String,
+        ThisPointer,
+        TypedIdentifier,
+        UnaryExpression,
+        VariableDeclaration
+    }
+
     public abstract class AssociativeNode : Node
     {
         public bool IsModifier;
@@ -30,6 +69,7 @@ namespace ProtoCore.AST.AssociativeAST
             IsProcedureOwned = rhs.IsProcedureOwned;
         }
 
+        public abstract AstKind Kind { get; }
         public abstract void Accept(AssociativeAstVisitor visitor);
         public abstract TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor);
     }
@@ -78,6 +118,14 @@ namespace ProtoCore.AST.AssociativeAST
                         Value = value.Substring(start + 2, end - start - 2);
                     }
                 }
+            }
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Comment;
             }
         }
 
@@ -166,6 +214,14 @@ namespace ProtoCore.AST.AssociativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.LanguageBlock;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitLanguageBlockNode(this);
@@ -232,6 +288,14 @@ namespace ProtoCore.AST.AssociativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ReplicationGuide;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitReplicationGuideNode(this);
@@ -240,6 +304,76 @@ namespace ProtoCore.AST.AssociativeAST
         public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
         {
             return visitor.VisitReplicationGuideNode(this);
+        }
+    }
+
+    public class AtLevelNode : AssociativeNode
+    {
+        public Int64 Level
+        {
+            get; set;
+        }
+
+        public bool IsDominant
+        {
+            get; set;
+        }
+
+        public AtLevelNode()
+        {
+            Level = 0;
+            IsDominant = false;
+        }
+
+        public AtLevelNode(AtLevelNode rhs)
+            : base(rhs)
+        {
+            if (rhs != null)
+            {
+                Level = rhs.Level;
+                IsDominant = rhs.IsDominant;
+            }
+        }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.AtLevel;
+            }
+        }
+        public override void Accept(AssociativeAstVisitor visitor)
+        {
+            visitor.VisitAtLevelNode(this);
+        }
+
+        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        {
+            return visitor.VisitAtLevelNode(this);
+        }
+        
+        public override bool Equals(object other)
+        {
+            var otherNode = other as AtLevelNode;
+            if (null == otherNode)
+                return false;
+
+            return Level == otherNode.Level && IsDominant == otherNode.IsDominant;
+        }
+
+        public override int GetHashCode()
+        {
+            return Level.GetHashCode() ^ IsDominant.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            var buf = new StringBuilder();
+            if (IsDominant)
+                buf.Append("@@");
+            else
+                buf.Append("@");
+            buf.Append(Level);
+            return buf.ToString();
         }
     }
 
@@ -252,6 +386,12 @@ namespace ProtoCore.AST.AssociativeAST
         }
 
         public List<AssociativeNode> ReplicationGuides
+        {
+            get;
+            set;
+        }
+
+        public AtLevelNode AtLevel
         {
             get;
             set;
@@ -277,6 +417,12 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 ReplicationGuides = rhs.ReplicationGuides.Select(NodeUtils.Clone).ToList();
             }
+
+            AtLevel = null;
+            if (rhs.AtLevel != null)
+            {
+                AtLevel = NodeUtils.Clone(rhs.AtLevel) as AtLevelNode;
+            }
         }
 
         public override bool Equals(object other)
@@ -291,13 +437,19 @@ namespace ProtoCore.AST.AssociativeAST
                 arrayDimEqual = EqualityComparer<ArrayNode>.Default.Equals(ArrayDimensions, otherNode.ArrayDimensions);
             }
 
+            bool atLevelEquals = (AtLevel == null && otherNode.AtLevel == null);
+            if (AtLevel != null && otherNode.AtLevel != null)
+            {
+                atLevelEquals = AtLevel.Equals(otherNode.AtLevel);
+            }
+
             bool repGuidesEqual = (null == ReplicationGuides && null == otherNode.ReplicationGuides);
             if (null != ReplicationGuides && null != otherNode.ReplicationGuides)
             {
                 repGuidesEqual = ReplicationGuides.SequenceEqual(otherNode.ReplicationGuides);
             }
 
-            return arrayDimEqual && repGuidesEqual;
+            return arrayDimEqual && atLevelEquals && repGuidesEqual;
         }
 
         public override int GetHashCode()
@@ -317,9 +469,20 @@ namespace ProtoCore.AST.AssociativeAST
             if (ArrayDimensions != null)
                 buf.Append(ArrayDimensions.ToString());
 
+            if (AtLevel != null)
+                buf.Append(AtLevel.ToString());
+
             ReplicationGuides.ForEach(x => buf.Append("<" + x.ToString() + ">"));
 
             return buf.ToString();
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ArrayName;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -373,6 +536,14 @@ namespace ProtoCore.AST.AssociativeAST
             return "(" + Expression + ")" + base.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.GroupExpression;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitGroupExpressionNode(this);
@@ -388,7 +559,7 @@ namespace ProtoCore.AST.AssociativeAST
     {
         public IdentifierNode(string identName = null)
         {
-            datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);
+            datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.InvalidType, 0);
             Value = Name = identName;
         }
 
@@ -444,6 +615,13 @@ namespace ProtoCore.AST.AssociativeAST
         {
             return Value.Replace("%", string.Empty) + base.ToString();
         }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Identifier;
+            }
+        }
 
         public override void Accept(AssociativeAstVisitor visitor)
         {
@@ -471,7 +649,13 @@ namespace ProtoCore.AST.AssociativeAST
         {
             return base.ToString() + " : " + datatype;
         }
-
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.TypedIdentifier;
+            }
+        }
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitTypedIdentifierNode(this);
@@ -545,6 +729,14 @@ namespace ProtoCore.AST.AssociativeAST
             return LeftNode + "." + RightNode;
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.IdentifierList;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitIdentifierListNode(this);
@@ -588,6 +780,14 @@ namespace ProtoCore.AST.AssociativeAST
         public override string ToString()
         {
             return Value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Integer;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -636,6 +836,14 @@ namespace ProtoCore.AST.AssociativeAST
         public override string ToString()
         {
             return Value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Double;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -689,6 +897,13 @@ namespace ProtoCore.AST.AssociativeAST
             return (Value ? "true" : "false");
 
         }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Boolean;
+            }
+        }
 
         public override void Accept(AssociativeAstVisitor visitor)
         {
@@ -735,6 +950,14 @@ namespace ProtoCore.AST.AssociativeAST
         public override string ToString()
         {
             return "'" + Value + "'";
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Char;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -785,6 +1008,14 @@ namespace ProtoCore.AST.AssociativeAST
             return "\"" + Value + "\"";
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.String;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitStringNode(this);
@@ -816,6 +1047,14 @@ namespace ProtoCore.AST.AssociativeAST
         public override string ToString()
         {
             return Keyword.Null;
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Null;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -950,6 +1189,14 @@ namespace ProtoCore.AST.AssociativeAST
             return buf.ToString();
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.FunctionCall;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitFunctionCallNode(this);
@@ -1032,6 +1279,14 @@ namespace ProtoCore.AST.AssociativeAST
             buf.Append(".");
             buf.Append(FunctionCall);
             return buf.ToString();
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.FunctionDotCall;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -1117,6 +1372,14 @@ namespace ProtoCore.AST.AssociativeAST
             return argumentTypeHashCode ^ nameNodeHashCode ^ isStaticHashCode;
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.VariableDeclaration;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitVarDeclNode(this);
@@ -1176,6 +1439,13 @@ namespace ProtoCore.AST.AssociativeAST
 
             return argumentsHashCode;
         }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ArgumentSignature;
+            }
+        }
 
         public override void Accept(AssociativeAstVisitor visitor)
         {
@@ -1233,6 +1503,14 @@ namespace ProtoCore.AST.AssociativeAST
                 buf.Append(Body[i].ToString());
             }
             return buf.ToString();
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.CodeBlock;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -1359,6 +1637,13 @@ namespace ProtoCore.AST.AssociativeAST
             return classNameHashCode ^ superClassHashCode ^ 
                 varlistHashCode ^ attributesHashCode ^ funclistHashCode;
         }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ClassDeclaration;
+            }
+        }
 
         public override void Accept(AssociativeAstVisitor visitor)
         {
@@ -1401,7 +1686,7 @@ namespace ProtoCore.AST.AssociativeAST
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
 
         /// <summary>
-        /// Gets/Sets description for the method.
+        /// Returns/Sets description for the method.
         /// </summary>
         public string Description { get; set; }
 
@@ -1436,7 +1721,6 @@ namespace ProtoCore.AST.AssociativeAST
     public class ConstructorDefinitionNode : AssociativeNode
     {
         public int LocalVariableCount { get; set; }
-        public List<AssociativeNode> Attributes { get; set; }
         public ArgumentSignatureNode Signature { get; set; }
         public Type ReturnType { get; set; }
         public CodeBlockNode FunctionBody { get; set; }
@@ -1454,10 +1738,6 @@ namespace ProtoCore.AST.AssociativeAST
             : base(rhs)
         {
             LocalVariableCount = rhs.LocalVariableCount;
-
-            Attributes = new List<AssociativeNode>();
-            if (null != rhs.Attributes)
-                Attributes.AddRange(rhs.Attributes.Select(NodeUtils.Clone));
 
             if (null != rhs.Signature)
                 Signature = NodeUtils.Clone(rhs.Signature) as ArgumentSignatureNode;
@@ -1511,8 +1791,7 @@ namespace ProtoCore.AST.AssociativeAST
             return LocalVariableCount == otherNode.LocalVariableCount &&
                    EqualityComparer<ArgumentSignatureNode>.Default.Equals(Signature, otherNode.Signature) &&
                    ReturnType.Equals(otherNode.ReturnType) &&
-                   EqualityComparer<CodeBlockNode>.Default.Equals(FunctionBody, otherNode.FunctionBody) &&
-                   Attributes.SequenceEqual(otherNode.Attributes); 
+                   EqualityComparer<CodeBlockNode>.Default.Equals(FunctionBody, otherNode.FunctionBody); 
         }
 
         public override int GetHashCode()
@@ -1523,11 +1802,15 @@ namespace ProtoCore.AST.AssociativeAST
             var returnTypeHashCode = ReturnType.GetHashCode();
             var functionBodyHashCode =
                 (FunctionBody == null ? base.GetHashCode() : FunctionBody.GetHashCode());
-            var attributesHashCode =
-                (Attributes == null ? base.GetHashCode() : Attributes.GetHashCode());
 
-            return localVarsHashCode ^ signatureHashCode ^
-                returnTypeHashCode ^ functionBodyHashCode ^ attributesHashCode;
+            return localVarsHashCode ^ signatureHashCode ^ returnTypeHashCode ^ functionBodyHashCode;
+        }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Constructor;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -1547,11 +1830,9 @@ namespace ProtoCore.AST.AssociativeAST
         public Type ReturnType { get; set; }
         public List<AssociativeNode> Attributes { get; set; }
         public ArgumentSignatureNode Signature { get; set; }
-        public AssociativeNode Pattern { get; set; }
         public bool IsExternLib { get; set; }
         public bool IsBuiltIn { get; set; }
         public BuiltInMethods.MethodID BuiltInMethodId { get; set; }
-        public bool IsDNI { get; set; }
         public string ExternLibName { get; set; }
         public CompilerDefinitions.AccessModifier Access { get; set; }
         public bool IsStatic { get; set; }
@@ -1562,7 +1843,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public FunctionDefinitionNode()
         {
-            BuiltInMethodId = BuiltInMethods.MethodID.kInvalidMethodID;
+            BuiltInMethodId = BuiltInMethods.MethodID.InvalidMethodID;
             IsAutoGenerated = false;
             IsAutoGeneratedThisProc = false;
 
@@ -1572,8 +1853,6 @@ namespace ProtoCore.AST.AssociativeAST
 
             IsBuiltIn = false;
             Signature = new ArgumentSignatureNode();
-
-            Attributes = new List<AssociativeNode>();
         }
 
         public FunctionDefinitionNode(FunctionDefinitionNode rhs)
@@ -1585,12 +1864,9 @@ namespace ProtoCore.AST.AssociativeAST
 
             ReturnType = rhs.ReturnType;
 
-            Attributes = rhs.Attributes;
             Signature = new ArgumentSignatureNode(rhs.Signature);
-            Pattern = rhs.Pattern;
             IsExternLib = rhs.IsExternLib;
             BuiltInMethodId = rhs.BuiltInMethodId;
-            IsDNI = rhs.IsDNI;
             ExternLibName = rhs.ExternLibName;
             Access = rhs.Access;
             IsStatic = rhs.IsStatic;
@@ -1611,7 +1887,6 @@ namespace ProtoCore.AST.AssociativeAST
 
             bool equalSignature = EqualityComparer<ArgumentSignatureNode>.Default.Equals(Signature, otherNode.Signature) 
                 && ReturnType.Equals(otherNode.ReturnType) 
-                && Attributes.SequenceEqual(otherNode.Attributes)
                 && Name.Equals(otherNode.Name);
 
             bool equalBody = FunctionBody.Equals(otherNode.FunctionBody);
@@ -1624,11 +1899,8 @@ namespace ProtoCore.AST.AssociativeAST
             var signatureHashCode =
                 (Signature == null ? base.GetHashCode() : Signature.GetHashCode());
             var returnTypeHashCode = ReturnType.GetHashCode();
-            var attributesHashCode =
-                (Attributes == null ? base.GetHashCode() : Attributes.GetHashCode());
 
-            return  signatureHashCode ^
-                returnTypeHashCode ^ attributesHashCode;
+            return  signatureHashCode ^ returnTypeHashCode;
         }
 
         public override string ToString()
@@ -1659,6 +1931,13 @@ namespace ProtoCore.AST.AssociativeAST
                 buf.Append(Constants.termline);
 
             return buf.ToString();
+        }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.FunctionDefintion;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -1705,6 +1984,14 @@ namespace ProtoCore.AST.AssociativeAST
                 (ElseBody == null ? base.GetHashCode() : ElseBody.GetHashCode());
 
             return ifExprNodeHashCode ^ ifBodyHashCode ^ elseBodyHashCode;
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.If;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -1778,6 +2065,13 @@ namespace ProtoCore.AST.AssociativeAST
 
             return buf.ToString();
         }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.InlineConditional;
+            }
+        }
 
         public override void Accept(AssociativeAstVisitor visitor)
         {
@@ -1794,8 +2088,7 @@ namespace ProtoCore.AST.AssociativeAST
     {
         public int SSAExpressionUID { get; set; }
         public int ExpressionUID { get; set; }
-        public int ssaExprID { get; set; }
-        public int modBlkUID { get; set; }
+        public int SSASubExpressionID { get; set; }
         public Guid guid { get; set; }
         public int OriginalAstID { get; set; }    // The original AST that this Binarynode was derived from
         public bool isSSAAssignment { get; set; }
@@ -1804,7 +2097,6 @@ namespace ProtoCore.AST.AssociativeAST
         public AssociativeNode LeftNode { get; set; }
         public Operator Optr { get; set; }
         public AssociativeNode RightNode { get; set; }
-        public bool IsInputExpression { get; set; }
         public bool isSSAPointerAssignment { get; set; }
         public bool IsFirstIdentListNode { get; set; }
 
@@ -1820,13 +2112,11 @@ namespace ProtoCore.AST.AssociativeAST
             isSSAFirstAssignment = false;
             isMultipleAssign = false;
             ExpressionUID = Constants.kInvalidIndex;
-            modBlkUID = Constants.kInvalidIndex;
             OriginalAstID = ID;
             guid = System.Guid.Empty;
             LeftNode = left;
             Optr = optr;
             RightNode = right;
-            IsInputExpression = false;
             IsFirstIdentListNode = false;
         }
 
@@ -1837,7 +2127,6 @@ namespace ProtoCore.AST.AssociativeAST
             isSSAFirstAssignment = rhs.isSSAFirstAssignment;
             isMultipleAssign = rhs.isMultipleAssign;
             ExpressionUID = rhs.ExpressionUID;
-            modBlkUID = rhs.modBlkUID;
             guid = rhs.guid;
             OriginalAstID = rhs.OriginalAstID;
 
@@ -1848,7 +2137,6 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 RightNode = NodeUtils.Clone(rhs.RightNode);
             }
-            IsInputExpression = rhs.IsInputExpression;
             IsFirstIdentListNode = rhs.IsFirstIdentListNode;
         }
 
@@ -1866,14 +2154,12 @@ namespace ProtoCore.AST.AssociativeAST
              isSSAFirstAssignment = false;
              isMultipleAssign = false;
              ExpressionUID = Constants.kInvalidIndex;
-             modBlkUID = Constants.kInvalidIndex;
              OriginalAstID = ID;
              guid = System.Guid.Empty;
             
              Optr = Operator.assign;
              LeftNode = lhs;
              RightNode = NodeUtils.Clone(rhs);
-             IsInputExpression = false;
              IsFirstIdentListNode = false;
              
          }
@@ -1928,6 +2214,13 @@ namespace ProtoCore.AST.AssociativeAST
 
             return buf.ToString();
         }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.BinaryExpression;
+            }
+        }
 
         public override void Accept(AssociativeAstVisitor visitor)
         {
@@ -1967,6 +2260,14 @@ namespace ProtoCore.AST.AssociativeAST
             return operatorHashCode ^ expressionHashCode;
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.UnaryExpression;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitUnaryExpressionNode(this);
@@ -1975,148 +2276,6 @@ namespace ProtoCore.AST.AssociativeAST
         public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
         {
             return visitor.VisitUnaryExpressionNode(this);
-        }
-    }
-
-    public class ModifierStackNode : AssociativeNode
-    {
-        public ModifierStackNode()
-        {
-            ElementNodes = new List<AssociativeNode>();
-        }
-
-        public ModifierStackNode(ModifierStackNode rhs)
-            : base(rhs)
-        {
-            ElementNodes = rhs.ElementNodes.Select(NodeUtils.Clone).ToList();
-
-            ReturnNode = null;
-            if (null != rhs.ReturnNode)
-                ReturnNode = NodeUtils.Clone(rhs.ReturnNode);
-        }
-
-        public IdentifierNode CreateIdentifierNode(Token token, AssociativeNode leftNode)
-        {
-            if (null == token || (string.IsNullOrEmpty(token.val)))
-                return null;
-
-            var leftIdentifier = leftNode as IdentifierNode;
-            if (null == leftIdentifier)
-                return null;
-
-            var identNode = new IdentifierNode
-            {
-                Value = token.val,
-                Name = token.val,
-                datatype = leftIdentifier.datatype
-            };
-
-            NodeUtils.SetNodeLocation(identNode, token);
-            return identNode;
-        }
-
-        public IdentifierNode CreateIdentifierNode(AssociativeNode leftNode, Core core)
-        {
-            var leftIdentifier = leftNode as IdentifierNode;
-            if (null == leftIdentifier)
-                return null;
-
-            string modifierName = leftIdentifier.Name;
-            string stackName = core.GetModifierBlockTemp(modifierName);
-            var identNode = new IdentifierNode
-            {
-                Value = stackName,
-                Name = stackName,
-                datatype = leftIdentifier.datatype
-            };
-
-            return identNode;
-        }
-
-        public BinaryExpressionNode AddElementNode(AssociativeNode n, IdentifierNode identNode)
-        {
-            var o = n as BinaryExpressionNode;
-            var elementNode = new BinaryExpressionNode
-            {
-                LeftNode = identNode,
-                RightNode = o.RightNode,
-                Optr = Operator.assign
-            };
-
-            if (Constants.kInvalidIndex == identNode.line)
-            {
-                // If the identifier was created as a temp, then we don't have the 
-                // corresponding source code location. In that case we'll just use 
-                // the entire "RightNode" as the location indicator.
-                NodeUtils.CopyNodeLocation(elementNode, elementNode.RightNode);
-            }
-            else
-            {
-                // If we do have the name explicitly specified, then we have just 
-                // the right location we're after. Only catch here is, for the case 
-                // of "foo() => a2", the "RightNode" would have been "foo()" and 
-                // the "LeftNode" would have been "a2". So in order to set the 
-                // right start and end column, we need these two swapped.
-                NodeUtils.SetNodeLocation(elementNode, elementNode.RightNode, elementNode.LeftNode);
-            }
-
-            ElementNodes.Add(elementNode);
-            return elementNode;
-
-            // TODO: For TP1 we are temporarily updating the modifier block variable 
-            // only for its final state instead of updating it for each of its states
-            // (which is what we eventually wish to do). This is in order to make MB's behave
-            // properly when assigned to class properties - pratapa
-            /*BinaryExpressionNode e2 = new BinaryExpressionNode();
-            e2.LeftNode = o.LeftNode as IdentifierNode;
-            e2.RightNode = e1.LeftNode;
-            e2.Optr = ProtoCore.DSASM.Operator.assign;
-            ElementNodes.Add(e2);*/
-        }
-
-        public List<AssociativeNode> ElementNodes { get; private set; }
-        public AssociativeNode ReturnNode { get; set; }
-
-        public override bool Equals(object other)
-        {
-            var otherNode = other as ModifierStackNode;
-            if (null == otherNode)
-                return false;
-
-            return ReturnNode.Equals(otherNode.ReturnNode) &&
-                   ElementNodes.SequenceEqual(otherNode.ElementNodes);
-        }
-
-        public override int GetHashCode()
-        {
-            var returnNodeHashCode =
-                (ReturnNode == null ? base.GetHashCode() : ReturnNode.GetHashCode());
-            var elementNodesHashCode =
-                (ElementNodes == null ? base.GetHashCode() : ElementNodes.GetHashCode());
-
-            return returnNodeHashCode ^ elementNodesHashCode;
-        }
-
-        public override string ToString()
-        {
-            var buf = new StringBuilder();
-
-            buf.Append("{");
-            if (ElementNodes != null) 
-                ElementNodes.ForEach(e => buf.AppendLine(e.ToString() + ";"));
-            buf.Append("}");
-
-            return buf.ToString();
-        }
-
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitModifierStackNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
-        {
-            return visitor.VisitModifierStackNode(this);
         }
     }
 
@@ -2211,6 +2370,13 @@ namespace ProtoCore.AST.AssociativeAST
 
             return buf.ToString();
         }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.RangeExpression;
+            }
+        }
 
         public override void Accept(AssociativeAstVisitor visitor)
         {
@@ -2269,6 +2435,13 @@ namespace ProtoCore.AST.AssociativeAST
             buf.Append(base.ToString());
 
             return buf.ToString();
+        }
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ExpressionList;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -2348,6 +2521,14 @@ namespace ProtoCore.AST.AssociativeAST
                 buf.Append(Type);
 
             return buf.ToString();
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Array;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -2430,6 +2611,14 @@ namespace ProtoCore.AST.AssociativeAST
             return Keyword.Import + "(\"" + ModuleName + "\")" + Constants.termline;
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Import;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitImportNode(this);
@@ -2443,6 +2632,14 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class DefaultArgNode : AssociativeNode
     {// not supposed to be used in parser 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.DefaultArgument;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitDefaultArgNode(this);
@@ -2462,6 +2659,14 @@ namespace ProtoCore.AST.AssociativeAST
 
         public DynamicNode(DynamicNode rhs) : base(rhs)
         {
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.Dynamic;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -2499,6 +2704,14 @@ namespace ProtoCore.AST.AssociativeAST
             return blockHashCode;
         }
 
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.DynamicBlock;
+            }
+        }
+
         public override void Accept(AssociativeAstVisitor visitor)
         {
             visitor.VisitDynamicBlockNode(this);
@@ -2533,6 +2746,14 @@ namespace ProtoCore.AST.AssociativeAST
         public override int GetHashCode()
         {
             return 10037;
+        }
+
+        public override AstKind Kind
+        {
+            get
+            {
+                return AstKind.ThisPointer;
+            }
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -2631,7 +2852,6 @@ namespace ProtoCore.AST.AssociativeAST
             };
             return cond;
         }
-
 
         //Due to the lack of var arg support for generic types, we need to do
         //the manual type expansions
@@ -2930,24 +3150,12 @@ namespace ProtoCore.AST.AssociativeAST
                                                                  AssociativeNode rhs,
                                                                  Operator op)
         {
-            if (lhs == null)
-                throw new ArgumentNullException("lhs");
-
-            if (rhs == null)
-                throw new ArgumentNullException("rhs");
-
             return new BinaryExpressionNode(lhs, rhs, op);
         }
 
         public static BinaryExpressionNode BuildAssignment(AssociativeNode lhs,
                                                            AssociativeNode rhs)
         {
-            if (lhs == null)
-                throw new ArgumentNullException("lhs");
-
-            if (rhs == null)
-                throw new ArgumentNullException("rhs");
-
             return new BinaryExpressionNode(lhs, rhs, Operator.assign);
         }
 
@@ -2958,7 +3166,7 @@ namespace ProtoCore.AST.AssociativeAST
 
             return BuildParamNode(
                 paramName,
-                TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0));
+                TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0));
         }
 
         public static VarDeclNode BuildParamNode(string paramName, Type type)
@@ -3027,7 +3235,7 @@ namespace ProtoCore.AST.AssociativeAST
                 AstFactory.BuildBooleanNode(true)
             };
 
-            return BuildFunctionCall("_SingleFunctionObject", inputParams);
+            return BuildFunctionCall("Function", inputParams);
         }
 
         /// <summary>
@@ -3078,18 +3286,6 @@ namespace ProtoCore.AST.AssociativeAST
             to.line = from.line;
             to.endLine = from.endLine;
             to.skipMe = from.skipMe;
-        }
-
-        public static ImperativeAST.ArgumentSignatureNode ToImperativeNode(this ArgumentSignatureNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.ArgumentSignatureNode
-            {
-                Arguments = aNode.Arguments.Select(ToImperativeNode).ToList()
-            };
-            CopyProps(aNode, result);
-            return result;
         }
 
         public static ImperativeAST.ArrayNameNode ToImperativeNode(this ArrayNameNode aNode)
@@ -3182,15 +3378,6 @@ namespace ProtoCore.AST.AssociativeAST
             return result;
         }
 
-        public static ImperativeAST.DefaultArgNode ToImperativeNode(this DefaultArgNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.DefaultArgNode();
-            CopyProps(aNode, result);
-            return result;
-        }
-
         public static ImperativeAST.DoubleNode ToImperativeNode(this DoubleNode aNode)
         {
             if (aNode == null) return null;
@@ -3222,21 +3409,6 @@ namespace ProtoCore.AST.AssociativeAST
                 ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
                 FormalArguments = aNode.FormalArguments.Select(ToImperativeAST).ToList(),
                 Function = aNode.Function.ToImperativeAST()
-            };
-            CopyProps(aNode, result);
-            return result;
-        }
-
-        public static ImperativeAST.FunctionDefinitionNode ToImperativeNode(this FunctionDefinitionNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.FunctionDefinitionNode
-            {
-                Attributes = aNode.Attributes.Select(ToImperativeAST).ToList(),
-                FunctionBody = aNode.FunctionBody.ToImperativeNode(),
-                ReturnType = aNode.ReturnType,
-                Signature = aNode.Signature.ToImperativeNode()
             };
             CopyProps(aNode, result);
             return result;
@@ -3378,19 +3550,6 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 Expression = aNode.Expression.ToImperativeAST(),
                 Operator = aNode.Operator
-            };
-            CopyProps(aNode, result);
-            return result;
-        }
-
-        public static ImperativeAST.VarDeclNode ToImperativeNode(this VarDeclNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.VarDeclNode
-            {
-                ArgumentType = aNode.ArgumentType,
-                NameNode = aNode.NameNode.ToImperativeAST()
             };
             CopyProps(aNode, result);
             return result;

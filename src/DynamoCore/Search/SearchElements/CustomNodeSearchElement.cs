@@ -16,8 +16,12 @@ namespace Dynamo.Search.SearchElements
     public class CustomNodeSearchElement : NodeSearchElement
     {
         private readonly ICustomNodeSource customNodeManager;
-        public Guid ID { get; private set; }
         private string path;
+
+        /// <summary>
+        ///     Returns identifier of the custom node
+        /// </summary>
+        public Guid ID { get; private set; }
 
         /// <summary>
         ///     Path to this custom node in disk, used in the Edit context menu.
@@ -30,8 +34,13 @@ namespace Dynamo.Search.SearchElements
                 if (value == path) return;
                 path = value;
             }
-        }         
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomNodeSearchElement"/> class.
+        /// </summary>
+        /// <param name="customNodeManager">Custom node manager</param>
+        /// <param name="info">Custom node info</param>
         public CustomNodeSearchElement(ICustomNodeSource customNodeManager, CustomNodeInfo info)
         {
             this.customNodeManager = customNodeManager;
@@ -43,7 +52,7 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         ///     Updates the properties of this search element.
         /// </summary>
-        /// <param name="info"></param>        
+        /// <param name="info">Actual data of custom node</param>        
         public void SyncWithCustomNodeInfo(CustomNodeInfo info)
         {
             ID = info.FunctionId;
@@ -109,7 +118,7 @@ namespace Dynamo.Search.SearchElements
             TryLoadDocumentation();
 
             if (!inputParameters.Any())
-                inputParameters.Add(Tuple.Create("", "none"));
+                inputParameters.Add(Tuple.Create(String.Empty, Properties.Resources.NoneString));
 
             return inputParameters;
         }
@@ -119,7 +128,7 @@ namespace Dynamo.Search.SearchElements
             TryLoadDocumentation();
 
             if (!outputParameters.Any())
-                outputParameters.Add("none");
+                outputParameters.Add(Properties.Resources.NoneString);
 
             return outputParameters;
         }

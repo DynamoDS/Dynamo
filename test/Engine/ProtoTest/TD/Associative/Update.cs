@@ -99,7 +99,8 @@ e1 = foo3(a);
         public void T004_Update_In_Function_Call_2()
         {
             string errmsg = "";//1467302 - rev 3778 : invalid cyclic dependency detected";
-            string src = @"def foo1 ( a : int ) 
+            string src = @"
+def foo1 ( a : int ) 
 {
     return = a + 1;
 }
@@ -122,10 +123,10 @@ a[1] = a[1] + 1;";
             Object[] v1 = new Object[] { 13, 12, 12, 13, 14 };
             Object[] v2 = new Object[] { 14, 13, 13, 14, 15 };
             Object[] v3 = new Object[] { 10, 12, 12, 13, 14 };
-            thisTest.Verify("a", v3, 0);
-            thisTest.Verify("e1", v1, 0);
-            thisTest.Verify("b", v1, 0);
-            thisTest.Verify("c", v2, 0);
+            thisTest.Verify("a", v3);
+            thisTest.Verify("e1", v1);
+            thisTest.Verify("b", 10);
+            thisTest.Verify("c", 11);
         }
 
         [Test]
@@ -325,7 +326,7 @@ t1 = 5.5;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification
             thisTest.Verify("b", 3, 0);
-            Assert.IsTrue(mirror.GetValue("t2").DsasmValue.IsNull);
+            thisTest.Verify("t2", null);
         }
 
         [Test]
@@ -393,11 +394,11 @@ r1 = true;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification         
-            Assert.IsTrue(mirror.GetValue("p2").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("q2").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("s2").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("t2").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("r2").DsasmValue.IsNull);
+            thisTest.Verify("p2", null);
+            thisTest.Verify("q2", null);
+            thisTest.Verify("s2", null);
+            thisTest.Verify("t2", null);
+            thisTest.Verify("r2", null);
 
         }
 
@@ -417,8 +418,8 @@ t1 = TestObjectA.TestObjectA(5);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verification      
-            Assert.IsTrue(mirror.GetValue("t2").DsasmValue.IsNull);
-            Assert.IsTrue(mirror.GetValue("r2").DsasmValue.IsNull);
+            thisTest.Verify("t2", null);
+            thisTest.Verify("r2", null);
 
         }
 
@@ -1174,7 +1175,7 @@ test1 = b1.a2[0];
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467116 Sprint24 : rev 2806 : Cross language update issue");
             //Verification   
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.CyclicDependency);
         }
 
         [Test]
@@ -1329,21 +1330,13 @@ c1 = x.c;
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4020
             string errmsg = "MAGN-4020 Update of global variables from inside function call is not happening as expected";
-            string src = @"def foo ()
-{
-	a = 0..4..1;
-	b = a;
-	c = b[2];
-	a = 10..14..1;
-	b[2] = b[2] + 1;
-	a[2] = a[2] + 1;
-	return = true;
-	
-}
-a :int[];
-b : int[];
-c : int;
-test = foo();
+            string src = @"
+a = 0..4..1;
+b = a;
+c = b[2];
+a = 10..14..1;
+b[2] = b[2] + 1;
+a[2] = a[2] + 1;
 ";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(src, errmsg);
             //Verification   
@@ -1614,23 +1607,6 @@ x3 = [Imperative]
             thisTest.Verify("x2", v2);
             thisTest.Verify("x3", v2);
             thisTest.Verify("x4", v2);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        [Category("ModifierBlock")] 
-        public void T028_Modifier_Stack_Simple()
-        {
-            string code = @"
-a = {
-     2 ;
-    +4;
-    +3;                                
-} //expected : a = 9; received : 13
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-
-            thisTest.Verify("a", 9);
         }
 
         [Test]
@@ -2060,7 +2036,7 @@ b = 1;
 a = b + 1;
 b = a;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency);
             Object n1 = null;
             thisTest.Verify("a", n1);
             thisTest.Verify("b", n1);
@@ -2088,7 +2064,7 @@ a1;
 	a1[0] = b1;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency);
+            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency);
             Object n1 = null;
             thisTest.Verify("a1", n1);
         }

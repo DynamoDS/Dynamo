@@ -19,19 +19,47 @@ namespace Dynamo.Configuration
     /// </summary>
     public class PreferenceSettings : NotificationObject, IPreferences
     {
-        public const int DefaultMaxNumRecentFiles = 10;
-        public static string DynamoTestPath = null;
         private string numberFormat;
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
+
+        /// <summary>
+        /// Indicates the maximum number of files shown in Recent Files
+        /// </summary>
+        internal const int DefaultMaxNumRecentFiles = 10;
+
+        /// <summary>
+        /// Temp PreferenceSetting Location for testing
+        /// </summary>
+        public static string DynamoTestPath = null;
+
+        /// <summary>
+        /// Default date format
+        /// </summary>
         public const string DefaultDateFormat = "MMMM dd, yyyy h:mm tt";
+
+        /// <summary>
+        /// Default time
+        /// </summary>
         public static readonly System.DateTime DynamoDefaultTime = new System.DateTime(1977, 4, 12, 12, 12, 0, 0);
 
         // Variables of the settings that will be persistent
 
         #region Collect Information Settings
+
+        /// <summary>
+        /// Indicates first run
+        /// </summary>
         public bool IsFirstRun { get; set; }
+
+        /// <summary>
+        /// Indicates whether usage reporting is approved or not.
+        /// </summary>
         public bool IsUsageReportingApproved { get; set; }
+
+        /// <summary>
+        /// Indicates whether analytics reporting is approved or not.
+        /// </summary>
         public bool IsAnalyticsReportingApproved { get; set; }
         #endregion
 
@@ -46,6 +74,11 @@ namespace Dynamo.Configuration
         public int ConsoleHeight { get; set; }
 
         /// <summary>
+        /// Indicates if preview bubbles should be displayed on nodes.
+        /// </summary>
+        public bool ShowPreviewBubbles { get; set; }
+
+        /// <summary>
         /// Should connectors be visible?
         /// </summary>
         public bool ShowConnector { get; set; }
@@ -56,9 +89,46 @@ namespace Dynamo.Configuration
         public ConnectorType ConnectorType { get; set; }
 
         /// <summary>
-        /// Should the background 3D preview be shown?
+        /// Collection of pairs [BackgroundPreviewName;isActive]
         /// </summary>
-        public bool IsBackgroundPreviewActive { get; set; }
+        public List<BackgroundPreviewActiveState> BackgroundPreviews { get; set; }
+
+        /// <summary>
+         /// Returns active state of specified background preview 
+         /// </summary>
+         /// <param name="name">Background preview name</param>
+         /// <returns>The active state</returns>
+        public bool GetIsBackgroundPreviewActive(string name)
+        {
+            var pair = GetBackgroundPreviewData(name);
+
+            return pair.IsActive;
+        }
+
+        /// <summary>
+        /// Sets active state of specified background preview 
+        /// </summary>
+        /// <param name="name">Background preview name</param>
+        /// <param name="value">Active state</param>
+        public void SetIsBackgroundPreviewActive(string name, bool value)
+        {
+            var pair = GetBackgroundPreviewData(name);
+
+            pair.IsActive = value;
+        }
+
+        private BackgroundPreviewActiveState GetBackgroundPreviewData(string name)
+        {
+            // find or create BackgroundPreviewActiveState instance in list by name
+            var pair = BackgroundPreviews.FirstOrDefault(p => p.Name == name)
+                ?? new BackgroundPreviewActiveState { Name = name };
+            if (!BackgroundPreviews.Contains(pair))
+            {
+                BackgroundPreviews.Add(pair);
+            }
+
+            return pair;
+        }
 
         /// <summary>
         /// Should the background grid be shown?
@@ -171,11 +241,15 @@ namespace Dynamo.Configuration
         /// </summary>
         public bool ShowDetailedLayout { get; set; }
 
+        /// <summary>
         /// Indicates the default state of the "Open in Manual Mode"
         /// checkbox in OpenFileDialog
         /// </summary>
         public bool OpenFileInManualExecutionMode { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PreferenceSettings"/> class.
+        /// </summary>
         public PreferenceSettings()
         {
             RecentFiles = new List<string>();
@@ -183,15 +257,16 @@ namespace Dynamo.Configuration
             WindowW = 1024;
             WindowY = 0.0;
             WindowX = 0.0;
+            BackgroundPreviews = new List<BackgroundPreviewActiveState>();
 
             // Default Settings
             IsFirstRun = true;
             IsUsageReportingApproved = false;
             LibraryWidth = 304;
             ConsoleHeight = 0;
+            ShowPreviewBubbles = true;
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
-            IsBackgroundPreviewActive = true;
             IsBackgroundGridVisible = true;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
@@ -210,7 +285,7 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Save PreferenceSettings in XML File Path if possible,
+        /// Saves PreferenceSettings in XML File Path if possible,
         /// else return false
         /// </summary>
         /// <param name="filePath">Path of the XML File</param>
@@ -237,7 +312,7 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Save PreferenceSettings in a default directory when no path is 
+        /// Saves PreferenceSettings in a default directory when no path is 
         /// specified.
         /// </summary>
         /// <param name="preferenceFilePath">The file path to save preference
@@ -255,7 +330,7 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Return PreferenceSettings from XML path if possible,
+        /// Returns PreferenceSettings from XML path if possible,
         /// else return PreferenceSettings with default values
         /// </summary>
         /// <param name="filePath">Path of the XML File</param>

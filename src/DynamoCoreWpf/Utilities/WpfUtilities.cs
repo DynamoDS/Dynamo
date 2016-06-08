@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace Dynamo.Utilities
 {
@@ -84,5 +87,17 @@ namespace Dynamo.Utilities
               element.TransformToVisual(relativeTo)
                      .TransformBounds(LayoutInformation.GetLayoutSlot(element));
         }
+
+        /// <summary>
+        /// Calls Dispatcher event after some delay.
+        /// </summary>        
+        /// <param name="delay">delay in milliseconds</param>
+        /// <param name="callback">action to be called</param>
+        public static async void DelayInvoke(this Dispatcher ds, int delay, Action callback)
+        {
+            await Task.Delay(delay);
+            await ds.BeginInvoke(callback);
+        }
+
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Xml;
-using Dynamo.Graph;
+﻿using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -13,17 +8,19 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Interfaces;
+using Dynamo.Library;
+using Dynamo.Logging;
 using Dynamo.Migration;
 using Dynamo.Models;
+using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.Logging;
-using ProtoCore.AST;
-using ProtoCore.Namespace;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml;
 using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
-using Dynamo.Library;
-using Dynamo.Properties;
 
 namespace Dynamo.Core
 {
@@ -34,6 +31,11 @@ namespace Dynamo.Core
     /// </summary>
     public class CustomNodeManager : LogSourceBase, ICustomNodeSource, ICustomNodeManager
     {
+        /// <summary>
+        /// This function creates CustomNodeManager
+        /// </summary>
+        /// <param name="nodeFactory">NodeFactory</param>
+        /// <param name="migrationManager">MigrationManager</param>
         public CustomNodeManager(NodeFactory nodeFactory, MigrationManager migrationManager)
         {
             this.nodeFactory = nodeFactory;
@@ -76,7 +78,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Gets custom node workspace by a specified custom node ID
+        /// Returns custom node workspace by a specified custom node ID
         /// </summary>
         /// <param name="customNodeId">Custom node ID of a requested workspace</param>
         /// <returns>Custom node workspace by a specified ID</returns>
@@ -218,7 +220,7 @@ namespace Dynamo.Core
         }
 
         /// <summary> 
-        ///     Get a function id from a guid assuming that the file is already loaded.
+        ///     Returns a function id from a guid assuming that the file is already loaded.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -280,7 +282,7 @@ namespace Dynamo.Core
         ///     disk.
         /// </summary>
         /// <param name="guid">Custom node identifier.</param>
-        public bool Uninitialize(Guid guid)
+        internal bool Uninitialize(Guid guid)
         {
             CustomNodeWorkspaceModel ws;
             if (loadedWorkspaceModels.TryGetValue(guid, out ws))
@@ -376,7 +378,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Get the function workspace from a guid
+        ///     Returns the function workspace from a guid
         /// </summary>
         /// <param name="id">The unique id for the node.</param>
         /// <param name="isTestMode">
@@ -400,6 +402,13 @@ namespace Dynamo.Core
             return false;
         }
 
+        /// <summary>
+        /// Returns the function workspace.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="isTestMode">if set to <c>true</c> [is test mode].</param>
+        /// <param name="ws">The workspace.</param>
+        /// <returns></returns>
         public bool TryGetFunctionWorkspace(Guid id, bool isTestMode, out ICustomNodeWorkspaceModel ws)
         {
             CustomNodeWorkspaceModel workSpace;
@@ -409,7 +418,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Get the function definition from a guid.
+        ///     Returns the function definition from a guid.
         /// </summary>
         /// <param name="id">Custom node identifier.</param>
         /// <param name="isTestMode">
@@ -433,7 +442,7 @@ namespace Dynamo.Core
         }
         
         /// <summary>
-        ///     Tells whether the custom node's unique identifier is inside of the manager (initialized or not)
+        ///     Returns true if the custom node's unique identifier is inside of the manager (initialized or not)
         /// </summary>
         /// <param name="guid">The FunctionId</param>
         public bool Contains(Guid guid)
@@ -442,7 +451,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Tells whether the custom node's name is inside of the manager (initialized or not)
+        ///     Returns true if the custom node's name is inside the manager (initialized or not)
         /// </summary>
         /// <param name="name">The name of the custom node.</param>
         public bool Contains(string name)
@@ -452,27 +461,27 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Tells whether the custom node is initialized in the manager
+        ///     Indicates whether the custom node is initialized in the manager
         /// </summary>
         /// <param name="name">The name of the node</param>
         /// <returns>The name of the </returns>
-        public bool IsInitialized(string name)
+        internal bool IsInitialized(string name)
         {
             CustomNodeInfo info;
             return TryGetNodeInfo(name, out info) && IsInitialized(info.FunctionId);
         }
 
         /// <summary>
-        ///     Tells whether the custom node is initialized in the manager
+        ///     Indicates whether the custom node is initialized in the manager
         /// </summary>
         /// <param name="guid">Whether the definition is stored with the manager.</param>
-        public bool IsInitialized(Guid guid)
+        internal bool IsInitialized(Guid guid)
         {
             return loadedCustomNodes.ContainsKey(guid);
         }
 
         /// <summary>
-        ///     Get a guid from a specific path, internally this first calls GetDefinitionFromPath
+        ///     Returns a guid from a specific path, internally this first calls GetDefinitionFromPath
         /// </summary>
         /// <param name="path">The path from which to get the guid</param>
         /// <param name="isTestMode">
@@ -480,7 +489,7 @@ namespace Dynamo.Core
         /// </param>
         /// <param name="info"></param>
         /// <returns>The custom node info object - null if we failed</returns>
-        public bool TryGetInfoFromPath(string path, bool isTestMode, out CustomNodeInfo info)
+        internal bool TryGetInfoFromPath(string path, bool isTestMode, out CustomNodeInfo info)
         {
             try
             {
@@ -666,7 +675,7 @@ namespace Dynamo.Core
         ///     Optional identifier to be used for the custom node. By default, will make a new unique one.
         /// </param>
         /// <returns>Newly created Custom Node Workspace.</returns>
-        public WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
+        internal WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
         {
             var newId = functionId ?? Guid.NewGuid();
 
@@ -698,7 +707,7 @@ namespace Dynamo.Core
         /// <param name="id">Custom node identifier.</param>
         /// <param name="info"></param>
         /// <returns>Success or failure.</returns>
-        public bool TryGetNodeInfo(Guid id, out CustomNodeInfo info)
+        internal bool TryGetNodeInfo(Guid id, out CustomNodeInfo info)
         {
             return NodeInfos.TryGetValue(id, out info);
         }
@@ -710,7 +719,7 @@ namespace Dynamo.Core
         /// <param name="name">Name of a custom node.</param>
         /// <param name="info"></param>
         /// <returns></returns>
-        public bool TryGetNodeInfo(string name, out CustomNodeInfo info)
+        internal bool TryGetNodeInfo(string name, out CustomNodeInfo info)
         {
             info = NodeInfos.Values.FirstOrDefault(x => x.Name == name);
             return info != null;
@@ -720,12 +729,16 @@ namespace Dynamo.Core
         ///     Collapse a set of nodes in a given workspace.
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
+        /// <param name="selectedNotes"> The note models in current selection </param>
         /// <param name="currentWorkspace"> The workspace where</param>
         /// <param name="isTestMode"></param>
         /// <param name="args"></param>
         internal CustomNodeWorkspaceModel Collapse(
-            IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace,
-            bool isTestMode, FunctionNamePromptEventArgs args)
+            IEnumerable<NodeModel> selectedNodes,
+            IEnumerable<NoteModel> selectedNotes,
+            WorkspaceModel currentWorkspace,
+            bool isTestMode,
+            FunctionNamePromptEventArgs args)
         {
             var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
             // Note that undoable actions are only recorded for the "currentWorkspace", 
@@ -894,9 +907,10 @@ namespace Dynamo.Core
                 #region Transfer nodes and connectors to new workspace
 
                 var newNodes = new List<NodeModel>();
+                var newNotes = new List<NoteModel>();
                 var newAnnotations = new List<AnnotationModel>();
             
-                // Step 4: move all nodes to new workspace remove from old
+                // Step 4: move all nodes and notes to new workspace remove from old
                 // PB: This could be more efficiently handled by a copy paste, but we
                 // are preservering the node 
                 foreach (var node in selectedNodeSet)
@@ -914,6 +928,17 @@ namespace Dynamo.Core
                     node.Y = node.Y - topMost;
                  
                     newNodes.Add(node);
+                }
+
+                foreach(var note in selectedNotes)
+                {
+                    undoRecorder.RecordDeletionForUndo(note);
+                    currentWorkspace.RemoveNote(note);
+
+                    note.GUID = Guid.NewGuid();
+                    note.X = note.X - leftShift;
+                    note.Y = note.Y - topMost;
+                    newNotes.Add(note);
                 }
 
                 //Copy the group from newNodes
@@ -1125,7 +1150,7 @@ namespace Dynamo.Core
                 newWorkspace = new CustomNodeWorkspaceModel(
                     nodeFactory,
                     newNodes,
-                    Enumerable.Empty<NoteModel>(),
+                    newNotes,
                     newAnnotations,
                     Enumerable.Empty<PresetModel>(),
                     currentWorkspace.ElementResolver,
@@ -1137,7 +1162,8 @@ namespace Dynamo.Core
                         Category = args.Category,
                         Description = args.Description,
                         ID = newId.ToString(),
-                        FileName = string.Empty
+                        FileName = string.Empty,
+                        IsVisibleInDynamoLibrary = true
                     });
                 
                 newWorkspace.HasUnsavedChanges = true;

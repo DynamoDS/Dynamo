@@ -25,7 +25,7 @@ namespace Dynamo.Engine.NodeToCode
     public interface INamingProvider
     {
         /// <summary>
-        /// Get a name for specified type. This name will be used as the prefix
+        /// Returns a name for specified type. This name will be used as the prefix
         /// for variable that created in node to code. It should return a empty
         /// string if fails to generate one.
         /// </summary>
@@ -56,7 +56,7 @@ namespace Dynamo.Engine.NodeToCode
                 prefix = GetShortName(classNode);
 
                 // Otherwise change class name to its lower case
-                if (String.IsNullOrEmpty(prefix) && (type.UID > (int)ProtoCore.PrimitiveType.kMaxPrimitives))
+                if (String.IsNullOrEmpty(prefix) && (type.UID > (int)ProtoCore.PrimitiveType.MaxPrimitive))
                 {
                     prefix = type.Name;
                     if (!string.IsNullOrEmpty(prefix))
@@ -210,7 +210,7 @@ namespace Dynamo.Engine.NodeToCode
         }
 
         /// <summary>
-        /// Return the count of recorded actions.
+        /// Returns the count of recorded actions.
         /// </summary>
         /// <returns></returns>
         public int ActionCount()
@@ -901,9 +901,14 @@ namespace Dynamo.Engine.NodeToCode
         /// <summary>
         /// Renumber variables used in astNode.
         /// </summary>
+        /// <param name="core"></param>
         /// <param name="astNode"></param>
+        /// <param name="node"></param>
         /// <param name="numberingMap"></param>
-        /// <param name="variableMap"></param>
+        /// <param name="renamingMap"></param>
+        /// <param name="inputMap"></param>
+        /// <param name="outputMap"></param>
+        /// <param name="mappedVariables"></param>
         private static void VariableNumbering(
             ProtoCore.Core core,
             AssociativeNode astNode, 
@@ -988,13 +993,16 @@ namespace Dynamo.Engine.NodeToCode
         /// <summary>
         /// Remap variables.
         /// </summary>
+        /// <param name="core"></param>
         /// <param name="astNode"></param>
         /// <param name="renamingMap"></param>
+        /// <param name="outputMap"></param>
+        /// <param name="mappedVariable"></param>
         private static void VariableRemapping(
             ProtoCore.Core core,
             AssociativeNode astNode, 
             Dictionary<string, string> renamingMap,
-            Dictionary<string, string> outuptMap,
+            Dictionary<string, string> outputMap,
             HashSet<string> mappedVariable)
         {
             Action<IdentifierNode> func = n =>
@@ -1004,7 +1012,7 @@ namespace Dynamo.Engine.NodeToCode
                     {
                         var ident = n.Value;
                         n.Value = n.Name = newIdent;
-                        outuptMap[ident] = newIdent;
+                        outputMap[ident] = newIdent;
                         mappedVariable.Add(newIdent);
                     }
                 };
@@ -1049,7 +1057,7 @@ namespace Dynamo.Engine.NodeToCode
         }
 
         /// <summary>
-        /// Get type-dependent short name based on the type hint of input variable
+        /// Returns type-dependent short name based on the type hint of input variable
         /// </summary>
         /// <param name="generator"></param>
         /// <param name="typeHints"></param>
@@ -1082,6 +1090,7 @@ namespace Dynamo.Engine.NodeToCode
         /// now should be updated to "a = x".
         /// </summary>
         /// <param name="result"></param>
+        /// <param name="outputVariables"></param>
         /// <returns></returns>
         internal static NodeToCodeResult ConstantPropagationForTemp(NodeToCodeResult result, IEnumerable<string> outputVariables)
         {

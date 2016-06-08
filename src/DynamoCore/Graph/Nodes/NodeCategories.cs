@@ -19,7 +19,7 @@ namespace Dynamo.Graph.Nodes
     {
         public const string CORE = "Core";
         public const string CORE_INPUT = "Core.Input";
-        public const string CORE_STRINGS = "Core.Strings";
+        public const string CORE_WEB = "Core.Web";
         public const string CORE_LISTS_CREATE = "Core.List.Create";
         public const string CORE_LISTS_ACTION = "Core.List.Actions";
         public const string CORE_LISTS_QUERY = "Core.List.Query";
@@ -42,9 +42,18 @@ namespace Dynamo.Graph.Nodes
         public const string IO_HARDWARE = "Input/Output.Hardware";
     }
 
+    /// <summary>
+    /// Service class for formatting node text data
+    /// </summary>
     public static class Utilities
     {
-        public static string Ellipsis(string value, int desiredLength)
+        /// <summary>
+        /// Returns cut version of a given <see cref="System.String"/> value
+        /// </summary>
+        /// <param name="value"><see cref="System.String"/> value to cut</param>
+        /// <param name="desiredLength">Max allowed number of symbols</param>
+        /// <returns>Cut version of a given <see cref="System.String"/> value</returns>
+        internal static string Ellipsis(string value, int desiredLength)
         {
             return desiredLength > value.Length ? value : value.Remove(desiredLength - 1) + "...";
         }
@@ -61,7 +70,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns>The processed fully qualified name. For an example, the 
         /// name "Dynamo.Elements.UV" will be returned as "Dynamo.Graph.Nodes.Uv".
         /// </returns>
-        public static string PreprocessTypeName(string fullyQualifiedName)
+        internal static string PreprocessTypeName(string fullyQualifiedName)
         {
             if (string.IsNullOrEmpty(fullyQualifiedName))
                 throw new ArgumentNullException("fullyQualifiedName");
@@ -108,7 +117,7 @@ namespace Dynamo.Graph.Nodes
         /// If overridePrefix is empty, it uses QualifiedName property.
         /// e.g. Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin
         /// </param>
-        public static string TypedParametersToString(FunctionDescriptor descriptor, string overridePrefix = "")
+        internal static string TypedParametersToString(FunctionDescriptor descriptor, string overridePrefix = "")
         {
             var builder = new StringBuilder();
 
@@ -153,6 +162,13 @@ namespace Dynamo.Graph.Nodes
             return overridePrefix + "." + builder.ToString();
         }
 
+        /// <summary>
+        /// Returns formatted category name replacing delimeters and 
+        /// if category is too long leaving only first and last subcategories.
+        /// </summary>
+        /// <param name="fullCategoryName">Full category name 
+        /// including all parent categories up to root one.</param>
+        /// <returns>Formatted category name.</returns>
         internal static string ShortenCategoryName(string fullCategoryName)
         {
             if (string.IsNullOrEmpty(fullCategoryName))
@@ -263,7 +279,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="nodeTraceDataList">A dictionary of node-data-list pairs
         /// to be saved to the XmlDocument. This parameter cannot be null and 
         /// must represent a non-empty list of node-data-list pairs.</param>
-        public static void SaveTraceDataToXmlDocument(XmlDocument document,
+        internal static void SaveTraceDataToXmlDocument(XmlDocument document,
             IEnumerable<KeyValuePair<Guid, List<string>>> nodeTraceDataList)
         {
             #region Parameter Validations
@@ -330,7 +346,7 @@ namespace Dynamo.Graph.Nodes
         /// data-list pairs are to be deserialized.</param>
         /// <returns>Returns a dictionary of deserialized node-data-list pairs
         /// loaded from the given XmlDocument.</returns>
-        public static IEnumerable<KeyValuePair<Guid, List<string>>>
+        internal static IEnumerable<KeyValuePair<Guid, List<string>>>
             LoadTraceDataFromXmlDocument(XmlDocument document)
         {
             if (document == null)
@@ -431,7 +447,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Gets words from text, e.g. ImportFromCSV to ("Import","From","CSV")
+        /// Returns words from text, e.g. ImportFromCSV to ("Import","From","CSV")
         /// </summary>
         /// <param name="text">incoming string</param>
         /// <param name="maxCharacters">Max number of characters per row</param>
@@ -565,6 +581,12 @@ namespace Dynamo.Graph.Nodes
             return results;
         }
 
+        /// <summary>
+        /// Returns formatted <see cref="System.String"/> value 
+        /// leaving only letters, numbers, dots and dashes.
+        /// </summary>
+        /// <param name="resource"><see cref="System.String"/> value to format</param>
+        /// <returns>Formatted <see cref="System.String"/> value</returns>
         internal static string NormalizeAsResourceName(string resource)
         {
             if (string.IsNullOrWhiteSpace(resource))

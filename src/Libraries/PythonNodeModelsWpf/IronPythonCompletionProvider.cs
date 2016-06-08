@@ -457,7 +457,7 @@ namespace Dynamo.Python
         }
 
         /// <summary>
-        ///     Get a type from a name.  For example: System.Collections or System.Collections.ArrayList
+        ///     Returns a type from a name.  For example: System.Collections or System.Collections.ArrayList
         /// </summary>
         /// <param name="name">The name</param>
         /// <returns>The type or null if its not a valid type</returns>
@@ -709,7 +709,7 @@ namespace Dynamo.Python
         }
 
         /// <summary>
-        /// Get the name from the end of a string.  Matches back to the first space and trims off spaces or ('s
+        /// Returns the name from the end of a string.  Matches back to the first space and trims off spaces or ('s
         /// from the end of the line
         /// </summary>
         /// <param name="text"></param>

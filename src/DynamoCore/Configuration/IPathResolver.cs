@@ -2,6 +2,9 @@
 
 namespace Dynamo.Interfaces
 {
+    /// <summary>
+    /// This interface provides paths to external assemblies and node directories.
+    /// </summary>
     public interface IPathResolver
     {
         /// <summary>
@@ -34,7 +37,7 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// This property represents the root folder where user specific data files 
         /// are stored. If this property returns a null or empty string, then 
-        /// PathManager falls back to using "%ProgramData%\Dynamo". If this property
+        /// PathManager falls back to using "%ProgramData%\Dynamo\Dynamo Core". If this property
         /// returns a string that does not represent an existing folder, PathManager 
         /// will attempt to create a new directory. If the property does not represent
         /// a valid path string, an exception will be thrown by the underlying system 
@@ -47,7 +50,7 @@ namespace Dynamo.Interfaces
         /// This property represents the root folder where application common data 
         /// files (i.e. shared among all users on the same machine) are stored. If 
         /// this property returns a null or empty string, then PathManager falls 
-        /// back to using "%AppData%\Dynamo". If this property returns a string 
+        /// back to using "%AppData%\Dynamo\Dynamo Core". If this property returns a string 
         /// that does not represent an existing folder, PathManager will attempt 
         /// to create a new directory. If the property does not represent a valid 
         /// path string, an exception will be thrown by the underlying system IO 
@@ -57,12 +60,22 @@ namespace Dynamo.Interfaces
         string CommonDataRootFolder { get; }
     }
 
+    /// <summary>
+    /// This interface provides the most common paths.
+    /// E.g. core directory, package directory etc.
+    /// </summary>
     public interface IPathManager
     {
         /// <summary>
         /// The directory in which DynamoCore.dll is guaranteed to be found.
         /// </summary>
         string DynamoCoreDirectory { get; }
+
+        /// <summary>
+        /// The directory in which the host application such as DynamoRevit or 
+        /// DynamoStudio could be found.
+        /// </summary>
+        string HostApplicationDirectory { get; }
 
         /// <summary>
         /// The local directory that contains user specific data files.
@@ -85,7 +98,7 @@ namespace Dynamo.Interfaces
         /// list is returned, and that the first entry represents the default 
         /// custom node directory. Custom nodes created are stored in the
         /// default directory, which is specific to the current user. Changes to
-        /// custom nodes may or may not be saved to their current location depeding
+        /// custom nodes may or may not be saved to their current location depending
         /// on write access.
         /// </summary>
         IEnumerable<string> DefinitionDirectories { get; }
@@ -118,14 +131,14 @@ namespace Dynamo.Interfaces
         IEnumerable<string> PackagesDirectories { get; }
 
         /// <summary>
-        /// The directory, which contains ExtensionDefinition .xml files
+        /// The directories, which contains ExtensionDefinition .xml files
         /// </summary>
-        string ExtensionsDirectory { get; }
+        IEnumerable<string> ExtensionsDirectories { get; }
 
         /// <summary>
-        /// The directory, which contains ViewExtensionDefinition.xml files
+        /// The directories, which contains ViewExtensionDefinition.xml files
         /// </summary>
-        string ViewExtensionsDirectory { get; }
+        IEnumerable<string> ViewExtensionsDirectories { get; }
 
         /// <summary>
         /// The root directory where all sample files are stored. This directory
@@ -146,7 +159,7 @@ namespace Dynamo.Interfaces
 
         /// <summary>
         /// Full path to the GalleryContent xml file. The file is located in
-        /// the AppData/Dynamo/version/locale/
+        /// the AppData/Dynamo/[version]/gallery/
         /// </summary>
         string GalleryFilePath { get; }
 
@@ -175,7 +188,7 @@ namespace Dynamo.Interfaces
         /// resolution take place.
         /// </summary>
         /// <param name="path">The full path to be considered when PathManager
-        /// attempt to resolve a file path. If this argument does not represent 
+        /// attempts to resolve a file path. If this argument does not represent 
         /// a valid directory path, this method throws an exception.</param>
         void AddResolutionPath(string path);
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Xml;
-using Dynamo.Core;
+﻿using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -15,9 +9,18 @@ using Dynamo.Models;
 using Dynamo.Scheduler;
 using ProtoCore;
 using ProtoCore.Namespace;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Xml;
 
 namespace Dynamo.Graph.Workspaces
 {
+    /// <summary>
+    ///     This class contains methods and properties that defines a <see cref="WorkspaceModel"/>.
+    /// </summary>
     public class HomeWorkspaceModel : WorkspaceModel
     {
         #region Class Data Members and Properties
@@ -28,6 +31,11 @@ namespace Dynamo.Graph.Workspaces
         private bool graphExecuted;
         private IEnumerable<KeyValuePair<Guid, List<string>>> historicalTraceData;
 
+        /// <summary>
+        ///     Returns <see cref="EngineController"/> object assosiated with this home workspace
+        /// to coordinate the interactions between some DesignScript
+        /// sub components like library managment, live runner and so on.
+        /// </summary>
         public EngineController EngineController { get; private set; }
 
         /// <summary>
@@ -48,9 +56,16 @@ namespace Dynamo.Graph.Workspaces
         ///     NodeModification events.
         /// </summary>
         private bool silenceNodeModifications = true;
-   
+
+        /// <summary>
+        /// Indicates if detailed descriptions should be logged
+        /// </summary>
         public readonly bool VerboseLogging;
 
+        /// <summary>
+        ///     Returns <see cref="EngineController"/> object containing properties to control
+        /// how execution is carried out.
+        /// </summary>
         public readonly RunSettings RunSettings;
 
         /// <summary>
@@ -81,6 +96,7 @@ namespace Dynamo.Graph.Workspaces
                 preloadedTraceData = value;
             }
         }
+
         private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
 
         internal bool IsEvaluationPending
@@ -91,7 +107,15 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        /// <summary>
+        /// Notifies listeners that graph evaluation is started.
+        /// </summary>
         public event EventHandler<EventArgs> EvaluationStarted;
+
+        /// <summary>
+        /// Triggers EvaluationStarted event.
+        /// </summary>
+        /// <param name="e">The event data.</param>
         public virtual void OnEvaluationStarted(EventArgs e)
         {
             this.HasRunWithoutCrash = false;
@@ -100,7 +124,16 @@ namespace Dynamo.Graph.Workspaces
             if (handler != null) handler(this, e);
         }
 
+        /// <summary>
+        /// Notifies listeners that graph evaluation is completed.
+        /// </summary>
         public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
+
+        /// <summary>
+        /// Triggers EvaluationCompleted event.
+        /// </summary>
+        /// <param name="e">The event data containing information 
+        /// if graph evaluation has completed successfully.</param>
         public virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
         {
             this.HasRunWithoutCrash = e.EvaluationSucceeded;
@@ -110,7 +143,16 @@ namespace Dynamo.Graph.Workspaces
 
         }
 
+        /// <summary>
+        /// Notifies listeners when all tasks in scheduler related to current evalution are completed.
+        /// </summary>
         public event EventHandler<EvaluationCompletedEventArgs> RefreshCompleted;
+
+        /// <summary>
+        /// Triggers RefreshCompleted event
+        /// </summary>
+        /// <param name="e">The event data containing information 
+        /// if graph evaluation has completed successfully.</param>
         public virtual void OnRefreshCompleted(EvaluationCompletedEventArgs e)
         {
             var handler = RefreshCompleted;
@@ -128,10 +170,19 @@ namespace Dynamo.Graph.Workspaces
 
         #region Constructors
 
-        public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
-            NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")
-            : this(
-                engine,
+        /// <summary>
+        /// Initializes a new empty instance of the <see cref="HomeWorkspaceModel"/> class
+        /// </summary>
+        /// <param name="engine"><see cref="EngineController"/> object assosiated with this home workspace
+        /// to coordinate the interactions between some DesignScript sub components.</param>
+        /// <param name="scheduler"><see cref="DynamoScheduler"/> object to add tasks in queue to execute</param>
+        /// <param name="factory">Node factory to create nodes</param>
+        /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
+        /// <param name="isTestMode">Indicates if current code is running in tests</param>
+        /// <param name="fileName">Name of file where the workspace is saved</param>
+        public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler,
+            NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName = "")
+            : this(engine,
                 scheduler,
                 factory,
                 Enumerable.Empty<KeyValuePair<Guid, List<string>>>(),
@@ -140,12 +191,29 @@ namespace Dynamo.Graph.Workspaces
                 Enumerable.Empty<AnnotationModel>(),
                 Enumerable.Empty<PresetModel>(),
                 new ElementResolver(),
-                new WorkspaceInfo(){FileName = fileName, Name = "Home"},
-                verboseLogging, 
+                new WorkspaceInfo() { FileName = fileName, Name = "Home" },
+                verboseLogging,
                 isTestMode) { }
-       
-        public HomeWorkspaceModel(
-            EngineController engine, 
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HomeWorkspaceModel"/> class
+        /// by given information about it and specified item collections
+        /// </summary>
+        /// <param name="engine"><see cref="EngineController"/> object assosiated with this home workspace
+        /// to coordinate the interactions between some DesignScript sub components.</param>
+        /// <param name="scheduler"><see cref="DynamoScheduler"/> object to add tasks in queue to execute</param>
+        /// <param name="factory">Node factory to create nodes</param>
+        /// <param name="traceData">Preloaded trace data</param>
+        /// <param name="nodes">Node collection of the workspace</param>
+        /// <param name="notes">Note collection of the workspace</param>
+        /// <param name="annotations">Group collection of the workspace</param>
+        /// <param name="presets">Preset collection of the workspace</param>
+        /// <param name="elementResolver">ElementResolver responsible for resolving 
+        /// a partial class name to its fully resolved name</param>
+        /// <param name="info">Information for creating custom node workspace</param>
+        /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
+        /// <param name="isTestMode">Indicates if current code is running in tests</param>
+        public HomeWorkspaceModel(EngineController engine, 
             DynamoScheduler scheduler, 
             NodeFactory factory,
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, 
@@ -195,6 +263,9 @@ namespace Dynamo.Graph.Workspaces
 
         #endregion
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public override void Dispose()
         {
             base.Dispose();
@@ -290,7 +361,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="node">The node itself</param>
         /// <param name="value">A boolean value indicating whether to silence or not</param>
-        private void NodeOnRequestSilenceNodeModifiedEvents(NodeModel _, bool value)
+        private void NodeOnRequestSilenceNodeModifiedEvents(NodeModel node, bool value)
         {
             this.silenceNodeModifications = value;
         }
@@ -311,7 +382,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Start periodic evaluation using the currently set RunPeriod
         /// </summary>
-        public void StartPeriodicEvaluation()
+        internal void StartPeriodicEvaluation()
         {
             if (pulseMaker == null)
             {
@@ -334,7 +405,7 @@ namespace Dynamo.Graph.Workspaces
         /// Stop the on-going periodic evaluation, if there is any.
         /// </summary>
         /// 
-        public void StopPeriodicEvaluation()
+        internal void StopPeriodicEvaluation()
         {
             if (pulseMaker == null || (pulseMaker.TimerPeriod == 0)) return;
 
@@ -379,7 +450,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="markNodesAsDirty">Set this parameter to true to force 
         ///     reset of the execution substrait. Note that setting this parameter 
         ///     to true will have a negative performance impact.</param>
-        public void ResetEngine(EngineController controller, bool markNodesAsDirty = false)
+        internal void ResetEngine(EngineController controller, bool markNodesAsDirty = false)
         {
             if (EngineController != null)
             {
@@ -407,7 +478,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="nodes">The nodes to modify</param>
         /// <param name="forceExecute">The argument to NodeModel.MarkNodeAsModified</param>
-        public void MarkNodesAsModifiedAndRequestRun(IEnumerable<NodeModel> nodes, bool forceExecute = false)
+        internal void MarkNodesAsModifiedAndRequestRun(IEnumerable<NodeModel> nodes, bool forceExecute = false)
         {
             if (nodes == null)
                 throw new ArgumentNullException("nodes");
@@ -449,12 +520,12 @@ namespace Dynamo.Graph.Workspaces
                 string message = string.Empty;
                 if (messages.ContainsKey(warning.Key))
                 {
-                    if (!warning.Value.Any(w => w.ID == ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency))
+                    if (!warning.Value.Any(w => w.ID == ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency))
                         continue;
 
                     messages.Remove(warning.Key);
                     message = string.Join("\n", warning.Value.
-                        Where(w => w.ID == ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency).
+                        Where(w => w.ID == ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency).
                         Select(w => w.Message));
                 }
                 else
@@ -502,9 +573,10 @@ namespace Dynamo.Graph.Workspaces
             EngineController.ReconcileTraceDataAndNotify();
 
             // Refresh values of nodes that took part in update.
-            foreach (var modifiedNode in updateTask.ModifiedNodes)
+            var nodes = new HashSet<NodeModel>(updateTask.ExecutedNodes.Concat(updateTask.ModifiedNodes));
+            foreach (var executedNode in nodes)
             {
-                modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
+                executedNode.RequestValueUpdate(EngineController);
             }
 
             scheduler.Tasks.AllComplete(_ =>
@@ -579,7 +651,7 @@ namespace Dynamo.Graph.Workspaces
         /// the executing nodes will be sent via SetNodeDeltaState event.
         /// </summary>
         /// <param name="showRunPreview">This parameter controls the delta state computation </param>
-        public void GetExecutingNodes(bool showRunPreview)
+        internal void GetExecutingNodes(bool showRunPreview)
         {
             var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
                         
@@ -618,7 +690,7 @@ namespace Dynamo.Graph.Workspaces
         /// trace data but do not exist in the current CallSite data.
         /// </summary>
         /// <returns></returns>
-        public IList<ISerializable> GetOrphanedSerializablesAndClearHistoricalTraceData()
+        internal IList<ISerializable> GetOrphanedSerializablesAndClearHistoricalTraceData()
         {
             var orphans = new List<ISerializable>();
 

@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Dynamo.Engine;
+using Dynamo.Exceptions;
+using NUnit.Framework;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Dynamo.Engine;
-using Dynamo.Models;
-
-using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
@@ -49,6 +48,27 @@ namespace Dynamo.Tests
             var functions = libraryServices.GetFunctionGroups(libraryPath);
             Assert.IsNotNull(functions);
             Assert.IsTrue(functions.Any());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestLoadDllFileFailure()
+        {
+            bool libraryLoaded = false;
+
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+
+            string libraryPath = Path.Combine(TestDirectory, @"core\library\Dummy.dll");
+            try
+            {
+                libraryServices.ImportLibrary(libraryPath);
+
+            }
+            catch( System.Exception ex)
+            {
+                Assert.IsTrue(ex is LibraryLoadFailedException);
+            }
+            Assert.IsFalse(libraryLoaded);
         }
 
         [Test]

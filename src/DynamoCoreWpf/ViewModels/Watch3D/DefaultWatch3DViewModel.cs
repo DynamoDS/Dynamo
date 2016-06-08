@@ -67,7 +67,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         protected bool active;
         protected bool isGridVisible;
-        private readonly List<IRenderPackage> currentTaggedPackages = new List<IRenderPackage>();
+
+        /// <summary>
+        /// Represents the name of current Watch3DViewModel which will be saved in preference settings
+        /// </summary>
+        public virtual string PreferenceWatchName { get { return "IsBackgroundPreviewActive"; } }
 
         /// <summary>
         /// A flag which indicates whether this Watch3DView should process
@@ -85,11 +89,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 active = value;
-                preferences.IsBackgroundPreviewActive = active;
-
+                preferences.SetIsBackgroundPreviewActive(PreferenceWatchName, value);
                 RaisePropertyChanged("Active");
 
                 OnActiveStateChanged();
+
+                if (active)
+                {
+                    RegenerateAllPackages();
+                }
             }
         }
 
@@ -212,7 +220,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             engineManager = parameters.EngineControllerManager;
 
             Name = Resources.BackgroundPreviewDefaultName;
-            Active = parameters.Preferences.IsBackgroundPreviewActive;
             isGridVisible = parameters.Preferences.IsBackgroundGridVisible;
             logger = parameters.Logger;
 
@@ -252,8 +259,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void OnActiveStateChanged()
         {
-            preferences.IsBackgroundPreviewActive = active;
-
             UnregisterEventHandlers();
             OnClear();
         }
@@ -438,7 +443,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void OnNodeRemovedFromWorkspace(NodeModel node)
         {
             UnregisterNodeEventHandlers(node);
-            DeleteGeometryForIdentifier(node.AstIdentifierBase);
+            DeleteGeometryForNode(node);
         }
 
         public virtual CameraData GetCameraInformation()
@@ -447,7 +452,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return null;
         }
 
-        public virtual void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages)
+        /// <summary>
+        /// Call this method to remove render pakcages that created by node.
+        /// </summary>
+        /// <param name="node"></param>
+        public virtual void RemoveGeometryForNode(NodeModel node)
+        {
+            // Override in inherited classes.
+        }
+
+        /// <summary>
+        /// Call this method to add the render package. 
+        /// </summary>
+        /// <param name="packages"></param>
+        /// <param name="forceAsyncCall"></param>
+        public virtual void AddGeometryForRenderPackages(IEnumerable<IRenderPackage> packages, bool forceAsyncCall = false)
+        {
+            // Override in inherited classes.
+        }
+
+        public virtual void AddLabelForPath(string path)
         {
             // Override in inherited classes.
         }
@@ -459,6 +483,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 dynamoViewModel.UIDispatcher.Invoke(action);
             }
+        }
+
+        public virtual void DeleteGeometryForNode(NodeModel node, bool requestUpdate = true)
+        {
+            // Override in derived classes.
         }
 
         public virtual void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
@@ -494,20 +523,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected void RegisterPortEventHandlers(NodeModel node)
         {
-            foreach (var p in node.InPorts)
-            {
-                p.PortDisconnected += PortDisconnectedHandler;
-                p.PortConnected += PortConnectedHandler;
-            }
+            node.PortConnected += PortConnectedHandler;
+            node.PortDisconnected += PortDisconnectedHandler;
         }
 
         private void UnregisterPortEventHandlers(NodeModel node)
         {
-            foreach (var p in node.InPorts)
-            {
-                p.PortDisconnected -= PortDisconnectedHandler;
-                p.PortConnected -= PortConnectedHandler;
-            }
+            node.PortConnected -= PortConnectedHandler;
+            node.PortDisconnected -= PortDisconnectedHandler;
         }
 
         protected virtual void PortConnectedHandler(PortModel arg1, ConnectorModel arg2)
@@ -517,7 +540,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void PortDisconnectedHandler(PortModel port)
         {
-            DeleteGeometryForIdentifier(port.Owner.AstIdentifierBase);
+            if (port.PortType == PortType.Input)
+            {
+                DeleteGeometryForIdentifier(port.Owner.AstIdentifierBase);
+            }
         }
 
         protected virtual void SelectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e)
@@ -568,9 +594,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public event Action<object, MouseButtonEventArgs> ViewMouseDown;
         internal void OnViewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            HandleViewClick(sender, e);
             var handler = ViewMouseDown;
             if (handler != null) handler(sender, e);
         }
+
+        protected virtual void HandleViewClick(object sender, MouseButtonEventArgs e)
+        { }
 
         public event Action<object, MouseButtonEventArgs> ViewMouseUp;
         internal void OnViewMouseUp(object sender, MouseButtonEventArgs e)

@@ -33,6 +33,11 @@ namespace ProtoCore.SyntaxAnalysis
             DefaultVisit(node);
         }
 
+        public virtual void VisitAtLevelNode(AtLevelNode node)
+        {
+            DefaultVisit(node);
+        }
+
         public virtual void VisitArrayNameNode(ArrayNameNode node)
         {
             DefaultVisit(node);
@@ -214,11 +219,6 @@ namespace ProtoCore.SyntaxAnalysis
         {
             DefaultVisit(node);
         }
-
-        public virtual void VisitModifierStackNode(ModifierStackNode node)
-        {
-            DefaultVisit(node);
-        }
     }
 
     public abstract class AssociativeAstVisitor<TResult>
@@ -248,6 +248,11 @@ namespace ProtoCore.SyntaxAnalysis
         }
 
         public virtual TResult VisitReplicationGuideNode(ReplicationGuideNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        public virtual TResult VisitAtLevelNode(AtLevelNode node)
         {
             return DefaultVisit(node);
         }
@@ -403,11 +408,6 @@ namespace ProtoCore.SyntaxAnalysis
         }
 
         public virtual TResult VisitDefaultArgNode(DefaultArgNode node)
-        {
-            return DefaultVisit(node);
-        }
-
-        public virtual TResult VisitModifierStackNode(ModifierStackNode node)
         {
             return DefaultVisit(node);
         }

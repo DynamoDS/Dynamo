@@ -17,15 +17,26 @@ namespace Dynamo.Engine
         }
     }
 
+    /// <summary>
+    /// This is a helper class that can get mirror data from live runner, update graph etc.
+    /// </summary>
     public class LiveRunnerServices : LogSourceBase, IDisposable
     {
         private readonly ILiveRunner liveRunner;
         
+        /// <summary>
+        /// Creates LiveRunnerServices.
+        /// </summary>
+        /// <param name="controller">Engine controller</param>
+        /// <param name="geometryFactoryFileName">Path to LibG</param>
         public LiveRunnerServices(EngineController controller, string geometryFactoryFileName)
         {
             liveRunner = LiveRunnerFactory.CreateLiveRunner(controller, geometryFactoryFileName);
         }
 
+        /// <summary>
+        /// Dispose LiveRunner object.
+        /// </summary>
         public void Dispose()
         {
             var disposable = liveRunner as IDisposable;
@@ -33,7 +44,7 @@ namespace Dynamo.Engine
                 disposable.Dispose();
         }
 
-        // To be superceeded by runtime core
+        // To be superseded by runtime core
         public ProtoCore.Core Core
         {
             get
@@ -42,6 +53,11 @@ namespace Dynamo.Engine
             }
         }
 
+        /// <summary>
+        /// RuntimeCore of liveRunner.
+        /// RuntimeCore is an object that is instantiated once across the lifecycle of the runtime.
+        /// This is the entry point of the runtime VM and its input is a DS Executable format. 
+        /// </summary>
         public ProtoCore.RuntimeCore RuntimeCore
         {
             get
@@ -54,10 +70,10 @@ namespace Dynamo.Engine
         /// <summary>
         /// TPDP
         /// </summary>
-        /// <param name="var"></param>
-        /// <param name="verboseLogging"></param>
-        /// <returns></returns>
-        public RuntimeMirror GetMirror(string var, bool verboseLogging)
+        /// <param name="var">AST node id</param>
+        /// <param name="verboseLogging">if set to true this enables verbose logging</param>
+        /// <returns>RuntimeMirror</returns>
+        internal RuntimeMirror GetMirror(string var, bool verboseLogging)
         {
 
             var mirror = liveRunner.InspectNodeValue(var);
@@ -74,7 +90,7 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="graphData"></param>
         /// <param name="verboseLogging"></param>
-        public void UpdateGraph(GraphSyncData graphData, bool verboseLogging)
+        internal void UpdateGraph(GraphSyncData graphData, bool verboseLogging)
         {
             if (verboseLogging)
                 Log("LRS.UpdateGraph: " + graphData);
@@ -86,7 +102,8 @@ namespace Dynamo.Engine
         /// Preview graph with graph sync data.
         /// </summary>
         /// <param name="graphData"></param>
-        public List<Guid> PreviewGraph(GraphSyncData graphData, bool verboseLogging)
+        /// <param name="verboseLogging"></param>
+        internal List<Guid> PreviewGraph(GraphSyncData graphData, bool verboseLogging)
         {
             if (verboseLogging)
                Log("LRS.PreviewGraph: " + graphData);
@@ -95,21 +112,40 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Return runtime warnings for this run.
+        /// Returns runtime warnings for this run.
         /// </summary>
         /// <returns></returns>
-        public IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings()
+        internal IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings()
         {
             return liveRunner.GetRuntimeWarnings();
         }
 
         /// <summary>
-        /// Return build warnings for this run.
+        /// Returns build warnings for this run.
         /// </summary>
         /// <returns></returns>
-        public IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings()
+        internal IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings()
         {
             return liveRunner.GetBuildWarnings();
+        }
+
+        /// <summary>
+        /// Returns GUIDs of exectued ASTs in this run.
+        /// </summary>
+        /// <param name="sessionID"></param>
+        /// <returns></returns>
+        internal IEnumerable<Guid> GetExecutedAstGuids(Guid sessionID)
+        {
+            return liveRunner.GetExecutedAstGuids(sessionID);
+        }
+
+        /// <summary>
+        /// Remove recorded GUIDs of executed ASTs for the specified session.
+        /// </summary>
+        /// <param name="sessionID"></param>
+        internal void RemoveRecordedAstGuidsForSession(Guid sessionID)
+        {
+            liveRunner.RemoveRecordedAstGuidsForSession(sessionID);
         }
 
         /// <summary>
@@ -117,7 +153,7 @@ namespace Dynamo.Engine
         /// all libraries and reset VM.
         /// </summary>
         /// <param name="libraries"></param>
-        public void ReloadAllLibraries(IEnumerable<string> libraries)
+        internal void ReloadAllLibraries(IEnumerable<string> libraries)
         { 
             liveRunner.ResetVMAndResyncGraph(libraries);
         }

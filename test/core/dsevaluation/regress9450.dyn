@@ -1,0 +1,17 @@
+<Workspace Version="1.0.0.621" X="-203.939291788515" Y="-243.036461716884" zoom="2.05668026833428" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="d5d37598-6b76-4b7e-bdd0-aac562b96861" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="230.253932908111" y="159.320865814757" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" CodeText="def mul(x, y = 3)&#xA;{&#xA;    return = x * y;&#xA;};" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="8db3ec78-27cd-475a-8820-ad933408418f" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="228.915351438238" y="305.112207667184" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" CodeText="x = mul(2);" ShouldFocus="false" />
+    <CoreNodeModels.Watch guid="25a90516-9e46-4268-a745-266524844158" type="CoreNodeModels.Watch" nickname="Watch" x="451.66927795776" y="300.501964856908" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="8db3ec78-27cd-475a-8820-ad933408418f" start_index="0" end="25a90516-9e46-4268-a745-266524844158" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

@@ -30,6 +30,26 @@ namespace DynamoInstallDetective
         }
 
         /// <summary>
+        /// Finds all unique Dynamo installation on the system that has file 
+        /// identifiable by the given fileLocator.
+        /// </summary>
+        /// <param name="additionalDynamoPath">Additional path for Dynamo binaries
+        /// to be included in search</param>
+        /// <param name="fileLocator">A callback method to locate dynamo specific files.</param>
+        /// <returns>List of KeyValuePair of install location and version info 
+        /// as Tuple. The returned list is sorted based on version info.</returns>
+        public static IEnumerable LocateDynamoInstallations(string additionalDynamoPath, Func<string, string> fileLocator)
+        {
+            var installs = DynamoProducts.FindDynamoInstallations(additionalDynamoPath, new InstalledProductLookUp("Dynamo", fileLocator));
+            return
+                installs.Products.Select(
+                    p =>
+                        new KeyValuePair<string, Tuple<int, int, int, int>>(
+                        p.InstallLocation,
+                        p.VersionInfo));
+        }
+
+        /// <summary>
         /// Finds all products installed on the system with given product name
         /// search pattern and file name search pattern. e.g. to find Dynamo
         /// installations, we can use Dynamo as product search pattern and

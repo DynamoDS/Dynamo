@@ -1,11 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Windows;
-
-using SystemTestServices;
-using CoreNodeModels.Input;
+﻿using CoreNodeModels.Input;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Connectors;
@@ -13,14 +6,21 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using NUnit.Framework;
+using Dynamo.Views;
 using DynamoCoreWpfTests.Utility;
+using NUnit.Framework;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Windows;
+using System.Windows.Input;
+using SystemTestServices;
 
 namespace DynamoCoreWpfTests
 {
@@ -445,13 +445,15 @@ namespace DynamoCoreWpfTests
             // Test Case to ensure that the link for these persistent variable
             // between DynamoViewModel, Model is not broken or replaced.
             #region BackgroundPreviewActive
-            bool expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
-            ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
 
-            expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
+            var backgroundPreviewName = ViewModel.BackgroundPreviewViewModel.PreferenceWatchName;
+            bool expectedValue = !ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName);
             ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName));
+
+            expectedValue = !ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName);
+            ViewModel.ToggleFullscreenWatchShowing(null);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName));
             #endregion
 
             #region ConsoleHeight
@@ -511,12 +513,13 @@ namespace DynamoCoreWpfTests
 
             initalSetting.ConnectorType = ConnectorType.BEZIER;
             initalSetting.ConsoleHeight = 100;
-            initalSetting.IsBackgroundPreviewActive = true;
+            initalSetting.SetIsBackgroundPreviewActive(backgroundPreviewName, true);
 
             initalSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
-            Assert.AreEqual(resultSetting.IsBackgroundPreviewActive, initalSetting.IsBackgroundPreviewActive);
+            Assert.AreEqual(resultSetting.GetIsBackgroundPreviewActive(backgroundPreviewName),
+                initalSetting.GetIsBackgroundPreviewActive(backgroundPreviewName));
             Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
             Assert.AreEqual(resultSetting.ConsoleHeight, initalSetting.ConsoleHeight);
             #endregion
@@ -524,12 +527,13 @@ namespace DynamoCoreWpfTests
             #region Second Test
             initalSetting.ConnectorType = ConnectorType.POLYLINE;
             initalSetting.ConsoleHeight = 0;
-            initalSetting.IsBackgroundPreviewActive = false;
+            initalSetting.SetIsBackgroundPreviewActive(backgroundPreviewName, false);
 
             initalSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
-            Assert.AreEqual(resultSetting.IsBackgroundPreviewActive, initalSetting.IsBackgroundPreviewActive);
+            Assert.AreEqual(resultSetting.GetIsBackgroundPreviewActive(backgroundPreviewName),
+                initalSetting.GetIsBackgroundPreviewActive(backgroundPreviewName));
             Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
             Assert.AreEqual(resultSetting.ConsoleHeight, initalSetting.ConsoleHeight);
             #endregion
@@ -707,6 +711,105 @@ namespace DynamoCoreWpfTests
             dn.Update(new Point2D(-16, 72));
             Assert.AreEqual(-8, locatable.X);
             Assert.AreEqual(40, locatable.Y);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WorkspaceContextMenu_TestIfOpenOnRightClick()
+        {
+            var currentWs = View.ChildOfType<WorkspaceView>();
+            Assert.IsNotNull(currentWs, "DynamoView does not have any WorkspaceView");
+            RightClick(currentWs.zoomBorder);
+
+            Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WorkspaceContextMenu_TestIfNotOpenOnNodeRightClick()
+        {
+            var currentWs = View.ChildOfType<WorkspaceView>();
+            Assert.IsNotNull(currentWs, "DynamoView does not have any WorkspaceView");
+            CreateNodeOnCurrentWorkspace();
+
+            DispatcherUtil.DoEvents();
+            var node = currentWs.ChildOfType<NodeView>();
+            RightClick(node);
+
+            // workspace context menu shouldn't be open
+            Assert.IsFalse(currentWs.ContextMenuPopup.IsOpen);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WorkspaceContextMenu_TestIfInCanvasSearchHidesOnOpeningContextMenu()
+        {
+            var currentWs = View.ChildOfType<WorkspaceView>();
+
+            // show in-canvas search
+            ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+
+            // open context menu
+            RightClick(currentWs.zoomBorder);
+
+            Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
+            Assert.IsFalse(currentWs.InCanvasSearchBar.IsOpen);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WorkspaceContextMenu_TestIfSearchTextClearsOnOpeningContextMenu()
+        {
+            var currentWs = View.ChildOfType<WorkspaceView>();
+
+            // open context menu
+            RightClick(currentWs.zoomBorder);
+
+            // set dummy content for search text
+            currentWs.ViewModel.InCanvasSearchViewModel.SearchText = "dummy";
+            Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
+            Assert.IsFalse(currentWs.InCanvasSearchBar.IsOpen);
+
+            // show in-canvas search
+            ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
+            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
+
+            // check if search text is still empty
+            Assert.IsTrue(currentWs.ViewModel.InCanvasSearchViewModel.SearchText.Equals(string.Empty));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WorkspaceContextMenu_IfSubmenuOpenOnMouseHover()
+        {
+            var currentWs = View.ChildOfType<WorkspaceView>();
+            RightClick(currentWs.zoomBorder);
+            Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
+
+            currentWs.WorkspaceLacingMenu.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
+            {
+                RoutedEvent = Mouse.MouseEnterEvent
+            });
+
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(currentWs.WorkspaceLacingMenu.IsSubmenuOpen);
+        }
+
+        private void RightClick(IInputElement element)
+        {
+            element.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Right)
+            {
+                RoutedEvent = Mouse.MouseDownEvent
+            });
+
+            element.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Right)
+            {
+                RoutedEvent = Mouse.MouseUpEvent
+            });
+
+            DispatcherUtil.DoEvents();
         }
     }
 }

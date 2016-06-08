@@ -19,9 +19,8 @@ def f(i : int)
 x = 1000;
 x = f(x);
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 1001);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1001);
         }
 
         [Test]
@@ -55,9 +54,8 @@ def f(a : int)
 x = 10;
 x = f(x);
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 11);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 11);
         }
         //TestCase from Mark//
 
@@ -77,9 +75,8 @@ x = 12;
 y = 10;
 x = f1(x, y) - f2(x, y); 
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 20);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 20);
         }
 
         [Test]
@@ -95,9 +92,8 @@ return = i;
 x = 2;
 x = f(x + f(x));
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 36);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 36);
         }
 
         [Test]
@@ -110,10 +106,9 @@ a = {a, 2};
 x = a[0];
 y = a[1];
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 2);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+            thisTest.Verify("y", 2);
         }
 
         [Test]
@@ -130,10 +125,9 @@ a = {1, f(a)};
 x = a[0];
 y = a[1];
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 2);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+            thisTest.Verify("y", 2);
         }
         //Mark TestCases//
 
@@ -145,18 +139,17 @@ y = a[1];
 @"
 def f(i : int)
 {
+    list = {1, 2, 3, 4};
     return = i + list[i];
 }
-list = {1, 2, 3, 4};
 a = 1;
 a = {f(f(a)), f(a)};
 x = a[0];
 y = a[1];
 ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            runtimeCore = fsr.Execute(code, core); ExecutionMirror mirror = runtimeCore.Mirror;
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 7);
-            Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 3);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 7);
+            thisTest.Verify("y", 3);
         }
 
         [Test]

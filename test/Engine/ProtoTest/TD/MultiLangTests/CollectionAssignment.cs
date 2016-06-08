@@ -633,13 +633,13 @@ b = CreateArray ( b, count );
         {
             string code = @"
 test;
-[Imperative]
-{
 	def CreateArray ( x : var[] , i )
 	{
 		x[i] = i;
 		return = x;
 	}
+[Imperative]
+{
 	test = { };
 	test = CreateArray ( test, 0 );
 	test = CreateArray ( test, 1 );
@@ -1353,9 +1353,6 @@ x = y.add(); // expected { { 0,0 }, { 1, 1, 1 }, {2, false, {2, 2}} }";
         public void T25_Adding_elements_1465704_7()
         {
             string code = @"
-
-x = [Imperative]
-{
     def add ( )
     {
         x = { { 0, 0 } , { 1, 1 } };
@@ -1363,6 +1360,8 @@ x = [Imperative]
         x[2] = { 2, false,{ 2, 2} };
         return = x;
     }
+x = [Imperative]
+{
     z = add();
     return = z;
 }
@@ -1381,10 +1380,9 @@ x = [Imperative]
         public void T25_Adding_elements_imperative_1465704_8()
         {
             string code = @"
-a = [Imperative]
-{
     def add ( )
     {
+return = [Imperative]{
         x = { { 0, 0 } , { 1, 1 } };
         z = 0..5;
         for(i in z)
@@ -1392,7 +1390,10 @@ a = [Imperative]
 	        x[i] = 1;
         }
         return = x; 
+}
     }
+a = [Imperative]
+{
     return = add();
 }
 ";
@@ -1408,10 +1409,9 @@ a = [Imperative]
         {
             string error = "1467309 rev 3786 : Warning:Couldn't decide which function to execute... coming from valid code ";
             string code = @"
-a = [Imperative]
-{
     def add ( )
     {
+    return = [Imperative]{
         x = { { 0, 0 } , { 1, 1 } };
         z = 5;
         j = 0;
@@ -1422,6 +1422,9 @@ a = [Imperative]
         }
         return = x; 
     }
+    }
+a = [Imperative]
+{
     y = add();
     return = y;
 }
@@ -1437,9 +1440,6 @@ a = [Imperative]
         public void T25_Adding_elements_imperative_1465704_10()
         {
             string code = @"
-
-x = [Imperative]
-{
     def add ( )
     {
         x = { { 0, 0 } , { 1, 1 } };
@@ -1447,6 +1447,8 @@ x = [Imperative]
         x[2] = { null, false,{ 2, 2} };
         return = x;
     }
+x = [Imperative]
+{
     z = add();
     return = z;
 }
@@ -1525,19 +1527,13 @@ b = a;";
         public void T26_Defct_DNL_1459616_3()
         {
             string code = @"
-a={1,2};
-[Imperative]
-{
-    a={a,2};
-}
-b = { 1, 2 };
-def foo ( )
+def foo (b:var[]..[])
 {
     b =  { b[1], b[1] };
-    return = null;
+    return = b;
 }
-dummy = foo ();
-c = b;";
+c = foo({1, 2});
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 2, 2 };
             thisTest.Verify("c", v1);
@@ -1715,23 +1711,18 @@ count = -2..-1;";
         public void T27_defect_1464429_DynamicArray_2()
         {
             string code = @"
-
-
-y ={};
 def CreateArray (  i :int)
 {
+    y ={};
 	y[i] = i;
 	return = y;
 }
 count = 0..2;
-t2 = CreateArray(  count );
-
+t2 = CreateArray(count );
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] count = new Object[] { 0, 1, 2 };
-            Object[] t2 = new Object[] { new Object[] { 0 }, new Object[] { 0, 1 }, new Object[] { 0, 1, 2 } };
-            thisTest.Verify("count", count);
-            thisTest.Verify("t2", t2);
+            thisTest.Verify("t2", new object [] { new object [] { 0 }, new object [] { null, 1 }, new object[] { null, null, 2 } });
+            thisTest.Verify("count", new[] { 0, 1, 2 });
         }
 
 
@@ -1984,13 +1975,13 @@ aa;aa1;
         {
             string code = @"
 test;
-[Imperative]
-{
 def CreateArray ( x : var[] , i )
 {
 x[i] = i;
 return = x;
 }
+[Imperative]
+{
 test = { };
 test = CreateArray ( test, 0 );
 test = CreateArray ( test, 1 );
@@ -2008,10 +1999,9 @@ test = CreateArray ( test, 1 );
             string code = @"
 a;
 r;
-[Imperative]
-{
     def test (i:int)
     {
+    return = [Imperative]{
         loc = {};
         for(j in i)
         {
@@ -2019,6 +2009,9 @@ r;
         }
         return = loc;
     }
+    }
+[Imperative]
+{
     a={3,4,5};
     t = test(a);
     r = {t[0][3], t[1][4], t[2][5]};
@@ -3338,9 +3331,9 @@ test = foo();
         {
             String code =
 @"
-arr = { {}, {}};
 def foo ()
 {
+    arr = { {}, {}};
     t = [Imperative]
     {
         //arr = null ;    
@@ -3369,12 +3362,11 @@ test = foo();
         {
             String code =
 @"
-arr;
 def foo ()
 {
+    arr;
     t = [Imperative]
     {
-        //arr  ;    
         for(i in (0..1))
         {
             arr[i][i] = i;
@@ -3401,12 +3393,11 @@ test = foo();
             String code =
 @"
 import(""FFITarget.dll"");
-arr = { {}, {}};
 def foo ()
 {
+    arr = { {}, {}};
     t = [Imperative]
     {
-        //arr = null ;    
         for(i in (0..1))
         {
             arr[i][i] = ClassFunctionality.ClassFunctionality(0);
@@ -3530,9 +3521,9 @@ test = foo().IntVal;
             String code =
 @"
 import(""FFITarget.dll"");
-arr;
 def foo ()
 {
+    arr;
     t = [Imperative]
     {
         for(i in (0..1))

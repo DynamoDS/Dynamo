@@ -1,17 +1,13 @@
-﻿using System;
-using System.Xml;
-
-using Dynamo;
+﻿using Dynamo;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
-
 using NUnit.Framework;
-
 using ProtoCore;
-
+using System;
+using System.Xml;
 using TestServices;
 
 namespace DynamoCoreWpfTests
@@ -28,7 +24,7 @@ namespace DynamoCoreWpfTests
         {
             base.Setup();
 
-            libraryCore = new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
+            libraryCore = new ProtoCore.Core(new Options());
             libraryCore.Compilers.Add(Language.Associative, new ProtoAssociative.Compiler(libraryCore));
             libraryCore.Compilers.Add(Language.Imperative, new ProtoImperative.Compiler(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
@@ -109,7 +105,7 @@ namespace DynamoCoreWpfTests
                 }
             }
 
-            var document = searchViewModel.Model.ComposeXmlForLibrary();
+            var document = searchViewModel.Model.ComposeXmlForLibrary(ExecutingDirectory);
 
             Assert.AreEqual("LibraryTree", document.DocumentElement.Name);
 

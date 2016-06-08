@@ -39,6 +39,9 @@ namespace Dynamo.Search
             get { return entryDictionary.Count; }
         }
 
+        /// <summary>
+        /// Event is fired when an entry is added.
+        /// </summary>
         public event Action<V> EntryAdded;
 
         protected virtual void OnEntryAdded(V entry)
@@ -47,6 +50,9 @@ namespace Dynamo.Search
             if (handler != null) handler(entry);
         }
 
+        /// <summary>
+        /// Event is fired when an entry is removed.
+        /// </summary>
         public event Action<V> EntryRemoved;
 
         protected virtual void OnEntryRemoved(V entry)
@@ -55,6 +61,9 @@ namespace Dynamo.Search
             if (handler != null) handler(entry);
         }
 
+        /// <summary>
+        /// Event is fired when an entry is updated.
+        /// </summary>
         public event Action<V> EntryUpdated;
 
         protected virtual void OnEntryUpdated(V entry)
@@ -69,7 +78,7 @@ namespace Dynamo.Search
         /// <param name="value"> The object to add  </param>
         /// <param name="tag"> The string to identify it in search </param>
         /// <param name="weight"></param>
-        public void Add(V value, string tag, double weight = 1)
+        internal void Add(V value, string tag, double weight = 1)
         {
             Add(value, tag.AsSingleton(), weight.AsSingleton());
         }
@@ -80,7 +89,7 @@ namespace Dynamo.Search
         /// <param name="values"> List of objects to add  </param>
         /// <param name="tag"> The string to identify it in search </param>
         /// <param name="weight"></param>
-        public void Add(IEnumerable<V> values, string tag, double weight = 1)
+        internal void Add(IEnumerable<V> values, string tag, double weight = 1)
         {
             foreach (var value in values)
                 Add(value, tag, weight);
@@ -92,7 +101,7 @@ namespace Dynamo.Search
         /// <param name="value"> The object to add  </param>
         /// <param name="tags"> The list of strings to identify it in search </param>
         /// <param name="weights">The list of corresponding weights coefficients</param>
-        public void Add(V value, IEnumerable<string> tags, IEnumerable<double> weights)
+        internal void Add(V value, IEnumerable<string> tags, IEnumerable<double> weights)
         {
             Dictionary<string, double> keys;
             if (!entryDictionary.TryGetValue(value, out keys))
@@ -119,7 +128,7 @@ namespace Dynamo.Search
         /// <param name="values"> The objects to add. Must have the same cardinality as the second parameter</param>
         /// <param name="tags"> The list of strings to identify it in search. Must have the same cardinality as the first parameter </param>
         /// <param name="weight"></param>
-        public void Add(IEnumerable<V> values, IEnumerable<string> tags, double weight = 1)
+        internal void Add(IEnumerable<V> values, IEnumerable<string> tags, double weight = 1)
         {
             var tagList = tags as IList<string> ?? tags.ToList();
             foreach (var value in values)
@@ -131,7 +140,7 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="value"> The object to remove </param>
         /// <param name="tag">The tag to remove for the given value </param>
-        public bool Remove(V value, string tag)
+        internal bool Remove(V value, string tag)
         {
             Dictionary<string, double> keys;
             return entryDictionary.TryGetValue(value, out keys) && keys.Remove(tag)
@@ -142,7 +151,7 @@ namespace Dynamo.Search
         ///     Remove an element from the search
         /// </summary>
         /// <param name="value"> The object to remove </param>
-        public bool Remove(V value)
+        internal bool Remove(V value)
         {
             if (!entryDictionary.Remove(value))
                 return false;
@@ -154,7 +163,7 @@ namespace Dynamo.Search
         ///     Remove elements from search based on a predicate
         /// </summary>
         /// <param name="removeCondition"> The predicate with which to test.  True results in removal. </param>
-        public int Remove(Func<V, bool> removeCondition)
+        internal int Remove(Func<V, bool> removeCondition)
         {
             var removals = entryDictionary.Keys.Where(removeCondition).ToList();
             foreach (var ele in removals)
@@ -168,7 +177,7 @@ namespace Dynamo.Search
         /// <param name="valueCondition"></param>
         /// <param name="removeTagCondition"></param>
         /// <returns></returns>
-        public int Remove(Func<V, bool> valueCondition, Func<string, bool> removeTagCondition)
+        internal int Remove(Func<V, bool> valueCondition, Func<string, bool> removeTagCondition)
         {
             var count = 0;
             var removals = entryDictionary.Where(kv => valueCondition(kv.Key)).ToList();
@@ -191,7 +200,7 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="value"> The object to remove </param>
         /// <param name="tags"> The list of tags to remove. </param>
-        public int Remove(V value, IEnumerable<string> tags)
+        internal int Remove(V value, IEnumerable<string> tags)
         {
             Dictionary<string, double> keys;
             if (!entryDictionary.TryGetValue(value, out keys))
@@ -204,11 +213,11 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Get the elements with a given tag
+        ///     Returns the elements with a given tag
         /// </summary>
         /// <param name="tag"> The tag to match </param>
         /// <returns> The elements with the given tag </returns>
-        public IEnumerable<V> ByTag(string tag)
+        internal IEnumerable<V> ByTag(string tag)
         {
             return entryDictionary.Where(kv => kv.Value.ContainsKey(tag)).Select(kv => kv.Key);
         }
@@ -218,7 +227,7 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
-        public bool Contains(V a)
+        internal bool Contains(V a)
         {
             return entryDictionary.Keys.Any(x => Equals(x, a));
         }
@@ -234,7 +243,7 @@ namespace Dynamo.Search
         /// "geometry point by".
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="pattern"></param>
+        /// <param name="subPatterns"></param>
         /// <returns></returns>
         private static bool MatchWithQueryString(string key, string[] subPatterns)
         {
@@ -275,7 +284,7 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="query"> The query </param>
         /// <param name="minResultsForTolerantSearch">Minimum number of results in the original search strategy to justify doing more tolerant search</param>
-        public IEnumerable<V> Search(string query, int minResultsForTolerantSearch = 0)
+        internal IEnumerable<V> Search(string query, int minResultsForTolerantSearch = 0)
         {
             var searchDict = new Dictionary<V, double>();
 
@@ -334,11 +343,11 @@ namespace Dynamo.Search
         }
 		
         /// <summary>
-        /// Get all tags for search specified element
+        /// Returns all tags for search specified element
         /// </summary>
         /// <param name="element">The element to match</param>
         /// <returns>All tags of the given element</returns>
-        public IEnumerable<string> GetTags(V element)
+        internal IEnumerable<string> GetTags(V element)
         {
             if (entryDictionary.ContainsKey(element))
                 return entryDictionary[element].Keys;

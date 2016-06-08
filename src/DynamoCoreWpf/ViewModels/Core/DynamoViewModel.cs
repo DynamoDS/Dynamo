@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Threading;
-using Dynamo.Configuration;
+﻿using Dynamo.Configuration;
 using Dynamo.Engine;
+using Dynamo.Exceptions;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
@@ -33,8 +21,22 @@ using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using DynamoUtilities;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Forms;
+using System.Windows.Threading;
 using ISelectable = Dynamo.Selection.ISelectable;
+
 
 namespace Dynamo.ViewModels
 {
@@ -171,7 +173,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Get the workspace view model whose workspace model is the model's current workspace
+        /// Returns the workspace view model whose workspace model is the model's current workspace
         /// </summary>
         public WorkspaceViewModel CurrentSpaceViewModel
         {
@@ -236,6 +238,22 @@ namespace Dynamo.ViewModels
                 model.PreferenceSettings.ConsoleHeight = value;
 
                 RaisePropertyChanged("ConsoleHeight");
+            }
+        }
+
+        /// <summary>
+        /// Indicates if preview bubbles should be displayed on nodes.
+        /// </summary>
+        public bool ShowPreviewBubbles
+        {
+            get
+            {
+                return model.PreferenceSettings.ShowPreviewBubbles;
+            }
+            set
+            {
+                model.PreferenceSettings.ShowPreviewBubbles = value;
+                RaisePropertyChanged("ShowPreviewBubbles");
             }
         }
 
@@ -496,6 +514,7 @@ namespace Dynamo.ViewModels
 
             BackgroundPreviewViewModel = startConfiguration.Watch3DViewModel;
             BackgroundPreviewViewModel.PropertyChanged += Watch3DViewModelPropertyChanged;
+            WatchHandler.RequestSelectGeometry += BackgroundPreviewViewModel.AddLabelForPath;
             RegisterWatch3DViewModel(BackgroundPreviewViewModel, RenderPackageFactoryViewModel.Factory);
         }
 
@@ -509,6 +528,8 @@ namespace Dynamo.ViewModels
         {
             watch3DViewModel.Setup(this, factory);
             watch3DViewModels.Add(watch3DViewModel);
+            watch3DViewModel.Active = PreferenceSettings
+                .GetIsBackgroundPreviewActive(watch3DViewModel.PreferenceWatchName);
             RaisePropertyChanged("Watch3DViewModels");
         }
 
@@ -1063,6 +1084,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Returns the file-save dialog with customized file types of Dynamo.
+        /// </summary>
+        /// <param name="workspace"></param>
+        /// <returns>A customized file-save dialog</returns>
         public FileDialog GetSaveDialog(WorkspaceModel workspace)
         {
             FileDialog fileDialog = new SaveFileDialog
@@ -1103,10 +1129,10 @@ namespace Dynamo.ViewModels
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
             // that can't be handled reliably
+            string xmlFilePath = string.Empty;
+            bool forceManualMode = false; 
             try
             {
-                string xmlFilePath = string.Empty;
-                bool forceManualMode = false;
                 var packedParams = parameters as Tuple<string, bool>;
                 if (packedParams != null)
                 {
@@ -1121,8 +1147,27 @@ namespace Dynamo.ViewModels
             }
             catch (Exception e)
             {
-                model.Logger.Log(Resources.MessageFailedToOpenFile + e.Message);
-                model.Logger.Log(e);
+                if (!DynamoModel.IsTestMode)
+                {
+                    // Catch all the IO exceptions and file access here. The message provided by .Net is clear enough to indicate the problem in this case.
+                    if (e is IOException || e is System.UnauthorizedAccessException)
+                    {
+                        System.Windows.MessageBox.Show(String.Format(e.Message, xmlFilePath));
+                    }
+                    else if (e is System.Xml.XmlException)
+                    {
+                        System.Windows.MessageBox.Show(String.Format(Resources.MessageFailedToOpenCorruptedFile, xmlFilePath));
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show(String.Format(Resources.MessageUnkownErrorOpeningFile, xmlFilePath));
+                    }
+                    model.Logger.Log(e);
+                }
+                else
+                {
+                    throw (e);
+                }
                 return;
             }
             this.ShowStartPage = false; // Hide start page if there's one.
@@ -1131,11 +1176,11 @@ namespace Dynamo.ViewModels
         private bool CanOpen(object parameters)
         {
             var filePath = parameters as string;
-            return ((!string.IsNullOrEmpty(filePath)) && File.Exists(filePath));
+            return PathHelper.IsValidPath(filePath);
         }
 
         /// <summary>
-        /// Present the open dialogue and open the workspace that is selected.
+        /// Present the open dialog and open the workspace that is selected.
         /// </summary>
         /// <param name="parameter"></param>
         private void ShowOpenDialogAndOpenResult(object parameter)
@@ -1202,7 +1247,14 @@ namespace Dynamo.ViewModels
         private void Save(object parameter)
         {
             if (!String.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
-                SaveAs(Model.CurrentWorkspace.FileName);
+            {
+                // For read-only file, re-direct save to save-as
+                if (this.CurrentSpace.IsReadOnly)
+                    ShowSaveDialogAndSaveResult(parameter);
+                else
+                    SaveAs(Model.CurrentWorkspace.FileName);      
+            }
+                
         }
 
         private bool CanSave(object parameter)
@@ -1237,7 +1289,15 @@ namespace Dynamo.ViewModels
         /// <param name="path">The path to save to</param>
         internal void SaveAs(string path)
         {
-            Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
+            try
+            {
+                Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
+            }
+            catch (System.Exception ex)
+            {
+                if (ex is IOException || ex is System.UnauthorizedAccessException)
+                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+            }
         }
 
         /// <summary>
@@ -1422,9 +1482,7 @@ namespace Dynamo.ViewModels
 
         private void CreateNodeFromSelection(object parameter)
         {
-            CurrentSpaceViewModel.CollapseNodes(
-                DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
-                    .Select(x => (x as NodeModel)));
+            CurrentSpaceViewModel.CollapseSelectedNodes();
         }
 
 
@@ -1434,7 +1492,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Gets the selected nodes that are "input" nodes, and makes an 
+        /// Returns the selected nodes that are "input" nodes, and makes an 
         /// exception for CodeBlockNodes as these are marked false so they 
         /// do not expose a IsInput checkbox
         /// </summary>
@@ -1800,6 +1858,15 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        /// <summary>
+        /// Toggles Showing Preview Bubbles globally
+        /// </summary>
+        /// <param name="parameter">Command parameter</param>
+        public void TogglePreviewBubblesShowing(object parameter)
+        {
+            ShowPreviewBubbles = !ShowPreviewBubbles;
+        }
+
         public void SelectNeighbors(object parameters)
         {
             List<ISelectable> sels = DynamoSelection.Instance.Selection.ToList<ISelectable>();
@@ -1979,11 +2046,18 @@ namespace Dynamo.ViewModels
             DialogResult result = openFileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-                foreach (var file in openFileDialog.FileNames)
+                try
                 {
-                    EngineController.ImportLibrary(file);
+                    foreach (var file in openFileDialog.FileNames)
+                    {
+                        EngineController.ImportLibrary(file);
+                    }
+                    SearchViewModel.SearchAndUpdateResults();
                 }
-                SearchViewModel.SearchAndUpdateResults();
+                catch(LibraryLoadFailedException ex)
+                {
+                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+                }
             }
         }
 

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Dynamo.Interfaces;
-using System.Globalization;
 using Dynamo.Configuration;
-using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Models;
+using Dynamo.Interfaces;
 using Dynamo.Properties;
 using DynamoUtilities;
 
@@ -37,6 +35,11 @@ namespace Dynamo.Core
         internal string CorePath { get; set; }
 
         /// <summary>
+        /// The full path of the host application such as DynamoRevit or DynamoStudio
+        /// </summary>
+        internal string HostPath { get; set; }
+
+        /// <summary>
         /// Reference of an IPathResolver object that supplies 
         /// additional path information. This argument is optional.
         /// </summary>
@@ -60,13 +63,12 @@ namespace Dynamo.Core
         private readonly int majorFileVersion;
         private readonly int minorFileVersion;
         private readonly string dynamoCoreDir;
+        private readonly string hostApplicationDirectory;
         private readonly string userDataDir;
         private readonly string commonDataDir;
 
         private readonly string commonDefinitions;
         private readonly string logDirectory;
-        private readonly string extensionsDirectory;
-        private readonly string viewExtensionsDirectory;
         private readonly string samplesDirectory;
         private readonly string backupDirectory;
         private readonly string preferenceFilePath;
@@ -76,14 +78,28 @@ namespace Dynamo.Core
         private readonly HashSet<string> nodeDirectories;
         private readonly HashSet<string> additionalResolutionPaths;
         private readonly HashSet<string> preloadedLibraries;
+        private readonly HashSet<string> extensionsDirectories;
+        private readonly HashSet<string> viewExtensionsDirectories;
 
         #endregion
+
+        internal IPreferences Preferences { get; set; }
+
+        private IEnumerable<string> RootDirectories
+        {
+            get { return Preferences != null ? Preferences.CustomPackageFolders : rootDirectories; }
+        }
 
         #region IPathManager Interface Implementation
 
         public string DynamoCoreDirectory
         {
             get { return dynamoCoreDir; }
+        }
+
+        public string HostApplicationDirectory
+        {
+            get { return hostApplicationDirectory; }
         }
 
         public string UserDataDirectory
@@ -98,12 +114,12 @@ namespace Dynamo.Core
 
         public string DefaultUserDefinitions
         {
-            get { return TransformPath(rootDirectories[0], DefinitionsDirectoryName); }
+            get { return TransformPath(RootDirectories.First(), DefinitionsDirectoryName); }
         }
 
         public IEnumerable<string> DefinitionDirectories
         {
-            get { return rootDirectories.Select(path => TransformPath(path, DefinitionsDirectoryName)); }
+            get { return RootDirectories.Select(path => TransformPath(path, DefinitionsDirectoryName)); }
         }
 
         public string CommonDefinitions
@@ -118,22 +134,22 @@ namespace Dynamo.Core
 
         public string DefaultPackagesDirectory
         {
-            get { return TransformPath(rootDirectories[0], PackagesDirectoryName); }
+            get { return TransformPath(RootDirectories.First(), PackagesDirectoryName); }
         }
 
         public IEnumerable<string> PackagesDirectories
         {
-            get { return rootDirectories.Select(path => TransformPath(path, PackagesDirectoryName)); }
+            get { return RootDirectories.Select(path => TransformPath(path, PackagesDirectoryName)); }
         }
 
-        public string ExtensionsDirectory
+        public IEnumerable<string> ExtensionsDirectories
         {
-            get { return extensionsDirectory; }
+            get { return extensionsDirectories; }
         }
 
-        public string ViewExtensionsDirectory
+        public IEnumerable<string> ViewExtensionsDirectories
         {
-            get { return viewExtensionsDirectory; }
+            get { return viewExtensionsDirectories; }
         }
 
         public string SamplesDirectory
@@ -210,10 +226,10 @@ namespace Dynamo.Core
         /// 
         public bool ResolveLibraryPath(ref string library)
         {
-            if (File.Exists(library)) // Absolute path, we're done here.
+            if (PathHelper.IsValidPath(library)) // Absolute path, we're done here.
                 return true;
 
-            library = LibrarySearchPaths(library).FirstOrDefault(File.Exists);
+            library = LibrarySearchPaths(library).FirstOrDefault(PathHelper.IsValidPath);
             return library != default(string);
         }
 
@@ -227,7 +243,7 @@ namespace Dynamo.Core
             try
             {
                 document = Path.GetFullPath(document);
-                if (File.Exists(document)) // "document" is already an absolute path.
+                if (PathHelper.IsValidPath(document)) // "document" is already an absolute path.
                     return true;
 
                 // Restore "document" back to just its file name first...
@@ -238,9 +254,9 @@ namespace Dynamo.Core
                 var rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
                 document = Path.Combine(rootModuleDirectory, document);
 
-                return File.Exists(document);
+                return PathHelper.IsValidPath(document);
             }
-            catch(Exception)
+            catch
             {
                 return false;
             }
@@ -272,7 +288,7 @@ namespace Dynamo.Core
 
             dynamoCoreDir = corePath;
             var assemblyPath = Path.Combine(dynamoCoreDir, "DynamoCore.dll");
-            if (!File.Exists(assemblyPath))
+            if (!PathHelper.IsValidPath(assemblyPath))
             {
                 throw new Exception("Dynamo's core path could not be found. " +
                     "If you are running Dynamo from a test, try specifying the " +
@@ -280,8 +296,18 @@ namespace Dynamo.Core
                     "TestServices.dll.config.");
             }
 
-            extensionsDirectory = Path.Combine(dynamoCoreDir, ExtensionsDirectoryName);
-            viewExtensionsDirectory = Path.Combine(dynamoCoreDir, ViewExtensionsDirectoryName);
+            hostApplicationDirectory = pathManagerParams.HostPath;
+            extensionsDirectories = new HashSet<string>();
+            viewExtensionsDirectories = new HashSet<string>();
+
+            extensionsDirectories.Add(Path.Combine(dynamoCoreDir, ExtensionsDirectoryName));
+            viewExtensionsDirectories.Add(Path.Combine(dynamoCoreDir, ViewExtensionsDirectoryName));
+
+            if(!string.IsNullOrEmpty(hostApplicationDirectory))
+            {
+                extensionsDirectories.Add(Path.Combine(hostApplicationDirectory, ExtensionsDirectoryName));
+                viewExtensionsDirectories.Add(Path.Combine(hostApplicationDirectory, ViewExtensionsDirectoryName));
+            }
 
             // If both major/minor versions are zero, get from assembly.
             majorFileVersion = pathManagerParams.MajorFileVersion;
@@ -329,7 +355,7 @@ namespace Dynamo.Core
         /// the target directories cannot be created during this call.</param>
         internal void EnsureDirectoryExistence(List<Exception> exceptions)
         {
-            if (rootDirectories.Count <= 0)
+            if (!RootDirectories.Any())
             {
                 throw new InvalidOperationException(
                     "At least one custom package directory must be specified");
@@ -355,7 +381,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Get the backup file path for a workspace
+        /// Returns the backup file path for a workspace
         /// </summary>
         /// <param name="workspace"></param>
         /// <returns></returns>
@@ -379,12 +405,6 @@ namespace Dynamo.Core
             }
 
             return Path.Combine(BackupDirectory, fileName);
-        }
-
-        internal void LoadCustomPackageFolders(IEnumerable<string> folders)
-        {
-            rootDirectories.Clear();
-            rootDirectories.AddRange(folders);
         }
 
         #endregion
@@ -426,8 +446,11 @@ namespace Dynamo.Core
             if (pathResolver != null && !string.IsNullOrEmpty(pathResolver.UserDataRootFolder))
                 return GetDynamoDataFolder(pathResolver.UserDataRootFolder);
 
+            if (!string.IsNullOrEmpty(userDataDir))
+                return userDataDir; //Return the cached userDataDir if we have one.
+
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo"));
+            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo", "Dynamo Core"));
         }
 
         private string GetCommonDataFolder(IPathResolver pathResolver)
@@ -436,7 +459,7 @@ namespace Dynamo.Core
                 return GetDynamoDataFolder(pathResolver.CommonDataRootFolder);
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo"));
+            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo", "Dynamo Core"));
         }
 
         private string GetDynamoDataFolder(string folder)

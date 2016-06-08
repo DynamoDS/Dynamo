@@ -1,54 +1,59 @@
 //------------------------------Associative----------------------------------//
 Hydrogen<out Node codeBlockNode>
-=                           (. ProtoCore.AST.AssociativeAST.CodeBlockNode codeblock = new ProtoCore.AST.AssociativeAST.CodeBlockNode();  .)
-                            (. NodeUtils.SetNodeStartLocation(codeblock, t); .)
-                            (. ProtoCore.AST.AssociativeAST.AssociativeNode node = null; .)
-                            (. ProtoFFI.ImportModuleHandler imh = null;
-        if (core.IsParsingPreloadedAssembly)
-        {
-            imh = core.ImportHandler;
-        }
-        else
-        {
-            imh = this.ImportModuleHandler;
-        }
-        bool rootImport = (null == imh) ? true : false;  .)
-  {
-                            (. ProtoCore.AST.AssociativeAST.AssociativeNode importNode = null; .)
-        Import_Statement <out importNode>
-                            (. 
-                               if (null != importNode)
-                                   (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(importNode);
-                            .)
-  }
-  (. imh = null;
-        if (core.IsParsingPreloadedAssembly)
-        {
-            imh = core.ImportHandler;
-        }
-        else
-            imh = ImportModuleHandler;
+=                           
+(. 
+    ProtoCore.AST.AssociativeAST.CodeBlockNode codeblock = new ProtoCore.AST.AssociativeAST.CodeBlockNode();  
+    NodeUtils.SetNodeStartLocation(codeblock, t); 
+    ProtoCore.AST.AssociativeAST.AssociativeNode node = null; 
+    ProtoFFI.ImportModuleHandler imh = null;
+    if (core.IsParsingPreloadedAssembly)
+    {
+       imh = core.ImportHandler;
+    }
+    else
+    {
+        imh = this.ImportModuleHandler;
+    }
+    bool rootImport = null == imh;  
 .)
-                            (.
-                               if(null != core.ContextDataManager)
-                               {
-                                   if (imh == null)
-                                       imh = new ProtoFFI.ImportModuleHandler(core);
-                                   ProtoCore.AST.AssociativeAST.AssociativeNode importNode = null;
-                                   importNode = core.ContextDataManager.Compile(imh);
-                                   if (null != importNode)
-                                       (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(importNode);
-                               }
-                            .)
-                            (.
-                               if (rootImport && null != imh && imh.RootImportNode.CodeNode.Body.Count != 0)
-                                   (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(imh.RootImportNode);
-                            .)
-                            (. if (rootImport && core.IsParsingPreloadedAssembly && !builtinMethodsLoaded)
-        {
-            CoreUtils.InsertPredefinedAndBuiltinMethods(core, codeblock);
-            core.ImportNodes = codeblock;
-        }
+    {
+        (. ProtoCore.AST.AssociativeAST.AssociativeNode importNode = null; .)
+        Import_Statement <out importNode>
+        (. 
+           if (null != importNode)
+              (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(importNode);
+        .)
+    }
+ (. 
+    imh = null;
+    if (core.IsParsingPreloadedAssembly)
+    {
+       imh = core.ImportHandler;
+    }
+    else
+    {
+        imh = ImportModuleHandler;
+    }
+    if(null != core.ContextDataManager)
+    {
+       if (imh == null)
+           imh = new ProtoFFI.ImportModuleHandler(core);
+       ProtoCore.AST.AssociativeAST.AssociativeNode importNode = null;
+       importNode = core.ContextDataManager.Compile(imh);
+       if (null != importNode)
+           (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(importNode);
+    }
+    
+    if (rootImport && null != imh && imh.RootImportNode.CodeNode.Body.Count != 0)
+    {
+       (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(imh.RootImportNode);
+    }
+
+    if (rootImport && core.IsParsingPreloadedAssembly && !builtinMethodsLoaded)
+    {
+        CoreUtils.InsertPredefinedAndBuiltinMethods(core, codeblock);
+       core.ImportNodes = codeblock;
+    }
 .)
   {
     ( 
@@ -58,17 +63,13 @@ Hydrogen<out Node codeBlockNode>
         )
         |
         (
-            (. List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>(); .)
-            [
-                Associative_AttributeDeclaration<out attrs>
-            ]
             (
                 (	               
-                    Associative_functiondecl<out node, attrs>
+                    Associative_functiondecl<out node>
                 )
                 |
                 (
-                    Associative_classdecl<out node, attrs>
+                    Associative_classdecl<out node>
                 )
             )
         )
@@ -205,10 +206,10 @@ Associative_StatementList<.out List<ProtoCore.AST.AssociativeAST.AssociativeNode
     .)
 .
 
-Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>
+Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node.>
 =
                                                 (. ProtoCore.AST.AssociativeAST.ClassDeclNode classnode = new ProtoCore.AST.AssociativeAST.ClassDeclNode(); .)
-                                                (. NodeUtils.SetNodeLocation(classnode, la); classnode.Attributes = attrs; .)
+                                                (. NodeUtils.SetNodeLocation(classnode, la); .)
     kw_class        
     ident                                       (. classnode.ClassName = t.val; .)      
                                                 (. isInClass = true;
@@ -228,19 +229,15 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Li
         }
     ]
     '{'
-        {										(. List<ProtoCore.AST.AssociativeAST.AssociativeNode> attributes = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>(); .)
-            [
-                Associative_AttributeDeclaration<out attributes>
-            ]
-            
-                                               (. ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic; .)
+        {										
+                                               (. ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public; .)
             [
                 Associative_AccessSpecifier<out access>
             ]
             (           
                 (      
                                                 (. ProtoCore.AST.AssociativeAST.AssociativeNode constr = null; .)   
-                    Associative_constructordecl<out constr, access, attributes>     
+                    Associative_constructordecl<out constr, access>     
                                                 (. if (String.IsNullOrEmpty(constr.Name))
                                                    {
                                                        constr.Name= classnode.ClassName;
@@ -257,13 +254,13 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Li
                     (
                         (
                                                 (. ProtoCore.AST.AssociativeAST.AssociativeNode funcnode; .)
-                            Associative_functiondecl<out funcnode, attributes, access, isStatic>      
+                            Associative_functiondecl<out funcnode, access, isStatic>      
                                                 (. classnode.Procedures.Add(funcnode); .)
                         )
                         |
                         (   
                                                 (. ProtoCore.AST.AssociativeAST.AssociativeNode varnode = null; .)  
-                            Associative_vardecl<out varnode, access, isStatic, attributes>    
+                            Associative_vardecl<out varnode, access, isStatic>    
                                                 (. classnode.Variables.Add(varnode); .)
 
                                                 (. 
@@ -345,23 +342,21 @@ Associative_LanguageBlock<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                             (. node = langblock; .)
 .       
 
-Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode constrNode, ProtoCore.CompilerDefinitions.AccessModifier access, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>
+Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode constrNode, ProtoCore.CompilerDefinitions.AccessModifier access.>
 =                           (.
                                 ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode constr = new ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode(); ;                                 
                                 string methodName;  
                                 ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature; 
-                                ProtoCore.AST.AssociativeAST.AssociativeNode pattern;                               
                             .)  
     kw_constructor          (. NodeUtils.SetNodeStartLocation(constr, t); .)
     Associative_CtorSignature<out methodName, out argumentSignature>
                             (.
-                                var returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
+                                var returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank);
                             
                                 constr.Name = methodName; 
                                 constr.ReturnType = returnType;
                                 constr.Signature = argumentSignature as ProtoCore.AST.AssociativeAST.ArgumentSignatureNode;
                                 constr.Access = access; 
-                                constr.Attributes = attrs;
                                 ProtoCore.AST.AssociativeAST.AssociativeNode functionBody = null; 
                             .)
     [
@@ -369,7 +364,7 @@ Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode co
         Associative_BaseConstructorCall<out bnode>  (. constr.BaseConstructor = bnode as ProtoCore.AST.AssociativeAST.FunctionCallNode; .)
     ]
 (
-    Associative_FunctionalMethodBodyMultiLine<out functionBody> 
+    Associative_FunctionDefinitionBody<out functionBody> 
 )
                             (. constr.FunctionBody = functionBody as ProtoCore.AST.AssociativeAST.CodeBlockNode; .)
                             (. NodeUtils.SetNodeEndLocation(constr, functionBody); .)
@@ -398,51 +393,30 @@ Associative_BaseConstructorCall<out ProtoCore.AST.AssociativeAST.AssociativeNode
                                                 (. bnode = f; .)
 .
 
-
-//------------------------------------------------------------------------
-Associative_ExternalLibraryReference<out string libname>
-=
-  '('
-    textstring   (. libname = t.val; .)
-                 (. libname = libname.Remove(0, 1); .)
-                 (. libname = libname.Remove(libname.Length-1, 1); .)
-  ')'
-.
-
 //------------------------------------------------------------------------
 Associative_AccessSpecifier<out ProtoCore.CompilerDefinitions.AccessModifier access>
-=                   (. access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic; .)
+=                   (. access = ProtoCore.CompilerDefinitions.AccessModifier.Public; .)
     (
         "public"        
         |
-        "private"       (. access = ProtoCore.CompilerDefinitions.AccessModifier.kPrivate; .)
+        "private"       (. access = ProtoCore.CompilerDefinitions.AccessModifier.Private; .)
         |
-        "protected"     (. access = ProtoCore.CompilerDefinitions.AccessModifier.kProtected; .)
+        "protected"     (. access = ProtoCore.CompilerDefinitions.AccessModifier.Protected; .)
     )
 .
 
-Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false.>
+Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false.>
 =                           
                             (. 
                                 ProtoCore.AST.AssociativeAST.FunctionDefinitionNode f = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode(); 
                                 string methodName;  
                                 ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature; 
                                 ProtoCore.Type returnType;  
-                                ProtoCore.AST.AssociativeAST.AssociativeNode pattern; 
                                 string externLibName = ""; 
                                 bool isExternLib = false; 
-                                bool isDNI = false;                                 
                             .)  
-    [ 
-        kw_external         (. isExternLib = true; .) //TODO do we want to add libtype? e.g. dll/py etc?
-        [ 
-            kw_native       (. isDNI = true; .)
-        ]
-        Associative_ExternalLibraryReference<out externLibName>
-    ]
-
     kw_def                  (. NodeUtils.SetNodeLocation(f, t); .)
-    Associative_MethodSignature<out methodName, out argumentSignature, out pattern, out returnType>
+    Associative_MethodSignature<out methodName, out argumentSignature, out returnType>
                             (.
                                 if (isExternLib &&  "var" == returnType.Name){
                                     errors.Warning(String.Format("External function {0} does not have a return type defined. Defaulting to var.", methodName));
@@ -451,27 +425,15 @@ Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node,
                             .) 
                             (. 
                                 f.IsExternLib = isExternLib; 
-                                f.IsDNI = isDNI; 
                                 f.ExternLibName = externLibName; 
                                 f.Name = methodName; 
-                                f.Pattern = pattern; 
                                 f.ReturnType = returnType; 
                                 f.Access = access;
-                                f.Attributes = attrs;
                                 f.Signature = argumentSignature as ProtoCore.AST.AssociativeAST.ArgumentSignatureNode; 
                                 f.IsStatic = isStatic;
                                 ProtoCore.AST.AssociativeAST.AssociativeNode functionBody = null; 
                             .) 
-    (
-        endline        
-        |
-        ( 
-            '='
-            Associative_FunctionalMethodBodySingleLine<out functionBody>
-        )
-        |
-        Associative_FunctionalMethodBodyMultiLine<out functionBody>
-    )
+    Associative_FunctionDefinitionBody<out functionBody>
                             (. f.FunctionBody = functionBody as ProtoCore.AST.AssociativeAST.CodeBlockNode; 
                                 node = f;   
                             .)
@@ -479,7 +441,7 @@ Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node,
 .
 
 //------------------------------------------------------------------------
-Associative_MethodSignature<out string methodName, out ProtoCore.AST.AssociativeAST.AssociativeNode argumentSign, out ProtoCore.AST.AssociativeAST.AssociativeNode pattern, out ProtoCore.Type returnType>
+Associative_MethodSignature<out string methodName, out ProtoCore.AST.AssociativeAST.AssociativeNode argumentSign, out ProtoCore.Type returnType>
 =
 ident                           (. methodName = t.val; .)
                                 (.  if (IsKeyWord(t.val, true))
@@ -487,18 +449,13 @@ ident                           (. methodName = t.val; .)
                                         errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                     }
                                     ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature = null;
-                                    returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
+                                    returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank);
                                 .)
 [
     Associative_TypeRestriction<out returnType>
 ]
 
 Associative_ArgumentSignatureDefinition<out argumentSignature>
-                                            (. pattern = null; .)
-[ 
-    Associative_PatternExpression<out pattern>
-]
-        
                                 (. argumentSign = argumentSignature; .)
 .
 
@@ -549,7 +506,7 @@ Associative_ArgumentSignatureDefinition<out ProtoCore.AST.AssociativeAST.Associa
                                                 (. argumentSign = argumentSignature; .)
 .
 
-Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>    
+Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false.>    
 = 
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
@@ -629,7 +586,7 @@ Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Prot
 
 .
 
-Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic>    
+Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public>    
 = 
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
@@ -671,7 +628,7 @@ Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, Proto
 .
 
 
-Associative_DefaultArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic>	
+Associative_DefaultArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public>	
 =
     Associative_ArgDecl<out node>    (. ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = node as ProtoCore.AST.AssociativeAST.VarDeclNode; .)
     '=' 
@@ -686,23 +643,6 @@ Associative_DefaultArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node
                                         varDeclNode.NameNode = bNode;
                                         .)
                                     (. node = varDeclNode; .)
-.
-
-
-//------------------------------------------------------------------------
-Associative_PatternExpression<out ProtoCore.AST.AssociativeAST.AssociativeNode pattern>
-=                       (. ProtoCore.AST.AssociativeAST.AssociativeNode p = null; .)
-'|'
-Associative_Expression<out p>    (. pattern = p; .)
-.
-
-
-//------------------------------------------------------------------------
-Associative_BinaryOps<out Operator op>  (. op = Operator.none; .)
-= Associative_AddOp<out op>
-| Associative_MulOp<out op>
-| Associative_ComparisonOp< out op>
-| Associative_LogicalOp< out op>
 .
 
 //------------------------------------------------------------------------
@@ -731,47 +671,10 @@ Associative_ClassReference<out ProtoCore.Type type>
  ident                           (. name = t.val; .)
                                  (. type.Name = name; .)
                                  (. type.UID = 0; .)
-                                 
-                                 // TODO Jun: Luke made changes to array representation, handle this
-                                 //(. type.IsArray = false; .)
 .
 
-
-
-Associative_FunctionalMethodBodySingleLine<out ProtoCore.AST.AssociativeAST.AssociativeNode funcBody>
-=                                       (.
-                                            funcBody = null;
-
-                                            ProtoCore.AST.AssociativeAST.CodeBlockNode functionBody = new ProtoCore.AST.AssociativeAST.CodeBlockNode(); 
-
-                                            ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryExpr = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-                                            IdentifierNode returnNode = AstFactory.BuildIdentifier("return");
-                                            returnNode.datatype = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeReturn, 0);
-                                            binaryExpr.LeftNode = returnNode;
-                                            ProtoCore.AST.AssociativeAST.AssociativeNode expr;
-                                        .)
-    Associative_Expression<out expr>
-                                        (. 
-                                            binaryExpr.RightNode = expr;
-                                            binaryExpr.Optr = Operator.assign;
-                                            NodeUtils.SetNodeLocation(binaryExpr, expr, expr);
-                                            
-                                            List<ProtoCore.AST.AssociativeAST.AssociativeNode> body = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>(); 
-                                            body.Add(binaryExpr);
-
-                                            functionBody.Body =body;
-                                            funcBody = functionBody; .)
-
-                                        (. 
-                                            if (la.val != ";")
-                                                SynErr(Resources.SemiColonExpected);  
-                                        .)
-    endline
-.
-                    
-    
 //------------------------------------------------------------------------
-Associative_FunctionalMethodBodyMultiLine<out ProtoCore.AST.AssociativeAST.AssociativeNode funcBody>
+Associative_FunctionDefinitionBody<out ProtoCore.AST.AssociativeAST.AssociativeNode funcBody>
 =                                       (.
                                             ProtoCore.AST.AssociativeAST.CodeBlockNode functionBody = new ProtoCore.AST.AssociativeAST.CodeBlockNode(); 
                                             List<ProtoCore.AST.AssociativeAST.AssociativeNode> body = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>(); 
@@ -785,78 +688,6 @@ Associative_FunctionalMethodBodyMultiLine<out ProtoCore.AST.AssociativeAST.Assoc
                                         (. funcBody = functionBody; .)
 .
 
-
-/*
-Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
-=                           (. node = null; .)
-(
-    (IF (IsTypedVariable())
-        (
-            ident           (.  
-                                if (IsKeyWord(t.val, true))
-                                {
-                                    errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
-                                }
-                                var typedVar = new ProtoCore.AST.AssociativeAST.TypedIdentifierNode();
-                                typedVar.Name = typedVar.Value = t.val;
-                                NodeUtils.SetNodeLocation(typedVar, t);
-                            .)
-            ':'
-            
-            [
-                kw_local    (.
-                                typedVar.IsLocal = true;
-                            .)
-            ]
-            
-            
-
-            ident
-                            (. 
-                               int type = core.TypeSystem.GetType(t.val); 
-                               if (type == ProtoCore.DSASM.Constants.kInvalidIndex)
-                               {
-                                   var unknownType = new ProtoCore.Type();
-                                   unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
-                                   unknownType.Name = t.val; 
-                                   typedVar.datatype = unknownType;
-                               }
-                               else
-                               {
-                                   typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
-                               }
-                            .)
-
-            [                               
-                            (. var datatype = typedVar.datatype; .)
-                openbracket closebracket    
-                            (. datatype.rank = 1; .)
-                [
-                    ( ".." openbracket closebracket )   
-                            (. datatype.rank = ProtoCore.DSASM.Constants.nDimensionArrayRank; .)
-                    |
-                    ( 
-                        {
-                            openbracket closebracket    
-                            (. datatype.rank++; .)
-                        } 
-                    )
-                ]
-                            (. typedVar.datatype = datatype; .)
-            ]
-
-                            (.  node = typedVar; .)
-        )
-    )
-    |
-    (
-        Associative_IdentifierList<out node>
-    )
-)
-.
-*/
-
-//-----------------------------------------------------------------------------------------------------
 TypedIdentifierList<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =
 (
@@ -882,7 +713,6 @@ TypedIdentifierList<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
  ) 
  .   
 
-//-----------------------------------------------------------------------------------------------------
 Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =                           (. node = null; .)
 (
@@ -1043,7 +873,6 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
 )
 .
 
-//------------------------------------------------------------------------
 Associative_NonAssignmentStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =
   SYNC                       (.
@@ -1059,7 +888,7 @@ Associative_NonAssignmentStatement<out ProtoCore.AST.AssociativeAST.AssociativeN
 						ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
 						leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
 
-						var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
+						var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
 						leftNode.datatype = unknownType;
 						leftNode.line = rightNode.line;
 						leftNode.col = rightNode.col;
@@ -1084,7 +913,6 @@ Associative_NonAssignmentStatement<out ProtoCore.AST.AssociativeAST.AssociativeN
 )
 .
 
-//------------------------------------------------------------------------
 Associative_FunctionCallStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =
   SYNC                       (.
@@ -1107,7 +935,7 @@ Associative_FunctionCallStatement<out ProtoCore.AST.AssociativeAST.AssociativeNo
 								ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
 								leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
 
-								var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
+								var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
 								leftNode.datatype = unknownType;
 								leftNode.line = rightNode.line;
 								leftNode.col = rightNode.col;
@@ -1134,7 +962,6 @@ Associative_FunctionCallStatement<out ProtoCore.AST.AssociativeAST.AssociativeNo
 .
 
 
-//------------------------------------------------------------------------
 Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode node> 
 =
  SYNC                       (. node = null; .)
@@ -1212,134 +1039,6 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
                                 .)    
                 )
                 |
-                (  
-                    IF(IsModifierStack())   
-                                (. 
-                                    withinModifierCheckScope = false; 
-                                .)                       
-                        "{"
-                        
-                                (.
-                                    ProtoCore.AST.AssociativeAST.ModifierStackNode mstack = new ProtoCore.AST.AssociativeAST.ModifierStackNode();
-                                    NodeUtils.SetNodeStartLocation(mstack, t);
-                                .)
-                        Associative_Expression<out rightNode> 
-                                (.
-                                    if (la.val == "=") 
-                                        SynErr(String.Format(Resources.InvalidSymbol, la.val));
-
-                                    ProtoCore.AST.AssociativeAST.IdentifierNode identifier = null;
-                                .)
-                        [
-                            
-                            "=>" ident  
-                                (. 
-                                    identifier = mstack.CreateIdentifierNode(t, leftNode);
-                                .)
-                        ]
-                                (.
-
-                                    if (null == identifier)
-                                        identifier = mstack.CreateIdentifierNode(leftNode, core);
-
-                                    expressionNode.RightNode = rightNode;
-                                    expressionNode.LeftNode = leftNode; 
-                                    expressionNode.Optr = Operator.assign;
-                                    Node elementNode = mstack.AddElementNode(expressionNode, identifier);
-                                .)
-
-                                (. 
-                                    if (la.val != ";")
-                                        SynErr(Resources.SemiColonExpected); 
-                                .)
-
-                        SYNC endline (. NodeUtils.SetNodeEndLocation(elementNode, t); .)
-                        {
-                                (. bool bHasOperator = false; .)
-                                (. Operator op = Operator.add;  .)
-                                (. 
-                                    int opLine = Constants.kInvalidIndex;
-                                    int opCol = Constants.kInvalidIndex;
-                                .)
-                            [
-                                (. bHasOperator = true; .)
-                                (
-                                    Associative_BinaryOps<out op>
-                                )
-                                (.
-                                    opLine = t.line;
-                                    opCol = t.col;
-                                .)
-                            ]
-                            Associative_Expression<out rightNode>
-                            (.
-                                    if (la.val == "=") 
-                                        SynErr(String.Format(Resources.InvalidSymbol, la.val));
-
-                                    identifier = null;
-                            .)
-                            [
-                                "=>" ident   (. identifier = mstack.CreateIdentifierNode(t, leftNode); .)
-                            ]
-                                (. 
-                                    expressionNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-                                    if(!bHasOperator)
-                                    {                                   
-                                       expressionNode.RightNode = rightNode;
-                                   
-                                    }
-                                    else
-                                    { 
-                                       int count = mstack.ElementNodes.Count;
-                                       ProtoCore.AST.AssociativeAST.BinaryExpressionNode previousElementNode = mstack.ElementNodes[count - 1] as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
-                                       // Create function call node from binary expression node 
-                                       expressionNode.RightNode = GenerateBinaryOperatorMethodCallNode(op, previousElementNode.LeftNode, rightNode);
-                                       NodeUtils.SetNodeStartLocation(expressionNode.RightNode, opLine, opCol);
-                                       expressionNode.IsModifier = true;
-                                    }
-
-                                    if (null == identifier)
-                                        identifier = mstack.CreateIdentifierNode(leftNode, core);
-
-                                    expressionNode.LeftNode = leftNode; 
-                                    expressionNode.Optr = Operator.assign;
-                                    elementNode = mstack.AddElementNode(expressionNode, identifier);
-                                .)
-
-                                (. 
-                                    if (la.val != ";")
-                                        SynErr(Resources.SemiColonExpected); 
-                                .)
-
-                            SYNC endline (. NodeUtils.SetNodeEndLocation(elementNode, t); .)
-                        }
-                            (. 
-                                ProtoCore.AST.AssociativeAST.BinaryExpressionNode previousNode = mstack.ElementNodes[mstack.ElementNodes.Count - 1] as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
-                                if (previousNode.LeftNode.Name.Contains(Constants.kTempModifierStateNamePrefix))
-                                {
-                                    // if a temporary exists for the final state, assign the modifier block variable to the final state directly
-                                    expressionNode.RightNode = previousNode.RightNode;
-
-                                    // delete previous temporary node
-                                    mstack.ElementNodes.RemoveAt(mstack.ElementNodes.Count - 1);
-                                }
-                                else // if the final state has a right assigned variable
-                                {
-                                    expressionNode.RightNode = previousNode.LeftNode;
-                                }	
-                                expressionNode.LeftNode = leftNode;
-                                expressionNode.Optr = Operator.assign;
-                                NodeUtils.SetNodeStartLocation(expressionNode, expressionNode.LeftNode);
-                                mstack.ElementNodes.Add(expressionNode);
-
-                                node = mstack; 
-                            .)
-                        "}" (.
-                                NodeUtils.SetNodeEndLocation(expressionNode, t);
-                                NodeUtils.SetNodeEndLocation(mstack, t);
-                            .)
-                )
-                |
                 (
                     Associative_Expression<out rightNode>
                                 (.
@@ -1367,12 +1066,6 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
                                         if (node is ProtoCore.AST.AssociativeAST.BinaryExpressionNode)
                                         {
                                             node.IsModifier = isModifier;   
-                                            /*
-                                            if ((node as ProtoCore.AST.AssociativeAST.BinaryExpressionNode).RightNode is ProtoCore.AST.AssociativeAST.InlineConditionalNode)
-                                            {
-                                               node.IsModifier = false;
-                                            }                                                             
-                                            */
                                         }
                                         isModifier = false;
                                         withinModifierCheckScope = false;
@@ -1388,7 +1081,6 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
 )
 .
 
-//------------------------------------------------------------------------
 Associative_Expression<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =               (. node = null; .)
     (
@@ -1432,23 +1124,7 @@ Associative_BitUnaryExpression<out ProtoCore.AST.AssociativeAST.AssociativeNode 
     Associative_unaryop<out op>     
     Associative_Factor<out exprNode>    
                         (. 
-                            if (!core.Options.AssocOperatorAsMethod)
-                            {
-                                // expression is converted to function call to support replication
-                                ProtoCore.AST.AssociativeAST.UnaryExpressionNode unary = new ProtoCore.AST.AssociativeAST.UnaryExpressionNode(); 
-                                unary.Operator = op;
-                                unary.Expression = exprNode;
-                                node = unary;
-                            }
-                            else
-                            {
-                                node = GenerateUnaryOperatorMethodCallNode(op, exprNode);
-                            }
-
-                            if (core.Options.AssocOperatorAsMethod && (op == UnaryOperator.Increment || op == UnaryOperator.Decrement))
-                            {
-                                node = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(){ LeftNode = exprNode, Optr = Operator.assign, RightNode = node }; 
-                            }
+                            node = GenerateUnaryOperatorMethodCallNode(op, exprNode);
                         .)
 .
 
@@ -1458,19 +1134,8 @@ Associative_NegExpression<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                         (. ProtoCore.AST.AssociativeAST.AssociativeNode exprNode = null; .)
     Associative_negop<out op>
     Associative_IdentifierList <out exprNode>
-                        (.  // convert operator to function call when AssocOperatorAsMethod is set
-                            if (!core.Options.AssocOperatorAsMethod)
-                            {
-                                //expression is converted to function call to support replication
-                                ProtoCore.AST.AssociativeAST.UnaryExpressionNode unary = new ProtoCore.AST.AssociativeAST.UnaryExpressionNode(); 
-                                unary.Operator = op;
-                                unary.Expression = exprNode;
-                                node = unary;
-                            }
-                            else
-                            {
-                                node = GenerateUnaryOperatorMethodCallNode(op, exprNode);
-                            }
+                        (.  
+                           node = GenerateUnaryOperatorMethodCallNode(op, exprNode);
                         .)
 .
 
@@ -1483,25 +1148,12 @@ Associative_LogicalExpression<out ProtoCore.AST.AssociativeAST.AssociativeNode n
     Associative_LogicalOp<out op> 
                                     (. ProtoCore.AST.AssociativeAST.AssociativeNode expr2; .)
     Associative_ComparisonExpression<out expr2>
-                                    (.	// convert operator to function call when AssocOperatorAsMethod is set
-                                        if (!core.Options.AssocOperatorAsMethod)
-                                        {
-                                            // The expression is converted to function call to support replication
-                                            ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-                                            binaryNode.LeftNode = node;
-                                            binaryNode.RightNode = expr2;
-                                            binaryNode.Optr = op;
-                                            node = binaryNode;
-                                        }
-                                        else 
-                                        {
-                                            node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
-                                        }
+                                    (.	
+                                        node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
                                     .)
   }
 .
 
-//------------------------------------------------------------------------
 Associative_ComparisonOp<out Operator op>
                             (. op = Operator.none; .)
 = ">"                       (. op = Operator.gt; .)
@@ -1512,7 +1164,6 @@ Associative_ComparisonOp<out Operator op>
 | "!="                      (. op = Operator.nq; .)
 .
 
-//------------------------------------------------------------------------
 Associative_ComparisonExpression<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =
 Associative_RangeExpr<out node>
@@ -1521,26 +1172,12 @@ Associative_RangeExpr<out node>
     Associative_ComparisonOp<out op>
                                 (. ProtoCore.AST.AssociativeAST.AssociativeNode expr2; .)
     Associative_RangeExpr<out expr2>
-                                (.	// convert operator to function call when AssocOperatorAsMethod is set
-                                    if (!core.Options.AssocOperatorAsMethod)
-                                    {
-                                        // The expression is converted to function call to support replication
-                                        ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-                                        binaryNode.LeftNode = node;
-                                        binaryNode.RightNode = expr2;
-                                        binaryNode.Optr = op;
-                                        node = binaryNode;
-                                    }
-                                    else 
-                                    {
-                                        node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
-                                    }
-
+                                (.	
+                                   node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
                                 .)
 }
 .
 
-//------------------------------------------------------------------------
 Associative_RangeExpr<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =
     Associative_ArithmeticExpression<out node>
@@ -1570,7 +1207,6 @@ Associative_RangeExpr<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
     ]
 .
 
-//------------------------------------------------------------------------
 Associative_AddOp<out Operator op>
 =                   (. op = Operator.add; .)
   ( "+"
@@ -1593,7 +1229,6 @@ Associative_BitOp<out Operator op>
   | '|'             (. op = Operator.bitwiseor; .)
   ).
 
-/*------------------------------------------------------------------------*/
 Associative_LogicalOp<out Operator op>
 =                   (. op = Operator.and; .)
 ( "&&"
@@ -1653,20 +1288,7 @@ Associative_Term<out node>
     (. ProtoCore.AST.AssociativeAST.AssociativeNode expr2; .)
     Associative_Term<out expr2>
     (.	
-        if (!core.Options.AssocOperatorAsMethod)
-        {
-            // The expression is converted to function call to support replication
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-            binaryNode.LeftNode = node;
-            binaryNode.RightNode = expr2;
-            binaryNode.Optr = op;
-            node = binaryNode;
-            NodeUtils.SetNodeLocation(node, node, expr2);
-        }
-        else 
-        {
-            node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
-        }
+        node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
     .)
 }
 .
@@ -1692,19 +1314,7 @@ Associative_Factor<out node>
     (. #endif            .)
 
     (.	
-        if (!core.Options.AssocOperatorAsMethod)
-        {
-            // The expression is converted to function call to support replication
-            ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-            binaryNode.LeftNode = node;
-            binaryNode.RightNode = expr2;
-            binaryNode.Optr = op;
-            node = binaryNode;
-        }
-        else 
-        {
-            node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
-        }
+        node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
     .)
 }
 .
@@ -1717,20 +1327,8 @@ Associative_interimfactor<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
         Associative_BitOp<out op> 
                                 (. ProtoCore.AST.AssociativeAST.AssociativeNode expr2; .)   
         Associative_Factor<out expr2>
-                                (.	// convert operator to function call when AssocOperatorAsMethod is set
-                                    if (!core.Options.AssocOperatorAsMethod)
-                                    {
-                                        // The expression is converted to function call to support replication
-                                        ProtoCore.AST.AssociativeAST.BinaryExpressionNode binaryNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-                                        binaryNode.LeftNode = node;
-                                        binaryNode.RightNode = expr2;
-                                        binaryNode.Optr = op;
-                                        node = binaryNode;
-                                    }
-                                    else 
-                                    {
-                                        node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
-                                    }
+                                (.	
+                                    node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
                                 .)
     }
 .
@@ -1889,14 +1487,14 @@ Associative_Ident<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                 {
                     errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                 }
-                int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
-                if (ltype == (int)ProtoCore.PrimitiveType.kTypeReturn && la.val != "=")
+                int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.Return : (int)ProtoCore.PrimitiveType.Var;
+                if (ltype == (int)ProtoCore.PrimitiveType.Return && la.val != "=")
                 {
                      SynErr(String.Format(Resources.InvalidReturnStatement, la.val));
                 }
                 
                 var identNode = AstFactory.BuildIdentifier(t.val);
-                identNode.datatype = TypeSystem.BuildPrimitiveTypeObject((ProtoCore.PrimitiveType)ltype, 0);
+                identNode.datatype = TypeSystem.BuildPrimitiveTypeObject((ProtoCore.PrimitiveType)ltype);
                 node = identNode;
                 NodeUtils.SetNodeLocation(node, t);
             .)
@@ -2086,99 +1684,96 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                             }
                                         .)
     ]
+    
+    [
+                                        (. 
+                                           AssociativeNode levelNode = null;
+                                           bool isDominant = false;
+                                        .)
+        (
+            list_at Associative_Number<out levelNode> 
+            |
+            dominant_list_at Associative_Number<out levelNode> (. isDominant = true; .)
+        )
+                                        (. 
+                                            IntNode listAtLevel = levelNode as IntNode;
+                                            if (listAtLevel != null)
+                                            {
+                                                var atLevel = new AtLevelNode { Level = listAtLevel.Value, IsDominant = isDominant };
+                                                nameNode.AtLevel = atLevel; 
+                                            }
+                                        .)
+    ]
 
     [ 
         IF(IsReplicationGuide())
         (
-                                            (. var guides = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();.)
+                                            (. var guides = new List<AssociativeNode>();.)
             lessthan
                                             (.
                                                 string repguide = String.Empty;
                                                 bool isLongest = false;
-                                                ProtoCore.AST.AssociativeAST.AssociativeNode numNode = null;
-                                                ProtoCore.AST.AssociativeAST.ReplicationGuideNode repGuideNode = null;
+                                                ReplicationGuideNode repGuideNode = null;
                                             .)
        
             (IF(IsPostfixedReplicationGuide())
             (
-                postfixed_replicationguide                         
-                                                (. 
-                                                    repguide = t.val;
-                                                    repguide = repguide.Remove(repguide.Length - 1);
-                                                    isLongest = true;
-
-                                                    numNode = new ProtoCore.AST.AssociativeAST.IdentifierNode() { Value = repguide };
-                                                    repGuideNode = new ProtoCore.AST.AssociativeAST.ReplicationGuideNode();
-                                                    repGuideNode.RepGuide = numNode;
-                                                    repGuideNode.IsLongest = isLongest;
-                                                    NodeUtils.SetNodeLocation(numNode, t); 
-                                                .)
-        
+                postfixed_replicationguide      (.  isLongest = true; .)
                 )
                 |
                 (
-                    number                      (. 
+                    number                      (.  isLongest = false; .)
+                )
+            )
+                                                (.
                                                     repguide = t.val;
-                                                    isLongest = false;
-                                                    numNode = new ProtoCore.AST.AssociativeAST.IdentifierNode() { Value = repguide };
-                                                    repGuideNode = new ProtoCore.AST.AssociativeAST.ReplicationGuideNode();
+                                                    if (isLongest)
+                                                    {
+                                                        repguide = repguide.Remove(repguide.Length - 1);
+                                                    }
+                                                    var numNode = new IdentifierNode() { Value = repguide };
+                                                    repGuideNode = new ReplicationGuideNode();
                                                     repGuideNode.RepGuide = numNode;
                                                     repGuideNode.IsLongest = isLongest;
                                                     NodeUtils.SetNodeLocation(numNode, t); 
                                                 .)
-                )
-            )
-            greaterthan
-                                                (. guides.Add(repGuideNode); .)
+            greaterthan                         (. guides.Add(repGuideNode); .)
             {                   
                 lessthan
-
                 (IF(IsPostfixedReplicationGuide())
-                (
-                    postfixed_replicationguide                         
-                                                    (. 
-                                                        repguide = t.val;
-                                                        repguide = repguide.Remove(repguide.Length - 1);
-                                                        isLongest = true;
-
-                                                        numNode = new ProtoCore.AST.AssociativeAST.IdentifierNode() { Value = repguide };
-                                                        repGuideNode = new ProtoCore.AST.AssociativeAST.ReplicationGuideNode();
-                                                        repGuideNode.RepGuide = numNode;
-                                                        repGuideNode.IsLongest = isLongest;
-                                                        NodeUtils.SetNodeLocation(numNode, t); 
-                                                    .)
-        
+                    (
+                        postfixed_replicationguide  (.  isLongest = true; .)
                     )
                     |
                     (
-                        number                      (. 
-                                                        repguide = t.val;
-                                                        isLongest = false;
-                                                        numNode = new ProtoCore.AST.AssociativeAST.IdentifierNode() { Value = repguide };
-                                                        repGuideNode = new ProtoCore.AST.AssociativeAST.ReplicationGuideNode();
-                                                        repGuideNode.RepGuide = numNode;
-                                                        repGuideNode.IsLongest = isLongest;
-                                                        NodeUtils.SetNodeLocation(numNode, t); 
-                                                    .)
+                        number                      (.  isLongest = false; .)
                     )
                 )
-                greaterthan              
-               
-                                            (. 
-                                                guides.Add(repGuideNode); 
+                                            (.
+                                                    repguide = t.val;
+                                                    if (isLongest)
+                                                    {
+                                                        repguide = repguide.Remove(repguide.Length - 1);
+                                                    }
+                                                    numNode = AstFactory.BuildIdentifier(repguide);
+                                                    repGuideNode = new ReplicationGuideNode();
+                                                    repGuideNode.RepGuide = numNode;
+                                                    repGuideNode.IsLongest = isLongest;
+                                                    NodeUtils.SetNodeLocation(numNode, t); 
                                             .)
+                greaterthan                 (.  guides.Add(repGuideNode); .)
             }
                                             (. 
                                                 nameNode.ReplicationGuides = guides; 
                                                 if (groupExprNode != null)
                                                 {
                                                     var expr = groupExprNode.Expression;
-                                                    if (expr is ProtoCore.AST.AssociativeAST.IdentifierListNode)
+                                                    if (expr is IdentifierListNode)
                                                     {
-                                                        var rightNode = (expr as ProtoCore.AST.AssociativeAST.IdentifierListNode).RightNode;
-                                                        if (rightNode is ProtoCore.AST.AssociativeAST.ArrayNameNode)
+                                                        var rightNode = (expr as IdentifierListNode).RightNode;
+                                                        if (rightNode is ArrayNameNode)
                                                         {
-                                                            var rightMostArrayNameNode = rightNode as ProtoCore.AST.AssociativeAST.ArrayNameNode;
+                                                            var rightMostArrayNameNode = rightNode as ArrayNameNode;
                                                             if (rightMostArrayNameNode.ReplicationGuides == null)
                                                             {
                                                                 rightMostArrayNameNode.ReplicationGuides = guides;
@@ -2190,10 +1785,10 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                                             groupExprNode.ReplicationGuides = null;
                                                         }
                                                     }
-                                                    else if (expr is ProtoCore.AST.AssociativeAST.FunctionDotCallNode)
+                                                    else if (expr is FunctionDotCallNode)
                                                     {
-                                                        var functionCall = (expr as ProtoCore.AST.AssociativeAST.FunctionDotCallNode).FunctionCall;
-                                                        var function = (functionCall.Function as ProtoCore.AST.AssociativeAST.ArrayNameNode);
+                                                        var functionCall = (expr as FunctionDotCallNode).FunctionCall;
+                                                        var function = (functionCall.Function as ArrayNameNode);
                                                         if (function.ReplicationGuides == null)
                                                         {
                                                             function.ReplicationGuides = guides;
@@ -2219,42 +1814,6 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                             }
                                         .)
 .
-
-/*
- void Associative_IdentifierList_FULL_SSA(out ProtoCore.AST.AssociativeAST.AssociativeNode node)
-    {
-        node = null;
-        if (isInClass && IsIdentList())
-        {
-            disableKwCheck = true;
-        }
-        Associative_NameReference(out node);
-        disableKwCheck = false;
-        ProtoCore.AST.AssociativeAST.AssociativeNode inode = node;
-
-        while (la.kind == 6)
-        {
-            Get();
-            ProtoCore.AST.AssociativeAST.AssociativeNode rnode = null;
-            Associative_NameReference(out rnode);
-            if ((inode is ProtoCore.AST.AssociativeAST.IdentifierNode) &&
-                (inode as ProtoCore.AST.AssociativeAST.IdentifierNode).Name == ProtoCore.DSDefinitions.Keyword.This &&
-                (rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode))
-            {
-                node = rnode;
-                return;
-            }
-
-            ProtoCore.AST.AssociativeAST.IdentifierListNode bnode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
-            bnode.LeftNode = node;
-            bnode.Optr = Operator.dot;
-            bnode.RightNode = rnode;
-            node = bnode;
-            NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode);
-        }
-    }
-*/
-
 
 Associative_IdentifierList<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =                                   (. 
@@ -2399,55 +1958,3 @@ Associative_Arguments<.out List<ProtoCore.AST.AssociativeAST.AssociativeNode> no
                         
     ')'
 .  
-
-Associative_AttributeDeclaration<.out List<ProtoCore.AST.AssociativeAST.AssociativeNode> nodes.>
-                                                    (. nodes = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>(); .)
-=
-    '['												(. ProtoCore.AST.AssociativeAST.AssociativeNode node; .)
-        Associative_Attribute<out node>			(. if (node != null) nodes.Add(node); .)
-        {
-            WEAK ','								(. node = null; .)
-            Associative_Attribute<out node>		(. if (node != null) nodes.Add(node); .)
-        }
-    ']'
-.
-
-Associative_Attribute<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
-=                                   (. ProtoCore.AST.AssociativeAST.FunctionCallNode f = new ProtoCore.AST.AssociativeAST.FunctionCallNode(); .)
-    Associative_Ident<out node>     (. NodeUtils.SetNodeStartLocation(f, t); .)
-                                    (. List<ProtoCore.AST.AssociativeAST.AssociativeNode> args = null; .)
-    {
-        Associative_Arguments<out args> (. f.FormalArguments = args; .)
-    }
-                                        (.
-                                            f.Function = node;
-                                            NodeUtils.SetNodeEndLocation(f, t);
-                                            node = f; 
-                                        .)						
-.
-
-/*
-Associative_ReplicationGuideIdent<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
-=
-                                    
-    Associative_Ident<out node>                 
-                                    (. ProtoCore.AST.AssociativeAST.IdentifierNode identNode = node as ProtoCore.AST.AssociativeAST.IdentifierNode; .)
-                                    (. List<ProtoCore.AST.AssociativeAST.AssociativeNode> guides = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();.)
-    lessthan
-        number                      (. ProtoCore.AST.AssociativeAST.AssociativeNode numNode = new ProtoCore.AST.AssociativeAST.IdentifierNode() { Value = t.val };
-                                       NodeUtils.SetNodeLocation(numNode, t); .)
-    greaterthan
-                                    (. guides.Add(numNode); .)
-                                    
-    {                   
-        lessthan
-            number                  (. numNode = new ProtoCore.AST.AssociativeAST.IdentifierNode() { Value = t.val };
-                                       NodeUtils.SetNodeLocation(numNode, t); .)
-        greaterthan                 
-                                    (. guides.Add(numNode); .)
-    }
-                                    (. identNode.ReplicationGuides = guides; .)
-                                    (. node = identNode; .)
-.
-*/
-

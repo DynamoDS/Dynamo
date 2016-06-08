@@ -7,9 +7,10 @@ namespace ProtoCore.DSASM
     public class SymbolNode
     {
         public string           name;
+        // To be deleted when implicit dependency is disabled.
+        // It is for dependency var <-> forloop expression
         public string           forArrayName;
         public int              index;
-        public int              heapIndex;
         public int              classScope;
         public int              functionIndex;
         public int              absoluteClassScope;
@@ -19,23 +20,19 @@ namespace ProtoCore.DSASM
         
         public bool             isArgument;
         public bool             isTemp;
-        public int              size;
-        public int              datasize;
-        public List<int>        arraySizeList;
+        public bool             isSSATemp;
         public MemoryRegion     memregion;
         public int              symbolTableIndex = Constants.kInvalidIndex;
         public int              runtimeTableIndex = Constants.kInvalidIndex;
         public CompilerDefinitions.AccessModifier  access;
         public bool isStatic;
-        public List<AttributeEntry> Attributes { get; set; }
         public int codeBlockId = Constants.kInvalidIndex;
         public string ExternLib = "";
 
         public SymbolNode()
         {
             name = string.Empty;
-            arraySizeList   = null;
-            memregion       = MemoryRegion.kInvalidRegion;
+            memregion       = MemoryRegion.InvalidRegion;
             classScope      = Constants.kInvalidIndex;
             functionIndex   = Constants.kGlobalScope;
             absoluteClassScope = Constants.kGlobalScope;
@@ -47,33 +44,24 @@ namespace ProtoCore.DSASM
         public SymbolNode(
             string name,
             int index, 
-            int heapIndex, 
             int functionIndex,
-            ProtoCore.Type datatype,
-            ProtoCore.Type enforcedType,
-            int size,
-            int datasize, 
+            Type datatype,
             bool isArgument, 
             int runtimeIndex,
-            MemoryRegion memregion = MemoryRegion.kInvalidRegion, 
-            bool isArray = false, 
-            List<int> arraySizeList = null, 
+            MemoryRegion memregion = MemoryRegion.InvalidRegion, 
             int scope = -1,
-            ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
+            CompilerDefinitions.AccessModifier access = CompilerDefinitions.AccessModifier.Public,
             bool isStatic = false,
-            int codeBlockId = ProtoCore.DSASM.Constants.kInvalidIndex)
+            int codeBlockId = Constants.kInvalidIndex)
         {
             this.name           = name;
             isTemp         = name.StartsWith("%");
+            isSSATemp = name.StartsWith(Constants.kSSATempPrefix); 
             this.index          = index;
             this.functionIndex = functionIndex;
             this.absoluteFunctionIndex = functionIndex;
             this.datatype       = datatype;
-            this.staticType   = enforcedType;
-            this.size           = size;
-            this.datasize       = datasize;
             this.isArgument     = isArgument;
-            this.arraySizeList  = arraySizeList;
             this.memregion      = memregion;
             this.classScope     = scope;
             this.absoluteClassScope = scope;
@@ -95,20 +83,6 @@ namespace ProtoCore.DSASM
                    functionIndex == rhs.functionIndex && 
                    classScope == rhs.classScope && 
                    codeBlockId == rhs.codeBlockId;
-        }
-
-        public void SetStaticType(ProtoCore.Type newtype)
-        {
-            if (staticType.Equals(newtype))
-            {
-                return;
-            }
-
-            staticType = newtype;
-            if (staticType.UID != (int)PrimitiveType.kTypeVar || staticType.rank != 0)
-            {
-                datatype = staticType;
-            }
         }
     }
 
@@ -186,7 +160,7 @@ namespace ProtoCore.DSASM
             symbolList[symbolTableIndex] = node;
             if (Constants.kGlobalScope == node.functionIndex)
             {
-                size += node.size;
+                size += 1;
             }
 
             if (!lookAsideSymbolCache.ContainsKey(node.name))

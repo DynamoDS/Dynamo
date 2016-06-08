@@ -1,17 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Input;
 using System.Windows.Media;
-
-using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
@@ -21,23 +17,21 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
-using RestSharp.Contrib;
-using System.Text;
 using System.Windows.Controls.Primitives;
 using Dynamo.Configuration;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Utilities;
-using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
+using RestSharp.Extensions.MonoHttp;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using Point = System.Windows.Point;
 using TabControl = System.Windows.Controls.TabControl;
 using Thickness = System.Windows.Thickness;
+using System.Net;
 
 namespace Dynamo.Controls
 {
@@ -408,8 +402,11 @@ namespace Dynamo.Controls
         {
             if (value is string && !string.IsNullOrEmpty(value as string))
             {
-                // convert to path, get file name
-                return Path.GetFileName((string)value);
+                // Convert to path, get file name. If read-only file, append [Read-Only].
+                if (DynamoUtilities.PathHelper.IsReadOnlyPath((string)value))
+                    return Resources.TabFileNameReadOnlyPrefix + Path.GetFileName((string)value);
+                else
+                    return Path.GetFileName((string)value);
             }
 
             return "Unsaved";
@@ -973,6 +970,25 @@ namespace Dynamo.Controls
             System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
+    public class ShowHidePreviewBubblesConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool) value
+                ? Resources.DynamoViewSettingsMenuHidePreviewBubbles
+                : Resources.DynamoViewSettingsMenuShowPreviewBubbles;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (string)value == Resources.DynamoViewSettingsMenuHidePreviewBubbles;
         }
 
         #endregion
@@ -1588,7 +1604,7 @@ namespace Dynamo.Controls
             if (value == null)
                 return Resources.FilePathConverterNoFileSelected;
 
-            var str = HttpUtility.UrlDecode(value.ToString());
+            var str = WebUtility.UrlDecode(value.ToString());
 
             if (string.IsNullOrEmpty(str))
                 return Resources.FilePathConverterNoFileSelected;
@@ -1643,7 +1659,7 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return HttpUtility.UrlEncode(value.ToString());
+            return WebUtility.UrlEncode(value.ToString());
         }
     }
 
@@ -2712,7 +2728,7 @@ namespace Dynamo.Controls
         /// Converter is used in Library Views.
         /// Create - green.
         /// Action - pink.
-        /// Query - blue.
+        /// Returns - blue.
         /// </summary>
         public class ElementGroupToColorConverter : IValueConverter
         {

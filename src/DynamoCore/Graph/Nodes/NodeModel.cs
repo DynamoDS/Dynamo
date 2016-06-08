@@ -74,7 +74,7 @@ namespace Dynamo.Graph.Nodes
         public virtual string CreationName { get { return this.Name; } }
 
         /// <summary>
-        /// This property gets all the Upstream Nodes  for a given node, ONLY after the graph is loaded. 
+        /// This property queries all the Upstream Nodes  for a given node, ONLY after the graph is loaded. 
         /// This property is computed in ComputeUpstreamOnDownstreamNodes function
         /// </summary>
         internal HashSet<NodeModel> UpstreamCache = new HashSet<NodeModel>();
@@ -102,6 +102,16 @@ namespace Dynamo.Graph.Nodes
         }
 
         internal event DispatchedToUIThreadHandler DispatchedToUI;
+
+        /// <summary>
+        /// Event triggered when a port is connected.
+        /// </summary>
+        public event Action<PortModel, ConnectorModel> PortConnected;
+
+        /// <summary>
+        /// Event triggered when a port is disconnected.
+        /// </summary>
+        public event Action<PortModel> PortDisconnected;
 
         #endregion
 
@@ -243,6 +253,11 @@ namespace Dynamo.Graph.Nodes
                 return state == ElementState.AstBuildBroken || state == ElementState.Error;
             }
         }
+
+        /// <summary>
+        ///     Indicates if node preview is pinned
+        /// </summary>
+        public bool PreviewPinned { get; internal set; }
 
         /// <summary>
         ///     Text that is displayed as this Node's tooltip.
@@ -442,39 +457,6 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// WARNING: This method is meant for unit test only. It directly accesses
-        /// the EngineController for the mirror data without waiting for any 
-        /// possible execution to complete (which, in single-threaded nature of 
-        /// unit test, is an okay thing to do). The right way to get the cached 
-        /// value for a NodeModel is by going through its RequestValueUpdateAsync
-        /// method).
-        /// </summary>
-        /// <param name="engine">Instance of EngineController from which the node
-        /// value is to be retrieved.</param>
-        /// <returns>Returns the MirrorData if the node's value is computed, or 
-        /// null otherwise.</returns>
-        /// 
-        internal MirrorData GetCachedValueFromEngine(EngineController engine)
-        {
-            if (cachedValue != null)
-                return cachedValue;
-
-            // Do not have an identifier for preview right now. For an example,
-            // this can be happening at the beginning of a code block node creation.
-            if (AstIdentifierForPreview.Value == null)
-                return null;
-
-            cachedValue = null;
-
-            var runtimeMirror = engine.GetMirror(AstIdentifierForPreview.Value);
-
-            if (runtimeMirror != null)
-                cachedValue = runtimeMirror.GetData();
-
-            return cachedValue;
-        }
-
-        /// <summary>
         /// This flag is used to determine if a node was involved in a recent execution.
         /// The primary purpose of this flag is to determine if the node's render packages 
         /// should be returned to client browser when it requests for them. This is mainly 
@@ -563,8 +545,18 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                return AstBuilder.StringConstants.VarPrefix
-                    + GUID.ToString().Replace("-", string.Empty);
+                return AstBuilder.StringConstants.VarPrefix + AstIdentifierGuid;
+            }
+        }
+
+        /// <summary>
+        ///     A unique ID that will be appended to all identifiers of this node.
+        /// </summary>
+        public string AstIdentifierGuid
+        {
+            get
+            {
+                return GUID.ToString().Replace("-", string.Empty).ToLower();
             }
         }
 
@@ -593,7 +585,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        ///     Get the description from type information
+        ///     Returns the description from type information
         /// </summary>
         /// <returns>The value or "No description provided"</returns>
         public string GetDescriptionStringFromAttributes()
@@ -631,7 +623,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns></returns>
         public virtual ProtoCore.Type GetTypeHintForOutput(int index)
         {
-            return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
+            return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.Var);
         }
     
         /// <summary>
@@ -745,7 +737,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Gets the downstream nodes for the given node.
+        /// Returns the downstream nodes for the given node.
         /// </summary>
         /// <param name="node">The node.</param>
         /// <param name="gathered">The gathered.</param>
@@ -789,6 +781,10 @@ namespace Dynamo.Graph.Nodes
                 }
             };
 
+            //Register port connection events.
+            PortConnected += OnPortConnected;
+            PortDisconnected += OnPortDisconnected;
+
             //Fetch the element name from the custom attribute.
             SetNickNameFromAttribute();
 
@@ -800,7 +796,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        ///     Gets the most recent value of this node stored in an EngineController that has evaluated it.
+        /// Returns the most recent value of this node stored in an EngineController that has evaluated it.
         /// </summary>
         /// <param name="outPortIndex"></param>
         /// <param name="engine"></param>
@@ -1518,11 +1514,7 @@ namespace Dynamo.Graph.Nodes
                                 OnNodeModified();
                             }
                         };
-
-                        //register listeners on the port
-                        p.PortConnected += PortConnected;
-                        p.PortDisconnected += PortDisconnected;
-
+                        
                         InPorts.Add(p);
                     }
 
@@ -1538,10 +1530,6 @@ namespace Dynamo.Graph.Nodes
                     {
                         p = new PortModel(portType, this, data);
                         OutPorts.Add(p);
-
-                        //register listeners on the port
-                        p.PortConnected += PortConnected;
-                        p.PortDisconnected += PortDisconnected;
                     }
 
                     return p;
@@ -1550,7 +1538,28 @@ namespace Dynamo.Graph.Nodes
             return null;
         }
 
-        private void PortConnected(PortModel port, ConnectorModel connector)
+        /// <summary>
+        /// This method to be called by the ports to raise the PortConnected event.
+        /// </summary>
+        /// <param name="port"></param>
+        /// <param name="connector"></param>
+        internal void RaisePortConnectedEvent(PortModel port, ConnectorModel connector)
+        {
+            var handler = PortConnected;
+            if (null != handler) handler(port, connector);
+        }
+
+        /// <summary>
+        /// This method to be called by the ports to raise the PortDisconnected event.
+        /// </summary>
+        /// <param name="port"></param>
+        internal void RaisePortDisconnectedEvent(PortModel port)
+        {
+            var handler = PortDisconnected;
+            if (null != handler) handler(port);
+        }
+
+        private void OnPortConnected(PortModel port, ConnectorModel connector)
         {
             ValidateConnections();
 
@@ -1566,7 +1575,7 @@ namespace Dynamo.Graph.Nodes
             OnNodeModified();
         }
 
-        private void PortDisconnected(PortModel port)
+        private void OnPortDisconnected(PortModel port)
         {
             ValidateConnections();
 
@@ -1654,6 +1663,21 @@ namespace Dynamo.Graph.Nodes
                     NickName = value;
                     return true;
 
+                case "Position":
+                    // Here we expect a string that represents an array of double values which are separated by ";"
+                    // For example "12.5;14.56"
+                    var pos = value.Split(';');
+                    double xPos, yPos;
+                    if (pos.Length == 2 && double.TryParse(pos[0], out xPos)
+                        && double.TryParse(pos[1], out yPos))
+                    {
+                        X = xPos;
+                        Y = yPos;
+                        ReportPosition();
+                    }
+
+                    return true;
+
                 case "UsingDefaultValue":
                     if (string.IsNullOrWhiteSpace(value))
                         return true;
@@ -1697,6 +1721,15 @@ namespace Dynamo.Graph.Nodes
                         IsFrozen = newIsFrozen;
                     }
                     return true;
+
+                case "PreviewPinned":
+                    bool newIsPinned;
+                    if (bool.TryParse(value, out newIsPinned))
+                    {
+                        PreviewPinned = newIsPinned;
+                    }
+                    return true;
+
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -1728,6 +1761,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
             helper.SetAttribute("isSelectedInput", IsSetAsInput.ToString());
             helper.SetAttribute("IsFrozen", isFrozenExplicitly);
+            helper.SetAttribute("isPinned", PreviewPinned);
 
             var portsWithDefaultValues =
                 inPorts.Select((port, index) => new { port, index })
@@ -1780,6 +1814,7 @@ namespace Dynamo.Graph.Nodes
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSetAsInput = helper.ReadBoolean("isSelectedInput", true);
             isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);
+            PreviewPinned = helper.ReadBoolean("isPinned", false);
 
             var portInfoProcessed = new HashSet<int>();
 
@@ -1885,13 +1920,11 @@ namespace Dynamo.Graph.Nodes
         #region Visualization Related Methods
 
         /// <summary>
-        /// Call this method to asynchronously update the cached MirrorData for 
-        /// this NodeModel through DynamoScheduler. AstIdentifierForPreview is 
-        /// being accessed within this method, therefore the method is typically
-        /// called from the main/UI thread.
+        /// Call this method to update the cached MirrorData for this NodeModel.
+        /// Note this method should be called from scheduler thread. 
         /// </summary>
         /// 
-        internal void RequestValueUpdateAsync(IScheduler scheduler, EngineController engine)
+        internal void RequestValueUpdate(EngineController engine)
         {
             // A NodeModel should have its cachedMirrorData reset when it is 
             // requested to update its value. When the QueryMirrorDataAsyncTask 
@@ -1908,29 +1941,11 @@ namespace Dynamo.Graph.Nodes
             if (string.IsNullOrEmpty(variableName))
                 return;
 
-            var task = new QueryMirrorDataAsyncTask(new QueryMirrorDataParams
+            var runtimeMirror = engine.GetMirror(variableName);
+            if (runtimeMirror != null)
             {
-                Scheduler = scheduler,
-                EngineController = engine,
-                VariableName = variableName
-            });
-
-            task.Completed += QueryMirrorDataAsyncTaskCompleted;
-            scheduler.ScheduleForExecution(task);
-        }
-
-        private void QueryMirrorDataAsyncTaskCompleted(AsyncTask asyncTask)
-        {
-            asyncTask.Completed -= QueryMirrorDataAsyncTaskCompleted;
-
-            var task = asyncTask as QueryMirrorDataAsyncTask;
-            if (task == null)
-            {
-                throw new InvalidOperationException("Expected a " + typeof(QueryMirrorDataAsyncTask).Name
-                    + ", but got a " + asyncTask.GetType().Name);
+                CachedValue = runtimeMirror.GetData();
             }
-
-            this.CachedValue = task.MirrorData;
         }
 
         /// <summary>
@@ -2007,7 +2022,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Gets list of drawable Ids as registered with visualization manager 
+        /// Returns list of drawable Ids as registered with visualization manager 
         /// for all the output port of the given node.
         /// </summary>
         /// <returns>List of Drawable Ids</returns>
@@ -2025,7 +2040,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Gets the drawable Id as registered with visualization manager for
+        /// Returns the drawable Id as registered with visualization manager for
         /// the given output port on the given node.
         /// </summary>
         /// <param name="outPortIndex">Output port index</param>
@@ -2097,6 +2112,9 @@ namespace Dynamo.Graph.Nodes
         }
     }
 
+    /// <summary>
+    /// Represents nodes states.
+    /// </summary>
     public enum ElementState
     {
         Dead,
@@ -2107,6 +2125,10 @@ namespace Dynamo.Graph.Nodes
         AstBuildBroken
     };
 
+    /// <summary>
+    /// Defines Lacing strategy for nodes.
+    /// Learn more about lacing here: http://dynamoprimer.com/06_Designing-with-Lists/6-1_whats-a-list.html
+    /// </summary>
     public enum LacingStrategy
     {
         Disabled,
@@ -2116,6 +2138,10 @@ namespace Dynamo.Graph.Nodes
         CrossProduct
     };
 
+    /// <summary>
+    /// Defines Enum for Mouse events.
+    /// Used in port snapping.
+    /// </summary>
     public enum PortEventType
     {
         MouseEnter,
@@ -2123,14 +2149,9 @@ namespace Dynamo.Graph.Nodes
         MouseLeftButtonDown
     };
 
-    public enum PortPosition
-    {
-        First,
-        Top,
-        Middle,
-        Last
-    }
-
+    /// <summary>
+    /// Returns one of the possible values(none, top, bottom) where a port can be snapped.
+    /// </summary>
     [Flags]
     public enum SnapExtensionEdges
     {
@@ -2139,18 +2160,25 @@ namespace Dynamo.Graph.Nodes
         Bottom = 0x2
     }
 
-    public delegate void PortsChangedHandler(object sender, EventArgs e);
-
     internal delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
 
+    /// <summary>
+    /// This class represents the UIDIspatcher thread event arguments.
+    /// </summary>
     public class UIDispatcherEventArgs : EventArgs
     {
+        /// <summary>
+        /// Creates UIDispatcherEventArgs.
+        /// </summary>
+        /// <param name="a">action to call on UI thread</param>
         public UIDispatcherEventArgs(Action a)
         {
             ActionToDispatch = a;
         }
 
+        /// <summary>
+        /// Action to call on UI thread.
+        /// </summary>
         public Action ActionToDispatch { get; set; }
-        public List<object> Parameters { get; set; }
     }
 }

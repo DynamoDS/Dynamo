@@ -18,20 +18,40 @@ namespace Dynamo.Graph.Nodes
         public string Name { get; set; }
     }
 
+    /// <summary>
+    ///     The NodeCategoryAttribute attribute allows the node implementer
+    ///     to define in which category node will appear. 
+    /// </summary>
     [AttributeUsage(AttributeTargets.All)]
     public class NodeCategoryAttribute : Attribute
     {
+        /// <summary>
+        /// Creates NodeCategoryAttribute.
+        /// </summary>
+        /// <param name="category">Full name of the category. E.g. Core.List.Create</param>
         public NodeCategoryAttribute(string category)
         {
             ElementCategory = category;
         }
 
+        /// <summary>
+        /// Full name of the category. E.g. Core.List.Create
+        /// </summary>
         public string ElementCategory { get; set; }
     }
 
+    /// <summary>
+    ///     The NodeCategoryAttribute attribute allows the node implementer
+    ///     to define search tags.
+    /// </summary>
     [AttributeUsage(AttributeTargets.All)]
     public class NodeSearchTagsAttribute : Attribute
     {
+        /// <summary>
+        /// Creates NodeSearchTagsAttribute with tags from resx file. 
+        /// </summary>
+        /// <param name="tagsID">Tag name</param>
+        /// <param name="resourceType">Type of Resource. E.g. typeof(Resource)</param>
         public NodeSearchTagsAttribute(string tagsID, Type resourceType)
         {
             if (resourceType == null)
@@ -50,41 +70,43 @@ namespace Dynamo.Graph.Nodes
                 Tags = new List<String> { tagsID };
             }
         }
+
+        /// <summary>
+        /// Creates NodeSearchTagsAttribute with string tags.
+        /// </summary>
+        /// <param name="tags"></param>
         public NodeSearchTagsAttribute(params string[] tags)
         {
             Tags = tags.ToList();
         }
 
+        /// <summary>
+        /// Search tags used in library search.
+        /// </summary>
         public List<string> Tags { get; set; }
     }
 
-    [AttributeUsage(AttributeTargets.Class)]
-    public class NotSearchableInHomeWorkspace : Attribute
-    { }
-
-    [AttributeUsage(AttributeTargets.Class)]
-    public class NotSearchableInCustomNodeWorkspace : Attribute
-    { }
-
-    [AttributeUsage(AttributeTargets.All)]
-    public class IsInteractiveAttribute : Attribute
-    {
-        public IsInteractiveAttribute(bool isInteractive)
-        {
-            IsInteractive = isInteractive;
-        }
-
-        public bool IsInteractive { get; set; }
-    }
-
+    /// <summary>
+    ///     The NodeDescriptionAttribute attribute allows the node implementer
+    ///     to define node description.
+    /// </summary>
     [AttributeUsage(AttributeTargets.All)]
     public class NodeDescriptionAttribute : Attribute
     {
+        /// <summary>
+        /// Creates NodeDescriptionAttribute with string.
+        /// </summary>
+        /// <param name="description">String description. E.g. "Get a color given a color range." for ColorRange node.</param>
         public NodeDescriptionAttribute(string description)
         {
             ElementDescription = description;
         }
 
+        /// <summary>
+        /// Creates NodeDescriptionAttribute with description from resx file.
+        /// </summary>
+        /// <param name="descriptionResourceID">Resource name</param>
+        /// <param name="resourceType">Type of Resource. E.g. typeof(Resource)</param>
         public NodeDescriptionAttribute(string descriptionResourceID, Type resourceType)
         {
             if (resourceType == null)
@@ -103,44 +125,33 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// Description of the node.
+        /// E.g. "Get a color given a color range." for ColorRange node.
+        /// </summary>
         public string ElementDescription { get; set; }
     }
 
-    [AttributeUsage(AttributeTargets.All)]
-    public class NodeSearchableAttribute : Attribute
-    {
-        public NodeSearchableAttribute(bool isSearchable)
-        {
-            IsSearchable = isSearchable;
-        }
-
-        public bool IsSearchable { get; set; }
-    }
-
-    [AttributeUsage(AttributeTargets.All)]
-    public class NodeTypeIdAttribute : Attribute
-    {
-        public NodeTypeIdAttribute(string description)
-        {
-            Id = description;
-        }
-
-        public string Id { get; set; }
-    }
-
     /// <summary>
-    ///     The DoNotLoadOnPlatforms attribute allows the node implementor
-    ///     to define an array of contexts in which the node will not
-    ///     be loaded.
+    ///     The DoNotLoadOnPlatforms attribute allows the node implementer
+    ///     to define an array of contexts.
     /// </summary>
     [AttributeUsage(AttributeTargets.All)]
     public class DoNotLoadOnPlatformsAttribute : Attribute
     {
+        /// <summary>
+        /// Creates DoNotLoadOnPlatformsAttribute with restricted contexts.
+        /// </summary>
+        /// <param name="values"></param>
         public DoNotLoadOnPlatformsAttribute(params string[] values)
         {
             Values = values;
         }
 
+        /// <summary>
+        /// Restricted contexts, i.e. contexts in which node won't be loaded.
+        /// E.g. Revit 2014
+        /// </summary>
         public string[] Values { get; set; }
     }
 
@@ -159,11 +170,18 @@ namespace Dynamo.Graph.Nodes
     [AttributeUsage(AttributeTargets.All)]
     public class AlsoKnownAsAttribute : Attribute
     {
+        /// <summary>
+        /// Constructs AlsoKnownAsAttribute with defined old names.
+        /// </summary>
+        /// <param name="values">Old names, that node used to have.</param>
         public AlsoKnownAsAttribute(params string[] values)
         {
             Values = values;
         }
 
+        /// <summary>
+        /// Old names, that node used to have.
+        /// </summary>
         public string[] Values { get; set; }
     }
 

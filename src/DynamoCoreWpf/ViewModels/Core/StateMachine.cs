@@ -529,10 +529,11 @@ namespace Dynamo.ViewModels
                             // should keep the input focus on the code block to 
                             // avoid it being dismissed (with empty content).
                             //
-                            // If Shift is pressed, CBN shouldn't be created.
+                            // If Shift/Ctrl is pressed, CBN shouldn't be created.
                             // Shift Modifier indicates, that user tries to call InCanvasSearch
                             // by using Shift + DoubleClick.
-                            if (Keyboard.Modifiers != ModifierKeys.Shift)
+                            // Ctrl Modifier indicates, that user tries to copy node.
+                            if (Keyboard.Modifiers != ModifierKeys.Shift && Keyboard.Modifiers != ModifierKeys.Control)
                             {
                                 CreateCodeBlockNode(mouseDownPos);
                             }

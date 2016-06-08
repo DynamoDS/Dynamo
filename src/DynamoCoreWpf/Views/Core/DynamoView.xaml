@@ -306,6 +306,19 @@
                                        Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuRecentFiles}"
+                                  ItemsSource="{Binding RecentFiles}">
+                            <MenuItem.ItemContainerStyle>
+                                <Style TargetType="MenuItem">
+                                    <Setter Property="Header"
+                                            Value="{Binding Converter={StaticResource FilePathDisplayConverter}}" />
+                                    <Setter Property="Command"
+                                            Value="{Binding DataContext.OpenRecentCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type MenuItem}, AncestorLevel=1}}" />
+                                    <Setter Property="CommandParameter"
+                                            Value="{Binding}" />
+                                </Style>
+                            </MenuItem.ItemContainerStyle>
+                        </MenuItem>
                         <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuSave}"
                                   Command="{Binding ShowSaveDialogIfNeededAndSaveResultCommand}"
@@ -351,21 +364,6 @@
                                   Name="saveSTL">
                         </MenuItem>
                         <Separator />
-
-                        <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuRecentFiles}"
-                                  ItemsSource="{Binding RecentFiles}">
-                            <MenuItem.ItemContainerStyle>
-                                <Style TargetType="MenuItem">
-                                    <Setter Property="Header"
-                                            Value="{Binding Converter={StaticResource FilePathDisplayConverter}}" />
-                                    <Setter Property="Command"
-                                            Value="{Binding DataContext.OpenRecentCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type MenuItem}, AncestorLevel=1}}" />
-                                    <Setter Property="CommandParameter"
-                                            Value="{Binding}" />
-                                </Style>
-                            </MenuItem.ItemContainerStyle>
-                        </MenuItem>
-                        <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFiileMenuExit}"
                                   Command="{Binding ExitCommand}"
                                   Name="exit"
@@ -380,12 +378,12 @@
                                   Header="{x:Static p:Resources.DynamoViewEditMenuUndo}"
                                   Command="{Binding UndoCommand}"
                                   Name="undo"
-                                  InputGestureText="Ctrl+Z" />
+                                  InputGestureText="Ctrl + Z" />
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuRedo}"
                                   Command="{Binding RedoCommand}"
                                   Name="redo"
-                                  InputGestureText="Ctrl+Y" />
+                                  InputGestureText="Ctrl + Y" />
                         <Separator />
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCopy}"
@@ -698,6 +696,8 @@
                                   IsCheckable="True"
                                   IsChecked="{Binding Path=RenderPackageFactoryViewModel.ShowEdges, Mode=TwoWay}"
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuShowEdges}"></MenuItem>
+                        <MenuItem Header="{Binding Path=ShowPreviewBubbles, Converter={StaticResource ShowHidePreviewBubblesConverter}}"
+                                  Command="{Binding TogglePreviewBubblesShowingCommand}"/>
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
                                   Command="{Binding ManagePackagePathsCommand}"
@@ -706,6 +706,14 @@
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenu}"
                               Focusable="False">
+                        <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.StartPageWhatsNew}"
+                                  Command="{Binding ShowGalleryCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/DynamoCoreWpf;component/UI/Images/icon-whats-new-small.png"
+                                       Width="13" Height="14" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewHepMenuSamples}"
                                   Name="SamplesMenu"

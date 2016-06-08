@@ -1449,11 +1449,11 @@ namespace DynamoCoreWpfTests
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 NodeModel nodeModel = workspace.NodeFromWorkspace("37c9b30b-1b78-442a-b433-ec31da996c52");
-                Assert.AreEqual(ElementState.Warning, nodeModel.State);
+                Assert.AreEqual(ElementState.Active, nodeModel.State);
                 if (commandTag == "First")
                 {
                     NodeModel nodeModel2 = workspace.NodeFromWorkspace("37c9b30b-1b78-442a-b433-ec31da996c52");
-                    Assert.AreEqual(ElementState.Warning, nodeModel2.State);
+                    Assert.AreEqual(ElementState.Active, nodeModel2.State);
                 }
             });
         }
@@ -2574,6 +2574,7 @@ namespace DynamoCoreWpfTests
         public void Defect_MAGN_2100()
         {
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2100
+            string nodeGuid = "3f309016-7b00-4487-9b68-f0640e892d39";
 
             RunCommandsFromFile("Defect_MAGN_2100.xml", (commandTag) =>
             {
@@ -2591,15 +2592,9 @@ namespace DynamoCoreWpfTests
 
             });
 
-            NodeModel nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(
-                "3f309016-7b00-4487-9b68-f0640e892d39");
-
+            NodeModel nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(nodeGuid);
             Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
-
-            Assert.IsNotNull(nodeModel.GetCachedValueFromEngine(ViewModel.Model.EngineController).Data);
-
-            AssertPreviewValue("3f309016-7b00-4487-9b68-f0640e892d39", 11);
-
+            AssertPreviewValue(nodeGuid, 11);
         }
 
         [Test, RequiresSTA]
@@ -4322,7 +4317,7 @@ namespace DynamoCoreWpfTests
                 {
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                          ("8a7591cf-0271-4c47-989f-583ab7c028ca");
-                    AssertPreviewValue("8a7591cf-0271-4c47-989f-583ab7c028ca", "_SingleFunctionObject");
+                    AssertPreviewValue("8a7591cf-0271-4c47-989f-583ab7c028ca", "Function");
                 }
                 //In Forth Run, reconnect nodes with 2 as step value for both number sequence and number range
                 else if (commandTag == "ForthRun")

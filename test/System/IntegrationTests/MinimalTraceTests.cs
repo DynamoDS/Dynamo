@@ -65,8 +65,7 @@ namespace IntegrationTests
         public void SanityCheckVMExecution()
         {
             var mirror = thisTest.RunScriptSource("a = 4 + 5;");
-            var a = mirror.GetFirstValue("a").Payload;
-            Assert.IsTrue((Int64)a == 9);
+            thisTest.Verify("a", 9);
         }
 
         [Test]
@@ -79,7 +78,7 @@ a = MinimalTracedClass.MinimalTracedClass();
 b = a.WasCreatedWithTrace();
 "
 );
-            Assert.IsTrue((bool)mirror.GetFirstValue("b").Payload == false);
+            thisTest.Verify("b", false);
         }
 
         [Test]
@@ -95,11 +94,8 @@ mtcB = MinimalTracedClass.MinimalTracedClass();
 cleanB = mtcB.WasCreatedWithTrace();
 "
 );
-            Assert.IsTrue((bool)mirror.GetFirstValue("cleanA").Payload == false);
-            Assert.IsTrue((bool)mirror.GetFirstValue("cleanB").Payload == false);
-
+            thisTest.Verify("cleanA", false);
+            thisTest.Verify("cleanB", false);
         }
-
-
     }
 }

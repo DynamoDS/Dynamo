@@ -4,9 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using System.Xml;
-using SystemTestServices;
 using CoreNodeModels.Input;
 using Dynamo;
 using Dynamo.Controls;
@@ -19,19 +20,21 @@ using Dynamo.Tests;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Views;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
 using HelixToolkit.Wpf.SharpDX;
 using NUnit.Framework;
 using SharpDX;
+using SystemTestServices;
 using TestServices;
 using Watch3DNodeModels;
 using Watch3DNodeModelsWpf;
+using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 using Color = System.Windows.Media.Color;
-using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
-using Dynamo.Views;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 
 namespace WpfVisualizationTests
 {
@@ -54,6 +57,7 @@ namespace WpfVisualizationTests
             libraries.Add("DSIronPython.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("Display.dll");
+            libraries.Add("VMDataBridge.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -145,14 +149,14 @@ namespace WpfVisualizationTests
             p1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
-            Assert.AreEqual(BackgroundPreviewGeometry.NumberOfInvisiblePoints(), 1);
+            Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfInvisiblePoints());
 
             //flip off the lines node
             var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
-            Assert.AreEqual(BackgroundPreviewGeometry.NumberOfInvisibleCurves(), 1);
+            Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfInvisibleCurves());
 
             //flip those back on and ensure the visualization returns
             p1.UpdateValue(new UpdateValueParams("IsVisible", "true"));
@@ -318,7 +322,7 @@ namespace WpfVisualizationTests
             p1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
-            Assert.AreEqual(BackgroundPreviewGeometry.NumberOfInvisiblePoints(), 1);
+            Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfInvisiblePoints());
 
             // Now change the number of points
             var cbn =
@@ -561,6 +565,20 @@ namespace WpfVisualizationTests
         }
 
         [Test]
+        public void Watch3D_FirstRun()
+        {
+            OpenVisualizationTest("FirstRunWatch3D.dyn");
+
+            // Clear the dispatcher to ensure that the 
+            // view is created.
+            DispatcherUtil.DoEvents();
+
+            var view = FindFirstWatch3DNodeView();
+            var vm = view.ViewModel as HelixWatch3DNodeViewModel;
+            Assert.AreEqual(vm.SceneItems.Count(), 3);
+        }
+
+        [Test]
         public void Watch3D_Disconnect_Reconnect_CorrectRenderings()
         {
             OpenVisualizationTest("ASM_points_line.dyn");
@@ -607,8 +625,8 @@ namespace WpfVisualizationTests
             // check if grid has not redraw
             Assert.IsTrue(bPreviewVm.Active, "Background has become inactive");
             Assert.IsFalse(bPreviewVm.IsGridVisible, "Background grid has not been hidden");
-            Assert.IsFalse(bPreviewVm.Model3DDictionary
-                .ContainsKey(HelixWatch3DViewModel.DefaultGridName), "Background grid has not been hidden");
+            var grid = bPreviewVm.Model3DDictionary[HelixWatch3DViewModel.DefaultGridName];
+            Assert.AreEqual(Visibility.Hidden, grid.Visibility, "Background grid has not been hidden");
         }
 
         [Test]
@@ -622,8 +640,8 @@ namespace WpfVisualizationTests
             var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
             Assert.IsTrue(bPreviewVm.Active, "Background has become inactive");
             Assert.IsFalse(bPreviewVm.IsGridVisible, "Background grid has become visible");
-            Assert.IsFalse(bPreviewVm.Model3DDictionary
-                .ContainsKey(HelixWatch3DViewModel.DefaultGridName), "Background grid has become visible");
+            var grid = bPreviewVm.Model3DDictionary[HelixWatch3DViewModel.DefaultGridName];
+            Assert.AreEqual(Visibility.Hidden, grid.Visibility, "Background grid has become visible");
         }
 
         [Test]
@@ -638,8 +656,8 @@ namespace WpfVisualizationTests
             var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
             Assert.IsTrue(bPreviewVm.Active, "Background has become inactive");
             Assert.IsTrue(bPreviewVm.IsGridVisible, "Background grid has not appeared");
-            Assert.IsTrue(bPreviewVm.Model3DDictionary
-                .ContainsKey(HelixWatch3DViewModel.DefaultGridName), "Background grid has not appeared");
+            var grid = bPreviewVm.Model3DDictionary[HelixWatch3DViewModel.DefaultGridName];
+            Assert.AreEqual(Visibility.Visible, grid.Visibility, "Background grid has not appeared");
         }
 
         [Test]
@@ -825,6 +843,135 @@ namespace WpfVisualizationTests
             // doesn't generate background preview.
             OpenVisualizationTest("TypedIdentifierInCBN.dyn");
             Assert.AreEqual(2, BackgroundPreviewGeometry.TotalPoints());
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void Switch3DBackgroundPreview()
+        {
+            // Regression test for MAGN-9140 that all geometries that created
+            // when the background preview is off should display when the
+            // background preview is switched to on.
+            ViewModel.Watch3DViewModels.First().Active = false;
+            OpenVisualizationTest("OnePoint.dyn");
+            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalPoints());
+            ViewModel.Watch3DViewModels.First().Active = true;
+            Assert.AreEqual(1, BackgroundPreviewGeometry.TotalPoints());
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void MAGN9434_DeleteCodeBlockNode()
+        {
+            OpenVisualizationTest("CreatePoint.dyn");
+            Assert.AreEqual(1, BackgroundPreviewGeometry.TotalPoints());
+            var codeBlockNode = ViewModel.CurrentSpace.NodeFromWorkspace<CodeBlockNodeModel>(Guid.Parse("7883d92a-ef8b-4e05-8c7d-46cfc627c994"));
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty, codeBlockNode.GUID, "Code", "p2 = Point.ByCoordinates();");
+            ViewModel.Model.ExecuteCommand(command);
+            Assert.AreEqual(1, BackgroundPreviewGeometry.TotalPoints());
+
+            var deleteCommand = new DynamoModel.DeleteModelCommand(codeBlockNode.GUID);
+            ViewModel.Model.ExecuteCommand(deleteCommand);
+            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalPoints());
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void MAGN9434_DisablePreview()
+        {
+            OpenVisualizationTest("CreatePoint.dyn");
+            Assert.AreEqual(1, BackgroundPreviewGeometry.TotalPoints());
+            var codeBlockNode = ViewModel.CurrentSpace.NodeFromWorkspace<CodeBlockNodeModel>(Guid.Parse("7883d92a-ef8b-4e05-8c7d-46cfc627c994"));
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty, codeBlockNode.GUID, "Code", "p2 = Point.ByCoordinates();");
+            ViewModel.Model.ExecuteCommand(command);
+            Assert.AreEqual(1, BackgroundPreviewGeometry.TotalPoints());
+
+            var disableCommand = new DynamoModel.UpdateModelValueCommand(Guid.Empty, codeBlockNode.GUID, "IsVisible", "false");
+            ViewModel.Model.ExecuteCommand(disableCommand);
+            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalPoints() - BackgroundPreviewGeometry.NumberOfInvisiblePoints());
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void CanTagGeometryWhenClickingSingleItemInPreviewBubble()
+        {
+            tagGeometryWhenClickingItem(new[] {0, 0}, 1, "Point.ByCoordinates", 
+                n => n.ViewModel.NodeModel, true);
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void CanTagGeometryWhenClickingArrayItemInPreviewBubble()
+        {
+            tagGeometryWhenClickingItem(new[] {0}, 11, "Point.ByCoordinates",
+                n => n.ViewModel.NodeModel, true);
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void CanTagGeometryWhenClickingSingleItemInWatchNode()
+        {
+            tagGeometryWhenClickingItem(new[] { 0, 0 }, 1, "Watch",
+                n => n.ViewModel.NodeModel.InPorts[0].Connectors[0].Start.Owner);
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void CanTagGeometryWhenClickingArrayItemInWatchNode()
+        {
+            tagGeometryWhenClickingItem(new[] { 0 }, 11, "Watch", 
+                n => n.ViewModel.NodeModel.InPorts[0].Connectors[0].Start.Owner);
+        }
+
+        private void tagGeometryWhenClickingItem(int[] indexes, int expectedNumberOfLabels, 
+            string nodeNickName, Func<NodeView,NodeModel> getGeometryOwnerNode, bool expandPreviewBubble = false)
+        {
+            OpenVisualizationTest("MAGN_3815.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(3, Model.CurrentWorkspace.Nodes.Count());
+            var nodeView = View.ChildrenOfType<NodeView>().First(nv => nv.ViewModel.NickName == nodeNickName);
+            Assert.IsNotNull(nodeView, "NodeView has not been found by given nickname: " + nodeNickName);
+
+            if (expandPreviewBubble)
+            {
+                nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+                View.Dispatcher.Invoke(() =>
+                {
+                    nodeView.PreviewControl.BindToDataSource();
+                    nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
+                    nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
+                });
+
+                DispatcherUtil.DoEvents();
+            }
+
+            var treeViewItem = nodeView.ChildOfType<TreeViewItem>();
+            // find TreeViewItem by given index in multi-dimentional array
+            foreach (var index in indexes)
+            {
+                treeViewItem = treeViewItem.ChildrenOfType<TreeViewItem>().ElementAt(index);
+            }
+
+            // click on the found TreeViewItem
+            View.Dispatcher.Invoke(() =>
+            {
+                treeViewItem.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+                {
+                    RoutedEvent = Mouse.MouseDownEvent
+                });
+            });
+
+            DispatcherUtil.DoEvents();
+
+            // check if label has been added to corresponding geometry
+            var helix = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+            var labelKey = getGeometryOwnerNode(nodeView).AstIdentifierForPreview.Name + ":text";
+            Assert.IsTrue(helix.Model3DDictionary.ContainsKey(labelKey), "Label has not been added to selected geometry item");
+            var geometry = (helix.Model3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
+            Assert.AreEqual(expectedNumberOfLabels, geometry.TextInfo.Count);
         }
 
         private Watch3DView FindFirstWatch3DNodeView()

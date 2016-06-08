@@ -1,4 +1,4 @@
-<Workspace Version="0.8.0.684" X="-1750.21068804189" Y="-360.563028682983" zoom="0.594707840266692" Name="Home" RunType="Automatic" RunPeriod="100">
+<Workspace Version="0.8.0.684" X="-1750.21068804189" Y="-360.563028682983" zoom="0.594707840266692" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <DSIronPythonNode.PythonNode guid="7183a2fe-9a6a-4eeb-b223-3525a80ab2f2" type="DSIronPythonNode.PythonNode" nickname="Python Script" x="3215.13835438171" y="846.688270498232" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2">

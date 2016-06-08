@@ -2,17 +2,17 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 #define Major
 #define Minor
-#define Rev
 #define Build
-#expr ParseVersion("temp\bin\DynamoCore.dll", Major, Minor, Rev, Build)
+#define Rev
+#expr ParseVersion("temp\bin\DynamoCore.dll", Major, Minor, Build, Rev)
 #define ProductName "Dynamo"
-#define ProductVersion Str(Major) + "." + Str(Minor) + "." + Str(Rev)
+#define ProductVersion Str(Major) + "." + Str(Minor) + "." + Str(Build)
 #define FullVersion GetFileVersion("temp\bin\DynamoCore.dll")
 
 [Setup]
 AppName={#ProductName}
 AppPublisher={#ProductName}
-AppID={{86B8C99A-85CE-45e1-8149-0A22AAAB3792}
+AppID={{0B41FA6D-F38C-4B57-BB44-ADBB5AF403B4}
 AppCopyright=
 AppPublisherURL=http://www.dynamobim.org
 AppSupportURL=http://www.dynamobim.org
@@ -50,6 +50,7 @@ Name: "{app}\viewExtensions"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\definitions"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\Logs"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\packages"
+Name: "{app}\3rdParty\OpenSourceComponents"
 
 
 [Components]
@@ -103,16 +104,19 @@ Source: Extra\DynamoInstaller.ico; DestDir: {app}; Flags: ignoreversion overwrit
 Source: temp\bin\UI\*; DestDir: {app}\UI; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 ;Samples
-Source: temp\samples\*.*; DestDir: {commonappdata}\Dynamo\{#Major}.{#Minor}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
+Source: temp\samples\*.*; DestDir: {commonappdata}\Dynamo\Dynamo Revit\{#Major}.{#Minor}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
 ;Other Custom Nodes
-Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\{#Major}.{#Minor}\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\Dynamo Revit\{#Major}.{#Minor}\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 ;DirectX
 Source: temp\DirectX\*.*; DestDir: {tmp}\DirectX;
 
 ;Gallery
-Source: temp\gallery\*; DestDir: "{commonappdata}\Dynamo\{#Major}.{#Minor}\gallery"; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+Source: temp\gallery\*; DestDir: "{commonappdata}\Dynamo\Dynamo Revit\{#Major}.{#Minor}\gallery"; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+
+;3rdParty
+Source: temp\3rdParty\OpenSourceComponents\*; DestDir: "{app}\3rdParty\OpenSourceComponents"; Flags: ignoreversion overwritereadonly recursesubdirs;
 
 [Registry]
 Root: HKCU64; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; Flags: uninsdeletekey

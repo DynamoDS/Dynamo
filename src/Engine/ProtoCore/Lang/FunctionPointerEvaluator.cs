@@ -7,6 +7,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Runtime;
 using ProtoCore.Utils;
 using ProtoCore.Properties;
+using ProtoCore.Exceptions;
 
 namespace ProtoCore.Lang
 {
@@ -23,7 +24,7 @@ namespace ProtoCore.Lang
             interpreter = dsi;
             RuntimeCore runtimeCore = dsi.runtime.RuntimeCore;
 
-            int fptr = (int)pointer.opdata;
+            int fptr = pointer.FunctionPointer;
             FunctionPointerNode fptrNode;
             int classScope = Constants.kGlobalScope;
 
@@ -68,8 +69,16 @@ namespace ProtoCore.Lang
                 var varParams = args.GetRange(paramCount - 1, varParamCount).ToArray();
                 args.RemoveRange(paramCount - 1, varParamCount);
 
-                var packedParams = interpreter.runtime.rmem.Heap.AllocateArray(varParams);
-                args.Add(packedParams);
+                try
+                {
+                    var packedParams = interpreter.runtime.rmem.Heap.AllocateArray(varParams);
+                    args.Add(packedParams);
+                }
+                catch (RunOutOfMemoryException)
+                {
+                    interpreter.runtime.RuntimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                    return StackValue.Null;
+                }
             }
 
             bool isCallingMemberFunciton = procNode.ClassID != Constants.kInvalidIndex 
@@ -93,21 +102,18 @@ namespace ProtoCore.Lang
 
             if (!isValidThisPointer || (!thisPtr.IsPointer && !thisPtr.IsArray))
             {
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.DereferencingNonPointer,
                                               Resources.kDeferencingNonPointer);
                 return StackValue.Null;
             }
 
             var callerType = stackFrame.StackFrameType;
-            interpreter.runtime.TX = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
+            interpreter.runtime.TX = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.Implicit);
 
             StackValue svBlockDecl = StackValue.BuildBlockIndex(blockDecl);
-            interpreter.runtime.SX = svBlockDecl;
+            // interpreter.runtime.SX = svBlockDecl;
 
-            var repGuides = new List<List<ProtoCore.ReplicationGuide>>();
-
-            List<StackValue> registers = new List<StackValue>();
-            interpreter.runtime.SaveRegisters(registers);
+            List<StackValue> registers = interpreter.runtime.GetRegisters();
             var newStackFrame = new StackFrame(thisPtr, 
                                                classScopeCaller, 
                                                1, 
@@ -115,14 +121,15 @@ namespace ProtoCore.Lang
                                                blockDecl, 
                                                blockCaller, 
                                                callerType, 
-                                               StackFrameType.kTypeFunction, 
+                                               StackFrameType.Function, 
                                                0,   // depth
                                                framePointer, 
+                                               svBlockDecl.BlockIndex,
                                                registers, 
-                                               null);
+                                               0);
 
             bool isInDebugMode = runtimeCore.Options.IDEDebugMode &&
-                                 runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter;
+                                 runtimeCore.Options.RunMode != InterpreterMode.Expression;
             if (isInDebugMode)
             {
                 runtimeCore.DebugProps.SetUpCallrForDebug(
@@ -132,15 +139,16 @@ namespace ProtoCore.Lang
                                                           returnAddr - 1, 
                                                           false, 
                                                           callsite, 
-                                                          args, 
-                                                          repGuides, 
+                                                          args,
+                                                          new List<List<ProtoCore.ReplicationGuide>>(), 
                                                           newStackFrame);
             }
 
             StackValue rx = callsite.JILDispatchViaNewInterpreter(
                                         new Runtime.Context(), 
-                                        args, 
-                                        repGuides, 
+                                        args,
+                                        new List<List<ProtoCore.ReplicationGuide>>(), 
+                                        null,
                                         newStackFrame,
                                         runtimeCore);
 
@@ -155,7 +163,7 @@ namespace ProtoCore.Lang
         public static string GetMethodName(StackValue pointer, Interpreter dsi)
         {
             Validity.Assert(pointer.IsFunctionPointer);
-            return dsi.runtime.exe.procedureTable[0].Procedures[(int)pointer.opdata].Name;
+            return dsi.runtime.exe.procedureTable[0].Procedures[pointer.FunctionPointer].Name;
         }
     }
 }

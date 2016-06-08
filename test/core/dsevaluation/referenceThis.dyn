@@ -1,0 +1,25 @@
+<Workspace Version="1.0.1.1093" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.CustomNodes.Function guid="4214577f-db6c-4859-a2fa-3c72b7dec84d" type="Dynamo.Graph.Nodes.CustomNodes.Function" nickname="referenceThis" x="212.5" y="171.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <ID value="b68daa55-9a30-4742-8d7a-6cca4ad02ff4" />
+      <Name value="referenceThis" />
+      <Description value="" />
+      <Inputs />
+      <Outputs>
+        <Output value="items" />
+      </Outputs>
+    </Dynamo.Graph.Nodes.CustomNodes.Function>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="e19aef5a-ce08-4798-9a0a-5a37afefd5de" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="ReferenceThisItem.IsHostDisposed" x="466" y="145" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="FFITarget.dll" function="FFITarget.ReferenceThisItem.IsHostDisposed" />
+    <CoreNodeModels.Watch guid="763c4e98-dbe0-4bb7-b00f-69e5b79b09b0" type="CoreNodeModels.Watch" nickname="Watch" x="605" y="443" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="e19aef5a-ce08-4798-9a0a-5a37afefd5de" start_index="0" end="763c4e98-dbe0-4bb7-b00f-69e5b79b09b0" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

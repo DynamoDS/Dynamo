@@ -125,7 +125,7 @@ namespace ProtoCore
             private ClassMirror classMirror = null;
             
             /// <summary>
-            /// Gets the Class info mirror for this data.
+            /// Returns the Class info mirror for this data.
             /// </summary>
             /// <returns></returns>
             private ClassMirror GetClass()
@@ -150,18 +150,18 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Gets the list of MirrorData if this data represents a collection,
+            /// Returns the list of MirrorData if this data represents a collection,
             /// else null.
             /// </summary>
             /// <returns>List of MirrorData represented by this data.</returns>
-            public List<MirrorData> GetElements() 
+            public IEnumerable<MirrorData> GetElements() 
             {
                 //This is not a collection
                 if (!this.IsCollection)
                     return null;
 
                 var array = runtimeCore.Heap.ToHeapObject<DSArray>(svData);
-                return array.Values.Select(x => new MirrorData(this.core, this.runtimeCore, x)).ToList();
+                return array.Values.Select(x => new MirrorData(this.core, this.runtimeCore, x));
             }
 
             /// <summary>
@@ -183,13 +183,13 @@ namespace ProtoCore
                 switch (sv.optype)
                 {
                     case AddressType.Int:
-                        return sv.opdata;
+                        return sv.IntegerValue;
                     case AddressType.Double:
-                        return sv.RawDoubleValue;
+                        return sv.DoubleValue;
                     case AddressType.Boolean:
-                        return sv.opdata != 0;
+                        return sv.BooleanValue;
                     case AddressType.Char:
-                        return Convert.ToChar(sv.opdata); 
+                        return Convert.ToChar(sv.CharValue); 
                     case AddressType.String:
                         return StringUtils.GetStringValue(sv, runtimeCore);
                     case AddressType.Pointer:
@@ -201,7 +201,7 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Return string representation of data
+            /// Returns string representation of data
             /// </summary>
             public string StringData
             {
@@ -232,7 +232,7 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Gets the CLR object for all the value type or FFI objects, else null
+            /// Returns the CLR object for all the value type or FFI objects, else null
             /// </summary>
             public object Data
             {
@@ -246,7 +246,7 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Gets if this data points to null.
+            /// Returns if this data points to null.
             /// </summary>
             public bool IsNull
             {

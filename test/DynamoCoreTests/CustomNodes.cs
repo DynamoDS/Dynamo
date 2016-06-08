@@ -14,6 +14,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Graph.Notes;
 
 namespace Dynamo.Tests
 {
@@ -57,6 +58,7 @@ namespace Dynamo.Tests
 
             CurrentDynamoModel.CustomNodeManager.Collapse(
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -100,6 +102,7 @@ namespace Dynamo.Tests
 
             CurrentDynamoModel.CustomNodeManager.Collapse(
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -140,6 +143,7 @@ namespace Dynamo.Tests
 
             CurrentDynamoModel.CustomNodeManager.Collapse(
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -203,6 +207,7 @@ namespace Dynamo.Tests
 
             CurrentDynamoModel.CustomNodeManager.Collapse(
                 selectionSet.AsEnumerable(),
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -302,6 +307,7 @@ namespace Dynamo.Tests
 
             var ws = CurrentDynamoModel.CustomNodeManager.Collapse(
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -566,7 +572,7 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(splitListVal.IsCollection);
 
-            var outs = splitListVal.GetElements();
+            var outs = splitListVal.GetElements().ToList();
 
             Assert.AreEqual(2, outs.Count);
 
@@ -625,7 +631,8 @@ namespace Dynamo.Tests
 
             CurrentDynamoModel.AddCustomNodeWorkspace(
                 CurrentDynamoModel.CustomNodeManager.Collapse(
-                    selectionSet, CurrentDynamoModel.CurrentWorkspace, DynamoModel.IsTestMode, arg));
+                    selectionSet, Enumerable.Empty<NoteModel>(), 
+                    CurrentDynamoModel.CurrentWorkspace, DynamoModel.IsTestMode, arg));
 
             Assert.IsNotNull(CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
 
@@ -653,6 +660,7 @@ namespace Dynamo.Tests
             var selectionSet = new[] { node };
             var customWorkspace = CurrentDynamoModel.CustomNodeManager.Collapse(
                 selectionSet,
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -777,6 +785,7 @@ namespace Dynamo.Tests
             var selectionSet = new List<NodeModel> { node };
             CurrentDynamoModel.CustomNodeManager.Collapse(
                 selectionSet,
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -851,6 +860,7 @@ namespace Dynamo.Tests
 
             var ws = CurrentDynamoModel.CustomNodeManager.Collapse(
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -891,6 +901,7 @@ namespace Dynamo.Tests
 
             var ws = CurrentDynamoModel.CustomNodeManager.Collapse(
                 DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                Enumerable.Empty<NoteModel>(),
                 CurrentDynamoModel.CurrentWorkspace,
                 true,
                 new FunctionNamePromptEventArgs
@@ -923,6 +934,55 @@ namespace Dynamo.Tests
             CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName2, "");
 
             Assert.AreEqual(2, CurrentDynamoModel.SearchModel.SearchEntries.Where(entry => entry.Name == nodeName).Count());
+        }
+
+        [Test]
+        public void TestInputOutputNodeDocumentation()
+        {
+            var filePath = Path.Combine(TestDirectory, @"core\CustomNodes\test_input_output_comment.dyn");
+            OpenModel(filePath);
+
+            var customInstance = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(x => x is Function) as Function;
+            Assert.AreEqual(5, customInstance.InPortData.Count());
+            Assert.AreEqual(3, customInstance.OutPortData.Count());
+
+            Assert.AreEqual("", customInstance.InPortData[0].NickName);
+            Assert.AreEqual(@"var[]..[]", customInstance.InPortData[0].ToolTipString);
+
+            Assert.AreEqual("x1", customInstance.InPortData[1].NickName);
+            Assert.AreEqual("x1\n\nvar[]..[]", customInstance.InPortData[1].ToolTipString);
+
+            Assert.AreEqual("x2", customInstance.InPortData[2].NickName);
+            Assert.AreEqual("x2:var\n\nvar", customInstance.InPortData[2].ToolTipString);
+
+            Assert.AreEqual("x3", customInstance.InPortData[3].NickName);
+            Assert.AreEqual("x3:var\n\nvar[]\nDefault value : {1}", customInstance.InPortData[3].ToolTipString);
+
+            Assert.AreEqual("x4", customInstance.InPortData[4].NickName);
+            Assert.AreEqual("comment1\ncomment2\ncomment3\n\nvar[]..[]", customInstance.InPortData[4].ToolTipString);
+
+            Assert.AreEqual("", customInstance.OutPortData[0].NickName);
+            Assert.AreEqual("return value", customInstance.OutPortData[0].ToolTipString);
+
+            Assert.AreEqual("y1", customInstance.OutPortData[1].NickName);
+            Assert.AreEqual("y1", customInstance.OutPortData[1].ToolTipString);
+
+            Assert.AreEqual("y2", customInstance.OutPortData[2].NickName);
+            Assert.AreEqual("comment1\ncomment2\ncomment3", customInstance.OutPortData[2].ToolTipString);
+        }
+
+        [Test]
+        public void Regress9548_OutputNameIsClassName()
+        {
+            var filePath = Path.Combine(TestDirectory, @"core\CustomNodes\PointAsOutput.dyn");
+            OpenModel(filePath);
+
+            var customInstance = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(x => x is Function) as Function;
+            Assert.AreEqual("comment", customInstance.OutPortData[0].ToolTipString);
+            Assert.AreEqual("Point", customInstance.OutPortData[0].NickName);
+
+            var previewValue = GetPreviewValue(customInstance.GUID.ToString());
+            Assert.AreEqual(21, previewValue);
         }
     }
 }

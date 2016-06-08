@@ -8,6 +8,9 @@ using ProtoCore.Namespace;
 
 namespace Dynamo.Graph
 {
+    /// <summary>
+    /// SaveContext represents several contexts, in which node can be serialized/deserialized.
+    /// </summary>
     public enum SaveContext { File, Copy, Undo, Preset };
 
     /// <summary>
@@ -17,17 +20,17 @@ namespace Dynamo.Graph
     public class UpdateValueParams
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="propertyName">Name of the property whose value is to be updated.
         /// This parameter cannot be empty or null.</param>
-        /// <param name="propertyValue">Value of the named property whose value is to be 
-        /// updated. This parameter can either be null or empty if the targeted property 
+        /// <param name="propertyValue">Value of the named property whose value is to be
+        /// updated. This parameter can either be null or empty if the targeted property
         /// allows such values.This value comes directly
-        /// from DynamoTextBox after user commits it. Overridden methods then use 
-        /// a specific IValueConverter to turn this string into another data type 
-        /// that it expects</param>
-        /// <param name="elementResolver">responsible for resolving class namespaces</param>
+        /// from DynamoTextBox after user commits it. Overridden methods then use
+        /// a specific IValueConverter to turn this string into another data type
+        /// that it expects.</param>
+        /// <param name="elementResolver">Responsible for resolving class namespaces.</param>
         public UpdateValueParams(string propertyName, string propertyValue, ElementResolver elementResolver = null)
         {
             ElementResolver = elementResolver;
@@ -35,11 +38,25 @@ namespace Dynamo.Graph
             PropertyValue = propertyValue;
         }
 
+        /// <summary>
+        /// Returns name of the property whose value needs to be updated.
+        /// </summary>
         public string PropertyName { get; private set; }
+
+        /// <summary>
+        /// Returns string representation of value to update specified node property
+        /// </summary>
         public string PropertyValue { get; private set; }
+
+        /// <summary>
+        /// Returns <see cref="ElementResolver"/> object responsible for resolving class namespaces
+        /// </summary>
         public ElementResolver ElementResolver { get; private set; }
     }
 
+    /// <summary>
+    /// Base class for all objects with which user can interact in Dynamo.
+    /// </summary>
     public abstract class ModelBase : NotificationObject, ISelectable, ILocatable, ILogSource
     {
         /// <summary>
@@ -53,15 +70,22 @@ namespace Dynamo.Graph
         private double y;
         private double height = 100;
         private double width = 100;
-       
+
+        /// <summary>
+        /// X coordinate of center point.
+        /// </summary>
         public double CenterX
         {
             get { return X + Width / 2; }
-            set { 
-                X = value - Width/2;
+            set
+            {
+                X = value - Width / 2;
             }
         }
 
+        /// <summary>
+        /// Y coordinate of center point.
+        /// </summary>
         public double CenterY
         {
             get { return Y + Height / 2; }
@@ -104,11 +128,11 @@ namespace Dynamo.Graph
         /// </summary>
         public Point2D Position
         {
-            get{return new Point2D(x,y);}
+            get { return new Point2D(x, y); }
         }
 
         /// <summary>
-        /// The height of the node.
+        /// The height of the object.
         /// </summary>
         public virtual double Height
         {
@@ -121,31 +145,29 @@ namespace Dynamo.Graph
         }
 
         /// <summary>
-        /// The width of the node.
+        /// The width of the object.
         /// </summary>
         public virtual double Width
         {
             get { return width; }
             set
-
             {
                 width = value;
                 //RaisePropertyChanged("Width");
             }
         }
 
+        /// <summary>
+        /// The bounds of the object.
+        /// </summary>
         public virtual Rect2D Rect
         {
-            get{return new Rect2D(x,y,width,height);}
+            get { return new Rect2D(x, y, width, height); }
         }
 
-        public event EventHandler Updated; 
-        public void OnUpdated(EventArgs e)
-        {
-            if (Updated != null)
-                Updated(this, e);
-        }
-
+        /// <summary>
+        /// Returns true if the object is selected otherwise false.
+        /// </summary>
         public bool IsSelected
         {
             get { return isSelected; }
@@ -156,6 +178,9 @@ namespace Dynamo.Graph
             }
         }
 
+        /// <summary>
+        /// Unique ID.
+        /// </summary>
         public Guid GUID
         {
             get
@@ -173,21 +198,36 @@ namespace Dynamo.Graph
             }
         }
 
+        /// <summary>
+        /// Protected constructor.
+        /// </summary>
         protected ModelBase()
         {
             GUID = Guid.NewGuid();
         }
 
+        /// <summary>
+        /// This method sets the isSelected property on the object to true.
+        /// E.g. when user clicks on node.
+        /// </summary>
         public virtual void Select()
         {
             IsSelected = true;
         }
 
+        /// <summary>
+        /// This method sets the isSelected property on the object to false.
+        /// E.g. when user clicks on canvas.
+        /// </summary>
         public virtual void Deselect()
         {
             IsSelected = false;
         }
 
+        /// <summary>
+        ///  Notifies listeners that the position of the object has changed,
+        ///  then all dependant objects will also redraw themselves.
+        /// </summary>
         public void ReportPosition()
         {
             RaisePropertyChanged("Position");
@@ -197,8 +237,8 @@ namespace Dynamo.Graph
         /// Set the width and the height of the node model
         /// and report once.
         /// </summary>
-        /// <param name="w"></param>
-        /// <param name="h"></param>
+        /// <param name="w">Width</param>
+        /// <param name="h">Height</param>
         public void SetSize(double w, double h)
         {
             width = w;
@@ -206,38 +246,52 @@ namespace Dynamo.Graph
             RaisePropertyChanged("Position");
         }
 
+        /// <summary>
+        /// Invokes Dispose on the object.
+        /// </summary>
         public virtual void Dispose()
         {
             var handler = Disposed;
             if (handler != null)
+            {
                 handler(this);
+            }
         }
 
         #region Command Framework Supporting Methods
 
+        /// <summary>
+        /// Updates object properties.
+        /// UpdateValueCore is overridden in derived classes.
+        /// </summary>
+        /// <param name="updateValueParams">Please see UpdateValueParams for details.</param>
+        /// <returns>Returns true if the call has been handled, or false otherwise.</returns>
         public bool UpdateValue(UpdateValueParams updateValueParams)
         {
             return UpdateValueCore(updateValueParams);
         }
 
         /// <summary>
-        /// This method is currently used as a way to send an event to ModelBase 
-        /// derived objects. Its primary use is in DynamoNodeButton class, which 
-        /// sends this event when clicked.
+        /// This method is currently used as a way to send an event to ModelBase
+        /// derived objects. Its primary use is in DynamoNodeButton class, which
+        /// sends this event when clicked, to change the number of ports in a
+        /// VariableInputNode.
         /// </summary>
         /// <param name="eventName">The name of the event.</param>
+        /// <param name="value">For the SetInPortCount event, the number of
+        /// ports desired.  Ignored for other events.</param>
         /// <param name="recorder"></param>
         /// <returns>Returns true if the call has been handled, or false otherwise.
         /// </returns>
-        internal bool HandleModelEvent(string eventName, UndoRedoRecorder recorder)
+        internal bool HandleModelEvent(string eventName, int value, UndoRedoRecorder recorder)
         {
-            return HandleModelEventCore(eventName, recorder);
+            return HandleModelEventCore(eventName, value, recorder);
         }
 
         /// <summary>
         /// This method is supplied as a generic way for command framework to update
-        /// a given named-value in a ModelBase (which has to work under both user 
-        /// and playback scenarios). During playback, the command framework issues 
+        /// a given named-value in a ModelBase (which has to work under both user
+        /// and playback scenarios). During playback, the command framework issues
         /// pre-recorded UpdateModelValueCommand that targets a model. Since there
         /// is no data-binding at play here, there will not be IValueConverter. This
         /// method takes only string input (the way they appear in DynamoTextBox),
@@ -251,7 +305,7 @@ namespace Dynamo.Graph
             return false; // Base class does not handle this.
         }
 
-        internal virtual bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
+        internal virtual bool HandleModelEventCore(string eventName, int value, UndoRedoRecorder recorder)
         {
             return false; // Base class does not handle this.
         }
@@ -260,6 +314,12 @@ namespace Dynamo.Graph
 
         #region Serialization/Deserialization Methods
 
+        /// <summary>
+        /// Serialize model into xml node.
+        /// </summary>
+        /// <param name="xmlDocument">Xml document</param>
+        /// <param name="context">Context in which object is saved</param>
+        /// <returns>xml node</returns>
         public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
         {
             var element = CreateElement(xmlDocument, context);
@@ -267,6 +327,11 @@ namespace Dynamo.Graph
             return element;
         }
 
+        /// <summary>
+        /// Deserialize model from xml node.
+        /// </summary>
+        /// <param name="element">Xml node</param>
+        /// <param name="context">Save context. E.g. save in file, copy node etc.</param>
         public void Deserialize(XmlElement element, SaveContext context)
         {
             DeserializeCore(element, context);
@@ -278,13 +343,17 @@ namespace Dynamo.Graph
             XmlElement element = xmlDocument.CreateElement(typeName);
             return element;
         }
-        
+
         protected abstract void SerializeCore(XmlElement element, SaveContext context);
         protected abstract void DeserializeCore(XmlElement nodeElement, SaveContext context);
 
         #endregion
 
         #region ILogSource implementation
+
+        /// <summary>
+        /// This event is fired when a message is logged.
+        /// </summary>
         public event Action<ILogMessage> MessageLogged;
 
         protected void Log(ILogMessage obj)
@@ -313,15 +382,51 @@ namespace Dynamo.Graph
         #endregion
     }
 
+    /// <summary>
+    /// Interface contains definitions for locatable objects.
+    /// Objects such as nodes, connectors, workspaces etc.
+    /// </summary>
     public interface ILocatable
     {
+        /// <summary>
+        /// X coordinate of locatable object.
+        /// </summary>
         double X { get; set; }
+
+        /// <summary>
+        /// Y coordinate of locatable object.
+        /// </summary>
         double Y { get; set; }
+
+        /// <summary>
+        /// Width of locatable object.
+        /// </summary>
         double Width { get; set; }
+
+        /// <summary>
+        /// Height of locatable object.
+        /// </summary>
         double Height { get; set; }
+
+        /// <summary>
+        /// Bounds of locatable object.
+        /// </summary>
         Rect2D Rect { get; }
+
+        /// <summary>
+        /// X coordinate of center point.
+        /// </summary>
         double CenterX { get; set; }
+
+        /// <summary>
+        /// Y coordinate of center point.
+        /// </summary>
         double CenterY { get; set; }
+
+        /// <summary>
+        ///  Notify listeners that the position of the object has changed,
+        ///  then all dependant objects will also redraw themselves.
+        /// </summary>
         void ReportPosition();
     }
 }

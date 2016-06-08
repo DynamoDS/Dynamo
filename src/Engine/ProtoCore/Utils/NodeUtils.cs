@@ -83,10 +83,6 @@ namespace ProtoCore.Utils
             {
                 return new ProtoCore.AST.AssociativeAST.RangeExprNode(rhsNode as ProtoCore.AST.AssociativeAST.RangeExprNode);
             }
-            else if (rhsNode is ProtoCore.AST.AssociativeAST.ModifierStackNode)
-            {
-                return new ProtoCore.AST.AssociativeAST.ModifierStackNode(rhsNode as ProtoCore.AST.AssociativeAST.ModifierStackNode);
-            }
             else if (rhsNode is ProtoCore.AST.AssociativeAST.GroupExpressionNode)
             {
                 return new ProtoCore.AST.AssociativeAST.GroupExpressionNode(rhsNode as ProtoCore.AST.AssociativeAST.GroupExpressionNode);
@@ -135,11 +131,13 @@ namespace ProtoCore.Utils
             {
                 return new ProtoCore.AST.AssociativeAST.NullNode();
             }
-
+            else if (rhsNode is AtLevelNode)
+            {
+                return new AtLevelNode(rhsNode as AtLevelNode);
+            }
 
             // Comment Jun: Leaving this as an assert to can catch unhandled nodes
             Validity.Assert(false);
-            
             return null;
         }
 
