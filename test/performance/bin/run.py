@@ -24,7 +24,7 @@ def run(profiler, dynamocli, test_case, test_output):
 #    'timestamp':'2010101',
 #    'pullrequests':[1,2,3],
 #    'testcases':
-#    [ {'testcase':'foo', 'cputime':'123', 'privatebytes':'21', 'managedheap':'22'},...]
+#    [ {'testcase':'foo', 'timestamp':'201001', 'cputime':'123', 'privatebytes':'21', 'managedheap':'22'},...]
 # }
 def harvest(test_result_path, output_path, pull_requests, logfile):
     current_time = datetime.datetime.now()
@@ -58,6 +58,7 @@ def harvest(test_result_path, output_path, pull_requests, logfile):
 
             testcase_benchmark = {}
             testcase_benchmark['testcase'] = os.path.splitext(output)[0]
+            testcase_benchmark['timestamp'] = timestamp
             testcase_benchmark['cputime'] = average_result[0] 
             testcase_benchmark['managedheap'] = average_result[1] 
             testcase_benchmark['privatebytes'] = average_result[2] 
