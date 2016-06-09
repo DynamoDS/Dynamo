@@ -2231,11 +2231,6 @@ namespace ProtoCore.Lang
                 }
 
                 var index = element.IntegerValue;
-                if (index < 0)
-                {
-                    index += length1;
-                }
-
                 if (index >=length1 || index < 0)
                 {
                     return DSASM.StackValue.Null;
