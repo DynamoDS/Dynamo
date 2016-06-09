@@ -54,7 +54,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// rendering by various render targets. The base class handles the registration
     /// of all necessary event handlers on models, workspaces, and nodes.
     /// </summary>
-    public class DefaultWatch3DViewModel : NotificationObject, IWatch3DViewModel
+    public class DefaultWatch3DViewModel : NotificationObject, IWatch3DViewModel, IDisposable
     {
         protected readonly IDynamoModel model;
         protected readonly IScheduler scheduler;
@@ -702,5 +702,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         } 
 
         #endregion
+
+        protected virtual void Dispose(bool disposing)
+        {
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
     }
 }
