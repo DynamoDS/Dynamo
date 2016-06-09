@@ -422,6 +422,7 @@ namespace Dynamo.Models
             IAuthProvider AuthProvider { get; set; }
             IEnumerable<IExtension> Extensions { get; set; }
             TaskProcessMode ProcessMode { get; set; }
+            bool HeadlessMode { get; set; }
         }
 
       
@@ -442,6 +443,7 @@ namespace Dynamo.Models
             public IAuthProvider AuthProvider { get; set; }
             public IEnumerable<IExtension> Extensions { get; set; }
             public TaskProcessMode ProcessMode { get; set; }
+            public bool HeadlessMode { get; set; }
         }
 
         /// <summary>
@@ -597,7 +599,7 @@ namespace Dynamo.Models
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
             UpdateManager.Log += UpdateManager_Log;
-            if (!IsTestMode)
+            if (!IsTestMode && !config.HeadlessMode)
             {
                 DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
             }
