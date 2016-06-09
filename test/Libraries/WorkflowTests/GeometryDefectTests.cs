@@ -12,6 +12,8 @@ namespace Dynamo.Tests
     [TestFixture]
     class GeometryDefectTests : DynamoModelTestBase 
     {
+		private const double Epsilon = 1e-6;
+		
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
@@ -19,7 +21,6 @@ namespace Dynamo.Tests
             libraries.Add("FunctionObject.ds");
             base.GetLibrariesToPreload(libraries);
         }
-        public const double Epsilon = 1e-6;
 
         // Note: This will contain purely ASM Geometry based test cases generated from Defects.
 
