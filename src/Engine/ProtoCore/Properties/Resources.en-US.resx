@@ -442,7 +442,7 @@
     <value>Returns the deepest depth of the list</value>
   </data>
   <data name="ReturnsTheFlattened1DList" xml:space="preserve">
-    <value>Returns the flattened 1D list of the multi-dimensional input list</value>
+    <value>Returns the flattened 1D list of the multi-dimensional input list. If the input is a single value, returns that value.</value>
   </data>
   <data name="ReturnsTheIndex" xml:space="preserve">
     <value>Returns the index of the member in the list</value>
