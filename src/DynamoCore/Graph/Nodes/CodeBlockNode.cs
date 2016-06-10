@@ -431,6 +431,9 @@ namespace Dynamo.Graph.Nodes
                 return null;
 
             var identNode = binExprNode.LeftNode as IdentifierNode;
+            if (identNode == null)
+                return null;
+
             var mappedIdent = NodeUtils.Clone(identNode);
 
             if (!forRawName)
@@ -1239,9 +1242,7 @@ namespace Dynamo.Graph.Nodes
                 return new IdentifierNode(leftNode as IdentifierNode);
             if (leftNode is IdentifierNode)
                 return leftNode as IdentifierNode;
-            else if (leftNode is IdentifierListNode)
-                return GetDefinedIdentifier((leftNode as IdentifierListNode).LeftNode);
-            else if (leftNode is FunctionCallNode)
+            else if (leftNode is IdentifierListNode || leftNode is FunctionCallNode)
                 return null;
             else
                 throw new ArgumentException("Left node type incorrect");
