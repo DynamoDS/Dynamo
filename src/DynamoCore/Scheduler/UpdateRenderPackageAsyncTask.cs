@@ -188,26 +188,28 @@ namespace Dynamo.Scheduler
 
                     if (factory.TessellationParameters.ShowEdges)
                     {
-                        var surf = graphicItem as Surface;
-                        if (surf != null)
+                        var topology = graphicItem as Topology;
+                        if (topology != null)
                         {
-                            foreach (var curve in surf.PerimeterCurves())
+                            var surf = graphicItem as Surface;
+                            if (surf != null)
                             {
-                                curve.Tessellate(package, factory.TessellationParameters);
-                                curve.Dispose();
+                                foreach (var curve in surf.PerimeterCurves())
+                                {
+                                    curve.Tessellate(package, factory.TessellationParameters);
+                                    curve.Dispose();
+                                }
                             }
-                        }
-
-                        var solid = graphicItem as Solid;
-                        if (solid != null)
-                        {
-                            var edges = solid.Edges;
-                            foreach (var geom in edges.Select(edge => edge.CurveGeometry))
+                            else
                             {
-                                geom.Tessellate(package, factory.TessellationParameters);
-                                geom.Dispose();
+                                var edges = topology.Edges;
+                                foreach (var geom in edges.Select(edge => edge.CurveGeometry))
+                                {
+                                    geom.Tessellate(package, factory.TessellationParameters);
+                                    geom.Dispose();
+                                }
+                                edges.ForEach(x => x.Dispose());
                             }
-                            edges.ForEach(x => x.Dispose());
                         }
                     }
                     
