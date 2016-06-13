@@ -825,6 +825,16 @@
             pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtDistance(System.Double)">
+            <summary>
+            Get a Point at a particular arc length along the curve
+            </summary>
+            <param name="segmentLength"> The distance along the curve at which to evaluate </param>
+            <returns> The point at the given arc length </returns>
+            <search>
+            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength(System.Int32)">
             <summary>
             Returns points spaced equally along the curve length  based on the input number of divisions
@@ -877,7 +887,27 @@
             coordoncurve,curvecoord,derivatives
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtDistance(System.Double)">
+            <summary>
+            Returns a CoordinateSystem at specified distance from Curve start Point. Y Axis lies tangent to the Curve, X Axis is the curvature.
+            </summary>
+            <param name="segmentLength"> The distance along the curve at which to evaluate </param>
+            <returns> CoordinateSystem on curve </returns>
+            <search>
+            coordoncurve,curvecoord,derivatives
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength(System.Double)">
+            <summary>
+            Returns a Plane at the specified distance along the Curve from the  start Point. The normal of the Plane aligns with the tangent of the  Curve.
+            </summary>
+            <param name="segmentLength"> The distance along the curve at which to evaluate </param>
+            <returns> Plane on curve </returns>
+            <search>
+            planeoncurve,planecurve,tangentplane
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtDistance(System.Double)">
             <summary>
             Returns a Plane at the specified distance along the Curve from the  start Point. The normal of the Plane aligns with the tangent of the  Curve.
             </summary>
@@ -897,7 +927,27 @@
             lengthatparameter,dist along,lengthatpoint,arclength
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.DistanceAtParameter(System.Double)">
+            <summary>
+            Get the arc length along the Curve at the particular parameter.
+            </summary>
+            <param name="param"> The parameter at which to evaluate </param>
+            <returns> The arc length </returns>
+            <search>
+            lengthatparameter,dist along,lengthatpoint,arclength
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength(System.Double)">
+            <summary>
+            Get the parameter at a particular arc length along the curve.
+            </summary>
+            <param name="segmentLength"> The distance along the curve at which to evaluate </param>
+            <returns> The parameter </returns>
+            <search>
+            parameteratlen,param along,paramatlen,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtDistance(System.Double)">
             <summary>
             Get the parameter at a particular arc length along the curve.
             </summary>
@@ -938,6 +988,17 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthBetweenParameters(System.Double,System.Double)">
+            <summary>
+            Get the arc length between two parameter points on the curve
+            </summary>
+            <param name="startParam"> The start of the domain </param>
+            <param name="endParam"> The end of the domain </param>
+            <returns> The arc length between the two parameters </returns>
+            <search>
+            measure,distance,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.LengthBetweenParameters(System.Double,System.Double)">
             <summary>
             Get the arc length between two parameter points on the curve
             </summary>
@@ -1052,6 +1113,16 @@
             rem,remstart,removestart,trimcurve
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimStart(System.Double)">
+            <summary>
+            Removes the start of the Curve at the specified parameter
+            </summary>
+            <param name="startParameter"> The parameter at which to start the trim </param>
+            <returns> A new Curve with the start removed </returns>
+            <search>
+            rem,remstart,removestart,trimcurve
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByEndParameter(System.Double)">
             <summary>
             Removes the end of the Curve at the specified parameter
@@ -1062,7 +1133,28 @@
             rem,remend,removeend,trimcurve
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimEnd(System.Double)">
+            <summary>
+            Removes the end of the Curve at the specified parameter
+            </summary>
+            <param name="endParameter"> The parameter at which to start the trim </param>
+            <returns> A new Curve with the end removed </returns>
+            <search>
+            rem,remend,removeend,trimcurve
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByParameter(System.Double,System.Double)">
+            <summary>
+            Removes the beginning and ends of at the specified parameters.
+            </summary>
+            <param name="startParameter"> The parameter at which to start the trim </param>
+            <param name="endParameter"> The parameter at which to start the trim </param>
+            <returns> A new Curve with the outer segments removed </returns>
+            <search>
+            rem,remend,remstart,remove,trimcurve,removeends
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrim(System.Double,System.Double)">
             <summary>
             Removes the beginning and ends of at the specified parameters.
             </summary>
@@ -1084,7 +1176,28 @@
             rem,removemiddle,middle,remmiddle,cutout,trimcurve
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimInterior(System.Double,System.Double)">
+            <summary>
+            Removes the interior portion of a Curve at the specified parameters
+            </summary>
+            <param name="startParameter"> The parameter at which to start the trim </param>
+            <param name="endParameter"> The parameter at which to start the trim </param>
+            <returns> A new Curve with the interior segment removed </returns>
+            <search>
+            rem,removemiddle,middle,remmiddle,cutout,trimcurve
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[])">
+            <summary>
+            Removes several segments of the curve, discarding the 1st, 3rd, 5th ... segments
+            </summary>
+            <param name="parameters"> A list of parameters at which to split the curve </param>
+            <returns> An Array of curves discarding the 1st, 3rd, 5th ... segments </returns>
+            <search>
+            rem,removeparts,remparts,cutout,trimcurv,interior,odd
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimSegments(System.Double[])">
             <summary>
             Removes several segments of the curve, discarding the 1st, 3rd, 5th ... segments
             </summary>
@@ -1115,7 +1228,27 @@
             cutinto,divide,curve2curves,cut
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterSplit(System.Double)">
+            <summary>
+            Split a Curve into two pieces at the given parameter
+            </summary>
+            <param name="parameter"> The parameter at which to do the split </param>
+            <returns> Two Curves remaining after the split </returns>
+            <search>
+            cutinto,divide,curve2curves,cut
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double[])">
+            <summary>
+            Split a Curve into multiple pieces at the given parameters
+            </summary>
+            <param name="parameters"> A list of parameters at which to split the curve </param>
+            <returns> Curves created from splitting </returns>
+            <search>
+            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterSplit(System.Double[])">
             <summary>
             Split a Curve into multiple pieces at the given parameters
             </summary>
@@ -1457,6 +1590,20 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiAngles(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Create an EllipseArc in a plane with the given the radii along the X and Y axes and the angles to sweep through
+            </summary>
+            <param name="plane"> The plane the EllipseArc is contained in </param>
+            <param name="xRadius"> The radius of the EllipseArc in the X direction of the Plane </param>
+            <param name="yRadius"> The radius of the EllipseArc in the Y direction of the Plane </param>
+            <param name="startAngle"> The start angle of the arc as measured from the positive x-axis of the input plane </param>
+            <param name="sweepAngle"> The angle to sweep from the start angle in degrees </param>
+            <returns>  </returns>
+            <search>
+            ellipsearc,arcs
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiStartAngleSweepAngle(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double,System.Double)">
             <summary>
             Create an EllipseArc in a plane with the given the radii along the X and Y axes and the angles to sweep through
             </summary>
@@ -2520,19 +2667,19 @@
             Get a string representation of the Polygon
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>
+            Construct a Polygon Curve by connecting Points.
+            </summary>
+            <param name="points">  </param>
+            <returns>  </returns>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
             <summary>
             Construct an inscribed Polygon Curve within a circle.
             </summary>
             <param name="circle">  </param>
             <param name="numberSides">  </param>
-            <returns>  </returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>
-            Construct a Polygon Curve by connecting Points.
-            </summary>
-            <param name="points">  </param>
             <returns>  </returns>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Polygon.Points">
@@ -3735,7 +3882,28 @@
             rotation angle
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Returns the angle between the two Vectors, in the range [0, 180] degrees.
+            </summary>
+            <param name="otherVector">  </param>
+            <returns>  </returns>
+            <search>
+            rotation angle
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleAboutAxis(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Returns the angle between the two Vectors, in the range [0, 360] degrees. It uses axis of rotation to determine the direction of the angle.
+            </summary>
+            <param name="otherVector">  </param>
+            <param name="rotationAxis">  </param>
+            <returns>  </returns>
+            <search>
+            rotation angle
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
             <summary>
             Returns the angle between the two Vectors, in the range [0, 360] degrees. It uses axis of rotation to determine the direction of the angle.
             </summary>
@@ -3992,7 +4160,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
             <summary>
-            Rotates an object around the Plane origin and normal by a specified 
+            Rotates an object around the origin and normal of the given Plane by a specified
             degree
             </summary>
             /// <search>around,normal,degrees</search>
