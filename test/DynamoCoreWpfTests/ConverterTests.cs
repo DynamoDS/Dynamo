@@ -616,6 +616,71 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\\Home\somedyn.dyn"));
             Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\somedyn.dyn"));
             Assert.AreEqual(@"\\psf\Home\Desktop\somedyn.dyn", FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\Home\Desktop\somedyn.dyn"));
-        }        
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ZoomToVisibilityConverterTest()
+        {
+            object visibility;
+            ZoomToVisibilityConverter converter = new ZoomToVisibilityConverter();
+
+            visibility = converter.Convert("1.0", typeof(string), null, new CultureInfo("en-US"));
+            Assert.AreEqual(visibility, Visibility.Visible);
+
+            visibility = converter.Convert("1,0", typeof(string), null, new CultureInfo("de-DE"));
+            Assert.AreEqual(visibility, Visibility.Visible);
+
+            visibility = converter.Convert(1.0, typeof(double), null, new CultureInfo("en-US"));
+            Assert.AreEqual(visibility, Visibility.Visible);
+
+            visibility = converter.Convert(1.0, typeof(double), null, new CultureInfo("de-DE"));
+            Assert.AreEqual(visibility, Visibility.Visible);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MenuItemCheckConverterTest()
+        {
+            object equal;
+            MenuItemCheckConverter converter = new MenuItemCheckConverter();
+
+            equal = converter.Convert("1.0", typeof(string), "1.0", new CultureInfo("en-US"));
+            Assert.AreEqual(equal, true);
+
+            equal = converter.Convert("1,0", typeof(string), "1,0", new CultureInfo("de-DE"));
+            Assert.AreEqual(equal, true);
+
+            equal = converter.Convert(1.0, typeof(double), 1.0, new CultureInfo("en-US"));
+            Assert.AreEqual(equal, true);
+
+            equal = converter.Convert(1.0, typeof(double), 1.0, new CultureInfo("de-DE"));
+            Assert.AreEqual(equal, true);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GroupFontSizeToEditorEnabledConverterTest()
+        {
+            object equal;
+            GroupFontSizeToEditorEnabledConverter converter = new GroupFontSizeToEditorEnabledConverter();
+            string[] stringsUs = { "2.0", "4.0" };
+            string[] stringsDe = { "2,0", "4,0" };
+            double[] doubles = { 2.0, 4.0 };
+            object[] objects = new object[2];
+            doubles.CopyTo(objects, 0);
+
+            equal = converter.Convert(stringsUs , typeof(string), null, new CultureInfo("en-US"));
+            Assert.AreEqual(equal, true);
+
+            equal = converter.Convert(stringsDe, typeof(string), null, new CultureInfo("de-DE"));
+            Assert.AreEqual(equal, true);
+
+            equal = converter.Convert(objects, typeof(float), null, new CultureInfo("en-US"));
+            Assert.AreEqual(equal, true);
+
+            equal = converter.Convert(objects, typeof(float), null, new CultureInfo("de-DE"));
+            Assert.AreEqual(equal, true);
+        }
     }
 }

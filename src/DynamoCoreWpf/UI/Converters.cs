@@ -1420,7 +1420,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            double zoom = System.Convert.ToDouble(value);
+            double zoom = System.Convert.ToDouble(value, culture);
 
             if (zoom < .5)
                 return Visibility.Hidden;
@@ -2193,8 +2193,8 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var fontsize = System.Convert.ToDouble(value);
-            var param = System.Convert.ToDouble(parameter);
+            var fontsize = System.Convert.ToDouble(value, culture);
+            var param = System.Convert.ToDouble(parameter, culture);
 
             return fontsize == param;            
         }
@@ -2250,8 +2250,8 @@ namespace Dynamo.Controls
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var zoom = System.Convert.ToDouble(values[0]);
-            var fontsize = System.Convert.ToDouble(values[1]);
+            var zoom = System.Convert.ToDouble(values[0], culture);
+            var fontsize = System.Convert.ToDouble(values[1], culture);
 
             var factor = zoom*fontsize;
             if (factor < MinFontFactor)
