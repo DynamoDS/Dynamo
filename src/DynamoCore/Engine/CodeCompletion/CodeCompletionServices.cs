@@ -240,9 +240,6 @@ namespace Dynamo.Engine.CodeCompletion
     /// </summary>
     internal class CompletionData
     {
-        private readonly string text;
-        private readonly CompletionType type;
-
         public enum CompletionType
         {
             Namespace,
@@ -258,7 +255,7 @@ namespace Dynamo.Engine.CodeCompletion
         /// Class name or fully qualified name
         /// Method, property name or keyword
         /// </summary>
-        public string Text { get { return text; } }
+        public string Text { get; private set; }
 
         /// <summary>
         /// Method signatures or any stub description for classes etc.
@@ -273,12 +270,12 @@ namespace Dynamo.Engine.CodeCompletion
         /// <summary>
         /// Type of completion item
         /// </summary>
-        public CompletionType Type { get { return type; } }
+        public CompletionType Type { get; private set; }
 
         internal CompletionData(string text, CompletionType type)
         {
-            this.text = text;
-            this.type = type;
+            this.Text = text;
+            this.Type = type;
         }
 
 
