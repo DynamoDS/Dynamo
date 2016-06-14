@@ -411,6 +411,19 @@ r = c[2];
         }
 
         [Test]
+        public void Reorder2()
+        {
+            String code =
+@"
+x = {1, 2, 3};
+y = {-1};
+z = Reorder(x,y);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("z", null);
+        }
+
+        [Test]
         //Test "IsUniformDepth"
         public void BIM19_IsUniformDepth()
         {

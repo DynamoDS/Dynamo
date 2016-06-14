@@ -2222,21 +2222,24 @@ namespace ProtoCore.Lang
             StackValue[] svArray = heap.ToHeapObject<DSArray>(sv1).Values.ToArray();
             StackValue[] svIdxArray = heap.ToHeapObject<DSArray>(sv2).Values.ToArray();
             List<StackValue> svList = new List<StackValue>();
-            foreach (StackValue idx in svIdxArray)
+            foreach (StackValue element in svIdxArray)
             {
-                if (!idx.IsInteger)
+                if (!element.IsInteger)
                 {
                     return DSASM.StackValue.Null;
                     //Type Error: Argument(1) must be filled with integers!
-                } 
-                if (idx.IntegerValue >=length1)
+                }
+
+                var index = element.IntegerValue;
+                if (index >=length1 || index < 0)
                 {
                     return DSASM.StackValue.Null;
                     //Type Error: Out of array index bound!
                 }
-                svList.Add(svArray[idx.IntegerValue]);
+                svList.Add(svArray[index]);
             }
-            if (svList.Count >= 0)
+
+            if (svList.Any())
             {
                 try
                 {
