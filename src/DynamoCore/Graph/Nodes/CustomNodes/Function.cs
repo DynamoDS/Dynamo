@@ -232,11 +232,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
         private void ValidateDefinition(CustomNodeDefinition def)
         {
-            if (def == null)
-            {
-                throw new ArgumentNullException("def");
-            }
-
             if (def.IsProxy)
             {
                 this.Error(Properties.Resources.CustomNodeNotLoaded);
@@ -246,6 +241,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 this.ClearRuntimeError();
             }
         }
+
 
         /// <summary>
         ///     Validates passed Custom Node definition and synchronizes node with it.
@@ -592,7 +588,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             }
 
             return base.UpdateValueCore(updateValueParams);
-        }
+        }input_output_commen
 
         private bool TryParseOutputExpression(string expression, out IdentifierNode outputIdentifier, out string comment)
         {
@@ -617,14 +613,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 }
 
                 var node = parseParam.ParsedNodes.First() as BinaryExpressionNode;
-                if (node == null)
-                {
-                    if (parseParam.Errors.Any())
-                    {
-                        this.Error(Properties.Resources.WarningInvalidOutput);
-                    }
-                }
-                else
+                if (node != null)
                 {
                     var leftIdent = node.LeftNode as IdentifierNode;
                     var rightIdent = node.RightNode as IdentifierNode;
