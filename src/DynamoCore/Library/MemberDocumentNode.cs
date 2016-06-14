@@ -88,11 +88,6 @@ namespace Dynamo.Engine
             returns = new List<Tuple<string, string>>();
         }
 
-        internal void AddParameter(string name, string description)
-        {
-            parameters[name] = description;
-        }
-
         internal static string MakeFullyQualifiedName(string assemblyName, string memberName)
         {
             return string.Format("{0},{1}", assemblyName, memberName);
