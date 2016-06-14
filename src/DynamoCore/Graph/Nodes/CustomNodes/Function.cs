@@ -588,7 +588,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             }
 
             return base.UpdateValueCore(updateValueParams);
-        }input_output_commen
+        }
 
         private bool TryParseOutputExpression(string expression, out IdentifierNode outputIdentifier, out string comment)
         {
@@ -623,21 +623,8 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     {
                         outputIdentifier = rightIdent;
                     }
-                    // "x:int" will be compiled to "x:int = tTypedIdent0;"
-                    else if (rightIdent != null && rightIdent.Value.StartsWith(Constants.kTempVarForTypedIdentifier))
-                    {
-                        outputIdentifier = leftIdent;
-                    }
                     else
                     {
-                        if (parseParam.Errors.Any())
-                        {
-                            this.Error(parseParam.Errors.First().Message);
-                        }
-                        else
-                        {
-                            this.Warning(Properties.Resources.WarningInvalidOutput);
-                        }
                         outputIdentifier = leftIdent;
                     }
                     return outputIdentifier != null;
