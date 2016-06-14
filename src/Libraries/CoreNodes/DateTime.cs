@@ -260,7 +260,7 @@ namespace DSCore
         ///     The smallest TimeSpan that can be represented.
         /// </summary>
         /// <returns name="timeSpan">TimeSpan</returns>
-        public static System.TimeSpan MinValue { get { return System.TimeSpan.MaxValue; } }
+        public static System.TimeSpan MinValue { get { return System.TimeSpan.MinValue; } }
 
         /// <summary>
         ///     Creates a new TimeSpan from a span of time.

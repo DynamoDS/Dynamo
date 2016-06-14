@@ -62,6 +62,31 @@ namespace DSCoreNodesTests
             Assert.Throws<ArgumentException>(
                 () => qt.FindPointsWithinRadius(UV.ByCoordinates(), 0.0));
         }
+        [Test]
+        public void Node_Intersects()
+        {
+            var uvs = new List<UV>();
+            uvs.Add(UV.ByCoordinates(0.1, 0.1));
+            uvs.Add(UV.ByCoordinates(0.3, 0.03));
+            uvs.Add(UV.ByCoordinates(0.7, 0.7));
+            var qt = Quadtree.ByUVs(uvs);
+ 
+            UVRect uvRect = new UVRect(UV.ByCoordinates(0,0),UV.ByCoordinates(0.5,0.5));
+            var points = qt.FindPointsInRectangle(uvRect);
+            Assert.AreEqual(points.Count, 2);   
+        }
+        [Test]
+        public void Node_FindAllNodesUpLevel()
+        {
+            var uvs = new List<UV>();
+            uvs.Add(UV.ByCoordinates(0, 0));
+            uvs.Add(UV.ByCoordinates(1, 1));
+            uvs.Add(UV.ByCoordinates(-1, -1));
+            var qt = Quadtree.ByUVs(uvs);
+            UVRect uvRect = new UVRect(UV.ByCoordinates(0, 0), UV.ByCoordinates(2, 2));
+            var points = qt.FindPointsInRectangle(uvRect);
+            Assert.AreEqual(points.Count, 2);
+        }
 
         private static IList<UV> SetupSampleUVs()
         {
