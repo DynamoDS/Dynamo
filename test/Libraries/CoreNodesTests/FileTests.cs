@@ -149,17 +149,27 @@ namespace Dynamo.Tests
         [Test, Category("UnitTests")]
         public void File_Move()
         {
-            const string contents = "test";
-            var fn = GetNewFileNameOnTempPath(".txt");
-            System.IO.File.WriteAllText(fn, contents);
-            Assert.IsTrue(System.IO.File.Exists(fn));
+            const string contents1 = "test1";
+            var fn1 = GetNewFileNameOnTempPath(".txt");
+            System.IO.File.WriteAllText(fn1, contents1);
+            Assert.IsTrue(System.IO.File.Exists(fn1));
 
             var dest = GetNewFileNameOnTempPath(".txt");
             var destInfo = File.FromPath(dest);
-            File.Move(fn, dest);
+            File.Move(fn1, dest);
             Assert.IsTrue(System.IO.File.Exists(dest));
-            Assert.IsFalse(System.IO.File.Exists(fn));
-            Assert.AreEqual(contents, File.ReadText(destInfo));
+            Assert.IsFalse(System.IO.File.Exists(fn1));
+            Assert.AreEqual(contents1, File.ReadText(destInfo));
+
+            const string contents2 = "test2";
+            var fn2 = GetNewFileNameOnTempPath(".txt");
+            System.IO.File.WriteAllText(fn2, contents2);
+            Assert.IsTrue(System.IO.File.Exists(fn2));
+
+            File.Move(fn2, dest, true);
+            Assert.IsTrue(System.IO.File.Exists(dest));
+            Assert.IsFalse(System.IO.File.Exists(fn2));
+            Assert.AreEqual(contents2, File.ReadText(destInfo));
         }
 
         [Test, Category("UnitTests")]
