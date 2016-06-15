@@ -113,58 +113,6 @@ namespace ProtoCore
             return csInstance;
         }
 
-        public Dictionary<Guid, List<CallSite>>
-        GetCallsitesForNodes(IEnumerable<Guid> nodeGuids, Executable executable)
-        {
-            if (nodeGuids == null)
-                throw new ArgumentNullException("nodeGuids");
-
-            var nodeMap = new Dictionary<Guid, List<CallSite>>();
-
-            if (!nodeGuids.Any()) // Nothing to persist now.
-                return nodeMap;
-
-            // Attempt to get the list of graph node if one exists.
-            IEnumerable<GraphNode> graphNodes = null;
-            {
-                if (executable != null)
-                {
-                    var stream = executable.instrStreamList;
-                    if (stream != null && (stream.Length > 0))
-                    {
-                        var graph = stream[0].dependencyGraph;
-                        if (graph != null)
-                            graphNodes = graph.GraphList;
-                    }
-                }
-
-
-                if (graphNodes == null) // No execution has taken place.
-                    return nodeMap;
-            }
-
-            foreach (Guid nodeGuid in nodeGuids)
-            {
-                // Get a list of GraphNode objects that correspond to this node.
-                var matchingGraphNodes = graphNodes.
-                        Where(gn => gn.guid == nodeGuid);
-
-                if (!matchingGraphNodes.Any())
-                    continue;
-
-                // Get all callsites that match the graph node ids.
-                var matchingCallSites = (from cs in CallsiteCache
-                                         from gn in matchingGraphNodes
-                                         where string.Equals(cs.Key, gn.CallsiteIdentifier)
-                                         select cs.Value);
-
-                // Append each callsite element under node element.
-                nodeMap[nodeGuid] = matchingCallSites.ToList();
-            }
-
-            return nodeMap;
-        }
-
         #region Trace Data Serialization Methods/Members
 
         /// <summary>
@@ -253,27 +201,6 @@ namespace ProtoCore
 
             foreach (var nodeData in nodeDataPairs)
                 uiNodeToSerializedDataMap.Add(nodeData.Key, nodeData.Value);
-        }
-
-        /// <summary>
-        /// Call this method to remove the trace data list for a given UI node. 
-        /// This is required for the scenario where a code block node content is 
-        /// modified before its corresponding callsite objects are reconstructed
-        /// (i.e. before any execution takes place, and after a file-load). 
-        /// Modifications on UI nodes will always result in trace data being 
-        /// reconstructed again.
-        /// </summary>
-        /// <param name="nodeGuid">The System.Guid of the node for which trace 
-        /// data is to be destroyed.</param>
-        /// 
-        public void DestroyLoadedTraceDataForNode(Guid nodeGuid)
-        {
-            // There is preloaded trace data from external file.
-            if (uiNodeToSerializedDataMap != null)
-            {
-                if (uiNodeToSerializedDataMap.Count > 0)
-                    uiNodeToSerializedDataMap.Remove(nodeGuid);
-            }
         }
 
         /// <summary>

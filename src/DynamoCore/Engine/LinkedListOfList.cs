@@ -42,18 +42,6 @@ namespace Dynamo.Engine
             listNode.Value.Add(item);
         }
 
-        public bool Contains(TKey key)
-        {
-            return map.ContainsKey(key);
-        }
-
-        public void Clears(TKey key)
-        {
-            LinkedListNode<List<T>> listNode;
-            if (map.TryGetValue(key, out listNode))
-                listNode.Value.Clear();
-        }
-
         public void Removes(TKey key)
         {
             LinkedListNode<List<T>> listNode;
