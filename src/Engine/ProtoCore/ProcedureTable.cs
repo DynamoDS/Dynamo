@@ -67,17 +67,6 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Number of non default argument
-        /// </summary>
-        public int NonDefaultArgumentCount
-        {
-            get
-            {
-                return ArgumentTypes.Count - ArgumentInfos.Count(a => a.IsDefault);
-            }
-        }
-
-        /// <summary>
         /// List of arguments' information (default value) 
         /// </summary>
         public List<ArgumentInfo> ArgumentInfos
@@ -137,10 +126,7 @@ namespace ProtoCore.DSASM
         {
             get; set;
         }
-		public List<AttributeEntry> Attributes
-        {
-            get; set;
-        }		
+		
         public bool IsExternal
         {
             get; set;

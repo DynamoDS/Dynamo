@@ -106,59 +106,12 @@ namespace ProtoCore
     public interface IOutputStream
     {
         void Write(OutputMessage message);
-        List<OutputMessage> GetMessages();
-    }
-
-    public class FileOutputStream : IOutputStream
-    {
-        StreamWriter FileStream { get; set; }
-
-        public FileOutputStream(StreamWriter sw)
-        {
-            FileStream = sw;
-        }
-
-        public void Write(ProtoCore.OutputMessage message)
-        {
-            if (null == message)
-                return;
-
-            if (string.IsNullOrEmpty(message.FilePath))
-            {
-                // Type: Message
-                string formatWithoutFile = "{0}: {1}";
-                FileStream.WriteLine(string.Format(formatWithoutFile,
-                    message.Type.ToString(), message.Message));
-            }
-            else
-            {
-                // Type: Message (File - Line, Column)
-                string formatWithFile = "{0}: {1} ({2} - line: {3}, col: {4})";
-                FileStream.WriteLine(string.Format(formatWithFile,
-                    message.Type.ToString(), message.Message,
-                    message.FilePath, message.Line, message.Column));
-            }
-
-            if (message.Type == ProtoCore.OutputMessage.MessageType.Warning)
-                message.Continue = true;
-        }
-
-        public List<ProtoCore.OutputMessage> GetMessages()
-        {
-            return null;
-        }
     }
 
     public class TextOutputStream : IOutputStream
     {
         public StringWriter TextStream { get; private set; }
         public Dictionary<int, List<string>> Map { get; private set; }
-
-        public TextOutputStream(StringWriter sw, Dictionary<int, List<string>> map)
-        {
-            TextStream = sw;
-            Map = map;
-        }
 
         public TextOutputStream(Dictionary<int, List<string>> map)
         {
@@ -189,11 +142,6 @@ namespace ProtoCore
 
             if (message.Type == ProtoCore.OutputMessage.MessageType.Warning)
                 message.Continue = true;
-        }
-
-        public List<ProtoCore.OutputMessage> GetMessages()
-        {
-            return null;
         }
     }
 
@@ -227,55 +175,6 @@ namespace ProtoCore
             if (message.Type == ProtoCore.OutputMessage.MessageType.Warning)
                 message.Continue = true;
         }
-
-        public List<ProtoCore.OutputMessage> GetMessages()
-        {
-            return null;
-        }
-    }
-
-    public class WebOutputStream : IOutputStream
-    {
-        public Core core;
-        public string filename;
-
-        public void Write(ProtoCore.OutputMessage message)
-        {
-            if (null == message)
-                return;
-
-            if (string.IsNullOrEmpty(message.FilePath))
-            {
-                // Type: Message
-                string formatWithoutFile = "{0}: {1}";
-
-                //System.IO.StreamWriter logFile = new System.IO.StreamWriter("c:\\test.txt");
-                if (null != core.ExecutionLog)
-                {
-                    core.ExecutionLog.WriteLine(string.Format(formatWithoutFile,
-                        message.Type.ToString(), message.Message));
-                }
-            }
-            else
-            {
-                // Type: Message (File - Line, Column)
-                if (null != core.ExecutionLog)
-                {
-                    string formatWithFile = "{0}: {1} ({2} - line: {3}, col: {4})";
-                    core.ExecutionLog.WriteLine(string.Format(formatWithFile,
-                        message.Type.ToString(), message.Message,
-                        message.FilePath, message.Line, message.Column));
-                }
-            }
-
-            if (message.Type == ProtoCore.OutputMessage.MessageType.Warning)
-                message.Continue = true;
-        }
-
-        public List<ProtoCore.OutputMessage> GetMessages()
-        {
-            return null;
-        }
     }
 
     public class BuildStatus
@@ -287,7 +186,6 @@ namespace ProtoCore
         private readonly bool displayBuildResult = true;
 
         public IOutputStream MessageHandler { get; set; }
-        public WebOutputStream WebMsgHandler { get; set; }
 
         private List<BuildData.WarningEntry> warnings;
         public IEnumerable<BuildData.WarningEntry> Warnings
@@ -345,27 +243,6 @@ namespace ProtoCore
             displayBuildResult = logErrors = LogWarnings = core.Options.Verbose;
         }
 
-        public BuildStatus(Core core,bool LogWarnings, bool logErrors, bool displayBuildResult, System.IO.TextWriter writer = null)
-        {
-            this.core = core;
-            this.LogWarnings = LogWarnings;
-            this.logErrors = logErrors;
-            this.displayBuildResult = displayBuildResult;
-
-            warnings = new List<BuildData.WarningEntry>();
-            errors = new List<BuildData.ErrorEntry>();
-
-            if (writer != null)
-            {
-                consoleOut = System.Console.Out;
-                System.Console.SetOut(writer);
-            }
-
-            // Create a default console output stream, and this can 
-            // be overwritten in IDE by assigning it a different value.
-            this.MessageHandler = new ConsoleOutputStream();
-        }
-
         /// <summary>
         /// Remove unbound variable warnings that match all symbols in the symbolList
         /// </summary>
@@ -376,22 +253,6 @@ namespace ProtoCore
             {
                 // Remove all warnings that match the symbol
                 warnings.RemoveAll(w => w.ID == BuildData.WarningID.IdUnboundIdentifier && w.UnboundVariableSymbolNode != null && w.UnboundVariableSymbolNode.Equals(symbol));
-            }
-        }
-
-        public void SetStream(System.IO.TextWriter writer)
-        {
-            //  flush the stream first
-            System.Console.Out.Flush();
-
-            if (writer != null)
-            {
-                consoleOut = System.Console.Out;
-                System.Console.SetOut(writer);
-            }
-            else
-            {
-                System.Console.SetOut(consoleOut);
             }
         }
 
@@ -447,11 +308,6 @@ namespace ProtoCore
             if (MessageHandler != null)
             {
                 MessageHandler.Write(outputmessage);
-                if (WebMsgHandler != null)
-                {
-                    OutputMessage webOutputMsg = new OutputMessage(OutputMessage.MessageType.Error, localizedMessage.Trim(), "", line, col);
-                    WebMsgHandler.Write(webOutputMsg);
-                }
                 if (!outputmessage.Continue)
                     throw new BuildHaltException(localizedMessage);
             }
@@ -727,11 +583,6 @@ namespace ProtoCore
             if (MessageHandler != null)
             {
                 MessageHandler.Write(outputmessage);
-                if (WebMsgHandler != null)
-                {
-                    OutputMessage webOutputMsg = new OutputMessage(OutputMessage.MessageType.Error, msg.Trim(), "", line, col);
-                    WebMsgHandler.Write(webOutputMsg);
-                }
                 if (!outputmessage.Continue)
                     throw new BuildHaltException(msg);
             }
@@ -804,11 +655,6 @@ namespace ProtoCore
                 if (MessageHandler != null)
                 {
                     MessageHandler.Write(outputmessage);
-                    if (WebMsgHandler != null)
-                    {
-                        OutputMessage webOutputMsg = new OutputMessage(OutputMessage.MessageType.Warning, message.Trim(), "", line, col);
-                        WebMsgHandler.Write(webOutputMsg);
-                    }
                     if (!outputmessage.Continue)
                         throw new BuildHaltException(message);
                 }
@@ -827,10 +673,6 @@ namespace ProtoCore
                 {
                     var outputMsg = new OutputMessage(buildResult);
                     MessageHandler.Write(outputMsg);
-                    if (WebMsgHandler != null)
-                    {
-                        WebMsgHandler.Write(outputMsg);
-                    }
                 }
             }
         }

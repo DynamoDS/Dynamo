@@ -2040,12 +2040,6 @@ namespace ProtoAssociative
             return false;
         }
 
-        public void Emit(ProtoCore.AST.AssociativeAST.DependencyTracker tracker)
-        {
-            // TODO Jun: Only HydrogenRunner uses this. Consider removing if HydrogenRunner becomes redundant
-            throw new NotSupportedException();
-        }
-
         private int EmitExpressionInterpreter(ProtoCore.AST.Node codeBlockNode)
         {
             core.watchStartPC = this.pc;

@@ -587,33 +587,8 @@ namespace ProtoCore
         public class PropertyMirror : StaticMirror
         {
             private ProcedureNode procNode = null;
-            public ProtoCore.Type? Type
-            {
-                get
-                {
-                    if (procNode != null)
-                    {
-                        if (isSetter)
-                            return procNode.ArgumentTypes[0];
-                        else
-                            return procNode.ReturnType;
-                    }
-                    return null;
-                }
-                set { }
-            }
-
-
             public string PropertyName { get; private set; }
-
             private bool isSetter = false;
-            public bool IsSetter
-            {
-                get
-                {
-                    return isSetter;
-                }
-            }
 
             public bool IsStatic
             {

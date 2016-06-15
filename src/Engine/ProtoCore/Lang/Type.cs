@@ -301,12 +301,6 @@ namespace ProtoCore
             return classTable.GetTypeName(UID);
         }
 
-        public string GetType(Type type)
-        {
-            Validity.Assert(null != classTable);
-            return classTable.GetTypeName(type.UID);
-        }
-
         public int GetType(string ident)
         {
             Validity.Assert(null != classTable);
@@ -328,20 +322,6 @@ namespace ProtoCore
                 }
             }
             return type;
-        }
-
-        public static bool IsConvertibleTo(int fromType, int toType, Core core)
-        {
-            if (Constants.kInvalidIndex != fromType && Constants.kInvalidIndex != toType)
-            {
-                if (fromType == toType)
-                {
-                    return true;
-                }
-
-                return core.ClassTable.ClassNodes[fromType].ConvertibleTo(toType);
-            }
-            return false;
         }
 
         //@TODO: Factor this into the type system

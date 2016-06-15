@@ -366,61 +366,6 @@ namespace ProtoCore
             }
         }
 
-        public class CodeBlockCompilationSnapshot
-        {
-            public CodeBlockCompilationSnapshot(int codeBlocKId, int graphNodeCount, int endPC)
-            {
-                CodeBlockId = codeBlocKId;
-                GraphNodeCount = graphNodeCount;
-                InstructionCount = endPC;
-            }
-
-            public static List<CodeBlockCompilationSnapshot> CaptureCoreCompileState(Core core)
-            {
-                List<CodeBlockCompilationSnapshot> snapShots = new List<CodeBlockCompilationSnapshot>();
-                if (core.CodeBlockList != null)
-                {
-                    foreach (var codeBlock in core.CodeBlockList)
-                    {
-                        int codeBlockId = codeBlock.codeBlockId;
-                        InstructionStream istream = core.CodeBlockList[codeBlockId].instrStream;
-                        int graphCount = istream.dependencyGraph.GraphList.Count;
-                        int instructionCount = istream.instrList.Count;
-
-                        snapShots.Add(new CodeBlockCompilationSnapshot(codeBlockId, graphCount, instructionCount));
-                    }
-                }
-                return snapShots;
-            }
-
-            public int CodeBlockId { get; set;} 
-            public int GraphNodeCount { get; set;} 
-            public int InstructionCount { get; set;}
-        }
-
-        public void ResetDeltaCompileFromSnapshot(List<CodeBlockCompilationSnapshot> snapShots)
-        {
-            if (snapShots == null)
-                throw new ArgumentNullException("snapshots");
-
-            foreach (var snapShot in snapShots)
-            {
-                InstructionStream istream = CodeBlockList[snapShot.CodeBlockId].instrStream;
-
-                int instrCount = istream.instrList.Count - snapShot.InstructionCount;
-                if (instrCount > 0)
-                {
-                    istream.instrList.RemoveRange(snapShot.InstructionCount, instrCount);
-                }
-
-                int graphNodeCount = istream.dependencyGraph.GraphList.Count - snapShot.GraphNodeCount;
-                if (graphNodeCount > 0)
-                {
-                    istream.dependencyGraph.GraphList.RemoveRange(snapShot.GraphNodeCount, graphNodeCount);
-                }
-            }
-        }
-
         /// <summary>
         /// Reset the VM state for delta execution.
         /// </summary>
@@ -589,68 +534,11 @@ namespace ProtoCore
 
         public CodeGen assocCodegen { get; set; }
 
-
         public TextWriter ExecutionLog { get; set; }
 
         public Core(Options options)
         {
             ResetAll(options);
-        }
-
-        public SymbolNode GetSymbolInFunction(string name, int classScope, int functionScope, CodeBlock codeBlock)
-        {
-            Validity.Assert(functionScope != Constants.kGlobalScope);
-            if (Constants.kGlobalScope == functionScope)
-            {
-                return null;
-            }
-
-            int symbolIndex = Constants.kInvalidIndex;
-
-            if (classScope != Constants.kGlobalScope)
-            {
-                //Search local variable for the class member function
-                symbolIndex = ClassTable.ClassNodes[classScope].Symbols.IndexOf(name, classScope, functionScope);
-                if (symbolIndex != Constants.kInvalidIndex)
-                {
-                    return ClassTable.ClassNodes[classScope].Symbols.symbolList[symbolIndex];
-                }
-
-                //Search class members
-                symbolIndex = ClassTable.ClassNodes[classScope].Symbols.IndexOf(name, classScope, Constants.kGlobalScope);
-                if (symbolIndex != Constants.kInvalidIndex)
-                {
-                    return ClassTable.ClassNodes[classScope].Symbols.symbolList[symbolIndex];
-                }
-            }
-
-            while (symbolIndex == Constants.kInvalidIndex &&
-                   codeBlock != null &&
-                   codeBlock.blockType != CodeBlockType.Function)
-            {
-                symbolIndex = codeBlock.symbolTable.IndexOf(name, classScope, functionScope);
-                if (symbolIndex != Constants.kInvalidIndex)
-                {
-                    return codeBlock.symbolTable.symbolList[symbolIndex];
-                }
-                else
-                {
-                    codeBlock = codeBlock.parent;
-                }
-            }
-
-            if (symbolIndex == Constants.kInvalidIndex &&
-                codeBlock != null &&
-                codeBlock.blockType == CodeBlockType.Function)
-            {
-                symbolIndex = codeBlock.symbolTable.IndexOf(name, classScope, functionScope);
-                if (symbolIndex != Constants.kInvalidIndex)
-                {
-                    return codeBlock.symbolTable.symbolList[symbolIndex];
-                }
-            }
-
-            return null;
         }
 
         public SymbolNode GetFirstVisibleSymbol(string name, int classscope, int function, CodeBlock codeblock)
@@ -873,14 +761,11 @@ namespace ProtoCore
             DSExecutable.CurrentDSFileName = CurrentDSFileName;           
         }
 
-
-
         public string GenerateTempVar()
         {
             tempVarId++;
             return Constants.kTempVar + tempVarId.ToString();
         }
-
 
         public string GenerateTempPropertyVar()
         {
@@ -902,12 +787,6 @@ namespace ProtoCore
             }
             return varName[0] == '%';
         }
-
-        public GraphNode GetExecutingGraphNode()
-        {
-            return ExecutingGraphnode;
-        }
-
 
         public GraphNode ExecutingGraphnode { get; set; }
 
