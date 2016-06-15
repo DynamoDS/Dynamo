@@ -258,6 +258,25 @@ namespace Dynamo.Engine
             return previewGraphQueue.Dequeue();
         }
 
+        /// <summary>
+        /// Returns true if there are graph sync data in the queue waiting to be executed.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasPendingGraphSyncData
+        {
+            get
+            {
+                lock (macroMutex)
+                {
+
+                    lock (graphSyncDataQueue)
+                    {
+                        return graphSyncDataQueue.Count > 0;
+                    }
+                }
+            }
+        }
+
         private readonly Queue<GraphSyncData> pendingCustomNodeSyncData = new Queue<GraphSyncData>();
 
         /// <summary>
