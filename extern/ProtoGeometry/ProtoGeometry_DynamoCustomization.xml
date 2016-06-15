@@ -7,6 +7,9 @@
         <namespace name="Autodesk.DesignScript.Geometry">
             <category>Geometry</category>
         </namespace>
+        <namespace name="Autodesk.DesignScript.Geometry.TSpline">
+            <category>Geometry.TSpline</category>
+        </namespace>
     </namespaces>
     <classes>
         <class name="Autodesk.DesignScript.Geometry.Arc" shortname="arc"/>

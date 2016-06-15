@@ -559,6 +559,14 @@ It does not contain your graph or any personal data</value>
     <value>Volume Display Units</value>
     <comment>Setting menu | Volume unit display</comment>
   </data>
+  <data name="DynamoViewSettingExperimental" xml:space="preserve">
+    <value>Experimental</value>
+    <comment>Setting menu | Experimental</comment>
+  </data>
+  <data name="DynamoViewSettingEnableTSplineNodes" xml:space="preserve">
+    <value>Enable T-Spline nodes</value>
+    <comment>Setting menu | Experimental | Enable T-Spline nodes</comment>
+  </data>
   <data name="DynamoViewToolbarExportButtonTooltip" xml:space="preserve">
     <value>Export Workspace As Image</value>
     <comment>Toolbar export button tooltip</comment>
