@@ -194,33 +194,79 @@ namespace DSCore
         /// <param name="colors"></param>
         /// <param name="parameter"></param>
         /// <returns>The interpolated color or white.</returns>
-        [IsVisibleInDynamoLibrary(false)]
+        [IsVisibleInDynamoLibrary(true)]
         public static Color Blerp(IList<IndexedColor2D> colors, UV parameter)
         {
+            /*
+                var num = new double[4];
+                var totalArea = 0.0;
+                foreach (var ci in colors)
+                {
+                    var t = ci.Parameter;
+                    var d = Math.Sqrt(Math.Pow(t.U - parameter.U, 2) + Math.Pow(t.V - parameter.V, 2));
+                    if (d == 0.0)
+                    {
+                        return ci.Color;
+                    }
+                    var w = 1/d;
+
+                    num[0] += ci.Color.Alpha * w;
+                    num[1] += ci.Color.Red * w;
+                    num[2] += ci.Color.Green * w;
+                    num[3] += ci.Color.Blue * w;
+                    totalArea += w;
+                }
+
+                return ByARGB((int)(num[0] / totalArea),
+                    (int)(num[1] / totalArea),
+                    (int)(num[2] / totalArea),
+                    (int)(num[3] / totalArea));
+                */
+
+            /// reference: https://en.wikipedia.org/wiki/Bilinear_interpolation
+
             var num = new double[4];
             var totalArea = 0.0;
+            List<double> distances = new List<double>();
+            List<double> weights = new List<double>();
             foreach (var ci in colors)
             {
                 var t = ci.Parameter;
-                var d = Math.Sqrt(Math.Pow(t.U - parameter.U, 2) + Math.Pow(t.V - parameter.V, 2));
-                if (d == 0.0)
+                var dx = Math.Abs(parameter.U - t.U);
+                var dy = Math.Abs(parameter.V - t.V);
+                var dis = Math.Sqrt(Math.Pow(dx, 2) + Math.Pow(dy, 2));
+                if (dis == 0.0)
                 {
                     return ci.Color;
                 }
-                var w = 1/d;
-
-                num[0] += ci.Color.Alpha * w;
-                num[1] += ci.Color.Red * w;
-                num[2] += ci.Color.Green * w;
-                num[3] += ci.Color.Blue * w;
-                totalArea += w;
+                distances.Add(dis);
             }
 
-            return ByARGB((int)(num[0] / totalArea),
-                (int)(num[1] / totalArea),
-                (int)(num[2] / totalArea),
-                (int)(num[3] / totalArea));
+            foreach (var d in distances)
+            {
+                totalArea += 1 / Math.Pow(d, 2);
+            }
+
+            foreach (var d in distances)
+            {
+                var w = 1 / Math.Pow(d, 2) * (1 / totalArea);
+                weights.Add(w);
+            }
+
+            for (int i = 0; i < colors.Count; i++)
+            {
+                num[0] += colors.ElementAt(i).Color.Alpha * weights.ElementAt(i);
+                num[1] += colors.ElementAt(i).Color.Red * weights.ElementAt(i);
+                num[2] += colors.ElementAt(i).Color.Green * weights.ElementAt(i);
+                num[3] += colors.ElementAt(i).Color.Blue * weights.ElementAt(i);
+            }
+            
+            return ByARGB((int)num[0],
+                   (int)num[1],
+                   (int)num[2],
+                   (int)(num[3]));
         }
+
 
         private static double Area(UV min, UV max)
         {
