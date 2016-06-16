@@ -194,7 +194,7 @@ namespace DSCore
         /// <param name="colors"></param>
         /// <param name="parameter"></param>
         /// <returns>The interpolated color or white.</returns>
-        [IsVisibleInDynamoLibrary(true)]
+        [IsVisibleInDynamoLibrary(false)]
         public static Color Blerp(IList<IndexedColor2D> colors, UV parameter)
         {
             /*
