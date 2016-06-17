@@ -1055,6 +1055,12 @@ namespace Dynamo.Models
         private static void InitializePreferences(IPreferences preferences)
         {
             BaseUnit.NumberFormat = preferences.NumberFormat;
+
+            var settings = preferences as PreferenceSettings;
+            if (settings != null)
+            {
+                settings.InitializeNamespacesToExcludeFromLibrary();
+            }
         }
 
         /// <summary>

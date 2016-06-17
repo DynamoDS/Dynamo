@@ -246,9 +246,16 @@ namespace Dynamo.Configuration
         /// checkbox in OpenFileDialog
         /// </summary>
         public bool OpenFileInManualExecutionMode { get; set; }
-        
+
+        /// <summary>
+        /// Indicates (if any) which namespaces should not be displayed in the Dynamo node library.
+        /// String format: "[library name]:[fully qualified namespace]"
+        /// </summary>
         public List<string> NamespacesToExcludeFromLibrary { get; set; }
 
+        /// <summary>
+        /// True if the NamespacesToExcludeFromLibrary element is found in DynamoSettings.xml.
+        /// </summary>
         [XmlIgnore]
         public bool NamespacesToExcludeFromLibrarySpecified { get; set; }
 
@@ -357,7 +364,6 @@ namespace Dynamo.Configuration
                 using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 {
                     settings = serializer.Deserialize(fs) as PreferenceSettings;
-                    settings.InitializeNamespacesToExcludeFromLibrary();
                     fs.Close(); // Release file lock
                 }
             }
@@ -368,7 +374,7 @@ namespace Dynamo.Configuration
             return settings;
 		}
 
-        private void InitializeNamespacesToExcludeFromLibrary()
+        internal void InitializeNamespacesToExcludeFromLibrary()
         {
             if (!NamespacesToExcludeFromLibrarySpecified)
             {

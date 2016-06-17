@@ -128,8 +128,6 @@ namespace Dynamo.Interfaces
         /// </summary>
         bool ShowEdges { get; set; }
 
-        List<string> NamespacesToExcludeFromLibrary { get; set; }
-
         /// <summary>
         /// Call this method to serialize PreferenceSettings given the output 
         /// file path.

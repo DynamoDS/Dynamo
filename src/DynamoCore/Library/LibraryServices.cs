@@ -20,6 +20,7 @@ using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore;
 using ProtoCore.Namespace;
 using Dynamo.Exceptions;
+using Dynamo.Configuration;
 
 namespace Dynamo.Engine
 {
@@ -341,10 +342,14 @@ namespace Dynamo.Engine
             IEnumerable<FunctionGroup> result = functionGroups.Values;
 
             // Skip namespaces specified in the preference settings
-            foreach (var nsp in preferenceSettings.NamespacesToExcludeFromLibrary
-                .Where(x => x.StartsWith(library + ':')).Select(x => x.Split(':').LastOrDefault()))
+            var settings = preferenceSettings as PreferenceSettings;
+            if (settings != null)
             {
-                result = result.Where(funcGroup => !funcGroup.QualifiedName.StartsWith(nsp));
+                foreach (var nsp in settings.NamespacesToExcludeFromLibrary
+                    .Where(x => x.StartsWith(library + ':')).Select(x => x.Split(':').LastOrDefault()))
+                {
+                    result = result.Where(funcGroup => !funcGroup.QualifiedName.StartsWith(nsp));
+                }
             }
             return result;
         }
