@@ -42,6 +42,7 @@ namespace Dynamo.Engine
         private readonly List<string> packagedLibraries = new List<string>();
 
         private readonly IPathManager pathManager;
+        private readonly IPreferences preferenceSettings;
 
         /// <summary>
         /// Returns core which is used for parsing code and loading libraries
@@ -92,10 +93,12 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="libraryManagementCore">Core which is used for parsing code and loading libraries</param>
         /// <param name="pathManager">Instance of IPathManager containing neccessary Dynamo paths</param>
-        public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager)
+        /// <param name="preferences">The preference settings of the Dynamo instance</param>
+        public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager, IPreferences preferences)
         {
             LibraryManagementCore = libraryManagementCore;
             this.pathManager = pathManager;
+            preferenceSettings = preferences;
 
             PreloadLibraries(pathManager.PreloadedLibraries);
             PopulateBuiltIns();
@@ -327,13 +330,23 @@ namespace Dynamo.Engine
                 throw new ArgumentNullException();
 
             Dictionary<string, FunctionGroup> functionGroups;
-            if (importedFunctionGroups.TryGetValue(library, out functionGroups))
-                return functionGroups.Values;
+            if (!importedFunctionGroups.TryGetValue(library, out functionGroups))
+            {
+                // Return an empty list instead of 'null' as some of the caller may
+                // not have the opportunity to check against 'null' enumerator (for
+                // example, an inner iterator in a nested LINQ statement).
+                return new List<FunctionGroup>();
+            }
 
-            // Return an empty list instead of 'null' as some of the caller may
-            // not have the opportunity to check against 'null' enumerator (for
-            // example, an inner iterator in a nested LINQ statement).
-            return new List<FunctionGroup>();
+            IEnumerable<FunctionGroup> result = functionGroups.Values;
+
+            // Skip namespaces specified in the preference settings
+            foreach (var nsp in preferenceSettings.NamespacesToExcludeFromLibrary
+                .Where(x => x.StartsWith(library + ':')).Select(x => x.Split(':').LastOrDefault()))
+            {
+                result = result.Where(funcGroup => !funcGroup.QualifiedName.StartsWith(nsp));
+            }
+            return result;
         }
 
         /// <summary>
