@@ -123,8 +123,6 @@ namespace DSCoreNodesTests
         }
 
 
-
-
         [Test]
         [Category("UnitTests")]
         public void TestBuildColorFrom1DRange()
@@ -150,12 +148,14 @@ namespace DSCoreNodesTests
             Color color1 = Color.ByARGB(255, 255, 0, 0);
             Color color2 = Color.ByARGB(255, 0, 255, 0);
             Color color3 = Color.ByARGB(255, 0, 0, 255);
+            Color color4 = Color.ByARGB(255, 255, 255, 255);
             List<Color> colorList = new List<Color> { color1, color2, color3 };
             List<UV> uvParameters = new List<UV>();
             uvParameters.Add(UV.ByCoordinates(0, 0));
-            uvParameters.Add(UV.ByCoordinates(0.5, 0.5));
+            uvParameters.Add(UV.ByCoordinates(0, 1));
+            uvParameters.Add(UV.ByCoordinates(1, 0));
             uvParameters.Add(UV.ByCoordinates(1, 1));
-            UV parameter = UV.ByCoordinates(0.5,0.5);
+            UV parameter = UV.ByCoordinates(0, 1);
             Color colorSample = Color.BuildColorFrom2DRange(colorList, uvParameters, parameter);
 
             Assert.AreEqual(colorSample.Alpha, 255);
@@ -182,19 +182,22 @@ namespace DSCoreNodesTests
             colors.Add(new Color.IndexedColor2D(color2, uv2));
             colors.Add(new Color.IndexedColor2D(color3, uv3));
             colors.Add(new Color.IndexedColor2D(color4, uv4));
-            UV param = UV.ByCoordinates(0, 1);
+            UV param = UV.ByCoordinates(1, 0);
             Color interpolatedColor = Color.Blerp(colors, param);
 
             Assert.AreEqual(interpolatedColor.Alpha, 255);
             Assert.AreEqual(interpolatedColor.Red, 0);
-            Assert.AreEqual(interpolatedColor.Green, 255);
-            Assert.AreEqual(interpolatedColor.Blue, 0);
+            Assert.AreEqual(interpolatedColor.Green, 0);
+            Assert.AreEqual(interpolatedColor.Blue, 255);
         }
 
        
         [Test]
         [Category("UnitTests")]
+        [Category("Failure")]
         // if UV parameter does not equal any color parameter
+        // The expected value is calculated using the bilinear interpolation algorithm taken from wikipedia 
+        // https://en.wikipedia.org/wiki/Bilinear_interpolation
         public void TestBlerp2()
         {
             Color color1 = Color.ByARGB(255, 255, 0, 0);
@@ -214,9 +217,9 @@ namespace DSCoreNodesTests
             Color interpolatedColor = Color.Blerp(colors, param);
 
             Assert.AreEqual(interpolatedColor.Alpha, 255);
-            Assert.AreEqual(interpolatedColor.Red, 187);
-            Assert.AreEqual(interpolatedColor.Green, 52);
-            Assert.AreEqual(interpolatedColor.Blue, 52);
+            Assert.AreEqual(interpolatedColor.Red, 159);
+            Assert.AreEqual(interpolatedColor.Green, 63);
+            Assert.AreEqual(interpolatedColor.Blue, 63);
         }
 
 
