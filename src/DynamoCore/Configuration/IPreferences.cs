@@ -7,31 +7,24 @@ using Dynamo.Models;
 namespace Dynamo.Interfaces
 {
     /// <summary>
-    /// An interface which defines preference settings.
+    /// interface that defines settings previewBubble preferences,
+    /// this interface should be merged with IPreferences at Dynamo 2.0
     /// </summary>
-    public interface IPreferences
+    public interface IPreviewBubblePreference
     {
-        /// <summary>
-        /// Returns height of console
-        /// </summary>
-        int ConsoleHeight { get; set; }
-
-        /// <summary>
-        /// Indicates whether connector should be displayed on canvas or not.
-        /// </summary>
-        bool ShowConnector { get; set; }
-
         /// <summary>
         /// Indicates if preview bubbles should be displayed on nodes.
         /// </summary>
         bool ShowPreviewBubbles { get; set; }
 
-        /// <summary>
-        /// Indicates which type of connector's should be displayed on canvas.
-        /// I.e. bezier or polyline
-        /// </summary>
-        ConnectorType ConnectorType { get; set; }
+    }
 
+    /// <summary>
+    /// interface that defines settings backgroundPreview preferences,
+    /// this interface should be merged with IPreferences at Dynamo 2.0
+    /// </summary>
+    public interface IBackgroundPreviewPreference
+    {
         /// <summary>
         /// Collection of pairs [BackgroundPreviewName;isActive]
         /// </summary>
@@ -51,10 +44,39 @@ namespace Dynamo.Interfaces
         /// <param name="value">Active state to set</param>
         void SetIsBackgroundPreviewActive(string name, bool value);
 
+    }
+
+    /// <summary>
+    /// An interface which defines preference settings.
+    /// </summary>
+    public interface IPreferences
+    {
+        /// <summary>
+        /// Returns height of console
+        /// </summary>
+        int ConsoleHeight { get; set; }
+
+        /// <summary>
+        /// Indicates whether connector should be displayed on canvas or not.
+        /// </summary>
+        bool ShowConnector { get; set; }
+
+        /// <summary>
+        /// Indicates which type of connector's should be displayed on canvas.
+        /// I.e. bezier or polyline
+        /// </summary>
+        ConnectorType ConnectorType { get; set; }
+
         /// <summary>
         /// Indicates whether background grid is visible or not.
         /// </summary>
         bool IsBackgroundGridVisible { get; set; }
+
+        /// <summary>
+        /// Indicates whether background preview is active or not.
+        /// </summary>
+        [Obsolete("Property will be deprecated in Dynamo 2.0, please use BackgroundPreviews")]
+        bool IsBackgroundPreviewActive { get; set; }
 
         /// <summary>
         /// Returns the decimal precision used to display numbers.

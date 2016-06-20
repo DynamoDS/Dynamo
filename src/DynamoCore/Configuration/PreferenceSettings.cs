@@ -17,7 +17,7 @@ namespace Dynamo.Configuration
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings into the XML file.
     /// </summary>
-    public class PreferenceSettings : NotificationObject, IPreferences
+    public class PreferenceSettings : NotificationObject, IPreferences, IPreviewBubblePreference, IBackgroundPreviewPreference
     {
         private string numberFormat;
         private string lastUpdateDownloadPath;
@@ -134,6 +134,20 @@ namespace Dynamo.Configuration
         /// Should the background grid be shown?
         /// </summary>
         public bool IsBackgroundGridVisible { get; set; }
+
+        /// <summary>
+        /// Indicates whether background preview is active or not.
+        /// </summary>
+        [Obsolete("Property will be deprecated in Dynamo 2.0, please use BackgroundPreviews")]
+        public bool IsBackgroundPreviewActive { get
+            {
+                return GetIsBackgroundPreviewActive("IsBackgroundPreviewActive");
+            }
+            set
+            {
+                SetIsBackgroundPreviewActive("IsBackgroundPreviewActive", value);
+            }
+        }
 
         /// <summary>
         /// The decimal precision used to display numbers.
