@@ -5,6 +5,8 @@
 
     <!-- To remove the Uninstall Button in ARP -->
     <Property Id='ARPNOREMOVE'>1</Property>
+    <!-- To remove the Repair Button in ARP -->
+    <Property Id='ARPNOREPAIR'>1</Property>
     
     <WixVariable Id="WixUIBannerBmp" Value="..\..\..\..\tools\install\Extra\logo_banner.bmp" />
     
@@ -31,14 +33,12 @@
       <Publish Dialog="SetupTypeDlg" Control="Back" Event="EndDialog" Value="Return">1</Publish>
 
       <Publish Dialog="DynamoVerifyReadyDlg" Control="Back" Event="NewDialog" Value="DynamoMaintenanceTypeDlg">
-        WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"
+        WixUI_InstallMode = "Remove"
       </Publish>
       
       <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog"
                Value="DynamoMaintenanceTypeDlg">1</Publish>
 
-      <Publish Dialog="DynamoMaintenanceTypeDlg" Control="RepairButton" Event="NewDialog"
-               Value="DynamoVerifyReadyDlg">1</Publish>
       <Publish Dialog="DynamoMaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog"
                Value="DynamoVerifyReadyDlg">1</Publish>
       
