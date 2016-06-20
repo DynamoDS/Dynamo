@@ -39,8 +39,6 @@
       <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog"
                Value="DynamoMaintenanceTypeDlg">1</Publish>
 
-      <!--Publish Dialog="DynamoMaintenanceTypeDlg" Control="RepairButton" Event="NewDialog"
-               Value="DynamoVerifyReadyDlg">1</Publish-->
       <Publish Dialog="DynamoMaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog"
                Value="DynamoVerifyReadyDlg">1</Publish>
       
