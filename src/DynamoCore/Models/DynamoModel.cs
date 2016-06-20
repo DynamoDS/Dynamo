@@ -1,17 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Threading;
-using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Events;
 using Dynamo.Extensions;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
@@ -23,6 +13,7 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Migration;
 using Dynamo.Properties;
 using Dynamo.Scheduler;
@@ -31,20 +22,27 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Updates;
 using Dynamo.Utilities;
-using Dynamo.Logging;
-
 using DynamoServices;
 using DynamoUnits;
 using Greg;
 using ProtoCore;
 using ProtoCore.Runtime;
-
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Threading;
+using System.Xml;
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
-using Utils = Dynamo.Graph.Nodes.Utilities;
 using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
-using Dynamo.Events;
+using Utils = Dynamo.Graph.Nodes.Utilities;
 
 namespace Dynamo.Models
 {
@@ -75,7 +73,6 @@ namespace Dynamo.Models
         #endregion
 
         #region events
-
         internal delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
         internal event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
         internal void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
@@ -427,6 +424,7 @@ namespace Dynamo.Models
             TaskProcessMode ProcessMode { get; set; }
         }
 
+      
         /// <summary>
         /// Initialization settings for DynamoModel.
         /// </summary>

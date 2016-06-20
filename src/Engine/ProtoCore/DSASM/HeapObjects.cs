@@ -206,7 +206,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public void CollectElementsForGC(Queue<StackValue> gcQueue)
         {
-            var elements = Values.Concat(Dict == null ? Dict.Keys : Enumerable.Empty<StackValue>());
+            var elements = Values.Concat(Dict != null ? Dict.Keys : Enumerable.Empty<StackValue>());
             foreach (var item in elements)
             {
                 if (item.IsReferenceType)

@@ -1,0 +1,35 @@
+<Workspace Version="1.0.0.1180" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.CustomNodes.Function guid="fb872c7c-21af-4074-8011-818874738dc7" type="Dynamo.Graph.Nodes.CustomNodes.Function" nickname="add" x="384.5" y="149.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false">
+      <ID value="98566e0d-3a11-4327-b688-713f6892a5bf" />
+      <Name value="add" />
+      <Description value="" />
+      <Inputs>
+        <Input value="x" />
+        <Input value="y" />
+      </Inputs>
+      <Outputs>
+        <Output value="var[]..[]" />
+      </Outputs>
+    </Dynamo.Graph.Nodes.CustomNodes.Function>
+    <CoreNodeModels.Input.IntegerSlider guid="65995606-72c2-4167-a9d2-abd90b86ffc9" type="CoreNodeModels.Input.IntegerSlider" nickname="Integer Slider" x="25.5" y="222.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.Int32>1</System.Int32>
+      <Range min="0" max="100" step="1" />
+    </CoreNodeModels.Input.IntegerSlider>
+    <CoreNodeModels.Input.IntegerSlider guid="b3383a2c-3150-4687-8983-59c59c1e3207" type="CoreNodeModels.Input.IntegerSlider" nickname="Integer Slider" x="14.5" y="134.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.Int32>1</System.Int32>
+      <Range min="0" max="100" step="1" />
+    </CoreNodeModels.Input.IntegerSlider>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="65995606-72c2-4167-a9d2-abd90b86ffc9" start_index="0" end="fb872c7c-21af-4074-8011-818874738dc7" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="b3383a2c-3150-4687-8983-59c59c1e3207" start_index="0" end="fb872c7c-21af-4074-8011-818874738dc7" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

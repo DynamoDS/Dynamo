@@ -98,6 +98,7 @@
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Tools\DynamoInstallDetective\DynamoInstallDetective.csproj">
       <Project>{98692887-b389-4f73-a71a-9fc516738dab}</Project>

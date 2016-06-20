@@ -31,6 +31,7 @@ using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using Point = System.Windows.Point;
 using TabControl = System.Windows.Controls.TabControl;
 using Thickness = System.Windows.Thickness;
+using System.Net;
 
 namespace Dynamo.Controls
 {
@@ -401,8 +402,11 @@ namespace Dynamo.Controls
         {
             if (value is string && !string.IsNullOrEmpty(value as string))
             {
-                // convert to path, get file name
-                return Path.GetFileName((string)value);
+                // Convert to path, get file name. If read-only file, append [Read-Only].
+                if (DynamoUtilities.PathHelper.IsReadOnlyPath((string)value))
+                    return Resources.TabFileNameReadOnlyPrefix + Path.GetFileName((string)value);
+                else
+                    return Path.GetFileName((string)value);
             }
 
             return "Unsaved";
@@ -1416,7 +1420,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            double zoom = System.Convert.ToDouble(value);
+            double zoom = System.Convert.ToDouble(value, culture);
 
             if (zoom < .5)
                 return Visibility.Hidden;
@@ -1600,7 +1604,7 @@ namespace Dynamo.Controls
             if (value == null)
                 return Resources.FilePathConverterNoFileSelected;
 
-            var str = HttpUtility.UrlDecode(value.ToString());
+            var str = WebUtility.UrlDecode(value.ToString());
 
             if (string.IsNullOrEmpty(str))
                 return Resources.FilePathConverterNoFileSelected;
@@ -1655,7 +1659,7 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return HttpUtility.UrlEncode(value.ToString());
+            return WebUtility.UrlEncode(value.ToString());
         }
     }
 
@@ -2189,8 +2193,8 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var fontsize = System.Convert.ToDouble(value);
-            var param = System.Convert.ToDouble(parameter);
+            var fontsize = System.Convert.ToDouble(value, culture);
+            var param = System.Convert.ToDouble(parameter, culture);
 
             return fontsize == param;            
         }
@@ -2246,8 +2250,8 @@ namespace Dynamo.Controls
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var zoom = System.Convert.ToDouble(values[0]);
-            var fontsize = System.Convert.ToDouble(values[1]);
+            var zoom = System.Convert.ToDouble(values[0], culture);
+            var fontsize = System.Convert.ToDouble(values[1], culture);
 
             var factor = zoom*fontsize;
             if (factor < MinFontFactor)

@@ -98,22 +98,17 @@ namespace ProtoScript.Runners
         {
             return _PreStart(src, null);
         }
+
         public bool LoadAndPreStart(string src)
         {
             return _PreStart(File.ReadAllText(src), src);
         }
 
         /// <summary>
-        /// Setup to run with the default options
-        /// </summary>
-
-        /// <summary>
         /// Perform one execution step on the VM
         /// </summary>
         /// <returns></returns>
         /// 
-
-
         public VMState Step()
         {
             DebuggerStateCheckBeforeRun();
@@ -148,34 +143,6 @@ namespace ProtoScript.Runners
             else
             {
                 vms = Step();
-            }
-
-            return vms;
-        }
-
-        public VMState StepOut()
-        {
-            VMState vms = null;
-
-            DebuggerStateCheckBeforeRun();
-
-            if(runtimeCore.DebugProps.DebugStackFrameContains(ProtoCore.DebugProperties.StackFrameFlagOptions.FepRun))
-            {
-                runtimeCore.DebugProps.RunMode = ProtoCore.Runmode.StepOut;
-                runtimeCore.DebugProps.AllbreakPoints = allbreakPoints;
-
-                runtimeCore.DebugProps.StepOutReturnPC = (int)runtimeCore.RuntimeMemory.GetAtRelative(StackFrame.FrameIndexReturnAddress).IntegerValue;
-
-                List<Instruction> instructions = new List<Instruction>();
-                foreach (Breakpoint bp in RegisteredBreakpoints)
-                {
-                    instructions.Add(BreakpointToInstruction(bp));
-                }
-                vms = RunVM(instructions);
-            }
-            else
-            {
-                vms = Run();
             }
 
             return vms;
@@ -252,24 +219,6 @@ namespace ProtoScript.Runners
             return vms;
 
         }
-        public void Shutdown()
-        {
-            if (lastState != null)
-                lastState.Invalidate();
-
-            try
-            {
-                //core.heap.Free();
-            }
-            catch (Exception)
-            { }
-
-            //Drop the VM state objects so they can be GCed
-            runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionEnd);
-            lastState = null;
-            core = null;
-
-        }
 
         private Instruction GetCurrentInstruction()
         {
@@ -297,14 +246,6 @@ namespace ProtoScript.Runners
         {
             get;
             private set;
-        }
-        public void RegisterBreakpoint(Breakpoint bp)
-        {
-            RegisteredBreakpoints.Add(bp);
-        }
-        public void UnRegisterBreakpoint(Breakpoint bp)
-        {
-            RegisteredBreakpoints.Remove(bp);
         }
         public bool ToggleBreakpoint(ProtoCore.CodeModel.CodePoint cp)
         {

@@ -200,7 +200,7 @@ namespace ProtoCore.Lang
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
                     new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))

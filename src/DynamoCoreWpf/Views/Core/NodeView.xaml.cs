@@ -66,6 +66,12 @@ namespace Dynamo.Controls
             }
         }
 
+        private void NodeView_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (viewModel!=null && viewModel.OnMouseLeave != null)
+                viewModel.OnMouseLeave();
+        }
+
         internal PreviewControl PreviewControl
         {
             get
@@ -82,9 +88,22 @@ namespace Dynamo.Controls
             {
                 previewControl = new PreviewControl(vm);
                 previewControl.StateChanged += OnPreviewControlStateChanged;
-                previewControl.MouseEnter += OnPreviewControlMouseEnter;
-                previewControl.MouseLeave += OnPreviewControlMouseLeave;
+                previewControl.bubbleTools.MouseEnter += OnPreviewControlMouseEnter;
+                previewControl.bubbleTools.MouseLeave += OnPreviewControlMouseLeave;
                 expansionBay.Children.Add(previewControl);
+            }
+        }
+
+        /// <summary>
+        /// Returns a boolean value of whether this node view already has its PreviewControl field
+        /// constructed (not null), in order to avoid calling the PreviewControl constructor
+        /// whenever the accessor property is queried.
+        /// </summary>
+        internal bool HasPreviewControl
+        {
+            get
+            {
+                return previewControl != null;
             }
         }
 
@@ -117,6 +136,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
+            MouseLeave -= NodeView_MouseLeave;
 
             if (previewControl != null)
             {
@@ -189,6 +209,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
+            MouseLeave += NodeView_MouseLeave;
         }
 
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -436,8 +457,6 @@ namespace Dynamo.Controls
                     PreviewControl.BindToDataSource();
 
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
-
-                Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
             }
 
             Dispatcher.DelayInvoke(previewDelay, BringToFront);
@@ -507,10 +526,11 @@ namespace Dynamo.Controls
                     }
                 case PreviewControl.State.Condensed:
                     {
-                        if (preview.IsMouseOver || IsMouseOver)
+                        if (preview.bubbleTools.IsMouseOver || preview.StaysOpen)
                         {
-                            Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
+                            preview.TransitionToState(PreviewControl.State.Expanded);
                         }
+
                         if (!IsMouseOver)
                         {
                             // If mouse is captured by DragCanvas and mouse is still over node, preview should stay open.
@@ -523,7 +543,7 @@ namespace Dynamo.Controls
                     }
                 case PreviewControl.State.Expanded:
                     {
-                        if (!IsMouseOver && !preview.IsMouseOver && !preview.StaysOpen)
+                        if (!preview.bubbleTools.IsMouseOver && !preview.StaysOpen)
                         {
                             preview.TransitionToState(PreviewControl.State.Condensed);
                         }
@@ -533,53 +553,38 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// If mouse is over node or preview control, then preview control is expanded.
-        /// </summary>
-        private void ExpandPreviewControl()
-        {
-            if ((IsMouseOver || PreviewControl.IsMouseOver || DynCmd.IsTestMode) && PreviewControl.IsCondensed)
-            {
-                PreviewControl.TransitionToState(PreviewControl.State.Expanded);
-            }
-        }
-
-        /// <summary>
         /// Sets ZIndex of node the maximum value.
         /// </summary>
         private void BringToFront()
         {
-            if (IsMouseOver || PreviewControl.IsMouseOver || DynCmd.IsTestMode)
-            {
-                if (NodeViewModel.StaticZIndex == Int32.MaxValue)
-                {
-                    PrepareZIndex();
-                }
-                var index = ++NodeViewModel.StaticZIndex;
+            if (!IsMouseOver && !PreviewControl.IsMouseOver && !DynCmd.IsTestMode) return;
 
-                oldZIndex = nodeWasClicked ? index : ViewModel.ZIndex;
-                ViewModel.ZIndex = index;
+            if (NodeViewModel.StaticZIndex == int.MaxValue)
+            {
+                PrepareZIndex();
             }
+
+            var index = ++NodeViewModel.StaticZIndex;
+
+            oldZIndex = nodeWasClicked ? index : ViewModel.ZIndex;
+            ViewModel.ZIndex = index;
         }
 
         private void OnPreviewControlMouseEnter(object sender, MouseEventArgs e)
         {
             if (PreviewControl.IsCondensed)
             {
-                Dispatcher.DelayInvoke(previewDelay, ExpandPreviewControl);
+                PreviewControl.TransitionToState(PreviewControl.State.Expanded);
             }
         }
 
         private void OnPreviewControlMouseLeave(object sender, MouseEventArgs e)
         {
-            if (!PreviewControl.StaysOpen && !PreviewControl.IsInTransition
-                && Keyboard.Modifiers != System.Windows.Input.ModifierKeys.Control
-                && !IsMouseOver
-                && Mouse.Captured != null && !IsMouseInsideNodeOrPreview(e.GetPosition(this)))
+            if (!PreviewControl.StaysOpen)
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             }
         }
-
 
         private void OnNodeViewMouseMove(object sender, MouseEventArgs e)
         {

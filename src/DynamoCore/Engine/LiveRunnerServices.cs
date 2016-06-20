@@ -157,29 +157,5 @@ namespace Dynamo.Engine
         { 
             liveRunner.ResetVMAndResyncGraph(libraries);
         }
-
-        /// <summary>
-        /// GraphUpdateReady event handler.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void GraphUpdateReady(object sender, GraphUpdateReadyEventArgs e)
-        {
-            if (EventStatus.OK == e.ResultStatus)
-            {
-            }
-        }
-
-        /// <summary>
-        /// NodeValueReady event handler.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NodeValueReady(object sender, NodeValueReadyEventArgs e)
-        {
-            if (EventStatus.OK == e.ResultStatus)
-            {
-            }
-        }
     }
 }

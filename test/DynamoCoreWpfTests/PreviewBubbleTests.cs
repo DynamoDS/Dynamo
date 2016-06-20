@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
@@ -328,7 +329,7 @@ namespace DynamoCoreWpfTests
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
 
             RaiseMouseEnterOnNode(nodeView);
-            Assert.IsTrue(nodeView.PreviewControl.IsCondensed, "Cmpact preview bubble is not shown");
+            Assert.IsTrue(nodeView.PreviewControl.IsCondensed, "Compact preview bubble is not shown");
 
             RaiseMouseLeaveNode(nodeView);
             Assert.IsTrue(nodeView.PreviewControl.IsHidden, "Preview bubble is not hidden");
@@ -342,6 +343,44 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.PreviewControl.IsHidden, "Preview bubble is not hidden");
         }
 
+        [Test]
+        public void PreviewBubble_ShowExpandedPreviewOnPinIconHover()
+        {
+            Open(@"core\DetailedPreviewMargin_Test.dyn");
+            var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
+
+            var previewBubble = nodeView.PreviewControl;
+            previewBubble.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+            previewBubble.bubbleTools.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            // open preview bubble
+            RaiseMouseEnterOnNode(nodeView);
+            Assert.IsTrue(previewBubble.IsCondensed, "Compact preview bubble should be shown");
+            Assert.AreEqual(Visibility.Collapsed, previewBubble.bubbleTools.Visibility, "Pin icon should not be shown");
+
+            // hover preview bubble to see pin icon
+            RaiseMouseEnterOnNode(previewBubble);
+            Assert.AreEqual(Visibility.Visible, previewBubble.bubbleTools.Visibility, "Pin icon should be shown");
+
+            // expand preview bubble
+            RaiseMouseEnterOnNode(previewBubble.bubbleTools);
+            Assert.IsTrue(previewBubble.IsExpanded, "Expanded preview bubble should be shown");
+        }
+
+        [Test]
+        public void PreviewBubble_ShownForColorRange()
+        {
+            var colorRange = new ColorRange();
+            Model.AddNodeToCurrentWorkspace(colorRange, true);
+            DispatcherUtil.DoEvents();
+            var nodeView = NodeViewWithGuid(colorRange.GUID.ToString());
+            nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            // open preview bubble
+            RaiseMouseEnterOnNode(nodeView);
+            Assert.IsFalse(nodeView.PreviewControl.IsHidden, "Preview bubble for color range should be shown");
+        }
+
         private bool ElementIsInContainer(FrameworkElement element, FrameworkElement container)
         {
             var relativePosition = element.TranslatePoint(new Point(), container);
@@ -349,7 +388,7 @@ namespace DynamoCoreWpfTests
             return (relativePosition.X == 0) && (element.ActualWidth <= container.ActualWidth);
         }
 
-        private void RaiseMouseEnterOnNode(NodeView nv)
+        private void RaiseMouseEnterOnNode(IInputElement nv)
         {
             View.Dispatcher.Invoke(() =>
             {
@@ -359,7 +398,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
         }
 
-        private void RaiseMouseLeaveNode(NodeView nv)
+        private void RaiseMouseLeaveNode(IInputElement nv)
         {
             View.Dispatcher.Invoke(() =>
             {

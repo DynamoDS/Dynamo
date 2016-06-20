@@ -422,9 +422,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer1()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.EngineController.ImportLibrary(libraryPath);
             }
 
             var functionCall = AstFactory.BuildFunctionCall(
@@ -448,9 +448,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer2()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
             }
 
             // Point.ByCoordinates(1,2); 
@@ -477,9 +477,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer3()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
             }
 
             // 1 -> Point.ByCoordinates(x, y); 
@@ -506,9 +506,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer4()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
             }
 
             // 1 -> Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, x); 
@@ -535,9 +535,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer5()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
             }
 
             // 1 -> Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, x); 
@@ -586,9 +586,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer7()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
             }
 
             // Point.ByCoordinates(1,2,3);
@@ -620,9 +620,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacerWithDefaultArgument()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
             }
 
             OpenModel(@"core\node2code\SphereDefaultArg.dyn");
@@ -649,9 +649,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacerWithDefaultArgument2()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
             }
 
             OpenModel(@"core\node2code\ShortenNodeNameWithDefaultArg.dyn");
@@ -678,9 +678,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacerWithStaticProperty()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
             }
 
             OpenModel(@"core\node2code\ShortenNodeNameWithStaticProperty.dyn");
@@ -802,9 +802,9 @@ namespace Dynamo.Tests
         public void TestShortName1()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
             }
 
             OpenModel(@"core\node2code\shortName1.dyn");
@@ -847,9 +847,9 @@ namespace Dynamo.Tests
         public void TestPropertyWontBeReplaced2()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
             }
 
             OpenModel(@"core\node2code\staticproperty.dyn");
@@ -1345,12 +1345,6 @@ namespace Dynamo.Tests
                     Assert.AreEqual(preValue, currentValue);
                 }
             }
-        }
-
-        [Test, TestCaseSource("GetFilesForMutation")]
-        public void TestMutation(string fileName)
-        {
-            MutationTest(fileName);
         }
     }
 }

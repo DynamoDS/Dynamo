@@ -2223,7 +2223,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns the flattened 1D list of the multi-dimensional input list.
+        ///   Looks up a localized string similar to Returns the flattened 1D list of the multi-dimensional input list. If the input is a single value, returns that value..
         /// </summary>
         public static string ReturnsTheFlattened1DList {
             get {

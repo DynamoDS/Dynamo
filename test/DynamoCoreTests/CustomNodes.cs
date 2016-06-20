@@ -972,6 +972,21 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestOuputNodes()
+        {
+            var filePath = Path.Combine(TestDirectory, @"core\CustomNodes\test_outputs.dyn");
+            OpenModel(filePath);
+
+            var customInstance = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(x => x is Function) as Function;
+            Assert.AreEqual(4, customInstance.OutPortData.Count());
+
+            Assert.AreEqual("x", customInstance.OutPortData[0].NickName);
+            Assert.AreEqual("y", customInstance.OutPortData[1].NickName);
+            Assert.AreEqual("def foo() {}", customInstance.OutPortData[2].NickName);
+            Assert.AreEqual("class bar {}", customInstance.OutPortData[3].NickName);
+        }
+
+        [Test]
         public void Regress9548_OutputNameIsClassName()
         {
             var filePath = Path.Combine(TestDirectory, @"core\CustomNodes\PointAsOutput.dyn");

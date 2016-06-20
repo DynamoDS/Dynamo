@@ -79,6 +79,7 @@ namespace Dynamo.Graph.Workspaces
         private string author = "None provided";
         private string description;
         private bool hasUnsavedChanges;
+        private bool isReadOnly;
         private readonly List<NodeModel> nodes;
         private readonly List<NoteModel> notes;
         private readonly List<AnnotationModel> annotations;
@@ -427,6 +428,18 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// Returns if current workspace is readonly.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return isReadOnly; }
+            set
+            {
+                isReadOnly = value;
+            }
+        }
+
+        /// <summary>
         ///     All of the nodes currently in the workspace.
         /// </summary>
         public IEnumerable<NodeModel> Nodes
@@ -722,6 +735,7 @@ namespace Dynamo.Graph.Workspaces
             Zoom = info.Zoom;
 
             HasUnsavedChanges = false;
+            IsReadOnly = DynamoUtilities.PathHelper.IsReadOnlyPath(fileName);
             LastSaved = DateTime.Now;
 
             WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
@@ -779,18 +793,22 @@ namespace Dynamo.Graph.Workspaces
         {
             this.workspaceLoaded = false;
             foreach (var node in Nodes)
+            {
                 DisposeNode(node);
+            }
 
             foreach (var connector in Connectors)
+            {
                 OnConnectorDeleted(connector);
+            }
 
             WorkspaceEvents.WorkspaceAdded -= computeUpstreamNodesWhenWorkspaceAdded;
 
             var handler = Disposed;
-            if (handler != null)
-                handler();
-
+            if (handler != null) handler();
             Disposed = null;
+
+            WorkspaceEvents.WorkspaceAdded -= computeUpstreamNodesWhenWorkspaceAdded;
         }
 
         #endregion
@@ -877,7 +895,7 @@ namespace Dynamo.Graph.Workspaces
                 Log(ex.Message);
                 Log(ex.StackTrace);
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                return false;
+                throw (ex);
             }
 
             return true;
@@ -1728,9 +1746,13 @@ namespace Dynamo.Graph.Workspaces
                 Utils.SetDocumentXmlPath(document, string.Empty);
                 document.Save(targetFilePath);
             }
-            catch (IOException)
+            catch (IOException ex)
             {
-                return false;
+                throw (ex);
+            }
+            catch (System.UnauthorizedAccessException ex)
+            {
+                throw (ex);
             }
 
             FileName = targetFilePath;

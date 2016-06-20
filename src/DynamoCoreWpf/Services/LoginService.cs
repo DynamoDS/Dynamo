@@ -26,7 +26,7 @@ namespace Dynamo.Wpf.Authentication
             // URL shouldn't be empty.
             // URL can be empty, if user's local date is incorrect.
             // This a known bug, described here: https://github.com/DynamoDS/Dynamo/pull/6112
-            if ((o as string).Length == 0)
+            if (o.ToString().Length == 0)
             {
                 MessageBox.Show(Resources.InvalidTimeZoneMessage,
                                 Resources.InvalidLoginUrl,

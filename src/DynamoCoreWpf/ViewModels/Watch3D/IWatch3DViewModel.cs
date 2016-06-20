@@ -61,6 +61,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         IRay GetClickRay(MouseEventArgs args);
 
         /// <summary>
+        /// Represents the name of current IWatch3DViewModel which will be saved in preference settings
+        /// </summary>
+        string PreferenceWatchName { get; }
+
+        /// <summary>
         /// Returns the current camera position of the 3D background preview
         /// Note: GetCameraInformation returns the camera position but without the correct
         /// transformation to model coordinates. This function takes care of that transformation

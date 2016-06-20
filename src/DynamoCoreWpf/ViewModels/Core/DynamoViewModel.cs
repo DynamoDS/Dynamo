@@ -528,6 +528,8 @@ namespace Dynamo.ViewModels
         {
             watch3DViewModel.Setup(this, factory);
             watch3DViewModels.Add(watch3DViewModel);
+            watch3DViewModel.Active = PreferenceSettings
+                .GetIsBackgroundPreviewActive(watch3DViewModel.PreferenceWatchName);
             RaisePropertyChanged("Watch3DViewModels");
         }
 
@@ -1147,8 +1149,8 @@ namespace Dynamo.ViewModels
             {
                 if (!DynamoModel.IsTestMode)
                 {
-                    // Catch all the IO exceptions here. The message provided by .Net is clear enough to indicate the problem in this case.
-                    if (e is IOException)
+                    // Catch all the IO exceptions and file access here. The message provided by .Net is clear enough to indicate the problem in this case.
+                    if (e is IOException || e is System.UnauthorizedAccessException)
                     {
                         System.Windows.MessageBox.Show(String.Format(e.Message, xmlFilePath));
                     }
@@ -1178,7 +1180,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Present the open dialogue and open the workspace that is selected.
+        /// Present the open dialog and open the workspace that is selected.
         /// </summary>
         /// <param name="parameter"></param>
         private void ShowOpenDialogAndOpenResult(object parameter)
@@ -1245,7 +1247,14 @@ namespace Dynamo.ViewModels
         private void Save(object parameter)
         {
             if (!String.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
-                SaveAs(Model.CurrentWorkspace.FileName);
+            {
+                // For read-only file, re-direct save to save-as
+                if (this.CurrentSpace.IsReadOnly)
+                    ShowSaveDialogAndSaveResult(parameter);
+                else
+                    SaveAs(Model.CurrentWorkspace.FileName);      
+            }
+                
         }
 
         private bool CanSave(object parameter)
@@ -1280,7 +1289,15 @@ namespace Dynamo.ViewModels
         /// <param name="path">The path to save to</param>
         internal void SaveAs(string path)
         {
-            Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
+            try
+            {
+                Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
+            }
+            catch (System.Exception ex)
+            {
+                if (ex is IOException || ex is System.UnauthorizedAccessException)
+                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+            }
         }
 
         /// <summary>
@@ -2205,6 +2222,8 @@ namespace Dynamo.ViewModels
             // ShutdownParams.CloseDynamoView member for details).
             if (shutdownParams.CloseDynamoView)
                 OnRequestClose(this, EventArgs.Empty);
+
+            BackgroundPreviewViewModel.Dispose();
 
             model.ShutDown(shutdownParams.ShutdownHost);
             if (shutdownParams.ShutdownHost)

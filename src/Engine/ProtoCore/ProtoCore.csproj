@@ -167,7 +167,6 @@
     <Compile Include="FFI\ImportModuleHandler.cs" />
     <Compile Include="Parser\AssociativeAST.cs" />
     <Compile Include="Parser\AST.cs" />
-    <Compile Include="Parser\DependencyTracker.cs" />
     <Compile Include="Parser\ImperativeAST.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\Scanner.cs" />

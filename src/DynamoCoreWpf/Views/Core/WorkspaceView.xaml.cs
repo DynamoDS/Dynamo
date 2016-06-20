@@ -509,6 +509,16 @@ namespace Dynamo.Views
             {
                 ViewModel.HandleLeftButtonDown(workBench, e);
             }
+
+            if (!ViewModel.IsDragging) return;
+
+            var nodesToHidePreview = this.ChildrenOfType<NodeView>().Where(view =>
+                view.HasPreviewControl && !view.PreviewControl.IsHidden && !view.PreviewControl.StaysOpen);
+
+            foreach (var node in nodesToHidePreview)
+            {
+                node.PreviewControl.HidePreviewBubble();
+            }
         }
 
         private void OnCanvasMouseDown(object sender, MouseButtonEventArgs e)

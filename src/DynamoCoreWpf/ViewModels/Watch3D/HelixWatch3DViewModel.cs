@@ -88,7 +88,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private LineGeometry3D worldAxes;
         private RenderTechnique renderTechnique;
         private PerspectiveCamera camera;
-        private Vector3 directionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
+        private readonly Vector3 directionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
         private DirectionalLight3D directionalLight;
 
         private readonly Color4 directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
@@ -149,8 +149,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override void OnActiveStateChanged()
         {
-            preferences.IsBackgroundPreviewActive = active;
-
             if (!active && CanNavigateBackground)
             {
                 CanNavigateBackground = false;
@@ -1363,7 +1361,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var p = rp.Points;
                     if (p.Positions.Any())
                     {
-                        id = baseId + PointsKey;
+                        //if we require a custom transform then we need to create a new Geometry3d object.
+                        id = ((rp.RequiresCustomTransform) ? rp.Description : baseId) + PointsKey;
 
                         PointGeometryModel3D pointGeometry3D;
 
@@ -1402,7 +1401,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var l = rp.Lines;
                     if (l.Positions.Any())
                     {
-                        id = baseId + LinesKey;
+                        //if we require a custom transform then we need to create a new Geometry3d object.
+                        id = ((rp.RequiresCustomTransform) ? rp.Description : baseId) + LinesKey;
 
                         LineGeometryModel3D lineGeometry3D;
 
@@ -1445,7 +1445,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var m = rp.Mesh;
                     if (!m.Positions.Any()) continue;
 
-                    id = ((rp.RequiresPerVertexColoration || rp.Colors != null) ? rp.Description : baseId) + MeshKey;
+                    //if we require a custom transform or vertex coloration then we need to create a new Geometry3d object.
+                    id = ((rp.RequiresPerVertexColoration || rp.Colors != null || rp.RequiresCustomTransform) ? rp.Description : baseId) + MeshKey;
 
                     DynamoGeometryModel3D meshGeometry3D;
 
@@ -1964,6 +1965,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         #endregion
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                var effectsManager = EffectsManager as DynamoEffectsManager;
+                if (effectsManager != null) effectsManager.Dispose();
+
+                foreach (var sceneItem in SceneItems)
+                {
+                    sceneItem.Dispose();
+                }
+            }
+        }
     }
 
     /// <summary>

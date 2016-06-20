@@ -111,7 +111,6 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="DebugTestFx.cs" />
-    <Compile Include="GeometryTestFrame.cs" />
     <Compile Include="JsonDecoder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
