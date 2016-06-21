@@ -42,14 +42,19 @@ namespace Dynamo.UI.Prompts
         }
         private void OnEditWindowPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Return ||e.Key == Key.Enter)
+            var dataItem = editText.GetBindingExpression(TextBox.TextProperty);
+            if(dataItem != null)
             {
-                UpdateNodeName();
-                e.Handled = true;
-                
+                if (!(dataItem.DataItem is NoteViewModel || dataItem.DataItem is NoteView))
+                {
+                    if (e.Key == Key.Return || e.Key == Key.Enter)
+                    {
+                        UpdateNodeName();
+                        e.Handled = true;
+                    }
+                }
             }
         }
-
         public void BindToProperty(object dataContext, System.Windows.Data.Binding binding)
         {
             if (null != dataContext)
