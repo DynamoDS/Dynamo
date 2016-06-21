@@ -21,12 +21,13 @@ def run(profiler, dynamocli, test_case, test_output):
 # harvest test case result from output_path 
 # schema:
 # {
-#    'timestamp':'2010101',
-#    'pullrequests':[1,2,3],
+#    'timestamp':'2016-01-01T09:45:00.000001',
+#    'commits':[be581, abcd, ...],
+#    'tag': 'RC1.0',
 #    'testcases':
 #    [ {'testcase':'foo', 'timestamp':'201001', 'cputime':'123', 'privatebytes':'21', 'managedheap':'22'},...]
 # }
-def harvest(test_result_path, output_path, pull_requests, logfile):
+def harvest(test_result_path, output_path, commits, tag, logfile):
     current_time = datetime.datetime.now()
     timestamp = current_time.isoformat()
     benchmark_file = os.path.join(output_path, current_time.strftime("%Y%m%d%H%M%S") + '_benchmark.json')
@@ -34,7 +35,8 @@ def harvest(test_result_path, output_path, pull_requests, logfile):
     benchmark = {} 
     testcase_benchmarks = [] 
     benchmark['timestamp'] = timestamp
-    benchmark['pullrequests'] = pull_requests 
+    benchmark['commits'] = commits 
+    benchmark['tag'] = tag
     benchmark['testcases'] = testcase_benchmarks
 
     curdir = os.getcwd()
@@ -104,7 +106,8 @@ def post_to_server(url, benchmark_file, key, logfile):
 
 def main():
     parser = argparse.ArgumentParser(description="DesignScript performance test runner")
-    parser.add_argument('-n', '--pullrequests', nargs='+', type=int, required=True, help='pull request ids')
+    parser.add_argument('-c', '--commits', nargs='*', type=str, required=False, help='commits')
+    parser.add_argument('-g', '--tag', required=False, help='tag')
     parser.add_argument('-p', '--profiler', required=True, help='profiler path')
     parser.add_argument('-t', '--testcases', required=True, help='test case path')
     parser.add_argument('-r', '--dynamocli', required=True, help='DynamoCLI path')
@@ -115,10 +118,13 @@ def main():
     logfile = args.logfile
     log(logfile, datetime.datetime.now().isoformat() + ' run performance benchmark')
 
-    pull_requests = args.pullrequests
-    if pull_requests is None:
-        log(logfile, 'Error: No pull request numbers are specified')
-        sys.exit(11)
+    commits = args.commits
+    if commits is None:
+        commits = []
+
+    tag = args.tag
+    if tag is None:
+        tag = ''
 
     profiler = args.profiler
     if not os.path.exists(profiler):
@@ -155,7 +161,7 @@ def main():
         except:
             log(logfile, 'Error: Failed to run test case ' + test_case_name)
 
-    benchmark_file = harvest(test_result_path, output_path, pull_requests, logfile)
+    benchmark_file = harvest(test_result_path, output_path, commits, tag, logfile)
     shutil.rmtree(test_result_path)
 
     # get a signature
