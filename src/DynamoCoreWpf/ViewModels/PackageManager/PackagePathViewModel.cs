@@ -5,7 +5,8 @@ using System.Linq;
 using System.Text;
 using Dynamo.Interfaces;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
-
+using Dynamo.Core;
+using Dynamo.PackageManager;
 
 namespace Dynamo.ViewModels
 {
@@ -58,9 +59,13 @@ namespace Dynamo.ViewModels
         public DelegateCommand MovePathDownCommand { get; private set; }
         public DelegateCommand UpdatePathCommand { get; private set; }
         public DelegateCommand SaveSettingCommand { get; private set; }
+        private CustomNodeManager customNodeManager;
+        private PackageLoader pl;
 
-        public PackagePathViewModel(IPreferences setting)
+        public PackagePathViewModel(IPreferences setting, CustomNodeManager manager, PackageLoader packageloader)
         {
+            customNodeManager = manager;
+            pl = packageloader;
             RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
             this.setting = setting;
 
@@ -160,6 +165,11 @@ namespace Dynamo.ViewModels
         private void CommitChanges(object param)
         {
             setting.CustomPackageFolders = new List<string>(RootLocations);
+            /* foreach(var pkg in setting.CustomPackageFolders)
+             {
+                 customNodeManager.AddUninitializedCustomNodesInPath(pkg, false, false);
+             }*/
+            pl.LoadAll(setting);
         }
 
     }
