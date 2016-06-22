@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using CSharpAnalytics;
 using CSharpAnalytics.Protocols.Measurement;
 using Dynamo.Models;
@@ -19,16 +22,35 @@ namespace Dynamo.Logging
         private static Log loggerImpl;
         private static DynamoModel dynamoModel;
 
+        private static readonly int MaxRecentActions = 20;
+        private static readonly string IssuesCategory = "Quality Issues";
         //Analytics components
+#if DEBUG
+        private const string ANALYTICS_PROPERTY = "UA-78361914-1";
+#else
         private const string ANALYTICS_PROPERTY = "UA-52186525-1";
+#endif
+
         private static MeasurementAnalyticsClient client;
 
         private static bool started = false;
-
+        private static Queue<string> recentActions = new Queue<string>(MaxRecentActions);
+        private static int numActions = 0;
         static InstrumentationLogger()
         {
             userID = GetUserID();
             StabilityTracking.GetInstance();
+        }
+
+        private static void EnqueLastAction(string action)
+        {
+            if(numActions >= MaxRecentActions)
+            {
+                recentActions.Dequeue();
+            }
+            
+            recentActions.Enqueue(action);
+            numActions++;
         }
 
         //Service start
@@ -46,7 +68,7 @@ namespace Dynamo.Logging
 
                 sessionID = Guid.NewGuid().ToString();
                 loggerImpl = new Log("Dynamo", userID, sessionID);
-            
+
                 AutoMeasurement.Start(mc);
                 client = AutoMeasurement.Client;
 
@@ -157,6 +179,7 @@ namespace Dynamo.Logging
             if (!started)
                 return;
 
+            EnqueLastAction(variable);
             client.TrackTimedEvent(category, variable, time, label);
         }
 
@@ -171,6 +194,7 @@ namespace Dynamo.Logging
             if (!started)
                 return;
 
+            EnqueLastAction(action);
             AutoMeasurement.Client.TrackEvent(action, category, label);
         }
 
@@ -200,8 +224,10 @@ namespace Dynamo.Logging
 
             if (IsAnalyticsEnabled)
             {
+                var description = GetDescription(e);
                 //Log anonymous version
-                AutoMeasurement.Client.TrackException(e.GetType().ToString());
+                AutoMeasurement.Client.TrackException(description);
+                AutoMeasurement.Client.TrackEvent(e.GetType().ToString(), IssuesCategory, recentActions.Aggregate((x, y) => x + y));
             }
 
             //Protect PII
@@ -210,6 +236,21 @@ namespace Dynamo.Logging
 
             //Log PII containing version
             loggerImpl.Error("StackTrace", e.ToString());
+        }
+
+        private static string GetDescription(Exception e, int maxFrameSize = 50)
+        {
+            var stackTrace = new StackTrace(e, false);
+            var text = stackTrace.ToString();
+            if (stackTrace.FrameCount > maxFrameSize)
+            {
+                var sb = text.Split(new[] { Environment.NewLine },
+                    StringSplitOptions.None).Take(maxFrameSize).Aggregate(new StringBuilder(), (s, x) => s.AppendLine(x));
+                text = sb.ToString();
+            }
+
+            var description = string.Format("{0}{1}{2}", e.GetType().ToString(), Environment.NewLine, text.Replace("&", ""));
+            return description;
         }
 
         public static void FORCE_LogInfo(string tag, string data)
