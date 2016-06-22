@@ -10,6 +10,9 @@ using Dynamo.ViewModels;
 using NUnit.Framework;
 using Dynamo.PackageManager;
 using Dynamo.Core;
+using System.IO;
+using System.Reflection;
+using Dynamo.Models;
 
 namespace DynamoCoreWpfTests
 {
@@ -99,6 +102,27 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, vm.SelectedIndex);
             Assert.AreEqual(@"C:\", vm.RootLocations[0]);
             Assert.AreEqual(@"D:\", vm.RootLocations[1]);
+        }
+        [Test]
+        public void AddPackagePathsTest()
+        {
+            var setting = new PreferenceSettings()
+            {
+                CustomPackageFolders = { @"Z:\" }
+            };
+
+            var vm = CreatePackagePathViewModel(setting);
+
+            var path = string.Empty;
+            vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
+
+            var testDir = GetTestDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            path = Path.Combine(testDir, @"core\packagePathTest");
+            var dynFilePath = Path.Combine(path, @"dynFile\Number1.dyn");
+            vm.AddPathCommand.Execute(null);
+            vm.SaveSettingCommand.Execute(null);
+            Model.ExecuteCommand(new DynamoModel.OpenFileCommand(dynFilePath));
+            Assert.AreEqual(1,GetPreviewValue("07d62dd8-b2f3-40a8-a761-013d93300444"));
         }
 
         #endregion
