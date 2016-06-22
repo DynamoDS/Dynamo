@@ -402,6 +402,21 @@ namespace Dynamo.Engine
             return importedFunctionGroups.ContainsKey(library);
         }
 
+        /// <summary>
+        /// Checks if a given function is in the builtinFunctionGroups so we do not necessarily look for it's library.
+        /// </summary>
+        /// <param name="library">assembly name</param>
+        /// <param name="nickname">nick name, used for searching as key with default value ""</param>
+        /// <returns></returns>
+        internal bool IsFunctionBuiltIn(string library, string nickname = "")
+        {
+            // For Nodes with Assembly 
+            if (library == "BuiltIn" || library == "Operators")
+                return builtinFunctionGroups.ContainsKey(nickname);
+            else
+                return false;
+        }
+
         private static bool CanbeResolvedTo(ICollection<string> partialName, ICollection<string> fullName)
         {
             return null != partialName && null != fullName && partialName.Count <= fullName.Count

@@ -73,17 +73,30 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
                 var docPath = Nodes.Utilities.GetDocumentXmlPath(document);
                 assembly = Nodes.Utilities.MakeAbsolutePath(docPath, assembly);
 
-                try
+                if (libraryServices.IsLibraryLoaded(assembly))
                 {
-                    descriptor = libraryServices.IsLibraryLoaded(assembly) || libraryServices.ImportLibrary(assembly)
-                    ? libraryServices.GetFunctionDescriptor(assembly, function)
-                    : libraryServices.GetFunctionDescriptor(function);
+                    descriptor = libraryServices.GetFunctionDescriptor(assembly, function);
                 }
-                catch (LibraryLoadFailedException) 
+                else
                 {
-                    descriptor = libraryServices.IsLibraryLoaded(assembly)
-                    ? libraryServices.GetFunctionDescriptor(assembly, function)
-                    : libraryServices.GetFunctionDescriptor(function);
+                    // If the desired assembly is not loaded already. Check if it belongs to BuiltInFunctionGroup.
+                    if (libraryServices.IsFunctionBuiltIn(assembly, nickname))
+                    {
+                        descriptor = libraryServices.GetFunctionDescriptor(function);
+                    }
+                    else
+                    {
+                        // If neither of these, Dynamo need to import the library.
+                        try
+                        {
+                            libraryServices.ImportLibrary(assembly);
+                            descriptor = libraryServices.GetFunctionDescriptor(assembly, function);
+                        }
+                        catch (LibraryLoadFailedException)
+                        {
+                            descriptor = libraryServices.GetFunctionDescriptor(function);
+                        }
+                    }
                 }
             }
             else
