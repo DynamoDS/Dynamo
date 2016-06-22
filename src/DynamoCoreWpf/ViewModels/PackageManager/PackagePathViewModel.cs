@@ -51,7 +51,9 @@ namespace Dynamo.ViewModels
         }
 
         private readonly IPreferences setting;
-
+        private readonly PackageLoader packageLoader;
+        private readonly LoadPackageParams loadPackageParams;
+        private readonly CustomNodeManager customNodeManager;
 
         public DelegateCommand AddPathCommand { get; private set; }
         public DelegateCommand DeletePathCommand { get; private set; }
@@ -60,10 +62,13 @@ namespace Dynamo.ViewModels
         public DelegateCommand UpdatePathCommand { get; private set; }
         public DelegateCommand SaveSettingCommand { get; private set; }
 
-        public PackagePathViewModel(LoadAllParams loadAllParams)
+        public PackagePathViewModel(PackageLoader loader, LoadPackageParams loadParams, CustomNodeManager customNodeManager)
         {
+            this.setting = loadParams.Preferences;
+            this.packageLoader = loader;
+            this.loadPackageParams = loadParams;
+            this.customNodeManager = customNodeManager;
             RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
-            this.setting = loadAllParams.Preferences;
 
             AddPathCommand = new DelegateCommand(p => InsertPath());
             DeletePathCommand = new DelegateCommand(p => RemovePathAt((int) p), CanDelete);
@@ -161,12 +166,7 @@ namespace Dynamo.ViewModels
         private void CommitChanges(object param)
         {
             setting.CustomPackageFolders = new List<string>(RootLocations);
-            /* foreach(var pkg in setting.CustomPackageFolders)
-             {
-                 customNodeManager.AddUninitializedCustomNodesInPath(pkg, false, false);
-             }*/
-            //pl.LoadAll(setting);
-            
+            this.packageLoader.LoadCustomNodesAndPackages(loadPackageParams,customNodeManager);
         }
 
     }

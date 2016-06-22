@@ -8,7 +8,8 @@ using Dynamo;
 using Dynamo.Configuration;
 using Dynamo.ViewModels;
 using NUnit.Framework;
-
+using Dynamo.PackageManager;
+using Dynamo.Core;
 
 namespace DynamoCoreWpfTests
 {
@@ -22,7 +23,9 @@ namespace DynamoCoreWpfTests
             {
                 CustomPackageFolders = { @"C:\" }
             };
-            var vm = new PackagePathViewModel(setting);
+
+
+            var vm = CreatePackagePathViewModel(setting);
 
             Assert.AreEqual(1, vm.RootLocations.Count);
             Assert.IsFalse(vm.DeletePathCommand.CanExecute(null));
@@ -36,7 +39,7 @@ namespace DynamoCoreWpfTests
                 CustomPackageFolders = { @"C:\", @"D:\", @"E:\" }
             };
 
-            var vm = new PackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel(setting);
 
             Assert.AreEqual(0, vm.SelectedIndex);
             Assert.IsTrue(vm.MovePathDownCommand.CanExecute(null));
@@ -76,7 +79,7 @@ namespace DynamoCoreWpfTests
                 CustomPackageFolders = { @"Z:\" }
             };
 
-            var vm = new PackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel(setting);
 
             var path = string.Empty;
             vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
@@ -97,6 +100,21 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(@"C:\", vm.RootLocations[0]);
             Assert.AreEqual(@"D:\", vm.RootLocations[1]);
         }
+
+        #endregion
+        #region Setup methods
+        private PackagePathViewModel CreatePackagePathViewModel(PreferenceSettings setting)
+        {
+            PackageLoader loader = new PackageLoader(setting.CustomPackageFolders);
+            LoadPackageParams loadParams = new LoadPackageParams
+            {
+                Preferences = setting,
+                PathManager = Model.PathManager
+            };
+            CustomNodeManager customNodeManager = Model.CustomNodeManager;
+            return new PackagePathViewModel(loader, loadParams, customNodeManager);
+        }
+
         #endregion
     }
 }

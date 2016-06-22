@@ -17,12 +17,6 @@ namespace Dynamo.PackageManager
         public IPreferences Preferences { get; set; }
         public IPathManager PathManager { get; set; }
     }
-    public struct LoadAllParams
-    {
-        public IPreferences Preferences { get; set; }
-        public IPathManager PathManager { get; set; }
-        public CustomNodeManager CustomNodeManager { get; set; }
-    }
 
     public enum AssemblyLoadingState
     {
@@ -187,16 +181,16 @@ namespace Dynamo.PackageManager
                 Load(pkg);
             }
         }
-        public void LoadCustomNodesAndPackages(LoadAllParams loadAllParams)
+        public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
         {
-            LoadAll(new LoadPackageParams
-            {
-                Preferences = loadAllParams.Preferences,
-                PathManager = loadAllParams.PathManager
-            });
-            foreach(var path in loadAllParams.Preferences.CustomPackageFolders){
-                loadAllParams.CustomNodeManager.AddUninitializedCustomNodesInPath(path, false, false);
+            foreach(var path in loadPackageParams.Preferences.CustomPackageFolders){
+                customNodeManager.AddUninitializedCustomNodesInPath(path, false, false);
+                if (!this.packagesDirectories.Contains(path))
+                {
+                    this.packagesDirectories.Add(path);
+                }
             }
+            LoadAll(loadPackageParams);
         }
 
         private void ScanAllPackageDirectories(IPreferences preferences)
