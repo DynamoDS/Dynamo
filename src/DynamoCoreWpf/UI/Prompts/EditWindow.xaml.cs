@@ -45,7 +45,7 @@ namespace Dynamo.UI.Prompts
             var dataItem = editText.GetBindingExpression(TextBox.TextProperty);
             if(dataItem != null)
             {
-                if (!(dataItem.DataItem is NoteViewModel || dataItem.DataItem is NoteView))
+                if (dataItem.DataItem is NodeViewModel || dataItem.DataItem is NodeModel)
                 {
                     if (e.Key == Key.Return || e.Key == Key.Enter)
                     {
