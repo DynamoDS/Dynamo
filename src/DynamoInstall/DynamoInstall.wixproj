@@ -79,7 +79,7 @@
     <Exec Condition="Exists('$(MSBuildProjectDirectory)\Digital_Sign.bat')" Command="$(MSBuildProjectDirectory)\Digital_Sign.bat $(DYNAMO_HARVEST_PATH)\binariestosign.txt" IgnoreExitCode="true" />
     
     <!-- Copy README file to install folder -->
-    <Exec Command="copy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration)\README.txt $(DYNAMO_BASE_PATH)\tools\install\Installers" IgnoreExitCode="true" />
+    <Exec Command="xcopy /y $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration)\README.txt $(DYNAMO_BASE_PATH)\tools\install\Installers\" IgnoreExitCode="true" />
     
     <HeatDirectory  Directory="$(DYNAMO_HARVEST_PATH)" 
                     PreprocessorVariable="var.harvest" 
