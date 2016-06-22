@@ -551,15 +551,18 @@ namespace Dynamo.PackageManager
 
                 if (uninstallsRequiringRestart.Any())
                 {
-                    // mark for uninstallation
-                    uninstallsRequiringRestart.ForEach(
-                        x => x.MarkForUninstall(settings));
-
-                    MessageBox.Show(String.Format(Resources.MessageUninstallToContinue2,
-                        PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName, 
-                        JoinPackageNames(uninstallsRequiringRestart)), 
+                    var message = string.Format(Resources.MessageUninstallToContinue2,
+                        PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName,
+                        JoinPackageNames(uninstallsRequiringRestart));
+                    var dialogResult = MessageBox.Show(message, 
                         Resources.CannotDownloadPackageMessageBoxTitle,
-                        MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBoxButton.OKCancel, MessageBoxImage.Error);
+
+                    if (dialogResult == MessageBoxResult.OK)
+                    {
+                        // mark for uninstallation
+                        uninstallsRequiringRestart.ForEach(x => x.MarkForUninstall(settings));
+                    }
                     return;
                 }
 
