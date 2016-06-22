@@ -42,10 +42,10 @@ namespace Dynamo.UI.Prompts
         }
         private void OnEditWindowPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            var dataItem = editText.GetBindingExpression(TextBox.TextProperty);
-            if(dataItem != null)
+            var expr = editText.GetBindingExpression(TextBox.TextProperty);
+            if(expr != null)
             {
-                if (dataItem.DataItem is NodeViewModel || dataItem.DataItem is NodeModel)
+                if (expr.DataItem is NodeViewModel ||expr.DataItem is NodeModel)
                 {
                     if (e.Key == Key.Return || e.Key == Key.Enter)
                     {
