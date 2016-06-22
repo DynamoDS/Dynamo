@@ -8,6 +8,7 @@ using Dynamo.Logging;
 using Dynamo.Utilities;
 using DynamoPackages.Properties;
 using DynamoUtilities;
+using Dynamo.Core;
 
 namespace Dynamo.PackageManager
 {
@@ -15,6 +16,12 @@ namespace Dynamo.PackageManager
     {
         public IPreferences Preferences { get; set; }
         public IPathManager PathManager { get; set; }
+    }
+    public struct LoadAllParams
+    {
+        public IPreferences Preferences { get; set; }
+        public IPathManager PathManager { get; set; }
+        public CustomNodeManager CustomNodeManager { get; set; }
     }
 
     public enum AssemblyLoadingState
@@ -178,6 +185,17 @@ namespace Dynamo.PackageManager
             foreach (var pkg in LocalPackages)
             {
                 Load(pkg);
+            }
+        }
+        public void LoadCustomNodesAndPackages(LoadAllParams loadAllParams)
+        {
+            LoadAll(new LoadPackageParams
+            {
+                Preferences = loadAllParams.Preferences,
+                PathManager = loadAllParams.PathManager
+            });
+            foreach(var path in loadAllParams.Preferences.CustomPackageFolders){
+                loadAllParams.CustomNodeManager.AddUninitializedCustomNodesInPath(path, false, false);
             }
         }
 

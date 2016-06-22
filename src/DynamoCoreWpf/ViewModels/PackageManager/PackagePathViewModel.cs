@@ -59,15 +59,11 @@ namespace Dynamo.ViewModels
         public DelegateCommand MovePathDownCommand { get; private set; }
         public DelegateCommand UpdatePathCommand { get; private set; }
         public DelegateCommand SaveSettingCommand { get; private set; }
-        private CustomNodeManager customNodeManager;
-        private PackageLoader pl;
 
-        public PackagePathViewModel(IPreferences setting, CustomNodeManager manager, PackageLoader packageloader)
+        public PackagePathViewModel(LoadAllParams loadAllParams)
         {
-            customNodeManager = manager;
-            pl = packageloader;
             RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
-            this.setting = setting;
+            this.setting = loadAllParams.Preferences;
 
             AddPathCommand = new DelegateCommand(p => InsertPath());
             DeletePathCommand = new DelegateCommand(p => RemovePathAt((int) p), CanDelete);
@@ -169,7 +165,8 @@ namespace Dynamo.ViewModels
              {
                  customNodeManager.AddUninitializedCustomNodesInPath(pkg, false, false);
              }*/
-            pl.LoadAll(setting);
+            //pl.LoadAll(setting);
+            
         }
 
     }

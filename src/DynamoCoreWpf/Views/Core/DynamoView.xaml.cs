@@ -711,7 +711,12 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestPackagePaths(object sender, EventArgs e)
         {
-            var viewModel = new PackagePathViewModel(dynamoViewModel.PreferenceSettings,dynamoViewModel.Model.CustomNodeManager,dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader);
+            var loadAllParams = new LoadAllParams{
+                Preferences = dynamoViewModel.PreferenceSettings,
+                PathManager = dynamoViewModel.Model.PathManager,
+                CustomNodeManager = dynamoViewModel.Model.CustomNodeManager
+            };
+            var viewModel = new PackagePathViewModel(loadAllParams);
             var view = new PackagePathView(viewModel) { Owner = this };
             view.ShowDialog();
         }
