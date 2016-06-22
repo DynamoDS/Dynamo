@@ -108,10 +108,7 @@ def main():
     parser = argparse.ArgumentParser(description="DesignScript performance test runner")
     parser.add_argument('-c', '--commits', nargs='*', type=str, required=False, help='commits')
     parser.add_argument('-g', '--tag', required=False, help='tag')
-    parser.add_argument('-p', '--profiler', required=True, help='profiler path')
-    parser.add_argument('-t', '--testcases', required=True, help='test case path')
-    parser.add_argument('-r', '--dynamocli', required=True, help='DynamoCLI path')
-    parser.add_argument('-o', '--output', required=True, help='output path')
+    parser.add_argument('-p', '--dynamopath', required=False, help='Dynamo repo path', default=os.getcwd())
     parser.add_argument('-l', '--logfile', required=False, help='log file path')
     args = parser.parse_args()
 
@@ -126,30 +123,40 @@ def main():
     if tag is None:
         tag = ''
 
-    profiler = args.profiler
+    dynamo_path = args.dynamopath
+    if not os.path.exists(dynamo_path):
+        log(logfile, 'Error: Dynamo source path ' + dynamo_path + ' does not exists.')
+        sys.exit(1)
+
+    performance_folder = os.path.join(dynamo_path, 'test\\performance')
+    if not os.path.exists(performance_folder):
+        log(logfile, 'Error: Performance folder ' + performance_folder + ' does not exists.')
+        sys.exit(1)
+
+    profiler = os.path.join(performance_folder, 'bin\\memlog.exe')
     if not os.path.exists(profiler):
         log(logfile, 'Error: Profiler path ' + profiler + ' does not exists.')
-        sys.exit(12)
+        sys.exit(1)
 
-    test_case_path = args.testcases
+    test_case_path = os.path.join(performance_folder, 'testcases') 
     if not os.path.exists(test_case_path):
         log(logfile, 'Error: Test cases path ' + test_case_path + ' does not exists.')
-        sys.exit(12)
+        sys.exit(1)
 
-    dynamocli = args.dynamocli
+    dynamocli = os.path.join(dynamo_path, 'bin\\AnyCPU\\Debug\\DynamoCLI.exe')
     if not os.path.exists(dynamocli):
         log(logfile, 'Error: DynamoCLI ' + dynamocli + ' does not exists.')
-        sys.exit(13)
+        sys.exit(1)
 
-    output_path = args.output
+    output_path = performance_folder
     if not os.path.exists(output_path):
         log(logfile, 'Error: Test output path ' + output_path + ' does not exist.')
-        sys.exit(14)
+        sys.exit(1)
 
     test_result_path = os.path.join(output_path, 'tmp')
     if not os.path.exists(test_result_path):
         os.mkdir(test_result_path)
-    
+
     os.chdir(test_case_path)
     for dyn_file in glob.glob("*.dyn"):
         log(logfile, 'Running ' + dyn_file)
