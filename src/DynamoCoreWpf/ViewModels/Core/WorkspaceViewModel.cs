@@ -552,7 +552,6 @@ namespace Dynamo.ViewModels
                 {
                     selection.AddUnique(n);
                 }
-                else if (n.IsSelected)
                 {
                     selection.Remove(n);
                 }
