@@ -553,7 +553,8 @@ namespace Dynamo.PackageManager
                 {
                     var message = string.Format(Resources.MessageUninstallToContinue2,
                         PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName,
-                        JoinPackageNames(uninstallsRequiringRestart));
+                        JoinPackageNames(uninstallsRequiringRestart),
+                        element.Name + " " + version.version);
                     var dialogResult = MessageBox.Show(message, 
                         Resources.CannotDownloadPackageMessageBoxTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Error);

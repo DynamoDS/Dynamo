@@ -951,7 +951,9 @@ You can always re-deprecate the package.</value>
     <value>{0} needs to uninstall {1} to continue, but cannot as one of its types appears to be in use.  Try restarting {0}.</value>
   </data>
   <data name="MessageUninstallToContinue2" xml:space="preserve">
-    <value>{0} needs to uninstall {1} to continue but it contains binaries already loaded into Dynamo. Do you want to remove them? You'll need to restart {0} and re-install the package.</value>
+    <value>You must first uninstall dependent packages {1} to continue installing {2} package. Do you want to uninstall? 
+
+After the uninstall, you must restart {0} and try to install {2} package again.</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>
