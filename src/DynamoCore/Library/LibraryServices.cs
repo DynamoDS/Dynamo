@@ -725,11 +725,11 @@ namespace Dynamo.Engine
                                                                 IsVisibleInLibrary = visibleInLibrary,
                                                                 IsBuiltIn = true,
                                                                 IsPackageMember = false,
-                                                                Assembly = "BuiltIn"
+                                                                Assembly = Categories.BuiltIn
                                                             });
 
             AddBuiltinFunctions(functions);
-            LoadLibraryMigrations("BuiltIn");
+            LoadLibraryMigrations(Categories.BuiltIn);
         }
 
         private static IEnumerable<TypedParameter> GetBinaryFuncArgs()
