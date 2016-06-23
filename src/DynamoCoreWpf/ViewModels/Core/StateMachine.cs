@@ -520,7 +520,20 @@ namespace Dynamo.ViewModels
                     {
                         if (e.ClickCount < 2) 
                         {
-                            InitiateWindowSelectionSequence();
+                            // if the Shift key is held down while the left mouse button is pressed, then do not initiate the window selection sequence
+
+                           if (Keyboard.Modifiers != ModifierKeys.Shift)
+                           {
+                                DynamoSelection.Instance.ClearSelectionDisabled = false; // clear current selection
+                                InitiateWindowSelectionSequence();
+                            }
+                           else
+                            {
+                                // If the Shift key is held down and there's a selection, then add new selection to current selection
+
+                                DynamoSelection.Instance.ClearSelectionDisabled = true; // ensure that the current selection is not cleared
+                                InitiateWindowSelectionSequence();
+                            }                                              
                         }
                         else // Double-clicking on canvas.
                         {
