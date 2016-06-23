@@ -411,7 +411,7 @@ namespace Dynamo.Engine
         internal bool IsFunctionBuiltIn(string library, string nickname = "")
         {
             // For Nodes with Assembly 
-            if (library == "BuiltIn" || library == "Operators")
+            if (library == Categories.BuiltIn || library == Categories.Operators)
                 return builtinFunctionGroups.ContainsKey(nickname);
             else
                 return false;
@@ -768,7 +768,7 @@ namespace Dynamo.Engine
                     FunctionType = FunctionType.GenericFunction,
                     IsBuiltIn = true,
                     IsPackageMember = false,
-                    Assembly = "Operators"
+                    Assembly = Categories.Operators
                 }))
                 .Concat(new FunctionDescriptor(new FunctionDescriptorParams
                 {
@@ -778,7 +778,7 @@ namespace Dynamo.Engine
                     FunctionType = FunctionType.GenericFunction,
                     IsBuiltIn = true,
                     IsPackageMember = false,
-                    Assembly = "Operators"
+                    Assembly = Categories.Operators
                 }).AsSingleton());
 
             AddBuiltinFunctions(functions);
@@ -1000,6 +1000,7 @@ namespace Dynamo.Engine
 
         public static class Categories
         {
+            public const string BuiltIn = "BUiltIn";
             public const string BuiltIns = "Builtin Functions";
             public const string Operators = "Operators";
             public const string Constructors = "Create";

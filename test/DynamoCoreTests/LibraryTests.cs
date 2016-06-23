@@ -262,19 +262,19 @@ namespace Dynamo.Tests
         {
             string nickName, categoryName;
 
-            nickName = "/"; categoryName = "Operators";
+            nickName = "/"; categoryName = LibraryServices.Categories.Operators;
             Assert.IsTrue(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
 
-            nickName = "*"; categoryName = "Operators";
+            nickName = "*"; categoryName = LibraryServices.Categories.Operators;
             Assert.IsTrue(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
 
             nickName = "=="; categoryName = "";
             Assert.IsFalse(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
 
-            nickName = "AllFalse"; categoryName = "BuiltIn";
+            nickName = "AllFalse"; categoryName = LibraryServices.Categories.BuiltIn;
             Assert.IsTrue(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
 
-            nickName = "SetUnion"; categoryName = "BuiltIn";
+            nickName = "SetUnion"; categoryName = LibraryServices.Categories.BuiltIn;
             Assert.IsTrue(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
 
             nickName = "Reorder"; categoryName = "";
@@ -283,7 +283,7 @@ namespace Dynamo.Tests
             nickName = ""; categoryName = "";
             Assert.IsFalse(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
 
-            nickName = ""; categoryName = "BuiltIn";
+            nickName = ""; categoryName = LibraryServices.Categories.BuiltIn;
             Assert.IsFalse(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
 
         }
