@@ -2614,6 +2614,13 @@ namespace ProtoCore.Lang
 
         internal static StackValue Evaluate(StackValue function, StackValue parameters, StackValue unpackParams, Interpreter runtime, StackFrame stackFrame)
         {
+            if (!function.IsFunctionPointer)
+            {
+                var runtimeCore = runtime.runtime.RuntimeCore;
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.InvalidType, Resources.InvalidFunction);
+                return StackValue.Null;
+            }
+
             var evaluator = new FunctionPointerEvaluator(function, runtime);
 
             StackValue ret;
