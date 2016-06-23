@@ -403,14 +403,14 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Checks if a given function is in the builtinFunctionGroups so we do not necessarily look for it's library.
+        /// Checks if a given function is in the builtinFunctionGroups so we do not necessarily look for it's library based on its Assembly tag
         /// </summary>
         /// <param name="library">assembly name</param>
         /// <param name="nickname">nick name, used for searching as key with default value ""</param>
         /// <returns></returns>
         internal bool IsFunctionBuiltIn(string library, string nickname = "")
         {
-            // For Nodes with Assembly 
+            // For Nodes with not .dll specific Assembly tag
             if (library == Categories.BuiltIn || library == Categories.Operators)
                 return builtinFunctionGroups.ContainsKey(nickname);
             else
