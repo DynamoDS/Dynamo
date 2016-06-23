@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReportParams>
+<WorkingDir>..\bin\AnyCPU\Release\</WorkingDir>
+  <Source>Snapshot.dcvr</Source>
+  <Output>CoverageReport.xml</Output>
+  <ReportType>xml</ReportType>
+</ReportParams>
