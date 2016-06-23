@@ -67,23 +67,13 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// ZIndex is used to order nodes, when some node is clicked.
-        /// This selected node should be moved above others.
-        /// Start value of zIndex is 3, because 1 is for groups and 2 is for connectors.
-        /// Nodes should be always at the top.
-        /// 
-        /// Static is used because every node should know what is the highest z-index right now.
-        /// </summary>
-        internal static int StaticZIndex = Configurations.NodeStartZIndex;
- 
- 
-        /// <summary>
         /// ZIndex represents the order on the z-plane in which the notes and other objects appear. 
         /// </summary>
         public int ZIndex
          {
                 get { return zIndex; }
-                set { zIndex = value; RaisePropertyChanged("ZIndex"); }
+            set { zIndex = value; RaisePropertyChanged("ZIndex"); }
+            //set { zIndex = value; }
         }
 
         public string Text

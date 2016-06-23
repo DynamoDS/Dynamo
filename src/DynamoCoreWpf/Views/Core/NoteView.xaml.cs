@@ -142,6 +142,11 @@ namespace Dynamo.Nodes
             {
                 child.ViewModel.ZIndex = Configurations.NodeStartZIndex;
             }
+
+            foreach(var child in parent.ChildrenOfType<Controls.NodeView>())
+            {
+                child.ViewModel.ZIndex = Configurations.NodeStartZIndex;
+            }
         }
    }
 }
