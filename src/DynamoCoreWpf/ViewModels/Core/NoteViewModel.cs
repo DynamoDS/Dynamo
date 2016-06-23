@@ -71,9 +71,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         public int ZIndex
          {
-                get { return zIndex; }
+
+            get { return zIndex; }
             set { zIndex = value; RaisePropertyChanged("ZIndex"); }
-            //set { zIndex = value; }
         }
 
         public string Text
