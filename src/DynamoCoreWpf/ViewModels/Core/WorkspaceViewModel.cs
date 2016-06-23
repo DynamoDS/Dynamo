@@ -552,7 +552,7 @@ namespace Dynamo.ViewModels
                 {
                     selection.AddUnique(n);
                 }
-                else if (n.IsSelected)
+                else if (n.IsSelected && !DynamoSelection.Instance.ClearSelectionDisabled) // only remove current selection if ClearSelectionDisabled flag is false
                 {
                     selection.Remove(n);
                 }
