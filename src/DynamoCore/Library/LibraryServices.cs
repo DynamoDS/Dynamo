@@ -402,6 +402,25 @@ namespace Dynamo.Engine
             return importedFunctionGroups.ContainsKey(library);
         }
 
+        /// <summary>
+        /// Checks if a given function is in the builtinFunctionGroups so we do not necessarily look for it's library based on its Assembly tag
+        /// </summary>
+        /// <param name="library">assembly name</param>
+        /// <param name="nickname">nick name, used for searching as key with default value ""</param>
+        /// <returns></returns>
+        internal bool IsFunctionBuiltIn(string library, string nickname = "")
+        {
+            // For Nodes with not .dll specific Assembly tag
+            if (library == Categories.BuiltIn || library == Categories.Operators)
+            {
+                return builtinFunctionGroups.ContainsKey(nickname);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         private static bool CanbeResolvedTo(ICollection<string> partialName, ICollection<string> fullName)
         {
             return null != partialName && null != fullName && partialName.Count <= fullName.Count
@@ -710,11 +729,11 @@ namespace Dynamo.Engine
                                                                 IsVisibleInLibrary = visibleInLibrary,
                                                                 IsBuiltIn = true,
                                                                 IsPackageMember = false,
-                                                                Assembly = "BuiltIn"
+                                                                Assembly = Categories.BuiltIn
                                                             });
 
             AddBuiltinFunctions(functions);
-            LoadLibraryMigrations("BuiltIn");
+            LoadLibraryMigrations(Categories.BuiltIn);
         }
 
         private static IEnumerable<TypedParameter> GetBinaryFuncArgs()
@@ -753,7 +772,7 @@ namespace Dynamo.Engine
                     FunctionType = FunctionType.GenericFunction,
                     IsBuiltIn = true,
                     IsPackageMember = false,
-                    Assembly = "Operators"
+                    Assembly = Categories.Operators
                 }))
                 .Concat(new FunctionDescriptor(new FunctionDescriptorParams
                 {
@@ -763,7 +782,7 @@ namespace Dynamo.Engine
                     FunctionType = FunctionType.GenericFunction,
                     IsBuiltIn = true,
                     IsPackageMember = false,
-                    Assembly = "Operators"
+                    Assembly = Categories.Operators
                 }).AsSingleton());
 
             AddBuiltinFunctions(functions);
@@ -985,6 +1004,7 @@ namespace Dynamo.Engine
 
         public static class Categories
         {
+            public const string BuiltIn = "BuiltIn";
             public const string BuiltIns = "Builtin Functions";
             public const string Operators = "Operators";
             public const string Constructors = "Create";

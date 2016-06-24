@@ -256,6 +256,38 @@ namespace Dynamo.Tests
             }
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TestBuiltInFunctionRecognition()
+        {
+            string nickName, categoryName;
+
+            nickName = "/"; categoryName = LibraryServices.Categories.Operators;
+            Assert.IsTrue(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
+
+            nickName = "*"; categoryName = LibraryServices.Categories.Operators;
+            Assert.IsTrue(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
+
+            nickName = "=="; categoryName = "";
+            Assert.IsFalse(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
+
+            nickName = "AllFalse"; categoryName = LibraryServices.Categories.BuiltIn;
+            Assert.IsTrue(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
+
+            nickName = "SetUnion"; categoryName = LibraryServices.Categories.BuiltIn;
+            Assert.IsTrue(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
+
+            nickName = "Reorder"; categoryName = "";
+            Assert.IsFalse(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
+
+            nickName = ""; categoryName = "";
+            Assert.IsFalse(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
+
+            nickName = ""; categoryName = LibraryServices.Categories.BuiltIn;
+            Assert.IsFalse(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
+
+        }
+
         #endregion
     }
 }
