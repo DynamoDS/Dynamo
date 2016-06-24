@@ -196,7 +196,7 @@
     <value>File : '{0}' is already imported</value>
   </data>
   <data name="kAmbigousMethodDispatch" xml:space="preserve">
-    <value>Internal error, please report: Function could not be found on final dispatch (e5235508)</value>
+    <value>Internal error, please report: Function could not be found on final dispatch.</value>
   </data>
   <data name="kArgumentTypeUndefined" xml:space="preserve">
     <value>Type '{0}' of argument '{1}' is not defined</value>
@@ -241,7 +241,7 @@
     <value>A cyclic dependency exists between two variables</value>
   </data>
   <data name="kDeferencingNonPointer" xml:space="preserve">
-    <value>Internal error, please report: Dereferencing a non-pointer. (3f47aacd)</value>
+    <value>Internal error, please report: Dereferencing a non-pointer.</value>
   </data>
   <data name="kExceptionTypeUndefined" xml:space="preserve">
     <value>The exception type '{0}' is not defined</value>
@@ -292,10 +292,10 @@
     <value>The value used in a range expression must be a number or a letter</value>
   </data>
   <data name="kInvalidBreakForFunction" xml:space="preserve">
-    <value>Internal error, please report: Statement break causes function to abnormally return null. (6ced82a9)</value>
+    <value>Internal error, please report: Statement break causes function to abnormally return null.</value>
   </data>
   <data name="kInvalidContinueForFunction" xml:space="preserve">
-    <value>Internal error, please report: Statement continue cause function to abnormally return null. (fd67aaee)</value>
+    <value>Internal error, please report: Statement continue cause function to abnormally return null.</value>
   </data>
   <data name="kInvalidStaticCyclicDependency" xml:space="preserve">
     <value>A cyclic dependency exists between two variables</value>
@@ -319,7 +319,7 @@
     <value>Method '{0}()' not found</value>
   </data>
   <data name="kMethodResolutionFailure" xml:space="preserve">
-    <value>Internal error, please report: Method resolution failure on: {0}() - (8bc0db87)</value>
+    <value>Internal error, please report: Method resolution failure on: {0}()</value>
   </data>
   <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
     <value>Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'</value>
@@ -851,9 +851,6 @@
   </data>
   <data name="ArrayWithNotSupported" xml:space="preserve">
     <value>Array with no common superclass not yet supported: {0}</value>
-  </data>
-  <data name="ErrorCode" xml:space="preserve">
-    <value>Error code: {0}</value>
   </data>
   <data name="FailedToResolveSortingFunction" xml:space="preserve">
     <value>Failed to resolve the comparison function for sorting, expected def sorter : int(x,y)</value>

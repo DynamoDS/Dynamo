@@ -1118,11 +1118,10 @@ namespace ProtoCore
                 //If this has failed, we have multiple feps, which can't be distiquished by class hiearchy. Emit a warning and select one
                 StringBuilder possibleFuncs = new StringBuilder();
                 possibleFuncs.Append(Resources.MultipleFunctionsFound);
+                possibleFuncs.AppendLine();
+                possibleFuncs.AppendLine();
                 foreach (FunctionEndPoint fep in feps)
-                    possibleFuncs.AppendLine("\t" + fep.ToString());
-
-
-                possibleFuncs.AppendLine(string.Format(Resources.ErrorCode, "{DCE486C0-0975-49F9-BE2C-2E7D8CCD17DD}"));
+                    possibleFuncs.AppendLine("    " + fep.ToString());
 
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.AmbiguousMethodDispatch, possibleFuncs.ToString());
             }

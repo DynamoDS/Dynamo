@@ -386,15 +386,6 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error code: {0}.
-        /// </summary>
-        public static string ErrorCode {
-            get {
-                return ResourceManager.GetString("ErrorCode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Null value cannot be cast to {0}.
         /// </summary>
         public static string FailedToCastFromNull {
@@ -989,7 +980,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Internal error, please report: Function could not be found on final dispatch (e5235508).
+        ///   Looks up a localized string similar to Internal error, please report: Function could not be found on final dispatch..
         /// </summary>
         public static string kAmbigousMethodDispatch {
             get {
@@ -1124,7 +1115,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Internal error, please report: Dereferencing a non-pointer. (3f47aacd).
+        ///   Looks up a localized string similar to Internal error, please report: Dereferencing a non-pointer..
         /// </summary>
         public static string kDeferencingNonPointer {
             get {
@@ -1277,7 +1268,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Internal error, please report: Statement break causes function to abnormally return null. (6ced82a9).
+        ///   Looks up a localized string similar to Internal error, please report: Statement break causes function to abnormally return null..
         /// </summary>
         public static string kInvalidBreakForFunction {
             get {
@@ -1286,7 +1277,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Internal error, please report: Statement continue cause function to abnormally return null. (fd67aaee).
+        ///   Looks up a localized string similar to Internal error, please report: Statement continue cause function to abnormally return null..
         /// </summary>
         public static string kInvalidContinueForFunction {
             get {
@@ -1385,7 +1376,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Internal error, please report: Method resolution failure on: {0}() - (8bc0db87).
+        ///   Looks up a localized string similar to Internal error, please report: Method resolution failure on: {0}().
         /// </summary>
         public static string kMethodResolutionFailure {
             get {
