@@ -74,6 +74,9 @@ namespace DSCore
         /// <search>divide,separaters,delimiter,cut,csv,comma,</search>
         public static string[] Split(string str, params string[] separaters)
         {
+            if (separaters.Contains(Environment.NewLine))
+                return str.Split(separaters, StringSplitOptions.RemoveEmptyEntries);
+
             return separaters.Contains("")
                 ? str.ToCharArray().Select(char.ToString).ToArray()
                 : str.Split(separaters, StringSplitOptions.RemoveEmptyEntries);
