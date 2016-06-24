@@ -849,9 +849,6 @@
   <data name="ArrayWithNotSupported" xml:space="preserve">
     <value>Array with no common superclass not yet supported: {0}</value>
   </data>
-  <data name="ErrorCode" xml:space="preserve">
-    <value>Error code: {0}</value>
-  </data>
   <data name="FailedToResolveSortingFunction" xml:space="preserve">
     <value>Failed to resolve the comparison function for sorting, expected def sorter : int(x,y)</value>
   </data>

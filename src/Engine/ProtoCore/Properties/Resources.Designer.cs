@@ -386,15 +386,6 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error code: {0}.
-        /// </summary>
-        public static string ErrorCode {
-            get {
-                return ResourceManager.GetString("ErrorCode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Null value cannot be cast to {0}.
         /// </summary>
         public static string FailedToCastFromNull {
