@@ -412,9 +412,13 @@ namespace Dynamo.Engine
         {
             // For Nodes with not .dll specific Assembly tag
             if (library == Categories.BuiltIn || library == Categories.Operators)
+            {
                 return builtinFunctionGroups.ContainsKey(nickname);
+            }
             else
+            {
                 return false;
+            }
         }
 
         private static bool CanbeResolvedTo(ICollection<string> partialName, ICollection<string> fullName)
