@@ -138,11 +138,13 @@ namespace Dynamo.Nodes
             var parent = TemplatedParent as ContentPresenter;
             if (parent == null) return;
 
+            // reset the ZIndex for all Notes
             foreach (var child in parent.ChildrenOfType<NoteView>())
             {
                 child.ViewModel.ZIndex = Configurations.NodeStartZIndex;
             }
-
+            
+            // reset the ZIndex for all Nodes
             foreach(var child in parent.ChildrenOfType<Controls.NodeView>())
             {
                 child.ViewModel.ZIndex = Configurations.NodeStartZIndex;
