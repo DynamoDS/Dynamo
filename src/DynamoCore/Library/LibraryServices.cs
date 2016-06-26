@@ -1005,7 +1005,6 @@ namespace Dynamo.Engine
         public static class Categories
         {
             public const string BuiltIn = "BuiltIn";
-            public const string BuiltIns = "Builtin Functions";
             public const string Operators = "Operators";
             public const string Constructors = "Create";
             public const string MemberFunctions = "Actions";
