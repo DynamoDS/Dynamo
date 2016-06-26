@@ -815,78 +815,8 @@ namespace Dynamo.Controls
 
         void DynamoViewModelRequestSaveImage(object sender, ImageSaveEventArgs e)
         {
-            if (string.IsNullOrEmpty(e.Path))
-                return;
-
-            var workspace = dynamoViewModel.Model.CurrentWorkspace;
-            if (workspace == null)
-                return;
-
-            if (!workspace.Nodes.Any() && (!workspace.Notes.Any()))
-                return; // An empty graph.
-
-            var initialized = false;
-            var bounds = new Rect();
-
-            var dragCanvas = WpfUtilities.ChildOfType<DragCanvas>(this);
-            var childrenCount = VisualTreeHelper.GetChildrenCount(dragCanvas);
-            for (int index = 0; index < childrenCount; ++index)
-            {
-                var child = VisualTreeHelper.GetChild(dragCanvas, index);
-                var firstChild = VisualTreeHelper.GetChild(child, 0);
-                if ((!(firstChild is NodeView)) && (!(firstChild is NoteView)))
-                    continue;
-
-                var childBounds = VisualTreeHelper.GetDescendantBounds(child as Visual);
-                childBounds.X = (double)(child as Visual).GetValue(Canvas.LeftProperty);
-                childBounds.Y = (double)(child as Visual).GetValue(Canvas.TopProperty);
-
-                if (initialized)
-                    bounds.Union(childBounds);
-                else
-                {
-                    initialized = true;
-                    bounds = childBounds;
-                }
-            }
-
-            // Add padding to the edge and make them multiples of two.
-            bounds.Width = (((int)Math.Ceiling(bounds.Width)) + 1) & ~0x01;
-            bounds.Height = (((int)Math.Ceiling(bounds.Height)) + 1) & ~0x01;
-
-            var drawingVisual = new DrawingVisual();
-            using (var drawingContext = drawingVisual.RenderOpen())
-            {
-                var targetRect = new Rect(0, 0, bounds.Width, bounds.Height);
-                var visualBrush = new VisualBrush(dragCanvas);
-                drawingContext.DrawRectangle(visualBrush, null, targetRect);
-
-                // drawingContext.DrawRectangle(null, new Pen(Brushes.Blue, 1.0), childBounds);
-            }
-
-            // var m = PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice;
-            // region.Scale(m.M11, m.M22);
-
-            var rtb = new RenderTargetBitmap(((int)bounds.Width),
-                ((int)bounds.Height), 96, 96, PixelFormats.Default);
-
-            rtb.Render(drawingVisual);
-
-            //endcode as PNG
-            var pngEncoder = new PngBitmapEncoder();
-            pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
-
-            try
-            {
-                using (var stm = File.Create(e.Path))
-                {
-                    pngEncoder.Save(stm);
-                }
-            }
-            catch
-            {
-                dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToSaveAsImage);
-            }
+            var workspace = this.ChildOfType<WorkspaceView>();
+            workspace.SaveWorkspaceAsImage(e.Path);
         }
 
         void DynamoViewModelRequestClose(object sender, EventArgs e)
