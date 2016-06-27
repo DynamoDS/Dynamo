@@ -8,6 +8,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Utilities;
 
 namespace Dynamo.Configuration
 {
@@ -51,6 +52,11 @@ namespace Dynamo.Configuration
         /// Indicates first run
         /// </summary>
         public bool IsFirstRun { get; set; }
+
+        /// <summary>
+        /// Indicates version of Dynamo before this run
+        /// </summary>
+        public string PrevDynamoVersion { get; set; }
 
         /// <summary>
         /// Indicates whether usage reporting is approved or not.
@@ -182,6 +188,14 @@ namespace Dynamo.Configuration
             }
         }
 
+        public Version GetPrevDynamoVersion()
+        {
+            if (string.IsNullOrWhiteSpace(PrevDynamoVersion))
+                return new Version();
+            else
+                return new Version(PrevDynamoVersion);
+        }
+
         /// <summary>
         /// A list of recently opened file paths.
         /// </summary>
@@ -308,6 +322,8 @@ namespace Dynamo.Configuration
         {
             try
             {
+                PrevDynamoVersion = AssemblyHelper.GetDynamoVersion(includeRevisionNumber: false).ToString();
+
                 var serializer = new XmlSerializer(typeof(PreferenceSettings));
                 using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                 {

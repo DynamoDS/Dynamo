@@ -424,7 +424,7 @@ namespace Dynamo.Controls
         /// Indicates if it is the first time new Dynamo version runs.
         /// It is used to decide whether the Gallery need to be shown on the StartPage.
         /// </param>
-        private void InitializeStartPage(bool isFirstRun)
+        private void InitializeStartPage(bool showGallery)
         {
             if (DynamoModel.IsTestMode) // No start screen in unit testing.
                 return;
@@ -437,7 +437,7 @@ namespace Dynamo.Controls
                     throw new InvalidOperationException(message);
                 }
 
-                startPage = new StartPageViewModel(dynamoViewModel, isFirstRun);
+                startPage = new StartPageViewModel(dynamoViewModel, showGallery);
                 startPageItemsControl.Items.Add(startPage);
             }
         }
@@ -480,8 +480,9 @@ namespace Dynamo.Controls
             // Do an initial load of the cursor collection
             CursorLibrary.GetCursor(CursorSet.ArcSelect);
 
-            //Backing up IsFirstRun to determine whether to show Gallery
-            var isFirstRun = dynamoViewModel.Model.PreferenceSettings.IsFirstRun;
+            var prevDynamoVersion = dynamoViewModel.Model.PreferenceSettings.GetPrevDynamoVersion();
+            var showGallery = prevDynamoVersion < AssemblyHelper.GetDynamoVersion(includeRevisionNumber: false) ? true : false;
+
             // If first run, Collect Info Prompt will appear
             UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
 
@@ -496,7 +497,8 @@ namespace Dynamo.Controls
                                                                      _timer.Elapsed, dynamoViewModel.BrandingResourceProvider.ProductName));
             InitializeLogin();
             InitializeShortcutBar();
-            InitializeStartPage(isFirstRun);
+
+            InitializeStartPage(showGallery);
 
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();
