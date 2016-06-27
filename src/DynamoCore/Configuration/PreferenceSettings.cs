@@ -191,7 +191,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Indicates if the Gallery should be shown
         /// </summary>
-        public bool ShowGallery()
+        public bool CanShowGallery()
         {
            
             if (string.IsNullOrWhiteSpace(PrevDynamoVersion))

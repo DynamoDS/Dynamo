@@ -495,7 +495,7 @@ namespace Dynamo.Controls
             InitializeLogin();
             InitializeShortcutBar();
 
-            InitializeStartPage(dynamoViewModel.Model.PreferenceSettings.ShowGallery());
+            InitializeStartPage(dynamoViewModel.Model.PreferenceSettings.CanShowGallery());
 
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();
