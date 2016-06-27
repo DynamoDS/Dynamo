@@ -203,13 +203,18 @@ namespace Dynamo.Views
                 childBounds.Y = (double)(child as Visual).GetValue(Canvas.TopProperty);
 
                 if (initialized)
+                {
                     bounds.Union(childBounds);
+                }
                 else
                 {
                     initialized = true;
                     bounds = childBounds;
                 }
             }
+
+            // Nothing found in the canvas, bail out.
+            if (!initialized) return;
 
             // Add padding to the edge and make them multiples of two (pad 10px on each side).
             bounds.Width = 20 + ((((int)Math.Ceiling(bounds.Width)) + 1) & ~0x01);
