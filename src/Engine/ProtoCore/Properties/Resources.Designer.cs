@@ -935,6 +935,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not an valid function..
+        /// </summary>
+        public static string InvalidFunction {
+            get {
+                return ResourceManager.GetString("InvalidFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to \&quot;{0}\&quot; is not a valid language block identifier, do you mean \&quot;Associative\&quot; or \&quot;Imperative\&quot;?.
         /// </summary>
         public static string InvalidLanguageBlockIdentifier {
@@ -1322,7 +1331,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Internal error, please report: Method &apos;{0}()&apos; is invoked on an invalid object..
+        ///   Looks up a localized string similar to Method &apos;{0}()&apos; is invoked on an invalid object..
         /// </summary>
         public static string kInvokeMethodOnInvalidObject {
             get {

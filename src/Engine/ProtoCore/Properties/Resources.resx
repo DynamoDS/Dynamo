@@ -304,7 +304,7 @@
     <value>'this' can only be used in methods that are members of a class</value>
   </data>
   <data name="kInvokeMethodOnInvalidObject" xml:space="preserve">
-    <value>Internal error, please report: Method '{0}()' is invoked on an invalid object.</value>
+    <value>Method '{0}()' is invoked on an invalid object.</value>
   </data>
   <data name="kMethodAlreadyDefined" xml:space="preserve">
     <value>Method '{0}()' is already defined</value>
@@ -907,5 +907,8 @@ Parameter name: {0}</value>
   </data>
   <data name="RunOutOfMemory" xml:space="preserve">
     <value>There is not enough memory to finish the operation.</value>
+  </data>
+  <data name="InvalidFunction" xml:space="preserve">
+    <value>Not an valid function.</value>
   </data>
 </root>

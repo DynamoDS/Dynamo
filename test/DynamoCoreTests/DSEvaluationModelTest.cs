@@ -1203,6 +1203,15 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] { 2, 3, 4, 5, 6 });
         }
+
+        [Test]
+        public void Regression_Magn_10015()
+        {
+            // no crash
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\10015.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("deb457c6-1b4b-4703-9476-db312b34a8e2", null);
+        }
     }
 
     [Category("GithubIssues")]
