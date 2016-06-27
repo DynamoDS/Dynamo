@@ -480,9 +480,6 @@ namespace Dynamo.Controls
             // Do an initial load of the cursor collection
             CursorLibrary.GetCursor(CursorSet.ArcSelect);
 
-            var prevDynamoVersion = dynamoViewModel.Model.PreferenceSettings.GetPrevDynamoVersion();
-            var showGallery = prevDynamoVersion < AssemblyHelper.GetDynamoVersion(includeRevisionNumber: false) ? true : false;
-
             // If first run, Collect Info Prompt will appear
             UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
 
@@ -498,7 +495,7 @@ namespace Dynamo.Controls
             InitializeLogin();
             InitializeShortcutBar();
 
-            InitializeStartPage(showGallery);
+            InitializeStartPage(dynamoViewModel.Model.PreferenceSettings.ShowGallery());
 
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();

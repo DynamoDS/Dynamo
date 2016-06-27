@@ -188,12 +188,21 @@ namespace Dynamo.Configuration
             }
         }
 
-        public Version GetPrevDynamoVersion()
+        /// <summary>
+        /// Indicates if the Gallery should be shown
+        /// </summary>
+        public bool ShowGallery()
         {
+           
             if (string.IsNullOrWhiteSpace(PrevDynamoVersion))
-                return new Version();
+                return true;
             else
-                return new Version(PrevDynamoVersion);
+            {
+                var prevVersion = new Version(PrevDynamoVersion);
+                return new Version(prevVersion.Major, prevVersion.Minor, prevVersion.Build, 0)
+                            < AssemblyHelper.GetDynamoVersion(includeRevisionNumber: false);
+            }
+            
         }
 
         /// <summary>
@@ -322,7 +331,7 @@ namespace Dynamo.Configuration
         {
             try
             {
-                PrevDynamoVersion = AssemblyHelper.GetDynamoVersion(includeRevisionNumber: false).ToString();
+                PrevDynamoVersion = AssemblyHelper.GetDynamoVersion(includeRevisionNumber: true).ToString();
 
                 var serializer = new XmlSerializer(typeof(PreferenceSettings));
                 using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
