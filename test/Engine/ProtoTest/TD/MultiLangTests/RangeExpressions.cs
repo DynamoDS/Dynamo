@@ -135,6 +135,7 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T04_SimpleRangeExpressionUsingFunctions()
         {
             string src = @"z1;z2;z3;z4;z5;z7;
@@ -245,6 +246,7 @@ Succesfully created function 'twice'
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T07_RangeExpressionWithIncrementUsingFunctionCall()
         {
             string code = @"
@@ -276,6 +278,7 @@ d;f;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T08_RangeExpressionWithIncrementUsingVariables()
         {
             string src = @"h;i;j;k;l;
@@ -337,6 +340,7 @@ o = {0.800000,0.810000}
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T09_RangeExpressionWithApproximateIncrement()
         {
             string src = @"a;b;f;g;h;j;k;l;
@@ -491,6 +495,7 @@ a1;a2;a3;a4;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T13_RangeExpressionWithStartEndValuesUsingFunctionCall()
         {
             string src = @"x;b;c;e1;f;g;
@@ -760,6 +765,7 @@ b;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T20_RangeExpressionsUsingPowerOperator()
         {
             string src = @"e1;f;
@@ -812,6 +818,7 @@ b;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T21_RangeExpressionsUsingEvenFunction()
         {
             string src = @"c;d;e1;f;g;
@@ -1308,6 +1315,7 @@ len = length(arr);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TA21_Defect_1454692_4()
         {
             string code = @"
@@ -1388,6 +1396,7 @@ a=(5..1).. (1..5);
 
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T26_RangeExpression_Function_tilda_1457845()
         {
             // 1467121
@@ -1439,6 +1448,7 @@ x;a;b;f;g;h;j;k;l;m;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T26_RangeExpression_Function_tilda_multilanguage_1457845_2()
         {
             // 1467121
@@ -1540,6 +1550,7 @@ x;a;b;f;g;h;j;k;l;m;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T27_RangeExpression_Function_Associative_1463472()
         {
             string code = @"
@@ -1559,6 +1570,7 @@ z1;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T27_RangeExpression_Function_Associative_1463472_2()
         {
 
@@ -1582,6 +1594,7 @@ c=twice(4);
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T27_RangeExpression_Function_return_1463472()
         {
             string code = @"
@@ -1628,6 +1641,7 @@ c=a.twice(4);
 
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T27_RangeExpression_Function_Associative_replication()
         {
             string code = @"

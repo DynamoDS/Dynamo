@@ -175,6 +175,7 @@ e;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T10_TestInFunctionScope()
         {
             string src = @"test;
@@ -319,6 +320,7 @@ c3;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T15_TestInRecursiveFunctionScope()
         {
             string src = @"val;
@@ -381,6 +383,7 @@ c3;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T18_TestMethodCallInExpr()
         {
             string src = @"test0;
@@ -721,6 +724,7 @@ e;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T32_Defect_1449877_2()
         {
             string src = @"d;
@@ -740,6 +744,7 @@ e;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T33_Defect_1450003()
         {
             string src = @"_a_test;
@@ -781,6 +786,7 @@ _c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardCompatibility"])
         public void T35_Defect_1450727_2()
         {
             string src = @"z;
@@ -1039,6 +1045,7 @@ d;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T48_MultipleAssignments()
         {
             string code = @"
@@ -1778,6 +1785,7 @@ x = foo();
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void T66_Defect_1467597()
         {
             String code =

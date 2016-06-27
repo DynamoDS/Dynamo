@@ -2754,6 +2754,7 @@ t4 = [Associative]
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void T0135_ReplicationGudes_ArraySlicingScope()
         {
             string code =

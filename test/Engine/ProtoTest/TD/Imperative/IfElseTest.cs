@@ -178,6 +178,7 @@ z;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         [Category("SmokeTest")]
         public void T05_InsideFunction()
         {
@@ -226,6 +227,7 @@ temp2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T06_NestedIfElse()
         {
             string src = @"temp1;
@@ -379,6 +381,7 @@ temp;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T11_TestIfElseUsingFunctionCall()
         {
             string src = @"a;
@@ -1098,6 +1101,7 @@ f;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T36_IfElseInsideFunctionScope()
         {
             string src = @"temp;
@@ -1165,6 +1169,7 @@ c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T38_Defect_1450939()
         {
             string src = @"c;
@@ -1388,6 +1393,7 @@ temp2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T44_Defect_1450706_2()
         {
             string src = @"x;
@@ -1496,6 +1502,7 @@ c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T48_Defect_1450858_2()
         {
             string src = @"test;
@@ -1546,6 +1553,7 @@ c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T50_Defect_1450817()
         {
             string src = @"temp;
@@ -1616,6 +1624,7 @@ c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T53_Defect_1452575()
         {
             string src = @"x;
@@ -1639,6 +1648,7 @@ c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T54_Defect_1451089()
         {
             string src = @"temp;
@@ -1717,6 +1727,7 @@ numpts2 = length(pts2);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T57_Function_With_If_Else_But_No_Default_Return_Statement()
         {
             string code = @"
@@ -2033,6 +2044,7 @@ A;
 
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T63_return_in_if_1467073()
         {
             string err = "1467073 - sprint 23 rev 2651-328756 throws warning missing return statement ";
@@ -2160,6 +2172,7 @@ if(a)
 
         [Test]
         [Category("TDDIfInline")]
+        [Category("BackwardIncompatible")]
         public void TDD_UserDefinedTypeConvertedToBool_Null()
         {
             String code =

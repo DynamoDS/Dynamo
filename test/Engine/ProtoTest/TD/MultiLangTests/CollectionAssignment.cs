@@ -629,6 +629,7 @@ b = CreateArray ( b, count );
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T23_Create_Dynamic_Array_Using_Replication_In_Imperative_Scope()
         {
             string code = @"
@@ -1350,6 +1351,7 @@ x = y.add(); // expected { { 0,0 }, { 1, 1, 1 }, {2, false, {2, 2}} }";
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T25_Adding_elements_1465704_7()
         {
             string code = @"
@@ -1378,6 +1380,7 @@ x = [Imperative]
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T25_Adding_elements_imperative_1465704_8()
         {
             string code = @"
@@ -1404,6 +1407,7 @@ a = [Imperative]
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T25_Adding_elements_imperative_1465704_9()
         {
             string error = "1467309 rev 3786 : Warning:Couldn't decide which function to execute... coming from valid code ";
@@ -1434,6 +1438,7 @@ a = [Imperative]
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T25_Adding_elements_imperative_1465704_10()
         {
             string code = @"
@@ -1712,6 +1717,7 @@ count = -2..-1;";
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T27_defect_1464429_DynamicArray_2()
         {
             string code = @"
@@ -1980,6 +1986,7 @@ aa;aa1;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T28_defect_1465706__DynamicArray_Imperative()
         {
             string code = @"
@@ -2003,6 +2010,7 @@ test = CreateArray ( test, 1 );
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T28_defect_1465706__DynamicArray_Imperative_2()
         {
             string code = @"
@@ -3334,6 +3342,7 @@ test = foo();
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T46_Defect_1467502_9_3()
         {
             String code =
@@ -3365,6 +3374,7 @@ test = foo();
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void T46_Defect_1467502_9_4()
         {
             String code =
@@ -3396,6 +3406,7 @@ test = foo();
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void T46_Defect_1467502_9_5()
         {
             String code =
@@ -3525,6 +3536,7 @@ test = foo().IntVal;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void T47_Defect_1467561_3()
         {
             String code =

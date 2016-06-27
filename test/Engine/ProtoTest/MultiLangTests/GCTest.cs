@@ -16,6 +16,7 @@ namespace ProtoTest.MultiLangTests
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void T01_TestGCArray()
         {
             string code = @"
@@ -380,6 +381,7 @@ v1 = DisposeCounter.x; // 2
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void T12_TestGCIfElseInFunction()
         {
             string code = @"

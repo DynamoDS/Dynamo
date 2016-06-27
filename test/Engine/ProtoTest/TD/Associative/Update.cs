@@ -96,6 +96,7 @@ e1 = foo3(a);
 
         [Test]
         [Category("Update")]
+        [Category("BackwardIncompatible")]
         public void T004_Update_In_Function_Call_2()
         {
             string errmsg = "";//1467302 - rev 3778 : invalid cyclic dependency detected";

@@ -24,6 +24,7 @@ namespace ProtoTest.TD.MultiLangTests
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T01_Function_In_Assoc_Scope()
         {
             string code = @"
@@ -45,6 +46,7 @@ a;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T02_Function_In_Imp_Scope()
         {
             string code = @"
@@ -64,6 +66,7 @@ a;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T03_Function_In_Nested_Scope()
         {
             string code = @"
@@ -93,6 +96,7 @@ a;b;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T04_Function_In_Nested_Scope()
         {
             string code = @"
@@ -152,6 +156,7 @@ b = 3.5;
 
         [Test]
         [Category("Smoke Test")]
+        [Category("BackwardIncompatible")]
         public void T06_Function_Imp_Inside_Assoc()
         {
             string code = @"
@@ -186,6 +191,7 @@ a;b;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T07_Function_Assoc_Inside_Imp()
         {
             string src = @"a;b;
@@ -399,6 +405,7 @@ a;b;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T12_Function_From_Inside_Function()
         {
             string code = @"
@@ -425,6 +432,7 @@ a;b;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T13_Function_From_Inside_Function()
         {
             string code = @"
@@ -451,6 +459,7 @@ def add_1 : double( a:double )
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T14_Function_Recursive_imperative()
         {
             string code = @"
@@ -480,6 +489,7 @@ a;b;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T18_Function_Recursive_associative()
         {
             string code = @"
@@ -509,6 +519,7 @@ a;b;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T15_Function_From_Parallel_Blocks()
         {
             //Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -544,6 +555,7 @@ a;b;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T16_Function_From_Parallel_Blocks()
         {
             //Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -607,6 +619,7 @@ a;b;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T19_Function_From_Imperative_While_And_For_Loops()
         {
             string code = @"
@@ -643,6 +656,7 @@ x;y;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T20_Function_From_Imperative_If_Block()
         {
             string code = @"
@@ -712,6 +726,7 @@ x;y;z;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T21_Function_From_Nested_Imperative_Loops()
         {
             string code = @"
@@ -764,6 +779,7 @@ x;y;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T22_Function_Call_As_Instance_Arguments()
         {
             string code = @"
@@ -788,6 +804,7 @@ A1 = [Associative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T23_Function_Call_As_Function_Call_Arguments()
         {
             string code = @"
@@ -817,6 +834,7 @@ c1;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T24_Function_Call_In_Range_Expression()
         {
             // Assert.Fail("1463472 - Sprint 20 : rev 2112 : Function calls are not working inside range expressions in Associative scope ");
@@ -861,6 +879,7 @@ a1;a2;a3;a4;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T25_Function_Call_In_Mathematical_And_Logical_Expr()
         {
             string code = @"
@@ -905,6 +924,7 @@ a1;a2;a3;a4;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T26_Function_Call_In_Mathematical_And_Logical_Expr()
         {
             string code = @"
@@ -949,6 +969,7 @@ x;a4;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T27_Function_Call_Before_Declaration()
         {
             string code = @"
@@ -980,6 +1001,7 @@ x;a4;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T29_Function_With_Different_Arguments()
         {
             string code = @"
@@ -1018,6 +1040,7 @@ y;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T30_Function_With_Mismatching_Return_Type()
         {
             //Assert.Throws(typeof(ProtoCore.Exceptions.RuntimeException), () =>
@@ -1044,6 +1067,7 @@ b1;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T31_Function_With_Mismatching_Return_Type()
         {
             string code = @"
@@ -1067,6 +1091,7 @@ b2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T32_Function_With_Mismatching_Return_Type()
         {
             //Assert.Throws(typeof(ProtoCore.Exceptions.RuntimeException), () =>
@@ -1094,6 +1119,7 @@ b2;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T33_Function_With_Mismatching_Return_Type()
         {
             string code = @"
@@ -1144,6 +1170,7 @@ b1;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T35_Function_With_Mismatching_Return_Type()
         {
             string code = @"
@@ -1167,6 +1194,7 @@ b2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T36_Function_With_Mismatching_Return_Type()
         {
             //Assert.Throws(typeof(ProtoCore.Exceptions.RuntimeException), () =>
@@ -1221,6 +1249,7 @@ b2 = [Associative]
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T38_Function_With_Mismatching_Return_Type()
         {
             //Assert.Throws(typeof(ProtoCore.Exceptions.RuntimeException), () =>
@@ -1312,6 +1341,7 @@ b2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T42_Function_With_Mismatching_Return_Type()
         {
             string code = @"
@@ -1334,6 +1364,7 @@ b2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T43_Function_With_Matching_Return_Type()
         {
             string code = @"
@@ -1356,6 +1387,7 @@ b2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T44_Function_With_Null_Argument()
         {
             string code = @"
@@ -1376,6 +1408,7 @@ b2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T45_Function_With_Mismatching_Argument_Type()
         {
             string code = @"
@@ -1397,6 +1430,7 @@ b2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T46_Function_With_Mismatching_Argument_Type()
         {
             string code = @"
@@ -1555,6 +1589,7 @@ c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T53_Function_Updating_Argument_Values()
         {
             string code = @"
@@ -1579,6 +1614,7 @@ aa;b2;c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T54_Function_Updating_Argument_Values()
         {
             string code = @"
@@ -1603,6 +1639,7 @@ aa;b2;c;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void T55_Function_Updating_Argument_Values()
         {
 
@@ -1628,6 +1665,7 @@ aa;b2;c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T56_Function_Updating_Argument_Values()
         {
             string code = @"
@@ -1655,6 +1693,7 @@ aa;bb;c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T57_Function_Using_Local_Var_As_Same_Name_As_Arg()
         {
             string code = @"
@@ -1754,6 +1793,7 @@ c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T61_Function_With_Void_Return_Stmt()
         {
             //Assert.Fail("1463474 - Sprint 20 : rev 2112 : negative case: when user tries to create a void function DS throws ArgumentOutOfRangeException ");
@@ -1781,6 +1821,7 @@ c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T62_Function_Modifying_Globals_Values()
         {
             //Assert.Fail("1461363 - Sprint 19 : rev 1800 : Global variable support is not there in function scope ");
@@ -1821,6 +1862,7 @@ z = foo2();
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T63_Function_Modifying_Globals_Values()
         {
             //Assert.Fail("1465794 - Sprint 22 : rev 2359 : Global variable support is not there in purely Imperative scope"); 
@@ -1849,6 +1891,7 @@ x = [Imperative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T64_Function_Modifying_Globals_Values_Negative()
         {
             string code = @"
@@ -1880,6 +1923,7 @@ a;b;c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T65_Function_With_No_Return_Type()
         {
             string code = @"
@@ -1905,6 +1949,7 @@ a;b;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T66_Function_Returning_Null()
         {
             string code = @"
@@ -1933,6 +1978,7 @@ a;b;c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T67_Function_Returning_Collection()
         {
             string code = @"
@@ -1962,6 +2008,7 @@ a;b;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T68_Function_Returning_Null()
         {
             string code = @"
@@ -2009,6 +2056,7 @@ a;b;
 
         [Test] //Fuqiang: this is changed due to the implementation of function pointer
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T70_Function_Name_Checking()
         {
             string code = @"
@@ -2044,6 +2092,7 @@ a;b;
 
         [Test] //Fuqiang: this is changed due to the implementation of function pointer
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T71_Function_Name_Checking()
         {
                 string code = @"
@@ -2168,6 +2217,7 @@ x;y;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T74_Function_With_Simple_Replication_Associative()
         {
             string code = @"
@@ -2195,6 +2245,7 @@ x;y;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T75_Function_With_Replication_In_Two_Args()
         {
             string code = @"
@@ -2222,6 +2273,7 @@ y;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T76_Function_With_Replication_In_One_Arg()
         {
             string code = @"
@@ -2249,6 +2301,7 @@ y;
 
         [Test]
         [Category("Replication")]
+        [Category("BackwardIncompatible")]
         public void T77_Function_With_Simple_Replication_Guide()
         {
             //Assert.Fail("1463477 - Sprint 20 : rev 2112 : replication guides throwing MethodResolutionException ");
@@ -2285,6 +2338,7 @@ a1;a2;a3;a4;
 
         [Test]
         [Category("Update")]
+        [Category("BackwardIncompatible")]
         public void T78_Function_call_By_Reference()
         {
             string code = @"
@@ -2316,6 +2370,7 @@ c;d;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T79_Function_call_By_Reference()
         {
             string code = @"
@@ -2347,6 +2402,7 @@ c;d;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T80_Function_call_By_Reference()
         {
             string code = @"
@@ -2381,6 +2437,7 @@ c;d;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T81_Function_Calling_Imp_From_Assoc()
         {
             string code = @"
@@ -2413,6 +2470,7 @@ b;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T82_Function_Calling_Assoc_From_Imp()
         {
             string code = @"
@@ -2487,6 +2545,7 @@ z = y.IntVal;";
 
         [Test]
         [Category("Replication")]
+        [Category("BackwardIncompatible")]
         public void T85_Function_With_No_Type()
         {
             // Assert.Fail("1467080 - sprint23 : rev 2681 : method overload issue over functions with same name and signature in multiple language blocks");
@@ -2534,6 +2593,7 @@ a12;a22;a32;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T86_Function_With_For_Loop()
         {
             string code = @"
@@ -2772,6 +2832,7 @@ i;j;k;a;b;c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV00_Function_With_If_Statements()
         {
             string src = @"a;
@@ -2802,6 +2863,7 @@ i;j;k;a;b;c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV01_Function_With_While_Statements()
         {
             string src = @"d;
@@ -2828,6 +2890,7 @@ i;j;k;a;b;c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV02_Function_With_For_Statements()
         {
             string src = @"d;
@@ -2860,6 +2923,7 @@ i;j;k;a;b;c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV03_Function_With_Recursion()
         {
             string src = @"x;
@@ -2885,6 +2949,7 @@ i;j;k;a;b;c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV04_Function_With_RangeExpression()
         {
             string src = @"d;
@@ -2907,6 +2972,7 @@ i;j;k;a;b;c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV05_Function_With_RangeExpression_2()
         {
             string src = @"a;d;
@@ -2932,6 +2998,7 @@ i;j;k;a;b;c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV06_Function_With_Logical_Operators()
         {
             string src = @"a;
@@ -2960,6 +3027,7 @@ i;j;k;a;b;c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV07_Function_With_Math_Operators()
         {
             string code = @"a;
@@ -2998,6 +3066,7 @@ i;j;k;a;b;c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV08_Function_With_Outer_Function_Calls()
         {
             string src = @"x;y;
@@ -3035,6 +3104,7 @@ i;j;k;a;b;c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV09_Function_With_Argument_Update_Imperative()
         {
             string src = @"e;f;
@@ -3082,6 +3152,7 @@ b = [Imperative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV11_Function_Update_Local_Variables()
         {
             string src = @"r;
@@ -3131,6 +3202,7 @@ b = [Imperative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV13_Empty_Functions_Imperative()
         {
             string src = @"b;
@@ -3224,6 +3296,7 @@ e;f;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV18_Function_Access_Global_Variables_Inside()
         {
             //Assert.Fail("1461363 - Sprint 19 : rev 1800 : Global variable support is not there in function scope ");
@@ -3250,6 +3323,7 @@ e;f;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV19_Function_Modify_Global_Variables_Inside()
         {
             //Assert.Fail("1461363 - Sprint 19 : rev 1800 : Global variable support is not there in function scope "); 
@@ -3696,6 +3770,7 @@ f = foo ( 1, 2 );
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV34_Implicit_Conversion_Int_To_Bool()
         {
             string code = @"
@@ -3790,6 +3865,7 @@ d = foo ( 2.3, 2 );
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV38_Defect_1449956()
         {
             string code = @"
@@ -3847,6 +3923,7 @@ def recursion: int ( a : int )
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV40_Defect_1449956_3()
         {
             string code = @"
@@ -3875,6 +3952,7 @@ x;y;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV41_Defect_1454959()
         {
             string code = @"
@@ -3952,6 +4030,7 @@ def foo2 ( a )
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV43_Defect_1455143()
         {
             string code = @"
@@ -3999,6 +4078,7 @@ a2;b2;c2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV44_Defect_1455245()
         {
             string code = @"
@@ -4025,6 +4105,7 @@ a;b;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV45_Defect_1455278()
         {
             string code = @"
@@ -4193,6 +4274,7 @@ x;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV50_Defect_1456108()
         {
             string code = @"
@@ -4224,6 +4306,7 @@ c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV51_Defect_1456108_2()
         {
             string code = @"
@@ -4434,6 +4517,7 @@ b1 = [Imperative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV54_Defect_1456397_3()
         {
             string code = @"
@@ -4667,6 +4751,7 @@ def multiply : double[] (a : double[])
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV61_Defect_1456100()
         {
             string code = @"
@@ -4748,6 +4833,7 @@ d;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV64_Defect_1455090_3()
         {
             string code = @"
@@ -4830,6 +4916,7 @@ import(""FFITarget.dll"");
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV67_Defect_1455090_6()
         {
             string code = @"
@@ -5037,6 +5124,7 @@ X = p.X;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV71_Defect_1456108()
         {
             string code = @"
@@ -5100,6 +5188,7 @@ c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV72_Defect_1454541()
         {
             string code = @"
@@ -5122,6 +5211,7 @@ d1;d2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV72_Defect_1454541_1()
         {
             string code = @"
@@ -5144,6 +5234,7 @@ d1;d2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV72_Defect_1454541_2()
         {
             string code = @"
@@ -5161,6 +5252,7 @@ d2 = d1[1];
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV73_Defect_1451831()
         {
             string code = @"
@@ -5203,6 +5295,7 @@ y;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV74_Defect_1456426()
         {
             string code = @"
@@ -5350,6 +5443,7 @@ sum1;sum2;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Method Resolution")]
+        [Category("BackwardIncompatible")]
         public void TV77_Defect_1455259()
         {
 
@@ -6424,6 +6518,7 @@ y4 = foo ( 0, d1 );
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV90_Defect_1463474()
         {
             //Assert.Fail("1461363 - Sprint 19 : rev 1800 : Global variable support is not there in function scope ");
@@ -6451,6 +6546,7 @@ a;b;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV90_Defect_1463474_2()
         {
             string code = @"
@@ -6468,6 +6564,7 @@ b1 = a;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV90_Defect_1463474_3()
         {
             //Assert.Fail("1461363 - Sprint 19 : rev 1800 : Global variable support is not there in function scope "); 
@@ -6867,6 +6964,7 @@ t = Test(a);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV96_Defect_DNL_1465794()
         {
 
@@ -6894,6 +6992,7 @@ x = [Imperative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV96_Defect_DNL_1465794_2()
         {
             string code = @"
@@ -6924,6 +7023,7 @@ x = [Imperative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV96_Defect_DNL_1465794_3()
         {
             string code = @"
@@ -7447,6 +7547,7 @@ t = foo()[0];";
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TV101_Indexing_IntoArray_InFunctionCall_1463234_2()
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
@@ -7595,6 +7696,7 @@ zz = p1.Z; // expected 0, received 0
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TV102_GlobalVariable_Function_1466768_1()
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
@@ -7679,6 +7781,7 @@ b=prop(convert);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void TV103_Defect_1455090_Rank_Of_Arg()
         {
             String code =
@@ -8153,6 +8256,7 @@ def foo3()
 
         [Test]
         [Category("Method Resolution")]
+        [Category("BackwardIncompatible")]
         public void T28_Function_Arguments_Declared_Before_Function_Def()
         {
             string code = @"
@@ -8208,6 +8312,7 @@ result3 =
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T63_Function_notDeclared()
         {
             String code = @"

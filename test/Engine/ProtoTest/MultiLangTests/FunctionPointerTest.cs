@@ -40,6 +40,7 @@ c = foo(2, 4.0); //c = 6.0";
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T03_GlobalFunctionInAssocBlk()
         {
             string code = @"
@@ -64,6 +65,7 @@ c;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T04_GlobalFunctionInImperBlk()
         {
             string code = @"
@@ -253,6 +255,7 @@ foo = 3;";
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T11_NegativeTest_UsingFunctionNameAsVarName_Global_ImperBlk()
         {
             string code = @"

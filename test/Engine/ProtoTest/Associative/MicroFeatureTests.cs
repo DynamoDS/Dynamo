@@ -99,6 +99,7 @@ c;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestFunctions01()
         {
             String code =
@@ -124,6 +125,7 @@ test3;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestFunctions02()
         {
             String code =
@@ -150,6 +152,7 @@ temp;
 
         [Test]
         [Category("Failure")]
+        [Category("BackwardIncompatible")]
         public void TestDuplicateFunctionParams()
         {
             const string code = @"
@@ -166,6 +169,7 @@ temp = test(1, 2);
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestFunctionsOverload01()
         {
             String code =
@@ -192,6 +196,7 @@ test2;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestFunctionsOverload02()
         {
             String code =
@@ -223,6 +228,7 @@ j;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestFunctionsOverload03()
         {
             String code =
@@ -278,6 +284,7 @@ j;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestClasses01()
         {
             String code =
@@ -296,6 +303,7 @@ c = p.Z;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestFunction01()
         {
             String code =
@@ -386,6 +394,7 @@ c = p.Z;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestFunction02()
         {
             String code =
@@ -486,6 +495,7 @@ t = b.x;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestClassFunction01()
         {
             String code =
@@ -637,6 +647,7 @@ x = d.foo(c);
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestClassFunction03()
         {
             String code =
@@ -948,6 +959,7 @@ l_ep_z = l_ep.get_Z();
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestClassFunction09()
         {
             String code =
@@ -1257,6 +1269,7 @@ class TestClass
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestClassFunction15()
         {
             String code =
@@ -1453,6 +1466,7 @@ b = S.a;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestStaticMethodResolution()
         {
             string code = @"
@@ -1590,6 +1604,7 @@ a;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestArray002()
         {
             String code =
@@ -2499,6 +2514,7 @@ c = f(a<1L>,b<2>);
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestReplicationGuidesOnDotOps01()
         {
             string code = @"
@@ -2602,6 +2618,7 @@ z = x[1];
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestTypeArrayAssign4()
         {
             string code = @"
@@ -2624,6 +2641,7 @@ b:int[] = a;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestTypeArrayAssign6()
         {
             string code = @"
@@ -3363,6 +3381,7 @@ t = f(p);
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("JunToFix")]
+        [Category("BackwardIncompatible")]
         public void TestFunctionUpdate02()
         {
             String code =
@@ -3496,6 +3515,7 @@ t = p.m.x;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestPropertyUpdate05()
         {
             String code =
@@ -3517,6 +3537,7 @@ y = 1000;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestPropertyUpdate06()
         {
             String code =
@@ -3610,6 +3631,7 @@ a = 10;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestPropertyModificationInMethodUpdate01()
         {
             String code =
@@ -3634,6 +3656,7 @@ a = f();
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestPropertyModificationInMethodUpdate02()
         {
             String code =
@@ -4176,6 +4199,7 @@ t = {1,2,3};
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestTypeArrayAssign3()
         {
             String code =
@@ -4286,6 +4310,7 @@ t = 3;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestTypedAssignment05()
         {
             string code =
@@ -4393,6 +4418,7 @@ y = f(x);
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestGlobalFunctionRecursion100_GlobalIncrement()
         {
             string code =
@@ -4422,6 +4448,7 @@ z = global;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestGlobalFunctionRecursion100_GlobalIncrementInFunction01()
         {
             string code =
@@ -4456,6 +4483,7 @@ z = global;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestGlobalFunctionRecursion100_GlobalIncrementInFunction02()
         {
             string code =

@@ -78,6 +78,7 @@ t1 = A.A(0..4).a;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Imperative")]
+        [Category("BackwardIncompatible")]
         public void T004_array_TypeConversion()
         {
             String code =

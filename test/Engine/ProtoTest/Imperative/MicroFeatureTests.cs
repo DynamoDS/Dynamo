@@ -111,6 +111,7 @@ foo;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestFunction01()
         {
             String code =
@@ -141,6 +142,7 @@ a;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestFunction02()
         {
             string code =
@@ -157,6 +159,7 @@ a;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestFunction03()
         {
             string code =
@@ -952,6 +955,7 @@ x1; x2; x3; x4;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void Factorial01()
         {
             String code =

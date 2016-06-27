@@ -8,6 +8,7 @@ namespace ProtoTest.TD.Associative
     {
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T001_Associative_Function_Simple()
         {
             string code = @"
@@ -39,6 +40,7 @@ sum;
         [Test]
         //Function does not accept single line function / Direct Assignment
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T002_Associative_Function_SinglelineFunction()
         {
             string code = @"
@@ -56,6 +58,7 @@ d;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T003_Associative_Function_MultilineFunction()
         {
             string code = @"
@@ -75,6 +78,7 @@ d;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T004_Associative_Function_SpecifyReturnType()
         {
             string code = @"
@@ -93,6 +97,7 @@ d;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void T005_Associative_Function_SpecifyArgumentType()
         {
             string code = @"
@@ -137,6 +142,7 @@ result;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T007_Associative_Function_NestedFunction()
         {
             string code = @"
@@ -164,6 +170,7 @@ result;
         [Test]
         //Function does not work if the argument variable is declared before function declaration
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T008_Associative_Function_DeclareVariableBeforeFunctionDeclaration()
         {
             string code = @"
@@ -210,6 +217,7 @@ sum;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T010_Associative_Function_PassAndReturnBooleanValue()
         {
             string code = @"
@@ -233,6 +241,7 @@ result2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T011_Associative_Function_FunctionWithoutArgument()
         {
             string code = @"
@@ -253,6 +262,7 @@ result1;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T012_Associative_Function_MultipleFunctions()
         {
             string code = @"
@@ -353,6 +363,7 @@ result2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T016_Associative_Function_ModifyArgumentInsideFunctionDoesNotAffectItsValue()
         {
             string code = @"
@@ -380,6 +391,7 @@ originalInput;
         [Test]
         //Calling a function before its declaration causes compilation failure
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T017_Associative_Function_CallingAFunctionBeforeItsDeclaration()
         {
             string code = @"

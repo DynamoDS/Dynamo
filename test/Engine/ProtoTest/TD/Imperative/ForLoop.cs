@@ -152,6 +152,7 @@ namespace ProtoTest.TD.Imperative
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T08_TestForLoopInsideFunctionDeclaration()
         {
             string src = @"y;
@@ -655,6 +656,7 @@ a7;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T27_TestCallingFunctionInsideForLoop()
         {
             string src = @"x;
@@ -871,6 +873,7 @@ sum;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T36_Defect_1452966_3()
         {
             string code = @"
@@ -978,6 +981,7 @@ b;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T39_Defect_1452951()
         {
             string code = @"

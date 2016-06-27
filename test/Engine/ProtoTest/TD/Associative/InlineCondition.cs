@@ -222,6 +222,7 @@ number = { 3, -3 };
 
         [Test]
         [Category("Imperative")]
+        [Category("BackwardIncompatible")]
         public void T010_Defect_1456751_replication_issue()
         {
             String errmsg = "1467166 - VALIDATION NEEDED - Sprint24 : rev 3133 : Regression : comparison of collection with singleton should yield null in imperative scope";
@@ -928,6 +929,7 @@ z = 3;
 
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T021_1467442()
         {
             string code = @"

@@ -1283,6 +1283,7 @@ c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void ArraySimpleCall01()
         {
             String code =
@@ -1934,6 +1935,7 @@ xdata = { 1.5, 2 };
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T58_Defect_1456115_Replication_Over_Collections()
         {
             String code =
@@ -1978,6 +1980,7 @@ t2 = two[1];
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T58_Defect_1456115_Replication_Over_Collections_3()
         {
             String code =
@@ -2001,6 +2004,7 @@ y;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T58_Defect_1456115_Replication_Over_Collections_4()
         {
             String code =
@@ -2024,6 +2028,7 @@ y;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T58_Defect_1456115_Replication_Over_Collections_5()
         {
             String code =
@@ -2047,6 +2052,7 @@ y;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T58_Defect_1456115_Replication_Over_Collections_6()
         {
             String code =
@@ -2390,6 +2396,7 @@ a = fun({{1.0}, {2.0}});";
 
         [Test]
         [Category("Replication")]
+        [Category("BackwardIncompatible")]
         public void T64_Defect_1456105_replication_on_function_with_no_arg_type()
         {
             String code =
@@ -2687,6 +2694,7 @@ p2 = DummyPoint.ByCoordinates(-20.0,-30.0,-40.0).X;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
+        [Category("BackwardIncompatible")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_4()
         {
             String code =

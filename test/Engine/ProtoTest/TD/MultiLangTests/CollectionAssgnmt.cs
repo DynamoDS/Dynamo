@@ -84,6 +84,7 @@ def foo: int[]( a: int,b: int )
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void Collection_Assignment_4()
         {
             string code = @"

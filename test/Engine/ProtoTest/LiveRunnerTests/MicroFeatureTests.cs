@@ -1951,6 +1951,7 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestFunctionOverloadRedefinitionOnUnmodifiedNode01()
         {
             List<string> codes = new List<string>() 
@@ -2013,6 +2014,7 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestFunctionOverloadRedefinitionOnUnmodifiedNode02()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4229
@@ -2355,6 +2357,7 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestCodeblockModification01()
         {
             List<string> codes = new List<string>() 
@@ -4940,7 +4943,9 @@ r = func_1(x);
         public void TestNestedLanguageBlockReExecution05()
         {
             string code = @"
-def foo()
+
+
+def foo()
 {
     x2 = 5;
     v1 = [Associative]
