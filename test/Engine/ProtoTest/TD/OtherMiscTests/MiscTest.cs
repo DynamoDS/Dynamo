@@ -9,6 +9,7 @@ namespace ProtoTest.TD.OtherMiscTests
     {
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void Fibunacci()
         {
             string code = @"
