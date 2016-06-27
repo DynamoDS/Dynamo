@@ -443,7 +443,7 @@ namespace Dynamo.Controls
             nodeWasClicked = false;
 
             // Always set old ZIndex to the last value, even if mouse is not over the node.
-            //oldZIndex = NodeViewModel.StaticZIndex;
+            oldZIndex = NodeViewModel.StaticZIndex;
 
             // There is no need run further.
             if (IsPreviewDisabled()) return;
@@ -459,7 +459,7 @@ namespace Dynamo.Controls
                 PreviewControl.TransitionToState(PreviewControl.State.Condensed);
             }
 
-            //Dispatcher.DelayInvoke(previewDelay, BringToFront);
+            Dispatcher.DelayInvoke(previewDelay, BringToFront);
         }
 
         private bool IsPreviewDisabled()
@@ -478,7 +478,7 @@ namespace Dynamo.Controls
 
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
-           // ViewModel.ZIndex = oldZIndex;
+            ViewModel.ZIndex = oldZIndex;
 
             // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
             if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen ||
