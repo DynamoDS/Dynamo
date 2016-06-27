@@ -370,11 +370,24 @@ namespace Dynamo.UI.Controls
             {
                 var extension = Path.GetExtension(filePath).ToUpper();
                 var caption = Path.GetFileNameWithoutExtension(filePath);
+                if (extension.IndexOf(".") == 0)
                 {
                     files.Add(new StartPageListItem(caption)
                     {
                         ContextData = filePath,
                         ToolTip = filePath,
+                        SubScript = extension.Substring(1), // Skipping the 'dot'
+                        ClickAction = StartPageListItem.Action.FilePath
+                    });
+                }
+                else
+                {
+                    // If not extension specified and code reach here, this means this is still a valid file only without file type.
+                    files.Add(new StartPageListItem(caption)
+                    {
+                        ContextData = filePath,
+                        ToolTip = filePath,
+                        SubScript = "",
                         ClickAction = StartPageListItem.Action.FilePath
                     });
                 }
