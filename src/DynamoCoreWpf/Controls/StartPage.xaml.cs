@@ -370,13 +370,14 @@ namespace Dynamo.UI.Controls
             {
                 var extension = Path.GetExtension(filePath).ToUpper();
                 var caption = Path.GetFileNameWithoutExtension(filePath);
-                files.Add(new StartPageListItem(caption)
                 {
-                    ContextData = filePath,
-                    ToolTip = filePath,
-                    SubScript = extension.Substring(1), // Skipping the 'dot'
-                    ClickAction = StartPageListItem.Action.FilePath
-                });
+                    files.Add(new StartPageListItem(caption)
+                    {
+                        ContextData = filePath,
+                        ToolTip = filePath,
+                        ClickAction = StartPageListItem.Action.FilePath
+                    });
+                }
             }
         }
 
