@@ -524,6 +524,7 @@ aA;bA;cA;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T019_LanguageBlockScope_ImperativeNestedAssociative_Function()
         {
             string code = @"
@@ -548,6 +549,7 @@ z;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T020_LanguageBlockScope_AssociativeNestedImperative_Function()
         {
             string src = @"z;
@@ -570,6 +572,7 @@ z;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T021_LanguageBlockScope_DeepNested_IAI_Function()
         {
             string code = @"
@@ -605,6 +608,7 @@ z_2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T022_LanguageBlockScope_DeepNested_AIA_Function()
         {
             string src = @"z_1;
@@ -670,6 +674,7 @@ z_2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T024_LanguageBlockScope_ImperativeParallelAssociative_Function()
         {
 
@@ -731,6 +736,7 @@ z_2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T026_LanguageBlockScope_ImperativeParallelImperative_Function()
         {
             //Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -799,6 +805,7 @@ z_2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T028_LanguageBlockScope_MultipleParallelLanguageBlocks_IAI_Function()
         {
             //Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -837,6 +844,7 @@ z_2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T029_LanguageBlockScope_ParallelInsideNestedBlock_AssociativeNested_II_Function()
         {
             string src = @"z_I1;
@@ -884,6 +892,7 @@ z_A2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T030_LanguageBlockScope_ParallelInsideNestedBlock_ImperativeNested_AA()
         {
             string code = @"

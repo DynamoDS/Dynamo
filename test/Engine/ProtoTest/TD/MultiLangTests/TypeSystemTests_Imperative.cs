@@ -60,6 +60,7 @@ a;b;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS003IntToChar1467119_Imperative()
         {
             string code =
@@ -76,6 +77,7 @@ a;b;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS004_IntToChar_1467119_2_Imperative()
         {
             string code =
@@ -93,6 +95,7 @@ a;b;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS005_RetTypeArray_return_Singleton_1467196_Imperative()
         {
             string code =
@@ -120,6 +123,7 @@ import(""FFITarget.dll"");
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS006_RetTypeuserdefinedArray_return_double_1467196_Imperative()
         {
             string code =
@@ -148,6 +152,7 @@ a;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS007_Return_double_To_int_1467196_Imperative()
         {
             string code =
@@ -177,6 +182,7 @@ import(""FFITarget.dll"");
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS008_Param_Int_IntArray_1467208_Imperative()
         {
             string code =
@@ -212,6 +218,7 @@ import(""FFITarget.dll"");
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS010_Parameter_Bool_ToIntArray_1467182_Imperative()
         {
             string code =
@@ -228,6 +235,7 @@ import(""FFITarget.dll"");
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS011_Return_Int_ToIntArray_Imperative()
         {
             string code =
@@ -245,6 +253,7 @@ import(""FFITarget.dll"");
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS012_Return_Int_ToBoolArray_1467182_Imperative()
         {
             string code =
@@ -262,6 +271,7 @@ import(""FFITarget.dll"");
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS013_Parameter_Bool_ToIntArray_Imperative()
         {
             string code =
@@ -279,6 +289,7 @@ import(""FFITarget.dll"");
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS014_Return_IntArray_ToInt_Imperative()
         {
             string code =
@@ -296,6 +307,7 @@ import(""FFITarget.dll"");
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS015_Parameter_BoolArray_ToInt_Imperative()
         {
             string code =
@@ -314,6 +326,7 @@ import(""FFITarget.dll"");
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS016_Return_BoolArray_ToInt_Imperative()
         {
             string code =
@@ -336,7 +349,8 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""FFITarget.dll"");
+import(""FFITarget.dll"");
+
 c;
                             [Imperative]{
                        
@@ -353,6 +367,7 @@ c;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS018_Param_Int_ordouble_ToBool_1467172_Imperative()
         {
             string code =
@@ -547,6 +562,7 @@ foo3;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS023_Double_To_Int_1467084_Imperative()
         {
             string code =
@@ -564,6 +580,7 @@ foo3;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS023_Double_To_Int_1467084_2_Imperative()
         {
             string code =
@@ -633,6 +650,7 @@ d;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS026_Double_ToInt_1467211_Imperative()
         {
             string code =
@@ -649,6 +667,7 @@ d;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS027_Double_ToInt_1467217_Imperative()
         {
             string code =
@@ -666,6 +685,7 @@ d;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS028_Double_ToInt_1467218_Imperative()
         {
             string code =
@@ -682,6 +702,7 @@ d;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS028_Double_ToInt_1467218_1_Imperative()
         {
             string code =
@@ -723,6 +744,7 @@ b;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS029_Double_ToInt_1463268_Imperative()
         {
             string code =
@@ -741,6 +763,7 @@ b;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS030_eachtype_To_var_Imperative()
         {
             string code =
@@ -775,6 +798,7 @@ a; b; c; d1; e; f;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS031_eachType_To_int_Imperative()
         {
             string code =
@@ -809,6 +833,7 @@ a;b;c;d1;e;f;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS031_eachtype_To_double_Imperative()
         {
             string code =
@@ -874,6 +899,7 @@ a;b;c;c1;d;e;e1;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS033_eachType_To_string_Imperative()
         {
             string code =
@@ -909,6 +935,7 @@ a;b;c;d1;e;f;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS034_eachType_To_char_Imperative()
         {
             string code =
@@ -943,6 +970,7 @@ a;b;c;d1;c1;e;f;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS34_CharToString_1467227_Imperative()
         {
             string code =
@@ -1086,6 +1114,7 @@ a1;b1;b2;c;c1;c2;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS41_null_toBool_1467231_2_Imperative()
         {
             string code =
@@ -1103,6 +1132,7 @@ a1;b1;b2;c;c1;c2;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS42_null_toBool_1467231_3_Imperative()
         {
             string code =
@@ -1170,6 +1200,7 @@ a;b;c;d;e;f;g;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS45_int_To_Double_1463268_Imperative()
         {
             string code =
@@ -1327,6 +1358,7 @@ a;b;c;d;e1;f;g;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS047_double_To_Int_insidefunction_Imperative()
         {
             string code =
@@ -1634,6 +1666,7 @@ a;a1;b;c;d;e;e1;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS056_Return_AlltypeTo_BoolArray_Imperative()
         {
             string code =
@@ -1672,6 +1705,7 @@ a;a1;b;c;d;e;f;g;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS056_Return_BoolArray_1467258_Imperative()
         {
             string code =
@@ -1776,6 +1810,7 @@ import(""FFITarget.dll"");
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS063_basic_upcoerce_dispatch_Imperative()
         {
             string code =
@@ -1793,6 +1828,7 @@ import(""FFITarget.dll"");
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS063_basic_upcoerce_return_Imperative()
         {
             string code =
@@ -1878,6 +1914,7 @@ import(""FFITarget.dll"");
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS067_string_To_Char_1467119_2_Imperative()
         {
             string code =
@@ -1896,6 +1933,7 @@ import(""FFITarget.dll"");
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS068_Param_singleton_AlltypeTo_BoolArray_Imperative()
         {
             string code =
@@ -1933,6 +1971,7 @@ a;a1;b;c;d;e;e1;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS069_Return_singleton_AlltypeTo_BoolArray_Imperative()
         {
             string code =
@@ -1970,6 +2009,7 @@ a;a1;b;c;c1;d;e;e1;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS070_Param_singleton_AlltypeTo_StringArray_Imperative()
         {
             string code =
@@ -2007,6 +2047,7 @@ a;a1;b;c;c1;d;e;e1;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS071_return_singleton_AlltypeTo_StringArray_Imperative()
         {
             string code =
@@ -2044,6 +2085,7 @@ a;a1;b;c;c1;d;e;f;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS072_Param_singleton_AlltypeTo_CharArray_Imperative()
         {
             string code =
@@ -2081,6 +2123,7 @@ a;a1;b;c;c1;d;e;f;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS073_return_singleton_AlltypeTo_CharArray_Imperative()
         {
             string code =
@@ -2312,6 +2355,7 @@ a1;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void indexintoarray_left_1467462_4_imperative()
         {
             string code =
@@ -2490,6 +2534,7 @@ myRangeExpressionResult ;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS0193_TypeConversion_nested_block_1467568()
         {
             string code =

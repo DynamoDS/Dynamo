@@ -259,6 +259,7 @@ t3 = lines[2].StartPoint.X;";
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
+        [Category("BackwardIncompatible")]
         public void T00009_Geometry_006_circle_all_unique_combinations()
         {
             //Assert.Fail("1456568 - Sprint 16 : Rev 982 : Replication does not work on operators "); 
@@ -673,6 +674,7 @@ x3 = side_c_a.MidPoint.X;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Feature")]
+        [Category("BackwardIncompatible")]
         public void T00016_Geometry_012_centroid_1()
         {
             string code = @"

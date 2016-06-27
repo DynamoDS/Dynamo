@@ -376,6 +376,7 @@ a=numpts.IntVal;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS018_Param_Int_ordouble_ToBool_1467172()
         {
             string code =
@@ -407,6 +408,7 @@ b;c;d;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS018_Return_Int_ordouble_ToBool_1467172_2()
         {
             string code =
@@ -499,6 +501,7 @@ b;c;d;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS020_conditional_cantevaluate_1467170()
         {
             string code =
@@ -520,6 +523,7 @@ b;c;d;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS020_conditional_cantevaluate_1465293()
         {
             string code =
@@ -552,6 +556,7 @@ b;c;d;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS020_conditional_cantevaluate_1465293_2()
         {
             string code =
@@ -586,6 +591,7 @@ z;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS020_conditional_cantevaluate_1465293_3()
         {
             string code =
@@ -615,6 +621,7 @@ z = foo(a);
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS020_conditional_cantevaluate_1465293_4()
         {
             string code =
@@ -1333,7 +1340,8 @@ import(""FFITarget.dll"");
         public void TS038_eachType_To_Userdefined()
         {
             string code =
-                @"import(""FFITarget.dll"");    
+                @"
+import(""FFITarget.dll"");    
                             a:A= 1;//
                             b:A= -0.1; //
                             c:A= ""1.5""; //false
@@ -1574,7 +1582,8 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""FFITarget.dll"");
+import(""FFITarget.dll"");
+
                     a:double= null; 
                     b:int =  null; 
                     c:string=null; 
@@ -1617,7 +1626,8 @@ import(""FFITarget.dll"");
         {
             string code =
                 @"
-import(""FFITarget.dll"");
+import(""FFITarget.dll"");
+
                     a:double[]= {1,2,3}; 
                     
                     b:int[] =  {1,2,3}; 
@@ -2196,6 +2206,7 @@ import(""FFITarget.dll"");
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS051_Param_eachType_To_intArray()
         {
             string code =
@@ -2232,6 +2243,7 @@ import(""FFITarget.dll"");
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS052_Return_AllTypeTo_doubleArray()
         {
             //  
@@ -2269,6 +2281,7 @@ import(""FFITarget.dll"");
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS053_Param_AlltypeTo_doubleArray()
         {
             //  
@@ -2307,6 +2320,7 @@ import(""FFITarget.dll"");
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         [Category("Failure")]
+        [Category("BackwardIncompatible")]
         public void TS055_Param_AlltypeTo_BoolArray()
         {
             string code =
@@ -2546,6 +2560,7 @@ a;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS063_basic_upcoerce_dispatch()
         {
             string code =
@@ -2563,6 +2578,7 @@ a;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS063_basic_upcoerce_return()
         {
             string code =
@@ -3349,6 +3365,7 @@ import(""FFITarget.dll"");
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TZ01_1467320_single_To_Dynamicarray()
         {
             string code =
@@ -3854,7 +3871,8 @@ import(""FFITarget.dll"");
         public void TS094_Param_notypedefined_single_Userdefined()
         {
             string code =
-                    @"import(""FFITarget.dll"");
+                    @"
+import(""FFITarget.dll"");
                         def foo (x : ClassFunctionality)
                         {
                             b  : ClassFunctionality = x;
@@ -5763,6 +5781,7 @@ import(""FFITarget.dll"");
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS0185_TypeConversion_1467291()
         {
             string code =
@@ -6279,6 +6298,7 @@ d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void indexintoarray_left_1467462_4()
         {
             string code =
