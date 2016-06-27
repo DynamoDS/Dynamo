@@ -951,9 +951,9 @@ You can always re-deprecate the package.</value>
     <value>{0} needs to uninstall {1} to continue, but cannot as one of its types appears to be in use.  Try restarting {0}.</value>
   </data>
   <data name="MessageUninstallToContinue2" xml:space="preserve">
-    <value>You must first uninstall dependent packages {1} to continue installing {2} package. Do you want to uninstall? 
+    <value>{2} has dependencies. To uninstall {2}, {0} needs to first uninstall the following dependent packages: {1}. Restart {0} to complete the uninstall, then try and download {2} again.
 
-After the uninstall, you must restart {0} and try to install {2} package again.</value>
+Uninstall {1}?</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>

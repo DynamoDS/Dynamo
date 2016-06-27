@@ -557,9 +557,9 @@ namespace Dynamo.PackageManager
                         element.Name + " " + version.version);
                     var dialogResult = MessageBox.Show(message, 
                         Resources.CannotDownloadPackageMessageBoxTitle,
-                        MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                        MessageBoxButton.YesNo, MessageBoxImage.Error);
 
-                    if (dialogResult == MessageBoxResult.OK)
+                    if (dialogResult == MessageBoxResult.Yes)
                     {
                         // mark for uninstallation
                         uninstallsRequiringRestart.ForEach(x => x.MarkForUninstall(settings));
