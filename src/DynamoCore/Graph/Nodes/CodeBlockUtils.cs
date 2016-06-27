@@ -20,15 +20,8 @@ namespace Dynamo.Graph.Nodes
         /// 
         internal static string NormalizeLineBreaks(string text)
         {
-            //text = text.Replace("\r\n", "\n");
-            //return text.Replace("\r", "\n");
-
-            //if (text.Contains("\\n"))
-              //  return text;
-
-            //text = text.Replace("\\r\\n", Environment.NewLine); /r/n works but Environment.Newline doesnt??
-            text = text.Replace("\\r", Environment.NewLine);
-            return text.Replace("\\n", Environment.NewLine);
+            text = text.Replace("\\r\\n", "\n");
+            return text.Replace("\\r", "\n");
         }
 
         /// <summary>
@@ -176,9 +169,6 @@ namespace Dynamo.Graph.Nodes
             inputCode = NormalizeLineBreaks(inputCode);
             inputCode = inputCode.Trim(charsToTrim);
 
-            //if (inputCode.Contains("\\r\\n"))
-              //  return inputCode;
-
             List<string> statements = new List<string>();
             var splitOption = StringSplitOptions.RemoveEmptyEntries;
 
@@ -237,6 +227,7 @@ namespace Dynamo.Graph.Nodes
                     inputCode = inputCode + ";";
             }
 
+            inputCode = NormalizeLineBreaks(inputCode);
             return inputCode;
         }
 
