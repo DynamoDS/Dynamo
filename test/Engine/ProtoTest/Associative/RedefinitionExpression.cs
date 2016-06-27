@@ -41,6 +41,7 @@ x = p.X;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void RedefineWithFunctions03()
         {
             String code =

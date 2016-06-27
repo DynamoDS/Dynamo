@@ -9,6 +9,7 @@ namespace ProtoTest.TD.Imperative
     {
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T001_Inline_Using_Function_Call()
         {
             string src = @"smallest2;
@@ -635,6 +636,7 @@ a3 = 1 > 2 ? true : b;";
 
         [Test]
         [Category("Replication")]
+        [Category("BackwardIncompatible")]
         public void T22_Defect_1467166_3()
         {
             String code =

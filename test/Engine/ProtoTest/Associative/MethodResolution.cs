@@ -51,6 +51,7 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void SimpleMethodOverload2()
         {
             String code =

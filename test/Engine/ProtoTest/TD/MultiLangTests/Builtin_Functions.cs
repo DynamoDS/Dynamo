@@ -570,6 +570,7 @@ n = foo(b, m);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T017_CountTrue_Inline()
         {
             string code = @"
@@ -872,6 +873,7 @@ result = foo(b);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T028_CountFalse_Inline()
         {
             string code = @"
@@ -2528,6 +2530,7 @@ sort = Sort(sorterFunction, c);
 
         [Test]
         //Test "1467446"
+        [Category("BackwardIncompatible")]
         public void BIM31_Sort_Associative()
         {
             String code =
@@ -2609,6 +2612,7 @@ y=z.create();
 
         [Test]
         //Test "1467446"
+        [Category("BackwardIncompatible")]
         public void BIM34_Sort_imperative()
         {
             String code =
@@ -2631,6 +2635,7 @@ sort = Sort(sorterFunction,a1);
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void BIM35_Sort_modifierblocks_1467446()
         {//1467446
             String code =
@@ -2677,6 +2682,7 @@ sort = Sort(sorterFunction,a1);
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void BIM37_Sort_nested_blocks_1467446()
         {//1467446
             String code =
@@ -2708,6 +2714,7 @@ sort = Sort(sorterFunction,a1);
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void BIM38_Sort_nested_blocks_1467446_2()
         {//1467446
             String code =
@@ -2763,6 +2770,7 @@ sort = Sort(sorterFunction,a1);
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void BIM40_Sort_multiarray_1467446_2()
         {//1467446
             String code =
@@ -2832,6 +2840,7 @@ a1 = { { 4, 2, 3 }, { 2, 5, 1 },{ 2,11,7}, { 8, 4, 6 }  };
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void BIM42_Sort_imperative_while_1467446()
         {//1467446
             String code =
@@ -4300,6 +4309,7 @@ b = ImportFromCSV(a);
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void T074_Defect_1467750()
         {
             String code =
@@ -4324,6 +4334,7 @@ x8 = Flatten({null}) ;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void T074_Defect_1467750_2()
         {
             String code =
@@ -4348,6 +4359,7 @@ test =
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void T074_Defect_1467750_3()
         {
             String code =

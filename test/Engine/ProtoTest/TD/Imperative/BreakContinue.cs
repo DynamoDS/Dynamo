@@ -109,6 +109,7 @@ y;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T05_FunctionBreakContinue()
         {
             string src = @"a;

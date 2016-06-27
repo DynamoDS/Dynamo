@@ -111,6 +111,7 @@ t15 = testNormalizeDepth();
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void T80581_BuiltinFunc_2()
         {
             string code = @"

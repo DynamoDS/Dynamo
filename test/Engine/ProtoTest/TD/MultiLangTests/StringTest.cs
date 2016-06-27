@@ -220,7 +220,7 @@ str = ""hello world!"";
         }
 
         [Test]
-
+        [Category("BackwardIncompatible")]
         public void T05_String_ForLoop()
         {
             string errmsg = "1467197 - Sprint 25 - Rev 3211 - when using dynamic array(without init as an empty array) within a for loop in imperative block, it returns null ";

@@ -197,6 +197,7 @@ f;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T10_Defect_1449732()
         {
             string src = @"c;
@@ -215,6 +216,7 @@ f;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T11_Defect_1450174()
         {
             string src = @"c;
@@ -273,6 +275,7 @@ f;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T14_Defect_1450550()
         {
             string src = @"a;

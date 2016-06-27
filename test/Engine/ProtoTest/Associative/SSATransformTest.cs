@@ -286,6 +286,7 @@ x = foo()[0];
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestRecursiveAssociativeImperativeCondition01()
         {
             String code =
@@ -313,6 +314,7 @@ a = global;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestRecursiveAssociativeImperativeCondition02()
         {
             String code =
@@ -345,6 +347,7 @@ a = global;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void TestRecursiveAssociativeImperativeCondition03()
         {
             String code =

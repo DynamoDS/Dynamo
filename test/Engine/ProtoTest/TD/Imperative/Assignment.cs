@@ -177,6 +177,7 @@ e;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T10_TestInFunctionScope()
         {
             string src = @"test;
@@ -316,6 +317,7 @@ c3;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T15_TestInRecursiveFunctionScope()
         {
             string src = @"val;
@@ -377,6 +379,7 @@ c3;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T18_TestMethodCallInExpr()
         {
             string src = @"test0;
@@ -697,6 +700,7 @@ e;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T32_Defect_1449877_2()
         {
             string src = @"d;
@@ -716,6 +720,7 @@ e;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T33_Defect_1450003()
         {
             string src = @"_a_test;
@@ -757,6 +762,7 @@ _c;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T35_Defect_1450727_2()
         {
             string src = @"z;
@@ -1008,6 +1014,7 @@ a;b;c;d;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T48_MultipleAssignments()
         {
             string code = @"
@@ -1039,6 +1046,7 @@ b1;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T49_TestForStringObjectType()
         {
             //Assert.Fail("1455594 - Sprint15 : Rev 804: String object type is missing in the new language ");
@@ -1358,6 +1366,7 @@ x2;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T58_Defect_1454691_3()
         {
             string code = @"
@@ -1584,6 +1593,7 @@ a = null + 1;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void T67_DNL_1467458()
         {
             String code =

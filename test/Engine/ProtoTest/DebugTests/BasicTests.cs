@@ -286,6 +286,7 @@ c = 3;
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
+        [Category("BackwardIncompatible")]
         public void TestWatchExpression5()
         {
             string sourceCode = @"
@@ -3337,6 +3338,7 @@ d = c;
 
         [Test]
         [Category("Debugger")]
+        [Category("BackwardIncompatible")]
         public void TestFunctionCallImperativeBlock_Defect_IDE_603()
         {
             string sourceCode = @"[Imperative]
@@ -3374,6 +3376,7 @@ d = c;
 
         [Test]
         [Category("Debugger")]
+        [Category("BackwardIncompatible")]
         public void TestFunctionCallImperativeBlock_Defect_IDE_603_1()
         {
             string sourceCode = @"[Imperative]
@@ -3675,6 +3678,7 @@ def foo(y : int)
 
         [Test]
         [Category("Debugger")]
+        [Category("BackwardIncompatible")]
         public void TestUnaryExpressionWithFunctionCallImperativeBlock()
         {
             string sourceCode = @"[Imperative]
@@ -5342,6 +5346,7 @@ t = a+c;
 
         [Test]
         [Category("Debugger")]
+        [Category("BackwardIncompatible")]
         public void TestStepWithUpdateUsingImperativeLangBlock2()
         {
             String code =
@@ -5491,6 +5496,7 @@ t = a+c;
 
         [Test]
         [Category("Debugger")]
+        [Category("BackwardIncompatible")]
         public void TestStepWithUpdateUsingAssociativeLangBlock2()
         {
             String code =
@@ -8536,6 +8542,7 @@ test = a1.x; //expected : { 1, { 2, { 0, 1 } } }
 
         [Test]
         [Category("Debugger")]
+        [Category("BackwardIncompatible")]
         public void HighlightingFunctionsInArrayAssociative1_Defect_IDE_578()
         {
             string src =
@@ -10510,6 +10517,7 @@ b = 2;";
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
+        [Category("BackwardIncompatible")]
         public void Testprivatememberpropertyinwatch_538()
         {
             // Execute and verify the defect IDE-519
@@ -12136,7 +12144,7 @@ r = 0;
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
-
+        [Category("BackwardIncompatible")]
         public void watchinImperative_nested_666_3()
         {
             // Execute and verify the main script in a debug session
@@ -13764,6 +13772,7 @@ i[4] = Point.ByCoordinates(0, 5, 1);
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
+        [Category("BackwardIncompatible")]
         public void IDE_Debugger_698_3()
         {
             fsr.PreStart( // Execute and verify the main script in a debug session
@@ -15571,6 +15580,7 @@ x = add(y);
 
         //To test the update order issue in assoc. code, relates to DNL-1467407
         [Test]
+        [Category("BackwardIncompatible")]
         [Category("ExpressionInterpreterRunner")]
         public void UseCaseTesting_Simple_cross_language_update_Imp_in_Assoc_2()
         {
@@ -15624,6 +15634,7 @@ a = 7;
         [Test]
         [Category("ExpressionInterpreterRunner")]
         [Category("ReleaseCriteria")]
+        [Category("BackwardIncompatible")]
         public void UseCase_Robert_simple_copy_and_modiy_collection_1()
         {
             // Execute and verify the main script in a debug session

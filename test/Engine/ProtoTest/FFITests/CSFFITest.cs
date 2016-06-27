@@ -984,6 +984,7 @@ a12;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void geometryFunction()
         {
             String code =

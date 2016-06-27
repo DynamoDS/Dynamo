@@ -87,6 +87,7 @@ while( i < 5 )
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T05_WithinFunction()
         {
             string src = @"testvar;
@@ -302,6 +303,7 @@ p;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T12_WhileWithFunctionCall()
         {
             string src = @"testvar;
@@ -648,6 +650,7 @@ y;y1;y2;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T22_Defect_1463683_3()
         {
             string errmsg = "1467318 - Cannot return an array from a function whose return type is var with undefined rank (-2)";
