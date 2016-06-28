@@ -1,19 +1,23 @@
-<dynWorkspace X="-59" Y="-32" zoom="1" Description="" Category="" Name="Home">
-  <dynElements>
-    <Dynamo.Nodes.dynLessThan type="Dynamo.Nodes.dynLessThan" guid="604e36a9-df28-43ac-b86e-11f932a9f6e4" nickname="Less Than" x="723.5" y="343.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynLessThan type="Dynamo.Nodes.dynLessThan" guid="20a2f416-2a13-4afe-af00-c041d5997f40" nickname="Less Than" x="725.5" y="511.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="72ef6b94-9dd9-49d9-b7aa-2956fddc58dc" nickname="String" x="461.5" y="429.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+<Workspace Version="1.0.1.1743" X="-59" Y="-32" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="604e36a9-df28-43ac-b86e-11f932a9f6e4" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Compare.LessThan" x="723.5" y="343.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Compare.LessThan@var,var" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="20a2f416-2a13-4afe-af00-c041d5997f40" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Compare.LessThan" x="725.5" y="511.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Compare.LessThan@var,var" />
+    <CoreNodeModels.Input.StringInput guid="72ef6b94-9dd9-49d9-b7aa-2956fddc58dc" type="CoreNodeModels.Input.StringInput" nickname="String" x="461.5" y="429.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.String>a</System.String>
       <System.String value="a" />
-    </Dynamo.Nodes.dynStringInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="b6771454-d6bb-4136-86c9-457507780d77" nickname="Number" x="460.5" y="513.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.StringInput>
+    <CoreNodeModels.Input.DoubleInput guid="b6771454-d6bb-4136-86c9-457507780d77" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="460.5" y="513.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="1" />
-    </Dynamo.Nodes.dynDoubleInput>
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Models.dynConnectorModel start="72ef6b94-9dd9-49d9-b7aa-2956fddc58dc" start_index="0" end="604e36a9-df28-43ac-b86e-11f932a9f6e4" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="72ef6b94-9dd9-49d9-b7aa-2956fddc58dc" start_index="0" end="20a2f416-2a13-4afe-af00-c041d5997f40" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="b6771454-d6bb-4136-86c9-457507780d77" start_index="0" end="604e36a9-df28-43ac-b86e-11f932a9f6e4" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="b6771454-d6bb-4136-86c9-457507780d77" start_index="0" end="20a2f416-2a13-4afe-af00-c041d5997f40" end_index="0" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+    </CoreNodeModels.Input.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="72ef6b94-9dd9-49d9-b7aa-2956fddc58dc" start_index="0" end="604e36a9-df28-43ac-b86e-11f932a9f6e4" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="72ef6b94-9dd9-49d9-b7aa-2956fddc58dc" start_index="0" end="20a2f416-2a13-4afe-af00-c041d5997f40" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="b6771454-d6bb-4136-86c9-457507780d77" start_index="0" end="604e36a9-df28-43ac-b86e-11f932a9f6e4" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="b6771454-d6bb-4136-86c9-457507780d77" start_index="0" end="20a2f416-2a13-4afe-af00-c041d5997f40" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

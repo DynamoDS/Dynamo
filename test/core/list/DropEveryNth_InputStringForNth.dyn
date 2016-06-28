@@ -1,22 +1,26 @@
-<Workspace Version="0.6.3.27696" X="-630.64133876959" Y="-456.523900084436" zoom="2" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="-630.64133876959" Y="-456.523900084436" zoom="2" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.RemoveEveryNth type="Dynamo.Nodes.RemoveEveryNth" guid="a0304232-ad3a-4518-92ff-4b8893297ce4" nickname="Drop Every Nth" x="719" y="416.04" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="a0304232-ad3a-4518-92ff-4b8893297ce4" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.DropEveryNthItem" x="719" y="416.04" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.List.DropEveryNthItem@var[]..[],int,int">
       <PortInfo index="2" default="True" />
-    </Dynamo.Nodes.RemoveEveryNth>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="d2743456-9cbd-41bb-b882-d7d231b07d76" nickname="Number" x="566.856299316439" y="533.734564553094" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <CoreNodeModels.Input.DoubleInput guid="d2743456-9cbd-41bb-b882-d7d231b07d76" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="566.856299316439" y="533.734564553094" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="2" />
-    </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="fd9f8056-903c-4ed1-b5f9-45b3db4586e9" nickname="Number" x="569.856299316439" y="446.2639763178" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="fd9f8056-903c-4ed1-b5f9-45b3db4586e9" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="569.856299316439" y="446.2639763178" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="1..10" />
-    </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="8b3775af-ecff-4c11-8166-aca094954f94" nickname="String" x="550.856299316439" y="355.371055602464" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.StringInput guid="8b3775af-ecff-4c11-8166-aca094954f94" type="CoreNodeModels.Input.StringInput" nickname="String" x="550.856299316439" y="355.371055602464" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.String>Dynamo</System.String>
       <System.String value="Dynamo" />
-    </Dynamo.Nodes.StringInput>
+    </CoreNodeModels.Input.StringInput>
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="d2743456-9cbd-41bb-b882-d7d231b07d76" start_index="0" end="a0304232-ad3a-4518-92ff-4b8893297ce4" end_index="2" portType="0" />
-    <Dynamo.Models.ConnectorModel start="fd9f8056-903c-4ed1-b5f9-45b3db4586e9" start_index="0" end="a0304232-ad3a-4518-92ff-4b8893297ce4" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="8b3775af-ecff-4c11-8166-aca094954f94" start_index="0" end="a0304232-ad3a-4518-92ff-4b8893297ce4" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="d2743456-9cbd-41bb-b882-d7d231b07d76" start_index="0" end="a0304232-ad3a-4518-92ff-4b8893297ce4" end_index="2" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="fd9f8056-903c-4ed1-b5f9-45b3db4586e9" start_index="0" end="a0304232-ad3a-4518-92ff-4b8893297ce4" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="8b3775af-ecff-4c11-8166-aca094954f94" start_index="0" end="a0304232-ad3a-4518-92ff-4b8893297ce4" end_index="1" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

@@ -1,16 +1,20 @@
-<dynWorkspace X="-59" Y="-32" zoom="1" Description="" Category="" Name="Home">
-  <dynElements>
-    <Dynamo.Nodes.dynEqual type="Dynamo.Nodes.dynEqual" guid="8c3ffac4-60e3-4898-9c8d-ffb5ccee2211" nickname="Equal" x="628.5" y="467.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="a44188a2-4159-4fe5-9af1-ade4a0a9a908" nickname="String" x="402.5" y="474.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+<Workspace Version="1.0.1.1743" X="-59" Y="-32" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="8c3ffac4-60e3-4898-9c8d-ffb5ccee2211" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="==" x="628.5" y="467.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="Operators" function="==@var[]..[],var[]..[]" />
+    <CoreNodeModels.Input.StringInput guid="a44188a2-4159-4fe5-9af1-ade4a0a9a908" type="CoreNodeModels.Input.StringInput" nickname="String" x="402.5" y="474.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.String>a</System.String>
       <System.String value="a" />
-    </Dynamo.Nodes.dynStringInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="350ab2a2-e4de-4a92-b033-d78dc68ea728" nickname="Number" x="397.5" y="548.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.StringInput>
+    <CoreNodeModels.Input.DoubleInput guid="350ab2a2-e4de-4a92-b033-d78dc68ea728" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="397.5" y="548.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="0.0" />
-    </Dynamo.Nodes.dynDoubleInput>
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Models.dynConnectorModel start="a44188a2-4159-4fe5-9af1-ade4a0a9a908" start_index="0" end="8c3ffac4-60e3-4898-9c8d-ffb5ccee2211" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="350ab2a2-e4de-4a92-b033-d78dc68ea728" start_index="0" end="8c3ffac4-60e3-4898-9c8d-ffb5ccee2211" end_index="1" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+    </CoreNodeModels.Input.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="a44188a2-4159-4fe5-9af1-ade4a0a9a908" start_index="0" end="8c3ffac4-60e3-4898-9c8d-ffb5ccee2211" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="350ab2a2-e4de-4a92-b033-d78dc68ea728" start_index="0" end="8c3ffac4-60e3-4898-9c8d-ffb5ccee2211" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

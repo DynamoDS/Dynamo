@@ -1,28 +1,33 @@
-<dynWorkspace X="-478" Y="-354" zoom="1" Description="" Category="" Name="Home">
-  <dynElements>
-    <Dynamo.Nodes.dynLessThanEquals type="Dynamo.Nodes.dynLessThanEquals" guid="8ed276d0-d1e0-4e38-bcaa-77c2c3b4819f" nickname="Less Than Or Equal" x="657.5" y="378.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynLessThanEquals type="Dynamo.Nodes.dynLessThanEquals" guid="c3167b61-df46-4034-8319-aefc9e7565d4" nickname="Less Than Or Equal" x="677.5" y="712.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynLessThanEquals type="Dynamo.Nodes.dynLessThanEquals" guid="4f115ff1-17b2-4386-a38b-4546e7bf39b6" nickname="Less Than Or Equal" x="681.5" y="555.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="00e916d4-531b-45f3-831f-01c39de7700e" nickname="String" x="441.5" y="535.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+<Workspace Version="1.0.1.1743" X="-478" Y="-354" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="8ed276d0-d1e0-4e38-bcaa-77c2c3b4819f" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Compare.LessThanOrEqual" x="657.5" y="378.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Compare.LessThanOrEqual@var,var" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="c3167b61-df46-4034-8319-aefc9e7565d4" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Compare.LessThanOrEqual" x="677.5" y="712.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Compare.LessThanOrEqual@var,var" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="4f115ff1-17b2-4386-a38b-4546e7bf39b6" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Compare.LessThanOrEqual" x="681.5" y="555.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Compare.LessThanOrEqual@var,var" />
+    <CoreNodeModels.Input.StringInput guid="00e916d4-531b-45f3-831f-01c39de7700e" type="CoreNodeModels.Input.StringInput" nickname="String" x="441.5" y="535.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.String>a</System.String>
       <System.String value="a" />
-    </Dynamo.Nodes.dynStringInput>
-    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="6ac2081c-220d-42da-bba0-1ec5911d5cb6" nickname="String" x="446.5" y="625.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.StringInput>
+    <CoreNodeModels.Input.StringInput guid="6ac2081c-220d-42da-bba0-1ec5911d5cb6" type="CoreNodeModels.Input.StringInput" nickname="String" x="446.5" y="625.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.String>b</System.String>
       <System.String value="b" />
-    </Dynamo.Nodes.dynStringInput>
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="05e8d59e-e183-4c20-a37f-03b6e97e465a" nickname="Watch" x="863" y="378.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="8e37eefc-8555-417c-a2af-bf75e6d986db" nickname="Watch" x="837" y="594.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="90bb3906-b6fe-4be5-b3cb-a97d92409a70" nickname="Watch" x="822" y="713.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Models.dynConnectorModel start="8ed276d0-d1e0-4e38-bcaa-77c2c3b4819f" start_index="0" end="05e8d59e-e183-4c20-a37f-03b6e97e465a" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="c3167b61-df46-4034-8319-aefc9e7565d4" start_index="0" end="90bb3906-b6fe-4be5-b3cb-a97d92409a70" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="4f115ff1-17b2-4386-a38b-4546e7bf39b6" start_index="0" end="8e37eefc-8555-417c-a2af-bf75e6d986db" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="00e916d4-531b-45f3-831f-01c39de7700e" start_index="0" end="8ed276d0-d1e0-4e38-bcaa-77c2c3b4819f" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="00e916d4-531b-45f3-831f-01c39de7700e" start_index="0" end="4f115ff1-17b2-4386-a38b-4546e7bf39b6" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="00e916d4-531b-45f3-831f-01c39de7700e" start_index="0" end="4f115ff1-17b2-4386-a38b-4546e7bf39b6" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="00e916d4-531b-45f3-831f-01c39de7700e" start_index="0" end="c3167b61-df46-4034-8319-aefc9e7565d4" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="6ac2081c-220d-42da-bba0-1ec5911d5cb6" start_index="0" end="8ed276d0-d1e0-4e38-bcaa-77c2c3b4819f" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="6ac2081c-220d-42da-bba0-1ec5911d5cb6" start_index="0" end="c3167b61-df46-4034-8319-aefc9e7565d4" end_index="0" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+    </CoreNodeModels.Input.StringInput>
+    <CoreNodeModels.Watch guid="05e8d59e-e183-4c20-a37f-03b6e97e465a" type="CoreNodeModels.Watch" nickname="Watch" x="863" y="378.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <CoreNodeModels.Watch guid="8e37eefc-8555-417c-a2af-bf75e6d986db" type="CoreNodeModels.Watch" nickname="Watch" x="837" y="594.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <CoreNodeModels.Watch guid="90bb3906-b6fe-4be5-b3cb-a97d92409a70" type="CoreNodeModels.Watch" nickname="Watch" x="822" y="713.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="8ed276d0-d1e0-4e38-bcaa-77c2c3b4819f" start_index="0" end="05e8d59e-e183-4c20-a37f-03b6e97e465a" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="c3167b61-df46-4034-8319-aefc9e7565d4" start_index="0" end="90bb3906-b6fe-4be5-b3cb-a97d92409a70" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="4f115ff1-17b2-4386-a38b-4546e7bf39b6" start_index="0" end="8e37eefc-8555-417c-a2af-bf75e6d986db" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="00e916d4-531b-45f3-831f-01c39de7700e" start_index="0" end="8ed276d0-d1e0-4e38-bcaa-77c2c3b4819f" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="00e916d4-531b-45f3-831f-01c39de7700e" start_index="0" end="4f115ff1-17b2-4386-a38b-4546e7bf39b6" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="00e916d4-531b-45f3-831f-01c39de7700e" start_index="0" end="4f115ff1-17b2-4386-a38b-4546e7bf39b6" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="00e916d4-531b-45f3-831f-01c39de7700e" start_index="0" end="c3167b61-df46-4034-8319-aefc9e7565d4" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="6ac2081c-220d-42da-bba0-1ec5911d5cb6" start_index="0" end="8ed276d0-d1e0-4e38-bcaa-77c2c3b4819f" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="6ac2081c-220d-42da-bba0-1ec5911d5cb6" start_index="0" end="c3167b61-df46-4034-8319-aefc9e7565d4" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

@@ -1,12 +1,18 @@
-<Workspace Version="0.6.3.27649" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="dc27fc31-fdad-40b5-906e-bbba9caf43a6" nickname="String" x="33" y="78.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <CoreNodeModels.Input.StringInput guid="dc27fc31-fdad-40b5-906e-bbba9caf43a6" type="CoreNodeModels.Input.StringInput" nickname="String" x="33" y="78.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.String>First line
+Second line with	tab
+Third line with "quotes"</System.String>
       <System.String value="First line&#xD;&#xA;Second line with	tab&#xD;&#xA;Third line with &quot;quotes&quot;" />
-    </Dynamo.Nodes.StringInput>
-    <Dynamo.Nodes.StringLen type="Dynamo.Nodes.StringLen" guid="f6d7a6c3-5df4-45c0-911b-04d39b4c1959" nickname="String Length" x="543" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    </CoreNodeModels.Input.StringInput>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="f6d7a6c3-5df4-45c0-911b-04d39b4c1959" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="String.Length" x="543" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.String.Length@string" />
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="dc27fc31-fdad-40b5-906e-bbba9caf43a6" start_index="0" end="f6d7a6c3-5df4-45c0-911b-04d39b4c1959" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="dc27fc31-fdad-40b5-906e-bbba9caf43a6" start_index="0" end="f6d7a6c3-5df4-45c0-911b-04d39b4c1959" end_index="0" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

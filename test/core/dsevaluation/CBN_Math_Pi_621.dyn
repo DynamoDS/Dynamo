@@ -1,7 +1,12 @@
-<Workspace Version="0.6.2.23604" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Math.PI" resolvedName="DSCore.Math" assemblyName="DSCoreNodes.dll" />
+  </NamespaceResolutionMap>
   <Elements>
-    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="b1d53709-114b-4ea6-8687-5f4456ddc336" nickname="Code Block" x="110" y="301" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a=Math.PI;" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="b1d53709-114b-4ea6-8687-5f4456ddc336" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="110" y="301" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="a=Math.PI;" ShouldFocus="false" />
   </Elements>
   <Connectors />
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

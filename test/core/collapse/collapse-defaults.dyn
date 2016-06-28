@@ -1,14 +1,15 @@
-<Workspace Version="0.6.2.23503" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.ListMin type="Dynamo.Nodes.ListMin" guid="13f58ca4-4e48-4757-b16a-45b971a6d7fc" nickname="List Minimum" x="281" y="133.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <PortInfo index="0" default="True" />
-    </Dynamo.Nodes.ListMin>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="4b6487e1-1bcf-47a6-a6fb-ea3122a303af" nickname="Number" x="116" y="153.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="13f58ca4-4e48-4757-b16a-45b971a6d7fc" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.MinimumItem" x="281" y="133.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.List.MinimumItem@var[]" />
+    <CoreNodeModels.Input.DoubleInput guid="4b6487e1-1bcf-47a6-a6fb-ea3122a303af" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="116" y="153.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="100..10" />
-    </Dynamo.Nodes.DoubleInput>
+    </CoreNodeModels.Input.DoubleInput>
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="4b6487e1-1bcf-47a6-a6fb-ea3122a303af" start_index="0" end="13f58ca4-4e48-4757-b16a-45b971a6d7fc" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="4b6487e1-1bcf-47a6-a6fb-ea3122a303af" start_index="0" end="13f58ca4-4e48-4757-b16a-45b971a6d7fc" end_index="0" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

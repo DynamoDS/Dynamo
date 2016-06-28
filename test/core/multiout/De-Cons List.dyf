@@ -1,14 +1,17 @@
-<Workspace Version="0.6.2.27679" X="0" Y="0" zoom="1" Description="" Category="Misc" Name="De-Cons List" ID="2473f1ca-2451-44e6-8110-85fc9b4499b9">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="De-Cons List" Description="" ID="2473f1ca-2451-44e6-8110-85fc9b4499b9" Category="Misc">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="22f11cfa-a224-4718-863d-02351e7eb39a" nickname="Input" x="37" y="50.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Graph.Nodes.CustomNodes.Symbol guid="22f11cfa-a224-4718-863d-02351e7eb39a" type="Dynamo.Graph.Nodes.CustomNodes.Symbol" nickname="Input" x="37" y="50.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <Symbol value="list" />
-    </Dynamo.Nodes.Symbol>
-    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="a43bb7bb-f2a8-4d29-a13c-e85a9d14e658" nickname="First of List" x="127" y="52.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.Rest type="Dynamo.Nodes.Rest" guid="80b88e14-3501-4f9c-8fe5-f58962aa4a0d" nickname="Rest of List" x="128" y="120.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    </Dynamo.Graph.Nodes.CustomNodes.Symbol>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="a43bb7bb-f2a8-4d29-a13c-e85a9d14e658" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.FirstItem" x="127" y="52.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.List.FirstItem@var[]..[]" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="80b88e14-3501-4f9c-8fe5-f58962aa4a0d" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.RestOfItems" x="128" y="120.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.List.RestOfItems@var[]..[]" />
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="22f11cfa-a224-4718-863d-02351e7eb39a" start_index="0" end="a43bb7bb-f2a8-4d29-a13c-e85a9d14e658" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="22f11cfa-a224-4718-863d-02351e7eb39a" start_index="0" end="80b88e14-3501-4f9c-8fe5-f58962aa4a0d" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="22f11cfa-a224-4718-863d-02351e7eb39a" start_index="0" end="a43bb7bb-f2a8-4d29-a13c-e85a9d14e658" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="22f11cfa-a224-4718-863d-02351e7eb39a" start_index="0" end="80b88e14-3501-4f9c-8fe5-f58962aa4a0d" end_index="0" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

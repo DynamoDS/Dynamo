@@ -1,18 +1,23 @@
-<dynWorkspace X="0" Y="0" Name="SecondLevelNode1" Category="Analyze.Display" ID="23f13608-3bb9-4ba4-a4e7-35647b722146">
-  <dynElements>
-    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="e16716bc-bb3f-4aad-b6e3-bd9d73fc8094" nickname="ThirdLevelCustomNodeA1" x="444.926689909737" y="193.912799500503" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="SecondLevelNode1" Description="" ID="23f13608-3bb9-4ba4-a4e7-35647b722146" Category="Analyze.Display">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.CustomNodes.Function guid="e16716bc-bb3f-4aad-b6e3-bd9d73fc8094" type="Dynamo.Graph.Nodes.CustomNodes.Function" nickname="ThirdLevelCustomNodeA1" x="444.926689909737" y="193.912799500503" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <ID value="5d28cbe6-1039-44c2-ba55-b72297354754" />
       <Name value="ThirdLevelCustomNodeA1" />
+      <Description value="" />
       <Inputs />
       <Outputs />
-    </Dynamo.Nodes.dynFunction>
-    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="a252167e-e39c-4ede-918d-d4a4d7a444fb" nickname="ThirdLevelCustomNodeA2" x="674.903511872005" y="198.323781756518" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </Dynamo.Graph.Nodes.CustomNodes.Function>
+    <Dynamo.Graph.Nodes.CustomNodes.Function guid="a252167e-e39c-4ede-918d-d4a4d7a444fb" type="Dynamo.Graph.Nodes.CustomNodes.Function" nickname="ThirdLevelCustomNodeA2" x="674.903511872005" y="198.323781756518" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <ID value="cd8b762b-4437-4cde-b22c-679fd47d3bde" />
       <Name value="ThirdLevelCustomNodeA2" />
+      <Description value="" />
       <Inputs />
       <Outputs />
-    </Dynamo.Nodes.dynFunction>
-  </dynElements>
-  <dynConnectors />
-  <dynNotes />
-</dynWorkspace>
+    </Dynamo.Graph.Nodes.CustomNodes.Function>
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

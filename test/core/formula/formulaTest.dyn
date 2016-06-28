@@ -1,18 +1,22 @@
-<dynWorkspace X="0" Y="0">
-  <dynElements>
-    <Dynamo.Nodes.dynFormula type="Dynamo.Nodes.dynFormula" guid="e7661e96-8c55-4b52-9c37-318cf77eedfe" nickname="Formula" x="267.508004766287" y="69.0696721945469" lacing="First" formula="x+f(y)-z" />
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="1f2c5ba9-77e2-4eee-b4d9-7c42338cbb58" nickname="Number" x="20.826725167421" y="121.809817472496" lacing="First">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <CoreNodeModels.Formula guid="e7661e96-8c55-4b52-9c37-318cf77eedfe" type="CoreNodeModels.Formula" nickname="Formula" x="267.508004766287" y="69.0696721945469" isVisible="true" isUpstreamVisible="true" lacing="First" isSelectedInput="False" IsFrozen="false" isPinned="false">
+      <FormulaText>x+f(y)-z</FormulaText>
+    </CoreNodeModels.Formula>
+    <CoreNodeModels.Input.DoubleInput guid="1f2c5ba9-77e2-4eee-b4d9-7c42338cbb58" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="20.826725167421" y="121.809817472496" isVisible="true" isUpstreamVisible="true" lacing="First" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="0" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynIdentity type="Dynamo.Nodes.dynIdentity" guid="7b15f624-b334-476c-8376-6e46f25bf089" nickname="Identity" x="135.104305200048" y="217.029479140634" lacing="First" />
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="bf1d75fa-cd2b-4f84-bea5-057f1ca05b2b" nickname="Watch" x="489.27901987791" y="135.902241706356" lacing="Disabled" />
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Connectors.dynConnectorModel start="e7661e96-8c55-4b52-9c37-318cf77eedfe" start_index="0" end="bf1d75fa-cd2b-4f84-bea5-057f1ca05b2b" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="1f2c5ba9-77e2-4eee-b4d9-7c42338cbb58" start_index="0" end="e7661e96-8c55-4b52-9c37-318cf77eedfe" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="1f2c5ba9-77e2-4eee-b4d9-7c42338cbb58" start_index="0" end="e7661e96-8c55-4b52-9c37-318cf77eedfe" end_index="2" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="1f2c5ba9-77e2-4eee-b4d9-7c42338cbb58" start_index="0" end="e7661e96-8c55-4b52-9c37-318cf77eedfe" end_index="3" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="7b15f624-b334-476c-8376-6e46f25bf089" start_index="0" end="e7661e96-8c55-4b52-9c37-318cf77eedfe" end_index="1" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+    </CoreNodeModels.Input.DoubleInput>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" guid="7b15f624-b334-476c-8376-6e46f25bf089" nickname="Function.Identity" x="135.104305200048" y="217.029479140634" lacing="First" assembly="DSCoreNodes.dll" function="Function.Identity@var" />
+    <CoreNodeModels.Watch guid="bf1d75fa-cd2b-4f84-bea5-057f1ca05b2b" type="CoreNodeModels.Watch" nickname="Watch" x="489.27901987791" y="135.902241706356" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="e7661e96-8c55-4b52-9c37-318cf77eedfe" start_index="0" end="bf1d75fa-cd2b-4f84-bea5-057f1ca05b2b" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="1f2c5ba9-77e2-4eee-b4d9-7c42338cbb58" start_index="0" end="e7661e96-8c55-4b52-9c37-318cf77eedfe" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="1f2c5ba9-77e2-4eee-b4d9-7c42338cbb58" start_index="0" end="e7661e96-8c55-4b52-9c37-318cf77eedfe" end_index="2" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="7b15f624-b334-476c-8376-6e46f25bf089" start_index="0" end="e7661e96-8c55-4b52-9c37-318cf77eedfe" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>
