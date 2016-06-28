@@ -3,11 +3,15 @@ using System.Diagnostics;
 using Analytics.NET.Google;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Microsoft.Win32;
 
 namespace Dynamo.Logging
 {
+    /// <summary>
+    /// Categories for analytics tracking.
+    /// </summary>
     public enum Categories
     {
         ApplicationLifecycle,
@@ -17,6 +21,9 @@ namespace Dynamo.Logging
         SearchUX,
     }
 
+    /// <summary>
+    /// Actions for analytics tracking.
+    /// </summary>
     public enum Actions
     {
         Start,
@@ -29,11 +36,15 @@ namespace Dynamo.Logging
         FilterButtonClicked,
     }
 
+    /// <summary>
+    /// Utility class to support analytics tracking.
+    /// </summary>
     public class Analytics
     {
         private static Analytics instance = null;
         private Heartbeat heartbeat = null;
         private Log piiLogger = null;
+        private IPreferences preferences = null;
 
 #if DEBUG
         private const string ANALYTICS_PROPERTY = "UA-78361914-1";
@@ -41,24 +52,34 @@ namespace Dynamo.Logging
         private const string ANALYTICS_PROPERTY = "UA-52186525-1";
 #endif
 
+        /// <summary>
+        /// Gets unique annonymous user id
+        /// </summary>
         internal string UserId { get; private set; }
 
+        /// <summary>
+        /// Gets unique session id
+        /// </summary>
         internal string SessionId { get; private set; }
 
-        public static bool IsEnabled { get { return instance != null; } }
+        /// <summary>
+        /// Checks if analytics tracking is enabled
+        /// </summary>
+        public static bool IsAnalyticsTrackingEnabled { get { return instance != null && instance.preferences.IsAnalyticsReportingApproved; } }
 
-        public static bool IsPIILoggingEnabled { get { return instance != null && instance.piiLogger != null; } }
+        /// <summary>
+        /// Checks if usgae reporting is enabled.
+        /// </summary>
+        public static bool IsUsageTrackingEnabled { get { return instance != null && instance.preferences.IsUsageReportingApproved; } }
 
         private Analytics(string userId, DynamoModel dynamoModel)
         {
             UserId = userId;
             SessionId = Guid.NewGuid().ToString();
+            preferences = dynamoModel.PreferenceSettings;
             heartbeat = Heartbeat.GetInstance(dynamoModel);
 
-            if (dynamoModel.PreferenceSettings.IsUsageReportingApproved)
-            {
-                piiLogger = new Log("Dynamo", userId, SessionId);
-            }
+            piiLogger = new Log("Dynamo", userId, SessionId);
         }
 
         private void Dispose()
@@ -110,10 +131,7 @@ namespace Dynamo.Logging
 
             StabilityCookie.Startup();
 
-            if (enable)
-            {
-                instance = new Analytics(userId, model);
-            }
+            instance = new Analytics(userId, model);
         }
 
         public static void ShutDown()
@@ -134,7 +152,7 @@ namespace Dynamo.Logging
 
         public static void TrackEvent(Actions action, Categories category, string description = "", int? value = null)
         {
-            if (!Analytics.IsEnabled)
+            if (!Analytics.IsAnalyticsTrackingEnabled)
                 return;
 
             var e = AnalyticsEvent.Create(category.ToString(), action.ToString(), description, value);
@@ -143,7 +161,7 @@ namespace Dynamo.Logging
 
         public static void TrackTimedEvent(Categories category, string variable, TimeSpan time, string description = "")
         {
-            if (!Analytics.IsEnabled) return;
+            if (!Analytics.IsAnalyticsTrackingEnabled) return;
 
             var e = new TimedEvent(time) { Category = category.ToString(), VariableName = variable, Description = description };
             e.Track();
@@ -151,7 +169,7 @@ namespace Dynamo.Logging
 
         public static void TrackScreenView(string viewName)
         {
-            if (!Analytics.IsEnabled) return;
+            if (!Analytics.IsAnalyticsTrackingEnabled) return;
 
             var e = new ScreenViewEvent(viewName);
             e.Track();
@@ -165,7 +183,7 @@ namespace Dynamo.Logging
 
         public static void LogPiiInfo(string tag, string data)
         {
-            if (!IsPIILoggingEnabled) return;
+            if (!IsUsageTrackingEnabled) return;
 
             instance.piiLogger.Info(tag, data);
         }
