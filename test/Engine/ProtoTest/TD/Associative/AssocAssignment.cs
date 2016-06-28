@@ -786,7 +786,7 @@ _c;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("BackwardCompatibility"])
+        [Category("BackwardIncompatible")]
         public void T35_Defect_1450727_2()
         {
             string src = @"z;
