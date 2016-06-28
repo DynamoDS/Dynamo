@@ -145,6 +145,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             set
             {
                 canNavigateBackground = value;
+                Dynamo.Logging.Analytics.TrackScreenView(canNavigateBackground ? "Geometry" : "Nodes");
                 RaisePropertyChanged("CanNavigateBackground");
             }
         }
@@ -686,8 +687,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 return;
 
             CanNavigateBackground = !CanNavigateBackground;
-
-            InstrumentationLogger.LogAnonymousScreen(CanNavigateBackground ? "Geometry" : "Nodes");
         }
 
         protected virtual bool CanToggleCanNavigateBackground(object parameter)

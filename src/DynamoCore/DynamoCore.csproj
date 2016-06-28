@@ -72,9 +72,11 @@ limitations under the License.
     <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CSharpAnalytics.WinForms, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\CSharpAnalytics\CSharpAnalytics.WinForms.dll</HintPath>
+    <Reference Include="Analytics.NET.Core">
+      <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Analytics.NET.Google">
+      <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
     </Reference>
     <Reference Include="Greg, Version=1.0.5959.26179, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Greg.1.0.5959.26179\lib\net45\Greg.dll</HintPath>
@@ -115,6 +117,7 @@ limitations under the License.
     <Compile Include="Configuration\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
     <Compile Include="Exceptions\LibraryLoadFailedException.cs" />
+    <Compile Include="Logging\Analytics.cs" />
     <Compile Include="Logging\NotificationMessage.cs" />
     <Compile Include="Scheduler\Disposable.cs" />
     <Compile Include="Engine\LinkedListOfList.cs" />

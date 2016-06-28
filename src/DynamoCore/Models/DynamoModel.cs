@@ -150,17 +150,7 @@ namespace Dynamo.Models
         /// with the assumption that the entire test will be wrapped in an
         /// idle thread call.
         /// </summary>
-        public static bool IsTestMode
-        {
-            get { return isTestMode; }
-            set
-            {
-                isTestMode = value;
-                InstrumentationLogger.IsTestMode = value;
-            }
-        }
-
-        private static bool isTestMode;
+        public static bool IsTestMode { get; set; }
 
         /// <summary>
         ///     Specifies whether or not Dynamo is in a crash-state.
@@ -394,7 +384,7 @@ namespace Dynamo.Models
             OnCleanup();
 
             DynamoSelection.DestroyInstance();
-            InstrumentationLogger.End();
+            Dynamo.Logging.Analytics.ShutDown();
 
             if (Scheduler != null)
             {
@@ -517,7 +507,7 @@ namespace Dynamo.Models
             InitializePreferences(preferences);
             InitializeInstrumentationLogger();
 
-            if (!isTestMode && this.PreferenceSettings.IsFirstRun)
+            if (!IsTestMode && this.PreferenceSettings.IsFirstRun)
             {
                 DynamoMigratorBase migrator = null;
 
@@ -781,8 +771,8 @@ namespace Dynamo.Models
                         long end = e.Task.ExecutionEndTime.TickCount;
                         var executionTimeSpan = new TimeSpan(end - start);
 
-                        InstrumentationLogger.LogAnonymousTimedEvent(
-                            "Perf",
+                        Dynamo.Logging.Analytics.TrackTimedEvent(
+                            Categories.Performance,
                             e.Task.GetType().Name,
                             executionTimeSpan);
 
@@ -1024,8 +1014,8 @@ namespace Dynamo.Models
 
         private void InitializeInstrumentationLogger()
         {
-            if (IsTestMode == false)
-                InstrumentationLogger.Start(this);
+            bool enableAnalytics = !IsTestMode && this.PreferenceSettings.IsAnalyticsReportingApproved;
+            Dynamo.Logging.Analytics.Start(this, enableAnalytics);
         }
 
         private IPreferences CreateOrLoadPreferences(IPreferences preferences)
@@ -1996,12 +1986,11 @@ namespace Dynamo.Models
         /// <param name="exception">The exception to display.</param>
         private TaskDialogEventArgs DisplayEngineFailureMessage(Exception exception)
         {
-            StabilityTracking.GetInstance().NotifyCrash();
-            InstrumentationLogger.LogAnonymousEvent("EngineFailure", "Stability");
+            Dynamo.Logging.Analytics.TrackEvent(Actions.EngineFailure, Categories.Stability);
 
             if (exception != null)
             {
-                InstrumentationLogger.LogException(exception);
+                Dynamo.Logging.Analytics.TrackException(exception, false);
             }
 
             string summary = Resources.UnhandledExceptionSummary;
