@@ -18,12 +18,12 @@ namespace Dynamo.UI.Prompts
     public partial class EditWindow
     {
         private readonly DynamoViewModel dynamoViewModel;
-        private bool commitChangesOnReturn;
+        private bool CommitChangesOnReturn { get; set; }
 
         public EditWindow(DynamoViewModel dynamoViewModel,
             bool updateSourceOnTextChange = false, bool commitChangesOnReturn = false)
         {
-            this.commitChangesOnReturn = commitChangesOnReturn;
+            this.CommitChangesOnReturn = commitChangesOnReturn;
 
             InitializeComponent();
             this.dynamoViewModel = dynamoViewModel;
@@ -45,7 +45,7 @@ namespace Dynamo.UI.Prompts
         }
         private void OnEditWindowPreviewKeyDown(object sender, KeyEventArgs e)
         {
-           if(commitChangesOnReturn && (e.Key == Key.Return || e.Key == Key.Enter))
+           if(CommitChangesOnReturn && (e.Key == Key.Return || e.Key == Key.Enter))
            {
                UpdateNodeName();
                e.Handled = true;
