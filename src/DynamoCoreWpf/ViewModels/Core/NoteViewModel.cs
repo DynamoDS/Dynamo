@@ -29,6 +29,7 @@ namespace Dynamo.ViewModels
         private NoteModel _model;
         public readonly WorkspaceViewModel WorkspaceViewModel;
         private int zIndex = Configurations.NodeStartZIndex; // initialize the start Z-Index of a note to the same as that of a node
+        internal static int StaticZIndex = Configurations.NodeStartZIndex; 
 
         public NoteModel Model
         {

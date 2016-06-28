@@ -565,6 +565,7 @@ namespace Dynamo.Controls
             }
 
             var index = ++NodeViewModel.StaticZIndex;
+            ++NoteViewModel.StaticZIndex; // increment the NoteViewModel ZIndex - how will the current Notes be updated?
 
             oldZIndex = nodeWasClicked ? index : ViewModel.ZIndex;
             ViewModel.ZIndex = index;
