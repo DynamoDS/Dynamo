@@ -50,7 +50,10 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private readonly IPreferences setting;
+        private IPreferences setting
+        {
+            get { return loadPackageParams.Preferences; }
+        }
         private readonly PackageLoader packageLoader;
         private readonly LoadPackageParams loadPackageParams;
         private readonly CustomNodeManager customNodeManager;
@@ -64,7 +67,6 @@ namespace Dynamo.ViewModels
 
         public PackagePathViewModel(PackageLoader loader, LoadPackageParams loadParams, CustomNodeManager customNodeManager)
         {
-            this.setting = loadParams.Preferences;
             this.packageLoader = loader;
             this.loadPackageParams = loadParams;
             this.customNodeManager = customNodeManager;
