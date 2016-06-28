@@ -1,22 +1,25 @@
-<Workspace Version="0.6.2.29585" X="131" Y="75" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="131" Y="75" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.BoolSelector type="Dynamo.Nodes.BoolSelector" guid="42ad1712-98bf-42ef-ada7-89adf11a20df" nickname="Boolean" x="12" y="69.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Boolean value="False" />
-    </Dynamo.Nodes.BoolSelector>
-    <Dynamo.Nodes.BoolSelector type="Dynamo.Nodes.BoolSelector" guid="deb044b9-e87b-4bd1-9f46-0afbeb3bf540" nickname="Boolean" x="11" y="182.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Boolean value="True" />
-    </Dynamo.Nodes.BoolSelector>
-    <Dynamo.Nodes.Xor type="Dynamo.Nodes.Xor" guid="950a1260-417d-484f-95e9-5a3d164fc537" nickname="Xor" x="241" y="69.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.Xor type="Dynamo.Nodes.Xor" guid="0e1e3c27-436d-48c5-b25f-cd319d836ac1" nickname="Xor" x="242" y="174.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.Xor type="Dynamo.Nodes.Xor" guid="17aa70a5-8038-425a-b049-9627a73a071c" nickname="Xor" x="245" y="283.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <CoreNodeModels.Input.BoolSelector guid="42ad1712-98bf-42ef-ada7-89adf11a20df" type="CoreNodeModels.Input.BoolSelector" nickname="Boolean" x="12" y="69.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.Boolean>False</System.Boolean>
+    </CoreNodeModels.Input.BoolSelector>
+    <CoreNodeModels.Input.BoolSelector guid="deb044b9-e87b-4bd1-9f46-0afbeb3bf540" type="CoreNodeModels.Input.BoolSelector" nickname="Boolean" x="11" y="182.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.Boolean>True</System.Boolean>
+    </CoreNodeModels.Input.BoolSelector>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="950a1260-417d-484f-95e9-5a3d164fc537" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Logic.Xor" x="241" y="69.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Logic.Xor@bool,bool" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="0e1e3c27-436d-48c5-b25f-cd319d836ac1" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Logic.Xor" x="242" y="174.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Logic.Xor@bool,bool" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="17aa70a5-8038-425a-b049-9627a73a071c" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Logic.Xor" x="245" y="283.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Logic.Xor@bool,bool" />
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="42ad1712-98bf-42ef-ada7-89adf11a20df" start_index="0" end="950a1260-417d-484f-95e9-5a3d164fc537" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="42ad1712-98bf-42ef-ada7-89adf11a20df" start_index="0" end="0e1e3c27-436d-48c5-b25f-cd319d836ac1" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="42ad1712-98bf-42ef-ada7-89adf11a20df" start_index="0" end="0e1e3c27-436d-48c5-b25f-cd319d836ac1" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="deb044b9-e87b-4bd1-9f46-0afbeb3bf540" start_index="0" end="950a1260-417d-484f-95e9-5a3d164fc537" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="deb044b9-e87b-4bd1-9f46-0afbeb3bf540" start_index="0" end="17aa70a5-8038-425a-b049-9627a73a071c" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="deb044b9-e87b-4bd1-9f46-0afbeb3bf540" start_index="0" end="17aa70a5-8038-425a-b049-9627a73a071c" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="42ad1712-98bf-42ef-ada7-89adf11a20df" start_index="0" end="950a1260-417d-484f-95e9-5a3d164fc537" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="42ad1712-98bf-42ef-ada7-89adf11a20df" start_index="0" end="0e1e3c27-436d-48c5-b25f-cd319d836ac1" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="42ad1712-98bf-42ef-ada7-89adf11a20df" start_index="0" end="0e1e3c27-436d-48c5-b25f-cd319d836ac1" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="deb044b9-e87b-4bd1-9f46-0afbeb3bf540" start_index="0" end="950a1260-417d-484f-95e9-5a3d164fc537" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="deb044b9-e87b-4bd1-9f46-0afbeb3bf540" start_index="0" end="17aa70a5-8038-425a-b049-9627a73a071c" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="deb044b9-e87b-4bd1-9f46-0afbeb3bf540" start_index="0" end="17aa70a5-8038-425a-b049-9627a73a071c" end_index="1" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

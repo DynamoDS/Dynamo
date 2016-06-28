@@ -1,10 +1,13 @@
-<Workspace Version="0.6.3.30864" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="843ccd7e-1cb8-4056-9357-02afd06969c3" nickname="foo" x="235" y="201.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly=".\Test.ds" function="foo" />
-    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="880ea294-7a01-4a78-8602-54d73f4b681b" nickname="Code Block" x="301" y="278" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a = x + 1;" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="880ea294-7a01-4a78-8602-54d73f4b681b" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="301" y="278" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="a = x + 1;" ShouldFocus="false" />
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="843ccd7e-1cb8-4056-9357-02afd06969c3" start_index="0" end="880ea294-7a01-4a78-8602-54d73f4b681b" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="843ccd7e-1cb8-4056-9357-02afd06969c3" start_index="0" end="880ea294-7a01-4a78-8602-54d73f4b681b" end_index="0" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

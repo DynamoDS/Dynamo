@@ -1,15 +1,18 @@
-<Workspace Version="0.6.3.7993" X="-272.557846628597" Y="-120.16665672868" zoom="1.59077689706107" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="-272.557846628597" Y="-120.16665672868" zoom="1.59077689706107" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.ColorComponents type="Dynamo.Nodes.ColorComponents" guid="504071ca-b833-4c8e-9ef5-b0e743bf9109" nickname="Color Components" x="390.309059332498" y="154.409513811828" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-    <Dynamo.Nodes.Color type="Dynamo.Nodes.Color" guid="d2a44ba6-e897-4b64-8bf8-0e2ca6804f93" nickname="Color" x="251.926627140817" y="123.079189115605" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="504071ca-b833-4c8e-9ef5-b0e743bf9109" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Color.Components" x="390.309059332498" y="154.409513811828" isVisible="true" isUpstreamVisible="true" lacing="Longest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Color.Components@DSCore.Color" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="d2a44ba6-e897-4b64-8bf8-0e2ca6804f93" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Color.ByARGB" x="251.926627140817" y="123.079189115605" isVisible="true" isUpstreamVisible="true" lacing="Longest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Color.ByARGB@int,int,int,int">
       <PortInfo index="0" default="True" />
       <PortInfo index="1" default="True" />
       <PortInfo index="2" default="True" />
       <PortInfo index="3" default="True" />
-    </Dynamo.Nodes.Color>
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="d2a44ba6-e897-4b64-8bf8-0e2ca6804f93" start_index="0" end="504071ca-b833-4c8e-9ef5-b0e743bf9109" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="d2a44ba6-e897-4b64-8bf8-0e2ca6804f93" start_index="0" end="504071ca-b833-4c8e-9ef5-b0e743bf9109" end_index="0" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

@@ -1,5 +1,8 @@
-<dynWorkspace X="0" Y="0">
-  <dynElements />
-  <dynConnectors />
-  <dynNotes />
-</dynWorkspace>
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements />
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

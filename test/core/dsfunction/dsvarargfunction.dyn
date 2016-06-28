@@ -1,7 +1,10 @@
-<Workspace Version="0.6.3.25590" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.DSVarArgFunction type="Dynamo.Nodes.DSVarArgFunction" guid="a182d3f8-bb7d-4480-8aa5-eaacd6161415" nickname="List.Join" x="235" y="201" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="3" assembly="DSCoreNodes.dll" function="DSCore.List.Join@var[]..[]" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction guid="a182d3f8-bb7d-4480-8aa5-eaacd6161415" type="Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction" nickname="List.Join" x="235" y="201" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.List.Join@var[]..[]" inputcount="3" />
   </Elements>
   <Connectors />
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>
