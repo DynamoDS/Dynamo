@@ -939,15 +939,25 @@ namespace Dynamo.ViewModels
             {   // no selection, fitview all nodes and notes
                 if (!_nodes.Any()) return;
 
-                List<NodeModel> nodes = _nodes.Select(x => x.NodeModel).Where(x => x != null).ToList();
-                List<NoteModel> notes = _notes.Select(x => x.Model).Where(x => x != null).ToList();
+                List<NodeModel> nodes = _nodes.Select(x => x.NodeModel).ToList();
+                List<NoteModel> notes = _notes.Select(x => x.Model).ToList();
+                List<ModelBase> models = nodes.Concat<ModelBase>(notes).ToList();
+                
+                // initialize to the first model (either note or node) on the list 
+                minX = models[0].X;
+                maxX = models[0].X;
+                minY = models[0].Y;
+                maxY = models[0].Y;
 
-                //calculates the min and max positions of both x and y coords of all nodes and notes
-
-                minX = Math.Min(nodes.Select(x => x.X).Min(), notes.Select(x => x.X).Min());
-                maxX = Math.Max(nodes.Select(x => x.X + x.Width).Max(), notes.Select(x => x.X + x.Width).Max());
-                minY = Math.Min(nodes.Select(y => y.Y).Min(), notes.Select(y => y.Y).Min());
-                maxY = Math.Max(nodes.Select(y => y.Y + y.Height).Max(), notes.Select(y => y.Y + y.Height).Max());
+                foreach (var model in models)
+                {
+                    //calculates the min and max positions of both x and y coords of all nodes and notes
+                    minX = Math.Min(model.X, minX);
+                    maxX = Math.Max(model.X + model.Width, maxX);
+                    minY = Math.Min(model.Y, minY);
+                    maxY = Math.Max(model.Y + model.Height, maxY);
+                }
+                
             }
 
             var offset = new Point2D(minX, minY);
