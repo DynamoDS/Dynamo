@@ -74,7 +74,10 @@ namespace DSCore
         /// <search>divide,separaters,delimiter,cut,csv,comma,</search>
         public static string[] Split(string str, params string[] separaters)
         {
-            separaters = separaters.Select(s => s == "\n" ? Environment.NewLine : s).ToArray(); // converts all \n in separater array to Environment Newline (i.e. /r/n)
+            separaters = separaters.Select(s => s == "\n" ? Environment.NewLine : s).ToArray(); // converts all \n in separater array to Environment Newline (i.e. \r\n)
+               
+            if (str.Contains("\n") && !str.Contains(Environment.NewLine)) // converts all \n in string to Environment Newline to ensure that all CBN strings are able to be parsed in the same way as a String node.
+                str = str.Replace("\n", Environment.NewLine);
 
             return separaters.Contains("")
                 ? str.ToCharArray().Select(char.ToString).ToArray()
