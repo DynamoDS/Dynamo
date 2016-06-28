@@ -20,8 +20,8 @@ namespace Dynamo.Graph.Nodes
         /// 
         internal static string NormalizeLineBreaks(string text)
         {
-            text = text.Replace("\\r\\n", "\n");
-            return text.Replace("\\r", "\n");
+            text = text.Replace("\r\n", "\n");
+            return text.Replace("\r", "\n");
         }
 
         /// <summary>
@@ -227,7 +227,6 @@ namespace Dynamo.Graph.Nodes
                     inputCode = inputCode + ";";
             }
 
-            inputCode = NormalizeLineBreaks(inputCode);
             return inputCode;
         }
 
