@@ -369,28 +369,18 @@ namespace Dynamo.UI.Controls
             foreach (var filePath in filePaths)
             {
                 var extension = Path.GetExtension(filePath).ToUpper();
+                // If not extension specified and code reach here, this means this is still a valid file 
+                // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
+                var subScript = extension.IndexOf(".") == 0 ? extension.Substring(1) : "";
                 var caption = Path.GetFileNameWithoutExtension(filePath);
-                if (extension.IndexOf(".") == 0)
+
+                files.Add(new StartPageListItem(caption)
                 {
-                    files.Add(new StartPageListItem(caption)
-                    {
-                        ContextData = filePath,
-                        ToolTip = filePath,
-                        SubScript = extension.Substring(1), // Skipping the 'dot'
-                        ClickAction = StartPageListItem.Action.FilePath
-                    });
-                }
-                else
-                {
-                    // If not extension specified and code reach here, this means this is still a valid file only without file type.
-                    files.Add(new StartPageListItem(caption)
-                    {
-                        ContextData = filePath,
-                        ToolTip = filePath,
-                        SubScript = "",
-                        ClickAction = StartPageListItem.Action.FilePath
-                    });
-                }
+                    ContextData = filePath,
+                    ToolTip = filePath,
+                    SubScript = subScript,
+                    ClickAction = StartPageListItem.Action.FilePath
+                });
             }
         }
 
