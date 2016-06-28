@@ -329,6 +329,8 @@ namespace Dynamo.Logging
 
                 while (true)
                 {
+                    if (uploaderThread == null) break;
+
                     Thread.Sleep(DELAY_MS);
 
                     Dictionary<String, String> itemToUpload = null;

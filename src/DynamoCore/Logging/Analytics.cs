@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Analytics.NET.Google;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
@@ -33,10 +29,11 @@ namespace Dynamo.Logging
         FilterButtonClicked,
     }
 
-    class Analytics
+    public class Analytics
     {
         private static Analytics instance = null;
-        private string userId;
+        private Heartbeat heartbeat = null;
+        private Log piiLogger = null;
 
 #if DEBUG
         private const string ANALYTICS_PROPERTY = "UA-78361914-1";
@@ -44,14 +41,36 @@ namespace Dynamo.Logging
         private const string ANALYTICS_PROPERTY = "UA-52186525-1";
 #endif
 
-        public static bool Enabled { get { return instance != null; } }
-        
-        private Analytics(string user) 
+        internal string UserId { get; private set; }
+
+        internal string SessionId { get; private set; }
+
+        public static bool IsEnabled { get { return instance != null; } }
+
+        public static bool IsPIILoggingEnabled { get { return instance != null && instance.piiLogger != null; } }
+
+        private Analytics(string userId, DynamoModel dynamoModel)
         {
-            userId = user;
+            UserId = userId;
+            SessionId = Guid.NewGuid().ToString();
+            heartbeat = Heartbeat.GetInstance(dynamoModel);
+
+            if (dynamoModel.PreferenceSettings.IsUsageReportingApproved)
+            {
+                piiLogger = new Log("Dynamo", userId, SessionId);
+            }
         }
 
-        private static String GetUserID()
+        private void Dispose()
+        {
+            Heartbeat.DestroyInstance();
+            heartbeat = null;
+
+            piiLogger.Dispose();
+            piiLogger = null;
+        }
+
+        internal static String GetUserID()
         {
             // The name of the key must include a valid root.
             const string userRoot = "HKEY_CURRENT_USER";
@@ -84,24 +103,38 @@ namespace Dynamo.Logging
             Service.Instance.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
             var userId = GetUserID();
             var appversion = model.AppVersion;
+
             //If not enabled set the idle time as infinite so idle state is not recorded.
             Service.StartUp(new ProductInfo() { Name = "Dynamo", VersionString = appversion },
                 new UserInfo(userId), enable ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
 
+            StabilityCookie.Startup();
+
             if (enable)
             {
-                instance = new Analytics(userId);
+                instance = new Analytics(userId, model);
             }
         }
 
         public static void ShutDown()
         {
+            //Are we shutting down clean if so write 'nice shutdown' cookie
+            if (DynamoModel.IsCrashing)
+                StabilityCookie.WriteCrashingShutdown();
+            else
+                StabilityCookie.WriteCleanShutdown();
+
             Service.ShutDown();
+            if (instance != null)
+            {
+                instance.Dispose();
+                instance = null;
+            }
         }
 
         public static void TrackEvent(Actions action, Categories category, string description = "", int? value = null)
         {
-            if(!Analytics.Enabled)
+            if (!Analytics.IsEnabled)
                 return;
 
             var e = AnalyticsEvent.Create(category.ToString(), action.ToString(), description, value);
@@ -110,7 +143,7 @@ namespace Dynamo.Logging
 
         public static void TrackTimedEvent(Categories category, string variable, TimeSpan time, string description = "")
         {
-            if (!Analytics.Enabled) return;
+            if (!Analytics.IsEnabled) return;
 
             var e = new TimedEvent(time) { Category = category.ToString(), VariableName = variable, Description = description };
             e.Track();
@@ -118,7 +151,7 @@ namespace Dynamo.Logging
 
         public static void TrackScreenView(string viewName)
         {
-            if (!Analytics.Enabled) return;
+            if (!Analytics.IsEnabled) return;
 
             var e = new ScreenViewEvent(viewName);
             e.Track();
@@ -128,6 +161,13 @@ namespace Dynamo.Logging
         {
             //Continue recording exception in all scenarios.
             Service.TrackException(ex, isFatal);
+        }
+
+        public static void LogPiiInfo(string tag, string data)
+        {
+            if (!IsPIILoggingEnabled) return;
+
+            instance.piiLogger.Info(tag, data);
         }
     }
 }

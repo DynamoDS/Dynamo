@@ -1954,7 +1954,7 @@ namespace Dynamo.Models
             var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
             var currVer = ((currVersion != null) ? currVersion.ToString() : "Unknown");
 
-            InstrumentationLogger.LogPiiInfo(
+            Logging.Analytics.LogPiiInfo(
                 "ObsoleteFileMessage",
                 fullFilePath + " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
@@ -2027,7 +2027,7 @@ namespace Dynamo.Models
             var fileVer = ((fileVersion != null) ? fileVersion.ToString() : Resources.UnknownVersion);
             var currVer = ((currVersion != null) ? currVersion.ToString() : Resources.UnknownVersion);
 
-            InstrumentationLogger.LogPiiInfo("FutureFileMessage", fullFilePath +
+            Logging.Analytics.LogPiiInfo("FutureFileMessage", fullFilePath +
                 " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
             string summary = Resources.FutureFileSummary;

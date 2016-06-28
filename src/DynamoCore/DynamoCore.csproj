@@ -238,7 +238,6 @@ limitations under the License.
     <Compile Include="Core\DynamoSelection.cs" />
     <Compile Include="Logging\Heartbeat.cs" />
     <Compile Include="Logging\Log.cs" />
-    <Compile Include="Logging\Logger.cs" />
     <Compile Include="Models\DynamoModel.cs" />
     <Compile Include="Updates\BinaryVersion.cs" />
     <Compile Include="Updates\UpdateManager.cs" />
