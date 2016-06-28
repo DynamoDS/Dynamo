@@ -192,12 +192,6 @@ namespace Dynamo.Migration
                         Log(message);
                     }
 
-                    //Hardcode the file version to 0.6.0.0. The file whose version is 0.7.0.x
-                    //needs to be forced to be migrated. The version number needs to be changed from
-                    //0.7.0.x to 0.6.0.0.
-                    if (fileVersion == new Version(0, 7, 0, 0))
-                        fileVersion = new Version(0, 6, 0, 0);
-
                     ProcessWorkspaceMigrations(currentVersion, xmlDoc, fileVersion);
                     ProcessNodesInWorkspace(xmlDoc, fileVersion, currentVersion, factory);
                     return Decision.Migrate;
@@ -566,18 +560,10 @@ namespace Dynamo.Migration
                 return fileVersion < currVersion ? Decision.Migrate : Decision.Retain;
             }
 
-            //Force the file to go through the migration process, when the file version
-            //is 0.7.0.x. 
-            //Reason: There were files creaeted in 0.6.x with wrong version number 0.7.0.
-            //Force them to migration will manage to have those files migrated properly.
-            //Related YouTrack Defect: MAGN3767
-            if (fileVersion == new Version(0, 7, 0, 0))
-            {
-                return Decision.Migrate;
-            }
-
+            if(fileVersion < new Version(0, 7, 1, 0))
+                return Decision.Abort;
             // For end-users, disable migration.
-            if (fileVersion < currVersion)
+            else if (fileVersion < currVersion)
                 return Decision.Migrate;
 
             return Decision.Retain; // User has latest file, allow usage.
