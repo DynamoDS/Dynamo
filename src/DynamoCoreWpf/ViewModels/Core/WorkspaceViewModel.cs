@@ -942,6 +942,8 @@ namespace Dynamo.ViewModels
                 var notes = _notes.Select(x => x.Model);
                 var models = nodes.Concat<ModelBase>(notes);
 
+                if (!models.Any()) return;
+
                 // initialize to the first model (either note or node) on the list 
 
                 var firstModel = models.First();
