@@ -1185,6 +1185,7 @@ a1 = foo ( a1);
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T23_Update_Class_Instance_Using_Set_Method_7()
         {
             string errmsg = "";
@@ -3184,6 +3185,7 @@ a = 4;
 
         [Test]
         [Category("Update")]
+        [Category("BackwardIncompatible")]
         public void T43_Defect_1463498()
         {
             string code = @"
@@ -4026,6 +4028,7 @@ test = foo();
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T58_Defect_1467396_Update_In_Global_Variables_2()
         {
             String code = @"
@@ -4245,6 +4248,7 @@ z2 = a.Z;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T62_update_wrongsequnce_1467484()
         {
             String code = @"
@@ -4270,6 +4274,7 @@ x = 3;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T62_update_wrongsequnce_1467484_2()
         {
             String code = @"
@@ -4296,6 +4301,7 @@ z = foo();
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T62_update_wrongsequnce_global_1467484_3()
         {
             String code = @"
@@ -4375,6 +4381,7 @@ a = 1;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T62_update_wrongsequnce_1467484_7()
         {
             String code = @"
@@ -4440,6 +4447,7 @@ c = Print(b);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T62_update_wrongsequnce_1467484_10()
         {
             String code = @"
@@ -4468,6 +4476,7 @@ z = foo();
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T62_update_wrongsequnce_1467484_11()
         {
             String code = @"
@@ -4544,6 +4553,7 @@ a = 3;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T62_update_wrongsequnce_1467484_14()
         {
             String code = @"
@@ -4576,6 +4586,7 @@ z = foo();
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T62_update_wrongsequnce_1467484_15()
         {
             String code = @"
@@ -4945,6 +4956,7 @@ pt3 = XPlusY(pt2);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T66_1467483_CyclicDependancy()
         {
             String code = @"
@@ -4966,6 +4978,7 @@ pt3 = XPlusY(pt2);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T66_1467483_CyclicDependancy_2()
         {
             String code = @"
@@ -5039,6 +5052,7 @@ pt3 = XPlusY(pt2);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T66_1467512_RighthandsideUpdate_imperative_3()
         {
             String code = @"
@@ -5222,6 +5236,7 @@ q = a;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T69_Cyclic_globalvariable_1467439()
         {
             String code = @"
@@ -6547,6 +6562,7 @@ x = n.X;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T91_1467547_3()
         {
             String code = @"
@@ -6614,6 +6630,7 @@ e1 = d1(b1);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T91_1467547_6()
         {
             String code = @"
@@ -6647,6 +6664,7 @@ a;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T91_1467547_7()
         {
             String code = @"

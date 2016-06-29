@@ -2192,6 +2192,7 @@ class foo
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T74_Function_With_Simple_Replication_Imperative()
         {
             string code = @"

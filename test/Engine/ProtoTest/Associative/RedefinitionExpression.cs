@@ -134,6 +134,7 @@ y = a[1];
 
         [Test]
         [Category("ToFixJun")]
+        [Category("BackwardIncompatible")]
         public void RedefineWithExpressionLists03()
         {
             String code =
