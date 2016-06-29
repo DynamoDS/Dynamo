@@ -568,13 +568,11 @@ namespace Dynamo.Controls
             var index = ++NodeViewModel.StaticZIndex;
 
             // increment all Notes to ensure that they are always above any Node
-            var parent = TemplatedParent as ContentPresenter;
-            if (parent == null) return;
             NoteViewModel.StaticZIndex = index + 1;
 
-            foreach (var child in parent.ChildrenOfType<NodeView>())
+            foreach (var note in ViewModel.WorkspaceViewModel.Notes)
             {
-                child.ViewModel.ZIndex = NoteViewModel.StaticZIndex;
+                note.ZIndex = NoteViewModel.StaticZIndex;
             }
 
             oldZIndex = nodeWasClicked ? index : ViewModel.ZIndex;
