@@ -97,7 +97,8 @@ namespace Dynamo.ViewModels
             model.PropertyChanged += note_PropertyChanged;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
 
-            ZIndex = ++NodeViewModel.StaticZIndex; // places the note on top of all nodes/notes
+            StaticZIndex = NodeViewModel.StaticZIndex;
+            ZIndex = ++StaticZIndex; // places the note on top of all nodes/notes
         }
 
         private void SelectionOnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

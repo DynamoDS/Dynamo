@@ -119,12 +119,12 @@ namespace Dynamo.Nodes
         /// </summary>
         private void BringToFront()
         {
-            if (NodeViewModel.StaticZIndex == int.MaxValue)
+            if (NoteViewModel.StaticZIndex == int.MaxValue)
             {
                 PrepareZIndex();
             }
             
-            ViewModel.ZIndex = ++NodeViewModel.StaticZIndex;
+            ViewModel.ZIndex = ++NoteViewModel.StaticZIndex;
         }
 
 
@@ -133,7 +133,7 @@ namespace Dynamo.Nodes
         /// </summary>
         private void PrepareZIndex()
         {
-            NodeViewModel.StaticZIndex = Configurations.NodeStartZIndex;
+            NoteViewModel.StaticZIndex = Configurations.NodeStartZIndex;
 
             var parent = TemplatedParent as ContentPresenter;
             if (parent == null) return;
