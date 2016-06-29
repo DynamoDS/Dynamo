@@ -960,6 +960,7 @@ z_I2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T031_Defect_1450594()
         {
             string src = @"f;p;q;x;y1;z;y2;

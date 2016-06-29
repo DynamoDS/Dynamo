@@ -194,6 +194,7 @@ import(""FFITarget.dll"");
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS009_Parameter_Int_ToBoolArray_1467182_Imperative()
         {
             string code =
@@ -384,6 +385,7 @@ b;c;d;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS018_Return_Int_ordouble_ToBool_1467172_2_Imperative()
         {
             string code =
@@ -1348,6 +1350,7 @@ a;b;c;d;e1;f;g;
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS047_double_To_Int_insidefunction_2_Imperative()
         {
             string code =
@@ -1481,6 +1484,7 @@ a;a1;b;c;d1;e;f;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS051_Param_eachType_To_intArray_Imperative()
         {
             string code =
@@ -1519,6 +1523,7 @@ a;a1;b;c;d1;e;f;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS052_Return_AllTypeTo_doubleArray_Imperative()
         {
             //  
@@ -1558,6 +1563,7 @@ a;a1;b;c;d1;e;f;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS053_Param_AlltypeTo_doubleArray_Imperative()
         {
             //  
@@ -1597,6 +1603,7 @@ a;b;c;d1;e;f;
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS055_Param_AlltypeTo_BoolArray_Imperative()
         {
             string code =
@@ -1861,6 +1868,7 @@ import(""FFITarget.dll"");
 
         [Test]
         [Category("Type System")]
+        [Category("BackwardIncompatible")]
         public void TS066_Int_To_Char_1467119_Imperative()
         {
             string code =

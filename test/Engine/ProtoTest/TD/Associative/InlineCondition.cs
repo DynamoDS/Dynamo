@@ -301,6 +301,7 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T010_Defect_1456751_execution_on_both_true_and_false_path_issue()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4026
@@ -960,6 +961,7 @@ a = 1;
 
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T021_1467442_3()
         {
             string code = @"

@@ -1665,6 +1665,7 @@ r3 = fa.fx[0]; // 10
 
         [Test]
         [Category("DSDefinedClass_Ported")]
+        [Category("BackwardIncompatible")]
         public void TestIndexingIntoArray02()
         {
             String code =

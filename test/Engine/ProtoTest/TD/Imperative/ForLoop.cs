@@ -1008,6 +1008,7 @@ x;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T39_Defect_1452951_1()
         {
             string code = @"
