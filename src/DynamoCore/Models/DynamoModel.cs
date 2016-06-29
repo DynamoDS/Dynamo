@@ -368,6 +368,8 @@ namespace Dynamo.Models
             PreShutdownCore(shutdownHost);
             ShutDownCore(shutdownHost);
             PostShutdownCore(shutdownHost);
+            
+            Dynamo.Logging.Analytics.ShutDown();
 
             OnShutdownCompleted(); // Notify possible event handlers.
         }
@@ -384,8 +386,7 @@ namespace Dynamo.Models
             OnCleanup();
 
             DynamoSelection.DestroyInstance();
-            Dynamo.Logging.Analytics.ShutDown();
-
+            
             if (Scheduler != null)
             {
                 Scheduler.Shutdown();
@@ -1014,7 +1015,7 @@ namespace Dynamo.Models
 
         private void InitializeInstrumentationLogger()
         {
-            bool enableAnalytics = !IsTestMode && this.PreferenceSettings.IsAnalyticsReportingApproved;
+            bool enableAnalytics = !IsTestMode;
             Dynamo.Logging.Analytics.Start(this, enableAnalytics);
         }
 

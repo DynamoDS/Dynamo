@@ -4,35 +4,77 @@ using Dynamo.Models;
 namespace Dynamo.Logging
 {
     /// <summary>
-    /// Utility class to support analytics tracking.
+    /// Categories for analytics tracking.
     /// </summary>
-    public class Analytics
+    public enum Categories
     {
-        private static IAnalyticsClient client = new DynamoAnalyticsClient();
-        private static bool enabled = true;
+        ApplicationLifecycle,
+        Stability,
+        NodeOperations,
+        Performance,
+        Command,
+        FileOperation,
+        SearchUX,
+    }
+
+    /// <summary>
+    /// Actions for analytics tracking.
+    /// </summary>
+    public enum Actions
+    {
+        Start,
+        End,
+        Create,
+        Delete,
+        Move,
+        Copy,
+        Open,
+        Close,
+        Read,
+        Write,
+        Save,
+        SaveAs,
+        New,
+        EngineFailure,
+        FilterButtonClicked,
+    }
+
+    /// <summary>
+    /// Implements analytics and logging functions.
+    /// </summary>
+    public interface IAnalyticsClient
+    {
+        /// <summary>
+        /// Get unique user id.
+        /// </summary>
+        string UserId { get; }
+
+        /// <summary>
+        /// Gets unique session id.
+        /// </summary>
+        string SessionId { get; }
+
+        /// <summary>
+        /// Checks if analytics reporting is ON.
+        /// </summary>
+        bool ReportingAnalytics { get; }
+
+        /// <summary>
+        /// Cheks if detailed usage reporting is ON.
+        /// </summary>
+        bool ReportingUsage { get; }
 
         /// <summary>
         /// Starts the client when DynamoModel is created. This method initializes
         /// the Analytics service and application life cycle start is tracked.
         /// </summary>
-        /// <param name="model">DynamoModel</param>
-        /// <param name="enable">Whether to enable analytics and usage reporting.</param>
-        internal static void Start(DynamoModel model, bool enable)
-        {
-            Analytics.enabled = enable;
-            if (enable) client.Start(model);
-        }
+        /// <param name="model"></param>
+        void Start(DynamoModel model);
 
         /// <summary>
         /// Shuts down the client. Application life cycle end is tracked.
         /// </summary>
-        internal static void ShutDown()
-        {
-            if (enabled) client.ShutDown();
-
-            IDisposable disposable = client as IDisposable;
-            if (disposable != null) disposable.Dispose();
-        }
+        void ShutDown();
 
         /// <summary>
         /// Tracks an arbitrary event.
@@ -41,10 +83,7 @@ namespace Dynamo.Logging
         /// <param name="category">Event category</param>
         /// <param name="description">Event description</param>
         /// <param name="value">A metric value associated with the event</param>
-        public static void TrackEvent(Actions action, Categories category, string description = "", int? value = null)
-        {
-            if (enabled) client.TrackEvent(action, category, description, value);
-        }
+        void TrackEvent(Actions action, Categories category, string description, int? value);
 
         /// <summary>
         /// Tracks a timed event, when it has completed.
@@ -53,29 +92,20 @@ namespace Dynamo.Logging
         /// <param name="variable">Timed variable name</param>
         /// <param name="time">Time taken by the event</param>
         /// <param name="description">Event description</param>
-        public static void TrackTimedEvent(Categories category, string variable, TimeSpan time, string description = "")
-        {
-            if(enabled) client.TrackTimedEvent(category, variable, time, description);
-        }
+        void TrackTimedEvent(Categories category, string variable, TimeSpan time, string description);
 
         /// <summary>
         /// Tracks screen view, such as Node view, Geometry view, Custom workspace etc.
         /// </summary>
         /// <param name="viewName">Name of the screen</param>
-        public static void TrackScreenView(string viewName)
-        {
-            if(enabled) client.TrackScreenView(viewName);
-        }
+        void TrackScreenView(string viewName);
 
         /// <summary>
         /// Tracks an exception. If the exception is fatal, its recorded as crash.
         /// </summary>
         /// <param name="ex">Exception</param>
         /// <param name="isFatal">If it's fatal</param>
-        public static void TrackException(Exception ex, bool isFatal)
-        {
-            if(enabled) client.TrackException(ex, isFatal);
-        }
+        void TrackException(Exception ex, bool isFatal);
 
         /// <summary>
         /// Creates a new timed event with start state and tracks its start.
@@ -85,12 +115,7 @@ namespace Dynamo.Logging
         /// <param name="variable">Timed varaible name</param>
         /// <param name="description">Event description</param>
         /// <returns>Event as IDisposable</returns>
-        public static IDisposable CreateTimedEvent(Categories category, string variable, string description)
-        {
-            if (!enabled) return DynamoAnalyticsClient.Disposable;
-
-            return client.CreateTimedEvent(category, variable, description);
-        }
+        IDisposable CreateTimedEvent(Categories category, string variable, string description);
 
         /// <summary>
         /// Creates a new command event of the given name. Start of the 
@@ -98,12 +123,7 @@ namespace Dynamo.Logging
         /// </summary>
         /// <param name="name">Command name</param>
         /// <returns>Event as IDisposable</returns>
-        public static IDisposable CreateCommandEvent(string name)
-        {
-            if (!enabled) return DynamoAnalyticsClient.Disposable;
-
-            return client.CreateCommandEvent(name);
-        }
+        IDisposable CreateCommandEvent(string name);
 
         /// <summary>
         /// Creates a new file operation event and tracks the start of the event.
@@ -113,21 +133,13 @@ namespace Dynamo.Logging
         /// <param name="operation">File operation</param>
         /// <param name="size">Size parameter</param>
         /// <returns>Event as IDisposable</returns>
-        public static IDisposable CreateFileOperationEvent(string filepath, Actions operation, int size)
-        {
-            if (!enabled) return DynamoAnalyticsClient.Disposable;
-
-            return client.CreateFileOperationEvent(filepath, operation, size);
-        }
+        IDisposable CreateFileOperationEvent(string filepath, Actions operation, int size);
 
         /// <summary>
         /// Logs usage data
         /// </summary>
         /// <param name="tag">Usage tag</param>
         /// <param name="data">Usage data</param>
-        public static void LogPiiInfo(string tag, string data)
-        {
-            if (enabled) client.LogPiiInfo(tag, data);
-        }
+        void LogPiiInfo(string tag, string data);
     }
 }
