@@ -55,6 +55,7 @@ fib10_i;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void SquareRoot()
         {
             string code = @"
@@ -948,6 +949,7 @@ return = t;
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void functionNotFound_1467444_2()
         {
             String code =

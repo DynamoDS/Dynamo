@@ -1221,6 +1221,7 @@ list2 = !list1; // { false, false, true, true, false, true }
 
         [Test]
         [Category("Replication")]
+        [Category("BackwardIncompatible")]
         public void T50_Replication_Imperative_Scope()
         {
             string code = @"
@@ -2812,6 +2813,7 @@ test3 = a1.X[0][0];
         }
 
         [Test]
+        [Category("BackwardIncompatible")]
         public void T67_Defect_1460965_ExpressionInParenthesis01()
         {
             string code = @"

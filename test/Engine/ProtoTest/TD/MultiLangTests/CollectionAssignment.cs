@@ -1527,6 +1527,7 @@ b = a;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("BackwardIncompatible")]
         public void T26_Defct_DNL_1459616_3()
         {
             string code = @"
