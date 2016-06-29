@@ -91,7 +91,7 @@ namespace DSCore
 #endif
 
         /// <summary>
-        ///     Gets the brightness value for this color.
+        /// Returns the brightness value for this color.
         /// </summary>
         /// <returns name="brightness">double between 0 and 1 inclusive.</returns>
         public static float Brightness(Color c)
@@ -100,7 +100,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Gets the saturation value for this color.
+        /// Returns the saturation value for this color.
         /// </summary>
         /// <returns name="saturation">double between 0 and 1 inclusive.</returns>
         public static float Saturation(Color c)
@@ -109,7 +109,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Gets the hue value for this color.
+        /// Returns the hue value for this color.
         /// </summary>
         /// <returns name="hue">double between 0 and 1 inclusive.</returns>
         /// <search>hues</search>
@@ -136,7 +136,7 @@ namespace DSCore
         }
 
         /// <summary>
-        /// Get a color from a color gradient between a start color and an end color.
+        /// Returns a color from a color gradient between a start color and an end color.
         /// </summary>
         /// <param name="colors"></param>
         /// <param name="parameters">The values between 0 and 1 along the range for which you would like to sample the color.</param>
@@ -194,6 +194,8 @@ namespace DSCore
         /// <param name="colors"></param>
         /// <param name="parameter"></param>
         /// <returns>The interpolated color or white.</returns>
+        /// This algorithm is not the same as the solution found from wikipedia 
+        /// (reference: https://en.wikipedia.org/wiki/Bilinear_interpolation)
         [IsVisibleInDynamoLibrary(false)]
         public static Color Blerp(IList<IndexedColor2D> colors, UV parameter)
         {
@@ -207,7 +209,7 @@ namespace DSCore
                 {
                     return ci.Color;
                 }
-                var w = 1/d;
+                var w = 1 / d;
 
                 num[0] += ci.Color.Alpha * w;
                 num[1] += ci.Color.Red * w;
@@ -221,6 +223,8 @@ namespace DSCore
                 (int)(num[2] / totalArea),
                 (int)(num[3] / totalArea));
         }
+
+
 
         private static double Area(UV min, UV max)
         {
@@ -432,7 +436,7 @@ namespace DSCore
         }
 
         /// <summary>
-        /// Get the color in this color range at the specified parameter.
+        /// Returns the color in this color range at the specified parameter.
         /// </summary>
         /// <param name="colorRange"></param>
         /// <param name="parameter">A value between 0.0 and 1.0.</param>
@@ -538,7 +542,7 @@ namespace DSCore
         }
 
         /// <summary>
-        /// Get the color in this color range at the specified parameter.
+        /// Returns the color in this color range at the specified parameter.
         /// </summary>
         /// <param name="parameter">A UV between (0.0,0.0) and (1.0,1.0).</param>
         /// <returns>A Color.</returns>

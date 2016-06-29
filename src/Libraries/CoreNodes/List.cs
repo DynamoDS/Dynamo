@@ -405,7 +405,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Gets an item from the given list that's located at the specified index.
+        /// Returns an item from the given list that's located at the specified index.
         /// </summary>
         /// <param name="list">List to fetch an item from.</param>
         /// <param name="index">Index of the item to be fetched.</param>
@@ -443,7 +443,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Gets a single sub-list from the given list, based on starting index, ending index,
+        ///     Returns a single sub-list from the given list, based on starting index, ending index,
         ///     and a step amount.
         /// </summary>
         /// <param name="list">List to take a slice of.</param>
@@ -551,7 +551,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Gets the number of items stored in the given list.
+        ///     Returns the number of items stored in the given list.
         /// </summary>
         /// <param name="list">List to get the item count of.</param>
         /// <returns name="count">List length.</returns>
@@ -576,7 +576,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Gets the first item in a list.
+        ///     Returns the first item in a list.
         /// </summary>
         /// <param name="list">List to get the first item from.</param>
         /// <returns name="item">First item in the list.</returns>

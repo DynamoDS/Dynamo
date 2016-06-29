@@ -1,30 +1,30 @@
-<Workspace X="-120.235256410257" Y="-246.387700854701" zoom="1.1" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="-120.235256410257" Y="-246.387700854701" zoom="1.1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
     <Dynamo.Nodes.CircleNode type="Dynamo.Nodes.CircleNode" guid="3382f192-30e7-49bf-92f0-c24504d498b5" nickname="Circle - LibG" x="677.373737373737" y="411.755252525252" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.Point3DNode type="Dynamo.Nodes.Point3DNode" guid="753356e5-4025-46b9-a688-8a2e20e482fc" nickname="Point" x="402.222222222222" y="299.453465423465" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.VectorNode type="Dynamo.Nodes.VectorNode" guid="4928a6fd-bc0b-435b-8b14-7a35bc1a5181" nickname="Vector" x="366.068376068376" y="519.453465423465" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="dcab5e83-ba90-44d0-b7c4-998bddd10c8f" nickname="Number" x="200.683760683761" y="276.376542346542" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <CoreNodeModels.Input.DoubleInput guid="dcab5e83-ba90-44d0-b7c4-998bddd10c8f" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="200.683760683761" y="276.376542346542" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="0" />
-    </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="98e277c1-e1ea-4ba6-ae10-fe87b4aa3362" nickname="Number" x="198.376068376068" y="524.838080808081" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="98e277c1-e1ea-4ba6-ae10-fe87b4aa3362" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="198.376068376068" y="524.838080808081" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="1" />
-    </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.DoubleSliderInput type="Dynamo.Nodes.DoubleSliderInput" guid="aff6dee6-ac92-4dec-83b3-7c47d0b35d31" nickname="Number Slider" x="179.441142191142" y="437.738818958819" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="50" min="0" max="100" />
-    </Dynamo.Nodes.DoubleSliderInput>
-    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="86cff78e-4ca0-4947-8a74-5a52aec8e5c2" nickname="Watch 3D" x="954.441142191142" y="335.238818958819" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleSlider guid="aff6dee6-ac92-4dec-83b3-7c47d0b35d31" type="CoreNodeModels.Input.DoubleSlider" nickname="Number Slider" x="179.441142191142" y="437.738818958819" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.Double>50</System.Double>
+      <Range min="0" max="100" step="0.1" />
+    </CoreNodeModels.Input.DoubleSlider>
+    <Watch3DNodeModels.Watch3D guid="86cff78e-4ca0-4947-8a74-5a52aec8e5c2" type="Watch3DNodeModels.Watch3D" nickname="Watch 3D" x="954.441142191142" y="335.238818958819" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
+      <view width="200" height="200" />
+    </Watch3DNodeModels.Watch3D>
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="3382f192-30e7-49bf-92f0-c24504d498b5" start_index="0" end="86cff78e-4ca0-4947-8a74-5a52aec8e5c2" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="753356e5-4025-46b9-a688-8a2e20e482fc" start_index="0" end="3382f192-30e7-49bf-92f0-c24504d498b5" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="4928a6fd-bc0b-435b-8b14-7a35bc1a5181" start_index="0" end="3382f192-30e7-49bf-92f0-c24504d498b5" end_index="2" portType="0" />
-    <Dynamo.Models.ConnectorModel start="dcab5e83-ba90-44d0-b7c4-998bddd10c8f" start_index="0" end="753356e5-4025-46b9-a688-8a2e20e482fc" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="dcab5e83-ba90-44d0-b7c4-998bddd10c8f" start_index="0" end="753356e5-4025-46b9-a688-8a2e20e482fc" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="dcab5e83-ba90-44d0-b7c4-998bddd10c8f" start_index="0" end="753356e5-4025-46b9-a688-8a2e20e482fc" end_index="2" portType="0" />
-    <Dynamo.Models.ConnectorModel start="dcab5e83-ba90-44d0-b7c4-998bddd10c8f" start_index="0" end="4928a6fd-bc0b-435b-8b14-7a35bc1a5181" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="dcab5e83-ba90-44d0-b7c4-998bddd10c8f" start_index="0" end="4928a6fd-bc0b-435b-8b14-7a35bc1a5181" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="98e277c1-e1ea-4ba6-ae10-fe87b4aa3362" start_index="0" end="4928a6fd-bc0b-435b-8b14-7a35bc1a5181" end_index="2" portType="0" />
-    <Dynamo.Models.ConnectorModel start="aff6dee6-ac92-4dec-83b3-7c47d0b35d31" start_index="0" end="3382f192-30e7-49bf-92f0-c24504d498b5" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="3382f192-30e7-49bf-92f0-c24504d498b5" start_index="0" end="86cff78e-4ca0-4947-8a74-5a52aec8e5c2" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="753356e5-4025-46b9-a688-8a2e20e482fc" start_index="0" end="3382f192-30e7-49bf-92f0-c24504d498b5" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="dcab5e83-ba90-44d0-b7c4-998bddd10c8f" start_index="0" end="753356e5-4025-46b9-a688-8a2e20e482fc" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="dcab5e83-ba90-44d0-b7c4-998bddd10c8f" start_index="0" end="4928a6fd-bc0b-435b-8b14-7a35bc1a5181" end_index="0" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

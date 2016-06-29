@@ -6,6 +6,9 @@ using Dynamo.Configuration;
 
 namespace Dynamo.Graph.Nodes
 {
+    /// <summary>
+    /// Contains helper methods to adjust the contents of codeblock node.
+    /// </summary>
     public static class CodeBlockUtils
     {
         /// <summary>
@@ -155,6 +158,9 @@ namespace Dynamo.Graph.Nodes
         /// 
         internal static string FormatUserText(string inputCode)
         {
+
+            // inputCode;
+
             if (inputCode == null)
                 return string.Empty;
 

@@ -38,7 +38,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Get all keys.
+        /// Returns all keys.
         /// </summary>
         /// <param name="core"></param>
         /// <returns></returns>
@@ -58,7 +58,7 @@ namespace ProtoCore.DSASM
             }
         }
         /// <summary>
-        /// Get all values. 
+        /// Returns all values. 
         /// </summary>
         public override IEnumerable<StackValue> Values
         {
@@ -69,7 +69,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Return if array contain key or not.
+        /// Returns true if array contain key or not.
         /// </summary>
         /// <param name="array"></param>
         /// <param name="key"></param>
@@ -184,7 +184,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Get a list of key-value pairs for an array.
+        /// Returns a list of key-value pairs for an array.
         /// </summary>
         /// <param name="array"></param>
         /// <param name="runtimeCore"></param>
@@ -206,7 +206,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public void CollectElementsForGC(Queue<StackValue> gcQueue)
         {
-            var elements = Values.Concat(Dict == null ? Dict.Keys : Enumerable.Empty<StackValue>());
+            var elements = Values.Concat(Dict != null ? Dict.Keys : Enumerable.Empty<StackValue>());
             foreach (var item in elements)
             {
                 if (item.IsReferenceType)

@@ -869,6 +869,7 @@ It does not contain your graph or any personal data</value>
     <value>You have unsaved changes to custom node workspace: "{0}".
 
 Would you like to save your changes?</value>
+    <comment>Message box content</comment>
   </data>
   <data name="MessageConfirmToSaveHomeWorkSpace" xml:space="preserve">
     <value>You have unsaved changes to the Home workspace.
@@ -954,7 +955,9 @@ You can always re-deprecate the package.</value>
     <value>{0} needs to uninstall {1} to continue, but cannot as one of its types appears to be in use.  Try restarting {0}.</value>
   </data>
   <data name="MessageUninstallToContinue2" xml:space="preserve">
-    <value>{0} needs to uninstall {1} to continue but it contains binaries already loaded into Dynamo.  It's now marked for removal, but you'll need to first restart {0}.</value>
+    <value>{2} has dependencies. To install {2}, {0} needs to first uninstall the following dependent packages: {1}. Restart {0} to complete the uninstall, then try and download {2} again.
+
+Uninstall the following dependent packages: {1}?</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>
@@ -1677,7 +1680,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Publish Online</value>
   </data>
   <data name="StartPageWhatsNew" xml:space="preserve">
-    <value>What's New</value>
+    <value>Getting Started</value>
   </data>
   <data name="TermsOfUseAcceptButton" xml:space="preserve">
     <value>I Accept</value>
@@ -1732,6 +1735,14 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
     <value>Show Edges</value>
+  </data>
+  <data name="DynamoViewSettingsMenuHidePreviewBubbles" xml:space="preserve">
+    <value>Hide Preview Bubbles</value>
+    <comment>Settings menu | Hide preview bubbles</comment>
+  </data>
+  <data name="DynamoViewSettingsMenuShowPreviewBubbles" xml:space="preserve">
+    <value>Show Preview Bubbles</value>
+    <comment>Settings menu | Show preview bubbles</comment>
   </data>
   <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
     <value>Visualization Settings</value>
@@ -1983,6 +1994,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PreviewListLabel" xml:space="preserve">
     <value>List</value>
   </data>
+  <data name="NullString" xml:space="preserve">
+    <value>null</value>
+  </data>
   <data name="InvalidTimeZoneMessage" xml:space="preserve">
     <value>Could not sign in at this moment. Check the date, time and time zone settings and try to sign in again.</value>
   </data>
@@ -1994,5 +2008,12 @@ Next assemblies were loaded several times:
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Failed to add file: {0}</value>
     <comment>Message box content</comment>
+  </data>
+  <data name="MessageConfirmToSaveReadOnlyCustomNode" xml:space="preserve">
+    <value>We can't save "{0}" because the file is read only. To keep your changes, you'll need to save it with a new name or in a different location.</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="TabFileNameReadOnlyPrefix" xml:space="preserve">
+    <value>[Read-Only] </value>
   </data>
 </root>

@@ -2,6 +2,9 @@
 
 namespace Dynamo.Scheduler
 {
+    /// <summary>
+    /// Implements IDisposable functionality.
+    /// </summary>
     public static class Disposable
     {
         private sealed class SimpleDisposable : IDisposable
@@ -20,10 +23,10 @@ namespace Dynamo.Scheduler
         }
 
         /// <summary>
-        /// construct a new disposable that calls the delegate when disposed 
+        /// Constructs a new disposable that calls the delegate when disposed 
         /// </summary>
-        /// <param name="disposeAction"> an action that is run when this object is disposed</param>
-        /// <returns></returns>
+        /// <param name="disposeAction">An action that runs when this object is disposed</param>
+        /// <returns>New disposable object</returns>
         public static IDisposable Create(Action disposeAction)
         {
             return new SimpleDisposable(disposeAction);

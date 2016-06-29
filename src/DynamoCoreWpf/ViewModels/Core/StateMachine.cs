@@ -520,7 +520,10 @@ namespace Dynamo.ViewModels
                     {
                         if (e.ClickCount < 2) 
                         {
+                            // if the Shift key is held down while the left mouse button is pressed, then do not initiate the window selection sequence
+                            DynamoSelection.Instance.ClearSelectionDisabled = Keyboard.Modifiers == ModifierKeys.Shift;
                             InitiateWindowSelectionSequence();
+
                         }
                         else // Double-clicking on canvas.
                         {

@@ -1,12 +1,17 @@
-<dynWorkspace X="0" Y="0">
-  <dynElements>
-    <Dynamo.Nodes.dynAngleInput type="Dynamo.Nodes.dynAngleInput" guid="dcd9c6c6-6350-4292-a553-c57a764504b4" nickname="Angle(deg.)" x="152.05016255707" y="161.845869535481" lacing="Disabled">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="dcd9c6c6-6350-4292-a553-c57a764504b4" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Math.DegreesToRadians" x="152.05016255707" y="161.845869535481" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Math.DegreesToRadians@double" />
+    <CoreNodeModels.Input.DoubleInput guid="c1d6f9b4-3f45-4502-b4b8-27fd03491388" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="2.05016255707" y="161.845869535481" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="0" />
-    </Dynamo.Nodes.dynAngleInput>
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="67f40bd6-cdee-470a-9aa5-2c9d6f6c87bc" nickname="Watch" x="365.125120302721" y="172.491065186649" lacing="Disabled" />
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Connectors.dynConnectorModel start="dcd9c6c6-6350-4292-a553-c57a764504b4" start_index="0" end="67f40bd6-cdee-470a-9aa5-2c9d6f6c87bc" end_index="0" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Watch guid="67f40bd6-cdee-470a-9aa5-2c9d6f6c87bc" type="CoreNodeModels.Watch" nickname="Watch" x="365.125120302721" y="172.491065186649" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="dcd9c6c6-6350-4292-a553-c57a764504b4" start_index="0" end="67f40bd6-cdee-470a-9aa5-2c9d6f6c87bc" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="c1d6f9b4-3f45-4502-b4b8-27fd03491388" start_index="0" end="dcd9c6c6-6350-4292-a553-c57a764504b4" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

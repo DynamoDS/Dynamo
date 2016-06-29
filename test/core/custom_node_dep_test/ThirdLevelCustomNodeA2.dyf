@@ -1,5 +1,8 @@
-<dynWorkspace X="0" Y="0" Name="ThirdLevelCustomNodeA2" Category="Analyze.Display" ID="cd8b762b-4437-4cde-b22c-679fd47d3bde">
-  <dynElements />
-  <dynConnectors />
-  <dynNotes />
-</dynWorkspace>
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="ThirdLevelCustomNodeA2" Description="" ID="cd8b762b-4437-4cde-b22c-679fd47d3bde" Category="Analyze.Display">
+  <NamespaceResolutionMap />
+  <Elements />
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

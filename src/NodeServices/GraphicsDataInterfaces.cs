@@ -203,13 +203,71 @@ namespace Autodesk.DesignScript.Interfaces
     public interface IGraphicItem
     {
         /// <summary>
-        /// Gets the graphics/tesselation data in given render package object.
+        /// Returns the graphics/tesselation data in given render package object.
         /// </summary>
         /// <param name="package">The render package, where graphics data to be
         /// pushed.</param>
         /// <param name="parameters"></param>
         void Tessellate(IRenderPackage package, TessellationParameters parameters);
     }
+
+    /// <summary>
+    /// An interface that defines items which have a transform property, which is a 4x4 matrix.
+    /// </summary>
+    public interface ITransformable
+    {
+        /// <summary>
+        /// A flag indicating whether the render package has had its Transform property set
+        /// explicitly.
+        /// </summary>
+        bool RequiresCustomTransform { get; set; }
+
+        /// <summary>
+        /// A 4x4 matrix that is used to transform all geometry in the render packaage.
+        /// </summary>
+        double[] Transform  { get; } 
+        
+        /// <summary>
+        /// Set the transform using a series of doubles. The resulting transform is applied to all geometry in the renderPackage.
+        /// Following conventional matrix notation, m11 is the value of the first row and first column, and m12
+        /// is the value of the first row and second column.
+        /// NOTE: This method should set the matrix exactly as described by the caller.
+        /// </summary>
+        /// <param name="m11"></param>
+        /// <param name="m12"></param>
+        /// <param name="m13"></param>
+        /// <param name="m14"></param>
+        /// <param name="m21"></param>
+        /// <param name="m22"></param>
+        /// <param name="m23"></param>
+        /// <param name="m24"></param>
+        /// <param name="m31"></param>
+        /// <param name="m32"></param>
+        /// <param name="m33"></param>
+        /// <param name="m34"></param>
+        /// <param name="m41"></param>
+        /// <param name="m42"></param>
+        /// <param name="m43"></param>
+        /// <param name="m44"></param>
+        void SetTransform(double m11, double m12, double m13, double m14,
+           double m21, double m22, double m23, double m24,
+           double m31, double m32, double m33, double m34,
+           double m41, double m42, double m43, double m44);
+
+        /// <summary>
+        /// Set the transform as a double array, this transform is applied to all geometry in the renderPackage.
+        /// This matrix should be laid out as follows in row vector order:
+        /// [Xx,Xy,Xz, 0,
+        ///  Yx, Yy, Yz, 0,
+        ///  Zx, Zy, Zz, 0,
+        ///  offsetX, offsetY, offsetZ, W]
+        ///NOTE: This method should transform the matrix from row vector order to whatever form is needed by the implementation.
+        /// </summary>
+        /// <param name="matrix"></param>
+        void SetTransform(double[] matrix);
+        
+    }
+
 
     public class TessellationParameters
     {
@@ -254,7 +312,7 @@ namespace Autodesk.DesignScript.Interfaces
         List<IGraphicItem> GetGraphicItems(Object obj);
 
         /// <summary>
-        /// Gets the Graphics/Render data into the given render package.
+        /// Returns the Graphics/Render data into the given render package.
         /// </summary>
         /// <param name="objects">Objects which owns some graphics items</param>
         /// <param name="package">RenderPackage where graphics/render data can

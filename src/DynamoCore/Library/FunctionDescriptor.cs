@@ -1,16 +1,15 @@
+using Dynamo.Graph.Nodes;
+using Dynamo.Interfaces;
+using Dynamo.Library;
+using ProtoCore;
+using ProtoCore.DSASM;
+using ProtoCore.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Dynamo.Graph.Nodes;
-using Dynamo.Interfaces;
-using Dynamo.Library;
-
-using ProtoCore.DSASM;
-using ProtoCore.Utils;
-using ProtoCore;
 
 namespace Dynamo.Engine
 {
@@ -51,8 +50,14 @@ namespace Dynamo.Engine
         ProtoCore.Type ReturnType { get; }
     }
 
+    /// <summary>
+    ///     Contains parameters for function description.
+    /// </summary>
     public class FunctionDescriptorParams
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FunctionDescriptorParams"/> class.
+        /// </summary>
         public FunctionDescriptorParams()
         {
             IsVisibleInLibrary = true;
@@ -61,20 +66,80 @@ namespace Dynamo.Engine
             ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
         }
 
+        /// <summary>
+        ///     Returns full path to the assembly the defined this function
+        /// </summary>
         public string Assembly { get; set; }
+
+        /// <summary>
+        ///     Returns class name of this function. If the functinon is global, return String.Empty.
+        /// </summary>
         public string ClassName { get; set; }
+
+        /// <summary>
+        ///     Returns function name.
+        /// </summary>
         public string FunctionName { get; set; }
+
+        /// <summary>
+        ///     Returns comment describing the function along with the signature
+        /// </summary>
         public string Summary { get; set; }
+
+        /// <summary>
+        ///     Message specified if function is obsolete
+        /// </summary>
         public string ObsoleteMsg { get; set; }
+
+        /// <summary>
+        /// Returns function parameters data
+        /// </summary>
         public IEnumerable<TypedParameter> Parameters { get; set; }
+
+        /// <summary>
+        /// Describes the type of object to return by the function
+        /// </summary>
         public ProtoCore.Type ReturnType { get; set; }
+
+        /// <summary>
+        /// Describes type of function
+        /// </summary>
         public FunctionType FunctionType { get; set; }
+
+        /// <summary>
+        ///     This attribute sets, if this function is shown in library or not.
+        /// </summary>
         public bool IsVisibleInLibrary { get; set; }
+
+        /// <summary>
+        /// This attribute sets whether the function enables periodic update of the workspace.
+        /// </summary>
         public bool CanUpdatePeriodically { get; set; }
+
+        /// <summary>
+        ///     If the function returns a dictionary, ReturnKeys is the key collection
+        /// used in returned dictionary.
+        /// </summary>
         public IEnumerable<string> ReturnKeys { get; set; }
+
+        /// <summary>
+        ///     Returns instance of IPathManager
+        /// </summary>
         public IPathManager PathManager { get; set; }
+
+        /// <summary>
+        ///     Does the function accept a variable number of arguments?
+        /// </summary>
         public bool IsVarArg { get; set; }
+
+        /// <summary>
+        ///     Indicates if it is built-in function
+        /// </summary>
         public bool IsBuiltIn { get; set; }
+
+        /// <summary>
+        ///     Indicates if the function is packaged element (either zero-touch DLLs or DYFs)
+        /// </summary>
         public bool IsPackageMember { get; set; }
     }
 
@@ -90,6 +155,10 @@ namespace Dynamo.Engine
 
         private readonly IPathManager pathManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FunctionDescriptor"/> class.
+        /// </summary>
+        /// <param name="funcDescParams">Function descriptor parameters.</param>
         public FunctionDescriptor(FunctionDescriptorParams funcDescParams)
         {
             if (!String.IsNullOrEmpty(funcDescParams.Summary))
@@ -133,16 +202,18 @@ namespace Dynamo.Engine
             IsPackageMember = funcDescParams.IsPackageMember;
         }
 
+        /// <summary>
+        ///     Indicates if the function overloads
+        /// </summary>
         public bool IsOverloaded { get; set; }
 
         /// <summary>
-        ///     Full path to the assembly the defined this function
+        ///     Full path to the assembly which defined this function
         /// </summary>
         public string Assembly { get; private set; }
 
         /// <summary>
-        ///     Class name of this function. If the functino is global function,
-        ///     return String.Empty.
+        ///     Class name of this function. If the function is global, return String.Empty.
         /// </summary>
         public string ClassName { get; private set; }
 
@@ -172,10 +243,24 @@ namespace Dynamo.Engine
         /// </summary>
         public bool IsVarArg { get; private set; }
 
+        /// <summary>
+        ///     Indicates if it is a built-in function
+        /// </summary>
         public bool IsBuiltIn { get; private set; }
+
+        /// <summary>
+        ///     Indicates if the function is packaged element (either zero-touch DLLs or DYFs)
+        /// </summary>
         public bool IsPackageMember { get; private set; }
 
+        /// <summary>
+        ///     Message specified if function is obsolete
+        /// </summary>
         public string ObsoleteMessage { get; protected set; }
+
+        /// <summary>
+        /// Indicates if the function is obsolete
+        /// </summary>
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
 
         /// <summary>
@@ -183,6 +268,10 @@ namespace Dynamo.Engine
         /// </summary>
         public FunctionType Type { get; private set; }
 
+        /// <summary>
+        ///     Returns summary of the function from its documentation xml 
+        /// using the corresponding FunctionDescriptor object.
+        /// </summary>
         public string Summary
         {
             get { return summary ?? (summary = this.GetSummary()); }
@@ -215,6 +304,7 @@ namespace Dynamo.Engine
             get;
             private set;
         }
+
         /// <summary>
         ///     The category of this function.
         /// </summary>
@@ -381,10 +471,13 @@ namespace Dynamo.Engine
         public bool IsVisibleInLibrary { get; private set; }
 
         /// <summary>
-        /// This attribute sets whether the function enables periodic update of the workspace.
+        ///     This attribute sets whether the function enables periodic update of the workspace.
         /// </summary>
         public bool CanUpdatePeriodically { get; private set; }
 
+        /// <summary>
+        ///     Returns class name without namespace
+        /// </summary>
         public string UnqualifedClassName
         {
             get
@@ -397,6 +490,9 @@ namespace Dynamo.Engine
             }
         }
 
+        /// <summary>
+        ///     Returns namespace where the function is specified
+        /// </summary>
         public string Namespace
         {
             get
@@ -409,8 +505,18 @@ namespace Dynamo.Engine
             }
         }
 
+        /// <summary>
+        ///     Returns instance of IPathManager
+        /// </summary>
         public IPathManager PathManager { get { return pathManager; } }
 
+        /// <summary>
+        ///     Overrides equality check of two <see cref="FunctionDescriptor"/> objects
+        /// </summary>
+        /// <param name="obj"><see cref="FunctionDescriptor"/> object to compare 
+        /// with the current one</param>
+        /// <returns>Returns true if two <see cref="FunctionDescriptor"/> objects 
+        /// are equals</returns>
         public override bool Equals(object obj)
         {
             if (null == obj || GetType() != obj.GetType())
@@ -419,6 +525,10 @@ namespace Dynamo.Engine
             return MangledName.Equals(obj as FunctionDescriptor);
         }
 
+        /// <summary>
+        ///     Overrides computing the hash code for the <see cref="FunctionDescriptor"/>
+        /// </summary>
+        /// <returns>The hash code for this <see cref="FunctionDescriptor"/></returns>
         public override int GetHashCode()
         {
             return MangledName.GetHashCode();
@@ -430,7 +540,7 @@ namespace Dynamo.Engine
             {
                 return CoreUtils.IsInternalMethod(FunctionName)
                     ? LibraryServices.Categories.Operators
-                    : LibraryServices.Categories.BuiltIns;
+                    : LibraryServices.Categories.BuiltIn;
             }
 
             LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(Assembly, pathManager);

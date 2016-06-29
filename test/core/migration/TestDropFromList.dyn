@@ -1,16 +1,19 @@
-<Workspace Version="0.6.2.29585" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.DropList type="Dynamo.Nodes.DropList" guid="c250a8d2-4e16-4e87-a8a8-f738329e61b1" nickname="Drop from List" x="334" y="176.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="01f8fad5-3475-4fd5-a69c-2eeda3f2ffe6" nickname="Number" x="78" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="c250a8d2-4e16-4e87-a8a8-f738329e61b1" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.DropItems" x="334" y="176.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.List.DropItems@var[]..[],int" />
+    <CoreNodeModels.Input.DoubleInput guid="01f8fad5-3475-4fd5-a69c-2eeda3f2ffe6" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="78" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="1..10" />
-    </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="e67ee6b0-f37f-4108-a101-e6629b05d6e4" nickname="Number" x="79" y="146.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="e67ee6b0-f37f-4108-a101-e6629b05d6e4" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="79" y="146.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="8" />
-    </Dynamo.Nodes.DoubleInput>
+    </CoreNodeModels.Input.DoubleInput>
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="01f8fad5-3475-4fd5-a69c-2eeda3f2ffe6" start_index="0" end="c250a8d2-4e16-4e87-a8a8-f738329e61b1" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="e67ee6b0-f37f-4108-a101-e6629b05d6e4" start_index="0" end="c250a8d2-4e16-4e87-a8a8-f738329e61b1" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="01f8fad5-3475-4fd5-a69c-2eeda3f2ffe6" start_index="0" end="c250a8d2-4e16-4e87-a8a8-f738329e61b1" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="e67ee6b0-f37f-4108-a101-e6629b05d6e4" start_index="0" end="c250a8d2-4e16-4e87-a8a8-f738329e61b1" end_index="1" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

@@ -1,9 +1,12 @@
-<Workspace Version="0.6.2.26056" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="3bcad14e-d086-4278-9e08-ed2759ef92f3" nickname="Python Script" x="269" y="164.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <PythonNodeModels.PythonNode guid="3bcad14e-d086-4278-9e08-ed2759ef92f3" type="PythonNodeModels.PythonNode" nickname="Python Script" x="269" y="164.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" inputcount="1">
       <Script>ok</Script>
-    </Dynamo.Nodes.Python>
+    </PythonNodeModels.PythonNode>
   </Elements>
   <Connectors />
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

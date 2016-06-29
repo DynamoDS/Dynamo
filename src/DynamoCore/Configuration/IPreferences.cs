@@ -6,26 +6,148 @@ using Dynamo.Models;
 
 namespace Dynamo.Interfaces
 {
+    /// <summary>
+    /// interface that defines settings previewBubble preferences,
+    /// this interface should be merged with IPreferences at Dynamo 2.0
+    /// </summary>
+    public interface IPreviewBubblePreference
+    {
+        /// <summary>
+        /// Indicates if preview bubbles should be displayed on nodes.
+        /// </summary>
+        bool ShowPreviewBubbles { get; set; }
+
+    }
+
+    /// <summary>
+    /// interface that defines settings backgroundPreview preferences,
+    /// this interface should be merged with IPreferences at Dynamo 2.0
+    /// </summary>
+    public interface IBackgroundPreviewPreference
+    {
+        /// <summary>
+        /// Collection of pairs [BackgroundPreviewName;isActive]
+        /// </summary>
+        List<BackgroundPreviewActiveState> BackgroundPreviews { get; set; }
+
+        /// <summary>
+        /// Returns active state of specified background preview 
+        /// </summary>
+        /// <param name="name">Background preview name</param>
+        /// <returns>The active state</returns>
+        bool GetIsBackgroundPreviewActive(string name);
+
+        /// <summary>
+        /// Sets active state of specified background preview 
+        /// </summary>
+        /// <param name="name">Background preview name</param>
+        /// <param name="value">Active state to set</param>
+        void SetIsBackgroundPreviewActive(string name, bool value);
+
+    }
+
+    /// <summary>
+    /// An interface which defines preference settings.
+    /// </summary>
     public interface IPreferences
     {
+        /// <summary>
+        /// Returns height of console
+        /// </summary>
         int ConsoleHeight { get; set; }
+
+        /// <summary>
+        /// Indicates whether connector should be displayed on canvas or not.
+        /// </summary>
         bool ShowConnector { get; set; }
+
+        /// <summary>
+        /// Indicates which type of connector's should be displayed on canvas.
+        /// I.e. bezier or polyline
+        /// </summary>
         ConnectorType ConnectorType { get; set; }
-        bool IsBackgroundPreviewActive { get; set; }
+
+        /// <summary>
+        /// Indicates whether background grid is visible or not.
+        /// </summary>
         bool IsBackgroundGridVisible { get; set; }
+
+        /// <summary>
+        /// Indicates whether background preview is active or not.
+        /// </summary>
+        [Obsolete("Property will be deprecated in Dynamo 2.0, please use BackgroundPreviews")]
+        bool IsBackgroundPreviewActive { get; set; }
+
+        /// <summary>
+        /// Returns the decimal precision used to display numbers.
+        /// </summary>
         string NumberFormat { get; set; }
+
+        /// <summary>
+        /// Indicates whether usage reporting is approved or not.
+        /// </summary>
         bool IsUsageReportingApproved { get; set; }
+
+        /// <summary>
+        /// Indicates whether analytics reporting is approved or not.
+        /// </summary>
         bool IsAnalyticsReportingApproved { get; set; }
+
+        /// <summary>
+        /// Indicates first run
+        /// </summary>
         bool IsFirstRun { get; set; }
+
+        /// <summary>
+        /// Returns the last X coordinate of the Dynamo window.
+        /// </summary>
         double WindowX { get; set; }
+
+        /// <summary>
+        /// Returns the last Y coordinate of the Dynamo window.
+        /// </summary>
         double WindowY { get; set; }
+
+        /// <summary>
+        /// Returns the last height of the Dynamo window.
+        /// </summary>
         double WindowH { get; set; }
+
+        /// <summary>
+        /// Returns the last width of the Dynamo window.
+        /// </summary>
         double WindowW { get; set; }
+
+        /// <summary>
+        /// Returns maximal count of recent files which can be displayed
+        /// </summary>
         int MaxNumRecentFiles { get; set; }
+
+        /// <summary>
+        /// Returns list of recent files
+        /// </summary>
         List<string> RecentFiles { get; set; }
+
+        /// <summary>
+        /// Returns list of backup files
+        /// </summary>
         List<string> BackupFiles { get; set; }
+
+        /// <summary>
+        /// Returns list of packages used by the Package Manager to determine
+        /// which packages are marked for deletion.
+        /// </summary>
         List<string> PackageDirectoriesToUninstall { get; set; }
+
+        /// <summary>
+        /// Returns list of folders containing zero-touch nodes and custom nodes.
+        /// </summary>
         List<string> CustomPackageFolders { get; set; }
+
+        /// <summary>
+        /// Indicates whether surface and solid edges will 
+        /// be rendered.
+        /// </summary>
         bool ShowEdges { get; set; }
 
         /// <summary>
@@ -37,5 +159,30 @@ namespace Dynamo.Interfaces
         /// <returns>Returns true if the serialization is successful, or false 
         /// otherwise.</returns>
         bool Save(string filePath);
+    }
+
+    /// <summary>
+    /// Represents data about active state of preview background
+    /// </summary>
+    public class BackgroundPreviewActiveState
+    {
+        /// <summary>
+        /// Name of background preview 
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Flag which indicates if background preview is active
+        /// </summary>
+        public bool IsActive { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of <c name="BackgroundPreviewActiveState"/> class
+        /// </summary>
+        public BackgroundPreviewActiveState()
+        {
+            // Default value
+            IsActive = true;
+        }
     }
 }

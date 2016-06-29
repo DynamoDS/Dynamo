@@ -1,21 +1,19 @@
-<Workspace Version="0.6.3.20195" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
     <Dynamo.Nodes.LineNode type="Dynamo.Nodes.LineNode" guid="2a5c0d1d-6941-43f1-9e40-ad646e648291" nickname="Line - LibG" x="431" y="115.3" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.Point3DNode type="Dynamo.Nodes.Point3DNode" guid="9519f41d-6fb2-4c16-bfa0-d6a26998df17" nickname="Point" x="236" y="123.3" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="555b1e7e-ca19-4e4a-8836-221793041e0e" nickname="Number" x="111" y="142.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <CoreNodeModels.Input.DoubleInput guid="555b1e7e-ca19-4e4a-8836-221793041e0e" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="111" y="142.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="0" />
-    </Dynamo.Nodes.DoubleInput>
+    </CoreNodeModels.Input.DoubleInput>
     <Dynamo.Nodes.Point3DNode type="Dynamo.Nodes.Point3DNode" guid="2c1d83f0-698f-4a96-b3a6-993ffe3aa910" nickname="Point" x="238" y="252.3" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="9519f41d-6fb2-4c16-bfa0-d6a26998df17" start_index="0" end="2a5c0d1d-6941-43f1-9e40-ad646e648291" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="555b1e7e-ca19-4e4a-8836-221793041e0e" start_index="0" end="9519f41d-6fb2-4c16-bfa0-d6a26998df17" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="555b1e7e-ca19-4e4a-8836-221793041e0e" start_index="0" end="9519f41d-6fb2-4c16-bfa0-d6a26998df17" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="555b1e7e-ca19-4e4a-8836-221793041e0e" start_index="0" end="9519f41d-6fb2-4c16-bfa0-d6a26998df17" end_index="2" portType="0" />
-    <Dynamo.Models.ConnectorModel start="555b1e7e-ca19-4e4a-8836-221793041e0e" start_index="0" end="2c1d83f0-698f-4a96-b3a6-993ffe3aa910" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="555b1e7e-ca19-4e4a-8836-221793041e0e" start_index="0" end="2c1d83f0-698f-4a96-b3a6-993ffe3aa910" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="555b1e7e-ca19-4e4a-8836-221793041e0e" start_index="0" end="2c1d83f0-698f-4a96-b3a6-993ffe3aa910" end_index="2" portType="0" />
-    <Dynamo.Models.ConnectorModel start="2c1d83f0-698f-4a96-b3a6-993ffe3aa910" start_index="0" end="2a5c0d1d-6941-43f1-9e40-ad646e648291" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="9519f41d-6fb2-4c16-bfa0-d6a26998df17" start_index="0" end="2a5c0d1d-6941-43f1-9e40-ad646e648291" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="555b1e7e-ca19-4e4a-8836-221793041e0e" start_index="0" end="9519f41d-6fb2-4c16-bfa0-d6a26998df17" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="555b1e7e-ca19-4e4a-8836-221793041e0e" start_index="0" end="2c1d83f0-698f-4a96-b3a6-993ffe3aa910" end_index="0" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

@@ -1,0 +1,104 @@
+﻿<Window x:Class="Dynamo.Notifications.NotificationsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Dynamo.Notifications"
+            xmlns:Logging="clr-namespace:Dynamo.Logging;assembly=DynamoCore"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+
+        Title="Notifications"
+        Height="450"
+        Width="400"
+        Background="#555"
+        MinWidth="400"
+        MaxWidth="400"
+        xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+        d:DataContext="{d:DesignInstance Type = local:NotificationsViewExtension}"
+                mc:Ignorable="d">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="Black">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ListBox Name="NotificationList"
+                 Grid.Row="0"
+                 ItemsSource="{Binding Path=Notifications}"
+                 Background= "Black"
+                 HorizontalContentAlignment="Stretch"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                 VirtualizingPanel.ScrollUnit="Pixel"
+                 Padding="0">
+
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Style.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                         Color="#000" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                         Color="#000" />
+                    </Style.Resources>
+                    <Setter Property="Padding"
+                            Value="0,0,0,10" />
+                </Style>
+
+            </ListBox.ItemContainerStyle>
+
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+
+                    <StackPanel MinWidth="380" MaxWidth="390">
+                        <StackPanel.Background>
+                            <SolidColorBrush Color="{DynamicResource ResourceKey=BorderDarkColor}"></SolidColorBrush>
+                        </StackPanel.Background>
+                        
+                        <StackPanel Margin="10,10,20,10">
+                            <TextBox Style="{DynamicResource ResourceKey =SDarkTextBox }" Name="Title" Text="{Binding Path=Title, Mode=OneWay}" FontWeight="Bold" IsReadOnly="True" TextWrapping="Wrap" Visibility="Visible" Grid.Row="0" Grid.Column="0" ></TextBox>
+                            <TextBox Style="{DynamicResource ResourceKey =SDarkTextBox }" Name="ShortErrorMessage" Text="{Binding Path= ShortMessage,Mode=OneWay}" FontSize="11" IsReadOnly="True" TextWrapping="Wrap" Visibility="Visible" Grid.Row="0" Grid.Column="0" ></TextBox>
+                        </StackPanel>
+                        
+                        <Border BorderThickness="1" BorderBrush="Black">
+
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel.Background>
+                                    <SolidColorBrush Color="{DynamicResource ResourceKey=BorderDarkColor}"></SolidColorBrush>
+                                </StackPanel.Background>
+                                <Button Margin="20,20,20,20"  Style="{DynamicResource ResourceKey=STextButton}" Tag="{Binding ElementName=Details}"  Click="ShowDetails_ButtonClick" >Show Details</Button>
+                            <Button Margin="50,20,20,20" HorizontalAlignment="Right" Style="{DynamicResource ResourceKey=STextButton}" Click="OKButton_Click">OK</Button>
+                    </StackPanel>
+                    </Border>
+                    <StackPanel Margin="0,0,20,0">
+                        
+                            <StackPanel.Background>
+                                <SolidColorBrush Color="{DynamicResource ResourceKey=BorderMediumColor}"></SolidColorBrush>
+                            </StackPanel.Background>
+                            <TextBox Style="{DynamicResource ResourceKey =SDarkTextBox }" FontSize="10" IsReadOnly="True" Text="{Binding Path=DetailedMessage,Mode=OneWay}" Name="Details" TextWrapping="Wrap" Background="WhiteSmoke"  Visibility="Collapsed"></TextBox>
+                        </StackPanel>
+                    </StackPanel>
+
+
+                </DataTemplate>
+                
+            </ListBox.ItemTemplate>
+
+        </ListBox>
+
+        <StackPanel Orientation="Horizontal"
+                    FlowDirection="RightToLeft"
+                    Grid.Row="1"
+                    Background="#333">
+        </StackPanel>
+
+    </Grid>
+</Window>

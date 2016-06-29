@@ -106,12 +106,12 @@ c;
 test;
 test2;
 test3;
+def mult : int( s : int )	
+{
+    return = s * 2;
+}
 [Associative]
 {
-    def mult : int( s : int )	
-	{
-		return = s * 2;
-	}
     test = mult(5);
     test2 = mult(2);
     test3 = mult(mult(5));
@@ -129,18 +129,17 @@ test3;
             String code =
 @"        
 temp;
+def test2 : int(b : int)
+{
+    return = b;
+}
+                
+def test : int(a : int)
+{
+    return = a + test2(5);
+}
 [Associative]
 { 
-    def test2 : int(b : int)
-    {
-        return = b;
-    }
-                
-    def test : int(a : int)
-    {
-        return = a + test2(5);
-    }
-               
     temp = test(2);
 }
 ";
@@ -166,40 +165,10 @@ temp = test(1, 2);
         }
 
         [Test]
-        public void TestFunctionsOverload01()
-        {
-            String code =
-@"
-test1;
-test2;
-[Associative]
-{
-    def m1 : int( s : int )	
-	{
-		return = s * 2;
-	}
-    def m1 : int( s: int, y : int )
-    {
-        return = s * y;
-    }
-    test1 = m1(5);
-    test2 = m1(5, 10);
-}
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("test1",10);
-            thisTest.Verify("test2",50);
-        }
-
-        [Test]
         public void TestFunctionsOverload02()
         {
             String code =
 @"
-i;
-j;
-[Associative]
-{
     def f : int( p1 : int )
     {
 	    x = p1 * 10;
@@ -214,7 +183,6 @@ j;
     // Pasing variables to function overloads
     i = f(a + 10);
     j = f(a, b);
-}   
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("i",120);
@@ -226,28 +194,22 @@ j;
         public void TestFunctionsOverload03()
         {
             String code =
-            @"b : int;
+            @"
             def foo(a : int)
             {
-	            b = 1;
 	            return = a;
             }
             def foo(a : int[])
             {
-	            b = 2;
 	            return = a;
             }
             c = {1,2,3,4};
             d = foo(c);
-            y = b;
             e = foo({5,6,7,8});
-            z = b;     
             ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("d", new [] {1,2,3,4});
-            thisTest.Verify("y",2);
             thisTest.Verify("e", new [] {5, 6, 7, 8});
-            thisTest.Verify("z",2);
         }
 
         [Test]
@@ -292,29 +254,6 @@ c = p.Z;
             thisTest.Verify("a",123.0);
             thisTest.Verify("b",345.0);
             thisTest.Verify("c",567.0);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void TestFunction01()
-        {
-            String code =
-@"
-	mx : var;
-	my : var;
-	def vector2D(px : int, py : int)
-	{
-		mx = px; 
-		// Copy mx to my with px's value
-		my = mx; 
-	}
-	vector2D(100,20);
-	x = mx;
-	y = my;
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x",100);
-            thisTest.Verify("y",100);
         }
 
         [Test]
@@ -382,34 +321,6 @@ c = p.Z;
             thisTest.RunScriptSource(code);
             thisTest.Verify("ax",1);
             thisTest.Verify("bx",2);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void TestFunction02()
-        {
-            String code =
-@"  
-    def sum : double (p : double)
-    {
-        return = p + 10.0;
-    }
-    val : var;
-	mx : var;
-	my : var;
-	mz : var;
-    def Obj(xx : double, yy : double, zz : double)
-    {
-        mx = xx;
-        my = yy;
-        mz = zz;
-        val = sum(zz);
-    }
-    p = Obj(0.0, 1.0, 2.0);
-    x = val;
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x",12);
         }
 
         [Test]
@@ -482,38 +393,6 @@ t = b.x;
             {
                 thisTest.RunScriptSource(code);
             });
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void TestClassFunction01()
-        {
-            String code =
-@"
-	mx : var;
-	my : var;
-	def complex(px : int, py : int)
-	{
-		mx = px; 
-		my = py; 
-	}
-	def scale : int(s : int)
-	{
-		mx = mx * s; 
-		my = my * s; 
-		return = 0;
-	}
-	complex(8,16);
-	i = mx;
-	j = my;
-	// Calling a member function of class complex that mutates its properties 
-	k1 = scale(2); 
-	// Scale 'p' further
-	k2 = scale(10); 
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("i", 160);
-            thisTest.Verify("j", 320);
         }
 
         [Test]
@@ -633,34 +512,6 @@ x = d.foo(c);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x",12);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void TestClassFunction03()
-        {
-            String code =
-@"
-	mx : var;
-	my : var;
-	def init : int ()
-	{
-        my = 522;  
-        return = 22;
-	}
-	def Vector(x : int)
-	{
-		mx = x;
-        aa = init();
-	}
-	Vector(1);
-	b = mx;
-    c = my;
-    d = init();
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("b",1);
-            thisTest.Verify("c",522);
         }
 
         [Test]
@@ -947,42 +798,6 @@ l_ep_z = l_ep.get_Z();
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void TestClassFunction09()
-        {
-            String code =
-@"
-mX : double;
-mY : double;
-mZ : double;
-                            
-def ByXY (x : double, y : double)
-{
-	mX = x;
-	mY = y;
-	mZ = 0.0;
-}
-		
-def ByYZ (y : double, z : double)
-{
-	mX = 0.0;
-	mY = y;
-	mZ = z;
-}
-    
-ByYZ (100.0,200.0);
-	
-x = mX;	
-y = mY;	
-z = mZ;
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x",0);
-            thisTest.Verify("y",100);
-            thisTest.Verify("z",200);
-        }
-
-        [Test]
         [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClassFunction10()
         {
@@ -1255,43 +1070,7 @@ class TestClass
             thisTest.Verify("y",11);
         }
 
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void TestClassFunction15()
-        {
-            String code =
-@"
-x : var;
-y : var;
-z : var;
-def Create(xx : double, yy : double, zz : double)
-{
-    x = xx;
-    y = yy;
-    z = zz;
-}
-def Offset (delx : double, dely : double, delz : double)
-{
-    Create(x + delx, y + dely, z + delz);
-}
-def OffsetByArray ( deltas : double[] )
-{
-    Offset(deltas[0], deltas[1], deltas[2]);
-}
-[Associative]
-{
-    Create(10,10,10);
-    a = {10.0,20.0,30.0};
-    OffsetByArray(a);
-}
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x",20);
-            thisTest.Verify("y",30);
-            thisTest.Verify("z",40);
-        }
-
-        [Test]
+    [Test]
         [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClassFunction16()
         {
@@ -1456,25 +1235,18 @@ b = S.a;
         public void TestStaticMethodResolution()
         {
             string code = @"
-	        b : int;
-	        z : int;
 	        def foo(a : int)
 	        {
-		        b = 1;
-		        return = a;
+		        return = 1;
 	        }
 	        def foo(a : int[])
 	        {
-		        z = 2;
-		        return = 9;
+		        return = 2;
             }
             c = {1,2,3,4};
-            d = foo(c);
-            v = z;";
+            d = foo(c);";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("c", new [] { 1, 2, 3, 4});
-            thisTest.Verify("d",9);
-            thisTest.Verify("v",2);
+            thisTest.Verify("d", 2);
         }
 
         [Test]
@@ -1594,9 +1366,6 @@ a;
         {
             String code =
 @"
-b;
-[Associative]
-{ 
     def foo : int (a : int[])
     {           
         return = a[0];
@@ -1604,7 +1373,6 @@ b;
             
     arr = {100, 200};            
     b = foo(arr);
-}
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("b",100);
@@ -2502,12 +2270,7 @@ c = f(a<1L>,b<2>);
         public void TestReplicationGuidesOnDotOps01()
         {
             string code = @"
-v : var[];
-def A()
-{
-    v = {1,2};
-}
-A();
+v = {1,2};
 c = v<1> + v<2>;
 x = c[0];
 y = c[1];
@@ -2669,68 +2432,6 @@ a;
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a",1);
-        }
-
-        [Ignore]
-        public void BitwiseOp001()
-        {
-            String code =
-                        @"
-                        [Associative]
-                        {
-	                        a = 2;
-	                        b = 3;
-                            c = a & b;
-                        }
-                        ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("c",2);
-        }
-
-        [Ignore]
-        public void BitwiseOp002()
-        {
-            String code =
-                        @"
-                        [Associative]
-                        {
-	                        a = 2;
-	                        b = 3;
-                            c = a | b;
-                        }
-                        ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("c",3);
-        }
-
-        [Ignore]
-        public void BitwiseOp003()
-        {
-            String code =
-                        @"
-                        [Associative]
-                        {
-	                        a = 2;
-	                        b = ~a;
-                        }
-                        ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("b",-3);
-        }
-        [Ignore]
-        public void BitwiseOp004()
-        {
-            String code =
-                        @"
-                        [Associative]
-                        {
-	                        a = true;
-                            b = false;
-	                        c = a^b;
-                        }
-                        ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("c", null);
         }
 
         [Test]
@@ -3070,45 +2771,6 @@ z = b[2];
             thisTest.Verify("y",1);
             thisTest.Verify("z",11);
         }
-        [Ignore]
-        public void PrePostFix001()
-        {
-            String code =
-                        @"
-	                        a = 5;
-                            b = ++a;
-                        ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a",6);
-            thisTest.Verify("b",6);
-        }
-        [Ignore]
-        public void PrePostFix002()
-        {
-            String code =
-                        @"
-	                        a = 5;
-                            b = a++;
-                        ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a",6);
-            thisTest.Verify("b",5);
-        }
-        [Ignore]
-        public void PrePostFix003()
-        {
-            String code =
-                        @"
-	                        a = 5;			//a=5;
-                            b = ++a;		//b =6; a =6;
-                            a++;			//a=7;
-                            c = a++;		//c = 7; a = 8;
-                        ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a",8);
-            thisTest.Verify("b",6);
-            thisTest.Verify("c",7);
-        }
 
         [Test]
         public void Modulo001()
@@ -3361,27 +3023,6 @@ t = f(p);
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("JunToFix")]
-        public void TestFunctionUpdate02()
-        {
-            String code =
-                @"
-a : int;
-def A()
-{
-    b = 1;
-    a = b;
-    b = 10;
-}
-A();
-y = a;
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("y",10);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
         public void TestNoUpdate01()
         {
             String code =
@@ -3494,48 +3135,6 @@ t = p.m.x;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void TestPropertyUpdate05()
-        {
-            String code =
-                @"
-x : var;
-y : var;
-def f()
-{
-	x = 1;	
-	y = 2;	
-}
-f();
-i = x;
-y = 1000;
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("i", 1);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void TestPropertyUpdate06()
-        {
-            String code =
-                @"
-x : var;
-def C()
-{
-    x = 10;
-}
-C();
-x = x + 1;
-x = x + 1;
-t = x;
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("t", 12);
-        }
-
-
-        [Test]
         [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestPropertyUpdate07()
         {
@@ -3605,59 +3204,6 @@ a = 10;
                 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("b", 10);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void TestPropertyModificationInMethodUpdate01()
-        {
-            String code =
-                @"
-mx : var;
-def C ()
-{
-    mx = 1; 
-}
-def f()
-{
-	mx = 10;
-	return = 0; 
-}
-C();
-x = mx; 
-a = f();
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 10);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void TestPropertyModificationInMethodUpdate02()
-        {
-            String code =
-                @"
-mx : var;
-my : var; 
-def C ()
-{
-    mx = 1; 
-    my = 2; 
-}
-def f()
-{
-	mx = 10;
-	my = 20;
-	return = 0; 
-}
-C();
-x = mx; 
-y = my; 
-a = f();
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 10);
-            thisTest.Verify("y", 20);
         }
 
         [Test]
@@ -3830,48 +3376,22 @@ n = point.point();
         }
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
-        [Category("PortToCodeBlocks")]
-        public void TestGCFFI001()
-        {
-            String code =
-                @"
-def foo : int()
-{
-	p = Point.ByCoordinates(10, 20, 30);
-	p2 = Point.ByCoordinates(12, 22, 32);
-	p3 = Point.ByCoordinates(14, 24, 34);
-	return = 10;
-}
-p = Point.ByCoordinates(15, 25, 35);
-x = p.X;
-y = foo();
-                ";
-            code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
-            thisTest.RunScriptSource(code);
-        }
-
-        [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
-        [Category("PortToCodeBlocks")]
         public void TestGCRefCount002()
         {
             String code =
                 @"
+import (""FFITarget.dll"");
 def CreatePoint : Point(x : int, y : int, z : int)
 {
-	return = Point.ByCoordinates(x, y, z);
+	return = DummyPoint.ByCoordinates(x, y, z);
 }
-def getx : double(p : Point)
+def getx : double(p : DummyPoint)
 {
 	return = p.X;
 }
 p = CreatePoint(5, 6, 7);
 x = getx(p);
                 ";
-            code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 5.0);
         }
@@ -3890,40 +3410,6 @@ x = getx(p);
                 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("gx", 100);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        [Category("ProtoGeometry")]
-        [Category("PortToCodeBlocks")]
-        public void TestNullFFI()
-        {
-            String code =
-                @"
-class Test
-{
-    X : int;
-    constructor Test(x : int)
-    {
-        X = x;
-    }
-    
-    def Equals : bool (other : Test)
-    {
-        return = (other.X == this.X);
-    }
-}
-x = {1001,2001};
-t = Point.ByCoordinates(x, 0, 0);
-s = t;
-s[1] = null;
-check = s.Equals(t);
-value = check[1];
-Print(check);
-                ";
-            code = string.Format("{0}\n{1}", "import(\"ProtoGeometry.dll\");", code);
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("value", null);
         }
 
         [Test]
@@ -4005,64 +3491,6 @@ class Point
 	{
 		return = 10;
 	}
-}";
-            thisTest.RunScriptSource(src);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassAttribute")]
-        public void TestAttributeOnLanguageBlock()
-        {
-            string src = @"class TestAttribute
-{
-	constructor TestAttribute()
-	{}
-}
-class VisibilityAttribute
-{
-	x : var;
-	constructor VisibilityAttribute(_x : var)
-	{
-		x = _x;
-	}
-}
-[Imperative, version=""###"", Visibility(11), fingerprint=""FS54"", Test] 
-{
-	a = 19;
-}
-";
-            thisTest.RunScriptSource(src);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassAttribute")]
-        public void TestAttributeWithLanguageBlockAndArrayExpression()
-        {
-            string src = @"class TestAttribute
-{
-	constructor TestAttribute()
-	{}
-}
-class VisibilityAttribute
-{
-	x : var;
-	constructor VisibilityAttribute(_x : var)
-	{
-		x = _x;
-	}
-}
-def foo : int[]..[](p : var[]..[])
-{
-	a = { 1, { 2, 3 }, 4 };
-	return = a[1];
-}
-[Associative, version=""###"", Visibility(11), fingerprint=""FS54"", Test] 
-{
-	a = {1, 2, 3};
-	b = a[1];
-	c = a[0];
 }";
             thisTest.RunScriptSource(src);
             thisTest.VerifyBuildWarningCount(0);
@@ -4179,17 +3607,14 @@ t = {1,2,3};
         {
             String code =
 @"
-t:int[];
 def foo() {
     t = {1,2,3};
     return = t;
 }
 b = foo();
-ret = t;
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("b", new Object[] { 1, 2, 3 });
-            thisTest.Verify("ret", new Object[] { 1, 2, 3 });
         }
 
         [Test]
@@ -4395,7 +3820,6 @@ y = f(x);
         {
             string code =
 @"
-global = 0;
 def f(i : int)
 {
     loc = [Imperative]
@@ -4407,90 +3831,13 @@ def f(i : int)
         }
         return = i;
     }
-    global = global + 1;
     return = loc;
 }
 x = 100;
 y = f(x);
-z = global;
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("y", 5050);
-            thisTest.Verify("z", 100);
-        }
-
-        [Test]
-        public void TestGlobalFunctionRecursion100_GlobalIncrementInFunction01()
-        {
-            string code =
-@"
-global = 0;
-def g()
-{
-    global = global + 1;
-    return = 0;
-}
-def f(i : int)
-{
-    loc = [Imperative]
-    {
-        a = 0;
-        if (i > 1)
-        {
-            return = f(i - 1) + i + a;
-        }
-        return = i;
-    }
-    t = g();
-    return = loc;
-}
-x = 100;
-y = f(x);
-z = global;
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("y", 5050);
-            thisTest.Verify("z", 100);
-        }
-
-        [Test]
-        public void TestGlobalFunctionRecursion100_GlobalIncrementInFunction02()
-        {
-            string code =
-@"
-global = 0;
-def g()
-{
-    global = global + 1;
-    return = 0;
-}
-def h()
-{
-    global = global + 1;
-    return = 0;
-}
-def f(i : int)
-{
-    loc = [Imperative]
-    {
-        a = 0;
-        if (i > 1)
-        {
-            return = f(i - 1) + i + a;
-        }
-        return = i;
-    }
-    s = g();
-    t = h();
-    return = loc;
-}
-x = 100;
-y = f(x);
-z = global;
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("y", 5050);
-            thisTest.Verify("z", 200);
         }
 
         [Test]

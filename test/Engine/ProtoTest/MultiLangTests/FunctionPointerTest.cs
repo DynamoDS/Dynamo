@@ -43,11 +43,6 @@ c = foo(2, 4.0); //c = 6.0";
         public void T03_GlobalFunctionInAssocBlk()
         {
             string code = @"
-a;
-b;
-c;
-[Associative]
-{
 	def foo:double(x:int, y:double = 2.0)
 	{
 		return = x + y;
@@ -55,7 +50,7 @@ c;
 	a = foo;
 	b = foo(3); //b=5.0;
 	c = foo(2, 4.0); //c = 6.0
-}";
+";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             object b = 5.0;
             object c = 6.0;
@@ -383,22 +378,6 @@ c = foo1(a, 3);";
             object c = 3;
             thisTest.Verify("b", b);
             thisTest.Verify("c", c);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void T19_NegativeTest_PassingFunctionPtrAsArg_CSFFI()
-        {
-            string code = @"
-import (""ProtoGeometry.dll"");
-def foo : CoordinateSystem()
-{
-	return = CoordinateSystem.Identity();
-}
-a = Point.ByCartesianCoordinates(foo, 1.0, 2.0, 3.0);";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            object a = null;
-            thisTest.Verify("a", a);
         }
 
         [Test]

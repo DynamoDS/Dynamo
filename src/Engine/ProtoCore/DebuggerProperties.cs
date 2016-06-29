@@ -35,35 +35,6 @@ namespace ProtoCore
                 PrintMessage += Console.WriteLine;
             }
         }
-
-        internal static class StreamUtil
-        {
-            internal static void AddText(FileStream stream, string p)
-            {
-                byte[] info = new UTF8Encoding(true).GetBytes(p);
-                stream.Write(info, 0, info.Length);
-            }
-        }
-
-        public class FEventSink : EventSink, IDisposable
-        {
-            private readonly FileStream stream;
-
-            public FEventSink(string fileName)
-            {
-                stream = new FileStream(fileName + ".log", FileMode.Create, FileAccess.Write, FileShare.Read);
-                BeginDocument += p => StreamUtil.AddText(stream, "Begin Document: " + p);
-                EndDocument += p => StreamUtil.AddText(stream, "End Document: " + p);
-                PrintMessage += p => StreamUtil.AddText(stream, p);
-            }
-
-            #region IDisposable Members
-            public void Dispose()
-            {
-                stream.Close();
-            }
-            #endregion
-        }
     }
 
     public enum ReasonForExecutionSuspend
@@ -220,7 +191,7 @@ namespace ProtoCore
             };
 
         /// <summary>
-        /// Gets the Program counter. This is only valid when the executive is suspended
+        /// Returns the Program counter. This is only valid when the executive is suspended
         /// </summary>
         public int DebugEntryPC { get; set; }
         // used by the code gen to insert the file name to the instruction

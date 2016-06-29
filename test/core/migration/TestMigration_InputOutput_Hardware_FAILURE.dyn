@@ -1,7 +1,10 @@
-<Workspace Version="0.6.3.7993" X="-169.240714608876" Y="-424.613879387006" zoom="0.827702570441191" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="-169.240714608876" Y="-424.613879387006" zoom="0.827702570441191" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.WebRequest type="Dynamo.Nodes.WebRequest" guid="a1fba589-5a83-4d67-93b1-aad22dcf92c8" nickname="Web Request" x="471.075210217995" y="1011.53119869832" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <CoreNodeModels.WebRequest guid="a1fba589-5a83-4d67-93b1-aad22dcf92c8" type="CoreNodeModels.WebRequest" nickname="Web Request" x="471.075210217995" y="1011.53119869832" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
   </Elements>
   <Connectors />
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

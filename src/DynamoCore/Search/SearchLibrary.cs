@@ -120,7 +120,7 @@ namespace Dynamo.Search
 
 
         /// <summary>
-        ///     Gets all nested categories from a sequence of search entries.
+        /// Returns all nested categories from a sequence of search entries.
         /// </summary>
         /// <typeparam name="TEntry"></typeparam>
         /// <param name="category"></param>

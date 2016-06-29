@@ -1891,45 +1891,6 @@ test;
         }
 
         [Test]
-        [Ignore]
-        [Category("ModifierBlock")]
-        public void T041_1467460_replication_guide_not_in_sequence_012()
-        {
-            string code =
-@"
-def foo (x1,y1,z1)
-{
-    return = y1;
-}
-a1;
-a2;
-a3;
-test;
-[Imperative]
-{
-    x = {0,1};
-    y = {2,3};
-    z = {4,5 };
-    test = [Associative]
-    {
-        a = { foo(x<7>, y<3>, z<6>) => a1; // expect this to be treated as :  foo(x<3>,y<1>,z<2>); 
-              foo(x<2>, y<2>, z<3>) => a2; // expect this to be treated as :  foo(x<1>,y<1>,z<2>);
-              foo(x<1>, y<3>, z<3>) => a3; // expect this to be treated as :  foo(x<1>,y<2>,z<2>);
-            }
-        return = a1;
-    }
-}
-";
-            string errmsg = "";
-            thisTest.VerifyRunScriptSource(code, errmsg);
-            Object[] t1 = new Object[] { new Object[] { 2, 2 }, new Object[] { 2, 2 } };
-            Object[] t2 = new Object[] { new Object[] { 3, 3 }, new Object[] { 3, 3 } };
-            thisTest.Verify("test", new object[] { t1, t2 });
-            thisTest.Verify("a2", new object[] { new Object[] { 2, 2, }, new Object[] { 3, 3 } });
-            thisTest.Verify("a3", new object[] { new Object[] { 2, 3, }, new Object[] { 2, 3 } });
-        }
-
-        [Test]
         public void T041_1467460_replication_guide_not_in_sequence_013()
         {
             string code =
@@ -2700,20 +2661,21 @@ def foo (x,y,z)
 {
     return = x + y + z;
 }
-def foo2 : int[] ()
+def foo2 : int[] (a:var[]..[])
 {
     return = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];
 }
-def foo: int[] ()
+def foo: int[] (a:var[]..[])
 {
     return = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];
 }
 a = {1,2,3,4};
-b = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];
-c = foo2();
-d = foo();
+c = foo2(a);
+d = foo(a);
+b;
 f = [Associative]
 {
+    b = a[0..Count(foo({1,2}<1>,{3,4}<5>, {5,6}<3>))];
     return = [Imperative]
     {
          return = [Associative]

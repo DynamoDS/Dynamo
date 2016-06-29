@@ -3,58 +3,140 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Configuration
 {
+    /// <summary>
+    /// This class contains properties that are used in Dynamo.
+    /// </summary>
     public class Configurations
     {
         #region Dynamo Universal Constants
 
-        // Add 0.5 to place the point in the middle of a pixel to sharpen it
+        /// <summary>
+        /// User interface culture
+        /// </summary>
         public static readonly string FallbackUiCulture = "en-US";
+
+        /// <summary>
+        /// Name of backup folder
+        /// </summary>
         public static readonly string BackupFolderName = "backup";
+
+        /// <summary>
+        /// Name of XML attribute which contains target file path. 
+        /// </summary>
         public static readonly string FilePathAttribName = "TargetXmlFilePath";
+
+        /// <summary>
+        /// Default width of Double Slider
+        /// </summary>
         public static readonly double DoubleSliderTextBoxWidth = 55.0;
+
+        /// <summary>
+        /// Default width of Integer Slider
+        /// </summary>
         public static readonly double IntegerSliderTextBoxWidth = 30.0;
+
+        /// <summary>
+        /// Maximum width of Watch Node
+        /// </summary>
         public static readonly double MaxWatchNodeWidth = 280.0;
+
+        /// <summary>
+        /// Maximum height of Watch Node
+        /// </summary>
         public static readonly double MaxWatchNodeHeight = 310.0;
 
         #endregion
 
         #region Usage Reporting Error Message
 
+        /// <summary>
+        /// Link to Dynamo site
+        /// </summary>
         public static string DynamoSiteLink = "http://dynamobim.org/";
+
+        /// <summary>
+        /// Link to Dynamo wiki
+        /// </summary>
         public static string DynamoWikiLink = "https://github.com/DynamoDS/Dynamo/wiki";
+
+        /// <summary>
+        /// Link to Dynamo forum
+        /// </summary>
         public static string DynamoBimForum = "http://dynamobim.org/forums/forum/dyn/";
+
+        /// <summary>
+        /// DynamoTeam email
+        /// </summary>
         public static string DynamoTeamEmail = "mailto:team@dynamobim.org";
+
+        /// <summary>
+        /// Link to Dynamo video tutorials
+        /// </summary>
         public static string DynamoVideoTutorials = "http://dynamobim.org/learn/#161";
+
+        /// <summary>
+        /// Link to Dynamo primer
+        /// </summary>
         public static string DynamoPrimer = "http://dynamoprimer.com/";
+
+        /// <summary>
+        /// Link to Dynamo download page
+        /// </summary>
         public static string DynamoDownloadLink = "http://dynamobim.org/download/";
+
+        /// <summary>
+        /// Link to Dynamo's github repo
+        /// </summary>
         public static string GitHubDynamoLink = "https://github.com/DynamoDS/Dynamo";
+
+        /// <summary>
+        /// Link to Dynamo's issues on github
+        /// </summary>
         public static string GitHubBugReportingLink = "https://github.com/DynamoDS/Dynamo/issues";
         #endregion
 
         #region Canvas Configurations
         //public static readonly double Minimum
 
-        // Generic Constants
+        /// <summary>
+        /// Generic Constants
+        /// </summary>
         public static readonly double PortHeightInPixels = 26;
 
-        // Canvas Control
+        /// <summary>
+        /// Canvas Control
+        /// </summary>
         public static readonly double ZoomIncrement = 0.05;
 
         #endregion
 
         #region Tab Bar Configurations
-        // Tabcontrol Settings        
+        /// <summary>
+        /// Count of tabs before clipping
+        /// </summary>       
         public static readonly int MinTabsBeforeClipping = 6;
+
+        /// <summary>
+        /// Default width of Tab control menu
+        /// </summary>
         public static readonly int TabControlMenuWidth = 20;
-        public static readonly int TabDefaultWidth = 200;
+
+        /// <summary>
+        /// Default width of tab
+        /// </summary>
+        public static readonly int TabDefaultWidth = 250;
         #endregion
 
         #region Information Bubble
+
+        /// <summary>
+        /// Maximal opacity of bubble
+        /// </summary>
         internal static double MaxOpacity = 0.95;
 
         #region Preview Bubble
-        internal static double PreviewTextFontSize = 10;
 
+        internal static double PreviewTextFontSize = 10;
         internal static double PreviewMaxWidth = 500;
         internal static double PreviewMinWidth = 40;
         internal static double PreviewMinHeight = 30;
@@ -144,8 +226,19 @@ namespace Dynamo.Configuration
 
         #region CodeBlockNode
 
+        /// <summary>
+        ///     Default height of CodeBlock's port
+        /// </summary>
         public static readonly double CodeBlockPortHeightInPixels = 17.573333333333336;
+
+        /// <summary>
+        ///     Maximal port name length of CodeBlock
+        /// </summary>
         public static readonly int CBNMaxPortNameLength = 24;
+
+        /// <summary>
+        ///     Highlighting File
+        /// </summary>
         public static readonly string HighlightingFile =
             "DesignScript.Resources.SyntaxHighlighting.xshd";
 
@@ -234,6 +327,9 @@ namespace Dynamo.Configuration
 
         #region Backup
 
+        /// <summary>
+        ///     Default backup file name prefix
+        /// </summary>
         public static string BackupFileNamePrefix = "backup";
 
         #endregion

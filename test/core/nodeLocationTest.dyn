@@ -1,9 +1,10 @@
-<dynWorkspace X="135.966666666667" Y="57.7239999999995">
-  <dynElements>
-    <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="30885215-7985-49da-b605-58cd804502f7" nickname="List" x="217.952067513811" y="177.041832898393" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <Input name="item(s)" />
-    </Dynamo.Nodes.dynNewList>
-  </dynElements>
-  <dynConnectors />
-  <dynNotes />
-</dynWorkspace>
+<Workspace Version="1.0.1.1743" X="135.966666666667" Y="57.7239999999995" zoom="1" Name="" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <CoreNodeModels.CreateList guid="30885215-7985-49da-b605-58cd804502f7" type="CoreNodeModels.CreateList" nickname="Create List" x="217.952067513811" y="177.041832898393" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" inputcount="1" />
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

@@ -1,3 +1,7 @@
+If this issue is with Dynamo for Revit, please post your issue on the [Dynamo for Revit Issues page](https://github.com/DynamoDS/DynamoRevit/issues).
+
+If this issue is **not** a bug report or improvement request, please check the [Dynamo forum](https://forum.dynamobim.com/), and start a thread there to discuss your issue.
+
 ## Dynamo version
 
 (Which version of Dynamo are you using? Go to Help > About if you're not sure.)

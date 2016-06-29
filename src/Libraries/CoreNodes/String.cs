@@ -6,6 +6,7 @@ using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using System.Text.RegularExpressions;
 
 namespace DSCore
 {
@@ -74,6 +75,9 @@ namespace DSCore
         /// <search>divide,separaters,delimiter,cut,csv,comma,</search>
         public static string[] Split(string str, params string[] separaters)
         {
+            separaters = separaters.Select(s => s == "\n" ? Environment.NewLine : s).ToArray(); // converts all \n in separater array to Environment Newline (i.e. \r\n)
+            str = Regex.Replace(str, "(?<!\r)\n", Environment.NewLine); // converts all \n in String str to Environment.NewLine (i.e. '\r\n')
+            
             return separaters.Contains("")
                 ? str.ToCharArray().Select(char.ToString).ToArray()
                 : str.Split(separaters, StringSplitOptions.RemoveEmptyEntries);

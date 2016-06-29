@@ -1,18 +1,23 @@
-<dynWorkspace X="0" Y="0">
-  <dynElements>
-    <Dynamo.Nodes.dynSin type="Dynamo.Nodes.dynSin" guid="16e8de10-5194-4e4a-8a42-b491fa0356be" nickname="Sine" x="439.707963007047" y="143.15133630875" lacing="Longest" />
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="4d9fb747-2e90-4571-9c8f-7d59ad14a939" nickname="Watch" x="596.712446940876" y="144.374114460597" lacing="Disabled" />
-    <Dynamo.Nodes.dynPi type="Dynamo.Nodes.dynPi" guid="f8cc1b6f-ac6c-4229-a895-e0826034bb61" nickname="Pi" x="129.761018058986" y="107.26542887481" lacing="Disabled" />
-    <Dynamo.Nodes.dynDivision type="Dynamo.Nodes.dynDivision" guid="906f321a-14c0-4a2c-a2d6-e6a44fa671fb" nickname="Divide" x="289.870222539661" y="156.046013187616" lacing="Longest" />
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="80701298-edd8-410c-8c8b-0034cbfd0dd0" nickname="Number" x="136.67413493252" y="216.658088569614" lacing="Disabled">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="16e8de10-5194-4e4a-8a42-b491fa0356be" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Math.Sin" x="439.707963007047" y="143.15133630875" isVisible="true" isUpstreamVisible="true" lacing="Longest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Math.Sin@double" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="8c90086d-163c-4c8f-a76e-c030598bfbc1" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Math.RadiansToDegrees" x="289.707963007047" y="143.15133630875" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Math.RadiansToDegrees@double" />
+    <CoreNodeModels.Watch guid="4d9fb747-2e90-4571-9c8f-7d59ad14a939" type="CoreNodeModels.Watch" nickname="Watch" x="596.712446940876" y="144.374114460597" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="f8cc1b6f-ac6c-4229-a895-e0826034bb61" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Math.PI" x="129.761018058986" y="107.26542887481" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Math.PI" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="906f321a-14c0-4a2c-a2d6-e6a44fa671fb" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="/" x="289.870222539661" y="156.046013187616" isVisible="true" isUpstreamVisible="true" lacing="Longest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="Operators" function="/@var[]..[],var[]..[]" />
+    <CoreNodeModels.Input.DoubleInput guid="80701298-edd8-410c-8c8b-0034cbfd0dd0" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="136.67413493252" y="216.658088569614" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="2" />
-    </Dynamo.Nodes.dynDoubleInput>
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Connectors.dynConnectorModel start="16e8de10-5194-4e4a-8a42-b491fa0356be" start_index="0" end="4d9fb747-2e90-4571-9c8f-7d59ad14a939" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="f8cc1b6f-ac6c-4229-a895-e0826034bb61" start_index="0" end="906f321a-14c0-4a2c-a2d6-e6a44fa671fb" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="906f321a-14c0-4a2c-a2d6-e6a44fa671fb" start_index="0" end="16e8de10-5194-4e4a-8a42-b491fa0356be" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="80701298-edd8-410c-8c8b-0034cbfd0dd0" start_index="0" end="906f321a-14c0-4a2c-a2d6-e6a44fa671fb" end_index="1" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+    </CoreNodeModels.Input.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="16e8de10-5194-4e4a-8a42-b491fa0356be" start_index="0" end="4d9fb747-2e90-4571-9c8f-7d59ad14a939" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="8c90086d-163c-4c8f-a76e-c030598bfbc1" start_index="0" end="16e8de10-5194-4e4a-8a42-b491fa0356be" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="f8cc1b6f-ac6c-4229-a895-e0826034bb61" start_index="0" end="906f321a-14c0-4a2c-a2d6-e6a44fa671fb" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="906f321a-14c0-4a2c-a2d6-e6a44fa671fb" start_index="0" end="8c90086d-163c-4c8f-a76e-c030598bfbc1" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="80701298-edd8-410c-8c8b-0034cbfd0dd0" start_index="0" end="906f321a-14c0-4a2c-a2d6-e6a44fa671fb" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

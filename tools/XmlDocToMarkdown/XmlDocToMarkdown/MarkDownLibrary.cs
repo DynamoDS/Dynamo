@@ -48,7 +48,8 @@ namespace XmlDocToMarkdown
             }
             else
             {
-                sb.Append(GetMarkdownForType(members, t.FullName));
+                string fullName = t.FullName.Replace("+", ".");
+                sb.Append(GetMarkdownForType(members, fullName));
                 sb.AppendLine("---");
             }
 
@@ -103,7 +104,8 @@ namespace XmlDocToMarkdown
                methodName + "(" + string.Join(",", methodParams.Select(pi => pi.ParameterType.FullName)) + ")" :
                methodName;
 
-                var current = GetMarkdownForMethod(members, t.FullName + fullMethodName);
+                var fullName = t.FullName.Replace("+", ".");
+                var current = GetMarkdownForMethod(members, fullName + fullMethodName);
                 if (current != "" && !foundType) foundType = true;
                 sb.Append(current);
                 sb.AppendLine();
@@ -153,7 +155,8 @@ namespace XmlDocToMarkdown
 
                 Debug.WriteLine(t.FullName + "." + fullMethodName);
 
-                var current = GetMarkdownForMethod(members, t.FullName + "." + fullMethodName);
+                var fullName = t.FullName.Replace("+", ".");
+                var current = GetMarkdownForMethod(members, fullName + "." + fullMethodName);
                 if (current != "" && !foundType) foundType = true;
                 sb.Append(current);
                 sb.AppendLine();
@@ -195,7 +198,8 @@ namespace XmlDocToMarkdown
                  {
                      XmlToMarkdown.PropertySetType  = "get;set;";
                  }
-                var propertyNameSpace = ConvertGenericParameterName(t.FullName);
+                var fullName = t.FullName.Replace("+", ".");
+                var propertyNameSpace = ConvertGenericParameterName(fullName);
                 var current = GetMarkdownForProperty(members, propertyNameSpace + "." + property.Name);
                 if (current != "" && !foundType) foundType = true;
                 sb.Append(current);
@@ -228,7 +232,8 @@ namespace XmlDocToMarkdown
             foreach (var e in t.GetEvents())
             {
                 XmlToMarkdown.ReturnType = string.Empty;
-                var eventNameSpace = ConvertGenericParameterName(t.FullName);
+                var fullName = t.FullName.Replace("+", ".");
+                var eventNameSpace = ConvertGenericParameterName(fullName);
                 var current = GetMarkdownForEvent(members, eventNameSpace + "." + e.Name);
                 if (current != "" && !foundType) foundType = true;
                 sb.Append(current);

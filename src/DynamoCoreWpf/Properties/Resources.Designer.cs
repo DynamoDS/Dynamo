@@ -1724,11 +1724,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide Preview Bubbles.
+        /// </summary>
+        public static string DynamoViewSettingsMenuHidePreviewBubbles {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsMenuHidePreviewBubbles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Edges.
         /// </summary>
         public static string DynamoViewSettingsMenuShowEdges {
             get {
                 return ResourceManager.GetString("DynamoViewSettingsMenuShowEdges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Preview Bubbles.
+        /// </summary>
+        public static string DynamoViewSettingsMenuShowPreviewBubbles {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsMenuShowPreviewBubbles", resourceCulture);
             }
         }
         
@@ -2740,6 +2758,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to We can&apos;t save &quot;{0}&quot; because the file is read only. To keep your changes, you&apos;ll need to save it with a new name or in a different location..
+        /// </summary>
+        public static string MessageConfirmToSaveReadOnlyCustomNode {
+            get {
+                return ResourceManager.GetString("MessageConfirmToSaveReadOnlyCustomNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to uninstall {0} ?  This will delete the packages root directory.
         ///
         ///You can always redownload the package..
@@ -2995,7 +3022,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} needs to uninstall {1} to continue but it contains binaries already loaded into Dynamo.  It&apos;s now marked for removal, but you&apos;ll need to first restart {0}..
+        ///   Looks up a localized string similar to {2} has dependencies. To install {2}, {0} needs to first uninstall the following dependent packages: {1}. Restart {0} to complete the uninstall, then try and download {2} again.
+        ///
+        ///Uninstall the following dependent packages: {1}?.
         /// </summary>
         public static string MessageUninstallToContinue2 {
             get {
@@ -3207,6 +3236,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NoteViewContextMenuEdit {
             get {
                 return ResourceManager.GetString("NoteViewContextMenuEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to null.
+        /// </summary>
+        public static string NullString {
+            get {
+                return ResourceManager.GetString("NullString", resourceCulture);
             }
         }
         
@@ -4509,7 +4547,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to What&apos;s New.
+        ///   Looks up a localized string similar to Getting Started.
         /// </summary>
         public static string StartPageWhatsNew {
             get {
@@ -4523,6 +4561,15 @@ namespace Dynamo.Wpf.Properties {
         public static string StringInputNodeEditMenu {
             get {
                 return ResourceManager.GetString("StringInputNodeEditMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [Read-Only] .
+        /// </summary>
+        public static string TabFileNameReadOnlyPrefix {
+            get {
+                return ResourceManager.GetString("TabFileNameReadOnlyPrefix", resourceCulture);
             }
         }
         

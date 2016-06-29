@@ -355,20 +355,6 @@ namespace ProtoCore.DSASM
             return procNode;
         }
 
-        private ProcedureNode GetProcNode(string variableName)
-        {
-            if (ProcTable == null)
-            {
-                return null;
-            }
-
-            Validity.Assert(null != variableName && variableName.Length > 0);
-            string getterName = ProtoCore.DSASM.Constants.kGetterPrefix + variableName;
-
-            var procNode = ProcTable.GetFunctionsByName(getterName).FirstOrDefault();
-            return procNode;
-        }
-
         public bool IsMemberVariable(SymbolNode symbol)
         {
             // Jun:
@@ -488,7 +474,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Gets Class Id for the given fully qualified class name.
+        /// Returns Class Id for the given fully qualified class name.
         /// </summary>
         /// <param name="fullname">Fully qualified class name</param>
         /// <returns>Class Id if found, else ProtoCore.DSASM.Constants.kInvalidIndex</returns>

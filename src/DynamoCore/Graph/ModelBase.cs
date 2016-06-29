@@ -20,17 +20,17 @@ namespace Dynamo.Graph
     public class UpdateValueParams
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="propertyName">Name of the property whose value is to be updated.
         /// This parameter cannot be empty or null.</param>
-        /// <param name="propertyValue">Value of the named property whose value is to be 
-        /// updated. This parameter can either be null or empty if the targeted property 
+        /// <param name="propertyValue">Value of the named property whose value is to be
+        /// updated. This parameter can either be null or empty if the targeted property
         /// allows such values.This value comes directly
-        /// from DynamoTextBox after user commits it. Overridden methods then use 
-        /// a specific IValueConverter to turn this string into another data type 
-        /// that it expects</param>
-        /// <param name="elementResolver">responsible for resolving class namespaces</param>
+        /// from DynamoTextBox after user commits it. Overridden methods then use
+        /// a specific IValueConverter to turn this string into another data type
+        /// that it expects.</param>
+        /// <param name="elementResolver">Responsible for resolving class namespaces.</param>
         public UpdateValueParams(string propertyName, string propertyValue, ElementResolver elementResolver = null)
         {
             ElementResolver = elementResolver;
@@ -38,13 +38,24 @@ namespace Dynamo.Graph
             PropertyValue = propertyValue;
         }
 
+        /// <summary>
+        /// Returns name of the property whose value needs to be updated.
+        /// </summary>
         public string PropertyName { get; private set; }
+
+        /// <summary>
+        /// Returns string representation of value to update specified node property
+        /// </summary>
         public string PropertyValue { get; private set; }
+
+        /// <summary>
+        /// Returns <see cref="ElementResolver"/> object responsible for resolving class namespaces
+        /// </summary>
         public ElementResolver ElementResolver { get; private set; }
     }
 
     /// <summary>
-    /// Base class for all objects with which user can interact in Dynamo.    
+    /// Base class for all objects with which user can interact in Dynamo.
     /// </summary>
     public abstract class ModelBase : NotificationObject, ISelectable, ILocatable, ILogSource
     {
@@ -261,23 +272,26 @@ namespace Dynamo.Graph
         }
 
         /// <summary>
-        /// This method is currently used as a way to send an event to ModelBase 
-        /// derived objects. Its primary use is in DynamoNodeButton class, which 
-        /// sends this event when clicked.
+        /// This method is currently used as a way to send an event to ModelBase
+        /// derived objects. Its primary use is in DynamoNodeButton class, which
+        /// sends this event when clicked, to change the number of ports in a
+        /// VariableInputNode.
         /// </summary>
         /// <param name="eventName">The name of the event.</param>
+        /// <param name="value">For the SetInPortCount event, the number of
+        /// ports desired.  Ignored for other events.</param>
         /// <param name="recorder"></param>
         /// <returns>Returns true if the call has been handled, or false otherwise.
         /// </returns>
-        internal bool HandleModelEvent(string eventName, UndoRedoRecorder recorder)
+        internal bool HandleModelEvent(string eventName, int value, UndoRedoRecorder recorder)
         {
-            return HandleModelEventCore(eventName, recorder);
+            return HandleModelEventCore(eventName, value, recorder);
         }
 
         /// <summary>
         /// This method is supplied as a generic way for command framework to update
-        /// a given named-value in a ModelBase (which has to work under both user 
-        /// and playback scenarios). During playback, the command framework issues 
+        /// a given named-value in a ModelBase (which has to work under both user
+        /// and playback scenarios). During playback, the command framework issues
         /// pre-recorded UpdateModelValueCommand that targets a model. Since there
         /// is no data-binding at play here, there will not be IValueConverter. This
         /// method takes only string input (the way they appear in DynamoTextBox),
@@ -291,7 +305,7 @@ namespace Dynamo.Graph
             return false; // Base class does not handle this.
         }
 
-        internal virtual bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
+        internal virtual bool HandleModelEventCore(string eventName, int value, UndoRedoRecorder recorder)
         {
             return false; // Base class does not handle this.
         }

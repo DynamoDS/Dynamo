@@ -1,14 +1,17 @@
-<Workspace Version="0.7.0.29946" X="0" Y="0" zoom="1" Description="Returns the number 2." Category="Analyze.Daylighting" Name="Constant2" ID="c629abbb-732e-4044-8f63-9a12c80117cd">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="Constant2" Description="Returns the number 2." ID="c629abbb-732e-4044-8f63-9a12c80117cd" Category="Analyze.Daylighting">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="9ce91e89-c087-49cd-9fd9-540cca086475" nickname="Output" x="290" y="79.8283333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Graph.Nodes.CustomNodes.Output guid="9ce91e89-c087-49cd-9fd9-540cca086475" type="Dynamo.Graph.Nodes.CustomNodes.Output" nickname="Output" x="290" y="79.8283333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
       <Symbol value="" />
-    </Dynamo.Nodes.Output>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="01507526-64ca-4d1c-9821-92603d935e42" nickname="Number" x="42" y="77.8283333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </Dynamo.Graph.Nodes.CustomNodes.Output>
+    <CoreNodeModels.Input.DoubleInput guid="01507526-64ca-4d1c-9821-92603d935e42" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="42" y="77.8283333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="2" />
-    </Dynamo.Nodes.DoubleInput>
+    </CoreNodeModels.Input.DoubleInput>
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="01507526-64ca-4d1c-9821-92603d935e42" start_index="0" end="9ce91e89-c087-49cd-9fd9-540cca086475" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="01507526-64ca-4d1c-9821-92603d935e42" start_index="0" end="9ce91e89-c087-49cd-9fd9-540cca086475" end_index="0" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

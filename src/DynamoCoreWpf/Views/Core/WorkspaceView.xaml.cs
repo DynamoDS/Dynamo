@@ -1,32 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using Dynamo.Models;
-using Dynamo.Selection;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.UI;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls.Primitives;
-using System.Windows.Documents;
-using System.Windows.Interactivity;
-using Dynamo.Controls;
+﻿using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Wpf.Utilities;
+using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Search.SearchElements;
-using Dynamo.UI.Controls;
+using Dynamo.Selection;
+using Dynamo.UI;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.UI;
-using ModifierKeys = System.Windows.Input.ModifierKeys;
+using Dynamo.Wpf.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using ModifierKeys = System.Windows.Input.ModifierKeys;
 
 namespace Dynamo.Views
 {
@@ -162,6 +161,7 @@ namespace Dynamo.Views
                 case ShowHideFlags.Show:
                     // Show InCanvas search just in case, when mouse is over workspace.
                     popup.IsOpen = DynamoModel.IsTestMode || IsMouseOver;
+                    ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
                     ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
                     break;
             }
@@ -182,6 +182,67 @@ namespace Dynamo.Views
             var topLeft = t.Transform(new Point());
             var bottomRight = t.Transform(new Point(outerCanvas.ActualWidth, outerCanvas.ActualHeight));
             return new Rect(topLeft, bottomRight);
+        }
+
+        internal void SaveWorkspaceAsImage(string path)
+        {
+            var initialized = false;
+            var bounds = new Rect();
+
+            var dragCanvas = WpfUtilities.ChildOfType<DragCanvas>(this);
+            var childrenCount = VisualTreeHelper.GetChildrenCount(dragCanvas);
+            for (int index = 0; index < childrenCount; ++index)
+            {
+                var child = VisualTreeHelper.GetChild(dragCanvas, index);
+                var firstChild = VisualTreeHelper.GetChild(child, 0);
+                if ((!(firstChild is NodeView)) && (!(firstChild is NoteView)) && (!(firstChild is AnnotationView)))
+                    continue;
+
+                var childBounds = VisualTreeHelper.GetDescendantBounds(child as Visual);
+                childBounds.X = (double)(child as Visual).GetValue(Canvas.LeftProperty);
+                childBounds.Y = (double)(child as Visual).GetValue(Canvas.TopProperty);
+
+                if (initialized)
+                {
+                    bounds.Union(childBounds);
+                }
+                else
+                {
+                    initialized = true;
+                    bounds = childBounds;
+                }
+            }
+
+            // Nothing found in the canvas, bail out.
+            if (!initialized) return;
+
+            // Add padding to the edge and make them multiples of two (pad 10px on each side).
+            bounds.Width = 20 + ((((int)Math.Ceiling(bounds.Width)) + 1) & ~0x01);
+            bounds.Height = 20 + ((((int)Math.Ceiling(bounds.Height)) + 1) & ~0x01);
+
+            var currentTransformGroup = WorkspaceElements.RenderTransform as TransformGroup;
+            WorkspaceElements.RenderTransform = new TranslateTransform(10.0 - bounds.X, 10.0 - bounds.Y);
+            WorkspaceElements.UpdateLayout();
+
+            var rtb = new RenderTargetBitmap(((int)bounds.Width),
+                ((int)bounds.Height), 96, 96, PixelFormats.Default);
+
+            rtb.Render(WorkspaceElements);
+            WorkspaceElements.RenderTransform = currentTransformGroup;
+
+            try
+            {
+                using (var stm = System.IO.File.Create(path))
+                {
+                    // Encode as PNG format
+                    var pngEncoder = new PngBitmapEncoder();
+                    pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+                    pngEncoder.Save(stm);
+                }
+            }
+            catch (Exception)
+            {
+            }
         }
 
         void OnSelectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -510,6 +571,16 @@ namespace Dynamo.Views
             else if (Keyboard.Modifiers != ModifierKeys.Control)
             {
                 ViewModel.HandleLeftButtonDown(workBench, e);
+            }
+
+            if (!ViewModel.IsDragging) return;
+
+            var nodesToHidePreview = this.ChildrenOfType<NodeView>().Where(view =>
+                view.HasPreviewControl && !view.PreviewControl.IsHidden && !view.PreviewControl.StaysOpen);
+
+            foreach (var node in nodesToHidePreview)
+            {
+                node.PreviewControl.HidePreviewBubble();
             }
         }
 

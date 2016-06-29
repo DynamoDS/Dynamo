@@ -714,47 +714,6 @@ namespace ProtoScript.Runners
             return finalDeltaAstList;
         }
 
-        private List<AssociativeNode> GetASTNodesDependentOnFunctionList(FunctionDefinitionNode functionNode)
-        {
-            // Determine if the modified function was used in any of the current nodes
-            List<AssociativeNode> modifiedNodes = new List<AssociativeNode>();
-
-            // Iterate through the vm graphnodes at the global scope that contain a function call
-            //foreach (ProtoCore.AssociativeGraph.GraphNode gnode in runnerCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
-            Validity.Assert(null != core.GraphNodeCallList);
-            foreach (ProtoCore.AssociativeGraph.GraphNode gnode in core.GraphNodeCallList)
-            {
-                if (gnode.isActive)
-                {
-                    // Iterate through the current ast nodes 
-                    foreach (KeyValuePair<System.Guid, Subtree> kvp in currentSubTreeList)
-                    {
-                        foreach (AssociativeNode assocNode in kvp.Value.AstNodes)
-                        {
-                            if (assocNode is BinaryExpressionNode)
-                            {
-                                if (gnode.exprUID == (assocNode as BinaryExpressionNode).ExpressionUID)
-                                {
-                                    // Check if the procedure associatied with this graphnode matches thename and arg count of the modified proc
-                                    if (null != gnode.firstProc)
-                                    {
-                                        if (gnode.firstProc.Name == functionNode.Name
-                                            && gnode.firstProc.ArgumentInfos.Count == functionNode.Signature.Arguments.Count)
-                                        {
-                                            // If it does, create a new ast tree for this graphnode and append it to deltaAstList
-                                            modifiedNodes.Add(assocNode);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return modifiedNodes;
-        }
-
-
         /// <summary>
         ///             
         /// Handle instances of redefining the lhs of an expression
@@ -809,7 +768,7 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Gets the only the modified nodes from the subtree by checking of the previous cached instance
+        /// Returns the only the modified nodes from the subtree by checking of the previous cached instance
         /// </summary>
         /// <param name="subtree"></param>
         /// <returns></returns>
@@ -891,7 +850,7 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Get the ASTs from the previous list that no longer exist in the new list
+        /// Returns the ASTs from the previous list that no longer exist in the new list
         /// </summary>
         /// <param name="prevASTList"></param>
         /// <param name="newASTList"></param>
@@ -921,7 +880,7 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Get the ASTs from the previous list that that still exist in the new list
+        /// Returns the ASTs from the previous list that that still exist in the new list
         /// </summary>
         /// <param name="prevASTList"></param>
         /// <param name="newASTList"></param>
@@ -943,29 +902,6 @@ namespace ProtoScript.Runners
             return existingList;
         }
 
-        /// <summary>
-        /// Updates the cached AST's if they were modified
-        /// </summary>
-        /// <param name="guid"></param>
-        /// <param name="modifiedNodes"></param>
-        private void UpdateCachedSubtree(Guid guid, List<AssociativeNode> modifiedNodes)
-        {
-            if (null != modifiedNodes && modifiedNodes.Count > 0)
-            {
-                List<AssociativeNode> cachedASTList = currentSubTreeList[guid].AstNodes;
-                foreach (AssociativeNode node in modifiedNodes)
-                {
-                    // Remove ast from cachedASTList if the current node matches an exprID
-                    // cachedASTList.RemoveUnmodified()
-
-                    if (node is BinaryExpressionNode)
-                    {
-                        cachedASTList.Add(node);
-                    }
-                }
-            }
-        }
-
         private bool CompileToSSA(Guid guid, List<AssociativeNode> astList, out List<AssociativeNode> ssaAstList)
         {
             core.Options.GenerateSSA = true;
@@ -975,55 +911,6 @@ namespace ProtoScript.Runners
             ssaAstList = codegen.EmitSSA(astList);
             return true;
         }
-
-
-        /// <summary>
-        ///  Compiles all ASTs within the syncData to SSA
-        /// </summary>
-        /// <param name="syncData"></param>
-        private void CompileToSSA(GraphSyncData syncData)
-        {
-            List<AssociativeNode> newASTList = null;
-            if (null != syncData.AddedSubtrees)
-            {
-                foreach (Subtree st in syncData.AddedSubtrees)
-                {
-                    if (null != st.AstNodes)
-                    {
-                        CompileToSSA(st.GUID, st.AstNodes, out newASTList);
-                        st.AstNodes.Clear();
-                        st.AstNodes.AddRange(newASTList);
-                    }
-                }
-            }
-
-            if (null != syncData.ModifiedSubtrees)
-            {
-                foreach (Subtree st in syncData.ModifiedSubtrees)
-                {
-                    if (null != st.AstNodes)
-                    {
-                        CompileToSSA(st.GUID, st.AstNodes, out newASTList);
-                        st.AstNodes.Clear();
-                        st.AstNodes.AddRange(newASTList);
-                    }
-                }
-            }
-
-            if (null != syncData.DeletedSubtrees)
-            {
-                foreach (Subtree st in syncData.DeletedSubtrees)
-                {
-                    if (null != st.AstNodes)
-                    {
-                        CompileToSSA(st.GUID, st.AstNodes, out newASTList);
-                        st.AstNodes.Clear();
-                        st.AstNodes.AddRange(newASTList);
-                    }
-                }
-            }
-        }
-
 
         /// <summary>
         /// Creates a list of null assignment statements where the lhs is retrieved from an ast list
@@ -1063,9 +950,7 @@ namespace ProtoScript.Runners
         void UpdateGraph(AssociativeNode astNode);
         #endregion
 
-        string GetCoreDump();
         void ResetVMAndResyncGraph(IEnumerable<string> libraries);
-        List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries);
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
@@ -1278,50 +1163,6 @@ namespace ProtoScript.Runners
             {
                 return Reflection.Reflect(nodeName, 0, runtimeCore, runnerCore);
             }
-        }
-
-        /// <summary>
-        /// VM Debugging API for general Debugging purposes 
-        /// temporarily used by Cmmand Line REPL
-        /// </summary>
-        /// <returns></returns>
-        public string GetCoreDump()
-        {
-            // Prints out the final Value of every symbol in the program
-            // Traverse order:
-            //  Exelist, Globals symbols
-
-            ProtoCore.DSASM.Executive exec = runtimeCore.CurrentExecutive.CurrentDSASMExec;
-            ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runtimeCore);
-            Executable exe = exec.exe;
-
-            // Only display symbols defined in the default top-most langauge block;
-            // Otherwise garbage information may be displayed.
-            string formattedString = string.Empty;
-            if (exe.runtimeSymbols.Length > 0)
-            {
-                int blockId = 0;
-
-                ProtoCore.DSASM.SymbolTable symbolTable = exe.runtimeSymbols[blockId];
-
-                for (int i = 0; i < symbolTable.symbolList.Count; ++i)
-                {
-                    SymbolNode symbolNode = symbolTable.symbolList[i];
-
-                    bool isLocal = ProtoCore.DSASM.Constants.kGlobalScope != symbolNode.functionIndex;
-                    bool isStatic = (symbolNode.classScope != ProtoCore.DSASM.Constants.kInvalidIndex && symbolNode.isStatic);
-                    if (symbolNode.isArgument || isLocal || isStatic || symbolNode.isTemp)
-                    {
-                        continue;
-                    }
-
-                    ProtoCore.Runtime.RuntimeMemory rmem = exec.rmem;
-                    StackValue sv = rmem.GetSymbolValue(symbolNode);
-                    formattedString = formattedString + string.Format("{0} = {1}\n", symbolNode.name, execMirror.GetStringValue(sv, rmem.Heap, blockId));
-                }
-            }
-
-            return formattedString;
         }
 
         /// <summary>
@@ -1575,9 +1416,12 @@ namespace ProtoScript.Runners
             changeSetComputer.UpdateCachedASTFromSubtrees(syncData.ModifiedSubtrees);
 
             // Prior to execution, apply state modifications to the VM given the delta AST's
+            bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
             changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
-
-            CompileAndExecuteForDeltaExecution(finalDeltaAstList);
+            if (finalDeltaAstList.Any() || anyForcedExecutedNodes)
+            {
+                CompileAndExecuteForDeltaExecution(finalDeltaAstList);
+            }
 
             var guids = runtimeCore.ExecutedAstGuids.ToList();
             executedAstGuids[syncData.SessionID] = guids;
@@ -1656,53 +1500,6 @@ namespace ProtoScript.Runners
             string code = codeGen.GenerateCode();
 
             UpdateCmdLineInterpreter(code);
-        }
-
-        /// <summary>
-        /// Resets the VM whenever a new library is imported and re-imports them
-        /// Returns the list of new Library Mirrors for reflection
-        /// TODO: It should not be needed once we have language support to insert import statements arbitrarily
-        /// </summary>
-        /// <param name="libraries"></param>
-        /// <returns></returns>
-        public List<LibraryMirror> ResetVMAndImportLibrary(List<string> libraries)
-        {
-            List<LibraryMirror> libs = new List<LibraryMirror>();
-
-            // Reset VM
-            ReInitializeLiveRunner();
-
-            // generate import node for each library in input list
-            List<AssociativeNode> importNodes = null;
-            foreach (string lib in libraries)
-            {
-                importNodes = new List<AssociativeNode>();
-
-                ProtoCore.AST.AssociativeAST.ImportNode importNode = new ProtoCore.AST.AssociativeAST.ImportNode();
-                importNode.ModuleName = lib;
-
-                importNodes.Add(importNode);
-
-                ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(importNodes);
-                string code = codeGen.GenerateCode();
-
-                int currentCI = runnerCore.ClassTable.ClassNodes.Count;
-
-                UpdateCmdLineInterpreter(code);
-
-                int postCI = runnerCore.ClassTable.ClassNodes.Count;
-
-                IList<ProtoCore.DSASM.ClassNode> classNodes = new List<ProtoCore.DSASM.ClassNode>();
-                for (int i = currentCI; i < postCI; ++i)
-                {
-                    classNodes.Add(runnerCore.ClassTable.ClassNodes[i]);
-                }
-
-                ProtoCore.Mirror.LibraryMirror libraryMirror = ProtoCore.Mirror.Reflection.Reflect(lib, classNodes, runnerCore);
-                libs.Add(libraryMirror);
-            }
-
-            return libs;
         }
 
         /// <summary>

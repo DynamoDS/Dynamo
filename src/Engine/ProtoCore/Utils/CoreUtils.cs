@@ -303,18 +303,6 @@ namespace ProtoCore.Utils
             return ssaVar.StartsWith(DSASM.Constants.kSSATempPrefix);
         }
 
-        public static bool IsTempVarProperty(string varname)
-        {
-            Validity.Assert(!string.IsNullOrEmpty(varname));
-            return varname.StartsWith(DSASM.Constants.kTempPropertyVar);
-        }
-
-        public static bool IsCompilerGenerated(string varname)
-        {
-            Validity.Assert(!string.IsNullOrEmpty(varname));
-            return varname.StartsWith(DSASM.Constants.kInternalNamePrefix);
-        }
-
         public static bool IsInternalFunction(string methodName)
         {
             Validity.Assert(!string.IsNullOrEmpty(methodName));
@@ -479,7 +467,7 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
-        /// Gets the has id of a function signature given the name and argument types
+        /// Returns the has id of a function signature given the name and argument types
         /// </summary>
         /// <param name="functionDef"></param>
         /// <returns></returns>
@@ -732,7 +720,7 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
-        /// Get the Codeblock given the blockId
+        /// Returns the Codeblock given the blockId
         /// </summary>
         /// <param name="blockList"></param>
         /// <param name="blockId"></param>
@@ -806,42 +794,6 @@ namespace ProtoCore.Utils
                 searchBlock = searchBlock.parent;
             }
             return null;
-        }
-
-        /// <summary>
-        /// Checks if an AST node is a primitive
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        public static bool IsPrimitiveASTNode(AssociativeNode node)
-        {
-            if (node is IntNode
-            || node is DoubleNode
-            || node is BooleanNode)
-            {
-                return true;
-            }
-            return false;
-        }
-
-
-        public static StackValue BuildStackValueForPrimitive(AssociativeNode node)
-        {
-            Validity.Assert(IsPrimitiveASTNode(node) == true);
-
-            if (node is IntNode)
-            {
-                return StackValue.BuildInt((node as IntNode).Value);
-            }
-            else if (node is DoubleNode)
-            {
-                return StackValue.BuildDouble((node as DoubleNode).Value);
-            }
-            else if (node is BooleanNode)
-            {
-                return StackValue.BuildBoolean((node as BooleanNode).Value);
-            }
-            return StackValue.BuildNull();
         }
 
         /// <summary>

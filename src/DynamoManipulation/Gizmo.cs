@@ -43,7 +43,7 @@ namespace Dynamo.Manipulation
         Vector GetOffset(Point newPosition, Vector viewDirection);
 
         /// <summary>
-        /// Gets render package for all the drawables of this Gizmo.
+        /// Returns render package for all the drawables of this Gizmo.
         /// </summary>
         /// <returns>List of render packages.</returns>
         IEnumerable<IRenderPackage> GetDrawables();

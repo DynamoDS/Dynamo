@@ -290,7 +290,6 @@ x = foo()[0];
         {
             String code =
 @"
-global = 0;
 def f(x : int)
 {
     loc = [Imperative]
@@ -301,80 +300,12 @@ def f(x : int)
         }
         return = x;
     } 
-    global = global + 1;
     return = loc;
 }
 y = f(10);
-a = global;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y", 55);
-            thisTest.Verify("a", 10);
-        }
-
-        [Test]
-        public void TestRecursiveAssociativeImperativeCondition02()
-        {
-            String code =
-@"
-global = 0;
-def g()
-{
-    global = global + 1;
-    return = 0;
-}
-def f(x : int)
-{
-    loc = [Imperative]
-    {
-        if (x > 1)
-        {
-            return = f(x - 1) + x;
-        }
-        return = x;
-    } 
-    t = g();
-    return = loc;
-}
-y = f(10);
-a = global;
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("y", 55);
-            thisTest.Verify("a", 10);
-        }
-
-        [Test]
-        public void TestRecursiveAssociativeImperativeCondition03()
-        {
-            String code =
-@"
-global = 0;
-def g()
-{
-    global = global + 1;
-    return = 0;
-}
-def f(x : int)
-{
-    loc = [Imperative]
-    {
-        if (x > 1)
-        {
-            return = f(x - 1) + x;
-        }
-        return = x;
-    } 
-    t = g();
-    global = global + 1;
-    return = loc;
-}
-y = f(10);
-a = global;
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("y", 55);
-            thisTest.Verify("a", 20);
         }
 
         [Test]

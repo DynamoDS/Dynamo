@@ -4589,93 +4589,6 @@ t = a+c;
 
         [Test]
         [Category("Debugger")]
-        public void TestStepWithUpdateUsingImperativeLangBlock2()
-        {
-            String code =
-@"
-y = 0;
-t = y * 2;
-[Imperative]
-{
-    c = 0;
-	[Associative]
-	{
-		def fadd : int(a : int)
-		{
-		    return = a+1;
-		}
-		
-		x = 1;
-		
-		a = fadd(x);
-		
-		b = 11;
-		c = a + b;
-	
-	    x = 10;
-	}
-    y = c + 2;
-}";
-            //Assert.Fail("IDE-333 Debugger fails with update using Imperative Language block");
-
-            fsr.PreStart(code);
-            fsr.Step();
-
-            DebugRunner.VMState vms = fsr.Step();
-            Obj o = vms.mirror.GetDebugValue("y");
-            Assert.IsTrue((Int64)o.Payload == 0);
-
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("t");
-            Assert.IsTrue((Int64)o.Payload == 0);
-
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("c");
-            Assert.IsTrue((Int64)o.Payload == 0);
-
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("x");
-            Assert.IsTrue((Int64)o.Payload == 1);
-
-            fsr.StepOver();
-            //vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("a");
-            Assert.IsTrue((Int64)o.Payload == 2);
-
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("b");
-            Assert.IsTrue((Int64)o.Payload == 11);
-
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("c");
-            Assert.IsTrue((Int64)o.Payload == 13);
-
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("x");
-            Assert.IsTrue((Int64)o.Payload == 10);
-
-            fsr.StepOver();
-            //vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("a");
-            Assert.IsTrue((Int64)o.Payload == 11);
-
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("c");
-            Assert.IsTrue((Int64)o.Payload == 22);
-
-            fsr.Step();
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("y");
-            Assert.IsTrue((Int64)o.Payload == 24);
-
-            fsr.Step();
-            vms = fsr.Step();
-            o = vms.mirror.GetDebugValue("t");
-            Assert.IsTrue((Int64)o.Payload == 48);
-        }
-
-        [Test]
-        [Category("Debugger")]
         public void TestStepWithUpdateUsingAssociativeLangBlock()
         {
             String code =
@@ -10581,7 +10494,7 @@ r = 0;
             vms = fsr.Step();
 
             TestFrameWork.Verify(mirror, "k", 1, 0);
-            TestFrameWork.Verify(mirror, "r", 1, 0);
+            TestFrameWork.Verify(mirror, "r", 0, 0);
 
         }
         [Test]

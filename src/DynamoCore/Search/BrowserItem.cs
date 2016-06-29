@@ -9,8 +9,14 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Search
 {
+    /// <summary>
+    ///     Base class for all browser items in search area.
+    /// </summary>
     public abstract class BrowserItem : NotificationObject
     {
+        /// <summary>
+        ///     Returns items inside of the browser item
+        /// </summary>
         public abstract ObservableCollection<BrowserItem> Items { get; set; }
 
         /// <summary>
@@ -41,10 +47,11 @@ namespace Dynamo.Search
         /// </summary>
         public abstract string Name { get; }
 
+        private int _height = 30;
+
         /// <summary>
         /// The height of the element in search
         /// </summary>
-        private int _height = 30;
         public int Height
         {
             get { return _height; }
@@ -94,10 +101,11 @@ namespace Dynamo.Search
             }
         }
 
+        private bool _visibility = true;
+
         /// <summary>
         /// Whether the item is visible or not
         /// </summary>
-        private bool _visibility = true;
         public bool Visibility
         {
             get
@@ -111,10 +119,11 @@ namespace Dynamo.Search
             }
         }
 
+        private bool _isSelected = false;
+        
         /// <summary>
         /// Whether the item is selected or not
         /// </summary>
-        private bool _isSelected = false;
         public bool IsSelected
         {
             get { return _isSelected; }
@@ -125,10 +134,11 @@ namespace Dynamo.Search
             }
         }
 
+        private bool _isExpanded = false;
+        
         /// <summary>
         /// Is the element expanded in the browser
         /// </summary>
-        private bool _isExpanded = false;
         public bool IsExpanded
         {
             get { return _isExpanded; }
@@ -141,7 +151,15 @@ namespace Dynamo.Search
 
         internal abstract void Execute();
 
+        /// <summary>
+        /// Represents the method that will handle the Executed event of the <see cref="BrowserItem"/> class.
+        /// </summary>
+        /// <param name="ele"><see cref="BrowserItem"/> object to execute</param>
         public delegate void BrowserItemHandler(BrowserItem ele);
+
+        /// <summary>
+        /// Occurs when corresponding node is created
+        /// </summary>
         public event BrowserItemHandler Executed;
         protected void OnExecuted()
         {

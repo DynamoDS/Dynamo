@@ -124,30 +124,6 @@ x;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestImportPointClass()
-        {
-            String code =
-            @"import(Point from ""ProtoGeometry.dll"");
-x;
-y;
-z;
-             [Associative] 
-             {
-               point = Point.ByCoordinates(1,2,3);
-               x = point.X;
-               y = point.Y;
-               z = point.Z;
-             }
-            ";
-            ValidationData[] data = { new ValidationData { ValueName="x", ExpectedValue = 1.0, BlockIndex = 0},
-                                      new ValidationData { ValueName="y", ExpectedValue = 2.0, BlockIndex = 0},
-                                      new ValidationData { ValueName="z", ExpectedValue = 3.0, BlockIndex = 0}
-                                    };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
         public void TestImportPointClassWithoutImportingVectorClass()
         {
             String code =
@@ -396,29 +372,6 @@ size;
         }
 
         [Test]
-        [Ignore]
-        public void TestDictionaryMarshalling_DStoCS_CStoDS()
-        {
-            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4035
-            String code =
-            @"
-                dummy = Dummy.Dummy();
-                dictionary = 
-                { 
-                    dummy.CreateDictionary() => dict;
-                    dummy.AddData(dict, ""ABCD"", 22) => dict;
-                    dummy.AddData(dict, ""xyz"", 11) => dict;
-                    dummy.AddData(dict, ""teas"", 12) => dict;
-                }
-                sum = dummy.SumAges(dictionary);
-            ";
-            Type dummy = typeof (FFITarget.Dummy);
-            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
-            ValidationData[] data = { new ValidationData { ValueName = "sum", ExpectedValue = 45, BlockIndex = 0 } };
-            Assert.IsTrue(ExecuteAndVerify(code, data) == 0); //runs without any error
-        }
-
-        [Test]
         public void TestListMarshalling_DStoCS_CStoDS()
         {
             String code =
@@ -575,31 +528,6 @@ sum;
             ValidationData[] data = { new ValidationData { ValueName = "num", ExpectedValue = 20.0, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
         }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        [Category("ProtoGeometry")][Category("PortToCodeBlocks")]
-        public void TestInheritanceAcrossLangauges_CS_DS()
-        {
-            string code = @"
-                import (Vector from ""ProtoGeometry.dll"");
-                class Vector2 extends Vector
-                {
-                    public constructor Vector2(x : double, y : double, z : double) : base ByCoordinates(x, y, z)
-                    {}
-                }
-                
-                vec2 = Vector2.Vector2(1,1,1);
-                x = vec2.GetLength();
-                ";
-            ValidationData[] data = { new ValidationData { ValueName = "x", ExpectedValue = Math.Sqrt(3.0), BlockIndex = 0 } };
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () => ExecuteAndVerify(code, data));
-        }
-        /// <summary>
-        /// This is to test Dispose method on IDisposable object. Dispose method 
-        /// on IDisposable is renamed to _Dispose as DS destructor. Calling 
-        /// Dispose doesn't affect the state.
-        /// </summary>
 
         [Test]
         public void TestDisposeNotAvailable()
@@ -784,65 +712,14 @@ sum;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestPropertyAccessor()
-        {
-            String code =
-            @"
-               import(""ProtoGeometry.dll"");
-               pt = Point.ByCoordinates(1,2,3);
-               a = pt.X;
-            ";
-            double aa = 1;
-            ValidationData[] data = { new ValidationData { ValueName = "a", ExpectedValue = aa, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestAssignmentSingleton()
-        {
-            String code =
-            @"
-               import(""ProtoGeometry.dll"");
-               pt = Point.ByCoordinates(1,2,3);
-               a = { pt.X};
-            ";
-            object[] aa = new object[] { 1.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a", ExpectedValue = aa, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        public void TestAssignmentAsArray()
-        {
-            String code =
-            @"
-               import(""ProtoGeometry.dll"");
-               pt = Point.ByCoordinates(1,2,3);
-               a = { pt.X, pt.X};
-               def test (pt : Point)
-               {
-                  return = { pt.X, pt.X};
-               }
-               c = test(pt);
-            ";
-            object[] aa = new object[] { 1.0, 1.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a", ExpectedValue = aa, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestReturnFromFunctionSingle()
         {
             String code =
             @"
-               import(""ProtoGeometry.dll"");
-            pt = Point.ByCoordinates(1,2,3);
+           import(""FFITarget.dll"");
+            pt = DummyPoint.ByCoordinates(1,2,3);
             a = { pt.X, pt.X};
-            def test (pt : Point)
+            def test (pt : DummyPoint)
             {
             return = {  pt.X};
             }
@@ -854,14 +731,13 @@ sum;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void Defect_1462300()
         {
             String code =
             @"
-               import(""ProtoGeometry.dll"");
-            pt = Point.ByCoordinates(1,2,3);
-            def test (pt : Point)
+            import(""FFITarget.dll"");
+            pt = DummyPoint.ByCoordinates(1,2,3);
+            def test (pt : DummyPoint)
             {
             return = {  pt.X,pt.Y};
             }
@@ -873,48 +749,18 @@ sum;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassProperties")]
-        [Category("ProtoGeometry")][Category("PortToCodeBlocks")]
-        public void geometryinClass()
-        {
-            String code =
-            @"
-               import(""ProtoGeometry.dll"");
-               pt1=Point.ByCoordinates(1.0,1.0,1.0);
-               class baseClass
-               { 
-                    val1 : Point  ;
-                    a:int;
-                    constructor baseClass()
-                    {
-                        a=1;
-                        val1=Point.ByCoordinates(1,1,1);
-                    }           
-                }
-                instance1= baseClass.baseClass();
-                a2=instance1.a;
-                b2=instance1.val1;
-                c2={b2.X,b2.Y,b2.Z};
-            ";
-            object[] c = new object[] { 1.0, 1.0, 1.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a2", ExpectedValue = 1, BlockIndex = 0 }, new ValidationData { ValueName = "c2", ExpectedValue = c, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }
-
-        [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void geometryArrayAssignment()
         {
             String code =
             @"
-               import(""ProtoGeometry.dll"");
+               import(""FFITarget.dll"");
               
-               pt1=Point.ByCoordinates(1,1,1);
-               pt2=Point.ByCoordinates(2,2,2);
-               pt3=Point.ByCoordinates(3,3,3);
-               pt4=Point.ByCoordinates(4,4,4);
-               pt5=Point.ByCoordinates(5,5,5);
-               pt6=Point.ByCoordinates(6,6,6);
+               pt1=DummyPoint.ByCoordinates(1,1,1);
+               pt2=DummyPoint.ByCoordinates(2,2,2);
+               pt3=DummyPoint.ByCoordinates(3,3,3);
+               pt4=DummyPoint.ByCoordinates(4,4,4);
+               pt5=DummyPoint.ByCoordinates(5,5,5);
+               pt6=DummyPoint.ByCoordinates(6,6,6);
 a11;
 a12;
 b11;
@@ -947,16 +793,15 @@ b12;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void geometryForLoop()
         {
             String code =
             @"
-                import(""ProtoGeometry.dll"");
+                import(""FFITarget.dll"");
                 
-                pt1=Point.ByCoordinates(1,1,1);
-                pt2=Point.ByCoordinates(2,2,2);
-                pt3=Point.ByCoordinates(3,3,3);
+                pt1=DummyPoint.ByCoordinates(1,1,1);
+                pt2=DummyPoint.ByCoordinates(2,2,2);
+                pt3=DummyPoint.ByCoordinates(3,3,3);
 a11;
 a12;
                 [Imperative]
@@ -989,18 +834,13 @@ a12;
             String code =
             @"
                 import(""FFITarget.dll"");
-              
                 pt1=DummyPoint.ByCoordinates(1,1,1);
-a11;
-                [Associative]
+                def foo : DummyPoint( a:DummyPoint)
                 {
-                    def foo : DummyPoint( a:DummyPoint)
-                    {
-                        return = a;
-                    }
-                    a = foo( pt1);
-                    a11={a.X,a.Y,a.Z};
-}
+                    return = a;
+                }
+                a = foo( pt1);
+                a11={a.X,a.Y,a.Z};
             ";
             object[] c = new object[] { 1.0, 1.0, 1.0 };
             ValidationData[] data = { new ValidationData { ValueName = "a11", ExpectedValue = c, BlockIndex = 0 } };
@@ -1047,26 +887,19 @@ ptcoords;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void geometryInlineConditional()
         {
             String code =
             @"
-               import(""ProtoGeometry.dll"");
-               WCS = CoordinateSystem.Identity();
-                pt1=Point.ByCoordinates(1,1,1);
-                pt2=Point.ByCoordinates(2,2,2);
+               import(""FFITarget.dll"");
+                pt1=DummyPoint.ByCoordinates(1,1,1);
+                pt2=DummyPoint.ByCoordinates(2,2,2);
 s11;
 l11;
                 [Imperative]
                 {
-                    def fo1 : int(a1 : int)
-                    {
-                        return = a1 * a1;
-                    }
                     a	=	10;				
                     b	=	20;
-                
                     smallest   =   a	<   b   ?   pt1	:	pt2;
                     largest	=   a	>   b   ?   pt1	:	pt2;
                     s11={smallest.X,smallest.Y,smallest.Z};
@@ -1082,12 +915,11 @@ l11;
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void geometryRangeExpression()
         {
             String code =
             @"
-               import(""ProtoGeometry.dll"");
+               import(""FFITarget.dll"");
                  
                     a=1;
 a12;
@@ -1097,7 +929,7 @@ a12;
                     }
                     [Associative]
                     {
-                    pt=Point.ByCoordinates(a[0],0,0);
+                    pt=DummyPoint.ByCoordinates(a[0],0,0);
                     a12={pt.X,pt.Y,pt.Z};
                     }
         
@@ -1142,46 +974,8 @@ a12;
                                     };
             Assert.IsTrue(ExecuteAndVerify(code, data) == 0); //runs without any error
         }
-        /*  
-          [Test]
-          public void geometryUpdateAcrossMultipleLanguageBlocks()
-          {
-              String code =
-              @"
-                 import(""ProtoGeometry.dll"");
-                 
-                    pt=Point.ByCoordinates(0,0,0);
-                    pt11={pt.X,pt.Y,pt.Z};
-                 
-                    [Associative]
-                    {
-                          pt=Point.ByCoordinates(1,1,1);
-                          pt12={pt.X,pt.Y,pt.Z};
-                       
-                          [Imperative]
-                          {
-                              pt=Point.ByCoordinates(2,2,2);
-                              pt13={pt.X,pt.Y,pt.Z};
-                          }
-                          pt=Point.ByCoordinates(3,3,3);
-                          pt14={pt.X,pt.Y,pt.Z};
-                     }
-        
-              ";
-              object[] a = new object[] { 0.0, 0.0, 0.0 };
-              object[] b = new object[] { 1.0, 1.0, 1.0 };
-              object[] c = new object[] { 2.0, 2.0, 2.0 };
-              object[] d = new object[] { 3.0, 3.0, 3.0 };
-              ValidationData[] data = {   new ValidationData() { ValueName   = "p11", ExpectedValue = a, BlockIndex = 0 },
-                                          new ValidationData() { ValueName = "p12", ExpectedValue = b, BlockIndex = 0 },
-                                          new ValidationData() { ValueName = "p13", ExpectedValue = c, BlockIndex = 0 },
-                                          new ValidationData() { ValueName = "p14", ExpectedValue = d, BlockIndex = 0 }
-                                        };
-              ExecuteAndVerify(code, data);
-          }*/
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void geometryWhileLoop()
         {
             String code =
@@ -1354,41 +1148,6 @@ p11;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DisposeSemanticsAlreadyCovered")]
-        public void DisposeOnFFITest005()
-        {
-            string code = @"
-                            import (""FFITarget.dll"");
-                            class Foo
-                            {
-                                a : A;
-                                b : B;
-                                
-                                constructor Foo(_a : A, _b : B)
-                                {
-                                    a = _a; b = _b;
-                                }   
-                            }
-                            def foo : int()
-                            {
-                                fb = BClass.CreateObject(9);
-                                fa = BClass.CreateObject(8);
-                                ff = Foo.Foo(fa, fb);
-                                return = 3;
-                            }
-                           
-                            dv = DisposeVerify.CreateObject();
-                            m = dv.SetValue(1);
-                            a = foo();
-                            __GC();
-                            b = dv.GetValue();
-                            ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 3);
-            thisTest.Verify("b", 18);
-        }
-
-        [Test]
         public void DisposeOnFFITest002()
         {
             string code = @"
@@ -1445,107 +1204,6 @@ p11;
             // For mark and sweep, the order of object dispose is not defined,
             // so we are not sure if AClass objects or BClass objects will be
             // disposed firstly, hence we can't verify the expected value.
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DisposeSemanticsAlreadyCovered")]
-        public void DisposeOnFFITest007()
-        {
-            string code = @"
-                            import (""FFITarget.dll"");
-                            class Foo
-                            {
-                                b : BClass;
-                                constructor Foo(_b : BClass)
-                                {
-                                    b = _b;
-                                }
-                                def foo : int(_b : BClass)
-                                {
-                                    b = _b;
-                                    return = 0;
-                                }
-                            }
-                            v1;
-                            v2;
-                            dv = DisposeVerify.CreateObject();
-                            [Imperative]
-                            {
-                                m = dv.SetValue(3);
-                                b1 = BClass.CreateObject(10);                            
-                                f = Foo.Foo(b1);
-                                m = f.foo(b1);
-                                b2 = BClass.CreateObject(20);
-                                b3 = BClass.CreateObject(30);
-                                f2 = Foo.Foo(b2);
-                                b2 = null;
-                                v1 = dv.GetValue();
-                                m = f2.foo(b3);
-                                v2 = dv.GetValue();
-                            }
-                            __GC();
-                            v3 = dv.GetValue();
-                            ";
-            thisTest.RunScriptSource(code);
-                // For mark and sweep, it is straight, we only need to focus 
-                // on created objects. So the value = 3 + 10 + 20 + 30 = 63.
-                thisTest.Verify("v3", 63);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DisposeSemanticsAlreadyCovered")]
-        public void DisposeOnFFITest008()
-        {
-            string code = @"
-                            import (""FFITarget.dll"");
-                            class Foo
-                            {
-                                a : AClass;
-                                b : BClass;
-                                constructor Foo(_a : AClass, _b : BClass)
-                                {
-                                    a = _a; b = _b;
-                                }
-                                def foo : int(_a : AClass, _b : BClass)
-                                {
-                                    a = _a; b = _b;
-                                    return = 0;
-                                }
-                            }
-                            v1;
-                            v2;
-                            v3;
-                            dv = DisposeVerify.CreateObject();
-                            [Imperative]
-                            {
-                                m = dv.SetValue(3);
-                                a1 = AClass.CreateObject(3);
-                                b1 = BClass.CreateObject(13);
-                                b2 = BClass.CreateObject(14);
-                                b3 = BClass.CreateObject(15);
-                                a1 = a1;
-                                v1 = dv.GetValue();
-                                a2 = AClass.CreateObject(4);
-                                f = Foo.Foo(a1, b1);
-                                f2 = Foo.Foo(a1, b2);
-                                //f.a = f2.a;
-                                b1 = b3;
-                                b2 = b3;
-                                v2 = dv.GetValue();
-                                f = f2;
-                                v3 = dv.GetValue();
-                            }
-                            __GC();
-                            v4 = dv.GetValue();
-                            ";
-
-            thisTest.RunScriptSource(code);
-            {
-                // For mark and sweep, the last object is a2, se the expected
-                // value = 4. But it is very fragile because the order of
-                // disposing is not defined. 
-                thisTest.Verify("v4", 4);
-            }
         }
 
         [Test]

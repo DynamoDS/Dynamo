@@ -9,6 +9,7 @@ using Dynamo.Library;
 
 using NUnit.Framework;
 using ProtoCore;
+using Dynamo.Extensions;
 
 namespace Dynamo.Tests
 {
@@ -170,5 +171,21 @@ namespace Dynamo.Tests
             Assert.AreEqual(0.2, weights.Last());
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void EnumDescriptionTest()
+        {
+            Assert.AreEqual(Dynamo.Properties.Resources.HeaderCreate, LibraryHeaders.TestCreate.GetDescription());
+            Assert.AreEqual(Dynamo.Properties.Resources.HeaderAction, LibraryHeaders.TestAction.GetDescription());
+            Assert.AreEqual(LibraryHeaders.TestQuery.ToString(), LibraryHeaders.TestQuery.GetDescription());
+        }
+
+    }
+
+    enum LibraryHeaders
+    {
+        [EnumDescription("HeaderCreate", typeof(Dynamo.Properties.Resources))] TestCreate,
+        [EnumDescription("HeaderAction", typeof(Dynamo.Properties.Resources))] TestAction,
+        TestQuery,
     }
 }

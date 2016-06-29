@@ -1,14 +1,17 @@
-<dynWorkspace X="0" Y="0">
-  <dynElements>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="27f2198c-fc10-489d-893e-be374e6d9933" nickname="Number" x="185.654221627368" y="141.099617572919" lacing="Disabled">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <CoreNodeModels.Input.DoubleInput guid="27f2198c-fc10-489d-893e-be374e6d9933" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="185.654221627368" y="141.099617572919" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="1.34" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynRound type="Dynamo.Nodes.dynRound" guid="d4567137-b0e1-4835-a21b-7cb5825676b0" nickname="Round" x="324.616540363758" y="133.462113357808" lacing="Longest" />
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="430e086e-8cf0-4e89-abba-69dc1cd94058" nickname="Watch" x="471.767005445327" y="134.461767465995" lacing="Disabled" />
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Connectors.dynConnectorModel start="27f2198c-fc10-489d-893e-be374e6d9933" start_index="0" end="d4567137-b0e1-4835-a21b-7cb5825676b0" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="d4567137-b0e1-4835-a21b-7cb5825676b0" start_index="0" end="430e086e-8cf0-4e89-abba-69dc1cd94058" end_index="0" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+    </CoreNodeModels.Input.DoubleInput>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="d4567137-b0e1-4835-a21b-7cb5825676b0" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Math.Round" x="324.616540363758" y="133.462113357808" isVisible="true" isUpstreamVisible="true" lacing="Longest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Math.Round@double" />
+    <CoreNodeModels.Watch guid="430e086e-8cf0-4e89-abba-69dc1cd94058" type="CoreNodeModels.Watch" nickname="Watch" x="471.767005445327" y="134.461767465995" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="27f2198c-fc10-489d-893e-be374e6d9933" start_index="0" end="d4567137-b0e1-4835-a21b-7cb5825676b0" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="d4567137-b0e1-4835-a21b-7cb5825676b0" start_index="0" end="430e086e-8cf0-4e89-abba-69dc1cd94058" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

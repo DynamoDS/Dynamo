@@ -5,13 +5,37 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Graph.Connectors
 {
-    public enum ConnectorType { BEZIER, POLYLINE };
+    /// <summary>
+    /// Returns the Type of connector.
+    /// </summary>
+    public enum ConnectorType
+    {
+        /// <summary>
+        /// Displays connectors as bezier curves
+        /// </summary>
+        BEZIER,
 
+        /// <summary>
+        /// Displays connectors as set of connected straight lines
+        /// </summary>
+        POLYLINE
+    };
+
+    /// <summary>
+    /// Represents a connector between nodes. Connector can be a bezier or polyline <see cref="ConnectorType"/>.
+    /// </summary>
     public class ConnectorModel : ModelBase
     {
         #region properties
 
+        /// <summary>
+        /// Returns start port model.
+        /// </summary>
         public PortModel Start { get; private set; }
+
+        /// <summary>
+        /// Returns end port model.
+        /// </summary>
         public PortModel End { get; private set; }
 
         #endregion 
@@ -22,11 +46,11 @@ namespace Dynamo.Graph.Connectors
         /// Factory method to create a connector.  Checks to make sure that the start and end ports are valid, 
         /// otherwise returns null.
         /// </summary>
-        /// <param name="start">The port where the connector starts</param>
-        /// <param name="end">The port where the connector ends</param>
-        /// <param name="startIndex"></param>
-        /// <param name="endIndex"></param>
-        /// <param name="guid"></param>
+        /// <param name="start">The node having port where the connector starts</param>
+        /// <param name="end">The node having port where the connector ends</param>
+        /// <param name="startIndex">Port index in <paramref name="start"/></param>
+        /// <param name="endIndex">Port index in <paramref name="end"/></param>
+        /// <param name="guid">Identifier of the new connector</param>
         /// <returns>The valid connector model or null if the connector is invalid</returns>
         internal static ConnectorModel Make(
             NodeModel start, NodeModel end, int startIndex, int endIndex, Guid? guid = null)
@@ -57,6 +81,9 @@ namespace Dynamo.Graph.Connectors
 
         #region operators
 
+        /// <summary>
+        /// Overload for EQUAL operator.
+        /// </summary>
         public static bool operator ==(ConnectorModel lhs, ConnectorModel rhs)
         {
             if (ReferenceEquals(lhs, rhs))
@@ -71,6 +98,9 @@ namespace Dynamo.Graph.Connectors
                 && (lhs.End.Index == rhs.End.Index));
         }
 
+        /// <summary>
+        /// Overload for NOT EQUAL operator.
+        /// </summary>
         public static bool operator !=(ConnectorModel lhs, ConnectorModel rhs)
         {
             return !(lhs == rhs);
@@ -173,6 +203,9 @@ namespace Dynamo.Graph.Connectors
 
         #endregion
 
+        /// <summary>
+        /// Occurs when deleting connector.
+        /// </summary>
         public event Action Deleted;
         protected virtual void OnDeleted()
         {

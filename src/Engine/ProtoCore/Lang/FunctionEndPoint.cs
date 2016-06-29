@@ -38,28 +38,6 @@ namespace ProtoCore
         // In which block it is defined?
         public int BlockScope { get; set; }
 
-
-        /// <summary>
-        /// Tests whether this end point matches the type of the passed arguments
-        /// </summary>
-        /// <param name="formalParameters">The proposed parameters </param>
-        /// <returns></returns>
-        public bool DoesTypeMatch(List<StackValue> formalParameters)
-        {
-            if (formalParameters.Count != FormalParams.Length)
-                return false;
-
-            for (int i = 0; i < FormalParams.Length; i++)
-            {
-                if (FormalParams[i].IsIndexable && formalParameters[i].IsArray)
-                    continue;
-
-                if (FormalParams[i].UID != formalParameters[i].metaData.type)
-                    return false;
-            }
-            return true;
-        }
-
         public bool DoesTypeDeepMatch(List<StackValue> formalParameters, RuntimeCore runtimeCore)
         {
             if (formalParameters.Count != FormalParams.Length)

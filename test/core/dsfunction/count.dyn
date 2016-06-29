@@ -1,14 +1,15 @@
-<Workspace Version="0.6.3.21110" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="007b5942-12b0-4cea-aa05-b43531b6ccb8" nickname="Count" x="215" y="241.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <Dynamo.DSEngine.FunctionItem Assembly="" Category="Builtin Functions" ClassName="" Name="Count" DisplayName="Count" Type="GenericFunction" Parameters="array" ReturnKeys="" />
-    </Dynamo.Nodes.DSFunction>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="7587d6cf-1ed7-4ee4-857e-d20d35a32463" nickname="Number" x="70" y="220.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="007b5942-12b0-4cea-aa05-b43531b6ccb8" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Count" x="215" y="241.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="BuiltIn" function="Count@var[]..[]" />
+    <CoreNodeModels.Input.DoubleInput guid="7587d6cf-1ed7-4ee4-857e-d20d35a32463" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="70" y="220.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="1..10" />
-    </Dynamo.Nodes.DoubleInput>
+    </CoreNodeModels.Input.DoubleInput>
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="7587d6cf-1ed7-4ee4-857e-d20d35a32463" start_index="0" end="007b5942-12b0-4cea-aa05-b43531b6ccb8" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="7587d6cf-1ed7-4ee4-857e-d20d35a32463" start_index="0" end="007b5942-12b0-4cea-aa05-b43531b6ccb8" end_index="0" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

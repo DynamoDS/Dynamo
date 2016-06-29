@@ -1686,7 +1686,7 @@ namespace ProtoCore.AST.AssociativeAST
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
 
         /// <summary>
-        /// Gets/Sets description for the method.
+        /// Returns/Sets description for the method.
         /// </summary>
         public string Description { get; set; }
 
@@ -1721,7 +1721,6 @@ namespace ProtoCore.AST.AssociativeAST
     public class ConstructorDefinitionNode : AssociativeNode
     {
         public int LocalVariableCount { get; set; }
-        public List<AssociativeNode> Attributes { get; set; }
         public ArgumentSignatureNode Signature { get; set; }
         public Type ReturnType { get; set; }
         public CodeBlockNode FunctionBody { get; set; }
@@ -1739,10 +1738,6 @@ namespace ProtoCore.AST.AssociativeAST
             : base(rhs)
         {
             LocalVariableCount = rhs.LocalVariableCount;
-
-            Attributes = new List<AssociativeNode>();
-            if (null != rhs.Attributes)
-                Attributes.AddRange(rhs.Attributes.Select(NodeUtils.Clone));
 
             if (null != rhs.Signature)
                 Signature = NodeUtils.Clone(rhs.Signature) as ArgumentSignatureNode;
@@ -1796,8 +1791,7 @@ namespace ProtoCore.AST.AssociativeAST
             return LocalVariableCount == otherNode.LocalVariableCount &&
                    EqualityComparer<ArgumentSignatureNode>.Default.Equals(Signature, otherNode.Signature) &&
                    ReturnType.Equals(otherNode.ReturnType) &&
-                   EqualityComparer<CodeBlockNode>.Default.Equals(FunctionBody, otherNode.FunctionBody) &&
-                   Attributes.SequenceEqual(otherNode.Attributes); 
+                   EqualityComparer<CodeBlockNode>.Default.Equals(FunctionBody, otherNode.FunctionBody); 
         }
 
         public override int GetHashCode()
@@ -1808,11 +1802,8 @@ namespace ProtoCore.AST.AssociativeAST
             var returnTypeHashCode = ReturnType.GetHashCode();
             var functionBodyHashCode =
                 (FunctionBody == null ? base.GetHashCode() : FunctionBody.GetHashCode());
-            var attributesHashCode =
-                (Attributes == null ? base.GetHashCode() : Attributes.GetHashCode());
 
-            return localVarsHashCode ^ signatureHashCode ^
-                returnTypeHashCode ^ functionBodyHashCode ^ attributesHashCode;
+            return localVarsHashCode ^ signatureHashCode ^ returnTypeHashCode ^ functionBodyHashCode;
         }
         public override AstKind Kind
         {
@@ -1839,11 +1830,9 @@ namespace ProtoCore.AST.AssociativeAST
         public Type ReturnType { get; set; }
         public List<AssociativeNode> Attributes { get; set; }
         public ArgumentSignatureNode Signature { get; set; }
-        public AssociativeNode Pattern { get; set; }
         public bool IsExternLib { get; set; }
         public bool IsBuiltIn { get; set; }
         public BuiltInMethods.MethodID BuiltInMethodId { get; set; }
-        public bool IsDNI { get; set; }
         public string ExternLibName { get; set; }
         public CompilerDefinitions.AccessModifier Access { get; set; }
         public bool IsStatic { get; set; }
@@ -1864,8 +1853,6 @@ namespace ProtoCore.AST.AssociativeAST
 
             IsBuiltIn = false;
             Signature = new ArgumentSignatureNode();
-
-            Attributes = new List<AssociativeNode>();
         }
 
         public FunctionDefinitionNode(FunctionDefinitionNode rhs)
@@ -1877,12 +1864,9 @@ namespace ProtoCore.AST.AssociativeAST
 
             ReturnType = rhs.ReturnType;
 
-            Attributes = rhs.Attributes;
             Signature = new ArgumentSignatureNode(rhs.Signature);
-            Pattern = rhs.Pattern;
             IsExternLib = rhs.IsExternLib;
             BuiltInMethodId = rhs.BuiltInMethodId;
-            IsDNI = rhs.IsDNI;
             ExternLibName = rhs.ExternLibName;
             Access = rhs.Access;
             IsStatic = rhs.IsStatic;
@@ -1903,7 +1887,6 @@ namespace ProtoCore.AST.AssociativeAST
 
             bool equalSignature = EqualityComparer<ArgumentSignatureNode>.Default.Equals(Signature, otherNode.Signature) 
                 && ReturnType.Equals(otherNode.ReturnType) 
-                && Attributes.SequenceEqual(otherNode.Attributes)
                 && Name.Equals(otherNode.Name);
 
             bool equalBody = FunctionBody.Equals(otherNode.FunctionBody);
@@ -1916,11 +1899,8 @@ namespace ProtoCore.AST.AssociativeAST
             var signatureHashCode =
                 (Signature == null ? base.GetHashCode() : Signature.GetHashCode());
             var returnTypeHashCode = ReturnType.GetHashCode();
-            var attributesHashCode =
-                (Attributes == null ? base.GetHashCode() : Attributes.GetHashCode());
 
-            return  signatureHashCode ^
-                returnTypeHashCode ^ attributesHashCode;
+            return  signatureHashCode ^ returnTypeHashCode;
         }
 
         public override string ToString()

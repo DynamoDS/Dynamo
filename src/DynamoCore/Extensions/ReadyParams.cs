@@ -17,12 +17,20 @@ namespace Dynamo.Extensions
     {
         private readonly DynamoModel dynamoModel;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReadyParams"/> class.
+        /// </summary>
+        /// <param name="dynamoM">Dynamo model.</param>
         internal ReadyParams(DynamoModel dynamoM)
         {
             dynamoModel = dynamoM;
             dynamoModel.PropertyChanged += OnDynamoModelPropertyChanged;
+            dynamoM.Logger.NotificationLogged += OnNotificationRecieved;
         }
 
+        /// <summary>
+        /// Returns list of workspaces
+        /// </summary>
         public IEnumerable<IWorkspaceModel> WorkspaceModels
         {
             get
@@ -31,6 +39,9 @@ namespace Dynamo.Extensions
             }
         }
 
+        /// <summary>
+        /// Returns current workspace
+        /// </summary>
         public IWorkspaceModel CurrentWorkspaceModel
         {
             get
@@ -48,6 +59,20 @@ namespace Dynamo.Extensions
             get { return commandExecutive ?? (commandExecutive = new ExtensionCommandExecutive(dynamoModel)); }
         }
 
+        /// <summary>
+        /// Event that is raised when the Dynamo Logger logs a notification.
+        /// This event passes the notificationMessage to any subscribers
+        /// </summary>
+        public event Action<Logging.NotificationMessage> NotificationRecieved;
+        private void OnNotificationRecieved(Logging.NotificationMessage notification)
+        {
+            if (NotificationRecieved != null)
+                NotificationRecieved(notification);
+        }
+
+        /// <summary>
+        /// Occurs when current workspace is changed
+        /// </summary>
         public event Action<IWorkspaceModel> CurrentWorkspaceChanged;
         private void OnCurrentWorkspaceModelChanged(IWorkspaceModel ws)
         {

@@ -1567,33 +1567,6 @@ d1 = Average(d);";
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
-        [Category("Design Issue")]
-        public void T058_Average_DataType_02()
-        {
-            string code = @"
-import(""ProtoGeometry.dll"");
-//WCS = CoordinateSystem.Identity();
-pt1=Point.ByCoordinates(1,1,1);
-a = {true};
-b = {{1},2,3};
-c = {""a"",0.2,0.3,1};
-d = {pt1, {}, 1};
-a1 = Average(a);
-b1 = Average(b);
-c1 = Average(c);
-d1 = Average(d);";
-
-            string err = "MAGN-4103 Type coercion issue from conversion of bool, null, empty arrays to numbers";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
-            //Assert.Fail("11467164 - Sprint 25 - Rev 3125: Built-in function: Average() should ignore the elements which can't be converted to int/double in the array");
-            thisTest.Verify("a1", 0.0, 0);
-            thisTest.Verify("b1", 2.0, 0);
-            thisTest.Verify("c1", 0.5, 0);
-            thisTest.Verify("d1", 1.0, 0);//significant digits
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T059_Defect_Flatten_RangeExpression()
         {
@@ -2320,14 +2293,14 @@ sort = Sort(sorterFunction, c);
             String code =
 @"
 sort;
-[Associative]
-{
 a = { 3, 1, 2 };
 def sorterFunction(a : double, b : int)
 {
     return = a > b ? 1 : -1;
 }
-sort = Sort(sorterFunction, a);
+[Associative]
+{
+    sort = Sort(sorterFunction, a);
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2477,6 +2450,10 @@ sort = Sort(sorterFunction,a1);
             @"
                 sort;
                 a1;
+                def sorterFunction(a : double, b : int)
+                {
+                    return = a > b ? 1 : -1;
+                }
                 [Imperative]
                 {
                 [Associative]
@@ -2487,10 +2464,7 @@ sort = Sort(sorterFunction,a1);
                 {
                 a1 = { 3, 1, 2 };
                 // c = Flatten(a1);
-                def sorterFunction(a : double, b : int)
-                {
-                    return = a > b ? 1 : -1;
-                }
+               
                 sort = Sort(sorterFunction, a1);
                 }
                 }
@@ -2533,7 +2507,6 @@ sort = Sort(sorterFunction,a1);
                 sort;
                 a1;
                 a1 = {  4, 2, 3 ,2, 5, 1 , 8, 4, 6  };
-                // c = Flatten(a1);
                 def sorterFunction(a : int, b : int)
                 {
                     return = a > b ? 1 : -1;
@@ -2543,7 +2516,7 @@ sort = Sort(sorterFunction,a1);
                     sort = Sort(sorterFunction, a);
                     return = sort;
                 }
-                d = foo(a1);
+                sort = foo(a1);
             ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("sort", new object[] { 1, 2, 2, 3, 4, 4, 5, 6, 8 });
@@ -4043,9 +4016,9 @@ x8 = Flatten({null}) ;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x1", null);
-            thisTest.Verify("x2", null);
-            thisTest.Verify("x3", null);
-            thisTest.Verify("x4", null);
+            thisTest.Verify("x2", 3);
+            thisTest.Verify("x3", 3.5);
+            thisTest.Verify("x4", true);
             thisTest.Verify("x6", null);
             thisTest.Verify("x8", new Object[] { null });
         }
@@ -4071,7 +4044,7 @@ test =
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("test", new Object[] { null, null, null, null, null, new Object[] { null } });
+            thisTest.Verify("test", new Object[] { null, 3, 3.5, true, null, new Object[] { null } });
         }
 
         [Test]
@@ -4097,7 +4070,7 @@ def foo ()
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("test", new Object[] { null, null, null, null, null, new Object[] { null } });
+            thisTest.Verify("test", new Object[] { null, 3, 3.5, true, null, new Object[] { null } });
         }
 
         [Test]

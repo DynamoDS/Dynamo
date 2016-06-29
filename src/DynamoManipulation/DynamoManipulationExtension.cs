@@ -78,7 +78,7 @@ namespace Dynamo.Manipulation
         }
 
         /// <summary>
-        /// Get RunSettings object for a given Workspace Model. 
+        /// Returns RunSettings object for a given Workspace Model. 
         /// </summary>
         /// <param name="wsm">IWorkspaceModel object</param>
         /// <returns>RunSettings</returns>

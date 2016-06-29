@@ -1,13 +1,16 @@
-<Workspace X="-471.285266530855" Y="-245.910669467787" zoom="0.799999999999999" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="-471.285266530855" Y="-245.910669467787" zoom="0.799999999999999" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.LaceLongest type="Dynamo.Nodes.LaceLongest" guid="25daa241-d8a4-4e74-aec1-6068358babf7" nickname="Lace Longest" x="777.461538461538" y="372.481538461538" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2" />
-    <Dynamo.Nodes.Addition type="Dynamo.Nodes.Addition" guid="3900ff5c-ea75-4ac5-9140-0ef3822181c0" nickname="Add" x="552.75" y="296.278888888889" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="51d73f51-da1d-4df8-a224-20f87b5f76c5" nickname="Empty List" x="514.065589639119" y="454.56205343676" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <CoreNodeModels.HigherOrder.LaceLongest guid="25daa241-d8a4-4e74-aec1-6068358babf7" type="CoreNodeModels.HigherOrder.LaceLongest" nickname="List.Longest" x="777.461538461538" y="372.481538461538" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" inputcount="3" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="3900ff5c-ea75-4ac5-9140-0ef3822181c0" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="+" x="552.75" y="296.278888888889" isVisible="true" isUpstreamVisible="true" lacing="Longest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="Operators" function="+@var[]..[],var[]..[]" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="51d73f51-da1d-4df8-a224-20f87b5f76c5" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.Empty" x="514.065589639119" y="454.56205343676" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.List.Empty" />
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="3900ff5c-ea75-4ac5-9140-0ef3822181c0" start_index="0" end="25daa241-d8a4-4e74-aec1-6068358babf7" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="51d73f51-da1d-4df8-a224-20f87b5f76c5" start_index="0" end="25daa241-d8a4-4e74-aec1-6068358babf7" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="51d73f51-da1d-4df8-a224-20f87b5f76c5" start_index="0" end="25daa241-d8a4-4e74-aec1-6068358babf7" end_index="2" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="3900ff5c-ea75-4ac5-9140-0ef3822181c0" start_index="0" end="25daa241-d8a4-4e74-aec1-6068358babf7" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="51d73f51-da1d-4df8-a224-20f87b5f76c5" start_index="0" end="25daa241-d8a4-4e74-aec1-6068358babf7" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="51d73f51-da1d-4df8-a224-20f87b5f76c5" start_index="0" end="25daa241-d8a4-4e74-aec1-6068358babf7" end_index="2" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>
