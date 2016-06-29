@@ -3022,7 +3022,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} needs to uninstall {1} to continue but it contains binaries already loaded into Dynamo.  It&apos;s now marked for removal, but you&apos;ll need to first restart {0}..
+        ///   Looks up a localized string similar to {2} has dependencies. To install {2}, {0} needs to first uninstall the following dependent packages: {1}. Restart {0} to complete the uninstall, then try and download {2} again.
+        ///
+        ///Uninstall the following dependent packages: {1}?.
         /// </summary>
         public static string MessageUninstallToContinue2 {
             get {
