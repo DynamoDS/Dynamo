@@ -1233,5 +1233,27 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\githubissue_6729.dyn");
             AssertPreviewValue("a1a9e8a5-a791-4924-82e1-0dc6dd2215ed", new int[] { 4, 5 });
         }
+
+        [Test]
+        //String.split yields different results with linebreak separator
+        public void Issue3446()
+        {   
+            
+            RunModel(@"core\dsevaluation\githubissue_3446.dyn");
+
+            // Test CBN '"\n";' value
+            AssertPreviewValue("07658815-d706-42b4-bb29-b0a65986c58d", new int[] { 1, 2, 3, 4, 5, 6 });
+
+            // Test String Newline value
+            AssertPreviewValue("6713ee10-a5e7-4049-b514-4388c7e09105", new int[] { 1, 2, 3, 4, 5, 6 });
+            AssertSamePreviewValues("07658815-d706-42b4-bb29-b0a65986c58d", "6713ee10-a5e7-4049-b514-4388c7e09105");
+
+            // Test case when CBN has a string - using both CBN and Strings as separators
+            AssertPreviewValue("803d08aa-ca57-41ba-85a9-50fc47104427", new int[] { 1, 2, 3, 4, 5, 6 });
+            AssertSamePreviewValues("07658815-d706-42b4-bb29-b0a65986c58d", "803d08aa-ca57-41ba-85a9-50fc47104427");
+
+            AssertPreviewValue("39447de2-f20c-4482-8f08-50c5001ed971", new int[] { 1, 2, 3, 4, 5, 6 });
+            AssertSamePreviewValues("07658815-d706-42b4-bb29-b0a65986c58d", "39447de2-f20c-4482-8f08-50c5001ed971");
+        }
     }
 }

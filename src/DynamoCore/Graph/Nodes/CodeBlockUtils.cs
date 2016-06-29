@@ -158,6 +158,9 @@ namespace Dynamo.Graph.Nodes
         /// 
         internal static string FormatUserText(string inputCode)
         {
+
+            // inputCode;
+
             if (inputCode == null)
                 return string.Empty;
 
