@@ -1210,7 +1210,7 @@ namespace Dynamo.Tests
             // no crash
             var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\10015.dyn");
             RunModel(dynFilePath);
-            AssertPreviewValue("deb457c6-1b4b-4703-9476-db312b34a8e2", null);
+            AssertPreviewValue("deb457c6-1b4b-4703-9476-db312b34a8e2", new object[] { null, null, null, null });
         }
     }
 
