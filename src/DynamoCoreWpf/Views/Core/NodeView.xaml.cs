@@ -572,7 +572,7 @@ namespace Dynamo.Controls
             if (parent == null) return;
             NoteViewModel.StaticZIndex = index + 1;
 
-            foreach (var child in parent.ChildrenOfType<NoteView>())
+            foreach (var child in parent.ChildrenOfType<NodeView>())
             {
                 child.ViewModel.ZIndex = NoteViewModel.StaticZIndex;
             }
