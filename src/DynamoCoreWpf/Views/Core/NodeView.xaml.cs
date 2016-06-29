@@ -19,6 +19,7 @@ using System.Windows.Threading;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 using Dynamo.UI.Controls;
+using Dynamo.Nodes;
 
 namespace Dynamo.Controls
 {
@@ -565,7 +566,16 @@ namespace Dynamo.Controls
             }
 
             var index = ++NodeViewModel.StaticZIndex;
-            ++NoteViewModel.StaticZIndex; // increment the NoteViewModel ZIndex - how will the current Notes be updated?
+
+            // increment all Notes to ensure that they are always above any Node
+            var parent = TemplatedParent as ContentPresenter;
+            if (parent == null) return;
+            NoteViewModel.StaticZIndex = index + 1;
+
+            foreach (var child in parent.ChildrenOfType<NoteView>())
+            {
+                child.ViewModel.ZIndex = NoteViewModel.StaticZIndex;
+            }
 
             oldZIndex = nodeWasClicked ? index : ViewModel.ZIndex;
             ViewModel.ZIndex = index;
