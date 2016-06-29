@@ -45,14 +45,9 @@ namespace Dynamo.Logging
     public interface IAnalyticsClient
     {
         /// <summary>
-        /// Get unique user id.
+        /// Gets session object for this client
         /// </summary>
-        string UserId { get; }
-
-        /// <summary>
-        /// Gets unique session id.
-        /// </summary>
-        string SessionId { get; }
+        IAnalyticsSession Session { get; }
 
         /// <summary>
         /// Checks if analytics reporting is ON.
@@ -141,5 +136,33 @@ namespace Dynamo.Logging
         /// <param name="tag">Usage tag</param>
         /// <param name="data">Usage data</param>
         void LogPiiInfo(string tag, string data);
+    }
+
+    /// <summary>
+    /// Defines analytics session interface.
+    /// </summary>
+    public interface IAnalyticsSession : IDisposable
+    {
+        /// <summary>
+        /// Get unique user id.
+        /// </summary>
+        string UserId { get; }
+
+        /// <summary>
+        /// Gets unique session id.
+        /// </summary>
+        string SessionId { get; }
+        
+        /// <summary>
+        /// Starts the session for the given DynamoModel. 
+        /// The Session is closed when Dispose() is called.
+        /// </summary>
+        /// <param name="model">DynamoModel</param>
+        void Start(DynamoModel model);
+
+        /// <summary>
+        /// Returns a logger to record usage.
+        /// </summary>
+        ILogger Logger { get; }
     }
 }

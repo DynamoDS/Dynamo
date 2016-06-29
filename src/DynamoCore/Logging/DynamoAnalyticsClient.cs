@@ -9,6 +9,91 @@ using Microsoft.Win32;
 
 namespace Dynamo.Logging
 {
+    class DynamoAnalyticsSession : IAnalyticsSession
+    {
+        private Heartbeat heartbeat;
+        private UsageLog logger;
+
+#if DEBUG
+        private const string ANALYTICS_PROPERTY = "UA-78361914-1";
+#else
+        private const string ANALYTICS_PROPERTY = "UA-52186525-1";
+#endif
+
+        public DynamoAnalyticsSession()
+        {
+            UserId = GetUserID();
+            SessionId = Guid.NewGuid().ToString();
+        }
+
+        public void Start(DynamoModel model)
+        {
+            //Whether enabled or not, we still record the startup.
+            Service.Instance.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
+
+            StabilityCookie.Startup();
+
+            heartbeat = Heartbeat.GetInstance(model);
+
+            logger = new UsageLog("Dynamo", UserId, SessionId);
+        }
+
+        public void Dispose()
+        {
+            //Are we shutting down clean if so write 'nice shutdown' cookie
+            if (DynamoModel.IsCrashing)
+                StabilityCookie.WriteCrashingShutdown();
+            else
+                StabilityCookie.WriteCleanShutdown();
+
+            Service.ShutDown();
+
+            if (null != heartbeat)
+                Heartbeat.DestroyInstance();
+            heartbeat = null;
+
+            if (null != logger)
+                logger.Dispose();
+            logger = null;
+        }
+
+        public ILogger Logger
+        {
+            get { return logger; }
+        }
+
+        public string UserId { get; private set; }
+
+        public string SessionId { get; private set; }
+
+        public static String GetUserID()
+        {
+            // The name of the key must include a valid root.
+            const string userRoot = "HKEY_CURRENT_USER";
+            const string subkey = "Software\\DynamoUXG";
+            const string keyName = userRoot + "\\" + subkey;
+
+            // An int value can be stored without specifying the
+            // registry data type, but long values will be stored
+            // as strings unless you specify the type. Note that
+            // the int is stored in the default name/value
+            // pair.
+
+            var tryGetValue = Registry.GetValue(keyName, "InstrumentationGUID", null) as string;
+
+            if (tryGetValue != null)
+            {
+                Debug.WriteLine("User id found: " + tryGetValue);
+                return tryGetValue;
+            }
+
+            String newGUID = Guid.NewGuid().ToString();
+            Registry.SetValue(keyName, "InstrumentationGUID", newGUID);
+            Debug.WriteLine("New User id: " + newGUID);
+            return newGUID;
+        }
+    }
+
     /// <summary>
     /// Dynamo specific implementation of IAnalyticsClient
     /// </summary>
@@ -23,25 +108,10 @@ namespace Dynamo.Logging
         }
 
         private IPreferences preferences = null;
-        private Heartbeat heartbeat = null;
-        private Log piiLogger = null;
-
-#if DEBUG
-        private const string ANALYTICS_PROPERTY = "UA-78361914-1";
-#else
-        private const string ANALYTICS_PROPERTY = "UA-52186525-1";
-#endif
+        
         public static IDisposable Disposable { get { return new Dummy(); } }
 
-        public DynamoAnalyticsClient()
-        {
-            UserId = GetUserID();
-            SessionId = Guid.NewGuid().ToString();
-        }
-
-        public string UserId { get; private set; }
-
-        public string SessionId { get; private set; }
+        public virtual IAnalyticsSession Session { get; private set; }
 
         public bool ReportingAnalytics
         {
@@ -53,34 +123,32 @@ namespace Dynamo.Logging
             get { return preferences != null && preferences.IsUsageReportingApproved; }
         }
 
+        /// <summary>
+        /// Starts the client when DynamoModel is created. This method initializes
+        /// the Analytics service and application life cycle start is tracked.
+        /// </summary>
+        /// <param name="model"></param>
         public void Start(DynamoModel dynamoModel)
         {
-            //Whether enabled or not, we still record the startup.
-            Service.Instance.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
-            var appversion = dynamoModel.AppVersion;
+            //Set the preferences, so that we can get live value of analytics 
+            //reporting approved status.
             preferences = dynamoModel.PreferenceSettings;
 
-            //If not enabled set the idle time as infinite so idle state is not recorded.
+            if (Session == null) Session = new DynamoAnalyticsSession();
+
+            //Setup Analytics service, StabilityCookie, Heartbeat and UsageLog.
+            Session.Start(dynamoModel);
+
+            //Dynamo app version.
+            var appversion = dynamoModel.AppVersion;
+
+            //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
             Service.StartUp(new ProductInfo() { Name = "Dynamo", VersionString = appversion },
-                new UserInfo(UserId), ReportingAnalytics ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
-
-            StabilityCookie.Startup();
-
-            heartbeat = Heartbeat.GetInstance(dynamoModel);
-
-            piiLogger = new Log("Dynamo", UserId, SessionId);
+                new UserInfo(Session.UserId), ReportingAnalytics ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
         }
 
         public void ShutDown()
         {
-            //Are we shutting down clean if so write 'nice shutdown' cookie
-            if (DynamoModel.IsCrashing)
-                StabilityCookie.WriteCrashingShutdown();
-            else
-                StabilityCookie.WriteCleanShutdown();
-
-            Service.ShutDown();
-
             Dispose();
         }
 
@@ -165,45 +233,16 @@ namespace Dynamo.Logging
         {
             if (!ReportingUsage) return;
 
-            piiLogger.Info(tag, data);
-        }
-
-        public static String GetUserID()
-        {
-            // The name of the key must include a valid root.
-            const string userRoot = "HKEY_CURRENT_USER";
-            const string subkey = "Software\\DynamoUXG";
-            const string keyName = userRoot + "\\" + subkey;
-
-            // An int value can be stored without specifying the
-            // registry data type, but long values will be stored
-            // as strings unless you specify the type. Note that
-            // the int is stored in the default name/value
-            // pair.
-
-            var tryGetValue = Registry.GetValue(keyName, "InstrumentationGUID", null) as string;
-
-            if (tryGetValue != null)
+            if (Session != null && Session.Logger != null)
             {
-                Debug.WriteLine("User id found: " + tryGetValue);
-                return tryGetValue;
+                Session.Logger.Log(tag, data);
             }
-
-            String newGUID = Guid.NewGuid().ToString();
-            Registry.SetValue(keyName, "InstrumentationGUID", newGUID);
-            Debug.WriteLine("New User id: " + newGUID);
-            return newGUID;
         }
 
         public void Dispose()
         {
-            if (null != heartbeat)
-                Heartbeat.DestroyInstance();
-            heartbeat = null;
-
-            if (null != piiLogger)
-                piiLogger.Dispose();
-            piiLogger = null;
+            Session.Dispose();
+            Session = null;
         }
     }
 }

@@ -8,8 +8,8 @@ namespace Dynamo.Logging
     /// </summary>
     public class Analytics
     {
-        private static IAnalyticsClient client = new DynamoAnalyticsClient();
-        private static bool enabled = true;
+        protected static IAnalyticsClient client = new DynamoAnalyticsClient();
+        protected static bool enabled = true;
 
         /// <summary>
         /// Starts the client when DynamoModel is created. This method initializes
