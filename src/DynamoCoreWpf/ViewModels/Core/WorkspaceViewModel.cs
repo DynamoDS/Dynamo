@@ -936,18 +936,19 @@ namespace Dynamo.ViewModels
                 maxY = GetSelectionMaxY();
             }
             else
-            {   // no selection, fitview all nodes and notes
-                if (!_nodes.Any()) return;
+            {   
+                // no selection, fitview all nodes and notes
+                var nodes = _nodes.Select(x => x.NodeModel);
+                var notes = _notes.Select(x => x.Model);
+                var models = nodes.Concat<ModelBase>(notes);
 
-                List<NodeModel> nodes = _nodes.Select(x => x.NodeModel).ToList();
-                List<NoteModel> notes = _notes.Select(x => x.Model).ToList();
-                List<ModelBase> models = nodes.Concat<ModelBase>(notes).ToList();
-                
                 // initialize to the first model (either note or node) on the list 
-                minX = models[0].X;
-                maxX = models[0].X;
-                minY = models[0].Y;
-                maxY = models[0].Y;
+
+                var firstModel = models.First();
+                minX = firstModel.X;
+                maxX = firstModel.X;
+                minY = firstModel.Y;
+                maxY = firstModel.Y;
 
                 foreach (var model in models)
                 {
