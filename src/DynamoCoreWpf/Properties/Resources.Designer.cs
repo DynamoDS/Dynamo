@@ -2823,6 +2823,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error Opening File.
+        /// </summary>
+        public static string MessageErrorOpeningFileGeneral {
+            get {
+                return ResourceManager.GetString("MessageErrorOpeningFileGeneral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to add file: {0}.
         /// </summary>
         public static string MessageFailedToAddFile {

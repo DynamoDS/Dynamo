@@ -1167,20 +1167,23 @@ namespace Dynamo.ViewModels
             {
                 if (!DynamoModel.IsTestMode)
                 {
+                    string CommandString = String.Format(Resources.DynamoViewFileMenuOpen);
+                    string ErrorMsgString;
                     // Catch all the IO exceptions and file access here. The message provided by .Net is clear enough to indicate the problem in this case.
-                    if (e is IOException || e is System.UnauthorizedAccessException)
+                    if (e is IOException || e is UnauthorizedAccessException)
                     {
-                        System.Windows.MessageBox.Show(String.Format(e.Message, xmlFilePath));
+                        ErrorMsgString = String.Format(e.Message, xmlFilePath);
                     }
                     else if (e is System.Xml.XmlException)
                     {
-                        System.Windows.MessageBox.Show(String.Format(Resources.MessageFailedToOpenCorruptedFile, xmlFilePath));
+                        ErrorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, xmlFilePath);
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show(String.Format(Resources.MessageUnkownErrorOpeningFile, xmlFilePath));
+                        ErrorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile);
                     }
-                    model.Logger.Log(e);
+                    System.Windows.MessageBox.Show(ErrorMsgString);
+                    model.Logger.LogNotification(CommandString, CommandString, ErrorMsgString, e.ToString());
                 }
                 else
                 {
@@ -1217,7 +1220,7 @@ namespace Dynamo.ViewModels
                 Title = string.Format(Resources.OpenDynamoDefinitionDialogTitle,BrandingResourceProvider.ProductName)
             };
 
-            // if you've got the current space path, use it as the inital dir
+            // if you've got the current space path, use it as the initial dir
             if (!string.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
             {
                 var fi = new FileInfo(Model.CurrentWorkspace.FileName);
@@ -1326,7 +1329,7 @@ namespace Dynamo.ViewModels
         /// <returns>true if save was successful, false otherwise</returns>
         internal bool ShowSaveDialogIfNeededAndSave(WorkspaceModel workspace)
         {
-            // crash sould always allow save as
+            // crash should always allow save as
             if (!String.IsNullOrEmpty(workspace.FileName) && !DynamoModel.IsCrashing)
             {
                 workspace.Save(EngineController.LiveRunnerRuntimeCore);
