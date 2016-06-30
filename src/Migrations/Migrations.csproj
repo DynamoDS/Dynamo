@@ -46,14 +46,6 @@
     <Compile Include="DynamoRaaS\Nodes.cs" />
     <Compile Include="MigrationHelpers.cs" />
     <Compile Include="CoreNodes\dynBaseTypes.cs" />
-    <Compile Include="CoreNodes\dynColors.cs" />
-    <Compile Include="CoreNodes\dynCommunication.cs" />
-    <Compile Include="CoreNodes\dynFiles.cs" />
-    <Compile Include="CoreNodes\dynFormula.cs" />
-    <Compile Include="CoreNodes\dynMultithreading.cs" />
-    <Compile Include="CoreNodes\dynOptimize.cs" />
-    <Compile Include="CoreNodes\dynTimer.cs" />
-    <Compile Include="CoreNodes\Measurement.cs" />
     <Compile Include="RevitNodes\AdaptiveComponents.cs" />
     <Compile Include="RevitNodes\AnalysisDisplay.cs" />
     <Compile Include="RevitNodes\Annotation.cs" />
@@ -61,16 +53,6 @@
     <Compile Include="RevitNodes\Circle.cs" />
     <Compile Include="RevitNodes\Curve.cs" />
     <Compile Include="RevitNodes\DividedCurve.cs" />
-    <Compile Include="RevitNodes\DividedSurface.cs" />
-    <Compile Include="RevitNodes\DynamicRelaxation.cs" />
-    <Compile Include="RevitNodes\Element.cs" />
-    <Compile Include="RevitNodes\Ellipse.cs" />
-    <Compile Include="RevitNodes\Face.cs" />
-    <Compile Include="RevitNodes\Facet.cs" />
-    <Compile Include="RevitNodes\FamilyInstance.cs" />
-    <Compile Include="RevitNodes\FamilyType.cs" />
-    <Compile Include="RevitNodes\Floor.cs" />
-    <Compile Include="RevitNodes\FreeForm.cs" />
     <Compile Include="RevitNodes\FunctionWithRevit.cs" />
     <Compile Include="RevitNodes\Grid.cs" />
     <Compile Include="RevitNodes\HermiteSpline.cs" />
@@ -91,6 +73,17 @@
     <Compile Include="RevitNodes\Selection.cs" />
     <Compile Include="RevitNodes\SimplexNoise.cs" />
     <Compile Include="RevitNodes\SolarRadiation.cs" />
+    <Compile Include="RevitNodes\Solid.cs" />
+    <Compile Include="RevitNodes\StructuralFraming.cs" />
+    <Compile Include="RevitNodes\SunPath.cs" />
+    <Compile Include="RevitNodes\Tesselation.cs" />
+    <Compile Include="RevitNodes\Topography.cs" />
+    <Compile Include="RevitNodes\Transaction.cs" />
+    <Compile Include="RevitNodes\Transform.cs" />
+    <Compile Include="RevitNodes\UV.cs" />
+    <Compile Include="RevitNodes\View.cs" />
+    <Compile Include="RevitNodes\Wall.cs" />
+    <Compile Include="RevitNodes\XYZ.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
