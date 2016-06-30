@@ -2024,4 +2024,24 @@ Next assemblies were loaded several times:
   <data name="TabFileNameReadOnlyPrefix" xml:space="preserve">
     <value>[Read-Only] </value>
   </data>
+  <data name="InCanvasFitViewButtonToolTip" xml:space="preserve">
+    <value>Zoom to Fit (Ctrl + 0)</value>
+    <comment>Zoom to Fit</comment>
+  </data>
+  <data name="InCanvasOrbitButtonToolTip" xml:space="preserve">
+    <value>Orbit</value>
+    <comment>Orbit</comment>
+  </data>
+  <data name="InCanvasPanButtonToolTip" xml:space="preserve">
+    <value>Pan</value>
+    <comment>Pan</comment>
+  </data>
+  <data name="InCanvasZoomInButtonToolTip" xml:space="preserve">
+    <value>Zoom In (Ctrl + =)</value>
+    <comment>Zoom In</comment>
+  </data>
+  <data name="InCanvasZoomOutButtonToolTip" xml:space="preserve">
+    <value>Zoom Out (Ctrl + -)</value>
+    <comment>Zoom Out</comment>
+  </data>
 </root>
