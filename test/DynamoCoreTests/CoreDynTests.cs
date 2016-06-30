@@ -401,6 +401,15 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CanOpenGoodFileWithoutExtension()
+        {
+            var examplePath = Path.Combine(TestDirectory, @"core\files");
+            string openPath = Path.Combine(examplePath, "Sphere");
+            OpenModel(openPath);
+            BeginRun();
+        }
+
+        [Test]
         public void TestExportToCSVFile()
         {
             var examplePath = Path.Combine(TestDirectory, @"core\files");
