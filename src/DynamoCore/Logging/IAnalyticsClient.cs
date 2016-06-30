@@ -109,16 +109,19 @@ namespace Dynamo.Logging
         /// <param name="category">Event category</param>
         /// <param name="variable">Timed varaible name</param>
         /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
         /// <returns>Event as IDisposable</returns>
-        IDisposable CreateTimedEvent(Categories category, string variable, string description);
+        IDisposable CreateTimedEvent(Categories category, string variable, string description, int? value);
 
         /// <summary>
         /// Creates a new command event of the given name. Start of the 
         /// command is tracked. When the event is disposed, it's completion is tracked.
         /// </summary>
         /// <param name="name">Command name</param>
+        /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
         /// <returns>Event as IDisposable</returns>
-        IDisposable CreateCommandEvent(string name);
+        IDisposable CreateCommandEvent(string name, string description, int? value);
 
         /// <summary>
         /// Creates a new file operation event and tracks the start of the event.
@@ -127,8 +130,9 @@ namespace Dynamo.Logging
         /// <param name="filepath">File path</param>
         /// <param name="operation">File operation</param>
         /// <param name="size">Size parameter</param>
+        /// <param name="description">Event description</param>
         /// <returns>Event as IDisposable</returns>
-        IDisposable CreateFileOperationEvent(string filepath, Actions operation, int size);
+        IDisposable CreateFileOperationEvent(string filepath, Actions operation, int size, string description);
 
         /// <summary>
         /// Logs usage data

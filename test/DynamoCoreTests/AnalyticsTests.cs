@@ -92,13 +92,13 @@ namespace Dynamo.Tests
             clientMoq.Verify(c => c.TrackTimedEvent(Categories.Stability, variable, time, description), times);
 
             var e = Analytics.CreateTimedEvent(Categories.Performance, variable, description);
-            clientMoq.Verify(c => c.CreateTimedEvent(Categories.Performance, variable, description), times);
+            clientMoq.Verify(c => c.CreateTimedEvent(Categories.Performance, variable, description, null), times);
 
             e = Analytics.CreateCommandEvent("TestCommand");
-            clientMoq.Verify(c => c.CreateCommandEvent("TestCommand"), times);
+            clientMoq.Verify(c => c.CreateCommandEvent("TestCommand", "", null), times);
 
             e = Analytics.CreateFileOperationEvent(this.TempFolder, Actions.Read, 5);
-            clientMoq.Verify(c => c.CreateFileOperationEvent(this.TempFolder, Actions.Read, 5), times);
+            clientMoq.Verify(c => c.CreateFileOperationEvent(this.TempFolder, Actions.Read, 5, ""), times);
 
             Analytics.LogPiiInfo("tag", "data");
             clientMoq.Verify(c => c.LogPiiInfo("tag", "data"), times);

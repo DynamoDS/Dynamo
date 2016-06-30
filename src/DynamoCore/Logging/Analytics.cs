@@ -84,12 +84,13 @@ namespace Dynamo.Logging
         /// <param name="category">Event category</param>
         /// <param name="variable">Timed varaible name</param>
         /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
         /// <returns>Event as IDisposable</returns>
-        public static IDisposable CreateTimedEvent(Categories category, string variable, string description)
+        public static IDisposable CreateTimedEvent(Categories category, string variable, string description = "", int? value = null)
         {
             if (!enabled) return DynamoAnalyticsClient.Disposable;
 
-            return client.CreateTimedEvent(category, variable, description);
+            return client.CreateTimedEvent(category, variable, description, value);
         }
 
         /// <summary>
@@ -97,12 +98,14 @@ namespace Dynamo.Logging
         /// command is tracked. When the event is disposed, it's completion is tracked.
         /// </summary>
         /// <param name="name">Command name</param>
+        /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
         /// <returns>Event as IDisposable</returns>
-        public static IDisposable CreateCommandEvent(string name)
+        public static IDisposable CreateCommandEvent(string name, string description = "", int? value = null)
         {
             if (!enabled) return DynamoAnalyticsClient.Disposable;
 
-            return client.CreateCommandEvent(name);
+            return client.CreateCommandEvent(name, description, value);
         }
 
         /// <summary>
@@ -112,12 +115,13 @@ namespace Dynamo.Logging
         /// <param name="filepath">File path</param>
         /// <param name="operation">File operation</param>
         /// <param name="size">Size parameter</param>
+        /// <param name="description">Event description</param>
         /// <returns>Event as IDisposable</returns>
-        public static IDisposable CreateFileOperationEvent(string filepath, Actions operation, int size)
+        public static IDisposable CreateFileOperationEvent(string filepath, Actions operation, int size, string description="")
         {
             if (!enabled) return DynamoAnalyticsClient.Disposable;
 
-            return client.CreateFileOperationEvent(filepath, operation, size);
+            return client.CreateFileOperationEvent(filepath, operation, size, description);
         }
 
         /// <summary>

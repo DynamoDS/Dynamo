@@ -164,7 +164,12 @@ namespace Dynamo.Logging
         {
             if (!ReportingAnalytics) return;
 
-            var e = new TimedEvent(time) { Category = category.ToString(), VariableName = variable, Description = description };
+            var e = new TimedEvent(time)
+            {
+                Category = category.ToString(),
+                VariableName = variable,
+                Description = description
+            };
             e.Track();
         }
 
@@ -182,25 +187,43 @@ namespace Dynamo.Logging
             Service.TrackException(ex, isFatal);
         }
 
-        public IDisposable CreateTimedEvent(Categories category, string variable, string description)
+        public IDisposable CreateTimedEvent(Categories category, string variable, string description, int? value)
         {
             if (!ReportingAnalytics) return Disposable;
 
-            return new TimedEvent() { Category = category.ToString(), VariableName = variable, Description = description };
+            var e = new TimedEvent()
+            {
+                Category = category.ToString(),
+                VariableName = variable,
+                Description = description,
+                Value = value
+            };
+            e.Track();
+            return e;
         }
 
-        public IDisposable CreateCommandEvent(string name)
+        public IDisposable CreateCommandEvent(string name, string description, int? value)
         {
             if (!ReportingAnalytics) return Disposable;
 
-            return new CommandEvent(name);
+            var e = new CommandEvent(name) { Description = description, Value = value };
+            e.Track();
+            return e;
         }
 
-        public IDisposable CreateFileOperationEvent(string filepath, Actions operation, int size)
+        public IDisposable CreateFileOperationEvent(string filepath, Actions operation, int size, string description)
         {
             if (!ReportingAnalytics) return Disposable;
 
-            return new FileOperationEvent() { FilePath = filepath, FileSize = size, FileAction = FileAction(operation) };
+            var e = new FileOperationEvent()
+            {
+                FilePath = filepath,
+                FileSize = size,
+                FileAction = FileAction(operation),
+                Description = description
+            };
+            e.Track();
+            return e;
         }
 
         private FileOperationEvent.Actions FileAction(Actions operation)
@@ -241,8 +264,11 @@ namespace Dynamo.Logging
 
         public void Dispose()
         {
-            Session.Dispose();
-            Session = null;
+            if (Session != null)
+            {
+                Session.Dispose();
+                Session = null;
+            }
         }
     }
 }
