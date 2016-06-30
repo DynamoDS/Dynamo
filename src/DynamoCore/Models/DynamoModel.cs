@@ -576,7 +576,7 @@ namespace Dynamo.Models
             libraryCore.Compilers.Add(Language.Imperative, new ProtoImperative.Compiler(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
-            LibraryServices = new LibraryServices(libraryCore, pathManager);
+            LibraryServices = new LibraryServices(libraryCore, pathManager, preferences);
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
@@ -1046,6 +1046,12 @@ namespace Dynamo.Models
         private static void InitializePreferences(IPreferences preferences)
         {
             BaseUnit.NumberFormat = preferences.NumberFormat;
+
+            var settings = preferences as PreferenceSettings;
+            if (settings != null)
+            {
+                settings.InitializeNamespacesToExcludeFromLibrary();
+            }
         }
 
         /// <summary>
@@ -1887,6 +1893,34 @@ namespace Dynamo.Models
             }
 
             SearchModel.Add(new NodeModelSearchElement(typeLoadData));
+        }
+
+        /// <summary>
+        /// This method updates the node search library to either hide or unhide nodes that belong
+        /// to a specified assembly name and namespace. These nodes will be hidden from the node
+        /// library sidebar and from the node search.
+        /// </summary>
+        /// <param name="hide">Set to true to hide, set to false to unhide.</param>
+        /// <param name="library">The assembly name of the library.</param>
+        /// <param name="namespc">The namespace of the nodes to be hidden.</param>
+        internal void HideUnhideNamespace(bool hide, string library, string namespc)
+        {
+            var str = library + ':' + namespc;
+            var namespaces = PreferenceSettings.NamespacesToExcludeFromLibrary;
+
+            if (hide)
+            {
+                if (!namespaces.Contains(str))
+                {
+                    namespaces.Add(str);
+                }
+                SearchModel.RemoveNamespace(library, namespc);
+            }
+            else // unhide
+            {
+                namespaces.Remove(str);
+                AddZeroTouchNodesToSearch(LibraryServices.GetFunctionGroups(library));
+            }
         }
 
         private void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups)

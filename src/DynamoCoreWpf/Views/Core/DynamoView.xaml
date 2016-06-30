@@ -702,6 +702,14 @@
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
                                   Command="{Binding ManagePackagePathsCommand}"
                                   Name="managePackagePaths" />
+                        <Separator />
+                        <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.DynamoViewSettingExperimental}">
+                            <MenuItem Name="EnableTSpline"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding EnableTSpline}"
+                                  Header="{x:Static p:Resources.DynamoViewSettingEnableTSplineNodes}" />
+                        </MenuItem>
                     </MenuItem>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenu}"

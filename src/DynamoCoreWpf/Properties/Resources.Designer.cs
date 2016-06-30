@@ -1396,6 +1396,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable T-Spline nodes.
+        /// </summary>
+        public static string DynamoViewSettingEnableTSplineNodes {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingEnableTSplineNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Experimental.
+        /// </summary>
+        public static string DynamoViewSettingExperimental {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingExperimental", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Settings.
         /// </summary>
         public static string DynamoViewSettingMenu {

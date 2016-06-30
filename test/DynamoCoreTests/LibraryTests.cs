@@ -9,6 +9,7 @@ using NUnit.Framework;
 using ProtoCore;
 using TestServices;
 using System.Xml;
+using Dynamo.Configuration;
 
 namespace Dynamo.Tests
 {
@@ -37,7 +38,9 @@ namespace Dynamo.Tests
                 PathResolver = pathResolver
             });
 
-            libraryServices = new LibraryServices(libraryCore, pathManager);
+            var settings = new PreferenceSettings();
+
+            libraryServices = new LibraryServices(libraryCore, pathManager, settings);
 
             RegisterEvents();
         }

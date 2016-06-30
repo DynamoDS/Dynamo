@@ -257,6 +257,24 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Indicates whether to make T-Spline nodes (under ProtoGeometry.dll) discoverable
+        /// in the node search library.
+        /// </summary>
+        public bool EnableTSpline
+        {
+            get
+            {
+                return !PreferenceSettings.NamespacesToExcludeFromLibrary.Contains(
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline");
+            }
+            set
+            {
+                model.HideUnhideNamespace(!value,
+                    "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.TSpline");
+            }
+        }
+
         public int LibraryWidth
         {
             get
