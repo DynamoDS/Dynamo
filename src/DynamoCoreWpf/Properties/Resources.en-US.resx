@@ -2022,4 +2022,8 @@ Next assemblies were loaded several times:
   <data name="TabFileNameReadOnlyPrefix" xml:space="preserve">
     <value>[Read-Only] </value>
   </data>
+  <data name="MessageErrorOpeningFileGeneral" xml:space="preserve">
+    <value>Error Opening File</value>
+    <comment>Nofication Center Title</comment>
+  </data>
 </root>
