@@ -91,7 +91,6 @@
     <Compile Include="RevitNodes\Selection.cs" />
     <Compile Include="RevitNodes\SimplexNoise.cs" />
     <Compile Include="RevitNodes\SolarRadiation.cs" />
-    <Compile Include="RevitNodes\XYZ.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
