@@ -54,33 +54,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestMigration_Core_Input()
-        {
-            TestMigration("TestMigration_Core_Input.dyn");
-        }
-
-        [Test]
         public void TestMigration_DSCoreNodesUI_to_CoreNodeModels()
         {
             TestMigration("TestMigration_DSCoreNodesUI_to_CoreNodeModels.dyn");
-        }
-
-        [Test]
-        public void TestMigration_Core_List()
-        {
-            TestMigration("TestMigration_Core_List.dyn");
-        }
-
-        [Test]
-        public void TestMigration_Core_Scripting()
-        {
-            TestMigration("TestMigration_Core_Scripting.dyn");
-        }
-
-        [Test]
-        public void TestMigration_Core_Strings()
-        {
-            TestMigration("TestMigration_Core_Strings.dyn");
         }
 
         [Test]
@@ -88,55 +64,6 @@ namespace Dynamo.Tests
         public void TestMigration_Core_Time()
         {
             TestMigration("TestMigration_Core_Time.dyn");
-        }
-
-        [Test]
-        public void TestMigration_Core_Watch()
-        {
-            TestMigration("TestMigration_Core_Watch.dyn");
-        }
-
-        [Test]
-        public void TestMigration_InputOutput_Excel()
-        {
-            TestMigration("TestMigration_InputOutput_Excel.dyn");
-        }
-
-        [Test]
-        public void TestMigration_InputOutput_File()
-        {
-            TestMigration("TestMigration_InputOutput_File.dyn");
-        }
-
-        [Test]
-        [Category("Failure")]
-        public void TestMigration_InputOutput_Hardware()
-        {
-            TestMigration("TestMigration_InputOutput_Hardware.dyn");
-        }
-
-        [Test]
-        public void TestMigration_Logic_Comparison()
-        {
-            TestMigration("TestMigration_Logic_Comparison.dyn");
-        }
-
-        [Test]
-        public void TestMigration_Logic_Conditional()
-        {
-            TestMigration("TestMigration_Logic_Conditional.dyn");
-        }
-
-        [Test]
-        public void TestMigration_Logic_Effect()
-        {
-            TestMigration("TestMigration_Logic_Effect.dyn");
-        }
-
-        [Test]
-        public void TestMigration_Logic_Math()
-        {
-            TestMigration("TestMigration_Logic_Math.dyn");
         }
 
         [Test]
@@ -330,66 +257,6 @@ namespace Dynamo.Tests
             AssertPreviewValue("c716fe96-15c2-4fc1-a683-ffcdbd864d9d", -3);
             AssertPreviewValue("dc8aaac2-6709-4f84-bdfc-432a1cc04f33", 3);
             AssertPreviewValue("945b64a3-6504-43f1-87fa-f46c4bc23f1a", -0.5);
-        }
-
-        [Test]
-        public void TestMultiply()
-        {
-            OpenModel(GetDynPath("TestMultiply.dyn"));
-
-            var workspace = CurrentDynamoModel.CurrentWorkspace;
-            var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
-                "a1582b3f-388a-47a5-8785-3ee3700878e1");
-            var operationn2 = workspace.NodeFromWorkspace<DSFunction>(
-                "a02fdbea-c30c-439b-a967-b0a46d981344");
-            var operationn3 = workspace.NodeFromWorkspace<DSFunction>(
-                "0cd1e263-1c38-4f1e-893d-874b593f939b");
-
-            Assert.AreEqual(7, workspace.Nodes.Count());
-            Assert.AreEqual(6, workspace.Connectors.Count());
-
-            Assert.NotNull(operationn1);
-            Assert.NotNull(operationn2);
-            Assert.NotNull(operationn3);
-
-            RunCurrentModel();
-            AssertPreviewValue("a1582b3f-388a-47a5-8785-3ee3700878e1", 10);
-            AssertPreviewValue("a02fdbea-c30c-439b-a967-b0a46d981344", -2);
-            AssertPreviewValue("0cd1e263-1c38-4f1e-893d-874b593f939b", 5);
-        }
-
-        [Test]
-        [Category("Failure")]
-        public void TestModulo()
-        {
-            OpenModel(GetDynPath("TestModulo.dyn"));
-
-            var workspace = CurrentDynamoModel.CurrentWorkspace;
-            var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
-                "3f4c4485-5149-479a-aa11-e66e72c76b37");
-            var operationn2 = workspace.NodeFromWorkspace<DSFunction>(
-                "99c18e93-bb19-458b-97f3-b3467aa10364");
-            var operationn3 = workspace.NodeFromWorkspace<DSFunction>(
-                "85f6a5e8-3e3c-4944-a7cb-ba856d755f87");
-            var operationn4 = workspace.NodeFromWorkspace<DSFunction>(
-                "2be464f1-81d0-4427-b588-a22d94e8118c");
-
-            Assert.AreEqual(9, workspace.Nodes.Count());
-            Assert.AreEqual(8, workspace.Connectors.Count());
-
-            Assert.NotNull(operationn1);
-            Assert.NotNull(operationn2);
-            Assert.NotNull(operationn3);
-            Assert.NotNull(operationn4);
-
-            RunCurrentModel();
-            AssertPreviewValue("3f4c4485-5149-479a-aa11-e66e72c76b37", 3);
-            AssertPreviewValue("99c18e93-bb19-458b-97f3-b3467aa10364", 1);
-
-            //the new one does not support double
-            AssertPreviewValue("85f6a5e8-3e3c-4944-a7cb-ba856d755f87", null);  
-
-            AssertPreviewValue("2be464f1-81d0-4427-b588-a22d94e8118c", 1);
         }
 
         [Test]
@@ -792,36 +659,6 @@ namespace Dynamo.Tests
             AssertPreviewValue("3c619222-858f-4f7c-b001-3a4a248f8f77",
                 new object[] {2, 2.5, 2, 9, 0, -7});
         }
-
-        [Test]
-        public void TestNewList()
-        {
-            OpenModel(GetDynPath("TestNewList.dyn"));
-
-            var workspace = CurrentDynamoModel.CurrentWorkspace;
-            var listn1 = workspace.NodeFromWorkspace<CreateList>(
-                "ff8f5f64-c9f3-4814-896a-6ef679a35275");
-            var listn2 = workspace.NodeFromWorkspace<CreateList>(
-                "2d58dbc4-62ad-4a12-974b-52d5986053b5");
-            var listn3 = workspace.NodeFromWorkspace<CreateList>(
-                "0c98e395-e2f4-49c1-abda-d1bcb3c24cbd");
-
-            Assert.AreEqual(10, workspace.Nodes.Count());
-            Assert.AreEqual(12, workspace.Connectors.Count());
-
-            Assert.NotNull(listn1);
-            Assert.NotNull(listn2);
-            Assert.NotNull(listn3);
-
-            RunCurrentModel();
-            AssertPreviewValue("ff8f5f64-c9f3-4814-896a-6ef679a35275", 
-                new object[] { 1,1,-1,2.5 });
-            AssertPreviewValue("2d58dbc4-62ad-4a12-974b-52d5986053b5",
-                new object[] {"hi,", "I am", 1, "test"});
-            AssertPreviewValue("0c98e395-e2f4-49c1-abda-d1bcb3c24cbd",
-                new object[] {new object[] {1, 2, 3}, 1, 1, 1});
-        }
-
         [Test]
         public void TestShiftListIndices()
         {
