@@ -8,7 +8,11 @@ using Dynamo;
 using Dynamo.Configuration;
 using Dynamo.ViewModels;
 using NUnit.Framework;
-
+using Dynamo.PackageManager;
+using Dynamo.Core;
+using System.IO;
+using System.Reflection;
+using Dynamo.Models;
 
 namespace DynamoCoreWpfTests
 {
@@ -22,7 +26,9 @@ namespace DynamoCoreWpfTests
             {
                 CustomPackageFolders = { @"C:\" }
             };
-            var vm = new PackagePathViewModel(setting);
+
+
+            var vm = CreatePackagePathViewModel(setting);
 
             Assert.AreEqual(1, vm.RootLocations.Count);
             Assert.IsFalse(vm.DeletePathCommand.CanExecute(null));
@@ -36,7 +42,7 @@ namespace DynamoCoreWpfTests
                 CustomPackageFolders = { @"C:\", @"D:\", @"E:\" }
             };
 
-            var vm = new PackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel(setting);
 
             Assert.AreEqual(0, vm.SelectedIndex);
             Assert.IsTrue(vm.MovePathDownCommand.CanExecute(null));
@@ -76,7 +82,7 @@ namespace DynamoCoreWpfTests
                 CustomPackageFolders = { @"Z:\" }
             };
 
-            var vm = new PackagePathViewModel(setting);
+            var vm = CreatePackagePathViewModel(setting);
 
             var path = string.Empty;
             vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
@@ -97,6 +103,42 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(@"C:\", vm.RootLocations[0]);
             Assert.AreEqual(@"D:\", vm.RootLocations[1]);
         }
+        [Test]
+        public void AddPackagePathsTest()
+        {
+            var setting = new PreferenceSettings()
+            {
+                CustomPackageFolders = { @"Z:\" }
+            };
+
+            var vm = CreatePackagePathViewModel(setting);
+
+            var path = string.Empty;
+            vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
+
+            var testDir = GetTestDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            path = Path.Combine(testDir, @"core\packagePathTest");
+            var dynFilePath = Path.Combine(path, @"dynFile\Number1.dyn");
+            vm.AddPathCommand.Execute(null);
+            vm.SaveSettingCommand.Execute(null);
+            Model.ExecuteCommand(new DynamoModel.OpenFileCommand(dynFilePath));
+            Assert.AreEqual(1,GetPreviewValue("07d62dd8-b2f3-40a8-a761-013d93300444"));
+        }
+
+        #endregion
+        #region Setup methods
+        private PackagePathViewModel CreatePackagePathViewModel(PreferenceSettings setting)
+        {
+            PackageLoader loader = new PackageLoader(setting.CustomPackageFolders);
+            LoadPackageParams loadParams = new LoadPackageParams
+            {
+                Preferences = setting,
+                PathManager = Model.PathManager
+            };
+            CustomNodeManager customNodeManager = Model.CustomNodeManager;
+            return new PackagePathViewModel(loader, loadParams, customNodeManager);
+        }
+
         #endregion
     }
 }

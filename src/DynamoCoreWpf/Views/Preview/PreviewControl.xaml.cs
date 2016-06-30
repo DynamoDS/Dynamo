@@ -486,13 +486,13 @@ namespace Dynamo.UI.Controls
 
             var largeContentGridSize = largeContentGrid.DesiredSize;
 
-            // Add two times width of scroll bar (5) and right margin(5), refer to infoBubbleView.xaml
-            largeContentGridSize.Width += 20;
-
             // Don't make it smaller then min width.
             largeContentGridSize.Width = largeContentGridSize.Width < largeContentGrid.MinWidth
                 ? largeContentGrid.MinWidth
                 : largeContentGridSize.Width;
+
+            // Add two times width of scroll bar (5) and right margin(5), refer to infoBubbleView.xaml
+            largeContentGridSize.Width += 20;
 
             // Add padding since we are sizing the centralizedGrid.
             return ContentToControlSize(largeContentGridSize);

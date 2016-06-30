@@ -1,0 +1,18 @@
+<Workspace Version="1.0.1.1732" X="0" Y="0" zoom="1" Name="Number1" Description="" ID="bdc7628c-cbd5-48e9-8ad0-9aad539ed4d2" Category="Number1">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="97322176-242b-4af4-875b-a706b0048cae" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="1;" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CustomNodes.Output guid="a454fcbe-5a16-4db5-b073-61fd19bf5416" type="Dynamo.Graph.Nodes.CustomNodes.Output" nickname="Output" x="404" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
+      <Symbol value="" />
+    </Dynamo.Graph.Nodes.CustomNodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="97322176-242b-4af4-875b-a706b0048cae" start_index="0" end="a454fcbe-5a16-4db5-b073-61fd19bf5416" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

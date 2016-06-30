@@ -295,7 +295,7 @@ namespace DynamoCoreWpfTests
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
                         
             // preview is hidden
-            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView.PreviewControl));
+            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView.PreviewControl, 0));
 
             View.Dispatcher.Invoke(() =>
             {
@@ -306,7 +306,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
 
             // preview is condensed
-            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView.PreviewControl));
+            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView.PreviewControl, 0));
 
             View.Dispatcher.Invoke(() =>
             {
@@ -315,8 +315,9 @@ namespace DynamoCoreWpfTests
 
             DispatcherUtil.DoEvents();
 
-            // preview is expanded
-            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView));
+            // preview is expanded, and its size will be slighly larger than the size of node view.
+            // See PR: https://github.com/DynamoDS/Dynamo/pull/6799
+            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView, 10));
         }
 
         [Test]
@@ -381,9 +382,10 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(nodeView.PreviewControl.IsHidden, "Preview bubble for color range should be shown");
         }
 
-        private bool ElementIsInContainer(FrameworkElement element, FrameworkElement container)
+        private bool ElementIsInContainer(FrameworkElement element, FrameworkElement container, int offset)
         {
             var relativePosition = element.TranslatePoint(new Point(), container);
+            relativePosition.X += offset;
             
             return (relativePosition.X == 0) && (element.ActualWidth <= container.ActualWidth);
         }
