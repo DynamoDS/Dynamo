@@ -46,14 +46,6 @@
     <Compile Include="DynamoRaaS\Nodes.cs" />
     <Compile Include="MigrationHelpers.cs" />
     <Compile Include="CoreNodes\dynBaseTypes.cs" />
-    <Compile Include="CoreNodes\dynColors.cs" />
-    <Compile Include="CoreNodes\dynCommunication.cs" />
-    <Compile Include="CoreNodes\dynFiles.cs" />
-    <Compile Include="CoreNodes\dynFormula.cs" />
-    <Compile Include="CoreNodes\dynMultithreading.cs" />
-    <Compile Include="CoreNodes\dynOptimize.cs" />
-    <Compile Include="CoreNodes\dynTimer.cs" />
-    <Compile Include="CoreNodes\Measurement.cs" />
     <Compile Include="RevitNodes\AdaptiveComponents.cs" />
     <Compile Include="RevitNodes\AnalysisDisplay.cs" />
     <Compile Include="RevitNodes\Annotation.cs" />
