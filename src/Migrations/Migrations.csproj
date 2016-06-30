@@ -91,16 +91,6 @@
     <Compile Include="RevitNodes\Selection.cs" />
     <Compile Include="RevitNodes\SimplexNoise.cs" />
     <Compile Include="RevitNodes\SolarRadiation.cs" />
-    <Compile Include="RevitNodes\Solid.cs" />
-    <Compile Include="RevitNodes\StructuralFraming.cs" />
-    <Compile Include="RevitNodes\SunPath.cs" />
-    <Compile Include="RevitNodes\Tesselation.cs" />
-    <Compile Include="RevitNodes\Topography.cs" />
-    <Compile Include="RevitNodes\Transaction.cs" />
-    <Compile Include="RevitNodes\Transform.cs" />
-    <Compile Include="RevitNodes\UV.cs" />
-    <Compile Include="RevitNodes\View.cs" />
-    <Compile Include="RevitNodes\Wall.cs" />
     <Compile Include="RevitNodes\XYZ.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
