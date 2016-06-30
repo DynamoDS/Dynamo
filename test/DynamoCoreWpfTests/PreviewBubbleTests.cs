@@ -322,7 +322,7 @@ namespace DynamoCoreWpfTests
             nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
                         
             // preview is hidden
-            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView.PreviewControl));
+            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView.PreviewControl, 0));
 
             View.Dispatcher.Invoke(() =>
             {
@@ -333,7 +333,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
 
             // preview is condensed
-            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView.PreviewControl));
+            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView.PreviewControl, 0));
 
             View.Dispatcher.Invoke(() =>
             {
@@ -343,12 +343,13 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
 
             // preview is expanded
-            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView));
+            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView, 10));
         }        
 
-        private bool ElementIsInContainer(FrameworkElement element, FrameworkElement container)
+        private bool ElementIsInContainer(FrameworkElement element, FrameworkElement container, int offset)
         {
             var relativePosition = element.TranslatePoint(new Point(), container);
+            relativePosition.X += offset;
             
             return (relativePosition.X == 0) && (element.ActualWidth <= container.ActualWidth);
         }
