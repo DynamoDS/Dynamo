@@ -150,17 +150,7 @@ namespace Dynamo.Models
         /// with the assumption that the entire test will be wrapped in an
         /// idle thread call.
         /// </summary>
-        public static bool IsTestMode
-        {
-            get { return isTestMode; }
-            set
-            {
-                isTestMode = value;
-                InstrumentationLogger.IsTestMode = value;
-            }
-        }
-
-        private static bool isTestMode;
+        public static bool IsTestMode { get; set; }
 
         /// <summary>
         ///     Specifies whether or not Dynamo is in a crash-state.
@@ -378,6 +368,8 @@ namespace Dynamo.Models
             PreShutdownCore(shutdownHost);
             ShutDownCore(shutdownHost);
             PostShutdownCore(shutdownHost);
+            
+            Dynamo.Logging.Analytics.ShutDown();
 
             OnShutdownCompleted(); // Notify possible event handlers.
         }
@@ -394,8 +386,7 @@ namespace Dynamo.Models
             OnCleanup();
 
             DynamoSelection.DestroyInstance();
-            InstrumentationLogger.End();
-
+            
             if (Scheduler != null)
             {
                 Scheduler.Shutdown();
@@ -517,7 +508,7 @@ namespace Dynamo.Models
             InitializePreferences(preferences);
             InitializeInstrumentationLogger();
 
-            if (!isTestMode && this.PreferenceSettings.IsFirstRun)
+            if (!IsTestMode && this.PreferenceSettings.IsFirstRun)
             {
                 DynamoMigratorBase migrator = null;
 
@@ -781,8 +772,8 @@ namespace Dynamo.Models
                         long end = e.Task.ExecutionEndTime.TickCount;
                         var executionTimeSpan = new TimeSpan(end - start);
 
-                        InstrumentationLogger.LogAnonymousTimedEvent(
-                            "Perf",
+                        Dynamo.Logging.Analytics.TrackTimedEvent(
+                            Categories.Performance,
                             e.Task.GetType().Name,
                             executionTimeSpan);
 
@@ -1024,8 +1015,8 @@ namespace Dynamo.Models
 
         private void InitializeInstrumentationLogger()
         {
-            if (IsTestMode == false)
-                InstrumentationLogger.Start(this);
+            bool enableAnalytics = !IsTestMode;
+            Dynamo.Logging.Analytics.Start(this, enableAnalytics);
         }
 
         private IPreferences CreateOrLoadPreferences(IPreferences preferences)
@@ -1964,7 +1955,7 @@ namespace Dynamo.Models
             var fileVer = ((fileVersion != null) ? fileVersion.ToString() : "Unknown");
             var currVer = ((currVersion != null) ? currVersion.ToString() : "Unknown");
 
-            InstrumentationLogger.LogPiiInfo(
+            Logging.Analytics.LogPiiInfo(
                 "ObsoleteFileMessage",
                 fullFilePath + " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
@@ -1996,12 +1987,11 @@ namespace Dynamo.Models
         /// <param name="exception">The exception to display.</param>
         private TaskDialogEventArgs DisplayEngineFailureMessage(Exception exception)
         {
-            StabilityTracking.GetInstance().NotifyCrash();
-            InstrumentationLogger.LogAnonymousEvent("EngineFailure", "Stability");
+            Dynamo.Logging.Analytics.TrackEvent(Actions.EngineFailure, Categories.Stability);
 
             if (exception != null)
             {
-                InstrumentationLogger.LogException(exception);
+                Dynamo.Logging.Analytics.TrackException(exception, false);
             }
 
             string summary = Resources.UnhandledExceptionSummary;
@@ -2038,7 +2028,7 @@ namespace Dynamo.Models
             var fileVer = ((fileVersion != null) ? fileVersion.ToString() : Resources.UnknownVersion);
             var currVer = ((currVersion != null) ? currVersion.ToString() : Resources.UnknownVersion);
 
-            InstrumentationLogger.LogPiiInfo("FutureFileMessage", fullFilePath +
+            Logging.Analytics.LogPiiInfo("FutureFileMessage", fullFilePath +
                 " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
             string summary = Resources.FutureFileSummary;
