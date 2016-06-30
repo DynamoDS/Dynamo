@@ -63,16 +63,6 @@
     <Compile Include="RevitNodes\ModelCurve.cs" />
     <Compile Include="RevitNodes\NurbsSpline.cs" />
     <Compile Include="RevitNodes\Plane.cs" />
-    <Compile Include="RevitNodes\Project.cs" />
-    <Compile Include="RevitNodes\RayBounce.cs" />
-    <Compile Include="RevitNodes\Rectangle.cs" />
-    <Compile Include="RevitNodes\ReferenceCurve.cs" />
-    <Compile Include="RevitNodes\ReferencePlane.cs" />
-    <Compile Include="RevitNodes\ReferencePoint.cs" />
-    <Compile Include="RevitNodes\RevitAPINode.cs" />
-    <Compile Include="RevitNodes\Selection.cs" />
-    <Compile Include="RevitNodes\SimplexNoise.cs" />
-    <Compile Include="RevitNodes\SolarRadiation.cs" />
     <Compile Include="RevitNodes\Solid.cs" />
     <Compile Include="RevitNodes\StructuralFraming.cs" />
     <Compile Include="RevitNodes\SunPath.cs" />
