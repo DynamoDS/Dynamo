@@ -2042,4 +2042,8 @@ Next assemblies were loaded several times:
     <value>Zoom Out</value>
     <comment>Zoom Out</comment>
   </data>
+  <data name="MessageErrorOpeningFileGeneral" xml:space="preserve">
+    <value>Error Opening File</value>
+    <comment>Nofication Center Title</comment>
+  </data>
 </root>

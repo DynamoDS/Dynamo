@@ -1167,7 +1167,7 @@ namespace Dynamo.ViewModels
             {
                 if (!DynamoModel.IsTestMode)
                 {
-                    string CommandString = String.Format(Resources.DynamoViewFileMenuOpen);
+                    string CommandString = String.Format(Resources.MessageErrorOpeningFileGeneral);
                     string ErrorMsgString;
                     // Catch all the IO exceptions and file access here. The message provided by .Net is clear enough to indicate the problem in this case.
                     if (e is IOException || e is UnauthorizedAccessException)
@@ -1183,7 +1183,7 @@ namespace Dynamo.ViewModels
                         ErrorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile);
                     }
                     System.Windows.MessageBox.Show(ErrorMsgString);
-                    model.Logger.LogNotification(CommandString, CommandString, ErrorMsgString, e.ToString());
+                    model.Logger.LogNotification("Dynamo", CommandString, ErrorMsgString, e.ToString());
                 }
                 else
                 {
