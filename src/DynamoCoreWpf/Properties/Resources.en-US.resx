@@ -2023,7 +2023,7 @@ Next assemblies were loaded several times:
     <value>[Read-Only] </value>
   </data>
   <data name="InCanvasFitViewButtonToolTip" xml:space="preserve">
-    <value>Zoom to Fit (Ctrl + 0)</value>
+    <value>Zoom to Fit</value>
     <comment>Zoom to Fit</comment>
   </data>
   <data name="InCanvasOrbitButtonToolTip" xml:space="preserve">
@@ -2035,11 +2035,11 @@ Next assemblies were loaded several times:
     <comment>Pan</comment>
   </data>
   <data name="InCanvasZoomInButtonToolTip" xml:space="preserve">
-    <value>Zoom In (Ctrl + =)</value>
+    <value>Zoom In</value>
     <comment>Zoom In</comment>
   </data>
   <data name="InCanvasZoomOutButtonToolTip" xml:space="preserve">
-    <value>Zoom Out (Ctrl + -)</value>
+    <value>Zoom Out</value>
     <comment>Zoom Out</comment>
   </data>
 </root>

@@ -2318,7 +2318,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Zoom to Fit (Ctrl + 0).
+        ///   Looks up a localized string similar to Zoom to Fit.
         /// </summary>
         public static string InCanvasFitViewButtonToolTip {
             get {
@@ -2363,7 +2363,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Zoom In (Ctrl + =).
+        ///   Looks up a localized string similar to Zoom In.
         /// </summary>
         public static string InCanvasZoomInButtonToolTip {
             get {
@@ -2372,7 +2372,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Zoom Out (Ctrl + -).
+        ///   Looks up a localized string similar to Zoom Out.
         /// </summary>
         public static string InCanvasZoomOutButtonToolTip {
             get {
