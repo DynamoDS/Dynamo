@@ -71,16 +71,6 @@
     <Compile Include="RevitNodes\FamilyType.cs" />
     <Compile Include="RevitNodes\Floor.cs" />
     <Compile Include="RevitNodes\FreeForm.cs" />
-    <Compile Include="RevitNodes\FunctionWithRevit.cs" />
-    <Compile Include="RevitNodes\Grid.cs" />
-    <Compile Include="RevitNodes\HermiteSpline.cs" />
-    <Compile Include="RevitNodes\Intersect.cs" />
-    <Compile Include="RevitNodes\Level.cs" />
-    <Compile Include="RevitNodes\Line.cs" />
-    <Compile Include="RevitNodes\Material.cs" />
-    <Compile Include="RevitNodes\ModelCurve.cs" />
-    <Compile Include="RevitNodes\NurbsSpline.cs" />
-    <Compile Include="RevitNodes\Plane.cs" />
     <Compile Include="RevitNodes\Project.cs" />
     <Compile Include="RevitNodes\RayBounce.cs" />
     <Compile Include="RevitNodes\Rectangle.cs" />
