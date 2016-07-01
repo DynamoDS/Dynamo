@@ -44,34 +44,7 @@
     <Compile Include="DynamoPython\dynPython.cs" />
     <Compile Include="MigrationHelpers.cs" />
     <Compile Include="CoreNodes\dynBaseTypes.cs" />
-    <Compile Include="RevitNodes\AdaptiveComponents.cs" />
-    <Compile Include="RevitNodes\AnalysisDisplay.cs" />
-    <Compile Include="RevitNodes\Annotation.cs" />
-    <Compile Include="RevitNodes\Arc.cs" />
-    <Compile Include="RevitNodes\Circle.cs" />
-    <Compile Include="RevitNodes\Curve.cs" />
-    <Compile Include="RevitNodes\DividedCurve.cs" />
-    <Compile Include="RevitNodes\FunctionWithRevit.cs" />
-    <Compile Include="RevitNodes\Grid.cs" />
-    <Compile Include="RevitNodes\HermiteSpline.cs" />
-    <Compile Include="RevitNodes\Intersect.cs" />
-    <Compile Include="RevitNodes\Level.cs" />
-    <Compile Include="RevitNodes\Line.cs" />
-    <Compile Include="RevitNodes\Material.cs" />
-    <Compile Include="RevitNodes\ModelCurve.cs" />
-    <Compile Include="RevitNodes\NurbsSpline.cs" />
-    <Compile Include="RevitNodes\Plane.cs" />
-    <Compile Include="RevitNodes\Solid.cs" />
-    <Compile Include="RevitNodes\StructuralFraming.cs" />
     <Compile Include="RevitNodes\SunPath.cs" />
-    <Compile Include="RevitNodes\Tesselation.cs" />
-    <Compile Include="RevitNodes\Topography.cs" />
-    <Compile Include="RevitNodes\Transaction.cs" />
-    <Compile Include="RevitNodes\Transform.cs" />
-    <Compile Include="RevitNodes\UV.cs" />
-    <Compile Include="RevitNodes\View.cs" />
-    <Compile Include="RevitNodes\Wall.cs" />
-    <Compile Include="RevitNodes\XYZ.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
