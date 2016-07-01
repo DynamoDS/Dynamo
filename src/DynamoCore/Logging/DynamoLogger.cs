@@ -180,7 +180,7 @@ namespace Dynamo.Logging
             {
                 //Don't overwhelm the logging system
                 if (debugSettings.VerboseLogging)
-                    InstrumentationLogger.LogPiiInfo("LogMessage-" + level.ToString(), message);
+                    Analytics.LogPiiInfo("LogMessage-" + level.ToString(), message);
 
                 switch (level)
                 {

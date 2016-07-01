@@ -1396,6 +1396,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable T-Spline nodes.
+        /// </summary>
+        public static string DynamoViewSettingEnableTSplineNodes {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingEnableTSplineNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Experimental.
+        /// </summary>
+        public static string DynamoViewSettingExperimental {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingExperimental", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Settings.
         /// </summary>
         public static string DynamoViewSettingMenu {
@@ -2300,6 +2318,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Zoom to Fit.
+        /// </summary>
+        public static string InCanvasFitViewButtonToolTip {
+            get {
+                return ResourceManager.GetString("InCanvasFitViewButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable background 3D preview navigation (Ctrl + B).
         /// </summary>
         public static string InCanvasGeomButtonToolTip {
@@ -2314,6 +2341,42 @@ namespace Dynamo.Wpf.Properties {
         public static string InCanvasNodeButtonToolTip {
             get {
                 return ResourceManager.GetString("InCanvasNodeButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Orbit.
+        /// </summary>
+        public static string InCanvasOrbitButtonToolTip {
+            get {
+                return ResourceManager.GetString("InCanvasOrbitButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pan.
+        /// </summary>
+        public static string InCanvasPanButtonToolTip {
+            get {
+                return ResourceManager.GetString("InCanvasPanButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom In.
+        /// </summary>
+        public static string InCanvasZoomInButtonToolTip {
+            get {
+                return ResourceManager.GetString("InCanvasZoomInButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom Out.
+        /// </summary>
+        public static string InCanvasZoomOutButtonToolTip {
+            get {
+                return ResourceManager.GetString("InCanvasZoomOutButtonToolTip", resourceCulture);
             }
         }
         

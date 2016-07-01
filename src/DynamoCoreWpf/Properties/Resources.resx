@@ -559,6 +559,14 @@ It does not contain your graph or any personal data</value>
     <value>Volume Display Units</value>
     <comment>Setting menu | Volume unit display</comment>
   </data>
+  <data name="DynamoViewSettingExperimental" xml:space="preserve">
+    <value>Experimental</value>
+    <comment>Setting menu | Experimental</comment>
+  </data>
+  <data name="DynamoViewSettingEnableTSplineNodes" xml:space="preserve">
+    <value>Enable T-Spline nodes</value>
+    <comment>Setting menu | Experimental | Enable T-Spline nodes</comment>
+  </data>
   <data name="DynamoViewToolbarExportButtonTooltip" xml:space="preserve">
     <value>Export Workspace As Image</value>
     <comment>Toolbar export button tooltip</comment>
@@ -2015,5 +2023,25 @@ Next assemblies were loaded several times:
   </data>
   <data name="TabFileNameReadOnlyPrefix" xml:space="preserve">
     <value>[Read-Only] </value>
+  </data>
+  <data name="InCanvasFitViewButtonToolTip" xml:space="preserve">
+    <value>Zoom to Fit</value>
+    <comment>Zoom to Fit</comment>
+  </data>
+  <data name="InCanvasOrbitButtonToolTip" xml:space="preserve">
+    <value>Orbit</value>
+    <comment>Orbit</comment>
+  </data>
+  <data name="InCanvasPanButtonToolTip" xml:space="preserve">
+    <value>Pan</value>
+    <comment>Pan</comment>
+  </data>
+  <data name="InCanvasZoomInButtonToolTip" xml:space="preserve">
+    <value>Zoom In</value>
+    <comment>Zoom In</comment>
+  </data>
+  <data name="InCanvasZoomOutButtonToolTip" xml:space="preserve">
+    <value>Zoom Out</value>
+    <comment>Zoom Out</comment>
   </data>
 </root>

@@ -4,50 +4,6 @@ using Microsoft.Win32;
 
 namespace Dynamo.Logging
 {
-    /// <summary>
-    /// Stability state tracking utils library
-    /// The primary use is for reporting MTBF to instrumentation
-    /// </summary>
-    internal class StabilityTracking
-    {
-        private Stopwatch globalTime;
-        private Stopwatch timeSinceLastCrash;
-        private static StabilityTracking instance;
-        private readonly static Object mutex = new object();
-
-        public static StabilityTracking GetInstance()
-        {
-            lock (mutex)
-            {
-                if (instance == null)
-                {
-                    instance = new StabilityTracking();
-                }    
-            }
-
-            return instance;
-        }
-
-        private StabilityTracking()
-        {
-            globalTime = new Stopwatch();
-            timeSinceLastCrash = new Stopwatch();
-
-            globalTime.Start();
-            timeSinceLastCrash.Start();
-        }
-
-        /// <summary>
-        /// Notify the stability tracker that a crash has occured
-        /// </summary>
-        public void NotifyCrash()
-        {
-            InstrumentationLogger.LogAnonymousTimedEvent(
-                "Stability", "TimeBetweenFailure", timeSinceLastCrash.Elapsed);
-            timeSinceLastCrash.Restart();
-        }
-    }
-
     internal class StabilityUtils
     {
         private static bool isLastShutdownClean;
@@ -117,53 +73,6 @@ namespace Dynamo.Logging
         public static void Startup()
         {
             StabilityUtils.IsLastShutdownClean = IsLastShutdownClean();
-            String cleanShutdownValue = Registry.GetValue(REG_KEY, SHUTDOWN_TYPE_NAME, null) as String;
-            String uptimeValue = Registry.GetValue(REG_KEY, UPTIME_NAME, null) as String;
-
-            bool isUptimeSpanValid = false;
-            TimeSpan uptimeSpan = TimeSpan.MinValue;
-
-
-            long uptimeMs;
-            if (long.TryParse(uptimeValue, out uptimeMs))
-            {
-                uptimeSpan = TimeSpan.FromMilliseconds(uptimeMs);
-                isUptimeSpanValid = true;
-            }
-
-            if (cleanShutdownValue == null || uptimeValue == null)
-                InstrumentationLogger.LogAnonymousEvent("FirstTimeStartup", "Stability");
-            else
-            {
-                switch (cleanShutdownValue)
-                {
-                    case CLEAN_SHUTDOWN_VALUE:
-                        InstrumentationLogger.LogAnonymousEvent("Clean shutdown", "Stability");
-                        if (isUptimeSpanValid)
-                            InstrumentationLogger.LogAnonymousTimedEvent("Stability", "Clean Uptime", uptimeSpan);
-                        break;
-
-                    case CRASHING_SHUTDOWN_VALUE:
-                        InstrumentationLogger.LogAnonymousEvent("Crashing shutdown", "Stability");
-                        if (isUptimeSpanValid)
-                            InstrumentationLogger.LogAnonymousTimedEvent("Stability", "Dirty Uptime", uptimeSpan);
-                        break;
-
-                    case ASSUMING_CRASHING_SHUTDOWN_VALUE:
-                        //This is the case where we don't know what happened, so we're defaulting
-                        InstrumentationLogger.LogAnonymousEvent("Assumed crashing shutdown", "Stability");
-                        if (isUptimeSpanValid)
-                            InstrumentationLogger.LogAnonymousTimedEvent("Stability", "Assumed Dirty Uptime", uptimeSpan);
-                        break;
-
-                    default:
-                        //Something went wrong, fail out with 'unknown' data.
-                        InstrumentationLogger.LogAnonymousEvent("Unknown shutdown", "Stability");
-                        Debug.WriteLine("Unknown shutdown key value: " + cleanShutdownValue);
-                        break;
-                }
-            }
-
 
             // If we don't do anything to explicitly set the type of shutdown assume we hard-crashed
             // this is pesimistic

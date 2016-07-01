@@ -41,9 +41,7 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
-    <Compile Include="DynamoMSOffice\Excel.cs" />
     <Compile Include="DynamoPython\dynPython.cs" />
-    <Compile Include="DynamoRaaS\Nodes.cs" />
     <Compile Include="MigrationHelpers.cs" />
     <Compile Include="CoreNodes\dynBaseTypes.cs" />
     <Compile Include="RevitNodes\AdaptiveComponents.cs" />
@@ -63,6 +61,17 @@
     <Compile Include="RevitNodes\ModelCurve.cs" />
     <Compile Include="RevitNodes\NurbsSpline.cs" />
     <Compile Include="RevitNodes\Plane.cs" />
+    <Compile Include="RevitNodes\Solid.cs" />
+    <Compile Include="RevitNodes\StructuralFraming.cs" />
+    <Compile Include="RevitNodes\SunPath.cs" />
+    <Compile Include="RevitNodes\Tesselation.cs" />
+    <Compile Include="RevitNodes\Topography.cs" />
+    <Compile Include="RevitNodes\Transaction.cs" />
+    <Compile Include="RevitNodes\Transform.cs" />
+    <Compile Include="RevitNodes\UV.cs" />
+    <Compile Include="RevitNodes\View.cs" />
+    <Compile Include="RevitNodes\Wall.cs" />
+    <Compile Include="RevitNodes\XYZ.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -77,6 +86,7 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
+  
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

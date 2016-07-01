@@ -14,7 +14,7 @@ using System.Threading;
 
 namespace Dynamo.Logging
 {
-    internal class Log : IDisposable
+    internal class UsageLog : ILogger, IDisposable
     {
         private const string URL = "https://dynamoinstr.appspot.com/rpc";
         //private const string URL = "http://192.168.1.68:8080/rpc";
@@ -162,7 +162,7 @@ namespace Dynamo.Logging
         /// <param name="appName">The name of the application associated with this log</param>
         /// <param name="userID">A statistically unique string associated with the user, e.g. a GUID</param>
         /// <param name="sessionID">A statistically unique string associated with the session, e.g. a GUID</param>
-        public Log(string appName, string userID, string sessionID)
+        public UsageLog(string appName, string userID, string sessionID)
         {
             try
             {
@@ -216,7 +216,7 @@ namespace Dynamo.Logging
         /// </summary>
         /// <param name="tag">Tag associated with the log item</param>
         /// <param name="text">Text to log</param>
-        public void Info(string tag, string text)
+        public void Log(string tag, string text)
         {
             ValidateInput(tag, text);
             PrepAndPushItem(tag, "Info", text);
@@ -309,7 +309,7 @@ namespace Dynamo.Logging
 
             lock (dbMutex)
             {
-                if (items.Count > Log.MAX_COUNT)
+                if (items.Count > UsageLog.MAX_COUNT)
                     return;
 
                 items.Enqueue(item);
@@ -329,6 +329,8 @@ namespace Dynamo.Logging
 
                 while (true)
                 {
+                    if (uploaderThread == null) break;
+
                     Thread.Sleep(DELAY_MS);
 
                     Dictionary<String, String> itemToUpload = null;
@@ -557,6 +559,26 @@ namespace Dynamo.Logging
 
             //Do nothing, just absorb the error, the implicitly causes logging to shut down
 
+        }
+
+        public void Log(string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LogError(string error)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LogWarning(string warning, WarningLevel level)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Log(Exception e)
+        {
+            throw new NotImplementedException();
         }
     }
 }
