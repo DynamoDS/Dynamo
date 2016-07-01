@@ -1,4 +1,5 @@
 ﻿using Dynamo;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Search;
@@ -37,7 +38,9 @@ namespace DynamoCoreWpfTests
                 PathResolver = pathResolver
             });
 
-            libraryServices = new LibraryServices(libraryCore, pathManager);
+            var settings = new PreferenceSettings();
+
+            libraryServices = new LibraryServices(libraryCore, pathManager, settings);
 
             RegisterEvents();
         }

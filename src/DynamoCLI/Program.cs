@@ -25,9 +25,7 @@ namespace DynamoCLI
                 try
                 {
                     DynamoModel.IsCrashing = true;
-                    InstrumentationLogger.LogException(e);
-                    StabilityTracking.GetInstance().NotifyCrash();
-
+                    Dynamo.Logging.Analytics.TrackException(e, true);
                 }
                 catch
                 {

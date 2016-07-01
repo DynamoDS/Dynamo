@@ -260,7 +260,7 @@ namespace Dynamo.Search
         {
             FilterPopup.IsOpen = true;
 
-            InstrumentationLogger.LogAnonymousEvent("FilterButtonClicked","Search UX");
+            Analytics.TrackEvent(Actions.FilterButtonClicked, Categories.SearchUX);
         }
 
         private void OnViewLayoutSelectorMouseLeftButtonUp(object sender, MouseButtonEventArgs e)

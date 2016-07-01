@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 
@@ -30,8 +29,6 @@ namespace Dynamo.Logging
             // not referencing multiple DynamoModels
             this.dynamoModel = dynamoModel;
 
-            StabilityCookie.Startup();
-
             startTime = DateTime.Now;
             heartbeatThread = new Thread(this.ExecThread);
             heartbeatThread.IsBackground = true;
@@ -40,12 +37,6 @@ namespace Dynamo.Logging
 
         private void DestroyInternal()
         {
-            //Are we shutting down clean if so write 'nice shutdown' cookie
-            if (DynamoModel.IsCrashing)
-                StabilityCookie.WriteCrashingShutdown();
-            else
-                StabilityCookie.WriteCleanShutdown();
-
             System.Diagnostics.Debug.WriteLine("Heartbeat Destory Internal called");
 
             shutdownEvent.Set(); // Signal the shutdown event... 
@@ -102,16 +93,16 @@ namespace Dynamo.Logging
                     String usage = PackFrequencyDict(ComputeNodeFrequencies());
                     String errors = PackFrequencyDict(ComputeErrorFrequencies());
 
-                    InstrumentationLogger.LogPiiInfo("Node-usage", usage);
-                    InstrumentationLogger.LogPiiInfo("Nodes-with-errors", errors);
+                    Analytics.LogPiiInfo("Node-usage", usage);
+                    Analytics.LogPiiInfo("Nodes-with-errors", errors);
 
                     DynamoModel.OnRequestDispatcherInvoke(
                         () =>
                         {
-                            string workspace =
+                            string workspace = dynamoModel.CurrentWorkspace == null ? string.Empty :
                                 dynamoModel.CurrentWorkspace
                                     .GetStringRepOfWorkspace();
-                            InstrumentationLogger.LogPiiInfo("Workspace", workspace);
+                            Analytics.LogPiiInfo("Workspace", workspace);
                         });
 
                 }

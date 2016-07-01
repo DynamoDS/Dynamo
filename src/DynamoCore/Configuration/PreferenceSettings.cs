@@ -262,6 +262,18 @@ namespace Dynamo.Configuration
         public bool OpenFileInManualExecutionMode { get; set; }
 
         /// <summary>
+        /// Indicates (if any) which namespaces should not be displayed in the Dynamo node library.
+        /// String format: "[library name]:[fully qualified namespace]"
+        /// </summary>
+        public List<string> NamespacesToExcludeFromLibrary { get; set; }
+
+        /// <summary>
+        /// True if the NamespacesToExcludeFromLibrary element is found in DynamoSettings.xml.
+        /// </summary>
+        [XmlIgnore]
+        public bool NamespacesToExcludeFromLibrarySpecified { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="PreferenceSettings"/> class.
         /// </summary>
         public PreferenceSettings()
@@ -290,6 +302,7 @@ namespace Dynamo.Configuration
             ShowEdges = false;
             OpenFileInManualExecutionMode = false;
             ShowDetailedLayout = true;
+            NamespacesToExcludeFromLibrary = new List<string>();
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
@@ -373,6 +386,17 @@ namespace Dynamo.Configuration
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
 
             return settings;
+		}
+
+        internal void InitializeNamespacesToExcludeFromLibrary()
+        {
+            if (!NamespacesToExcludeFromLibrarySpecified)
+            {
+                NamespacesToExcludeFromLibrary.Add(
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
+                );
+                NamespacesToExcludeFromLibrarySpecified = true;
+            }
         }
     }
 }
