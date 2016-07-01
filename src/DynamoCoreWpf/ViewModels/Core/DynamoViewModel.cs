@@ -1167,23 +1167,23 @@ namespace Dynamo.ViewModels
             {
                 if (!DynamoModel.IsTestMode)
                 {
-                    string CommandString = String.Format(Resources.MessageErrorOpeningFileGeneral);
-                    string ErrorMsgString;
+                    string commandString = String.Format(Resources.MessageErrorOpeningFileGeneral);
+                    string errorMsgString;
                     // Catch all the IO exceptions and file access here. The message provided by .Net is clear enough to indicate the problem in this case.
                     if (e is IOException || e is UnauthorizedAccessException)
                     {
-                        ErrorMsgString = String.Format(e.Message, xmlFilePath);
+                        errorMsgString = String.Format(e.Message, xmlFilePath);
                     }
                     else if (e is System.Xml.XmlException)
                     {
-                        ErrorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, xmlFilePath);
+                        errorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, xmlFilePath);
                     }
                     else
                     {
-                        ErrorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile);
+                        errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile);
                     }
-                    System.Windows.MessageBox.Show(ErrorMsgString);
-                    model.Logger.LogNotification("Dynamo", CommandString, ErrorMsgString, e.ToString());
+                    System.Windows.MessageBox.Show(errorMsgString);
+                    model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
                 }
                 else
                 {
