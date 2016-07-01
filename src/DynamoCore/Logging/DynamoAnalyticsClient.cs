@@ -46,6 +46,7 @@ namespace Dynamo.Logging
             else
                 StabilityCookie.WriteCleanShutdown();
 
+            Service.Instance.Unregister(GATrackerFactory.Name);
             Service.ShutDown();
 
             if (null != heartbeat)
