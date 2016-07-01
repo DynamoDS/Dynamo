@@ -15,16 +15,20 @@ namespace Dynamo.Tests
 {
     class TestAnalytics : Analytics
     {
-        public static void Init(IAnalyticsClient client, DynamoModel model, bool enable)
+        public static void Init(IAnalyticsClient client, DynamoModel model)
         {
             Analytics.client = client;
-            Analytics.Start(model, enable);
+            client.Start(model);
         }
 
         public static bool IsEnabled 
         { 
-            get { return enabled; }
-            set { enabled = value; }
+            get { return client != null; }
+        }
+
+        public static void Disable()
+        {
+            client = null;
         }
 
         public static void Throw<T>() where T : Exception, new()
@@ -55,7 +59,7 @@ namespace Dynamo.Tests
             base.Setup();
 
             //Setup mock client and start analytics tracking.
-            TestAnalytics.Init(clientMoq.Object, CurrentDynamoModel, true);
+            TestAnalytics.Init(clientMoq.Object, CurrentDynamoModel);
         }
 
         protected virtual Mock<IAnalyticsClient> MockClient()
@@ -113,7 +117,7 @@ namespace Dynamo.Tests
         [Test]
         public void EventTrackingDisabled()
         {
-            TestAnalytics.IsEnabled = false; //Disable analytics tracking.
+            TestAnalytics.Disable(); //Disable analytics tracking.
             VerifyEventTracking(Times.Never());
         }
     }

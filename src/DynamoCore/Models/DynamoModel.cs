@@ -1015,8 +1015,10 @@ namespace Dynamo.Models
 
         private void InitializeInstrumentationLogger()
         {
-            bool enableAnalytics = !IsTestMode;
-            Dynamo.Logging.Analytics.Start(this, enableAnalytics);
+            if (!IsTestMode)
+            {
+                Dynamo.Logging.Analytics.Start(this);
+            }
         }
 
         private IPreferences CreateOrLoadPreferences(IPreferences preferences)
