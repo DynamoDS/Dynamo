@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-17 16:03-0700\n"
+"POT-Creation-Date: 2016-06-30 20:40-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,6 +44,11 @@ msgstr ""
 msgid "Cast object is not a Ellipse"
 msgstr ""
 
+msgid ""
+"Error creating an ellipse!\n"
+" Ellipse radius must be non-zero"
+msgstr ""
+
 msgid "Error creating an ellipse!"
 msgstr ""
 
@@ -51,6 +56,12 @@ msgid "Cast object is not a SubDivisionMesh"
 msgstr ""
 
 msgid "Casted object is not an EllipseArc"
+msgstr ""
+
+msgid "EllipseArc radius must be non-zero"
+msgstr ""
+
+msgid "EllipseArc sweep angle must be non-zero"
 msgstr ""
 
 msgid "Unexpected error creating the EllipseArc!"
@@ -267,6 +278,9 @@ msgid "Casted object is not a Cylinder"
 msgstr ""
 
 msgid "Casted object is not a Circle"
+msgstr ""
+
+msgid "Circle radius must be non-zero"
 msgstr ""
 
 msgid "Error creating a circle!"
@@ -646,6 +660,16 @@ msgstr ""
 msgid "Casted object is not an Arc"
 msgstr ""
 
+msgid ""
+"Error creating an arc!\n"
+"Start angle cannot be the same as end angle"
+msgstr ""
+
+msgid ""
+"Error creating an arc!\n"
+"Sweep angle must be non-zero"
+msgstr ""
+
 msgid "Cannot create Arc: base object NULL"
 msgstr ""
 
@@ -685,6 +709,11 @@ msgid "Cannot build bi arc for coincident lines"
 msgstr ""
 
 msgid "Cannot build bi arc facing corner of tangent intersections"
+msgstr ""
+
+msgid ""
+"Error creating arc!\n"
+"End point lies in direction of Tangent vector"
 msgstr ""
 
 msgid "Casted object is not a Rectangle"
@@ -900,6 +929,498 @@ msgid "Error getting face loops!"
 msgstr ""
 
 msgid "Cast object is not Face"
+msgstr ""
+
+msgid "Cannot construct FACE from surface"
+msgstr ""
+
+msgid "Cannot get bounding box from FACE"
+msgstr ""
+
+msgid "The input surface must have finite parameter ranges"
+msgstr ""
+
+msgid "Impossible to refit given surface"
+msgstr ""
+
+msgid "Knots is not match control vertices"
+msgstr ""
+
+msgid "Failed to create ASM B-Spline curve"
+msgstr ""
+
+msgid "Failed to convert Nurbs curve"
+msgstr ""
+
+msgid "Failed to convert Nurbs surface"
+msgstr ""
+
+msgid "Unable to set T-Spline for conversion"
+msgstr ""
+
+msgid "Unable to build body from T-Spline"
+msgstr ""
+
+msgid ""
+"Knots technically match, but it's probably just roundoff from a seashell"
+msgstr ""
+
+msgid "Seashell isoparm pattern exists, standardization is impossible"
+msgstr ""
+
+msgid "The t-spline is not manifold"
+msgstr ""
+
+msgid "The matching knots guarantee is not met"
+msgstr ""
+
+msgid "The t-spline contains degenerate faces/zero-length edges"
+msgstr ""
+
+msgid "The t-spline contains valence-2 star points"
+msgstr ""
+
+msgid "Crashed during standardize"
+msgstr ""
+
+msgid "Unknown"
+msgstr ""
+
+msgid "Impossible to get face from surface"
+msgstr ""
+
+msgid "Impossible to get edges from face"
+msgstr ""
+
+msgid "Impossible to get curve from edge"
+msgstr ""
+
+msgid "Number of symmetric segments must be greater than or equal to 2"
+msgstr ""
+
+msgid "Reflection has null parent"
+msgstr ""
+
+msgid "Reflection has invalid index"
+msgstr ""
+
+msgid "Reflection has invalid plane"
+msgstr ""
+
+msgid "Reflection has unimplemented symmetry type"
+msgstr ""
+
+msgid "Failed to combine T-Spline Surfaces"
+msgstr ""
+
+msgid "Failed to commit topology changes"
+msgstr ""
+
+msgid "The provided topolology inputs should create equal count of loops"
+msgstr ""
+
+msgid ""
+"Span counts list should have the same length as input face/edge loops count, "
+"1 for replication or be empty. Detected loops: "
+msgstr ""
+
+msgid ""
+"Rotation counts list should have the same length as input face/edge loops "
+"count, 1 for replication or be empty. Detected loops: "
+msgstr ""
+
+msgid ""
+"Follow curves list should have the same length as input face/edge loops "
+"count, 1 for replication or be empty. Detected loops: "
+msgstr ""
+
+msgid ""
+"Align vertices list should have the same length as input face/edge loops "
+"count or be empty. Detected loops: "
+msgstr ""
+
+msgid ""
+"Flip alignment flags list should have the same length as input face/edge "
+"loops count, 1 for replication or be empty. Detected loops: "
+msgstr ""
+
+msgid ""
+"The provided faces or edges cannot be used to form a single, simple edge "
+"path."
+msgstr ""
+
+msgid "Second group elements count should be equal or multiple of first."
+msgstr ""
+
+msgid "Edge path periodicity missmatching."
+msgstr ""
+
+msgid "Error occurred while trying to build the bridge geometry."
+msgstr ""
+
+msgid "Could not build the bridge geometry due to complex symmetries."
+msgstr ""
+
+msgid "T-spline surfaces version missmatching."
+msgstr ""
+
+msgid "Segments count should be greater than or equal to 1"
+msgstr ""
+
+msgid "Segments count should be greater than rotations count"
+msgstr ""
+
+msgid "Wrong first orient vertex"
+msgstr ""
+
+msgid "Wrong second orient vertex"
+msgstr ""
+
+msgid "Bridge cannot be built"
+msgstr ""
+
+msgid "Cast object is not a TSplineSurface"
+msgstr ""
+
+msgid "Spans should be greater than or equal to 1"
+msgstr ""
+
+msgid "Error loading TSM"
+msgstr ""
+
+msgid "No objects were loaded"
+msgstr ""
+
+msgid "Error saving TSM"
+msgstr ""
+
+msgid "Error saving TSS"
+msgstr ""
+
+msgid "This T-Spline is not BRep convertible"
+msgstr ""
+
+msgid "Unable to convert to BRep"
+msgstr ""
+
+msgid "Minimum segments count must be greater or equal to 0."
+msgstr ""
+
+msgid "The mesh is empty"
+msgstr ""
+
+msgid "Groups sizes don't match."
+msgstr ""
+
+msgid ""
+"T-Spline Surface is not extractable and can not be displayed in smooth mode"
+msgstr ""
+
+msgid "T-Spline Surface requires segments count to be greater or equal to 1"
+msgstr ""
+
+msgid "Failed to bevel edges"
+msgstr ""
+
+msgid "The provided faces and edges should create equal count of groups"
+msgstr ""
+
+msgid "Failed to merge edges."
+msgstr ""
+
+msgid "The input groups cannot be empty"
+msgstr ""
+
+msgid "Only border edges are permitted"
+msgstr ""
+
+msgid "Failed fill hole with given inputs"
+msgstr ""
+
+msgid "T-Spline doesn't have symmetry"
+msgstr ""
+
+msgid "Impossible to add symmetry to the t-spline"
+msgstr ""
+
+msgid "Unable to find closest point to given geometries"
+msgstr ""
+
+msgid "Flatten failed. At least 4 vertices is required"
+msgstr ""
+
+msgid "Flatten failed. At least 3 vertices is required"
+msgstr ""
+
+msgid "Faces with given indices are absent in the surface"
+msgstr ""
+
+msgid "Knots repairing failed."
+msgstr ""
+
+msgid "nu and nv should be non-negative"
+msgstr ""
+
+msgid "Spans parameters shoud be greater or equal to 0"
+msgstr ""
+
+msgid "One of front or back spans number shoud be greater than 0"
+msgstr ""
+
+msgid "Curve extrusion failed"
+msgstr ""
+
+msgid "Failed to sweep curve into TSpline surface"
+msgstr ""
+
+msgid "Segments count must be as much as curves count or 1"
+msgstr ""
+
+msgid "End rotations count must be twice as much as curves count or 1"
+msgstr ""
+
+msgid "End radiuses count must be twice as much as curves count or 1"
+msgstr ""
+
+msgid "End percentage count must be twice as much as curves count or 1"
+msgstr ""
+
+msgid "Radius spans should be greater or equal to 3"
+msgstr ""
+
+msgid "Either radial or axial symmetry is allowed, but not both"
+msgstr ""
+
+msgid ""
+"Radius spans should be greater than or equal to 4 when X or Y symmetry is "
+"selected"
+msgstr ""
+
+msgid "Radius spans should be multiple of 4 when X and Y symmetry is selected"
+msgstr ""
+
+msgid ""
+"Faces per span must be greater than or equal to 1 when radial symmetry is "
+"selected"
+msgstr ""
+
+msgid "T-Spline revolving curve failed"
+msgstr ""
+
+msgid "Faces valence must be greater than 0."
+msgstr ""
+
+msgid "Snapping tolerance must be greater than 0."
+msgstr ""
+
+msgid "Vertex can't be creased: "
+msgstr ""
+
+msgid "Vertex can't be uncreased: "
+msgstr ""
+
+msgid "Crease unsuccessfull"
+msgstr ""
+
+msgid "Weld unsuccessfull"
+msgstr ""
+
+msgid "Failed to thicken TSpline surface"
+msgstr ""
+
+msgid "Failed to offset TSpline surface"
+msgstr ""
+
+msgid "Edges loop is empty"
+msgstr ""
+
+msgid "Failed to create match"
+msgstr ""
+
+msgid "Can't match more than one loop at a time"
+msgstr ""
+
+msgid "Failed to init match"
+msgstr ""
+
+msgid "Can't match a closed loop to an open loop"
+msgstr ""
+
+msgid "Invalid initial match parameters"
+msgstr ""
+
+msgid "Failed to create a match"
+msgstr ""
+
+msgid "T-Spline Surface requires spans to be greater or equal to 1"
+msgstr ""
+
+msgid "Failed to extrude TSpline edges"
+msgstr ""
+
+msgid "Failed to extrude TSpline faces"
+msgstr ""
+
+msgid "T-Spline surface is non-manifold"
+msgstr ""
+
+msgid "Faces with L-points cannot be subdivided"
+msgstr ""
+
+msgid "Ouptut t-spline has empty topology"
+msgstr ""
+
+msgid "Face normal has not-a-number coordinates"
+msgstr ""
+
+msgid "Num symmetric faces must be greater than zero."
+msgstr ""
+
+msgid "Point list should contain 4 points."
+msgstr ""
+
+msgid "Failed to build Sphere by four points."
+msgstr ""
+
+msgid "Point list should contain more than 3 points."
+msgstr ""
+
+msgid "Failed to fit T-Spline Sphere."
+msgstr ""
+
+msgid ""
+"X spans should be greater than or equal to 2 if X axis symmetry is selected"
+msgstr ""
+
+msgid ""
+"Y spans should be greater than or equal to 2 if Y axis symmetry is selected"
+msgstr ""
+
+msgid "Plane has invalid normal"
+msgstr ""
+
+msgid "X or Y coordinates of corners are coincedent"
+msgstr ""
+
+msgid "T-Spline Surface Plane creation failed"
+msgstr ""
+
+msgid "Height spans should be greater or equal to 1"
+msgstr ""
+
+msgid "Zero radius is not allowed"
+msgstr ""
+
+msgid "Zero height is not allowed"
+msgstr ""
+
+msgid "Coordinate system has zero axis"
+msgstr ""
+
+msgid ""
+"Height spans should be greater than or equal to 2 when Z symmetry is selected"
+msgstr ""
+
+msgid "T-Spline Surface Cylinder creation failed"
+msgstr ""
+
+msgid "Both radii cannot be zero"
+msgstr ""
+
+msgid "Failed to create cone"
+msgstr ""
+
+msgid "Height spans should be greater or equal to 2"
+msgstr ""
+
+msgid "T-Spline Surface Sphere creation failed"
+msgstr ""
+
+msgid "Zero radii are not allowed"
+msgstr ""
+
+msgid "Inner and outer radius spans should be greater or equal to 3"
+msgstr ""
+
+msgid ""
+"Inner and outer radius spans should be greater or equal to 4 if any axial "
+"symmetry is selected"
+msgstr ""
+
+msgid ""
+"Outer radius spans should be multiple of 4 when X and Y symmetry is selected"
+msgstr ""
+
+msgid "T-Spline Surface Torus creation failed"
+msgstr ""
+
+msgid "Zero dimensions are not allowed"
+msgstr ""
+
+msgid "T-Spline Surface Box creation failed"
+msgstr ""
+
+msgid "T-Spline Surface Quadball creation failed"
+msgstr ""
+
+msgid "Invalid topology index"
+msgstr ""
+
+msgid "Cast Face is not a TSplineFace"
+msgstr ""
+
+msgid "Cast object is not a TSplineFace"
+msgstr ""
+
+msgid "Face has invalid parent"
+msgstr ""
+
+msgid "Surface creation error."
+msgstr ""
+
+msgid "Face index is invalid"
+msgstr ""
+
+msgid "Cast Vertex is not a TSplineVertex"
+msgstr ""
+
+msgid "Cast object is not a TSplineVertex"
+msgstr ""
+
+msgid "Vertex has invalid parent"
+msgstr ""
+
+msgid "Vertex index is invalid"
+msgstr ""
+
+msgid "Cast Coedge is not a TSplineCoedge"
+msgstr ""
+
+msgid "Cast object is not a TSplineTopology"
+msgstr ""
+
+msgid "Vertex with given index is not present on the t-spline"
+msgstr ""
+
+msgid "Edge with given index is not present on the t-spline"
+msgstr ""
+
+msgid "Face with given index is not present on the t-spline"
+msgstr ""
+
+msgid "Cast Edge is not a TSplineEdge"
+msgstr ""
+
+msgid "Cast object is not a TSplineEdge"
+msgstr ""
+
+msgid "Edge has invalid parent"
+msgstr ""
+
+msgid "Edge index is invalid"
+msgstr ""
+
+msgid "Cast Loop is not a TSplineLoop"
 msgstr ""
 
 msgid "Cast object is not a Curve"
@@ -1398,6 +1919,9 @@ msgid "Error setting color attributes!"
 msgstr ""
 
 msgid "One part of curve is not linear!"
+msgstr ""
+
+msgid "Failed to approximate curve"
 msgstr ""
 
 msgid "Unable to multiply Matrix by Vector"
