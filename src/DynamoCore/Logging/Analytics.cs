@@ -33,6 +33,11 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
+        /// Returns if analytics reporting is ON
+        /// </summary>
+        public static bool ReportingAnalytics { get { return client != null && client.ReportingAnalytics; } }
+
+        /// <summary>
         /// Tracks an arbitrary event.
         /// </summary>
         /// <param name="action">Action performed</param>

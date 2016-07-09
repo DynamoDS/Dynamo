@@ -18,6 +18,7 @@ namespace DynamoSandbox
         private SettingsMigrationWindow migrationWindow;
         private DynamoViewModel viewModel = null;
         private string commandFilePath;
+        private Stopwatch startupTimer = Stopwatch.StartNew();
 
         [DllImport("msvcrt.dll")]
         public static extern int _putenv(string env);
@@ -48,7 +49,7 @@ namespace DynamoSandbox
                     });
 
                 var view = new DynamoView(viewModel);
-                view.Loaded += (sender, args) => CloseMigrationWindow();
+                view.Loaded += OnDynamoViewLoaded;
 
                 app.Run(view);
 
@@ -88,6 +89,12 @@ namespace DynamoSandbox
                 Debug.WriteLine(e.Message);
                 Debug.WriteLine(e.StackTrace);
             }
+        }
+
+        void OnDynamoViewLoaded(object sender, RoutedEventArgs e)
+        {
+            CloseMigrationWindow();
+            Analytics.TrackTimedEvent(Categories.Performance, "Startup", startupTimer.Elapsed, "DynamoSandbox");
         }
 
         private void CloseMigrationWindow()
