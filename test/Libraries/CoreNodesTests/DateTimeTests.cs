@@ -92,5 +92,51 @@ namespace DSCoreNodesTests
                 },
                 WrappedTS.Components(aTimeSpan));
         }
+        [Test, Category("UnitTests")]
+        public static void ZeroTimeSpan()
+        {
+            Assert.AreEqual(System.TimeSpan.Zero, DSCore.TimeSpan.Zero);
+            
+        }
+        [Test, Category("UnitTests")]
+        public static void MaxValueTimeSpan()
+        {
+            Assert.AreEqual(System.TimeSpan.MaxValue, DSCore.TimeSpan.MaxValue);
+        }
+        [Test, Category("UnitTests")]
+        public static void NegateTimeSpan()
+        {
+            TimeSpan ts = System.TimeSpan.MaxValue;
+            Assert.AreEqual(ts.Negate(), DSCore.TimeSpan.Negate(ts));
+        }
+        [Test, Category("UnitTests")]
+        public static void MinValueTimeSpan()
+        {
+            Assert.AreEqual(System.TimeSpan.MinValue, DSCore.TimeSpan.MinValue);
+
+        }
+        [Test, Category("UnitTests")]
+        public static void TestDateTime_Today()
+        {
+            Assert.AreEqual(System.DateTime.Today, DSCore.DateTime.Today);
+        }
+        [Test, Category("UnitTests")]
+        public static void TestDateTime_DayOfWeek()
+        {
+            DateTime dt = new DateTime(2016, 6, 13);
+            Assert.AreEqual("Monday", DSCore.DateTime.DayOfWeek(dt).ToString());
+            dt = dt.AddDays(1);
+            Assert.AreEqual("Tuesday", DSCore.DateTime.DayOfWeek(dt).ToString());
+            dt = dt.AddDays(1);
+            Assert.AreEqual("Wednesday", DSCore.DateTime.DayOfWeek(dt).ToString());
+            dt = dt.AddDays(1);
+            Assert.AreEqual("Thursday", DSCore.DateTime.DayOfWeek(dt).ToString());
+            dt = dt.AddDays(1);
+            Assert.AreEqual("Friday", DSCore.DateTime.DayOfWeek(dt).ToString());
+            dt = dt.AddDays(1);
+            Assert.AreEqual("Saturday", DSCore.DateTime.DayOfWeek(dt).ToString());
+            dt = dt.AddDays(1);
+            Assert.AreEqual("Sunday", DSCore.DateTime.DayOfWeek(dt).ToString());
+        }
     }
 }

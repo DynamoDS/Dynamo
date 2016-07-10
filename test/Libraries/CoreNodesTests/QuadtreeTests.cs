@@ -62,6 +62,93 @@ namespace DSCoreNodesTests
             Assert.Throws<ArgumentException>(
                 () => qt.FindPointsWithinRadius(UV.ByCoordinates(), 0.0));
         }
+        [Test]
+        public void QuadTree_FindPointsInRectangle()
+        {
+            var uvs = new List<UV>();
+            uvs.Add(UV.ByCoordinates(0.1, 0.1));
+            uvs.Add(UV.ByCoordinates(0.3, 0.03));
+            uvs.Add(UV.ByCoordinates(0.7, 0.7));
+            var qt = Quadtree.ByUVs(uvs);
+ 
+            UVRect uvRect = new UVRect(UV.ByCoordinates(0,0),UV.ByCoordinates(0.5,0.5));
+            var points = qt.FindPointsInRectangle(uvRect);
+            Assert.AreEqual(points.Count, 2);   
+        }
+        [Test]
+        public void UVExtensions_Area()
+        {
+            Assert.AreEqual(0.5,DSCore.UVExtensions.Area(UV.ByCoordinates(0,0),UV.ByCoordinates(1,0.5)));
+        }
+        [Test]
+        public void Node_FindAllNodesUpLevel_FromRootNode()
+        {
+            var uvs = new List<UV>();
+            uvs.Add(UV.ByCoordinates(0, 0));
+            uvs.Add(UV.ByCoordinates(1, 1));
+            var qt = Quadtree.ByUVs(uvs);
+            var nodeList = qt.Root.FindAllNodesUpLevel(3);
+            Assert.AreEqual(4, nodeList.Count);
+        }
+        [Test]
+        public void Node_FindNodeWhichContains_GoodArgs()
+        {
+            var uvs = new List<UV>();
+            uvs.Add(UV.ByCoordinates(0, 0));
+            uvs.Add(UV.ByCoordinates(1, 1));
+            uvs.Add(UV.ByCoordinates(0.2, 0.2));
+            var qt = Quadtree.ByUVs(uvs);
+            var node = qt.Root.FindNodeWhichContains(UV.ByCoordinates(0.2, 0.2));
+            Assert.AreEqual(0.2, node.Point.U);
+            Assert.AreEqual(0.2, node.Point.V);
+
+        }
+        [Test]
+        public void Node_TryFind_GoodArgs()
+        {
+            var uvs = new List<UV>();
+            uvs.Add(UV.ByCoordinates(0, 0));
+            uvs.Add(UV.ByCoordinates(1, 1));
+            uvs.Add(UV.ByCoordinates(0.2, 0.2));
+            var qt = Quadtree.ByUVs(uvs);
+            Node node;
+            Assert.IsTrue( qt.Root.TryFind(UV.ByCoordinates(0.2, 0.2),out node));
+            Assert.AreEqual(0.2, node.Point.U);
+            Assert.AreEqual(0.2, node.Point.V);
+        }
+        [Test]
+        public void Node_TryFind_BadArgs()
+        {
+            var uvs = new List<UV>();
+            uvs.Add(UV.ByCoordinates(0, 0));
+            uvs.Add(UV.ByCoordinates(1, 1));
+            uvs.Add(UV.ByCoordinates(0.2, 0.2));
+            var qt = Quadtree.ByUVs(uvs);
+            Node node;
+            Assert.IsFalse(qt.Root.TryFind(UV.ByCoordinates(-1,-1), out node));
+            Assert.IsNull(node);
+        }
+        [Test]
+        public void Node_FindNodeWhichContains_BadArgs()
+        {
+            var uvs = new List<UV>();
+            uvs.Add(UV.ByCoordinates(0, 0));
+            uvs.Add(UV.ByCoordinates(0.2, 0.2));
+            var qt = Quadtree.ByUVs(uvs);
+            Assert.IsNull(qt.Root.FindNodeWhichContains(UV.ByCoordinates(-1, -1)));
+        }
+
+        [Test]
+        public void Node_FindAllNodesUpLevel_FromLeafNode()
+        {
+            var uvs = new List<UV>();
+            uvs.Add(UV.ByCoordinates(0, 0));
+            uvs.Add(UV.ByCoordinates(1, 1));
+            var qt = Quadtree.ByUVs(uvs);
+            var neNode = qt.Root.NE;
+            var nodeList = neNode.FindAllNodesUpLevel(3);
+            Assert.AreEqual(4, nodeList.Count);
+        }
 
         private static IList<UV> SetupSampleUVs()
         {
