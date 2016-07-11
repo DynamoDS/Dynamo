@@ -2048,4 +2048,11 @@ Next assemblies were loaded several times:
     <value>Error Opening File</value>
     <comment>Nofication Center Title</comment>
   </data>
+  <data name="ContextMenuLacingAuto" xml:space="preserve">
+    <value>Auto</value>
+    <comment>Auto lacing</comment>
+  </data>
+  <data name="LacingAutoToolTip" xml:space="preserve">
+    <value>No replication guide will be added.</value>
+  </data>
 </root>

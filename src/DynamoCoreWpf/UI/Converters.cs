@@ -1368,6 +1368,8 @@ namespace Dynamo.Controls
             {
                 case LacingStrategy.Disabled:
                     return "";
+                case LacingStrategy.Auto:
+                    return "Auto";
                 case LacingStrategy.CrossProduct:
                     return "XXX";
                 case LacingStrategy.First:
@@ -1397,10 +1399,10 @@ namespace Dynamo.Controls
             {
                 case LacingStrategy.Disabled:
                     return Resources.LacingDisabledToolTip;
+                case LacingStrategy.Auto:
+                    return Resources.LacingAutoToolTip;
                 case LacingStrategy.CrossProduct:
                     return Resources.LacingCrossProductToolTip;
-                case LacingStrategy.First:
-                    return Resources.LacingFirstToolTip;
                 case LacingStrategy.Longest:
                     return Resources.LacingLongestToolTip;
                 case LacingStrategy.Shortest:

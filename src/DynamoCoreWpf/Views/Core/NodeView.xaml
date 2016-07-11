@@ -54,11 +54,10 @@
                 <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
                           Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter},Mode=OneWay}">
                     <MenuItem IsCheckable="True"
-                              IsEnabled="False"
-                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=First,Mode=OneWay}"
+                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Auto,Mode=OneWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
-                              CommandParameter="First"
-                              Header="{x:Static p:Resources.ContextMenuLacingFirst}" />
+                              CommandParameter="Auto"
+                              Header="{x:Static p:Resources.ContextMenuLacingAuto}" />
                     <MenuItem IsCheckable="True"
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Shortest,Mode=OneWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
