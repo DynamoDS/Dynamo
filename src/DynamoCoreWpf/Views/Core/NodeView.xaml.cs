@@ -127,6 +127,7 @@ namespace Dynamo.Controls
             nodeBorder.SizeChanged += OnSizeChanged;
             DataContextChanged += OnDataContextChanged;
 
+
             Panel.SetZIndex(this, 1);
         }
 
