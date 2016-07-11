@@ -203,13 +203,8 @@ namespace ProtoCore.Lang
                     ret = ArrayUtilsForBuiltIns.Equals(formalParameters[0], formalParameters[1], interpreter, c);
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.Contains:
-                    {
-                        if (formalParameters[1].IsArray)
-                            ret = ProtoCore.DSASM.StackValue.BuildBoolean(ArrayUtilsForBuiltIns.ContainsArray(formalParameters[0], formalParameters[1], interpreter));
-                        else
-                            ret = ProtoCore.DSASM.StackValue.BuildBoolean(ArrayUtilsForBuiltIns.Contains(formalParameters[0], formalParameters[1], interpreter));
-                        break;
-                    }
+                    ret = ProtoCore.DSASM.StackValue.BuildBoolean(ArrayUtilsForBuiltIns.Contains(formalParameters[0], formalParameters[1], interpreter));
+                    break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.IndexOf:
                     {
                         if (formalParameters[0].IsArray)
@@ -1996,67 +1991,13 @@ namespace ProtoCore.Lang
             {
                 return true;
             }
-
-            var svArray = runtimeCore.Heap.ToHeapObject<DSArray>(sv1).Values;
-            foreach (StackValue op in svArray)
+            else
             {
-                if (op.IsArray)
-                {
-                    if (Contains(op, sv2, runtime))
-                        return true;
-                }
-                else
-                {
-                    if (StackUtils.CompareStackValues(op, sv2, runtime.runtime.RuntimeCore))
-                        return true;
-                }
+                var svArray = runtimeCore.Heap.ToHeapObject<DSArray>(sv1).Values;
+                return svArray.Any(v => StackUtils.CompareStackValues(v, sv2, runtimeCore) || (v.IsArray && Contains(v, sv2, runtime)));
             }
-            return false;
         }
-        internal static bool ContainsArray(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
-        {
-            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
-            if (!sv1.IsArray)
-            {
-                // Type mismatch.
-                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.InvalidArguments, Resources.kInvalidArguments);
-                return false;
-            }
-            bool contains = false;
-            if (StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.RuntimeCore)) 
-                return true;
 
-            var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv1);
-            foreach (var op in array.Values)
-            {
-                if (!sv2.IsArray)
-                {
-                    if (!op.IsArray)
-                    {
-                        if (op.Equals(sv2))
-                            return true;
-                    }
-                    else
-                    {
-                        contains = ContainsArray(op, sv2, runtime);
-                    }
-                    if (contains) return contains;
-                }
-                else
-                {
-                    if (op.IsArray)
-                    {
-                        contains = StackUtils.CompareStackValues(op, sv2, runtime.runtime.RuntimeCore);
-                        if (!contains)
-                        {
-                            contains = ContainsArray(op, sv2, runtime);
-                        }
-                        if (contains) return contains;
-                    }
-                }
-            }
-            return contains;
-        }
         //IndexOf & IOndexOfArray::: sv2 is index of sv1
         internal static int IndexOf(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
         {
