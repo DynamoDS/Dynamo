@@ -1791,6 +1791,9 @@ namespace Dynamo.ViewModels
         public void SaveImage(object parameters)
         {
             OnRequestSaveImage(this, new ImageSaveEventArgs(parameters.ToString()));
+
+            Dynamo.Logging.Analytics.TrackCommandEvent("ImageCapture",
+                "NodeCount", CurrentSpace.Nodes.Count());
         }
 
         internal bool CanSaveImage(object parameters)
@@ -2131,6 +2134,8 @@ namespace Dynamo.ViewModels
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 BackgroundPreviewViewModel.ExportToSTL(_fileDialog.FileName, HomeSpace.Name);
+
+                Dynamo.Logging.Analytics.TrackCommandEvent("ExportToSTL");
             }
         }
 

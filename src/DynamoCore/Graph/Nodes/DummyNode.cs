@@ -56,6 +56,13 @@ namespace Dynamo.Graph.Nodes
             Description = GetDescription();
             ShouldDisplayPreviewCore = false;
 
+            if (OriginalNodeContent != null)
+            {
+                var legacyFullName = OriginalNodeContent.Attributes["function"];
+                if (legacyFullName != null)
+                    LegacyFullName = legacyFullName.Value;
+            }
+
             UpdatePorts();
 
             // Take the position from the old node (because a dummy node
@@ -84,6 +91,13 @@ namespace Dynamo.Graph.Nodes
                 foreach (XmlNode childNode in nodeElement.ChildNodes)
                     if (childNode.Name.Equals("OriginalNodeContent"))
                         OriginalNodeContent = (XmlElement)nodeElement.FirstChild.FirstChild;
+            }
+
+            if (OriginalNodeContent != null)
+            {
+                var legacyFullName = OriginalNodeContent.Attributes["type"];
+                if (legacyFullName != null)
+                    LegacyFullName = legacyFullName.Value;
             }
 
             var legacyAsm = nodeElement.Attributes["legacyAssembly"];
@@ -265,6 +279,11 @@ namespace Dynamo.Graph.Nodes
         /// Returns the node assembly
         /// </summary>
         public string LegacyAssembly { get; private set; }
+
+        /// <summary>
+        /// Returns the original node DSFunction description or UI node type
+        /// </summary>
+        public string LegacyFullName { get; private set; }
 
         /// <summary>
         /// Node can be Deprecated or Unresolved

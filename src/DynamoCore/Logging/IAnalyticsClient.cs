@@ -37,6 +37,7 @@ namespace Dynamo.Logging
         New,
         EngineFailure,
         FilterButtonClicked,
+        Unresolved,
     }
 
     /// <summary>
@@ -132,7 +133,7 @@ namespace Dynamo.Logging
         /// <param name="size">Size parameter</param>
         /// <param name="description">Event description</param>
         /// <returns>Event as IDisposable</returns>
-        IDisposable CreateFileOperationEvent(string filepath, Actions operation, int size, string description);
+        IDisposable TrackFileOperationEvent(string filepath, Actions operation, int size, string description);
 
         /// <summary>
         /// Logs usage data
