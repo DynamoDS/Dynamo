@@ -1064,6 +1064,17 @@ namespace Dynamo.Tests
             AssertPreviewValue("a612292b-6c72-41f7-bf91-753925f7a776", true);
             AssertPreviewValue("ad5b2297-537c-4445-b8db-9eca720787ec", true);
         }
+
+        [Test]
+        public void TestContainsArray()
+        {
+            // Verify the function with default argument works.
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsfunction\contains2.dyn");
+            OpenModel(dynFilePath);
+            AssertPreviewValue("863e8d06-0175-42ec-8613-305e9efa95d0", true);
+            AssertPreviewValue("b0d7b844-93a9-43fa-b8f1-15cbb7469a84", true);
+            AssertPreviewValue("d1942e84-355f-4083-bb1c-6b7203ee192c", true);
+        }
     }
 
     [Category("DSCustomNode")]
