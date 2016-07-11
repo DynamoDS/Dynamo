@@ -94,7 +94,7 @@ namespace DynamoSandbox
         void OnDynamoViewLoaded(object sender, RoutedEventArgs e)
         {
             CloseMigrationWindow();
-            Analytics.TrackTimedEvent(Categories.Performance, "Startup", startupTimer.Elapsed, "DynamoSandbox");
+            Analytics.TrackStartupTime("DynamoSandbox", startupTimer.Elapsed);
         }
 
         private void CloseMigrationWindow()

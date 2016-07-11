@@ -779,7 +779,7 @@ namespace Dynamo.Models
                             if (updateTask.ModifiedNodes != null && updateTask.ModifiedNodes.Any())
                             {
                                 modifiedNodes = updateTask.ModifiedNodes
-                                    .Select(n => n.NickName)
+                                    .Select(n => n.GetOriginalName())
                                     .Aggregate((x, y) => string.Format("{0}, {1}", x, y));
                             }
 
