@@ -1054,6 +1054,16 @@ namespace Dynamo.Tests
             OpenModel(dynFilePath);
             AssertPreviewValue("25a90516-9e46-4268-a745-266524844158", 6);
         }
+
+        [Test]
+        public void TestContainsUsingEqualityTest()
+        {
+            // Verify the function with default argument works.
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsfunction\contains.dyn");
+            OpenModel(dynFilePath);
+            AssertPreviewValue("a612292b-6c72-41f7-bf91-753925f7a776", true);
+            AssertPreviewValue("ad5b2297-537c-4445-b8db-9eca720787ec", true);
+        }
     }
 
     [Category("DSCustomNode")]
