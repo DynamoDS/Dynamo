@@ -504,6 +504,17 @@ namespace Dynamo.Models
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
                 dynamoModel.OpenFileImpl(this);
+
+                // Log file open action and the number of nodes in the opened workspace
+                Dynamo.Logging.Analytics.CreateFileOperationEvent(
+                    XmlFilePath, Logging.Actions.Open, dynamoModel.CurrentWorkspace.Nodes.Count());
+
+                // Log each unresolved node name in the opened workspace
+                foreach (DummyNode n in dynamoModel.CurrentWorkspace.Nodes.Where(x => x is DummyNode))
+                {
+                    Dynamo.Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.NodeOperations,
+                        string.Format("Unresolved node ({0}, {1})", n.LegacyAssembly, n.LegacyNodeName));
+                }
             }
 
             protected override void SerializeCore(XmlElement element)
