@@ -2111,6 +2111,21 @@ namespace Dynamo.Graph.Nodes
                 RenderPackagesUpdated(this, packages);
             }
         }
+
+        /// <summary>
+        /// Migrate NodeModel's LacingStrategy.Shortest to LacingStrategy.Auto
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        [NodeMigration(@from: "1.2.0.0")]
+        public static NodeMigrationData MigrateShortestLacingToAutoLacing(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            XmlElement node = data.MigratedNodes.ElementAt(0);
+            MigrationManager.ReplaceAttributeValue(node, "lacing", "Shortest", "Auto");
+            migrationData.AppendNode(node);
+            return migrationData;
+        }
     }
 
     /// <summary>
