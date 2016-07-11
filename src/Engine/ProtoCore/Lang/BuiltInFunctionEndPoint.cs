@@ -1997,27 +1997,21 @@ namespace ProtoCore.Lang
                 return true;
             }
 
-            bool contains = false;
             var svArray = runtimeCore.Heap.ToHeapObject<DSArray>(sv1).Values;
             foreach (StackValue op in svArray)
             {
-                if (!op.IsArray)
+                if (op.IsArray)
                 {
-                    if (op.Equals(sv2))
+                    if (Contains(op, sv2, runtime))
                         return true;
                 }
                 else
                 {
-                    contains = Contains(op, sv2, runtime);
+                    if (StackUtils.CompareStackValues(op, sv2, runtime.runtime.RuntimeCore))
+                        return true;
                 }
-
-                if (contains) 
-                {
-                    return true;
-                }
-
             }
-            return contains;
+            return false;
         }
         internal static bool ContainsArray(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
         {
