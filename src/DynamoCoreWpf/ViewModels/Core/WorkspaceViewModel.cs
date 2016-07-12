@@ -1048,7 +1048,7 @@ namespace Dynamo.ViewModels
             Model.DoGraphAutoLayout();
             DynamoViewModel.RaiseCanExecuteUndoRedo();
 
-            Dynamo.Logging.Analytics.CreateCommandEvent("GraphLayout");
+            Dynamo.Logging.Analytics.TrackCommandEvent("GraphLayout");
         }
 
         private static bool CanDoGraphAutoLayout(object o)
@@ -1074,8 +1074,8 @@ namespace Dynamo.ViewModels
                 DynamoViewModel.Model.CustomNodeManager.Collapse(selectedNodes,
                 selectedNotes, Model, DynamoModel.IsTestMode, args));
 
-            Dynamo.Logging.Analytics.CreateCommandEvent("NewCustomNode",
-                "Node count = " + selectedNodes.Count());
+            Dynamo.Logging.Analytics.TrackCommandEvent("NewCustomNode",
+                "NodeCount", selectedNodes.Count());
         }
 
         internal void Loaded()
