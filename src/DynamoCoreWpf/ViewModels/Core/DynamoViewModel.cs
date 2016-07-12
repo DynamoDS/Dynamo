@@ -1182,10 +1182,10 @@ namespace Dynamo.ViewModels
                     }
                     else
                     {
-                        errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile);
+                        errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, xmlFilePath);
                     }
-                    System.Windows.MessageBox.Show(errorMsgString);
                     model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
+                    System.Windows.MessageBox.Show(errorMsgString);
                 }
                 else
                 {
