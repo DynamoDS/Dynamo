@@ -481,6 +481,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />
     <None Include="packages.config" />
+    <None Include="UI\Fonts\fontawesome-webfont.ttf" />
     <None Include="UI\Fonts\OpenSans-Bold.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -269,6 +269,23 @@ namespace Dynamo.Controls
         }
     }
 
+    public class PortAtLevelVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            PortType portType = ((PortType)value);
+            if (portType == PortType.Input)
+                return Visibility.Visible;
+            else
+                return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class PortToAttachmentConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1369,7 +1386,7 @@ namespace Dynamo.Controls
                 case LacingStrategy.Disabled:
                     return "";
                 case LacingStrategy.Auto:
-                    return "Auto";
+                    return "?Auto";
                 case LacingStrategy.CrossProduct:
                     return "XXX";
                 case LacingStrategy.First:

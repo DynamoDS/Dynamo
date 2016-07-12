@@ -88,6 +88,7 @@
     <FontFamily x:Key="OpenSansLightItalic">../../Fonts/#Open Sans Light Italic</FontFamily>
     <FontFamily x:Key="OpenSansSemiboldItalic">../../Fonts/#Open Sans Semibold Italic</FontFamily>
     <FontFamily x:Key="OpenSansBoldItalic">../../Fonts/#Open Sans Bold Italic</FontFamily>
+    <FontFamily x:Key="fontawesome">../../Fonts/fontawesome-webfont</FontFamily>
 
     <!-- Window Common Styling -->
     <Style x:Key="DynamoWindowStyle"
