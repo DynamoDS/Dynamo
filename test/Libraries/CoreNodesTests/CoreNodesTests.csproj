@@ -80,6 +80,7 @@
     <Compile Include="ProtoNodesTests.cs" />
     <Compile Include="QuadtreeTests.cs" />
     <Compile Include="Setup.cs" />
+    <Compile Include="ThreadTests.cs" />
     <Compile Include="WebTests.cs" />
     <Compile Include="StringTests.cs" />
   </ItemGroup>

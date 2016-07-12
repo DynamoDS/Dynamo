@@ -24,6 +24,11 @@ namespace DSCoreNodesTests
             result = Object.Type(0.0);
             Assert.AreEqual("System.Double", result);
         }
-
+        [Test]
+        [Category("UnitTests")]
+        public static void Test_Identity()
+        {
+            Assert.AreEqual(string.Empty,Object.Identity(string.Empty));
+        }
     }
 }

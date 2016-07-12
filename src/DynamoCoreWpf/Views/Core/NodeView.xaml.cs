@@ -19,6 +19,7 @@ using System.Windows.Threading;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 using Dynamo.UI.Controls;
+using Dynamo.Nodes;
 
 namespace Dynamo.Controls
 {
@@ -125,6 +126,7 @@ namespace Dynamo.Controls
 
             nodeBorder.SizeChanged += OnSizeChanged;
             DataContextChanged += OnDataContextChanged;
+
 
             Panel.SetZIndex(this, 1);
         }
@@ -565,6 +567,14 @@ namespace Dynamo.Controls
             }
 
             var index = ++NodeViewModel.StaticZIndex;
+
+            // increment all Notes to ensure that they are always above any Node
+            NoteViewModel.StaticZIndex = index + 1;
+
+            foreach (var note in ViewModel.WorkspaceViewModel.Notes)
+            {
+                note.ZIndex = NoteViewModel.StaticZIndex;
+            }
 
             oldZIndex = nodeWasClicked ? index : ViewModel.ZIndex;
             ViewModel.ZIndex = index;

@@ -70,6 +70,7 @@ namespace Dynamo.Models
         private WorkspaceModel currentWorkspace;
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
+        internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
         #endregion
 
         #region events
@@ -772,10 +773,21 @@ namespace Dynamo.Models
                         long end = e.Task.ExecutionEndTime.TickCount;
                         var executionTimeSpan = new TimeSpan(end - start);
 
-                        Dynamo.Logging.Analytics.TrackTimedEvent(
-                            Categories.Performance,
-                            e.Task.GetType().Name,
-                            executionTimeSpan);
+                        if (Logging.Analytics.ReportingAnalytics)
+                        {
+                            var modifiedNodes = "";
+                            if (updateTask.ModifiedNodes != null && updateTask.ModifiedNodes.Any())
+                            {
+                                modifiedNodes = updateTask.ModifiedNodes
+                                    .Select(n => n.GetOriginalName())
+                                    .Aggregate((x, y) => string.Format("{0}, {1}", x, y));
+                            }
+
+                            Dynamo.Logging.Analytics.TrackTimedEvent(
+                                Categories.Performance,
+                                e.Task.GetType().Name,
+                                executionTimeSpan, modifiedNodes);
+                        }
 
                         Debug.WriteLine(String.Format(Resources.EvaluationCompleted, executionTimeSpan));
 
@@ -1015,8 +1027,10 @@ namespace Dynamo.Models
 
         private void InitializeInstrumentationLogger()
         {
-            bool enableAnalytics = !IsTestMode;
-            Dynamo.Logging.Analytics.Start(this, enableAnalytics);
+            if (!IsTestMode)
+            {
+                Dynamo.Logging.Analytics.Start(this);
+            }
         }
 
         private IPreferences CreateOrLoadPreferences(IPreferences preferences)

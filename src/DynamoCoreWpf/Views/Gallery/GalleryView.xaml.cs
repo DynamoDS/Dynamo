@@ -15,6 +15,7 @@ namespace Dynamo.Wpf.Views.Gallery
             InitializeComponent();
             DataContext = galleryViewModel;
             ViewModel = galleryViewModel;
+            Logging.Analytics.TrackScreenView("Gallery");
         }
 
         private void GalleryView_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

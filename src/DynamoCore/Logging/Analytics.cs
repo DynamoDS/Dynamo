@@ -8,19 +8,17 @@ namespace Dynamo.Logging
     /// </summary>
     public class Analytics
     {
-        protected static IAnalyticsClient client = new DynamoAnalyticsClient();
-        protected static bool enabled = true;
-
+        protected static IAnalyticsClient client = null;
+        
         /// <summary>
         /// Starts the client when DynamoModel is created. This method initializes
         /// the Analytics service and application life cycle start is tracked.
         /// </summary>
         /// <param name="model">DynamoModel</param>
-        /// <param name="enable">Whether to enable analytics and usage reporting.</param>
-        internal static void Start(DynamoModel model, bool enable)
+        internal static void Start(DynamoModel model)
         {
-            Analytics.enabled = enable;
-            if (enable) client.Start(model);
+            client = new DynamoAnalyticsClient();
+            client.Start(model);
         }
 
         /// <summary>
@@ -28,10 +26,31 @@ namespace Dynamo.Logging
         /// </summary>
         internal static void ShutDown()
         {
-            if (enabled) client.ShutDown();
+            if (client != null) client.ShutDown();
 
             IDisposable disposable = client as IDisposable;
             if (disposable != null) disposable.Dispose();
+        }
+
+        /// <summary>
+        /// Returns if analytics reporting is ON
+        /// </summary>
+        public static bool ReportingAnalytics { get { return client != null && client.ReportingAnalytics; } }
+
+        /// <summary>
+        /// Tracks application startup time
+        /// </summary>
+        /// <param name="productName">Dynamo product name</param>
+        /// <param name="time">Elapsed time</param>
+        /// <param name="description">Optional description</param>
+        public static void TrackStartupTime(string productName, TimeSpan time, string description="")
+        {
+            if(client != null)
+            {
+                var desc = string.IsNullOrEmpty(description) 
+                    ? productName : string.Format("{0}: {1}", productName, description);
+                client.TrackTimedEvent(Categories.Performance, "Startup", time, desc);
+            }
         }
 
         /// <summary>
@@ -43,7 +62,7 @@ namespace Dynamo.Logging
         /// <param name="value">A metric value associated with the event</param>
         public static void TrackEvent(Actions action, Categories category, string description = "", int? value = null)
         {
-            if (enabled) client.TrackEvent(action, category, description, value);
+            if (client != null) client.TrackEvent(action, category, description, value);
         }
 
         /// <summary>
@@ -55,7 +74,7 @@ namespace Dynamo.Logging
         /// <param name="description">Event description</param>
         public static void TrackTimedEvent(Categories category, string variable, TimeSpan time, string description = "")
         {
-            if(enabled) client.TrackTimedEvent(category, variable, time, description);
+            if(client != null) client.TrackTimedEvent(category, variable, time, description);
         }
 
         /// <summary>
@@ -64,7 +83,7 @@ namespace Dynamo.Logging
         /// <param name="viewName">Name of the screen</param>
         public static void TrackScreenView(string viewName)
         {
-            if(enabled) client.TrackScreenView(viewName);
+            if(client != null) client.TrackScreenView(viewName);
         }
 
         /// <summary>
@@ -74,7 +93,7 @@ namespace Dynamo.Logging
         /// <param name="isFatal">If it's fatal</param>
         public static void TrackException(Exception ex, bool isFatal)
         {
-            if(enabled) client.TrackException(ex, isFatal);
+            if(client != null) client.TrackException(ex, isFatal);
         }
 
         /// <summary>
@@ -88,7 +107,7 @@ namespace Dynamo.Logging
         /// <returns>Event as IDisposable</returns>
         public static IDisposable CreateTimedEvent(Categories category, string variable, string description = "", int? value = null)
         {
-            if (!enabled) return DynamoAnalyticsClient.Disposable;
+            if (client == null) return DynamoAnalyticsClient.Disposable;
 
             return client.CreateTimedEvent(category, variable, description, value);
         }
@@ -103,7 +122,7 @@ namespace Dynamo.Logging
         /// <returns>Event as IDisposable</returns>
         public static IDisposable CreateCommandEvent(string name, string description = "", int? value = null)
         {
-            if (!enabled) return DynamoAnalyticsClient.Disposable;
+            if (client == null) return DynamoAnalyticsClient.Disposable;
 
             return client.CreateCommandEvent(name, description, value);
         }
@@ -119,7 +138,7 @@ namespace Dynamo.Logging
         /// <returns>Event as IDisposable</returns>
         public static IDisposable CreateFileOperationEvent(string filepath, Actions operation, int size, string description="")
         {
-            if (!enabled) return DynamoAnalyticsClient.Disposable;
+            if (client == null) return DynamoAnalyticsClient.Disposable;
 
             return client.CreateFileOperationEvent(filepath, operation, size, description);
         }
@@ -131,7 +150,7 @@ namespace Dynamo.Logging
         /// <param name="data">Usage data</param>
         public static void LogPiiInfo(string tag, string data)
         {
-            if (enabled) client.LogPiiInfo(tag, data);
+            if (client != null) client.LogPiiInfo(tag, data);
         }
     }
 }

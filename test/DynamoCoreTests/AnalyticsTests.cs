@@ -15,16 +15,20 @@ namespace Dynamo.Tests
 {
     class TestAnalytics : Analytics
     {
-        public static void Init(IAnalyticsClient client, DynamoModel model, bool enable)
+        public static void Init(IAnalyticsClient client, DynamoModel model)
         {
             Analytics.client = client;
-            Analytics.Start(model, enable);
+            client.Start(model);
         }
 
         public static bool IsEnabled 
         { 
-            get { return enabled; }
-            set { enabled = value; }
+            get { return client != null; }
+        }
+
+        public static void Disable()
+        {
+            client = null;
         }
 
         public static void Throw<T>() where T : Exception, new()
@@ -55,7 +59,7 @@ namespace Dynamo.Tests
             base.Setup();
 
             //Setup mock client and start analytics tracking.
-            TestAnalytics.Init(clientMoq.Object, CurrentDynamoModel, true);
+            TestAnalytics.Init(clientMoq.Object, CurrentDynamoModel);
         }
 
         protected virtual Mock<IAnalyticsClient> MockClient()
@@ -91,10 +95,12 @@ namespace Dynamo.Tests
             Analytics.TrackTimedEvent(Categories.Stability, variable, time, description);
             clientMoq.Verify(c => c.TrackTimedEvent(Categories.Stability, variable, time, description), times);
 
-            var e = Analytics.CreateTimedEvent(Categories.Performance, variable, description);
-            clientMoq.Verify(c => c.CreateTimedEvent(Categories.Performance, variable, description, null), times);
+            using (var x = Analytics.CreateTimedEvent(Categories.Performance, variable, description))
+            {
+                clientMoq.Verify(c => c.CreateTimedEvent(Categories.Performance, variable, description, null), times);
+            }
 
-            e = Analytics.CreateCommandEvent("TestCommand");
+            var e = Analytics.CreateCommandEvent("TestCommand");
             clientMoq.Verify(c => c.CreateCommandEvent("TestCommand", "", null), times);
 
             e = Analytics.CreateFileOperationEvent(this.TempFolder, Actions.Read, 5);
@@ -113,7 +119,7 @@ namespace Dynamo.Tests
         [Test]
         public void EventTrackingDisabled()
         {
-            TestAnalytics.IsEnabled = false; //Disable analytics tracking.
+            TestAnalytics.Disable(); //Disable analytics tracking.
             VerifyEventTracking(Times.Never());
         }
     }
@@ -204,8 +210,8 @@ namespace Dynamo.Tests
             var e = Analytics.CreateTimedEvent(Categories.Performance, variable, description);
             Assert.IsInstanceOf<TimedEvent>(e);
             e.Dispose();
-            //1 Create + 1 Dispose
-            trackerMoq.Verify(t => t.Track(e as TimedEvent, factoryMoq.Object), Times.Exactly(2));
+            //1 Dispose, Timed event is not tracked for creation.
+            trackerMoq.Verify(t => t.Track(e as TimedEvent, factoryMoq.Object), Times.Exactly(1));
 
             e = Analytics.CreateCommandEvent("TestCommand");
             Assert.IsInstanceOf<CommandEvent>(e);

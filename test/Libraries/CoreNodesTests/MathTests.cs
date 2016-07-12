@@ -31,6 +31,50 @@ namespace DSCoreNodesTests
                 DSCore.Math.Sum(new List<double> { -1.0, 0.0, 2.0, 4.0, 6.0, 10.0 }));
 
         }
+        [Test]
+        [Category("UnitTests")]
+        public static void GoldenRatio()
+        {
+            Assert.AreEqual(1.61803398875, DSCore.Math.GoldenRatio);
+
+        }
+        [Test]
+        [Category("UnitTests")]
+        public static void Log()
+        {
+            Assert.AreEqual(13.815510557964274, DSCore.Math.Log(1000000));
+        }
+        [Test]
+        [Category("UnitTests")]
+        public static void Log_Infinity()
+        {
+            Assert.IsTrue(System.Double.IsInfinity( DSCore.Math.Log(0)));
+        }
+        [Test]
+        [Category("UnitTests")]
+        public static void Log_NegativeInput()
+        {
+            Assert.IsTrue(System.Double.IsNaN(DSCore.Math.Log(-1)));
+        }
+        [Test]
+        [Category("UnitTests")]
+        public static void Test_RemapRange()
+        {
+            List<double> input = new List<double> { 0, 1, 2, 3, 4 };
+            List<double> expectedResults = new List<double> { -10, -2.5, 5, 12.5, 20 };
+            List<double> results = (List<double>)DSCore.Math.RemapRange(input, -10, 20);
+            for(int i = 0; i < expectedResults.Count; i++)
+            {
+                Assert.AreEqual(expectedResults.ElementAt(i), results.ElementAt(i));
+            }
+        }
+        [Test]
+        [Category("UnitTests")]
+        public static void Tan_NaN()
+        {
+            Assert.IsTrue(System.Double.IsNaN(DSCore.Math.Tan(90)));
+        }
+
 
     }
 }

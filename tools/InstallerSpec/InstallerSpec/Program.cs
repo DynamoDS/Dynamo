@@ -25,7 +25,7 @@ namespace InstallerSpec
 
         private DynamoCoreVersion DynamoVersion;
 
-        public static DynamoInstallSpec CreateFromPath(string binPath, string corefile)
+        public static DynamoInstallSpec CreateFromPath(string binPath, string corefile, IEnumerable<string> additionalFilePaths)
         {
             var spec = new DynamoInstallSpec()
             {
@@ -34,6 +34,7 @@ namespace InstallerSpec
 
             var dir = new DirectoryInfo(spec.DynamoVersion.BaseDirectory);
             spec.Modules = spec.GetModules(dir).ToList();
+            spec.Modules.AddRange(spec.GetModules(additionalFilePaths));
             return spec;
         }
 
@@ -81,16 +82,30 @@ namespace InstallerSpec
 
             foreach (FileInfo item in dir.EnumerateFiles())
             {
-                var info = FileVersionInfo.GetVersionInfo(item.FullName);
-                yield return new ModuleSpec() 
-                { 
-                    Name = item.Name, 
-                    FilePath = item.FullName.Replace(DynamoVersion.BaseDirectory, @".\"), 
-                    Version = info != null ? info.FileVersion : "", 
-                    DigitalSignature = NeedSignature(info), 
-                    Author = info != null ? info.CompanyName : "" 
-                };
+                yield return ModuleSpecFromFileInfo(item, false);
             }
+        }
+
+        private IEnumerable<ModuleSpec> GetModules(IEnumerable<string> additionalFilePaths)
+        {
+            foreach(var filePath in additionalFilePaths)
+            {
+                if (!File.Exists(filePath)) continue;
+                yield return ModuleSpecFromFileInfo(new FileInfo(filePath), true);
+            }
+        }
+
+        private ModuleSpec ModuleSpecFromFileInfo(FileInfo fileInfo, bool forceSignature)
+        {
+            var info = FileVersionInfo.GetVersionInfo(fileInfo.FullName);
+            return new ModuleSpec()
+            {
+                Name = fileInfo.Name,
+                FilePath = fileInfo.FullName.Replace(DynamoVersion.BaseDirectory, @".\"),
+                Version = info != null ? info.FileVersion : "",
+                DigitalSignature = forceSignature ? true : NeedSignature(info),
+                Author = info != null ? info.CompanyName : ""
+            };
         }
 
         private bool NeedSignature(FileVersionInfo info)
@@ -150,7 +165,7 @@ namespace InstallerSpec
 Generates installer spec XML file to be used to create installer and digital 
 signature based on a given folder.
 
-InstallerSpec.exe [binfolder] [xmlfilepath] [corefile]
+InstallerSpec.exe binfolder [xmlfilepath] [corefile] [/f:files.txt]
 
   binfolder     The folder in which all binaries reside. The search will 
                 enumerate this folder as well as all sub-folders.
@@ -159,6 +174,10 @@ InstallerSpec.exe [binfolder] [xmlfilepath] [corefile]
 
   corefile      The core file name such as DynamoCore or DynamoRevitDS etc. 
                 to detect the version of the installer.
+
+  /f:files.txt  An optional text file containing paths to additional binary 
+                files that need to be signed. Each file in this text file 
+                should be on one line.
 ");
                 
                 return;
@@ -176,9 +195,48 @@ InstallerSpec.exe [binfolder] [xmlfilepath] [corefile]
                 filePath = args[1];
             }
 
-            var corefile = nArgs > 2 ? args[2] : string.Empty;
+            var corefile = string.Empty;
+            var fileList = new List<string>();
 
-            var installspec = DynamoInstallSpec.CreateFromPath(binpath, corefile);
+            var index = 2;
+            while (index < nArgs)
+            {
+                var value = args[index++];
+                if (value.StartsWith("/f:"))
+                {
+                    var textFilePath = value.Substring(3);
+                    if (File.Exists(textFilePath))
+                    {
+                        try
+                        {
+                            using (var streamReader = File.OpenText(textFilePath))
+                            {
+                                while (!streamReader.EndOfStream)
+                                {
+                                    // WARNING: The following codes are written with the assumption that 
+                                    // files with listed names are residing under "binpath", but this may 
+                                    // not be true in the future. Rewrite this logic and make "textFilePath"
+                                    // contains fully qualified paths instead of doing the prefix here.
+                                    // 
+                                    var fileNameWithoutPath = streamReader.ReadLine().Trim();
+                                    var fileNameWithPath = Path.Combine(binpath, fileNameWithoutPath);
+                                    if (!string.IsNullOrEmpty(fileNameWithPath))
+                                        fileList.Add(fileNameWithPath);
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
+                    }
+                }
+                else
+                {
+                    corefile = value; // Without "/f" flag, it's a file name.
+                }
+            }
+
+            var installspec = DynamoInstallSpec.CreateFromPath(binpath, corefile, fileList);
             installspec.Save(filePath);
 
             var binariestosigntxt = Path.Combine(Path.GetDirectoryName(filePath), @"binariestosign.txt");
