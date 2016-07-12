@@ -586,6 +586,7 @@ namespace Dynamo.Controls
                 Converter = new BooleanToVisibilityConverter()
             };
             BackgroundPreview.SetBinding(VisibilityProperty, vizBinding);
+            Analytics.TrackTimedEvent(Categories.Performance, "ViewActivation", dynamoViewModel.Model.stopwatch.Elapsed, "DynamoModel + DynamoView loaded");
         }
 
         /// <summary>

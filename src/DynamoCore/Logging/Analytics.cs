@@ -33,6 +33,27 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
+        /// Returns if analytics reporting is ON
+        /// </summary>
+        public static bool ReportingAnalytics { get { return client != null && client.ReportingAnalytics; } }
+
+        /// <summary>
+        /// Tracks application startup time
+        /// </summary>
+        /// <param name="productName">Dynamo product name</param>
+        /// <param name="time">Elapsed time</param>
+        /// <param name="description">Optional description</param>
+        public static void TrackStartupTime(string productName, TimeSpan time, string description="")
+        {
+            if(client != null)
+            {
+                var desc = string.IsNullOrEmpty(description) 
+                    ? productName : string.Format("{0}: {1}", productName, description);
+                client.TrackTimedEvent(Categories.Performance, "Startup", time, desc);
+            }
+        }
+
+        /// <summary>
         /// Tracks an arbitrary event.
         /// </summary>
         /// <param name="action">Action performed</param>

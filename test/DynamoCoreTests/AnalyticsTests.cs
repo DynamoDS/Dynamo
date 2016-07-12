@@ -95,10 +95,12 @@ namespace Dynamo.Tests
             Analytics.TrackTimedEvent(Categories.Stability, variable, time, description);
             clientMoq.Verify(c => c.TrackTimedEvent(Categories.Stability, variable, time, description), times);
 
-            var e = Analytics.CreateTimedEvent(Categories.Performance, variable, description);
-            clientMoq.Verify(c => c.CreateTimedEvent(Categories.Performance, variable, description, null), times);
+            using (var x = Analytics.CreateTimedEvent(Categories.Performance, variable, description))
+            {
+                clientMoq.Verify(c => c.CreateTimedEvent(Categories.Performance, variable, description, null), times);
+            }
 
-            e = Analytics.CreateCommandEvent("TestCommand");
+            var e = Analytics.CreateCommandEvent("TestCommand");
             clientMoq.Verify(c => c.CreateCommandEvent("TestCommand", "", null), times);
 
             e = Analytics.CreateFileOperationEvent(this.TempFolder, Actions.Read, 5);
@@ -208,8 +210,8 @@ namespace Dynamo.Tests
             var e = Analytics.CreateTimedEvent(Categories.Performance, variable, description);
             Assert.IsInstanceOf<TimedEvent>(e);
             e.Dispose();
-            //1 Create + 1 Dispose
-            trackerMoq.Verify(t => t.Track(e as TimedEvent, factoryMoq.Object), Times.Exactly(2));
+            //1 Dispose, Timed event is not tracked for creation.
+            trackerMoq.Verify(t => t.Track(e as TimedEvent, factoryMoq.Object), Times.Exactly(1));
 
             e = Analytics.CreateCommandEvent("TestCommand");
             Assert.IsInstanceOf<CommandEvent>(e);
