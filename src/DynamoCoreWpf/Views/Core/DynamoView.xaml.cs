@@ -586,7 +586,22 @@ namespace Dynamo.Controls
                 Converter = new BooleanToVisibilityConverter()
             };
             BackgroundPreview.SetBinding(VisibilityProperty, vizBinding);
-            Analytics.TrackTimedEvent(Categories.Performance, "ViewActivation", dynamoViewModel.Model.stopwatch.Elapsed, "DynamoModel + DynamoView loaded");
+            TrackStartupAnalytics();
+        }
+
+        private void TrackStartupAnalytics()
+        {
+            if (!Analytics.ReportingAnalytics) return;
+
+            string packages = string.Empty;
+            var pkgExtension = dynamoViewModel.Model.GetPackageManagerExtension();
+            if(pkgExtension != null)
+            {
+                packages = pkgExtension.PackageLoader.LocalPackages
+                    .Select(p => p.Name)
+                    .Aggregate((x, y) => string.Format("{0}, {1}", x, y));
+            }
+            Analytics.TrackTimedEvent(Categories.Performance, "ViewStartup", dynamoViewModel.Model.stopwatch.Elapsed, packages);
         }
 
         /// <summary>
