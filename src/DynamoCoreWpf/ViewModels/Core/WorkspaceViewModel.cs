@@ -506,6 +506,7 @@ namespace Dynamo.ViewModels
         {
             DynamoSelection.Instance.ClearSelection();
             Nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
+            Notes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.Model));
         }
 
         internal bool CanSelectAll(object parameter)
