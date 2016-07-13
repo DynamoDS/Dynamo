@@ -5,6 +5,7 @@ using Dynamo.Graph.Notes;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Configuration;
 
 namespace Dynamo.ViewModels
 {
@@ -27,6 +28,8 @@ namespace Dynamo.ViewModels
 
         private NoteModel _model;
         public readonly WorkspaceViewModel WorkspaceViewModel;
+        private int zIndex = Configurations.NodeStartZIndex; // initialize the start Z-Index of a note to the same as that of a node
+        internal static int StaticZIndex = Configurations.NodeStartZIndex; 
 
         public NoteModel Model
         {
@@ -64,9 +67,14 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public double ZIndex
-        {
-            get { return 3; }
+        /// <summary>
+        /// ZIndex represents the order on the z-plane in which the notes and other objects appear. 
+        /// </summary>
+        public int ZIndex
+         {
+
+            get { return zIndex; }
+            set { zIndex = value; RaisePropertyChanged("ZIndex"); }
         }
 
         public string Text
@@ -88,6 +96,7 @@ namespace Dynamo.ViewModels
             _model = model;
             model.PropertyChanged += note_PropertyChanged;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
+            ZIndex = ++StaticZIndex; // places the note on top of all nodes/notes
         }
 
         private void SelectionOnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
