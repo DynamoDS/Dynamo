@@ -598,8 +598,8 @@ namespace Dynamo.Controls
             if(pkgExtension != null)
             {
                 packages = pkgExtension.PackageLoader.LocalPackages
-                    .Select(p => p.Name)
-                    .Aggregate((x, y) => string.Format("{0}, {1}", x, y));
+                    .Select(p => string.Format("{0} {1}", p.Name, p.VersionName))
+                    .Aggregate(String.Empty, (x, y) => string.Format("{0}, {1}", x, y));
             }
             Analytics.TrackTimedEvent(Categories.Performance, "ViewStartup", dynamoViewModel.Model.stopwatch.Elapsed, packages);
         }
