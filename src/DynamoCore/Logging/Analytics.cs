@@ -120,7 +120,7 @@ namespace Dynamo.Logging
         /// <param name="description">Event description</param>
         /// <param name="value">A metric value associated with the event</param>
         /// <returns>Event as IDisposable</returns>
-        public static IDisposable CreateCommandEvent(string name, string description = "", int? value = null)
+        public static IDisposable TrackCommandEvent(string name, string description = "", int? value = null)
         {
             if (client == null) return DynamoAnalyticsClient.Disposable;
 
@@ -136,11 +136,11 @@ namespace Dynamo.Logging
         /// <param name="size">Size parameter</param>
         /// <param name="description">Event description</param>
         /// <returns>Event as IDisposable</returns>
-        public static IDisposable CreateFileOperationEvent(string filepath, Actions operation, int size, string description="")
+        public static IDisposable TrackFileOperationEvent(string filepath, Actions operation, int size, string description="")
         {
             if (client == null) return DynamoAnalyticsClient.Disposable;
 
-            return client.CreateFileOperationEvent(filepath, operation, size, description);
+            return client.TrackFileOperationEvent(filepath, operation, size, description);
         }
 
         /// <summary>

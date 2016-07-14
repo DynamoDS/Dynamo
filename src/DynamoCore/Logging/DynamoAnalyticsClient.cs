@@ -214,7 +214,7 @@ namespace Dynamo.Logging
             return e;
         }
 
-        public IDisposable CreateFileOperationEvent(string filepath, Actions operation, int size, string description)
+        public IDisposable TrackFileOperationEvent(string filepath, Actions operation, int size, string description)
         {
             if (!ReportingAnalytics) return Disposable;
 
