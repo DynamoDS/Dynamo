@@ -28,6 +28,7 @@ namespace Dynamo.Graph.Nodes
         public DummyNode()
         {
             LegacyNodeName = "Dynamo.Graph.Nodes.DummyNode";
+            LegacyFullName = LegacyNodeName;
             LegacyAssembly = string.Empty;
             NodeNature = Nature.Unresolved;
             Description = GetDescription();
@@ -48,6 +49,7 @@ namespace Dynamo.Graph.Nodes
             InputCount = inputCount;
             OutputCount = outputCount;
             LegacyNodeName = legacyName;
+            LegacyFullName = legacyName;
             NickName = legacyName;
             OriginalNodeContent = originalElement;
             LegacyAssembly = legacyAssembly;
