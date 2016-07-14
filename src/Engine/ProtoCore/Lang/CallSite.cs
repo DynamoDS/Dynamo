@@ -225,10 +225,20 @@ namespace ProtoCore
 
             public override System.Type BindToType(string assemblyName, string typeName)
             {
-                var result = AppDomain.CurrentDomain.GetAssemblies()
-                    .Where(a => !a.IsDynamic)
-                    .SelectMany(a => a.GetTypes())
-                    .FirstOrDefault(t => t.FullName == typeName);
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic);
+                var types = new List<System.Type>();
+                foreach (var a in assemblies)
+                {
+                    try
+                    {
+                        types.AddRange(a.GetTypes());
+                    }
+                    catch (ReflectionTypeLoadException)
+                    {
+                        // We ignore assembly loading exceptions that are thrown here when their dependencies cannot be found
+                    }
+                }
+                var result = types.FirstOrDefault(t => t.FullName == typeName);
 
                 return result;
             }
