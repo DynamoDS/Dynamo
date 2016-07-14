@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 
 namespace Dynamo.Logging
@@ -19,6 +21,15 @@ namespace Dynamo.Logging
         {
             client = new DynamoAnalyticsClient();
             client.Start(model);
+            model.WorkspaceAdded += OnWorkspaceAdded;
+        }
+
+        static void OnWorkspaceAdded(WorkspaceModel obj)
+        {
+            if (obj is CustomNodeWorkspaceModel)
+                TrackScreenView("CustomWorkspace");
+            else
+                TrackScreenView("Workspace");
         }
 
         /// <summary>
