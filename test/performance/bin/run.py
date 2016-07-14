@@ -143,7 +143,10 @@ def main():
         log(logfile, 'Error: Test cases path ' + test_case_path + ' does not exists.')
         sys.exit(1)
 
-    dynamocli = os.path.join(dynamo_path, 'bin\\AnyCPU\\Debug\\DynamoCLI.exe')
+    dynamocli = os.path.join(dynamo_path, 'bin\\AnyCPU\\Release\\DynamoCLI.exe')
+    if not os.path.exists(dynamocli):
+        dynamocli = os.path.join(dynamo_path, 'bin\\AnyCPU\\Debug\\DynamoCLI.exe')
+
     if not os.path.exists(dynamocli):
         log(logfile, 'Error: DynamoCLI ' + dynamocli + ' does not exists.')
         sys.exit(1)
