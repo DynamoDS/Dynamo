@@ -17,6 +17,7 @@ namespace Dynamo.PackageManager.UI
             this.viewModel = viewModel;
             this.DataContext = viewModel;
             InitializeComponent();
+            Logging.Analytics.TrackScreenView("PackageManager");
         }
 
         private void BrowseOnline_OnClick(object sender, RoutedEventArgs e)
