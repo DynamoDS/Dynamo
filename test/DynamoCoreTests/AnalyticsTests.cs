@@ -100,11 +100,11 @@ namespace Dynamo.Tests
                 clientMoq.Verify(c => c.CreateTimedEvent(Categories.Performance, variable, description, null), times);
             }
 
-            var e = Analytics.CreateCommandEvent("TestCommand");
+            var e = Analytics.TrackCommandEvent("TestCommand");
             clientMoq.Verify(c => c.CreateCommandEvent("TestCommand", "", null), times);
 
-            e = Analytics.CreateFileOperationEvent(this.TempFolder, Actions.Read, 5);
-            clientMoq.Verify(c => c.CreateFileOperationEvent(this.TempFolder, Actions.Read, 5, ""), times);
+            e = Analytics.TrackFileOperationEvent(this.TempFolder, Actions.Read, 5);
+            clientMoq.Verify(c => c.TrackFileOperationEvent(this.TempFolder, Actions.Read, 5, ""), times);
 
             Analytics.LogPiiInfo("tag", "data");
             clientMoq.Verify(c => c.LogPiiInfo("tag", "data"), times);
@@ -213,13 +213,13 @@ namespace Dynamo.Tests
             //1 Dispose, Timed event is not tracked for creation.
             trackerMoq.Verify(t => t.Track(e as TimedEvent, factoryMoq.Object), Times.Exactly(1));
 
-            e = Analytics.CreateCommandEvent("TestCommand");
+            e = Analytics.TrackCommandEvent("TestCommand");
             Assert.IsInstanceOf<CommandEvent>(e);
             e.Dispose();
             //1 Create + 1 Dispose
             trackerMoq.Verify(t => t.Track(e as CommandEvent, factoryMoq.Object), Times.Exactly(2));
 
-            e = Analytics.CreateFileOperationEvent(this.TempFolder, Actions.Save, 5);
+            e = Analytics.TrackFileOperationEvent(this.TempFolder, Actions.Save, 5);
             Assert.IsInstanceOf<FileOperationEvent>(e);
             e.Dispose();
 
@@ -242,13 +242,13 @@ namespace Dynamo.Tests
             //1 ApplicationLifecycle Start
             trackerMoq.Verify(t => t.Track(It.IsAny<TimedEvent>(), factoryMoq.Object), Times.Exactly(1));
 
-            e = Analytics.CreateCommandEvent("TestCommand");
+            e = Analytics.TrackCommandEvent("TestCommand");
             Assert.IsNotInstanceOf<CommandEvent>(e);
             e.Dispose();
             
             trackerMoq.Verify(t => t.Track(It.IsAny<CommandEvent>(), factoryMoq.Object), Times.Never());
 
-            e = Analytics.CreateFileOperationEvent(this.TempFolder, Actions.Save, 5);
+            e = Analytics.TrackFileOperationEvent(this.TempFolder, Actions.Save, 5);
             Assert.IsNotInstanceOf<FileOperationEvent>(e);
             e.Dispose();
 

@@ -95,7 +95,7 @@ namespace Dynamo.Engine
         /// <param name="libraryManagementCore">Core which is used for parsing code and loading libraries</param>
         /// <param name="pathManager">Instance of IPathManager containing neccessary Dynamo paths</param>
         /// <param name="preferences">The preference settings of the Dynamo instance</param>
-        public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager, IPreferences preferences)
+        public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager, IPreferences preferences = null)
         {
             LibraryManagementCore = libraryManagementCore;
             this.pathManager = pathManager;
