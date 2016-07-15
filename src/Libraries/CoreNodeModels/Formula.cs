@@ -50,7 +50,7 @@ namespace CoreNodeModels
 
         public Formula()
         {
-            ArgumentLacing = LacingStrategy.Shortest;
+            ArgumentLacing = LacingStrategy.Auto;
             OutPortData.Add(new PortData("", Properties.Resources.FormulaPortDataResultToolTip));
             RegisterAllPorts();
         }
