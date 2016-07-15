@@ -632,14 +632,31 @@ namespace DynamoUnits
             //it it's parsable, then just cram it into
             //whatever the project units are
             double total = 0.0;
-            if (Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out total))
-            {
-                _value = total/UiLengthConversion;
+            double feet, inch, m, cm, mm, numerator, denominator;
+            //For input with either unit of feet specified
+            //or without any unit being specified.
+            //When there is no unit being specified in the input,
+            //we take that as unit of feet by default
+            if(Utils.ParseLengthInFeetFromString(value, out feet, out numerator, out denominator))
+            { 
+                if (feet == 0 && denominator != 0)
+                {
+                    total = numerator / denominator;
+                }
+                else
+                {
+                    total = feet;
+                }
+                _value = total / UiLengthConversion;
                 return;
             }
-
+            /*if (Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out total))
+             {
+                 _value = total/UiLengthConversion;
+                 return;
+             }*/
+            //For inputs with inches specified.
             double fractionalInch = 0.0;
-            double feet, inch, m, cm, mm, numerator, denominator;
             Utils.ParseLengthFromString(value, out feet, out inch, out m, out cm, out mm, out numerator, out denominator);
 
             if (denominator != 0)
@@ -1874,7 +1891,30 @@ namespace DynamoUnits
             }
             return string.Format("{0}{1} {2}\"", sign, inches, fraction).Trim();
         }
-    
+
+        public static bool ParseLengthInFeetFromString(string value, out double feet, out double numerator, out double denominator)
+        {
+            string pattern = @"(\A((?<ft>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)('|ft)?)\Z)|(\A(?<ft>(?<num>(\+|-)?\d+)/(?<den>\d+)*( ?)('|ft)?)\Z)";
+
+            feet = 0.0;
+            numerator = 0.0;
+            denominator = 0.0;
+
+            const RegexOptions opts = RegexOptions.None;
+            var regex = new Regex(pattern, opts);
+            Match match = regex.Match(value.Trim().ToLower());
+            if (match.Success)
+            {
+                double.TryParse(match.Groups["ft"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out feet);
+                double.TryParse(match.Groups["num"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
+                                out numerator);
+                double.TryParse(match.Groups["den"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
+                                out denominator);
+                return true;
+            }
+            else return false;
+        }
+
         public static void ParseLengthFromString(string value, out double feet, 
             out double inch, out double m, out double cm, out double mm, out double numerator, out double denominator )
         {
