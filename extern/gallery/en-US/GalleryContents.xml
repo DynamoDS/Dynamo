@@ -3,7 +3,7 @@
 	<GalleryUiContents>
 	<GalleryContent>
 		<Header>Getting Started with Dynamo</Header>
-		<Body>Dynamo is a visual scripting program that will help you compose custom algorithms to process data and generate geometry. With Dynamo, you can generate code without having to know how to code.&#10;&#10;Learn about the basics of Dynamo on the next few pages.</Body>
+		<Body>Dynamo is a visual scripting program that will help you compose custom algorithms to process data and generate geometry. With Dynamo, you can generate code without having to know how to code. Learn about the basics of Dynamo on the next few pages.&#10;&#10;Find this guide in the application menu under "Help > Getting Started"</Body>
 		<ImagePath>01-Welcome.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
@@ -13,7 +13,7 @@
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Node Anatomy: Input, Output, Previews</Header>
-		<Body>[1] INPUT PORT: hover over it to reveal the default value and what type of input it accepts&#10;[2] OUTPUT PORT: hover over it to reveal the type of output the node returns&#10;[3] PREVIEW BUBBLE: to get more details about a node’s output, hover over the node for 1 second to reveal its preview bubble. Preview bubbles can’t be typed into, and you can keep the preview bubble open by clicking on the pin icon.</Body>
+		<Body>[1] INPUT PORT: hover over it to reveal the default value and what type of input the port accepts. Override the default by connecting a node to it.&#10;[2] OUTPUT PORT: hover over it to reveal the type of output the node returns&#10;[3] PREVIEW BUBBLE: hover over the node to reveal more output details. Preview bubbles can’t be typed into, and you can expand and keep them open by clicking on the pin icon.</Body>
 		<ImagePath>03-Anatomy-L.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
@@ -28,7 +28,7 @@
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Graph View  vs. Background 3D Preview</Header>
-		<Body>In Dynamo, you will see 2 views simultaneously: the Graph View and the Background 3d Preview.&#10;[1] Switch from Graph View to the Background 3d Preview&#10;[2] Use Zoom to Fit and independently control the Zoom of each view&#10;[3] Pan around each view by dragging the hand cursor</Body>
+		<Body>In Dynamo, you will see 2 views simultaneously: the Graph View (where nodes are edited) and the Background 3d Preview (where geometry output is visualized).&#10;[1]Switch from Graph View to the Background 3d Preview&#10;[2] Use Zoom to Fit and independently control the Zoom of each view&#10;[3] Pan around each view by dragging the mouse</Body>
 		<ImagePath>06-View-L.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
