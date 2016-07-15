@@ -491,7 +491,9 @@ namespace Dynamo.Models
 
             Context = config.Context;
             IsTestMode = config.StartInTestMode;
-            IsHeadless = ((config as IStartConfiguration2)?.IsHeadless).GetValueOrDefault();
+
+            var config2 = config as IStartConfiguration2;
+            IsHeadless = config2 ? config2.IsHeadless : false;
 
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory);
