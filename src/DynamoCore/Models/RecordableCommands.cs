@@ -802,7 +802,7 @@ namespace Dynamo.Models
                 Dynamo.Logging.Analytics.TrackEvent(
                     Logging.Actions.Create,
                     Logging.Categories.NodeOperations,
-                    Node.GetOriginalName());
+                    (Node != null) ? Node.GetOriginalName() : Name ?? "");
             }
 
             #endregion
