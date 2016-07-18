@@ -175,12 +175,7 @@
                     </Rectangle.Style>
                 </Rectangle>
                 <fa:FontAwesome Icon="ChevronRight" HorizontalAlignment="Right" VerticalAlignment="Center"  IsHitTestVisible="False" Background="{x:Null}"/>
-                <Popup Name="MyPopup" Placement="Right" AllowsTransparency="True" IsOpen="{Binding Path=ShowUseLevelMenu,diag:PresentationTraceSources.TraceLevel=High}">
-                    <interactivity:Interaction.Triggers>
-                        <views:HandlingEventTrigger EventName="MouseLeave">
-                            <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftUseLevelCommand}" CommandParameter="{Binding}" />
-                        </views:HandlingEventTrigger>
-                    </interactivity:Interaction.Triggers>
+                <dynui:UseLevelPopup Name="MyPopup" Placement="Right" AllowsTransparency="True" IsOpen="{Binding Path=ShowUseLevelMenu,diag:PresentationTraceSources.TraceLevel=High}" StaysOpen="False">
                     <Grid Background="Transparent">
                         <Grid.Resources>
                             <ResourceDictionary>
@@ -195,7 +190,7 @@
                             </StackPanel>
                         </Border>
                     </Grid>
-                </Popup>
+                </dynui:UseLevelPopup>
             </Grid>
         </DockPanel>
     </DataTemplate>
