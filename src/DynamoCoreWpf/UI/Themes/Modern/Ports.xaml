@@ -179,14 +179,23 @@
                     <Grid Background="Transparent">
                         <Grid.Resources>
                             <ResourceDictionary>
-                                <Style x:Key="EmptyStyle"/>
+                                <Style TargetType="CheckBox">
+                                    <Setter Property="FontFamily" Value="{StaticResource OpenSansRegular}"/>
+                                    <Setter Property="Foreground" Value="#555555"/>
+                                    <Setter Property="FontSize" Value="13"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="false">
+                                            <Setter Property="Foreground" Value="#bcbcbc"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
                             </ResourceDictionary>
                         </Grid.Resources>
                         <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="5" Padding="5" Background="#CBC6BE">
                             <StackPanel>
-                                <CheckBox Content="Use Levels?" Style="{StaticResource EmptyStyle}" Name="UseLevel" FontFamily="{StaticResource OpenSansRegular}"/>
+                                <CheckBox Content="Use Levels?" Name="UseLevel"/>
                                 <Border BorderBrush="#E0E0E0" BorderThickness="1"/>
-                                <CheckBox Content="Keep list structure?" Style="{StaticResource EmptyStyle}" IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}" FontFamily="{StaticResource OpenSansRegular}"/>
+                                <CheckBox Content="Keep list structure?" IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}"/>
                             </StackPanel>
                         </Border>
                     </Grid>
