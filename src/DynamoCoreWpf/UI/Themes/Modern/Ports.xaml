@@ -182,11 +182,16 @@
                         </views:HandlingEventTrigger>
                     </interactivity:Interaction.Triggers>
                     <Grid Background="Transparent">
+                        <Grid.Resources>
+                            <ResourceDictionary>
+                                <Style x:Key="EmptyStyle"/>
+                            </ResourceDictionary>
+                        </Grid.Resources>
                         <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="5" Padding="5" Background="#CBC6BE">
                             <StackPanel>
-                                <CheckBox Content="Use Levels?" Name="UseLevel"/>
+                                <CheckBox Content="Use Levels?" Style="{StaticResource EmptyStyle}" Name="UseLevel" FontFamily="{StaticResource OpenSansRegular}"/>
                                 <Border BorderBrush="#E0E0E0" BorderThickness="1"/>
-                                <CheckBox Content="Keep list structure?" IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}"/>
+                                <CheckBox Content="Keep list structure?" Style="{StaticResource EmptyStyle}" IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}" FontFamily="{StaticResource OpenSansRegular}"/>
                             </StackPanel>
                         </Border>
                     </Grid>
