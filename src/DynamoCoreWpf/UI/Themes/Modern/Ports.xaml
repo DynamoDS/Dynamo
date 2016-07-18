@@ -6,6 +6,8 @@
                       xmlns:interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                       xmlns:views="clr-namespace:Dynamo.UI.Views;assembly=DynamoCoreWpf"
                       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+                      xmlns:fa="http://schemas.fontawesome.io/icons/"
+                      xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
                       xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf">
 
     <!-- Templates
@@ -29,7 +31,6 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
-
     <DataTemplate DataType="{x:Type viewModels:PortViewModel}">
         <DockPanel>
             <Grid Name="mainGrid"
@@ -97,6 +98,7 @@
                             <Binding ElementName="portNameTb" Path="ActualWidth"/>
                             <Binding Path="PortModel"/>
                         </MultiBinding>
+
                     </Rectangle.Margin>
                 </Rectangle>
                 <Rectangle Name="highlightOverlay"
@@ -145,10 +147,46 @@
                 </TextBlock>
             </Grid>
 
-            <Button 
-                HorizontalAlignment="Right" 
-                Visibility="{Binding Path=PortType, Converter={StaticResource PortAtLevelVisibilityConverter}}"
-                FontFamily="{StaticResource fontawesome}">[&#xf138;]hello</Button>
+            <Grid 
+              Background="Transparent"
+              IsHitTestVisible="True"
+              Margin="{Binding Path=MarginThickness}"
+              Height="{Binding Path=Height}"
+              ToolTipService.ShowDuration="60000"
+              Visibility="{Binding Path=PortType, Converter={StaticResource PortAtLevelVisibilityConverter}}">
+                <Rectangle 
+                    Name="highlightOverlayForArrow" Fill="White" MinWidth="12" Margin="0,0,0,1" IsHitTestVisible="True">
+                    <interactivity:Interaction.Triggers>
+                        <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
+                            <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownOnLevelCommand}" CommandParameter="{Binding}" />
+                        </views:HandlingEventTrigger>
+                    </interactivity:Interaction.Triggers>
+                    <Rectangle.Style>
+                        <Style TargetType="{x:Type Rectangle}">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Opacity" Value="1.0"></Setter>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="False">
+                                    <Setter Property="Opacity" Value="0.5"></Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
+                <fa:FontAwesome Icon="ChevronRight" HorizontalAlignment="Right" VerticalAlignment="Center"  IsHitTestVisible="False" Background="{x:Null}"/>
+                <Popup Name="MyPopup" Placement="Right" IsOpen="{Binding Path=ShowUseLevelMenu,diag:PresentationTraceSources.TraceLevel=High}">
+                    <interactivity:Interaction.Triggers>
+                        <views:HandlingEventTrigger EventName="MouseLeave">
+                            <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftUseLevelCommand}" CommandParameter="{Binding}" />
+                        </views:HandlingEventTrigger>
+                    </interactivity:Interaction.Triggers>
+                    <StackPanel>
+                        <CheckBox Content="Use Levels?"/>
+                        <CheckBox Content="Keep list structure?"/>
+                    </StackPanel>
+                </Popup>
+            </Grid>
         </DockPanel>
     </DataTemplate>
 

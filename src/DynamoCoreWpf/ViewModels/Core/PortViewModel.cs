@@ -95,12 +95,27 @@ namespace Dynamo.ViewModels
 
         public PortEventType EventType { get; set; }
 
+        private bool _showUseLevelMenu;
+        public bool ShowUseLevelMenu
+        {
+            get
+            {
+                return _showUseLevelMenu;
+            }
+            set
+            {
+                _showUseLevelMenu = value;
+                RaisePropertyChanged("ShowUseLevelMenu");
+            }
+        }
+
         #endregion
 
         #region events
         public event EventHandler MouseEnter;
         public event EventHandler MouseLeave;
-        public event EventHandler MouseLeftButtonDown;       
+        public event EventHandler MouseLeftButtonDown;
+        public event EventHandler MouseLeftButtonDownOnLevel;
         #endregion
 
         public PortViewModel(NodeViewModel node, PortModel port)
@@ -214,6 +229,24 @@ namespace Dynamo.ViewModels
         {
             if (MouseLeftButtonDown != null)
                 MouseLeftButtonDown(parameter, null);
+        }
+
+        /// <summary>
+        /// Handles the Mouse left button down on the level.
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void OnMouseLeftButtonDownOnLevel(object parameter)
+        {
+            ShowUseLevelMenu = true;
+        }
+
+        /// <summary>
+        /// Handle the Mouse left from Use Level popup.
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void OnMouseLeftUseLevel(object parameter)
+        {
+            ShowUseLevelMenu = false;
         }
     }
 }
