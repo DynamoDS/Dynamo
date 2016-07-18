@@ -423,6 +423,13 @@ namespace Dynamo.Models
             TaskProcessMode ProcessMode { get; set; }
         }
 
+        /// <summary>
+        /// A new interface that adds a headless flag on top of the existing
+        /// IStartConfiguration, as the existing interface can't be changed
+        /// until 2.0.0.  The flag is used to suppress update checks and
+        /// analytics.
+        /// TODO: Merge this into IStartConfiguration for 2.0.0.
+        /// </summary>
         public interface IStartConfiguration2 : IStartConfiguration
         {
             bool IsHeadless { get; set; }
