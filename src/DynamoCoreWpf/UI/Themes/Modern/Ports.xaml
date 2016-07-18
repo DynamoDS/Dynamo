@@ -175,16 +175,21 @@
                     </Rectangle.Style>
                 </Rectangle>
                 <fa:FontAwesome Icon="ChevronRight" HorizontalAlignment="Right" VerticalAlignment="Center"  IsHitTestVisible="False" Background="{x:Null}"/>
-                <Popup Name="MyPopup" Placement="Right" IsOpen="{Binding Path=ShowUseLevelMenu,diag:PresentationTraceSources.TraceLevel=High}">
+                <Popup Name="MyPopup" Placement="Right" AllowsTransparency="True" IsOpen="{Binding Path=ShowUseLevelMenu,diag:PresentationTraceSources.TraceLevel=High}">
                     <interactivity:Interaction.Triggers>
                         <views:HandlingEventTrigger EventName="MouseLeave">
                             <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftUseLevelCommand}" CommandParameter="{Binding}" />
                         </views:HandlingEventTrigger>
                     </interactivity:Interaction.Triggers>
-                    <StackPanel>
-                        <CheckBox Content="Use Levels?"/>
-                        <CheckBox Content="Keep list structure?"/>
-                    </StackPanel>
+                    <Grid Background="Transparent">
+                        <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="5" Padding="5" Background="#CBC6BE">
+                            <StackPanel>
+                                <CheckBox Content="Use Levels?" Name="UseLevel"/>
+                                <Border BorderBrush="#E0E0E0" BorderThickness="1"/>
+                                <CheckBox Content="Keep list structure?" IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
                 </Popup>
             </Grid>
         </DockPanel>
