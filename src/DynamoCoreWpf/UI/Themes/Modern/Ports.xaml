@@ -175,7 +175,12 @@
                     </Rectangle.Style>
                 </Rectangle>
                 <fa:FontAwesome Icon="ChevronRight" HorizontalAlignment="Right" VerticalAlignment="Center"  IsHitTestVisible="False" Background="{x:Null}"/>
-                <dynui:UseLevelPopup Name="MyPopup" Placement="Right" AllowsTransparency="True" IsOpen="{Binding Path=ShowUseLevelMenu,diag:PresentationTraceSources.TraceLevel=High}" StaysOpen="False">
+                <dynui:UseLevelPopup
+                    Name="MyPopup"
+                    Placement="Right"
+                    AllowsTransparency="True"
+                    IsOpen="{Binding Path=ShowUseLevelMenu,diag:PresentationTraceSources.TraceLevel=High}"
+                    StaysOpen="False">
                     <Grid Background="Transparent">
                         <Grid.Resources>
                             <ResourceDictionary>
@@ -185,7 +190,7 @@
                                     <Setter Property="FontSize" Value="13"/>
                                     <Style.Triggers>
                                         <Trigger Property="IsEnabled" Value="false">
-                                            <Setter Property="Foreground" Value="#bcbcbc"/>
+                                            <Setter Property="Foreground" Value="#E0E0E0"/>
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -193,9 +198,22 @@
                         </Grid.Resources>
                         <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="5" Padding="5" Background="#CBC6BE">
                             <StackPanel>
-                                <CheckBox Content="Use Levels?" Name="UseLevel"/>
-                                <Border BorderBrush="#E0E0E0" BorderThickness="1"/>
-                                <CheckBox Content="Keep list structure?" IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}"/>
+                                <CheckBox 
+                                    Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
+                                    Name="UseLevel"/>
+                                <Border
+                                    BorderBrush="#E0E0E0"
+                                    BorderThickness="1"/>
+                                <CheckBox
+                                    Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}"
+                                    IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}"/>
+                                <TextBlock 
+                                    FontFamily="{StaticResource OpenSansRegular}" 
+                                    FontSize="10" 
+                                    Foreground="#E0E0E0" 
+                                    Focusable="False" 
+                                    Padding="20, 0, 0, 0"
+                                    Text="{x:Static p:Resources.UseLevelKeepListStructureHint}"/>
                             </StackPanel>
                         </Border>
                     </Grid>

@@ -2055,4 +2055,13 @@ Next assemblies were loaded several times:
   <data name="LacingAutoToolTip" xml:space="preserve">
     <value>No replication guide will be added.</value>
   </data>
+  <data name="UseLevelKeepListStructureHint" xml:space="preserve">
+    <value>Keep 1 input list's nesting</value>
+  </data>
+  <data name="UseLevelKeepListStructurePopupMenuItem" xml:space="preserve">
+    <value>Keep list structure?</value>
+  </data>
+  <data name="UseLevelPopupMenuItem" xml:space="preserve">
+    <value>Use Levels?</value>
+  </data>
 </root>

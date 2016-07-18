@@ -4981,6 +4981,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Keep 1 input list&apos;s nesting.
+        /// </summary>
+        public static string UseLevelKeepListStructureHint {
+            get {
+                return ResourceManager.GetString("UseLevelKeepListStructureHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep list structure?.
+        /// </summary>
+        public static string UseLevelKeepListStructurePopupMenuItem {
+            get {
+                return ResourceManager.GetString("UseLevelKeepListStructurePopupMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Levels?.
+        /// </summary>
+        public static string UseLevelPopupMenuItem {
+            get {
+                return ResourceManager.GetString("UseLevelPopupMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to At least one of your version values must be greater than 0..
         /// </summary>
         public static string VersionValueGreaterThan0 {
