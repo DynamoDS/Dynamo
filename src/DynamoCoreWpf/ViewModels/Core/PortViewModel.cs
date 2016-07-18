@@ -109,6 +109,21 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public Visibility UseLevelVisibility
+        {
+            get
+            {
+                if (_node.ArgumentLacing != LacingStrategy.Disabled && PortType == PortType.Input)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Collapsed;
+                }
+            }
+        }
+
         #endregion
 
         #region events
