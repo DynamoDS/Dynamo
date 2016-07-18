@@ -679,6 +679,7 @@ namespace Dynamo.Controls
         private PublishPackageView _pubPkgView;
         void DynamoViewModelRequestRequestPackageManagerPublish(PublishPackageViewModel model)
         {
+            var cmd = Analytics.TrackCommandEvent("PublishPackage");
             if (_pubPkgView == null)
             {
                 _pubPkgView = new PublishPackageView(model)
@@ -686,7 +687,7 @@ namespace Dynamo.Controls
                     Owner = this,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
-                _pubPkgView.Closed += (sender, args) => _pubPkgView = null;
+                _pubPkgView.Closed += (sender, args) => { _pubPkgView = null; cmd.Dispose(); };
                 _pubPkgView.Show();
 
                 if (_pubPkgView.IsLoaded && IsLoaded) _pubPkgView.Owner = this;
@@ -702,6 +703,7 @@ namespace Dynamo.Controls
             if (!DisplayTermsOfUseForAcceptance())
                 return; // Terms of use not accepted.
 
+            var cmd = Analytics.TrackCommandEvent("SearchPackage");
             if (_pkgSearchVM == null)
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
@@ -715,7 +717,7 @@ namespace Dynamo.Controls
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                _searchPkgsView.Closed += (sender, args) => _searchPkgsView = null;
+                _searchPkgsView.Closed += (sender, args) => { _searchPkgsView = null; cmd.Dispose(); };
                 _searchPkgsView.Show();
 
                 if (_searchPkgsView.IsLoaded && IsLoaded) _searchPkgsView.Owner = this;
@@ -741,6 +743,7 @@ namespace Dynamo.Controls
         private InstalledPackagesView _installedPkgsView;
         void DynamoViewModelRequestShowInstalledPackages(object s, EventArgs e)
         {
+            var cmd = Analytics.TrackCommandEvent("ManagePackage");
             if (_installedPkgsView == null)
             {
                 var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
@@ -751,7 +754,7 @@ namespace Dynamo.Controls
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                _installedPkgsView.Closed += (sender, args) => _installedPkgsView = null;
+                _installedPkgsView.Closed += (sender, args) => { _installedPkgsView = null; cmd.Dispose(); };
                 _installedPkgsView.Show();
 
                 if (_installedPkgsView.IsLoaded && IsLoaded) _installedPkgsView.Owner = this;
