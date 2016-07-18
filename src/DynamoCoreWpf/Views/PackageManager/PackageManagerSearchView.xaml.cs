@@ -19,6 +19,7 @@ namespace Dynamo.PackageManager.UI
             InitializeComponent();
 
             pm.RequestShowFileDialog += OnRequestShowFileDialog;
+            Logging.Analytics.TrackScreenView("PackageManager");
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)

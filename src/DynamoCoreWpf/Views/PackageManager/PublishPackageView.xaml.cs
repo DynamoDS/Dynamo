@@ -26,6 +26,7 @@ namespace Dynamo.PackageManager
             Title = string.Format(Wpf.Properties.Resources.PublishPackageViewTitle,
                 packageViewModel.DynamoViewModel.BrandingResourceProvider.ProductName);
             packageViewModel.RequestShowFolderBrowserDialog += OnRequestShowFolderBrowserDialog;
+            Logging.Analytics.TrackScreenView("PackageManager");
         }
 
         private void PackageViewModelOnPublishSuccess(PublishPackageViewModel sender)
