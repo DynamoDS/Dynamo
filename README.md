@@ -38,6 +38,36 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
+### 1.1.1 ###
+
+New Functionality : 
+- New Revit node introduced in this Release. FamilyInstance.ByFace with two overloads. 
+- A whole new bunch of Library added for T-Spline Nodes. You can turn on this option from Settings to view the T-Spline nodes in Library. T-Splines modelling technology is now exposed in Dynamo to enable new organic and freeform geometry creation tools. There are approximately 150 new nodes that are a subset of the existing geometry library. Since this is an advanced functionality that may be useful only in certain non-standard workflows these nodes by default will be hidden in the library and will not interfere in node search results unless explicitly turned on in the Settings -> Experimental menu. The new functionality offers a wide range of capabilities to create and edit T-Spline surfaces and also conversion to and from NURBS and meshes.
+- New notification center provides you with more details on system crashes and errors.
+- New Settings menu option to Show or Hide Preview Bubbles
+
+Important Bug Fixes: 
+- Fixed issue related to FamilyInstance.SetRotation, now you can use this node with Run Automatic mode as well and your first instance won't get placed randomly in a different location. 
+- Fixed long pending issue with Importing series of Swept Solids, Now while after importing all Surfaces are there. 
+- Localization crash fixes with Norwegian, German and French
+- Dynamo for Revit no longer crashes at startup with non-compliant Views (not 3D)
+- When selecting any labeled item only that item's label gets displayed, no additional labels are displayed
+- Fixed errors on Code Block Nodes and String Nodes that are published to Web and accessed from the Customizer view
+- Read-only nodes and directories can now be loaded in Dynamo.
+ 
+Other Improvements: 
+- From this release, we stopped migrating of 0.6.3 and 0.7.0 files. If your old files contain nodes from above two releases then you have to open those files on an earlier version (till 1.0.0) and the save them. 
+- Now once you add a new path for Package location then all the packages from the new path will get loaded without relaunching Dynamo. 
+- We have improved the preview bubble for its Pin and hover over related issues.
+- Updated the compact view of the preview bubble to display information about the number of items in an output list.
+- Error messages when external files are not compatible or missing instead of a silently crashing in the background.
+- Support for a Notifications pop up window for when DLL incompatibilities between Dynamo and other Revit Addins are detected at startup.
+- Quick Access to "Getting Started" from Help menu
+
+Known Issues:
+- Installing Dynamo 4 Revit 1.1 Will require a reinstallation of Dynamo Studio with Studio 1.1 (1.0 and 1.1 cannot co-habitate).  This issue will not happen in the furture, when Future Dynamo Core installation will work with older versions of Products. 
+- Simplification of some overload methods will result in minor changes in behavior.  Please see this document for specific nodes affected: https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Node-Changes
+
 ### 1.0.0 ###
 
 - API Stabilization:  1.0.0 is a commitment to stable code that allows for smoother and more reliable movements from one version to another.  To more clearly express this, we have been moving to “semantic versioning” to illustrate the nature of changes in each release. We will be using the fairly standard version naming with an x.y.z system, where x incrementing represents breaks to the API (requiring developer refactors), y indicates changes that are still backwards compatible, and z are smaller bug fixes.  Package creators and maintainers are encouraged to assess changes to the previous code, which can be found here  
