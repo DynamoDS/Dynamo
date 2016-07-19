@@ -30,7 +30,7 @@ namespace Dynamo.Graph.Nodes
         #region private members
 
         private bool overrideNameWithNickName;
-        private LacingStrategy argumentLacing = LacingStrategy.First;
+        private LacingStrategy argumentLacing = LacingStrategy.Auto;
         private bool displayLabels;
         private bool isUpstreamVisible;
         private bool isVisible;
@@ -980,14 +980,18 @@ namespace Dynamo.Graph.Nodes
 
             switch (ArgumentLacing)
             {
+                case LacingStrategy.Shortest:
+                    for (int i = 0; i < inputs.Count(); ++i)
+                    {
+                        inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, false);
+                    }
+                    break;
+
                 case LacingStrategy.Longest:
 
                     for (int i = 0; i < inputs.Count(); ++i)
                     {
-                        inputs[i] = AstFactory.AddReplicationGuide(
-                                                inputs[i],
-                                                new List<int> { 1 },
-                                                true);
+                        inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, true);
                     }
                     break;
 
@@ -996,10 +1000,7 @@ namespace Dynamo.Graph.Nodes
                     int guide = 1;
                     for (int i = 0; i < inputs.Count(); ++i)
                     {
-                        inputs[i] = AstFactory.AddReplicationGuide(
-                                                inputs[i],
-                                                new List<int> { guide },
-                                                false);
+                        inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { guide }, false);
                         guide++;
                     }
                     break;
@@ -2110,6 +2111,21 @@ namespace Dynamo.Graph.Nodes
                 RenderPackagesUpdated(this, packages);
             }
         }
+
+        /// <summary>
+        /// Migrate NodeModel's LacingStrategy.Shortest to LacingStrategy.Auto
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        [NodeMigration(@from: "1.2.0.0")]
+        public static NodeMigrationData MigrateShortestLacingToAutoLacing(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            XmlElement node = data.MigratedNodes.ElementAt(0);
+            MigrationManager.ReplaceAttributeValue(node, "lacing", "Shortest", "Auto");
+            migrationData.AppendNode(node);
+            return migrationData;
+        }
     }
 
     /// <summary>
@@ -2133,6 +2149,7 @@ namespace Dynamo.Graph.Nodes
     {
         Disabled,
         First,
+        Auto,
         Shortest,
         Longest,
         CrossProduct
