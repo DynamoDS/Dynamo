@@ -41,7 +41,9 @@ namespace Dynamo.Tests
         public void CanLoadReadOnlyNode()
         {
             // Open a read-only custom node
-            Assert.IsFalse(DynamoUtilities.PathHelper.IsReadOnlyPath(@"core\CustomNodes\add_Read_only.dyf"));
+            FileInfo fInfo = new FileInfo(@"core\CustomNodes\add_Read_only.dyf");
+            fInfo.IsReadOnly = true;
+            Assert.IsTrue(DynamoUtilities.PathHelper.IsReadOnlyPath(@"core\CustomNodes\add_Read_only.dyf"));
 
             OpenTestFile(@"core\CustomNodes", "add_Read_only.dyf");
             var nodeWorkspace = CurrentDynamoModel.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
