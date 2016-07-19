@@ -240,35 +240,45 @@ namespace Dynamo.Tests
             var length = Length.FromDouble(0.0762); //.25"
             length.LengthUnit = LengthUnit.FractionalFoot;
 
-            Assert.AreEqual("3\"", length.ToString());
+            Assert.AreEqual("3.0000\"", length.ToString());
 
             length.Value = -0.0762;
-            Assert.AreEqual("-3\"", length.ToString());
+            Assert.AreEqual("-3.0000\"", length.ToString());
 
             length.Value = 0.3048; //1ft.
-            Assert.AreEqual("1' 0\"", length.ToString());
+            Assert.AreEqual("1' 0.0000\"", length.ToString());
 
             length.Value = -0.3048;
-            Assert.AreEqual("-1' 0\"", length.ToString());
+            Assert.AreEqual("-1' 0.0000\"", length.ToString());
 
             //test some edge cases
             length.Value = 0.0;
-            Assert.AreEqual("0' 0\"", length.ToString());
+            Assert.AreEqual("0' 0.0000\"", length.ToString());
+
+            /*length.Value = 0.003175; //1/8"
+            Assert.AreEqual("1/8\"", length.ToString());*/
 
             length.Value = 0.003175; //1/8"
-            Assert.AreEqual("1/8\"", length.ToString());
+            Assert.AreEqual("0.1250\"", length.ToString());
+
+            /*length.Value = 0.301752; //.99ft
+            Assert.AreEqual("11 7/8\"", length.ToString());*/
 
             length.Value = 0.301752; //.99ft
-            Assert.AreEqual("11 7/8\"", length.ToString());
+            Assert.AreEqual("11.8800\"", length.ToString());
+
+            /*length.Value = 0.3044952; //.999ft
+            Assert.AreEqual("11 63/64\"", length.ToString());*/
 
             length.Value = 0.3044952; //.999ft
-            Assert.AreEqual("11 63/64\"", length.ToString());
+            Assert.AreEqual("11.9880\"", length.ToString());
 
             length.Value = 0.35560000000142239; //1'2"
-            Assert.AreEqual("1' 2\"", length.ToString());
+            Assert.AreEqual("1' 2.0000\"", length.ToString());
 
             length.Value = -0.35560000000142239; //-1'2"
-            Assert.AreEqual("-1' 2\"", length.ToString());
+            Assert.AreEqual("-1' 2.0000\"", length.ToString());
+
         }
 
         [Test]
@@ -390,6 +400,36 @@ namespace Dynamo.Tests
             Utils.ParseLengthFromString(length, out feet, out inch, out m, out cm, out mm, out numerator,
                                         out denominator);
             Assert.AreEqual(1, inch);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ParseLengthInFeetFromString()
+        {
+            double feet = 0;
+            double numeratorInFeet = 0;
+            double denominatorInFeet = 0;
+
+            string length = "1/32";
+            Utils.ParseLengthInFeetFromString(length, out feet, out numeratorInFeet,
+                                        out denominatorInFeet);
+            Assert.AreEqual(0, feet);
+            Assert.AreEqual(1, numeratorInFeet);
+            Assert.AreEqual(32, denominatorInFeet);
+
+            length = "1/128\'";
+            Utils.ParseLengthInFeetFromString(length, out feet, out numeratorInFeet,
+                                        out denominatorInFeet);
+            Assert.AreEqual(0, feet);
+            Assert.AreEqual(1, numeratorInFeet);
+            Assert.AreEqual(128, denominatorInFeet);
+
+            length = "8.25";
+            Utils.ParseLengthInFeetFromString(length, out feet, out numeratorInFeet,
+                                        out denominatorInFeet);
+            Assert.AreEqual(8.25, feet);
+            Assert.AreEqual(0, numeratorInFeet);
+            Assert.AreEqual(0, denominatorInFeet);
         }
 
         [Test]
@@ -557,29 +597,29 @@ namespace Dynamo.Tests
         public void UiRounding()
         {
             var length = Length.FromFeet(1.5, LengthUnit.FractionalFoot);
-            Assert.AreEqual("2' 0\"", ((Length)length.Round()).ToString());
-            Assert.AreEqual("2' 0\"", ((Length)length.Ceiling()).ToString());
-            Assert.AreEqual("1' 0\"", ((Length)length.Floor()).ToString());
+            Assert.AreEqual("2' 0.0000\"", ((Length)length.Round()).ToString());
+            Assert.AreEqual("2' 0.0000\"", ((Length)length.Ceiling()).ToString());
+            Assert.AreEqual("1' 0.0000\"", ((Length)length.Floor()).ToString());
 
             length = Length.FromFeet(1.2, LengthUnit.FractionalFoot);
-            Assert.AreEqual("1' 0\"", ((Length)length.Round()).ToString());
-            Assert.AreEqual("2' 0\"", ((Length)length.Ceiling()).ToString());
-            Assert.AreEqual("1' 0\"", ((Length)length.Floor()).ToString());
+            Assert.AreEqual("1' 0.0000\"", ((Length)length.Round()).ToString());
+            Assert.AreEqual("2' 0.0000\"", ((Length)length.Ceiling()).ToString());
+            Assert.AreEqual("1' 0.0000\"", ((Length)length.Floor()).ToString());
 
             length = Length.FromFeet(-1.5, LengthUnit.FractionalFoot);
-            Assert.AreEqual("-2' 0\"", ((Length)length.Round()).ToString());
-            Assert.AreEqual("-1' 0\"", ((Length)length.Ceiling()).ToString());
-            Assert.AreEqual("-2' 0\"", ((Length)length.Floor()).ToString());
+            Assert.AreEqual("-2' 0.0000\"", ((Length)length.Round()).ToString());
+            Assert.AreEqual("-1' 0.0000\"", ((Length)length.Ceiling()).ToString());
+            Assert.AreEqual("-2' 0.0000\"", ((Length)length.Floor()).ToString());
 
             length = Length.FromFeet(-1.2, LengthUnit.FractionalFoot);
-            Assert.AreEqual("-1' 0\"", ((Length)length.Round()).ToString());
-            Assert.AreEqual("-1' 0\"", ((Length)length.Ceiling()).ToString());
-            Assert.AreEqual("-2' 0\"", ((Length)length.Floor()).ToString());
+            Assert.AreEqual("-1' 0.0000\"", ((Length)length.Round()).ToString());
+            Assert.AreEqual("-1' 0.0000\"", ((Length)length.Ceiling()).ToString());
+            Assert.AreEqual("-2' 0.0000\"", ((Length)length.Floor()).ToString());
 
             //this fails as explained here:
             //http://msdn.microsoft.com/en-us/library/wyk4d9cy(v=vs.110).aspx
             //length = Units.Length.FromFeet(.5);
-            //Assert.AreEqual("1' 0\"", ((Units.Length)length.Round()).ToString(LengthUnit.FractionalFoot));
+            //Assert.AreEqual("1' 0.0000\"", ((Units.Length)length.Round()).ToString(LengthUnit.FractionalFoot));
         }
 
         [Test]

@@ -1914,6 +1914,18 @@ namespace DynamoUnits
 
             string decimalInches = (Math.Round(partialFeet * 12.0, ROUND_DIGITS)).ToString(BaseUnit.NumberFormat, CultureInfo.InvariantCulture);
 
+            if (partialFeet.AlmostEquals(1.0000, EPSILON))
+            {
+                //add a foot to the whole feet
+                wholeFeet += 1.0;
+                decimalInches = "0.0000";
+            }
+            else if (partialFeet.AlmostEquals(-1.0000, EPSILON))
+            {
+                wholeFeet -= 1.0;
+                decimalInches = "0.0000";
+            }
+
             string feet = "";
             if (wholeFeet != 0.0)
                 feet = string.Format("{0}'", wholeFeet);
@@ -1929,7 +1941,9 @@ namespace DynamoUnits
 
         public static bool ParseLengthInFeetFromString(string value, out double feet, out double numerator, out double denominator)
         {
-            string pattern = @"(\A((?<ft>((\+|-)?\d{0,}([.,]\d{1,})?))( ?)('|ft)?)\Z)|(\A(?<ft>(?<num>(\+|-)?\d+)/(?<den>\d+)*( ?)('|ft)?)\Z)";
+            // This string pattern only handle for the case of input in whole feet without unit symbol 
+            // or fractional feet with/without unit symbol.
+            string pattern = @"(\A((?<ft>((\+|-)?\d{0,}([.,]\d{1,})?))( ?))\Z)|(\A(?<ft>(?<num>(\+|-)?\d+)/(?<den>\d+)*( ?)('|ft)?)\Z)";
 
             feet = 0.0;
             numerator = 0.0;
