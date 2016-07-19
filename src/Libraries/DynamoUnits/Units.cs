@@ -715,7 +715,8 @@ namespace DynamoUnits
                     return (_value * ToFoot).ToString(NumberFormat, CultureInfo.InvariantCulture) + FEET;
 
                 case LengthUnit.FractionalFoot:
-                    return Utils.ToFeetAndFractionalInches(_value * ToFoot);
+                    //return Utils.ToFeetAndFractionalInches(_value * ToFoot);
+                    return Utils.ToFeetAndDecimalInches(_value * ToFoot);
 
                 default:
                     return _value.ToString(NumberFormat, CultureInfo.InvariantCulture) + METERS;
@@ -1890,6 +1891,40 @@ namespace DynamoUnits
                 return string.Format("{0}{1}\"", sign, inches).Trim();
             }
             return string.Format("{0}{1} {2}\"", sign, inches, fraction).Trim();
+        }
+
+        public static string ToFeetAndDecimalInches(double decimalFeet)
+        {
+            double wholeFeet = 0.0;
+            double partialFeet = 0.0;
+
+            if (decimalFeet < 0)
+            {
+                wholeFeet = Math.Ceiling(decimalFeet);
+                if (wholeFeet == 0)
+                    partialFeet = decimalFeet;
+                else
+                    partialFeet = wholeFeet - decimalFeet;
+            }
+            else
+            {
+                wholeFeet = Math.Floor(decimalFeet);
+                partialFeet = decimalFeet - wholeFeet;
+            }
+
+            string decimalInches = (Math.Round(partialFeet * 12.0, ROUND_DIGITS)).ToString(BaseUnit.NumberFormat, CultureInfo.InvariantCulture);
+
+            string feet = "";
+            if (wholeFeet != 0.0)
+                feet = string.Format("{0}'", wholeFeet);
+
+            if (wholeFeet.AlmostEquals(0.0, EPSILON) && (partialFeet * 12.0).AlmostEquals(0.0, EPSILON))
+                feet = "0'";
+
+            // Adding symbol for inch
+            decimalInches += "\"";
+
+            return string.Format("{0} {1}", feet, decimalInches).Trim();
         }
 
         public static bool ParseLengthInFeetFromString(string value, out double feet, out double numerator, out double denominator)
