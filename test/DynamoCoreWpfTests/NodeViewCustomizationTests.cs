@@ -413,7 +413,7 @@ namespace DynamoCoreWpfTests
             Assert.NotNull(Model.CurrentWorkspace);
 
             var funcNode = homeWorkspace.Nodes.OfType<Function>().First();
-            var customNodeView = NodeViewWithGuid("98566e0d-3a11-4327-b688-713f6892a5bf");
+            var customNodeView = NodeViewWithGuid("fb872c7c-21af-4074-8011-818874738dc7");
             
             MenuItem menuItem = customNodeView.MainContextMenu.Items.GetItemAt(customNodeView.MainContextMenu.Items.Count - 2) as MenuItem;
             Assert.IsFalse(menuItem.IsEnabled);
