@@ -43,7 +43,7 @@ OUT = 0</Script>
     <ModelGuid>f7a37771-e4f0-466e-b17a-3cf1a1a5357f</ModelGuid>
   </UpdateModelValueCommand>
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.DSFunction guid="8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3" type="Dynamo.Nodes.DSFunction" nickname="List.GetItemAtIndex" x="363.5" y="77.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.GetItemAtIndex@var[]..[],int" />
+    <Dynamo.Nodes.DSFunction guid="8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3" type="Dynamo.Nodes.DSFunction" nickname="List.GetItemAtIndex" x="363.5" y="77.5" isVisible="true" isUpstreamVisible="true" lacing="Auto" assembly="DSCoreNodes.dll" function="DSCore.List.GetItemAtIndex@var[]..[],int" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3" Modifiers="0" />
   <DragSelectionCommand X="368" Y="239" DragOperation="0" />

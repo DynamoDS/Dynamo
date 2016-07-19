@@ -11,10 +11,10 @@
     <ModelGuid>0cce4b2d-47d5-427a-8235-514d3c2e90ed</ModelGuid>
   </UpdateModelValueCommand>
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.DSFunction guid="b80b5001-efa7-4831-9161-ebcfa65d5505" type="Dynamo.Nodes.DSFunction" nickname="List.MaximumItem" x="385" y="22.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.MaximumItem@var[]" />
+    <Dynamo.Nodes.DSFunction guid="b80b5001-efa7-4831-9161-ebcfa65d5505" type="Dynamo.Nodes.DSFunction" nickname="List.MaximumItem" x="385" y="22.5" isVisible="true" isUpstreamVisible="true" lacing="Auto" assembly="DSCoreNodes.dll" function="DSCore.List.MaximumItem@var[]" />
   </CreateNodeCommand>
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.DSFunction guid="f323299b-e841-4d47-b8bd-f6596034814f" type="Dynamo.Nodes.DSFunction" nickname="List.MinimumItem" x="393" y="126.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.MinimumItem@var[]" />
+    <Dynamo.Nodes.DSFunction guid="f323299b-e841-4d47-b8bd-f6596034814f" type="Dynamo.Nodes.DSFunction" nickname="List.MinimumItem" x="393" y="126.5" isVisible="true" isUpstreamVisible="true" lacing="Auto" assembly="DSCoreNodes.dll" function="DSCore.List.MinimumItem@var[]" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="b80b5001-efa7-4831-9161-ebcfa65d5505" Modifiers="0" />
   <DragSelectionCommand X="552" Y="163" DragOperation="0" />
@@ -38,10 +38,10 @@
     <ModelGuid>daaf465b-277d-405d-8bf1-61039835ef8e</ModelGuid>
   </UpdateModelValueCommand>
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.DSFunction guid="64616918-bdcf-47e7-b093-8c4b4c8ed62c" type="Dynamo.Nodes.DSFunction" nickname="List.MinimumItem" x="350" y="221.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.MinimumItem@var[]" />
+    <Dynamo.Nodes.DSFunction guid="64616918-bdcf-47e7-b093-8c4b4c8ed62c" type="Dynamo.Nodes.DSFunction" nickname="List.MinimumItem" x="350" y="221.5" isVisible="true" isUpstreamVisible="true" lacing="Auto" assembly="DSCoreNodes.dll" function="DSCore.List.MinimumItem@var[]" />
   </CreateNodeCommand>
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.DSFunction guid="adbce23a-f2ce-46a7-be2d-146762033571" type="Dynamo.Nodes.DSFunction" nickname="List.MaximumItem" x="355" y="335.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.MaximumItem@var[]" />
+    <Dynamo.Nodes.DSFunction guid="adbce23a-f2ce-46a7-be2d-146762033571" type="Dynamo.Nodes.DSFunction" nickname="List.MaximumItem" x="355" y="335.5" isVisible="true" isUpstreamVisible="true" lacing="Auto" assembly="DSCoreNodes.dll" function="DSCore.List.MaximumItem@var[]" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="adbce23a-f2ce-46a7-be2d-146762033571" Modifiers="0" />
   <DragSelectionCommand X="600" Y="271" DragOperation="0" />
