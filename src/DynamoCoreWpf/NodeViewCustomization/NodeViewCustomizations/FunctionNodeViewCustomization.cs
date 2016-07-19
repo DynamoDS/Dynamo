@@ -38,6 +38,15 @@ namespace Dynamo.Wpf
             };
             nodeView.MainContextMenu.Items.Add(editPropertiesItem);
             editPropertiesItem.Click += (sender, args) => EditCustomNodeProperties();
+            CustomNodeWorkspaceModel ws;
+            dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
+                functionNodeModel.Definition.FunctionId,
+                DynamoModel.IsTestMode,
+                out ws);
+            if (ws.IsReadOnly)
+            {
+                editPropertiesItem.IsEnabled = false;
+            }
 
             // publish
             var publishCustomNodeItem = new MenuItem
