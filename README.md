@@ -38,13 +38,14 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
-### 1.1.1 ###
+### 1.1.0 ###
 
 New Functionality : 
 - New Revit node introduced in this Release. FamilyInstance.ByFace with two overloads. 
 - A whole new bunch of Library added for T-Spline Nodes. You can turn on this option from Settings to view the T-Spline nodes in Library. T-Splines modelling technology is now exposed in Dynamo to enable new organic and freeform geometry creation tools. There are approximately 150 new nodes that are a subset of the existing geometry library. Since this is an advanced functionality that may be useful only in certain non-standard workflows these nodes by default will be hidden in the library and will not interfere in node search results unless explicitly turned on in the Settings -> Experimental menu. The new functionality offers a wide range of capabilities to create and edit T-Spline surfaces and also conversion to and from NURBS and meshes.
 - New notification center provides you with more details on system crashes and errors, such as when DLL incompatibilities between Dynamo and other Revit Addins are detected at startup
 - New Settings menu option to Show or Hide Preview Bubbles
+- We have fixed the long pending issue of Screen Capture, now it doesn't matter how big your graph is, everything will be visible  at whatever zoom level you are at when you use Export Workspace as Image.
 
 Important Bug Fixes: 
 - Fixed issue related to FamilyInstance.SetRotation, now you can use this node with Run Automatic mode as well and your first instance won't get placed randomly in a different location. 
