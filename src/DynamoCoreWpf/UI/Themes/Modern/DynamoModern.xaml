@@ -78,7 +78,7 @@
 
     <LinearGradientBrush x:Key="SpinnerNormalBrush" EndPoint="0,1" StartPoint="0,0">
         <GradientStop Color="#EEE" Offset="0.0"/>
-        <GradientStop Color="#CCC" Offset="1.0"/>
+        <GradientStop Color="#CBC6BE" Offset="1.0"/>
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="SpinnerNormalBorderBrush" EndPoint="0,1" StartPoint="0,0">
         <GradientStop Color="#CCC" Offset="0.0"/>
@@ -86,7 +86,7 @@
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="SpinnerHoverBrush" EndPoint="0,1" StartPoint="0,0">
         <GradientStop Color="#FFF" Offset="0.0"/>
-        <GradientStop Color="#AAA" Offset="1.0"/>
+        <GradientStop Color="#CBC6BE" Offset="1.0"/>
     </LinearGradientBrush>
     <LinearGradientBrush x:Key="SpinnerPressedBrush" EndPoint="0,1" StartPoint="0,0">
         <GradientStop Color="#BBB" Offset="0.0"/>
@@ -2004,7 +2004,17 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <TextBox Name="textbox" BorderThickness="0" Margin="0" Grid.Column="0" Grid.RowSpan="2" Background="Transparent" VerticalContentAlignment="Center"  IsEnabled="False"/>
+                        <TextBox 
+                            Name="textbox"
+                            BorderThickness="0"
+                            Margin="0"
+                            Grid.Column="0"
+                            Grid.RowSpan="2"
+                            Background="Transparent"
+                            VerticalContentAlignment="Center" 
+                            FontFamily="{StaticResource OpenSansRegular}"
+                            FontSize="10"
+                            IsEnabled="False"/>
 
                         <RepeatButton Margin="0" Padding="0" Command="{x:Static dynui:UseLevelSpinner.IncreaseCommand}"
                             Grid.Column="1" Grid.Row="0" Focusable="False" Style="{StaticResource IncreaseButton}">

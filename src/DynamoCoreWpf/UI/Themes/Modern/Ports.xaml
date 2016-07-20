@@ -175,7 +175,11 @@
                     </Rectangle.Style>
                 </Rectangle>
                 <StackPanel Orientation="Horizontal">
-                    <dynui:UseLevelSpinner x:Name="useLevelSpinner" VerticalAlignment="Center" Width="60" Height="16" KeepListStructure="True"/>
+                    <dynui:UseLevelSpinner x:Name="useLevelSpinner"
+                                           VerticalAlignment="Center"
+                                           Width="50"
+                                           Height="16"
+                                           KeepListStructure="True"/>
                     <fa:FontAwesome
                     Icon="ChevronRight"
                     HorizontalAlignment="Right"
