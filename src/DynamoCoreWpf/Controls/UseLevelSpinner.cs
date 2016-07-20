@@ -13,10 +13,11 @@ namespace Dynamo.UI.Controls
     public class UseLevelSpinner : Control
     {
         private const uint MinimumLevel = 1;
-        public static readonly DependencyProperty ValueProperty;
+        private const uint MaximumLevel = 9;
+        public static readonly DependencyProperty LevelProperty;
         public static readonly DependencyProperty IsReadOnlyProperty;
         public static readonly DependencyProperty KeepListStructureProperty;
-        public static readonly RoutedEvent ValueChangedEvent;
+        public static readonly RoutedEvent LevelChangedEvent;
         public static RoutedCommand IncreaseCommand;
         public static RoutedCommand DecreaseCommand;
 
@@ -27,15 +28,15 @@ namespace Dynamo.UI.Controls
         /// Gets or sets the value assigned to the numeric up-down control.
         /// This is a dependency property.
         /// </summary>
-        public uint Value
+        public uint Level
         {
             get
             {
-                return (uint)GetValue(ValueProperty);
+                return (uint)GetValue(LevelProperty);
             }
             set
             {
-                SetValue(ValueProperty, value);
+                SetValue(LevelProperty, value);
             }
         }
 
@@ -98,9 +99,9 @@ namespace Dynamo.UI.Controls
         /// </summary>
         public event RoutedPropertyChangedEventHandler<uint> ValueChanged
         {
-            add { AddHandler(ValueChangedEvent, value); }
+            add { AddHandler(LevelChangedEvent, value); }
 
-            remove { RemoveHandler(ValueChangedEvent, value); }
+            remove { RemoveHandler(LevelChangedEvent, value); }
         }
 
         #endregion
@@ -113,8 +114,8 @@ namespace Dynamo.UI.Controls
 
             InitializeCommands();
 
-            ValueProperty = DependencyProperty.Register("Value", typeof(uint), typeof(UseLevelSpinner),
-                new FrameworkPropertyMetadata(MinimumLevel, OnValueChanged, CoerceValue));
+            LevelProperty = DependencyProperty.Register("Level", typeof(uint), typeof(UseLevelSpinner),
+                new FrameworkPropertyMetadata(MinimumLevel, OnLevelChanged, CoerceValue));
 
             KeepListStructureProperty = DependencyProperty.Register("KeepListStructure", typeof(bool), typeof(UseLevelSpinner),
                 new FrameworkPropertyMetadata(false, OnKeepListStructureChanged));
@@ -122,7 +123,7 @@ namespace Dynamo.UI.Controls
             IsReadOnlyProperty = DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(UseLevelSpinner),
                 new FrameworkPropertyMetadata(false, OnIsReadOnlyChanged));
 
-            ValueChangedEvent = EventManager.RegisterRoutedEvent("ValueChanged", RoutingStrategy.Bubble,
+            LevelChangedEvent = EventManager.RegisterRoutedEvent("LevelChanged", RoutingStrategy.Bubble,
                 typeof(RoutedPropertyChangedEventHandler<uint>), typeof(UseLevelSpinner));
 
             EventManager.RegisterClassHandler(typeof(UseLevelSpinner),
@@ -139,7 +140,7 @@ namespace Dynamo.UI.Controls
 
         #endregion
 
-        private static void OnValueChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
+        private static void OnLevelChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
             UseLevelSpinner control = (UseLevelSpinner)obj;
 
@@ -147,9 +148,9 @@ namespace Dynamo.UI.Controls
             uint newValue = (uint)args.NewValue;
 
             RoutedPropertyChangedEventArgs<uint> e = new RoutedPropertyChangedEventArgs<uint>(
-                oldValue, newValue, ValueChangedEvent);
+                oldValue, newValue, LevelChangedEvent);
 
-            control.OnValueChanged(e);
+            control.OnLevelChanged(e);
             control.UpdateText();
         }
 
@@ -175,7 +176,7 @@ namespace Dynamo.UI.Controls
             uint newValue = (uint)value;
             UseLevelSpinner control = (UseLevelSpinner)element;
 
-            newValue = Math.Max(MinimumLevel, newValue);
+            newValue = Math.Min(MaximumLevel, Math.Max(MinimumLevel, newValue));
             return newValue;
         }
 
@@ -288,7 +289,7 @@ namespace Dynamo.UI.Controls
         /// Raises the ValueChanged event.
         /// </summary>
         /// <param name="args">Arguments associated with the ValueChanged event.</param>
-        protected virtual void OnValueChanged(RoutedPropertyChangedEventArgs<uint> args)
+        protected virtual void OnLevelChanged(RoutedPropertyChangedEventArgs<uint> args)
         {
             RaiseEvent(args);
         }
@@ -298,7 +299,10 @@ namespace Dynamo.UI.Controls
         /// </summary>
         protected virtual void OnIncrease()
         {
-            Value += 1;
+            if (Level + 1 <= MaximumLevel)
+            {
+                Level += 1;
+            }
         }
 
         /// <summary>
@@ -306,9 +310,9 @@ namespace Dynamo.UI.Controls
         /// </summary>
         protected virtual void OnDecrease()
         {
-            if (Value - 1 >= MinimumLevel)
+            if (Level - 1 >= MinimumLevel)
             {
-                Value -= 1;
+                Level -= 1;
             }
         }
 
@@ -356,7 +360,7 @@ namespace Dynamo.UI.Controls
         /// </summary>
         internal void UpdateText()
         {
-            string formattedValue = string.Format(KeepListStructure ? "@@L{0}" : "@L{0}", Value);
+            string formattedValue = string.Format(KeepListStructure ? "@@L{0}" : "@L{0}", Level);
             if (_textBox != null)
             {
                 _textBox.Text = formattedValue;

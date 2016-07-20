@@ -1764,16 +1764,21 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("IsFrozen", isFrozenExplicitly);
             helper.SetAttribute("isPinned", PreviewPinned);
 
-            var portsWithDefaultValues =
-                inPorts.Select((port, index) => new { port, index })
-                   .Where(x => x.port.UsingDefaultValue);
+            var portIndexTuples = inPorts.Select((port, index) => new { port, index });
 
             //write port information
-            foreach (var port in portsWithDefaultValues)
+            foreach (var t in portIndexTuples)
             {
                 XmlElement portInfo = element.OwnerDocument.CreateElement("PortInfo");
-                portInfo.SetAttribute("index", port.index.ToString(CultureInfo.InvariantCulture));
-                portInfo.SetAttribute("default", true.ToString());
+                portInfo.SetAttribute("index", t.index.ToString(CultureInfo.InvariantCulture));
+                if (t.port.UsingDefaultValue)
+                {
+                    portInfo.SetAttribute("default", true.ToString());
+                }
+
+                portInfo.SetAttribute("useLevels", t.port.UseLevels.ToString());
+                portInfo.SetAttribute("shouldKeepListStructure", t.port.ShouldKeepListStructure.ToString());
+                portInfo.SetAttribute("level", t.port.Level.ToString());
                 element.AppendChild(portInfo);
             }
 
@@ -1828,8 +1833,38 @@ namespace Dynamo.Graph.Nodes
                     if (index < InPorts.Count)
                     {
                         portInfoProcessed.Add(index);
-                        bool def = bool.Parse(subNode.Attributes["default"].Value);
-                        inPorts[index].UsingDefaultValue = def;
+
+                        var attrValue = subNode.Attributes["default"];
+                        if (attrValue != null)
+                        {
+                            bool def = false;
+                            bool.TryParse(subNode.Attributes["default"].Value, out def);
+                            inPorts[index].UsingDefaultValue = def;
+                        }
+
+                        attrValue = subNode.Attributes["useLevels"];
+                        if (attrValue != null)
+                        {
+                            bool useLevels = false;
+                            bool.TryParse(attrValue.Value, out useLevels);
+                            inPorts[index].UseLevels = useLevels;
+                        }
+
+                        attrValue = subNode.Attributes["shouldKeepListStructure"];
+                        if (attrValue != null)
+                        {
+                            bool shouldKeepListStructure = false;
+                            bool.TryParse(attrValue.Value, out shouldKeepListStructure);
+                            inPorts[index].ShouldKeepListStructure = shouldKeepListStructure;
+                        }
+
+                        attrValue = subNode.Attributes["level"];
+                        if (attrValue != null)
+                        {
+                            int level = 1;
+                            int.TryParse(attrValue.Value, out level);
+                            InPorts[index].Level = level;
+                        }
                     }
                 }
             }

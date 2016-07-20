@@ -177,8 +177,9 @@
                 <StackPanel Orientation="Horizontal">
                     <dynui:UseLevelSpinner x:Name="useLevelSpinner"
                                            VerticalAlignment="Center"
-                                           Width="50"
+                                           Width="45"
                                            Height="16"
+                                           Level="{Binding Path=Level, Mode=TwoWay}"
                                            KeepListStructure="{Binding Path=ShouldKeepListStructure}"
                                            Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
 

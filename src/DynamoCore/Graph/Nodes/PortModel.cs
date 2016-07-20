@@ -193,6 +193,14 @@ namespace Dynamo.Graph.Nodes
         public SnapExtensionEdges extensionEdges { get; set; }
 
         /// <summary>
+        /// List at level.
+        /// </summary>
+        public int Level
+        {
+            get; set;
+        }
+
+        /// <summary>
         /// If use level is enabled.
         /// </summary>
         public bool UseLevels
@@ -222,6 +230,7 @@ namespace Dynamo.Graph.Nodes
             Owner = owner;
             UseLevels = false;
             ShouldKeepListStructure = false;
+            Level = 1;
 
             SetPortData(data);
 

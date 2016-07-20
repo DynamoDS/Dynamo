@@ -1938,7 +1938,7 @@
     <Style TargetType="{x:Type dynui:UseLevelSpinner}">
         <Style.Resources>
             <Style TargetType="{x:Type RepeatButton}" x:Key="IncreaseButton" BasedOn="{x:Null}">
-                <Setter Property="MinWidth" Value="15" />
+                <Setter Property="MinWidth" Value="12" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type RepeatButton}">
@@ -1962,7 +1962,7 @@
             </Style>
 
             <Style TargetType="{x:Type RepeatButton}" x:Key="DecreaseButton" BasedOn="{x:Null}">
-                <Setter Property="MinWidth" Value="15" />
+                <Setter Property="MinWidth" Value="12" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type RepeatButton}">

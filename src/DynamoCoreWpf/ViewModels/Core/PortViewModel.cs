@@ -196,6 +196,25 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Levle of list.
+        /// </summary>
+        public int Level
+        {
+            get
+            {
+                return _port.Level;
+            }
+            set
+            {
+                if (_port.Level != value)
+                {
+                    _port.Level = value;
+                    RaisePropertyChanged("Level");
+                }
+            }
+        }
+
+        /// <summary>
         /// The visibility of Use Levels menu.
         /// </summary>
         public Visibility UseLevelVisibility
