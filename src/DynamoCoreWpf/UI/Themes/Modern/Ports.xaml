@@ -179,7 +179,9 @@
                                            VerticalAlignment="Center"
                                            Width="50"
                                            Height="16"
-                                           KeepListStructure="True"/>
+                                           KeepListStructure="True"
+                                           Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
+
                     <fa:FontAwesome
                     Icon="ChevronRight"
                     HorizontalAlignment="Right"
@@ -213,6 +215,7 @@
                             <StackPanel>
                                 <CheckBox 
                                     Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
+                                    IsChecked="{Binding Path=UseLevels, Mode=TwoWay}"
                                     Name="UseLevel"/>
                                 <Border
                                     BorderBrush="#E0E0E0"

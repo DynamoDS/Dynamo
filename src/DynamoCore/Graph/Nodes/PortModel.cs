@@ -192,6 +192,13 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public SnapExtensionEdges extensionEdges { get; set; }
 
+        /// <summary>
+        /// If use level is enabled.
+        /// </summary>
+        public bool UseLevels
+        {
+            get; set;
+        }
         #endregion
 
         /// <summary>
@@ -205,6 +212,7 @@ namespace Dynamo.Graph.Nodes
             IsConnected = false;
             PortType = portType;
             Owner = owner;
+            UseLevels = false;
 
             SetPortData(data);
 

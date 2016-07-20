@@ -109,6 +109,22 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool UseLevels
+        {
+            get
+            {
+                return _port.UseLevels;
+            }
+            set
+            {
+                if (_port.UseLevels != value)
+                {
+                    _port.UseLevels = value;
+                    RaisePropertyChanged("UseLevels");
+                }
+            }
+        }
+
         public Visibility UseLevelVisibility
         {
             get
