@@ -414,10 +414,11 @@ namespace DynamoCoreWpfTests
 
             var funcNode = homeWorkspace.Nodes.OfType<Function>().First();
             var customNodeView = NodeViewWithGuid("fb872c7c-21af-4074-8011-818874738dc7");
-            foreach (MenuItem menuItem in customNodeView.MainContextMenu.Items)
+            foreach (var menuItem in customNodeView.MainContextMenu.Items)
             {
-                if(menuItem.Header.ToString() == Dynamo.Wpf.Properties.Resources.ContextMenuEditCustomNodeProperty)
-                    Assert.IsFalse(menuItem.IsEnabled);
+                MenuItem item = menuItem as MenuItem;
+                if(item != null && item.Header.ToString() == Dynamo.Wpf.Properties.Resources.ContextMenuEditCustomNodeProperty)
+                    Assert.IsFalse(item.IsEnabled);
             }
         }
     }
