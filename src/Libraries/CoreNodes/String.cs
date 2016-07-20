@@ -415,7 +415,6 @@ namespace DSCore
         /// <param name="count">
         ///     Amount of characters to remove, by default will remove all characters from
         ///     the given startIndex to the end of the string.
-        ///     Note: if the Count is negative, the removal process goes from right to left
         /// </param>
         /// <returns name="str">String with characters removed.</returns>
 		/// <search>delete,rem,shorten</search>
@@ -430,11 +429,7 @@ namespace DSCore
 
             if (_count < 0)
             {
-                // The input count is negative means the removal process is required operate from right to left.
-                // However, the removal process in this function always operates rightwards (left to right).
-                // Therefore, a conversion for start index needs to be done in order to change
-                // from leftwards removal (right to left) to rightwards removal (left to right).
-                startIndex = startIndex + _count;// + 1; 
+                startIndex += _count;
                 _count *= -1;
             }
 
