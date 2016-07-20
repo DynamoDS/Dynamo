@@ -48,13 +48,23 @@ New Functionality :
 - We have fixed the long pending issue of Screen Capture, now it doesn't matter how big your graph is, everything will be visible  at whatever zoom level you are at when you use Export Workspace as Image.
 
 Important Bug Fixes: 
-- Fixed issue related to FamilyInstance.SetRotation, now you can use this node with Run Automatic mode as well and your first instance won't get placed randomly in a different location. 
+- Element Binding (the ability of Dynamo to track and modify rather than duplicate or replace elements in Revit) had some regressions in Revit 2017.  These are fixed.
+- Freeze does not delete elements created in Revit anymore.
+- Fixed issue related to FamilyInstance.SetRotation, now you can use this node with Run Automatic mode as well and your first instance won't get placed randomly in a different location and crash issues have been addressed
 - Fixed long pending issue with Importing series of Swept Solids, Now while after importing all Surfaces are there. 
 - Localization crash fixes with Norwegian, German and French
 - Dynamo for Revit no longer crashes at startup with non-compliant Views (not 3D)
 - When selecting any labeled item only that item's label gets displayed, no additional labels are displayed
 - Fixed errors on Code Block Nodes and String Nodes that are published to Web and accessed from the Customizer view
 - Read-only nodes and directories can now be loaded in Dynamo.
+- Mapping flatten nodes and flatten on single values no longer replaces data with null values
+- Arc.ByStartPointEndPointStartTangent no longer fails using a normalised vector
+- Direct Shape now recognizes material input properly
+-  /verysilent install of Dynamo for Revit now completes without user interaction
+-  Fixed crash with closed curve as input to Surface.ByLoft
+-  Dot product no longer returning erronous scalars
+-  Zero radius and related bad geometry errors no longer create crash 
+-  Turning off "Revit Background Preview" no longer turns off "Background Preview" on relaunch of Dynamo.
  
 Other Changes: 
 - Now once you add a new path for Package location then all the packages from the new path will get loaded without relaunching Dynamo.
