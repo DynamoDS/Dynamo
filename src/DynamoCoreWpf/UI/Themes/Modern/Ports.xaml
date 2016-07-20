@@ -174,7 +174,16 @@
                         </Style>
                     </Rectangle.Style>
                 </Rectangle>
-                <fa:FontAwesome Icon="ChevronRight" HorizontalAlignment="Right" VerticalAlignment="Center"  IsHitTestVisible="False" Background="{x:Null}"/>
+                <StackPanel Orientation="Horizontal">
+                    <dynui:UseLevelSpinner x:Name="useLevelSpinner" VerticalAlignment="Center" Width="60" Height="16" KeepListStructure="True"/>
+                    <fa:FontAwesome
+                    Icon="ChevronRight"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    IsHitTestVisible="False"
+                    Background="{x:Null}"
+                    Foreground="#555555"/>
+                </StackPanel>
                 <dynui:UseLevelPopup
                     Name="MyPopup"
                     Placement="Right"
