@@ -432,6 +432,10 @@ namespace Dynamo.Models
         /// </summary>
         public interface IStartConfiguration2 : IStartConfiguration
         {
+            /// <summary>
+            /// If true, the program does not have a UI.
+            /// No update checks or analytics collection should be done.
+            /// </summary>
             bool IsHeadless { get; set; }
         }
 
