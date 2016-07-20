@@ -39,6 +39,18 @@ namespace Dynamo.Wpf
             nodeView.MainContextMenu.Items.Add(editPropertiesItem);
             editPropertiesItem.Click += (sender, args) => EditCustomNodeProperties();
 
+            // Check if the workspace is read-only or not, disable editPropertiesItem accordingly
+            CustomNodeWorkspaceModel ws;
+            dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
+                functionNodeModel.Definition.FunctionId,
+                DynamoModel.IsTestMode,
+                out ws);
+
+            if (ws != null && ws.IsReadOnly)
+            {
+                editPropertiesItem.IsEnabled = false;
+            }
+
             // publish
             var publishCustomNodeItem = new MenuItem
             {

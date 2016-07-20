@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using CoreNodeModelsWpf.Controls;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
-using CoreNodeModelsWpf.Controls;
 
 namespace DynamoCoreWpfTests
 {
@@ -392,6 +395,30 @@ namespace DynamoCoreWpfTests
 
             DispatcherUtil.DoEvents();
             Assert.AreEqual(8, items.Count());
+        }
+
+        [Test]
+        public void TestEditReadOnlyCustomNodeProperty()
+        {
+            // Open a read-only custom node
+            var pathInTestsDir = @"core\CustomNodes\add_Read_only.dyf";
+            var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), pathInTestsDir);
+            FileInfo fInfo = new FileInfo(filePath);
+            fInfo.IsReadOnly = true;
+            Assert.IsTrue(DynamoUtilities.PathHelper.IsReadOnlyPath(filePath));
+
+            // a file with a read-only custom node definition is opened
+            Open(@"core\CustomNodes\TestAdd.dyn");
+            var homeWorkspace = Model.CurrentWorkspace as HomeWorkspaceModel;
+            Assert.NotNull(Model.CurrentWorkspace);
+
+            var funcNode = homeWorkspace.Nodes.OfType<Function>().First();
+            var customNodeView = NodeViewWithGuid("fb872c7c-21af-4074-8011-818874738dc7");
+            foreach (MenuItem menuItem in customNodeView.MainContextMenu.Items)
+            {
+                if (menuItem.Header.ToString() == Dynamo.Wpf.Properties.Resources.ContextMenuEditCustomNodeProperty)
+                    Assert.IsFalse(menuItem.IsEnabled);
+            }
         }
     }
 }
