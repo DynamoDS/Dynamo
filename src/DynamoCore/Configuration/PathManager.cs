@@ -490,6 +490,12 @@ namespace Dynamo.Core
 
         private static string GetSamplesFolder(string dataRootDirectory)
         {
+            var versionedDirectory = dataRootDirectory;
+            if (!Directory.Exists(versionedDirectory))
+            {
+                dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
+            }
+
             var uiCulture = CultureInfo.CurrentUICulture.ToString();
             var sampleDirectory = Path.Combine(dataRootDirectory, "samples", uiCulture);
 
@@ -512,6 +518,12 @@ namespace Dynamo.Core
 
         private static string GetGalleryDirectory(string commonDataDir)
         {
+            var versionedDirectory = commonDataDir;
+            if (!Directory.Exists(versionedDirectory))
+            {
+                commonDataDir = Directory.GetParent(versionedDirectory).FullName;
+            }
+
             var uiCulture = CultureInfo.CurrentUICulture.ToString();
             var galleryDirectory = Path.Combine(commonDataDir, "gallery", uiCulture);
 
