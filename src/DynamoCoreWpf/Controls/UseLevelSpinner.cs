@@ -156,8 +156,8 @@ namespace Dynamo.UI.Controls
         private static void OnIsReadOnlyChanged(DependencyObject element, DependencyPropertyChangedEventArgs args)
         {
             UseLevelSpinner control = element as UseLevelSpinner;
-            bool readOnly = (bool)args.NewValue;
 
+            bool readOnly = (bool)args.NewValue;
             if (readOnly != control._textBox.IsReadOnly)
             {
                 control._textBox.IsReadOnly = readOnly;
@@ -167,9 +167,6 @@ namespace Dynamo.UI.Controls
         private static void OnKeepListStructureChanged(DependencyObject element, DependencyPropertyChangedEventArgs args)
         {
             UseLevelSpinner control = element as UseLevelSpinner;
-            bool keepListStructure = (bool)args.NewValue;
-
-            control.KeepListStructure = keepListStructure;
             control.UpdateText();
         }
 
