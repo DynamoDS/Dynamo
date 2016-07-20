@@ -63,6 +63,7 @@ namespace DynamoUnits
         private static VolumeUnit _hostApplicationInternalVolumeUnit = DynamoUnits.VolumeUnit.CubicMeter;
 
         private static string _numberFormat = "f4";
+        private static string _generalNumberFormat = "G";
 
         public static double Epsilon
         {
@@ -93,6 +94,11 @@ namespace DynamoUnits
             set { _numberFormat = value; }
         }
 
+        public static string GeneralNumberFormat
+        {
+            get { return _generalNumberFormat; }
+            set { _generalNumberFormat = value; }
+        }
     }
 
     [IsVisibleInDynamoLibrary(false)]
@@ -1905,19 +1911,19 @@ namespace DynamoUnits
                 wholeFeet = Math.Floor(decimalFeet);
                 partialFeet = decimalFeet - wholeFeet;
             }
-
-            string decimalInches = (Math.Round(partialFeet * 12.0, ROUND_DIGITS)).ToString(BaseUnit.NumberFormat, CultureInfo.InvariantCulture);
+           
+            string decimalInches = (Math.Round(partialFeet * 12.0, ROUND_DIGITS)).ToString(BaseUnit.GeneralNumberFormat, CultureInfo.InvariantCulture);
 
             if (partialFeet.AlmostEquals(1.0000, EPSILON))
             {
                 //add a foot to the whole feet
                 wholeFeet += 1.0;
-                decimalInches = "0.0000";
+                decimalInches = "0";
             }
             else if (partialFeet.AlmostEquals(-1.0000, EPSILON))
             {
                 wholeFeet -= 1.0;
-                decimalInches = "0.0000";
+                decimalInches = "0";
             }
 
             string feet = "";
