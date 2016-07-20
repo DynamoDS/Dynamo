@@ -121,6 +121,27 @@ namespace Dynamo.ViewModels
                 {
                     _port.UseLevels = value;
                     RaisePropertyChanged("UseLevels");
+
+                    if (!_port.UseLevels)
+                    {
+                        ShouldKeepListStructure = false;
+                    }
+                }
+            }
+        }
+
+        public bool ShouldKeepListStructure
+        {
+            get
+            {
+                return _port.ShouldKeepListStructure;
+            }
+            set
+            {
+                if (_port.ShouldKeepListStructure != value)
+                {
+                    _port.ShouldKeepListStructure = value;
+                    RaisePropertyChanged("ShouldKeepListStructure");
                 }
             }
         }

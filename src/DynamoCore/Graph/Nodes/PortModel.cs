@@ -199,6 +199,14 @@ namespace Dynamo.Graph.Nodes
         {
             get; set;
         }
+
+        /// <summary>
+        /// If needs to keep list structure.
+        /// </summary>
+        public bool ShouldKeepListStructure
+        {
+            get; set;
+        }
         #endregion
 
         /// <summary>
@@ -213,6 +221,7 @@ namespace Dynamo.Graph.Nodes
             PortType = portType;
             Owner = owner;
             UseLevels = false;
+            ShouldKeepListStructure = false;
 
             SetPortData(data);
 

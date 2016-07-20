@@ -179,7 +179,7 @@
                                            VerticalAlignment="Center"
                                            Width="50"
                                            Height="16"
-                                           KeepListStructure="True"
+                                           KeepListStructure="{Binding Path=ShouldKeepListStructure}"
                                            Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
 
                     <fa:FontAwesome
@@ -222,6 +222,7 @@
                                     BorderThickness="1"/>
                                 <CheckBox
                                     Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}"
+                                    IsChecked="{Binding Path=ShouldKeepListStructure, Mode=TwoWay}"
                                     IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}"/>
                                 <TextBlock 
                                     FontFamily="{StaticResource OpenSansRegular}" 
