@@ -218,9 +218,7 @@
                                     Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
                                     IsChecked="{Binding Path=UseLevels, Mode=TwoWay}"
                                     Name="UseLevel"/>
-                                <Border
-                                    BorderBrush="#E0E0E0"
-                                    BorderThickness="1"/>
+                                <Separator/>
                                 <CheckBox
                                     Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}"
                                     IsChecked="{Binding Path=ShouldKeepListStructure, Mode=TwoWay}"
