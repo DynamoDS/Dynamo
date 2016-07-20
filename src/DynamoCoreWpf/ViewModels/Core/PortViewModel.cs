@@ -308,6 +308,9 @@ namespace Dynamo.ViewModels
                 case "MarginThickness":
                     RaisePropertyChanged("MarginThickness");
                     break;
+                case "ShouldKeepListStructure":
+                    RaisePropertyChanged("ShouldKeepListStructure");
+                    break;
             }
             
         }

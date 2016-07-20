@@ -213,8 +213,21 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public bool ShouldKeepListStructure
         {
-            get; set;
+            get
+            {
+                return shouldKeepListStructure;
+            }
+            set
+            {
+                if (shouldKeepListStructure != value)
+                {
+                    shouldKeepListStructure = value;
+                    RaisePropertyChanged("ShouldKeepListStructure");
+                }
+            }
         }
+        private bool shouldKeepListStructure = false;
+
         #endregion
 
         /// <summary>

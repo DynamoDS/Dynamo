@@ -1507,15 +1507,7 @@ namespace Dynamo.Graph.Nodes
                     else
                     {
                         p = new PortModel(portType, this, data);
-
-                        p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
-                        {
-                            if (args.PropertyName == "UsingDefaultValue")
-                            {
-                                OnNodeModified();
-                            }
-                        };
-                        
+                        p.PropertyChanged += OnPortPropertyChanged;
                         InPorts.Add(p);
                     }
 
@@ -1537,6 +1529,35 @@ namespace Dynamo.Graph.Nodes
             }
 
             return null;
+        }
+
+        private void OnPortPropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            switch (args.PropertyName)
+            {
+                case "UsingDefaultValue":
+                case "Level":
+                case "UseLevels":
+                    OnNodeModified();
+                    break;
+
+                case "ShouldKeepListStructure":
+                    var portModel = sender as PortModel;
+                    if (portModel != null && portModel.ShouldKeepListStructure)
+                    {
+                        foreach (var inport in InPorts)
+                        {
+                            if (inport != portModel && inport.ShouldKeepListStructure)
+                            {
+                                inport.ShouldKeepListStructure = false;  
+                            }
+                        }
+                    }
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         /// <summary>
