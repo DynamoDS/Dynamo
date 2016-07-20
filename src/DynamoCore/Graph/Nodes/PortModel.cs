@@ -243,7 +243,7 @@ namespace Dynamo.Graph.Nodes
             Owner = owner;
             UseLevels = false;
             ShouldKeepListStructure = false;
-            Level = 1;
+            Level = 2;
 
             SetPortData(data);
 

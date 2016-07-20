@@ -1797,9 +1797,12 @@ namespace Dynamo.Graph.Nodes
                     portInfo.SetAttribute("default", true.ToString());
                 }
 
-                portInfo.SetAttribute("useLevels", t.port.UseLevels.ToString());
-                portInfo.SetAttribute("shouldKeepListStructure", t.port.ShouldKeepListStructure.ToString());
-                portInfo.SetAttribute("level", t.port.Level.ToString());
+                if (t.port.UseLevels)
+                {
+                    portInfo.SetAttribute("useLevels", t.port.UseLevels.ToString());
+                    portInfo.SetAttribute("level", t.port.Level.ToString());
+                    portInfo.SetAttribute("shouldKeepListStructure", t.port.ShouldKeepListStructure.ToString());
+                }
                 element.AppendChild(portInfo);
             }
 
