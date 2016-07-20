@@ -47,7 +47,7 @@ using Utils = Dynamo.Graph.Nodes.Utilities;
 namespace Dynamo.Models
 {
     /// <summary>
-    /// This class creates an interface for Engine controller. 
+    /// This class creates an interface for Engine controller.
     /// </summary>
     public interface IEngineControllerManager
     {
@@ -99,10 +99,10 @@ namespace Dynamo.Models
             if (WorkspaceSaved != null)
                 WorkspaceSaved(model);
         }
-     
+
         /// <summary>
         /// Event that is fired during the opening of the workspace.
-        /// 
+        ///
         /// Use the XmlDocument object provided to conduct additional
         /// workspace opening operations.
         /// </summary>
@@ -116,9 +116,9 @@ namespace Dynamo.Models
         /// <summary>
         /// This event is raised right before the shutdown of DynamoModel started.
         /// When this event is raised, the shutdown is guaranteed to take place
-        /// (i.e. user has had a chance to save the work and decided to proceed 
-        /// with shutting down Dynamo). Handlers of this event can still safely 
-        /// access the DynamoModel, the WorkspaceModel (along with its contents), 
+        /// (i.e. user has had a chance to save the work and decided to proceed
+        /// with shutting down Dynamo). Handlers of this event can still safely
+        /// access the DynamoModel, the WorkspaceModel (along with its contents),
         /// and the DynamoScheduler.
         /// </summary>
         public event DynamoModelHandler ShutdownStarted;
@@ -130,8 +130,8 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// This event is raised after DynamoModel has been shut down. At this 
-        /// point the DynamoModel is no longer valid and access to it should be 
+        /// This event is raised after DynamoModel has been shut down. At this
+        /// point the DynamoModel is no longer valid and access to it should be
         /// avoided.
         /// </summary>
         public event DynamoModelHandler ShutdownCompleted;
@@ -141,7 +141,7 @@ namespace Dynamo.Models
             if (ShutdownCompleted != null)
                 ShutdownCompleted(this);
         }
-       
+
         #endregion
 
         #region static properties
@@ -154,13 +154,20 @@ namespace Dynamo.Models
         public static bool IsTestMode { get; set; }
 
         /// <summary>
+        /// Flag to indicate that there is no UI on this process, and things
+        /// like the update manager and the analytics collection should be
+        /// disabled.
+        /// </summary>
+        public static bool IsHeadless { get; set; }
+
+        /// <summary>
         ///     Specifies whether or not Dynamo is in a crash-state.
         /// </summary>
         public static bool IsCrashing { get; set; }
 
         /// <summary>
-        /// Setting this flag enables creation of an XML in following format that records 
-        /// node mapping information - which old node has been converted to which to new node(s) 
+        /// Setting this flag enables creation of an XML in following format that records
+        /// node mapping information - which old node has been converted to which to new node(s)
         /// </summary>
         public static bool EnableMigrationLogging { get; set; }
 
@@ -197,8 +204,8 @@ namespace Dynamo.Models
         public IUpdateManager UpdateManager { get; private set; }
 
         /// <summary>
-        ///     The path manager that configures path information required for 
-        ///     Dynamo to function properly. See IPathManager interface for more 
+        ///     The path manager that configures path information required for
+        ///     Dynamo to function properly. See IPathManager interface for more
         ///     details.
         /// </summary>
         public IPathManager PathManager { get { return pathManager; } }
@@ -326,9 +333,9 @@ namespace Dynamo.Models
         /// <summary>
         ///     Returns collection of visible workspaces in Dynamo
         /// </summary>
-        public IEnumerable<WorkspaceModel> Workspaces 
+        public IEnumerable<WorkspaceModel> Workspaces
         {
-            get { return _workspaces; } 
+            get { return _workspaces; }
         }
 
         /// <summary>
@@ -347,12 +354,12 @@ namespace Dynamo.Models
         #region initialization and disposal
 
         /// <summary>
-        /// External components call this method to shutdown DynamoModel. This 
-        /// method marks 'ShutdownRequested' property to 'true'. This method is 
+        /// External components call this method to shutdown DynamoModel. This
+        /// method marks 'ShutdownRequested' property to 'true'. This method is
         /// used rather than a public virtual method to ensure that the value of
         /// ShutdownRequested is set to true.
         /// </summary>
-        /// <param name="shutdownHost">Set this parameter to true to shutdown 
+        /// <param name="shutdownHost">Set this parameter to true to shutdown
         /// the host application.</param>
         public void ShutDown(bool shutdownHost)
         {
@@ -369,7 +376,7 @@ namespace Dynamo.Models
             PreShutdownCore(shutdownHost);
             ShutDownCore(shutdownHost);
             PostShutdownCore(shutdownHost);
-            
+
             Dynamo.Logging.Analytics.ShutDown();
 
             OnShutdownCompleted(); // Notify possible event handlers.
@@ -387,7 +394,7 @@ namespace Dynamo.Models
             OnCleanup();
 
             DynamoSelection.DestroyInstance();
-            
+
             if (Scheduler != null)
             {
                 Scheduler.Shutdown();
@@ -416,7 +423,22 @@ namespace Dynamo.Models
             TaskProcessMode ProcessMode { get; set; }
         }
 
-      
+        /// <summary>
+        /// A new interface that adds a headless flag on top of the existing
+        /// IStartConfiguration, as the existing interface can't be changed
+        /// until 2.0.0.  The flag is used to suppress update checks and
+        /// analytics.
+        /// TODO: Merge this into IStartConfiguration for 2.0.0.
+        /// </summary>
+        public interface IStartConfiguration2 : IStartConfiguration
+        {
+            /// <summary>
+            /// If true, the program does not have a UI.
+            /// No update checks or analytics collection should be done.
+            /// </summary>
+            bool IsHeadless { get; set; }
+        }
+
         /// <summary>
         /// Initialization settings for DynamoModel.
         /// </summary>
@@ -480,6 +502,10 @@ namespace Dynamo.Models
 
             Context = config.Context;
             IsTestMode = config.StartInTestMode;
+
+            var config2 = config as IStartConfiguration2;
+            IsHeadless = (config2 != null) ? config2.IsHeadless : false;
+
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory);
 
@@ -515,7 +541,7 @@ namespace Dynamo.Models
 
                 try
                 {
-                    var dynamoLookup = config.UpdateManager != null && config.UpdateManager.Configuration != null 
+                    var dynamoLookup = config.UpdateManager != null && config.UpdateManager.Configuration != null
                         ? config.UpdateManager.Configuration.DynamoLookUp : null;
 
                     migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, dynamoLookup);
@@ -530,7 +556,7 @@ namespace Dynamo.Models
                     var isFirstRun = this.PreferenceSettings.IsFirstRun;
                     this.PreferenceSettings = migrator.PreferenceSettings;
 
-                    // Preserve the preference settings for IsFirstRun as this needs to be set 
+                    // Preserve the preference settings for IsFirstRun as this needs to be set
                     // only by UsageReportingManager
                     this.PreferenceSettings.IsFirstRun = isFirstRun;
                 }
@@ -589,12 +615,12 @@ namespace Dynamo.Models
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
             UpdateManager.Log += UpdateManager_Log;
-            if (!IsTestMode)
+            if (!IsTestMode && !IsHeadless)
             {
                 DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
             }
-            
-            Logger.Log(string.Format("Dynamo -- Build {0}", 
+
+            Logger.Log(string.Format("Dynamo -- Build {0}",
                                         Assembly.GetExecutingAssembly().GetName().Version));
 
             InitializeNodeLibrary(preferences);
@@ -617,7 +643,7 @@ namespace Dynamo.Models
                     }
                     catch (Exception ex)
                     {
-                        Logger.Log(ex.Message);                       
+                        Logger.Log(ex.Message);
                     }
 
                     ExtensionManager.Add(ext);
@@ -628,8 +654,8 @@ namespace Dynamo.Models
 
             StartBackupFilesTimer();
 
-            TraceReconciliationProcessor = this; 
-            
+            TraceReconciliationProcessor = this;
+
             foreach (var ext in ExtensionManager.Extensions)
             {
                 try
@@ -652,7 +678,7 @@ namespace Dynamo.Models
             }
             return extensions;
         }
-            
+
         private void RemoveExtension(IExtension ext)
         {
             ExtensionManager.Remove(ext);
@@ -665,7 +691,7 @@ namespace Dynamo.Models
         private void EngineController_TraceReconcliationComplete(TraceReconciliationEventArgs obj)
         {
             Debug.WriteLine("TRACE RECONCILIATION: {0} total serializables were orphaned.", obj.CallsiteToOrphanMap.SelectMany(kvp=>kvp.Value).Count());
-            
+
             // The orphans will come back here as a dictionary of lists of ISerializables jeyed by their callsite id.
             // This dictionary gets redistributed into a dictionary keyed by the workspace id.
 
@@ -713,7 +739,7 @@ namespace Dynamo.Models
                 }
                 else
                 {
-                    workspaceOrphanMap.Add(nodeSpace.Guid, kvp.Value);  
+                    workspaceOrphanMap.Add(nodeSpace.Guid, kvp.Value);
                 }
             }
 
@@ -748,13 +774,13 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// This event handler is invoked when DynamoScheduler changes the state 
-        /// of an AsyncTask object. See TaskStateChangedEventArgs.State for more 
+        /// This event handler is invoked when DynamoScheduler changes the state
+        /// of an AsyncTask object. See TaskStateChangedEventArgs.State for more
         /// details of these state changes.
         /// </summary>
         /// <param name="sender">The scheduler which raised the event.</param>
         /// <param name="e">Task state changed event argument.</param>
-        /// 
+        ///
         private void OnAsyncTaskStateChanged(DynamoScheduler sender, TaskStateChangedEventArgs e)
         {
             var updateTask = e.Task as UpdateGraphAsyncTask;
@@ -810,7 +836,7 @@ namespace Dynamo.Models
 
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
-            
+
             UpdateManager.Log -= UpdateManager_Log;
             Logger.Dispose();
 
@@ -832,7 +858,7 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
             foreach (var ws in _workspaces)
             {
-                ws.Dispose(); 
+                ws.Dispose();
             }
         }
 
@@ -1027,7 +1053,7 @@ namespace Dynamo.Models
 
         private void InitializeInstrumentationLogger()
         {
-            if (!IsTestMode)
+            if (!IsTestMode && !IsHeadless)
             {
                 Dynamo.Logging.Analytics.Start(this);
             }
@@ -1038,11 +1064,11 @@ namespace Dynamo.Models
             if (preferences != null) // If there is preference settings provided...
                 return preferences;
 
-            // Is order for test cases not to interfere with the regular preference 
-            // settings xml file, a test case usually specify a temporary xml file 
-            // path from where preference settings are to be loaded. If that value 
+            // Is order for test cases not to interfere with the regular preference
+            // settings xml file, a test case usually specify a temporary xml file
+            // path from where preference settings are to be loaded. If that value
             // is not set, then fall back to the file path specified in PathManager.
-            // 
+            //
             var xmlFilePath = PreferenceSettings.DynamoTestPath;
             if (string.IsNullOrEmpty(xmlFilePath))
                 xmlFilePath = pathManager.PreferenceFilePath;
@@ -1100,7 +1126,7 @@ namespace Dynamo.Models
         #region engine management
 
         /// <summary>
-        ///     Register custom node defintion and execute all custom node 
+        ///     Register custom node defintion and execute all custom node
         ///     instances.
         /// </summary>
         /// <param name="definition"></param>
@@ -1124,8 +1150,8 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Returns all function instances directly or indirectly depends on the 
-        /// specified function definition and mark them as modified so that 
+        /// Returns all function instances directly or indirectly depends on the
+        /// specified function definition and mark them as modified so that
         /// their values will be re-queried.
         /// </summary>
         /// <param name="def"></param>
@@ -1143,26 +1169,26 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Call this method to reset the virtual machine, avoiding a race 
+        /// Call this method to reset the virtual machine, avoiding a race
         /// condition by using a thread join inside the vm executive.
         /// </summary>
-        /// <param name="markNodesAsDirty">Set this parameter to true to force 
-        /// reset of the execution substrait. Note that setting this parameter 
+        /// <param name="markNodesAsDirty">Set this parameter to true to force
+        /// reset of the execution substrait. Note that setting this parameter
         /// to true will have a negative performance impact.</param>
         public virtual void ResetEngine(bool markNodesAsDirty = false)
         {
             // TODO(Luke): Push this into a resync call with the engine controller
             //
             // Tracked in MAGN-5167.
-            // As some async tasks use engine controller, for example 
+            // As some async tasks use engine controller, for example
             // CompileCustomNodeAsyncTask and UpdateGraphAsyncTask, it is possible
             // that engine controller is reset *before* tasks get executed. For
             // example, opening custom node will schedule a CompileCustomNodeAsyncTask
-            // firstly and then reset engine controller. 
-            // 
+            // firstly and then reset engine controller.
+            //
             // We should make sure engine controller is reset after all tasks that
-            // depend on it get executed, or those tasks are thrown away if safe to 
-            // do that. 
+            // depend on it get executed, or those tasks are thrown away if safe to
+            // do that.
 
             ResetEngineInternal();
             foreach (var workspaceModel in Workspaces.OfType<HomeWorkspaceModel>())
@@ -1185,7 +1211,7 @@ namespace Dynamo.Models
                 LibraryServices,
                 geometryFactoryPath,
                 DebugSettings.VerboseLogging);
-            
+
             EngineController.MessageLogged += LogMessage;
             EngineController.TraceReconcliationComplete += EngineController_TraceReconcliationComplete;
 
@@ -1299,7 +1325,7 @@ namespace Dynamo.Models
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
-            
+
             var newWorkspace = new HomeWorkspaceModel(
                 EngineController,
                 Scheduler,
@@ -1311,13 +1337,13 @@ namespace Dynamo.Models
                 nodeGraph.Presets,
                 nodeGraph.ElementResolver,
                 workspaceInfo,
-                DebugSettings.VerboseLogging, 
+                DebugSettings.VerboseLogging,
                 IsTestMode
                );
 
             RegisterHomeWorkspace(newWorkspace);
 
-            workspace = newWorkspace;            
+            workspace = newWorkspace;
             return true;
         }
 
@@ -1343,7 +1369,7 @@ namespace Dynamo.Models
         protected void SaveBackupFiles(object state)
         {
             OnRequestDispatcherBeginInvoke(() =>
-            {               
+            {
                 // tempDict stores the list of backup files and their corresponding workspaces IDs
                 // when the last auto-save operation happens. Now the IDs will be used to know
                 // whether some workspaces have already been backed up. If so, those workspaces won't be
@@ -1420,7 +1446,7 @@ namespace Dynamo.Models
                 //record the annotation before the models in it are deleted.
                 foreach (var model in modelsToDelete)
                 {
-                    //If there is only one model, then deleting that model should delete the group. In that case, do not record 
+                    //If there is only one model, then deleting that model should delete the group. In that case, do not record
                     //the group for modification. Until we have one model in a group, group should be recorded for modification
                     //otherwise, undo operation cannot get the group back.
                     if (annotation.SelectedModels.Count() > 1 && annotation.SelectedModels.Where(x => x.GUID == model.GUID).Any())
@@ -1432,10 +1458,10 @@ namespace Dynamo.Models
                 if (annotation.SelectedModels.Any() && !annotation.SelectedModels.Except(modelsToDelete).Any())
                 {
                     //Annotation Model has to be serialized first - before the nodes.
-                    //so, store the Annotation model as first object. This will serialize the 
+                    //so, store the Annotation model as first object. This will serialize the
                     //annotation before the nodes are deleted. So, when Undo is pressed,
                     //annotation model is deserialized correctly.
-                    modelsToDelete.Insert(0, annotation);                   
+                    modelsToDelete.Insert(0, annotation);
                 }
             }
 
@@ -1447,7 +1473,7 @@ namespace Dynamo.Models
             foreach (ModelBase model in modelsToDelete)
             {
                 selection.Remove(model); // Remove from selection set.
-                model.Dispose();              
+                model.Dispose();
             }
 
             OnDeletionComplete(this, EventArgs.Empty);
@@ -1475,13 +1501,13 @@ namespace Dynamo.Models
                             }
                         }
                         else
-                        {                          
-                            emptyGroup.Add(annotation);                            
-                        }                        
+                        {
+                            emptyGroup.Add(annotation);
+                        }
                     }
                 }
             }
-           
+
             if(emptyGroup.Any())
             {
                 DeleteModelInternal(emptyGroup);
@@ -1493,7 +1519,7 @@ namespace Dynamo.Models
             var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
             var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.IsSelected);
             if (selectedGroup != null)
-            {                      
+            {
                 foreach (var model in modelsToAdd)
                 {
                     CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
@@ -1589,9 +1615,9 @@ namespace Dynamo.Models
         ///     Adds a node to the current workspace.
         /// </summary>
         /// <param name="node">Node to add</param>
-        /// <param name="centered">Indicates if the node should be placed 
+        /// <param name="centered">Indicates if the node should be placed
         /// at the center of workspace.</param>
-        /// <param name="addToSelection">Indicates if the newly added node 
+        /// <param name="addToSelection">Indicates if the newly added node
         /// should be selected</param>
         internal void AddNodeToCurrentWorkspace(NodeModel node, bool centered, bool addToSelection = true)
         {
@@ -1637,7 +1663,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Paste ISelectable objects from the clipboard to the workspace 
+        ///     Paste ISelectable objects from the clipboard to the workspace
         /// so that the nodes appear in their original location with a slight offset
         /// </summary>
         public void Paste()
@@ -1727,7 +1753,7 @@ namespace Dynamo.Models
             }
 
             var newItems = newNodeModels.Concat<ModelBase>(newNoteModels);
-            
+
             var shiftX = targetPoint.X - newItems.Min(item => item.X);
             var shiftY = targetPoint.Y - newItems.Min(item => item.Y);
             var offset = useOffset ? CurrentWorkspace.CurrentPasteOffset : 0;
@@ -1770,7 +1796,7 @@ namespace Dynamo.Models
                     modelLookup.TryGetValue(c.End.Owner.GUID, out end)
                         ? end as NodeModel
                         : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.End.Owner.GUID)
-             
+
                 // Don't make a connector if either end is null.
                 where startNode != null && endNode != null
                 select
@@ -1778,15 +1804,15 @@ namespace Dynamo.Models
 
             createdModels.AddRange(newConnectors);
 
-            //Grouping depends on the selected node models. 
+            //Grouping depends on the selected node models.
             //so adding the group after nodes / notes are added to workspace.
-            //select only those nodes that are part of a group.             
+            //select only those nodes that are part of a group.
             var newAnnotations = new List<AnnotationModel>();
             foreach (var annotation in annotations)
             {
                 var annotationNodeModel = new List<NodeModel>();
                 var annotationNoteModel = new List<NoteModel>();
-                // some models can be deleted after copying them, 
+                // some models can be deleted after copying them,
                 // so they need to be in pasted annotation as well
                 var modelsToRestore = annotation.DeletedModelBases.Intersect(ClipBoard);
                 var modelsToAdd = annotation.SelectedModels.Concat(modelsToRestore);
@@ -1812,7 +1838,7 @@ namespace Dynamo.Models
                     Background = annotation.Background,
                     FontSize = annotation.FontSize
                 };
-              
+
                 newAnnotations.Add(annotationModel);
             }
 
@@ -1863,7 +1889,7 @@ namespace Dynamo.Models
 
             OnWorkspaceCleared(CurrentWorkspace);
         }
-       
+
         #endregion
 
         #region private methods
@@ -1883,7 +1909,7 @@ namespace Dynamo.Models
                 functionGroups.Select(functionGroup => functionGroup.Functions.ToList())
                     .Where(functions => functions.Any())
                     .SelectMany(
-                        functions => 
+                        functions =>
                             (from function in functions
                              where function.IsVisibleInLibrary
                              let displayString = function.UserFriendlyName
@@ -1891,7 +1917,7 @@ namespace Dynamo.Models
                              select string.IsNullOrEmpty(function.Namespace)
                                 ? ""
                                 : function.Namespace + "." + function.Signature + "\n"));
-            
+
             var sb = string.Join("\n", descriptions);
 
             Logger.Log(sb, LogLevel.File);
@@ -1966,7 +1992,7 @@ namespace Dynamo.Models
         private void AddWorkspace(WorkspaceModel workspace)
         {
             if (workspace == null) return;
-            
+
             Action savedHandler = () => OnWorkspaceSaved(workspace);
             workspace.WorkspaceSaved += savedHandler;
             workspace.MessageLogged += LogMessage;
@@ -1979,7 +2005,7 @@ namespace Dynamo.Models
             };
 
             _workspaces.Add(workspace);
-            OnWorkspaceAdded(workspace);           
+            OnWorkspaceAdded(workspace);
         }
 
         enum ButtonId
@@ -1992,7 +2018,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Call this method to display a message box when a file of an older 
+        /// Call this method to display a message box when a file of an older
         /// version cannot be opened by the current version of Dynamo.
         /// </summary>
         /// <param name="fullFilePath"></param>
@@ -2028,8 +2054,8 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Call this method to display an error message in an event when live 
-        /// runner throws an exception that is not handled anywhere else. This 
+        /// Call this method to display an error message in an event when live
+        /// runner throws an exception that is not handled anywhere else. This
         /// message instructs user to save their work and restart Dynamo.
         /// </summary>
         /// <param name="exception">The exception to display.</param>
