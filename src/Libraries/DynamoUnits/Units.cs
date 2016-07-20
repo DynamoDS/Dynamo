@@ -628,16 +628,15 @@ namespace DynamoUnits
         [Obsolete("Length.SetValueFromString is obsolete.", false)]
         public override void SetValueFromString(string value)
         {
-            //first try to parse the input as a number
-            //it it's parsable, then just cram it into
-            //whatever the project units are
-            double total = 0.0;
-            double feet, inch, m, cm, mm, numerator, denominator;
             //For input with either unit of feet specified
             //or without any unit being specified.
             //When there is no unit being specified in the input,
             //we take that as unit of feet by default
-            if(Utils.ParseLengthInFeetFromString(value, out feet, out numerator, out denominator))
+
+            double total = 0.0;
+            double feet, inch, m, cm, mm, numerator, denominator;
+
+            if (Utils.ParseLengthInFeetFromString(value, out feet, out numerator, out denominator))
             { 
                 if (feet == 0 && denominator != 0)
                 {
@@ -650,11 +649,7 @@ namespace DynamoUnits
                 _value = total / UiLengthConversion;
                 return;
             }
-            /*if (Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out total))
-             {
-                 _value = total/UiLengthConversion;
-                 return;
-             }*/
+            
             //For inputs with inches specified.
             double fractionalInch = 0.0;
             Utils.ParseLengthFromString(value, out feet, out inch, out m, out cm, out mm, out numerator, out denominator);
@@ -715,7 +710,6 @@ namespace DynamoUnits
                     return (_value * ToFoot).ToString(NumberFormat, CultureInfo.InvariantCulture) + FEET;
 
                 case LengthUnit.FractionalFoot:
-                    //return Utils.ToFeetAndFractionalInches(_value * ToFoot);
                     return Utils.ToFeetAndDecimalInches(_value * ToFoot);
 
                 default:
@@ -1961,7 +1955,10 @@ namespace DynamoUnits
                                 out denominator);
                 return true;
             }
-            else return false;
+            else
+            {
+                return false;
+            }
         }
 
         public static void ParseLengthFromString(string value, out double feet, 

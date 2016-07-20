@@ -255,20 +255,11 @@ namespace Dynamo.Tests
             length.Value = 0.0;
             Assert.AreEqual("0' 0.0000\"", length.ToString());
 
-            /*length.Value = 0.003175; //1/8"
-            Assert.AreEqual("1/8\"", length.ToString());*/
-
             length.Value = 0.003175; //1/8"
             Assert.AreEqual("0.1250\"", length.ToString());
 
-            /*length.Value = 0.301752; //.99ft
-            Assert.AreEqual("11 7/8\"", length.ToString());*/
-
             length.Value = 0.301752; //.99ft
             Assert.AreEqual("11.8800\"", length.ToString());
-
-            /*length.Value = 0.3044952; //.999ft
-            Assert.AreEqual("11 63/64\"", length.ToString());*/
 
             length.Value = 0.3044952; //.999ft
             Assert.AreEqual("11.9880\"", length.ToString());
