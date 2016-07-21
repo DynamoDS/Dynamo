@@ -32,8 +32,13 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
     <DataTemplate DataType="{x:Type viewModels:PortViewModel}">
-        <DockPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
             <Grid Name="mainGrid"
+              Grid.Column="0"
               Background="Transparent"
               IsHitTestVisible="True"
               Margin="{Binding Path=MarginThickness}"
@@ -41,7 +46,6 @@
               ToolTipService.ShowDuration="60000"
               IsEnabled="{Binding Path=IsEnabled}"
              >
-
                 <interactivity:Interaction.Triggers>
                     <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
                         <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}" />
@@ -98,7 +102,6 @@
                             <Binding ElementName="portNameTb" Path="ActualWidth"/>
                             <Binding Path="PortModel"/>
                         </MultiBinding>
-
                     </Rectangle.Margin>
                 </Rectangle>
                 <Rectangle Name="highlightOverlay"
@@ -117,16 +120,11 @@
                     <Rectangle.Style>
                         <Style TargetType="{x:Type Rectangle}">
                             <Style.Triggers>
-                                <Trigger Property="IsMouseOver"
-                                     Value="True">
-                                    <Setter Property="Opacity"
-                                        Value="1.0"></Setter>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Opacity" Value="1.0"></Setter>
                                 </Trigger>
-                                <Trigger Property="IsMouseOver"
-                                     Value="False">
-                                    <Setter Property="Opacity"
-                                        Value="0.5"></Setter>
-
+                                <Trigger Property="IsMouseOver" Value="False">
+                                    <Setter Property="Opacity" Value="0.5"></Setter>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -147,15 +145,16 @@
                 </TextBlock>
             </Grid>
 
-            <Grid 
-              Background="Transparent"
-              IsHitTestVisible="True"
-              Margin="{Binding Path=MarginThickness}"
-              Height="{Binding Path=Height}"
-              ToolTipService.ShowDuration="60000"
-              Visibility="{Binding Path=UseLevelVisibility}">
-                <Rectangle 
-                    Name="highlightOverlayForArrow" Fill="White" MinWidth="12" Margin="0,0,0,1" IsHitTestVisible="True">
+            <Grid Name="useLevelGrid"
+                  Grid.Column="1"
+                  Background="Transparent"
+                  HorizontalAlignment="Right"
+                  IsHitTestVisible="True"
+                  Margin="{Binding Path=MarginThickness}"
+                  Height="{Binding Path=Height}"
+                  ToolTipService.ShowDuration="60000"
+                  Visibility="{Binding Path=UseLevelVisibility}">
+                <Rectangle Name="highlightOverlayForArrow" Fill="White" MinWidth="12" Margin="0,0,0,1" IsHitTestVisible="True">
                     <interactivity:Interaction.Triggers>
                         <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
                             <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownOnLevelCommand}" CommandParameter="{Binding}" />
@@ -182,14 +181,12 @@
                                            Level="{Binding Path=Level, Mode=TwoWay}"
                                            KeepListStructure="{Binding Path=ShouldKeepListStructure}"
                                            Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
-
-                    <fa:FontAwesome
-                    Icon="ChevronRight"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    IsHitTestVisible="False"
-                    Background="{x:Null}"
-                    Foreground="#555555"/>
+                    <fa:FontAwesome Icon="ChevronRight"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    IsHitTestVisible="False"
+                                    Background="{x:Null}"
+                                    Foreground="#555555"/>
                 </StackPanel>
                 <dynui:UseLevelPopup
                     Name="MyPopup"
@@ -235,7 +232,7 @@
                     </Grid>
                 </dynui:UseLevelPopup>
             </Grid>
-        </DockPanel>
+        </Grid>
     </DataTemplate>
 
 </ResourceDictionary>
