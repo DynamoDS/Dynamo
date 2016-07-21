@@ -532,10 +532,9 @@ namespace Dynamo.Models
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             }
 
-            InitializePreferences(preferences);
             InitializeInstrumentationLogger();
 
-            if (!IsTestMode && this.PreferenceSettings.IsFirstRun)
+            if (!IsTestMode && PreferenceSettings.IsFirstRun)
             {
                 DynamoMigratorBase migrator = null;
 
@@ -553,14 +552,15 @@ namespace Dynamo.Models
 
                 if (migrator != null)
                 {
-                    var isFirstRun = this.PreferenceSettings.IsFirstRun;
-                    this.PreferenceSettings = migrator.PreferenceSettings;
+                    var isFirstRun = PreferenceSettings.IsFirstRun;
+                    PreferenceSettings = migrator.PreferenceSettings;
 
                     // Preserve the preference settings for IsFirstRun as this needs to be set
                     // only by UsageReportingManager
-                    this.PreferenceSettings.IsFirstRun = isFirstRun;
+                    PreferenceSettings.IsFirstRun = isFirstRun;
                 }
             }
+            InitializePreferences(PreferenceSettings);
 
             // At this point, pathManager.PackageDirectories only has 1 element which is the directory
             // in AppData. If list of PackageFolders is empty, add the folder in AppData to the list since there
@@ -603,7 +603,7 @@ namespace Dynamo.Models
             libraryCore.Compilers.Add(Language.Imperative, new ProtoImperative.Compiler(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
-            LibraryServices = new LibraryServices(libraryCore, pathManager, preferences);
+            LibraryServices = new LibraryServices(libraryCore, pathManager, PreferenceSettings);
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
@@ -623,13 +623,13 @@ namespace Dynamo.Models
             Logger.Log(string.Format("Dynamo -- Build {0}",
                                         Assembly.GetExecutingAssembly().GetName().Version));
 
-            InitializeNodeLibrary(preferences);
+            InitializeNodeLibrary(PreferenceSettings);
 
             if (extensions.Any())
             {
                 var startupParams = new StartupParams(config.AuthProvider,
                     pathManager, new ExtensionLibraryLoader(this), CustomNodeManager,
-                    GetType().Assembly.GetName().Version, preferences);
+                    GetType().Assembly.GetName().Version, PreferenceSettings);
 
                 foreach (var ext in extensions)
                 {
