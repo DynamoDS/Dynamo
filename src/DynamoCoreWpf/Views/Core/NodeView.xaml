@@ -5,6 +5,7 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              Height="Auto"
              Width="Auto"
              Name="topControl"
@@ -302,10 +303,20 @@
                     Height="25"
                     Visibility="{Binding ShouldShowGlyphBar, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
-            <TextBlock Name="lacingOptionTextBlock"
+            <Grid>
+                <fa:FontAwesome 
+                       ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
+                       Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource AutoLacingToVisibilityConverter}}"
+                       Icon="Ban"
+                       FontSize="8"
+                       Margin="5"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Foreground="#99000000"/>
+                <TextBlock Name="lacingOptionTextBlock"
                        Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
                        ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
-                       Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
+                       Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource NonAutoLacingToVisibilityConverter}}"
                        FontFamily="Tahoma"
                        FontSize="8"
                        Margin="5"
@@ -313,7 +324,7 @@
                        VerticalAlignment="Center"
                        Foreground="#99000000"
                        FontWeight="Bold" />
-
+            </Grid>
         </StackPanel>
 
         <Grid Name="PresentationGrid"
