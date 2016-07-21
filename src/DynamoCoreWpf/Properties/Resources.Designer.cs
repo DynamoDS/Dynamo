@@ -1396,7 +1396,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable T-Spline nodes.
+        ///   Looks up a localized string similar to Enable T-Spline nodes (requires relaunch of Dynamo).
         /// </summary>
         public static string DynamoViewSettingEnableTSplineNodes {
             get {
