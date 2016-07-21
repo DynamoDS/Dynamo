@@ -63,6 +63,7 @@ namespace DynamoUnits
         private static VolumeUnit _hostApplicationInternalVolumeUnit = DynamoUnits.VolumeUnit.CubicMeter;
 
         private static string _numberFormat = "f4";
+        private static string _generalNumberFormat = "G";
 
         public static double Epsilon
         {
@@ -93,6 +94,11 @@ namespace DynamoUnits
             set { _numberFormat = value; }
         }
 
+        public static string GeneralNumberFormat
+        {
+            get { return _generalNumberFormat; }
+            set { _generalNumberFormat = value; }
+        }
     }
 
     [IsVisibleInDynamoLibrary(false)]
@@ -628,18 +634,30 @@ namespace DynamoUnits
         [Obsolete("Length.SetValueFromString is obsolete.", false)]
         public override void SetValueFromString(string value)
         {
-            //first try to parse the input as a number
-            //it it's parsable, then just cram it into
-            //whatever the project units are
+            //For input with either unit of feet specified
+            //or without any unit being specified.
+            //When there is no unit being specified in the input,
+            //we take that as unit of feet by default
+
             double total = 0.0;
-            if (Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out total))
-            {
-                _value = total/UiLengthConversion;
+            double feet, inch, m, cm, mm, numerator, denominator;
+
+            if (Utils.ParseLengthInFeetFromString(value, out feet, out numerator, out denominator))
+            { 
+                if (feet == 0 && denominator != 0)
+                {
+                    total = numerator / denominator;
+                }
+                else
+                {
+                    total = feet;
+                }
+                _value = total / UiLengthConversion;
                 return;
             }
-
+            
+            //For inputs with inches specified.
             double fractionalInch = 0.0;
-            double feet, inch, m, cm, mm, numerator, denominator;
             Utils.ParseLengthFromString(value, out feet, out inch, out m, out cm, out mm, out numerator, out denominator);
 
             if (denominator != 0)
@@ -698,7 +716,7 @@ namespace DynamoUnits
                     return (_value * ToFoot).ToString(NumberFormat, CultureInfo.InvariantCulture) + FEET;
 
                 case LengthUnit.FractionalFoot:
-                    return Utils.ToFeetAndFractionalInches(_value * ToFoot);
+                    return Utils.ToFeetAndDecimalInches(_value * ToFoot);
 
                 default:
                     return _value.ToString(NumberFormat, CultureInfo.InvariantCulture) + METERS;
@@ -1874,7 +1892,81 @@ namespace DynamoUnits
             }
             return string.Format("{0}{1} {2}\"", sign, inches, fraction).Trim();
         }
-    
+
+        public static string ToFeetAndDecimalInches(double decimalFeet)
+        {
+            double wholeFeet = 0.0;
+            double partialFeet = 0.0;
+
+            if (decimalFeet < 0)
+            {
+                wholeFeet = Math.Ceiling(decimalFeet);
+                if (wholeFeet == 0)
+                    partialFeet = decimalFeet;
+                else
+                    partialFeet = wholeFeet - decimalFeet;
+            }
+            else
+            {
+                wholeFeet = Math.Floor(decimalFeet);
+                partialFeet = decimalFeet - wholeFeet;
+            }
+           
+            string decimalInches = (Math.Round(partialFeet * 12.0, ROUND_DIGITS)).ToString(BaseUnit.GeneralNumberFormat, CultureInfo.InvariantCulture);
+
+            if (partialFeet.AlmostEquals(1.0000, EPSILON))
+            {
+                //add a foot to the whole feet
+                wholeFeet += 1.0;
+                decimalInches = "0";
+            }
+            else if (partialFeet.AlmostEquals(-1.0000, EPSILON))
+            {
+                wholeFeet -= 1.0;
+                decimalInches = "0";
+            }
+
+            string feet = "";
+            if (wholeFeet != 0.0)
+                feet = string.Format("{0}'", wholeFeet);
+
+            if (wholeFeet.AlmostEquals(0.0, EPSILON) && (partialFeet * 12.0).AlmostEquals(0.0, EPSILON))
+                feet = "0'";
+
+            // Adding symbol for inch
+            decimalInches += "\"";
+
+            return string.Format("{0} {1}", feet, decimalInches).Trim();
+        }
+
+        public static bool ParseLengthInFeetFromString(string value, out double feet, out double numerator, out double denominator)
+        {
+            // This string pattern only handle for the case of input in whole feet without unit symbol 
+            // or fractional feet with/without unit symbol.
+            string pattern = @"(\A((?<ft>((\+|-)?\d{0,}([.,]\d{1,})?))( ?))\Z)|(\A(?<ft>(?<num>(\+|-)?\d+)/(?<den>\d+)*( ?)('|ft)?)\Z)";
+
+            feet = 0.0;
+            numerator = 0.0;
+            denominator = 0.0;
+
+            const RegexOptions opts = RegexOptions.None;
+            var regex = new Regex(pattern, opts);
+            Match match = regex.Match(value.Trim().ToLower());
+            if (match.Success)
+            {
+                double.TryParse(match.Groups["ft"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out feet);
+                double.TryParse(match.Groups["num"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
+                                out numerator);
+                double.TryParse(match.Groups["den"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
+                                out denominator);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public static void ParseLengthFromString(string value, out double feet, 
             out double inch, out double m, out double cm, out double mm, out double numerator, out double denominator )
         {

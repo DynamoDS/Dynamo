@@ -40,13 +40,16 @@ namespace PythonNodeModelsWpf
 
         private void EditScriptContent()
         {
-            var editWindow = new ScriptEditorWindow(dynamoViewModel);
-            editWindow.Initialize(model.GUID, "ScriptContent", model.Script);
-            bool? acceptChanged = editWindow.ShowDialog();
-            if (acceptChanged.HasValue && acceptChanged.Value)
+            using (var cmd = Dynamo.Logging.Analytics.TrackCommandEvent("PythonEdit"))
             {
-                // Mark node for update
-                model.OnNodeModified();
+                var editWindow = new ScriptEditorWindow(dynamoViewModel);
+                editWindow.Initialize(model.GUID, "ScriptContent", model.Script);
+                bool? acceptChanged = editWindow.ShowDialog();
+                if (acceptChanged.HasValue && acceptChanged.Value)
+                {
+                    // Mark node for update
+                    model.OnNodeModified();
+                }
             }
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
@@ -462,7 +463,7 @@ namespace Dynamo.ViewModels
             // calls like NUnit test cases can properly display the exception.
             // 
             if (PlaybackException != null)
-                throw PlaybackException;
+                ExceptionDispatchInfo.Capture(PlaybackException).Throw();
         }
 
         private void ChangeStateInternal(State playbackState)

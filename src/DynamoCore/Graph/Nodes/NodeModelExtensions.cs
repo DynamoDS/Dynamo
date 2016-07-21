@@ -99,6 +99,8 @@ namespace Dynamo.Graph.Nodes
 
         internal static string GetOriginalName(this NodeModel node)
         {
+            if (node == null) return string.Empty;
+
             var function = node as DSFunctionBase;
             if (function != null)
                 return function.Controller.Definition.DisplayName;
