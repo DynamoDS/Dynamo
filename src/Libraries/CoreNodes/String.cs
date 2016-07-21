@@ -437,6 +437,27 @@ namespace DSCore
                 startIndex = startIndex + _count + 1; 
                 _count *= -1;
             }
+            
+            if(_count > str.Length)
+            {
+                throw new ArgumentOutOfRangeException("count", "Count is out of range!");
+            }
+
+            if (startIndex >= str.Length || startIndex < 0) 
+            {
+                // startIndex of an array must be within the string length. 
+                // If after the conversion of negative startIndex, startIndex is still
+                // less than zero, ArgumentOutOfRangeException is occured.
+                if (startIndex == str.Length && str.Length == 0)
+                {
+                    return str.Remove(startIndex, _count);
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("startIndex", "startIndex is out of range!");
+
+                }
+            }
 
             return str.Remove(startIndex, _count);
         }
