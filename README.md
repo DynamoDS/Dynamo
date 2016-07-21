@@ -62,7 +62,7 @@ Important Bug Fixes:
 - Direct Shape now recognizes material input properly
 -  /verysilent install of Dynamo for Revit now completes without user interaction
 -  Fixed crash with closed curve as input to Surface.ByLoft
--  Dot product no longer returning erronous scalars
+-  Dot product no longer returning erroneus scalars
 -  Zero radius and related bad geometry errors no longer create crash 
 -  Turning off "Revit Background Preview" no longer turns off "Background Preview" on relaunch of Dynamo.
  
@@ -74,7 +74,7 @@ Other Changes:
 - From this release, we stopped migrating of 0.6.3 and 0.7.0 files. If your old files contain nodes from above two releases then you have to open those files on an earlier version (till 1.0.0) and the save them. 
 
 Known Issues:
-- Installing Dynamo 4 Revit 1.1 Will require a reinstallation of Dynamo Studio with Studio 1.1 (1.0 and 1.1 cannot co-habitate).  This issue will not happen in the furture, when Future Dynamo Core installation will work with older versions of Products. 
+- Installing Dynamo 4 Revit 1.1 Will require a reinstallation of Dynamo Studio with Studio 1.1 (1.0 and 1.1 cannot co-habitate).  This issue will not happen in the future, when Future Dynamo Core installation will work with older versions of Products. 
 - Simplification of some overload methods will result in minor changes in behavior.  Please see this document for specific nodes affected: https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Node-Changes
 
 ### 1.0.0 ###
