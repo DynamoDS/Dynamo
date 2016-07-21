@@ -30,11 +30,14 @@ namespace CoreNodeModelsWpf.Nodes
         private SynchronizationContext syncContext;
         private WatchViewModel rootWatchViewModel;
 
+        private NodeView nodeviewWatch; //?
+
         #endregion
 
         public void CustomizeView(Watch nodeModel, NodeView nodeView)
         {
             this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
+            nodeviewWatch = nodeView; // nec?
             this.watch = nodeModel;
             this.syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
 
@@ -48,6 +51,9 @@ namespace CoreNodeModelsWpf.Nodes
             nodeView.PresentationGrid.MaxHeight = Configurations.MaxWatchNodeHeight;
             nodeView.PresentationGrid.Children.Add(watchTree);
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
+
+            
+            
             // disable preview control
             nodeView.TogglePreviewControlAllowance();
 
@@ -69,6 +75,15 @@ namespace CoreNodeModelsWpf.Nodes
                 Source = rootWatchViewModel,
             };
             watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
+
+
+            // test binding for ItemCount
+            var testBinding = new Binding("NumberOfItemsWT")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = rootWatchViewModel,
+            };
+            watchTree.Items.SetBinding(ItemsControl.ItemsSourceProperty, testBinding);
 
             // Add binding for "Show Raw Data" in context menu
             var checkedBinding = new Binding("ShowRawData")
@@ -153,6 +168,7 @@ namespace CoreNodeModelsWpf.Nodes
             if (watch.IsPartiallyApplied)
             {
                 rootWatchViewModel.Children.Clear();
+                rootWatchViewModel.NumberOfItemsWT = 0;
                 return;
             }
 
@@ -170,6 +186,8 @@ namespace CoreNodeModelsWpf.Nodes
             var t = new DelegateBasedAsyncTask(s, () =>
             {
                 wvm = GetWatchViewModel();
+                //wvm.NumberOfItemsWT = 100;
+                wvm.numberOfItemsCount(nodeviewWatch.ViewModel.NodeModel.CachedValue);
             });
 
             // then update on the ui thread
@@ -177,6 +195,7 @@ namespace CoreNodeModelsWpf.Nodes
             {
                 // store in temp variable to silence binding
                 var temp = rootWatchViewModel.Children;
+                var tempNumItems = rootWatchViewModel.NumberOfItemsWT;
 
                 rootWatchViewModel.Children = null;
                 temp.Clear();
@@ -184,6 +203,7 @@ namespace CoreNodeModelsWpf.Nodes
 
                 // rebind
                 rootWatchViewModel.Children = temp;
+                rootWatchViewModel.NumberOfItemsWT = tempNumItems; 
             }, syncContext);
 
             s.ScheduleForExecution(t);
@@ -191,6 +211,7 @@ namespace CoreNodeModelsWpf.Nodes
 
         private void RootWatchViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            //if (e.PropertyName == "ShowRawData" || e.PropertyName == "NumberOfItemsWT")
             if (e.PropertyName == "ShowRawData")
             {
                 ResetWatch();

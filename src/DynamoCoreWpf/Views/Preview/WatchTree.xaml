@@ -217,6 +217,17 @@
                 </Setter>
             </Style>
 
+            
+            
+             <Rectangle Grid.Row="1"
+                   Width="Auto" 
+                   Height="20" 
+                   Stroke="HotPink" 
+                   SnapsToDevicePixels="true" 
+                   VerticalAlignment="Bottom"
+                   Fill="IndianRed"/>
+
+            
             -->
 
             <Style x:Key="ExpandCollapseToggleStyleWT" TargetType="ToggleButton">
@@ -390,6 +401,12 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height ="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>        
+        
         <!--ItemContainerStyle="{StaticResource WatchTreeViewItem}"-->
         <TreeView Name="treeView1"
                   ItemsSource="{Binding Children}"
@@ -423,9 +440,9 @@
                     </VirtualizingStackPanel>
                 </ItemsPanelTemplate>
             </TreeView.ItemsPanel>
-            
+
             <!--ItemTemplate used to render layout of each individual item in the list-->
-            
+
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}"
                                           DataType="{x:Type viewModels:WatchViewModel}">
@@ -455,5 +472,17 @@
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
+
+        <Grid Name ="ListLevelsDisplay" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="15" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Name="Items" Grid.Column="2" Margin="0,3,0,7" Foreground="Gray" FontStyle="Italic">
+            {<Run Foreground="DarkRed" Text="{Binding NumberOfItemsWT}" />}
+            </TextBlock>
+        </Grid>
     </Grid>
 </UserControl>

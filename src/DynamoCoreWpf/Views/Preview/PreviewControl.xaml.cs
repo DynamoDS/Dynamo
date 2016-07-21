@@ -283,6 +283,7 @@ namespace Dynamo.UI.Controls
 
             // Unbind the view from data context, then clear the data context.
             BindingOperations.ClearAllBindings(watchTree.treeView1);
+            BindingOperations.ClearAllBindings(watchTree.ListLevelsDisplay);
             rootDataContext.Children.Clear();
         }
 
@@ -371,6 +372,8 @@ namespace Dynamo.UI.Controls
                 {
                     newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
                         nodeViewModel.NodeModel.CachedValue, null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
+                    //newViewModel.numberOfItemsCount(nodeViewModel.NodeModel.CachedValue);
+
                 },
                 (m) =>
                 {
@@ -381,7 +384,6 @@ namespace Dynamo.UI.Controls
                             DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath)
                         };
                         tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
-
                         largeContentGrid.Children.Add(tree);
                     }
 
@@ -398,13 +400,21 @@ namespace Dynamo.UI.Controls
                             rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
                             rootDataContext.Children.Clear();
                             rootDataContext.Children.Add(cachedLargeContent);
-
+                            rootDataContext.numberOfItemsCount(nodeViewModel.NodeModel.CachedValue);
+                            //rootDataContext.NumberOfItemsWT = 1000;
+                            //rootDataContext.NumberOfItemsWT = CompactBubbleHandler.Process(nodeViewModel.NodeModel.CachedValue).NumberOfItems;
                             watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
                                 new Binding("Children")
                                 {
                                     Mode = BindingMode.TwoWay,
                                     Source = rootDataContext
                                 });
+                            //watchTree.ListLevelsDisplay.SetBinding(ItemsControl.ItemsSourceProperty,
+                            //    new Binding("NumberOfItemsWT")
+                            //    {
+                            //        Mode = BindingMode.OneWay,
+                            //        Source = rootDataContext.NumberOfItemsWT
+                         //       });
                         }
                     }
                     if (refreshDisplay != null)

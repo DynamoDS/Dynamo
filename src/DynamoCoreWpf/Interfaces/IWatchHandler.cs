@@ -33,6 +33,7 @@ namespace Dynamo.Interfaces
         public static WatchViewModel GenerateWatchViewModelForData(this IWatchHandler handler, dynamic value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData = true)
         {
             return handler.Process(value, runtimeCore, tag, showRawData, new WatchHandlerCallback(handler.GenerateWatchViewModelForData));
+
         }
     }
 
@@ -41,7 +42,7 @@ namespace Dynamo.Interfaces
         // Formats double value into string. E.g. 1054.32179 => "1054.32179"
         // For more info: https://msdn.microsoft.com/en-us/library/kfsatb94(v=vs.110).aspx
         private const string numberFormat = "g";
-
+        private static int listitems;
         private readonly IPreferences preferences;
 
         public DefaultWatchHandler(IPreferences preferences)
@@ -134,6 +135,8 @@ namespace Dynamo.Interfaces
 
                 return node;
             }
+
+
             if (data.Data is Enum)
             {
                 return new WatchViewModel(((Enum)data.Data).GetDescription(), tag, RequestSelectGeometry);
@@ -170,6 +173,15 @@ namespace Dynamo.Interfaces
 
         public WatchViewModel Process(dynamic value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
+            //if (object.ReferenceEquals(value,null))
+              //  return new WatchViewModel(Resources.NullString, tag, RequestSelectGeometry);
+           // else
+            ///{
+              //  listitems = 0;
+               // var ViewModel = ProcessThing(value, runtimeCore, tag, showRawData, callback);
+               // ViewModel.NumberOfItemsWT = listitems;
+               // return ViewModel;
+           // }
             return Object.ReferenceEquals(value, null)
                 ? new WatchViewModel(Resources.NullString, tag, RequestSelectGeometry)
                 : ProcessThing(value, runtimeCore, tag, showRawData, callback);

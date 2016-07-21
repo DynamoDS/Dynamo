@@ -4,6 +4,7 @@ using System.Linq;
 using Dynamo.Interfaces;
 using Dynamo.UI.Commands;
 using Microsoft.Practices.Prism.ViewModel;
+using ProtoCore.Mirror;
 
 namespace Dynamo.ViewModels
 {
@@ -32,6 +33,9 @@ namespace Dynamo.ViewModels
         private bool _isOneRowContent;
         private readonly Action<string> tagGeometry;
 
+        // Instance variable for the number of items in the list 
+        private static int numberOfItems;
+
         public DelegateCommand FindNodeForPathCommand { get; set; }
 
         /// <summary>
@@ -46,7 +50,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("Children");
             }
         }
-        
+
         /// <summary>
         /// The string lable visibile in the watch.
         /// </summary>
@@ -59,7 +63,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("NodeLabel");
             }
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -88,7 +92,7 @@ namespace Dynamo.ViewModels
                 //return _path;
             }
         }
-        
+
         /// <summary>
         /// A path describing the location of the data.
         /// Path takes the form var_xxxx...:0:1:2, where
@@ -105,7 +109,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("Path");
             }
         }
-        
+
         /// <summary>
         /// A flag used to determine whether the item
         /// should be process to draw 'raw' data or data
@@ -139,9 +143,23 @@ namespace Dynamo.ViewModels
             }
         }
 
+
+        /// <summary>
+        /// Number of items in the overall list if node output is a list
+        /// </summary>
+        public int NumberOfItemsWT
+        { 
+            get { return numberOfItems; }
+            set
+            {
+                numberOfItems = value;
+                RaisePropertyChanged("NumberOfItemsWT");
+            }
+        }
+
         #endregion
 
-        public WatchViewModel(Action<string> tagGeometry): this(null, null, tagGeometry, true) { }
+        public WatchViewModel(Action<string> tagGeometry) : this(null, null, tagGeometry, true) { }
 
         public WatchViewModel(string label, string path, Action<string> tagGeometry, bool expanded = false)
         {
@@ -150,6 +168,7 @@ namespace Dynamo.ViewModels
             _label = label;
             IsNodeExpanded = expanded;
             this.tagGeometry = tagGeometry;
+            numberOfItems = 0;
         }
 
         private bool CanFindNodeForPath(object obj)
@@ -164,6 +183,35 @@ namespace Dynamo.ViewModels
                 tagGeometry(obj.ToString());
             }
             //visualizationManager.TagRenderPackageForPath(obj.ToString());
+        }
+
+        public void numberOfItemsCount(MirrorData mirrorData)
+        {
+            numberOfItemsCountHelper(mirrorData);
+            RaisePropertyChanged("NumberOfItemsWT");
+        }
+
+
+        /// <summary>
+        /// Method to count the number of items in a collection recursively
+        /// </summary>
+        /// <param name="mirrorData">The value of this particular node's output</param>
+        private void numberOfItemsCountHelper(MirrorData mirrorData)
+        {
+            if (mirrorData != null)
+            {
+                if (mirrorData.IsCollection)
+                {
+                    var list = mirrorData.GetElements();
+
+                    foreach (var item in list)
+                    {
+                        numberOfItemsCountHelper(item);
+                    }
+                }
+                if (mirrorData.Class != null || mirrorData.Data != null)
+                    numberOfItems++;
+            }
         }
     }
 }
