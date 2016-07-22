@@ -168,7 +168,7 @@ namespace CoreNodeModelsWpf.Nodes
             if (watch.IsPartiallyApplied)
             {
                 rootWatchViewModel.Children.Clear();
-                rootWatchViewModel.NumberOfItemsWT = 0;
+                rootWatchViewModel.IsCollection = false;
                 return;
             }
 
@@ -186,8 +186,7 @@ namespace CoreNodeModelsWpf.Nodes
             var t = new DelegateBasedAsyncTask(s, () =>
             {
                 wvm = GetWatchViewModel();
-                //wvm.NumberOfItemsWT = 100;
-                wvm.numberOfItemsCount(nodeviewWatch.ViewModel.NodeModel.CachedValue);
+                //wvm.numberOfItemsCount(nodeviewWatch.ViewModel.NodeModel.CachedValue); // count the number of items in the watchnode
             });
 
             // then update on the ui thread
@@ -195,7 +194,8 @@ namespace CoreNodeModelsWpf.Nodes
             {
                 // store in temp variable to silence binding
                 var temp = rootWatchViewModel.Children;
-                var tempNumItems = rootWatchViewModel.NumberOfItemsWT;
+                //rootWatchViewModel.numberOfItemsCount(nodeviewWatch.ViewModel.NodeModel.CachedValue); 
+                //var tempNumItems = rootWatchViewModel.NumberOfItemsWT;
 
                 rootWatchViewModel.Children = null;
                 temp.Clear();
@@ -203,7 +203,10 @@ namespace CoreNodeModelsWpf.Nodes
 
                 // rebind
                 rootWatchViewModel.Children = temp;
-                rootWatchViewModel.NumberOfItemsWT = tempNumItems; 
+                //rootWatchViewModel.IsCollection = true;
+                //rootWatchViewModel.NumberOfItemsWT = tempNumItems;
+                //rootWatchViewModel.numberOfItemsCount(nodeviewWatch.ViewModel.NodeModel.CachedValue);
+                rootWatchViewModel.numberOfItemsCountWVM();
             }, syncContext);
 
             s.ScheduleForExecution(t);

@@ -32,6 +32,7 @@ namespace Dynamo.ViewModels
         private string _path = "";
         private bool _isOneRowContent;
         private readonly Action<string> tagGeometry;
+        private bool _isCollection;
 
         // Instance variable for the number of items in the list 
         private static int numberOfItems;
@@ -153,9 +154,45 @@ namespace Dynamo.ViewModels
             set
             {
                 numberOfItems = value;
+                IsCollection = true;
                 RaisePropertyChanged("NumberOfItemsWT");
+                //RaisePropertyChanged("ShowNumberOfItems");
+                
             }
         }
+
+        /// <summary>
+        /// Indicates if number of list items is shown
+        /// </summary>
+        public bool ShowNumberOfItems
+        {
+            get { return IsCollection; }
+        }
+
+        /// <summary>
+        /// Indicates if the items are lists
+        /// </summary>
+        //public bool IsCollection
+        //{
+        //    get { return _isCollection; } 
+        //   set
+        //  {
+        //     _isCollection = value;
+
+        //                if (!_isCollection)
+        //                  numberOfItems = 0;
+        //            RaisePropertyChanged("ShowNumberOfItems");
+        //       }
+        //  }
+        public bool IsCollection
+        {
+            get { return _isCollection; }
+            set {
+                _isCollection = value;
+                RaisePropertyChanged("ShowNumberOfItems");
+            }
+        }
+
 
         #endregion
 
@@ -185,33 +222,74 @@ namespace Dynamo.ViewModels
             //visualizationManager.TagRenderPackageForPath(obj.ToString());
         }
 
-        public void numberOfItemsCount(MirrorData mirrorData)
-        {
-            numberOfItemsCountHelper(mirrorData);
-            RaisePropertyChanged("NumberOfItemsWT");
-        }
+        /// <summary>
+        /// Method to account for the number of items in a list (in the WatchTree)
+        /// </summary>
+        /// <param name="mirrorData"> The data contained in this particular node's output </param>
+        //public void numberOfItemsCount(MirrorData mirrorData)
+        //{
+
+            //IsCollection = mirrorData.IsCollection;
+//            NumberOfItemsWT = 0; 
+  //          numberOfItemsCountHelper(mirrorData);
+    //        IsCollection = true;
+      //      RaisePropertyChanged("NumberOfItemsWT");
+        //    RaisePropertyChanged("ShowNumberOfItems");
+
+      //  }
 
 
         /// <summary>
-        /// Method to count the number of items in a collection recursively
+        /// Helper method to count the number of items in a collection recursively
         /// </summary>
-        /// <param name="mirrorData">The value of this particular node's output</param>
-        private void numberOfItemsCountHelper(MirrorData mirrorData)
-        {
-            if (mirrorData != null)
-            {
-                if (mirrorData.IsCollection)
-                {
-                    var list = mirrorData.GetElements();
+        /// <param name="mirrorData">The data contained in this particular node's output</param>
+        //private void numberOfItemsCountHelper(MirrorData mirrorData)
+        //{
+        //    if (mirrorData != null)
+        //    {
+        //        if (mirrorData.IsCollection)
+        //        {
+        //            var list = mirrorData.GetElements();
 
-                    foreach (var item in list)
+        //            foreach (var item in list)
+        //            {
+        //                numberOfItemsCountHelper(item);
+        //            }
+        //        }
+        //        if (mirrorData.Class != null || mirrorData.Data != null)
+        //            numberOfItems++;
+        //    }
+        //}
+
+        public void numberOfItemsCountWVM()
+        {
+
+            //IsCollection = mirrorData.IsCollection;
+            NumberOfItemsWT = 0;
+            numberOfItemsCountHelperWVM(this);
+            IsCollection = true;
+            RaisePropertyChanged("NumberOfItemsWT");
+            RaisePropertyChanged("ShowNumberOfItems");
+
+        }
+
+
+        private void numberOfItemsCountHelperWVM(WatchViewModel wvm)
+        {
+            if (wvm != null)
+            {
+                if (wvm.Children.Count > 0)
+                {
+                    foreach (var item in wvm.Children)
                     {
-                        numberOfItemsCountHelper(item);
+                        numberOfItemsCountHelperWVM(item);
                     }
                 }
-                if (mirrorData.Class != null || mirrorData.Data != null)
+                if (wvm.NodeLabel != null && wvm.NodeLabel != "List")
                     numberOfItems++;
             }
         }
+
+
     }
 }

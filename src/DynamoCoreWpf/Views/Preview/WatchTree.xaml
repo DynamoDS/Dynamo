@@ -473,14 +473,15 @@
             </TreeView.ItemTemplate>
         </TreeView>
 
-        <Grid Name ="ListLevelsDisplay" Grid.Row="1">
+        <Grid Name ="ListLevelsDisplay" Grid.Row="1" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="15" />
             </Grid.ColumnDefinitions>
-            <TextBlock Name="Items" Grid.Column="2" Margin="0,3,0,7" Foreground="Gray" FontStyle="Italic">
+            <TextBlock Name="Items" Grid.Column="2" Margin="0,3,0,7" Foreground="Gray" FontStyle="Italic"
+                       Visibility="{Binding ShowNumberOfItems, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
             {<Run Foreground="DarkRed" Text="{Binding NumberOfItemsWT}" />}
             </TextBlock>
         </Grid>

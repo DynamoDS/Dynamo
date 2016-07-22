@@ -394,13 +394,18 @@ namespace Dynamo.UI.Controls
 
 
                         cachedLargeContent = newViewModel;
+                        //newViewModel.numberOfItemsCountWVM();
 
                         if (rootDataContext != null)
                         {
                             rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
                             rootDataContext.Children.Clear();
                             rootDataContext.Children.Add(cachedLargeContent);
-                            rootDataContext.numberOfItemsCount(nodeViewModel.NodeModel.CachedValue);
+                            //rootDataContext.NumberOfItemsWT = cachedLargeContent.NumberOfItemsWT;
+                            //rootDataContext.numberOfItemsCount(nodeViewModel.NodeModel.CachedValue);
+                            //rootDataContext.NumberOfItemsWT = newViewModel.NumberOfItemsWT;
+                            rootDataContext.numberOfItemsCountWVM();
+                            //rootDataContext.IsCollection = true;
                             //rootDataContext.NumberOfItemsWT = 1000;
                             //rootDataContext.NumberOfItemsWT = CompactBubbleHandler.Process(nodeViewModel.NodeModel.CachedValue).NumberOfItems;
                             watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
