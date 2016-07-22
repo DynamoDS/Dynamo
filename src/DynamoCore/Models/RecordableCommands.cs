@@ -1576,7 +1576,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             [JsonConstructor]
-            public ModelEventCommand(string modelGuid, string eventName, int value = 1)
+            public ModelEventCommand(string modelGuid, string eventName, int value)
                 : base(new[] { Guid.Parse(modelGuid) })
             {
                 EventName = eventName;
@@ -1591,7 +1591,7 @@ namespace Dynamo.Models
                 Value = 1;
             }
 
-            public ModelEventCommand(Guid modelGuid, string eventName, int value = 1)
+            public ModelEventCommand(Guid modelGuid, string eventName, int value)
                 : base(new[] { modelGuid })
             {
                 EventName = eventName;
@@ -1604,7 +1604,7 @@ namespace Dynamo.Models
                 Value = 1;
             }
 
-            public ModelEventCommand(IEnumerable<Guid> modelGuid, string eventName, int value = 1)
+            public ModelEventCommand(IEnumerable<Guid> modelGuid, string eventName, int value)
                 : base(modelGuid)
             {
                 EventName = eventName;
