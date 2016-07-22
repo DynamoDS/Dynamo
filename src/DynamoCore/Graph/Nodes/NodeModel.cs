@@ -982,7 +982,7 @@ namespace Dynamo.Graph.Nodes
             {
                 if (InPorts[i].UseLevels)
                 {
-                    inputs[i] = AstFactory.AddAtLevel(inputs[i], InPorts[i].Level, InPorts[i].ShouldKeepListStructure);
+                    inputs[i] = AstFactory.AddAtLevel(inputs[i], -InPorts[i].Level, InPorts[i].ShouldKeepListStructure);
                 }
             }
 
@@ -1561,6 +1561,7 @@ namespace Dynamo.Graph.Nodes
                             }
                         }
                     }
+                    OnNodeModified();
                     break;
 
                 default:

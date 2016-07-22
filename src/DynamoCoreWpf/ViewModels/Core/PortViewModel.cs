@@ -157,22 +157,14 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool UseLevels
         {
-            get
-            {
-                return _port.UseLevels;
-            }
+            get { return _port.UseLevels; }
             set
             {
-                if (_port.UseLevels != value)
-                {
-                    _port.UseLevels = value;
-                    RaisePropertyChanged("UseLevels");
-
-                    if (!_port.UseLevels)
-                    {
-                        ShouldKeepListStructure = false;
-                    }
-                }
+               _port.UseLevels = value;
+               if (!_port.UseLevels)
+               {
+                   ShouldKeepListStructure = false;
+               }
             }
         }
 
@@ -181,18 +173,8 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool ShouldKeepListStructure
         {
-            get
-            {
-                return _port.ShouldKeepListStructure;
-            }
-            set
-            {
-                if (_port.ShouldKeepListStructure != value)
-                {
-                    _port.ShouldKeepListStructure = value;
-                    RaisePropertyChanged("ShouldKeepListStructure");
-                }
-            }
+            get { return _port.ShouldKeepListStructure; }
+            set { _port.ShouldKeepListStructure = value; }
         }
 
         /// <summary>
@@ -200,18 +182,8 @@ namespace Dynamo.ViewModels
         /// </summary>
         public int Level
         {
-            get
-            {
-                return _port.Level;
-            }
-            set
-            {
-                if (_port.Level != value)
-                {
-                    _port.Level = value;
-                    RaisePropertyChanged("Level");
-                }
-            }
+            get { return _port.Level; }
+            set { _port.Level = value; } 
         }
 
         /// <summary>
@@ -307,6 +279,12 @@ namespace Dynamo.ViewModels
                     break;
                 case "MarginThickness":
                     RaisePropertyChanged("MarginThickness");
+                    break;
+                case "UseLevels":
+                    RaisePropertyChanged("UseLevels");
+                    break;
+                case "Level":
+                    RaisePropertyChanged("Level");
                     break;
                 case "ShouldKeepListStructure":
                     RaisePropertyChanged("ShouldKeepListStructure");

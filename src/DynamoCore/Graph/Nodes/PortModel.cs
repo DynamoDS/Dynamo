@@ -24,6 +24,9 @@ namespace Dynamo.Graph.Nodes
         private bool usingDefaultValue;
         private PortData portData;
         private bool isEnabled = true;
+        private bool useLevels = false;
+        private bool shouldKeepListStructure = false;
+        private int level = 1;
         #endregion
 
         #region public members
@@ -197,7 +200,18 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public int Level
         {
-            get; set;
+            get
+            {
+                return level;
+            }
+            set
+            {
+                if (level != value)
+                {
+                    level = value;
+                    RaisePropertyChanged("Level");
+                }
+            }
         }
 
         /// <summary>
@@ -205,7 +219,18 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public bool UseLevels
         {
-            get; set;
+            get
+            {
+                return useLevels;
+            }
+            set
+            {
+                if (useLevels != value)
+                {
+                    useLevels = value;
+                    RaisePropertyChanged("UseLevels");
+                }
+            }
         }
 
         /// <summary>
@@ -226,7 +251,6 @@ namespace Dynamo.Graph.Nodes
                 }
             }
         }
-        private bool shouldKeepListStructure = false;
 
         #endregion
 
