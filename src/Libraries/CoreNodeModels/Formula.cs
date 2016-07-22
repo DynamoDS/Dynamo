@@ -242,7 +242,7 @@ namespace CoreNodeModels
             }
             else
             {
-                AppendReplicationGuides(inputAstNodes);
+                UseLevelAndReplicationGuide(inputAstNodes);
 
                 return new AssociativeNode[]
                 {

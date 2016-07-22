@@ -973,10 +973,18 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="inputs"></param>
         /// <returns></returns>
-        public void AppendReplicationGuides(List<AssociativeNode> inputs)
+        public void UseLevelAndReplicationGuide(List<AssociativeNode> inputs)
         {
             if (inputs == null || !inputs.Any())
                 return;
+
+            for (int i = 0; i < inputs.Count; i++)
+            {
+                if (InPorts[i].UseLevels)
+                {
+                    inputs[i] = AstFactory.AddAtLevel(inputs[i], InPorts[i].Level, InPorts[i].ShouldKeepListStructure);
+                }
+            }
 
             switch (ArgumentLacing)
             {
