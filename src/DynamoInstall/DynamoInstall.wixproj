@@ -18,12 +18,12 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>$(OutputPath)</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;definitions=$(DYNAMO_MIGRATION_NODES_PATH);base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH);gallery=$(DYNAMO_GALLERY_PATH);modules=$(DYNAMO_INSTALL_BASE_PATH);solution=$(SolutionDir)</DefineConstants>
+    <DefineConstants>Debug;base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH);gallery=$(DYNAMO_GALLERY_PATH);modules=$(DYNAMO_INSTALL_BASE_PATH);solution=$(SolutionDir)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>$(OutputPath)</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>definitions=$(DYNAMO_MIGRATION_NODES_PATH);base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH);gallery=$(DYNAMO_GALLERY_PATH);modules=$(DYNAMO_INSTALL_BASE_PATH);solution=$(SolutionDir)</DefineConstants>
+    <DefineConstants>base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH);gallery=$(DYNAMO_GALLERY_PATH);modules=$(DYNAMO_INSTALL_BASE_PATH);solution=$(SolutionDir)</DefineConstants>
     <WixVariables>
     </WixVariables>
   </PropertyGroup>
