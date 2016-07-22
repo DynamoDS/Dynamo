@@ -451,7 +451,7 @@ namespace DSCore
 
                 if (startIndex == str.Length && str.Length == 0)
                 {
-                    return str.Remove(startIndex, _count);
+                    return "";
                 }
                 else
                 {
