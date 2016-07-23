@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -214,6 +214,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoManipulation", "DynamoManipulation\DynamoManipulation.csproj", "{33F88E8C-CC3C-4237-8AA9-CC891EFCABFA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications", "Notifications\Notifications.csproj", "{09F48994-BB2F-4A26-8CCD-469FE3F7F904}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeCompilers", "Libraries\NodeCompilers\NodeCompilers.csproj", "{EE5DECE5-8D4D-4822-A7BC-FFE0D5F3D78D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -489,6 +491,10 @@ Global
 		{09F48994-BB2F-4A26-8CCD-469FE3F7F904}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09F48994-BB2F-4A26-8CCD-469FE3F7F904}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09F48994-BB2F-4A26-8CCD-469FE3F7F904}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE5DECE5-8D4D-4822-A7BC-FFE0D5F3D78D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE5DECE5-8D4D-4822-A7BC-FFE0D5F3D78D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE5DECE5-8D4D-4822-A7BC-FFE0D5F3D78D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE5DECE5-8D4D-4822-A7BC-FFE0D5F3D78D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -553,5 +559,6 @@ Global
 		{8872CA17-C10D-43B9-8393-5C5A57065EB0} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
 		{C4964946-B367-44EE-9ED2-451FF2A83D32} = {24A1EF6B-5A24-4536-B8BD-C879ABA26389}
 		{31183026-DE70-49CB-BC7C-0DFD0A088F62} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
+		{EE5DECE5-8D4D-4822-A7BC-FFE0D5F3D78D} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
 	EndGlobalSection
 EndGlobal

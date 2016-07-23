@@ -5,6 +5,7 @@ using Dynamo.Core;
 using Dynamo.Events;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Scheduler;
 
 namespace Dynamo.Models
 {
@@ -303,6 +304,10 @@ namespace Dynamo.Models
         /// <param name="e">The event data</param>
         public virtual void OnEvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
+
+            var compileTask = new ExpressionCompileTask(Scheduler, CurrentWorkspace, ExpressionCompilerRegistry);
+            Scheduler.ScheduleForExecution(compileTask);
+
             if (!e.EvaluationSucceeded)
             {
                 Action showFailureMessage = () => DisplayEngineFailureMessage(e.Error);

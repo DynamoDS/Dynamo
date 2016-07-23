@@ -34,6 +34,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -342,6 +343,8 @@ namespace Dynamo.Models
         /// </summary>
         public AuthenticationManager AuthenticationManager { get; set; }
 
+        internal NodeCompilerRegistry<Expression> ExpressionCompilerRegistry { get; }
+
         #endregion
 
         #region initialization and disposal
@@ -641,6 +644,9 @@ namespace Dynamo.Models
                     Logger.Log(ex.Message);
                 }
             }
+
+            var compilerDir = Path.Combine(PathManager.DynamoCoreDirectory, "compilers");
+            ExpressionCompilerRegistry = NodeCompilerRegistry<Expression>.FromDirectory(compilerDir, Logger);
         }
 
         private IEnumerable<IExtension> LoadExtensions()
