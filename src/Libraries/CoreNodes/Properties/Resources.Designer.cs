@@ -232,6 +232,24 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Count is out of range!.
+        /// </summary>
+        internal static string StringRemoveCountOutOfRangeMessage {
+            get {
+                return ResourceManager.GetString("StringRemoveCountOutOfRangeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to StartIndex is out of range!.
+        /// </summary>
+        internal static string StringRemoveStartIndexOutOfRangeMessage {
+            get {
+                return ResourceManager.GetString("StringRemoveStartIndexOutOfRangeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not a valid number..
         /// </summary>
         internal static string StringToNumberInvalidNumberMessage {
