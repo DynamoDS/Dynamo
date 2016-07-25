@@ -162,6 +162,7 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="Controls\UseLevelPopup.cs" />
+    <Compile Include="Controls\UseLevelSpinner.cs" />
     <Compile Include="Extensions\IViewExtension.cs" />
     <Compile Include="Extensions\IViewExtensionLoader.cs" />
     <Compile Include="Extensions\IViewExtensionManager.cs" />
@@ -173,7 +174,6 @@
     <Compile Include="Extensions\ViewLoadedParams.cs" />
     <Compile Include="Extensions\ViewExtensionDefinition.cs" />
     <Compile Include="Extensions\ViewStartupParams.cs" />
-    <Compile Include="Utilities\Class1.cs" />
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />

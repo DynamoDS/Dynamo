@@ -1348,8 +1348,42 @@ namespace Dynamo.Controls
             LacingStrategy strategy = (LacingStrategy)value;
             if (strategy == LacingStrategy.Disabled)
                 return Visibility.Collapsed;
+            else
+                return Visibility.Visible;
+        }
 
-            return Visibility.Visible;
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    public class NonAutoLacingToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            LacingStrategy strategy = (LacingStrategy)value;
+            if (strategy == LacingStrategy.Disabled || strategy == LacingStrategy.Auto)
+                return Visibility.Collapsed;
+            else
+                return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    public class AutoLacingToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            LacingStrategy strategy = (LacingStrategy)value;
+            if (strategy == LacingStrategy.Auto)
+                return Visibility.Visible;
+            else
+                return Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

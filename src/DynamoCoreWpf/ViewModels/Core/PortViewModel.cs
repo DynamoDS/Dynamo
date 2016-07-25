@@ -15,61 +15,97 @@ namespace Dynamo.ViewModels
         private readonly PortModel _port;
         private readonly NodeViewModel _node;
 
+        /// <summary>
+        /// Port model.
+        /// </summary>
         public PortModel PortModel
         {
             get { return _port; }
         }
 
+        /// <summary>
+        /// The content of tooltip.
+        /// </summary>
         public string ToolTipContent
         {
             get { return _port.ToolTipContent; }
         }
 
+        /// <summary>
+        /// Port name.
+        /// </summary>
         public string PortName
         {
             get { return _port.PortName; }
         }
 
+        /// <summary>
+        /// Port type.
+        /// </summary>
         public PortType PortType
         {
             get { return _port.PortType; }
         }
         
+        /// <summary>
+        /// If port is selected.
+        /// </summary>
         public bool IsSelected
         {
             get { return _node.IsSelected; }
         }
 
+        /// <summary>
+        /// If port is connected.
+        /// </summary>
         public bool IsConnected
         {
             get { return _port.IsConnected; }
         }
 
+        /// <summary>
+        /// If port is enabled.
+        /// </summary>
         public bool IsEnabled
         {
             get { return _port.IsEnabled; }
         }
 
+        /// <summary>
+        /// The height of port.
+        /// </summary>
         public double Height
         {
             get { return _port.Height; }
         }
 
+        /// <summary>
+        /// The center point of port.
+        /// </summary>
         public Point Center
         {
             get { return _port.Center.AsWindowsType(); }
         }
 
+        /// <summary>
+        /// The state of host node.
+        /// </summary>
         public ElementState State
         {
             get { return _node.State; }    
         }
 
+        /// <summary>
+        /// If should use default value on this port.
+        /// </summary>
         public bool DefaultValueEnabled
         {
             get { return _port.DefaultValueEnabled; }
         }
 
+        /// <summary>
+        /// If default value is being used on this port.
+        /// </summary>
         public bool UsingDefaultValue
         {
             get { return _port.UsingDefaultValue; }
@@ -88,6 +124,9 @@ namespace Dynamo.ViewModels
             get { return _node.WorkspaceViewModel.ActiveConnector != null; }
         }
 
+        /// <summary>
+        /// The margin thickness of port view.
+        /// </summary>
         public System.Windows.Thickness MarginThickness
         {
             get { return _port.MarginThickness.AsWindowsType(); }
@@ -96,6 +135,10 @@ namespace Dynamo.ViewModels
         public PortEventType EventType { get; set; }
 
         private bool _showUseLevelMenu;
+
+        /// <summary>
+        /// If should display Use Levels popup menu. 
+        /// </summary>
         public bool ShowUseLevelMenu
         {
             get
@@ -109,6 +152,43 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// If UseLevel is enabled on this port.
+        /// </summary>
+        public bool UseLevels
+        {
+            get { return _port.UseLevels; }
+            set
+            {
+               _port.UseLevels = value;
+               if (!_port.UseLevels)
+               {
+                   ShouldKeepListStructure = false;
+               }
+            }
+        }
+
+        /// <summary>
+        /// If should keep list structure on this port.
+        /// </summary>
+        public bool ShouldKeepListStructure
+        {
+            get { return _port.ShouldKeepListStructure; }
+            set { _port.ShouldKeepListStructure = value; }
+        }
+
+        /// <summary>
+        /// Levle of list.
+        /// </summary>
+        public int Level
+        {
+            get { return _port.Level; }
+            set { _port.Level = value; } 
+        }
+
+        /// <summary>
+        /// The visibility of Use Levels menu.
+        /// </summary>
         public Visibility UseLevelVisibility
         {
             get
@@ -199,6 +279,15 @@ namespace Dynamo.ViewModels
                     break;
                 case "MarginThickness":
                     RaisePropertyChanged("MarginThickness");
+                    break;
+                case "UseLevels":
+                    RaisePropertyChanged("UseLevels");
+                    break;
+                case "Level":
+                    RaisePropertyChanged("Level");
+                    break;
+                case "ShouldKeepListStructure":
+                    RaisePropertyChanged("ShouldKeepListStructure");
                     break;
             }
             

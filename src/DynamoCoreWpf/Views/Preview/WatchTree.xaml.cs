@@ -50,5 +50,6 @@ namespace Dynamo.Controls
                 _vm.FindNodeForPathCommand.Execute(node.Path);
             }
         }
+
     }
 }

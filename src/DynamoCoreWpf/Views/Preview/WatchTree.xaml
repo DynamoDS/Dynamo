@@ -24,7 +24,7 @@
                 <Setter Property="Padding"
                         Value="1" />
                 <Setter Property="Background"
-                        Value="Pink" />
+                        Value="PaleGreen" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Button}">
@@ -71,164 +71,7 @@
                 <Setter Property="IsExpanded"
                         Value="{Binding IsNodeExpanded}" />
             </Style>
-            <!--
-
-
-            ScratchCode
-            
-
-            
-                                    <Rectangle x:Name="ListLine"  Stretch="UniformToFill" Stroke="Black" 
-                                                           Fill="Black" Height="1" HorizontalAlignment="Stretch" Width="100"
-                                   Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}"
-                             Margin="0,0,4,0"/>
-
-            <Style x:Key="ExpandCollapseToggleStyleWT" TargetType="ToggleButton">
-                <Setter Property="Focusable" Value="False"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ToggleButton">
-                            <Grid Width="15" Height="13" SnapsToDevicePixels="True">
-                                <Rectangle Width="9" Height="9" Stroke="#919191" SnapsToDevicePixels="true" Fill="White"/>
-                                <Rectangle x:Name="ExpandPath" Width="1" Height="5" Stroke="Black" SnapsToDevicePixels="true"/>
-                                <Rectangle Width="5" Height="1" Stroke="Black" SnapsToDevicePixels="true"/>
-                            </Grid>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsChecked" Value="True">
-                                    <Setter Property="Visibility"  TargetName="ExpandPath" Value="Collapsed"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            
-                                                  ClickMode="Press"
-
            
-
-
-            <Style TargetType="ToggleButton">
-                <Setter Property="Background" Value="#FF1F3B53"/>
-                <Setter Property="Foreground" Value="#FF000000"/>
-                <Setter Property="Padding" Value="3"/>
-                <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="BorderBrush">
-                    <Setter.Value>
-                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="#FFA3AEB9" Offset="0"/>
-                            <GradientStop Color="#FF8399A9" Offset="0.375"/>
-                            <GradientStop Color="#FF718597" Offset="0.375"/>
-                            <GradientStop Color="#FF617584" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ToggleButton">
-                            <Grid>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal"/>
-                                        <VisualState x:Name="MouseOver">
-                                            <Storyboard>
-                                                <DoubleAnimation Duration="0" Storyboard.TargetName="BackgroundAnimation" Storyboard.TargetProperty="Opacity" To="1"/>
-                                                <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundGradient" Storyboard.TargetProperty="(Rectangle.Fill).(GradientBrush.GradientStops)[1].(GradientStop.Color)" To="#F2FFFFFF"/>
-                                                <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundGradient" Storyboard.TargetProperty="(Rectangle.Fill).(GradientBrush.GradientStops)[2].(GradientStop.Color)" To="#CCFFFFFF"/>
-                                                <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundGradient" Storyboard.TargetProperty="(Rectangle.Fill).(GradientBrush.GradientStops)[3].(GradientStop.Color)" To="#7FFFFFFF"/>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <Storyboard>
-                                                <ColorAnimation Duration="0" Storyboard.TargetName="Background" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#FF6DBDD1"/>
-                                                <DoubleAnimation Duration="0" Storyboard.TargetName="BackgroundAnimation" Storyboard.TargetProperty="Opacity" To="1"/>
-                                                <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundGradient" Storyboard.TargetProperty="(Rectangle.Fill).(GradientBrush.GradientStops)[0].(GradientStop.Color)" To="#D8FFFFFF"/>
-                                                <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundGradient" Storyboard.TargetProperty="(Rectangle.Fill).(GradientBrush.GradientStops)[1].(GradientStop.Color)" To="#C6FFFFFF"/>
-                                                <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundGradient" Storyboard.TargetProperty="(Rectangle.Fill).(GradientBrush.GradientStops)[2].(GradientStop.Color)" To="#8CFFFFFF"/>
-                                                <ColorAnimation Duration="0" Storyboard.TargetName="BackgroundGradient" Storyboard.TargetProperty="(Rectangle.Fill).(GradientBrush.GradientStops)[3].(GradientStop.Color)" To="#3FFFFFFF"/>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Disabled">
-                                            <Storyboard>
-                                                <DoubleAnimation Duration="0" Storyboard.TargetName="DisabledVisualElement" Storyboard.TargetProperty="Opacity" To=".55"/>
-                                            </Storyboard>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                    <VisualStateGroup x:Name="CheckStates">
-                                        <VisualState x:Name="Checked">
-                                            <Storyboard>
-                                                <PointAnimation Duration="0" To="0.7,1" Storyboard.TargetName="BackgroundGradient" Storyboard.TargetProperty="(Rectangle.Fill).(LinearGradientBrush.StartPoint)"/>
-                                                <PointAnimation Duration="0" To="0.7,0" Storyboard.TargetName="BackgroundGradient" Storyboard.TargetProperty="(Rectangle.Fill).(LinearGradientBrush.EndPoint)"/>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Unchecked"/>
-                                    </VisualStateGroup>
-                                    <VisualStateGroup x:Name="FocusStates">
-                                        <VisualState x:Name="Focused">
-                                            <Storyboard>
-                                                <DoubleAnimation Duration="0" Storyboard.TargetName="FocusVisualElement" Storyboard.TargetProperty="Opacity" To="1"/>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Unfocused" />
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Border x:Name="Background" CornerRadius="3" Background="White" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
-                                    <Grid Background="{TemplateBinding Background}"  Margin="1">
-                                        <Border Opacity="0"  x:Name="BackgroundAnimation" Background="#FF448DCA" />
-                                        <Rectangle x:Name="BackgroundGradient" >
-                                            <Rectangle.Fill>
-                                                <LinearGradientBrush StartPoint=".7,0" EndPoint=".7,1">
-                                                    <GradientStop Color="#FFFFFFFF" Offset="0" />
-                                                    <GradientStop Color="#F9FFFFFF" Offset="0.375" />
-                                                    <GradientStop Color="#E5FFFFFF" Offset="0.625" />
-                                                    <GradientStop Color="#C6FFFFFF" Offset="1" />
-                                                </LinearGradientBrush>
-                                            </Rectangle.Fill>
-                                        </Rectangle>
-                                        
-                                    </Grid>
-                                </Border>
-                                <ContentPresenter
-                              x:Name="contentPresenter"
-                              Content="{TemplateBinding Content}"
-                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                              Margin="{TemplateBinding Padding}"/>
-                                <Rectangle x:Name="DisabledVisualElement" RadiusX="3" RadiusY="3" Fill="#FFFFFFFF" Opacity="0" IsHitTestVisible="false" />
-                                <Rectangle x:Name="FocusVisualElement" RadiusX="2" RadiusY="2" Margin="1" Stroke="#FF6DBDD1" StrokeThickness="1" Opacity="0" IsHitTestVisible="false" />
-                                <Path x:Name="ExpandPath"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Margin="1,1,1,1"
-                Fill="Green"
-                Data="M 4 0 L 8 4 L 4 8 Z"/>
-                            </Grid>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsChecked"
-                   Value="True">
-                                    <Setter Property="Data"
-                    TargetName="ExpandPath"
-                    Value="M 0 4 L 8 4 L 4 8 Z"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            
-            
-             <Rectangle Grid.Row="1"
-                   Width="Auto" 
-                   Height="20" 
-                   Stroke="HotPink" 
-                   SnapsToDevicePixels="true" 
-                   VerticalAlignment="Bottom"
-                   Fill="IndianRed"/>
-
-            
-            -->
 
             <Style x:Key="ExpandCollapseToggleStyleWT" TargetType="ToggleButton">
                 <Setter Property="Focusable" Value="False"/>
@@ -281,20 +124,14 @@
                 <Setter Property="IsExpanded"
                         Value="{Binding IsNodeExpanded}" />
 
-                <Setter Property="Background"
-      Value="Transparent"/>
-                <Setter Property="HorizontalContentAlignment"
-      Value="{Binding Path=HorizontalContentAlignment,
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment,
               RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                <Setter Property="VerticalContentAlignment"
-      Value="{Binding Path=VerticalContentAlignment,
+                <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment,
               RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                <Setter Property="Padding"
-      Value="1,0,0,0"/>
-                <Setter Property="Foreground"
-      Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-                <Setter Property="FocusVisualStyle"
-      Value="{StaticResource TreeViewItemFocusVisual}"/>
+                <Setter Property="Padding" Value="1,0,0,0"/>
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
                 
                 
                 <Setter Property="Template">
@@ -315,32 +152,6 @@
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
 
-                                
-                                <!-- Uses BorderControl for verticle lines, instead of rectangles
-                                
-                                <Grid Name="Lines" Grid.Column="0" Grid.Row="0">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <Border Grid.Row="0" Grid.Column="1" BorderThickness="1 0 0 1" SnapsToDevicePixels="True" BorderBrush="{TemplateBinding BorderBrush}"/>
-                                    <Border Grid.Row="1" Grid.Column="1" BorderThickness="1 0 0 0" SnapsToDevicePixels="True" BorderBrush="{TemplateBinding BorderBrush}" Name="LineToNextItem"
-                                Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}}, 
-                                             Converter={StaticResource TreeViewLineConverter}}"/>
-                                    
-                                </Grid>
-                                -->
-
-                                <!-- Connecting Lines -->
-
-                                <!-- Vertical line -->
-                                <Rectangle x:Name="VerLn" Width="1" Stroke="Black" Margin="0,0,4.4,0" Grid.RowSpan="2" SnapsToDevicePixels="true" Fill="Black"/>
-
                                 <!-- Insert Toggle Button for Expander-->
                                 
                                 <ToggleButton x:Name="Expander"
@@ -350,6 +161,7 @@
                                       IsChecked="{Binding IsExpanded, RelativeSource= {RelativeSource TemplatedParent}}">
                                 </ToggleButton>
 
+                                <!-- Set Border for ListNode-->
                                 
                                 <Border Name="Bd" Grid.Column="1" Grid.Row="0"
                                     HorizontalAlignment="Left"
@@ -369,9 +181,34 @@
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
 
-                                    <Border Grid.Column="1" BorderThickness="1 0 0 0" SnapsToDevicePixels="True" BorderBrush="{TemplateBinding BorderBrush}"
+                                    <!-- Vertical line -->
+
+                                    <Rectangle Grid.Column="0" Grid.Row="0"
+                                           x:Name="VerLn" Width="1" 
+                                           Stroke="Black" 
+                                           Margin="2.6,0,0,1" 
+                                           Grid.RowSpan="1000" 
+                                           SnapsToDevicePixels="true"
+                                           Fill="Black"/>
+
+
+                                    <!-- Draw Ellipse at the bottom of each vertical line -->
+
+                                    <Ellipse Grid.Column="0" Grid.Row="0"
+                                             x:Name="LnEnd" 
+                                             Width="4.3" 
+                                             Height="4.3" 
+                                             Margin="3,3,0,0"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Bottom"
+                                             Stroke="Black" Fill="Black" SnapsToDevicePixels="False"/>
+
+                                    <Border Grid.Column="1" Grid.Row="0" 
+                                            BorderThickness="1 0 0 0" SnapsToDevicePixels="True" BorderBrush="{TemplateBinding BorderBrush}"
                                 Visibility="{Binding ElementName=LineToNextItem, Path=Visibility}"/>
+                                                                                                     
                                 </Grid>
+
                                 
                                 <!--ItemPresenter (specified in the Template) will be replaced with whatever is specified in the ItemsPanelTemplate.-->
                                 
@@ -386,6 +223,7 @@
                                     <Trigger Property="IsExpanded" Value="false">
                                         <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
                                         <Setter TargetName="VerLn" Property="Visibility" Value="Hidden" />
+                                        <Setter TargetName="LnEnd" Property="Visibility" Value="Collapsed" />
                                 </Trigger> 
                                     <Trigger Property="IsSelected" Value="true">
                                         <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
@@ -407,7 +245,6 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>        
         
-        <!--ItemContainerStyle="{StaticResource WatchTreeViewItem}"-->
         <TreeView Name="treeView1"
                   ItemsSource="{Binding Children}"
                   Background="White"
@@ -419,7 +256,9 @@
                   SelectedItemChanged="TreeView1_OnSelectedItemChanged">
             <TreeView.ItemsPanel>
                 <ItemsPanelTemplate>
+                    
                     <!--ItemsPanelTemplate used to specify the panel used to arrange the children of TreeView-->
+                    
                     <VirtualizingStackPanel>
                         <VirtualizingPanel.Style>
                             <Style TargetType="{x:Type VirtualizingPanel}">
