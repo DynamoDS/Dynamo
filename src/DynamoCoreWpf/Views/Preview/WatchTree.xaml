@@ -24,7 +24,7 @@
                 <Setter Property="Padding"
                         Value="1" />
                 <Setter Property="Background"
-                        Value="Pink" />
+                        Value="PaleGreen" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Button}">
