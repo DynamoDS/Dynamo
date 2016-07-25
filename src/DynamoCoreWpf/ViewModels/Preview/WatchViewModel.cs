@@ -156,7 +156,6 @@ namespace Dynamo.ViewModels
                 numberOfItems = value;
                 IsCollection = true;
                 RaisePropertyChanged("NumberOfItemsWT");
-                //RaisePropertyChanged("ShowNumberOfItems");
                 
             }
         }
@@ -172,18 +171,6 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Indicates if the items are lists
         /// </summary>
-        //public bool IsCollection
-        //{
-        //    get { return _isCollection; } 
-        //   set
-        //  {
-        //     _isCollection = value;
-
-        //                if (!_isCollection)
-        //                  numberOfItems = 0;
-        //            RaisePropertyChanged("ShowNumberOfItems");
-        //       }
-        //  }
         public bool IsCollection
         {
             get { return _isCollection; }
@@ -223,44 +210,9 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Method to account for the number of items in a list (in the WatchTree)
+        /// Method to account for the total number of items in a list (in the WatchTree)
         /// </summary>
-        /// <param name="mirrorData"> The data contained in this particular node's output </param>
-        //public void numberOfItemsCount(MirrorData mirrorData)
-        //{
-
-            //IsCollection = mirrorData.IsCollection;
-//            NumberOfItemsWT = 0; 
-  //          numberOfItemsCountHelper(mirrorData);
-    //        IsCollection = true;
-      //      RaisePropertyChanged("NumberOfItemsWT");
-        //    RaisePropertyChanged("ShowNumberOfItems");
-
-      //  }
-
-
-        /// <summary>
-        /// Helper method to count the number of items in a collection recursively
-        /// </summary>
-        /// <param name="mirrorData">The data contained in this particular node's output</param>
-        //private void numberOfItemsCountHelper(MirrorData mirrorData)
-        //{
-        //    if (mirrorData != null)
-        //    {
-        //        if (mirrorData.IsCollection)
-        //        {
-        //            var list = mirrorData.GetElements();
-
-        //            foreach (var item in list)
-        //            {
-        //                numberOfItemsCountHelper(item);
-        //            }
-        //        }
-        //        if (mirrorData.Class != null || mirrorData.Data != null)
-        //            numberOfItems++;
-        //    }
-        //}
-
+        /// 
         public void numberOfItemsCountWVM()
         {
 
@@ -273,7 +225,9 @@ namespace Dynamo.ViewModels
 
         }
 
-
+        /// <summary>
+        /// Helper method to count the total number of items in a collection recursively
+        /// </summary>
         private void numberOfItemsCountHelperWVM(WatchViewModel wvm)
         {
             if (wvm != null)

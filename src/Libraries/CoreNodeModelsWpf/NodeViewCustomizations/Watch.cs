@@ -186,7 +186,6 @@ namespace CoreNodeModelsWpf.Nodes
             var t = new DelegateBasedAsyncTask(s, () =>
             {
                 wvm = GetWatchViewModel();
-                //wvm.numberOfItemsCount(nodeviewWatch.ViewModel.NodeModel.CachedValue); // count the number of items in the watchnode
             });
 
             // then update on the ui thread
@@ -194,8 +193,7 @@ namespace CoreNodeModelsWpf.Nodes
             {
                 // store in temp variable to silence binding
                 var temp = rootWatchViewModel.Children;
-                //rootWatchViewModel.numberOfItemsCount(nodeviewWatch.ViewModel.NodeModel.CachedValue); 
-                //var tempNumItems = rootWatchViewModel.NumberOfItemsWT;
+
 
                 rootWatchViewModel.Children = null;
                 temp.Clear();
@@ -203,9 +201,6 @@ namespace CoreNodeModelsWpf.Nodes
 
                 // rebind
                 rootWatchViewModel.Children = temp;
-                //rootWatchViewModel.IsCollection = true;
-                //rootWatchViewModel.NumberOfItemsWT = tempNumItems;
-                //rootWatchViewModel.numberOfItemsCount(nodeviewWatch.ViewModel.NodeModel.CachedValue);
                 rootWatchViewModel.numberOfItemsCountWVM();
             }, syncContext);
 
@@ -214,7 +209,6 @@ namespace CoreNodeModelsWpf.Nodes
 
         private void RootWatchViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            //if (e.PropertyName == "ShowRawData" || e.PropertyName == "NumberOfItemsWT")
             if (e.PropertyName == "ShowRawData")
             {
                 ResetWatch();

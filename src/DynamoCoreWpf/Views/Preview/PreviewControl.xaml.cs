@@ -401,25 +401,14 @@ namespace Dynamo.UI.Controls
                             rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
                             rootDataContext.Children.Clear();
                             rootDataContext.Children.Add(cachedLargeContent);
-                            //rootDataContext.NumberOfItemsWT = cachedLargeContent.NumberOfItemsWT;
-                            //rootDataContext.numberOfItemsCount(nodeViewModel.NodeModel.CachedValue);
-                            //rootDataContext.NumberOfItemsWT = newViewModel.NumberOfItemsWT;
-                            rootDataContext.numberOfItemsCountWVM();
-                            //rootDataContext.IsCollection = true;
-                            //rootDataContext.NumberOfItemsWT = 1000;
-                            //rootDataContext.NumberOfItemsWT = CompactBubbleHandler.Process(nodeViewModel.NodeModel.CachedValue).NumberOfItems;
+
+                            rootDataContext.numberOfItemsCountWVM(); //count the total number of items in the list
                             watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
                                 new Binding("Children")
                                 {
                                     Mode = BindingMode.TwoWay,
                                     Source = rootDataContext
                                 });
-                            //watchTree.ListLevelsDisplay.SetBinding(ItemsControl.ItemsSourceProperty,
-                            //    new Binding("NumberOfItemsWT")
-                            //    {
-                            //        Mode = BindingMode.OneWay,
-                            //        Source = rootDataContext.NumberOfItemsWT
-                         //       });
                         }
                     }
                     if (refreshDisplay != null)
