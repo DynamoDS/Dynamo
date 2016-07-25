@@ -443,7 +443,7 @@ namespace DSCore
                 throw new ArgumentOutOfRangeException("count", Properties.Resources.StringRemoveCountOutOfRangeMessage);
             }
 
-            if (startIndex == str.Length && str.Length == 0)
+            if (startIndex == 0 && str.Length == 0)
             {
                 return string.Empty;
             }
