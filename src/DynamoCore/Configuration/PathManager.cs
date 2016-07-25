@@ -493,9 +493,19 @@ namespace Dynamo.Core
         private static string GetSamplesFolder(string dataRootDirectory)
         {
             var versionedDirectory = dataRootDirectory;
-            if (!Directory.Exists(versionedDirectory)
-                || !Directory.Exists(Path.Combine(versionedDirectory, SamplesDirectoryName)))
+            if (!Directory.Exists(versionedDirectory))
             {
+                // Try to see if folder "%ProgramData%\{...}\{major}.{minor}" exists, if it
+                // does not, then root directory would be "%ProgramData%\{...}".
+                //
+                dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
+            }
+            else if (!Directory.Exists(Path.Combine(versionedDirectory, SamplesDirectoryName)))
+            {
+                // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
+                // if the folder "%ProgramData%\{...}\{major}.{minor}\samples" exists. If it
+                // doesn't exist, then root directory would be "%ProgramData%\{...}".
+                //
                 dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
             }
 
@@ -522,9 +532,19 @@ namespace Dynamo.Core
         private static string GetGalleryDirectory(string commonDataDir)
         {
             var versionedDirectory = commonDataDir;
-            if (!Directory.Exists(versionedDirectory)
-                || !Directory.Exists(Path.Combine(versionedDirectory, GalleryDirectoryName)))
+            if (!Directory.Exists(versionedDirectory))
             {
+                // Try to see if folder "%ProgramData%\{...}\{major}.{minor}" exists, if it
+                // does not, then root directory would be "%ProgramData%\{...}".
+                //
+                commonDataDir = Directory.GetParent(versionedDirectory).FullName;
+            }
+            else if (!Directory.Exists(Path.Combine(versionedDirectory, GalleryDirectoryName)))
+            {
+                // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
+                // if the folder "%ProgramData%\{...}\{major}.{minor}\gallery" exists. If it
+                // doesn't exist, then root directory would be "%ProgramData%\{...}".
+                //
                 commonDataDir = Directory.GetParent(versionedDirectory).FullName;
             }
 
