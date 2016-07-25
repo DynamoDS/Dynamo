@@ -443,21 +443,19 @@ namespace DSCore
                 throw new ArgumentOutOfRangeException("count", Properties.Resources.StringRemoveCountOutOfRangeMessage);
             }
 
+            if (startIndex == str.Length && str.Length == 0)
+            {
+                return string.Empty;
+            }
+
             if (startIndex >= str.Length || startIndex < 0) 
             {
                 // startIndex of an array must be within the string length. 
                 // If after the conversion of negative startIndex, startIndex is still
                 // less than zero, ArgumentOutOfRangeException is occured.
 
-                if (startIndex == str.Length && str.Length == 0)
-                {
-                    return "";
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException("startIndex", Properties.Resources.StringRemoveStartIndexOutOfRangeMessage);
+                throw new ArgumentOutOfRangeException("startIndex", Properties.Resources.StringRemoveStartIndexOutOfRangeMessage);
 
-                }
             }
 
             return str.Remove(startIndex, _count);
