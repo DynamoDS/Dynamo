@@ -24,6 +24,6 @@
   <MakeConnectionCommand NodeId="63ef2fc5-bd43-40fb-b59b-fef3f02bd6f7" PortIndex="1" Type="0" ConnectionMode="1" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <SelectInRegionCommand X="313" Y="232" Width="307" Height="210" IsCrossSelection="false" />
+  <SelectInRegionCommand X="313" Y="232" Width="500" Height="210" IsCrossSelection="false" />
   <DeleteModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" />
 </Commands>
