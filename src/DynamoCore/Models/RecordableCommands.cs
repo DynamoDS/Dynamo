@@ -1583,7 +1583,7 @@ namespace Dynamo.Models
                 Value = value;
             }
 
-            [JsonConstructor]
+         
             public ModelEventCommand(string modelGuid, string eventName)
                 : base(new[] { Guid.Parse(modelGuid) })
             {
