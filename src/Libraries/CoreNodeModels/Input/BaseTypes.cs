@@ -57,7 +57,7 @@ namespace CoreNodeModels.Input
 
             var helper = new XmlElementHelper(outEl);
             helper.SetAttribute("value", SerializeValue());
-            nodeElement.ReplaceChild(outEl,nodeElement.FirstChild);
+            nodeElement.AppendChild(outEl);
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
