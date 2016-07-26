@@ -138,7 +138,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
-            viewModel.NodeModel.ConnectorAdded -= NodeModel_ConnectorAdded;
+            ViewModel.NodeModel.ConnectorAdded -= NodeModel_ConnectorAdded;
             MouseLeave -= NodeView_MouseLeave;
 
             if (previewControl != null)
@@ -212,7 +212,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
-            viewModel.NodeModel.ConnectorAdded += NodeModel_ConnectorAdded;
+            ViewModel.NodeModel.ConnectorAdded += NodeModel_ConnectorAdded;
             MouseLeave += NodeView_MouseLeave;
         }
 
