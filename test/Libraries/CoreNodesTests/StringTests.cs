@@ -345,7 +345,7 @@ namespace DSCoreNodesTests
             Assert.AreEqual("a", String.Remove("abcdef", 1));
             Assert.AreEqual("aef", String.Remove("abcdef", 1, 3));
             Assert.AreEqual("aef", String.Remove("abcdef", -5, 3));
-            Assert.AreEqual("aef", String.Remove("abcdef", -2, -3));
+            Assert.AreEqual("abf", String.Remove("abcdef", -2, -3));
         }
     }
 }

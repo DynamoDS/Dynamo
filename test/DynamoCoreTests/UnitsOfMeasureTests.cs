@@ -237,7 +237,7 @@ namespace Dynamo.Tests
         public void ToFractionalFootRepresentations()
         {
             //test just the fractional case
-            var length = Length.FromDouble(0.0762); //.25"
+            var length = Length.FromDouble(0.0762); //.25'
             length.LengthUnit = LengthUnit.FractionalFoot;
 
             Assert.AreEqual("3\"", length.ToString());
@@ -256,13 +256,13 @@ namespace Dynamo.Tests
             Assert.AreEqual("0' 0\"", length.ToString());
 
             length.Value = 0.003175; //1/8"
-            Assert.AreEqual("1/8\"", length.ToString());
+            Assert.AreEqual("0.125\"", length.ToString());
 
             length.Value = 0.301752; //.99ft
-            Assert.AreEqual("11 7/8\"", length.ToString());
+            Assert.AreEqual("11.88\"", length.ToString());
 
             length.Value = 0.3044952; //.999ft
-            Assert.AreEqual("11 63/64\"", length.ToString());
+            Assert.AreEqual("11.988\"", length.ToString());
 
             length.Value = 0.35560000000142239; //1'2"
             Assert.AreEqual("1' 2\"", length.ToString());
