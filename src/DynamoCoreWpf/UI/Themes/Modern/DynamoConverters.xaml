@@ -188,4 +188,8 @@
                                       TrueBrush="{StaticResource PinnedIconForegroundColor}"
                                       FalseBrush="{StaticResource UnpinnedIconForegroundColor}">
     </controls:BooleanToBrushConverter>
+    <controls:BooleanToBrushConverter x:Key="KeepListStructureHighlighColorConverter"
+                                      TrueBrush="{StaticResource KeepListStructureHighlight}"
+                                      FalseBrush="{StaticResource NotKeepListStructureHighlight}">
+    </controls:BooleanToBrushConverter>
 </ResourceDictionary>
