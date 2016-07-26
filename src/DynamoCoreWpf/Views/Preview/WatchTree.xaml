@@ -71,8 +71,8 @@
                 <Setter Property="IsExpanded"
                         Value="{Binding IsNodeExpanded}" />
             </Style>
-           
-
+            
+            <!-- Expander Button Style -->
             <Style x:Key="ExpandCollapseToggleStyleWT" TargetType="ToggleButton">
                 <Setter Property="Focusable" Value="False"/>
                 <Setter Property="Template">
@@ -82,19 +82,12 @@
                               Width="15"
                               Height="13"
                               Background="White">       
-                                <Path x:Name="ExpandPath"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Margin="1,1,1,1"
-                Fill="#0e67b1"
-                Data="M 4 0 L 8 4 L 4 8 Z"/>
+                                <Path x:Name="ExpandPath" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                      Margin="0,1,1,1" Fill="#0e67b1" Data="M 4 0 L 8 4 L 4 8 Z"/>
                             </Grid>
                             <ControlTemplate.Triggers>
-                                <Trigger Property="IsChecked"
-                   Value="True">
-                                    <Setter Property="Data"
-                    TargetName="ExpandPath"
-                    Value="M 0 4 L 8 4 L 4 8 Z"/>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter Property="Data" TargetName="ExpandPath" Value="M 0 4 L 8 4 L 4 8 Z"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -118,22 +111,20 @@
             </Style>
 
             
-            <!-- An attempt to rewrite the TreeViewItem Control Style-->       
+            <!-- TreeViewItem Control Style-->       
+            
             <Style x:Key="WatchTreeViewItem" 
                    TargetType="{x:Type TreeViewItem}">
                 <Setter Property="IsExpanded"
                         Value="{Binding IsNodeExpanded}" />
 
                 <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment,
-              RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment,
-              RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
                 <Setter Property="Padding" Value="1,0,0,0"/>
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
                 <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
-                
-                
+                                
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TreeViewItem}">
@@ -158,6 +149,7 @@
                                       Background="Transparent"
                                       ClickMode="Press"
                                       Style="{StaticResource ExpandCollapseToggleStyleWT}"
+                                      HorizontalAlignment="Center" 
                                       IsChecked="{Binding IsExpanded, RelativeSource= {RelativeSource TemplatedParent}}">
                                 </ToggleButton>
 
@@ -174,42 +166,32 @@
                                     <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" MinWidth="20"/>
                                 </Border>
 
-
                                 <Grid Grid.Column="0" Grid.Row="1">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
 
                                     <!-- Vertical line -->
 
-                                    <Rectangle Grid.Column="0" Grid.Row="0"
-                                           x:Name="VerLn" Width="1" 
+                                    <Rectangle 
+                                           x:Name="VerLn" Width="2" 
                                            Stroke="Black" 
-                                           Margin="2.6,0,0,1" 
-                                           Grid.RowSpan="1000" 
+                                           Margin="0,0,0,0" 
+                                           Grid.RowSpan="2" 
                                            SnapsToDevicePixels="true"
+                                           HorizontalAlignment="Center"
                                            Fill="Black"/>
-
 
                                     <!-- Draw Ellipse at the bottom of each vertical line -->
 
-                                    <Ellipse Grid.Column="0" Grid.Row="0"
+                                    <Ellipse 
                                              x:Name="LnEnd" 
-                                             Width="4.3" 
-                                             Height="4.3" 
-                                             Margin="3,3,0,0"
+                                             Width="5" 
+                                             Height="5" 
+                                             Margin="0,0,0,-1"
                                              HorizontalAlignment="Center"
                                              VerticalAlignment="Bottom"
-                                             Stroke="Black" Fill="Black" SnapsToDevicePixels="False"/>
+                                             Stroke="Black" Fill="Black" SnapsToDevicePixels="True"/>
 
-                                    <Border Grid.Column="1" Grid.Row="0" 
-                                            BorderThickness="1 0 0 0" SnapsToDevicePixels="True" BorderBrush="{TemplateBinding BorderBrush}"
-                                Visibility="{Binding ElementName=LineToNextItem, Path=Visibility}"/>
-                                                                                                     
                                 </Grid>
 
-                                
                                 <!--ItemPresenter (specified in the Template) will be replaced with whatever is specified in the ItemsPanelTemplate.-->
                                 
                                 <ItemsPresenter x:Name="ItemsHost" Grid.Column="1" Grid.Row="1" />
@@ -319,10 +301,41 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="15" />
             </Grid.ColumnDefinitions>
-            <TextBlock Name="Items" Grid.Column="2" Margin="0,3,0,7" Foreground="Gray" FontStyle="Italic"
-                       Visibility="{Binding ShowNumberOfItems, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            
+            <!-- Shows counts of all items in List -->
+            
+            <TextBlock Name="ListItems" Grid.Column="2" Margin="0,3,0,7" Foreground="Gray" FontStyle="Italic"
+                       Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
             {<Run Foreground="DarkRed" Text="{Binding NumberOfItemsWT}" />}
             </TextBlock>
+
+            <!-- Shows list@level labels in List -->
+            
+            <ListView Name="listLevelsView" 
+                      Grid.Column ="0" Margin="0,3,0,7" 
+                      Background="Transparent"
+                      Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                      BorderThickness="0">
+
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"></StackPanel>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <WrapPanel Orientation="Horizontal">
+                            <TextBlock FontSize="8">
+                                <Run Foreground="Gray">@</Run>
+                            </TextBlock>
+                            <TextBlock Name="indivListLevel"  FontSize="8">
+                                L<Run Foreground="Black" Text="{Binding listLevel}"></Run>
+                            </TextBlock>
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </Grid>
     </Grid>
 </UserControl>

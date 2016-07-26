@@ -29,15 +29,11 @@ namespace CoreNodeModelsWpf.Nodes
         private Watch watch;
         private SynchronizationContext syncContext;
         private WatchViewModel rootWatchViewModel;
-
-        private NodeView nodeviewWatch; //?
-
         #endregion
 
         public void CustomizeView(Watch nodeModel, NodeView nodeView)
         {
             this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
-            nodeviewWatch = nodeView; // nec?
             this.watch = nodeModel;
             this.syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
 
@@ -51,9 +47,6 @@ namespace CoreNodeModelsWpf.Nodes
             nodeView.PresentationGrid.MaxHeight = Configurations.MaxWatchNodeHeight;
             nodeView.PresentationGrid.Children.Add(watchTree);
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
-
-            
-            
             // disable preview control
             nodeView.TogglePreviewControlAllowance();
 
@@ -76,14 +69,21 @@ namespace CoreNodeModelsWpf.Nodes
             };
             watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
 
-
-            // test binding for ItemCount
-            var testBinding = new Binding("NumberOfItemsWT")
+            // add binding for ItemCount
+            var numItemsBinding = new Binding("NumberOfItemsWT")
             {
                 Mode = BindingMode.TwoWay,
                 Source = rootWatchViewModel,
             };
-            watchTree.Items.SetBinding(ItemsControl.ItemsSourceProperty, testBinding);
+            watchTree.ListItems.SetBinding(ItemsControl.ItemsSourceProperty, numItemsBinding);
+
+            // add binding for depth of list
+             var listlevelBinding = new Binding("listLevelList")
+            {
+                Mode = BindingMode.TwoWay,
+               Source = rootWatchViewModel,
+            };
+            watchTree.listLevelsView.SetBinding(ItemsControl.ItemsSourceProperty, listlevelBinding);
 
             // Add binding for "Show Raw Data" in context menu
             var checkedBinding = new Binding("ShowRawData")
@@ -201,7 +201,9 @@ namespace CoreNodeModelsWpf.Nodes
 
                 // rebind
                 rootWatchViewModel.Children = temp;
-                rootWatchViewModel.numberOfItemsCountWVM();
+                rootWatchViewModel.countNumberOfItemsWVM();
+                rootWatchViewModel.countListLevel();
+                
             }, syncContext);
 
             s.ScheduleForExecution(t);

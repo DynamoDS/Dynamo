@@ -402,7 +402,14 @@ namespace Dynamo.UI.Controls
                             rootDataContext.Children.Clear();
                             rootDataContext.Children.Add(cachedLargeContent);
 
-                            rootDataContext.numberOfItemsCountWVM(); //count the total number of items in the list
+                            rootDataContext.countNumberOfItemsWVM(); //count the total number of items in the list
+
+                            if (rootDataContext != null)
+                            {
+                                rootDataContext.countListLevel();
+                                watchTree.listLevelsView.ItemsSource = rootDataContext.listLevelList; // add listLevelList to the ItemsSource of listlevelsView in WatchTree
+                            }
+
                             watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
                                 new Binding("Children")
                                 {

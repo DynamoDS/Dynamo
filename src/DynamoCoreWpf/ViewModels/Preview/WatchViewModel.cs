@@ -5,6 +5,7 @@ using Dynamo.Interfaces;
 using Dynamo.UI.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 using ProtoCore.Mirror;
+using System.Collections.Generic;
 
 namespace Dynamo.ViewModels
 {
@@ -35,7 +36,16 @@ namespace Dynamo.ViewModels
         private bool _isCollection;
 
         // Instance variable for the number of items in the list 
-        private static int numberOfItems;
+        private int numberOfItems;
+
+        // Instance variable for the max depth of items in the list
+        private int maxListLevel;
+
+        //Instance variable for the current list depth of items in the list
+        private int listDepth;
+
+        //Instance variable for list of list level items
+        private List<ListLevel> _listlevelsList;
 
         public DelegateCommand FindNodeForPathCommand { get; set; }
 
@@ -156,17 +166,9 @@ namespace Dynamo.ViewModels
                 numberOfItems = value;
                 IsCollection = true;
                 RaisePropertyChanged("NumberOfItemsWT");
-                
             }
         }
 
-        /// <summary>
-        /// Indicates if number of list items is shown
-        /// </summary>
-        public bool ShowNumberOfItems
-        {
-            get { return IsCollection; }
-        }
 
         /// <summary>
         /// Indicates if the items are lists
@@ -176,9 +178,23 @@ namespace Dynamo.ViewModels
             get { return _isCollection; }
             set {
                 _isCollection = value;
-                RaisePropertyChanged("ShowNumberOfItems");
+                RaisePropertyChanged("IsCollection");
             }
         }
+
+        /// <summary>
+        /// Returns a list of listlevel items
+        /// </summary>
+        public List<ListLevel> listLevelList
+        {
+            get { return _listlevelsList;  }
+            set
+            {
+                _listlevelsList = value;
+                RaisePropertyChanged("listLevelList");
+            }
+        }
+
 
 
         #endregion
@@ -193,6 +209,7 @@ namespace Dynamo.ViewModels
             IsNodeExpanded = expanded;
             this.tagGeometry = tagGeometry;
             numberOfItems = 0;
+            maxListLevel = 0;
         }
 
         private bool CanFindNodeForPath(object obj)
@@ -210,40 +227,68 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Method to account for the total number of items in a list (in the WatchTree)
+        /// Method to account for the total number of items and the depth of a list in a list (in the WatchTree)
         /// </summary>
         /// 
-        public void numberOfItemsCountWVM()
+        public void countNumberOfItemsWVM()
         {
-
-            //IsCollection = mirrorData.IsCollection;
-            NumberOfItemsWT = 0;
+            NumberOfItemsWT = 0; // reset the number of items in list
+            maxListLevel = 0; // reset the max list depth
+            listDepth = 0; 
             numberOfItemsCountHelperWVM(this);
             IsCollection = true;
             RaisePropertyChanged("NumberOfItemsWT");
-            RaisePropertyChanged("ShowNumberOfItems");
-
+            RaisePropertyChanged("IsCollection");
+            RaisePropertyChanged("maxDepthOfList");
         }
 
         /// <summary>
-        /// Helper method to count the total number of items in a collection recursively
+        /// Helper method to count the total number of items and the max list depth in a collection recursively
         /// </summary>
         private void numberOfItemsCountHelperWVM(WatchViewModel wvm)
         {
-            if (wvm != null)
-            {
                 if (wvm.Children.Count > 0)
                 {
+                    if (wvm.Path != null)
+                        listDepth++; // as the list is traversed deeper on each level, the current list depth will increase
+
                     foreach (var item in wvm.Children)
                     {
                         numberOfItemsCountHelperWVM(item);
                     }
+
+                    if (listDepth > 0)
+                        listDepth--; // as the list depth exits each level, the current list depth will decrease
                 }
+
+                if (listDepth > maxListLevel)
+                     maxListLevel = listDepth; 
+
                 if (wvm.NodeLabel != null && wvm.NodeLabel != "List")
                     numberOfItems++;
-            }
         }
 
+        /// <summary>
+        /// Count the list levels of each list 
+        /// </summary>
+        public void countListLevel()
+        {
+            _listlevelsList = new List<ListLevel>();
 
+            if (maxListLevel > 0)
+            {
+                for (int i = this.maxListLevel; i >= 1; i--)
+                {
+                    _listlevelsList.Add(new ListLevel() { listLevel = i });
+                }
+                this.listLevelList = _listlevelsList;
+            }
+        }
     }
+
+    public class ListLevel
+    {
+        public int listLevel { get; set; }
+    }
+
 }
