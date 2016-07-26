@@ -37,15 +37,16 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Grid Name="mainGrid"
-              Grid.Column="0"
-              Background="Transparent"
-              IsHitTestVisible="True"
-              Margin="{Binding Path=MarginThickness}"
-              Height="{Binding Path=Height}"
-              ToolTipService.ShowDuration="60000"
-              IsEnabled="{Binding Path=IsEnabled}"
-             >
+            <Grid
+                Name="mainGrid"
+                Grid.Column="0"
+                Background="Transparent"
+                IsHitTestVisible="True"
+                Margin="{Binding Path=MarginThickness}"
+                Height="{Binding Path=Height}"
+                ToolTipService.ShowDuration="60000"
+                IsEnabled="{Binding Path=IsEnabled}">
+
                 <interactivity:Interaction.Triggers>
                     <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
                         <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}" />
@@ -54,16 +55,16 @@
 
                 <Grid.ContextMenu>
                     <ContextMenu Visibility="{Binding Path=DefaultValueEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <MenuItem Header="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}"
-                              IsCheckable="True"
-                              IsEnabled="{Binding Path=DefaultValueEnabled, Mode=OneWay}"
-                              IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay}" />
+                        <MenuItem
+                            Header="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}"
+                            IsCheckable="True"
+                            IsEnabled="{Binding Path=DefaultValueEnabled, Mode=OneWay}"
+                            IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay}" />
                     </ContextMenu>
                 </Grid.ContextMenu>
 
                 <Grid.ToolTip>
-                    <dynui:DynamoToolTip AttachmentSide="{Binding Path=PortType, Converter={StaticResource PortToAttachmentConverter}}"
-                         Style="{DynamicResource ResourceKey=SLightToolTip}">
+                    <dynui:DynamoToolTip AttachmentSide="{Binding Path=PortType, Converter={StaticResource PortToAttachmentConverter}}" Style="{DynamicResource ResourceKey=SLightToolTip}">
                         <Grid>
                             <TextBlock Text="{Binding Path=ToolTipContent}"></TextBlock>
                         </Grid>
@@ -83,9 +84,11 @@
                the grid's width, the outside rectangle is shrinked to fit the grid. Port snapping cannot occur in that case 
                as no mouse events are generated.This happens only for codeblock node. 
             -->
-                <Rectangle Fill="Transparent"
-                       SnapsToDevicePixels="True"
-                       IsHitTestVisible="{Binding IsHitTestVisible}">
+                <Rectangle
+                    Fill="Transparent"
+                    SnapsToDevicePixels="True"
+                    IsHitTestVisible="{Binding IsHitTestVisible}">
+
                     <interactivity:Interaction.Triggers>
                         <views:HandlingEventTrigger EventName="MouseEnter">
                             <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
@@ -105,7 +108,7 @@
                     </Rectangle.Margin>
                 </Rectangle>
                 <Rectangle Name="highlightOverlay"
-                       Fill="White"
+                       Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlighColorConverter}}"
                        MinWidth="26"
                        Margin="0,0,0,1"
                        IsHitTestVisible="True">
@@ -154,7 +157,12 @@
                   Height="{Binding Path=Height}"
                   ToolTipService.ShowDuration="60000"
                   Visibility="{Binding Path=UseLevelVisibility}">
-                <Rectangle Name="highlightOverlayForArrow" Fill="White" MinWidth="12" Margin="0,0,0,1" IsHitTestVisible="True">
+                <Rectangle
+                    Name="highlightOverlayForArrow" 
+                    Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlighColorConverter}}"
+                    MinWidth="12"
+                    Margin="0,0,0,1"
+                    IsHitTestVisible="True">
                     <interactivity:Interaction.Triggers>
                         <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
                             <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownOnLevelCommand}" CommandParameter="{Binding}" />
