@@ -218,6 +218,8 @@ namespace Dynamo.Controls
 
         private void NodeModel_ConnectorAdded(Graph.Connectors.ConnectorModel obj)
         {
+            // If the mouse does not leave the node after the connnector is added,
+            // try to show the preview bubble without new mouse enter event.   
             Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
         }
 
