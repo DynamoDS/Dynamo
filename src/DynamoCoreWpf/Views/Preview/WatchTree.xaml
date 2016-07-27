@@ -328,7 +328,7 @@
                                 <Run Foreground="Gray">@</Run>
                             </TextBlock>
                             <TextBlock Name="indivListLevel" FontFamily="Consolas" FontSize="9">
-                                L<Run Foreground="Black" Text="{Binding levels}"></Run>
+                                L<Run Foreground="Black" Text="{Binding level}"></Run>
                             </TextBlock>
                         </WrapPanel>
                     </DataTemplate>

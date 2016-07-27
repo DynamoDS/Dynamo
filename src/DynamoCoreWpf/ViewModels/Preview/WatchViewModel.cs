@@ -42,7 +42,7 @@ namespace Dynamo.ViewModels
         private int maxListLevel;
 
         // Instance variable for the list of levels 
-        private IEnumerable<ListLevels> ListLevelsList;
+        private IEnumerable<ListLevels> levels;
 
         public DelegateCommand FindNodeForPathCommand { get; set; }
 
@@ -183,14 +183,13 @@ namespace Dynamo.ViewModels
         /// </summary>
         public IEnumerable<ListLevels> Levels
         {
-            get { return ListLevelsList;  }
+            get { return levels;  }
             set
             {
-                ListLevelsList = value;
+                levels = value;
                 RaisePropertyChanged("Levels");
             }
         }
-
 
         #endregion
 
@@ -225,15 +224,15 @@ namespace Dynamo.ViewModels
         /// Method to account for the total number of items and the depth of a list in a list (in the WatchTree)
         /// </summary>
         /// 
-        public void countNumberOfItemsWVM()
+        public void CountNumberOfItemsWVM()
         {
-            var listLevelAndItemCount = GetMaximumDepthAndItemNumber(this);
+            var listLevelAndItemCount = getMaximumDepthAndItemNumber(this);
             maxListLevel = listLevelAndItemCount.Item1;
             NumberOfItemsWatchViewModel = listLevelAndItemCount.Item2;
-            IsCollection = this.Children.Count > 0 ? this.Children[0].Children.Count > 0 : false; 
+            IsCollection = maxListLevel > 0; 
         }
 
-        private Tuple<int, int> GetMaximumDepthAndItemNumber(WatchViewModel wvm)
+        private Tuple<int, int> getMaximumDepthAndItemNumber(WatchViewModel wvm)
         {
             if (wvm.Children.Count == 0)
             {
@@ -242,37 +241,33 @@ namespace Dynamo.ViewModels
 
             if (wvm.Path != null)
             {
-                var depthAndNumbers = wvm.Children.Select(GetMaximumDepthAndItemNumber);
+                var depthAndNumbers = wvm.Children.Select(getMaximumDepthAndItemNumber);
                 var maxDepth = depthAndNumbers.Select(t => t.Item1).Any() ? depthAndNumbers.Select(t => t.Item1).Max() + 1 : 1;
                 var itemNumber = depthAndNumbers.Select(t => t.Item2).Sum();
                 return new Tuple<int, int>(maxDepth, itemNumber);
             }
             else
             {
-                return GetMaximumDepthAndItemNumber(wvm.Children[0]);
+                return getMaximumDepthAndItemNumber(wvm.Children[0]);
             }
         }
 
         /// <summary>
         /// Count the list levels of each list 
         /// </summary>
-        public void countListLevel()
+        public void CountListLevel()
         {
-            ListLevelsList = new List<ListLevels>();
+            Levels = Enumerable.Empty<ListLevels>();        
 
             if (maxListLevel > 0)
             {
-                for (int i = this.maxListLevel; i >= 1; i--)
-                {
-                    ListLevelsList = ListLevelsList.Concat(new List<ListLevels>() { new ListLevels() { levels = i }});
-                }
-                this.Levels = ListLevelsList;
+               Levels = Enumerable.Range(1, maxListLevel).Reverse().Select(x => new ListLevels() { level = x }).ToList();
             }
         }
     }
 
     public class ListLevels
     {
-        public int levels { get; set; }
+        public int level { get; set; }
     }
 }

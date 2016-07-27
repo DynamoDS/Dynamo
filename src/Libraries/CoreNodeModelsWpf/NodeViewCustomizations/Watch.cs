@@ -201,8 +201,8 @@ namespace CoreNodeModelsWpf.Nodes
 
                 // rebind
                 rootWatchViewModel.Children = temp;
-                rootWatchViewModel.countNumberOfItemsWVM();
-                rootWatchViewModel.countListLevel();
+                rootWatchViewModel.CountNumberOfItemsWVM();
+                rootWatchViewModel.CountListLevel();
                 
             }, syncContext);
 
