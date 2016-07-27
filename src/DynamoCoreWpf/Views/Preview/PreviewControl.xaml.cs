@@ -372,7 +372,6 @@ namespace Dynamo.UI.Controls
                 {
                     newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
                         nodeViewModel.NodeModel.CachedValue, null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
-                    //newViewModel.numberOfItemsCount(nodeViewModel.NodeModel.CachedValue);
 
                 },
                 (m) =>
@@ -392,9 +391,7 @@ namespace Dynamo.UI.Controls
                     {
                         var rootDataContext = watchTree.DataContext as WatchViewModel;
 
-
                         cachedLargeContent = newViewModel;
-                        //newViewModel.numberOfItemsCountWVM();
 
                         if (rootDataContext != null)
                         {
@@ -402,10 +399,9 @@ namespace Dynamo.UI.Controls
                             rootDataContext.Children.Clear();
                             rootDataContext.Children.Add(cachedLargeContent);
 
-                            rootDataContext.countNumberOfItemsWVM(); //count the total number of items in the list
-
-                            if (rootDataContext != null)
+                            if (!rootDataContext.IsOneRowContent)
                             {
+                                rootDataContext.countNumberOfItemsWVM(); //count the total number of items in the list
                                 rootDataContext.countListLevel();
                                 watchTree.listLevelsView.ItemsSource = rootDataContext.listLevelList; // add listLevelList to the ItemsSource of listlevelsView in WatchTree
                             }

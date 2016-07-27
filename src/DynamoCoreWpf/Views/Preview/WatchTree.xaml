@@ -110,9 +110,7 @@
                 </Setter>
             </Style>
 
-            
-            <!-- TreeViewItem Control Style-->       
-            
+            <!-- TreeViewItem Control Style-->                   
             <Style x:Key="WatchTreeViewItem" 
                    TargetType="{x:Type TreeViewItem}">
                 <Setter Property="IsExpanded"
@@ -173,7 +171,7 @@
                                     <Rectangle 
                                            x:Name="VerLn" Width="2" 
                                            Stroke="Black" 
-                                           Margin="0,0,0,0" 
+                                           Margin="0,0,0,1" 
                                            Grid.RowSpan="2" 
                                            SnapsToDevicePixels="true"
                                            HorizontalAlignment="Center"
@@ -183,9 +181,9 @@
 
                                     <Ellipse 
                                              x:Name="LnEnd" 
-                                             Width="5" 
-                                             Height="5" 
-                                             Margin="0,0,0,-1"
+                                             Width="6" 
+                                             Height="6" 
+                                             Margin="0,0,0,0"
                                              HorizontalAlignment="Center"
                                              VerticalAlignment="Bottom"
                                              Stroke="Black" Fill="Black" SnapsToDevicePixels="True"/>
@@ -312,7 +310,7 @@
             <!-- Shows list@level labels in List -->
             
             <ListView Name="listLevelsView" 
-                      Grid.Column ="0" Margin="0,3,0,7" 
+                      Grid.Column ="0" Margin="3,3,0,7" 
                       Background="Transparent"
                       Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                       BorderThickness="0">
@@ -326,10 +324,10 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel Orientation="Horizontal">
-                            <TextBlock FontSize="8">
+                            <TextBlock FontSize="9" FontFamily="Consolas">
                                 <Run Foreground="Gray">@</Run>
                             </TextBlock>
-                            <TextBlock Name="indivListLevel"  FontSize="8">
+                            <TextBlock Name="indivListLevel" FontFamily="Consolas" FontSize="9">
                                 L<Run Foreground="Black" Text="{Binding listLevel}"></Run>
                             </TextBlock>
                         </WrapPanel>

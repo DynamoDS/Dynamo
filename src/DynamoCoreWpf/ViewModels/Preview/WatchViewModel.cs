@@ -286,6 +286,9 @@ namespace Dynamo.ViewModels
         }
     }
 
+    /// <summary>
+    /// Helper Class to create list@level objects for the list@level labels
+    /// </summary>
     public class ListLevel
     {
         public int listLevel { get; set; }
