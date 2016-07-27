@@ -5,6 +5,8 @@ using System.Windows.Controls.Primitives;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.PackageManager.ViewModels;
+using DynamoUtilities;
+using System.IO;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -74,6 +76,14 @@ namespace Dynamo.PackageManager.UI
                 .PackageManagerClientViewModel.DynamoViewModel.Model.PathManager.DefaultPackagesDirectory;
             
             e.Cancel = true;
+
+            // Handle for the case, initialPath does not exist.
+            var errorCannotCreateFolder = PathHelper.CreateFolderIfNotExist(initialPath);
+            if (errorCannotCreateFolder != null)
+            {
+                throw new DirectoryNotFoundException(Wpf.Properties.Resources.PackageFolderNotFound);
+            }
+                
 
             var dialog = new DynamoFolderBrowserDialog
             {

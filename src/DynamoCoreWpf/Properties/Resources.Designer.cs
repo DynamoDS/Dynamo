@@ -3458,6 +3458,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package Installation Folder Is Not Found..
+        /// </summary>
+        public static string PackageFolderNotFound {
+            get {
+                return ResourceManager.GetString("PackageFolderNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package Manager Website.
         /// </summary>
         public static string PackageManagerWebSiteButton {

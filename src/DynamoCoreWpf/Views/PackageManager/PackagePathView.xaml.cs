@@ -16,6 +16,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Dynamo.UI;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using DynamoUtilities;
+using System.IO;
 
 namespace Dynamo.Wpf.Views.PackageManager
 {
@@ -100,6 +102,13 @@ namespace Dynamo.Wpf.Views.PackageManager
         {
             var args = e as PackagePathEventArgs;
             args.Cancel = true;
+            
+            // Handle for the case, initialPath does not exist.
+            var errorCannotCreateFolder = PathHelper.CreateFolderIfNotExist(args.Path);
+            if (errorCannotCreateFolder != null)
+            {
+                throw new DirectoryNotFoundException(Wpf.Properties.Resources.PackageFolderNotFound);
+            }
 
             var dialog = new DynamoFolderBrowserDialog
             {
