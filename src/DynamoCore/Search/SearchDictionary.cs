@@ -353,5 +353,17 @@ namespace Dynamo.Search
                 return entryDictionary[element].Keys;
             return null;
         }
+
+        /// <summary>
+        /// Returns all weights for search specified element
+        /// </summary>
+        /// <param name="element">The element to match</param>
+        /// <returns>All tags of the given element</returns>
+        internal IEnumerable<double> GetWeights(V element)
+        {
+            if (entryDictionary.ContainsKey(element))
+                return entryDictionary[element].Values;
+            return null;
+        }
     }
 }
