@@ -169,8 +169,8 @@
                                     <!-- Vertical line -->
 
                                     <Rectangle 
-                                           x:Name="VerLn" Width="2" 
-                                           Stroke="Black" 
+                                           x:Name="VerLn" Width="1" 
+                                           Stroke="Gray" 
                                            Margin="0,0,0,1" 
                                            Grid.RowSpan="2" 
                                            SnapsToDevicePixels="true"
@@ -181,12 +181,12 @@
 
                                     <Ellipse 
                                              x:Name="LnEnd" 
-                                             Width="6" 
-                                             Height="6" 
+                                             Width="5" 
+                                             Height="5" 
                                              Margin="0,0,0,0"
                                              HorizontalAlignment="Center"
                                              VerticalAlignment="Bottom"
-                                             Stroke="Black" Fill="Black" SnapsToDevicePixels="True"/>
+                                             Stroke="Gray" Fill="Gray" SnapsToDevicePixels="True"/>
 
                                 </Grid>
 
@@ -304,7 +304,7 @@
             
             <TextBlock Name="ListItems" Grid.Column="2" Margin="0,3,0,7" Foreground="Gray" FontStyle="Italic"
                        Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-            {<Run Foreground="DarkRed" Text="{Binding NumberOfItemsWT}" />}
+            {<Run Foreground="DarkRed" Text="{Binding NumberOfItemsWatchViewModel}" />}
             </TextBlock>
 
             <!-- Shows list@level labels in List -->
@@ -328,7 +328,7 @@
                                 <Run Foreground="Gray">@</Run>
                             </TextBlock>
                             <TextBlock Name="indivListLevel" FontFamily="Consolas" FontSize="9">
-                                L<Run Foreground="Black" Text="{Binding listLevel}"></Run>
+                                L<Run Foreground="Black" Text="{Binding levels}"></Run>
                             </TextBlock>
                         </WrapPanel>
                     </DataTemplate>

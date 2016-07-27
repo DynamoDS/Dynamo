@@ -398,12 +398,11 @@ namespace Dynamo.UI.Controls
                             rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
                             rootDataContext.Children.Clear();
                             rootDataContext.Children.Add(cachedLargeContent);
-
+                            rootDataContext.countNumberOfItemsWVM(); //count the total number of items in the list
                             if (!rootDataContext.IsOneRowContent)
                             {
-                                rootDataContext.countNumberOfItemsWVM(); //count the total number of items in the list
                                 rootDataContext.countListLevel();
-                                watchTree.listLevelsView.ItemsSource = rootDataContext.listLevelList; // add listLevelList to the ItemsSource of listlevelsView in WatchTree
+                                watchTree.listLevelsView.ItemsSource = rootDataContext.Levels; // add listLevelList to the ItemsSource of listlevelsView in WatchTree
                             }
 
                             watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,

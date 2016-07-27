@@ -70,7 +70,7 @@ namespace CoreNodeModelsWpf.Nodes
             watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
 
             // add binding for ItemCount
-            var numItemsBinding = new Binding("NumberOfItemsWT")
+            var numItemsBinding = new Binding("NumberOfItemsWatchViewModel")
             {
                 Mode = BindingMode.TwoWay,
                 Source = rootWatchViewModel,
@@ -78,7 +78,7 @@ namespace CoreNodeModelsWpf.Nodes
             watchTree.ListItems.SetBinding(ItemsControl.ItemsSourceProperty, numItemsBinding);
 
             // add binding for depth of list
-             var listlevelBinding = new Binding("listLevelList")
+             var listlevelBinding = new Binding("Levels")
             {
                 Mode = BindingMode.TwoWay,
                Source = rootWatchViewModel,

@@ -41,11 +41,8 @@ namespace Dynamo.ViewModels
         // Instance variable for the max depth of items in the list
         private int maxListLevel;
 
-        //Instance variable for the current list depth of items in the list
-        private int listDepth;
-
-        //Instance variable for list of list level items
-        private List<ListLevel> _listlevelsList;
+        // Instance variable for the list of levels 
+        private IEnumerable<ListLevels> ListLevelsList;
 
         public DelegateCommand FindNodeForPathCommand { get; set; }
 
@@ -158,14 +155,13 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Number of items in the overall list if node output is a list
         /// </summary>
-        public int NumberOfItemsWT
+        public int NumberOfItemsWatchViewModel
         { 
             get { return numberOfItems; }
             set
             {
                 numberOfItems = value;
-                IsCollection = true;
-                RaisePropertyChanged("NumberOfItemsWT");
+                RaisePropertyChanged("NumberOfItemsWatchViewModel");
             }
         }
 
@@ -185,16 +181,15 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Returns a list of listlevel items
         /// </summary>
-        public List<ListLevel> listLevelList
+        public IEnumerable<ListLevels> Levels
         {
-            get { return _listlevelsList;  }
+            get { return ListLevelsList;  }
             set
             {
-                _listlevelsList = value;
-                RaisePropertyChanged("listLevelList");
+                ListLevelsList = value;
+                RaisePropertyChanged("Levels");
             }
         }
-
 
 
         #endregion
@@ -232,40 +227,30 @@ namespace Dynamo.ViewModels
         /// 
         public void countNumberOfItemsWVM()
         {
-            NumberOfItemsWT = 0; // reset the number of items in list
-            maxListLevel = 0; // reset the max list depth
-            listDepth = 0; 
-            numberOfItemsCountHelperWVM(this);
-            IsCollection = true;
-            RaisePropertyChanged("NumberOfItemsWT");
-            RaisePropertyChanged("IsCollection");
-            RaisePropertyChanged("maxDepthOfList");
+            var listLevelAndItemCount = GetMaximumDepthAndItemNumber(this);
+            maxListLevel = listLevelAndItemCount.Item1;
+            NumberOfItemsWatchViewModel = listLevelAndItemCount.Item2;
+            IsCollection = this.Children.Count > 0 ? this.Children[0].Children.Count > 0 : false; 
         }
 
-        /// <summary>
-        /// Helper method to count the total number of items and the max list depth in a collection recursively
-        /// </summary>
-        private void numberOfItemsCountHelperWVM(WatchViewModel wvm)
+        private Tuple<int, int> GetMaximumDepthAndItemNumber(WatchViewModel wvm)
         {
-                if (wvm.Children.Count > 0)
-                {
-                    if (wvm.Path != null)
-                        listDepth++; // as the list is traversed deeper on each level, the current list depth will increase
+            if (wvm.Children.Count == 0)
+            {
+                return new Tuple<int, int>(0, 1);
+            }
 
-                    foreach (var item in wvm.Children)
-                    {
-                        numberOfItemsCountHelperWVM(item);
-                    }
-
-                    if (listDepth > 0)
-                        listDepth--; // as the list depth exits each level, the current list depth will decrease
-                }
-
-                if (listDepth > maxListLevel)
-                     maxListLevel = listDepth; 
-
-                if (wvm.NodeLabel != null && wvm.NodeLabel != "List")
-                    numberOfItems++;
+            if (wvm.Path != null)
+            {
+                var depthAndNumbers = wvm.Children.Select(GetMaximumDepthAndItemNumber);
+                var maxDepth = depthAndNumbers.Select(t => t.Item1).Any() ? depthAndNumbers.Select(t => t.Item1).Max() + 1 : 1;
+                var itemNumber = depthAndNumbers.Select(t => t.Item2).Sum();
+                return new Tuple<int, int>(maxDepth, itemNumber);
+            }
+            else
+            {
+                return GetMaximumDepthAndItemNumber(wvm.Children[0]);
+            }
         }
 
         /// <summary>
@@ -273,25 +258,21 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void countListLevel()
         {
-            _listlevelsList = new List<ListLevel>();
+            ListLevelsList = new List<ListLevels>();
 
             if (maxListLevel > 0)
             {
                 for (int i = this.maxListLevel; i >= 1; i--)
                 {
-                    _listlevelsList.Add(new ListLevel() { listLevel = i });
+                    ListLevelsList = ListLevelsList.Concat(new List<ListLevels>() { new ListLevels() { levels = i }});
                 }
-                this.listLevelList = _listlevelsList;
+                this.Levels = ListLevelsList;
             }
         }
     }
 
-    /// <summary>
-    /// Helper Class to create list@level objects for the list@level labels
-    /// </summary>
-    public class ListLevel
+    public class ListLevels
     {
-        public int listLevel { get; set; }
+        public int levels { get; set; }
     }
-
 }
