@@ -103,7 +103,7 @@ namespace Dynamo.Wpf.Views.PackageManager
             var args = e as PackagePathEventArgs;
             args.Cancel = true;
             
-            // Handle for the case, initialPath does not exist.
+            // Handle for the case, args.Path does not exist.
             var errorCannotCreateFolder = PathHelper.CreateFolderIfNotExist(args.Path);
             if (errorCannotCreateFolder != null)
             {
