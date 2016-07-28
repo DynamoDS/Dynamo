@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Dynamo.ViewModels;
-using System.Collections.Generic;
 
 namespace Dynamo.Controls
 {

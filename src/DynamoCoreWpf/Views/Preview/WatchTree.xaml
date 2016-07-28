@@ -236,9 +236,7 @@
                   SelectedItemChanged="TreeView1_OnSelectedItemChanged">
             <TreeView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    
-                    <!--ItemsPanelTemplate used to specify the panel used to arrange the children of TreeView-->
-                    
+                                       
                     <VirtualizingStackPanel>
                         <VirtualizingPanel.Style>
                             <Style TargetType="{x:Type VirtualizingPanel}">
@@ -259,8 +257,6 @@
                     </VirtualizingStackPanel>
                 </ItemsPanelTemplate>
             </TreeView.ItemsPanel>
-
-            <!--ItemTemplate used to render layout of each individual item in the list-->
 
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}"

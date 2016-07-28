@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Dynamo.Interfaces;
 using Dynamo.UI.Commands;
 using Microsoft.Practices.Prism.ViewModel;
-using ProtoCore.Mirror;
 using System.Collections.Generic;
 
 namespace Dynamo.ViewModels
@@ -239,11 +237,14 @@ namespace Dynamo.ViewModels
                 return new Tuple<int, int>(0, 1);
             }
 
-            if (wvm.Path == null) return GetMaximumDepthAndItemNumber(wvm.Children[0]);
+            if (wvm.Path == null)
+            {
+                return GetMaximumDepthAndItemNumber(wvm.Children[0]);
+            }
             else
             {
                 var depthAndNumbers = wvm.Children.Select(GetMaximumDepthAndItemNumber);
-                var maxDepth = depthAndNumbers.Select(t => t.Item1).Any() ? depthAndNumbers.Select(t => t.Item1).Max() + 1 : 1;
+                var maxDepth = depthAndNumbers.Select(t => t.Item1).DefaultIfEmpty(1).Max() + 1;
                 var itemNumber = depthAndNumbers.Select(t => t.Item2).Sum();
                 return new Tuple<int, int>(maxDepth, itemNumber);
             }
