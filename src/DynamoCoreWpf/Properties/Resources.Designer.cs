@@ -2183,6 +2183,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File Not Found.
+        /// </summary>
+        public static string FileNotFoundError {
+            get {
+                return ResourceManager.GetString("FileNotFoundError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No file selected..
         /// </summary>
         public static string FilePathConverterNoFileSelected {

@@ -98,7 +98,7 @@ namespace Dynamo.PackageManager.UI
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show(Wpf.Properties.Resources.PackageFolderNotFound, "File Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Windows.Forms.MessageBox.Show(Wpf.Properties.Resources.PackageFolderNotFound, Wpf.Properties.Resources.FileNotFoundError, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
                 
         }

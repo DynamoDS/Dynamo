@@ -2049,4 +2049,7 @@ Next assemblies were loaded several times:
   <data name="PackageFolderNotFound" xml:space="preserve">
     <value>Package installation folder is not found.</value>
   </data>
+  <data name="FileNotFoundError" xml:space="preserve">
+    <value>File Not Found</value>
+  </data>
 </root>
