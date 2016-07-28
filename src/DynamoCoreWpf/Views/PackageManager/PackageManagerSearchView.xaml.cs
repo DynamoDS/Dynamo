@@ -7,6 +7,7 @@ using Dynamo.ViewModels;
 using Dynamo.PackageManager.ViewModels;
 using DynamoUtilities;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -48,7 +49,7 @@ namespace Dynamo.PackageManager.UI
 
         private void OnShowContextMenuFromLeftClicked(object sender, RoutedEventArgs e)
         {
-            var button = (Button)sender;
+            var button = (System.Windows.Controls.Button)sender;
             button.ContextMenu.DataContext = button.DataContext;
             button.ContextMenu.PlacementTarget = button;
             button.ContextMenu.Placement = PlacementMode.Bottom;
@@ -79,24 +80,27 @@ namespace Dynamo.PackageManager.UI
 
             // Handle for the case, initialPath does not exist.
             var errorCannotCreateFolder = PathHelper.CreateFolderIfNotExist(initialPath);
-            if (errorCannotCreateFolder != null)
+            if (errorCannotCreateFolder == null)
             {
-                throw new DirectoryNotFoundException(Wpf.Properties.Resources.PackageFolderNotFound);
+                var dialog = new DynamoFolderBrowserDialog
+                {
+                    // Navigate to initial folder.
+                    SelectedPath = initialPath,
+                    Owner = this
+                };
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    e.Cancel = false;
+                    e.Path = dialog.SelectedPath;
+                }
+               
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show(Wpf.Properties.Resources.PackageFolderNotFound, "File Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
                 
-
-            var dialog = new DynamoFolderBrowserDialog
-            {
-                // Navigate to initial folder.
-                SelectedPath = initialPath,
-                Owner = this
-            };
-
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                e.Cancel = false;
-                e.Path = dialog.SelectedPath;
-            }
         }
 
     }

@@ -2047,6 +2047,6 @@ Next assemblies were loaded several times:
     <comment>Nofication Center Title</comment>
   </data>
   <data name="PackageFolderNotFound" xml:space="preserve">
-    <value>Package Installation Folder Is Not Found.</value>
+    <value>Package installation folder is not found.</value>
   </data>
 </root>

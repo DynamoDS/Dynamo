@@ -3458,7 +3458,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package Installation Folder Is Not Found..
+        ///   Looks up a localized string similar to Package installation folder is not found..
         /// </summary>
         public static string PackageFolderNotFound {
             get {

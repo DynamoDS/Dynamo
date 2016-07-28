@@ -105,23 +105,28 @@ namespace Dynamo.Wpf.Views.PackageManager
             
             // Handle for the case, args.Path does not exist.
             var errorCannotCreateFolder = PathHelper.CreateFolderIfNotExist(args.Path);
-            if (errorCannotCreateFolder != null)
+            if (errorCannotCreateFolder == null)
             {
-                throw new DirectoryNotFoundException(Wpf.Properties.Resources.PackageFolderNotFound);
-            }
+                var dialog = new DynamoFolderBrowserDialog
+                {
+                    // Navigate to initial folder.
+                    SelectedPath = args.Path,
+                    Owner = this
+                };
 
-            var dialog = new DynamoFolderBrowserDialog
-            {
-                // Navigate to initial folder.
-                SelectedPath = args.Path,
-                Owner = this
-            };
-
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                args.Cancel = false;
-                args.Path = dialog.SelectedPath;
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    args.Cancel = false;
+                    args.Path = dialog.SelectedPath;
+                }
+              
             }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show(Wpf.Properties.Resources.PackageFolderNotFound, "File Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            
+            
         }
 
         private void UpdateVisualToReflectSelectionState()
