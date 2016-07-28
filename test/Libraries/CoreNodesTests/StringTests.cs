@@ -345,7 +345,11 @@ namespace DSCoreNodesTests
             Assert.AreEqual("a", String.Remove("abcdef", 1));
             Assert.AreEqual("aef", String.Remove("abcdef", 1, 3));
             Assert.AreEqual("aef", String.Remove("abcdef", -5, 3));
-            Assert.AreEqual("aef", String.Remove("abcdef", -2, -3));
+            Assert.AreEqual("abf", String.Remove("abcdef", -2, -3));
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => String.Remove("abcdef", 0, 7)); // count out of range of available character in string
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => String.Remove("abcdef", 8, 1)); // startIndex out of range of available character in string
+            // Case of startIndex magnitude is out of range and the computation of startIndex + string.Length in the String.Remove function is negative.
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => String.Remove("abcdef", -7, 1)); 
         }
     }
 }
