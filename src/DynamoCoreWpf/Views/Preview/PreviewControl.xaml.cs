@@ -376,41 +376,42 @@ namespace Dynamo.UI.Controls
                 },
                 (m) =>
                 {
-                    if (largeContentGrid.Children.Count == 0)
+                if (largeContentGrid.Children.Count == 0)
+                {
+                    var tree = new WatchTree
                     {
-                        var tree = new WatchTree
-                        {
-                            DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath)
-                        };
-                        tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
-                        largeContentGrid.Children.Add(tree);
-                    }
+                        DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath)
+                    };
+                    tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
+                    largeContentGrid.Children.Add(tree);
+                }
 
-                    var watchTree = largeContentGrid.Children[0] as WatchTree;
-                    if (watchTree != null)
+                var watchTree = largeContentGrid.Children[0] as WatchTree;
+                if (watchTree != null)
+                {
+                    var rootDataContext = watchTree.DataContext as WatchViewModel;
+
+                    cachedLargeContent = newViewModel;
+
+                    if (rootDataContext != null)
                     {
-                        var rootDataContext = watchTree.DataContext as WatchViewModel;
-
-                        cachedLargeContent = newViewModel;
-
-                        if (rootDataContext != null)
+                        rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
+                        rootDataContext.Children.Clear();
+                        rootDataContext.Children.Add(cachedLargeContent);
+                        rootDataContext.CountNumberOfItems(); //count the total number of items in the list
+                        if (!rootDataContext.IsOneRowContent)
                         {
-                            rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
-                            rootDataContext.Children.Clear();
-                            rootDataContext.Children.Add(cachedLargeContent);
-                            rootDataContext.CountNumberOfItemsWVM(); //count the total number of items in the list
-                            if (!rootDataContext.IsOneRowContent)
+                            rootDataContext.CountListLevel();
+                            watchTree.listLevelsView.ItemsSource = rootDataContext.Levels; // add listLevelList to the ItemsSource of listlevelsView in WatchTree
+                        }
+
+                        watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
+                            new Binding("Children")
                             {
-                                rootDataContext.CountListLevel();
-                                watchTree.listLevelsView.ItemsSource = rootDataContext.Levels; // add listLevelList to the ItemsSource of listlevelsView in WatchTree
-                            }
+                                Mode = BindingMode.TwoWay,
+                                Source = rootDataContext
+                            });
 
-                            watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
-                                new Binding("Children")
-                                {
-                                    Mode = BindingMode.TwoWay,
-                                    Source = rootDataContext
-                                });
                         }
                     }
                     if (refreshDisplay != null)

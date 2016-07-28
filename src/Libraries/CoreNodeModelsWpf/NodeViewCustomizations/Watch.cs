@@ -70,7 +70,7 @@ namespace CoreNodeModelsWpf.Nodes
             watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
 
             // add binding for ItemCount
-            var numItemsBinding = new Binding("NumberOfItemsWatchViewModel")
+            var numItemsBinding = new Binding("NumberOfItems")
             {
                 Mode = BindingMode.TwoWay,
                 Source = rootWatchViewModel,
@@ -201,7 +201,7 @@ namespace CoreNodeModelsWpf.Nodes
 
                 // rebind
                 rootWatchViewModel.Children = temp;
-                rootWatchViewModel.CountNumberOfItemsWVM();
+                rootWatchViewModel.CountNumberOfItems();
                 rootWatchViewModel.CountListLevel();
                 
             }, syncContext);

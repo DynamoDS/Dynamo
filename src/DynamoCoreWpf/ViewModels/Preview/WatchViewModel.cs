@@ -33,7 +33,7 @@ namespace Dynamo.ViewModels
         private string _path = "";
         private bool _isOneRowContent;
         private readonly Action<string> tagGeometry;
-        private bool _isCollection;
+        private bool isCollection;
 
         // Instance variable for the number of items in the list 
         private int numberOfItems;
@@ -42,7 +42,7 @@ namespace Dynamo.ViewModels
         private int maxListLevel;
 
         // Instance variable for the list of levels 
-        private IEnumerable<ListLevels> levels;
+        private IEnumerable<int> levels;
 
         public DelegateCommand FindNodeForPathCommand { get; set; }
 
@@ -155,13 +155,13 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Number of items in the overall list if node output is a list
         /// </summary>
-        public int NumberOfItemsWatchViewModel
+        public int NumberOfItems
         { 
             get { return numberOfItems; }
             set
             {
                 numberOfItems = value;
-                RaisePropertyChanged("NumberOfItemsWatchViewModel");
+                RaisePropertyChanged("NumberOfItems");
             }
         }
 
@@ -171,9 +171,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsCollection
         {
-            get { return _isCollection; }
+            get { return isCollection; }
             set {
-                _isCollection = value;
+                isCollection = value;
                 RaisePropertyChanged("IsCollection");
             }
         }
@@ -181,7 +181,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Returns a list of listlevel items
         /// </summary>
-        public IEnumerable<ListLevels> Levels
+        public IEnumerable<int> Levels
         {
             get { return levels;  }
             set
@@ -224,31 +224,28 @@ namespace Dynamo.ViewModels
         /// Method to account for the total number of items and the depth of a list in a list (in the WatchTree)
         /// </summary>
         /// 
-        public void CountNumberOfItemsWVM()
+        public void CountNumberOfItems()
         {
-            var listLevelAndItemCount = getMaximumDepthAndItemNumber(this);
+            var listLevelAndItemCount = GetMaximumDepthAndItemNumber(this);
             maxListLevel = listLevelAndItemCount.Item1;
-            NumberOfItemsWatchViewModel = listLevelAndItemCount.Item2;
+            NumberOfItems = listLevelAndItemCount.Item2;
             IsCollection = maxListLevel > 0; 
         }
 
-        private Tuple<int, int> getMaximumDepthAndItemNumber(WatchViewModel wvm)
+        private Tuple<int, int> GetMaximumDepthAndItemNumber(WatchViewModel wvm)
         {
             if (wvm.Children.Count == 0)
             {
                 return new Tuple<int, int>(0, 1);
             }
 
-            if (wvm.Path != null)
+            if (wvm.Path == null) return GetMaximumDepthAndItemNumber(wvm.Children[0]);
+            else
             {
-                var depthAndNumbers = wvm.Children.Select(getMaximumDepthAndItemNumber);
+                var depthAndNumbers = wvm.Children.Select(GetMaximumDepthAndItemNumber);
                 var maxDepth = depthAndNumbers.Select(t => t.Item1).Any() ? depthAndNumbers.Select(t => t.Item1).Max() + 1 : 1;
                 var itemNumber = depthAndNumbers.Select(t => t.Item2).Sum();
                 return new Tuple<int, int>(maxDepth, itemNumber);
-            }
-            else
-            {
-                return getMaximumDepthAndItemNumber(wvm.Children[0]);
             }
         }
 
@@ -257,17 +254,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void CountListLevel()
         {
-            Levels = Enumerable.Empty<ListLevels>();        
-
-            if (maxListLevel > 0)
-            {
-               Levels = Enumerable.Range(1, maxListLevel).Reverse().Select(x => new ListLevels() { level = x }).ToList();
-            }
+            Levels = maxListLevel > 0 ? Enumerable.Range(1, maxListLevel).Reverse().Select(x => x).ToList() : Enumerable.Empty<int>();
         }
-    }
-
-    public class ListLevels
-    {
-        public int level { get; set; }
     }
 }
