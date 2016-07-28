@@ -252,7 +252,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Count the list levels of each list 
         /// </summary>
-        public void CountListLevel()
+        public void CountLevels()
         {
             Levels = maxListLevel > 0 ? Enumerable.Range(1, maxListLevel).Reverse().Select(x => x).ToList() : Enumerable.Empty<int>();
         }

@@ -401,7 +401,7 @@ namespace Dynamo.UI.Controls
                         rootDataContext.CountNumberOfItems(); //count the total number of items in the list
                         if (!rootDataContext.IsOneRowContent)
                         {
-                            rootDataContext.CountListLevel();
+                            rootDataContext.CountLevels();
                             watchTree.listLevelsView.ItemsSource = rootDataContext.Levels; // add listLevelList to the ItemsSource of listlevelsView in WatchTree
                         }
 
