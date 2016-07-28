@@ -234,7 +234,10 @@ namespace Dynamo.ViewModels
         {
             if (wvm.Children.Count == 0)
             {
-                return new Tuple<int, int>(0, 1);
+                if (wvm.NodeLabel == "Empty List")
+                    return new Tuple<int, int>(0, 0);
+                else
+                    return new Tuple<int, int>(0, 1);
             }
 
             if (wvm.Path == null)
