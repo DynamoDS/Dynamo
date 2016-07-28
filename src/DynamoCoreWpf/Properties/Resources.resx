@@ -2046,7 +2046,7 @@ Next assemblies were loaded several times:
   </data>
   <data name="MessageErrorOpeningFileGeneral" xml:space="preserve">
     <value>Error Opening File</value>
-    <comment>Nofication Center Title</comment>
+    <comment>Notification Center Title</comment>
   </data>
   <data name="PackageFolderNotFound" xml:space="preserve">
     <value>Package installation folder is not found.</value>
