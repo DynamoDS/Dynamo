@@ -440,6 +440,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto.
+        /// </summary>
+        public static string ContextMenuLacingAuto {
+            get {
+                return ResourceManager.GetString("ContextMenuLacingAuto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cross Product.
         /// </summary>
         public static string ContextMenuLacingCrossProduct {
@@ -2638,6 +2647,15 @@ namespace Dynamo.Wpf.Properties {
         public static string InvalidTimeZoneMessage {
             get {
                 return ResourceManager.GetString("InvalidTimeZoneMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No replication guide will be added..
+        /// </summary>
+        public static string LacingAutoToolTip {
+            get {
+                return ResourceManager.GetString("LacingAutoToolTip", resourceCulture);
             }
         }
         
@@ -4959,6 +4977,33 @@ namespace Dynamo.Wpf.Properties {
         public static string UsageReportPromptDialogTitle {
             get {
                 return ResourceManager.GetString("UsageReportPromptDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep 1 input list&apos;s nesting.
+        /// </summary>
+        public static string UseLevelKeepListStructureHint {
+            get {
+                return ResourceManager.GetString("UseLevelKeepListStructureHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep list structure?.
+        /// </summary>
+        public static string UseLevelKeepListStructurePopupMenuItem {
+            get {
+                return ResourceManager.GetString("UseLevelKeepListStructurePopupMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Levels?.
+        /// </summary>
+        public static string UseLevelPopupMenuItem {
+            get {
+                return ResourceManager.GetString("UseLevelPopupMenuItem", resourceCulture);
             }
         }
         

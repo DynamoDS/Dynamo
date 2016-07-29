@@ -3274,6 +3274,35 @@ namespace ProtoCore.AST.AssociativeAST
 
             return repNode;
         }
+
+        /// <summary>
+        /// Create a copy of node with at-level. E.g., xs@-2
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="level"></param>
+        /// <param name="shouldKeepListStructure"></param>
+        /// <returns></returns>
+        public static AssociativeNode AddAtLevel(AssociativeNode node, int level, bool shouldKeepListStructure)
+        {
+            if (node == null)
+                throw new ArgumentNullException("node");
+
+            ArrayNameNode repNode = null;
+            if (node is ArrayNameNode)
+            {
+                repNode = NodeUtils.Clone(node) as ArrayNameNode;
+            }
+            else
+            {
+                return node;
+            }
+
+            repNode.AtLevel = new AtLevelNode();
+            repNode.AtLevel.IsDominant = shouldKeepListStructure;
+            repNode.AtLevel.Level = level;
+
+            return repNode;
+        }
     }
 
     public static class AstExtensions

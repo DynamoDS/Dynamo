@@ -36,7 +36,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             : base(new CustomNodeController<CustomNodeDefinition>(def))
         {
             ValidateDefinition(def);
-            ArgumentLacing = LacingStrategy.Shortest;
+            ArgumentLacing = LacingStrategy.Auto;
             NickName = nickName;
             Description = description;
             Category = category;
