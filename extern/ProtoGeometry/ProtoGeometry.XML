@@ -682,7 +682,7 @@
             0.5,0.5,0.4,0.4
             </weights>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByBlendBetweenCurves(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean,System.Boolean)">
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByBlendBetweenCurves(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             Create a curve that blends between two curves
             </summary>
@@ -690,6 +690,7 @@
             <param name="curve2"> Second curve to blend </param>
             <param name="endOrStart1"> flag to indicate which end of curve1 to blend </param>
             <param name="endOrStart2"> flag to indicate which end of curve1 to blend </param>
+            <param name="isG2Continuous"> flag to indicate if resultant curve is of G1 continuity or G2 continuity </param>
             <returns>  </returns>
             <search>
             blend,make continuous,connect
@@ -1145,7 +1146,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByParameter(System.Double,System.Double)">
             <summary>
-            Removes the beginning and ends of at the specified parameters.
+            Removes the beginning and end of the Curve at the specified parameters.
             </summary>
             <param name="startParameter"> The parameter at which to start the trim </param>
             <param name="endParameter"> The parameter at which to start the trim </param>
@@ -1156,7 +1157,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrim(System.Double,System.Double)">
             <summary>
-            Removes the beginning and ends of at the specified parameters.
+            Removes the beginning and end of the Curve at the specified parameters.
             </summary>
             <param name="startParameter"> The parameter at which to start the trim </param>
             <param name="endParameter"> The parameter at which to start the trim </param>

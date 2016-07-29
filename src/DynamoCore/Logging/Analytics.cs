@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 
 namespace Dynamo.Logging
@@ -19,6 +21,15 @@ namespace Dynamo.Logging
         {
             client = new DynamoAnalyticsClient();
             client.Start(model);
+            model.WorkspaceAdded += OnWorkspaceAdded;
+        }
+
+        static void OnWorkspaceAdded(WorkspaceModel obj)
+        {
+            if (obj is CustomNodeWorkspaceModel)
+                TrackScreenView("CustomWorkspace");
+            else
+                TrackScreenView("Workspace");
         }
 
         /// <summary>
@@ -30,6 +41,27 @@ namespace Dynamo.Logging
 
             IDisposable disposable = client as IDisposable;
             if (disposable != null) disposable.Dispose();
+        }
+
+        /// <summary>
+        /// Returns if analytics reporting is ON
+        /// </summary>
+        public static bool ReportingAnalytics { get { return client != null && client.ReportingAnalytics; } }
+
+        /// <summary>
+        /// Tracks application startup time
+        /// </summary>
+        /// <param name="productName">Dynamo product name</param>
+        /// <param name="time">Elapsed time</param>
+        /// <param name="description">Optional description</param>
+        public static void TrackStartupTime(string productName, TimeSpan time, string description="")
+        {
+            if(client != null)
+            {
+                var desc = string.IsNullOrEmpty(description) 
+                    ? productName : string.Format("{0}: {1}", productName, description);
+                client.TrackTimedEvent(Categories.Performance, "Startup", time, desc);
+            }
         }
 
         /// <summary>
@@ -99,7 +131,7 @@ namespace Dynamo.Logging
         /// <param name="description">Event description</param>
         /// <param name="value">A metric value associated with the event</param>
         /// <returns>Event as IDisposable</returns>
-        public static IDisposable CreateCommandEvent(string name, string description = "", int? value = null)
+        public static IDisposable TrackCommandEvent(string name, string description = "", int? value = null)
         {
             if (client == null) return DynamoAnalyticsClient.Disposable;
 
@@ -115,11 +147,11 @@ namespace Dynamo.Logging
         /// <param name="size">Size parameter</param>
         /// <param name="description">Event description</param>
         /// <returns>Event as IDisposable</returns>
-        public static IDisposable CreateFileOperationEvent(string filepath, Actions operation, int size, string description="")
+        public static IDisposable TrackFileOperationEvent(string filepath, Actions operation, int size, string description="")
         {
             if (client == null) return DynamoAnalyticsClient.Disposable;
 
-            return client.CreateFileOperationEvent(filepath, operation, size, description);
+            return client.TrackFileOperationEvent(filepath, operation, size, description);
         }
 
         /// <summary>

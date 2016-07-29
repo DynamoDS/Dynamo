@@ -324,10 +324,19 @@ namespace UnitsUI
     {
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var typeName = AstFactory.BuildStringNode(Items[SelectedIndex].Name);
-            var assemblyName = AstFactory.BuildStringNode("DynamoUnits");
-            var functionCall = AstFactory.BuildFunctionCall(new Func<string, string, object>(Types.FindTypeByNameInAssembly), new List<AssociativeNode>() { typeName, assemblyName });
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+            AssociativeNode node;
+            if (SelectedIndex < 0 || SelectedIndex >= Items.Count)
+            {
+                node = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                var typeName = AstFactory.BuildStringNode(Items[SelectedIndex].Name);
+                var assemblyName = AstFactory.BuildStringNode("DynamoUnits");
+                node = AstFactory.BuildFunctionCall(new Func<string, string, object>(Types.FindTypeByNameInAssembly), new List<AssociativeNode>() { typeName, assemblyName });
+            }
+           
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
     }
 }

@@ -6,6 +6,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.Views;
+using Dynamo.Nodes;
 
 namespace DynamoCoreWpfTests.Utility
 {
@@ -24,6 +25,16 @@ namespace DynamoCoreWpfTests.Utility
         public static IEnumerable<NodeView> NodeViewsInFirstWorkspace(this DynamoView dynamoView)
         {
             return dynamoView.WorkspaceTabs.ChildrenOfType<WorkspaceView>().First().ChildNodeViews();
+        }
+
+        public static IEnumerable<NoteView> ChildNoteViews(this WorkspaceView noteViews)
+        {
+            return noteViews.ChildrenOfType<NoteView>();
+        }
+
+        public static IEnumerable<NoteView> NoteViewsInFirstWorkspace(this DynamoView dynamoView)
+        {
+            return dynamoView.WorkspaceTabs.ChildrenOfType<WorkspaceView>().First().ChildNoteViews();
         }
     }
 }

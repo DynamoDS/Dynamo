@@ -302,6 +302,12 @@ namespace Dynamo.Models
             ///
             protected abstract void SerializeCore(XmlElement element);
 
+            /// <summary>
+            /// This method provides derived class implementation of analytics
+            /// tracking, and only gets called if analytics tracking is enabled.
+            /// </summary>
+            internal virtual void TrackAnalytics() { }
+
             #endregion
         }
 
@@ -496,6 +502,7 @@ namespace Dynamo.Models
             [DataMember]
             internal string XmlFilePath { get; private set; }
             internal bool ForceManualExecutionMode { get; private set; }
+            private DynamoModel dynamoModel;
 
             #endregion
 
@@ -503,6 +510,7 @@ namespace Dynamo.Models
 
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
+                this.dynamoModel = dynamoModel;
                 dynamoModel.OpenFileImpl(this);
             }
 
@@ -510,6 +518,27 @@ namespace Dynamo.Models
             {
                 var helper = new XmlElementHelper(element);
                 helper.SetAttribute("XmlFilePath", XmlFilePath);
+            }
+
+            internal override void TrackAnalytics()
+            {
+                // Log file open action and the number of nodes in the opened workspace
+                Dynamo.Logging.Analytics.TrackFileOperationEvent(
+                    XmlFilePath,
+                    Logging.Actions.Open,
+                    dynamoModel.CurrentWorkspace.Nodes.Count());
+
+                // If there are unresolved nodes in the opened workspace, log the node names and count
+                var unresolvedNodes = dynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
+                if (unresolvedNodes != null && unresolvedNodes.Any())
+                {
+                    Dynamo.Logging.Analytics.TrackEvent(
+                        Logging.Actions.Unresolved,
+                        Logging.Categories.NodeOperations,
+                        unresolvedNodes.Select(n => string.Format("{0}:{1}", n.LegacyAssembly, n.LegacyFullName))
+                            .Aggregate((x, y) => string.Format("{0}, {1}", x, y)),
+                        unresolvedNodes.Count());
+                }
             }
 
             #endregion
@@ -766,6 +795,14 @@ namespace Dynamo.Models
                 {
                     helper.SetAttribute("NodeName", Name);
                 }
+            }
+
+            internal override void TrackAnalytics()
+            {
+                Dynamo.Logging.Analytics.TrackEvent(
+                    Logging.Actions.Create,
+                    Logging.Categories.NodeOperations,
+                    (Node != null) ? Node.GetOriginalName() : Name ?? "");
             }
 
             #endregion
@@ -1521,6 +1558,12 @@ namespace Dynamo.Models
                 helper.SetAttribute("CmdOperation", ((int)CmdOperation));
             }
 
+            internal override void TrackAnalytics()
+            {
+                Dynamo.Logging.Analytics.TrackCommandEvent(
+                    CmdOperation.ToString()); // "Undo" or "Redo"
+            }
+
             #endregion
         }
 
@@ -1533,25 +1576,46 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             [JsonConstructor]
-            public ModelEventCommand(string modelGuid, string eventName, int value = 1)
+            public ModelEventCommand(string modelGuid, string eventName, int value)
                 : base(new[] { Guid.Parse(modelGuid) })
             {
                 EventName = eventName;
                 Value = value;
             }
 
-            public ModelEventCommand(Guid modelGuid, string eventName, int value = 1)
+         
+            public ModelEventCommand(string modelGuid, string eventName)
+                : base(new[] { Guid.Parse(modelGuid) })
+            {
+                EventName = eventName;
+                Value = 1;
+            }
+
+            public ModelEventCommand(Guid modelGuid, string eventName, int value)
                 : base(new[] { modelGuid })
             {
                 EventName = eventName;
                 Value = value;
             }
+            public ModelEventCommand(Guid modelGuid, string eventName)
+               : base(new[] { modelGuid })
+            {
+                EventName = eventName;
+                Value = 1;
+            }
 
-            public ModelEventCommand(IEnumerable<Guid> modelGuid, string eventName, int value = 1)
+            public ModelEventCommand(IEnumerable<Guid> modelGuid, string eventName, int value)
                 : base(modelGuid)
             {
                 EventName = eventName;
                 Value = value;
+            }
+
+            public ModelEventCommand(IEnumerable<Guid> modelGuid, string eventName)
+               : base(modelGuid)
+            {
+                EventName = eventName;
+                Value = 1;
             }
 
             internal static ModelEventCommand DeserializeCore(XmlElement element)

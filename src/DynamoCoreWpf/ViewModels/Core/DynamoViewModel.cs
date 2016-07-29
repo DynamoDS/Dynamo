@@ -216,6 +216,8 @@ namespace Dynamo.ViewModels
                 }
 
                 showStartPage = value;
+                if (showStartPage) Logging.Analytics.TrackScreenView("StartPage");
+
                 RaisePropertyChanged("ShowStartPage");
                 if (DisplayStartPageCommand != null)
                     DisplayStartPageCommand.RaiseCanExecuteChanged();
@@ -1180,10 +1182,10 @@ namespace Dynamo.ViewModels
                     }
                     else
                     {
-                        errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile);
+                        errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, xmlFilePath);
                     }
-                    System.Windows.MessageBox.Show(errorMsgString);
                     model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
+                    System.Windows.MessageBox.Show(errorMsgString);
                 }
                 else
                 {
@@ -1789,6 +1791,9 @@ namespace Dynamo.ViewModels
         public void SaveImage(object parameters)
         {
             OnRequestSaveImage(this, new ImageSaveEventArgs(parameters.ToString()));
+
+            Dynamo.Logging.Analytics.TrackCommandEvent("ImageCapture",
+                "NodeCount", CurrentSpace.Nodes.Count());
         }
 
         internal bool CanSaveImage(object parameters)
@@ -2129,6 +2134,8 @@ namespace Dynamo.ViewModels
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 BackgroundPreviewViewModel.ExportToSTL(_fileDialog.FileName, HomeSpace.Name);
+
+                Dynamo.Logging.Analytics.TrackCommandEvent("ExportToSTL");
             }
         }
 

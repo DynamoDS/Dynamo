@@ -10,6 +10,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.ViewModels;
+using Dynamo.Nodes;
 using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
 using NUnit.Framework;
@@ -198,6 +199,15 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, nodeViewsOfType.Count(), "Expected a single NodeView with guid: " + guid);
 
             return nodeViewsOfType.First();
+        }
+
+        public NoteView NoteViewWithGuid(string guid)
+        {
+            var noteViews = View.NoteViewsInFirstWorkspace();
+            var noteViewsOfType = noteViews.Where(x => x.ViewModel.Model.GUID.ToString() == guid);
+            Assert.AreEqual(1, noteViewsOfType.Count(), "Expected a single NoteView with guid: " + guid);
+
+            return noteViewsOfType.First();
         }
 
         #endregion
