@@ -57,7 +57,7 @@ namespace Dynamo.Interfaces
             {
                 var list = (value as IEnumerable).Cast<dynamic>().ToList();
 
-                node = new WatchViewModel(list.Count == 0 ? "Empty List" : "List", tag, RequestSelectGeometry, true);
+                node = new WatchViewModel(list.Count == 0 ? WatchViewModel.EMPTY_LIST : WatchViewModel.LIST, tag, RequestSelectGeometry, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
                     node.Children.Add(callback(e.element, runtimeCore, tag + ":" + e.idx, showRawData));
@@ -126,7 +126,7 @@ namespace Dynamo.Interfaces
             {
                 var list = data.GetElements();
 
-                var node = new WatchViewModel(!list.Any() ? "Empty List" : "List", tag, RequestSelectGeometry, true);
+                var node = new WatchViewModel(!list.Any() ? WatchViewModel.EMPTY_LIST : WatchViewModel.LIST, tag, RequestSelectGeometry, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
                     node.Children.Add(ProcessThing(e.element, runtimeCore, tag + ":" + e.idx, showRawData, callback));

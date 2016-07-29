@@ -23,6 +23,8 @@ namespace Dynamo.ViewModels
         #endregion
 
         #region Properties/Fields
+        public const string EMPTY_LIST = "Empty List";
+        public const string LIST = "List";
 
         private ObservableCollection<WatchViewModel> _children = new ObservableCollection<WatchViewModel>();
         private string _label;
@@ -234,7 +236,7 @@ namespace Dynamo.ViewModels
         {
             if (wvm.Children.Count == 0)
             {
-                if (wvm.NodeLabel == "Empty List")
+                if (wvm.NodeLabel == WatchViewModel.EMPTY_LIST)
                     return new Tuple<int, int>(0, 0);
                 else
                     return new Tuple<int, int>(0, 1);
