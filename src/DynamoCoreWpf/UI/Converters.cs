@@ -2823,4 +2823,23 @@ namespace Dynamo.Controls
                 throw new NotImplementedException();
             }
         }
+
+    public class LeftThicknessConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is int)
+            {
+                int margin = (int)value;
+                return new Thickness(margin, 0, 0, 0);
+            }
+            return new Thickness();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
+
+}
