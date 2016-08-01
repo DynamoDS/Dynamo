@@ -290,6 +290,9 @@
             </TreeView.ItemTemplate>
         </TreeView>
 
+
+        <Border BorderBrush="#aaaaaa" BorderThickness="1" Grid.Row="1">
+            
         <Grid Name ="ListLevelsDisplay" Grid.Row="1" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -333,5 +336,7 @@
                 </ListView.ItemTemplate>
             </ListView>
         </Grid>
+        </Border>
+        
     </Grid>
 </UserControl>
