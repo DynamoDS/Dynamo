@@ -85,6 +85,7 @@ namespace Dynamo.Graph.Workspaces
         private readonly List<AnnotationModel> annotations;
         private readonly List<PresetModel> presets;
         private readonly UndoRedoRecorder undoRecorder;
+        private double scaleFactor;
         private bool hasNodeInSyncWithDefinition;
         private Guid guid;
 
@@ -704,6 +705,16 @@ namespace Dynamo.Graph.Workspaces
         public Guid Guid
         {
             get { return guid; }
+        }
+
+        public double ScaleFactor
+        {
+            get { return scaleFactor; }
+            internal set
+            {
+                scaleFactor = value;
+                WorkspaceEvents.OnWorkspaceSettingsChanged(scaleFactor);
+            }
         }
 
         #endregion
