@@ -76,6 +76,10 @@ namespace Dynamo.Events
 
         public static event WorkspaceSettingsChangedEventHandler WorkspaceSettingsChanged;
 
+        /// <summary>
+        /// An event raised when workspace ScaleFactor setting is changed.
+        /// </summary>
+        /// <param name="scaleFactor"></param>
         internal static void OnWorkspaceSettingsChanged(double scaleFactor)
         {
             var handler = WorkspaceSettingsChanged;
