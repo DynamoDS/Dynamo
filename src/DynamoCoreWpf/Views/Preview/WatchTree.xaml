@@ -79,11 +79,11 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="ToggleButton">
                             <Grid
-                              Width="15"
+                              Width="17"
                               Height="13"
                               Background="White">       
-                                <Path x:Name="ExpandPath" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                      Margin="0,1,1,1" Fill="#0e67b1" Data="M 4 0 L 8 4 L 4 8 Z"/>
+                                <Path x:Name="ExpandPath" HorizontalAlignment="Right" VerticalAlignment="Center" 
+                                      Margin="2,1,0,0" Fill="#0e67b1" Data="M 4 0 L 8 4 L 4 8 Z"/>
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsChecked" Value="True">
@@ -171,7 +171,7 @@
                                     <Rectangle 
                                            x:Name="VerLn" Width="1" 
                                            Stroke="Gray" 
-                                           Margin="0,0,0,1" 
+                                           Margin="8,0,0,0" 
                                            Grid.RowSpan="2" 
                                            SnapsToDevicePixels="true"
                                            HorizontalAlignment="Center"
@@ -183,7 +183,7 @@
                                              x:Name="LnEnd" 
                                              Width="5" 
                                              Height="5" 
-                                             Margin="0,0,0,0"
+                                             Margin="8,0,0,0"
                                              HorizontalAlignment="Center"
                                              VerticalAlignment="Bottom"
                                              Stroke="Gray" Fill="Gray" SnapsToDevicePixels="True"/>
@@ -264,14 +264,18 @@
                                           DataType="{x:Type viewModels:WatchViewModel}">
                     <VirtualizingStackPanel Orientation="Horizontal"
                                             Width="Auto">
-                        <TextBlock Text="{Binding Path=ViewPath}"
+                        <TextBlock x:Name="listIndex"
+                                   Text="{Binding Path=ViewPath}"
                                    VerticalAlignment="Center"
                                    Visibility="{Binding Path=ViewPath, Converter={StaticResource EmptyStringToCollapsedConverter}}"
                                    Width="Auto"
                                    FontFamily="Consolas"
                                    FontStyle="Italic"
-                                   Margin="0,0,4,0"
-                                   Background="#aaaaaa"/>
+                                   LineHeight="12"
+                                   Padding="0,0,0,-1"
+                                   LineStackingStrategy="BlockLineHeight"
+                                   Margin="{Binding Path=IsCollection, Converter={StaticResource ListIndexMargin}}"
+                                   Background="{Binding Path=IsCollection, Converter={StaticResource ListIndexBackground}}"/>
                         <TextBlock Text="{Binding Path=NodeLabel}"
                                    VerticalAlignment="Center"
                                    Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}"
@@ -311,7 +315,7 @@
             <!-- Shows list@level labels in List -->
             
             <ListView Name="listLevelsView"
-                      Grid.Column ="0" Margin="2,3,0,7" 
+                      Grid.Column ="0" Margin="7,3,0,7" 
                       Background="Transparent"
                       Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                       BorderThickness="0">
@@ -331,7 +335,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                            <TextBlock FontSize="9" FontFamily="Consolas">
+                                <TextBlock FontSize="9" FontFamily="Consolas" Opacity="{Binding IsNodeExpanded, Converter={StaticResource LabelOpacityConverter}}">
                                 <Run Foreground="Gray">@</Run>
                             </TextBlock>
                             <TextBlock Name="indivListLevel" FontFamily="Consolas" FontSize="9">
