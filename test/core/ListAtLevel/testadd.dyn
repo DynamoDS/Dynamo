@@ -5,7 +5,7 @@
       <PortInfo index="0" />
     </CoreNodeModels.Watch>
     <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="e72e0546-5f29-483f-a45f-54a4cb7ce052" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="284" y="225" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="{{1,2}, {3, 4}};" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="14818a06-e0c2-4b09-ac1e-d212edc8fd80" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="+" x="647.937606114844" y="263.467611857292" isVisible="true" isUpstreamVisible="true" lacing="Auto" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="Operators" function="+@var[]..[],var[]..[]">
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="14818a06-e0c2-4b09-ac1e-d212edc8fd80" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="+" x="647.937606114844" y="263.467611857292" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="Operators" function="+@var[]..[],var[]..[]">
       <PortInfo index="0" useLevels="True" level="1" shouldKeepListStructure="False" />
       <PortInfo index="1" useLevels="True" level="1" shouldKeepListStructure="False" />
     </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
