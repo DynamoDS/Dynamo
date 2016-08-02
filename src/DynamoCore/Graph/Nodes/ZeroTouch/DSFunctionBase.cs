@@ -22,7 +22,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         protected DSFunctionBase(ZeroTouchNodeController<FunctionDescriptor> controller)
             : base(controller)
         {
-            ArgumentLacing = LacingStrategy.Auto;
+            ArgumentLacing = LacingStrategy.Shortest;
             Category = Controller.Category;
 
             if (controller.Definition.IsObsolete)

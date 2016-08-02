@@ -36,7 +36,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             : base(new CustomNodeController<CustomNodeDefinition>(def))
         {
             ValidateDefinition(def);
-            ArgumentLacing = LacingStrategy.Auto;
+            ArgumentLacing = LacingStrategy.Shortest;
             NickName = nickName;
             Description = description;
             Category = category;
@@ -52,7 +52,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             return Controller.BuildAst(this, inputAstNodes);
         }
 
-        #region Serialization/Deserialization methods
+#region Serialization/Deserialization methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
@@ -199,7 +199,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                         }
                     }
 
-                    #region Legacy output support
+#region Legacy output support
 
                     else if (subNode.Name.Equals("Output"))
                     {
@@ -211,7 +211,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                             OutPortData.Add(data);
                     }
 
-                    #endregion
+#endregion
                 }
 
                 RegisterAllPorts();
@@ -228,7 +228,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 Description = descNode.Attributes["value"].Value;
         }
 
-        #endregion
+#endregion
 
         private void ValidateDefinition(CustomNodeDefinition def)
         {

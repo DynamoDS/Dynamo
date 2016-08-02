@@ -54,11 +54,13 @@
                           Command="{Binding Path=AddToGroupCommand}" />               
                 <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
                           Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter},Mode=OneWay}">
+                    <!-- Hide Auto lacing menu item temporarily.
                     <MenuItem IsCheckable="True"
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Auto,Mode=OneWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
                               CommandParameter="Auto"
                               Header="{x:Static p:Resources.ContextMenuLacingAuto}" />
+                    -->
                     <MenuItem IsCheckable="True"
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Shortest,Mode=OneWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
