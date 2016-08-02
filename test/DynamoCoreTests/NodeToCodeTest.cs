@@ -1347,7 +1347,7 @@ namespace Dynamo.Tests
             }
         }
 
-        [Test, TestCaseSource("GetFilesForMutation")]
+        [Test, Ignore, TestCaseSource("GetFilesForMutation")]
         public void TestMutation(string fileName)
         {
             MutationTest(fileName);

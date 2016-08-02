@@ -444,7 +444,7 @@ namespace Dynamo.Tests
             //Get the first node and assert the lacing strategy
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
             Assert.IsNotNull(node);
-            Assert.AreEqual(LacingStrategy.Shortest, node.ArgumentLacing);
+            Assert.AreEqual(LacingStrategy.First, node.ArgumentLacing);
 
             //change the lacing strategy
             CurrentDynamoModel.CurrentWorkspace.UpdateModelValue(new List<Guid> { node.GUID }, "ArgumentLacing", "Longest");

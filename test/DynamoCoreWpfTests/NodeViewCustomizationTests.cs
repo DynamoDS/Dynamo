@@ -198,7 +198,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             var inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(4, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(8, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
         [Test]
@@ -269,7 +269,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             var inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(3, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(6, inputPortControl.ChildrenOfType<TextBlock>().Count());
 
             nodeView = NodeViewWithGuid("2f031397-539e-4df4-bfca-d94d0bd02bc1"); // String.Concat node
 
@@ -277,7 +277,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(2, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(6, inputPortControl.ChildrenOfType<TextBlock>().Count());
 
             nodeView = NodeViewWithGuid("0cb04cce-1b05-47e0-a73f-ee81af4b7f43"); // List.Join node
 
@@ -285,7 +285,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(2, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(4, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
         [Test]

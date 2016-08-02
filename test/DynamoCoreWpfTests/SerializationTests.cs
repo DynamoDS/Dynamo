@@ -30,7 +30,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(400, sumNode.X);
             Assert.AreEqual(100, sumNode.Y);
             Assert.AreEqual("+", sumNode.NickName);
-            Assert.AreEqual(LacingStrategy.Shortest, sumNode.ArgumentLacing);
+            Assert.AreEqual(LacingStrategy.First, sumNode.ArgumentLacing);
             Assert.AreEqual(true, sumNode.IsVisible);
             Assert.AreEqual(true, sumNode.IsUpstreamVisible);
             Assert.AreEqual(ElementState.Dead, sumNode.State);
@@ -60,7 +60,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(400, sumNode.X);
             Assert.AreEqual(100, sumNode.Y);
             Assert.AreEqual("+", sumNode.NickName);
-            Assert.AreEqual(LacingStrategy.Shortest, sumNode.ArgumentLacing);
+            Assert.AreEqual(LacingStrategy.First, sumNode.ArgumentLacing);
             Assert.AreEqual(true, sumNode.IsVisible);
             Assert.AreEqual(true, sumNode.IsUpstreamVisible);
             Assert.AreEqual(ElementState.Dead, sumNode.State);
