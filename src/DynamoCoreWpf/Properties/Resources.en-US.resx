@@ -2044,7 +2044,16 @@ Next assemblies were loaded several times:
   </data>
   <data name="MessageErrorOpeningFileGeneral" xml:space="preserve">
     <value>Error Opening File</value>
-    <comment>Nofication Center Title</comment>
+    <comment>Notification Center Title</comment>
+  </data>
+  <data name="PackageFolderNotAccessible" xml:space="preserve">
+    <value>Package installation folder is not accessible.</value>
+  </data>
+  <data name="FolderNotFoundError" xml:space="preserve">
+    <value>Folder Not Found</value>
+  </data>
+  <data name="PackageNotExisted" xml:space="preserve">
+    <value>Package is not existed.</value>
   </data>
   <data name="ContextMenuLacingAuto" xml:space="preserve">
     <value>Auto</value>
