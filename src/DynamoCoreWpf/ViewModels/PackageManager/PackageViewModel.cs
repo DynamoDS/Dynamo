@@ -8,6 +8,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using System.IO;
 
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
@@ -167,7 +168,15 @@ namespace Dynamo.ViewModels
 
         private void GoToRootDirectory()
         {
-            Process.Start(Model.RootDirectory);
+            // Check for the existance of RootDirectory
+            if (Directory.Exists(Model.RootDirectory))
+            {
+                Process.Start(Model.RootDirectory);
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show(Wpf.Properties.Resources.PackageNotExisted, Wpf.Properties.Resources.FolderNotFoundError, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
         }
 
         private bool CanGoToRootDirectory()

@@ -16,6 +16,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Dynamo.UI;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using DynamoUtilities;
+using System.IO;
 
 namespace Dynamo.Wpf.Views.PackageManager
 {
@@ -101,17 +103,27 @@ namespace Dynamo.Wpf.Views.PackageManager
             var args = e as PackagePathEventArgs;
             args.Cancel = true;
 
-            var dialog = new DynamoFolderBrowserDialog
+            // Handle for the case, args.Path does not exist.
+            var errorCannotCreateFolder = PathHelper.CreateFolderIfNotExist(args.Path);
+            if (errorCannotCreateFolder == null)
             {
-                // Navigate to initial folder.
-                SelectedPath = args.Path,
-                Owner = this
-            };
+                var dialog = new DynamoFolderBrowserDialog
+                {
+                    // Navigate to initial folder.
+                    SelectedPath = args.Path,
+                    Owner = this
+                };
 
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    args.Cancel = false;
+                    args.Path = dialog.SelectedPath;
+                }
+
+            }
+            else
             {
-                args.Cancel = false;
-                args.Path = dialog.SelectedPath;
+                System.Windows.Forms.MessageBox.Show(Wpf.Properties.Resources.PackageFolderNotAccessible, Wpf.Properties.Resources.FolderNotFoundError, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

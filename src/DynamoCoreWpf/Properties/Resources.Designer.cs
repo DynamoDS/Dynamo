@@ -2210,6 +2210,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Folder Not Found.
+        /// </summary>
+        public static string FolderNotFoundError {
+            get {
+                return ResourceManager.GetString("FolderNotFoundError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You do not have write permission to {0}..
         /// </summary>
         public static string FolderNotWritableError {
@@ -3476,6 +3485,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package folder is not accessible..
+        /// </summary>
+        public static string PackageFolderNotAccessible {
+            get {
+                return ResourceManager.GetString("PackageFolderNotAccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package Manager Website.
         /// </summary>
         public static string PackageManagerWebSiteButton {
@@ -3499,6 +3517,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageNeedAtLeastOneFile {
             get {
                 return ResourceManager.GetString("PackageNeedAtLeastOneFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package is not existed..
+        /// </summary>
+        public static string PackageNotExisted {
+            get {
+                return ResourceManager.GetString("PackageNotExisted", resourceCulture);
             }
         }
         
