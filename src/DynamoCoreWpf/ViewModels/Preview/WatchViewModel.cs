@@ -45,6 +45,8 @@ namespace Dynamo.ViewModels
         // Instance variable for the list of levels 
         private IEnumerable<Level> levels;
 
+        private bool isNodeExpanded;
+
         public DelegateCommand FindNodeForPathCommand { get; set; }
 
         /// <summary>
@@ -97,7 +99,7 @@ namespace Dynamo.ViewModels
                 var splits = _path.Split(':');
                 if (splits.Count() == 1)
                     return string.Empty;
-                return splits.Any() ? string.Format(" {0} ", splits.Last()) : string.Empty;
+                return splits.Any() ? string.Format(NodeLabel == LIST ? "{0}" : " {0} ", splits.Last()) : string.Empty;
                 //return _path;
             }
         }
@@ -135,7 +137,16 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool IsNodeExpanded { get; set; }
+        public bool IsNodeExpanded
+        { get { return isNodeExpanded; }
+          set
+            {
+                isNodeExpanded = value;
+                RaisePropertyChanged("IsNodeExpanded");
+            }
+                    
+                    
+        }
 
         /// <summary>
         /// If Content is 1 string, e.g. "Empty", "null", "Function", margin should be more to the left side.
@@ -205,6 +216,7 @@ namespace Dynamo.ViewModels
             this.tagGeometry = tagGeometry;
             numberOfItems = 0;
             maxListLevel = 0;
+            isCollection = label == WatchViewModel.LIST; 
         }
 
         private bool CanFindNodeForPath(object obj)
@@ -230,7 +242,7 @@ namespace Dynamo.ViewModels
             var listLevelAndItemCount = GetMaximumDepthAndItemNumber(this);
             maxListLevel = listLevelAndItemCount.Item1;
             NumberOfItems = listLevelAndItemCount.Item2;
-            IsCollection = maxListLevel > 0; 
+            IsCollection = maxListLevel > 1; 
         }
 
         private Tuple<int, int> GetMaximumDepthAndItemNumber(WatchViewModel wvm)
@@ -243,7 +255,7 @@ namespace Dynamo.ViewModels
                     return new Tuple<int, int>(1, 1);
             }
 
-            if (wvm.Path == null)
+            if (wvm.Path == null) // if its the top level WatchViewModel, then recursively get the max depth and item number from its only child
             {
                 return GetMaximumDepthAndItemNumber(wvm.Children[0]);
             }
@@ -263,7 +275,7 @@ namespace Dynamo.ViewModels
         {
             //Levels = maxListLevel > 0 ? Enumerable.Range(1, maxListLevel).Reverse().Select(x => x).ToList() : Enumerable.Empty<int>();
             //Levels = maxListLevel > 0 ? Enumerable.Range(1, maxListLevel).Reverse().Select(x => new Level() { Levels = x, Margin = new Tuple<int, int, int, int>(5, 0, 0, 0) }).ToList() : Enumerable.Empty<Level>();
-            Levels = maxListLevel > 0 ? Enumerable.Range(1, maxListLevel).Reverse().Select(x => new Level() { Levels = x, LeftMargin = 0 }).ToList() : Enumerable.Empty<Level>();
+            Levels = maxListLevel > 0 ? Enumerable.Range(1, maxListLevel).Reverse().Select(x => new Level() { Levels = x, LeftMargin = 1 }).ToList() : Enumerable.Empty<Level>();
         }
     }
 
@@ -277,7 +289,7 @@ namespace Dynamo.ViewModels
             get { return leftMargin; }
             set
             {
-                leftMargin = this.Levels == 1 ? leftMargin = 11 : leftMargin = value;
+                leftMargin = this.Levels == 1 ? leftMargin = 4 : leftMargin = value;
             }
         }
     }

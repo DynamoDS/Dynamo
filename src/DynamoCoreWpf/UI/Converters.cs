@@ -2824,6 +2824,11 @@ namespace Dynamo.Controls
             }
         }
 
+    /// <summary>
+    /// Converter is used in WatchTree.xaml
+    /// It converts the value of the padding required by each list level label to the required thickness (padding from the left)
+    /// It then supplies the required thickness to the margin property for each label
+    /// </summary>
     public class LeftThicknessConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -2842,4 +2847,62 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Converter is used in WatchTree.xaml
+    /// It converts the boolean value of WatchViewModel.IsCollection to the background color of the each listnode label
+    /// </summary>
+    public class ListIndexBackground : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool) value)
+            {
+                return "Transparent";
+            }
+            return "#aaaaaa";
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converter is used in WatchTree.xaml
+    /// </summary>
+
+    public class ListIndexMargin : IValueConverter
+    { 
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return new Thickness(0,0,4,0);
+            }
+            return new Thickness (-4,0,4,0);
+        }   
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converter is used in WatchTree.xaml
+    /// </summary>
+    public class LabelOpacityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return 1;
+            }
+            return 0.2;
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
