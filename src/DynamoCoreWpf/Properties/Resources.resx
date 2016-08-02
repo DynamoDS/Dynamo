@@ -2048,10 +2048,13 @@ Next assemblies were loaded several times:
     <value>Error Opening File</value>
     <comment>Notification Center Title</comment>
   </data>
-  <data name="PackageFolderNotFound" xml:space="preserve">
-    <value>Package installation folder is not found.</value>
+  <data name="PackageFolderNotAccessible" xml:space="preserve">
+    <value>Package installation folder is not accessible.</value>
   </data>
-  <data name="FileNotFoundError" xml:space="preserve">
-    <value>File Not Found</value>
+  <data name="FolderNotFoundError" xml:space="preserve">
+    <value>Folder Not Found</value>
+  </data>
+  <data name="PackageNotExisted" xml:space="preserve">
+    <value>Package is not existed.</value>
   </data>
 </root>

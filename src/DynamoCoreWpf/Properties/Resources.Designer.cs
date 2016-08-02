@@ -2183,15 +2183,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File Not Found.
-        /// </summary>
-        public static string FileNotFoundError {
-            get {
-                return ResourceManager.GetString("FileNotFoundError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No file selected..
         /// </summary>
         public static string FilePathConverterNoFileSelected {
@@ -2206,6 +2197,15 @@ namespace Dynamo.Wpf.Properties {
         public static string FilterIconTooltip {
             get {
                 return ResourceManager.GetString("FilterIconTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folder Not Found.
+        /// </summary>
+        public static string FolderNotFoundError {
+            get {
+                return ResourceManager.GetString("FolderNotFoundError", resourceCulture);
             }
         }
         
@@ -3467,11 +3467,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package installation folder is not found..
+        ///   Looks up a localized string similar to Package installation folder is not accessible..
         /// </summary>
-        public static string PackageFolderNotFound {
+        public static string PackageFolderNotAccessible {
             get {
-                return ResourceManager.GetString("PackageFolderNotFound", resourceCulture);
+                return ResourceManager.GetString("PackageFolderNotAccessible", resourceCulture);
             }
         }
         
@@ -3499,6 +3499,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageNeedAtLeastOneFile {
             get {
                 return ResourceManager.GetString("PackageNeedAtLeastOneFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package is not existed..
+        /// </summary>
+        public static string PackageNotExisted {
+            get {
+                return ResourceManager.GetString("PackageNotExisted", resourceCulture);
             }
         }
         
