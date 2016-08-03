@@ -161,9 +161,10 @@
     <controls:TreeViewVLineMarginConverter x:Key="TreeViewVLineMarginConverter" />
     <controls:TreeViewMarginCheck x:Key="TreeViewMarginCheck"/>
     <controls:LeftThicknessConverter x:Key="LeftThicknessConverter" />
-    <controls:ListIndexBackground x:Key="ListIndexBackground" />
-    <controls:ListIndexMargin x:Key="ListIndexMargin" />
-    <controls:LabelOpacityConverter x:Key="LabelOpacityConverter"/>
+    <controls:ListIndexBackgroundConverter x:Key="ListIndexBackgroundConverter" />
+    <controls:ListIndexMarginConverter x:Key="ListIndexMarginConverter" />
+    <controls:TopLevelExpanderConverter x:Key="TopLevelExpanderConverter"/>
+    <controls:TopLevelLabelMarginConverter x:Key="TopLevelLabelMarginConverter"/>
     <controls:NestedContentMarginConverter x:Key="NestedContentMarginConverter"/>
     <controls:ClassViewMarginConverter x:Key="ClassViewMarginConverter" />
     <controls:ElementGroupToColorConverter x:Key="ElementGroupToColorConverter" />

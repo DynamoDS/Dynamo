@@ -2851,7 +2851,7 @@ namespace Dynamo.Controls
     /// Converter is used in WatchTree.xaml
     /// It converts the boolean value of WatchViewModel.IsCollection to the background color of the each listnode label
     /// </summary>
-    public class ListIndexBackground : IValueConverter
+    public class ListIndexBackgroundConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -2868,10 +2868,11 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Converter is used in WatchTree.xaml
+    /// Converter is used in WatchTree.xaml 
+    /// It converts the boolean value of WatchViewModel.IsCollection to determine the margin of the listnode textblock
     /// </summary>
 
-    public class ListIndexMargin : IValueConverter
+    public class ListIndexMarginConverter : IValueConverter
     { 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -2886,23 +2887,46 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
-
     /// <summary>
-    /// Converter is used in WatchTree.xaml
+    /// Converter is used in WatchTree.xaml 
+    /// It converts the boolean value of WatchViewModel.IsTopLevel to determine the visibility of the expander button
     /// </summary>
-    public class LabelOpacityConverter : IValueConverter
+
+    public class TopLevelExpanderConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if ((bool)value)
             {
-                return 1;
+                return Visibility.Collapsed;
             }
-            return 0.2;
+            return Visibility.Visible;
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();
         }
     }
+
+    /// <summary>
+    /// Converter is used in WatchTree.xaml 
+    /// It converts the boolean value of WatchViewModel.IsTopLevel to determine the margin of the list node label
+    /// </summary>
+
+    public class TopLevelLabelMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return new Thickness(-4,0,4,0);
+            }
+            return new Thickness(0,0,4,0);
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 }

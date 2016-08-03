@@ -45,8 +45,6 @@ namespace Dynamo.ViewModels
         // Instance variable for the list of levels 
         private IEnumerable<Level> levels;
 
-        private bool isNodeExpanded;
-
         public DelegateCommand FindNodeForPathCommand { get; set; }
 
         /// <summary>
@@ -137,16 +135,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool IsNodeExpanded
-        { get { return isNodeExpanded; }
-          set
-            {
-                isNodeExpanded = value;
-                RaisePropertyChanged("IsNodeExpanded");
-            }
-                    
-                    
-        }
+        public bool IsNodeExpanded { get; set; }
 
         /// <summary>
         /// If Content is 1 string, e.g. "Empty", "null", "Function", margin should be more to the left side.
@@ -203,6 +192,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Indicates if the item is the top level item
+        /// </summary>
+        public bool IsTopLevel { get; set; }
+
         #endregion
 
         public WatchViewModel(Action<string> tagGeometry) : this(null, null, tagGeometry, true) { }
@@ -216,7 +210,7 @@ namespace Dynamo.ViewModels
             this.tagGeometry = tagGeometry;
             numberOfItems = 0;
             maxListLevel = 0;
-            isCollection = label == WatchViewModel.LIST; 
+            isCollection = label == WatchViewModel.LIST;
         }
 
         private bool CanFindNodeForPath(object obj)
@@ -273,8 +267,6 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void CountLevels()
         {
-            //Levels = maxListLevel > 0 ? Enumerable.Range(1, maxListLevel).Reverse().Select(x => x).ToList() : Enumerable.Empty<int>();
-            //Levels = maxListLevel > 0 ? Enumerable.Range(1, maxListLevel).Reverse().Select(x => new Level() { Levels = x, Margin = new Tuple<int, int, int, int>(5, 0, 0, 0) }).ToList() : Enumerable.Empty<Level>();
             Levels = maxListLevel > 0 ? Enumerable.Range(1, maxListLevel).Reverse().Select(x => new Level() { Levels = x, LeftMargin = 1 }).ToList() : Enumerable.Empty<Level>();
         }
     }
@@ -293,5 +285,4 @@ namespace Dynamo.ViewModels
             }
         }
     }
-
 }
