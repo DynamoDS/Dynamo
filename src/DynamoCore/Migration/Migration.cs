@@ -308,7 +308,7 @@ namespace Dynamo.Migration
         public NodeMigrationData MigrateXmlNode(Version currentVersion, XmlNode elNode, 
             Type type, Version workspaceVersion)
         {
-            var migrations = (from method in type.GetMethods()
+            var migrations = (from method in type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
                               let attribute =
                                   method.GetCustomAttributes(false).OfType<NodeMigrationAttribute>().FirstOrDefault()
                               where attribute != null
@@ -1014,6 +1014,23 @@ namespace Dynamo.Migration
             element.SetAttribute("assembly", assemblyName);
             element.SetAttribute("nickname", methodName);
             element.SetAttribute("function", signature);
+        }
+
+
+        /// <summary>
+        /// Call this method to replace the value of attribute.
+        /// </summary>
+        /// <param name="element">Xml element where to replace attribute value</param>
+        /// <param name="attribute">Attribute name</param>
+        /// <param name="from">Original value</param>
+        /// <param name="to">New value</param>
+        public static void ReplaceAttributeValue(XmlElement element, string attribute, string from, string to)
+        {
+            var xmlAttribute = element.Attributes[attribute];
+            if (string.Equals(xmlAttribute.Value, from))
+            {
+                xmlAttribute.Value = to;
+            }
         }
 
         /// <summary>
