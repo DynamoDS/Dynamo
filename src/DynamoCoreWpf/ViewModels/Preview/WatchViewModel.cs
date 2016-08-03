@@ -239,7 +239,7 @@ namespace Dynamo.ViewModels
                 if (wvm.NodeLabel == WatchViewModel.EMPTY_LIST)
                     return new Tuple<int, int>(0, 0);
                 else
-                    return new Tuple<int, int>(1, 1);
+                    return new Tuple<int, int>(0, 1);
             }
 
             if (wvm.Path == null)
