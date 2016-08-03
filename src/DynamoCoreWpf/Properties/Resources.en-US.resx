@@ -2066,7 +2066,9 @@ Next assemblies were loaded several times:
     <value>Folder Not Found</value>
   </data>
   <data name="PackageFolderNotAccessible" xml:space="preserve">
-    <value>A problem occurred when trying to install the package. Dynamo is unable to obtain read/write access to {0} {1}.{2}Please update the permissions and try again.</value>
+    <value>A problem occurred when trying to install the package. Dynamo is unable to obtain read/write access to
+{0}
+Please update the permissions and try again.</value>
   </data>
   <data name="PackageNotExisted" xml:space="preserve">
     <value>The root directory of the package does not exist. Please try and re-install the package.</value>

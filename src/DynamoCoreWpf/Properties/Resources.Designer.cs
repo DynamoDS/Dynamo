@@ -3494,7 +3494,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A problem occurred when trying to install the package. Dynamo is unable to obtain read/write access to {0} {1}.{2}Please update the permissions and try again..
+        ///   Looks up a localized string similar to A problem occurred when trying to install the package. Dynamo is unable to obtain read/write access to
+        ///{0}
+        ///Please update the permissions and try again..
         /// </summary>
         public static string PackageFolderNotAccessible {
             get {
