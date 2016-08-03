@@ -2210,6 +2210,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Access Denied.
+        /// </summary>
+        public static string FolderNotAccessibleError {
+            get {
+                return ResourceManager.GetString("FolderNotAccessibleError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Folder Not Found.
         /// </summary>
         public static string FolderNotFoundError {
@@ -3485,7 +3494,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package folder is not accessible..
+        ///   Looks up a localized string similar to A problem occurred when trying to install the package. Dynamo is unable to obtain read/write access to {0} {1}.{2}Please update the permissions and try again..
         /// </summary>
         public static string PackageFolderNotAccessible {
             get {
@@ -3521,7 +3530,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package is not existed..
+        ///   Looks up a localized string similar to The root directory of the package does not exist. Please try and re-install the package..
         /// </summary>
         public static string PackageNotExisted {
             get {

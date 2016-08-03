@@ -105,7 +105,8 @@ namespace Dynamo.Wpf.Views.PackageManager
 
             // Handle for the case, args.Path does not exist.
             var errorCannotCreateFolder = PathHelper.CreateFolderIfNotExist(args.Path);
-            if (errorCannotCreateFolder == null)
+            // args.Path == null condition is to handle when user want to create new path.
+            if (errorCannotCreateFolder == null || args.Path == null)
             {
                 var dialog = new DynamoFolderBrowserDialog
                 {
@@ -123,7 +124,8 @@ namespace Dynamo.Wpf.Views.PackageManager
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show(Wpf.Properties.Resources.PackageFolderNotAccessible, Wpf.Properties.Resources.FolderNotFoundError, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string errorMessage = string.Format(Wpf.Properties.Resources.PackageFolderNotAccessible, "\n", args.Path, "\n");
+                System.Windows.Forms.MessageBox.Show(errorMessage, Wpf.Properties.Resources.FolderNotAccessibleError, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
