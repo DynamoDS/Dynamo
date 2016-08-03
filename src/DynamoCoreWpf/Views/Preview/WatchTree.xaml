@@ -83,7 +83,7 @@
                               Height="13"
                               Background="White">       
                                 <Path x:Name="ExpandPath" HorizontalAlignment="Right" VerticalAlignment="Center" 
-                                      Margin="2,1,0,0" Fill="#0e67b1" Data="M 4 0 L 8 4 L 4 8 Z"/>
+                                      Margin="2,2,0,0" Fill="#0e67b1" Data="M 4 0 L 8 4 L 4 8 Z"/>
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsChecked" Value="True">
@@ -148,6 +148,7 @@
                                       ClickMode="Press"
                                       Style="{StaticResource ExpandCollapseToggleStyleWT}"
                                       HorizontalAlignment="Center" 
+                                      Visibility="{Binding IsTopLevel, Converter= {StaticResource TopLevelExpanderConverter} }"
                                       IsChecked="{Binding IsExpanded, RelativeSource= {RelativeSource TemplatedParent}}">
                                 </ToggleButton>
 
@@ -274,14 +275,14 @@
                                    LineHeight="12"
                                    Padding="0,0,0,-1"
                                    LineStackingStrategy="BlockLineHeight"
-                                   Margin="{Binding Path=IsCollection, Converter={StaticResource ListIndexMargin}}"
-                                   Background="{Binding Path=IsCollection, Converter={StaticResource ListIndexBackground}}"/>
+                                   Margin="{Binding Path=IsCollection, Converter={StaticResource ListIndexMarginConverter}}"
+                                   Background="{Binding Path=IsCollection, Converter={StaticResource ListIndexBackgroundConverter}}"/>
                         <TextBlock Text="{Binding Path=NodeLabel}"
                                    VerticalAlignment="Center"
                                    Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}"
                                    Width="Auto"
                                    FontFamily="Consolas"
-                                   Margin="0,0,4,0" />
+                                   Margin="{Binding Path =IsTopLevel, Converter={StaticResource TopLevelLabelMarginConverter}}" />
                         <Button Content="{Binding Path=Link}"
                                 RenderTransformOrigin="0.5,0.5"
                                 Margin="10,2,2,2"
@@ -323,6 +324,7 @@
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="Margin" Value="{Binding Path=. , Converter= {StaticResource LeftThicknessConverter} }"></Setter>
+                                <Setter Property="Focusable" Value="False"/>
                         </Style>
                     </ListView.ItemContainerStyle>
 
@@ -335,7 +337,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock FontSize="9" FontFamily="Consolas" Opacity="{Binding IsNodeExpanded, Converter={StaticResource LabelOpacityConverter}}">
+                                <TextBlock FontSize="9" FontFamily="Consolas">
                                 <Run Foreground="Gray">@</Run>
                             </TextBlock>
                             <TextBlock Name="indivListLevel" FontFamily="Consolas" FontSize="9">

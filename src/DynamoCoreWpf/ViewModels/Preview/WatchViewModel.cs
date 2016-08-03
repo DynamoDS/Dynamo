@@ -45,8 +45,6 @@ namespace Dynamo.ViewModels
         // Instance variable for the list of levels 
         private IEnumerable<int> levels;
 
-        private bool isNodeExpanded;
-
         public DelegateCommand FindNodeForPathCommand { get; set; }
 
         /// <summary>
@@ -137,16 +135,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool IsNodeExpanded
-        { get { return isNodeExpanded; }
-          set
-            {
-                isNodeExpanded = value;
-                RaisePropertyChanged("IsNodeExpanded");
-            }
-                    
-                    
-        }
+        public bool IsNodeExpanded { get; set; }
 
         /// <summary>
         /// If Content is 1 string, e.g. "Empty", "null", "Function", margin should be more to the left side.
@@ -168,7 +157,7 @@ namespace Dynamo.ViewModels
         /// Number of items in the overall list if node output is a list
         /// </summary>
         public int NumberOfItems
-        { 
+        {
             get { return numberOfItems; }
             set
             {
@@ -184,7 +173,8 @@ namespace Dynamo.ViewModels
         public bool IsCollection
         {
             get { return isCollection; }
-            set {
+            set
+            {
                 isCollection = value;
                 RaisePropertyChanged("IsCollection");
             }
@@ -195,13 +185,18 @@ namespace Dynamo.ViewModels
         /// </summary>
         public IEnumerable<int> Levels
         {
-            get { return levels;  }
+            get { return levels; }
             set
             {
                 levels = value;
                 RaisePropertyChanged("Levels");
             }
         }
+
+        /// <summary>
+        /// Indicates if the item is the top level item
+        /// </summary>
+        public bool IsTopLevel { get; set; }
 
         #endregion
 
@@ -216,7 +211,7 @@ namespace Dynamo.ViewModels
             this.tagGeometry = tagGeometry;
             numberOfItems = 0;
             maxListLevel = 0;
-            isCollection = label == WatchViewModel.LIST; 
+            isCollection = label == WatchViewModel.LIST;
         }
 
         private bool CanFindNodeForPath(object obj)
@@ -242,7 +237,7 @@ namespace Dynamo.ViewModels
             var listLevelAndItemCount = GetMaximumDepthAndItemNumber(this);
             maxListLevel = listLevelAndItemCount.Item1;
             NumberOfItems = listLevelAndItemCount.Item2;
-            IsCollection = maxListLevel > 1; 
+            IsCollection = maxListLevel > 1;
         }
 
         private Tuple<int, int> GetMaximumDepthAndItemNumber(WatchViewModel wvm)
