@@ -149,6 +149,7 @@
             </Grid>
 
             <Grid Name="useLevelGrid"
+                  Cursor="Hand"
                   Grid.Column="1"
                   Background="Transparent"
                   HorizontalAlignment="Right"
