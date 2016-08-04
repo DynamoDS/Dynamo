@@ -3,15 +3,10 @@
 namespace Dynamo.Events
 {
     public delegate void WorkspaceAddedEventHandler(WorkspacesModificationEventArgs args);
-
     public delegate void WorkspaceRemoveStartedEventHandler(WorkspacesModificationEventArgs args);
-
     public delegate void WorkspaceRemovedEventHandler(WorkspacesModificationEventArgs args);
-
     public delegate void WorkspaceSettingsChangedEventHandler(WorkspacesSettingsChangedEventArgs args);
-    
     public delegate void WorkspaceClearingEventHandler();
-
     public delegate void WorkspaceClearedEventHandler();
 
     public static class WorkspaceEvents
@@ -21,7 +16,6 @@ namespace Dynamo.Events
         /// to the DynamoModel's Workspaces collection.
         /// </summary>
         public static event WorkspaceAddedEventHandler WorkspaceAdded;
-
         internal static void OnWorkspaceAdded(Guid id, string name, Type type)
         {
             if (WorkspaceAdded != null)
@@ -33,7 +27,6 @@ namespace Dynamo.Events
         /// from the Workspaces collection.
         /// </summary>
         public static event WorkspaceRemoveStartedEventHandler WorkspaceRemoveStarted;
-
         internal static void OnWorkspaceRemoveStarted(Guid id, string name, Type type)
         {
             if (WorkspaceRemoveStarted != null)
@@ -45,7 +38,6 @@ namespace Dynamo.Events
         /// from the DynamoModel's Workspaces collection.
         /// </summary>
         public static event WorkspaceRemovedEventHandler WorkspaceRemoved;
-
         internal static void OnWorkspaceRemoved(Guid id, string name, Type type)
         {
             if (WorkspaceRemoved != null)
@@ -56,7 +48,6 @@ namespace Dynamo.Events
         /// An event that is triggered before a workspace is cleared.
         /// </summary>
         public static event WorkspaceClearingEventHandler WorkspaceClearing;
-
         internal static void OnWorkspaceClearing()
         {
             if (WorkspaceClearing != null)
@@ -67,19 +58,17 @@ namespace Dynamo.Events
         /// An event that is triggered after a workspace is cleared.
         /// </summary>
         public static event WorkspaceClearedEventHandler WorkspaceCleared;
-
         internal static void OnWorkspaceCleared()
         {
             if (WorkspaceCleared != null)
                 WorkspaceCleared();
         }
 
-        public static event WorkspaceSettingsChangedEventHandler WorkspaceSettingsChanged;
-
         /// <summary>
         /// An event raised when workspace ScaleFactor setting is changed.
         /// </summary>
         /// <param name="scaleFactor"></param>
+        public static event WorkspaceSettingsChangedEventHandler WorkspaceSettingsChanged;
         internal static void OnWorkspaceSettingsChanged(double scaleFactor)
         {
             var handler = WorkspaceSettingsChanged;
