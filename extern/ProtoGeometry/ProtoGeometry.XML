@@ -3023,8 +3023,8 @@
             <summary>
             Sweep a closed profile Curve along two rail Curves.
             </summary>
-            <param name="rail1">  </param>
-            <param name="rail2">  </param>
+            <param name="path"> The input path to sweep along. </param>
+            <param name="guideRail"> A rail to guide the orientation of the sweep. </param>
             <param name="profile">  </param>
             <returns>  </returns>
             <search>
@@ -3276,8 +3276,8 @@
             <summary>
             Sweep the cross section curve along a path guided by a two rails
             </summary>
-            <param name="rail1">  </param>
-            <param name="rail2">  </param>
+            <param name="path"> The input path to sweep along. </param>
+            <param name="guideRail"> A rail to guide the orientation of the sweep. </param>
             <param name="profile">  </param>
             <returns>  </returns>
             <search>

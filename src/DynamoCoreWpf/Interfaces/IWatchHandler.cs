@@ -33,6 +33,7 @@ namespace Dynamo.Interfaces
         public static WatchViewModel GenerateWatchViewModelForData(this IWatchHandler handler, dynamic value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData = true)
         {
             return handler.Process(value, runtimeCore, tag, showRawData, new WatchHandlerCallback(handler.GenerateWatchViewModelForData));
+
         }
     }
 
@@ -41,7 +42,6 @@ namespace Dynamo.Interfaces
         // Formats double value into string. E.g. 1054.32179 => "1054.32179"
         // For more info: https://msdn.microsoft.com/en-us/library/kfsatb94(v=vs.110).aspx
         private const string numberFormat = "g";
-
         private readonly IPreferences preferences;
 
         public DefaultWatchHandler(IPreferences preferences)
@@ -57,7 +57,7 @@ namespace Dynamo.Interfaces
             {
                 var list = (value as IEnumerable).Cast<dynamic>().ToList();
 
-                node = new WatchViewModel(list.Count == 0 ? "Empty List" : "List", tag, RequestSelectGeometry, true);
+                node = new WatchViewModel(list.Count == 0 ? WatchViewModel.EMPTY_LIST : WatchViewModel.LIST, tag, RequestSelectGeometry, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
                     node.Children.Add(callback(e.element, runtimeCore, tag + ":" + e.idx, showRawData));
@@ -126,7 +126,7 @@ namespace Dynamo.Interfaces
             {
                 var list = data.GetElements();
 
-                var node = new WatchViewModel(!list.Any() ? "Empty List" : "List", tag, RequestSelectGeometry, true);
+                var node = new WatchViewModel(!list.Any() ? WatchViewModel.EMPTY_LIST : WatchViewModel.LIST, tag, RequestSelectGeometry, true);
                 foreach (var e in list.Select((element, idx) => new { element, idx }))
                 {
                     node.Children.Add(ProcessThing(e.element, runtimeCore, tag + ":" + e.idx, showRawData, callback));
@@ -134,6 +134,7 @@ namespace Dynamo.Interfaces
 
                 return node;
             }
+
             if (data.Data is Enum)
             {
                 return new WatchViewModel(((Enum)data.Data).GetDescription(), tag, RequestSelectGeometry);
