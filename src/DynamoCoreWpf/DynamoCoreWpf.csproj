@@ -286,6 +286,9 @@
     <Compile Include="UI\Prompts\UsageReportingAgreementPrompt.xaml.cs">
       <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Prompts\ChangeScaleFactorPrompt.xaml.cs">
+      <DependentUpon>ChangeScaleFactorPrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="ViewModels\Core\AnnotationExtension.cs" />
     <Compile Include="ViewModels\Core\AnnotationViewModel.cs" />
@@ -987,6 +990,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Prompts\ChangeScaleFactorPrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Prompts\FunctionNamePrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

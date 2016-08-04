@@ -85,7 +85,7 @@ namespace Dynamo.Graph.Workspaces
         private readonly List<AnnotationModel> annotations;
         private readonly List<PresetModel> presets;
         private readonly UndoRedoRecorder undoRecorder;
-        private double scaleFactor;
+        private double scaleFactor = 1.0;
         private bool hasNodeInSyncWithDefinition;
         private Guid guid;
 
@@ -1806,6 +1806,7 @@ namespace Dynamo.Graph.Workspaces
                 root.SetAttribute("X", X.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("zoom", Zoom.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("ScaleFactor", ScaleFactor.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Name", Name);
                 root.SetAttribute("Description", Description);
 
