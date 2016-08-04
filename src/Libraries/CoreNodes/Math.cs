@@ -393,12 +393,13 @@ namespace DSCore
         {
             return mRandom.NextDouble();
         }
-        
+
         /// <summary>
-        ///     Rounds a number to the nearest integer.
+        ///     Rounds a number to the closest integral value.
+        ///     Note that this method returns a Double instead of an integral type.
         /// </summary>
         /// <param name="number">Number to round.</param>
-        /// <returns name="int">Integer closest to the number.</returns>
+        /// <returns name="number">Integral value closes to the number.</returns>
         public static double Round(double number)
         {
             return CSMath.Round(number);
