@@ -95,7 +95,7 @@ namespace Dynamo.Events
 
     public class WorkspacesSettingsChangedEventArgs : EventArgs
     {
-        public double ScaleFactor { get; }
+        public double ScaleFactor { get; private set; }
 
         public WorkspacesSettingsChangedEventArgs(double scaleFactor)
         {
