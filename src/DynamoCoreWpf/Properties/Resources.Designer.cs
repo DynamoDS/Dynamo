@@ -793,6 +793,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Directory Not Found.
+        /// </summary>
+        public static string DirectoryNotFound {
+            get {
+                return ResourceManager.GetString("DirectoryNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download Warning.
         /// </summary>
         public static string DownloadWarningMessageBoxTitle {
@@ -2210,24 +2219,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Access Denied.
-        /// </summary>
-        public static string FolderNotAccessibleError {
-            get {
-                return ResourceManager.GetString("FolderNotAccessibleError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Folder Not Found.
-        /// </summary>
-        public static string FolderNotFoundError {
-            get {
-                return ResourceManager.GetString("FolderNotFoundError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to You do not have write permission to {0}..
         /// </summary>
         public static string FolderNotWritableError {
@@ -3495,8 +3486,7 @@ namespace Dynamo.Wpf.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to A problem occurred when trying to install the package. Dynamo is unable to obtain read/write access to
-        ///{0}
-        ///Please update the permissions and try again..
+        ///{0}.
         /// </summary>
         public static string PackageFolderNotAccessible {
             get {
@@ -4734,6 +4724,15 @@ namespace Dynamo.Wpf.Properties {
         public static string TooltipCurrentIndex {
             get {
                 return ResourceManager.GetString("TooltipCurrentIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable To Access Package Directory.
+        /// </summary>
+        public static string UnableToAccessPackageDirectory {
+            get {
+                return ResourceManager.GetString("UnableToAccessPackageDirectory", resourceCulture);
             }
         }
         

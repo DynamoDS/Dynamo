@@ -99,7 +99,7 @@ namespace Dynamo.PackageManager.UI
             else
             {
                 string errorMessage = string.Format(Wpf.Properties.Resources.PackageFolderNotAccessible, initialPath);
-                System.Windows.Forms.MessageBox.Show(errorMessage, Wpf.Properties.Resources.FolderNotAccessibleError, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Windows.Forms.MessageBox.Show(errorMessage, Wpf.Properties.Resources.UnableToAccessPackageDirectory, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
