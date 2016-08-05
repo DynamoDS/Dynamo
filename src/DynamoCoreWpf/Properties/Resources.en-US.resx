@@ -2044,7 +2044,7 @@ Next assemblies were loaded several times:
   </data>
   <data name="MessageErrorOpeningFileGeneral" xml:space="preserve">
     <value>Error Opening File</value>
-    <comment>Nofication Center Title</comment>
+    <comment>Notification Center Title</comment>
   </data>
   <data name="ContextMenuLacingAuto" xml:space="preserve">
     <value>Auto</value>
@@ -2061,5 +2061,18 @@ Next assemblies were loaded several times:
   </data>
   <data name="UseLevelPopupMenuItem" xml:space="preserve">
     <value>Use Levels?</value>
+  </data>
+  <data name="DirectoryNotFound" xml:space="preserve">
+    <value>Directory Not Found</value>
+  </data>
+  <data name="PackageFolderNotAccessible" xml:space="preserve">
+    <value>A problem occurred when trying to install the package. Dynamo is unable to obtain read/write access to
+{0}</value>
+  </data>
+  <data name="PackageNotExisted" xml:space="preserve">
+    <value>The root directory of the package does not exist. Please try and re-install the package.</value>
+  </data>
+  <data name="UnableToAccessPackageDirectory" xml:space="preserve">
+    <value>Unable To Access Package Directory</value>
   </data>
 </root>
