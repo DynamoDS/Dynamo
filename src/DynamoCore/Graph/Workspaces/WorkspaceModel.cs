@@ -85,6 +85,7 @@ namespace Dynamo.Graph.Workspaces
         private readonly List<AnnotationModel> annotations;
         private readonly List<PresetModel> presets;
         private readonly UndoRedoRecorder undoRecorder;
+        private double scaleFactor;
         private bool hasNodeInSyncWithDefinition;
         private Guid guid;
 
@@ -704,6 +705,22 @@ namespace Dynamo.Graph.Workspaces
         public Guid Guid
         {
             get { return guid; }
+        }
+
+        /// <summary>
+        /// The geometry scale factor specific to the workspace obtained from user input
+        /// when selecting the scale of the model with which he/she is working. 
+        /// This is used by ProtoGeometry to scale geometric values appropriately before passing them to ASM.
+        /// This property is set either when reading the setting from a DYN file or when the setting is updated from the UI.
+        /// </summary>
+        public double ScaleFactor
+        {
+            get { return scaleFactor; }
+            internal set
+            {
+                scaleFactor = value;
+                WorkspaceEvents.OnWorkspaceSettingsChanged(scaleFactor);
+            }
         }
 
         #endregion
