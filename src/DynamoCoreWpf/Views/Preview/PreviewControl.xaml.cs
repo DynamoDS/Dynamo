@@ -403,6 +403,7 @@ namespace Dynamo.UI.Controls
                         {
                             rootDataContext.CountLevels();
                             watchTree.listLevelsView.ItemsSource = rootDataContext.Levels; // add listLevelList to the ItemsSource of listlevelsView in WatchTree
+                            rootDataContext.Children[0].IsTopLevel = true;
                         }
 
                         watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,

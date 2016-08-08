@@ -2824,23 +2824,84 @@ namespace Dynamo.Controls
             }
         }
 
-    /// <summary>
-    /// LeftThicknessConverter is used in WatchTree.xaml
-    /// It is used to pad L1 to align with the inner most listnode
+    /// Converter is used in WatchTree.xaml
+    /// It converts the value of the padding required by each list level label to the required thickness (padding from the left)
+    /// It then supplies the required thickness to the margin property for each label
     /// </summary>
-
     public class LeftThicknessConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value is int)
             {
-                var margin = (int)value == 1 ? new Thickness(11, 0, 0, 0) : new Thickness();
+                var margin = (int)value == 1 ? new Thickness(3, 0, 0, 0) : new Thickness();
                 return margin; 
             }
             return new Thickness();
         }
 
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converter is used in WatchTree.xaml
+    /// It converts the boolean value of WatchViewModel.IsCollection to the background color of the each listnode label
+    /// </summary>
+    public class ListIndexBackgroundConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool) value)
+            {
+                return "Transparent";
+            }
+            return "#aaaaaa";
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converter is used in WatchTree.xaml 
+    /// It converts the boolean value of WatchViewModel.IsCollection to determine the margin of the listnode textblock
+    /// </summary>
+
+    public class ListIndexMarginConverter : IValueConverter
+    { 
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return new Thickness(0,0,4,0);
+            }
+            return new Thickness (-4,0,4,0);
+        }   
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converter is used in WatchTree.xaml 
+    /// It converts the boolean value of WatchViewModel.IsTopLevel to determine the margin of the list node label
+    /// </summary>
+
+    public class TopLevelLabelMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return new Thickness(-4,0,4,0);
+            }
+            return new Thickness(0,0,4,0);
+        }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();
