@@ -2823,4 +2823,28 @@ namespace Dynamo.Controls
                 throw new NotImplementedException();
             }
         }
+
+    /// <summary>
+    /// LeftThicknessConverter is used in WatchTree.xaml
+    /// It is used to pad L1 to align with the inner most listnode
+    /// </summary>
+
+    public class LeftThicknessConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is int)
+            {
+                var margin = (int)value == 1 ? new Thickness(11, 0, 0, 0) : new Thickness();
+                return margin; 
+            }
+            return new Thickness();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
+
+}
