@@ -77,7 +77,7 @@ namespace Dynamo.Engine
                 return true;
 
             //try with uppercase XML for linux
-            documentationPath = Path.GetFileNameWithoutExtension(documentationPath) + ".XML";
+            documentationPath = Path.Combine(Path.GetDirectoryName(documentationPath),Path.GetFileNameWithoutExtension(documentationPath) + ".XML");
             if (File.Exists(documentationPath))
                 return true;
               
@@ -88,7 +88,7 @@ namespace Dynamo.Engine
                 return true;
 
             //try with uppercase XML for linux
-            documentationPath = Path.GetFileNameWithoutExtension(documentationPath) + ".XML";
+            documentationPath = Path.Combine(Path.GetDirectoryName(documentationPath), Path.GetFileNameWithoutExtension(documentationPath) + ".XML");
             if (File.Exists(documentationPath))
                 return true;
             
@@ -98,7 +98,7 @@ namespace Dynamo.Engine
                 return true;
 
             //try with uppercase XML for linux
-            documentationPath = Path.GetFileNameWithoutExtension(documentationPath) + ".XML";
+            documentationPath = Path.Combine(Path.GetDirectoryName(documentationPath), Path.GetFileNameWithoutExtension(documentationPath) + ".XML");
             return File.Exists(documentationPath);
                
         }
