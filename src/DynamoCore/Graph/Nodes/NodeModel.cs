@@ -989,12 +989,13 @@ namespace Dynamo.Graph.Nodes
             switch (ArgumentLacing)
             {
                 case LacingStrategy.Shortest:
-                    /*
                     for (int i = 0; i < inputs.Count(); ++i)
                     {
-                        inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, false);
+                        if (InPorts[i].UseLevels)
+                        {
+                            inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, false);
+                        }
                     }
-                    */
                     break;
 
                 case LacingStrategy.Longest:
