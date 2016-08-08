@@ -77,10 +77,10 @@ namespace Dynamo.Engine
                 return true;
 
             //try with uppercase XML for linux
-            documentationPath = Path.Combine(Path.GetDirectoryName(documentationPath),Path.GetFileNameWithoutExtension(documentationPath) + ".XML");
+            documentationPath = PathHelper.replaceExtension(documentationPath, ".XML");
             if (File.Exists(documentationPath))
                 return true;
-              
+
             //try with the fallback culture
             localizedResPath = Path.Combine(baseDir, Configurations.FallbackUiCulture);
             documentationPath = Path.Combine(localizedResPath, xmlFileName);
@@ -88,20 +88,21 @@ namespace Dynamo.Engine
                 return true;
 
             //try with uppercase XML for linux
-            documentationPath = Path.Combine(Path.GetDirectoryName(documentationPath), Path.GetFileNameWithoutExtension(documentationPath) + ".XML");
+            documentationPath = PathHelper.replaceExtension(documentationPath, ".XML");
             if (File.Exists(documentationPath))
                 return true;
-            
+
             //try in the base directory
             documentationPath = Path.Combine(baseDir, xmlFileName);
             if (File.Exists(documentationPath))
                 return true;
 
             //try with uppercase XML for linux
-            documentationPath = Path.Combine(Path.GetDirectoryName(documentationPath), Path.GetFileNameWithoutExtension(documentationPath) + ".XML");
+            documentationPath = PathHelper.replaceExtension(documentationPath, ".XML");
             return File.Exists(documentationPath);
-               
+
         }
+
     }
 
 }

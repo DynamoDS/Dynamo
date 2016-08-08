@@ -83,5 +83,17 @@ namespace DynamoUtilities
 
             return writeAllow && !writeDeny;
         }
+
+        /// <summary>
+        /// returns the original path with the extension replaced with the new extension. 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="extension"></param>
+        /// <returns></returns>
+        public static string replaceExtension(string path, string extension)
+        {
+            path = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + extension);
+            return path;
+        }
     }
 }
