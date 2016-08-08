@@ -148,7 +148,7 @@
                                       ClickMode="Press"
                                       Style="{StaticResource ExpandCollapseToggleStyleWT}"
                                       HorizontalAlignment="Center" 
-                                      Visibility="{Binding IsTopLevel, Converter= {StaticResource TopLevelExpanderConverter} }"
+                                      Visibility="{Binding IsTopLevel, Converter= {StaticResource InverseBoolToVisibilityCollapsedConverter} }"
                                       IsChecked="{Binding IsExpanded, RelativeSource= {RelativeSource TemplatedParent}}">
                                 </ToggleButton>
 

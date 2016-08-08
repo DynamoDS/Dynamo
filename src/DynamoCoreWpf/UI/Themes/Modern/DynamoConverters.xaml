@@ -163,7 +163,6 @@
     <controls:LeftThicknessConverter x:Key="LeftThicknessConverter" />
     <controls:ListIndexBackgroundConverter x:Key="ListIndexBackgroundConverter" />
     <controls:ListIndexMarginConverter x:Key="ListIndexMarginConverter" />
-    <controls:TopLevelExpanderConverter x:Key="TopLevelExpanderConverter"/>
     <controls:TopLevelLabelMarginConverter x:Key="TopLevelLabelMarginConverter"/>
     <controls:NestedContentMarginConverter x:Key="NestedContentMarginConverter"/>
     <controls:ClassViewMarginConverter x:Key="ClassViewMarginConverter" />

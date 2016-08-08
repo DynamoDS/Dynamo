@@ -2886,26 +2886,6 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
-    /// <summary>
-    /// Converter is used in WatchTree.xaml 
-    /// It converts the boolean value of WatchViewModel.IsTopLevel to determine the visibility of the expander button
-    /// </summary>
-
-    public class TopLevelExpanderConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            if ((bool)value)
-            {
-                return Visibility.Collapsed;
-            }
-            return Visibility.Visible;
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
 
     /// <summary>
     /// Converter is used in WatchTree.xaml 

@@ -250,7 +250,8 @@ namespace Dynamo.ViewModels
                     return new Tuple<int, int>(1, 1);
             }
 
-            if (wvm.Path == null) // if its the top level WatchViewModel, then recursively get the max depth and item number from its only child
+            // If its a top level WatchViewModel, call function on child
+            if (wvm.Path == null) 
             {
                 return GetMaximumDepthAndItemNumber(wvm.Children[0]);
             }
