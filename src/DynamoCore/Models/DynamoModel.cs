@@ -459,6 +459,46 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// A start configuration used for testing. 
+        /// 
+        /// This configuration sets both StartInTestMode and IsHeadless to true,
+        /// regardless of the settings in the configuration used to initialize it.
+        /// </summary>
+        public struct HeadlessStartConfiguration : IStartConfiguration2
+        {
+            public string Context { get; set; }
+            public string DynamoCorePath { get; set; }
+            public string DynamoHostPath { get; set; }
+            public IPreferences Preferences { get; set; }
+            public IPathResolver PathResolver { get; set; }
+            public bool StartInTestMode { get; set; }
+            public IUpdateManager UpdateManager { get; set; }
+            public ISchedulerThread SchedulerThread { get; set; }
+            public string GeometryFactoryPath { get; set; }
+            public IAuthProvider AuthProvider { get; set; }
+            public IEnumerable<IExtension> Extensions { get; set; }
+            public TaskProcessMode ProcessMode { get; set; }
+            public bool IsHeadless { get; set; }
+
+            public HeadlessStartConfiguration(DefaultStartConfiguration config)
+            {
+                Context = config.Context;
+                DynamoCorePath = config.DynamoCorePath;
+                DynamoHostPath = config.DynamoHostPath;
+                Preferences = config.Preferences;
+                PathResolver = config.PathResolver;
+                StartInTestMode = true;
+                UpdateManager = config.UpdateManager;
+                SchedulerThread = config.SchedulerThread;
+                GeometryFactoryPath = config.GeometryFactoryPath;
+                AuthProvider = config.AuthProvider;
+                Extensions = config.Extensions;
+                ProcessMode = config.ProcessMode;
+                IsHeadless = true;
+            }
+        }
+
+        /// <summary>
         ///     Start DynamoModel with all default configuration options
         /// </summary>
         /// <returns>The instance of <see cref="DynamoModel"/></returns>
