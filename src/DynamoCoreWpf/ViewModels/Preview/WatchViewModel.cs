@@ -4,6 +4,7 @@ using System.Linq;
 using Dynamo.UI.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 using System.Collections.Generic;
+using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
@@ -96,7 +97,7 @@ namespace Dynamo.ViewModels
                 var splits = _path.Split(':');
                 if (splits.Count() == 1)
                     return string.Empty;
-                return splits.Any() ? string.Format("[{0}]", splits.Last()) : string.Empty;
+                return splits.Any() ? string.Format(" {0} ", splits.Last()) : string.Empty;
                 //return _path;
             }
         }
@@ -105,7 +106,7 @@ namespace Dynamo.ViewModels
         /// A path describing the location of the data.
         /// Path takes the form var_xxxx...:0:1:2, where
         /// var_xxx is the AST identifier for the node, followed
-        /// by : delimited indices represnting the array index
+        /// by : delimited indices representing the array index
         /// of the data.
         /// </summary>
         public string Path
@@ -256,7 +257,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Count the list levels of each list 
+        /// Set the list levels of each list 
         /// </summary>
         public void CountLevels()
         {
