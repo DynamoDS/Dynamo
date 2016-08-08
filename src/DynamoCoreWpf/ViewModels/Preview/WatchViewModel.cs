@@ -43,7 +43,7 @@ namespace Dynamo.ViewModels
         private int maxListLevel;
 
         // Instance variable for the list of levels 
-        private IEnumerable<Level> levels;
+        private IEnumerable<int> levels;
 
         public DelegateCommand FindNodeForPathCommand { get; set; }
 
@@ -182,7 +182,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Returns a list of listlevel items
         /// </summary>
-        public IEnumerable<Level> Levels
+        public IEnumerable<int> Levels
         {
             get { return levels;  }
             set
@@ -261,23 +261,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void CountLevels()
         {
-            Levels = maxListLevel > 0 ? Enumerable.Range(1, maxListLevel).Reverse().Select(x => new Level() { Levels = x, LeftMargin = 0 }).ToList() : Enumerable.Empty<Level>();
+            Levels = maxListLevel > 0 ? Enumerable.Range(1, maxListLevel).Reverse().Select(x => x).ToList() : Enumerable.Empty<int>();
         }
     }
-
-    public class Level
-    {
-        private int leftMargin;
-        public int Levels { get; set; }
-
-        public int LeftMargin
-        {
-            get { return leftMargin; }
-            set
-            {
-                leftMargin = this.Levels == 1 ? leftMargin = 11 : leftMargin = value;
-            }
-        }
-    }
-
 }

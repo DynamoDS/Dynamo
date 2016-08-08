@@ -318,7 +318,7 @@
 
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
-                            <Setter Property="Margin" Value="{Binding LeftMargin, Converter= {StaticResource LeftThicknessConverter} }"></Setter>
+                            <Setter Property="Margin" Value="{Binding Path=. , Converter= {StaticResource LeftThicknessConverter} }"></Setter>
                         </Style>
                     </ListView.ItemContainerStyle>
 
@@ -335,7 +335,7 @@
                                 <Run Foreground="Gray">@</Run>
                             </TextBlock>
                             <TextBlock Name="indivListLevel" FontFamily="Consolas" FontSize="9">
-                                L<Run Foreground="Black" Text="{Binding Levels}"></Run>
+                                L<Run Foreground="Black" Text="{Binding Path =. }"></Run>
                             </TextBlock>
                         </StackPanel>
                     </DataTemplate>
