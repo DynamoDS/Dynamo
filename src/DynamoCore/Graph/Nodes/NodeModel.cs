@@ -1803,10 +1803,7 @@ namespace Dynamo.Graph.Nodes
             {
                 XmlElement portInfo = element.OwnerDocument.CreateElement("PortInfo");
                 portInfo.SetAttribute("index", t.index.ToString(CultureInfo.InvariantCulture));
-                if (t.port.UsingDefaultValue)
-                {
-                    portInfo.SetAttribute("default", true.ToString());
-                }
+                portInfo.SetAttribute("default", t.port.UsingDefaultValue.ToString());
 
                 if (t.port.UseLevels)
                 {
