@@ -159,7 +159,11 @@
     <controls:TreeViewLineMarginConverter x:Key="TreeViewLineMarginConverter" />
     <controls:TreeViewHLineMarginConverter x:Key="TreeViewHLineMarginConverter" />
     <controls:TreeViewVLineMarginConverter x:Key="TreeViewVLineMarginConverter" />
-    <controls:TreeViewMarginCheck x:Key="TreeViewMarginCheck"/>   
+    <controls:TreeViewMarginCheck x:Key="TreeViewMarginCheck"/>
+    <controls:LeftThicknessConverter x:Key="LeftThicknessConverter" />
+    <controls:ListIndexBackgroundConverter x:Key="ListIndexBackgroundConverter" />
+    <controls:ListIndexMarginConverter x:Key="ListIndexMarginConverter" />
+    <controls:TopLevelLabelMarginConverter x:Key="TopLevelLabelMarginConverter"/>
     <controls:NestedContentMarginConverter x:Key="NestedContentMarginConverter"/>
     <controls:ClassViewMarginConverter x:Key="ClassViewMarginConverter" />
     <controls:ElementGroupToColorConverter x:Key="ElementGroupToColorConverter" />
@@ -192,4 +196,6 @@
                                       TrueBrush="{StaticResource KeepListStructureHighlight}"
                                       FalseBrush="{StaticResource NotKeepListStructureHighlight}">
     </controls:BooleanToBrushConverter>
+    
+    
 </ResourceDictionary>

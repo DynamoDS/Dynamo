@@ -989,12 +989,13 @@ namespace Dynamo.Graph.Nodes
             switch (ArgumentLacing)
             {
                 case LacingStrategy.Shortest:
-                    /*
                     for (int i = 0; i < inputs.Count(); ++i)
                     {
-                        inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, false);
+                        if (InPorts[i].UseLevels)
+                        {
+                            inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, false);
+                        }
                     }
-                    */
                     break;
 
                 case LacingStrategy.Longest:
@@ -1803,10 +1804,7 @@ namespace Dynamo.Graph.Nodes
             {
                 XmlElement portInfo = element.OwnerDocument.CreateElement("PortInfo");
                 portInfo.SetAttribute("index", t.index.ToString(CultureInfo.InvariantCulture));
-                if (t.port.UsingDefaultValue)
-                {
-                    portInfo.SetAttribute("default", true.ToString());
-                }
+                portInfo.SetAttribute("default", t.port.UsingDefaultValue.ToString());
 
                 if (t.port.UseLevels)
                 {

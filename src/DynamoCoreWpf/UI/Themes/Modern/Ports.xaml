@@ -203,7 +203,7 @@
                     AllowsTransparency="True"
                     IsOpen="{Binding Path=ShowUseLevelMenu,diag:PresentationTraceSources.TraceLevel=High}"
                     StaysOpen="False">
-                    <Grid Background="Transparent">
+                    <Grid Background="#e5e2de">
                         <Grid.Resources>
                             <ResourceDictionary>
                                 <Style TargetType="CheckBox">
@@ -212,7 +212,7 @@
                                     <Setter Property="FontSize" Value="13"/>
                                     <Style.Triggers>
                                         <Trigger Property="IsEnabled" Value="false">
-                                            <Setter Property="Foreground" Value="#E0E0E0"/>
+                                            <Setter Property="Foreground" Value="#999999"/>
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -232,7 +232,7 @@
                                 <TextBlock 
                                     FontFamily="{StaticResource OpenSansRegular}" 
                                     FontSize="10" 
-                                    Foreground="#E0E0E0" 
+                                    Foreground="#999999" 
                                     Focusable="False" 
                                     Padding="20, 0, 0, 0"
                                     Text="{x:Static p:Resources.UseLevelKeepListStructureHint}"/>
