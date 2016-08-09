@@ -589,6 +589,25 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
+        public void FindFilesWithcaseinsensitiveFileExtensions()
+        {
+            var path = Path.GetTempPath();
+            string filePath = Path.Combine(path, "SaveFile.txt");
+            using (StreamWriter sw = new StreamWriter(filePath))
+            {
+                sw.Write("test");
+            }
+
+            Assert.AreEqual(filePath, PathHelper.FindFileInPaths("SaveFile", ".txt", new String[] { path }));
+            Assert.AreEqual(filePath, PathHelper.FindFileInPaths("SaveFile", ".TXT", new String[] { path }));
+            Assert.AreEqual(filePath, PathHelper.FindFileInPaths("SaveFile", ".tXt", new String[] { path }));
+
+            File.Delete(filePath);
+        }
+
+
+        [Test]
         public void WrapTextTest()
         {
             string testingSTR = string.Empty;

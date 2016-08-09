@@ -67,42 +67,23 @@ namespace Dynamo.Engine
                 baseDir = Path.GetDirectoryName(Path.GetFullPath(assemblyLocation));
             }
 
-            var xmlFileName = assemblyName + ".xml";
-
             var language = System.Threading.Thread.CurrentThread.CurrentUICulture.ToString();
-            var localizedResPath = Path.Combine(baseDir, language);
-            documentationPath = Path.Combine(localizedResPath, xmlFileName);
-
-            if (File.Exists(documentationPath))
-                return true;
-
-            //try with uppercase XML for linux
-            documentationPath = PathHelper.replaceExtension(documentationPath, ".XML");
-            if (File.Exists(documentationPath))
-                return true;
+            //try with the system culture
+            var localizedDocPath = Path.Combine(baseDir, language);
 
             //try with the fallback culture
-            localizedResPath = Path.Combine(baseDir, Configurations.FallbackUiCulture);
-            documentationPath = Path.Combine(localizedResPath, xmlFileName);
-            if (File.Exists(documentationPath))
+            var localizedFallbackDockPath = Path.Combine(baseDir, Configurations.FallbackUiCulture);
+
+            var searchPaths = new List<string>() { localizedDocPath, localizedFallbackDockPath, baseDir };
+            var extension = ".xml";
+
+            documentationPath = PathHelper.FindFileInPaths(assemblyName, extension, searchPaths.ToArray());
+            if(documentationPath != string.Empty)
+            {
                 return true;
-
-            //try with uppercase XML for linux
-            documentationPath = PathHelper.replaceExtension(documentationPath, ".XML");
-            if (File.Exists(documentationPath))
-                return true;
-
-            //try in the base directory
-            documentationPath = Path.Combine(baseDir, xmlFileName);
-            if (File.Exists(documentationPath))
-                return true;
-
-            //try with uppercase XML for linux
-            documentationPath = PathHelper.replaceExtension(documentationPath, ".XML");
-            return File.Exists(documentationPath);
-
+            }
+            return false;
         }
 
     }
-
 }

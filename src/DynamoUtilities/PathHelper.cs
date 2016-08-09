@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Security.AccessControl;
 
 namespace DynamoUtilities
@@ -85,15 +86,30 @@ namespace DynamoUtilities
         }
 
         /// <summary>
-        /// returns the original path with the extension replaced with the new extension. 
+        /// searchs for a file with an extension in a list of paths, returns the first match
+        /// where the extension is case insensitive. If no file is found, returns an empty string.
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="filename"></param>
         /// <param name="extension"></param>
+        /// <param name="searchPaths"></param>
         /// <returns></returns>
-        public static string replaceExtension(string path, string extension)
+        public static string FindFileInPaths(string filename, string extension, string[] searchPaths)
         {
-            path = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + extension);
-            return path;
+            foreach (var path in searchPaths)
+            {
+                if (Directory.Exists(path))
+                {
+                    var files = Directory.GetFiles(path);
+                    var matches = files.ToList().Where(x => x.EndsWith(filename+extension) || x.EndsWith(filename+extension.ToUpper()) || x.EndsWith(filename+extension.ToLower()));
+                    if (matches.Count() > 0)
+                    {
+                        //found a match, return the first one
+                        return matches.First();
+                    }
+
+                }
+            }
+            return string.Empty;
         }
     }
 }
