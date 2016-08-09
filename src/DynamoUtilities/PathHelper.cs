@@ -102,6 +102,11 @@ namespace DynamoUtilities
                     var files = Directory.GetFiles(path);
                     //matches occur where filename and extension are the same when both are lowercased
                     var matches = files.ToList().Where(x => String.CompareOrdinal(Path.GetFileName(x).ToLower(), (filename + extension).ToLower()) == 0) ;
+                    if (matches.Count() > 1)
+                    {
+                        Console.WriteLine(string.Format("While searching for {0}{1} in {2}, {3} matches were found, the first will be loaded",
+                            filename, extension, path, matches.Count().ToString()));
+                    }
                     if (matches.Count() > 0)
                     {
                         //found a match, return the first one

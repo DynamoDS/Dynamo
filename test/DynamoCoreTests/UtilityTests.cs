@@ -632,7 +632,7 @@ namespace Dynamo.Tests
             Directory.CreateDirectory(path2);
 
             string filePath1 = Path.Combine(path1, "SaveFile.txt");
-            string filePath2 = Path.Combine(path1, "SaveFile.TXT");
+            string filePath2 = Path.Combine(path2, "SaveFile.TXT");
 
             using (StreamWriter sw = new StreamWriter(filePath1))
             {
@@ -645,7 +645,7 @@ namespace Dynamo.Tests
 
 
             Assert.AreEqual(filePath1, PathHelper.FindFileInPaths("SaveFile", ".txt", new String[] { path1,path2 }));
-
+            Assert.AreEqual(filePath2, PathHelper.FindFileInPaths("SaveFile", ".txt", new String[] { path2, path1 }));
 
             Directory.Delete(path1,true);
             Directory.Delete(path2,true);
