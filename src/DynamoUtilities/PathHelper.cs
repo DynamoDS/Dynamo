@@ -100,7 +100,8 @@ namespace DynamoUtilities
                 if (Directory.Exists(path))
                 {
                     var files = Directory.GetFiles(path);
-                    var matches = files.ToList().Where(x => x.EndsWith(filename+extension) || x.EndsWith(filename+extension.ToUpper()) || x.EndsWith(filename+extension.ToLower()));
+                    //matches occur where filename and extension are the same when both are lowercased
+                    var matches = files.ToList().Where(x => String.CompareOrdinal(Path.GetFileName(x).ToLower(), (filename + extension).ToLower()) == 0) ;
                     if (matches.Count() > 0)
                     {
                         //found a match, return the first one
