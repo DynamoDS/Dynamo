@@ -203,7 +203,7 @@
                     AllowsTransparency="True"
                     IsOpen="{Binding Path=ShowUseLevelMenu,diag:PresentationTraceSources.TraceLevel=High}"
                     StaysOpen="False">
-                    <Grid Background="#E5E2DE">
+                    <Grid Background="Transparent">
                         <Grid.Resources>
                             <ResourceDictionary>
                                 <Style TargetType="CheckBox">
@@ -218,7 +218,12 @@
                                 </Style>
                             </ResourceDictionary>
                         </Grid.Resources>
-                        <Border BorderBrush="#5E5C5A" BorderThickness="1" CornerRadius="5" Padding="5" Background="#E5E2DE">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Path Grid.Column="0" Stroke="#5E5C5A" Fill="#E5E2DE" Margin="1,0,0,0" Data="M 0,10 L 12,5 12,15 Z"/>
+                        <Border BorderBrush="#5E5C5A" BorderThickness="1" CornerRadius="2" Padding="2" Background="#E5E2DE" Grid.Column="1">
                             <StackPanel>
                                 <CheckBox 
                                     Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
@@ -238,6 +243,7 @@
                                     Text="{x:Static p:Resources.UseLevelKeepListStructureHint}"/>
                             </StackPanel>
                         </Border>
+                        <Path Grid.Column="1" Stroke="#E5E2DE" Fill="#E5E2DE" Data="M 0,7 L 1,7 L 1,13 L0,13 Z"/>
                     </Grid>
                 </dynui:UseLevelPopup>
             </Grid>
