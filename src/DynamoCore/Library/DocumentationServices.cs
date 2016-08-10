@@ -67,23 +67,23 @@ namespace Dynamo.Engine
                 baseDir = Path.GetDirectoryName(Path.GetFullPath(assemblyLocation));
             }
 
-            var xmlFileName = assemblyName + ".xml";
-
             var language = System.Threading.Thread.CurrentThread.CurrentUICulture.ToString();
-            var localizedResPath = Path.Combine(baseDir, language);
-            documentationPath = Path.Combine(localizedResPath, xmlFileName);
+            //try with the system culture
+            var localizedDocPath = Path.Combine(baseDir, language);
 
-            if (File.Exists(documentationPath))
+            //try with the fallback culture
+            var localizedFallbackDockPath = Path.Combine(baseDir, Configurations.FallbackUiCulture);
+
+            var searchPaths = new List<string>() { localizedDocPath, localizedFallbackDockPath, baseDir };
+            var extension = ".xml";
+
+            documentationPath = PathHelper.FindFileInPaths(assemblyName, extension, searchPaths.ToArray());
+            if(documentationPath != string.Empty)
+            {
                 return true;
-
-            localizedResPath = Path.Combine(baseDir, Configurations.FallbackUiCulture);
-            documentationPath = Path.Combine(localizedResPath, xmlFileName);
-            if (File.Exists(documentationPath))
-                return true;
-
-            documentationPath = Path.Combine(baseDir, xmlFileName);
-            return File.Exists(documentationPath);
+            }
+            return false;
         }
-    }
 
+    }
 }
