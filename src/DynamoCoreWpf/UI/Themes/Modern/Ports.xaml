@@ -236,7 +236,7 @@
                                     IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}"/>
                                 <TextBlock 
                                     FontFamily="{StaticResource OpenSansRegular}" 
-                                    FontSize="10" 
+                                    FontSize="9" 
                                     Foreground="#999999" 
                                     Focusable="False" 
                                     Padding="20, 0, 0, 0"
