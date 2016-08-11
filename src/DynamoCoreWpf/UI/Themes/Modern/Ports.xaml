@@ -203,13 +203,13 @@
                     AllowsTransparency="True"
                     IsOpen="{Binding Path=ShowUseLevelMenu,diag:PresentationTraceSources.TraceLevel=High}"
                     StaysOpen="False">
-                    <Grid Background="#e5e2de">
+                    <Grid Background="Transparent">
                         <Grid.Resources>
                             <ResourceDictionary>
                                 <Style TargetType="CheckBox">
                                     <Setter Property="FontFamily" Value="{StaticResource OpenSansRegular}"/>
-                                    <Setter Property="Foreground" Value="#555555"/>
-                                    <Setter Property="FontSize" Value="13"/>
+                                    <Setter Property="Foreground" Value="#5E5C5A"/>
+                                    <Setter Property="FontSize" Value="11"/>
                                     <Style.Triggers>
                                         <Trigger Property="IsEnabled" Value="false">
                                             <Setter Property="Foreground" Value="#999999"/>
@@ -218,7 +218,12 @@
                                 </Style>
                             </ResourceDictionary>
                         </Grid.Resources>
-                        <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="5" Padding="5" Background="#CBC6BE">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Path Grid.Column="0" Stroke="#5E5C5A" Fill="#E5E2DE" Margin="1,0,0,0" Data="M 0,10 L 12,5 12,15 Z"/>
+                        <Border BorderBrush="#5E5C5A" BorderThickness="1" CornerRadius="2" Padding="2" Background="#E5E2DE" Grid.Column="1">
                             <StackPanel>
                                 <CheckBox 
                                     Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
@@ -231,13 +236,14 @@
                                     IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}"/>
                                 <TextBlock 
                                     FontFamily="{StaticResource OpenSansRegular}" 
-                                    FontSize="10" 
+                                    FontSize="9" 
                                     Foreground="#999999" 
                                     Focusable="False" 
                                     Padding="20, 0, 0, 0"
                                     Text="{x:Static p:Resources.UseLevelKeepListStructureHint}"/>
                             </StackPanel>
                         </Border>
+                        <Path Grid.Column="1" Stroke="#E5E2DE" Fill="#E5E2DE" Data="M 0,7.5 L 1,7.5 L 1,12.5 L0,12.5 Z"/>
                     </Grid>
                 </dynui:UseLevelPopup>
             </Grid>
