@@ -243,7 +243,7 @@
                                     Text="{x:Static p:Resources.UseLevelKeepListStructureHint}"/>
                             </StackPanel>
                         </Border>
-                        <Path Grid.Column="1" Stroke="#E5E2DE" Fill="#E5E2DE" Data="M 0,7 L 1,7 L 1,13 L0,13 Z"/>
+                        <Path Grid.Column="1" Stroke="#E5E2DE" Fill="#E5E2DE" Data="M 0,7.5 L 1,7.5 L 1,12.5 L0,12.5 Z"/>
                     </Grid>
                 </dynui:UseLevelPopup>
             </Grid>
