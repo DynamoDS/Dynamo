@@ -161,7 +161,7 @@
                 <Rectangle
                     Name="highlightOverlayForArrow" 
                     Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlighColorConverter}}"
-                    MinWidth="12"
+                    MinWidth="8"
                     Margin="0,0,0,1"
                     IsHitTestVisible="True">
                     <interactivity:Interaction.Triggers>
@@ -189,7 +189,7 @@
                                            Height="16"
                                            Level="{Binding Path=Level, Mode=TwoWay}"
                                            KeepListStructure="{Binding Path=ShouldKeepListStructure}"
-                                           Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
+                                           Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}"/>
                     <fa:FontAwesome Icon="ChevronRight"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
