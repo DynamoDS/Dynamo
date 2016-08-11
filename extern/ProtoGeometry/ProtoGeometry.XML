@@ -788,7 +788,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
             <summary>
-            Get a CoordinateSystem with origin at the point at the given parameter. The XAxis is aligned with the curve normal and the YAxis is aligned with the curve tangent at this point
+            Get a CoordinateSystem with origin at the point at the given parameter. The XAxis is aligned with the curve normal,  the YAxis is aligned with the curve tangent at this point, and the ZAxis is aligned with the up-vector or binormal at this point
             </summary>
             <param name="param"> The parameter at which to evaluate </param>
             <returns> The aligned CoordinateSystem at the point </returns>
@@ -2303,9 +2303,9 @@
             <summary>
             Create a the Plane containing the three input Points.
             </summary>
-            <param name="p1">  </param>
-            <param name="p2">  </param>
-            <param name="p3">  </param>
+            <param name="origin"> The plane origin </param>
+            <param name="planePoint"> Any point lying on the plane </param>
+            <param name="xAxisPoint"> The point lying on the X-axis of the plane wrt to the plane origin </param>
             <returns>  </returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.XY">
