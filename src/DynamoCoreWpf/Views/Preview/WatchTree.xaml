@@ -316,7 +316,7 @@
             <!-- Shows list@level labels in List -->
             
             <ListView Name="listLevelsView"
-                      Grid.Column ="0" Margin="7,3,0,7" 
+                      Grid.Column ="0" Margin="6,3,0,7" 
                       Background="Transparent"
                       Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                       BorderThickness="0">
