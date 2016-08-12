@@ -141,6 +141,7 @@ namespace Dynamo.ViewModels
                 case "CreateCustomNodeCommand":
                 case "AddPresetCommand":
                 case "ApplyPresetCommand":
+                case "UseLevelsCommand": 
                     // for this commands there is no need
                     // to do anything after execution
                     break;
@@ -187,6 +188,7 @@ namespace Dynamo.ViewModels
                 case "AddPresetCommand":
                 case "ApplyPresetCommand":
                 case "CreateAndConnectNodeCommand":
+                case "UseLevelsCommand":
                     // for this commands there is no need
                     // to do anything before execution
                     break;

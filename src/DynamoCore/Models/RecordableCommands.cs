@@ -202,6 +202,9 @@ namespace Dynamo.Models
                     case "CreateAndConnectNodeCommand":
                         command = CreateAndConnectNodeCommand.DeserializeCore(element);
                         break;
+                    case "UseLevelsCommand":
+                        command = UseLevelsCommand.DeserializeCore(element);
+                        break;
                 }
 
                 if (null != command)
@@ -2296,6 +2299,74 @@ namespace Dynamo.Models
 
             #endregion
         }
+
+        /// <summary>
+        /// A command to check off UseLevels
+        /// </summary>
+        [DataContract]
+        public class UseLevelsCommand : ModelBasedRecordableCommand
+        {
+            #region Public Class Methods
+
+            [JsonConstructor]
+            public UseLevelsCommand(string modelGuid, bool useLevels, bool shouldKeepListStructure, int level) : base(new[] { Guid.Parse(modelGuid) })
+            {
+                UseLevels = useLevels;
+                ShouldKeepListStructure = shouldKeepListStructure;
+                Level = level; 
+            }
+
+            public UseLevelsCommand(Guid modelGuid, bool useLevels, bool shouldKeepListStructure, int level) : base(new[] { modelGuid })
+            {
+                UseLevels = useLevels;
+                ShouldKeepListStructure = shouldKeepListStructure;
+                Level = level;
+            }
+
+
+            public UseLevelsCommand(IEnumerable<Guid> modelGuid, bool useLevels, bool shouldKeepListStructure, int level) : base(modelGuid)
+            {
+                UseLevels = useLevels;
+                ShouldKeepListStructure = shouldKeepListStructure;
+                Level = level; 
+            }
+
+            internal static UseLevelsCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                var modelGuids = DeserializeGuid(element, helper);
+
+                return new UseLevelsCommand(modelGuids, helper.ReadBoolean("UseLevels"), helper.ReadBoolean("ShouldKeepListStructure"), helper.ReadInteger("Level"));
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            [DataMember]
+            internal bool UseLevels { get; private set; }
+            internal int Level { get; private set;  }
+            internal bool ShouldKeepListStructure { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel) { }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                base.SerializeCore(element);
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("UseLevels", UseLevels);
+                helper.SetAttribute("Level", Level);
+                helper.SetAttribute("ShouldKeepListStructure", ShouldKeepListStructure);
+            }
+
+            #endregion
+
+        }
+
     }
 
     // public class XxxYyyCommand : RecordableCommand

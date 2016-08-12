@@ -72,6 +72,11 @@ namespace Dynamo.ViewModels
             return stateMachine.HandlePortClicked(portViewModel);
         }
 
+        internal void UseLevels(PortViewModel portViewModel, bool useLevels, bool shouldKeepListStructure, int level)
+        {
+            stateMachine.UseLevels(portViewModel, useLevels, shouldKeepListStructure, level);
+        }
+
         internal void RequestTogglePanMode()
         {
             stateMachine.RequestTogglePanMode();
@@ -746,6 +751,16 @@ namespace Dynamo.ViewModels
                 model.ClipBoard.AddRange(oldClipboardData);
                 SetCurrentState(State.None);
             }
+
+            internal void UseLevels(PortViewModel portViewModel, bool useLevels, bool shouldKeepListStructure, int level)
+            {
+                var portModel = portViewModel.PortModel;
+                var workspaceViewModel = owningWorkspace.DynamoViewModel.CurrentSpaceViewModel;
+                Guid nodeId = portModel.Owner.GUID;
+                var command = new DynamoModel.UseLevelsCommand(nodeId, useLevels, shouldKeepListStructure, level);
+                owningWorkspace.DynamoViewModel.ExecuteCommand(command);
+            }
+
 
             #endregion
 
