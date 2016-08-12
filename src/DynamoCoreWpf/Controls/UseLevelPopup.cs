@@ -18,5 +18,19 @@ namespace Dynamo.UI.Controls
             if (isOpen && !this.IsOpen)
                 IsOpen = true;
         }
+
+        /// <summary>
+        /// Override EndInit().
+        /// </summary>
+        public override void EndInit()
+        {
+            this.MouseWheel += OnMouseWheel;
+            base.EndInit();
+        }
+
+        private void OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            IsOpen = false;
+        }
     }
 }

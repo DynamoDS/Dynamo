@@ -2834,7 +2834,7 @@ namespace Dynamo.Controls
         {
             if (value is int)
             {
-                var margin = (int)value == 1 ? new Thickness(3, 0, 0, 0) : new Thickness();
+                var margin = (int)value == 1 ? new Thickness(4, 3, 0, 0) : new Thickness(2,3,0,0);
                 return margin; 
             }
             return new Thickness();
