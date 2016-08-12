@@ -20,6 +20,8 @@ type t4list.txt
 set TextTransform=%COMMONPROGRAMFILES(x86)%\microsoft shared\TextTemplating\11.0\TextTransform.exe
 IF NOT EXIST "%TextTransform%" set TextTransform=%COMMONPROGRAMFILES(x86)%\microsoft shared\TextTemplating\12.0\TextTransform.exe
 
+set TextTransform=%COMMONPROGRAMFILES(x86)%\microsoft shared\TextTemplating\12.0\TextTransform.exe
+IF NOT EXIST "%TextTransform%" set TextTransform=%COMMONPROGRAMFILES(x86)%\microsoft shared\TextTemplating\14.0\TextTransform.exe
 
 :: transform all the templates
 for /f %%d in (t4list.txt) do (

@@ -1,18 +1,23 @@
-<Workspace Version="0.6.3.20001" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.FileWriter type="Dynamo.Nodes.FileWriter" guid="cd8bf37e-36a1-46ce-afcf-de98972a9c7c" nickname="Write File" x="288" y="226.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="1651f446-1b0f-4d5b-be59-c59bf9f80142" nickname="String" x="132" y="194.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="cd8bf37e-36a1-46ce-afcf-de98972a9c7c" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="File.WriteText" x="288" y="226.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.IO.File.WriteText@string,string" />
+    <CoreNodeModels.Input.StringInput guid="1651f446-1b0f-4d5b-be59-c59bf9f80142" type="CoreNodeModels.Input.StringInput" nickname="String" x="132" y="194.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.String>.\writetext.txt</System.String>
       <System.String value=".\writetext.txt" />
-    </Dynamo.Nodes.StringInput>
-    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="9a460247-8c8f-4764-b3ea-29506dbc80c1" nickname="String" x="135" y="270.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.StringInput>
+    <CoreNodeModels.Input.StringInput guid="9a460247-8c8f-4764-b3ea-29506dbc80c1" type="CoreNodeModels.Input.StringInput" nickname="String" x="135" y="270.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.String>test</System.String>
       <System.String value="test" />
-    </Dynamo.Nodes.StringInput>
-    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="a169a84b-2624-422c-9a48-1afe2691f11f" nickname="Watch" x="470" y="230.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    </CoreNodeModels.Input.StringInput>
+    <CoreNodeModels.Watch guid="a169a84b-2624-422c-9a48-1afe2691f11f" type="CoreNodeModels.Watch" nickname="Watch" x="470" y="230.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="cd8bf37e-36a1-46ce-afcf-de98972a9c7c" start_index="0" end="a169a84b-2624-422c-9a48-1afe2691f11f" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="1651f446-1b0f-4d5b-be59-c59bf9f80142" start_index="0" end="cd8bf37e-36a1-46ce-afcf-de98972a9c7c" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="9a460247-8c8f-4764-b3ea-29506dbc80c1" start_index="0" end="cd8bf37e-36a1-46ce-afcf-de98972a9c7c" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="cd8bf37e-36a1-46ce-afcf-de98972a9c7c" start_index="0" end="a169a84b-2624-422c-9a48-1afe2691f11f" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="1651f446-1b0f-4d5b-be59-c59bf9f80142" start_index="0" end="cd8bf37e-36a1-46ce-afcf-de98972a9c7c" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="9a460247-8c8f-4764-b3ea-29506dbc80c1" start_index="0" end="cd8bf37e-36a1-46ce-afcf-de98972a9c7c" end_index="1" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

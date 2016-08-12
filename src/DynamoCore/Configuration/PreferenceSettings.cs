@@ -17,7 +17,7 @@ namespace Dynamo.Configuration
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings into the XML file.
     /// </summary>
-    public class PreferenceSettings : NotificationObject, IPreferences
+    public class PreferenceSettings : NotificationObject, IPreferences, IPreviewBubblePreference, IBackgroundPreviewPreference
     {
         private string numberFormat;
         private string lastUpdateDownloadPath;
@@ -89,14 +89,65 @@ namespace Dynamo.Configuration
         public ConnectorType ConnectorType { get; set; }
 
         /// <summary>
-        /// Should the background 3D preview be shown?
+        /// Collection of pairs [BackgroundPreviewName;isActive]
         /// </summary>
-        public bool IsBackgroundPreviewActive { get; set; }
+        public List<BackgroundPreviewActiveState> BackgroundPreviews { get; set; }
+
+        /// <summary>
+         /// Returns active state of specified background preview 
+         /// </summary>
+         /// <param name="name">Background preview name</param>
+         /// <returns>The active state</returns>
+        public bool GetIsBackgroundPreviewActive(string name)
+        {
+            var pair = GetBackgroundPreviewData(name);
+
+            return pair.IsActive;
+        }
+
+        /// <summary>
+        /// Sets active state of specified background preview 
+        /// </summary>
+        /// <param name="name">Background preview name</param>
+        /// <param name="value">Active state</param>
+        public void SetIsBackgroundPreviewActive(string name, bool value)
+        {
+            var pair = GetBackgroundPreviewData(name);
+
+            pair.IsActive = value;
+        }
+
+        private BackgroundPreviewActiveState GetBackgroundPreviewData(string name)
+        {
+            // find or create BackgroundPreviewActiveState instance in list by name
+            var pair = BackgroundPreviews.FirstOrDefault(p => p.Name == name)
+                ?? new BackgroundPreviewActiveState { Name = name };
+            if (!BackgroundPreviews.Contains(pair))
+            {
+                BackgroundPreviews.Add(pair);
+            }
+
+            return pair;
+        }
 
         /// <summary>
         /// Should the background grid be shown?
         /// </summary>
         public bool IsBackgroundGridVisible { get; set; }
+
+        /// <summary>
+        /// Indicates whether background preview is active or not.
+        /// </summary>
+        [Obsolete("Property will be deprecated in Dynamo 2.0, please use BackgroundPreviews")]
+        public bool IsBackgroundPreviewActive { get
+            {
+                return GetIsBackgroundPreviewActive("IsBackgroundPreviewActive");
+            }
+            set
+            {
+                SetIsBackgroundPreviewActive("IsBackgroundPreviewActive", value);
+            }
+        }
 
         /// <summary>
         /// The decimal precision used to display numbers.
@@ -211,6 +262,18 @@ namespace Dynamo.Configuration
         public bool OpenFileInManualExecutionMode { get; set; }
 
         /// <summary>
+        /// Indicates (if any) which namespaces should not be displayed in the Dynamo node library.
+        /// String format: "[library name]:[fully qualified namespace]"
+        /// </summary>
+        public List<string> NamespacesToExcludeFromLibrary { get; set; }
+
+        /// <summary>
+        /// True if the NamespacesToExcludeFromLibrary element is found in DynamoSettings.xml.
+        /// </summary>
+        [XmlIgnore]
+        public bool NamespacesToExcludeFromLibrarySpecified { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="PreferenceSettings"/> class.
         /// </summary>
         public PreferenceSettings()
@@ -220,6 +283,7 @@ namespace Dynamo.Configuration
             WindowW = 1024;
             WindowY = 0.0;
             WindowX = 0.0;
+            BackgroundPreviews = new List<BackgroundPreviewActiveState>();
 
             // Default Settings
             IsFirstRun = true;
@@ -229,7 +293,6 @@ namespace Dynamo.Configuration
             ShowPreviewBubbles = true;
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
-            IsBackgroundPreviewActive = true;
             IsBackgroundGridVisible = true;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
@@ -239,6 +302,7 @@ namespace Dynamo.Configuration
             ShowEdges = false;
             OpenFileInManualExecutionMode = false;
             ShowDetailedLayout = true;
+            NamespacesToExcludeFromLibrary = new List<string>();
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
@@ -322,6 +386,17 @@ namespace Dynamo.Configuration
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
 
             return settings;
+		}
+
+        internal void InitializeNamespacesToExcludeFromLibrary()
+        {
+            if (!NamespacesToExcludeFromLibrarySpecified)
+            {
+                NamespacesToExcludeFromLibrary.Add(
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
+                );
+                NamespacesToExcludeFromLibrarySpecified = true;
+            }
         }
     }
 }

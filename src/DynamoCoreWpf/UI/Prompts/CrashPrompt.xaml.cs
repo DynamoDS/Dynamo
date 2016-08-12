@@ -49,21 +49,11 @@ namespace Dynamo.Nodes.Prompts
             Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
             txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);
 
-            InstrumentationLogger.LogAnonymousEvent("CrashPrompt", "Stability");
-            StabilityTracking.GetInstance().NotifyCrash();
-
             if (args.HasDetails())
             {
                 this.details = args.Details;
                 this.CrashDetailsContent.Text = args.Details;
                 this.btnDetails.Visibility = Visibility.Visible;
-
-                InstrumentationLogger.LogPiiInfo("CrashPrompt", args.Details);
-            }
-            else
-            {
-                InstrumentationLogger.LogPiiInfo("CrashPrompt", args.Details);
-                
             }
 
             if (args.IsFilePath())

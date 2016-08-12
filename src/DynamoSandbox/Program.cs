@@ -16,6 +16,9 @@ namespace DynamoSandbox
         {   
             AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
 
+            //Display a message box and exit the program if Dynamo Core is unresolved.
+            if (string.IsNullOrEmpty(DynamoCorePath)) return;
+
             //Include Dynamo Core path in System Path variable for helix to load properly.
             UpdateSystemPathForProcess();
 
@@ -67,6 +70,11 @@ namespace DynamoSandbox
                 if (string.IsNullOrEmpty(dynamopath))
                 {
                     dynamopath = GetDynamoCorePath();
+
+                    if (string.IsNullOrEmpty(dynamopath))
+                    {
+                        NotifyUserDynamoCoreUnresolved();
+                    }
                 }
                 return dynamopath;
             }
@@ -80,14 +88,16 @@ namespace DynamoSandbox
         {
             var assembly = Assembly.GetExecutingAssembly();
             var version = assembly.GetName().Version;
+            var dynamoRoot = Path.GetDirectoryName(assembly.Location);
 
-            var installs = DynamoInstallDetective.DynamoProducts.FindDynamoInstallations(Path.GetDirectoryName(assembly.Location));
-            if (installs == null) return string.Empty;
-
-            return installs.Products
-                .Where(p => p.VersionInfo.Item1 == version.Major && p.VersionInfo.Item2 == version.Minor)
-                .Select(p => p.InstallLocation)
-                .FirstOrDefault();
+            try
+            {
+                return DynamoInstallDetective.DynamoProducts.GetDynamoPath(version, dynamoRoot);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -101,6 +111,31 @@ namespace DynamoSandbox
                         "Path",
                         EnvironmentVariableTarget.Process) + ";" + DynamoCorePath;
             Environment.SetEnvironmentVariable("Path", path, EnvironmentVariableTarget.Process);
+        }
+        
+        /// <summary>
+        /// If Dynamo Sandbox fails to acquire Dynamo Core path, show a dialog that
+        /// redirects to download DynamoCore.msi, and the program should exit.
+        /// </summary>
+        private static void NotifyUserDynamoCoreUnresolved()
+        {
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            var shortversion = version.Major + "." + version.Minor;
+
+            // Hard-coding the strings in English, since in order to access the
+            // Resources files we would need prior resolution to Dynamo Core itself
+            if (MessageBoxResult.OK ==
+                MessageBox.Show(
+                    string.Format(
+                        "Dynamo Sandbox {0} is not able to find an installation of " +
+                        "Dynamo Core version {0} or higher.\n\nWould you like to download the " +
+                        "latest version of DynamoCore.msi from http://dynamobim.org now?", shortversion),
+                    "Dynamo Core component missing",
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Error))
+            {
+                Process.Start("http://dynamobim.org/download/");
+            }
         }
     }
 }

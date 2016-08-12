@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Dynamo.Interfaces;
 using Dynamo.UI.Commands;
 using Microsoft.Practices.Prism.ViewModel;
+using System.Collections.Generic;
+using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
@@ -23,6 +24,8 @@ namespace Dynamo.ViewModels
         #endregion
 
         #region Properties/Fields
+        public const string EMPTY_LIST = "Empty List";
+        public const string LIST = "List";
 
         private ObservableCollection<WatchViewModel> _children = new ObservableCollection<WatchViewModel>();
         private string _label;
@@ -31,6 +34,16 @@ namespace Dynamo.ViewModels
         private string _path = "";
         private bool _isOneRowContent;
         private readonly Action<string> tagGeometry;
+        private bool isCollection;
+
+        // Instance variable for the number of items in the list 
+        private int numberOfItems;
+
+        // Instance variable for the max depth of items in the list
+        private int maxListLevel;
+
+        // Instance variable for the list of levels 
+        private IEnumerable<int> levels;
 
         public DelegateCommand FindNodeForPathCommand { get; set; }
 
@@ -46,7 +59,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("Children");
             }
         }
-        
+
         /// <summary>
         /// The string lable visibile in the watch.
         /// </summary>
@@ -59,7 +72,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("NodeLabel");
             }
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -84,16 +97,16 @@ namespace Dynamo.ViewModels
                 var splits = _path.Split(':');
                 if (splits.Count() == 1)
                     return string.Empty;
-                return splits.Any() ? string.Format("[{0}]", splits.Last()) : string.Empty;
+                return splits.Any() ? string.Format(NodeLabel == LIST ? "{0}" : " {0} ", splits.Last()) : string.Empty;
                 //return _path;
             }
         }
-        
+
         /// <summary>
         /// A path describing the location of the data.
         /// Path takes the form var_xxxx...:0:1:2, where
         /// var_xxx is the AST identifier for the node, followed
-        /// by : delimited indices represnting the array index
+        /// by : delimited indices representing the array index
         /// of the data.
         /// </summary>
         public string Path
@@ -105,7 +118,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("Path");
             }
         }
-        
+
         /// <summary>
         /// A flag used to determine whether the item
         /// should be process to draw 'raw' data or data
@@ -139,9 +152,55 @@ namespace Dynamo.ViewModels
             }
         }
 
+
+        /// <summary>
+        /// Number of items in the overall list if node output is a list
+        /// </summary>
+        public int NumberOfItems
+        {
+            get { return numberOfItems; }
+            set
+            {
+                numberOfItems = value;
+                RaisePropertyChanged("NumberOfItems");
+            }
+        }
+
+
+        /// <summary>
+        /// Indicates if the items are lists
+        /// </summary>
+        public bool IsCollection
+        {
+            get { return isCollection; }
+            set
+            {
+                isCollection = value;
+                RaisePropertyChanged("IsCollection");
+            }
+        }
+
+        /// <summary>
+        /// Returns a list of listlevel items
+        /// </summary>
+        public IEnumerable<int> Levels
+        {
+            get { return levels; }
+            set
+            {
+                levels = value;
+                RaisePropertyChanged("Levels");
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the item is the top level item
+        /// </summary>
+        public bool IsTopLevel { get; set; }
+
         #endregion
 
-        public WatchViewModel(Action<string> tagGeometry): this(null, null, tagGeometry, true) { }
+        public WatchViewModel(Action<string> tagGeometry) : this(null, null, tagGeometry, true) { }
 
         public WatchViewModel(string label, string path, Action<string> tagGeometry, bool expanded = false)
         {
@@ -150,6 +209,9 @@ namespace Dynamo.ViewModels
             _label = label;
             IsNodeExpanded = expanded;
             this.tagGeometry = tagGeometry;
+            numberOfItems = 0;
+            maxListLevel = 0;
+            isCollection = label == WatchViewModel.LIST;
         }
 
         private bool CanFindNodeForPath(object obj)
@@ -164,6 +226,50 @@ namespace Dynamo.ViewModels
                 tagGeometry(obj.ToString());
             }
             //visualizationManager.TagRenderPackageForPath(obj.ToString());
+        }
+
+        /// <summary>
+        /// Method to account for the total number of items and the depth of a list in a list (in the WatchTree)
+        /// </summary>
+        /// 
+        public void CountNumberOfItems()
+        {
+            var listLevelAndItemCount = GetMaximumDepthAndItemNumber(this);
+            maxListLevel = listLevelAndItemCount.Item1;
+            NumberOfItems = listLevelAndItemCount.Item2;
+            IsCollection = maxListLevel > 1;
+        }
+
+        private Tuple<int, int> GetMaximumDepthAndItemNumber(WatchViewModel wvm)
+        {
+            if (wvm.Children.Count == 0)
+            {
+                if (wvm.NodeLabel == WatchViewModel.EMPTY_LIST)
+                    return new Tuple<int, int>(0, 0);
+                else
+                    return new Tuple<int, int>(1, 1);
+            }
+
+            // If its a top level WatchViewModel, call function on child
+            if (wvm.Path == null) 
+            {
+                return GetMaximumDepthAndItemNumber(wvm.Children[0]);
+            }
+            else
+            {
+                var depthAndNumbers = wvm.Children.Select(GetMaximumDepthAndItemNumber);
+                var maxDepth = depthAndNumbers.Select(t => t.Item1).DefaultIfEmpty(1).Max() + 1;
+                var itemNumber = depthAndNumbers.Select(t => t.Item2).Sum();
+                return new Tuple<int, int>(maxDepth, itemNumber);
+            }
+        }
+
+        /// <summary>
+        /// Set the list levels of each list 
+        /// </summary>
+        public void CountLevels()
+        {
+            Levels = maxListLevel > 0 ? Enumerable.Range(1, maxListLevel).Reverse().Select(x => x).ToList() : Enumerable.Empty<int>();
         }
     }
 }

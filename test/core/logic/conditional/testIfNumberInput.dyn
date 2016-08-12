@@ -1,115 +1,100 @@
-<dynWorkspace X="-306.977777777778" Y="-185.721333333333" zoom="0.7" Description="" Category="" Name="Home">
-  <dynElements>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="e442d656-3ffc-4c92-aa9c-4773e1eb057c" nickname="Number" x="459" y="368.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+<Workspace Version="1.0.1.1743" X="-306.977777777778" Y="-185.721333333333" zoom="0.7" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <CoreNodeModels.Input.DoubleInput guid="e442d656-3ffc-4c92-aa9c-4773e1eb057c" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="459" y="368.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="1" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="61fa9a37-7948-4313-bfe4-78cbbbbaf93c" nickname="Number" x="434.888888888889" y="523.742222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="61fa9a37-7948-4313-bfe4-78cbbbbaf93c" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="434.888888888889" y="523.742222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="0" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynConditional type="Dynamo.Nodes.dynConditional" guid="a00a70d6-6806-46d3-9bbc-52e30108499b" nickname="If" x="589" y="437.684444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <PortInfo index="1" default="True" />
-      <PortInfo index="2" default="True" />
-    </Dynamo.Nodes.dynConditional>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="ff7986e9-2e8d-4a89-b7bd-393b7dab65bb" nickname="Number" x="427.888888888889" y="458.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Logic.If guid="a00a70d6-6806-46d3-9bbc-52e30108499b" type="CoreNodeModels.Logic.If" nickname="If" x="589" y="437.684444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <CoreNodeModels.Input.DoubleInput guid="ff7986e9-2e8d-4a89-b7bd-393b7dab65bb" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="427.888888888889" y="458.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="1" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="6c49c027-96fc-42de-9c67-155e4c594a3c" nickname="Number" x="437.888888888889" y="600.742222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="6c49c027-96fc-42de-9c67-155e4c594a3c" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="437.888888888889" y="600.742222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="0" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="281f0df5-e2ec-4447-abd4-f334502eff4c" nickname="Number" x="413.777777777778" y="757.075555555555" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="281f0df5-e2ec-4447-abd4-f334502eff4c" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="413.777777777778" y="757.075555555555" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="0" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynConditional type="Dynamo.Nodes.dynConditional" guid="f1c1e1bb-c112-41ad-b38e-67e2512d2c97" nickname="If" x="567.888888888889" y="671.017777777778" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <PortInfo index="1" default="True" />
-      <PortInfo index="2" default="True" />
-    </Dynamo.Nodes.dynConditional>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="18cd0ef0-aaeb-402f-b05d-60a8abe6827b" nickname="Number" x="406.777777777778" y="691.853333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Logic.If guid="f1c1e1bb-c112-41ad-b38e-67e2512d2c97" type="CoreNodeModels.Logic.If" nickname="If" x="567.888888888889" y="671.017777777778" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <CoreNodeModels.Input.DoubleInput guid="18cd0ef0-aaeb-402f-b05d-60a8abe6827b" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="406.777777777778" y="691.853333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="1" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="69743522-1a22-4307-a947-a4bc82e92295" nickname="Number" x="977.888888888889" y="375.186666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="69743522-1a22-4307-a947-a4bc82e92295" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="977.888888888889" y="375.186666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="1" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="ef03f873-f235-4ccd-886b-4e0430a4875c" nickname="Number" x="953.777777777778" y="531.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="ef03f873-f235-4ccd-886b-4e0430a4875c" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="953.777777777778" y="531.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="1" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynConditional type="Dynamo.Nodes.dynConditional" guid="8f4b6aa0-5c1d-4dd3-90cb-bd66e4d921ac" nickname="If" x="1107.88888888889" y="445.462222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <PortInfo index="1" default="True" />
-      <PortInfo index="2" default="True" />
-    </Dynamo.Nodes.dynConditional>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="b5b5290f-ce64-4dda-b086-cdcd52476577" nickname="Number" x="946.777777777778" y="466.297777777778" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Logic.If guid="8f4b6aa0-5c1d-4dd3-90cb-bd66e4d921ac" type="CoreNodeModels.Logic.If" nickname="If" x="1107.88888888889" y="445.462222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <CoreNodeModels.Input.DoubleInput guid="b5b5290f-ce64-4dda-b086-cdcd52476577" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="946.777777777778" y="466.297777777778" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="0" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="1b6cd5da-4a0d-4426-917e-630928c5bb67" nickname="Number" x="979" y="639.631111111111" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="1b6cd5da-4a0d-4426-917e-630928c5bb67" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="979" y="639.631111111111" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="0" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="ab935fa7-3f4a-414f-a770-7bebf419b79b" nickname="Number" x="954.888888888889" y="795.964444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="ab935fa7-3f4a-414f-a770-7bebf419b79b" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="954.888888888889" y="795.964444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="1" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynConditional type="Dynamo.Nodes.dynConditional" guid="38f7e43f-9361-45de-9ef1-cd51af9afe6c" nickname="If" x="1109" y="709.906666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <PortInfo index="1" default="True" />
-      <PortInfo index="2" default="True" />
-    </Dynamo.Nodes.dynConditional>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="c5c3705c-ee02-496e-bcd8-295b3a4c95ab" nickname="Number" x="947.888888888889" y="730.742222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Logic.If guid="38f7e43f-9361-45de-9ef1-cd51af9afe6c" type="CoreNodeModels.Logic.If" nickname="If" x="1109" y="709.906666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <CoreNodeModels.Input.DoubleInput guid="c5c3705c-ee02-496e-bcd8-295b3a4c95ab" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="947.888888888889" y="730.742222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="0" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="725c87aa-4ac0-4d93-acf9-c2d4107ded9e" nickname="Number" x="445.666666666667" y="867.408888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="725c87aa-4ac0-4d93-acf9-c2d4107ded9e" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="445.666666666667" y="867.408888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="1" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="5a371dcd-49eb-4dbb-89f0-cc0b2683d90e" nickname="Number" x="421.555555555556" y="1023.74222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="5a371dcd-49eb-4dbb-89f0-cc0b2683d90e" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="421.555555555556" y="1023.74222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="0" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynConditional type="Dynamo.Nodes.dynConditional" guid="66361adf-57db-4bcf-9bec-3e7c07bf025b" nickname="If" x="575.666666666667" y="937.684444444445" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <PortInfo index="1" default="True" />
-      <PortInfo index="2" default="True" />
-    </Dynamo.Nodes.dynConditional>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="40651e99-8826-4a88-9f89-76e79976c44f" nickname="Number" x="414.555555555556" y="958.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Logic.If guid="66361adf-57db-4bcf-9bec-3e7c07bf025b" type="CoreNodeModels.Logic.If" nickname="If" x="575.666666666667" y="937.684444444445" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <CoreNodeModels.Input.DoubleInput guid="40651e99-8826-4a88-9f89-76e79976c44f" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="414.555555555556" y="958.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="0.000" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="da9395fb-929c-4a4e-8e49-2ec5a4c88bf0" nickname="Number" x="1021.22222222222" y="880.742222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="da9395fb-929c-4a4e-8e49-2ec5a4c88bf0" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="1021.22222222222" y="880.742222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="0" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="535e60d2-89e6-4d20-a99f-7c62fcd2d1a8" nickname="Number" x="997.111111111111" y="1037.07555555556" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="535e60d2-89e6-4d20-a99f-7c62fcd2d1a8" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="997.111111111111" y="1037.07555555556" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="3" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynConditional type="Dynamo.Nodes.dynConditional" guid="b6f5ae7a-cb3b-4eed-88a5-259ea2a12302" nickname="If" x="1149.79365079365" y="951.017777777778" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <PortInfo index="1" default="True" />
-      <PortInfo index="2" default="True" />
-    </Dynamo.Nodes.dynConditional>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="c4b5d2ed-73da-45e0-a2e6-cf9970b39730" nickname="Number" x="990.111111111111" y="971.853333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Logic.If guid="b6f5ae7a-cb3b-4eed-88a5-259ea2a12302" type="CoreNodeModels.Logic.If" nickname="If" x="1149.79365079365" y="951.017777777778" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <CoreNodeModels.Input.DoubleInput guid="c4b5d2ed-73da-45e0-a2e6-cf9970b39730" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="990.111111111111" y="971.853333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="3" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="1e99e389-04ba-4a9f-9ef4-d188058f734f" nickname="Watch" x="769.968253968254" y="451.773333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="ae08cfd2-3fb3-41e0-94f4-a70ead3e7466" nickname="Watch" x="749.968253968254" y="701.773333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="75da9972-b458-45d7-8673-42e7c74e42b6" nickname="Watch" x="784.253968253968" y="986.059047619047" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="1faadb07-62e9-42f1-9c01-18b6673e53cf" nickname="Watch" x="1298.53968253968" y="478.91619047619" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="a1cb3c11-4939-40fb-ac7b-ad80c9e3c576" nickname="Watch" x="1295.68253968254" y="710.344761904762" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="6a3cc1a4-a353-4870-8c1c-848298ebe050" nickname="Watch" x="1331.39682539683" y="973.201904761905" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Models.dynConnectorModel start="e442d656-3ffc-4c92-aa9c-4773e1eb057c" start_index="0" end="a00a70d6-6806-46d3-9bbc-52e30108499b" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="61fa9a37-7948-4313-bfe4-78cbbbbaf93c" start_index="0" end="a00a70d6-6806-46d3-9bbc-52e30108499b" end_index="2" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="a00a70d6-6806-46d3-9bbc-52e30108499b" start_index="0" end="1e99e389-04ba-4a9f-9ef4-d188058f734f" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="ff7986e9-2e8d-4a89-b7bd-393b7dab65bb" start_index="0" end="a00a70d6-6806-46d3-9bbc-52e30108499b" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="6c49c027-96fc-42de-9c67-155e4c594a3c" start_index="0" end="f1c1e1bb-c112-41ad-b38e-67e2512d2c97" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="281f0df5-e2ec-4447-abd4-f334502eff4c" start_index="0" end="f1c1e1bb-c112-41ad-b38e-67e2512d2c97" end_index="2" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="f1c1e1bb-c112-41ad-b38e-67e2512d2c97" start_index="0" end="ae08cfd2-3fb3-41e0-94f4-a70ead3e7466" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="18cd0ef0-aaeb-402f-b05d-60a8abe6827b" start_index="0" end="f1c1e1bb-c112-41ad-b38e-67e2512d2c97" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="69743522-1a22-4307-a947-a4bc82e92295" start_index="0" end="8f4b6aa0-5c1d-4dd3-90cb-bd66e4d921ac" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="ef03f873-f235-4ccd-886b-4e0430a4875c" start_index="0" end="8f4b6aa0-5c1d-4dd3-90cb-bd66e4d921ac" end_index="2" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="8f4b6aa0-5c1d-4dd3-90cb-bd66e4d921ac" start_index="0" end="1faadb07-62e9-42f1-9c01-18b6673e53cf" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="b5b5290f-ce64-4dda-b086-cdcd52476577" start_index="0" end="8f4b6aa0-5c1d-4dd3-90cb-bd66e4d921ac" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="1b6cd5da-4a0d-4426-917e-630928c5bb67" start_index="0" end="38f7e43f-9361-45de-9ef1-cd51af9afe6c" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="ab935fa7-3f4a-414f-a770-7bebf419b79b" start_index="0" end="38f7e43f-9361-45de-9ef1-cd51af9afe6c" end_index="2" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="38f7e43f-9361-45de-9ef1-cd51af9afe6c" start_index="0" end="a1cb3c11-4939-40fb-ac7b-ad80c9e3c576" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="c5c3705c-ee02-496e-bcd8-295b3a4c95ab" start_index="0" end="38f7e43f-9361-45de-9ef1-cd51af9afe6c" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="725c87aa-4ac0-4d93-acf9-c2d4107ded9e" start_index="0" end="66361adf-57db-4bcf-9bec-3e7c07bf025b" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="5a371dcd-49eb-4dbb-89f0-cc0b2683d90e" start_index="0" end="66361adf-57db-4bcf-9bec-3e7c07bf025b" end_index="2" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="66361adf-57db-4bcf-9bec-3e7c07bf025b" start_index="0" end="75da9972-b458-45d7-8673-42e7c74e42b6" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="40651e99-8826-4a88-9f89-76e79976c44f" start_index="0" end="66361adf-57db-4bcf-9bec-3e7c07bf025b" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="da9395fb-929c-4a4e-8e49-2ec5a4c88bf0" start_index="0" end="b6f5ae7a-cb3b-4eed-88a5-259ea2a12302" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="535e60d2-89e6-4d20-a99f-7c62fcd2d1a8" start_index="0" end="b6f5ae7a-cb3b-4eed-88a5-259ea2a12302" end_index="2" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="b6f5ae7a-cb3b-4eed-88a5-259ea2a12302" start_index="0" end="6a3cc1a4-a353-4870-8c1c-848298ebe050" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="c4b5d2ed-73da-45e0-a2e6-cf9970b39730" start_index="0" end="b6f5ae7a-cb3b-4eed-88a5-259ea2a12302" end_index="1" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Watch guid="1e99e389-04ba-4a9f-9ef4-d188058f734f" type="CoreNodeModels.Watch" nickname="Watch" x="769.968253968254" y="451.773333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <CoreNodeModels.Watch guid="ae08cfd2-3fb3-41e0-94f4-a70ead3e7466" type="CoreNodeModels.Watch" nickname="Watch" x="749.968253968254" y="701.773333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <CoreNodeModels.Watch guid="75da9972-b458-45d7-8673-42e7c74e42b6" type="CoreNodeModels.Watch" nickname="Watch" x="784.253968253968" y="986.059047619047" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <CoreNodeModels.Watch guid="1faadb07-62e9-42f1-9c01-18b6673e53cf" type="CoreNodeModels.Watch" nickname="Watch" x="1298.53968253968" y="478.91619047619" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <CoreNodeModels.Watch guid="a1cb3c11-4939-40fb-ac7b-ad80c9e3c576" type="CoreNodeModels.Watch" nickname="Watch" x="1295.68253968254" y="710.344761904762" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <CoreNodeModels.Watch guid="6a3cc1a4-a353-4870-8c1c-848298ebe050" type="CoreNodeModels.Watch" nickname="Watch" x="1331.39682539683" y="973.201904761905" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="e442d656-3ffc-4c92-aa9c-4773e1eb057c" start_index="0" end="a00a70d6-6806-46d3-9bbc-52e30108499b" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="61fa9a37-7948-4313-bfe4-78cbbbbaf93c" start_index="0" end="a00a70d6-6806-46d3-9bbc-52e30108499b" end_index="2" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="a00a70d6-6806-46d3-9bbc-52e30108499b" start_index="0" end="1e99e389-04ba-4a9f-9ef4-d188058f734f" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="ff7986e9-2e8d-4a89-b7bd-393b7dab65bb" start_index="0" end="a00a70d6-6806-46d3-9bbc-52e30108499b" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="6c49c027-96fc-42de-9c67-155e4c594a3c" start_index="0" end="f1c1e1bb-c112-41ad-b38e-67e2512d2c97" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="281f0df5-e2ec-4447-abd4-f334502eff4c" start_index="0" end="f1c1e1bb-c112-41ad-b38e-67e2512d2c97" end_index="2" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="f1c1e1bb-c112-41ad-b38e-67e2512d2c97" start_index="0" end="ae08cfd2-3fb3-41e0-94f4-a70ead3e7466" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="18cd0ef0-aaeb-402f-b05d-60a8abe6827b" start_index="0" end="f1c1e1bb-c112-41ad-b38e-67e2512d2c97" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="69743522-1a22-4307-a947-a4bc82e92295" start_index="0" end="8f4b6aa0-5c1d-4dd3-90cb-bd66e4d921ac" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="ef03f873-f235-4ccd-886b-4e0430a4875c" start_index="0" end="8f4b6aa0-5c1d-4dd3-90cb-bd66e4d921ac" end_index="2" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="8f4b6aa0-5c1d-4dd3-90cb-bd66e4d921ac" start_index="0" end="1faadb07-62e9-42f1-9c01-18b6673e53cf" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="b5b5290f-ce64-4dda-b086-cdcd52476577" start_index="0" end="8f4b6aa0-5c1d-4dd3-90cb-bd66e4d921ac" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="1b6cd5da-4a0d-4426-917e-630928c5bb67" start_index="0" end="38f7e43f-9361-45de-9ef1-cd51af9afe6c" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="ab935fa7-3f4a-414f-a770-7bebf419b79b" start_index="0" end="38f7e43f-9361-45de-9ef1-cd51af9afe6c" end_index="2" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="38f7e43f-9361-45de-9ef1-cd51af9afe6c" start_index="0" end="a1cb3c11-4939-40fb-ac7b-ad80c9e3c576" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="c5c3705c-ee02-496e-bcd8-295b3a4c95ab" start_index="0" end="38f7e43f-9361-45de-9ef1-cd51af9afe6c" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="725c87aa-4ac0-4d93-acf9-c2d4107ded9e" start_index="0" end="66361adf-57db-4bcf-9bec-3e7c07bf025b" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="5a371dcd-49eb-4dbb-89f0-cc0b2683d90e" start_index="0" end="66361adf-57db-4bcf-9bec-3e7c07bf025b" end_index="2" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="66361adf-57db-4bcf-9bec-3e7c07bf025b" start_index="0" end="75da9972-b458-45d7-8673-42e7c74e42b6" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="40651e99-8826-4a88-9f89-76e79976c44f" start_index="0" end="66361adf-57db-4bcf-9bec-3e7c07bf025b" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="da9395fb-929c-4a4e-8e49-2ec5a4c88bf0" start_index="0" end="b6f5ae7a-cb3b-4eed-88a5-259ea2a12302" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="535e60d2-89e6-4d20-a99f-7c62fcd2d1a8" start_index="0" end="b6f5ae7a-cb3b-4eed-88a5-259ea2a12302" end_index="2" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="b6f5ae7a-cb3b-4eed-88a5-259ea2a12302" start_index="0" end="6a3cc1a4-a353-4870-8c1c-848298ebe050" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="c4b5d2ed-73da-45e0-a2e6-cf9970b39730" start_index="0" end="b6f5ae7a-cb3b-4eed-88a5-259ea2a12302" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

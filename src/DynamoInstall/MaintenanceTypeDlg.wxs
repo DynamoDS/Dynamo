@@ -3,27 +3,16 @@
   
   <Fragment>
     
-    <!-- A fully customize MaintenanceTypeDlg is needed because ARPNOREMOVE=1 removes the Remove Button in this dialog -->
+    <!-- A fully customize MaintenanceTypeDlg is needed because ARPNOREMOVE & ARPNOREPAIR = 1 removes the Remove & Repair Button in this dialog -->
     <UI Id="DynamoMaintenanceTypeDlg">
       
       <!-- https://github.com/wixtoolset/wix3/tree/develop/src/ext/UIExtension/wixlib -->
       <Dialog Id="DynamoMaintenanceTypeDlg" Width="370" Height="270" Title="!(loc.MaintenanceTypeDlg_Title)">
-        
-        <Control Id="RepairButton" Type="PushButton" X="40" Y="65" Width="80" Height="17" ToolTip="!(loc.MaintenanceTypeDlgRepairButtonTooltip)" Text="!(loc.MaintenanceTypeDlgRepairButton)">
-          <Publish Property="WixUI_InstallMode" Value="Repair">1</Publish>
-          <Condition Action="disable">ARPNOREPAIR</Condition>
-        </Control>
-        <Control Id="RepairText" Type="Text" X="60" Y="85" Width="280" Height="20" Text="!(loc.MaintenanceTypeDlgRepairText)">
-          <Condition Action="hide">ARPNOREPAIR</Condition>
-        </Control>
-        <Control Id="RepairDisabledText" Type="Text" X="60" Y="85" Width="280" Height="20" NoPrefix="yes" Text="!(loc.MaintenanceTypeDlgRepairDisabledText)" Hidden="yes">
-          <Condition Action="show">ARPNOREPAIR</Condition>
-        </Control>
 
-        <Control Id="RemoveButton" Type="PushButton" X="40" Y="118" Width="80" Height="17" ToolTip="!(loc.MaintenanceTypeDlgRemoveButtonTooltip)" Text="!(loc.MaintenanceTypeDlgRemoveButton)">
+        <Control Id="RemoveButton" Type="PushButton" X="40" Y="65" Width="80" Height="17" ToolTip="!(loc.MaintenanceTypeDlgRemoveButtonTooltip)" Text="!(loc.MaintenanceTypeDlgRemoveButton)">
           <Publish Property="WixUI_InstallMode" Value="Remove">1</Publish>
         </Control>
-        <Control Id="RemoveText" Type="Text" X="60" Y="138" Width="280" Height="30" Text="!(loc.MaintenanceTypeDlgRemoveText)">
+        <Control Id="RemoveText" Type="Text" X="60" Y="85" Width="280" Height="20" Text="!(loc.MaintenanceTypeDlgRemoveText)">
         </Control>
 
         <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Disabled="yes" Text="!(loc.WixUIBack)" />

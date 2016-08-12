@@ -194,6 +194,8 @@ namespace DSCore
         /// <param name="colors"></param>
         /// <param name="parameter"></param>
         /// <returns>The interpolated color or white.</returns>
+        /// This algorithm is not the same as the solution found from wikipedia 
+        /// (reference: https://en.wikipedia.org/wiki/Bilinear_interpolation)
         [IsVisibleInDynamoLibrary(false)]
         public static Color Blerp(IList<IndexedColor2D> colors, UV parameter)
         {
@@ -207,7 +209,7 @@ namespace DSCore
                 {
                     return ci.Color;
                 }
-                var w = 1/d;
+                var w = 1 / d;
 
                 num[0] += ci.Color.Alpha * w;
                 num[1] += ci.Color.Red * w;
@@ -221,6 +223,8 @@ namespace DSCore
                 (int)(num[2] / totalArea),
                 (int)(num[3] / totalArea));
         }
+
+
 
         private static double Area(UV min, UV max)
         {

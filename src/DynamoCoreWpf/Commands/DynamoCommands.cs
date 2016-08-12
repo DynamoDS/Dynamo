@@ -148,6 +148,11 @@ namespace Dynamo.ViewModels
                 default:
                     throw new InvalidOperationException("Unhandled command name");
             }
+
+            if (Dynamo.Logging.Analytics.ReportingAnalytics && !command.IsInPlaybackMode)
+            {
+                command.TrackAnalytics();
+            }
         }
 
         void OnModelCommandStarting(DynamoModel.RecordableCommand command)

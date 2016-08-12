@@ -288,7 +288,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                     }
                     else
                     {
-                        model.AppendReplicationGuides(inputAstNodes);
+                        model.UseLevelAndReplicationGuide(inputAstNodes);
                         rhs = AstFactory.BuildFunctionCall(
                             Definition.ClassName,
                             Definition.FunctionName,
@@ -351,7 +351,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                     else
                     {
                         rhs = new NullNode();
-                        model.AppendReplicationGuides(inputAstNodes);
+                        model.UseLevelAndReplicationGuide(inputAstNodes);
 
                         if (inputAstNodes != null && inputAstNodes.Count >= 1)
                         {
@@ -381,7 +381,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                     }
                     else
                     {
-                        model.AppendReplicationGuides(inputAstNodes);
+                        model.UseLevelAndReplicationGuide(inputAstNodes);
                         rhs = AstFactory.BuildFunctionCall(function, inputAstNodes);
                     }
                     break;

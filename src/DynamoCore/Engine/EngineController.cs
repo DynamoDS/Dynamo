@@ -154,15 +154,6 @@ namespace Dynamo.Engine
 
         #region Function Groups
 
-        /// <summary>
-        /// Returns all function groups.
-        /// </summary>
-        internal IEnumerable<FunctionGroup> GetFunctionGroups()
-        {
-            return libraryServices.GetAllFunctionGroups();
-        }
-
-        /// <summary>
         /// Import library.
         /// </summary>
         /// <param name="library"></param>
@@ -203,42 +194,7 @@ namespace Dynamo.Engine
             }
         }
 
-        /// <summary>
-        /// Returns a list of IGraphicItem of variable if it is a geometry object;
-        /// otherwise returns null.
-        /// </summary>
-        /// <param name="variableName"></param>
-        /// <returns></returns>
-        internal List<IGraphicItem> GetGraphicItems(string variableName)
-        {
-            lock (macroMutex)
-            {
-                RuntimeMirror mirror = GetMirror(variableName);
-                return null == mirror ? null : mirror.GetData().GetGraphicsItems();
-            }
-        }
-
         #endregion
-
-        /// <summary>
-        /// Generate graph sync data based on the input Dynamo nodes. Return 
-        /// false if all nodes are clean.
-        /// </summary>
-        /// <param name="nodes"></param>
-        /// <param name="verboseLogging"></param>
-        /// <returns></returns>
-        internal bool GenerateGraphSyncData(ICollection<NodeModel> nodes, bool verboseLogging)
-        {
-            lock (macroMutex)
-            {
-                var activeNodes = nodes.Where(n => !n.IsInErrorState);
-
-                if (activeNodes.Any())
-                    astBuilder.CompileToAstNodes(activeNodes, CompilationContext.DeltaExecution, verboseLogging);
-
-                return VerifyGraphSyncData(nodes);
-            }
-        }
 
         /// <summary>
         /// This method is called on the main thread from UpdateGraphAsyncTask
@@ -471,63 +427,6 @@ namespace Dynamo.Engine
             liveRunnerServices.RemoveRecordedAstGuidsForSession(sessionID);
         }
 
-        /// <summary>
-        /// Update graph with graph sync data.
-        /// </summary>
-        /// <param name="nodes"></param>
-        /// <param name="fatalException">The exception that is not handled 
-        /// anywhere within the LiveRunnerServices.UpdateGraph method. This 
-        /// parameter will always be set to null if there is no unhandled 
-        /// exception thrown from within the UpdateGraph call.</param>
-        /// <returns>Returns true if any update has taken place, or false 
-        /// otherwise.</returns>
-        internal bool UpdateGraph(ICollection<NodeModel> nodes, out Exception fatalException)
-        {
-            lock (macroMutex)
-            {
-
-                bool updated = false;
-                fatalException = null;
-
-                ClearWarnings(nodes);
-
-                lock (graphSyncDataQueue)
-                {
-                    while (graphSyncDataQueue.Count > 0)
-                    {
-                        try
-                        {
-                            var data = graphSyncDataQueue.Dequeue();
-                            liveRunnerServices.UpdateGraph(data, VerboseLogging);
-                            updated = true;
-                        }
-                        catch (Exception e)
-                        {
-                            // The exception that is not handled within the UpdateGraph
-                            // method is recorded here. The only thing for now is, we 
-                            // are only interested in the first unhandled exception.
-                            // This decision may change in the future if we decided to 
-                            // clear up "graphSyncDataQueue" whenever there is a fatal 
-                            // exception?
-                            // 
-                            if (fatalException == null)
-                                fatalException = e;
-
-                            Log("Update graph failed: " + e.Message);
-                        }
-                    }
-                }
-
-                if (updated)
-                {
-                    ShowBuildWarnings(nodes);
-                    ShowRuntimeWarnings(nodes);
-                }
-
-                return updated;
-            }
-        }
-
         internal void ReconcileTraceDataAndNotify()
         {
             if (this.IsDisposed)
@@ -550,48 +449,6 @@ namespace Dynamo.Engine
             }
 
             OnTraceReconciliationComplete(new TraceReconciliationEventArgs(callsiteToOrphanMap));
-        }
-
-        private static void ClearWarnings(IEnumerable<NodeModel> nodes)
-        {
-            var warningNodes = nodes.Where(n => n.State == ElementState.Warning);
-
-            foreach (var node in warningNodes)
-            {
-                node.ClearRuntimeError();
-            }
-        }
-
-        private void ShowRuntimeWarnings(IEnumerable<NodeModel> nodes)
-        {
-            // Clear all previous warnings
-            var warnings = liveRunnerServices.GetRuntimeWarnings();
-            foreach (var item in warnings)
-            {
-                Guid guid = item.Key;
-                var node = nodes.FirstOrDefault(n => n.GUID == guid);
-                if (node != null)
-                {
-                    string warningMessage = string.Join("\n", item.Value.Select(w => w.Message));
-                    node.Warning(warningMessage);
-                }
-            }
-        }
-
-        private void ShowBuildWarnings(IEnumerable<NodeModel> nodes)
-        {
-            // Clear all previous warnings
-            var warnings = liveRunnerServices.GetBuildWarnings();
-            foreach (var item in warnings)
-            {
-                Guid guid = item.Key;
-                var node = nodes.FirstOrDefault(n => n.GUID == guid);
-                if (node != null)
-                {
-                    string warningMessage = string.Join("\n", item.Value.Select(w => w.Message));
-                    node.Warning(warningMessage);
-                }
-            }
         }
 
         /// <summary>
@@ -669,20 +526,7 @@ namespace Dynamo.Engine
             return NodeToCodeCompiler.NodeToCode(libraryServices.LibraryManagementCore, graph, nodes, namingProvider);
         }
 
-        private bool HasVariableDefined(string var)
-        {
-            var cbs = libraryServices.LibraryManagementCore.CodeBlockList;
-            if (cbs == null || cbs.Count > 0)
-            {
-                return false;
-            }
-
-            var idx = cbs[0].symbolTable.IndexOf(var, Constants.kGlobalScope, Constants.kGlobalScope);
-            return idx == Constants.kInvalidIndex;
-        }
-
         #endregion
-
     }
 
     /// <summary>

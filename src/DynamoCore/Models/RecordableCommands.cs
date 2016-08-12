@@ -1,25 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Xml;
+﻿using Dynamo.Graph;
+using Dynamo.Graph.Nodes;
 using Dynamo.Properties;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
-using System.Runtime.Serialization;
-using Dynamo.Graph;
-using Dynamo.Graph.Nodes;
 using Newtonsoft.Json.Serialization;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Xml;
 
 namespace Dynamo.Models
 {
     public partial class DynamoModel
     {
         /// <summary>
-        /// This is the base class of all recordable commands. It provides the 
-        /// contract between a UI event handler (e.g. delegate command method or 
-        /// a button event handler) and the actual command handler in the 
-        /// DynamoViewModel. It is mandatory for each RecordableCommand-derived 
+        /// This is the base class of all recordable commands. It provides the
+        /// contract between a UI event handler (e.g. delegate command method or
+        /// a button event handler) and the actual command handler in the
+        /// DynamoViewModel. It is mandatory for each RecordableCommand-derived
         /// class to be serializable to/deserializable from an XmlElement.
         /// </summary>
         [DataContract]
@@ -52,20 +52,20 @@ namespace Dynamo.Models
             #region Public Class Operational Methods
 
             /// <summary>
-            /// Constructs an instance of RecordableCommand derived class. This 
-            /// constructor is made protected to indicate that the class instance 
+            /// Constructs an instance of RecordableCommand derived class. This
+            /// constructor is made protected to indicate that the class instance
             /// can only be instantiated through a derived class.
             /// </summary>
             protected RecordableCommand()
                 : this(string.Empty) { }
 
             /// <summary>
-            /// Constructs an instance of RecordableCommand derived class, 
+            /// Constructs an instance of RecordableCommand derived class,
             /// assigning a new tag to it.
             /// </summary>
             /// <param name="tag">A string tag to be assigned to the command.
-            /// This parameter can be any string, even an empty one. However, 
-            /// it should not be null. A null "tag" parameter causes the 
+            /// This parameter can be any string, even an empty one. However,
+            /// it should not be null. A null "tag" parameter causes the
             /// ArgumentNullException to be thrown.</param>
             protected RecordableCommand(string tag)
             {
@@ -77,28 +77,28 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// Call this method to execute a RecordableCommand. A RecordableCommand 
+            /// Call this method to execute a RecordableCommand. A RecordableCommand
             /// must be executed in the context of an existing DynamoViewModel.
             /// </summary>
-            /// <param name="dynamoModel">The DynamoModel object this 
+            /// <param name="dynamoModel">The DynamoModel object this
             /// RecordableCommand is targeting.</param>
-            /// 
+            ///
             internal void Execute(DynamoModel dynamoModel)
             {
                 ExecuteCore(dynamoModel);
             }
 
             /// <summary>
-            /// This method serializes the RecordableCommand object in the form of 
-            /// XmlElement for storage. The resulting XmlElement contains all the 
+            /// This method serializes the RecordableCommand object in the form of
+            /// XmlElement for storage. The resulting XmlElement contains all the
             /// arguments that are required by this command.
             /// </summary>
             /// <param name="document">The XmlDocument from which an XmlElement can
             /// be created.</param>
-            /// <returns>The XmlElement representation of this RecordableCommand 
-            /// object. It will be used in RecordableCommand.Deserialize method to 
+            /// <returns>The XmlElement representation of this RecordableCommand
+            /// object. It will be used in RecordableCommand.Deserialize method to
             /// completely reconstruct the RecordableCommand it represents.</returns>
-            /// 
+            ///
             internal XmlElement Serialize(XmlDocument document)
             {
                 string commandName = GetType().Name;
@@ -108,11 +108,11 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// This method serializes the RecordableCommand object in the json form. 
-            /// The resulting string contains command type name and all the 
+            /// This method serializes the RecordableCommand object in the json form.
+            /// The resulting string contains command type name and all the
             /// arguments that are required by this command.
             /// </summary>
-            /// <returns>The string can be used for reconstructing RecordableCommand 
+            /// <returns>The string can be used for reconstructing RecordableCommand
             /// using Deserialize method</returns>
             internal string Serialize()
             {
@@ -120,15 +120,15 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// Call this static method to reconstruct a RecordableCommand-derived 
-            /// object given an XmlElement that was previously saved with Serialize 
-            /// method. This method simply redirects the XmlElement to respective 
+            /// Call this static method to reconstruct a RecordableCommand-derived
+            /// object given an XmlElement that was previously saved with Serialize
+            /// method. This method simply redirects the XmlElement to respective
             /// RecordableCommand-derived classes based on its type.
             /// </summary>
             /// <param name="element">The XmlElement from which the RecordableCommand
             /// can be reconstructed.</param>
-            /// <returns>Returns the reconstructed RecordableCommand object. If a 
-            /// RecordableCommand cannot be reconstructed, this method throws a 
+            /// <returns>Returns the reconstructed RecordableCommand object. If a
+            /// RecordableCommand cannot be reconstructed, this method throws a
             /// relevant exception.</returns>
             internal static RecordableCommand Deserialize(XmlElement element)
             {
@@ -216,12 +216,12 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// Call this static method to reconstruct a RecordableCommand from json 
-            /// string that contains command name - name of corresponding class inherited 
-            /// from RecordableCommand, - and all the arguments that are required by this 
+            /// Call this static method to reconstruct a RecordableCommand from json
+            /// string that contains command name - name of corresponding class inherited
+            /// from RecordableCommand, - and all the arguments that are required by this
             /// command.
             /// </summary>
-            /// <param name="jsonString">Json string that contains command name and all 
+            /// <param name="jsonString">Json string that contains command name and all
             /// its arguments.</param>
             /// <returns>Reconstructed RecordableCommand</returns>
             internal static RecordableCommand Deserialize(string jsonString)
@@ -243,10 +243,10 @@ namespace Dynamo.Models
             #region Public Command Properties
 
             /// <summary>
-            /// Some commands are fired at high frequency (e.g. dragging and window 
+            /// Some commands are fired at high frequency (e.g. dragging and window
             /// selection related commands), and can be simulated during playback by
-            /// issuing the final occurrence of the command. For example, window 
-            /// selection command is fired for each mouse-move event, but the end 
+            /// issuing the final occurrence of the command. For example, window
+            /// selection command is fired for each mouse-move event, but the end
             /// result will be same if only the final selection command is recorded.
             /// If this property is set to 'true', then only the last occurrence will
             /// be recorded for playback.
@@ -255,22 +255,22 @@ namespace Dynamo.Models
 
             /// <summary>
             /// This flag will be set to true only during playback. Derived classes
-            /// can use this to decide their actions accordingly. For example, 
-            /// UpdateModelValueCommand doesn't change the value of a property 
+            /// can use this to decide their actions accordingly. For example,
+            /// UpdateModelValueCommand doesn't change the value of a property
             /// during recording time, it is created for the sole purpose of being
             /// recorded. During playback, then UpdateModelValueCommand will update
-            /// the property that it is bound to. This is a runtime flag, it is not 
+            /// the property that it is bound to. This is a runtime flag, it is not
             /// serialized in anyway.
             /// </summary>
             [DataMember]
             internal bool IsInPlaybackMode { get; private set; }
 
             /// <summary>
-            /// This is an optional tag for each of the recorded commands in a 
-            /// command Xml file. A command can only be tagged from within a 
-            /// command Xml file manually, and a tag is useful for unit test 
-            /// verification passes. See PlaybackStateChangedEventArgs class for 
-            /// possible usage of command tags. If a command is not tagged, its 
+            /// This is an optional tag for each of the recorded commands in a
+            /// command Xml file. A command can only be tagged from within a
+            /// command Xml file manually, and a tag is useful for unit test
+            /// verification passes. See PlaybackStateChangedEventArgs class for
+            /// possible usage of command tags. If a command is not tagged, its
             /// default tag value is an empty string.
             /// </summary>
             [DataMember]
@@ -286,9 +286,9 @@ namespace Dynamo.Models
             /// calling a corresponding method on DynamoModel by passing itself as
             /// the only argument.
             /// </summary>
-            /// <param name="dynamoModel">The DynamoModel object on which 
+            /// <param name="dynamoModel">The DynamoModel object on which
             /// this command should be executed.</param>
-            /// 
+            ///
             protected abstract void ExecuteCore(DynamoModel dynamoModel);
 
             /// <summary>
@@ -296,17 +296,23 @@ namespace Dynamo.Models
             /// information into the XmlElement supplied to it. Typically the method
             /// is a direct mirror of DeserializeCore.
             /// </summary>
-            /// <param name="element">All arguments that are required for this 
-            /// command are written into this XmlElement. The information written 
+            /// <param name="element">All arguments that are required for this
+            /// command are written into this XmlElement. The information written
             /// here must be exactly what DeserializeCore method expects.</param>
-            /// 
+            ///
             protected abstract void SerializeCore(XmlElement element);
+
+            /// <summary>
+            /// This method provides derived class implementation of analytics
+            /// tracking, and only gets called if analytics tracking is enabled.
+            /// </summary>
+            internal virtual void TrackAnalytics() { }
 
             #endregion
         }
 
         /// <summary>
-        /// This class is base for those RecordableCommands that should have 
+        /// This class is base for those RecordableCommands that should have
         /// Guid that causes the problems during deserialization
         /// </summary>
         [DataContract]
@@ -378,7 +384,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="pauseDurationInMs">The duration to pause the playback in milliseconds.</param>
             public PausePlaybackCommand(int pauseDurationInMs)
@@ -426,10 +432,10 @@ namespace Dynamo.Models
             {
                 // Given a GUID in the form AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE,
                 // extract out only the AAAAAAAA part (we don't want the tag name
-                // to be that long, considering the chances of collision in the 
-                // same recorded XML file is near zero, and that these tags are 
+                // to be that long, considering the chances of collision in the
+                // same recorded XML file is near zero, and that these tags are
                 // usually renamed after they are recorded by a test developer).
-                // 
+                //
                 string guid = Guid.NewGuid().ToString();
                 guid = guid.Substring(0, guid.IndexOf('-'));
                 return string.Format("Tag-{0}", guid);
@@ -447,7 +453,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="xmlFilePath">The path to the file.</param>
             /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
@@ -496,6 +502,7 @@ namespace Dynamo.Models
             [DataMember]
             internal string XmlFilePath { get; private set; }
             internal bool ForceManualExecutionMode { get; private set; }
+            private DynamoModel dynamoModel;
 
             #endregion
 
@@ -503,6 +510,7 @@ namespace Dynamo.Models
 
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
+                this.dynamoModel = dynamoModel;
                 dynamoModel.OpenFileImpl(this);
             }
 
@@ -510,6 +518,27 @@ namespace Dynamo.Models
             {
                 var helper = new XmlElementHelper(element);
                 helper.SetAttribute("XmlFilePath", XmlFilePath);
+            }
+
+            internal override void TrackAnalytics()
+            {
+                // Log file open action and the number of nodes in the opened workspace
+                Dynamo.Logging.Analytics.TrackFileOperationEvent(
+                    XmlFilePath,
+                    Logging.Actions.Open,
+                    dynamoModel.CurrentWorkspace.Nodes.Count());
+
+                // If there are unresolved nodes in the opened workspace, log the node names and count
+                var unresolvedNodes = dynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>();
+                if (unresolvedNodes != null && unresolvedNodes.Any())
+                {
+                    Dynamo.Logging.Analytics.TrackEvent(
+                        Logging.Actions.Unresolved,
+                        Logging.Categories.NodeOperations,
+                        unresolvedNodes.Select(n => string.Format("{0}:{1}", n.LegacyAssembly, n.LegacyFullName))
+                            .Aggregate((x, y) => string.Format("{0}, {1}", x, y)),
+                        unresolvedNodes.Count());
+                }
             }
 
             #endregion
@@ -524,7 +553,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="showErrors">Should errors be shown?</param>
             /// <param name="cancelRun">True to cancel execution. False to execute.</param>
@@ -578,7 +607,7 @@ namespace Dynamo.Models
         public class ForceRunCancelCommand : RunCancelCommand
         {
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="showErrors">Should errors be shown?</param>
             /// <param name="cancelRun">True to cancel execution. False to execute.</param>
@@ -592,7 +621,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// A command used to mutate commands during testing. 
+        /// A command used to mutate commands during testing.
         /// </summary>
         public class MutateTestCommand : RecordableCommand
         {
@@ -636,7 +665,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="node"></param>
             /// <param name="x"></param>
@@ -652,7 +681,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="nodeName"></param>
@@ -669,7 +698,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="nodeName"></param>
@@ -730,7 +759,7 @@ namespace Dynamo.Models
 
             [DataMember]
             internal bool TransformCoordinates { get; private set; }
-            
+
             [DataMember]
             //Legacy properties
             public string Name { get; private set; }
@@ -768,6 +797,14 @@ namespace Dynamo.Models
                 }
             }
 
+            internal override void TrackAnalytics()
+            {
+                Dynamo.Logging.Analytics.TrackEvent(
+                    Logging.Actions.Create,
+                    Logging.Categories.NodeOperations,
+                    (Node != null) ? Node.GetOriginalName() : Name ?? "");
+            }
+
             #endregion
         }
 
@@ -778,7 +815,7 @@ namespace Dynamo.Models
         [DataContract]
         public class CreateAndConnectNodeCommand : ModelBasedRecordableCommand
         {
-            
+
             #region Public Class Methods
 
             /// <summary>
@@ -795,7 +832,7 @@ namespace Dynamo.Models
             /// new node to be created as downstream or upstream node wrt the existing node
             /// </param>
             /// <param name="addNewNodeToSelection">select the new node after it is created by default</param>
-            public CreateAndConnectNodeCommand(Guid newNodeGuid, Guid existingNodeGuid, string newNodeName, int outPortIndex, int inPortIndex, 
+            public CreateAndConnectNodeCommand(Guid newNodeGuid, Guid existingNodeGuid, string newNodeName, int outPortIndex, int inPortIndex,
                 double x, double y, bool createAsDownstreamNode, bool addNewNodeToSelection)
                 : base(new[] { newNodeGuid, existingNodeGuid })
             {
@@ -818,7 +855,7 @@ namespace Dynamo.Models
 
             [DataMember]
             internal int OutputPortIndex { get; private set; }
-            
+
             [DataMember]
             internal int InputPortIndex { get; private set; }
 
@@ -876,7 +913,7 @@ namespace Dynamo.Models
                 int outPortIndex = helper.ReadInteger("OutPortIndex");
                 int inPortIndex = helper.ReadInteger("InPortIndex");
 
-                return new CreateAndConnectNodeCommand(newNodeGuid, existingNodeGuid, newNodeName, outPortIndex, inPortIndex, 
+                return new CreateAndConnectNodeCommand(newNodeGuid, existingNodeGuid, newNodeName, outPortIndex, inPortIndex,
                     x, y, createAsDownstreamNode, addNewNodeToSelection);
             }
 
@@ -891,7 +928,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="nodeName"></param>
@@ -984,7 +1021,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="noteText"></param>
@@ -999,7 +1036,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="nodeIds"></param>
             /// <param name="noteText"></param>
@@ -1014,7 +1051,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="noteText"></param>
@@ -1088,7 +1125,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="modelGuid"></param>
             /// <param name="modifiers"></param>
@@ -1100,7 +1137,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="modelGuid"></param>
             /// <param name="modifiers"></param>
@@ -1111,7 +1148,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="modelGuids"></param>
             /// <param name="modifiers"></param>
@@ -1166,7 +1203,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="region"></param>
             /// <param name="isCrossSelection"></param>
@@ -1243,7 +1280,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="mouseCursor"></param>
             /// <param name="operation"></param>
@@ -1324,7 +1361,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="portIndex"></param>
@@ -1338,7 +1375,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="portIndex"></param>
@@ -1351,7 +1388,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="portIndex"></param>
@@ -1418,20 +1455,20 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="modelGuid"></param>
             [JsonConstructor]
             public DeleteModelCommand(string modelGuid) : base(new[] { Guid.Parse(modelGuid) }) { }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="modelGuid"></param>
             public DeleteModelCommand(Guid modelGuid) : base(new[] { modelGuid }) { }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="modelGuids"></param>
             public DeleteModelCommand(IEnumerable<Guid> modelGuids) : base(modelGuids) { }
@@ -1484,7 +1521,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="operation">The operation to perform.</param>
             public UndoRedoCommand(Operation operation)
@@ -1521,11 +1558,17 @@ namespace Dynamo.Models
                 helper.SetAttribute("CmdOperation", ((int)CmdOperation));
             }
 
+            internal override void TrackAnalytics()
+            {
+                Dynamo.Logging.Analytics.TrackCommandEvent(
+                    CmdOperation.ToString()); // "Undo" or "Redo"
+            }
+
             #endregion
         }
 
         /// <summary>
-        /// A command used 
+        /// A command used
         /// </summary>
         [DataContract]
         public class ModelEventCommand : ModelBasedRecordableCommand
@@ -1533,22 +1576,46 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             [JsonConstructor]
+            public ModelEventCommand(string modelGuid, string eventName, int value)
+                : base(new[] { Guid.Parse(modelGuid) })
+            {
+                EventName = eventName;
+                Value = value;
+            }
+
+         
             public ModelEventCommand(string modelGuid, string eventName)
                 : base(new[] { Guid.Parse(modelGuid) })
             {
                 EventName = eventName;
+                Value = 1;
             }
 
-            public ModelEventCommand(Guid modelGuid, string eventName)
+            public ModelEventCommand(Guid modelGuid, string eventName, int value)
                 : base(new[] { modelGuid })
             {
                 EventName = eventName;
+                Value = value;
+            }
+            public ModelEventCommand(Guid modelGuid, string eventName)
+               : base(new[] { modelGuid })
+            {
+                EventName = eventName;
+                Value = 1;
             }
 
-            public ModelEventCommand(IEnumerable<Guid> modelGuid, string eventName)
+            public ModelEventCommand(IEnumerable<Guid> modelGuid, string eventName, int value)
                 : base(modelGuid)
             {
                 EventName = eventName;
+                Value = value;
+            }
+
+            public ModelEventCommand(IEnumerable<Guid> modelGuid, string eventName)
+               : base(modelGuid)
+            {
+                EventName = eventName;
+                Value = 1;
             }
 
             internal static ModelEventCommand DeserializeCore(XmlElement element)
@@ -1556,7 +1623,8 @@ namespace Dynamo.Models
                 var helper = new XmlElementHelper(element);
                 var modelGuids = DeserializeGuid(element, helper);
                 string eventName = helper.ReadString("EventName");
-                return new ModelEventCommand(modelGuids, eventName);
+                int value = helper.ReadInteger("Value", 1);
+                return new ModelEventCommand(modelGuids, eventName, value);
             }
 
             #endregion
@@ -1565,6 +1633,9 @@ namespace Dynamo.Models
 
             [DataMember]
             public string EventName { get; private set; }
+
+            [DataMember]
+            public int Value { get; private set; }
 
             #endregion
 
@@ -1580,6 +1651,7 @@ namespace Dynamo.Models
                 base.SerializeCore(element);
                 var helper = new XmlElementHelper(element);
                 helper.SetAttribute("EventName", EventName);
+                helper.SetAttribute("Value", Value);
             }
 
             #endregion
@@ -1657,10 +1729,10 @@ namespace Dynamo.Models
 
                 Guid workspaceGuid = helper.ReadGuid("WorkspaceGuid", Guid.Empty);
 
-                // TODO: once recordable framework serialize workspace's GUID, 
-                // we should use the GUID that read from file instead of using 
-                // empty GUID. Empty GUID means the command will be executed on 
-                // the current workspace, but it may not be the desired target 
+                // TODO: once recordable framework serialize workspace's GUID,
+                // we should use the GUID that read from file instead of using
+                // empty GUID. Empty GUID means the command will be executed on
+                // the current workspace, but it may not be the desired target
                 // workspace.
                 workspaceGuid = Guid.Empty;
 
@@ -1785,7 +1857,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="name"></param>
@@ -1800,7 +1872,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="name"></param>
@@ -1874,7 +1946,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="modelIndex"></param>
             [JsonConstructor]
@@ -1922,7 +1994,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="annotationId"></param>
             /// <param name="annotationText"></param>
@@ -1943,7 +2015,7 @@ namespace Dynamo.Models
             }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="annotationId"></param>
             /// <param name="annotationText"></param>
@@ -2015,20 +2087,20 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="modelGuid"></param>
             [JsonConstructor]
             public UngroupModelCommand(string modelGuid) : base(new[] { Guid.Parse(modelGuid) }) { }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="modelGuid"></param>
             public UngroupModelCommand(Guid modelGuid) : base(new[] { modelGuid }) { }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="modelGuid"></param>
             public UngroupModelCommand(IEnumerable<Guid> modelGuid) : base(modelGuid) { }
@@ -2066,20 +2138,20 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="modelGuid"></param>
             [JsonConstructor]
             public AddModelToGroupCommand(string modelGuid) : base(new[] { Guid.Parse(modelGuid) }) { }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="modelGuid"></param>
             public AddModelToGroupCommand(Guid modelGuid) : base(new[] { modelGuid }) { }
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="modelGuid"></param>
             public AddModelToGroupCommand(IEnumerable<Guid> modelGuid) : base(modelGuid) { }
@@ -2117,7 +2189,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="name"></param>
             /// <param name="description"></param>
@@ -2137,7 +2209,7 @@ namespace Dynamo.Models
                 {
                     throw new ArgumentNullException("No IDs were deserialized during load of preset creation command");
                 }
-                
+
                 return new AddPresetCommand(helper.ReadString("name"), helper.ReadString("description"),modelGuids);
             }
 
@@ -2165,7 +2237,7 @@ namespace Dynamo.Models
                 var helper = new XmlElementHelper(element);
                 helper.SetAttribute("name", PresetStateName);
                 helper.SetAttribute("description", PresetStateDescription);
-               
+
             }
               #endregion
         }
@@ -2179,7 +2251,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             /// <param name="workspaceID"></param>
             /// <param name="stateID"></param>
@@ -2204,7 +2276,7 @@ namespace Dynamo.Models
             internal Guid StateID { get; set; }
             [DataMember]
             internal Guid WorkSpaceID { get; set; }
-          
+
             #endregion
 
             #region Protected Overridable Methods
@@ -2229,33 +2301,33 @@ namespace Dynamo.Models
     // public class XxxYyyCommand : RecordableCommand
     // {
     //     #region Public Class Methods
-    // 
+    //
     //     public XxxYyyCommand()
     //     {
     //     }
-    // 
+    //
     //     internal static XxxYyyCommand DeserializeCore(XmlElement element)
     //     {
     //         throw new NotImplementedException();
     //     }
-    // 
+    //
     //     #endregion
-    // 
+    //
     //     #region Public Command Properties
     //     #endregion
-    // 
+    //
     //     #region Protected Overridable Methods
-    // 
+    //
     //     protected override void ExecuteCore(DynamoModel dynamoModel)
     //     {
     //         throw new NotImplementedException();
     //     }
-    // 
+    //
     //     protected override void SerializeCore(XmlElement element)
     //     {
     //         throw new NotImplementedException();
     //     }
-    // 
+    //
     //     #endregion
     // }
 }

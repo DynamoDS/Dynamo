@@ -1,13 +1,12 @@
-﻿using System.Collections;
+﻿using CoreNodeModels;
+using CoreNodeModels.Input;
+using Dynamo.Graph.Nodes;
+using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using CoreNodeModels;
-using CoreNodeModels.Input;
-using Dynamo.Graph.Nodes;
-using NUnit.Framework;
-
 using String = System.String;
 
 
@@ -399,6 +398,15 @@ namespace Dynamo.Tests
             {
                 Assert.IsTrue(e is System.Xml.XmlException);
             }
+        }
+
+        [Test]
+        public void CanOpenGoodFileWithoutExtension()
+        {
+            var examplePath = Path.Combine(TestDirectory, @"core\files");
+            string openPath = Path.Combine(examplePath, "Sphere");
+            OpenModel(openPath);
+            BeginRun();
         }
 
         [Test]

@@ -6,6 +6,8 @@
                       xmlns:interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                       xmlns:views="clr-namespace:Dynamo.UI.Views;assembly=DynamoCoreWpf"
                       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+                      xmlns:fa="http://schemas.fontawesome.io/icons/"
+                      xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
                       xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf">
 
     <!-- Templates
@@ -29,109 +31,110 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
-
     <DataTemplate DataType="{x:Type viewModels:PortViewModel}">
-      
-        <Grid Name="mainGrid"
-              Background="Transparent"
-              IsHitTestVisible="True"
-              Margin="{Binding Path=MarginThickness}"
-              Height="{Binding Path=Height}"
-              ToolTipService.ShowDuration="60000"
-              IsEnabled="{Binding Path=IsEnabled}"
-             >
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid
+                Name="mainGrid"
+                Grid.Column="0"
+                Background="Transparent"
+                IsHitTestVisible="True"
+                Margin="{Binding Path=MarginThickness}"
+                Height="{Binding Path=Height}"
+                ToolTipService.ShowDuration="60000"
+                IsEnabled="{Binding Path=IsEnabled}">
 
-            <interactivity:Interaction.Triggers>
-                <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
-                    <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}" />
-                </views:HandlingEventTrigger>
-            </interactivity:Interaction.Triggers>
+                <interactivity:Interaction.Triggers>
+                    <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}" />
+                    </views:HandlingEventTrigger>
+                </interactivity:Interaction.Triggers>
 
-            <Grid.ContextMenu>
-                <ContextMenu Visibility="{Binding Path=DefaultValueEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <MenuItem Header="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}"
-                              IsCheckable="True"
-                              IsEnabled="{Binding Path=DefaultValueEnabled, Mode=OneWay}"
-                              IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay}" />
-                </ContextMenu>
-            </Grid.ContextMenu>
+                <Grid.ContextMenu>
+                    <ContextMenu Visibility="{Binding Path=DefaultValueEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <MenuItem
+                            Header="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}"
+                            IsCheckable="True"
+                            IsEnabled="{Binding Path=DefaultValueEnabled, Mode=OneWay}"
+                            IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay}" />
+                    </ContextMenu>
+                </Grid.ContextMenu>
 
-            <Grid.ToolTip>
-                <dynui:DynamoToolTip AttachmentSide="{Binding Path=PortType, Converter={StaticResource PortToAttachmentConverter}}"
-                         Style="{DynamicResource ResourceKey=SLightToolTip}">
-                    <Grid>
-                        <TextBlock Text="{Binding Path=ToolTipContent}"></TextBlock>
-                    </Grid>
-                </dynui:DynamoToolTip>
-            </Grid.ToolTip>
+                <Grid.ToolTip>
+                    <dynui:DynamoToolTip AttachmentSide="{Binding Path=PortType, Converter={StaticResource PortToAttachmentConverter}}" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                        <Grid>
+                            <TextBlock Text="{Binding Path=ToolTipContent}"></TextBlock>
+                        </Grid>
+                    </dynui:DynamoToolTip>
+                </Grid.ToolTip>
 
-            <!--
+                <!--
                 We could have changed the Grid opacity directly here but didn't
                 The reason is that if the opacity of the Grid is modified, the 
                 internal text box will also appear semi-transparent. This is why an 
                 intermediary Border is required just for mouse-over highlighting.
             -->
-            
-            <!--
+
+                <!--
                Port is contained in another rectangle to ensure that hit area is extended outside the grid.
                Minimum Width is specified on the rectangle, rather than the grid. Otherwise, if the port's width is less than
                the grid's width, the outside rectangle is shrinked to fit the grid. Port snapping cannot occur in that case 
                as no mouse events are generated.This happens only for codeblock node. 
             -->
-            <Rectangle Fill="Transparent"
-                       SnapsToDevicePixels="True"
-                       IsHitTestVisible="{Binding IsHitTestVisible}">
-                <interactivity:Interaction.Triggers>
-                    <views:HandlingEventTrigger EventName="MouseEnter">
-                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
-                    </views:HandlingEventTrigger>
-                    <views:HandlingEventTrigger EventName="MouseLeave">
-                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
-                    </views:HandlingEventTrigger>
-                    <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
-                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownCommand}" CommandParameter="{Binding}" />
-                    </views:HandlingEventTrigger>
-                </interactivity:Interaction.Triggers>
-                <Rectangle.Margin>
-                    <MultiBinding Converter="{StaticResource SnapRegionMarginConverter}">
-                        <Binding ElementName="portNameTb" Path="ActualWidth"/>
-                        <Binding Path="PortModel"/>
-                    </MultiBinding>
-                </Rectangle.Margin>
-            </Rectangle>
-            <Rectangle Name="highlightOverlay"
-                       Fill="White"
+                <Rectangle
+                    Fill="Transparent"
+                    SnapsToDevicePixels="True"
+                    IsHitTestVisible="{Binding IsHitTestVisible}">
+
+                    <interactivity:Interaction.Triggers>
+                        <views:HandlingEventTrigger EventName="MouseEnter">
+                            <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
+                        </views:HandlingEventTrigger>
+                        <views:HandlingEventTrigger EventName="MouseLeave">
+                            <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
+                        </views:HandlingEventTrigger>
+                        <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
+                            <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownCommand}" CommandParameter="{Binding}" />
+                        </views:HandlingEventTrigger>
+                    </interactivity:Interaction.Triggers>
+                    <Rectangle.Margin>
+                        <MultiBinding Converter="{StaticResource SnapRegionMarginConverter}">
+                            <Binding ElementName="portNameTb" Path="ActualWidth"/>
+                            <Binding Path="PortModel"/>
+                        </MultiBinding>
+                    </Rectangle.Margin>
+                </Rectangle>
+                <Rectangle Name="highlightOverlay"
+                       Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlighColorConverter}}"
                        MinWidth="26"
                        Margin="0,0,0,1"
                        IsHitTestVisible="True">
-                <interactivity:Interaction.Triggers>
-                    <views:HandlingEventTrigger EventName="MouseEnter">
-                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
-                    </views:HandlingEventTrigger>
-                    <views:HandlingEventTrigger EventName="MouseLeave">
-                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
-                    </views:HandlingEventTrigger>                   
-                </interactivity:Interaction.Triggers>
-                <Rectangle.Style>
-                    <Style TargetType="{x:Type Rectangle}">
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver"
-                                     Value="True">
-                                <Setter Property="Opacity"
-                                        Value="1.0"></Setter>                               
-                            </Trigger>
-                            <Trigger Property="IsMouseOver"
-                                     Value="False">
-                                <Setter Property="Opacity"
-                                        Value="0.5"></Setter>
-                               
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Rectangle.Style>
-            </Rectangle>
-            
-            <TextBlock Name="portNameTb"
+                    <interactivity:Interaction.Triggers>
+                        <views:HandlingEventTrigger EventName="MouseEnter">
+                            <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
+                        </views:HandlingEventTrigger>
+                        <views:HandlingEventTrigger EventName="MouseLeave">
+                            <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
+                        </views:HandlingEventTrigger>
+                    </interactivity:Interaction.Triggers>
+                    <Rectangle.Style>
+                        <Style TargetType="{x:Type Rectangle}">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Opacity" Value="1.0"></Setter>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="False">
+                                    <Setter Property="Opacity" Value="0.5"></Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
+
+                <TextBlock Name="portNameTb"
                        Width="Auto"
                        Style="{StaticResource SZoomFadeText}"
                        Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter} }"
@@ -142,10 +145,103 @@
                        IsHitTestVisible="False"
                        Background="{x:Null}"
                        Foreground="#555555">
-            </TextBlock>
+                </TextBlock>
+            </Grid>
 
+            <Grid Name="useLevelGrid"
+                  Cursor="Hand"
+                  Grid.Column="1"
+                  Background="Transparent"
+                  HorizontalAlignment="Right"
+                  IsHitTestVisible="True"
+                  Margin="{Binding Path=MarginThickness}"
+                  Height="{Binding Path=Height}"
+                  ToolTipService.ShowDuration="60000"
+                  Visibility="{Binding Path=UseLevelVisibility}">
+                <Rectangle
+                    Name="highlightOverlayForArrow" 
+                    Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlighColorConverter}}"
+                    MinWidth="12"
+                    Margin="0,0,0,1"
+                    IsHitTestVisible="True">
+                    <interactivity:Interaction.Triggers>
+                        <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
+                            <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownOnLevelCommand}" CommandParameter="{Binding}" />
+                        </views:HandlingEventTrigger>
+                    </interactivity:Interaction.Triggers>
+                    <Rectangle.Style>
+                        <Style TargetType="{x:Type Rectangle}">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Opacity" Value="1.0"></Setter>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="False">
+                                    <Setter Property="Opacity" Value="0.5"></Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
+                <StackPanel Orientation="Horizontal">
+                    <dynui:UseLevelSpinner x:Name="useLevelSpinner"
+                                           VerticalAlignment="Center"
+                                           Width="45"
+                                           Height="16"
+                                           Level="{Binding Path=Level, Mode=TwoWay}"
+                                           KeepListStructure="{Binding Path=ShouldKeepListStructure}"
+                                           Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
+                    <fa:FontAwesome Icon="ChevronRight"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    IsHitTestVisible="False"
+                                    Background="{x:Null}"
+                                    Foreground="#555555"/>
+                </StackPanel>
+                <dynui:UseLevelPopup
+                    Name="MyPopup"
+                    Placement="Right"
+                    AllowsTransparency="True"
+                    IsOpen="{Binding Path=ShowUseLevelMenu,diag:PresentationTraceSources.TraceLevel=High}"
+                    StaysOpen="False">
+                    <Grid Background="#e5e2de">
+                        <Grid.Resources>
+                            <ResourceDictionary>
+                                <Style TargetType="CheckBox">
+                                    <Setter Property="FontFamily" Value="{StaticResource OpenSansRegular}"/>
+                                    <Setter Property="Foreground" Value="#555555"/>
+                                    <Setter Property="FontSize" Value="13"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="false">
+                                            <Setter Property="Foreground" Value="#999999"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ResourceDictionary>
+                        </Grid.Resources>
+                        <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="5" Padding="5" Background="#CBC6BE">
+                            <StackPanel>
+                                <CheckBox 
+                                    Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
+                                    IsChecked="{Binding Path=UseLevels, Mode=TwoWay}"
+                                    Name="UseLevel"/>
+                                <Separator/>
+                                <CheckBox
+                                    Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}"
+                                    IsChecked="{Binding Path=ShouldKeepListStructure, Mode=TwoWay}"
+                                    IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}"/>
+                                <TextBlock 
+                                    FontFamily="{StaticResource OpenSansRegular}" 
+                                    FontSize="10" 
+                                    Foreground="#999999" 
+                                    Focusable="False" 
+                                    Padding="20, 0, 0, 0"
+                                    Text="{x:Static p:Resources.UseLevelKeepListStructureHint}"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </dynui:UseLevelPopup>
+            </Grid>
         </Grid>
-    
     </DataTemplate>
 
 </ResourceDictionary>

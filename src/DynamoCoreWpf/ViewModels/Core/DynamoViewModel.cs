@@ -216,6 +216,8 @@ namespace Dynamo.ViewModels
                 }
 
                 showStartPage = value;
+                if (showStartPage) Logging.Analytics.TrackScreenView("StartPage");
+
                 RaisePropertyChanged("ShowStartPage");
                 if (DisplayStartPageCommand != null)
                     DisplayStartPageCommand.RaiseCanExecuteChanged();
@@ -254,6 +256,24 @@ namespace Dynamo.ViewModels
             {
                 model.PreferenceSettings.ShowPreviewBubbles = value;
                 RaisePropertyChanged("ShowPreviewBubbles");
+            }
+        }
+
+        /// <summary>
+        /// Indicates whether to make T-Spline nodes (under ProtoGeometry.dll) discoverable
+        /// in the node search library.
+        /// </summary>
+        public bool EnableTSpline
+        {
+            get
+            {
+                return !PreferenceSettings.NamespacesToExcludeFromLibrary.Contains(
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline");
+            }
+            set
+            {
+                model.HideUnhideNamespace(!value,
+                    "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.TSpline");
             }
         }
 
@@ -528,6 +548,8 @@ namespace Dynamo.ViewModels
         {
             watch3DViewModel.Setup(this, factory);
             watch3DViewModels.Add(watch3DViewModel);
+            watch3DViewModel.Active = PreferenceSettings
+                .GetIsBackgroundPreviewActive(watch3DViewModel.PreferenceWatchName);
             RaisePropertyChanged("Watch3DViewModels");
         }
 
@@ -1082,6 +1104,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Returns the file-save dialog with customized file types of Dynamo.
+        /// </summary>
+        /// <param name="workspace"></param>
+        /// <returns>A customized file-save dialog</returns>
         public FileDialog GetSaveDialog(WorkspaceModel workspace)
         {
             FileDialog fileDialog = new SaveFileDialog
@@ -1142,20 +1169,23 @@ namespace Dynamo.ViewModels
             {
                 if (!DynamoModel.IsTestMode)
                 {
-                    // Catch all the IO exceptions here. The message provided by .Net is clear enough to indicate the problem in this case.
-                    if (e is IOException)
+                    string commandString = String.Format(Resources.MessageErrorOpeningFileGeneral);
+                    string errorMsgString;
+                    // Catch all the IO exceptions and file access here. The message provided by .Net is clear enough to indicate the problem in this case.
+                    if (e is IOException || e is UnauthorizedAccessException)
                     {
-                        System.Windows.MessageBox.Show(String.Format(e.Message, xmlFilePath));
+                        errorMsgString = String.Format(e.Message, xmlFilePath);
                     }
                     else if (e is System.Xml.XmlException)
                     {
-                        System.Windows.MessageBox.Show(String.Format(Resources.MessageFailedToOpenCorruptedFile, xmlFilePath));
+                        errorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, xmlFilePath);
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show(String.Format(Resources.MessageUnkownErrorOpeningFile, xmlFilePath));
+                        errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, xmlFilePath);
                     }
-                    model.Logger.Log(e);
+                    model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
+                    System.Windows.MessageBox.Show(errorMsgString);
                 }
                 else
                 {
@@ -1173,7 +1203,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Present the open dialogue and open the workspace that is selected.
+        /// Present the open dialog and open the workspace that is selected.
         /// </summary>
         /// <param name="parameter"></param>
         private void ShowOpenDialogAndOpenResult(object parameter)
@@ -1240,7 +1270,14 @@ namespace Dynamo.ViewModels
         private void Save(object parameter)
         {
             if (!String.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
-                SaveAs(Model.CurrentWorkspace.FileName);
+            {
+                // For read-only file, re-direct save to save-as
+                if (this.CurrentSpace.IsReadOnly)
+                    ShowSaveDialogAndSaveResult(parameter);
+                else
+                    SaveAs(Model.CurrentWorkspace.FileName);      
+            }
+                
         }
 
         private bool CanSave(object parameter)
@@ -1275,7 +1312,15 @@ namespace Dynamo.ViewModels
         /// <param name="path">The path to save to</param>
         internal void SaveAs(string path)
         {
-            Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
+            try
+            {
+                Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
+            }
+            catch (System.Exception ex)
+            {
+                if (ex is IOException || ex is System.UnauthorizedAccessException)
+                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+            }
         }
 
         /// <summary>
@@ -1746,6 +1791,9 @@ namespace Dynamo.ViewModels
         public void SaveImage(object parameters)
         {
             OnRequestSaveImage(this, new ImageSaveEventArgs(parameters.ToString()));
+
+            Dynamo.Logging.Analytics.TrackCommandEvent("ImageCapture",
+                "NodeCount", CurrentSpace.Nodes.Count());
         }
 
         internal bool CanSaveImage(object parameters)
@@ -2086,6 +2134,8 @@ namespace Dynamo.ViewModels
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 BackgroundPreviewViewModel.ExportToSTL(_fileDialog.FileName, HomeSpace.Name);
+
+                Dynamo.Logging.Analytics.TrackCommandEvent("ExportToSTL");
             }
         }
 
@@ -2200,6 +2250,8 @@ namespace Dynamo.ViewModels
             // ShutdownParams.CloseDynamoView member for details).
             if (shutdownParams.CloseDynamoView)
                 OnRequestClose(this, EventArgs.Empty);
+
+            BackgroundPreviewViewModel.Dispose();
 
             model.ShutDown(shutdownParams.ShutdownHost);
             if (shutdownParams.ShutdownHost)

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReportParams>
+  <Source>Snapshot.dcvr</Source>
+  <Output>CoverageReport.html</Output>
+  <ReportType>html</ReportType>
+</ReportParams>

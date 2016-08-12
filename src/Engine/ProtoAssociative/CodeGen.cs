@@ -716,26 +716,6 @@ namespace ProtoAssociative
             }
         }
 
-        private void InferDFSTraverse(AssociativeNode node, ref ProtoCore.Type inferedType)
-        {
-            if (node is IdentifierNode)
-            {
-                IdentifierNode t = node as IdentifierNode;
-                if (core.TypeSystem.IsHigherRank(t.datatype.UID, inferedType.UID))
-                {
-                    ProtoCore.Type type = new ProtoCore.Type();
-                    type.UID = t.datatype.UID;
-                    inferedType = type;
-                }
-            }
-            else if (node is BinaryExpressionNode)
-            {
-                BinaryExpressionNode b = node as BinaryExpressionNode;
-                InferDFSTraverse(b.LeftNode, ref inferedType);
-                InferDFSTraverse(b.RightNode, ref inferedType);
-            }
-        }
-
         public ProtoCore.DSASM.ProcedureNode GetProcedureFromInstance(int classScope, ProtoCore.AST.AssociativeAST.FunctionCallNode funcCall)
         {
             string procName = funcCall.Function.Name;
@@ -2058,12 +2038,6 @@ namespace ProtoAssociative
             }
 
             return false;
-        }
-
-        public void Emit(ProtoCore.AST.AssociativeAST.DependencyTracker tracker)
-        {
-            // TODO Jun: Only HydrogenRunner uses this. Consider removing if HydrogenRunner becomes redundant
-            throw new NotSupportedException();
         }
 
         private int EmitExpressionInterpreter(ProtoCore.AST.Node codeBlockNode)

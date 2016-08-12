@@ -4016,9 +4016,9 @@ x8 = Flatten({null}) ;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x1", null);
-            thisTest.Verify("x2", null);
-            thisTest.Verify("x3", null);
-            thisTest.Verify("x4", null);
+            thisTest.Verify("x2", 3);
+            thisTest.Verify("x3", 3.5);
+            thisTest.Verify("x4", true);
             thisTest.Verify("x6", null);
             thisTest.Verify("x8", new Object[] { null });
         }
@@ -4044,7 +4044,7 @@ test =
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("test", new Object[] { null, null, null, null, null, new Object[] { null } });
+            thisTest.Verify("test", new Object[] { null, 3, 3.5, true, null, new Object[] { null } });
         }
 
         [Test]
@@ -4070,7 +4070,7 @@ def foo ()
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("test", new Object[] { null, null, null, null, null, new Object[] { null } });
+            thisTest.Verify("test", new Object[] { null, 3, 3.5, true, null, new Object[] { null } });
         }
 
         [Test]

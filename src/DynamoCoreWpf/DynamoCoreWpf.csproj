@@ -83,6 +83,11 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="ProtoGeometry, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Y:\Dynamo\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net45\RestSharp.dll</HintPath>
       <Private>True</Private>
@@ -156,6 +161,8 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="Controls\UseLevelPopup.cs" />
+    <Compile Include="Controls\UseLevelSpinner.cs" />
     <Compile Include="Extensions\IViewExtension.cs" />
     <Compile Include="Extensions\IViewExtensionLoader.cs" />
     <Compile Include="Extensions\IViewExtensionManager.cs" />
@@ -167,6 +174,7 @@
     <Compile Include="Extensions\ViewLoadedParams.cs" />
     <Compile Include="Extensions\ViewExtensionDefinition.cs" />
     <Compile Include="Extensions\ViewStartupParams.cs" />
+    <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />
     <Compile Include="Interfaces\IBrandingResourceProvider.cs" />
@@ -286,6 +294,7 @@
     <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
+    <Compile Include="ViewModels\Preview\CompactBubbleViewModel.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
@@ -325,6 +334,9 @@
     <Compile Include="ViewModels\Watch3D\DynamoEffectsManager.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoRenderTechniquesManager.cs" />
     <Compile Include="Views\Preview\CameraExtensions.cs" />
+    <Compile Include="Views\Preview\PreviewCompactView.xaml.cs">
+      <DependentUpon>PreviewCompactView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Preview\Watch3DSettingsControl.xaml.cs">
       <DependentUpon>Watch3DSettingsControl.xaml</DependentUpon>
     </Compile>
@@ -1096,6 +1108,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Preview\PreviewCompactView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Preview\Watch3DSettingsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1199,6 +1215,7 @@
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
       <Project>{c2595b04-856d-40ae-8b99-4804c7a70708}</Project>
@@ -1269,6 +1286,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="UI\Images\bubble-arrow.png" />
+    <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Content Include="ViewModels\Watch3D\Shaders\BillboardText.fx" />
     <Content Include="ViewModels\Watch3D\Shaders\Common.fx" />
     <Content Include="ViewModels\Watch3D\Shaders\Custom.fx" />

@@ -1,29 +1,33 @@
-<Workspace Version="0.6.3.17491" X="42.3998664008251" Y="7.52311111111084" zoom="0.7" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="42.3998664008251" Y="7.52311111111084" zoom="0.7" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.StringFilename type="Dynamo.Nodes.StringFilename" guid="06189b89-84bf-413c-91a1-9d6629810394" nickname="File Path" x="50.8571428571429" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="..\..\..\test\core\excel\mixedNumbersAndStrings.xlsx" />
-    </Dynamo.Nodes.StringFilename>
-    <Dynamo.Nodes.ReadExcelFile type="Dynamo.Nodes.ReadExcelFile" guid="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" nickname="Open Excel Workbook" x="360.143047998821" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="83b11652-871a-4ae3-9532-efea852b78b2" nickname="Watch" x="1153.00019085596" y="132.948571428571" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.AddExcelWorksheetToWorkbook type="Dynamo.Nodes.AddExcelWorksheetToWorkbook" guid="dd32679d-1853-41a0-ab46-397b3ea1eeaf" nickname="Add Excel Worksheet To Workbook" x="598.71447657025" y="74.0074603174607" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="6e95ab45-b82b-4d30-b5b0-3087a51394d2" nickname="String" x="323.000190855964" y="236.864603174604" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <CoreNodeModels.Input.Filename guid="06189b89-84bf-413c-91a1-9d6629810394" type="CoreNodeModels.Input.Filename" nickname="File Path" x="50.8571428571429" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.String>..\..\..\test\core\excel\mixedNumbersAndStrings.xlsx</System.String>
+    </CoreNodeModels.Input.Filename>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Excel.ReadExcelFile" x="360.143047998821" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSOffice.dll" function="DSOffice.Excel.ReadExcelFile@string" />
+    <CoreNodeModels.Watch guid="83b11652-871a-4ae3-9532-efea852b78b2" type="CoreNodeModels.Watch" nickname="Watch" x="1153.00019085596" y="132.948571428571" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="dd32679d-1853-41a0-ab46-397b3ea1eeaf" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Excel.AddExcelWorksheetToWorkbook" x="598.71447657025" y="74.0074603174607" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSOffice.dll" function="DSOffice.Excel.AddExcelWorksheetToWorkbook@DSOffice.WorkBook,string" />
+    <CoreNodeModels.Input.StringInput guid="6e95ab45-b82b-4d30-b5b0-3087a51394d2" type="CoreNodeModels.Input.StringInput" nickname="String" x="323.000190855964" y="236.864603174604" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.String>CoolNewWorksheet</System.String>
       <System.String value="CoolNewWorksheet" />
-    </Dynamo.Nodes.StringInput>
-    <Dynamo.Nodes.GetExcelWorksheetByName type="Dynamo.Nodes.GetExcelWorksheetByName" guid="2bfaeff8-063f-4d1c-8001-7208c90a05e9" nickname="Get Excel Worksheet By Name" x="643.000190855964" y="251.150317460318" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    </CoreNodeModels.Input.StringInput>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="2bfaeff8-063f-4d1c-8001-7208c90a05e9" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Excel.GetExcelWorksheetByName" x="643.000190855964" y="251.150317460318" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSOffice.dll" function="DSOffice.Excel.GetExcelWorksheetByName@DSOffice.WorkBook,string" />
     <Dynamo.Nodes.Begin type="Dynamo.Nodes.Begin" guid="6c4dc838-22e9-4fa3-acbc-d7423317db8f" nickname="Perform All" x="870.143047998821" y="139.721746031746" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <Input name="expr1" />
       <Input name="expr2" />
     </Dynamo.Nodes.Begin>
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="06189b89-84bf-413c-91a1-9d6629810394" start_index="0" end="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" start_index="0" end="dd32679d-1853-41a0-ab46-397b3ea1eeaf" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" start_index="0" end="2bfaeff8-063f-4d1c-8001-7208c90a05e9" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="dd32679d-1853-41a0-ab46-397b3ea1eeaf" start_index="0" end="6c4dc838-22e9-4fa3-acbc-d7423317db8f" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="6e95ab45-b82b-4d30-b5b0-3087a51394d2" start_index="0" end="dd32679d-1853-41a0-ab46-397b3ea1eeaf" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="6e95ab45-b82b-4d30-b5b0-3087a51394d2" start_index="0" end="2bfaeff8-063f-4d1c-8001-7208c90a05e9" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="2bfaeff8-063f-4d1c-8001-7208c90a05e9" start_index="0" end="6c4dc838-22e9-4fa3-acbc-d7423317db8f" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="6c4dc838-22e9-4fa3-acbc-d7423317db8f" start_index="0" end="83b11652-871a-4ae3-9532-efea852b78b2" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="06189b89-84bf-413c-91a1-9d6629810394" start_index="0" end="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" start_index="0" end="dd32679d-1853-41a0-ab46-397b3ea1eeaf" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" start_index="0" end="2bfaeff8-063f-4d1c-8001-7208c90a05e9" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="dd32679d-1853-41a0-ab46-397b3ea1eeaf" start_index="0" end="6c4dc838-22e9-4fa3-acbc-d7423317db8f" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="6e95ab45-b82b-4d30-b5b0-3087a51394d2" start_index="0" end="dd32679d-1853-41a0-ab46-397b3ea1eeaf" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="6e95ab45-b82b-4d30-b5b0-3087a51394d2" start_index="0" end="2bfaeff8-063f-4d1c-8001-7208c90a05e9" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="2bfaeff8-063f-4d1c-8001-7208c90a05e9" start_index="0" end="6c4dc838-22e9-4fa3-acbc-d7423317db8f" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="6c4dc838-22e9-4fa3-acbc-d7423317db8f" start_index="0" end="83b11652-871a-4ae3-9532-efea852b78b2" end_index="0" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

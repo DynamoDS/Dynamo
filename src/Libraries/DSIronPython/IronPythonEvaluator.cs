@@ -25,6 +25,11 @@ namespace DSIronPython
     [IsVisibleInDynamoLibrary(false)]
     public static class IronPythonEvaluator
     {
+        /// <summary> stores a copy of the previously executed code</summary>
+        private static string prev_code { get; set; }
+        /// <summary> stores a copy of the previously compiled engine</summary>
+        private static ScriptSource prev_script { get; set; }
+
         /// <summary>
         ///     Executes a Python script with custom variable names. Script may be a string
         ///     read from a file, for example. Pass a list of names (matching the variable
@@ -39,10 +44,18 @@ namespace DSIronPython
             IList bindingNames,
             [ArbitraryDimensionArrayImport] IList bindingValues)
         {
-            var engine = Python.CreateEngine();
-            var scope = engine.CreateScope();
+            if (code != prev_code)
+            {
+                ScriptSource script = Python.CreateEngine().CreateScriptSourceFromString(code);
+                script.Compile();
+                prev_script = script;
+                prev_code = code;
+            }
 
-            var amt = Math.Min(bindingNames.Count, bindingValues.Count);
+            ScriptEngine engine = prev_script.Engine;
+            ScriptScope scope = engine.CreateScope();
+
+            int amt = Math.Min(bindingNames.Count, bindingValues.Count);
 
             for (int i = 0; i < amt; i++)
             {
@@ -52,7 +65,7 @@ namespace DSIronPython
             try
             {
                 OnEvaluationBegin(engine, scope, code, bindingValues);
-                engine.CreateScriptSourceFromString(code).Execute(scope);
+                prev_script.Execute(scope);
             }
             catch (Exception e)
             {

@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Dynamo.Engine;
+using Dynamo.Exceptions;
+using NUnit.Framework;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Dynamo.Engine;
-using Dynamo.Models;
-using Dynamo.Exceptions;
-
-using NUnit.Framework;
 
 namespace Dynamo.Tests
 {

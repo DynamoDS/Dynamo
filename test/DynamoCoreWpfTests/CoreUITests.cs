@@ -437,6 +437,47 @@ namespace DynamoCoreWpfTests
 
         #endregion
 
+        [Test,RequiresSTA]
+        [Category("DynamoUI")]
+        public void PreferenceSetting_BackgroundPreview_1_0API()
+        {
+            bool expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
+            ViewModel.ToggleFullscreenWatchShowing(null);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
+          
+
+            expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
+            ViewModel.ToggleFullscreenWatchShowing(null);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
+
+            #region Save And Load of PreferenceSettings
+
+            // Test if variable can be serialize and deserialize without any issue
+            string tempPath = System.IO.Path.GetTempPath();
+            tempPath = Path.Combine(tempPath, "userPreference.xml");
+
+            // Force inital state
+            PreferenceSettings initalSetting = new PreferenceSettings();
+            PreferenceSettings resultSetting;
+
+            initalSetting.IsBackgroundPreviewActive = true;
+
+            initalSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(resultSetting.IsBackgroundPreviewActive, initalSetting.IsBackgroundPreviewActive);
+            #endregion
+
+            #region Second Test
+            initalSetting.IsBackgroundPreviewActive = false;
+
+            initalSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(resultSetting.IsBackgroundPreviewActive, initalSetting.IsBackgroundPreviewActive);
+            #endregion
+        }
+
         #region PreferenceSettings
         [Test, RequiresSTA]
         [Category("DynamoUI")]
@@ -445,13 +486,15 @@ namespace DynamoCoreWpfTests
             // Test Case to ensure that the link for these persistent variable
             // between DynamoViewModel, Model is not broken or replaced.
             #region BackgroundPreviewActive
-            bool expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
-            ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
 
-            expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
+            var backgroundPreviewName = ViewModel.BackgroundPreviewViewModel.PreferenceWatchName;
+            bool expectedValue = !ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName);
             ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName));
+
+            expectedValue = !ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName);
+            ViewModel.ToggleFullscreenWatchShowing(null);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName));
             #endregion
 
             #region ConsoleHeight
@@ -511,12 +554,13 @@ namespace DynamoCoreWpfTests
 
             initalSetting.ConnectorType = ConnectorType.BEZIER;
             initalSetting.ConsoleHeight = 100;
-            initalSetting.IsBackgroundPreviewActive = true;
+            initalSetting.SetIsBackgroundPreviewActive(backgroundPreviewName, true);
 
             initalSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
-            Assert.AreEqual(resultSetting.IsBackgroundPreviewActive, initalSetting.IsBackgroundPreviewActive);
+            Assert.AreEqual(resultSetting.GetIsBackgroundPreviewActive(backgroundPreviewName),
+                initalSetting.GetIsBackgroundPreviewActive(backgroundPreviewName));
             Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
             Assert.AreEqual(resultSetting.ConsoleHeight, initalSetting.ConsoleHeight);
             #endregion
@@ -524,12 +568,13 @@ namespace DynamoCoreWpfTests
             #region Second Test
             initalSetting.ConnectorType = ConnectorType.POLYLINE;
             initalSetting.ConsoleHeight = 0;
-            initalSetting.IsBackgroundPreviewActive = false;
+            initalSetting.SetIsBackgroundPreviewActive(backgroundPreviewName, false);
 
             initalSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
-            Assert.AreEqual(resultSetting.IsBackgroundPreviewActive, initalSetting.IsBackgroundPreviewActive);
+            Assert.AreEqual(resultSetting.GetIsBackgroundPreviewActive(backgroundPreviewName),
+                initalSetting.GetIsBackgroundPreviewActive(backgroundPreviewName));
             Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
             Assert.AreEqual(resultSetting.ConsoleHeight, initalSetting.ConsoleHeight);
             #endregion

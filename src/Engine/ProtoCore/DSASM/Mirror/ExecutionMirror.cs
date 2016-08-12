@@ -46,11 +46,6 @@ namespace ProtoCore.DSASM.Mirror
             MirrorTarget = exec;
         }
 
-        private string GetFormattedValue(string varname, string value)
-        {
-            return string.Format("{0} = {1}", varname, value);
-        }
-
         public string GetStringValue(StackValue val, Heap heap, int langblock, bool forPrint = false)
         {
             return GetStringValue(val, heap, langblock, -1, -1, forPrint);
@@ -155,13 +150,6 @@ namespace ProtoCore.DSASM.Mirror
             {
                 var obj = heap.ToHeapObject<DSObject>(val);
 
-                List<string> visibleProperties = null;
-                if (null != propertyFilter)
-                {
-                    if (!propertyFilter.TryGetValue(classnode.Name, out visibleProperties))
-                        visibleProperties = null;
-                }
-
                 StringBuilder classtrace = new StringBuilder();
                 if (classnode.Symbols != null && classnode.Symbols.symbolList.Count > 0)
                 {
@@ -170,9 +158,6 @@ namespace ProtoCore.DSASM.Mirror
                     {
                         SymbolNode symbol = classnode.Symbols.symbolList[n];
                         string propName = symbol.name;
-
-                        if ((null != visibleProperties) && visibleProperties.Contains(propName) == false)
-                            continue; // This property is not to be displayed.
 
                         if (firstPropertyDisplayed)
                             classtrace.Append(", ");
@@ -295,81 +280,6 @@ namespace ProtoCore.DSASM.Mirror
 
             formatParams.RestoreOutputTraceDepth();
             return arrayElements.ToString();
-        }
-
-        private string GetGlobalVarTrace(List<string> variableTraces)
-        {
-            // Prints out the final Value of every symbol in the program
-            // Traverse order:
-            //  Exelist, Globals symbols
-
-            StringBuilder globaltrace = null;
-            if (null == variableTraces)
-                globaltrace = new StringBuilder();
-
-            ProtoCore.DSASM.Executable exe = MirrorTarget.exe;
-
-            // Only display symbols defined in the default top-most langauge block;
-            // Otherwise garbage information may be displayed.
-            if (exe.runtimeSymbols.Length > 0)
-            {
-                int blockId = 0;
-
-                // when this code block is of type construct, such as if, else, while, all the symbols inside are local
-                //if (exe.instrStreamList[blockId] == null) 
-                //    continue;
-
-                SymbolTable symbolTable = exe.runtimeSymbols[blockId];
-                for (int i = 0; i < symbolTable.symbolList.Count; ++i)
-                {
-                    formatParams.ResetOutputDepth();
-                    SymbolNode symbolNode = symbolTable.symbolList[i];
-
-                    bool isLocal = Constants.kGlobalScope != symbolNode.functionIndex;
-                    bool isStatic = (symbolNode.classScope != Constants.kInvalidIndex && symbolNode.isStatic);
-                    if (symbolNode.isArgument || isLocal || isStatic || symbolNode.isTemp)
-                    {
-                        // These have gone out of scope, their values no longer exist
-                        continue;
-                    }
-
-                    RuntimeMemory rmem = MirrorTarget.rmem;
-                    StackValue sv = rmem.GetSymbolValue(symbolNode);
-                    string formattedString = GetFormattedValue(symbolNode.name, GetStringValue(sv, rmem.Heap, blockId));
-
-                    if (null != globaltrace)
-                    {
-                        int maxLength = 1020;
-                        while (formattedString.Length > maxLength)
-                        {
-                            globaltrace.AppendLine(formattedString.Substring(0, maxLength));
-                            formattedString = formattedString.Remove(0, maxLength);
-                        }
-
-                        globaltrace.AppendLine(formattedString);
-                    }
-
-                    if (null != variableTraces)
-                        variableTraces.Add(formattedString);
-                }
-
-                formatParams.ResetOutputDepth();
-            }
-
-            return ((null == globaltrace) ? string.Empty : globaltrace.ToString());
-        }
-
-        public string GetCoreDump()
-        {
-            formatParams = new OutputFormatParameters();
-            return GetGlobalVarTrace(null);
-        }
-
-        public void GetCoreDump(out List<string> variableTraces, int maxArraySize, int maxOutputDepth)
-        {
-            variableTraces = new List<string>();
-            formatParams = new OutputFormatParameters(maxArraySize, maxOutputDepth);
-            GetGlobalVarTrace(variableTraces);
         }
 
         private int GetSymbolIndex(string name, out int ci, ref int block, out SymbolNode symbol)
@@ -1046,11 +956,6 @@ namespace ProtoCore.DSASM.Mirror
         {
             this.maximumArray = maximumArray;
             this.maximumDepth = maximumDepth;
-            this.CurrentOutputDepth = this.maximumDepth;
-        }
-
-        internal void ResetOutputDepth()
-        {
             this.CurrentOutputDepth = this.maximumDepth;
         }
 

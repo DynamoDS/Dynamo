@@ -46,7 +46,7 @@ namespace Dynamo.Nodes
         {
             // If this DynamoNodeButton was created with an associated model 
             // and the event name, then the owner of this button (a ModelBase) 
-            // needs the "DynCmd.ModelEventCommand" to be sent when user clicks
+            // needs the "ModelEventCommand" to be sent when user clicks
             // on the button.
             // 
             if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))

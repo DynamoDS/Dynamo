@@ -1,0 +1,21 @@
+<Workspace Version="1.0.1.1732" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.CustomNodes.Function guid="07d62dd8-b2f3-40a8-a761-013d93300444" type="Dynamo.Graph.Nodes.CustomNodes.Function" nickname="Number1" x="231" y="192" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <ID value="bdc7628c-cbd5-48e9-8ad0-9aad539ed4d2" />
+      <Name value="Number1" />
+      <Description value="" />
+      <Inputs />
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Graph.Nodes.CustomNodes.Function>
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

@@ -13,7 +13,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     ///     DesignScript var-arg function node. All functions from DesignScript share the
     ///     same function node but internally have different procedure.
     /// </summary>
-    [NodeName("Function Node w/ VarArgs"), NodeDescription("FunctionNodeDescription", typeof(Properties.Resources)), 
+    [NodeName("Function Node w/ VarArgs"), NodeDescription("FunctionNodeDescription", typeof(Properties.Resources)),
     IsVisibleInDynamoLibrary(false), IsMetaNode]
     [AlsoKnownAs("Dynamo.Nodes.DSVarArgFunction")]
     public class DSVarArgFunction : DSFunctionBase
@@ -47,10 +47,10 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             VarInputController.DeserializeCore(nodeElement, context);
         }
 
-        internal override bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
+        internal override bool HandleModelEventCore(string eventName, int value, UndoRedoRecorder recorder)
         {
-            return VarInputController.HandleModelEventCore(eventName, recorder)
-                || base.HandleModelEventCore(eventName, recorder);
+            return VarInputController.HandleModelEventCore(eventName, value, recorder)
+                || base.HandleModelEventCore(eventName, value, recorder);
         }
 
         /// <summary>
@@ -70,10 +70,10 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             }
             /// <summary>
             /// This method is to get the index of the adding Input when we click +
-            /// nodeController.Definition.Parameters.Count() will return 
+            /// nodeController.Definition.Parameters.Count() will return
             /// the number of inputs the node got by default. For example, String.Join
             /// got separator+string0. when we click +, base.GetInputIndexFromModel() return 2,
-            /// (nodeController.Definition.Parameters.Count() -1) return 1. Then the new port will 
+            /// (nodeController.Definition.Parameters.Count() -1) return 1. Then the new port will
             /// be string1
             /// </summary>
             /// <returns></returns>
@@ -90,7 +90,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             protected override string GetInputTooltip(int index)
             {
                 var type = nodeController.Definition.Parameters.Last().Type;
-                return type.ToShortString(); 
+                return type.ToShortString();
             }
         }
         #endregion
@@ -100,14 +100,14 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     /// <summary>
     ///     Controller that extends Zero Touch synchronization with VarArg function compilation.
     /// </summary>
-    public class ZeroTouchVarArgNodeController<T> : ZeroTouchNodeController<T> 
+    public class ZeroTouchVarArgNodeController<T> : ZeroTouchNodeController<T>
         where T : FunctionDescriptor
     {
         /// <summary>
-        ///     Initializes a new instance of 
+        ///     Initializes a new instance of
         /// the <see cref="ZeroTouchVarArgNodeController"/> class with FunctionDescriptor.
         /// </summary>
-        /// <param name="zeroTouchDef">FunctionDescriptor describing the function 
+        /// <param name="zeroTouchDef">FunctionDescriptor describing the function
         /// that this controller will call.</param>
         public ZeroTouchVarArgNodeController(T zeroTouchDef) : base(zeroTouchDef) { }
 
@@ -126,7 +126,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         protected override void BuildOutputAst(NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst)
         {
             // All inputs are provided, then we should pack all inputs that
-            // belong to variable input parameter into a single array. 
+            // belong to variable input parameter into a single array.
             if (!model.IsPartiallyApplied)
             {
                 var paramCount = Definition.Parameters.Count();
@@ -141,7 +141,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                 //
                 // Here we pack all var arguments in an array {y1, y2, ..., ym}
                 // (skipping the first n == paramCount - 1 inputs)
-                var argPack = AstFactory.BuildExprList(inputAstNodes.Skip(paramCount - 1).ToList()); 
+                var argPack = AstFactory.BuildExprList(inputAstNodes.Skip(paramCount - 1).ToList());
                 inputAstNodes = inputAstNodes.Take(paramCount - 1).ToList();
                 inputAstNodes.Add(argPack);
             }

@@ -5,6 +5,7 @@ namespace Dynamo.Events
     public delegate void WorkspaceAddedEventHandler(WorkspacesModificationEventArgs args);
     public delegate void WorkspaceRemoveStartedEventHandler(WorkspacesModificationEventArgs args);
     public delegate void WorkspaceRemovedEventHandler(WorkspacesModificationEventArgs args);
+    public delegate void WorkspaceSettingsChangedEventHandler(WorkspacesSettingsChangedEventArgs args);
     public delegate void WorkspaceClearingEventHandler();
     public delegate void WorkspaceClearedEventHandler();
 
@@ -62,6 +63,20 @@ namespace Dynamo.Events
             if (WorkspaceCleared != null)
                 WorkspaceCleared();
         }
+
+        /// <summary>
+        /// An event raised when workspace ScaleFactor setting is changed.
+        /// </summary>
+        /// <param name="scaleFactor"></param>
+        public static event WorkspaceSettingsChangedEventHandler WorkspaceSettingsChanged;
+        internal static void OnWorkspaceSettingsChanged(double scaleFactor)
+        {
+            var handler = WorkspaceSettingsChanged;
+            if (handler != null)
+            {
+                handler(new WorkspacesSettingsChangedEventArgs(scaleFactor));
+            }
+        }
     }
 
     public class WorkspacesModificationEventArgs : EventArgs
@@ -77,4 +92,15 @@ namespace Dynamo.Events
             Type = type;
         }
     }
+
+    public class WorkspacesSettingsChangedEventArgs : EventArgs
+    {
+        public double ScaleFactor { get; private set; }
+
+        public WorkspacesSettingsChangedEventArgs(double scaleFactor)
+        {
+            ScaleFactor = scaleFactor;
+        }
+    }
 }
+    

@@ -12,6 +12,8 @@ namespace Dynamo.Tests
     [TestFixture]
     class GeometryDefectTests : DynamoModelTestBase 
     {
+		private const double Epsilon = 1e-6;
+		
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
@@ -560,5 +562,123 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        [Category("Failure")]
+        public void LargeModel_Intersection_MAGN_9320()
+        {
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-9320
+
+            string openPath = Path.Combine(TestDirectory,
+            @"core\WorkflowTestFiles\GeometryDefects\LargeModel_Intersection_MAGN_9320.dyn");
+
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            // Surface created using NurbsSurface.ByControlPointsWeightsKnots
+            var intersectAllResults = GetFlattenedPreviewValues("ecc1a8ed-7f70-45b6-9e57-d72c6774b2fe");
+            Assert.AreEqual(42, intersectAllResults.Count);
+            foreach (var x in intersectAllResults)
+            {
+                Assert.IsTrue(x.GetType() == typeof(Point));
+            }
+            
+            var doesIntersectResult = GetFlattenedPreviewValues("be1b4b66-fc41-4240-a79f-f2345439ee33");
+            Assert.AreEqual(42, doesIntersectResult.Count);
+            foreach (var x in doesIntersectResult)
+            {
+                Assert.IsTrue((bool)x);
+            }
+        }
+        #region Test Node Changes
+        [Test]
+        public void TestNodeChange_BoundingBox_ByGeometry()
+        {
+            string openPath = Path.Combine(TestDirectory,
+            @"core\WorkflowTestFiles\TestGeometryNodeChanges\TestBoundingBox.ByGeometry.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+            Assert.AreEqual(GetPreviewValue("f03e7c8a-1ab3-49d3-be23-d0f47fca0742"), GetPreviewValue("eb5288e9-4ea0-4b5e-afcc-ef78779d8589"));
+        }
+
+        [Test]
+        public void TestNodeChange_Solid_ByLoft()
+        {
+            string openPath = Path.Combine(TestDirectory,
+            @"core\WorkflowTestFiles\TestGeometryNodeChanges\TestSolid.ByLoft.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+            var val = GetPreviewValue("68bca29e-cf59-4dfb-89a2-1183895a6cac") as Solid;
+            var val2 = GetPreviewValue("253e626f-afd8-4407-90ca-3e2b853cb572") as Solid;
+            var val3 = GetPreviewValue("1ce322b0-a5a6-4874-a0c1-2ce5ca8aa3b3") as Solid;
+            ShouldBeApproximate(val.Area, val2.Area);
+            ShouldBeApproximate(val2.Area, val3.Area);
+            ShouldBeApproximate(val.Area, 69.11503837);
+        }
+        [Test]
+        public void TestNodeChange_Surface_ByLoft()
+        {
+            string openPath = Path.Combine(TestDirectory,
+            @"core\WorkflowTestFiles\TestGeometryNodeChanges\TestSurface.ByLoft.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+            var val = GetPreviewValue("411aeb4d-560f-4676-a93d-ee8d41170dcf") as Surface;
+            var val2 = GetPreviewValue("9d2b0d76-c44b-4bbd-b513-555e61d246a8") as Surface;
+            var val3 = GetPreviewValue("5ce5db0c-fdc8-445b-b923-144eda1a33e2") as Surface;
+            ShouldBeApproximate(val.Area, val2.Area);
+            ShouldBeApproximate(val2.Area, val3.Area);
+            ShouldBeApproximate(val.Area, 62.831853071);
+        }
+        [Test]
+        public void TestNodeChange_Surface_ByJoin()
+        {
+            string openPath = Path.Combine(TestDirectory,
+            @"core\WorkflowTestFiles\TestGeometryNodeChanges\TestSurface.Join.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+            var val = GetPreviewValue("6fd810e6-45a3-43df-9303-8a0a6ce59e45") as Surface;
+            var val2 = GetPreviewValue("39df02d4-8b76-4a00-ac05-c0b7beef4db9") as Surface;
+            ShouldBeApproximate(val.Area, 2);
+            ShouldBeApproximate(val2.Area, 3);
+        }
+
+        [Test]
+        public void TestNodeChange_ByUnion()
+        {
+            string openPath = Path.Combine(TestDirectory,
+            @"core\WorkflowTestFiles\TestGeometryNodeChanges\TestByUnion.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+            var val = GetPreviewValue("ec6a82c4-ee31-4c72-a5ef-58dc1bec0fe9") as Solid;
+            var val2 = GetPreviewValue("9f2ea7e8-51e8-4361-a337-9f7849a00d29") as Solid;
+            ShouldBeApproximate(val.Area, val2.Area);
+            ShouldBeApproximate(val.Area, 45.83992284);
+        }
+        [Test]
+        public void TestNodeChange_ExportToSaT()
+        {
+            string openPath = Path.Combine(TestDirectory,
+            @"core\WorkflowTestFiles\TestGeometryNodeChanges\TestGeometry.ExportToSAT.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+            Assert.NotNull( GetPreviewValue("9d0457db-65e4-43c9-a7c7-752b79f73216"));
+            Assert.NotNull(GetPreviewValue("998d5d0f-1d8f-48df-9f99-696613fb549f"));
+            Assert.NotNull(GetPreviewValue("9cefb50b-c331-4af3-b076-e4b3d264e26d"));
+            Assert.NotNull(GetPreviewValue("11314f90-fcb8-4493-90ee-4051c3a9ff34"));
+            Assert.NotNull(GetPreviewValue("5b5c0108-5e74-4ff1-a435-cf86c219ae73"));
+        }
+        #endregion
+        #region Helper Methods
+        private static void ShouldBeApproximate(double x, double y, double epsilon = Epsilon)
+        {
+            Assert.AreEqual(x, y, epsilon);
+        }
+        #endregion
     }
 }

@@ -5,6 +5,9 @@ using System.Windows.Controls.Primitives;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.PackageManager.ViewModels;
+using DynamoUtilities;
+using System.IO;
+using System.Windows.Forms;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -19,6 +22,7 @@ namespace Dynamo.PackageManager.UI
             InitializeComponent();
 
             pm.RequestShowFileDialog += OnRequestShowFileDialog;
+            Logging.Analytics.TrackScreenView("PackageManager");
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -45,7 +49,7 @@ namespace Dynamo.PackageManager.UI
 
         private void OnShowContextMenuFromLeftClicked(object sender, RoutedEventArgs e)
         {
-            var button = (Button)sender;
+            var button = (System.Windows.Controls.Button)sender;
             button.ContextMenu.DataContext = button.DataContext;
             button.ContextMenu.PlacementTarget = button;
             button.ContextMenu.Placement = PlacementMode.Bottom;
@@ -74,17 +78,28 @@ namespace Dynamo.PackageManager.UI
             
             e.Cancel = true;
 
-            var dialog = new DynamoFolderBrowserDialog
+            // Handle for the case, initialPath does not exist.
+            var errorCannotCreateFolder = PathHelper.CreateFolderIfNotExist(initialPath);
+            if (errorCannotCreateFolder == null)
             {
-                // Navigate to initial folder.
-                SelectedPath = initialPath,
-                Owner = this
-            };
+                var dialog = new DynamoFolderBrowserDialog
+                {
+                    // Navigate to initial folder.
+                    SelectedPath = initialPath,
+                    Owner = this
+                };
 
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    e.Cancel = false;
+                    e.Path = dialog.SelectedPath;
+                }
+
+            }
+            else
             {
-                e.Cancel = false;
-                e.Path = dialog.SelectedPath;
+                string errorMessage = string.Format(Wpf.Properties.Resources.PackageFolderNotAccessible, initialPath);
+                System.Windows.Forms.MessageBox.Show(errorMessage, Wpf.Properties.Resources.UnableToAccessPackageDirectory, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

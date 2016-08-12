@@ -9,11 +9,11 @@ using System.Text.RegularExpressions;
 using Dynamo.Configuration;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Models;
-using System.Windows; 
+using System.Windows;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
-using Dynamo.Graph.Workspaces; 
+using Dynamo.Graph.Workspaces;
 using Dynamo.Selection;
 using Dynamo.Wpf.ViewModels.Core;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -36,6 +36,8 @@ namespace Dynamo.ViewModels
         #region events
         public event SnapInputEventHandler SnapInputEvent;
         #endregion
+
+        public Action OnMouseLeave;
 
         #region private members
 
@@ -489,6 +491,7 @@ namespace Dynamo.ViewModels
             IsNodeAddedRecently = true;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
             ZIndex = ++StaticZIndex;
+            ++NoteViewModel.StaticZIndex;
         }
  
         public NodeViewModel(WorkspaceViewModel workspaceViewModel, NodeModel logic, Size preferredSize)

@@ -1,16 +1,15 @@
+using Dynamo.Graph.Nodes;
+using Dynamo.Interfaces;
+using Dynamo.Library;
+using ProtoCore;
+using ProtoCore.DSASM;
+using ProtoCore.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Dynamo.Graph.Nodes;
-using Dynamo.Interfaces;
-using Dynamo.Library;
-
-using ProtoCore.DSASM;
-using ProtoCore.Utils;
-using ProtoCore;
 
 namespace Dynamo.Engine
 {
@@ -541,7 +540,7 @@ namespace Dynamo.Engine
             {
                 return CoreUtils.IsInternalMethod(FunctionName)
                     ? LibraryServices.Categories.Operators
-                    : LibraryServices.Categories.BuiltIns;
+                    : LibraryServices.Categories.BuiltIn;
             }
 
             LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(Assembly, pathManager);

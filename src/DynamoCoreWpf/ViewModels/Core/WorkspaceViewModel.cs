@@ -1,3 +1,14 @@
+using Dynamo.Configuration;
+using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Notes;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
+using Dynamo.Selection;
+using Dynamo.Utilities;
+using Dynamo.Wpf.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,21 +17,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using Dynamo.Models;
-using Dynamo.Selection;
-using Dynamo.UI;
-using Dynamo.Utilities;
 using System.Windows.Input;
-using Dynamo.Configuration;  
-using Dynamo.Graph;
-using Dynamo.Graph.Annotations;
-using Dynamo.Graph.Connectors;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Notes;
-using Dynamo.Graph.Workspaces;
- 
-using Dynamo.Wpf.ViewModels;
-
 using Function = Dynamo.Graph.Nodes.CustomNodes.Function;
 
 namespace Dynamo.ViewModels
@@ -509,6 +506,7 @@ namespace Dynamo.ViewModels
         {
             DynamoSelection.Instance.ClearSelection();
             Nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
+            Notes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.Model));
         }
 
         internal bool CanSelectAll(object parameter)
@@ -555,7 +553,7 @@ namespace Dynamo.ViewModels
                 {
                     selection.AddUnique(n);
                 }
-                else if (n.IsSelected)
+                else if (n.IsSelected && !DynamoSelection.Instance.ClearSelectionDisabled) // only remove current selection if ClearSelectionDisabled flag is false
                 {
                     selection.Remove(n);
                 }
@@ -939,14 +937,31 @@ namespace Dynamo.ViewModels
                 maxY = GetSelectionMaxY();
             }
             else
-            {   // no selection, fitview all nodes
-                if (!_nodes.Any()) return;
+            {   
+                // no selection, fitview all nodes and notes
+                var nodes = _nodes.Select(x => x.NodeModel);
+                var notes = _notes.Select(x => x.Model);
+                var models = nodes.Concat<ModelBase>(notes);
 
-                List<NodeModel> nodes = _nodes.Select(x => x.NodeModel).Where(x => x != null).ToList();
-                minX = nodes.Select(x => x.X).Min();
-                maxX = nodes.Select(x => x.X + x.Width).Max();
-                minY = nodes.Select(y => y.Y).Min();
-                maxY = nodes.Select(y => y.Y + y.Height).Max();
+                if (!models.Any()) return;
+
+                // initialize to the first model (either note or node) on the list 
+
+                var firstModel = models.First();
+                minX = firstModel.X;
+                maxX = firstModel.X;
+                minY = firstModel.Y;
+                maxY = firstModel.Y;
+
+                foreach (var model in models)
+                {
+                    //calculates the min and max positions of both x and y coords of all nodes and notes
+                    minX = Math.Min(model.X, minX);
+                    maxX = Math.Max(model.X + model.Width, maxX);
+                    minY = Math.Min(model.Y, minY);
+                    maxY = Math.Max(model.Y + model.Height, maxY);
+                }
+                
             }
 
             var offset = new Point2D(minX, minY);
@@ -1033,6 +1048,8 @@ namespace Dynamo.ViewModels
         {
             Model.DoGraphAutoLayout();
             DynamoViewModel.RaiseCanExecuteUndoRedo();
+
+            Dynamo.Logging.Analytics.TrackCommandEvent("GraphLayout");
         }
 
         private static bool CanDoGraphAutoLayout(object o)
@@ -1057,6 +1074,9 @@ namespace Dynamo.ViewModels
             DynamoViewModel.Model.AddCustomNodeWorkspace(
                 DynamoViewModel.Model.CustomNodeManager.Collapse(selectedNodes,
                 selectedNotes, Model, DynamoModel.IsTestMode, args));
+
+            Dynamo.Logging.Analytics.TrackCommandEvent("NewCustomNode",
+                "NodeCount", selectedNodes.Count());
         }
 
         internal void Loaded()

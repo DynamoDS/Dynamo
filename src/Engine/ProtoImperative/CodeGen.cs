@@ -137,62 +137,6 @@ namespace ProtoImperative
             return ProtoCore.DSASM.Constants.kForLoopExpression + core.ForLoopBlockIndex.ToString();
         }
 
-        private int DfsExprValue(ImperativeNode node)
-        {
-            if (node is IdentifierNode)
-            {
-                int val = 0;
-                IdentifierNode t = node as IdentifierNode;
-                try
-                {
-                    val = System.Convert.ToInt32(t.Value);
-                    return val;
-                }
-                catch (OverflowException)
-                {
-                    buildStatus.LogSemanticError(Resources.ArraySizeOverflow, core.CurrentDSFileName, t.line, t.col);
-                }
-                catch (FormatException)
-                {
-                    buildStatus.LogSemanticError(Resources.ConstantExpectedInArrayDeclaration, core.CurrentDSFileName, t.line, t.col);
-                } 
-            }
-            else if (node is BinaryExpressionNode)
-            {
-                BinaryExpressionNode b = node as BinaryExpressionNode;
-                Validity.Assert(ProtoCore.DSASM.Operator.mul == b.Optr);
-                int left = DfsExprValue(b.LeftNode);
-                int right = DfsExprValue(b.RightNode);
-                return left * right;
-            }
-            return 1;
-        }
-
-        private void DfsEmitArraySize(ImperativeNode node)
-        {
-            // s = size * ( i * j * k..n )
-            if (node is ArrayNode)
-            {
-                ArrayNode array = node as ArrayNode;
-
-                ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.InvalidType, 0);
-                DfsTraverse(array.Expr, ref type);
-
-                if (array.Type is ArrayNode)
-                {
-                    DfsEmitArraySize(array.Type);
-
-                    string op = Op.GetOpName(ProtoCore.DSASM.Operator.add);
-                    EmitInstrConsole(op);
-                    EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.add));
-                }
-            }
-            else
-            {
-                Validity.Assert(false, "ast error ? check ast construction");
-            }
-        }
-
         private SymbolNode Allocate(string ident, int funcIndex, ProtoCore.Type datatype)
         {
             if (core.ClassTable.IndexOf(ident) != ProtoCore.DSASM.Constants.kInvalidIndex)

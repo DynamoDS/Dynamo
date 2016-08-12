@@ -8,6 +8,7 @@ using Dynamo.Logging;
 using Dynamo.Utilities;
 using DynamoPackages.Properties;
 using DynamoUtilities;
+using Dynamo.Core;
 
 namespace Dynamo.PackageManager
 {
@@ -179,6 +180,17 @@ namespace Dynamo.PackageManager
             {
                 Load(pkg);
             }
+        }
+        public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
+        {
+            foreach(var path in loadPackageParams.Preferences.CustomPackageFolders){
+                customNodeManager.AddUninitializedCustomNodesInPath(path, false, false);
+                if (!this.packagesDirectories.Contains(path))
+                {
+                    this.packagesDirectories.Add(path);
+                }
+            }
+            LoadAll(loadPackageParams);
         }
 
         private void ScanAllPackageDirectories(IPreferences preferences)

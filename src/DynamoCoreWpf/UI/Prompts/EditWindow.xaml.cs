@@ -8,6 +8,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
+using System.Windows.Input;
 
 namespace Dynamo.UI.Prompts
 {
@@ -17,10 +18,13 @@ namespace Dynamo.UI.Prompts
     public partial class EditWindow
     {
         private readonly DynamoViewModel dynamoViewModel;
+        private bool CommitChangesOnReturn { get; set; }
 
         public EditWindow(DynamoViewModel dynamoViewModel,
-            bool updateSourceOnTextChange = false)
+            bool updateSourceOnTextChange = false, bool commitChangesOnReturn = false)
         {
+            this.CommitChangesOnReturn = commitChangesOnReturn;
+
             InitializeComponent();
             this.dynamoViewModel = dynamoViewModel;
 
@@ -29,7 +33,6 @@ namespace Dynamo.UI.Prompts
             
             // do not accept value if user closes 
             this.Closing += (sender, args) => this.DialogResult = false;
-
             if (false != updateSourceOnTextChange)
             {
                 this.editText.TextChanged += delegate
@@ -40,7 +43,14 @@ namespace Dynamo.UI.Prompts
                 };
             }
         }
-
+        private void OnEditWindowPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+           if(CommitChangesOnReturn && (e.Key == Key.Return || e.Key == Key.Enter))
+           {
+               UpdateNodeName();
+               e.Handled = true;
+           }
+        }
         public void BindToProperty(object dataContext, System.Windows.Data.Binding binding)
         {
             if (null != dataContext)
@@ -52,6 +62,10 @@ namespace Dynamo.UI.Prompts
 
         private void OkClick(object sender, RoutedEventArgs e)
         {
+            UpdateNodeName();
+        }
+        private void UpdateNodeName()
+        {
             var expr = editText.GetBindingExpression(TextBox.TextProperty);
             if (expr != null)
             {
@@ -62,7 +76,7 @@ namespace Dynamo.UI.Prompts
                     new DynCmd.UpdateModelValueCommand(
                         System.Guid.Empty, model.GUID, propName, editText.Text));
             }
-           
+
             this.DialogResult = true;
         }
 

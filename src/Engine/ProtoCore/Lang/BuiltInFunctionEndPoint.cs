@@ -203,13 +203,8 @@ namespace ProtoCore.Lang
                     ret = ArrayUtilsForBuiltIns.Equals(formalParameters[0], formalParameters[1], interpreter, c);
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.Contains:
-                    {
-                        if (formalParameters[1].IsArray)
-                            ret = ProtoCore.DSASM.StackValue.BuildBoolean(ArrayUtilsForBuiltIns.ContainsArray(formalParameters[0], formalParameters[1], interpreter));
-                        else
-                            ret = ProtoCore.DSASM.StackValue.BuildBoolean(ArrayUtilsForBuiltIns.Contains(formalParameters[0], formalParameters[1], interpreter));
-                        break;
-                    }
+                    ret = ProtoCore.DSASM.StackValue.BuildBoolean(ArrayUtilsForBuiltIns.Contains(formalParameters[0], formalParameters[1], interpreter));
+                    break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.IndexOf:
                     {
                         if (formalParameters[0].IsArray)
@@ -1430,7 +1425,7 @@ namespace ProtoCore.Lang
         internal static StackValue Flatten(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
             if (!sv.IsArray)
-                return DSASM.StackValue.Null;
+                return sv;
 
             List<StackValue> newElements = new List<DSASM.StackValue>();
             GetFlattenedArrayElements(sv, runtime, ref newElements);
@@ -1996,73 +1991,13 @@ namespace ProtoCore.Lang
             {
                 return true;
             }
-
-            bool contains = false;
-            var svArray = runtimeCore.Heap.ToHeapObject<DSArray>(sv1).Values;
-            foreach (StackValue op in svArray)
+            else
             {
-                if (!op.IsArray)
-                {
-                    if (op.Equals(sv2))
-                        return true;
-                }
-                else
-                {
-                    contains = Contains(op, sv2, runtime);
-                }
-
-                if (contains) 
-                {
-                    return true;
-                }
-
+                var svArray = runtimeCore.Heap.ToHeapObject<DSArray>(sv1).Values;
+                return svArray.Any(v => StackUtils.CompareStackValues(v, sv2, runtimeCore) || (v.IsArray && Contains(v, sv2, runtime)));
             }
-            return contains;
         }
-        internal static bool ContainsArray(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
-        {
-            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
-            if (!sv1.IsArray)
-            {
-                // Type mismatch.
-                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.InvalidArguments, Resources.kInvalidArguments);
-                return false;
-            }
-            bool contains = false;
-            if (StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.RuntimeCore)) 
-                return true;
 
-            var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv1);
-            foreach (var op in array.Values)
-            {
-                if (!sv2.IsArray)
-                {
-                    if (!op.IsArray)
-                    {
-                        if (op.Equals(sv2))
-                            return true;
-                    }
-                    else
-                    {
-                        contains = ContainsArray(op, sv2, runtime);
-                    }
-                    if (contains) return contains;
-                }
-                else
-                {
-                    if (op.IsArray)
-                    {
-                        contains = StackUtils.CompareStackValues(op, sv2, runtime.runtime.RuntimeCore);
-                        if (!contains)
-                        {
-                            contains = ContainsArray(op, sv2, runtime);
-                        }
-                        if (contains) return contains;
-                    }
-                }
-            }
-            return contains;
-        }
         //IndexOf & IOndexOfArray::: sv2 is index of sv1
         internal static int IndexOf(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
         {
@@ -2222,21 +2157,24 @@ namespace ProtoCore.Lang
             StackValue[] svArray = heap.ToHeapObject<DSArray>(sv1).Values.ToArray();
             StackValue[] svIdxArray = heap.ToHeapObject<DSArray>(sv2).Values.ToArray();
             List<StackValue> svList = new List<StackValue>();
-            foreach (StackValue idx in svIdxArray)
+            foreach (StackValue element in svIdxArray)
             {
-                if (!idx.IsInteger)
+                if (!element.IsInteger)
                 {
                     return DSASM.StackValue.Null;
                     //Type Error: Argument(1) must be filled with integers!
-                } 
-                if (idx.IntegerValue >=length1)
+                }
+
+                var index = element.IntegerValue;
+                if (index >=length1 || index < 0)
                 {
                     return DSASM.StackValue.Null;
                     //Type Error: Out of array index bound!
                 }
-                svList.Add(svArray[idx.IntegerValue]);
+                svList.Add(svArray[index]);
             }
-            if (svList.Count >= 0)
+
+            if (svList.Any())
             {
                 try
                 {
@@ -2611,6 +2549,13 @@ namespace ProtoCore.Lang
 
         internal static StackValue Evaluate(StackValue function, StackValue parameters, StackValue unpackParams, Interpreter runtime, StackFrame stackFrame)
         {
+            if (!function.IsFunctionPointer)
+            {
+                var runtimeCore = runtime.runtime.RuntimeCore;
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.InvalidType, Resources.InvalidFunction);
+                return StackValue.Null;
+            }
+
             var evaluator = new FunctionPointerEvaluator(function, runtime);
 
             StackValue ret;

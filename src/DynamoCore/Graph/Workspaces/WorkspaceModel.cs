@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Xml;
-using Dynamo.Core;
+﻿using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Engine.NodeToCode;
@@ -25,12 +18,19 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.Namespace;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Xml;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
 namespace Dynamo.Graph.Workspaces
 {
     /// <summary>
-    /// Represents base class for all kind of workspaces which contains general data 
+    /// Represents base class for all kind of workspaces which contains general data
     /// such as Name, collections of nodes, notes, annotations, etc.
     /// </summary>
     public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable, IWorkspaceModel
@@ -83,11 +83,13 @@ namespace Dynamo.Graph.Workspaces
         private string author = "None provided";
         private string description;
         private bool hasUnsavedChanges;
+        private bool isReadOnly;
         private readonly List<NodeModel> nodes;
         private readonly List<NoteModel> notes;
         private readonly List<AnnotationModel> annotations;
         private readonly List<PresetModel> presets;
         private readonly UndoRedoRecorder undoRecorder;
+        private double scaleFactor;
         private bool hasNodeInSyncWithDefinition;
         private Guid guid;
 
@@ -131,7 +133,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="sender">The object where the event handler is attached.</param>
         /// <param name="e">The event data.</param>
         public delegate void ZoomEventHandler(object sender, EventArgs e);
-        
+
         /// <summary>
         ///     Event that is fired every time the zoom factor of a workspace changes.
         /// </summary>
@@ -147,7 +149,7 @@ namespace Dynamo.Graph.Workspaces
             if (ZoomChanged != null)
             {
                 //Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
-                ZoomChanged(this, e); 
+                ZoomChanged(this, e);
             }
         }
 
@@ -289,12 +291,12 @@ namespace Dynamo.Graph.Workspaces
             RegisterConnector(obj);
             var handler = ConnectorAdded;
             if (handler != null) handler(obj);
-            //Check if the workspace is loaded, i.e all the nodes are 
-            //added to the workspace. In that case, compute the Upstream cache for the 
+            //Check if the workspace is loaded, i.e all the nodes are
+            //added to the workspace. In that case, compute the Upstream cache for the
             //given node.
             if (workspaceLoaded)
             {
-                obj.End.Owner.ComputeUpstreamOnDownstreamNodes();               
+                obj.End.Owner.ComputeUpstreamOnDownstreamNodes();
             }
         }
 
@@ -316,8 +318,8 @@ namespace Dynamo.Graph.Workspaces
 
             var handler = ConnectorDeleted;
             if (handler != null) handler(obj);
-            //Check if the workspace is loaded, i.e all the nodes are 
-            //added to the workspace. In that case, compute the Upstream cache for the 
+            //Check if the workspace is loaded, i.e all the nodes are
+            //added to the workspace. In that case, compute the Upstream cache for the
             //given node.
             if (workspaceLoaded)
             {
@@ -342,7 +344,7 @@ namespace Dynamo.Graph.Workspaces
 
         /// <summary>
         /// Event that is fired during the saving of the workspace.
-        /// 
+        ///
         /// Add additional XmlNode objects to the XmlDocument provided,
         /// in order to save data to the file.
         /// </summary>
@@ -375,7 +377,7 @@ namespace Dynamo.Graph.Workspaces
         public readonly NodeFactory NodeFactory;
 
         /// <summary>
-        ///     A set of input parameter states, this can be used to set the graph to a serialized state.       
+        ///     A set of input parameter states, this can be used to set the graph to a serialized state.
         /// </summary>
         [JsonIgnore]
         public IEnumerable<PresetModel> Presets { get { return presets;} }
@@ -433,20 +435,32 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// Returns if current workspace is readonly.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get { return isReadOnly; }
+            set
+            {
+                isReadOnly = value;
+            }
+        }
+
+        /// <summary>
         ///     All of the nodes currently in the workspace.
         /// </summary>
-        public IEnumerable<NodeModel> Nodes 
-        { 
-            get 
+        public IEnumerable<NodeModel> Nodes
+        {
+            get
             {
                 IEnumerable<NodeModel> nodesClone;
                 lock (nodes)
                 {
-                    nodesClone = nodes.ToList();                
+                    nodesClone = nodes.ToList();
                 }
 
                 return nodesClone;
-            } 
+            }
         }
 
         [JsonIgnore]
@@ -474,7 +488,7 @@ namespace Dynamo.Graph.Workspaces
             lock (nodes)
             {
                 nodes.Add(node);
-            }            
+            }
 
             OnNodeAdded(node);
         }
@@ -683,11 +697,11 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Returns the current UndoRedoRecorder that is associated with the current 
-        /// WorkspaceModel. Note that external parties should not have the needs 
-        /// to access the recorder directly, so this property is exposed just as 
-        /// a "temporary solution". Before using this property, consider using 
-        /// WorkspaceModel.RecordModelsForUndo method which allows for multiple 
+        /// Returns the current UndoRedoRecorder that is associated with the current
+        /// WorkspaceModel. Note that external parties should not have the needs
+        /// to access the recorder directly, so this property is exposed just as
+        /// a "temporary solution". Before using this property, consider using
+        /// WorkspaceModel.RecordModelsForUndo method which allows for multiple
         /// modifications in a single action group.
         /// </summary>
         internal UndoRedoRecorder UndoRecorder
@@ -709,15 +723,31 @@ namespace Dynamo.Graph.Workspaces
             get { return guid; }
         }
 
+        /// <summary>
+        /// The geometry scale factor specific to the workspace obtained from user input
+        /// when selecting the scale of the model with which he/she is working. 
+        /// This is used by ProtoGeometry to scale geometric values appropriately before passing them to ASM.
+        /// This property is set either when reading the setting from a DYN file or when the setting is updated from the UI.
+        /// </summary>
+        public double ScaleFactor
+        {
+            get { return scaleFactor; }
+            internal set
+            {
+                scaleFactor = value;
+                WorkspaceEvents.OnWorkspaceSettingsChanged(scaleFactor);
+            }
+        }
+
         #endregion
 
         #region constructors
 
         protected WorkspaceModel(
-            IEnumerable<NodeModel> nodes, 
+            IEnumerable<NodeModel> nodes,
             IEnumerable<NoteModel> notes,
             IEnumerable<AnnotationModel> annotations,
-            WorkspaceInfo info, 
+            WorkspaceInfo info,
             NodeFactory factory,
             IEnumerable<PresetModel> presets,
             ElementResolver resolver)
@@ -727,7 +757,7 @@ namespace Dynamo.Graph.Workspaces
             this.nodes = new List<NodeModel>(nodes);
             this.notes = new List<NoteModel>(notes);
 
-            this.annotations = new List<AnnotationModel>(annotations);         
+            this.annotations = new List<AnnotationModel>(annotations);
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
@@ -738,6 +768,7 @@ namespace Dynamo.Graph.Workspaces
             Zoom = info.Zoom;
 
             HasUnsavedChanges = false;
+            IsReadOnly = DynamoUtilities.PathHelper.IsReadOnlyPath(fileName);
             LastSaved = DateTime.Now;
 
             WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
@@ -760,8 +791,8 @@ namespace Dynamo.Graph.Workspaces
 
         /// <summary>
         /// Computes the upstream nodes when workspace is added. when a workspace is added (assuming that
-        /// all the nodes and its connectors were added successfully) compute the upstream cache for all 
-        /// the frozen nodes.     
+        /// all the nodes and its connectors were added successfully) compute the upstream cache for all
+        /// the frozen nodes.
         /// </summary>
         /// <param name="args">The <see cref="WorkspacesModificationEventArgs"/> instance containing the event data.</param>
         private void computeUpstreamNodesWhenWorkspaceAdded(WorkspacesModificationEventArgs args)
@@ -771,7 +802,7 @@ namespace Dynamo.Graph.Workspaces
                 this.workspaceLoaded = true;
                 this.ComputeUpstreamCacheForEntireGraph();
 
-                // If the entire graph is frozen then set silenceModification 
+                // If the entire graph is frozen then set silenceModification
                 // to false on the workspace. This is required
                 // becuase if all the nodes are frozen, then updategraphsyncdata task
                 // has nothing to process and the graph will not run. setting silenceModification here
@@ -792,23 +823,27 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <filterpriority>2</filterpriority>
         public virtual void Dispose()
-        {            
+        {
             this.workspaceLoaded = false;
             foreach (var node in Nodes)
+            {
                 DisposeNode(node);
+            }
 
             foreach (var connector in Connectors)
+            {
                 OnConnectorDeleted(connector);
+            }
 
             WorkspaceEvents.WorkspaceAdded -= computeUpstreamNodesWhenWorkspaceAdded;
 
             var handler = Disposed;
-            if (handler != null) 
-                handler();
-
+            if (handler != null) handler();
             Disposed = null;
+
+            WorkspaceEvents.WorkspaceAdded -= computeUpstreamNodesWhenWorkspaceAdded;
         }
-     
+
         #endregion
 
         #region public methods
@@ -832,7 +867,7 @@ namespace Dynamo.Graph.Workspaces
             DynamoSelection.Instance.ClearSelection();
 
             // The deletion of connectors in the following step will trigger a
-            // lot of graph executions. As connectors are deleted, nodes will 
+            // lot of graph executions. As connectors are deleted, nodes will
             // have invalid inputs, so these executions are meaningless and may
             // cause invalid GC. See comments in MAGN-7229.
             foreach (NodeModel node in Nodes)
@@ -873,7 +908,7 @@ namespace Dynamo.Graph.Workspaces
         ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
         /// </summary>
         /// <param name="newPath">The path to save to</param>
-        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object 
+        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object
         /// to obtain serialized trace data for node list to save.</param>
         /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
         /// we should add it to recent files. Otherwise leave it.</param>
@@ -893,7 +928,7 @@ namespace Dynamo.Graph.Workspaces
                 Log(ex.Message);
                 Log(ex.StackTrace);
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                return false;
+                throw (ex);
             }
 
             return true;
@@ -929,7 +964,7 @@ namespace Dynamo.Graph.Workspaces
             node.Modified += NodeModified;
             node.ConnectorAdded += OnConnectorAdded;
             node.UpdateASTCollection +=OnToggleNodeFreeze;
-            
+
             var functionNode = node as Function;
             if (functionNode != null)
             {
@@ -940,12 +975,12 @@ namespace Dynamo.Graph.Workspaces
 
         protected virtual void OnToggleNodeFreeze(NodeModel obj)
         {
-             
+
         }
-       
+
         protected virtual void RequestRun()
         {
-            
+
         }
 
         /// <summary>
@@ -957,7 +992,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Removes a node from this workspace. 
+        /// Removes a node from this workspace.
         /// This method does not raise a NodesModified event. (LC notes this is clearly not true)
         /// </summary>
         /// <param name="model">The node which is being removed from the worksapce.</param>
@@ -965,7 +1000,7 @@ namespace Dynamo.Graph.Workspaces
         {
             lock (nodes)
             {
-                if (!nodes.Remove(model)) return;                
+                if (!nodes.Remove(model)) return;
             }
 
             OnNodeRemoved(model);
@@ -1075,13 +1110,13 @@ namespace Dynamo.Graph.Workspaces
         {
             var selectedNodes = this.Nodes == null ? null:this.Nodes.Where(s => s.IsSelected);
             var selectedNotes = this.Notes == null ? null: this.Notes.Where(s => s.IsSelected);
-           
+
             if (!CheckIfModelExistsInSameGroup(selectedNodes, selectedNotes))
             {
                 var annotationModel = new AnnotationModel(selectedNodes, selectedNotes)
                 {
                     GUID = id,
-                    AnnotationText = text                   
+                    AnnotationText = text
                 };
                 annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
                 annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
@@ -1218,7 +1253,7 @@ namespace Dynamo.Graph.Workspaces
                     NodeModel ndm = group.SelectedModels.OfType<NodeModel>().OrderBy(node =>
                         Math.Pow(node.X + node.Width / 2 - note.X - note.Width / 2, 2) +
                         Math.Pow(node.Y + node.Height / 2 - note.Y - note.Height / 2, 2)).FirstOrDefault();
-                    
+
                     // Skip processing the group if there is no node in the group
                     if (ndm == null) continue;
 
@@ -1289,7 +1324,7 @@ namespace Dynamo.Graph.Workspaces
 
             WorkspaceModel.RecordModelsForModification(undoItems, UndoRecorder);
         }
-        
+
         /// <summary>
         /// This method repeatedly takes a selected node in the combined graph and
         /// uses breadth-first search to find all other nodes in the same subgraph
@@ -1502,7 +1537,7 @@ namespace Dynamo.Graph.Workspaces
         /// from workspace.
         /// </summary>
         private void SetModelEventOnAnnotation()
-        {           
+        {
             foreach (var model in this.Annotations)
             {
                 model.ModelBaseRequested += annotationModel_GetModelBase;
@@ -1551,7 +1586,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Save assuming that the Filepath attribute is set.
         /// </summary>
-        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object 
+        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object
         /// to obtain serialized trace data for node list to save.</param>
         public virtual bool Save(ProtoCore.RuntimeCore runtimeCore)
         {
@@ -1565,14 +1600,14 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Derived workspace classes can choose to override 
+        /// Derived workspace classes can choose to override
         /// this method to perform clean-up specific to them.
         /// </summary>
-        /// 
+        ///
         protected virtual void ResetWorkspaceCore()
         {
         }
-        
+
         internal IEnumerable<NodeModel> GetHangingNodes()
         {
             return
@@ -1599,9 +1634,9 @@ namespace Dynamo.Graph.Workspaces
         /// this is done in such a way that each node is only computed once.
         /// </summary>
         private void ComputeUpstreamCacheForEntireGraph()
-        {           
-            var sortedNodes = AstBuilder.TopologicalSort(this.nodes);             
-            
+        {
+            var sortedNodes = AstBuilder.TopologicalSort(this.nodes);
+
             foreach (var sortedNode in sortedNodes)
             {
                 //call ComputeUpstreamCache to propogate the upstream Cache down to all nodes
@@ -1624,7 +1659,7 @@ namespace Dynamo.Graph.Workspaces
         {
             this.currentPasteOffset = (this.currentPasteOffset + PasteOffsetStep) % PasteOffsetMax;
         }
-        
+
         #endregion
 
         #region Presets
@@ -1678,7 +1713,7 @@ namespace Dynamo.Graph.Workspaces
                //reload each node, and record each each modification in the undogroup
                 foreach (var node in state.Nodes)
                 {
-                    //check that node still exists in this workspace, 
+                    //check that node still exists in this workspace,
                     //otherwise bail on this node, check by GUID instead of nodemodel
                     if (nodes.Select(x=>x.GUID).Contains(node.GUID))
                     {
@@ -1744,9 +1779,13 @@ namespace Dynamo.Graph.Workspaces
                 Utils.SetDocumentXmlPath(document, string.Empty);
                 document.Save(targetFilePath);
             }
-            catch (IOException)
+            catch (IOException ex)
             {
-                return false;
+                throw (ex);
+            }
+            catch (System.UnauthorizedAccessException ex)
+            {
+                throw (ex);
             }
 
             FileName = targetFilePath;
@@ -1764,7 +1803,7 @@ namespace Dynamo.Graph.Workspaces
             foreach (var element in ElementResolver.ResolutionMap)
             {
                 var resolverElement = xmlDoc.CreateElement("ClassMap");
-                
+
                 resolverElement.SetAttribute("partialName", element.Key);
                 resolverElement.SetAttribute("resolvedName", element.Value.Key);
                 resolverElement.SetAttribute("assemblyName", element.Value.Value);
@@ -1827,7 +1866,7 @@ namespace Dynamo.Graph.Workspaces
                 foreach (var n in Notes)
                 {
                     var note = n.Serialize(xmlDoc, SaveContext.File);
-                    noteList.AppendChild(note);                         
+                    noteList.AppendChild(note);
                 }
 
                 //save the annotation
@@ -1836,7 +1875,7 @@ namespace Dynamo.Graph.Workspaces
                 foreach (var n in annotations)
                 {
                     var annotation = n.Serialize(xmlDoc, SaveContext.File);
-                    annotationList.AppendChild(annotation);                   
+                    annotationList.AppendChild(annotation);
                 }
 
                 //save the presets into the dyn file as a seperate element on the root
@@ -1896,7 +1935,7 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        internal void SendModelEvent(Guid modelGuid, string eventName)
+        internal void SendModelEvent(Guid modelGuid, string eventName, int value)
         {
             var retrievedModel = GetModelInternal(modelGuid);
             if (retrievedModel == null)
@@ -1908,14 +1947,14 @@ namespace Dynamo.Graph.Workspaces
             {
                 using (new UndoRedoRecorder.ModelModificationUndoHelper(undoRecorder, nodeModel))
                 {
-                    handled = nodeModel.HandleModelEvent(eventName, undoRecorder);
+                    handled = nodeModel.HandleModelEvent(eventName, value, undoRecorder);
                 }
             }
             else
             {
                 // Perform generic undo recording for models other than node.
                 RecordModelForModification(retrievedModel, UndoRecorder);
-                handled = retrievedModel.HandleModelEvent(eventName, undoRecorder);
+                handled = retrievedModel.HandleModelEvent(eventName, value, undoRecorder);
             }
 
             if (!handled) // Method call was not handled by any derived class.
@@ -1928,7 +1967,7 @@ namespace Dynamo.Graph.Workspaces
                     "Event name: {2}",
                     type, modelGuid, eventName);
 
-                // All 'HandleModelEvent' calls must be handled by one of 
+                // All 'HandleModelEvent' calls must be handled by one of
                 // the ModelBase derived classes that the 'SendModelEvent'
                 // is intended for.
                 throw new InvalidOperationException(message);
@@ -1977,7 +2016,7 @@ namespace Dynamo.Graph.Workspaces
             {
                 foreach (var nodeList in cliques)
                 {
-                    //Create two dictionarys to store the details of the external connections that have to 
+                    //Create two dictionarys to store the details of the external connections that have to
                     //be recreated after the conversion
                     var externalInputConnections = new Dictionary<ConnectorModel, string>();
                     var externalOutputConnections = new Dictionary<ConnectorModel, string>();
@@ -2049,11 +2088,11 @@ namespace Dynamo.Graph.Workspaces
 
                     var codeBlockNode = new CodeBlockNodeModel(
                         code,
-                        System.Guid.NewGuid(), 
+                        System.Guid.NewGuid(),
                         totalX / nodeCount,
                         totalY / nodeCount, engineController.LibraryServices, ElementResolver);
                     undoHelper.RecordCreation(codeBlockNode);
-                   
+
                     AddAndRegisterNode(codeBlockNode, false);
                     codeBlockNodes.Add(codeBlockNode);
                     #endregion
@@ -2083,7 +2122,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         #endregion
-        
+
         #region Undo/Redo Supporting Methods
 
         internal void Undo()
@@ -2127,10 +2166,10 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// TODO(Ben): This method is exposed this way for external codes (e.g. 
-        /// the DragCanvas) to record models before they are modified. This is 
-        /// by no means ideal. The ideal case of course is for ALL codes that 
-        /// end up modifying models to be folded back into WorkspaceViewModel in 
+        /// TODO(Ben): This method is exposed this way for external codes (e.g.
+        /// the DragCanvas) to record models before they are modified. This is
+        /// by no means ideal. The ideal case of course is for ALL codes that
+        /// end up modifying models to be folded back into WorkspaceViewModel in
         /// the form of commands. These commands then internally record those
         /// affected models before updating them. We need this method to be gone
         /// sooner than later.
@@ -2201,14 +2240,14 @@ namespace Dynamo.Graph.Workspaces
         }
 
         internal void RecordAndDeleteModels(List<ModelBase> models)
-        
+
         {
             if (!ShouldProceedWithRecording(models))
                 return; // There's nothing for deletion.
 
             // Gather a list of connectors first before the nodes they connect
-            // to are deleted. We will have to delete the connectors first 
-            // before 
+            // to are deleted. We will have to delete the connectors first
+            // before
 
             using (undoRecorder.BeginActionGroup()) // Start a new action group.
             {
@@ -2234,20 +2273,20 @@ namespace Dynamo.Graph.Workspaces
 
                     else if (model is NodeModel)
                     {
-                        // Just to make sure we don't end up deleting nodes from 
-                        // another workspace (potentially two issues: the node was 
-                        // having its "Workspace" pointing to another workspace, 
+                        // Just to make sure we don't end up deleting nodes from
+                        // another workspace (potentially two issues: the node was
+                        // having its "Workspace" pointing to another workspace,
                         // or the selection set was not quite set up properly.
-                        // 
+                        //
                         var node = model as NodeModel;
                         Debug.Assert(Nodes.Contains(node));
 
                         bool silentFlag = node.RaisesModificationEvents;
                         node.RaisesModificationEvents = false;
 
-                        // Note that AllConnectors is duplicated as a separate list 
-                        // by calling its "ToList" method. This is the because the 
-                        // "Connectors.Remove" will modify "AllConnectors", causing 
+                        // Note that AllConnectors is duplicated as a separate list
+                        // by calling its "ToList" method. This is the because the
+                        // "Connectors.Remove" will modify "AllConnectors", causing
                         // the Enumerator in this "foreach" to become invalid.
                         foreach (var conn in node.AllConnectors.ToList())
                         {
@@ -2283,9 +2322,9 @@ namespace Dynamo.Graph.Workspaces
 
         private static bool ShouldProceedWithRecording(List<ModelBase> models)
         {
-            if (null == models) 
+            if (null == models)
                 return false;
-            
+
             models.RemoveAll(x => x == null);
             return models.Count > 0;
         }
@@ -2301,13 +2340,13 @@ namespace Dynamo.Graph.Workspaces
         #region IUndoRedoRecorderClient Members
 
         /// <summary>
-        /// Deletes <see cref="ModelBase"/> object given by <see cref="XmlElement"/> 
+        /// Deletes <see cref="ModelBase"/> object given by <see cref="XmlElement"/>
         /// from a corresponding collection of the workspace.
         /// </summary>
         /// <param name="modelData"><see cref="ModelBase"/> object given by <see cref="XmlElement"/></param>
         public void DeleteModel(XmlElement modelData)
         {
-            //When there is a Redo operation, model is removed from 
+            //When there is a Redo operation, model is removed from
             //the workspace but the model is "not disposed" from memory.
             //Identified this when redo operation is performed on groups
             ModelBase model = GetModelForElement(modelData);
@@ -2365,7 +2404,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Creates <see cref="ModelBase"/> object by given xml data and 
+        /// Creates <see cref="ModelBase"/> object by given xml data and
         /// adds it to corresponding collection of the workspace.
         /// </summary>
         /// <param name="modelData">Xml data to create model</param>
@@ -2375,8 +2414,8 @@ namespace Dynamo.Graph.Workspaces
             string typeName = helper.ReadString("type", String.Empty);
             if (string.IsNullOrEmpty(typeName))
             {
-                // If there wasn't a "type" attribute, then we fall-back onto 
-                // the name of the XmlElement itself, which is usually the type 
+                // If there wasn't a "type" attribute, then we fall-back onto
+                // the name of the XmlElement itself, which is usually the type
                 // name.
                 typeName = modelData.Name;
                 if (string.IsNullOrEmpty(typeName))
@@ -2403,9 +2442,9 @@ namespace Dynamo.Graph.Workspaces
                     {
                         throw new InvalidOperationException("'guid' field missing from recorded model");
                     }
-                    undoRecorder.RecordModelAsOffTrack(Guid.Parse(guidAttribute.Value)); 
+                    undoRecorder.RecordModelAsOffTrack(Guid.Parse(guidAttribute.Value));
                 }
-                else 
+                else
                 {
                     OnConnectorAdded(connector); // Update view-model and view.
                 }
@@ -2446,14 +2485,14 @@ namespace Dynamo.Graph.Workspaces
                 //the model and to the DynamoViewModel so that presets show in the UI menu if our undo/redo
                 //created the first preset
                 RaisePropertyChanged("EnablePresetOptions");
-               
+
             }
             else // Other node types.
             {
                 NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo, ElementResolver);
-                
+
                 AddAndRegisterNode(nodeModel);
-                
+
                 //check whether this node belongs to a group
                 foreach (var annotation in Annotations)
                 {
@@ -2473,12 +2512,12 @@ namespace Dynamo.Graph.Workspaces
         /// <returns>Found <see cref="ModelBase"/> object.</returns>
         public ModelBase GetModelForElement(XmlElement modelData)
         {
-            // TODO(Ben): This may or may not be true, but I guess we should be 
+            // TODO(Ben): This may or may not be true, but I guess we should be
             // using "System.Type" (given the "type" information in "modelData"),
-            // and determine the matching category (e.g. is this a Node, or a 
+            // and determine the matching category (e.g. is this a Node, or a
             // Connector?) instead of checking in each and every collections we
             // have in the workspace.
-            // 
+            //
             // System.Type type = System.Type.GetType(helper.ReadString("type"));
             // if (typeof(Dynamo.Models.NodeModel).IsAssignableFrom(type))
             //     return Nodes.First((x) => (x.GUID == modelGuid));
@@ -2534,8 +2573,8 @@ namespace Dynamo.Graph.Workspaces
         #region Node To Code Reconnection
 
         /// <summary>
-        /// Checks whether the given connection is inside the node to code set or outside it. 
-        /// This determines if it should be redrawn(if it is external) or if it should be 
+        /// Checks whether the given connection is inside the node to code set or outside it.
+        /// This determines if it should be redrawn(if it is external) or if it should be
         /// deleted (if it is internal)
         /// </summary>
         private static bool IsInternalNodeToCodeConnection(IEnumerable<NodeModel> nodes, ConnectorModel connector)
@@ -2629,10 +2668,10 @@ namespace Dynamo.Graph.Workspaces
 
             //Now unset the temp file name again
             Utils.SetDocumentXmlPath(document, null);
-            
+
             return document.OuterXml;
         }
-         
+
         #region ILogSource implementation
 
         /// <summary>

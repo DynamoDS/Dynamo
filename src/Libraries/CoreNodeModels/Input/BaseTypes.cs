@@ -14,6 +14,7 @@ using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using CoreNodeModels.Properties;
+using System.Net;
 
 namespace CoreNodeModels.Input
 {
@@ -83,27 +84,6 @@ namespace CoreNodeModels.Input
             var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
 
             return new[] { assignment };
-        }
-
-        [NodeMigration(@from: "0.5.3.0", to: "0.6.3.0")]
-        public static NodeMigrationData Migrate_0530_to_0600(NodeMigrationData data)
-        {
-            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
-
-            XmlNode nodeElement = data.MigratedNodes.ElementAt(0);
-            XmlNode newNode = nodeElement.CloneNode(true);
-
-            var query = from XmlNode subNode in newNode.ChildNodes
-                        where subNode.Name.Equals(typeof(string).FullName)
-                        from XmlAttribute attr in subNode.Attributes
-                        where attr.Name.Equals("value")
-                        select attr;
-
-            foreach (XmlAttribute attr in query)
-                attr.Value = HttpUtility.UrlDecode(attr.Value);
-
-            migrationData.AppendNode(newNode as XmlElement);
-            return migrationData;
         }
     }
 

@@ -1,6 +1,7 @@
-<Workspace Version="0.6.3.30607" X="-107" Y="33" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="-107" Y="33" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="9c8c2279-6f59-417c-8218-3b337230bd99" nickname="GraphFunction" x="534.75" y="151.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Graph.Nodes.CustomNodes.Function guid="9c8c2279-6f59-417c-8218-3b337230bd99" type="Dynamo.Graph.Nodes.CustomNodes.Function" nickname="GraphFunction" x="534.75" y="151.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
       <ID value="07e6b150-d902-4abb-8103-79193552eee7" />
       <Name value="GraphFunction" />
       <Description value="" />
@@ -8,13 +9,15 @@
         <Input value="x-start" />
         <Input value="x-end" />
         <Input value="x-step" />
-        <Input value="y = f(x)" />
+        <Input value="y" />
       </Inputs>
       <Outputs>
-        <Output value="out" />
+        <Output value="combined" />
       </Outputs>
-    </Dynamo.Nodes.Function>
+    </Dynamo.Graph.Nodes.CustomNodes.Function>
   </Elements>
   <Connectors />
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

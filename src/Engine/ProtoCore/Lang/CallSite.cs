@@ -225,10 +225,20 @@ namespace ProtoCore
 
             public override System.Type BindToType(string assemblyName, string typeName)
             {
-                var result = AppDomain.CurrentDomain.GetAssemblies()
-                    .Where(a => !a.IsDynamic)
-                    .SelectMany(a => a.GetTypes())
-                    .FirstOrDefault(t => t.FullName == typeName);
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic);
+                var types = new List<System.Type>();
+                foreach (var a in assemblies)
+                {
+                    try
+                    {
+                        types.AddRange(a.GetTypes());
+                    }
+                    catch (ReflectionTypeLoadException)
+                    {
+                        // We ignore assembly loading exceptions that are thrown here when their dependencies cannot be found
+                    }
+                }
+                var result = types.FirstOrDefault(t => t.FullName == typeName);
 
                 return result;
             }
@@ -1118,11 +1128,10 @@ namespace ProtoCore
                 //If this has failed, we have multiple feps, which can't be distiquished by class hiearchy. Emit a warning and select one
                 StringBuilder possibleFuncs = new StringBuilder();
                 possibleFuncs.Append(Resources.MultipleFunctionsFound);
+                possibleFuncs.AppendLine();
+                possibleFuncs.AppendLine();
                 foreach (FunctionEndPoint fep in feps)
-                    possibleFuncs.AppendLine("\t" + fep.ToString());
-
-
-                possibleFuncs.AppendLine(string.Format(Resources.ErrorCode, "{DCE486C0-0975-49F9-BE2C-2E7D8CCD17DD}"));
+                    possibleFuncs.AppendLine("    " + fep.ToString());
 
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.AmbiguousMethodDispatch, possibleFuncs.ToString());
             }

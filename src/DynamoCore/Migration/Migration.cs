@@ -1,19 +1,18 @@
-﻿using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Xml;
-using Dynamo.Models;
-using Dynamo.Utilities;
-using Dynamo.Logging;
-using System.Collections.Generic;
-using System.IO;
-using Dynamo.Configuration;
-using Dynamo.Graph;
+﻿using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
+using Dynamo.Models;
+using Dynamo.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Xml;
 
 namespace Dynamo.Migration
 {
@@ -193,12 +192,6 @@ namespace Dynamo.Migration
                         Log(message);
                     }
 
-                    //Hardcode the file version to 0.6.0.0. The file whose version is 0.7.0.x
-                    //needs to be forced to be migrated. The version number needs to be changed from
-                    //0.7.0.x to 0.6.0.0.
-                    if (fileVersion == new Version(0, 7, 0, 0))
-                        fileVersion = new Version(0, 6, 0, 0);
-
                     ProcessWorkspaceMigrations(currentVersion, xmlDoc, fileVersion);
                     ProcessNodesInWorkspace(xmlDoc, fileVersion, currentVersion, factory);
                     return Decision.Migrate;
@@ -315,7 +308,7 @@ namespace Dynamo.Migration
         public NodeMigrationData MigrateXmlNode(Version currentVersion, XmlNode elNode, 
             Type type, Version workspaceVersion)
         {
-            var migrations = (from method in type.GetMethods()
+            var migrations = (from method in type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
                               let attribute =
                                   method.GetCustomAttributes(false).OfType<NodeMigrationAttribute>().FirstOrDefault()
                               where attribute != null
@@ -374,12 +367,11 @@ namespace Dynamo.Migration
                 backupPath = destFileName;
                 return true;
             }
-            catch (IOException)
-            {
-                // If we caught an IO exception, fall through and let the rest handle this 
-                // (by saving to other locations). Any other exception will be thrown to the 
-                // caller for handling.
-            }
+            // If we caught an IO exception or UnauthorizedAccessException, fall through and let the rest handle this 
+            // (by saving to other locations). Any other exception will be thrown to the 
+            // caller for handling.
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
 
             try
             {
@@ -421,7 +413,7 @@ namespace Dynamo.Migration
         /// already exist).
         /// </summary>
         /// <param name="baseFolder">This is a directory inside which a new 
-        /// backup sub-directory will be created. If this paramter does not 
+        /// backup sub-directory will be created. If this parameter does not 
         /// represent a valid directory name, an exception will be thrown.
         /// </param>
         /// <param name="create">Set this parameter to false if the creation of 
@@ -447,7 +439,6 @@ namespace Dynamo.Migration
             var subFolder = Path.Combine(baseFolder, backupFolderName);
             if (create && (Directory.Exists(subFolder) == false))
                 Directory.CreateDirectory(subFolder);
-
             return subFolder;
         }
 
@@ -569,18 +560,10 @@ namespace Dynamo.Migration
                 return fileVersion < currVersion ? Decision.Migrate : Decision.Retain;
             }
 
-            //Force the file to go through the migration process, when the file version
-            //is 0.7.0.x. 
-            //Reason: There were files creaeted in 0.6.x with wrong version number 0.7.0.
-            //Force them to migration will manage to have those files migrated properly.
-            //Related YouTrack Defect: MAGN3767
-            if (fileVersion == new Version(0, 7, 0, 0))
-            {
-                return Decision.Migrate;
-            }
-
+            if(fileVersion < new Version(0, 7, 1, 0))
+                return Decision.Abort;
             // For end-users, disable migration.
-            if (fileVersion < currVersion)
+            else if (fileVersion < currVersion)
                 return Decision.Migrate;
 
             return Decision.Retain; // User has latest file, allow usage.
@@ -1031,6 +1014,23 @@ namespace Dynamo.Migration
             element.SetAttribute("assembly", assemblyName);
             element.SetAttribute("nickname", methodName);
             element.SetAttribute("function", signature);
+        }
+
+
+        /// <summary>
+        /// Call this method to replace the value of attribute.
+        /// </summary>
+        /// <param name="element">Xml element where to replace attribute value</param>
+        /// <param name="attribute">Attribute name</param>
+        /// <param name="from">Original value</param>
+        /// <param name="to">New value</param>
+        public static void ReplaceAttributeValue(XmlElement element, string attribute, string from, string to)
+        {
+            var xmlAttribute = element.Attributes[attribute];
+            if (string.Equals(xmlAttribute.Value, from))
+            {
+                xmlAttribute.Value = to;
+            }
         }
 
         /// <summary>

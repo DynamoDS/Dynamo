@@ -7,6 +7,46 @@ using Dynamo.Models;
 namespace Dynamo.Interfaces
 {
     /// <summary>
+    /// interface that defines settings previewBubble preferences,
+    /// this interface should be merged with IPreferences at Dynamo 2.0
+    /// </summary>
+    public interface IPreviewBubblePreference
+    {
+        /// <summary>
+        /// Indicates if preview bubbles should be displayed on nodes.
+        /// </summary>
+        bool ShowPreviewBubbles { get; set; }
+
+    }
+
+    /// <summary>
+    /// interface that defines settings backgroundPreview preferences,
+    /// this interface should be merged with IPreferences at Dynamo 2.0
+    /// </summary>
+    public interface IBackgroundPreviewPreference
+    {
+        /// <summary>
+        /// Collection of pairs [BackgroundPreviewName;isActive]
+        /// </summary>
+        List<BackgroundPreviewActiveState> BackgroundPreviews { get; set; }
+
+        /// <summary>
+        /// Returns active state of specified background preview 
+        /// </summary>
+        /// <param name="name">Background preview name</param>
+        /// <returns>The active state</returns>
+        bool GetIsBackgroundPreviewActive(string name);
+
+        /// <summary>
+        /// Sets active state of specified background preview 
+        /// </summary>
+        /// <param name="name">Background preview name</param>
+        /// <param name="value">Active state to set</param>
+        void SetIsBackgroundPreviewActive(string name, bool value);
+
+    }
+
+    /// <summary>
     /// An interface which defines preference settings.
     /// </summary>
     public interface IPreferences
@@ -22,25 +62,21 @@ namespace Dynamo.Interfaces
         bool ShowConnector { get; set; }
 
         /// <summary>
-        /// Indicates if preview bubbles should be displayed on nodes.
-        /// </summary>
-        bool ShowPreviewBubbles { get; set; }
-
-        /// <summary>
         /// Indicates which type of connector's should be displayed on canvas.
         /// I.e. bezier or polyline
         /// </summary>
         ConnectorType ConnectorType { get; set; }
 
         /// <summary>
-        /// Indicates whether background preview is active or not.
-        /// </summary>
-        bool IsBackgroundPreviewActive { get; set; }
-
-        /// <summary>
         /// Indicates whether background grid is visible or not.
         /// </summary>
         bool IsBackgroundGridVisible { get; set; }
+
+        /// <summary>
+        /// Indicates whether background preview is active or not.
+        /// </summary>
+        [Obsolete("Property will be deprecated in Dynamo 2.0, please use BackgroundPreviews")]
+        bool IsBackgroundPreviewActive { get; set; }
 
         /// <summary>
         /// Returns the decimal precision used to display numbers.
@@ -123,5 +159,30 @@ namespace Dynamo.Interfaces
         /// <returns>Returns true if the serialization is successful, or false 
         /// otherwise.</returns>
         bool Save(string filePath);
+    }
+
+    /// <summary>
+    /// Represents data about active state of preview background
+    /// </summary>
+    public class BackgroundPreviewActiveState
+    {
+        /// <summary>
+        /// Name of background preview 
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Flag which indicates if background preview is active
+        /// </summary>
+        public bool IsActive { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of <c name="BackgroundPreviewActiveState"/> class
+        /// </summary>
+        public BackgroundPreviewActiveState()
+        {
+            // Default value
+            IsActive = true;
+        }
     }
 }

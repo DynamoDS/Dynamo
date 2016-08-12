@@ -72,4 +72,12 @@
     <oldName>Autodesk.DesignScript.Geometry.Curve.ParameterTrimSegments</oldName>
     <newName>Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter</newName>
   </priorNameHint>
+    <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Surface.ByLoft@Autodesk.DesignScript.Geometry.Curve[],Autodesk.DesignScript.Geometry.Curve</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Surface.ByLoft@Autodesk.DesignScript.Geometry.Curve[],Autodesk.DesignScript.Geometry.Curve[]</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Solid.ByLoft@Autodesk.DesignScript.Geometry.Curve[],Autodesk.DesignScript.Geometry.Curve</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Solid.ByLoft@Autodesk.DesignScript.Geometry.Curve[],Autodesk.DesignScript.Geometry.Curve[]</newName>
+  </priorNameHint>
 </migrations>

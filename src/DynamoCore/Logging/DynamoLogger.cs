@@ -78,6 +78,10 @@ namespace Dynamo.Logging
         private StringBuilder ConsoleWriter { get; set; }
 
         /// <summary>
+        /// event that is raised when a notification is logged
+        public event Action<NotificationMessage> NotificationLogged;
+
+        /// <summary>
         /// Returns warning level for log messages.
         /// </summary>
         public WarningLevel WarningLevel
@@ -176,7 +180,7 @@ namespace Dynamo.Logging
             {
                 //Don't overwhelm the logging system
                 if (debugSettings.VerboseLogging)
-                    InstrumentationLogger.LogPiiInfo("LogMessage-" + level.ToString(), message);
+                    Analytics.LogPiiInfo("LogMessage-" + level.ToString(), message);
 
                 switch (level)
                 {
@@ -221,6 +225,22 @@ namespace Dynamo.Logging
                 }
             }
         }
+
+        /// <summary>
+        /// Logs a tagged notification to the console, also
+        /// fires an event that a notification was logged
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="title"></param>
+        /// <param name="shortMessage"></param>
+        /// <param name="detailedMessage"></param>
+        public void LogNotification(string sender,string title, string shortMessage, string detailedMessage)
+        {
+            var notificationMessage = string.Format("{0}:{3} {1}: {3} {2}", title, shortMessage, detailedMessage,Environment.NewLine);
+            Log("notification",notificationMessage );
+            NotificationLogged(new NotificationMessage(sender, shortMessage, detailedMessage,title));
+        }
+
 
         /// <summary>
         /// Logs the warning.

@@ -147,6 +147,12 @@
         <KeyBinding Key="OemMinus"
                     Modifiers="Ctrl"
                     Command="{Binding Path=DataContext.ZoomOutCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="Add"
+                    Modifiers="Ctrl"
+                    Command="{Binding Path=DataContext.ZoomInCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="Subtract"
+                    Modifiers="Ctrl"
+                    Command="{Binding Path=DataContext.ZoomOutCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="D0"
                     Modifiers="Ctrl"
                     Command="{Binding Path=DataContext.FitViewCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
@@ -378,12 +384,12 @@
                                   Header="{x:Static p:Resources.DynamoViewEditMenuUndo}"
                                   Command="{Binding UndoCommand}"
                                   Name="undo"
-                                  InputGestureText="Ctrl+Z" />
+                                  InputGestureText="Ctrl + Z" />
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuRedo}"
                                   Command="{Binding RedoCommand}"
                                   Name="redo"
-                                  InputGestureText="Ctrl+Y" />
+                                  InputGestureText="Ctrl + Y" />
                         <Separator />
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCopy}"
@@ -702,6 +708,14 @@
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
                                   Command="{Binding ManagePackagePathsCommand}"
                                   Name="managePackagePaths" />
+                        <Separator />
+                        <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.DynamoViewSettingExperimental}">
+                            <MenuItem Name="EnableTSpline"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding EnableTSpline}"
+                                  Header="{x:Static p:Resources.DynamoViewSettingEnableTSplineNodes}" />
+                        </MenuItem>
                     </MenuItem>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenu}"

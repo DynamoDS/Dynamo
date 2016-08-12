@@ -1,17 +1,14 @@
-﻿using System;
-using System.Xml;
-
-using Dynamo;
+﻿using Dynamo;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
-
 using NUnit.Framework;
-
 using ProtoCore;
-
+using System;
+using System.Xml;
 using TestServices;
 
 namespace DynamoCoreWpfTests
@@ -41,7 +38,9 @@ namespace DynamoCoreWpfTests
                 PathResolver = pathResolver
             });
 
-            libraryServices = new LibraryServices(libraryCore, pathManager);
+            var settings = new PreferenceSettings();
+
+            libraryServices = new LibraryServices(libraryCore, pathManager, settings);
 
             RegisterEvents();
         }

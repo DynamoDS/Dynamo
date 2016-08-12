@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Engine;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using ProtoCore.Mirror;
 
 namespace Dynamo.Graph.Nodes
@@ -92,6 +95,22 @@ namespace Dynamo.Graph.Nodes
             }
 
             return results;
+        }
+
+        internal static string GetOriginalName(this NodeModel node)
+        {
+            if (node == null) return string.Empty;
+
+            var function = node as DSFunctionBase;
+            if (function != null)
+                return function.Controller.Definition.DisplayName;
+
+            var nodeType = node.GetType();
+            var elNameAttrib = nodeType.GetCustomAttributes<NodeNameAttribute>(false).FirstOrDefault();
+            if (elNameAttrib != null)
+                return elNameAttrib.Name;
+
+            return nodeType.FullName;
         }
 
         private static void GetGraphicItemsFromMirrorData(MirrorData mirrorData, List<IGraphicItem> graphicItems)

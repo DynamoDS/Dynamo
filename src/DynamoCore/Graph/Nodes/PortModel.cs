@@ -25,6 +25,9 @@ namespace Dynamo.Graph.Nodes
         private bool usingDefaultValue;
         private PortData portData;
         private bool isEnabled = true;
+        private bool useLevels = false;
+        private bool shouldKeepListStructure = false;
+        private int level = 1;
         #endregion
 
         #region public members
@@ -206,6 +209,63 @@ namespace Dynamo.Graph.Nodes
         [JsonIgnore]
         public SnapExtensionEdges extensionEdges { get; set; }
 
+        /// <summary>
+        /// List at level.
+        /// </summary>
+        public int Level
+        {
+            get
+            {
+                return level;
+            }
+            set
+            {
+                if (level != value)
+                {
+                    level = value;
+                    RaisePropertyChanged("Level");
+                }
+            }
+        }
+
+        /// <summary>
+        /// If use level is enabled.
+        /// </summary>
+        public bool UseLevels
+        {
+            get
+            {
+                return useLevels;
+            }
+            set
+            {
+                if (useLevels != value)
+                {
+                    useLevels = value;
+                    RaisePropertyChanged("UseLevels");
+                }
+            }
+        }
+
+        /// <summary>
+        /// If needs to keep list structure.
+        /// </summary>
+        public bool ShouldKeepListStructure
+        {
+            get
+            {
+                return shouldKeepListStructure;
+            }
+            set
+            {
+                if (shouldKeepListStructure != value)
+                {
+                    shouldKeepListStructure = value;
+                    RaisePropertyChanged("ShouldKeepListStructure");
+                }
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -219,6 +279,9 @@ namespace Dynamo.Graph.Nodes
             IsConnected = false;
             PortType = portType;
             Owner = owner;
+            UseLevels = false;
+            ShouldKeepListStructure = false;
+            Level = 2;
 
             SetPortData(data);
 

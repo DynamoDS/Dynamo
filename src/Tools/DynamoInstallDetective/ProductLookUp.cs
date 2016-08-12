@@ -319,6 +319,18 @@ namespace DynamoInstallDetective
             this.debugPath = debugPath;
         }
 
+        public static string GetDynamoPath(Version version, string debugPath = null)
+        {
+            var installs = FindDynamoInstallations(debugPath);
+            if (installs == null) return string.Empty;
+
+            return installs.Products
+                .Where(p => p.VersionInfo.Item1 == version.Major)
+                .Where(p => p.VersionInfo.Item2 >= version.Minor)
+                .Select(p => p.InstallLocation)
+                .LastOrDefault();
+        }
+
         public static DynamoProducts FindDynamoInstallations(string debugPath = null, IProductLookUp lookUp = null)
         {
             var products = new DynamoProducts(debugPath);

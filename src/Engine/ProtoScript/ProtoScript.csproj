@@ -95,7 +95,6 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runners\LiveRunner.cs" />
-    <Compile Include="Runners\LiveRunnerEventArgs.cs" />
     <Compile Include="Runners\LiveRunnerTasks.cs" />
     <Compile Include="Runners\ProtoRunner.cs" />
     <Compile Include="Runners\DebugRunner.cs" />

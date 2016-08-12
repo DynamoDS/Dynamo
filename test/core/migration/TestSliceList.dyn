@@ -1,27 +1,40 @@
-<Workspace Version="0.6.2.29585" X="-414.279780605424" Y="-86.9779658613445" zoom="0.9" Description="" Category="" Name="Home">
+<Workspace Version="1.0.1.1743" X="-414.279780605424" Y="-86.9779658613445" zoom="0.9" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.SliceList type="Dynamo.Nodes.SliceList" guid="fbe895a7-e97a-47f3-b5bf-536d652aa603" nickname="Slice List" x="866.977534006027" y="319.419962068161" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.SliceList type="Dynamo.Nodes.SliceList" guid="797b1b02-c815-4808-9889-296bc6d176fd" nickname="Slice List" x="874.755311783804" y="473.864406512605" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="090349c0-d93e-41ae-8ccc-5bb7260b46b8" nickname="Number" x="673.644200672693" y="309.419962068161" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="fbe895a7-e97a-47f3-b5bf-536d652aa603" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.Slice" x="866.977534006027" y="319.419962068161" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.List.Slice@var[]..[],int,int,int">
+      <PortInfo index="3" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="e666be67-6384-4aa5-a0dd-df6e4009888a" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="+" x="716.977534006027" y="319.419962068161" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="Operators" function="+@var[]..[],var[]..[]" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="797b1b02-c815-4808-9889-296bc6d176fd" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.Slice" x="874.755311783804" y="473.864406512605" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.List.Slice@var[]..[],int,int,int">
+      <PortInfo index="3" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="90f8fd56-198a-4534-89d1-bca7d61a2356" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="+" x="724.755311783804" y="473.864406512605" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="Operators" function="+@var[]..[],var[]..[]" />
+    <CoreNodeModels.Input.DoubleInput guid="090349c0-d93e-41ae-8ccc-5bb7260b46b8" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="673.644200672693" y="309.419962068161" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="1..10" />
-    </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="a4e58fc5-0b4d-42f7-b9ab-a51236812341" nickname="Number" x="676.977534006027" y="473.864406512605" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="a4e58fc5-0b4d-42f7-b9ab-a51236812341" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="676.977534006027" y="473.864406512605" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="1" />
-    </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="4892b281-6997-4bc1-889d-250f0e834211" nickname="Number" x="674.755311783804" y="388.308850957049" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="4892b281-6997-4bc1-889d-250f0e834211" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="674.755311783804" y="388.308850957049" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="5" />
-    </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="ced4610c-770d-4f73-b207-9ab1bd657b77" nickname="Number" x="676.977534006027" y="558.308850957049" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleInput guid="ced4610c-770d-4f73-b207-9ab1bd657b77" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="676.977534006027" y="558.308850957049" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.Double value="3" />
-    </Dynamo.Nodes.DoubleInput>
+    </CoreNodeModels.Input.DoubleInput>
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="090349c0-d93e-41ae-8ccc-5bb7260b46b8" start_index="0" end="fbe895a7-e97a-47f3-b5bf-536d652aa603" end_index="2" portType="0" />
-    <Dynamo.Models.ConnectorModel start="090349c0-d93e-41ae-8ccc-5bb7260b46b8" start_index="0" end="797b1b02-c815-4808-9889-296bc6d176fd" end_index="2" portType="0" />
-    <Dynamo.Models.ConnectorModel start="a4e58fc5-0b4d-42f7-b9ab-a51236812341" start_index="0" end="fbe895a7-e97a-47f3-b5bf-536d652aa603" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="4892b281-6997-4bc1-889d-250f0e834211" start_index="0" end="fbe895a7-e97a-47f3-b5bf-536d652aa603" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="4892b281-6997-4bc1-889d-250f0e834211" start_index="0" end="797b1b02-c815-4808-9889-296bc6d176fd" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="ced4610c-770d-4f73-b207-9ab1bd657b77" start_index="0" end="797b1b02-c815-4808-9889-296bc6d176fd" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="e666be67-6384-4aa5-a0dd-df6e4009888a" start_index="0" end="fbe895a7-e97a-47f3-b5bf-536d652aa603" end_index="2" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="90f8fd56-198a-4534-89d1-bca7d61a2356" start_index="0" end="797b1b02-c815-4808-9889-296bc6d176fd" end_index="2" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="090349c0-d93e-41ae-8ccc-5bb7260b46b8" start_index="0" end="fbe895a7-e97a-47f3-b5bf-536d652aa603" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="090349c0-d93e-41ae-8ccc-5bb7260b46b8" start_index="0" end="797b1b02-c815-4808-9889-296bc6d176fd" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="a4e58fc5-0b4d-42f7-b9ab-a51236812341" start_index="0" end="e666be67-6384-4aa5-a0dd-df6e4009888a" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="4892b281-6997-4bc1-889d-250f0e834211" start_index="0" end="fbe895a7-e97a-47f3-b5bf-536d652aa603" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="4892b281-6997-4bc1-889d-250f0e834211" start_index="0" end="797b1b02-c815-4808-9889-296bc6d176fd" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="4892b281-6997-4bc1-889d-250f0e834211" start_index="0" end="e666be67-6384-4aa5-a0dd-df6e4009888a" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="4892b281-6997-4bc1-889d-250f0e834211" start_index="0" end="90f8fd56-198a-4534-89d1-bca7d61a2356" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="ced4610c-770d-4f73-b207-9ab1bd657b77" start_index="0" end="90f8fd56-198a-4534-89d1-bca7d61a2356" end_index="1" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
 </Workspace>

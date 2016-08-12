@@ -256,7 +256,8 @@
             <ui:ImageButton Width="30"
                             Height="28"
                             HorizontalAlignment="Right"
-                            StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-fit-view-states.png">
+                            StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-fit-view-states.png"
+                            ToolTip="{x:Static p:Resources.InCanvasFitViewButtonToolTip}">
                 <ui:ImageButton.Command>
                     <Binding Path="DataContext.FitViewCommand"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
@@ -266,7 +267,8 @@
             <ui:ImageRepeatButton Width="30"
                                   Height="24"
                                   HorizontalAlignment="Right"
-                                  StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-zoom-in-states.png">
+                                  StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-zoom-in-states.png"
+                                  ToolTip="{x:Static p:Resources.InCanvasZoomInButtonToolTip}">
                 <ui:ImageRepeatButton.Command>
                     <Binding Path="DataContext.ZoomInCommand"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
@@ -276,7 +278,8 @@
             <ui:ImageRepeatButton Width="30"
                                   Height="28"
                                   HorizontalAlignment="Right"
-                                  StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-zoom-out-states.png">
+                                  StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-zoom-out-states.png"
+                                  ToolTip="{x:Static p:Resources.InCanvasZoomOutButtonToolTip}">
                 <ui:ImageRepeatButton.Command>
                     <Binding Path="DataContext.ZoomOutCommand"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
@@ -287,7 +290,8 @@
                               Height="30"
                               HorizontalAlignment="Right"
                               StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-pan-states.png"
-                              CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-pan-check.png">
+                              CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-pan-check.png"
+                              ToolTip="{x:Static p:Resources.InCanvasPanButtonToolTip}">
                 <ui:ImageCheckBox.Command>
                     <Binding Path="DataContext.BackgroundPreviewViewModel.TogglePanCommand"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
@@ -303,7 +307,8 @@
                               Height="30"
                               HorizontalAlignment="Right"
                               StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-orbit-states.png"
-                              CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-orbit-check.png">
+                              CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-orbit-check.png"
+                              ToolTip="{x:Static p:Resources.InCanvasOrbitButtonToolTip}">
                 <ui:ImageCheckBox.Command>
                     <Binding Path="DataContext.BackgroundPreviewViewModel.ToggleOrbitCommand"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />

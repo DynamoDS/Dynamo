@@ -1445,6 +1445,24 @@ var06 = g;
 
         [Test]
         [Category("UnitTests")]
+        public void TestCompletionOnType1()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            var completions = codeCompletionServices.GetCompletionsOnType("", "CodeCompletionClass");
+            Assert.AreEqual(6, completions.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCompletionOnType2()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            var completions = codeCompletionServices.GetCompletionsOnType("x : CodeCompletionClass", "x");
+            Assert.AreEqual(5, completions.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void TestHiddenClassCompletionWhenTyping()
         {
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);

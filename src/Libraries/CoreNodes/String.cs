@@ -6,6 +6,7 @@ using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using System.Text.RegularExpressions;
 
 namespace DSCore
 {
@@ -74,6 +75,9 @@ namespace DSCore
         /// <search>divide,separaters,delimiter,cut,csv,comma,</search>
         public static string[] Split(string str, params string[] separaters)
         {
+            separaters = separaters.Select(s => s == "\n" ? Environment.NewLine : s).ToArray(); // converts all \n in separater array to Environment Newline (i.e. \r\n)
+            str = Regex.Replace(str, "(?<!\r)\n", Environment.NewLine); // converts all \n in String str to Environment.NewLine (i.e. '\r\n')
+            
             return separaters.Contains("")
                 ? str.ToCharArray().Select(char.ToString).ToArray()
                 : str.Split(separaters, StringSplitOptions.RemoveEmptyEntries);
@@ -411,6 +415,7 @@ namespace DSCore
         /// <param name="count">
         ///     Amount of characters to remove, by default will remove all characters from
         ///     the given startIndex to the end of the string.
+        ///     Note: if the Count is negative, the removal process goes from right to left.
         /// </param>
         /// <returns name="str">String with characters removed.</returns>
 		/// <search>delete,rem,shorten</search>
@@ -425,8 +430,32 @@ namespace DSCore
 
             if (_count < 0)
             {
-                startIndex += _count;
+                // The input count is negative means the removal process is required operate from right to left.
+                // However, the removal process in this function always operates rightwards (left to right).
+                // Therefore, a conversion for start index needs to be done in order to change
+                // from leftwards removal (right to left) to rightwards removal (left to right).
+                startIndex = startIndex + _count + 1; 
                 _count *= -1;
+            }
+            
+            if(_count > str.Length)
+            {
+                throw new ArgumentOutOfRangeException("count", Properties.Resources.StringRemoveCountOutOfRangeMessage);
+            }
+
+            if (startIndex == 0 && str.Length == 0)
+            {
+                return string.Empty;
+            }
+
+            if (startIndex >= str.Length || startIndex < 0) 
+            {
+                // startIndex of an array must be within the string length. 
+                // If after the conversion of negative startIndex, startIndex is still
+                // less than zero, ArgumentOutOfRangeException is occured.
+
+                throw new ArgumentOutOfRangeException("startIndex", Properties.Resources.StringRemoveStartIndexOutOfRangeMessage);
+
             }
 
             return str.Remove(startIndex, _count);

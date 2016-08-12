@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using CoreNodeModelsWpf.Controls;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
-using CoreNodeModelsWpf.Controls;
 
 namespace DynamoCoreWpfTests
 {
@@ -184,7 +187,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             var inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(3, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(6, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
         [Test]
@@ -198,7 +201,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             var inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(4, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(8, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
         [Test]
@@ -269,7 +272,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             var inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(3, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(6, inputPortControl.ChildrenOfType<TextBlock>().Count());
 
             nodeView = NodeViewWithGuid("2f031397-539e-4df4-bfca-d94d0bd02bc1"); // String.Concat node
 
@@ -277,7 +280,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(2, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(4, inputPortControl.ChildrenOfType<TextBlock>().Count());
 
             nodeView = NodeViewWithGuid("0cb04cce-1b05-47e0-a73f-ee81af4b7f43"); // List.Join node
 
@@ -285,7 +288,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(2, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(4, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
         [Test]
@@ -392,6 +395,31 @@ namespace DynamoCoreWpfTests
 
             DispatcherUtil.DoEvents();
             Assert.AreEqual(8, items.Count());
+        }
+
+        [Test]
+        public void TestEditReadOnlyCustomNodeProperty()
+        {
+            // Open a read-only custom node
+            var pathInTestsDir = @"core\CustomNodes\add_Read_only.dyf";
+            var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), pathInTestsDir);
+            FileInfo fInfo = new FileInfo(filePath);
+            fInfo.IsReadOnly = true;
+            Assert.IsTrue(DynamoUtilities.PathHelper.IsReadOnlyPath(filePath));
+
+            // a file with a read-only custom node definition is opened
+            Open(@"core\CustomNodes\TestAdd.dyn");
+            var homeWorkspace = Model.CurrentWorkspace as HomeWorkspaceModel;
+            Assert.NotNull(Model.CurrentWorkspace);
+
+            var funcNode = homeWorkspace.Nodes.OfType<Function>().First();
+            var customNodeView = NodeViewWithGuid("fb872c7c-21af-4074-8011-818874738dc7");
+            foreach (var menuItem in customNodeView.MainContextMenu.Items)
+            {
+                MenuItem item = menuItem as MenuItem;
+                if (item != null && item.Header.ToString() == Dynamo.Wpf.Properties.Resources.ContextMenuEditCustomNodeProperty)
+                    Assert.IsFalse(item.IsEnabled);
+            }
         }
     }
 }

@@ -1,16 +1,10 @@
-using System;
-using System.ComponentModel;
-using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Diagnostics;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
+using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Notes;
+using Dynamo.Graph.Presets;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Prompts;
@@ -18,33 +12,37 @@ using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Search;
 using Dynamo.Selection;
+using Dynamo.Services;
+using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Views;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Authentication;
 using Dynamo.Wpf.Controls;
-
-using String = System.String;
-using System.Windows.Data;
-using Dynamo.UI.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media;
-using Dynamo.Configuration;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Notes;
-using Dynamo.Graph.Presets;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Services;
+using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Utilities;
-using Dynamo.Logging;
-
-using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Gallery;
-using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Views.PackageManager;
-using Dynamo.Views;
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
+using String = System.String;
 
 namespace Dynamo.Controls
 {
@@ -588,6 +586,22 @@ namespace Dynamo.Controls
                 Converter = new BooleanToVisibilityConverter()
             };
             BackgroundPreview.SetBinding(VisibilityProperty, vizBinding);
+            TrackStartupAnalytics();
+        }
+
+        private void TrackStartupAnalytics()
+        {
+            if (!Analytics.ReportingAnalytics) return;
+
+            string packages = string.Empty;
+            var pkgExtension = dynamoViewModel.Model.GetPackageManagerExtension();
+            if(pkgExtension != null)
+            {
+                packages = pkgExtension.PackageLoader.LocalPackages
+                    .Select(p => string.Format("{0} {1}", p.Name, p.VersionName))
+                    .Aggregate(String.Empty, (x, y) => string.Format("{0}, {1}", x, y));
+            }
+            Analytics.TrackTimedEvent(Categories.Performance, "ViewStartup", dynamoViewModel.Model.stopwatch.Elapsed, packages);
         }
 
         /// <summary>
@@ -665,6 +679,7 @@ namespace Dynamo.Controls
         private PublishPackageView _pubPkgView;
         void DynamoViewModelRequestRequestPackageManagerPublish(PublishPackageViewModel model)
         {
+            var cmd = Analytics.TrackCommandEvent("PublishPackage");
             if (_pubPkgView == null)
             {
                 _pubPkgView = new PublishPackageView(model)
@@ -672,7 +687,7 @@ namespace Dynamo.Controls
                     Owner = this,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
-                _pubPkgView.Closed += (sender, args) => _pubPkgView = null;
+                _pubPkgView.Closed += (sender, args) => { _pubPkgView = null; cmd.Dispose(); };
                 _pubPkgView.Show();
 
                 if (_pubPkgView.IsLoaded && IsLoaded) _pubPkgView.Owner = this;
@@ -688,6 +703,7 @@ namespace Dynamo.Controls
             if (!DisplayTermsOfUseForAcceptance())
                 return; // Terms of use not accepted.
 
+            var cmd = Analytics.TrackCommandEvent("SearchPackage");
             if (_pkgSearchVM == null)
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
@@ -701,7 +717,7 @@ namespace Dynamo.Controls
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                _searchPkgsView.Closed += (sender, args) => _searchPkgsView = null;
+                _searchPkgsView.Closed += (sender, args) => { _searchPkgsView = null; cmd.Dispose(); };
                 _searchPkgsView.Show();
 
                 if (_searchPkgsView.IsLoaded && IsLoaded) _searchPkgsView.Owner = this;
@@ -713,7 +729,13 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestPackagePaths(object sender, EventArgs e)
         {
-            var viewModel = new PackagePathViewModel(dynamoViewModel.PreferenceSettings);
+            var loadPackagesParams = new LoadPackageParams {
+                Preferences = dynamoViewModel.PreferenceSettings,
+                PathManager = dynamoViewModel.Model.PathManager,
+            };
+            var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
+            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader;
+            var viewModel = new PackagePathViewModel(packageLoader,loadPackagesParams,customNodeManager);
             var view = new PackagePathView(viewModel) { Owner = this };
             view.ShowDialog();
         }
@@ -721,6 +743,7 @@ namespace Dynamo.Controls
         private InstalledPackagesView _installedPkgsView;
         void DynamoViewModelRequestShowInstalledPackages(object s, EventArgs e)
         {
+            var cmd = Analytics.TrackCommandEvent("ManagePackage");
             if (_installedPkgsView == null)
             {
                 var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
@@ -731,7 +754,7 @@ namespace Dynamo.Controls
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                _installedPkgsView.Closed += (sender, args) => _installedPkgsView = null;
+                _installedPkgsView.Closed += (sender, args) => { _installedPkgsView = null; cmd.Dispose(); };
                 _installedPkgsView.Show();
 
                 if (_installedPkgsView.IsLoaded && IsLoaded) _installedPkgsView.Owner = this;
@@ -748,19 +771,27 @@ namespace Dynamo.Controls
         void DynamoViewModelRequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
             var dialogText = "";
-            if (e.Workspace is CustomNodeWorkspaceModel)
+            // If the file is read only, display a different message.
+            if (e.Workspace.IsReadOnly)
             {
-                dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveCustomNode, e.Workspace.Name);
+                dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveReadOnlyCustomNode, e.Workspace.FileName);
             }
-            else // homeworkspace
+            else
             {
-                if (string.IsNullOrEmpty(e.Workspace.FileName))
+                if (e.Workspace is CustomNodeWorkspaceModel)
                 {
-                    dialogText = Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveHomeWorkSpace;
+                    dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveCustomNode, e.Workspace.Name);
                 }
-                else
+                else // home workspace
                 {
-                    dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveNamedHomeWorkSpace, Path.GetFileName(e.Workspace.FileName));
+                    if (string.IsNullOrEmpty(e.Workspace.FileName))
+                    {
+                        dialogText = Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveHomeWorkSpace;
+                    }
+                    else
+                    {
+                        dialogText = String.Format(Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveNamedHomeWorkSpace, Path.GetFileName(e.Workspace.FileName));
+                    }
                 }
             }
 
@@ -771,7 +802,11 @@ namespace Dynamo.Controls
 
             if (result == MessageBoxResult.Yes)
             {
-                e.Success = dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
+                // If the file is read-only, redirect yes to save-as.
+                if (e.Workspace.IsReadOnly)
+                    dynamoViewModel.ShowSaveDialogAndSaveResult(e.Workspace);
+                else
+                    e.Success = dynamoViewModel.ShowSaveDialogIfNeededAndSave(e.Workspace);
             }
             else if (result == MessageBoxResult.Cancel)
             {
@@ -805,78 +840,8 @@ namespace Dynamo.Controls
 
         void DynamoViewModelRequestSaveImage(object sender, ImageSaveEventArgs e)
         {
-            if (string.IsNullOrEmpty(e.Path))
-                return;
-
-            var workspace = dynamoViewModel.Model.CurrentWorkspace;
-            if (workspace == null)
-                return;
-
-            if (!workspace.Nodes.Any() && (!workspace.Notes.Any()))
-                return; // An empty graph.
-
-            var initialized = false;
-            var bounds = new Rect();
-
-            var dragCanvas = WpfUtilities.ChildOfType<DragCanvas>(this);
-            var childrenCount = VisualTreeHelper.GetChildrenCount(dragCanvas);
-            for (int index = 0; index < childrenCount; ++index)
-            {
-                var child = VisualTreeHelper.GetChild(dragCanvas, index);
-                var firstChild = VisualTreeHelper.GetChild(child, 0);
-                if ((!(firstChild is NodeView)) && (!(firstChild is NoteView)))
-                    continue;
-
-                var childBounds = VisualTreeHelper.GetDescendantBounds(child as Visual);
-                childBounds.X = (double)(child as Visual).GetValue(Canvas.LeftProperty);
-                childBounds.Y = (double)(child as Visual).GetValue(Canvas.TopProperty);
-
-                if (initialized)
-                    bounds.Union(childBounds);
-                else
-                {
-                    initialized = true;
-                    bounds = childBounds;
-                }
-            }
-
-            // Add padding to the edge and make them multiples of two.
-            bounds.Width = (((int)Math.Ceiling(bounds.Width)) + 1) & ~0x01;
-            bounds.Height = (((int)Math.Ceiling(bounds.Height)) + 1) & ~0x01;
-
-            var drawingVisual = new DrawingVisual();
-            using (var drawingContext = drawingVisual.RenderOpen())
-            {
-                var targetRect = new Rect(0, 0, bounds.Width, bounds.Height);
-                var visualBrush = new VisualBrush(dragCanvas);
-                drawingContext.DrawRectangle(visualBrush, null, targetRect);
-
-                // drawingContext.DrawRectangle(null, new Pen(Brushes.Blue, 1.0), childBounds);
-            }
-
-            // var m = PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice;
-            // region.Scale(m.M11, m.M22);
-
-            var rtb = new RenderTargetBitmap(((int)bounds.Width),
-                ((int)bounds.Height), 96, 96, PixelFormats.Default);
-
-            rtb.Render(drawingVisual);
-
-            //endcode as PNG
-            var pngEncoder = new PngBitmapEncoder();
-            pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
-
-            try
-            {
-                using (var stm = File.Create(e.Path))
-                {
-                    pngEncoder.Save(stm);
-                }
-            }
-            catch
-            {
-                dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToSaveAsImage);
-            }
+            var workspace = this.ChildOfType<WorkspaceView>();
+            workspace.SaveWorkspaceAsImage(e.Path);
         }
 
         void DynamoViewModelRequestClose(object sender, EventArgs e)

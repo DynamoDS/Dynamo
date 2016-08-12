@@ -52,7 +52,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             return Controller.BuildAst(this, inputAstNodes);
         }
 
-        #region Serialization/Deserialization methods
+#region Serialization/Deserialization methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
@@ -199,7 +199,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                         }
                     }
 
-                    #region Legacy output support
+#region Legacy output support
 
                     else if (subNode.Name.Equals("Output"))
                     {
@@ -211,7 +211,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                             OutPortData.Add(data);
                     }
 
-                    #endregion
+#endregion
                 }
 
                 RegisterAllPorts();
@@ -228,15 +228,10 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 Description = descNode.Attributes["value"].Value;
         }
 
-        #endregion
+#endregion
 
         private void ValidateDefinition(CustomNodeDefinition def)
         {
-            if (def == null)
-            {
-                throw new ArgumentNullException("def");
-            }
-
             if (def.IsProxy)
             {
                 this.Error(Properties.Resources.CustomNodeNotLoaded);
@@ -246,6 +241,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 this.ClearRuntimeError();
             }
         }
+
 
         /// <summary>
         ///     Validates passed Custom Node definition and synchronizes node with it.
@@ -617,14 +613,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 }
 
                 var node = parseParam.ParsedNodes.First() as BinaryExpressionNode;
-                if (node == null)
-                {
-                    if (parseParam.Errors.Any())
-                    {
-                        this.Error(Properties.Resources.WarningInvalidOutput);
-                    }
-                }
-                else
+                if (node != null)
                 {
                     var leftIdent = node.LeftNode as IdentifierNode;
                     var rightIdent = node.RightNode as IdentifierNode;
@@ -634,21 +623,8 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     {
                         outputIdentifier = rightIdent;
                     }
-                    // "x:int" will be compiled to "x:int = tTypedIdent0;"
-                    else if (rightIdent != null && rightIdent.Value.StartsWith(Constants.kTempVarForTypedIdentifier))
-                    {
-                        outputIdentifier = leftIdent;
-                    }
                     else
                     {
-                        if (parseParam.Errors.Any())
-                        {
-                            this.Error(parseParam.Errors.First().Message);
-                        }
-                        else
-                        {
-                            this.Warning(Properties.Resources.WarningInvalidOutput);
-                        }
                         outputIdentifier = leftIdent;
                     }
                     return outputIdentifier != null;
