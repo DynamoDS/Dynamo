@@ -2059,10 +2059,10 @@ Next assemblies were loaded several times:
     <value>Keep 1 input list's nesting</value>
   </data>
   <data name="UseLevelKeepListStructurePopupMenuItem" xml:space="preserve">
-    <value>Keep list structure?</value>
+    <value>Keep list structure</value>
   </data>
   <data name="UseLevelPopupMenuItem" xml:space="preserve">
-    <value>Use Levels?</value>
+    <value>Use Levels</value>
   </data>
   <data name="DirectoryNotFound" xml:space="preserve">
     <value>Directory Not Found</value>
