@@ -218,9 +218,8 @@
                 </Setter>
             </Style>
             
-            <!--ScrollViewer Style-->
+            <!--ScrollViewer Control Style-->
             <Style TargetType="ScrollViewer">
-
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ScrollViewer}">
@@ -242,7 +241,8 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-
+            
+            <!-- TreeView Control Style-->
             <Style x:Key="TreeView" TargetType="TreeView">
                 <Setter Property="OverridesDefaultStyle" Value="True" />
                 <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -260,18 +260,12 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
-
-
-
-
-
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
