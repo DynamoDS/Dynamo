@@ -152,7 +152,7 @@
                 <Grid Visibility="{Binding Path=UseLevelVisibility}" HorizontalAlignment="Right"> 
                     <!-- This is is a stub UI element just occupy the space of List@Level spinner
                          so that input port highlight will get wider area if "Use Levels" option is off -->
-                    <TextBlock
+                    <Grid
                         HorizontalAlignment="Right"
                         Width="45"
                         Background="{x:Null}"
