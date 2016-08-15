@@ -9,6 +9,7 @@ using System.IO;
 using Dynamo.Configuration;
 using ProtoCore.AST.AssociativeAST;
 using DynamoUtilities;
+using Dynamo.Engine;
 
 namespace Dynamo.Tests
 {
@@ -599,7 +600,7 @@ namespace Dynamo.Tests
                 sw.Write("test");
             }
 
-            Assert.AreEqual(filePath, PathHelper.FindFileInPaths("SaveFile", ".txt", new String[] { path }));
+            Assert.AreEqual(filePath, DocumentationServices.FindFileInPaths("SaveFile", ".txt", new String[] { path }));
             File.Delete(filePath);
             filePath = Path.Combine(path, "SaveFile.TXT");
             using (StreamWriter sw = new StreamWriter(filePath))
@@ -607,7 +608,7 @@ namespace Dynamo.Tests
                 sw.Write("test");
             }
 
-            Assert.AreEqual(filePath, PathHelper.FindFileInPaths("SaveFile", ".txt", new String[] { path }));
+            Assert.AreEqual(filePath, DocumentationServices.FindFileInPaths("SaveFile", ".txt", new String[] { path }));
             File.Delete(filePath);
             filePath = Path.Combine(path, "SaveFile.tXt");
             using (StreamWriter sw = new StreamWriter(filePath))
@@ -615,7 +616,7 @@ namespace Dynamo.Tests
                 sw.Write("test");
             }
 
-            Assert.AreEqual(filePath, PathHelper.FindFileInPaths("SaveFile", ".txt", new String[] { path }));
+            Assert.AreEqual(filePath, DocumentationServices.FindFileInPaths("SaveFile", ".txt", new String[] { path }));
             File.Delete(filePath);
 
 
@@ -644,8 +645,8 @@ namespace Dynamo.Tests
             }
 
 
-            Assert.AreEqual(filePath1, PathHelper.FindFileInPaths("SaveFile", ".txt", new String[] { path1,path2 }));
-            Assert.AreEqual(filePath2, PathHelper.FindFileInPaths("SaveFile", ".txt", new String[] { path2, path1 }));
+            Assert.AreEqual(filePath1, DocumentationServices.FindFileInPaths("SaveFile", ".txt", new String[] { path1,path2 }));
+            Assert.AreEqual(filePath2, DocumentationServices.FindFileInPaths("SaveFile", ".txt", new String[] { path2, path1 }));
 
             Directory.Delete(path1,true);
             Directory.Delete(path2,true);
