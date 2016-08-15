@@ -21,7 +21,7 @@
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <DocumentationFile>$(OutputPath)\nodes\CoreNodeModels.XML</DocumentationFile>
+    <DocumentationFile>$(OutputPath)\CoreNodeModels.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
