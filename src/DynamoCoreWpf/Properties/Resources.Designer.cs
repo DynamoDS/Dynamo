@@ -5027,7 +5027,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keep list structure?.
+        ///   Looks up a localized string similar to Keep list structure.
         /// </summary>
         public static string UseLevelKeepListStructurePopupMenuItem {
             get {
@@ -5036,7 +5036,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use Levels?.
+        ///   Looks up a localized string similar to Use Levels.
         /// </summary>
         public static string UseLevelPopupMenuItem {
             get {
