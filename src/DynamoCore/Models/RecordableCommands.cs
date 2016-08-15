@@ -2309,26 +2309,35 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             [JsonConstructor]
-            public UseLevelsCommand(string modelGuid, bool useLevels, bool shouldKeepListStructure, int level) : base(new[] { Guid.Parse(modelGuid) })
-            {
-                UseLevels = useLevels;
-                ShouldKeepListStructure = shouldKeepListStructure;
-                Level = level; 
-            }
-
-            public UseLevelsCommand(Guid modelGuid, bool useLevels, bool shouldKeepListStructure, int level) : base(new[] { modelGuid })
+            public UseLevelsCommand(string modelGuid, bool useLevels, bool shouldKeepListStructure, int level, int portIndex, string portName) 
+                : base(new[] { Guid.Parse(modelGuid) })
             {
                 UseLevels = useLevels;
                 ShouldKeepListStructure = shouldKeepListStructure;
                 Level = level;
+                PortIndex = portIndex;
+                PortName = portName;
             }
 
-
-            public UseLevelsCommand(IEnumerable<Guid> modelGuid, bool useLevels, bool shouldKeepListStructure, int level) : base(modelGuid)
+            public UseLevelsCommand(Guid modelGuid, bool useLevels, bool shouldKeepListStructure, int level, int portIndex, string portName) 
+                : base(new[] { modelGuid })
             {
                 UseLevels = useLevels;
                 ShouldKeepListStructure = shouldKeepListStructure;
-                Level = level; 
+                Level = level;
+                PortIndex = portIndex;
+                PortName = portName; 
+            }
+
+
+            public UseLevelsCommand(IEnumerable<Guid> modelGuid, bool useLevels, bool shouldKeepListStructure, int level, int portIndex, string portName) 
+                : base(modelGuid)
+            {
+                UseLevels = useLevels;
+                ShouldKeepListStructure = shouldKeepListStructure;
+                Level = level;
+                PortIndex = portIndex;
+                PortName = portName;
             }
 
             internal static UseLevelsCommand DeserializeCore(XmlElement element)
@@ -2336,7 +2345,9 @@ namespace Dynamo.Models
                 var helper = new XmlElementHelper(element);
                 var modelGuids = DeserializeGuid(element, helper);
 
-                return new UseLevelsCommand(modelGuids, helper.ReadBoolean("UseLevels"), helper.ReadBoolean("ShouldKeepListStructure"), helper.ReadInteger("Level"));
+                return new UseLevelsCommand(modelGuids, helper.ReadBoolean("UseLevels"), 
+                    helper.ReadBoolean("ShouldKeepListStructure"), helper.ReadInteger("Level"), 
+                    helper.ReadInteger("PortIndex"), helper.ReadString("PortName"));
             }
 
             #endregion
@@ -2347,6 +2358,8 @@ namespace Dynamo.Models
             internal bool UseLevels { get; private set; }
             internal int Level { get; private set;  }
             internal bool ShouldKeepListStructure { get; private set; }
+            internal int PortIndex { get; private set; }
+            internal string PortName { get; private set; }
 
             #endregion
 
@@ -2358,15 +2371,14 @@ namespace Dynamo.Models
             {
                 base.SerializeCore(element);
                 var helper = new XmlElementHelper(element);
+                helper.SetAttribute("PortIndex", PortIndex);
+                helper.SetAttribute("PortName", PortName);
                 helper.SetAttribute("UseLevels", UseLevels);
                 helper.SetAttribute("Level", Level);
                 helper.SetAttribute("ShouldKeepListStructure", ShouldKeepListStructure);
             }
-
             #endregion
-
         }
-
     }
 
     // public class XxxYyyCommand : RecordableCommand

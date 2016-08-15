@@ -160,12 +160,12 @@ namespace Dynamo.ViewModels
             get { return _port.UseLevels; }
             set
             {
-                Levels(value, ShouldKeepListStructure, Level);
                 _port.UseLevels = value;
                if (!_port.UseLevels)
                {
                    ShouldKeepListStructure = false;
                }
+               Levels();
             }
         }
 
@@ -177,8 +177,8 @@ namespace Dynamo.ViewModels
             get { return _port.ShouldKeepListStructure; }
             set
             {
-                Levels(UseLevels, value, Level);
                 _port.ShouldKeepListStructure = value;
+                Levels();
             }
         }
 
@@ -190,9 +190,8 @@ namespace Dynamo.ViewModels
             get { return _port.Level; }
             set
             {
-
-                Levels(UseLevels, ShouldKeepListStructure, value);
                 _port.Level = value;
+                Levels();
             } 
         }
 
@@ -310,11 +309,11 @@ namespace Dynamo.ViewModels
             workspaceViewModel.HandlePortClicked(this);
         }
 
-        private void Levels(bool useLevels, bool shouldKeepListStructure, int level)
+        private void Levels()
         {
             DynamoViewModel dynamoViewModel = this._node.DynamoViewModel;
             WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
-            workspaceViewModel.UseLevels(this, useLevels, shouldKeepListStructure, level);
+            workspaceViewModel.UseLevels(this);
         }
 
         private bool CanConnect(object parameter)
