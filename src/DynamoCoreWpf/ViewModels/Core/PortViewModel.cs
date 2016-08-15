@@ -314,6 +314,7 @@ namespace Dynamo.ViewModels
             DynamoViewModel dynamoViewModel = this._node.DynamoViewModel;
             WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
             workspaceViewModel.UseLevels(this);
+
         }
 
         private bool CanConnect(object parameter)

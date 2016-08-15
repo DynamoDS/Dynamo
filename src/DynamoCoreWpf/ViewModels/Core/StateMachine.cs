@@ -766,6 +766,12 @@ namespace Dynamo.ViewModels
                 Guid nodeId = portModel.Owner.GUID;
                 var command = new DynamoModel.UseLevelsCommand(nodeId, useLevels, shouldKeepListStructure, level,portIndex, portName);
                 owningWorkspace.DynamoViewModel.ExecuteCommand(command);
+
+                string label = "PortIndex;PortModel;UseLevels;Level;KeepListStructure";
+                string value = portIndex.ToString() + ";" + portName.ToString() + ";" + useLevels + ";" + level.ToString() + ";" + shouldKeepListStructure;
+
+                var command2 = new DynamoModel.UpdateModelValueCommand(Guid.Empty, nodeId, label, value);
+                owningWorkspace.DynamoViewModel.ExecuteCommand(command2);
             }
 
 
