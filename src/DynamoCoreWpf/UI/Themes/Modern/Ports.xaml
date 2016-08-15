@@ -189,7 +189,7 @@
                                            Height="16"
                                            Level="{Binding Path=Level, Mode=TwoWay}"
                                            KeepListStructure="{Binding Path=ShouldKeepListStructure}"
-                                           Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}"/>
+                                           Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Hidden}"/>
                     <fa:FontAwesome Icon="ChevronRight"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
