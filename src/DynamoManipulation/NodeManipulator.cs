@@ -565,11 +565,7 @@ namespace Dynamo.Manipulation
 
         public bool IsNodeValueNull()
         {
-            if (Node.CachedValue == null || Node.CachedValue.IsNull)
-            {
-                return true;
-            }
-            return false;
+            return Node.CachedValue == null || Node.CachedValue.IsNull;
         }
         #endregion
     }
