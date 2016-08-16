@@ -758,20 +758,15 @@ namespace Dynamo.ViewModels
                 var workspaceViewModel = owningWorkspace.DynamoViewModel.CurrentSpaceViewModel;
 
                 int portIndex = portModel.Index;
-                var portName = portModel.PortName;
                 bool useLevels = portModel.UseLevels;
                 bool shouldKeepListStructure = portModel.ShouldKeepListStructure;
                 int level = portModel.Level;
-
                 Guid nodeId = portModel.Owner.GUID;
-                var command = new DynamoModel.UseLevelsCommand(nodeId, useLevels, shouldKeepListStructure, level,portIndex, portName);
+                string label = "UseLevels";
+                string value = portIndex.ToString() + ";" + useLevels + ";" + level.ToString() + ";" + shouldKeepListStructure;
+
+                var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty, nodeId, label, value);
                 owningWorkspace.DynamoViewModel.ExecuteCommand(command);
-
-                string label = "PortIndex;PortModel;UseLevels;Level;KeepListStructure";
-                string value = portIndex.ToString() + ";" + portName.ToString() + ";" + useLevels + ";" + level.ToString() + ";" + shouldKeepListStructure;
-
-                var command2 = new DynamoModel.UpdateModelValueCommand(Guid.Empty, nodeId, label, value);
-                owningWorkspace.DynamoViewModel.ExecuteCommand(command2);
             }
 
 

@@ -202,9 +202,6 @@ namespace Dynamo.Models
                     case "CreateAndConnectNodeCommand":
                         command = CreateAndConnectNodeCommand.DeserializeCore(element);
                         break;
-                    case "UseLevelsCommand":
-                        command = UseLevelsCommand.DeserializeCore(element);
-                        break;
                 }
 
                 if (null != command)
@@ -1586,7 +1583,7 @@ namespace Dynamo.Models
                 Value = value;
             }
 
-         
+
             public ModelEventCommand(string modelGuid, string eventName)
                 : base(new[] { Guid.Parse(modelGuid) })
             {
@@ -2197,8 +2194,8 @@ namespace Dynamo.Models
             /// <param name="name"></param>
             /// <param name="description"></param>
             /// <param name="currentSelectionIds"></param>
-            public AddPresetCommand(string name, string description, IEnumerable<Guid> currentSelectionIds )
-                :base(currentSelectionIds)
+            public AddPresetCommand(string name, string description, IEnumerable<Guid> currentSelectionIds)
+                : base(currentSelectionIds)
             {
                 PresetStateName = name;
                 PresetStateDescription = description;
@@ -2208,12 +2205,12 @@ namespace Dynamo.Models
             {
                 var helper = new XmlElementHelper(element);
                 var modelGuids = DeserializeGuid(element, helper);
-                if (modelGuids.Count()<1)
+                if (modelGuids.Count() < 1)
                 {
                     throw new ArgumentNullException("No IDs were deserialized during load of preset creation command");
                 }
 
-                return new AddPresetCommand(helper.ReadString("name"), helper.ReadString("description"),modelGuids);
+                return new AddPresetCommand(helper.ReadString("name"), helper.ReadString("description"), modelGuids);
             }
 
             #endregion
@@ -2224,7 +2221,7 @@ namespace Dynamo.Models
             internal string PresetStateName { get; set; }
             [DataMember]
             internal string PresetStateDescription { get; set; }
-             #endregion
+            #endregion
 
             #region Protected Overridable Methods
 
@@ -2242,7 +2239,7 @@ namespace Dynamo.Models
                 helper.SetAttribute("description", PresetStateDescription);
 
             }
-              #endregion
+            #endregion
         }
 
         /// <summary>
@@ -2300,85 +2297,6 @@ namespace Dynamo.Models
             #endregion
         }
 
-        /// <summary>
-        /// A command to check off UseLevels
-        /// </summary>
-        [DataContract]
-        public class UseLevelsCommand : ModelBasedRecordableCommand
-        {
-            #region Public Class Methods
-
-            [JsonConstructor]
-            public UseLevelsCommand(string modelGuid, bool useLevels, bool shouldKeepListStructure, int level, int portIndex, string portName) 
-                : base(new[] { Guid.Parse(modelGuid) })
-            {
-                UseLevels = useLevels;
-                ShouldKeepListStructure = shouldKeepListStructure;
-                Level = level;
-                PortIndex = portIndex;
-                PortName = portName;
-            }
-
-            public UseLevelsCommand(Guid modelGuid, bool useLevels, bool shouldKeepListStructure, int level, int portIndex, string portName) 
-                : base(new[] { modelGuid })
-            {
-                UseLevels = useLevels;
-                ShouldKeepListStructure = shouldKeepListStructure;
-                Level = level;
-                PortIndex = portIndex;
-                PortName = portName; 
-            }
-
-
-            public UseLevelsCommand(IEnumerable<Guid> modelGuid, bool useLevels, bool shouldKeepListStructure, int level, int portIndex, string portName) 
-                : base(modelGuid)
-            {
-                UseLevels = useLevels;
-                ShouldKeepListStructure = shouldKeepListStructure;
-                Level = level;
-                PortIndex = portIndex;
-                PortName = portName;
-            }
-
-            internal static UseLevelsCommand DeserializeCore(XmlElement element)
-            {
-                var helper = new XmlElementHelper(element);
-                var modelGuids = DeserializeGuid(element, helper);
-
-                return new UseLevelsCommand(modelGuids, helper.ReadBoolean("UseLevels"), 
-                    helper.ReadBoolean("ShouldKeepListStructure"), helper.ReadInteger("Level"), 
-                    helper.ReadInteger("PortIndex"), helper.ReadString("PortName"));
-            }
-
-            #endregion
-
-            #region Public Command Properties
-
-            [DataMember]
-            internal bool UseLevels { get; private set; }
-            internal int Level { get; private set;  }
-            internal bool ShouldKeepListStructure { get; private set; }
-            internal int PortIndex { get; private set; }
-            internal string PortName { get; private set; }
-
-            #endregion
-
-            #region Protected Overridable Methods
-
-            protected override void ExecuteCore(DynamoModel dynamoModel) { }
-
-            protected override void SerializeCore(XmlElement element)
-            {
-                base.SerializeCore(element);
-                var helper = new XmlElementHelper(element);
-                helper.SetAttribute("PortIndex", PortIndex);
-                helper.SetAttribute("PortName", PortName);
-                helper.SetAttribute("UseLevels", UseLevels);
-                helper.SetAttribute("Level", Level);
-                helper.SetAttribute("ShouldKeepListStructure", ShouldKeepListStructure);
-            }
-            #endregion
-        }
     }
 
     // public class XxxYyyCommand : RecordableCommand
