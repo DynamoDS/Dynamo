@@ -376,42 +376,45 @@ namespace Dynamo.UI.Controls
                 },
                 (m) =>
                 {
-                if (largeContentGrid.Children.Count == 0)
-                {
-                    var tree = new WatchTree
+                    //If newViewModel is not set then no point continuing.
+                    if (newViewModel == null) return;
+
+                    if (largeContentGrid.Children.Count == 0)
                     {
-                        DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath)
-                    };
-                    tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
-                    largeContentGrid.Children.Add(tree);
-                }
-
-                var watchTree = largeContentGrid.Children[0] as WatchTree;
-                if (watchTree != null)
-                {
-                    var rootDataContext = watchTree.DataContext as WatchViewModel;
-
-                    cachedLargeContent = newViewModel;
-
-                    if (rootDataContext != null)
-                    {
-                        rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
-                        rootDataContext.Children.Clear();
-                        rootDataContext.Children.Add(cachedLargeContent);
-                        rootDataContext.CountNumberOfItems(); //count the total number of items in the list
-                        if (!rootDataContext.IsOneRowContent)
+                        var tree = new WatchTree
                         {
-                            rootDataContext.CountLevels();
-                            watchTree.listLevelsView.ItemsSource = rootDataContext.Levels; // add listLevelList to the ItemsSource of listlevelsView in WatchTree
-                            rootDataContext.Children[0].IsTopLevel = true;
-                        }
+                            DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath)
+                        };
+                        tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
+                        largeContentGrid.Children.Add(tree);
+                    }
 
-                        watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
-                            new Binding("Children")
+                    var watchTree = largeContentGrid.Children[0] as WatchTree;
+                    if (watchTree != null)
+                    {
+                        var rootDataContext = watchTree.DataContext as WatchViewModel;
+
+                        cachedLargeContent = newViewModel;
+
+                        if (rootDataContext != null)
+                        {
+                            rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
+                            rootDataContext.Children.Clear();
+                            rootDataContext.Children.Add(cachedLargeContent);
+                            rootDataContext.CountNumberOfItems(); //count the total number of items in the list
+                            if (!rootDataContext.IsOneRowContent)
                             {
-                                Mode = BindingMode.TwoWay,
-                                Source = rootDataContext
-                            });
+                                rootDataContext.CountLevels();
+                                watchTree.listLevelsView.ItemsSource = rootDataContext.Levels; // add listLevelList to the ItemsSource of listlevelsView in WatchTree
+                                rootDataContext.Children[0].IsTopLevel = true;
+                            }
+
+                            watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
+                                new Binding("Children")
+                                {
+                                    Mode = BindingMode.TwoWay,
+                                    Source = rootDataContext
+                                });
 
                         }
                     }
@@ -636,9 +639,23 @@ namespace Dynamo.UI.Controls
 
             // The real transition starts
             SetCurrentStateAndNotify(State.InTransition);
-            var largeContentSize = ComputeLargeContentSize();
-            centralizedGrid.Width = largeContentSize.Width;
-            centralizedGrid.Height = largeContentSize.Height;
+            try
+            {
+                var largeContentSize = ComputeLargeContentSize();
+                centralizedGrid.Width = largeContentSize.Width;
+                centralizedGrid.Height = largeContentSize.Height;
+            }
+            catch (DivideByZeroException ex)
+            {
+                //Log this exception as non-fatal exception.
+                Logging.Analytics.TrackException(ex, false);
+
+                //MAGN-10528, thrown from UpdateLayout call while measuring the size.
+                //Most likely it doesn't have any content, so use condensed content size.
+                centralizedGrid.Width = Configurations.DefCondensedContentWidth;
+                centralizedGrid.Height = Configurations.DefCondensedContentHeight;
+            }
+
             SetCurrentStateAndNotify(State.Expanded);
             BeginNextTransition(); // See if there's any more requests.
         }
