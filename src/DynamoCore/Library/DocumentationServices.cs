@@ -5,6 +5,7 @@ using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Interfaces;
 using DynamoUtilities;
+using System.Linq;
 
 namespace Dynamo.Engine
 {
@@ -77,12 +78,45 @@ namespace Dynamo.Engine
             var searchPaths = new List<string>() { localizedDocPath, localizedFallbackDockPath, baseDir };
             var extension = ".xml";
 
-            documentationPath = PathHelper.FindFileInPaths(assemblyName, extension, searchPaths.ToArray());
+            documentationPath = FindFileInPaths(assemblyName, extension, searchPaths.ToArray());
             if(documentationPath != string.Empty)
             {
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// searchs for a file with an extension in a list of paths, returns the first match
+        /// where the extension is case insensitive. If no file is found, returns an empty string.
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="extension"></param>
+        /// <param name="searchPaths"></param>
+        /// <returns></returns>
+        internal static string FindFileInPaths(string filename, string extension, string[] searchPaths)
+        {
+            foreach (var path in searchPaths)
+            {
+                if (Directory.Exists(path))
+                {
+                    var files = Directory.GetFiles(path);
+                    //matches occur where filename and extension are the same when both are lowercased
+                    var matches = files.ToList().Where(x => String.CompareOrdinal(Path.GetFileName(x).ToLower(), (filename + extension).ToLower()) == 0);
+                    if (matches.Count() > 1)
+                    {
+                        Console.WriteLine(string.Format("While searching for {0}{1} in {2}, {3} matches were found, the first will be loaded",
+                            filename, extension, path, matches.Count().ToString()));
+                    }
+                    if (matches.Count() > 0)
+                    {
+                        //found a match, return the first one
+                        return matches.First();
+                    }
+
+                }
+            }
+            return string.Empty;
         }
 
     }
