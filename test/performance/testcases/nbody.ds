@@ -1,0 +1,185 @@
+def abs(x)
+{
+    return = x < 0 ? -x : x;
+}
+
+def sqrt(x)
+{
+    return = [Imperative]
+    {
+        guess = 1.0;
+        while (abs((guess * guess) / x - 1.0) >= 0.001)
+        {
+            guess = ((x / guess) + guess) / 2.0;
+        }
+        return = guess;
+    }
+}
+
+def initialize(bodies:var[]..[]) {
+    px = 0.0;
+    py = 0.0;
+    pz = 0.0;
+
+    [Imperative]
+    {
+        for (body in bodies)
+        {
+            px = px + body["vx"] * body["mass"];
+            py = py + body["vy"] * body["mass"];
+            pz = pz + body["vz"] * body["mass"];
+        }
+    }
+    bodies[0] = offsetMomentum(bodies[0], px, py, pz);
+    return = bodies;
+}
+
+def advance(bodies: var[]..[], dt:double) 
+{
+    [Imperative]
+    {
+        bodiesCount = Count(bodies);
+        for (i in 0..(bodiesCount - 1)..1)
+        {
+            ibody = bodies[i];
+            for (j in (i + 1)..(bodiesCount - 1)..1)
+            {
+                jbody = bodies[j];
+
+                dx = ibody["x"] - jbody["x"];
+                dy = ibody["y"] - jbody["y"];
+                dz = ibody["z"] - jbody["z"];
+
+                dsquared = dx * dx + dy * dy + dz * dz;
+                distance = sqrt(dsquared);
+                mag = dt / (dsquared * distance);
+
+                ibody["vx"] = ibody["vx"] - dx * jbody["mass"] * mag;
+                ibody["vy"] = ibody["vy"] - dy * jbody["mass"] * mag;
+                ibody["vz"] = ibody["vz"] - dz * jbody["mass"] * mag;
+
+                jbody["vx"] = jbody["vx"] + dx * ibody["mass"] * mag;
+                jbody["vy"] = jbody["vy"] + dy * ibody["mass"] * mag;
+                jbody["vz"] = jbody["vz"] + dz * ibody["mass"] * mag;
+            }
+        }
+        
+        for (body in bodies) {
+            body["x"] = body["x"] + dt * body["vx"];
+            body["y"] = body["y"] + dt * body["vy"];
+            body["z"] = body["z"] + dt * body["vz"];
+        }
+    }
+    return = bodies;
+}
+
+def energy:double(bodies: var[]..[])
+{
+    e = 0.0;
+    [Imperative]
+    {
+        bodiesCount = Count(bodies);
+        for (i in 0..(bodiesCount - 1)..1)
+        {
+            ibody = bodies[i];
+            e = e + 0.5 * ibody["mass"] * (ibody["vx"] * ibody["vx"] + ibody["vy"] * ibody["vy"] + ibody["vz"] * ibody["vz"]);
+
+            for (j in (i + 1)..(bodiesCount - 1)..1)
+            {
+                jbody = bodies[j];
+                dx = ibody["x"] - jbody["x"];
+                dy = ibody["y"] - jbody["y"];
+                dz = ibody["z"] - jbody["z"];
+
+                distance = sqrt(dx * dx + dy * dy + dz * dz);
+                e = e - (ibody["mass"] * jbody["mass"]) / distance;
+            }
+        }
+    }
+    return = e;
+}
+
+PI:double = 3.141592653589793;
+SOLAR_MASS:double = 4 * PI * PI;
+DAYS_PER_YEAR:double = 365.24;
+
+def jupiter(){
+    b = {};
+    b["x"] = 4.84143144246472090e+00;
+    b["y"] = -1.16032004402742839e+00;
+    b["z"] = -1.03622044471123109e-01;
+    b["vx"] = 1.66007664274403694e-03 * DAYS_PER_YEAR;
+    b["vy"] = 7.69901118419740425e-03 * DAYS_PER_YEAR;
+    b["vz"] = -6.90460016972063023e-05 * DAYS_PER_YEAR;
+    b["mass"] = 9.54791938424326609e-04 * SOLAR_MASS;
+    return = b;
+}
+
+def saturn(){
+    b = {};
+    b["x"] = 8.34336671824457987e+00;
+    b["y"] = 4.12479856412430479e+00;
+    b["z"] = -4.03523417114321381e-01;
+    b["vx"] = -2.76742510726862411e-03 * DAYS_PER_YEAR;
+    b["vy"] = 4.99852801234917238e-03 * DAYS_PER_YEAR;
+    b["vz"] = 2.30417297573763929e-05 * DAYS_PER_YEAR;
+    b["mass"] = 2.85885980666130812e-04 * SOLAR_MASS;
+    return = b;
+}
+
+def uranus(){
+    b = {};
+    b["x"] = 1.28943695621391310e+01;
+    b["y"] = -1.51111514016986312e+01;
+    b["z"] = -2.23307578892655734e-01;
+    b["vx"] = 2.96460137564761618e-03 * DAYS_PER_YEAR;
+    b["vy"] = 2.37847173959480950e-03 * DAYS_PER_YEAR;
+    b["vz"] = -2.96589568540237556e-05 * DAYS_PER_YEAR;
+    b["mass"] = 4.36624404335156298e-05 * SOLAR_MASS;
+    return = b;
+}
+
+def neptune(){
+    b = {};
+    b["x"] = 1.53796971148509165e+01;
+    b["y"] = -2.59193146099879641e+01;
+    b["z"] = 1.79258772950371181e-01;
+    b["vx"] = 2.68067772490389322e-03 * DAYS_PER_YEAR;
+    b["vy"] = 1.62824170038242295e-03 * DAYS_PER_YEAR;
+    b["vz"] = -9.51592254519715870e-05 * DAYS_PER_YEAR;
+    b["mass"] = 5.15138902046611451e-05 * SOLAR_MASS;
+    return = b;
+}
+
+def sun(){
+    b = {};
+    b["x"] = 0;
+    b["y"] = 0;
+    b["z"] = 0;
+    b["vx"] = 0;
+    b["vy"] = 0; 
+    b["vz"] = 0;
+    b["mass"] = SOLAR_MASS;
+    return = b;
+}
+
+def offsetMomentum(body: var[]..[], px:double, py:double, pz:double){
+    body["vx"] = -px / SOLAR_MASS;
+    body["vy"] = -py / SOLAR_MASS;
+    body["vz"] = -pz / SOLAR_MASS;
+    return = body;
+}
+
+bodies = { sun(), jupiter(), saturn(), uranus(), neptune()};
+bodies = initialize(bodies);
+
+[Imperative]
+{
+    n = 1000;
+    // expected output for n = 1000: -0.169075164
+    for(i in 1..n)
+    {
+        advance(bodies, 0.01);
+    }
+    // Print(energy(bodies));
+}

@@ -14,6 +14,8 @@ Looking to learn or download Dynamo?  Check out [dynamobim.org](http://dynamobim
 If you're interested in developing a Node library for Dynamo, the easiest place to start is by browsing the [DynamoSamples](https://github.com/DynamoDS/DynamoSamples).  
 These samples use the [Dynamo NuGet packages](https://www.nuget.org/packages?q=DynamoVisualProgramming) which can be installed using the NuGet package manager in Visual Studio.
 
+[Documentation of the Dynamo API]( http://dynamods.github.io/DynamoAPI) with a searchable index of public API calls for core functionality. This will be expanded to include regular nodes and Revit functionality.
+
 The [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document explains changes made to the Dynamo API with every version.
 
 You can learn more about developing libraries for Dynamo on the [Dynamo wiki](https://github.com/DynamoDS/Dynamo/wiki/Zero-Touch-Plugin-Development).

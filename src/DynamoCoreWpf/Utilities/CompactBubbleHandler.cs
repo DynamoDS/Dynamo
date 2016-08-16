@@ -55,7 +55,7 @@ namespace Dynamo.Wpf.Utilities
                 return generateViewModel
                     ? new CompactBubbleViewModel(true)
                     {
-                        NodeLabel = list.Any() ? "List" : "Empty List"
+                        NodeLabel = list.Any() ? WatchViewModel.LIST : WatchViewModel.EMPTY_LIST
                     }
                     : null;
             }

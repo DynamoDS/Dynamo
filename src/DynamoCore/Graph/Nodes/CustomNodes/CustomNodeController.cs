@@ -54,7 +54,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         {
             if (!model.IsPartiallyApplied)
             {
-                model.AppendReplicationGuides(inputAstNodes);
+                model.UseLevelAndReplicationGuide(inputAstNodes);
                 return AstFactory.BuildFunctionCall(Definition.FunctionName, inputAstNodes);
             }
 

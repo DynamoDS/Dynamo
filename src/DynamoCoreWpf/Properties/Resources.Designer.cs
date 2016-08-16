@@ -440,6 +440,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto.
+        /// </summary>
+        public static string ContextMenuLacingAuto {
+            get {
+                return ResourceManager.GetString("ContextMenuLacingAuto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cross Product.
         /// </summary>
         public static string ContextMenuLacingCrossProduct {
@@ -780,6 +789,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DetailedLayoutTitle {
             get {
                 return ResourceManager.GetString("DetailedLayoutTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Directory Not Found.
+        /// </summary>
+        public static string DirectoryNotFound {
+            get {
+                return ResourceManager.GetString("DirectoryNotFound", resourceCulture);
             }
         }
         
@@ -2642,6 +2660,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No replication guide will be added..
+        /// </summary>
+        public static string LacingAutoToolTip {
+            get {
+                return ResourceManager.GetString("LacingAutoToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to For two lists {a,b,c}{1,2,3} returns {a1,a2,a3}{b1,b2,b3}{c1,c2,c3}..
         /// </summary>
         public static string LacingCrossProductToolTip {
@@ -3458,6 +3485,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A problem occurred when trying to install the package. Dynamo is unable to obtain read/write access to
+        ///{0}.
+        /// </summary>
+        public static string PackageFolderNotAccessible {
+            get {
+                return ResourceManager.GetString("PackageFolderNotAccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package Manager Website.
         /// </summary>
         public static string PackageManagerWebSiteButton {
@@ -3481,6 +3518,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageNeedAtLeastOneFile {
             get {
                 return ResourceManager.GetString("PackageNeedAtLeastOneFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The root directory of the package does not exist. Please try and re-install the package..
+        /// </summary>
+        public static string PackageNotExisted {
+            get {
+                return ResourceManager.GetString("PackageNotExisted", resourceCulture);
             }
         }
         
@@ -4682,6 +4728,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable To Access Package Directory.
+        /// </summary>
+        public static string UnableToAccessPackageDirectory {
+            get {
+                return ResourceManager.GetString("UnableToAccessPackageDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Removing Package Deprecation.
         /// </summary>
         public static string UndeprecatingPackageMessageBoxTitle {
@@ -4959,6 +5014,33 @@ namespace Dynamo.Wpf.Properties {
         public static string UsageReportPromptDialogTitle {
             get {
                 return ResourceManager.GetString("UsageReportPromptDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep 1 input list&apos;s nesting.
+        /// </summary>
+        public static string UseLevelKeepListStructureHint {
+            get {
+                return ResourceManager.GetString("UseLevelKeepListStructureHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep list structure.
+        /// </summary>
+        public static string UseLevelKeepListStructurePopupMenuItem {
+            get {
+                return ResourceManager.GetString("UseLevelKeepListStructurePopupMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Levels.
+        /// </summary>
+        public static string UseLevelPopupMenuItem {
+            get {
+                return ResourceManager.GetString("UseLevelPopupMenuItem", resourceCulture);
             }
         }
         

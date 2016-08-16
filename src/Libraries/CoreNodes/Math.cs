@@ -393,41 +393,28 @@ namespace DSCore
         {
             return mRandom.NextDouble();
         }
-        
+
         /// <summary>
-        ///     Rounds a number to the nearest integer.
+        /// Rounds a number to the closest integral value.
+        /// Note that this method returns a double-precision floating-point number instead of an integral type.
         /// </summary>
         /// <param name="number">Number to round.</param>
-        /// <returns name="int">Integer closest to the number.</returns>
+        /// <returns name="number">Integral value closes to the number.</returns>
         public static double Round(double number)
         {
             return CSMath.Round(number);
         }
 
-        /* DISABLE - LC - 070 Pre-release
-        public static double Round(double value, MidpointRounding mode)
-        {
-            return CSMath.Round(value, mode);
-        }
-        */
-
         /// <summary>
-        ///     Rounds a number to the specified number of decimal places.
+        /// Rounds a number to a specified number of fractional digits. 
         /// </summary>
-        /// <param name="number">Number to round.</param>
-        /// <param name="digits">Number of digits beyond the decimal to round to.</param>
-        /// <returns name="number">Rounded number.</returns>
+        /// <param name="number">Number to be rounded.</param>
+        /// <param name="digits">Number of fractional digits in the return value.</param>
+        /// <returns name="number">The number nearest to value that contains a number of fractional digits equal to digits.</returns>
         public static double Round(double number, int digits)
         {
             return CSMath.Round(number, digits);
         }
-
-        /* DISABLE - LC - 070 Pre-release
-        public static double Round(double value, int digits, MidpointRounding mode)
-        {
-            return CSMath.Round(value, digits, mode);
-        }
-        */
 
         /// <summary>
         ///     Returns the sign of the number: -1, 0, or 1.
