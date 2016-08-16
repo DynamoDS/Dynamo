@@ -1583,7 +1583,7 @@ namespace Dynamo.Models
                 Value = value;
             }
 
-         
+
             public ModelEventCommand(string modelGuid, string eventName)
                 : base(new[] { Guid.Parse(modelGuid) })
             {
@@ -2194,8 +2194,8 @@ namespace Dynamo.Models
             /// <param name="name"></param>
             /// <param name="description"></param>
             /// <param name="currentSelectionIds"></param>
-            public AddPresetCommand(string name, string description, IEnumerable<Guid> currentSelectionIds )
-                :base(currentSelectionIds)
+            public AddPresetCommand(string name, string description, IEnumerable<Guid> currentSelectionIds)
+                : base(currentSelectionIds)
             {
                 PresetStateName = name;
                 PresetStateDescription = description;
@@ -2205,12 +2205,12 @@ namespace Dynamo.Models
             {
                 var helper = new XmlElementHelper(element);
                 var modelGuids = DeserializeGuid(element, helper);
-                if (modelGuids.Count()<1)
+                if (modelGuids.Count() < 1)
                 {
                     throw new ArgumentNullException("No IDs were deserialized during load of preset creation command");
                 }
 
-                return new AddPresetCommand(helper.ReadString("name"), helper.ReadString("description"),modelGuids);
+                return new AddPresetCommand(helper.ReadString("name"), helper.ReadString("description"), modelGuids);
             }
 
             #endregion
@@ -2221,7 +2221,7 @@ namespace Dynamo.Models
             internal string PresetStateName { get; set; }
             [DataMember]
             internal string PresetStateDescription { get; set; }
-             #endregion
+            #endregion
 
             #region Protected Overridable Methods
 
@@ -2239,7 +2239,7 @@ namespace Dynamo.Models
                 helper.SetAttribute("description", PresetStateDescription);
 
             }
-              #endregion
+            #endregion
         }
 
         /// <summary>
@@ -2296,6 +2296,7 @@ namespace Dynamo.Models
 
             #endregion
         }
+
     }
 
     // public class XxxYyyCommand : RecordableCommand
