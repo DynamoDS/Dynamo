@@ -47,7 +47,7 @@ namespace Dynamo.Manipulation
         private const double NewNodeOffsetY = 50;
         private bool active;
 
-        protected static readonly double gizmoScale = 1.2;
+        protected const double gizmoScale = 1.2;
 
         #region properties
 
