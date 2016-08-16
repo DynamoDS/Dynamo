@@ -109,7 +109,7 @@
                 </Rectangle>
                 <Rectangle Name="highlightOverlay"
                        Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlighColorConverter}}"
-                       MinWidth="26"
+                       MinWidth="19"
                        Margin="0,0,0,1"
                        IsHitTestVisible="True">
                     <interactivity:Interaction.Triggers>
@@ -134,8 +134,10 @@
                     </Rectangle.Style>
                 </Rectangle>
 
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                 <TextBlock Name="portNameTb"
                        Width="Auto"
+                       HorizontalAlignment="Stretch"
                        Style="{StaticResource SZoomFadeText}"
                        Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter} }"
                        VerticalAlignment="Center"
@@ -146,22 +148,33 @@
                        Background="{x:Null}"
                        Foreground="#555555">
                 </TextBlock>
+                <!-- We wrap the text block in a grid so that it wont be displayed on output port-->
+                <Grid Visibility="{Binding Path=UseLevelVisibility}" HorizontalAlignment="Right"> 
+                    <!-- This is is a stub UI element just occupy the space of List@Level spinner
+                         so that input port highlight will get wider area if "Use Levels" option is off -->
+                    <Grid
+                        HorizontalAlignment="Right"
+                        Width="45"
+                        Background="{x:Null}"
+                        IsHitTestVisible="False"
+                        Visibility="{Binding Path=UseLevels, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"/>
+                </Grid>
+                </StackPanel>
             </Grid>
 
             <Grid Name="useLevelGrid"
                   Cursor="Hand"
                   Grid.Column="1"
                   Background="Transparent"
-                  HorizontalAlignment="Right"
+                  HorizontalAlignment="Stretch"
                   IsHitTestVisible="True"
                   Margin="{Binding Path=MarginThickness}"
                   Height="{Binding Path=Height}"
-                  ToolTipService.ShowDuration="60000"
                   Visibility="{Binding Path=UseLevelVisibility}">
                 <Rectangle
                     Name="highlightOverlayForArrow" 
                     Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlighColorConverter}}"
-                    MinWidth="8"
+                    MinWidth="10"
                     Margin="0,0,0,1"
                     IsHitTestVisible="True">
                     <interactivity:Interaction.Triggers>
@@ -191,7 +204,8 @@
                                            KeepListStructure="{Binding Path=ShouldKeepListStructure}"
                                            Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}"/>
                     <fa:FontAwesome Icon="ChevronRight"
-                                    HorizontalAlignment="Right"
+                                    Width="10"
+                                    HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     IsHitTestVisible="False"
                                     Background="{x:Null}"
@@ -252,5 +266,4 @@
             </Grid>
         </Grid>
     </DataTemplate>
-
 </ResourceDictionary>
