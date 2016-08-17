@@ -1138,6 +1138,19 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Attempts to open a file using the passed open command, but wraps the call
+        /// with a check to make sure no unsaved changes to the HomeWorkspace are lost.
+        /// </summary>
+        /// <param name="openCommand"> <see cref="DynamoModel.OpenFileCommand"/> </param>
+        private void OpenIfSaved(DynamoModel.OpenFileCommand openCommand)
+        {
+            if(HomeSpace != null && HomeSpace.HasUnsavedChanges)
+            {
+                this.ExecuteCommand(openCommand);
+            }
+        }
+
+        /// <summary>
         /// Open a definition or workspace.
         /// </summary>
         /// <param name="parameters"></param>
