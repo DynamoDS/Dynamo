@@ -108,7 +108,7 @@
                     </Rectangle.Margin>
                 </Rectangle>
                 <Rectangle Name="highlightOverlay"
-                       Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlighColorConverter}}"
+                       Fill="{Binding Path=ToggleShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlighColorConverter}}"
                        MinWidth="26"
                        Margin="0,0,0,1"
                        IsHitTestVisible="True">
@@ -160,7 +160,7 @@
                   Visibility="{Binding Path=UseLevelVisibility}">
                 <Rectangle
                     Name="highlightOverlayForArrow" 
-                    Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlighColorConverter}}"
+                    Fill="{Binding Path=ToggleShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlighColorConverter}}"
                     MinWidth="8"
                     Margin="0,0,0,1"
                     IsHitTestVisible="True">
@@ -187,9 +187,9 @@
                                            VerticalAlignment="Center"
                                            Width="45"
                                            Height="16"
-                                           Level="{Binding Path=Level, Mode=TwoWay}"
-                                           KeepListStructure="{Binding Path=ShouldKeepListStructure}"
-                                           Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}"/>
+                                           Level="{Binding Path=ToggleLevel, Mode=TwoWay}"
+                                           KeepListStructure="{Binding Path=ToggleShouldKeepListStructure}"
+                                           Visibility="{Binding Path=ToggleUseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}"/>
                     <fa:FontAwesome Icon="ChevronRight"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
@@ -228,13 +228,13 @@
                                 <CheckBox 
                                     Margin="5, 5, 5, 0"
                                     Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
-                                    IsChecked="{Binding Path=UseLevels, Mode=TwoWay}"
+                                    IsChecked="{Binding Path=ToggleUseLevels, Mode=TwoWay}"
                                     Name="UseLevel"/>
                                 <Separator Margin ="5, 5, 5, 0"/>
                                 <CheckBox
                                     Margin="5, 5, 5, 0"
                                     Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}"
-                                    IsChecked="{Binding Path=ShouldKeepListStructure, Mode=TwoWay}"
+                                    IsChecked="{Binding Path=ToggleShouldKeepListStructure, Mode=TwoWay}"
                                     IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}"/>
                                 <TextBlock 
                                     Margin="5, 0, 5, 5"

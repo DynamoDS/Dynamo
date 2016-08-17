@@ -155,44 +155,44 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// If UseLevel is enabled on this port.
         /// </summary>
-        public bool UseLevels
+        public bool ToggleUseLevels
         {
             get { return _port.UseLevels; }
             set
             {
-                _port.UseLevels = value;
-               if (!_port.UseLevels)
-               {
-                   ShouldKeepListStructure = false;
-               }
-               Levels();
+                if (!value)
+                {
+                    Levels(value, false, _port.Level);
+                }
+                else
+                {
+                    Levels(value, _port.ShouldKeepListStructure, _port.Level);
+                }
             }
         }
 
         /// <summary>
         /// If should keep list structure on this port.
         /// </summary>
-        public bool ShouldKeepListStructure
+        public bool ToggleShouldKeepListStructure
         {
             get { return _port.ShouldKeepListStructure; }
             set
             {
-                _port.ShouldKeepListStructure = value;
-                Levels();
+                Levels(_port.UseLevels, value, _port.Level);
             }
         }
 
         /// <summary>
-        /// Levle of list.
+        /// Level of list.
         /// </summary>
-        public int Level
+        public int ToggleLevel
         {
             get { return _port.Level; }
             set
             {
-                _port.Level = value;
-                Levels();
-            } 
+                Levels(_port.UseLevels, _port.ShouldKeepListStructure, value);
+            }
         }
 
         /// <summary>
@@ -290,13 +290,13 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("MarginThickness");
                     break;
                 case "UseLevels":
-                    RaisePropertyChanged("UseLevels");
+                    RaisePropertyChanged("ToggleUseLevels");
                     break;
                 case "Level":
-                    RaisePropertyChanged("Level");
+                    RaisePropertyChanged("ToggleLevel");
                     break;
                 case "ShouldKeepListStructure":
-                    RaisePropertyChanged("ShouldKeepListStructure");
+                    RaisePropertyChanged("ToggleShouldKeepListStructure");
                     break;
             }
             
@@ -309,12 +309,12 @@ namespace Dynamo.ViewModels
             workspaceViewModel.HandlePortClicked(this);
         }
 
-        private void Levels()
+        private void Levels(bool useLevels, bool keepListStructure, int level)
         {
-            DynamoViewModel dynamoViewModel = this._node.DynamoViewModel;
-            WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
-            workspaceViewModel.UseLevels(this);
-
+            string levelInfo = PortModel.Index + ";" + useLevels + ";" + keepListStructure + ";" + level.ToString();
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+    PortModel.Owner.GUID, "Level", levelInfo);
+            _node.DynamoViewModel.ExecuteCommand(command);
         }
 
         private bool CanConnect(object parameter)

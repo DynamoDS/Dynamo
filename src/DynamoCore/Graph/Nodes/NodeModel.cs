@@ -1763,7 +1763,21 @@ namespace Dynamo.Graph.Nodes
                         PreviewPinned = newIsPinned;
                     }
                     return true;
-
+                case "Level":
+                    // The value is defined as such: "portIndex;useLevel;keepListStructure;level"
+                    // portIndex and Level are integers
+                    // useLevel and keepListStructure are boolean values
+                    var levelInfo = value.Split(';');
+                    int portIndex, level;
+                    bool useLevel, keepListStructure;
+                    if (levelInfo.Length == 4 && int.TryParse(levelInfo[0], out portIndex) && bool.TryParse(levelInfo[1], out useLevel)
+      && bool.TryParse(levelInfo[2], out keepListStructure) && int.TryParse(levelInfo[3], out level))
+                    {
+                        InPorts[portIndex].Level = level;
+                        InPorts[portIndex].UseLevels = useLevel;
+                        InPorts[portIndex].ShouldKeepListStructure = keepListStructure;
+                    }
+                    return true; 
             }
 
             return base.UpdateValueCore(updateValueParams);

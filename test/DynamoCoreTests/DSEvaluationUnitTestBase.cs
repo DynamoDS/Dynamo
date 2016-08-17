@@ -149,7 +149,7 @@ namespace Dynamo.Tests
             {
                 if (!(value is IEnumerable))
                 {
-                    Assert.Fail("Data is collection but expected vlaue is not.");
+                    Assert.Fail("Data is collection but expected value is not.");
                 }
                 AssertCollection(data, value as IEnumerable);
             }
