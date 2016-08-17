@@ -2216,11 +2216,11 @@ namespace Dynamo.Graph.Nodes
     public enum LacingStrategy
     {
         Disabled,
-        Auto,
         First,
         Shortest,
         Longest,
-        CrossProduct
+        CrossProduct,
+        Auto
     };
 
     /// <summary>
