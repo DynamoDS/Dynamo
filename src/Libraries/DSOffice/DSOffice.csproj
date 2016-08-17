@@ -11,22 +11,30 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DSOffice</RootNamespace>
     <AssemblyName>DSOffice</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
+    <OutputPath>$(OutputPath)</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <DocumentationFile>$(OutputPath)\$(UICulture)\DSOffice.xml</DocumentationFile>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\..\bin\AnyCPU\Debug\$(UICulture)\DSOffice.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
+    <OutputPath>$(OutputPath)</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <DocumentationFile>$(OutputPath)\$(UICulture)\DSOffice.xml</DocumentationFile>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\..\bin\AnyCPU\Release\$(UICulture)\DSOffice.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
