@@ -337,6 +337,7 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
+        [Ignore]
         public static void Remove()
         {
             Assert.AreEqual("", String.Remove("", 0));
