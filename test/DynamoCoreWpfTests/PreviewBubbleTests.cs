@@ -314,6 +314,7 @@ namespace DynamoCoreWpfTests
         #endregion
 
         [Test]
+        [Ignore]
         public void PreviewBubble_HiddenDummyVerticalBoundaries()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");

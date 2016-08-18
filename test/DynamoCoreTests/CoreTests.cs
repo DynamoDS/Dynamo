@@ -428,6 +428,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Ignore]
         public void TestFileDirtyOnLacingChange()
         {
             string openPath = Path.Combine(TestDirectory, @"core\LacingTest.dyn");

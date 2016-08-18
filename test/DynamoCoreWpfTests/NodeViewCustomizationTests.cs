@@ -188,6 +188,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore]
         public void PythonStringNodeHasButtonsAndCorrectNumberOfInputs()
         {
             Open(@"UI\CoreUINodes.dyn");
@@ -259,6 +260,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore]
         public void DSVarArgFunctionNodeHasButtons()
         {
             Open(@"UI\VariableInputNodes.dyn");

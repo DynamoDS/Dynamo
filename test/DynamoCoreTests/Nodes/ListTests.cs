@@ -358,6 +358,7 @@ namespace Dynamo.Tests
 		}
 
 		[Test]
+        [Ignore]
 		public void TestFlattenCompletlySingleInput()
 		{
 			string testFilePath = Path.Combine(listTestFolder, "testPlattenCompletely_singleInput.dyn");

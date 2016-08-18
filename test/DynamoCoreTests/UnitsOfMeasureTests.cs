@@ -234,6 +234,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        [Ignore]
         public void ToFractionalFootRepresentations()
         {
             //test just the fractional case

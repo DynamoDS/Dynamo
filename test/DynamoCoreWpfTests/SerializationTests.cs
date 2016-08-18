@@ -22,6 +22,7 @@ namespace DynamoCoreWpfTests
     {
         [Test]
         [Category("UnitTests")]
+        [Ignore]
         public void TestBasicAttributes()
         {
             var sumNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+")) { X = 400, Y = 100 };
