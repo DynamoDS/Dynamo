@@ -242,7 +242,9 @@
                                 <CheckBox 
                                     Margin="5, 5, 5, 0"
                                     Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
-                                    IsChecked="{Binding Path=UseLevels, Mode=TwoWay}"
+                                    IsChecked="{Binding Path=UseLevels, Mode=OneWay}"
+                                    Command="{Binding Path=UseLevelsCommand}"
+                                    CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                                     Name="UseLevel"/>
                                 <Separator Margin ="5, 5, 5, 0"/>
                                 <CheckBox

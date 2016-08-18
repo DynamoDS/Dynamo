@@ -4,6 +4,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
 {
@@ -14,6 +15,7 @@ namespace Dynamo.ViewModels
 
         private readonly PortModel _port;
         private readonly NodeViewModel _node;
+        private DelegateCommand _useLevelsCommand;
 
         /// <summary>
         /// Port model.
@@ -158,14 +160,6 @@ namespace Dynamo.ViewModels
         public bool UseLevels
         {
             get { return _port.UseLevels; }
-            set
-            {
-               _port.UseLevels = value;
-               if (!_port.UseLevels)
-               {
-                   ShouldKeepListStructure = false;
-               }
-            }
         }
 
         /// <summary>
@@ -291,6 +285,20 @@ namespace Dynamo.ViewModels
                     break;
             }
             
+        }
+
+        public DelegateCommand UseLevelsCommand 
+        {
+            get
+            {
+                if (_useLevelsCommand == null)
+                {
+                    _useLevelsCommand = new DelegateCommand(
+                        parameter => _node.UseLevels(_port.Index, (bool)parameter),
+                        parameter => true);
+                }
+                return _useLevelsCommand;
+            }
         }
 
         private void Connect(object parameter)

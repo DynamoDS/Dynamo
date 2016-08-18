@@ -1059,6 +1059,7 @@ namespace Dynamo.ViewModels
         private void ToggleIsFrozen(object parameters)
         {
             var node = this.nodeLogic;
+
             if (node != null)
             {
                 var oldFrozen = (!node.isFrozenExplicitly).ToString();
@@ -1079,6 +1080,23 @@ namespace Dynamo.ViewModels
         private bool CanToggleIsFrozen(object parameters)
         {
             return DynamoSelection.Instance.Selection.Count() == 1;
+        }
+
+        /// <summary>
+        /// Specify UseLevels on the corresponding input port.
+        /// </summary>
+        /// <param name="portIndex"></param>
+        /// <param name="use"></param>
+        public void UseLevels(int portIndex, bool use)
+        {
+            var node = this.nodeLogic;
+            if (node != null)
+            {
+                var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                    new[] { node.GUID }, "UseLevels", string.Format("{0}:{1}", portIndex, use));
+
+                DynamoViewModel.Model.ExecuteCommand(command);
+            }
         }
 
         private void RaiseFrozenPropertyChanged()

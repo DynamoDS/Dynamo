@@ -1764,6 +1764,19 @@ namespace Dynamo.Graph.Nodes
                     }
                     return true;
 
+                case "UseLevels":
+                    var parts = value.Split(new[] { ':' });
+                    if (parts != null && parts.Count() == 2)
+                    {
+                        int portIndex;
+                        bool useLevels;
+                        if (int.TryParse(parts[0], out portIndex) &&
+                            bool.TryParse(parts[1], out useLevels))
+                        {
+                            inPorts[portIndex].UseLevels = useLevels;
+                        }
+                    }
+                    return true;
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -1876,20 +1889,20 @@ namespace Dynamo.Graph.Nodes
                         }
 
                         attrValue = subNode.Attributes["useLevels"];
+                        bool useLevels = false;
                         if (attrValue != null)
                         {
-                            bool useLevels = false;
                             bool.TryParse(attrValue.Value, out useLevels);
-                            inPorts[index].UseLevels = useLevels;
                         }
+                        inPorts[index].UseLevels = useLevels;
 
                         attrValue = subNode.Attributes["shouldKeepListStructure"];
+                        bool shouldKeepListStructure = false;
                         if (attrValue != null)
                         {
-                            bool shouldKeepListStructure = false;
                             bool.TryParse(attrValue.Value, out shouldKeepListStructure);
-                            inPorts[index].ShouldKeepListStructure = shouldKeepListStructure;
                         }
+                        inPorts[index].ShouldKeepListStructure = shouldKeepListStructure;
 
                         attrValue = subNode.Attributes["level"];
                         if (attrValue != null)
