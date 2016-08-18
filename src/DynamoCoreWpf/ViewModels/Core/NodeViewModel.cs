@@ -1089,14 +1089,10 @@ namespace Dynamo.ViewModels
         /// <param name="use"></param>
         public void UseLevels(int portIndex, bool use)
         {
-            var node = this.nodeLogic;
-            if (node != null)
-            {
-                var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
-                    new[] { node.GUID }, "UseLevels", string.Format("{0}:{1}", portIndex, use));
+            var command = new DynamoModel.UpdateModelValueCommand(
+                Guid.Empty, NodeModel.GUID, "UseLevels", string.Format("{0}:{1}", portIndex, use));
 
-                DynamoViewModel.Model.ExecuteCommand(command);
-            }
+            DynamoViewModel.ExecuteCommand(command);
         }
 
         /// <summary>
@@ -1106,14 +1102,10 @@ namespace Dynamo.ViewModels
         /// <param name="keep"></param>
         public void KeepListStructure(int portIndex, bool keep)
         {
-            var node = this.nodeLogic;
-            if (node != null)
-            {
-                var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
-                    new[] { node.GUID }, "KeepListStructure", string.Format("{0}:{1}", portIndex, keep));
+            var command = new DynamoModel.UpdateModelValueCommand(
+                Guid.Empty, NodeModel.GUID, "KeepListStructure", string.Format("{0}:{1}", portIndex, keep));
 
-                DynamoViewModel.Model.ExecuteCommand(command);
-            }
+            DynamoViewModel.ExecuteCommand(command);
         }
 
         private void RaiseFrozenPropertyChanged()
