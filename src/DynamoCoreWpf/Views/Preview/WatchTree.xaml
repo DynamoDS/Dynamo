@@ -345,7 +345,7 @@
             </TreeView.ItemTemplate>
         </TreeView>
 
-        <Border BorderBrush="#aaaaaa" BorderThickness="1" Grid.Row="1">
+        <Border BorderBrush="#d4d4d4" BorderThickness="1" Grid.Row="1" HorizontalAlignment="Stretch">
 
         <Grid Name ="ListLevelsDisplay" Grid.Row="1">
             <Grid.ColumnDefinitions>
