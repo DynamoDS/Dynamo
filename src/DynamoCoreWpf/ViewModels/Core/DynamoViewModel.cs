@@ -1142,12 +1142,27 @@ namespace Dynamo.ViewModels
         /// with a check to make sure no unsaved changes to the HomeWorkspace are lost.
         /// </summary>
         /// <param name="openCommand"> <see cref="DynamoModel.OpenFileCommand"/> </param>
-        private void OpenIfSaved(DynamoModel.OpenFileCommand openCommand)
+        private void OpenIfSaved(object openCommand)
         {
+            var command = openCommand as DynamoModel.OpenFileCommand;
+            if (command == null)
+            {
+                return;
+            }
+
             if(HomeSpace != null && HomeSpace.HasUnsavedChanges)
             {
-                this.ExecuteCommand(openCommand);
+                if (AskUserToSaveWorkspaceOrCancel(HomeSpace))
+                {
+                    this.ExecuteCommand(command);
+                }
             }
+            else
+            {
+                this.ExecuteCommand(command);
+            }
+
+            
         }
 
         /// <summary>
