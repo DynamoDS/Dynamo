@@ -29,6 +29,15 @@ limitations under the License.
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo</RootNamespace>
     <AssemblyName>DynamoCore</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <WarningLevel>4</WarningLevel>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
@@ -37,20 +46,26 @@ limitations under the License.
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
+    <OutputPath>$(OutputPath)</OutputPath>
     <DefineConstants>TRACE;DEBUG;USE_DSENGINE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <DocumentationFile>$(OutputPath)\DynamoCore.XML</DocumentationFile>
+    <DocumentationFile>..\..\bin\AnyCPU\Debug\DynamoCore.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
+    <OutputPath>$(OutputPath)</OutputPath>
     <DefineConstants>TRACE;USE_DSENGINE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
-    <DocumentationFile>$(OutputPath)\DynamoCore.XML</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>..\..\bin\AnyCPU\Release\DynamoCore.XML</DocumentationFile>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
