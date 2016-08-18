@@ -67,11 +67,6 @@
                 </Setter>
             </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}">
-                <Setter Property="IsExpanded"
-                        Value="{Binding IsNodeExpanded}" />
-            </Style>
-            
             <!-- Expander Button Style -->
             <Style x:Key="ExpandCollapseToggleStyleWT" TargetType="ToggleButton">
                 <Setter Property="Focusable" Value="False"/>
@@ -244,22 +239,7 @@
             
             <!-- TreeView Control Style-->
             <Style x:Key="TreeView" TargetType="TreeView">
-                <Setter Property="OverridesDefaultStyle" Value="True" />
-                <Setter Property="SnapsToDevicePixels" Value="True" />
                 <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
-                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="TreeView">
-                            <Border Name="Border" CornerRadius="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="0" >
-                                <ScrollViewer Focusable="False" CanContentScroll="False" Padding="1">
-                                    <ItemsPresenter/>
-                                </ScrollViewer>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
