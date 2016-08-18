@@ -1549,21 +1549,7 @@ namespace Dynamo.Graph.Nodes
                 case "UsingDefaultValue":
                 case "Level":
                 case "UseLevels":
-                    OnNodeModified();
-                    break;
-
                 case "ShouldKeepListStructure":
-                    var portModel = sender as PortModel;
-                    if (portModel != null && portModel.ShouldKeepListStructure)
-                    {
-                        foreach (var inport in InPorts)
-                        {
-                            if (inport != portModel && inport.ShouldKeepListStructure)
-                            {
-                                inport.ShouldKeepListStructure = false;  
-                            }
-                        }
-                    }
                     OnNodeModified();
                     break;
 
@@ -1774,6 +1760,31 @@ namespace Dynamo.Graph.Nodes
                             bool.TryParse(parts[1], out useLevels))
                         {
                             inPorts[portIndex].UseLevels = useLevels;
+                        }
+                    }
+                    return true;
+
+                case "KeepListStructure":
+                    var keepListStructureInfos = value.Split(new[] { ':' });
+                    if (keepListStructureInfos != null && keepListStructureInfos.Count() == 2)
+                    {
+                        int portIndex;
+                        bool keepListStructure;
+                        if (int.TryParse(keepListStructureInfos[0], out portIndex) &&
+                            bool.TryParse(keepListStructureInfos[1], out keepListStructure))
+                        {
+                            inPorts[portIndex].ShouldKeepListStructure = keepListStructure;
+                            if (keepListStructure)
+                            {
+                                // Only allow one input port to keep list structure
+                                for (int i = 0; i < inPorts.Count; i++)
+                                {
+                                    if (portIndex != i && inPorts[i].ShouldKeepListStructure)
+                                    {
+                                        inPorts[i].ShouldKeepListStructure = false;
+                                    }
+                                }
+                            }
                         }
                     }
                     return true;

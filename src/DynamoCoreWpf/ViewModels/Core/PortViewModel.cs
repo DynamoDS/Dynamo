@@ -16,6 +16,7 @@ namespace Dynamo.ViewModels
         private readonly PortModel _port;
         private readonly NodeViewModel _node;
         private DelegateCommand _useLevelsCommand;
+        private DelegateCommand _keepListStructureCommand;
 
         /// <summary>
         /// Port model.
@@ -168,7 +169,6 @@ namespace Dynamo.ViewModels
         public bool ShouldKeepListStructure
         {
             get { return _port.ShouldKeepListStructure; }
-            set { _port.ShouldKeepListStructure = value; }
         }
 
         /// <summary>
@@ -287,6 +287,9 @@ namespace Dynamo.ViewModels
             
         }
 
+        /// <summary>
+        /// UseLevels command
+        /// </summary>
         public DelegateCommand UseLevelsCommand 
         {
             get
@@ -298,6 +301,23 @@ namespace Dynamo.ViewModels
                         parameter => true);
                 }
                 return _useLevelsCommand;
+            }
+        }
+
+        /// <summary>
+        /// ShouldKeepListStructure command
+        /// </summary>
+        public DelegateCommand KeeeListStructureCommand
+        {
+            get
+            {
+                if (_keepListStructureCommand == null)
+                {
+                    _keepListStructureCommand = new DelegateCommand(
+                        parameter => _node.KeepListStructure(_port.Index, (bool)parameter),
+                        parameter => true);
+                }
+                return _keepListStructureCommand;
             }
         }
 

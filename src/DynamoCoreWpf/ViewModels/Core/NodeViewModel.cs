@@ -1099,6 +1099,23 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Keep list structure on the corresponding input port.
+        /// </summary>
+        /// <param name="portIndex"></param>
+        /// <param name="keep"></param>
+        public void KeepListStructure(int portIndex, bool keep)
+        {
+            var node = this.nodeLogic;
+            if (node != null)
+            {
+                var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                    new[] { node.GUID }, "KeepListStructure", string.Format("{0}:{1}", portIndex, keep));
+
+                DynamoViewModel.Model.ExecuteCommand(command);
+            }
+        }
+
         private void RaiseFrozenPropertyChanged()
         {            
             RaisePropertyChanged("IsFrozen");
