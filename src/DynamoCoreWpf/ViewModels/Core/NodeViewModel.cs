@@ -1112,7 +1112,7 @@ namespace Dynamo.ViewModels
         /// Change level on the corresponding input port to specified value.
         /// </summary>
         /// <param name="portIndex"></param>
-        /// <param name="keep"></param>
+        /// <param name="value"></param>
         public void ChangeLevel(int portIndex, int value)
         {
             var command = new DynamoModel.UpdateModelValueCommand(

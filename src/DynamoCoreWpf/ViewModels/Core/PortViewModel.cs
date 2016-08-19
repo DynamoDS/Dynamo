@@ -178,7 +178,6 @@ namespace Dynamo.ViewModels
         public int Level
         {
             get { return _port.Level; }
-            set { _port.Level = value; } 
         }
 
         /// <summary>
@@ -329,7 +328,14 @@ namespace Dynamo.ViewModels
                 if (_levelChangedCommand == null)
                 {
                     _levelChangedCommand = new DelegateCommand(
-                        parameter => _node.ChangeLevel(_port.Index, (int)parameter),
+                        parameter =>
+                        {
+                            var eventArg = parameter as RoutedPropertyChangedEventArgs<int>;
+                            if (eventArg != null)
+                            {
+                                _node.ChangeLevel(_port.Index, eventArg.NewValue);
+                            }
+                        },
                         parameter => true);
                 }
                 return _levelChangedCommand;

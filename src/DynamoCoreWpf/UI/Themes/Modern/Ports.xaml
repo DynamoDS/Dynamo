@@ -8,6 +8,7 @@
                       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
                       xmlns:fa="http://schemas.fontawesome.io/icons/"
                       xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+                      xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
                       xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf">
 
     <!-- Templates
@@ -205,8 +206,7 @@
                                            Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}">
                         <interactivity:Interaction.Triggers>
                             <interactivity:EventTrigger EventName="LevelChanged">
-                                <command:Event
-                                <interactivity:InvokeCommandAction Command="{Binding ChangeLevelCommand}" CommandParameter="{Binding Path=Level, RelativeSource={RelativeSource AncestorType={x:Type dynui:UseLevelSpinner}}}"/>
+                                <command:EventToCommand Command="{Binding ChangeLevelCommand}" PassEventArgsToCommand="True"/>
                             </interactivity:EventTrigger>
                         </interactivity:Interaction.Triggers>
                     </dynui:UseLevelSpinner>

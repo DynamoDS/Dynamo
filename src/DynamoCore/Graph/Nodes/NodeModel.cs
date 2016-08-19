@@ -1788,6 +1788,20 @@ namespace Dynamo.Graph.Nodes
                         }
                     }
                     return true;
+
+                case "ChangeLevel":
+                    var changeLevelInfos = value.Split(new[] { ':' });
+                    if (changeLevelInfos != null && changeLevelInfos.Count() == 2)
+                    {
+                        int portIndex;
+                        int level;
+                        if (int.TryParse(changeLevelInfos[0], out portIndex) &&
+                            int.TryParse(changeLevelInfos[1], out level))
+                        {
+                            inPorts[portIndex].Level = level;
+                        }
+                    }
+                    return true;
             }
 
             return base.UpdateValueCore(updateValueParams);
