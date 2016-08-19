@@ -307,7 +307,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// ShouldKeepListStructure command
         /// </summary>
-        public DelegateCommand KeeeListStructureCommand
+        public DelegateCommand KeepListStructureCommand
         {
             get
             {

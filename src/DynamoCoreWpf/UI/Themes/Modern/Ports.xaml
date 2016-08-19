@@ -251,7 +251,7 @@
                                     Margin="5, 5, 5, 0"
                                     Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}"
                                     IsChecked="{Binding Path=ShouldKeepListStructure, Mode=OneWay}"
-                                    Command="{Binding Path=KeeeListStructureCommand}"
+                                    Command="{Binding Path=KeepListStructureCommand}"
                                     CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                                     IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}"/>
                                 <TextBlock 
