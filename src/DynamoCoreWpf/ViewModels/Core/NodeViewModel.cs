@@ -1082,45 +1082,6 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.Count() == 1;
         }
 
-        /// <summary>
-        /// Specify UseLevels on the corresponding input port.
-        /// </summary>
-        /// <param name="portIndex"></param>
-        /// <param name="use"></param>
-        public void UseLevels(int portIndex, bool use)
-        {
-            var command = new DynamoModel.UpdateModelValueCommand(
-                Guid.Empty, NodeModel.GUID, "UseLevels", string.Format("{0}:{1}", portIndex, use));
-
-            DynamoViewModel.ExecuteCommand(command);
-        }
-
-        /// <summary>
-        /// Keep list structure on the corresponding input port.
-        /// </summary>
-        /// <param name="portIndex"></param>
-        /// <param name="keep"></param>
-        public void KeepListStructure(int portIndex, bool keep)
-        {
-            var command = new DynamoModel.UpdateModelValueCommand(
-                Guid.Empty, NodeModel.GUID, "KeepListStructure", string.Format("{0}:{1}", portIndex, keep));
-
-            DynamoViewModel.ExecuteCommand(command);
-        }
-
-        /// <summary>
-        /// Change level on the corresponding input port to specified value.
-        /// </summary>
-        /// <param name="portIndex"></param>
-        /// <param name="value"></param>
-        public void ChangeLevel(int portIndex, int value)
-        {
-            var command = new DynamoModel.UpdateModelValueCommand(
-                Guid.Empty, NodeModel.GUID, "ChangeLevel", string.Format("{0}:{1}", portIndex, value));
-
-            DynamoViewModel.ExecuteCommand(command);
-        }
-
         private void RaiseFrozenPropertyChanged()
         {            
             RaisePropertyChanged("IsFrozen");

@@ -296,12 +296,19 @@ namespace Dynamo.ViewModels
             {
                 if (_useLevelsCommand == null)
                 {
-                    _useLevelsCommand = new DelegateCommand(
-                        parameter => _node.UseLevels(_port.Index, (bool)parameter),
-                        parameter => true);
+                    _useLevelsCommand = new DelegateCommand(UseLevel, p => true);
                 }
                 return _useLevelsCommand;
             }
+        }
+
+        private void UseLevel(object parameter)
+        {
+            var useLevel = (bool)parameter;
+            var command = new DynamoModel.UpdateModelValueCommand(
+                Guid.Empty, _node.NodeLogic.GUID, "UseLevels", string.Format("{0}:{1}", _port.Index, useLevel));
+
+            _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
         }
 
         /// <summary>
@@ -313,32 +320,45 @@ namespace Dynamo.ViewModels
             {
                 if (_keepListStructureCommand == null)
                 {
-                    _keepListStructureCommand = new DelegateCommand(
-                        parameter => _node.KeepListStructure(_port.Index, (bool)parameter),
-                        parameter => true);
+                    _keepListStructureCommand = new DelegateCommand(KeepListStructure, p => true);
                 }
                 return _keepListStructureCommand;
             }
         }
 
+        private void KeepListStructure(object parameter)
+        {
+            bool keepListStructure = (bool)parameter;
+            var command = new DynamoModel.UpdateModelValueCommand(
+                Guid.Empty, _node.NodeLogic.GUID, "KeepListStructure", string.Format("{0}:{1}", _port.Index, keepListStructure));
+
+            _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
+        }
+
+        /// <summary>
+        /// ChangeLevel command
+        /// </summary>
         public DelegateCommand ChangeLevelCommand
         {
             get
             {
                 if (_levelChangedCommand == null)
                 {
-                    _levelChangedCommand = new DelegateCommand(
-                        parameter =>
-                        {
-                            var eventArg = parameter as RoutedPropertyChangedEventArgs<int>;
-                            if (eventArg != null)
-                            {
-                                _node.ChangeLevel(_port.Index, eventArg.NewValue);
-                            }
-                        },
-                        parameter => true);
+                    _levelChangedCommand = new DelegateCommand(ChangeLevel, p => true);
                 }
                 return _levelChangedCommand;
+            }
+        }
+
+        private void ChangeLevel(object parameter)
+        {
+            var eventArg = parameter as RoutedPropertyChangedEventArgs<int>;
+            if (eventArg != null)
+            {
+                var command = new DynamoModel.UpdateModelValueCommand(
+                                Guid.Empty, _node.NodeLogic.GUID, "ChangeLevel", string.Format("{0}:{1}", _port.Index, eventArg.NewValue));
+
+                _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
             }
         }
 
