@@ -9,7 +9,7 @@ namespace Dynamo.UI.Controls
     /// <summary>
     /// UseLevelSpinner control 
     /// </summary>
-    [DefaultProperty("Value"), DefaultEvent("ValueChanged")]
+    [DefaultProperty("Level"), DefaultEvent("LevelChanged")]
     public class UseLevelSpinner : Control
     {
         private const int MinimumLevel = 1;
@@ -95,9 +95,9 @@ namespace Dynamo.UI.Controls
         #region Events
 
         /// <summary>
-        /// Occurs when the Value property changes.
+        /// Occurs when the Level property changes.
         /// </summary>
-        public event RoutedPropertyChangedEventHandler<int> ValueChanged
+        public event RoutedPropertyChangedEventHandler<int> LevelChanged
         {
             add { AddHandler(LevelChangedEvent, value); }
 
@@ -286,9 +286,9 @@ namespace Dynamo.UI.Controls
         }
 
         /// <summary>
-        /// Raises the ValueChanged event.
+        /// Raises the LevelChanged event.
         /// </summary>
-        /// <param name="args">Arguments associated with the ValueChanged event.</param>
+        /// <param name="args">Arguments associated with the LevelChanged event.</param>
         protected virtual void OnLevelChanged(RoutedPropertyChangedEventArgs<int> args)
         {
             RaiseEvent(args);
