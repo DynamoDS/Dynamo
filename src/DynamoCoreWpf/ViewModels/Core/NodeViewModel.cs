@@ -1108,6 +1108,19 @@ namespace Dynamo.ViewModels
             DynamoViewModel.ExecuteCommand(command);
         }
 
+        /// <summary>
+        /// Change level on the corresponding input port to specified value.
+        /// </summary>
+        /// <param name="portIndex"></param>
+        /// <param name="keep"></param>
+        public void ChangeLevel(int portIndex, int value)
+        {
+            var command = new DynamoModel.UpdateModelValueCommand(
+                Guid.Empty, NodeModel.GUID, "ChangeLevel", string.Format("{0}:{1}", portIndex, value));
+
+            DynamoViewModel.ExecuteCommand(command);
+        }
+
         private void RaiseFrozenPropertyChanged()
         {            
             RaisePropertyChanged("IsFrozen");

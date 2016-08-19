@@ -17,6 +17,7 @@ namespace Dynamo.ViewModels
         private readonly NodeViewModel _node;
         private DelegateCommand _useLevelsCommand;
         private DelegateCommand _keepListStructureCommand;
+        private DelegateCommand _levelChangedCommand;
 
         /// <summary>
         /// Port model.
@@ -318,6 +319,20 @@ namespace Dynamo.ViewModels
                         parameter => true);
                 }
                 return _keepListStructureCommand;
+            }
+        }
+
+        public DelegateCommand ChangeLevelCommand
+        {
+            get
+            {
+                if (_levelChangedCommand == null)
+                {
+                    _levelChangedCommand = new DelegateCommand(
+                        parameter => _node.ChangeLevel(_port.Index, (int)parameter),
+                        parameter => true);
+                }
+                return _levelChangedCommand;
             }
         }
 

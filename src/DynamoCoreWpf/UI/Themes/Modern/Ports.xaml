@@ -200,9 +200,16 @@
                                            VerticalAlignment="Center"
                                            Width="45"
                                            Height="16"
-                                           Level="{Binding Path=Level, Mode=TwoWay}"
+                                           Level="{Binding Path=Level, Mode=OneWay}"
                                            KeepListStructure="{Binding Path=ShouldKeepListStructure}"
-                                           Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}"/>
+                                           Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}">
+                        <interactivity:Interaction.Triggers>
+                            <interactivity:EventTrigger EventName="LevelChanged">
+                                <command:Event
+                                <interactivity:InvokeCommandAction Command="{Binding ChangeLevelCommand}" CommandParameter="{Binding Path=Level, RelativeSource={RelativeSource AncestorType={x:Type dynui:UseLevelSpinner}}}"/>
+                            </interactivity:EventTrigger>
+                        </interactivity:Interaction.Triggers>
+                    </dynui:UseLevelSpinner>
                     <fa:FontAwesome Icon="ChevronRight"
                                     Width="10"
                                     HorizontalAlignment="Center"
@@ -212,7 +219,7 @@
                                     Foreground="#555555"/>
                 </StackPanel>
                 <dynui:UseLevelPopup
-                    Name="MyPopup"
+                    x:Name="MyPopup"
                     Placement="Right"
                     AllowsTransparency="True"
                     IsOpen="{Binding Path=ShowUseLevelMenu,diag:PresentationTraceSources.TraceLevel=High}"
