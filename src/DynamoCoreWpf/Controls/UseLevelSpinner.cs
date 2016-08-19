@@ -115,7 +115,7 @@ namespace Dynamo.UI.Controls
             InitializeCommands();
 
             LevelProperty = DependencyProperty.Register("Level", typeof(int), typeof(UseLevelSpinner),
-                new FrameworkPropertyMetadata(2, OnLevelChanged, CoerceValue));
+                new FrameworkPropertyMetadata(2, OnLevelChanged));
 
             KeepListStructureProperty = DependencyProperty.Register("KeepListStructure", typeof(bool), typeof(UseLevelSpinner),
                 new FrameworkPropertyMetadata(false, OnKeepListStructureChanged));

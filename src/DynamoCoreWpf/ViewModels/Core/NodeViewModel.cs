@@ -1059,7 +1059,6 @@ namespace Dynamo.ViewModels
         private void ToggleIsFrozen(object parameters)
         {
             var node = this.nodeLogic;
-
             if (node != null)
             {
                 var oldFrozen = (!node.isFrozenExplicitly).ToString();

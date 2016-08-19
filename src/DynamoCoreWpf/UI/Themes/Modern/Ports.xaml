@@ -201,14 +201,9 @@
                                            VerticalAlignment="Center"
                                            Width="45"
                                            Height="16"
-                                           Level="{Binding Path=Level, Mode=OneWay}"
+                                           Level="{Binding Path=Level, Mode=TwoWay}"
                                            KeepListStructure="{Binding Path=ShouldKeepListStructure}"
                                            Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}">
-                        <interactivity:Interaction.Triggers>
-                            <interactivity:EventTrigger EventName="LevelChanged">
-                                <command:EventToCommand Command="{Binding ChangeLevelCommand}" PassEventArgsToCommand="True"/>
-                            </interactivity:EventTrigger>
-                        </interactivity:Interaction.Triggers>
                     </dynui:UseLevelSpinner>
                     <fa:FontAwesome Icon="ChevronRight"
                                     Width="10"

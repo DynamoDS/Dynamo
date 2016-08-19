@@ -17,7 +17,6 @@ namespace Dynamo.ViewModels
         private readonly NodeViewModel _node;
         private DelegateCommand _useLevelsCommand;
         private DelegateCommand _keepListStructureCommand;
-        private DelegateCommand _levelChangedCommand;
 
         /// <summary>
         /// Port model.
@@ -178,6 +177,10 @@ namespace Dynamo.ViewModels
         public int Level
         {
             get { return _port.Level; }
+            set
+            {
+                ChangeLevel(value);
+            }
         }
 
         /// <summary>
@@ -335,31 +338,12 @@ namespace Dynamo.ViewModels
             _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
         }
 
-        /// <summary>
-        /// ChangeLevel command
-        /// </summary>
-        public DelegateCommand ChangeLevelCommand
+        private void ChangeLevel(int level)
         {
-            get
-            {
-                if (_levelChangedCommand == null)
-                {
-                    _levelChangedCommand = new DelegateCommand(ChangeLevel, p => true);
-                }
-                return _levelChangedCommand;
-            }
-        }
+            var command = new DynamoModel.UpdateModelValueCommand(
+                            Guid.Empty, _node.NodeLogic.GUID, "ChangeLevel", string.Format("{0}:{1}", _port.Index, level));
 
-        private void ChangeLevel(object parameter)
-        {
-            var eventArg = parameter as RoutedPropertyChangedEventArgs<int>;
-            if (eventArg != null)
-            {
-                var command = new DynamoModel.UpdateModelValueCommand(
-                                Guid.Empty, _node.NodeLogic.GUID, "ChangeLevel", string.Format("{0}:{1}", _port.Index, eventArg.NewValue));
-
-                _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
-            }
+            _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
         }
 
         private void Connect(object parameter)
