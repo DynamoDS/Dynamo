@@ -205,7 +205,7 @@
                                            KeepListStructure="{Binding Path=ShouldKeepListStructure}"
                                            Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}">
                     </dynui:UseLevelSpinner>
-                    <fa:FontAwesome Icon="ChevronRight"
+                    <fa:FontAwesome Icon="EllipsisVertical"
                                     Width="10"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
