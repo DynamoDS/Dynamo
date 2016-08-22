@@ -1038,6 +1038,21 @@ namespace Dynamo.PackageManager
                 var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
                 builder.BuildDirectory(Package, publishPath, files);
                 UploadState = PackageUploadHandle.State.Uploaded;
+
+                // Calling back the OnPublishSuccess() function to close the dialog
+                // once the publish finished.
+                // Timer is used to prevent a sudden close of the dialog, 
+                // so that the users are clearly acknowledged about the uploaded state.
+                if (UploadState == PackageUploadHandle.State.Uploaded)
+                {
+                    System.Threading.Timer timer = null;
+                    timer = new System.Threading.Timer((obj) =>
+                        {
+                            OnPublishSuccess();
+                            timer.Dispose();
+                        },
+                        null, 1000, System.Threading.Timeout.Infinite);
+                }
             }
             catch (Exception e)
             {
