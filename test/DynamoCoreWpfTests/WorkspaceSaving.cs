@@ -966,6 +966,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Ignore]
         [Category("UnitTests")]
         public void CustomNodeWorkspaceSavedToSamePlaceNotCausingDuplicatedLibraryItems()
         {

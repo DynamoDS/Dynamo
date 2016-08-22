@@ -174,6 +174,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore]
         public void PythonNodeHasButtonsAndCorrectNumberOfInputs()
         {
             Open(@"UI\CoreUINodes.dyn");

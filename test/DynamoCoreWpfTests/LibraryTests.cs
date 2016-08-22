@@ -80,6 +80,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Ignore]
         [Category("UnitTests")]
         public void DumpLibraryToXmlZeroTouchTest()
         {
