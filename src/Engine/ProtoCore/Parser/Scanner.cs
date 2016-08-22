@@ -862,8 +862,9 @@ public class Scanner {
 				else {goto case 0;}
 			case 37:
 				recEnd = pos; recKind = 4;
-				if (ch <= '!' || ch >= '#' && ch <= '[' || ch >= ']' && ch <= 65535) {AddCh(); goto case 7;}
-				else if (ch == '"') {AddCh(); goto case 8;}
+				if (ch <= '!' || ch >= '#' && ch != ';' && ch <= '[' || ch >= ']' && ch <= 65535) {AddCh(); goto case 7;}
+                else if (ch == ';') { goto case 8; }
+                else if (ch == '"') {AddCh(); goto case 8;}
 				else if (ch == 92) {AddCh(); goto case 34;}
 				else {t.kind = 4; break;}
 			case 38:
