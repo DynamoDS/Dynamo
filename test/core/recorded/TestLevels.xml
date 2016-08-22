@@ -1,0 +1,68 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <CreateNodeCommand X="464" Y="329" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>0fca922b-47c3-4fb9-89f4-3f7ff1322547</ModelGuid>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="0fca922b-47c3-4fb9-89f4-3f7ff1322547" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="372" y="298" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="{{1}};" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="{{1}};" WorkspaceGuid="ea37a19a-f791-4c03-ac0e-5483568e53af">
+    <ModelGuid>0fca922b-47c3-4fb9-89f4-3f7ff1322547</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <CreateNodeCommand X="409" Y="437" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>bc4714fc-b5d4-4d5f-bf82-83e35fa14b2b</ModelGuid>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="bc4714fc-b5d4-4d5f-bf82-83e35fa14b2b" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="317" y="406" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="1;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="1;" WorkspaceGuid="ea37a19a-f791-4c03-ac0e-5483568e53af">
+    <ModelGuid>bc4714fc-b5d4-4d5f-bf82-83e35fa14b2b</ModelGuid>
+  </UpdateModelValueCommand>
+  <CreateNodeCommand X="680" Y="332" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>137ba70d-2835-404d-ba51-c7ad8dd201df</ModelGuid>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="137ba70d-2835-404d-ba51-c7ad8dd201df" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.Flatten" x="680" y="332" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="DSCoreNodes.dll" function="DSCore.List.Flatten@var[]..[],int">
+      <PortInfo index="0" default="False" useLevels="True" level="4" shouldKeepListStructure="False" />
+      <PortInfo index="1" default="False" useLevels="True" level="3" shouldKeepListStructure="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+  </CreateNodeCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>0fca922b-47c3-4fb9-89f4-3f7ff1322547</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="0" ConnectionMode="1">
+    <ModelGuid>137ba70d-2835-404d-ba51-c7ad8dd201df</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>bc4714fc-b5d4-4d5f-bf82-83e35fa14b2b</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="1" Type="0" ConnectionMode="1">
+    <ModelGuid>137ba70d-2835-404d-ba51-c7ad8dd201df</ModelGuid>
+  </MakeConnectionCommand>
+  <UpdateModelValueCommand Name="Level" Value="0;True;False;2" WorkspaceGuid="00000000-0000-0000-0000-000000000000">
+    <ModelGuid>137ba70d-2835-404d-ba51-c7ad8dd201df</ModelGuid>
+  </UpdateModelValueCommand>
+  <UpdateModelValueCommand Name="Level" Value="1;True;False;2" WorkspaceGuid="00000000-0000-0000-0000-000000000000">
+    <ModelGuid>137ba70d-2835-404d-ba51-c7ad8dd201df</ModelGuid>
+  </UpdateModelValueCommand>
+  <UpdateModelValueCommand Name="Level" Value="1;True;False;3" WorkspaceGuid="00000000-0000-0000-0000-000000000000">
+    <ModelGuid>137ba70d-2835-404d-ba51-c7ad8dd201df</ModelGuid>
+  </UpdateModelValueCommand>
+  <UpdateModelValueCommand Name="PreviewPinned" Value="True" WorkspaceGuid="00000000-0000-0000-0000-000000000000">
+    <ModelGuid>137ba70d-2835-404d-ba51-c7ad8dd201df</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>137ba70d-2835-404d-ba51-c7ad8dd201df</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Level" Value="0;True;False;3" WorkspaceGuid="00000000-0000-0000-0000-000000000000">
+    <ModelGuid>137ba70d-2835-404d-ba51-c7ad8dd201df</ModelGuid>
+  </UpdateModelValueCommand>
+  <UpdateModelValueCommand Name="Level" Value="0;True;False;4" WorkspaceGuid="00000000-0000-0000-0000-000000000000">
+    <ModelGuid>137ba70d-2835-404d-ba51-c7ad8dd201df</ModelGuid>
+  </UpdateModelValueCommand>
+</Commands>

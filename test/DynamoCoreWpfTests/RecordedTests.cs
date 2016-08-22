@@ -1100,6 +1100,25 @@ namespace DynamoCoreWpfTests
             AssertPreviewValue("345cd2d4-5f3b-4eb0-9d5f-5dd90c5a7493", 36.0);
         }
 
+        [Test, RequiresSTA]
+        public void TestLevels()
+        {
+            RunCommandsFromFile("TestLevels.xml");
+            Assert.AreEqual(3, workspace.Nodes.Count());
+            var levels = GetNode("137ba70d-2835-404d-ba51-c7ad8dd201df") as NodeModel;
+
+            // check first index in Port
+            var index1 = levels.InPorts[0];
+            Assert.AreEqual(4, index1.Level);
+            Assert.AreEqual(true, index1.UseLevels);
+            Assert.AreEqual(false, index1.ShouldKeepListStructure);
+
+            // check second index in Port
+            var index2 = levels.InPorts[1];
+            Assert.AreEqual(3, index2.Level);
+            Assert.AreEqual(true, index2.UseLevels);
+            Assert.AreEqual(false, index2.ShouldKeepListStructure);
+        }
         #endregion
     }
 
