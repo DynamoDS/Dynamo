@@ -210,6 +210,5 @@ namespace Dynamo.ViewModels
                 return _computeRunStateOfTheNodeCommand;
             }
         }
-        
     }
 }

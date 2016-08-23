@@ -117,6 +117,28 @@
             </ContextMenu>
         </Grid.ContextMenu>
 
+        <Rectangle Name="frozenBorder"
+                Grid.Row="1"
+                Grid.ColumnSpan="3"
+                Grid.RowSpan="3"
+                Canvas.ZIndex="1"
+                Margin="-5,-5,-5,-5"
+                StrokeDashArray="2"
+                StrokeThickness="3"
+                Opacity=".5"
+                Stroke="#444">
+            <Rectangle.Style>
+                <Style TargetType="{x:Type Rectangle}">
+                    <Setter Property="Visibility" Value="Hidden"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsFrozen}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Rectangle.Style>
+        </Rectangle>
+
         <Border Name="customNodeBorder0"
                 Grid.Row="0"
                 Grid.ColumnSpan="3"
@@ -224,6 +246,25 @@
                 </dynui:DynamoToolTip>
             </Rectangle.ToolTip>
         </Rectangle>
+
+        <Border Name="previewState"
+                Grid.Row="1"
+                Grid.ColumnSpan="3"
+                Grid.RowSpan="3"
+                Canvas.ZIndex="12"
+                Margin="1,1,1,1"
+                Background="#99B8CA"
+                Opacity=".4"
+                Style="{StaticResource SZoomFadePreview}">
+            <Border.Visibility>
+                <Binding Path="IsVisible"
+                         UpdateSourceTrigger="PropertyChanged"
+                         Mode="OneWay"
+                         Converter="{StaticResource InverseBoolToVisibilityConverter}">
+                </Binding>
+            </Border.Visibility>
+        </Border>
+
 
         <TextBlock Name="nickNameBlock"
                    Grid.Row="1"
