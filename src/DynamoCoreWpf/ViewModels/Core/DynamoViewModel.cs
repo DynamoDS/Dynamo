@@ -1155,14 +1155,14 @@ namespace Dynamo.ViewModels
                 if (AskUserToSaveWorkspaceOrCancel(HomeSpace))
                 {
                     this.ExecuteCommand(command);
+                    this.ShowStartPage = false;
                 }
             }
             else
             {
                 this.ExecuteCommand(command);
+                this.ShowStartPage = false;
             }
-
-            
         }
 
         /// <summary>
