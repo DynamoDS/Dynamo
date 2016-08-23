@@ -29,7 +29,12 @@ namespace Dynamo.Logging
         public void Start(DynamoModel model)
         {
             //Whether enabled or not, we still record the startup.
-            Service.Instance.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
+            var service = Service.Instance;
+            
+            //Some clients such as Revit may allow start/close Dynamo multiple times
+            //in the same session so register only if the factory is not registered.
+            if(service.GetTrackerFactory(GATrackerFactory.Name) == null)
+                service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
 
             StabilityCookie.Startup();
 
