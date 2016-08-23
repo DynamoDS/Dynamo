@@ -148,9 +148,9 @@ public Node root { get; set; }
                 }
             }
             else if (s[i] == '\\' && i == s.Length - 1)
-                {
+            {
                     SynErr(Resources.EOF_expected);
-                }
+            }
             else
             {
                 sb.Append(s[i]);
@@ -613,6 +613,7 @@ public Node root { get; set; }
 		errors.count++;
 		errDist = 0;
 	 }
+
 
 
 	
@@ -1190,7 +1191,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		node = null; 
 		Associative_LogicalExpression(out node);
 		while (la.kind == 53) {
-			Associative_TernaryOp(ref node);
+			AssociativeTernaryOp(ref node);
 		}
 	}
 
@@ -1447,13 +1448,13 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank);
 		
 		if (la.kind == 47) {
-			Associative_TypeRestriction(out returnType);
+			AssociativeTypeRestriction(out returnType);
 		}
 		Associative_ArgumentSignatureDefinition(out argumentSignature);
 		argumentSign = argumentSignature; 
 	}
 
-	void Associative_TypeRestriction(out ProtoCore.Type type) {
+	void AssociativeTypeRestriction(out ProtoCore.Type type) {
 		Expect(47);
 		Associative_ClassReference(out type);
 		type.rank = 0; 
@@ -1846,7 +1847,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		}
 	}
 
-	void Associative_TernaryOp(ref ProtoCore.AST.AssociativeAST.AssociativeNode node) {
+	void AssociativeTernaryOp(ref ProtoCore.AST.AssociativeAST.AssociativeNode node) {
 		ProtoCore.AST.AssociativeAST.InlineConditionalNode inlineConNode = new ProtoCore.AST.AssociativeAST.InlineConditionalNode(); 
 		Expect(53);
 		inlineConNode.ConditionExpression = node; node = null; 
@@ -2032,12 +2033,12 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 	}
 
 	void Associative_ArithmeticExpression(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
-		Associative_Term(out node);
+		AssociativeTerm(out node);
 		while (la.kind == 15 || la.kind == 54) {
 			Operator op; 
 			Associative_AddOp(out op);
 			ProtoCore.AST.AssociativeAST.AssociativeNode expr2; 
-			Associative_Term(out expr2);
+			AssociativeTerm(out expr2);
 			node = GenerateBinaryOperatorMethodCallNode(op, node, expr2);
 			
 		}
@@ -2098,7 +2099,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else SynErr(91);
 	}
 
-	void Associative_Term(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
+	void AssociativeTerm(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
 		#if ENABLE_BIT_OP 
 		Associative_interimfactor(out node);
 		#else             
@@ -2775,7 +2776,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		node = null; 
 		Imperative_binexpr(out node);
 		while (la.kind == 53) {
-			Imperative_TernaryOp(ref node);
+			ImperativeTernaryOp(ref node);
 		}
 	}
 
@@ -2970,7 +2971,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		}
 	}
 
-	void Imperative_TernaryOp(ref ProtoCore.AST.ImperativeAST.ImperativeNode node) {
+	void ImperativeTernaryOp(ref ProtoCore.AST.ImperativeAST.ImperativeNode node) {
 		ProtoCore.AST.ImperativeAST.InlineConditionalNode inlineConNode = new ProtoCore.AST.ImperativeAST.InlineConditionalNode(); 
 		Expect(53);
 		inlineConNode.ConditionExpression = node; node = null; 
