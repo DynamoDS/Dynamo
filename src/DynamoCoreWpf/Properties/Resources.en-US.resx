@@ -2075,4 +2075,8 @@ Next assemblies were loaded several times:
   <data name="UnableToAccessPackageDirectory" xml:space="preserve">
     <value>Unable To Access Package Directory</value>
   </data>
+  <data name="DynamoViewFileMenuExport3DAsImage" xml:space="preserve">
+    <value>Export Background 3D Preview as Image</value>
+    <comment>File menu | Export Background 3D Preview as image</comment>
+  </data>
 </root>

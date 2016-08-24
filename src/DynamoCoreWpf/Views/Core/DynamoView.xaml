@@ -365,6 +365,17 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.DynamoViewFileMenuExport3DAsImage}"
+                                  Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
+                                  CommandParameter="3D"
+                                  Name="save3DImage">
+                            <MenuItem.Icon>
+                                <Image Source="/DynamoCoreWpf;component/UI/Images/screenshot_normal.png"
+                                       Width="14"
+                                       Height="14" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewFileMenuExportToSTL}"
                                   Command="{Binding ExportToSTLCommand}"
                                   Name="saveSTL">

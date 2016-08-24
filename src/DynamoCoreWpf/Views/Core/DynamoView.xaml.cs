@@ -41,6 +41,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using HelixToolkit.Wpf.SharpDX;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using String = System.String;
 
@@ -537,6 +538,7 @@ namespace Dynamo.Controls
 
             dynamoViewModel.RequestClose += DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage += DynamoViewModelRequestSaveImage;
+            dynamoViewModel.RequestSave3DImage += DynamoViewModelRequestSave3DImage;
             dynamoViewModel.SidebarClosed += DynamoViewModelSidebarClosed;
 
             dynamoViewModel.Model.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
@@ -842,6 +844,28 @@ namespace Dynamo.Controls
         {
             var workspace = this.ChildOfType<WorkspaceView>();
             workspace.SaveWorkspaceAsImage(e.Path);
+        }
+
+        private void DynamoViewModelRequestSave3DImage(object sender, ImageSaveEventArgs e)
+        {
+            var canvas = (DPFCanvas)BackgroundPreview.View.RenderHost;
+
+            var encoder = new PngBitmapEncoder();
+            var rtBitmap = new RenderTargetBitmap((int)canvas.ActualWidth, (int)canvas.ActualHeight, 96, 96,
+                PixelFormats.Pbgra32);
+            rtBitmap.Render(canvas);
+
+            encoder.Frames.Add(BitmapFrame.Create(rtBitmap));
+
+            if (File.Exists(e.Path))
+            {
+                File.Delete(e.Path);
+            }
+
+            using (var stream = File.Create(e.Path))
+            {
+                encoder.Save(stream);
+            }
         }
 
         void DynamoViewModelRequestClose(object sender, EventArgs e)

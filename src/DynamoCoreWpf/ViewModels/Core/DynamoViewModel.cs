@@ -1824,6 +1824,12 @@ namespace Dynamo.ViewModels
                 "NodeCount", CurrentSpace.Nodes.Count());
         }
 
+        public void Save3DImage(object parameters)
+        {
+            // Save the parameters
+            OnRequestSave3DImage(this, new ImageSaveEventArgs(parameters.ToString()));
+        }
+
         internal bool CanSaveImage(object parameters)
         {
             return true;
@@ -1855,9 +1861,17 @@ namespace Dynamo.ViewModels
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 if (CanSaveImage(_fileDialog.FileName))
-                    SaveImage(_fileDialog.FileName);
+                {
+                    if (parameter != null && parameter.ToString() == "3D")
+                    {
+                        Save3DImage(_fileDialog.FileName);
+                    }
+                    else
+                    {
+                        SaveImage(_fileDialog.FileName);
+                    }
+                }  
             }
-
         }
 
         internal bool CanShowSaveImageDialogAndSaveResult(object parameter)
