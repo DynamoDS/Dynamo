@@ -31,19 +31,12 @@ namespace ProtoCore
         /// </summary>
         public Dictionary<Guid, Guid> CallSiteToNodeMap { get; private set; }
  		 
-        /// <summary>		
-        /// Map from a AST node's ID to a callsite.		
-        /// </summary>
-        public Dictionary<int, CallSite> ASTToCallSiteMap { get; private set; }
-
-
  #endregion
 
         public RuntimeData()
         {
             CallsiteCache = new Dictionary<string, CallSite>();
             CallSiteToNodeMap = new Dictionary<Guid, Guid>();
-            ASTToCallSiteMap = new Dictionary<int, CallSite>();
         }
 
       
@@ -103,8 +96,6 @@ namespace ProtoCore
 
                 CallsiteCache[callsiteID] = csInstance;
                 CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
-                ASTToCallSiteMap[graphNode.AstID] = csInstance;
-
             }
 
             if (graphNode != null && !CoreUtils.IsDisposeMethod(methodName))
