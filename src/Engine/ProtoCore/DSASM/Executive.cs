@@ -728,14 +728,7 @@ namespace ProtoCore.DSASM
             }
 
             // Get the cached callsite, creates a new one for a first-time call
-            CallSite callsite = runtimeCore.RuntimeData.GetCallSite(
-                exe.ExecutingGraphnode, 
-                classIndex, 
-                fNode.Name, 
-                exe,
-                runtimeCore.RunningBlock, 
-                runtimeCore.Options, 
-                runtimeCore.RuntimeStatus);
+            CallSite callsite = runtimeCore.RuntimeData.GetCallSite(classIndex, fNode.Name, exe, runtimeCore);
             Validity.Assert(null != callsite);
 
             List<StackValue> registers = GetRegisters();
@@ -866,10 +859,7 @@ namespace ProtoCore.DSASM
 
             var stackFrame = new StackFrame(thisObject, classIndex, procIndex, pc + 1, 0, runtimeCore.RunningBlock, fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, 0, registers, 0);
 
-            var callsite = runtimeCore.RuntimeData.GetCallSite(exe.ExecutingGraphnode,
-                                            classIndex,
-                                            procNode.Name,
-                                            exe, runtimeCore.RunningBlock, runtimeCore.Options, runtimeCore.RuntimeStatus);
+            var callsite = runtimeCore.RuntimeData.GetCallSite(classIndex, procNode.Name, exe, runtimeCore);
 
             Validity.Assert(null != callsite);
 

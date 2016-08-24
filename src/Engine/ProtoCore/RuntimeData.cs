@@ -55,17 +55,11 @@ namespace ProtoCore
         /// <param name="core"></param>
         /// <param name="uid"></param>
         /// <returns></returns>
-        public CallSite GetCallSite(GraphNode graphNode,
-                                    int classScope,
-                                    string methodName,
-                                    Executable executable,
-                                    int runningBlock,
-                                    Options options,
-                                    RuntimeStatus runtimeStatus
-             )
+        public CallSite GetCallSite(int classScope, string methodName, Executable executable, RuntimeCore runtimeCore)
         {
             Validity.Assert(null != executable.FunctionTable);
             CallSite csInstance = null;
+            var graphNode = executable.ExecutingGraphnode;
 
             // TODO Jun: Currently generates a new callsite for imperative and 
             // internally generated functions.
@@ -73,7 +67,7 @@ namespace ProtoCore
             // attempting to cache internal functions. This may require a 
             // secondary callsite cache for internal functions so they dont 
             // clash with the graphNode UID key
-            var language = executable.instrStreamList[runningBlock].language;
+            var language = executable.instrStreamList[runtimeCore.RunningBlock].language;
             bool isImperative = language == Language.Imperative;
             bool isInternalFunction = CoreUtils.IsInternalFunction(methodName);
 
@@ -82,7 +76,7 @@ namespace ProtoCore
                 csInstance = new CallSite(classScope,
                                           methodName,
                                           executable.FunctionTable,
-                                          options.ExecutionMode);
+                                          runtimeCore.Options.ExecutionMode);
             }
             else if (!CallsiteCache.TryGetValue(graphNode.CallsiteIdentifier, out csInstance))
             {
@@ -92,7 +86,7 @@ namespace ProtoCore
                 csInstance = new CallSite(classScope,
                                           methodName,
                                           executable.FunctionTable,
-                                          options.ExecutionMode,
+                                          runtimeCore.Options.ExecutionMode,
                                           traceData);
 
                 CallsiteCache[graphNode.CallsiteIdentifier] = csInstance;
@@ -104,9 +98,9 @@ namespace ProtoCore
             if (graphNode != null && !CoreUtils.IsDisposeMethod(methodName))
             {
                 csInstance.UpdateCallSite(classScope, methodName);
-                if (options.IsDeltaExecution)
+                if (runtimeCore.Options.IsDeltaExecution)
                 {
-                    runtimeStatus.ClearWarningForExpression(graphNode.exprUID);
+                    runtimeCore.RuntimeStatus.ClearWarningForExpression(graphNode.exprUID);
                 }
             }
 
