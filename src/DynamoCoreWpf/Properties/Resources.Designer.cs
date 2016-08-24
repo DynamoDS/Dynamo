@@ -1153,7 +1153,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export Background 3D Preview as Image.
+        ///   Looks up a localized string similar to _Export Background 3D Preview as Image....
         /// </summary>
         public static string DynamoViewFileMenuExport3DAsImage {
             get {
