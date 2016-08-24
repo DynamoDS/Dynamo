@@ -369,7 +369,7 @@ namespace Dynamo.Controls
             ShortcutBarItem screenShotButton = new ShortcutBarItem();
             screenShotButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarExportButtonTooltip;
             screenShotButton.ShortcutCommand = dynamoViewModel.ShowSaveImageDialogAndSaveResultCommand;
-            screenShotButton.ShortcutCommandParameter = null;
+            screenShotButton.ShortcutCommandParameter = "3D_shortcut";
             screenShotButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/screenshot_normal.png";
             screenShotButton.ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/screenshot_disabled.png";
             screenShotButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/screenshot_hover.png";

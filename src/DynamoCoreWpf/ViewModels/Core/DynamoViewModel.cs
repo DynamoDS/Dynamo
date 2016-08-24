@@ -1858,11 +1858,22 @@ namespace Dynamo.ViewModels
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
 
-            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            if (_fileDialog.ShowDialog() != DialogResult.OK) return;
+            if (!CanSaveImage(_fileDialog.FileName)) return;
+
+            if (parameter == null)
             {
-                if (CanSaveImage(_fileDialog.FileName))
-                {
-                    if (parameter != null && parameter.ToString() == "3D")
+                SaveImage(_fileDialog.FileName);
+                return;
+            }
+
+            switch (parameter.ToString())
+            {
+                case "3D":
+                    Save3DImage(_fileDialog.FileName);
+                    break;
+                case "3D_shortcut":
+                    if (BackgroundPreviewViewModel.CanNavigateBackground)
                     {
                         Save3DImage(_fileDialog.FileName);
                     }
@@ -1870,7 +1881,10 @@ namespace Dynamo.ViewModels
                     {
                         SaveImage(_fileDialog.FileName);
                     }
-                }  
+                    break;
+                default:
+                    SaveImage(_fileDialog.FileName);
+                    break;
             }
         }
 
