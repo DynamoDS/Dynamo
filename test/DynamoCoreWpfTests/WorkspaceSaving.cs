@@ -462,6 +462,20 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void EnsureOnOpenIfSaveCommandOpensDynFile()
+        {
+            
+            //openPath
+            string openPath = Path.Combine(TestDirectory, (@"UI\GroupTest.dyn"));
+            //send the command
+            ViewModel.OpenIfSavedCommand.Execute(new Dynamo.Models.DynamoModel.OpenFileCommand(openPath));
+
+            Assert.GreaterOrEqual(2, GetModel().CurrentWorkspace.Nodes.ToList().Count());
+
+        }
+
 
         [Test]
         [Category("UnitTests")]
