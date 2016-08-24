@@ -1824,7 +1824,7 @@ namespace Dynamo.ViewModels
                 "NodeCount", CurrentSpace.Nodes.Count());
         }
 
-        public void Save3DImage(object parameters)
+        private void Save3DImage(object parameters)
         {
             // Save the parameters
             OnRequestSave3DImage(this, new ImageSaveEventArgs(parameters.ToString()));
