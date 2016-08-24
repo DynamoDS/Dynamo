@@ -61,6 +61,18 @@ namespace ProtoCore
             CallSite csInstance = null;
             var graphNode = executable.ExecutingGraphnode;
 
+            // If it is a nested function call, append all callsite ids
+            var callsiteID = string.Empty;
+            var runtimeProperties = runtimeCore.InterpreterProps;
+            foreach (var prop in runtimeProperties)
+            {
+                if (prop != null && prop.executingGraphNode != null && graphNode != prop.executingGraphNode)
+                {
+                    callsiteID += ";" + prop.executingGraphNode.CallsiteIdentifier;
+                }
+            }
+            callsiteID += graphNode.CallsiteIdentifier;
+
             // TODO Jun: Currently generates a new callsite for imperative and 
             // internally generated functions.
             // Fix the issues that cause the cache to go out of sync when 
@@ -78,7 +90,7 @@ namespace ProtoCore
                                           executable.FunctionTable,
                                           runtimeCore.Options.ExecutionMode);
             }
-            else if (!CallsiteCache.TryGetValue(graphNode.CallsiteIdentifier, out csInstance))
+            else if (!CallsiteCache.TryGetValue(callsiteID, out csInstance))
             {
                 // Attempt to retrieve a preloaded callsite data (optional).
                 var traceData = GetAndRemoveTraceDataForNode(graphNode.guid);
@@ -89,7 +101,7 @@ namespace ProtoCore
                                           runtimeCore.Options.ExecutionMode,
                                           traceData);
 
-                CallsiteCache[graphNode.CallsiteIdentifier] = csInstance;
+                CallsiteCache[callsiteID] = csInstance;
                 CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
                 ASTToCallSiteMap[graphNode.AstID] = csInstance;
 
