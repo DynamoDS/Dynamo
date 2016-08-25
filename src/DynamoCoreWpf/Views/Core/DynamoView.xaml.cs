@@ -291,7 +291,7 @@ namespace Dynamo.Controls
 
         #endregion
 
-        bool CheckVirtualScreenSize()
+        private bool CheckVirtualScreenSize()
         {
             var w = SystemParameters.VirtualScreenWidth;
             var h = SystemParameters.VirtualScreenHeight;
@@ -318,19 +318,19 @@ namespace Dynamo.Controls
             return true;
         }
 
-        void DynamoView_LocationChanged(object sender, EventArgs e)
+        private void DynamoView_LocationChanged(object sender, EventArgs e)
         {
             dynamoViewModel.Model.PreferenceSettings.WindowX = Left;
             dynamoViewModel.Model.PreferenceSettings.WindowY = Top;
         }
 
-        void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             dynamoViewModel.Model.PreferenceSettings.WindowW = e.NewSize.Width;
             dynamoViewModel.Model.PreferenceSettings.WindowH = e.NewSize.Height;
         }
 
-        void InitializeLogin()
+        private void InitializeLogin()
         {
             if ( dynamoViewModel.ShowLogin && dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
             {
@@ -339,7 +339,7 @@ namespace Dynamo.Controls
             }
         }
 
-        void InitializeShortcutBar()
+        private void InitializeShortcutBar()
         {
             shortcutBar = new ShortcutToolbar(this.dynamoViewModel.Model.UpdateManager) {Name = "ShortcutToolbar"};
 
@@ -444,12 +444,12 @@ namespace Dynamo.Controls
             }
         }
 
-        void vm_RequestLayoutUpdate(object sender, EventArgs e)
+        private void vm_RequestLayoutUpdate(object sender, EventArgs e)
         {
             Dispatcher.Invoke(new Action(UpdateLayout), DispatcherPriority.Render, null);
         }
 
-        void DynamoViewModelRequestViewOperation(ViewOperationEventArgs e)
+        private void DynamoViewModelRequestViewOperation(ViewOperationEventArgs e)
         {
             if (dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground == false)
                 return;
@@ -616,7 +616,7 @@ namespace Dynamo.Controls
         /// is accepted by the user, or false otherwise. If this method returns 
         /// false, then download of package should be terminated.</returns>
         /// 
-        bool DisplayTermsOfUseForAcceptance()
+        private bool DisplayTermsOfUseForAcceptance()
         {
             var prefSettings = dynamoViewModel.Model.PreferenceSettings;
             if (prefSettings.PackageDownloadTouAccepted)
@@ -629,12 +629,12 @@ namespace Dynamo.Controls
             return prefSettings.PackageDownloadTouAccepted;
         }
 
-        void DynamoView_Unloaded(object sender, RoutedEventArgs e)
+        private void DynamoView_Unloaded(object sender, RoutedEventArgs e)
         {
             UnsubscribeNodeViewCustomizationEvents();
         }
 
-        void DynamoViewModelRequestAboutWindow(DynamoViewModel model)
+        private void DynamoViewModelRequestAboutWindow(DynamoViewModel model)
         {
             var aboutWindow = model.BrandingResourceProvider.CreateAboutBox(model);
             aboutWindow.Owner = this;
@@ -648,7 +648,7 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
-        void DynamoViewModelRequestShowHideGallery(bool showGallery)
+        private void DynamoViewModelRequestShowHideGallery(bool showGallery)
         {
             if (showGallery)
             {
@@ -680,7 +680,8 @@ namespace Dynamo.Controls
         }
 
         private PublishPackageView _pubPkgView;
-        void DynamoViewModelRequestRequestPackageManagerPublish(PublishPackageViewModel model)
+
+        private void DynamoViewModelRequestRequestPackageManagerPublish(PublishPackageViewModel model)
         {
             var cmd = Analytics.TrackCommandEvent("PublishPackage");
             if (_pubPkgView == null)
@@ -701,7 +702,8 @@ namespace Dynamo.Controls
 
         private PackageManagerSearchView _searchPkgsView;
         private PackageManagerSearchViewModel _pkgSearchVM;
-        void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
+
+        private void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
             if (!DisplayTermsOfUseForAcceptance())
                 return; // Terms of use not accepted.
@@ -744,7 +746,8 @@ namespace Dynamo.Controls
         }
 
         private InstalledPackagesView _installedPkgsView;
-        void DynamoViewModelRequestShowInstalledPackages(object s, EventArgs e)
+
+        private void DynamoViewModelRequestShowInstalledPackages(object s, EventArgs e)
         {
             var cmd = Analytics.TrackCommandEvent("ManagePackage");
             if (_installedPkgsView == null)
@@ -765,13 +768,13 @@ namespace Dynamo.Controls
             _installedPkgsView.Focus();
         }
 
-        void ClipBoard_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void ClipBoard_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
         }
 
-        void DynamoViewModelRequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
+        private void DynamoViewModelRequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
             var dialogText = "";
             // If the file is read only, display a different message.
@@ -822,26 +825,26 @@ namespace Dynamo.Controls
             }
         }
 
-        void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
             dynamoViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();           
         }
 
-        void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
+        private void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
             var prompt = new CrashPrompt(args, dynamoViewModel);
             prompt.ShowDialog();
         }
 
-        void Controller_RequestTaskDialog(object sender, TaskDialogEventArgs e)
+        private void Controller_RequestTaskDialog(object sender, TaskDialogEventArgs e)
         {
             var taskDialog = new UI.Prompts.GenericTaskDialog(e);
             taskDialog.ShowDialog();
         }
 
-        void DynamoViewModelRequestSaveImage(object sender, ImageSaveEventArgs e)
+        private void DynamoViewModelRequestSaveImage(object sender, ImageSaveEventArgs e)
         {
             var workspace = this.ChildOfType<WorkspaceView>();
             workspace.SaveWorkspaceAsImage(e.Path);
@@ -869,12 +872,12 @@ namespace Dynamo.Controls
             }
         }
 
-        void DynamoViewModelRequestClose(object sender, EventArgs e)
+        private void DynamoViewModelRequestClose(object sender, EventArgs e)
         {
             Close();
         }
 
-        void DynamoViewModelSidebarClosed(object sender, EventArgs e)
+        private void DynamoViewModelSidebarClosed(object sender, EventArgs e)
         {
             LibraryClicked(sender, e);
         }
@@ -884,7 +887,7 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void DynamoViewModelRequestsFunctionNamePrompt(object sender, FunctionNamePromptEventArgs e)
+        private void DynamoViewModelRequestsFunctionNamePrompt(object sender, FunctionNamePromptEventArgs e)
         {
             ShowNewFunctionDialog(e);
         }
@@ -946,12 +949,12 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="e">a parameter object contains default Name and Description,
         /// and Success bool returned from the dialog</param>
-        void DynamoViewModelRequestPresetNamePrompt (PresetsNamePromptEventArgs e)
+        private void DynamoViewModelRequestPresetNamePrompt (PresetsNamePromptEventArgs e)
         {
             ShowNewPresetDialog(e);
         }
 
-        void DynamoViewModelRequestPresetWarningPrompt()
+        private void DynamoViewModelRequestPresetWarningPrompt()
         {
             ShowPresetWarning();
         }
@@ -1120,7 +1123,7 @@ namespace Dynamo.Controls
         // the key press event is being intercepted before it can get to
         // the active workspace. This code simply grabs the key presses and
         // passes it to thecurrent workspace
-        void DynamoView_KeyDown(object sender, KeyEventArgs e)
+        private void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key != Key.Escape || !IsMouseOver) return;
 
@@ -1151,7 +1154,7 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
-        void DynamoView_KeyUp(object sender, KeyEventArgs e)
+        private void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key != Key.Escape) return;
 
@@ -1619,7 +1622,7 @@ namespace Dynamo.Controls
             _workspaceResizeTimer.Start();
         }
 
-        void _resizeTimer_Tick(object sender, EventArgs e)
+        private void _resizeTimer_Tick(object sender, EventArgs e)
         {
             _workspaceResizeTimer.IsEnabled = false;
 
