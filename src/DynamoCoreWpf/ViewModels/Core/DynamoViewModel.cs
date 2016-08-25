@@ -35,6 +35,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using Dynamo.Controls;
 using ISelectable = Dynamo.Selection.ISelectable;
 
 
@@ -1846,7 +1847,7 @@ namespace Dynamo.ViewModels
                     AddExtension = true,
                     DefaultExt = ".png",
                     FileName = Resources.FileDialogDefaultPNGName,
-                    Filter = string.Format(Resources.FileDialogPNGFiles,"*.png"),
+                    Filter = string.Format(Resources.FileDialogPNGFiles, "*.png"),
                     Title = Resources.SaveWorkbenToImageDialogTitle
                 };
             }
@@ -1867,24 +1868,24 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            switch (parameter.ToString())
+            if (parameter.ToString() == Resources.ScreenShotFrom3DParameter)
             {
-                case "3D":
+                Save3DImage(_fileDialog.FileName);
+            }
+            else if (parameter.ToString() == Resources.ScreenShotFrom3DShortcutParameter)
+            {
+                if (BackgroundPreviewViewModel.CanNavigateBackground)
+                {
                     Save3DImage(_fileDialog.FileName);
-                    break;
-                case "3D_shortcut":
-                    if (BackgroundPreviewViewModel.CanNavigateBackground)
-                    {
-                        Save3DImage(_fileDialog.FileName);
-                    }
-                    else
-                    {
-                        SaveImage(_fileDialog.FileName);
-                    }
-                    break;
-                default:
+                }
+                else
+                {
                     SaveImage(_fileDialog.FileName);
-                    break;
+                }
+            }
+            else
+            {
+                SaveImage(_fileDialog.FileName);
             }
         }
 

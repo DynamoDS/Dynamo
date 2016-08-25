@@ -4395,6 +4395,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to screenshot_3D.
+        /// </summary>
+        public static string ScreenShotFrom3DParameter {
+            get {
+                return ResourceManager.GetString("ScreenShotFrom3DParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to screenshot_3D_shortcut.
+        /// </summary>
+        public static string ScreenShotFrom3DShortcutParameter {
+            get {
+                return ResourceManager.GetString("ScreenShotFrom3DShortcutParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Top Result.
         /// </summary>
         public static string SearchViewTopResult {

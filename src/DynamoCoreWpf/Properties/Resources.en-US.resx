@@ -2083,4 +2083,10 @@ Next assemblies were loaded several times:
     <value>Export Background Preview As Image</value>
     <comment>Toolbar export button tooltip</comment>
   </data>
+  <data name="ScreenShotFrom3DParameter" xml:space="preserve">
+    <value>screenshot_3D</value>
+  </data>
+  <data name="ScreenShotFrom3DShortcutParameter" xml:space="preserve">
+    <value>screenshot_3D_shortcut</value>
+  </data>
 </root>

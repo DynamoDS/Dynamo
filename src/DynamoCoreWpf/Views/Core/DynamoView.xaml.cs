@@ -30,7 +30,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -376,7 +375,7 @@ namespace Dynamo.Controls
             var screenShotButton = new ImageExportShortcutBarItem(dynamoViewModel)
             {
                 ShortcutCommand = dynamoViewModel.ShowSaveImageDialogAndSaveResultCommand,
-                ShortcutCommandParameter = "3D_shortcut",
+                ShortcutCommandParameter = Wpf.Properties.Resources.ScreenShotFrom3DShortcutParameter,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/screenshot_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/screenshot_disabled.png",
                 ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/screenshot_hover.png"
