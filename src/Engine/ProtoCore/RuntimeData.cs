@@ -177,13 +177,13 @@ namespace ProtoCore
         /// <returns>Returns a dictionary that maps each node Guid to its 
         /// corresponding list of serialized callsite trace data.</returns>
         /// 
-        public IDictionary<Guid, List<string>>
+        public IDictionary<Guid, List<KeyValuePair<string, string>>>
             GetTraceDataForNodes(IEnumerable<Guid> nodeGuids, Executable executable)
         {
             if (nodeGuids == null)
                 throw new ArgumentNullException("nodeGuids");
 
-            var nodeDataPairs = new Dictionary<Guid, List<string>>();
+            var nodeDataPairs = new Dictionary<Guid, List<KeyValuePair<string, string>>>();
 
             if (!nodeGuids.Any()) // Nothing to persist now.
                 return nodeDataPairs;
@@ -224,17 +224,24 @@ namespace ProtoCore
                 var matchingCallSites = (from cs in CallsiteCache
                                          from gn in graphNodeIds
                                          where !string.IsNullOrEmpty(gn) && cs.Key.StartsWith(gn)
-                                         select cs.Value);
+                                         select new { cs.Key, cs.Value });
 
                 // Append each callsite element under node element.
-                var serializedCallsites =
-                    matchingCallSites.Select(callSite => callSite.GetTraceDataToSave())
-                        .Where(traceDataToSave => !String.IsNullOrEmpty(traceDataToSave))
-                        .ToList();
+                List<KeyValuePair<string, string>> serializedCallsites = new List<KeyValuePair<string, string>>();
+                foreach (var site in matchingCallSites)
+                {
+                    var traceData = site.Value.GetTraceDataToSave();
+                    if (!string.IsNullOrEmpty(traceData))
+                    {
+                        serializedCallsites.Add(new KeyValuePair<string, string>(site.Key, traceData));
+                    }
+                }
 
                 // No point adding serialized callsite data if it's empty.
-                if (serializedCallsites.Count > 0)
+                if (serializedCallsites.Any())
+                {
                     nodeDataPairs.Add(nodeGuid, serializedCallsites);
+                }
             }
 
             return nodeDataPairs;

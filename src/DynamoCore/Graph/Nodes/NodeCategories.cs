@@ -280,7 +280,7 @@ namespace Dynamo.Graph.Nodes
         /// to be saved to the XmlDocument. This parameter cannot be null and 
         /// must represent a non-empty list of node-data-list pairs.</param>
         internal static void SaveTraceDataToXmlDocument(XmlDocument document,
-            IEnumerable<KeyValuePair<Guid, List<string>>> nodeTraceDataList)
+            IEnumerable<KeyValuePair<Guid, List<KeyValuePair<string, string>>>> nodeTraceDataList)
         {
             #region Parameter Validations
 
@@ -329,8 +329,9 @@ namespace Dynamo.Graph.Nodes
                 {
                     var callsiteXmlElement = document.CreateElement(
                         Configurations.CallsiteTraceDataXmlTag);
+                    callsiteXmlElement.SetAttribute(Configurations.CallSiteID, data.Key);
 
-                    callsiteXmlElement.InnerText = data;
+                    callsiteXmlElement.InnerText = data.Value;
                     nodeElement.AppendChild(callsiteXmlElement);
                 }
             }

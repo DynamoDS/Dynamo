@@ -300,7 +300,7 @@ namespace Dynamo.Tests
         public void SaveTraceDataToXmlDocument00()
         {
             XmlDocument document = new XmlDocument();
-            var data = new Dictionary<Guid, List<string>>();
+            var data = new Dictionary<Guid, List<KeyValuePair<string, string>>>();
 
             Assert.Throws<ArgumentNullException>(() =>
             {
@@ -340,18 +340,18 @@ namespace Dynamo.Tests
             var nodeGuid0 = Guid.NewGuid();
             var nodeGuid1 = Guid.NewGuid();
 
-            var nodeData0 = new List<string>()
-            {
-                "TraceData00", "TraceData01", "TraceData02"
-            };
+            var nodeData0 = new List<KeyValuePair<string, string>>();
+            nodeData0.Add(new KeyValuePair<string, string>("", "TraceData00"));
+            nodeData0.Add(new KeyValuePair<string, string>("", "TraceData01"));
+            nodeData0.Add(new KeyValuePair<string, string>("", "TraceData02"));
 
-            var nodeData1 = new List<string>()
-            {
-                "TraceData10", "TraceData11", "TraceData12"
-            };
+            var nodeData1 = new List<KeyValuePair<string, string>>();
+            nodeData0.Add(new KeyValuePair<string, string>("", "TraceData10"));
+            nodeData0.Add(new KeyValuePair<string, string>("", "TraceData11"));
+            nodeData0.Add(new KeyValuePair<string, string>("", "TraceData12"));
 
             // Create sample data.
-            var data = new Dictionary<Guid, List<string>>();
+            var data = new Dictionary<Guid, List<KeyValuePair<string, string>>>();
             data.Add(nodeGuid0, nodeData0);
             data.Add(nodeGuid1, nodeData1);
 
