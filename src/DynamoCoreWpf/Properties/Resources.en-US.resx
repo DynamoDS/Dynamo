@@ -2079,4 +2079,8 @@ Next assemblies were loaded several times:
     <value>_Export Background 3D Preview as Image...</value>
     <comment>File menu | Export Background 3D Preview as image</comment>
   </data>
+  <data name="DynamoViewToolbarExport3DButtonTooltip" xml:space="preserve">
+    <value>Export Background Preview As Image</value>
+    <comment>Toolbar export button tooltip</comment>
+  </data>
 </root>

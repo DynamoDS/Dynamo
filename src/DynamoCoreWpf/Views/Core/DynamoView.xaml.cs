@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -65,6 +66,7 @@ namespace Dynamo.Controls
         private GalleryView galleryView;
         private readonly LoginService loginService;
         internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
+        private ShortcutToolbar shortcutBar;
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -339,74 +341,73 @@ namespace Dynamo.Controls
 
         void InitializeShortcutBar()
         {
-            ShortcutToolbar shortcutBar = new ShortcutToolbar(this.dynamoViewModel.Model.UpdateManager);
-            shortcutBar.Name = "ShortcutToolbar";
+            shortcutBar = new ShortcutToolbar(this.dynamoViewModel.Model.UpdateManager) {Name = "ShortcutToolbar"};
 
-            ShortcutBarItem newScriptButton = new ShortcutBarItem();
-            newScriptButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarNewButtonTooltip;
-            newScriptButton.ShortcutCommand = dynamoViewModel.NewHomeWorkspaceCommand;
-            newScriptButton.ShortcutCommandParameter = null;
-            newScriptButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png";
-            newScriptButton.ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/new_disabled.png";
-            newScriptButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/new_hover.png";
+            var newScriptButton = new ShortcutBarItem
+            {
+                ShortcutToolTip = Wpf.Properties.Resources.DynamoViewToolbarNewButtonTooltip,
+                ShortcutCommand = dynamoViewModel.NewHomeWorkspaceCommand,
+                ShortcutCommandParameter = null,
+                ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png",
+                ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/new_disabled.png",
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/new_hover.png"
+            };
 
-            ShortcutBarItem openScriptButton = new ShortcutBarItem();
-            openScriptButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarOpenButtonTooltip;
-            openScriptButton.ShortcutCommand = dynamoViewModel.ShowOpenDialogAndOpenResultCommand;
-            openScriptButton.ShortcutCommandParameter = null;
-            openScriptButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png";
-            openScriptButton.ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/open_disabled.png";
-            openScriptButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/open_hover.png";
+            var openScriptButton = new ShortcutBarItem
+            {
+                ShortcutToolTip = Wpf.Properties.Resources.DynamoViewToolbarOpenButtonTooltip,
+                ShortcutCommand = dynamoViewModel.ShowOpenDialogAndOpenResultCommand,
+                ShortcutCommandParameter = null,
+                ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png",
+                ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/open_disabled.png",
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/open_hover.png"
+            };
 
-            ShortcutBarItem saveButton = new ShortcutBarItem();
-            saveButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarSaveButtonTooltip;
-            saveButton.ShortcutCommand = dynamoViewModel.ShowSaveDialogIfNeededAndSaveResultCommand;
-            saveButton.ShortcutCommandParameter = null;
-            saveButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png";
-            saveButton.ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/save_disabled.png";
-            saveButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_hover.png";
+            var saveButton = new ShortcutBarItem
+            {
+                ShortcutToolTip = Wpf.Properties.Resources.DynamoViewToolbarSaveButtonTooltip,
+                ShortcutCommand = dynamoViewModel.ShowSaveDialogIfNeededAndSaveResultCommand,
+                ShortcutCommandParameter = null,
+                ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png",
+                ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/save_disabled.png",
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_hover.png"
+            };
 
-            ShortcutBarItem screenShotButton = new ShortcutBarItem();
-            screenShotButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarExportButtonTooltip;
-            screenShotButton.ShortcutCommand = dynamoViewModel.ShowSaveImageDialogAndSaveResultCommand;
-            screenShotButton.ShortcutCommandParameter = "3D_shortcut";
-            screenShotButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/screenshot_normal.png";
-            screenShotButton.ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/screenshot_disabled.png";
-            screenShotButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/screenshot_hover.png";
+            var screenShotButton = new ImageExportShortcutBarItem(dynamoViewModel)
+            {
+                ShortcutCommand = dynamoViewModel.ShowSaveImageDialogAndSaveResultCommand,
+                ShortcutCommandParameter = "3D_shortcut",
+                ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/screenshot_normal.png",
+                ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/screenshot_disabled.png",
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/screenshot_hover.png"
+            };
 
-            ShortcutBarItem undoButton = new ShortcutBarItem();
-            undoButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarUndoButtonTooltip;
-            undoButton.ShortcutCommand = dynamoViewModel.UndoCommand;
-            undoButton.ShortcutCommandParameter = null;
-            undoButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png";
-            undoButton.ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/undo_disabled.png";
-            undoButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/undo_hover.png";
+            var undoButton = new ShortcutBarItem
+            {
+                ShortcutToolTip = Wpf.Properties.Resources.DynamoViewToolbarUndoButtonTooltip,
+                ShortcutCommand = dynamoViewModel.UndoCommand,
+                ShortcutCommandParameter = null,
+                ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png",
+                ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/undo_disabled.png",
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/undo_hover.png"
+            };
 
-            ShortcutBarItem redoButton = new ShortcutBarItem();
-            redoButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarRedoButtonTooltip;
-            redoButton.ShortcutCommand = dynamoViewModel.RedoCommand;
-            redoButton.ShortcutCommandParameter = null;
-            redoButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png";
-            redoButton.ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/redo_disabled.png";
-            redoButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/redo_hover.png";
-
-            // PLACEHOLDER FOR FUTURE SHORTCUTS
-            //ShortcutBarItem runButton = new ShortcutBarItem();
-            //runButton.ShortcutToolTip = "Run [Ctrl + R]";
-            ////runButton.ShortcutCommand = viewModel.RunExpressionCommand; // Function implementation in progress
-            //runButton.ShortcutCommandParameter = null;
-            //runButton.ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/run_normal.png";
-            //runButton.ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/run_disabled.png";
-            //runButton.ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/run_hover.png";
+            var redoButton = new ShortcutBarItem
+            {
+                ShortcutToolTip = Wpf.Properties.Resources.DynamoViewToolbarRedoButtonTooltip,
+                ShortcutCommand = dynamoViewModel.RedoCommand,
+                ShortcutCommandParameter = null,
+                ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png",
+                ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/redo_disabled.png",
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/redo_hover.png"
+            };
 
             shortcutBar.ShortcutBarItems.Add(newScriptButton);
             shortcutBar.ShortcutBarItems.Add(openScriptButton);
             shortcutBar.ShortcutBarItems.Add(saveButton);
             shortcutBar.ShortcutBarItems.Add(undoButton);
             shortcutBar.ShortcutBarItems.Add(redoButton);
-            //shortcutBar.ShortcutBarItems.Add(runButton);            
 
-            //shortcutBar.ShortcutBarRightSideItems.Add(updateButton);
             shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
 
             shortcutBarGrid.Children.Add(shortcutBar);

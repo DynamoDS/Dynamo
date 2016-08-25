@@ -1805,6 +1805,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export Background Preview As Image.
+        /// </summary>
+        public static string DynamoViewToolbarExport3DButtonTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewToolbarExport3DButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export Workspace As Image.
         /// </summary>
         public static string DynamoViewToolbarExportButtonTooltip {
