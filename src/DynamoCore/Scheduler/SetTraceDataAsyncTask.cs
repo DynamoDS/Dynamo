@@ -11,7 +11,7 @@ namespace Dynamo.Scheduler
     class SetTraceDataAsyncTask : AsyncTask
     {
         private EngineController engineController;
-        private IEnumerable<KeyValuePair<Guid, List<string>>> traceData;
+        private IEnumerable<KeyValuePair<Guid, List<KeyValuePair<string, string>>>> traceData;
 
         public override TaskPriority Priority
         {

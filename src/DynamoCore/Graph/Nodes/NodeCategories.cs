@@ -347,7 +347,7 @@ namespace Dynamo.Graph.Nodes
         /// data-list pairs are to be deserialized.</param>
         /// <returns>Returns a dictionary of deserialized node-data-list pairs
         /// loaded from the given XmlDocument.</returns>
-        internal static IEnumerable<KeyValuePair<Guid, List<string>>>
+        internal static IEnumerable<KeyValuePair<Guid, List<KeyValuePair<string, string>>>>
             LoadTraceDataFromXmlDocument(XmlDocument document)
         {
             if (document == null)
@@ -365,7 +365,7 @@ namespace Dynamo.Graph.Nodes
                         where childNode.Name.Equals(sessionXmlTagName)
                         select childNode;
 
-            var loadedData = new Dictionary<Guid, List<string>>();
+            var loadedData = new Dictionary<Guid, List<KeyValuePair<string, string>>>();
             if (!query.Any()) // There's no data, return empty dictionary.
                 return loadedData;
 
@@ -373,8 +373,18 @@ namespace Dynamo.Graph.Nodes
             foreach (XmlElement nodeElement in sessionElement.ChildNodes)
             {
                 var guid = Guid.Parse(nodeElement.GetAttribute(Configurations.NodeIdAttribName));
-                var callsites = nodeElement.ChildNodes.Cast<XmlElement>().Select(e => e.InnerText).ToList();
-                loadedData.Add(guid, callsites);
+                List<KeyValuePair<string, string>> callsiteTraceData = new List<KeyValuePair<string, string>>();
+                foreach (var child in nodeElement.ChildNodes.Cast<XmlElement>())
+                {
+                    var callsiteId = string.Empty;
+                    if (child.HasAttribute(Configurations.CallSiteID))
+                    {
+                        callsiteId = child.GetAttribute(Configurations.CallSiteID);
+                    }
+                    var traceData = child.InnerText;
+                    callsiteTraceData.Add(new KeyValuePair<string, string>(callsiteId, traceData));
+                }
+                loadedData.Add(guid, callsiteTraceData);
             }
 
             return loadedData;

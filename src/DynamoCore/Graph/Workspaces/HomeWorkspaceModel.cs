@@ -29,7 +29,7 @@ namespace Dynamo.Graph.Workspaces
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
         private bool graphExecuted;
-        private IEnumerable<KeyValuePair<Guid, List<string>>> historicalTraceData;
+        private IEnumerable<KeyValuePair<Guid, List<KeyValuePair<string, string>>>> historicalTraceData;
 
         /// <summary>
         ///     Returns <see cref="EngineController"/> object assosiated with this home workspace
@@ -78,7 +78,7 @@ namespace Dynamo.Graph.Workspaces
         /// In near future, the file loading mechanism will be completely moved 
         /// into WorkspaceModel, that's the time we removed this property setter below.
         /// </summary>
-        internal IEnumerable<KeyValuePair<Guid, List<string>>> PreloadedTraceData
+        internal IEnumerable<KeyValuePair<Guid, List<KeyValuePair<string, string>>>> PreloadedTraceData
         {
             get
             {
@@ -97,7 +97,7 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
+        private IEnumerable<KeyValuePair<Guid, List<KeyValuePair<string, string>>>> preloadedTraceData;
 
         internal bool IsEvaluationPending
         {
@@ -185,7 +185,7 @@ namespace Dynamo.Graph.Workspaces
             : this(engine,
                 scheduler,
                 factory,
-                Enumerable.Empty<KeyValuePair<Guid, List<string>>>(),
+                Enumerable.Empty<KeyValuePair<Guid, List<KeyValuePair<string, string>>>>(),
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 Enumerable.Empty<AnnotationModel>(),
@@ -216,7 +216,7 @@ namespace Dynamo.Graph.Workspaces
         public HomeWorkspaceModel(EngineController engine, 
             DynamoScheduler scheduler, 
             NodeFactory factory,
-            IEnumerable<KeyValuePair<Guid, List<string>>> traceData, 
+            IEnumerable<KeyValuePair<Guid, List<KeyValuePair<string, string>>>> traceData, 
             IEnumerable<NodeModel> nodes, 
             IEnumerable<NoteModel> notes, 
             IEnumerable<AnnotationModel> annotations,
@@ -252,11 +252,12 @@ namespace Dynamo.Graph.Workspaces
             // nulled, to check for node deletions and reconcile the trace data.
             // We do a deep copy of this data because the PreloadedTraceData is
             // later set to null before the graph update.
-            var copiedData = new List<KeyValuePair<Guid, List<string>>>();
+            var copiedData = new List<KeyValuePair<Guid, List<KeyValuePair<string, string>>>>();
             foreach (var kvp in PreloadedTraceData)
             {
-                var strings = kvp.Value.Select(string.Copy).ToList();
-                copiedData.Add(new KeyValuePair<Guid, List<string>>(kvp.Key, strings));
+                List<KeyValuePair<string, string>> callSiteTraceData = new List<KeyValuePair<string, string>>();
+                callSiteTraceData.AddRange(kvp.Value);
+                copiedData.Add(new KeyValuePair<Guid, List<KeyValuePair<string, string>>>(kvp.Key, callSiteTraceData));
             }
             historicalTraceData = copiedData;
         }

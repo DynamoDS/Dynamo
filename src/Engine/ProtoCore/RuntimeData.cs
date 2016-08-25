@@ -24,7 +24,7 @@ namespace ProtoCore
         // Once generated these properties are consumed by the runtime-VM and are read-only
 
       
-        private Dictionary<Guid, List<string>> uiNodeToSerializedDataMap = null;
+        private Dictionary<Guid, List<KeyValuePair<string, string>>> uiNodeToSerializedDataMap = null;
         public IDictionary<string, CallSite> CallsiteCache { get; set; }
         /// <summary>		
         /// Map from a callsite's guid to a graph UI node. 		
@@ -91,7 +91,7 @@ namespace ProtoCore
             else if (!CallsiteCache.TryGetValue(callsiteID, out csInstance))
             {
                 // Attempt to retrieve a preloaded callsite data (optional).
-                var traceData = GetAndRemoveTraceDataForNode(topGraphNode.guid);
+                var traceData = GetAndRemoveTraceDataForNode(topGraphNode.guid, callsiteID);
 
                 csInstance = new CallSite(classScope,
                                           methodName,
@@ -255,13 +255,13 @@ namespace ProtoCore
         /// to its corresponding list of serialized callsite trace data.</param>
         /// 
         public void SetTraceDataForNodes(
-            IEnumerable<KeyValuePair<Guid, List<string>>> nodeDataPairs)
+            IEnumerable<KeyValuePair<Guid, List<KeyValuePair<string, string>>>> nodeDataPairs)
         {
             if (nodeDataPairs == null || (nodeDataPairs.Count() <= 0))
                 return; // There is no preloaded trace data.
 
             if (uiNodeToSerializedDataMap == null)
-                uiNodeToSerializedDataMap = new Dictionary<Guid, List<string>>();
+                uiNodeToSerializedDataMap = new Dictionary<Guid, List<KeyValuePair<string, string>>>();
 
             foreach (var nodeData in nodeDataPairs)
                 uiNodeToSerializedDataMap.Add(nodeData.Key, nodeData.Value);
@@ -277,7 +277,7 @@ namespace ProtoCore
         /// <returns>Returns the serialized callsite trace data in Base64 encoded
         /// string for the given UI node.</returns>
         /// 
-        private string GetAndRemoveTraceDataForNode(Guid nodeGuid)
+        private string GetAndRemoveTraceDataForNode(Guid nodeGuid, string callsiteID)
         {
             if (uiNodeToSerializedDataMap == null)
                 return null; // There is no preloaded trace data.
@@ -285,25 +285,38 @@ namespace ProtoCore
                 return null; // There is no preloaded trace data.
 
             // Get the node element for the given node.
-            List<string> callsiteDataList = null;
+            List<KeyValuePair<string, string>> callsiteDataList = null;
             if (!uiNodeToSerializedDataMap.TryGetValue(nodeGuid, out callsiteDataList))
+            {
                 return null;
+            }
 
             // There exists a node element matching the UI node's GUID, get its 
             // first child callsite element, remove it from the child node list,
             // and return it to the caller.
             // 
             string callsiteTraceData = null;
-            if (callsiteDataList != null && (callsiteDataList.Count > 0))
+            if (callsiteDataList != null)
             {
-                callsiteTraceData = callsiteDataList[0];
-                callsiteDataList.RemoveAt(0);
+                for (int i = 0; i < callsiteDataList.Count; i++)
+                {
+                    if (callsiteDataList[i].Key == callsiteID)
+                    {
+                        callsiteTraceData = callsiteDataList[i].Value;
+                        callsiteDataList.RemoveAt(i);
+                        // Remove the trace data
+                        if (callsiteDataList.Any())
+                        {
+                            uiNodeToSerializedDataMap[nodeGuid] = callsiteDataList;
+                        }
+                        else
+                        {
+                            uiNodeToSerializedDataMap.Remove(nodeGuid);
+                        }
+                        break;
+                    }
+                }
             }
-
-            // On removal of the last callsite trace data, the node entry
-            // itself will be removed from the uiNodeToSerializedDataMap.
-            if (callsiteDataList != null && (callsiteDataList.Count <= 0))
-                uiNodeToSerializedDataMap.Remove(nodeGuid);
 
             return callsiteTraceData;
         }

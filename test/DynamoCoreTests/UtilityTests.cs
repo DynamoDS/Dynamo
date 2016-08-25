@@ -355,7 +355,7 @@ namespace Dynamo.Tests
             data.Add(nodeGuid0, nodeData0);
             data.Add(nodeGuid1, nodeData1);
 
-            IEnumerable<KeyValuePair<Guid, List<string>>> outputs = null;
+            IEnumerable<KeyValuePair<Guid, List<KeyValuePair<string, string>>>> outputs = null;
 
             Assert.DoesNotThrow(() =>
             {
@@ -376,13 +376,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, outputData0.Count);
             Assert.AreEqual(3, outputData1.Count);
 
-            Assert.AreEqual("TraceData00", outputData0[0]);
-            Assert.AreEqual("TraceData01", outputData0[1]);
-            Assert.AreEqual("TraceData02", outputData0[2]);
+            Assert.AreEqual("TraceData00", outputData0[0].Value);
+            Assert.AreEqual("TraceData01", outputData0[1].Value);
+            Assert.AreEqual("TraceData02", outputData0[2].Value);
 
-            Assert.AreEqual("TraceData10", outputData1[0]);
-            Assert.AreEqual("TraceData11", outputData1[1]);
-            Assert.AreEqual("TraceData12", outputData1[2]);
+            Assert.AreEqual("TraceData10", outputData1[0].Value);
+            Assert.AreEqual("TraceData11", outputData1[1].Value);
+            Assert.AreEqual("TraceData12", outputData1[2].Value);
         }
 
         [Test]
@@ -407,7 +407,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void LoadTraceDataFromXmlDocument01()
         {
-            IEnumerable<KeyValuePair<Guid, List<string>>> outputs = null;
+            IEnumerable<KeyValuePair<Guid, List<KeyValuePair<string, string>>>> outputs = null;
 
             Assert.DoesNotThrow(() =>
             {

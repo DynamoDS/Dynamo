@@ -1985,9 +1985,9 @@ namespace ProtoCore
         /// <param name="callSiteData">The serialized representation of a SingleRunTraceData object.</param>
         /// <returns>A flat collection of ISerializable objects.</returns>
         public static IList<ISerializable> GetAllSerializablesFromSingleRunTraceData(
-            string callSiteData)
+            KeyValuePair<string, string> callSiteData)
         {
-            var helper = TraceSerialiserHelper.FromCallSiteData(callSiteData);
+            var helper = TraceSerialiserHelper.FromCallSiteData(callSiteData.Value);
             if (helper == null)
             {
                 return new List<ISerializable>();
