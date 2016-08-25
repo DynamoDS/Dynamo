@@ -24,7 +24,7 @@ namespace ProtoCore
         // Once generated these properties are consumed by the runtime-VM and are read-only
 
       
-        private Dictionary<Guid, List<KeyValuePair<string, string>>> uiNodeToSerializedDataMap = null;
+        private Dictionary<Guid, List<CallSite.RawTraceData>> uiNodeToSerializedDataMap = null;
         public IDictionary<string, CallSite> CallsiteCache { get; set; }
         /// <summary>		
         /// Map from a callsite's guid to a graph UI node. 		
@@ -177,13 +177,13 @@ namespace ProtoCore
         /// <returns>Returns a dictionary that maps each node Guid to its 
         /// corresponding list of serialized callsite trace data.</returns>
         /// 
-        public IDictionary<Guid, List<KeyValuePair<string, string>>>
+        public IDictionary<Guid, List<CallSite.RawTraceData>>
             GetTraceDataForNodes(IEnumerable<Guid> nodeGuids, Executable executable)
         {
             if (nodeGuids == null)
                 throw new ArgumentNullException("nodeGuids");
 
-            var nodeDataPairs = new Dictionary<Guid, List<KeyValuePair<string, string>>>();
+            var nodeDataPairs = new Dictionary<Guid, List<CallSite.RawTraceData>>();
 
             if (!nodeGuids.Any()) // Nothing to persist now.
                 return nodeDataPairs;
@@ -227,13 +227,13 @@ namespace ProtoCore
                                          select new { cs.Key, cs.Value });
 
                 // Append each callsite element under node element.
-                List<KeyValuePair<string, string>> serializedCallsites = new List<KeyValuePair<string, string>>();
+                var serializedCallsites = new List<CallSite.RawTraceData>();
                 foreach (var site in matchingCallSites)
                 {
                     var traceData = site.Value.GetTraceDataToSave();
                     if (!string.IsNullOrEmpty(traceData))
                     {
-                        serializedCallsites.Add(new KeyValuePair<string, string>(site.Key, traceData));
+                        serializedCallsites.Add(new CallSite.RawTraceData(site.Key, traceData));
                     }
                 }
 
@@ -255,13 +255,13 @@ namespace ProtoCore
         /// to its corresponding list of serialized callsite trace data.</param>
         /// 
         public void SetTraceDataForNodes(
-            IEnumerable<KeyValuePair<Guid, List<KeyValuePair<string, string>>>> nodeDataPairs)
+            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> nodeDataPairs)
         {
             if (nodeDataPairs == null || (nodeDataPairs.Count() <= 0))
                 return; // There is no preloaded trace data.
 
             if (uiNodeToSerializedDataMap == null)
-                uiNodeToSerializedDataMap = new Dictionary<Guid, List<KeyValuePair<string, string>>>();
+                uiNodeToSerializedDataMap = new Dictionary<Guid, List<CallSite.RawTraceData>>();
 
             foreach (var nodeData in nodeDataPairs)
                 uiNodeToSerializedDataMap.Add(nodeData.Key, nodeData.Value);
@@ -285,7 +285,7 @@ namespace ProtoCore
                 return null; // There is no preloaded trace data.
 
             // Get the node element for the given node.
-            List<KeyValuePair<string, string>> callsiteDataList = null;
+            List<CallSite.RawTraceData> callsiteDataList = null;
             if (!uiNodeToSerializedDataMap.TryGetValue(nodeGuid, out callsiteDataList))
             {
                 return null;
@@ -300,9 +300,9 @@ namespace ProtoCore
             {
                 for (int i = 0; i < callsiteDataList.Count; i++)
                 {
-                    if (callsiteDataList[i].Key == callsiteID)
+                    if (callsiteDataList[i].ID == callsiteID)
                     {
-                        callsiteTraceData = callsiteDataList[i].Value;
+                        callsiteTraceData = callsiteDataList[i].Data;
                         callsiteDataList.RemoveAt(i);
                         // Remove the trace data
                         if (callsiteDataList.Any())

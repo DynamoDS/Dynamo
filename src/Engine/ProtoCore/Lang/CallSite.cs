@@ -24,6 +24,28 @@ namespace ProtoCore
         #region private classes
 
         /// <summary>
+        /// Trace data for a specific callsite
+        /// </summary>
+        public class RawTraceData
+        {
+            public string ID
+            {
+                get; private set;
+            }
+
+            public string Data
+            {
+                get; private set;
+            }
+           
+            public RawTraceData(string callSiteID, string data)
+            {
+                ID = callSiteID;
+                Data = data;
+            }
+        }
+
+        /// <summary>
         /// Data structure used to carry trace data
         /// </summary>
         public class SingleRunTraceData
@@ -1985,9 +2007,9 @@ namespace ProtoCore
         /// <param name="callSiteData">The serialized representation of a SingleRunTraceData object.</param>
         /// <returns>A flat collection of ISerializable objects.</returns>
         public static IList<ISerializable> GetAllSerializablesFromSingleRunTraceData(
-            KeyValuePair<string, string> callSiteData)
+            RawTraceData callSiteData)
         {
-            var helper = TraceSerialiserHelper.FromCallSiteData(callSiteData.Value);
+            var helper = TraceSerialiserHelper.FromCallSiteData(callSiteData.Data);
             if (helper == null)
             {
                 return new List<ISerializable>();
