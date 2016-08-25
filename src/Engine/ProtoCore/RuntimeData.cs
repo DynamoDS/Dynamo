@@ -53,18 +53,23 @@ namespace ProtoCore
             Validity.Assert(null != executable.FunctionTable);
             CallSite csInstance = null;
             var graphNode = executable.ExecutingGraphnode;
+            var topGraphNode = graphNode;
 
             // If it is a nested function call, append all callsite ids
-            var callsiteID = string.Empty;
-            var runtimeProperties = runtimeCore.InterpreterProps;
-            foreach (var prop in runtimeProperties)
+            List<string> callsiteIdentifiers = new List<string>();
+            foreach (var prop in runtimeCore.InterpreterProps)
             {
                 if (prop != null && prop.executingGraphNode != null && graphNode != prop.executingGraphNode)
                 {
-                    callsiteID += ";" + prop.executingGraphNode.CallsiteIdentifier;
+                    topGraphNode = prop.executingGraphNode;
+                    if (!string.IsNullOrEmpty(topGraphNode.CallsiteIdentifier))
+                    {
+                        callsiteIdentifiers.Add(topGraphNode.CallsiteIdentifier);
+                    }
                 }
             }
-            callsiteID += graphNode.CallsiteIdentifier;
+            callsiteIdentifiers.Add(graphNode.CallsiteIdentifier);
+            var callsiteID = string.Join(";", callsiteIdentifiers.ToArray());
 
             // TODO Jun: Currently generates a new callsite for imperative and 
             // internally generated functions.
@@ -86,7 +91,7 @@ namespace ProtoCore
             else if (!CallsiteCache.TryGetValue(callsiteID, out csInstance))
             {
                 // Attempt to retrieve a preloaded callsite data (optional).
-                var traceData = GetAndRemoveTraceDataForNode(graphNode.guid);
+                var traceData = GetAndRemoveTraceDataForNode(topGraphNode.guid);
 
                 csInstance = new CallSite(classScope,
                                           methodName,
@@ -95,7 +100,7 @@ namespace ProtoCore
                                           traceData);
 
                 CallsiteCache[callsiteID] = csInstance;
-                CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
+                CallSiteToNodeMap[csInstance.CallSiteID] = topGraphNode.guid;
             }
 
             if (graphNode != null && !CoreUtils.IsDisposeMethod(methodName))
@@ -212,9 +217,13 @@ namespace ProtoCore
                     continue;
 
                 // Get all callsites that match the graph node ids.
+                // 
+                // Note we assume the graph node is the top-level graph node here.
+                // The callsite id is the concatenation of all graphnodes' callsite
+                // identifier along the nested function call. 
                 var matchingCallSites = (from cs in CallsiteCache
                                          from gn in graphNodeIds
-                                         where cs.Key == gn
+                                         where !string.IsNullOrEmpty(gn) && cs.Key.StartsWith(gn)
                                          select cs.Value);
 
                 // Append each callsite element under node element.
