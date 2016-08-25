@@ -116,7 +116,7 @@ namespace Dynamo.UI.Controls
         private void BackgroundPreviewViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != "CanNavigateBackground") return;
-            RaisePropertyChanged(nameof(ShortcutToolTip));
+            RaisePropertyChanged("ShortcutToolTip");
         }
     }
 }
