@@ -1744,10 +1744,6 @@ Do you want to install the latest Dynamo update?</value>
   <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
     <value>Show Edges</value>
   </data>
-  <data name="DynamoViewSettingsMenuHidePreviewBubbles" xml:space="preserve">
-    <value>Hide Preview Bubbles</value>
-    <comment>Settings menu | Hide preview bubbles</comment>
-  </data>
   <data name="DynamoViewSettingsMenuShowPreviewBubbles" xml:space="preserve">
     <value>Show Preview Bubbles</value>
     <comment>Settings menu | Show preview bubbles</comment>

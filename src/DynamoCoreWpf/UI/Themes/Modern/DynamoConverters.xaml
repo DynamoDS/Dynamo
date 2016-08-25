@@ -88,7 +88,6 @@
     <controls:PathToSaveStateConverter x:Key="PathToSaveStateConverter" />
     <controls:InverseBooleanConverter x:Key="InverseBooleanConverter" />
     <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter" />
-    <controls:ShowHidePreviewBubblesConverter x:Key="ShowHidePreviewBubblesConverter" />
     <controls:ShowHideFullscreenWatchMenuItemConverter x:Key="ShowHideFullscreenWatchMenuConverter" />
     <controls:PackageSearchStateToStringConverter x:Key="PackageSearchStateToStringConverter" />
     <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
