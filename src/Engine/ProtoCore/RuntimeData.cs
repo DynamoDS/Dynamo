@@ -321,7 +321,16 @@ namespace ProtoCore
                 }
             }
 
-            return callsiteTraceData;
+            // For backword compatibility: old dyn file doesn't have CallSiteID
+            // attribute, so the call site id will be empty string.
+            if (callsiteTraceData == null && !string.IsNullOrEmpty(callsiteID))
+            {
+                return GetAndRemoveTraceDataForNode(nodeGuid, string.Empty);
+            }
+            else
+            {
+                return callsiteTraceData;
+            }
         }
 
         #endregion // Trace Data Serialization Methods/Members
