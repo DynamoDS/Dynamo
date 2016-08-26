@@ -2,3 +2,10 @@ DynamoInstallDetective.dll
 Greg.dll
 GregAdWebServicesAuth.dll
 Reach.dll
+Analytics.NET.Core.dll
+Analytics.NET.Google.dll
+DynamoServices.dll
+DynamoUnits.dll
+DynamoUtilities.dll
+GraphLayout.dll
+LibG.Interface.dll
