@@ -400,12 +400,12 @@ namespace ProtoCore.DSASM
             pc = (int)rmem.GetAtRelative(StackFrame.FrameIndexReturnAddress).IntegerValue;
         }
 
-        private void PushInterpreterProps(InterpreterProperties properties)
+        public void PushInterpreterProps(InterpreterProperties properties)
         {
             runtimeCore.InterpreterProps.Push(new InterpreterProperties(properties));
         }
 
-        private InterpreterProperties PopInterpreterProps()
+        public InterpreterProperties PopInterpreterProps()
         {
             return runtimeCore.InterpreterProps.Pop();
         }
