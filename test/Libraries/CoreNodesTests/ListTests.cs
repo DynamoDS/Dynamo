@@ -341,6 +341,25 @@ namespace DSCoreNodesTests
         public static void GetFromList()
         {
             Assert.AreEqual(2, List.GetItemAtIndex(new List<int> { 0, 1, 2, 3 }, 2));
+            Assert.AreEqual(3, List.GetItemAtIndex(new List<int> { 0, 1, 2, 3 }, -1));
+        }
+        
+        [Test]
+        [Category("UnitTests")]
+        public static void InsertInList()
+        {
+            var list = new List<int> { 0, 1, 3 };
+            Assert.AreEqual(new List<int> { 0, 1, 2, 3 }, List.InsertItemAtIndex(2, list, 2));
+            Assert.AreEqual(new List<int> { 0, 1, 2, 3 }, List.InsertItemAtIndex(2, list, -1));
+        }
+        
+        [Test]
+        [Category("UnitTests")]
+        public static void ReplaceInList()
+        {
+            var list = new List<int> { 0, 1, 5, 3 };
+            Assert.AreEqual(new List<int> { 0, 1, 2, 3 }, List.ReplaceItemAtIndex(2, list, 2));
+            Assert.AreEqual(new List<int> { 0, 1, 2, 3 }, List.ReplaceItemAtIndex(2, list, -2));
         }
 
         [Test]
