@@ -99,7 +99,7 @@ public Node root { get; set; }
     private int stmtsParsed = 0;
 
 
-    private static string GetEscapedString(string s)
+    private string GetEscapedString(string s)
     {
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
@@ -146,6 +146,10 @@ public Node root { get; set; }
                         sb.Append(s[i]);
                         break;
                 }
+            }
+            else if (s[i] == '\\' && i == s.Length - 1)
+            {
+                    SynErr(Resources.EOF_expected);
             }
             else
             {
