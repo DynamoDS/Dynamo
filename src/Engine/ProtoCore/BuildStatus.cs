@@ -463,8 +463,6 @@ namespace ProtoCore
                     return Properties.Resources.in_expected;
                 case  "??? expected":
                     return Properties.Resources.triquestionmark_expected;
-                case "';' is expected":
-                    return Properties.Resources.SemiColonExpected;
                 case  "invalid Hydrogen":
                     return Properties.Resources.invalid_Hydrogen;
                 case   "this symbol not expected in Import_Statement":
