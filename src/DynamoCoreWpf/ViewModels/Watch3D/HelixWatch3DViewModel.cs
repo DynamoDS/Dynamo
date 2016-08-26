@@ -892,6 +892,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             UpdateSceneItems();
             RaisePropertyChanged("SceneItems");
             OnRequestViewRefresh();
+            UpdateNearClipPlane();
         }
    
         private KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(NodeModel node)
