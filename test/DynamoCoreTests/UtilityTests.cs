@@ -346,9 +346,9 @@ namespace Dynamo.Tests
             nodeData0.Add(new ProtoCore.CallSite.RawTraceData("", "TraceData02"));
 
             var nodeData1 = new List<ProtoCore.CallSite.RawTraceData>();
-            nodeData0.Add(new ProtoCore.CallSite.RawTraceData("", "TraceData10"));
-            nodeData0.Add(new ProtoCore.CallSite.RawTraceData("", "TraceData11"));
-            nodeData0.Add(new ProtoCore.CallSite.RawTraceData("", "TraceData12"));
+            nodeData1.Add(new ProtoCore.CallSite.RawTraceData("", "TraceData10"));
+            nodeData1.Add(new ProtoCore.CallSite.RawTraceData("", "TraceData11"));
+            nodeData1.Add(new ProtoCore.CallSite.RawTraceData("", "TraceData12"));
 
             // Create sample data.
             var data = new Dictionary<Guid, List<ProtoCore.CallSite.RawTraceData>>();
