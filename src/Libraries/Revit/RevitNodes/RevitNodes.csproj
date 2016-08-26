@@ -13,8 +13,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Revit</RootNamespace>
     <AssemblyName>RevitNodes</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
@@ -29,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>$(OutputPath)\RevitNodes.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -39,6 +41,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>$(OutputPath)\RevitNodes.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -113,6 +116,7 @@
     <Compile Include="GeometryConversion\GeometryDebugging.cs" />
     <Compile Include="GeometryConversion\CurveUtils.cs" />
     <Compile Include="GeometryConversion\HermiteToNurbs.cs" />
+    <Compile Include="GeometryConversion\ProtoToRevitMesh.cs" />
     <Compile Include="GeometryConversion\NurbsUtils.cs" />
     <Compile Include="GeometryConversion\PolygonContainment.cs" />
     <Compile Include="GeometryConversion\RevitToProtoSolid.cs" />
@@ -155,6 +159,11 @@
     <Compile Include="Transaction\Transaction.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\DynamoCore\DynamoCore.csproj">
+      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+      <Name>DynamoCore</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\NodeServices\NodeServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>NodeServices</Name>

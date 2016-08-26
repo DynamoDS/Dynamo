@@ -46,6 +46,7 @@ namespace Dynamo.Applications
                 if (element.InternalElement.IsValidObject)
                     DocumentManager.Instance.CurrentUIDocument.ShowElements(element.InternalElement);
             };
+
             node.Link = id.ToString(CultureInfo.InvariantCulture);
 
             return node;

@@ -1,12 +1,5 @@
-﻿using System.IO;
-using System.Linq;
-using Autodesk.Revit.DB;
-using Dynamo.Nodes;
-using Dynamo.Utilities;
-using NUnit.Framework;
-using RevitServices.Persistence;
+﻿using NUnit.Framework;
 using RTF.Framework;
-using ModelCurve = Autodesk.Revit.DB.ModelCurve;
 
 namespace Dynamo.Tests
 {

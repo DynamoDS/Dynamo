@@ -28,8 +28,9 @@ limitations under the License.
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RevitServicesTests</RootNamespace>
     <AssemblyName>RevitServicesTests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,6 +41,7 @@ limitations under the License.
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -49,6 +51,7 @@ limitations under the License.
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.framework">
@@ -71,10 +74,6 @@ limitations under the License.
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\DynamoRevit\DynamoRevit.csproj">
-      <Project>{FD56AE51-739E-4893-8DE4-925D60C7097C}</Project>
-      <Name>DynamoRevit</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\src\Libraries\Revit\RevitServices\RevitServices.csproj">
       <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>
       <Name>RevitServices</Name>

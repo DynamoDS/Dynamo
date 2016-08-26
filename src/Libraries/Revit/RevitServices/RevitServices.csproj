@@ -28,8 +28,9 @@ limitations under the License.
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RevitServices</RootNamespace>
     <AssemblyName>RevitServices</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,6 +40,7 @@ limitations under the License.
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -48,6 +50,7 @@ limitations under the License.
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="RevitAPI">
@@ -71,6 +74,7 @@ limitations under the License.
     <Compile Include="Elements\ElementUtils.cs" />
     <Compile Include="Elements\ModelUpdater.cs" />
     <Compile Include="Elements\Updaters.cs" />
+    <Compile Include="Materials\Materials.cs" />
     <Compile Include="Persistence\DocumentManager.cs" />
     <Compile Include="Persistence\ElementBinder.cs" />
     <Compile Include="Persistence\ElementIDLifecycleManager.cs" />

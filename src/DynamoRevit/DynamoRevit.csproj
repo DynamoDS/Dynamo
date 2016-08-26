@@ -13,7 +13,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.Applications</RootNamespace>
     <AssemblyName>DynamoRevitDS</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -35,6 +35,8 @@
     <WarningLevel>3</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <NoWarn>618</NoWarn>
+    <DocumentationFile>..\..\bin\AnyCPU\Debug\DynamoRevitDS.XML</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>$(OutputPath)\DynamoRevitDS.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -46,6 +48,7 @@
     <WarningLevel>3</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
     <NoWarn>618</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>$(OutputPath)\DynamoRevitDS.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>

@@ -51,7 +51,9 @@ namespace Dynamo.Tests
             
             //test the shortest lacing
             xyzNode.ArgumentLacing = LacingStrategy.Shortest;
+
             ViewModel.Model.RunExpression();
+
             var fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(4, fec.ToElements().Count());
@@ -60,7 +62,7 @@ namespace Dynamo.Tests
             xyzNode.ArgumentLacing = LacingStrategy.Longest;
             ViewModel.Model.RunExpression();
             fec = null;
-            fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
+            fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(5, fec.ToElements().Count());
 
@@ -68,7 +70,7 @@ namespace Dynamo.Tests
             xyzNode.ArgumentLacing = LacingStrategy.CrossProduct;
             ViewModel.Model.RunExpression();
             fec = null;
-            fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
+            fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(20, fec.ToElements().Count());
         }
@@ -136,23 +138,24 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(()=>ViewModel.Model.RunExpression());
 
             //verify we have a reference point
-            var fec = new FilteredElementCollector((Autodesk.Revit.DB.Document)DocumentManager.Instance.CurrentDBDocument);
+            var fec = new FilteredElementCollector(DocumentManager.Instance.CurrentDBDocument);
             fec.OfClass(typeof(ReferencePoint));
             Assert.AreEqual(1, fec.ToElements().Count());
 
             //open a new document and activate it
-            var initialDoc = (UIDocument)DocumentManager.Instance.CurrentUIDocument;
+            var initialDoc = DocumentManager.Instance.CurrentUIDocument;
             string shellPath = Path.Combine(_testPath, @".\empty1.rfa");
             TransactionManager.Instance.ForceCloseTransaction();
-            ((UIApplication)DocumentManager.Instance.CurrentUIApplication).OpenAndActivateDocument(shellPath);
+            DocumentManager.Instance.CurrentUIApplication.OpenAndActivateDocument(shellPath);
             initialDoc.Document.Close(false);
 
             ////assert that the doc is set on the controller
-            Assert.IsNotNull((Document)DocumentManager.Instance.CurrentDBDocument);
+            Assert.IsNotNull(DocumentManager.Instance.CurrentDBDocument);
 
             ////update the double node so the graph reevaluates
             var doubleNodes = ViewModel.Model.Nodes.Where(x => x is BasicInteractive<double>);
             BasicInteractive<double> node = doubleNodes.First() as BasicInteractive<double>;
+
             node.Value = node.Value + .1;
 
             ////run the expression again

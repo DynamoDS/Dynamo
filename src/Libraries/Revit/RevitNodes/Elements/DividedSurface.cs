@@ -71,6 +71,8 @@ namespace Revit.Elements
             // otherwise create a new family instance...
             TransactionManager.Instance.EnsureInTransaction(Document);
 
+            //TODO: 2014->2015
+            //var divSurf = Document.FamilyCreate.NewDividedSurface(elementFace.InternalReference);
             var divSurf = Autodesk.Revit.DB.DividedSurface.Create(Document, elementFace.InternalReference);
 
             InternalSetDividedSurface(divSurf);
