@@ -1793,6 +1793,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         internal void UpdateNearClipPlane()
         {
+
+            if (camera == null) return;
+
             var near = camera.NearPlaneDistance;
             var far = camera.FarPlaneDistance;
 
