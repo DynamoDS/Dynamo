@@ -1912,15 +1912,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        /// <summary>
-        /// Toggles Showing Preview Bubbles globally
-        /// </summary>
-        /// <param name="parameter">Command parameter</param>
-        public void TogglePreviewBubblesShowing(object parameter)
-        {
-            ShowPreviewBubbles = !ShowPreviewBubbles;
-        }
-
         public void SelectNeighbors(object parameters)
         {
             List<ISelectable> sels = DynamoSelection.Instance.Selection.ToList<ISelectable>();
