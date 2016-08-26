@@ -68,7 +68,10 @@ namespace ProtoCore
                     }
                 }
             }
-            callsiteIdentifiers.Add(graphNode.CallsiteIdentifier);
+            if (graphNode != null)
+            {
+                callsiteIdentifiers.Add(graphNode.CallsiteIdentifier);
+            }
             var callsiteID = string.Join(";", callsiteIdentifiers.ToArray());
 
             // TODO Jun: Currently generates a new callsite for imperative and 
