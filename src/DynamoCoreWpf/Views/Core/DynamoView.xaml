@@ -702,9 +702,11 @@
                                   IsCheckable="True"
                                   IsChecked="{Binding Path=RenderPackageFactoryViewModel.ShowEdges, Mode=TwoWay}"
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuShowEdges}"></MenuItem>
-                        <MenuItem Header="{Binding Path=ShowPreviewBubbles, Converter={StaticResource ShowHidePreviewBubblesConverter}}"
-                                  Command="{Binding TogglePreviewBubblesShowingCommand}"/>
-                        <MenuItem Focusable="False"
+                  <MenuItem Focusable="False"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding ShowPreviewBubbles, Mode=TwoWay}"
+                                  Header="{x:Static p:Resources.DynamoViewSettingsMenuShowPreviewBubbles}"/>
+                  <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
                                   Command="{Binding ManagePackagePathsCommand}"
                                   Name="managePackagePaths" />

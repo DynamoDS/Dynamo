@@ -217,7 +217,7 @@
                     x:Name="MyPopup"
                     Placement="Right"
                     AllowsTransparency="True"
-                    IsOpen="{Binding Path=ShowUseLevelMenu,diag:PresentationTraceSources.TraceLevel=High}"
+                    IsOpen="{Binding Path=ShowUseLevelMenu}"
                     StaysOpen="False">
                     <Grid Background="Transparent">
                         <Grid.Resources>

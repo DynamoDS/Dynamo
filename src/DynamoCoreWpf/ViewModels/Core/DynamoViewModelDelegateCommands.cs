@@ -48,7 +48,6 @@ namespace Dynamo.ViewModels
             CopyCommand = new DelegateCommand(_ => model.Copy(), CanCopy);
             PasteCommand = new DelegateCommand(Paste, CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
-            TogglePreviewBubblesShowingCommand = new DelegateCommand(TogglePreviewBubblesShowing);
             ForceRunExpressionCommand = new DelegateCommand(ForceRunExprCmd, RunSettingsViewModel.CanRunExpression);
             MutateTestDelegateCommand = new DelegateCommand(MutateTestCmd, RunSettingsViewModel.CanRunExpression);
             DisplayFunctionCommand = new DelegateCommand(DisplayFunction, CanDisplayFunction);
@@ -123,7 +122,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand SaveImageCommand { get; set; }
         public DelegateCommand ShowSaveImageDialogAndSaveResultCommand { get; set; }
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
-        public DelegateCommand TogglePreviewBubblesShowingCommand { get; set; }
         public DelegateCommand ShowPackageManagerCommand { get; set; }
         public DelegateCommand ForceRunExpressionCommand { get; set; }
         public DelegateCommand MutateTestDelegateCommand { get; set; }
