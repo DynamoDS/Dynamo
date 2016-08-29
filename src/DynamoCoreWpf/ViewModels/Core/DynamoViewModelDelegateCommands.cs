@@ -122,6 +122,9 @@ namespace Dynamo.ViewModels
         public DelegateCommand SaveImageCommand { get; set; }
         public DelegateCommand ShowSaveImageDialogAndSaveResultCommand { get; set; }
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
+        // TODO: To be removed in Dynamo 2.0
+        [System.Obsolete("This delegate command is obsolete, set DynamoViewModel.ShowPreviewBubbles directly instead.")]
+        public DelegateCommand TogglePreviewBubblesShowingCommand { get; set; }
         public DelegateCommand ShowPackageManagerCommand { get; set; }
         public DelegateCommand ForceRunExpressionCommand { get; set; }
         public DelegateCommand MutateTestDelegateCommand { get; set; }
