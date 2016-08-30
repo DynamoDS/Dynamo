@@ -90,6 +90,7 @@ namespace Dynamo.Controls
             watch_view.MouseUp += (sender, args) =>
             {
                 ViewModel.OnViewMouseUp(sender, args);
+                //Call update on completion of user manipulation of the scene
                 ViewModel.UpdateNearClipPlane();
             };
 
@@ -218,6 +219,8 @@ namespace Dynamo.Controls
 
         private void CompositionTargetRenderingHandler(object sender, EventArgs e)
         {
+            //Do not call the clip plane update on the render loop if the camera is unchanged or
+            //the user is manipulating the view with mouse 
             if (!View.Camera.Position.Equals(prevCamera) && !View.IsMouseCaptured )
             {
                 ViewModel.UpdateNearClipPlane();

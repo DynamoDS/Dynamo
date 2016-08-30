@@ -892,6 +892,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             UpdateSceneItems();
             RaisePropertyChanged("SceneItems");
             OnRequestViewRefresh();
+            //Call update to the clipping plane after the scene items are updated
             UpdateNearClipPlane();
         }
    
