@@ -975,6 +975,29 @@ namespace Dynamo.Controls
         #endregion
     }
 
+    /// <summary>
+    /// Obsolete class of ShowHidePreviewBubblesConverter
+    /// Using of this class will produce compile warnings
+    /// TODO: To be removed in Dynamo 2.0
+    /// </summary>
+    [System.Obsolete("This class is obsolete, string converter for Preview Bubble Display Option only returns single value now. ")]
+    public class ShowHidePreviewBubblesConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return Resources.DynamoViewSettingsMenuShowPreviewBubbles;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (string)value == Resources.DynamoViewSettingsMenuShowPreviewBubbles;
+        }
+
+        #endregion
+    }
+
     public class ShowHideFullscreenWatchMenuItemConverter : IValueConverter
     {
         #region IValueConverter Members
