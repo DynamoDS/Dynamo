@@ -224,9 +224,9 @@ namespace Dynamo.Controls
             if (!View.Camera.Position.Equals(prevCamera) && !View.IsMouseCaptured )
             {
                 ViewModel.UpdateNearClipPlane();
-                ViewModel.ComputeFrameUpdate();   
             }
-            prevCamera = watch_view.Camera.Position;          
+            ViewModel.ComputeFrameUpdate();
+            prevCamera = View.Camera.Position;          
         }
 
         private void MouseButtonIgnoreHandler(object sender, MouseButtonEventArgs e)
