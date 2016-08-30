@@ -534,7 +534,10 @@
                                        InputGestureText="Ctrl + Alt + Down" />
                         </MenuItem>
 
-                        <MenuItem Header="{Binding Path=ConsoleHeight, Converter={StaticResource ShowHideConsoleMenuConverter}}"
+                        <MenuItem Focusable="False"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding Path=ConsoleHeight, Converter={StaticResource ConsoleHeightToBoolConverter},Mode=TwoWay}"
+                                  Header="{x:Static p:Resources.DynamoViewViewMenuShowConsole}"
                                   Command="{Binding ToggleConsoleShowingCommand}"
                                   InputGestureText="Ctrl + Shift + Up" />
 
@@ -702,11 +705,11 @@
                                   IsCheckable="True"
                                   IsChecked="{Binding Path=RenderPackageFactoryViewModel.ShowEdges, Mode=TwoWay}"
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuShowEdges}"></MenuItem>
-                  <MenuItem Focusable="False"
+                        <MenuItem Focusable="False"
                                   IsCheckable="True"
                                   IsChecked="{Binding ShowPreviewBubbles, Mode=TwoWay}"
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuShowPreviewBubbles}"/>
-                  <MenuItem Focusable="False"
+                        <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
                                   Command="{Binding ManagePackagePathsCommand}"
                                   Name="managePackagePaths" />
