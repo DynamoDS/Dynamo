@@ -1,3 +1,4 @@
+<Workspace Version="0.8.0.684" X="-1204.9614795612" Y="-174.93420633805" zoom="0.608136350193896" Name="Home" Description="" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <CoreNodeModels.Input.DoubleInput guid="d0036752-d644-4511-9937-c17b4f152313" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="2122.37470588" y="834.676641352278" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
