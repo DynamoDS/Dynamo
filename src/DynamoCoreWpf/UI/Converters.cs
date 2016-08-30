@@ -949,6 +949,13 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Obsolete class of ShowHideConsoleMenuItemConverter
+    /// Using of this class will produce compile warnings
+    /// TODO: To be removed in Dynamo 2.0
+    /// TODO: Resource String DynamoViewViewMenuHideConsole to be removed in Dynamo 2.0
+    /// </summary>
+    [System.Obsolete("This class is obsolete.")]
     public class ShowHideConsoleMenuItemConverter : IValueConverter
     {
         #region IValueConverter Members
@@ -974,6 +981,33 @@ namespace Dynamo.Controls
 
         #endregion
     }
+
+    public class ConsoleHeightToBooleanConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if ((int)value > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+
+        #endregion
+    }
+
 
     /// <summary>
     /// Obsolete class of ShowHidePreviewBubblesConverter
