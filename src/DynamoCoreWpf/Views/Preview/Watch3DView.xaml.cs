@@ -25,6 +25,7 @@ namespace Dynamo.Controls
         #region private members
 
         private Point rightMousePoint;
+        private Point3D prevCamera;
 
         #endregion
 
@@ -89,6 +90,8 @@ namespace Dynamo.Controls
             watch_view.MouseUp += (sender, args) =>
             {
                 ViewModel.OnViewMouseUp(sender, args);
+                //Call update on completion of user manipulation of the scene
+                ViewModel.UpdateNearClipPlane();
             };
 
             watch_view.MouseMove += (sender, args) =>
@@ -216,8 +219,14 @@ namespace Dynamo.Controls
 
         private void CompositionTargetRenderingHandler(object sender, EventArgs e)
         {
-            ViewModel.UpdateNearClipPlane();
+            //Do not call the clip plane update on the render loop if the camera is unchanged or
+            //the user is manipulating the view with mouse 
+            if (!View.Camera.Position.Equals(prevCamera) && !View.IsMouseCaptured )
+            {
+                ViewModel.UpdateNearClipPlane();
+            }
             ViewModel.ComputeFrameUpdate();
+            prevCamera = View.Camera.Position;          
         }
 
         private void MouseButtonIgnoreHandler(object sender, MouseButtonEventArgs e)
