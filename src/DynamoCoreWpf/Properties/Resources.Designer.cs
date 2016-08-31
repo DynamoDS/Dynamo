@@ -2201,6 +2201,28 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Publish Fail!.
+        /// </summary>
+        public static string FileNotPublishCaption {
+            get {
+                return ResourceManager.GetString("FileNotPublishCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File does not exist or is currently belong to a package. 
+        ///Please select a different file that is not contained in any packages or copy that file to a new location outside of the package to publish. 
+        ///
+        ///Failed to publish files: 
+        ///{0}.
+        /// </summary>
+        public static string FileNotPublishMessage {
+            get {
+                return ResourceManager.GetString("FileNotPublishMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No file selected..
         /// </summary>
         public static string FilePathConverterNoFileSelected {
@@ -4089,11 +4111,30 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Published Successfully.
+        /// </summary>
+        public static string PublishPackageDialogCaption {
+            get {
+                return ResourceManager.GetString("PublishPackageDialogCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Locally.
         /// </summary>
         public static string PublishPackageLocally {
             get {
                 return ResourceManager.GetString("PublishPackageLocally", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package published successfully.
+        ///Continue publishing a new package?.
+        /// </summary>
+        public static string PublishPackageMessage {
+            get {
+                return ResourceManager.GetString("PublishPackageMessage", resourceCulture);
             }
         }
         

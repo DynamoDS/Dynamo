@@ -2077,4 +2077,21 @@ Next assemblies were loaded several times:
   <data name="UnableToAccessPackageDirectory" xml:space="preserve">
     <value>Unable To Access Package Directory</value>
   </data>
+  <data name="FileNotPublishCaption" xml:space="preserve">
+    <value>Publish Fail!</value>
+  </data>
+  <data name="FileNotPublishMessage" xml:space="preserve">
+    <value>File does not exist or is currently belong to a package. 
+Please select a different file that is not contained in any packages or copy that file to a new location outside of the package to publish. 
+
+Failed to publish files: 
+{0}</value>
+  </data>
+  <data name="PublishPackageDialogCaption" xml:space="preserve">
+    <value>Published Successfully</value>
+  </data>
+  <data name="PublishPackageMessage" xml:space="preserve">
+    <value>Package published successfully.
+Continue publishing a new package?</value>
+  </data>
 </root>

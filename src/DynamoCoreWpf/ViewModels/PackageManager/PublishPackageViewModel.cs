@@ -20,6 +20,7 @@ using Microsoft.Practices.Prism.Commands;
 using Double = System.Double;
 using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
 using String = System.String;
+using System.Diagnostics;
 
 namespace Dynamo.PackageManager
 {
@@ -40,6 +41,17 @@ namespace Dynamo.PackageManager
         /// A event called when publishing was a success
         /// </summary>
         public event PublishSuccessHandler PublishSuccess;
+
+        /// <summary>
+        /// A event called when publishing was finished loccally and user want to re-publish the package
+        /// </summary>
+        public event PublishSuccessHandler ClearEntries;
+
+        /// <summary>
+        /// A event called when publishing was an error due to the files had not been accepted.
+        /// This event occured to clear the files but still keeping the details that had been filled.
+        /// </summary>
+        public event PublishSuccessHandler ClearFiles;
 
         public event EventHandler<PackagePathEventArgs> RequestShowFolderBrowserDialog;
         public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
@@ -679,6 +691,41 @@ namespace Dynamo.PackageManager
             return AllDependentFuncDefs().Union(CustomNodeDefinitions).Distinct();
         }
 
+        private IEnumerable<string> GetAllUnqualifiedFiles()
+        {
+            // get all function defs
+            var allFuncs = AllFuncDefs().ToList();
+
+            // all workspaces
+            var workspaces = new List<CustomNodeWorkspaceModel>();
+            foreach (var def in allFuncs)
+            {
+                CustomNodeWorkspaceModel ws;
+                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
+                    def.FunctionId,
+                    DynamoModel.IsTestMode,
+                    out ws))
+                {
+                    workspaces.Add(ws);
+                }
+            }
+
+            var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
+
+            // Get all unqualified files to notify to users
+            var files =
+               workspaces.Select(f => f.FileName)
+                   .Where(
+                       p => (
+                             pmExtension.PackageLoader.IsUnderPackageControl(p)
+                             && (pmExtension.PackageLoader.GetOwnerPackage(p).Name != Name)
+                            )
+                          );
+
+            return files;
+
+        }
+
         private IEnumerable<string> GetAllFiles()
         {
             // get all function defs
@@ -913,6 +960,20 @@ namespace Dynamo.PackageManager
                 // add the new packages folder to path
                 dynamoViewModel.Model.CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(filename), DynamoModel.IsTestMode);
 
+                // Check the ID to confirm weather the file is contained in any package.
+                // If Yes, then update the loadedworkspace node info to this file location
+                // This is to solve the issues when user copy a file from a given package to new location
+                // and start publishing with the new copied file.
+                // Since the loadedworkspace node info location is update, the issue is fixed.
+
+                foreach(var node in dynamoViewModel.Model.CustomNodeManager.LoadedWorkspaces)
+                {
+                    if(node.CustomNodeId == dynamoViewModel.Model.CustomNodeManager.GuidFromPath(filename))
+                    {
+                        node.SetInfo(filename,null,null,filename);
+                    }
+                }
+
                 CustomNodeDefinition funcDef;
                 if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(nodeInfo.FunctionId, DynamoModel.IsTestMode, out funcDef)
                     && CustomNodeDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
@@ -1024,10 +1085,32 @@ namespace Dynamo.PackageManager
 
             try
             {
-                //if buildPackage() returns no files then the package
-                //is empty so we should return
-                if (files == null || files.Count() < 1)
+                var unqualifiedFiles = GetAllUnqualifiedFiles();
+
+                // if the unqualified files are bigger than 0, error message is triggered.
+                // At the same time, as unqualified files existed, 
+                // files returned from BuildPackage() is 0.
+                // This is caused by the package file is not existed or it has already been in a package.
+                if (files == null || unqualifiedFiles.Count() > 0) 
                 {
+                    string filesCannotBePublished = null;
+                    foreach (var file in unqualifiedFiles)
+                    {
+                        filesCannotBePublished = filesCannotBePublished + file + "\n";
+                    }
+                    string FileNotPublishMessage = string.Format(Resources.FileNotPublishMessage, filesCannotBePublished);
+                    UploadState = PackageUploadHandle.State.Error;
+                    DialogResult response = System.Windows.Forms.MessageBox.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (response == DialogResult.OK)
+                    {
+                        if (ClearFiles != null)
+                        {
+                            // Clear only the files added but keep the package details filled-in.
+                            ClearFiles(this); 
+                        }
+                        UploadState = PackageUploadHandle.State.Ready;
+                        Uploading = false;
+                    }
                     return;
                 }
                 UploadState = PackageUploadHandle.State.Copying;
@@ -1039,19 +1122,24 @@ namespace Dynamo.PackageManager
                 builder.BuildDirectory(Package, publishPath, files);
                 UploadState = PackageUploadHandle.State.Uploaded;
 
-                // Calling back the OnPublishSuccess() function to close the dialog
-                // once the publish finished.
-                // Timer is used to prevent a sudden close of the dialog, 
-                // so that the users are clearly acknowledged about the uploaded state.
+                // Once upload is successful, a display message will appear to ask
+                // whether user wants to continue uploading another file or not.
                 if (UploadState == PackageUploadHandle.State.Uploaded)
                 {
-                    System.Threading.Timer timer = null;
-                    timer = new System.Threading.Timer((obj) =>
+                    DialogResult dialogResult = System.Windows.Forms.MessageBox.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        if (ClearEntries != null)
                         {
-                            OnPublishSuccess();
-                            timer.Dispose();
-                        },
-                        null, 1000, System.Threading.Timeout.Infinite);
+                            // Clear the form entries.
+                            ClearEntries(this);
+                        }
+                        Uploading = false;
+                    }
+                    else
+                    {
+                        Uploading = true;
+                    }
                 }
             }
             catch (Exception e)
@@ -1059,10 +1147,6 @@ namespace Dynamo.PackageManager
                 UploadState = PackageUploadHandle.State.Error;
                 ErrorString = e.Message;
                 dynamoViewModel.Model.Logger.Log(e);
-            }
-            finally
-            {
-                Uploading = false;
             }
         }
 

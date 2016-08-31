@@ -21,6 +21,8 @@ namespace Dynamo.PackageManager
         {
             this.DataContext = packageViewModel;
             packageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
+            packageViewModel.ClearEntries += ClearEntries;
+            packageViewModel.ClearFiles += ClearFiles;
 
             InitializeComponent();
 
@@ -33,6 +35,39 @@ namespace Dynamo.PackageManager
         private void PackageViewModelOnPublishSuccess(PublishPackageViewModel sender)
         {
             this.Dispatcher.BeginInvoke((Action) (Close));
+        }
+
+        private void ClearEntries(PublishPackageViewModel sender)
+        {
+            PublishPackageViewModel newPackageViewModel = new PublishPackageViewModel(sender.DynamoViewModel);
+            this.DataContext = newPackageViewModel;
+            newPackageViewModel.ClearEntries += ClearEntries;
+            newPackageViewModel.ClearFiles += ClearFiles;
+            newPackageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
+            newPackageViewModel.RequestShowFolderBrowserDialog += OnRequestShowFolderBrowserDialog;
+        }
+
+        private void ClearFiles(PublishPackageViewModel sender)
+        {
+            PublishPackageViewModel newPackageViewModel = new PublishPackageViewModel(sender.DynamoViewModel);
+            this.DataContext = newPackageViewModel;
+            newPackageViewModel.ClearEntries += ClearEntries;
+            newPackageViewModel.ClearFiles += ClearFiles;
+            newPackageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
+            newPackageViewModel.RequestShowFolderBrowserDialog += OnRequestShowFolderBrowserDialog;
+
+            // Copy all the details to newPackageViewModel.Package 
+            // so that user do not have to re-filled in all those details.
+            newPackageViewModel.Name = sender.Name;
+            newPackageViewModel.MajorVersion = sender.MajorVersion;
+            newPackageViewModel.MinorVersion = sender.MinorVersion;
+            newPackageViewModel.BuildVersion = sender.BuildVersion;
+            newPackageViewModel.Description = sender.Description;
+            newPackageViewModel.Group = sender.Package.Group;
+            newPackageViewModel.Keywords = sender.Keywords;
+            newPackageViewModel.License = sender.License;
+            newPackageViewModel.SiteUrl = sender.SiteUrl;
+            newPackageViewModel.RepositoryUrl = sender.RepositoryUrl;
         }
 
         private void OnRequestShowFolderBrowserDialog(object sender, PackagePathEventArgs e)
