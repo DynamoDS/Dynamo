@@ -347,6 +347,11 @@ namespace Dynamo.ViewModels
             get { return model.Version; }
         }
 
+        public string DynamoRevitVersion
+        {
+            get { return model.DynamoRevitVersion; }
+        }
+
         public bool IsUpdateAvailable
         {
             get

@@ -78,6 +78,8 @@ namespace Dynamo.Updates
         /// </summary>
         BinaryVersion AvailableVersion { get; }
 
+        Version DynamoRevitVersion { get; set; }
+
         /// <summary>
         /// Returns information, where version can be updated.
         /// </summary>
@@ -594,6 +596,8 @@ namespace Dynamo.Updates
 
             return productVersion;
         }
+
+        public Version DynamoRevitVersion { get; set; }
 
         /// <summary>
         ///     Obtains available update version string 

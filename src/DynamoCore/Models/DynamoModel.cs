@@ -198,6 +198,11 @@ namespace Dynamo.Models
             get { return UpdateManager.ProductVersion.ToString(); }
         }
 
+        public string DynamoRevitVersion
+        {
+            get { return UpdateManager.DynamoRevitVersion.ToString(); }
+        }
+
         /// <summary>
         /// UpdateManager to handle automatic upgrade to higher version.
         /// </summary>
