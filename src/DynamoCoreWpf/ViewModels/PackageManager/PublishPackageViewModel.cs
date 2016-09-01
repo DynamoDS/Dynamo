@@ -1139,6 +1139,13 @@ namespace Dynamo.PackageManager
                     else
                     {
                         Uploading = true;
+                        System.Threading.Timer timer = null;
+                        timer = new System.Threading.Timer((obj) =>
+                        {
+                            OnPublishSuccess();
+                            timer.Dispose();
+                        },
+                            null, 1200, System.Threading.Timeout.Infinite);
                     }
                 }
             }

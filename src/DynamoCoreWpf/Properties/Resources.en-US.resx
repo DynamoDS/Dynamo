@@ -2079,17 +2079,16 @@ Next assemblies were loaded several times:
     <value>Publish Fail!</value>
   </data>
   <data name="FileNotPublishMessage" xml:space="preserve">
-    <value>File does not exist or is currently belong to a package. 
-Please select a different file that is not contained in any packages or copy that file to a new location outside of the package to publish. 
+    <value>File(s) were not found or are contained inside of a package. Please only add files that are located outside of packages.
 
-Failed to publish files: 
+Failed to publish file(s): 
 {0}</value>
   </data>
   <data name="PublishPackageDialogCaption" xml:space="preserve">
     <value>Published Successfully</value>
   </data>
   <data name="PublishPackageMessage" xml:space="preserve">
-    <value>Package published successfully.
-Continue publishing a new package?</value>
+    <value>Package published successfully. 
+Want to publish a different package?</value>
   </data>
 </root>

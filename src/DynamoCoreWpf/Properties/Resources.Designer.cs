@@ -2210,10 +2210,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File does not exist or is currently belong to a package. 
-        ///Please select a different file that is not contained in any packages or copy that file to a new location outside of the package to publish. 
+        ///   Looks up a localized string similar to File(s) were not found or are contained inside of a package. Please only add files that are located outside of packages.
         ///
-        ///Failed to publish files: 
+        ///Failed to publish file(s): 
         ///{0}.
         /// </summary>
         public static string FileNotPublishMessage {
@@ -4129,8 +4128,8 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package published successfully.
-        ///Continue publishing a new package?.
+        ///   Looks up a localized string similar to Package published successfully. 
+        ///Want to publish a different package?.
         /// </summary>
         public static string PublishPackageMessage {
             get {
