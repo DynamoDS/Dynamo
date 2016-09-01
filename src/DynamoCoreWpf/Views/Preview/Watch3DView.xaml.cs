@@ -223,7 +223,7 @@ namespace Dynamo.Controls
         private void CompositionTargetRenderingHandler(object sender, EventArgs e)
         {
             //Do not call the clip plane update on the render loop if the camera is unchanged or
-            //the user is manipulating the view with mouse.  Do run when queued from by runUpdateClipPlane bool 
+            //the user is manipulating the view with mouse.  Do run when queued by runUpdateClipPlane bool 
             if (runUpdateClipPlane || (!View.Camera.Position.Equals(prevCamera) && !View.IsMouseCaptured) )
             {
                 ViewModel.UpdateNearClipPlane();
