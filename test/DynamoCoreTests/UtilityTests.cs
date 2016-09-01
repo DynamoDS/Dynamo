@@ -295,6 +295,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Ignore]
         [Category("UnitTests")]
         public void SaveTraceDataToXmlDocument00()
         {
@@ -329,6 +330,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Ignore]
         [Category("UnitTests")]
         public void SaveTraceDataToXmlDocument01()
         {
@@ -385,6 +387,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Ignore]
         [Category("UnitTests")]
         public void LoadTraceDataFromXmlDocument00()
         {
@@ -403,6 +406,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Ignore]
         [Category("UnitTests")]
         public void LoadTraceDataFromXmlDocument01()
         {
