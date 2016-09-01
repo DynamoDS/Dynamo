@@ -42,17 +42,6 @@ namespace Dynamo.PackageManager
         /// </summary>
         public event PublishSuccessHandler PublishSuccess;
 
-        /// <summary>
-        /// A event called when publishing was finished loccally and user want to re-publish the package
-        /// </summary>
-        public event PublishSuccessHandler ClearEntries;
-
-        /// <summary>
-        /// A event called when publishing was an error due to the files had not been accepted.
-        /// This event occured to clear the files but still keeping the details that had been filled.
-        /// </summary>
-        public event PublishSuccessHandler ClearFiles;
-
         public event EventHandler<PackagePathEventArgs> RequestShowFolderBrowserDialog;
         public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
         {
@@ -552,6 +541,56 @@ namespace Dynamo.PackageManager
             this.dynamoViewModel = dynamoViewModel;
         }
 
+        private void clearAllEntries()
+        {
+            // this function clears all the entries of the publish package dialog
+            this.Name = "";
+            this.RepositoryUrl = "";
+            this.SiteUrl = "";
+            this.License = "";
+            this.Keywords = "";
+            this.Description = "";
+            this.Group = "";
+            this.clearFullVersion();
+
+            this.Package = null;
+            this.Uploading = false;
+            this.UploadHandle = null;
+            this.IsNewVersion = false;
+            this.AdditionalFiles = new ObservableCollection<string>();
+            this.ErrorString = "";
+            this.MoreExpanded = false;
+            this.UploadState = PackageUploadHandle.State.Ready;
+
+            this.SubmitCommand.RaiseCanExecuteChanged();
+            this.PublishLocallyCommand.RaiseCanExecuteChanged();
+            this.ShowAddFileDialogAndAddCommand.RaiseCanExecuteChanged();
+            this.ToggleMoreCommand.RaiseCanExecuteChanged();
+            this.Dependencies = new ObservableCollection<PackageDependency>();
+            this.Assemblies = new List<PackageAssembly>();
+            this.clearPackageContents();
+        }
+
+        private void clearFullVersion()
+        {
+            this._MajorVersion = "";
+            RaisePropertyChanged("MajorVersion");
+
+            this._MinorVersion = "";
+            RaisePropertyChanged("MinorVersion");
+
+            this._BuildVersion = "";
+            RaisePropertyChanged("BuildVersion");
+        }
+
+        private void clearPackageContents()
+        {
+            //  this method clears the package contents in the publish package dialog
+
+            this.CustomNodeDefinitions = new List<CustomNodeDefinition>();
+            RaisePropertyChanged("PackageContents");
+        }
+
         private void ThisPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "PackageContents")
@@ -694,7 +733,7 @@ namespace Dynamo.PackageManager
         private IEnumerable<string> GetAllUnqualifiedFiles()
         {
             // get all function defs
-            var allFuncs = AllFuncDefs().ToList();
+            var allFuncs = AllFuncDefs();
 
             // all workspaces
             var workspaces = new List<CustomNodeWorkspaceModel>();
@@ -1103,11 +1142,7 @@ namespace Dynamo.PackageManager
                     DialogResult response = System.Windows.Forms.MessageBox.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     if (response == DialogResult.OK)
                     {
-                        if (ClearFiles != null)
-                        {
-                            // Clear only the files added but keep the package details filled-in.
-                            ClearFiles(this); 
-                        }
+                        this.clearPackageContents();
                         UploadState = PackageUploadHandle.State.Ready;
                         Uploading = false;
                     }
@@ -1128,13 +1163,10 @@ namespace Dynamo.PackageManager
                 {
                     DialogResult dialogResult = System.Windows.Forms.MessageBox.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                     if (dialogResult == DialogResult.Yes)
-                    {
-                        if (ClearEntries != null)
-                        {
-                            // Clear the form entries.
-                            ClearEntries(this);
-                        }
+                    { 
+                        this.clearAllEntries();
                         Uploading = false;
+                        UploadState = PackageUploadHandle.State.Ready;
                     }
                     else
                     {
