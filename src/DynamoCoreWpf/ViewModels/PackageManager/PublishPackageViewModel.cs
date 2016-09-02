@@ -993,7 +993,8 @@ namespace Dynamo.PackageManager
                 {
                     if(node.CustomNodeId == dynamoViewModel.Model.CustomNodeManager.GuidFromPath(filename))
                     {
-                        node.SetInfo(filename,null,null,filename);
+                        var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filename);
+                        node.SetInfo(fileNameWithoutExtension,null,null,filename);
                     }
                 }
 
