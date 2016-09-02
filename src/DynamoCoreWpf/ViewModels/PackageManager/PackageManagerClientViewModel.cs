@@ -39,6 +39,7 @@ namespace Dynamo.ViewModels
     public class TermsOfUseHelper
     {
         private static int currentRequestCount = 0;
+        private static int lockCount = 0;
         private readonly IBrandingResourceProvider resourceProvider;
         private readonly Action callbackAction;
         private readonly PackageManagerClient packageManagerClient;
@@ -61,6 +62,48 @@ namespace Dynamo.ViewModels
             packageManagerClient = touParams.PackageManagerClient;
             callbackAction = touParams.AcceptanceCallback;
             authenticationManager = touParams.AuthenticationManager;
+        }
+
+        public void ExecuteForTou()
+        {
+            if (Interlocked.Increment(ref lockCount) > 1)
+            {
+                // Determine if there is already a previous request to display
+                // terms of use dialog, if so, do nothing for the second time.
+                Interlocked.Decrement(ref lockCount);
+                return;
+            }
+
+            Task<bool>.Factory.StartNew(() => packageManagerClient.GetTermsOfUseAcceptanceStatus()).
+                ContinueWith(t =>
+                {
+                    // The above GetTermsOfUseAcceptanceStatus call will get the
+                    // user to sign-in. If the user cancels that sign-in dialog 
+                    // without signing in, we won't show the terms of use dialog,
+                    // simply return from here.
+                    // 
+                    if (authenticationManager.LoginState != LoginState.LoggedIn)
+                        return;
+
+                    var termsOfUseAccepted = t.Result;
+                    if (termsOfUseAccepted)
+                    {
+                        // Terms of use accepted, proceed to publish.
+                        callbackAction.Invoke();
+                    }
+                    else
+                    {
+                        // Prompt user to accept the terms of use.
+                        ShowTermsOfUseForPublishing();
+                    }
+
+                }, TaskScheduler.FromCurrentSynchronizationContext()).
+                ContinueWith(t =>
+                {
+                    // Done with terms of use dialog, decrement counter.
+                    Interlocked.Decrement(ref lockCount);
+
+                }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         public void Execute()

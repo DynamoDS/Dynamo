@@ -250,7 +250,7 @@ namespace Dynamo.ViewModels
                 AcceptanceCallback = acceptanceCallback
             });
 
-            termsOfUseCheck.Execute();
+            termsOfUseCheck.ExecuteForTou();
         }
 
         private bool CanPublishNewPackage()
