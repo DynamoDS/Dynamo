@@ -200,7 +200,7 @@ namespace Dynamo.Models
 
         public string DynamoRevitVersion
         {
-            get { return UpdateManager.DynamoRevitVersion.ToString(); }
+            get { return UpdateManager.DynamoRevitVersion == null ? null : UpdateManager.DynamoRevitVersion.ToString(); }
         }
 
         /// <summary>
