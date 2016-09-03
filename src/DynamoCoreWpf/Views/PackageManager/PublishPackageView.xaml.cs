@@ -8,6 +8,7 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
+using DynamoUtilities;
 
 namespace Dynamo.PackageManager
 {
@@ -37,18 +38,23 @@ namespace Dynamo.PackageManager
         private void OnRequestShowFolderBrowserDialog(object sender, PackagePathEventArgs e)
         {
             e.Cancel = true;
-
-            var dialog = new DynamoFolderBrowserDialog
+            // Handle for the case, initialPath does not exist.
+            var errorCannotCreateFolder = PathHelper.CreateFolderIfNotExist(e.Path);
+            if(errorCannotCreateFolder == null)
             {
-                SelectedPath = e.Path,
-                Owner = this
-            };
+                var dialog = new DynamoFolderBrowserDialog
+                {
+                    SelectedPath = e.Path,
+                    Owner = this
+                };
 
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                e.Cancel = false;
-                e.Path = dialog.SelectedPath;
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    e.Cancel = false;
+                    e.Path = dialog.SelectedPath;
+                }
             }
+           
         }
     }
 
