@@ -564,7 +564,7 @@ It does not contain your graph or any personal data</value>
     <comment>Setting menu | Experimental</comment>
   </data>
   <data name="DynamoViewSettingEnableTSplineNodes" xml:space="preserve">
-    <value>Enable T-Spline nodes (requires relaunch of Dynamo)</value>
+    <value>Enable T-Spline nodes</value>
     <comment>Setting menu | Experimental | Enable T-Spline nodes</comment>
   </data>
   <data name="DynamoViewToolbarExportButtonTooltip" xml:space="preserve">
