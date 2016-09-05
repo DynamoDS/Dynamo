@@ -39,6 +39,9 @@ namespace ProtoTestConsoleRunner
                 return;
             }
 
+            var profilingThread = new Thread(new ThreadStart(CollectingMemory));
+            profilingThread.Start();
+
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
 
@@ -52,10 +55,6 @@ namespace ProtoTestConsoleRunner
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
 
             ProtoScriptRunner runner = new ProtoScriptRunner();
-
-            var profilingThread = new Thread(new ThreadStart(CollectingMemory));
-            profilingThread.Start();
-
             runner.LoadAndExecute(filename, core);
             long ms = sw.ElapsedMilliseconds;
             sw.Stop();
