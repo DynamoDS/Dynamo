@@ -38,7 +38,6 @@ namespace Dynamo.ViewModels
     /// </summary>
     public class TermsOfUseHelper
     {
-        private static int currentRequestCount = 0;
         private static int lockCount = 0;
         private readonly IBrandingResourceProvider resourceProvider;
         private readonly Action callbackAction;
@@ -64,9 +63,10 @@ namespace Dynamo.ViewModels
             authenticationManager = touParams.AuthenticationManager;
         }
 
-        public void ExecuteForTou()
+
+        public void Execute(bool preventReentrant)
         {
-            if (Interlocked.Increment(ref lockCount) > 1)
+            if (preventReentrant && Interlocked.Increment(ref lockCount) > 1)
             {
                 // Determine if there is already a previous request to display
                 // terms of use dialog, if so, do nothing for the second time.
@@ -102,48 +102,6 @@ namespace Dynamo.ViewModels
                 {
                     // Done with terms of use dialog, decrement counter.
                     Interlocked.Decrement(ref lockCount);
-
-                }, TaskScheduler.FromCurrentSynchronizationContext());
-        }
-
-        public void Execute()
-        {
-            if (Interlocked.Increment(ref currentRequestCount) > 1)
-            {
-                // Determine if there is already a previous request to display
-                // terms of use dialog, if so, do nothing for the second time.
-                Interlocked.Decrement(ref currentRequestCount);
-                return;
-            }
-
-            Task<bool>.Factory.StartNew(() => packageManagerClient.GetTermsOfUseAcceptanceStatus()).
-                ContinueWith(t =>
-                {
-                    // The above GetTermsOfUseAcceptanceStatus call will get the
-                    // user to sign-in. If the user cancels that sign-in dialog 
-                    // without signing in, we won't show the terms of use dialog,
-                    // simply return from here.
-                    // 
-                    if (authenticationManager.LoginState != LoginState.LoggedIn)
-                        return;
-
-                    var termsOfUseAccepted = t.Result;
-                    if (termsOfUseAccepted)
-                    {
-                        // Terms of use accepted, proceed to publish.
-                        callbackAction.Invoke();
-                    }
-                    else
-                    {
-                        // Prompt user to accept the terms of use.
-                        ShowTermsOfUseForPublishing();
-                    }
-
-                }, TaskScheduler.FromCurrentSynchronizationContext()).
-                ContinueWith(t =>
-                {
-                    // Done with terms of use dialog, decrement counter.
-                    Interlocked.Decrement(ref currentRequestCount);
 
                 }, TaskScheduler.FromCurrentSynchronizationContext());
         }
@@ -308,7 +266,7 @@ namespace Dynamo.ViewModels
                     };
 
                     var termsOfUseCheck = new TermsOfUseHelper(touParams);
-                    termsOfUseCheck.Execute();
+                    termsOfUseCheck.Execute(true);
                     return;
                 }
             }
@@ -333,7 +291,7 @@ namespace Dynamo.ViewModels
                 AcceptanceCallback = ShowNodePublishInfo
             });
 
-            termsOfUseCheck.Execute();
+            termsOfUseCheck.Execute(true);
         }
 
         public bool CanPublishNewPackage(object m)
@@ -359,7 +317,7 @@ namespace Dynamo.ViewModels
                     })
                 });
 
-                termsOfUseCheck.Execute();
+                termsOfUseCheck.Execute(true);
             }
         }
 
@@ -412,7 +370,7 @@ namespace Dynamo.ViewModels
                 AcceptanceCallback = () => ShowNodePublishInfo(defs)
             });
 
-            termsOfUseCheck.Execute();
+            termsOfUseCheck.Execute(true);
         }
 
         public bool CanPublishSelectedNodes(object m)
