@@ -198,9 +198,14 @@ namespace Dynamo.Models
             get { return UpdateManager.ProductVersion.ToString(); }
         }
 
-        public string DynamoRevitVersion
+        public string HostVersion
         {
-            get { return UpdateManager.DynamoRevitVersion == null ? null : UpdateManager.DynamoRevitVersion.ToString(); }
+            get { return UpdateManager.HostVersion == null ? null : UpdateManager.HostVersion.ToString(); }
+        }
+
+        public string HostName
+        {
+            get { return UpdateManager.HostName == null ? null : UpdateManager.HostName; }
         }
 
         /// <summary>
