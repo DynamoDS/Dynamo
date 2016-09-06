@@ -1730,7 +1730,7 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Helix.Pitch">
             <summary>
-            The pitch of the helix in Degrees
+            The pitch of the helix
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Helix.Radius">
