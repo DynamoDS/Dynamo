@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2070,6 +2070,20 @@ Next assemblies were loaded several times:
   </data>
   <data name="UnableToAccessPackageDirectory" xml:space="preserve">
     <value>Unable To Access Package Directory</value>
+  </data>
+  <data name="DynamoViewFileMenuExport3DAsImage" xml:space="preserve">
+    <value>_Export Background 3D Preview as Image...</value>
+    <comment>File menu | Export Background 3D Preview as image</comment>
+  </data>
+  <data name="DynamoViewToolbarExport3DButtonTooltip" xml:space="preserve">
+    <value>Export Background Preview As Image</value>
+    <comment>Toolbar export button tooltip</comment>
+  </data>
+  <data name="ScreenShotFrom3DParameter" xml:space="preserve">
+    <value>screenshot_3D</value>
+  </data>
+  <data name="ScreenShotFrom3DShortcutParameter" xml:space="preserve">
+    <value>screenshot_3D_shortcut</value>
   </data>
   <data name="FileNotPublishCaption" xml:space="preserve">
     <value>Publish Fail!</value>
