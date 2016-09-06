@@ -20,6 +20,7 @@ using Microsoft.Practices.Prism.Commands;
 using Double = System.Double;
 using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
 using String = System.String;
+using System.Diagnostics;
 
 namespace Dynamo.PackageManager
 {
@@ -540,6 +541,40 @@ namespace Dynamo.PackageManager
             this.dynamoViewModel = dynamoViewModel;
         }
 
+        private void ClearAllEntries()
+        {
+            // this function clears all the entries of the publish package dialog
+            this.Name = "";
+            this.RepositoryUrl = "";
+            this.SiteUrl = "";
+            this.License = "";
+            this.Keywords = "";
+            this.Description = "";
+            this.Group = "";
+            this.MajorVersion = "0";
+            this.MinorVersion = "0";
+            this.BuildVersion = "0";
+            this.ErrorString = "";
+            this.Uploading = false;
+            this.UploadHandle = null;
+            this.IsNewVersion = false;
+            this.MoreExpanded = false;
+            this.ClearPackageContents();
+            this.UploadState = PackageUploadHandle.State.Ready;
+            this.AdditionalFiles = new ObservableCollection<string>();
+            this.Dependencies = new ObservableCollection<PackageDependency>();
+            this.Assemblies = new List<PackageAssembly>();
+        }
+
+        private void ClearPackageContents()
+        {
+            //  this method clears the package contents in the publish package dialog
+
+            this.Package = null;
+            this.CustomNodeDefinitions = new List<CustomNodeDefinition>();
+            RaisePropertyChanged("PackageContents");
+        }
+
         private void ThisPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "PackageContents")
@@ -677,6 +712,41 @@ namespace Dynamo.PackageManager
         private IEnumerable<CustomNodeDefinition> AllFuncDefs()
         {
             return AllDependentFuncDefs().Union(CustomNodeDefinitions).Distinct();
+        }
+
+        private IEnumerable<string> GetAllUnqualifiedFiles()
+        {
+            // get all function defs
+            var allFuncs = AllFuncDefs();
+
+            // all workspaces
+            var workspaces = new List<CustomNodeWorkspaceModel>();
+            foreach (var def in allFuncs)
+            {
+                CustomNodeWorkspaceModel ws;
+                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
+                    def.FunctionId,
+                    DynamoModel.IsTestMode,
+                    out ws))
+                {
+                    workspaces.Add(ws);
+                }
+            }
+
+            var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
+
+            // Get all unqualified files to notify to users
+            var files =
+               workspaces.Select(f => f.FileName)
+                   .Where(
+                       p => (
+                             pmExtension.PackageLoader.IsUnderPackageControl(p)
+                             && (pmExtension.PackageLoader.GetOwnerPackage(p).Name != Name)
+                            )
+                          );
+
+            return files;
+
         }
 
         private IEnumerable<string> GetAllFiles()
@@ -913,6 +983,21 @@ namespace Dynamo.PackageManager
                 // add the new packages folder to path
                 dynamoViewModel.Model.CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(filename), DynamoModel.IsTestMode);
 
+                // Check the ID to confirm weather the file is contained in any package.
+                // If Yes, then update the loadedworkspace node info to this file location
+                // This is to solve the issues when user copy a file from a given package to new location
+                // and start publishing with the new copied file.
+                // Since the loadedworkspace node info location is update, the issue is fixed.
+
+                foreach(var node in dynamoViewModel.Model.CustomNodeManager.LoadedWorkspaces)
+                {
+                    if(node.CustomNodeId == dynamoViewModel.Model.CustomNodeManager.GuidFromPath(filename))
+                    {
+                        var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filename);
+                        node.SetInfo(fileNameWithoutExtension,null,null,filename);
+                    }
+                }
+
                 CustomNodeDefinition funcDef;
                 if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(nodeInfo.FunctionId, DynamoModel.IsTestMode, out funcDef)
                     && CustomNodeDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
@@ -1024,10 +1109,28 @@ namespace Dynamo.PackageManager
 
             try
             {
-                //if buildPackage() returns no files then the package
-                //is empty so we should return
-                if (files == null || files.Count() < 1)
+                var unqualifiedFiles = GetAllUnqualifiedFiles();
+
+                // if the unqualified files are bigger than 0, error message is triggered.
+                // At the same time, as unqualified files existed, 
+                // files returned from BuildPackage() is 0.
+                // This is caused by the package file is not existed or it has already been in a package.
+                if (files == null || unqualifiedFiles.Count() > 0) 
                 {
+                    string filesCannotBePublished = null;
+                    foreach (var file in unqualifiedFiles)
+                    {
+                        filesCannotBePublished = filesCannotBePublished + file + "\n";
+                    }
+                    string FileNotPublishMessage = string.Format(Resources.FileNotPublishMessage, filesCannotBePublished);
+                    UploadState = PackageUploadHandle.State.Error;
+                    DialogResult response = System.Windows.Forms.MessageBox.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (response == DialogResult.OK)
+                    {
+                        this.ClearPackageContents();
+                        UploadState = PackageUploadHandle.State.Ready;
+                        Uploading = false;
+                    }
                     return;
                 }
                 UploadState = PackageUploadHandle.State.Copying;
@@ -1038,16 +1141,36 @@ namespace Dynamo.PackageManager
                 var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
                 builder.BuildDirectory(Package, publishPath, files);
                 UploadState = PackageUploadHandle.State.Uploaded;
+
+                // Once upload is successful, a display message will appear to ask
+                // whether user wants to continue uploading another file or not.
+                if (UploadState == PackageUploadHandle.State.Uploaded)
+                {
+                    DialogResult dialogResult = System.Windows.Forms.MessageBox.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    if (dialogResult == DialogResult.Yes)
+                    { 
+                        this.ClearAllEntries();
+                        Uploading = false;
+                        UploadState = PackageUploadHandle.State.Ready;
+                    }
+                    else
+                    {
+                        Uploading = true;
+                        System.Threading.Timer timer = null;
+                        timer = new System.Threading.Timer((obj) =>
+                        {
+                            OnPublishSuccess();
+                            timer.Dispose();
+                        },
+                            null, 1200, System.Threading.Timeout.Infinite);
+                    }
+                }
             }
             catch (Exception e)
             {
                 UploadState = PackageUploadHandle.State.Error;
                 ErrorString = e.Message;
                 dynamoViewModel.Model.Logger.Log(e);
-            }
-            finally
-            {
-                Uploading = false;
             }
         }
 

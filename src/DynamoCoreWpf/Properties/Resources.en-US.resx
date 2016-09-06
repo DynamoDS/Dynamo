@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1739,10 +1739,6 @@ Do you want to install the latest Dynamo update?</value>
   <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
     <value>Show Edges</value>
   </data>
-  <data name="DynamoViewSettingsMenuHidePreviewBubbles" xml:space="preserve">
-    <value>Hide Preview Bubbles</value>
-    <comment>Settings menu | Hide preview bubbles</comment>
-  </data>
   <data name="DynamoViewSettingsMenuShowPreviewBubbles" xml:space="preserve">
     <value>Show Preview Bubbles</value>
     <comment>Settings menu | Show preview bubbles</comment>
@@ -2088,5 +2084,21 @@ Next assemblies were loaded several times:
   </data>
   <data name="ScreenShotFrom3DShortcutParameter" xml:space="preserve">
     <value>screenshot_3D_shortcut</value>
+  </data>
+  <data name="FileNotPublishCaption" xml:space="preserve">
+    <value>Publish Fail!</value>
+  </data>
+  <data name="FileNotPublishMessage" xml:space="preserve">
+    <value>File(s) were not found or are contained inside of a package. Please only add files that are located outside of packages.
+
+Failed to publish file(s): 
+{0}</value>
+  </data>
+  <data name="PublishPackageDialogCaption" xml:space="preserve">
+    <value>Published Successfully</value>
+  </data>
+  <data name="PublishPackageMessage" xml:space="preserve">
+    <value>Package published successfully. 
+Want to publish a different package?</value>
   </data>
 </root>

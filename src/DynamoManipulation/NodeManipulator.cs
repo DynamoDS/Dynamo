@@ -474,8 +474,9 @@ namespace Dynamo.Manipulation
             var gizmos = GetGizmos(false);
             foreach (var item in gizmos)
             {
-                BackgroundPreviewViewModel.DeleteGeometryForIdentifier(item.Name);
+                // Unsubscribe gizmos from camera-change events before updating the scene
                 item.Dispose();
+                BackgroundPreviewViewModel.DeleteGeometryForIdentifier(item.Name);
             }
         }
 

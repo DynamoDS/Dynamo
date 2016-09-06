@@ -48,7 +48,6 @@ namespace Dynamo.ViewModels
             CopyCommand = new DelegateCommand(_ => model.Copy(), CanCopy);
             PasteCommand = new DelegateCommand(Paste, CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
-            TogglePreviewBubblesShowingCommand = new DelegateCommand(TogglePreviewBubblesShowing);
             ForceRunExpressionCommand = new DelegateCommand(ForceRunExprCmd, RunSettingsViewModel.CanRunExpression);
             MutateTestDelegateCommand = new DelegateCommand(MutateTestCmd, RunSettingsViewModel.CanRunExpression);
             DisplayFunctionCommand = new DelegateCommand(DisplayFunction, CanDisplayFunction);
@@ -80,8 +79,10 @@ namespace Dynamo.ViewModels
             ShowGalleryCommand = new DelegateCommand(p => OnRequestShowHideGallery(true), o => true);
             CloseGalleryCommand = new DelegateCommand(p => OnRequestShowHideGallery(false), o => true);
             ShowNewPresetsDialogCommand = new DelegateCommand(ShowNewPresetStateDialogAndMakePreset, CanShowNewPresetStateDialog);
-            NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);            
-       }
+            NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
+            // TODO: To be removed in Dynamo 2.0
+            TogglePreviewBubblesShowingCommand = new DelegateCommand(TogglePreviewBubblesShowing);
+        }
         public DelegateCommand OpenIfSavedCommand { get; set; }
         public DelegateCommand OpenCommand { get; set; }
         public DelegateCommand ShowOpenDialogAndOpenResultCommand { get; set; }
@@ -123,6 +124,8 @@ namespace Dynamo.ViewModels
         public DelegateCommand SaveImageCommand { get; set; }
         public DelegateCommand ShowSaveImageDialogAndSaveResultCommand { get; set; }
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
+        // TODO: To be removed in Dynamo 2.0
+        [System.Obsolete("This delegate command is obsolete, set DynamoViewModel.ShowPreviewBubbles directly instead.")]
         public DelegateCommand TogglePreviewBubblesShowingCommand { get; set; }
         public DelegateCommand ShowPackageManagerCommand { get; set; }
         public DelegateCommand ForceRunExpressionCommand { get; set; }

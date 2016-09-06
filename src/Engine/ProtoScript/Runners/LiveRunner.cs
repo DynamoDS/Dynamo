@@ -1338,6 +1338,8 @@ namespace ProtoScript.Runners
                 StackValue restoreFramePointer = runtimeCore.RuntimeMemory.GetAtRelative(ProtoCore.DSASM.StackFrame.FrameIndexFramePointer);
                 runtimeCore.RuntimeMemory.FramePointer = (int)restoreFramePointer.IntegerValue;
                 runtimeCore.RuntimeMemory.PopFrame(ProtoCore.DSASM.StackFrame.StackFrameSize);
+
+                runtimeCore.CurrentExecutive.CurrentDSASMExec.PopInterpreterProps();
             }
             ForceGC();
         }

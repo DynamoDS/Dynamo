@@ -1902,7 +1902,7 @@ namespace Dynamo.Graph.Workspaces
                 // a DSVarArgFunction or a CodeBlockNodeModel into a list.
                 var nodeGuids =
                     Nodes.Where(
-                        n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel)
+                        n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel || n is Function)
                         .Select(n => n.GUID);
 
                 var nodeTraceDataList = runtimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids, runtimeCore.DSExecutable);

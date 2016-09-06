@@ -1942,9 +1942,12 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Toggles Showing Preview Bubbles globally
+        /// Obsolete method toggles Showing Preview Bubbles globally
+        /// Using of this class will produce compile warnings
+        /// TODO: To be removed in Dynamo 2.0
         /// </summary>
         /// <param name="parameter">Command parameter</param>
+        [System.Obsolete("This method is obsolete, set DynamoViewModel.ShowPreviewBubbles directly instead.")]
         public void TogglePreviewBubblesShowing(object parameter)
         {
             ShowPreviewBubbles = !ShowPreviewBubbles;

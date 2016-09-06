@@ -300,7 +300,7 @@ namespace Dynamo.Tests
         public void SaveTraceDataToXmlDocument00()
         {
             XmlDocument document = new XmlDocument();
-            var data = new Dictionary<Guid, List<string>>();
+            var data = new Dictionary<Guid, List<ProtoCore.CallSite.RawTraceData>>();
 
             Assert.Throws<ArgumentNullException>(() =>
             {
@@ -340,22 +340,22 @@ namespace Dynamo.Tests
             var nodeGuid0 = Guid.NewGuid();
             var nodeGuid1 = Guid.NewGuid();
 
-            var nodeData0 = new List<string>()
-            {
-                "TraceData00", "TraceData01", "TraceData02"
-            };
+            var nodeData0 = new List<ProtoCore.CallSite.RawTraceData>();
+            nodeData0.Add(new ProtoCore.CallSite.RawTraceData("", "TraceData00"));
+            nodeData0.Add(new ProtoCore.CallSite.RawTraceData("", "TraceData01"));
+            nodeData0.Add(new ProtoCore.CallSite.RawTraceData("", "TraceData02"));
 
-            var nodeData1 = new List<string>()
-            {
-                "TraceData10", "TraceData11", "TraceData12"
-            };
+            var nodeData1 = new List<ProtoCore.CallSite.RawTraceData>();
+            nodeData1.Add(new ProtoCore.CallSite.RawTraceData("", "TraceData10"));
+            nodeData1.Add(new ProtoCore.CallSite.RawTraceData("", "TraceData11"));
+            nodeData1.Add(new ProtoCore.CallSite.RawTraceData("", "TraceData12"));
 
             // Create sample data.
-            var data = new Dictionary<Guid, List<string>>();
+            var data = new Dictionary<Guid, List<ProtoCore.CallSite.RawTraceData>>();
             data.Add(nodeGuid0, nodeData0);
             data.Add(nodeGuid1, nodeData1);
 
-            IEnumerable<KeyValuePair<Guid, List<string>>> outputs = null;
+            IEnumerable<KeyValuePair<Guid, List<ProtoCore.CallSite.RawTraceData>>> outputs = null;
 
             Assert.DoesNotThrow(() =>
             {
@@ -376,13 +376,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, outputData0.Count);
             Assert.AreEqual(3, outputData1.Count);
 
-            Assert.AreEqual("TraceData00", outputData0[0]);
-            Assert.AreEqual("TraceData01", outputData0[1]);
-            Assert.AreEqual("TraceData02", outputData0[2]);
+            Assert.AreEqual("TraceData00", outputData0[0].Data);
+            Assert.AreEqual("TraceData01", outputData0[1].Data);
+            Assert.AreEqual("TraceData02", outputData0[2].Data);
 
-            Assert.AreEqual("TraceData10", outputData1[0]);
-            Assert.AreEqual("TraceData11", outputData1[1]);
-            Assert.AreEqual("TraceData12", outputData1[2]);
+            Assert.AreEqual("TraceData10", outputData1[0].Data);
+            Assert.AreEqual("TraceData11", outputData1[1].Data);
+            Assert.AreEqual("TraceData12", outputData1[2].Data);
         }
 
         [Test]
@@ -407,7 +407,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void LoadTraceDataFromXmlDocument01()
         {
-            IEnumerable<KeyValuePair<Guid, List<string>>> outputs = null;
+            IEnumerable<KeyValuePair<Guid, List<ProtoCore.CallSite.RawTraceData>>> outputs = null;
 
             Assert.DoesNotThrow(() =>
             {
