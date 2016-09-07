@@ -115,7 +115,7 @@ def main():
     args = parser.parse_args()
 
     logfile = args.logfile
-    log(logfile, datetime.datetime.now().isoformat() + ' run performance benchmark')
+    log(logfile, datetime.datetime.now().isoformat() + ' run language performance benchmark')
 
     commits = args.commits
     if commits is None:
