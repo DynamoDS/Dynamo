@@ -228,7 +228,7 @@ namespace Dynamo.Applications
             return sb.ToString();
         }
 
-        public static String[] assemblyNamesToIgnore = { "CollaborateDB", "Autodesk.Bcg.Http", "Autodesk.Bcg.Net ", "Autodesk.C4R.Client"};
+        public static String[] assemblyNamesToIgnore = { "Newtonsoft.Json" };
 
         /// <summary>
         /// Checks that an assembly does not have any dependencies that have already been loaded into the 
@@ -267,7 +267,7 @@ namespace Dynamo.Applications
             {
                 if (loadedAssemblyDict.ContainsKey(currentReferencedAssembly.Name))
                 {
-                    //if the dll is already loadead, then check that our required version is not greater than the currently loaded one.
+                    //if the dll is already loaded, then check that our required version is not greater than the currently loaded one.
                     var loadedAssembly = loadedAssemblyDict[currentReferencedAssembly.Name];
                     if (currentReferencedAssembly.Version.Major > loadedAssembly.Version.Major)
                     {
