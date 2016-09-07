@@ -228,7 +228,10 @@ namespace Dynamo.Applications
             return sb.ToString();
         }
 
-        public static String[] assemblyNamesToIgnore = { "Newtonsoft.Json" };
+        /// <summary>
+        /// The white list of dependencies to be ignored.
+        /// </summary>
+        private static String[] assemblyNamesToIgnore = { "Newtonsoft.Json" };
 
         /// <summary>
         /// Checks that an assembly does not have any dependencies that have already been loaded into the 
