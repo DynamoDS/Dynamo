@@ -1,82 +1,122 @@
 ﻿using Dynamo.UI.Commands;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Controls;
 
 using Dynamo.Updates;
-
+using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.UI.Controls
 {
     /// <summary>
-    /// Interaction logic for ShortcutToolbar.xaml
+    /// An object which provides the data for the shortcut toolbar.
     /// </summary>
     public partial class ShortcutToolbar : UserControl
     {
-        private ObservableCollection<ShortcutBarItem> shortcutBarItems;
+        private readonly ObservableCollection<ShortcutBarItem> shortcutBarItems;
+        private readonly ObservableCollection<ShortcutBarItem> shortcutBarRightSideItems;
+
+        /// <summary>
+        /// A collection of <see cref="ShortcutBarItem"/>.
+        /// </summary>
         public ObservableCollection<ShortcutBarItem> ShortcutBarItems
         {
             get { return shortcutBarItems; }
         }
-        private ObservableCollection<ShortcutBarItem> shortcutBarRightSideItems;
+
+        /// <summary>
+        /// A collection of <see cref="ShortcutBarItems"/> for the right hand side of the shortcut bar.
+        /// </summary>
         public ObservableCollection<ShortcutBarItem> ShortcutBarRightSideItems
         {
             get { return shortcutBarRightSideItems; }
         }
 
+        /// <summary>
+        /// Construct a ShortcutToolbar.
+        /// </summary>
+        /// <param name="updateManager"></param>
         public ShortcutToolbar(IUpdateManager updateManager)
         {
             shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
             shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();    
 
             InitializeComponent();
-            this.UpdateControl.DataContext = updateManager;
+            UpdateControl.DataContext = updateManager;
         }
     }
 
+    /// <summary>
+    /// An object which provides the data for an item in the shortcut toolbar.
+    /// </summary>
     public partial class ShortcutBarItem : NotificationObject
     {
-        private string shortcutToolTip;
-        private string imgNormalSource;
-        private string imgHoverSource;
-        private string imgDisabledSource;
-        private DelegateCommand shortcutCommand;
-        private string shortcutCommandParameter;
+        protected string shortcutToolTip;
 
-        public string ShortcutCommandParameter
-        {
-            get { return shortcutCommandParameter; }
-            set { shortcutCommandParameter = value; }
-        }
+        /// <summary>
+        /// A parameter sent to the ShortcutCommand.
+        /// </summary>
+        public string ShortcutCommandParameter { get; set; }
 
-        public DelegateCommand ShortcutCommand
-        {
-            get { return shortcutCommand; }
-            set { shortcutCommand = value; }
-        }
+        /// <summary>
+        /// The Command that will be executed by this shortcut item.
+        /// </summary>
+        public DelegateCommand ShortcutCommand { get; set; }
 
-        public string ImgDisabledSource
-        {
-            get { return imgDisabledSource; }
-            set { imgDisabledSource = value; }
-        }
+        /// <summary>
+        /// The path to the image for the disabled state of this shortcut item.
+        /// </summary>
+        public string ImgDisabledSource { get; set; }
 
-        public string ImgHoverSource
-        {
-            get { return imgHoverSource; }
-            set { imgHoverSource = value; }
-        }
+        /// <summary>
+        /// The path to the image for the hover state of this shortcut item.
+        /// </summary>
+        public string ImgHoverSource { get; set; }
 
-        public string ImgNormalSource
-        {
-            get { return imgNormalSource; }
-            set { imgNormalSource = value; }
-        }
+        /// <summary>
+        /// The path to the image for the normal state of this shortcut item.
+        /// </summary>
+        public string ImgNormalSource { get; set; }
 
-        public string ShortcutToolTip
+        /// <summary>
+        /// The tooltip for this shortcut item.
+        /// </summary>
+        public virtual string ShortcutToolTip
         {
             get { return shortcutToolTip; }
             set { shortcutToolTip = value; }
+        }
+    }
+
+    internal partial class ImageExportShortcutBarItem : ShortcutBarItem
+    {
+        private readonly DynamoViewModel vm;
+
+        public override string ShortcutToolTip
+        {
+            get
+            {
+                return vm.BackgroundPreviewViewModel == null || !vm.BackgroundPreviewViewModel.CanNavigateBackground
+                    ? Wpf.Properties.Resources.DynamoViewToolbarExportButtonTooltip
+                    : Wpf.Properties.Resources.DynamoViewToolbarExport3DButtonTooltip;
+            }
+            set
+            {
+                shortcutToolTip = value;
+            }
+        }
+
+        public ImageExportShortcutBarItem(DynamoViewModel viewModel)
+        {
+            vm = viewModel;
+            vm.BackgroundPreviewViewModel.PropertyChanged += BackgroundPreviewViewModel_PropertyChanged;
+        }
+
+        private void BackgroundPreviewViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != "CanNavigateBackground") return;
+            RaisePropertyChanged("ShortcutToolTip");
         }
     }
 }
