@@ -64,7 +64,7 @@ namespace Dynamo.ViewModels
         }
 
 
-        public void Execute(bool preventReentrant)
+        public void Execute(bool preventReentrant = true)
         {
             if (preventReentrant && Interlocked.Increment(ref lockCount) > 1)
             {
@@ -266,7 +266,7 @@ namespace Dynamo.ViewModels
                     };
 
                     var termsOfUseCheck = new TermsOfUseHelper(touParams);
-                    termsOfUseCheck.Execute(true);
+                    termsOfUseCheck.Execute();
                     return;
                 }
             }
@@ -291,7 +291,7 @@ namespace Dynamo.ViewModels
                 AcceptanceCallback = ShowNodePublishInfo
             });
 
-            termsOfUseCheck.Execute(true);
+            termsOfUseCheck.Execute();
         }
 
         public bool CanPublishNewPackage(object m)
@@ -317,7 +317,7 @@ namespace Dynamo.ViewModels
                     })
                 });
 
-                termsOfUseCheck.Execute(true);
+                termsOfUseCheck.Execute();
             }
         }
 
@@ -370,7 +370,7 @@ namespace Dynamo.ViewModels
                 AcceptanceCallback = () => ShowNodePublishInfo(defs)
             });
 
-            termsOfUseCheck.Execute(true);
+            termsOfUseCheck.Execute();
         }
 
         public bool CanPublishSelectedNodes(object m)
