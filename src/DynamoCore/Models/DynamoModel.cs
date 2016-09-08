@@ -198,20 +198,38 @@ namespace Dynamo.Models
             get { return UpdateManager.ProductVersion.ToString(); }
         }
 
+        /// <summary>
+        /// Current Version of the Host (i.e. DynamoRevit/DynamoStudio)
+        /// </summary>
         public string HostVersion
         {
-            get { return UpdateManager.HostVersion == null ? null : UpdateManager.HostVersion.ToString(); }
+            get {
+                if (HostUpdateManager == null) { return null; }
+                else { return HostUpdateManager.HostVersion == null ? null : HostUpdateManager.HostVersion.ToString(); }
+            }
         }
 
+        /// <summary>
+        /// Name of the Host (i.e. DynamoRevit/DynamoStudio)
+        /// </summary>
         public string HostName
         {
-            get { return UpdateManager.HostName == null ? null : UpdateManager.HostName; }
+            get
+            {
+                if (HostUpdateManager == null) { return null; }
+                else { return HostUpdateManager.HostName == null ? null : HostUpdateManager.HostName; }
+            }
         }
 
         /// <summary>
         /// UpdateManager to handle automatic upgrade to higher version.
         /// </summary>
         public IUpdateManager UpdateManager { get; private set; }
+
+        /// <summary>
+        /// HostUpdateManager to keep track of the latest host version (i.e. DynamoRevit/DynamoStudio)
+        /// </summary>
+        public IHostUpdateManager HostUpdateManager { get; private set; }
 
         /// <summary>
         ///     The path manager that configures path information required for
@@ -624,6 +642,7 @@ namespace Dynamo.Models
             AuthenticationManager = new AuthenticationManager(config.AuthProvider);
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
+            HostUpdateManager = (IHostUpdateManager) config.UpdateManager ?? new DefaultUpdateManager(null);
             UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode && !IsHeadless)
             {

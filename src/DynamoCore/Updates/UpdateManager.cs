@@ -78,10 +78,6 @@ namespace Dynamo.Updates
         /// </summary>
         BinaryVersion AvailableVersion { get; }
 
-        Version HostVersion { get; set; }
-
-        String HostName { get; set; }
-
         /// <summary>
         /// Returns information, where version can be updated.
         /// </summary>
@@ -158,6 +154,19 @@ namespace Dynamo.Updates
         /// </summary>
         /// <param name="id">int</param>
         void RegisterExternalApplicationProcessId(int id);
+    }
+
+    public interface IHostUpdateManager
+    {
+        /// <summary>
+        /// Get the current version of the Host
+        /// </summary>
+        Version HostVersion { get; set; }
+
+        /// <summary>
+        /// Get the current name of the Host
+        /// </summary>
+        String HostName { get; set; }
     }
 
     /// <summary>
@@ -548,7 +557,7 @@ namespace Dynamo.Updates
     /// <summary>
     /// This class provides services for product update management.
     /// </summary>
-    internal sealed class UpdateManager : NotificationObject, IUpdateManager
+    internal sealed class UpdateManager : NotificationObject, IUpdateManager, IHostUpdateManager
     {
         #region Private Class Data Members
 
