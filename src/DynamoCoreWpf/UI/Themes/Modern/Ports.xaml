@@ -8,6 +8,7 @@
                       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
                       xmlns:fa="http://schemas.fontawesome.io/icons/"
                       xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+                      xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
                       xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf">
 
     <!-- Templates
@@ -202,7 +203,8 @@
                                            Height="16"
                                            Level="{Binding Path=Level, Mode=TwoWay}"
                                            KeepListStructure="{Binding Path=ShouldKeepListStructure}"
-                                           Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}"/>
+                                           Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}">
+                    </dynui:UseLevelSpinner>
                     <fa:FontAwesome Icon="ChevronRight"
                                     Width="10"
                                     HorizontalAlignment="Center"
@@ -212,10 +214,10 @@
                                     Foreground="#555555"/>
                 </StackPanel>
                 <dynui:UseLevelPopup
-                    Name="MyPopup"
+                    x:Name="MyPopup"
                     Placement="Right"
                     AllowsTransparency="True"
-                    IsOpen="{Binding Path=ShowUseLevelMenu,diag:PresentationTraceSources.TraceLevel=High}"
+                    IsOpen="{Binding Path=ShowUseLevelMenu}"
                     StaysOpen="False">
                     <Grid Background="Transparent">
                         <Grid.Resources>
@@ -242,13 +244,17 @@
                                 <CheckBox 
                                     Margin="5, 5, 5, 0"
                                     Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
-                                    IsChecked="{Binding Path=UseLevels, Mode=TwoWay}"
+                                    IsChecked="{Binding Path=UseLevels, Mode=OneWay}"
+                                    Command="{Binding Path=UseLevelsCommand}"
+                                    CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                                     Name="UseLevel"/>
                                 <Separator Margin ="5, 5, 5, 0"/>
                                 <CheckBox
                                     Margin="5, 5, 5, 0"
                                     Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}"
-                                    IsChecked="{Binding Path=ShouldKeepListStructure, Mode=TwoWay}"
+                                    IsChecked="{Binding Path=ShouldKeepListStructure, Mode=OneWay}"
+                                    Command="{Binding Path=KeepListStructureCommand}"
+                                    CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                                     IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}"/>
                                 <TextBlock 
                                     Margin="5, 0, 5, 5"

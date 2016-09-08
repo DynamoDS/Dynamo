@@ -677,11 +677,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public override void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(IEnumerable<IRenderPackage> taskPackages)
         {
-            foreach (var p in taskPackages)
+            /*foreach (var p in taskPackages)
             {
                 Debug.WriteLine(string.Format("Processing render packages for {0}", p.Description));
             }
-
+            */
             recentlyAddedNodes.Clear();
 
 #if DEBUG
@@ -1792,6 +1792,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         internal void UpdateNearClipPlane()
         {
+
+            if (camera == null) return;
+
             var near = camera.NearPlaneDistance;
             var far = camera.FarPlaneDistance;
 
