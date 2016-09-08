@@ -1126,15 +1126,7 @@ namespace Dynamo.PackageManager
                     }
                     string FileNotPublishMessage = string.Format(Resources.FileNotPublishMessage, filesCannotBePublished);
                     UploadState = PackageUploadHandle.State.Error;
-                    DialogResult response;
-                    if (DynamoModel.IsTestMode)
-                    {
-                        response = DialogResult.OK;
-                    }
-                    else
-                    {
-                         response = System.Windows.Forms.MessageBox.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    DialogResult response = DynamoModel.IsTestMode ? DialogResult.OK : System.Windows.Forms.MessageBox.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                     if (response == DialogResult.OK)
                     {
@@ -1159,16 +1151,7 @@ namespace Dynamo.PackageManager
                 if (UploadState == PackageUploadHandle.State.Uploaded)
                 {
                     // For test mode, presume the dialog input to be No and proceed.
-                    DialogResult dialogResult;
-
-                    if (DynamoModel.IsTestMode)
-                    {
-                        dialogResult = DialogResult.No;
-                    }
-                    else
-                    {
-                        dialogResult = System.Windows.Forms.MessageBox.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-                    }
+                    DialogResult dialogResult = DynamoModel.IsTestMode ? DialogResult.No : System.Windows.Forms.MessageBox.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information); ;
 
                     if (dialogResult == DialogResult.Yes)
                     { 
