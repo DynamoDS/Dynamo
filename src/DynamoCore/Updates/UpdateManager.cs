@@ -616,6 +616,9 @@ namespace Dynamo.Updates
 
         public string HostName { get; set; }
 
+        /// <summary>
+        /// BinaryVersion version of HostVersion
+        /// </summary>
         public BinaryVersion BinaryHostVersion
         {
             get
@@ -692,7 +695,8 @@ namespace Dynamo.Updates
                 if (DownloadedUpdateInfo == null)
                     return false;
 
-                // checks if a new version is available for either the Host or Core version.
+                // checks if a new version is available for either the Host version 
+                // even if the Core version has already been updated
                 bool HostVersionUpdate = HostVersion == null ? false : AvailableVersion > BinaryHostVersion;
 
                 return ForceUpdate || AvailableVersion > ProductVersion || HostVersionUpdate;
