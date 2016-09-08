@@ -1115,7 +1115,9 @@ namespace Dynamo.PackageManager
                 // At the same time, as unqualified files existed, 
                 // files returned from BuildPackage() is 0.
                 // This is caused by the package file is not existed or it has already been in a package.
-                if (files == null || unqualifiedFiles.Count() > 0) 
+                // files.Count() is also checking for the exception that was caught in BuildPackage().
+                // The scenario can be user trying to publish unsaved workspace.
+                if (files == null || files.Count() < 1 || unqualifiedFiles.Count() > 0) 
                 {
                     string filesCannotBePublished = null;
                     foreach (var file in unqualifiedFiles)
@@ -1124,7 +1126,16 @@ namespace Dynamo.PackageManager
                     }
                     string FileNotPublishMessage = string.Format(Resources.FileNotPublishMessage, filesCannotBePublished);
                     UploadState = PackageUploadHandle.State.Error;
-                    DialogResult response = System.Windows.Forms.MessageBox.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    DialogResult response;
+                    if (DynamoModel.IsTestMode)
+                    {
+                        response = DialogResult.OK;
+                    }
+                    else
+                    {
+                         response = System.Windows.Forms.MessageBox.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
                     if (response == DialogResult.OK)
                     {
                         this.ClearPackageContents();
@@ -1133,6 +1144,7 @@ namespace Dynamo.PackageManager
                     }
                     return;
                 }
+
                 UploadState = PackageUploadHandle.State.Copying;
                 Uploading = true;
                 // begin publishing to local directory
@@ -1146,7 +1158,18 @@ namespace Dynamo.PackageManager
                 // whether user wants to continue uploading another file or not.
                 if (UploadState == PackageUploadHandle.State.Uploaded)
                 {
-                    DialogResult dialogResult = System.Windows.Forms.MessageBox.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    // For test mode, presume the dialog input to be No and proceed.
+                    DialogResult dialogResult;
+
+                    if (DynamoModel.IsTestMode)
+                    {
+                        dialogResult = DialogResult.No;
+                    }
+                    else
+                    {
+                        dialogResult = System.Windows.Forms.MessageBox.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    }
+
                     if (dialogResult == DialogResult.Yes)
                     { 
                         this.ClearAllEntries();
