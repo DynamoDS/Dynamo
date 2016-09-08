@@ -616,6 +616,14 @@ namespace Dynamo.Updates
 
         public string HostName { get; set; }
 
+        public BinaryVersion BinaryHostVersion
+        {
+            get
+            {
+                return HostVersion == null ? null : BinaryVersion.FromString(HostVersion.ToString());
+            }
+        }
+
         /// <summary>
         ///     Obtains available update version string 
         /// </summary>
@@ -681,10 +689,13 @@ namespace Dynamo.Updates
             get
             {
                 //Update is not available unitl it's downloaded
-                if(DownloadedUpdateInfo==null)
+                if (DownloadedUpdateInfo == null)
                     return false;
 
-                return ForceUpdate || AvailableVersion > ProductVersion;
+                // checks if a new version is available for either the Host or Core version.
+                bool HostVersionUpdate = HostVersion == null ? false : AvailableVersion > BinaryHostVersion;
+
+                return ForceUpdate || AvailableVersion > ProductVersion || HostVersionUpdate;
             }
         }
 
@@ -864,7 +875,7 @@ namespace Dynamo.Updates
             {
                 if (useStable) //Check stables
                 {
-                    if (latestBuildVersion > ProductVersion)
+                    if (latestBuildVersion > ProductVersion || latestBuildVersion > BinaryHostVersion)
                     {
                         SetUpdateInfo(latestBuildVersion, latestBuildDownloadUrl, latestBuildSignatureUrl);
                     }
@@ -1269,7 +1280,7 @@ namespace Dynamo.Updates
         /// update check if a newer version of the product is already installed.
         /// </summary>
         /// <param name="manager">Update manager instance using which product
-        /// update check nees to be done.</param>
+        /// update check needs to be done.</param>
         internal static void CheckForProductUpdate(IUpdateManager manager)
         {
             //If we already have higher version installed, don't look for product update.
