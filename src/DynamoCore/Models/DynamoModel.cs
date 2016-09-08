@@ -228,6 +228,9 @@ namespace Dynamo.Models
 
         /// <summary>
         /// HostUpdateManager to keep track of the latest host version (i.e. DynamoRevit/DynamoStudio)
+        /// This additional Interface is created to ensure backward compatibility when Host versions are older than Core versions
+        /// This Interface contains two getter/setter methods to update the Host Version and Name
+        /// This Interface should be removed and merged with UpdateManager in 2.0
         /// </summary>
         public IHostUpdateManager HostUpdateManager { get; private set; }
 
@@ -642,6 +645,9 @@ namespace Dynamo.Models
             AuthenticationManager = new AuthenticationManager(config.AuthProvider);
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
+
+            // config.UpdateManager has to be cast to IHostUpdateManager in order to extract the HostVersion and HostName
+            // see IHostUpdateManager summary for more details 
             HostUpdateManager = (IHostUpdateManager) config.UpdateManager ?? new DefaultUpdateManager(null);
             UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode && !IsHeadless)

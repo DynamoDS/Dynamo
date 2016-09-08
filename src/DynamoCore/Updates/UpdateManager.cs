@@ -156,6 +156,10 @@ namespace Dynamo.Updates
         void RegisterExternalApplicationProcessId(int id);
     }
 
+    /// <summary>
+    /// Additional Interface to ensure backward compatibility for 1.x Host Versions which may be older than the Core version
+    /// Interface should be merged with IUpdateManager in 2.0
+    /// </summary>
     public interface IHostUpdateManager
     {
         /// <summary>

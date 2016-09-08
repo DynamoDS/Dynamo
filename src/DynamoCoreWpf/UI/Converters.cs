@@ -2073,20 +2073,6 @@ namespace Dynamo.Controls
         }
     }
 
-    public class NullValueToHorizontalAlignCenterConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null) return HorizontalAlignment.Center;
-            return HorizontalAlignment.Right;
-        }
-
-        public object ConvertBack(
-            object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
 
     public class NullValueToGridRow1Converter : IValueConverter
     {
@@ -2094,21 +2080,6 @@ namespace Dynamo.Controls
         {
             if (value == null) return 1;
             return 2;
-        }
-
-        public object ConvertBack(
-            object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class NullValueToMarginConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null) return new Thickness(57,0,0,0);
-            return new Thickness(105,0,0,0);
         }
 
         public object ConvertBack(
