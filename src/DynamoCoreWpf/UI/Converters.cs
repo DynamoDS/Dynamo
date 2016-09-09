@@ -2073,7 +2073,10 @@ namespace Dynamo.Controls
         }
     }
 
-
+    /// <summary>
+    /// This converter was created for AboutWindow.xaml in order to accomodate the changes required
+    /// for the display for both Core/Host versions. 
+    /// </summary>
     public class NullValueToGridRow1Converter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

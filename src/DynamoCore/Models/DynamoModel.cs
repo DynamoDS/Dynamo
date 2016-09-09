@@ -201,38 +201,17 @@ namespace Dynamo.Models
         /// <summary>
         /// Current Version of the Host (i.e. DynamoRevit/DynamoStudio)
         /// </summary>
-        public string HostVersion
-        {
-            get {
-                if (HostUpdateManager == null) { return null; }
-                else { return HostUpdateManager.HostVersion == null ? null : HostUpdateManager.HostVersion.ToString(); }
-            }
-        }
+        public string HostVersion { get; set; }
 
         /// <summary>
         /// Name of the Host (i.e. DynamoRevit/DynamoStudio)
         /// </summary>
-        public string HostName
-        {
-            get
-            {
-                if (HostUpdateManager == null) { return null; }
-                else { return HostUpdateManager.HostName == null ? null : HostUpdateManager.HostName; }
-            }
-        }
+        public string HostName { get; set; }
 
         /// <summary>
         /// UpdateManager to handle automatic upgrade to higher version.
         /// </summary>
         public IUpdateManager UpdateManager { get; private set; }
-
-        /// <summary>
-        /// HostUpdateManager to keep track of the latest host version (i.e. DynamoRevit/DynamoStudio)
-        /// This additional Interface is created to ensure backward compatibility when Host versions are older than Core versions
-        /// This Interface contains two getter/setter methods to update the Host Version and Name
-        /// This Interface should be removed and merged with UpdateManager in 2.0
-        /// </summary>
-        public IHostUpdateManager HostUpdateManager { get; private set; }
 
         /// <summary>
         ///     The path manager that configures path information required for
@@ -648,7 +627,10 @@ namespace Dynamo.Models
 
             // config.UpdateManager has to be cast to IHostUpdateManager in order to extract the HostVersion and HostName
             // see IHostUpdateManager summary for more details 
-            HostUpdateManager = (IHostUpdateManager) config.UpdateManager ?? new DefaultUpdateManager(null);
+            var hostUpdateManager = (IHostUpdateManager) config.UpdateManager;
+            HostName = hostUpdateManager == null ? string.Empty : hostUpdateManager.HostName; 
+            HostVersion = hostUpdateManager == null ? null : hostUpdateManager.HostVersion == null ? null : hostUpdateManager.HostVersion.ToString();
+
             UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode && !IsHeadless)
             {

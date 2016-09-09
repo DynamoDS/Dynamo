@@ -157,8 +157,10 @@ namespace Dynamo.Updates
     }
 
     /// <summary>
-    /// Additional Interface to ensure backward compatibility for 1.x Host Versions which may be older than the Core version
-    /// Interface should be merged with IUpdateManager in 2.0
+    /// HostUpdateManager to keep track of the latest host version (i.e. DynamoRevit/DynamoStudio)
+    /// This additional Interface is created to ensure backward compatibility when Host versions are older than Core versions
+    /// This Interface contains two getter/setter methods to update the Host Version and Name
+    /// This Interface should be removed and merged with UpdateManager in 2.0
     /// </summary>
     public interface IHostUpdateManager
     {
@@ -758,6 +760,8 @@ namespace Dynamo.Updates
         {
             this.configuration = configuration;
             PropertyChanged += UpdateManager_PropertyChanged;
+            HostVersion = null;
+            HostName = string.Empty;
         }
 
         void UpdateManager_PropertyChanged(object sender, PropertyChangedEventArgs e)
