@@ -2098,15 +2098,15 @@ namespace Dynamo.Graph.Nodes
         private void OnRenderPackageUpdateCompleted(AsyncTask asyncTask)
         {
             var task = asyncTask as UpdateRenderPackageAsyncTask;
+            var packages = new List<IRenderPackage>();
             if (task.RenderPackages.Any())
             {
-                var packages = new List<IRenderPackage>();
-
                 packages.AddRange(task.RenderPackages);
                 packages.AddRange(OnRequestRenderPackages());
 
-                OnRenderPackagesUpdated(packages);
             }
+            OnRenderPackagesUpdated(packages);
+
         }
 
         /// <summary>
