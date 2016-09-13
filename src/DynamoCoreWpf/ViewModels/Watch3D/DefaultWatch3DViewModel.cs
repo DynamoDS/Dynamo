@@ -559,7 +559,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void OnRenderPackagesUpdated(NodeModel node, IEnumerable<IRenderPackage> packages)
         {
-            AddGeometryForRenderPackages(packages);
+            if (!packages.Any())
+            {
+                RemoveGeometryForNode(node);
+            }
+            else
+            {
+                AddGeometryForRenderPackages(packages);
+            }
         }
 
         /// <summary>

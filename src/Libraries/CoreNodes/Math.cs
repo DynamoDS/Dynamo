@@ -439,7 +439,7 @@ namespace DSCore
         /// <summary>
         ///     Finds the sine of an angle.
         /// </summary>
-        /// <param name="angle">Angle in degrees to take the cosine of.</param>
+        /// <param name="angle">Angle in degrees to take the sine of.</param>
         /// <returns name="sin">Sine of the angle.</returns>
         /// <search>sine</search>
         public static double Sin(double angle)
