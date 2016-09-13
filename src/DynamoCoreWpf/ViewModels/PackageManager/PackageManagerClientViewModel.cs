@@ -64,7 +64,7 @@ namespace Dynamo.ViewModels
         }
 
 
-        public void Execute(bool preventReentrant = true)
+        internal void Execute(bool preventReentrant = true)
         {
             if (preventReentrant && Interlocked.Increment(ref lockCount) > 1)
             {
