@@ -1153,6 +1153,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Export Background 3D Preview as Image....
+        /// </summary>
+        public static string DynamoViewFileMenuExport3DAsImage {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuExport3DAsImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Export Workspace As Image....
         /// </summary>
         public static string DynamoViewFileMenuExportAsImage {
@@ -1783,6 +1792,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewSettingsMenuVisualizationSettings {
             get {
                 return ResourceManager.GetString("DynamoViewSettingsMenuVisualizationSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export Background Preview As Image.
+        /// </summary>
+        public static string DynamoViewToolbarExport3DButtonTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewToolbarExport3DButtonTooltip", resourceCulture);
             }
         }
         
@@ -4404,6 +4422,24 @@ namespace Dynamo.Wpf.Properties {
         public static string SaveWorkbenToImageDialogTitle {
             get {
                 return ResourceManager.GetString("SaveWorkbenToImageDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to screenshot_3D.
+        /// </summary>
+        public static string ScreenShotFrom3DParameter {
+            get {
+                return ResourceManager.GetString("ScreenShotFrom3DParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to screenshot_3D_shortcut.
+        /// </summary>
+        public static string ScreenShotFrom3DShortcutParameter {
+            get {
+                return ResourceManager.GetString("ScreenShotFrom3DShortcutParameter", resourceCulture);
             }
         }
         

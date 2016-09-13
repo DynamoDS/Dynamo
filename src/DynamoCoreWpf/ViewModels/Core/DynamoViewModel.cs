@@ -35,6 +35,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using Dynamo.Controls;
 using ISelectable = Dynamo.Selection.ISelectable;
 
 
@@ -1824,6 +1825,12 @@ namespace Dynamo.ViewModels
                 "NodeCount", CurrentSpace.Nodes.Count());
         }
 
+        private void Save3DImage(object parameters)
+        {
+            // Save the parameters
+            OnRequestSave3DImage(this, new ImageSaveEventArgs(parameters.ToString()));
+        }
+
         internal bool CanSaveImage(object parameters)
         {
             return true;
@@ -1840,7 +1847,7 @@ namespace Dynamo.ViewModels
                     AddExtension = true,
                     DefaultExt = ".png",
                     FileName = Resources.FileDialogDefaultPNGName,
-                    Filter = string.Format(Resources.FileDialogPNGFiles,"*.png"),
+                    Filter = string.Format(Resources.FileDialogPNGFiles, "*.png"),
                     Title = Resources.SaveWorkbenToImageDialogTitle
                 };
             }
@@ -1852,12 +1859,34 @@ namespace Dynamo.ViewModels
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
 
-            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            if (_fileDialog.ShowDialog() != DialogResult.OK) return;
+            if (!CanSaveImage(_fileDialog.FileName)) return;
+
+            if (parameter == null)
             {
-                if (CanSaveImage(_fileDialog.FileName))
-                    SaveImage(_fileDialog.FileName);
+                SaveImage(_fileDialog.FileName);
+                return;
             }
 
+            if (parameter.ToString() == Resources.ScreenShotFrom3DParameter)
+            {
+                Save3DImage(_fileDialog.FileName);
+            }
+            else if (parameter.ToString() == Resources.ScreenShotFrom3DShortcutParameter)
+            {
+                if (BackgroundPreviewViewModel.CanNavigateBackground)
+                {
+                    Save3DImage(_fileDialog.FileName);
+                }
+                else
+                {
+                    SaveImage(_fileDialog.FileName);
+                }
+            }
+            else
+            {
+                SaveImage(_fileDialog.FileName);
+            }
         }
 
         internal bool CanShowSaveImageDialogAndSaveResult(object parameter)

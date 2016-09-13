@@ -9,13 +9,13 @@ import json
 import shutil
 import urllib2
 
-def run(profiler, hostapp, test_case, test_output):
+def run(hostapp, test_case, test_output):
     # memlog hostapp test.ds
     # 
     # the output of memlog is cputime,managedheap,privateworkingset
     with open(test_output, "wb") as output: 
         for x in range(0, 5):
-            proc = subprocess.Popen([profiler, hostapp, test_case], stdout=output)
+            proc = subprocess.Popen([hostapp, test_case], stdout=output)
             proc.wait()
     
 # harvest test case result from output_path 
@@ -115,7 +115,7 @@ def main():
     args = parser.parse_args()
 
     logfile = args.logfile
-    log(logfile, datetime.datetime.now().isoformat() + ' run performance benchmark')
+    log(logfile, datetime.datetime.now().isoformat() + ' run language performance benchmark')
 
     commits = args.commits
     if commits is None:
@@ -133,11 +133,6 @@ def main():
     performance_folder = os.path.join(dynamo_path, 'test\\performance')
     if not os.path.exists(performance_folder):
         log(logfile, 'Error: Performance folder ' + performance_folder + ' does not exists.')
-        sys.exit(1)
-
-    profiler = os.path.join(performance_folder, 'bin\\memlog.exe')
-    if not os.path.exists(profiler):
-        log(logfile, 'Error: Profiler path ' + profiler + ' does not exists.')
         sys.exit(1)
 
     test_case_path = os.path.join(performance_folder, 'testcases') 
@@ -169,7 +164,7 @@ def main():
         test_case_name = os.path.splitext(test_file)[0]
         test_result_file = os.path.join(test_result_path, test_case_name + '.out')
         try:
-            run(profiler, hostapp, dyn_file_path, test_result_file)
+            run(hostapp, dyn_file_path, test_result_file)
         except:
             log(logfile, 'Error: Failed to run test case ' + test_case_name)
 

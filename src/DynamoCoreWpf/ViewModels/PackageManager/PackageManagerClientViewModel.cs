@@ -38,7 +38,7 @@ namespace Dynamo.ViewModels
     /// </summary>
     public class TermsOfUseHelper
     {
-        private static int currentRequestCount = 0;
+        private static int lockCount = 0;
         private readonly IBrandingResourceProvider resourceProvider;
         private readonly Action callbackAction;
         private readonly PackageManagerClient packageManagerClient;
@@ -63,13 +63,14 @@ namespace Dynamo.ViewModels
             authenticationManager = touParams.AuthenticationManager;
         }
 
-        public void Execute()
+
+        public void Execute(bool preventReentrant = true)
         {
-            if (Interlocked.Increment(ref currentRequestCount) > 1)
+            if (preventReentrant && Interlocked.Increment(ref lockCount) > 1)
             {
                 // Determine if there is already a previous request to display
                 // terms of use dialog, if so, do nothing for the second time.
-                Interlocked.Decrement(ref currentRequestCount);
+                Interlocked.Decrement(ref lockCount);
                 return;
             }
 
@@ -100,7 +101,7 @@ namespace Dynamo.ViewModels
                 ContinueWith(t =>
                 {
                     // Done with terms of use dialog, decrement counter.
-                    Interlocked.Decrement(ref currentRequestCount);
+                    Interlocked.Decrement(ref lockCount);
 
                 }, TaskScheduler.FromCurrentSynchronizationContext());
         }

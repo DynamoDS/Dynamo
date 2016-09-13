@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.Interfaces;
-using Dynamo.Scheduler;
-using DynamoShapeManager;
-using System.Reflection;
-using System.IO;
-using Dynamo.Models;
-using Dynamo.Updates;
-using Microsoft.Win32;
 using System.Diagnostics;
-using System.Threading;
 using System.Globalization;
-using NDesk.Options;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.Scheduler;
+using Dynamo.Updates;
 using DynamoApplications.Properties;
+using DynamoShapeManager;
+using Microsoft.Win32;
+using NDesk.Options;
 
 namespace Dynamo.Applications
 {
@@ -229,6 +229,11 @@ namespace Dynamo.Applications
         }
 
         /// <summary>
+        /// The white list of dependencies to be ignored.
+        /// </summary>
+        private static String[] assemblyNamesToIgnore = { "Newtonsoft.Json" };
+
+        /// <summary>
         /// Checks that an assembly does not have any dependencies that have already been loaded into the 
         /// appDomain with an incompatible to the one Dynamo requires.
         /// </summary>
@@ -236,21 +241,21 @@ namespace Dynamo.Applications
         /// <returns>returns a list of fileLoad exceptions - if the list is empty no mismatched assemblies were encountered </returns>
         public static List<Exception> CheckAssemblyForVersionMismatches(Assembly assembly)
         {
-            return GetVersionMismatchedReferencesInAppDomain(assembly, new string[] { });
+            return GetVersionMismatchedReferencesInAppDomain(assembly, assemblyNamesToIgnore);
         }
 
         /// <summary>
         /// Handler for an assembly load event into a host's appdomain - we need to make sure
-        /// that another addin or package has not loadead another version of a .dll that we require.
+        /// that another addin or package has not loaded another version of a .dll that we require.
         /// If this happens Dynamo will most likely crash. We should alert the user they
         /// have an incompatible addin/package installed.. this is only called if the host calls or
         /// subscribes to it during AppDomain.AssemblyLoad event.
         /// 
         private static List<Exception> GetVersionMismatchedReferencesInAppDomain(Assembly assembly, String[] assemblyNamesToIgnore)
         {
-            //get all assemblies that are currently loaded into the appdomain.
+            // Get all assemblies that are currently loaded into the appdomain.
             var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
-            // ignore some assemblies(revit assemblies) that we know work and have changed their version number format or do not align
+            // Ignore some assemblies(Revit assemblies) that we know work and have changed their version number format or do not align
             // with semantic versioning.
 
             var loadedAssemblyNames = loadedAssemblies.Select(assem => assem.GetName()).ToList();
@@ -265,7 +270,7 @@ namespace Dynamo.Applications
             {
                 if (loadedAssemblyDict.ContainsKey(currentReferencedAssembly.Name))
                 {
-                    //if the dll is already loadead, then check that our required version is not greater than the currently loaded one.
+                    //if the dll is already loaded, then check that our required version is not greater than the currently loaded one.
                     var loadedAssembly = loadedAssemblyDict[currentReferencedAssembly.Name];
                     if (currentReferencedAssembly.Version.Major > loadedAssembly.Version.Major)
                     {
