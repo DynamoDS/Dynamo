@@ -219,7 +219,9 @@ namespace Dynamo.PackageManager
                         pkg.MarkForUninstall(preferences);
                 }
             }
-            catch (Exception ex) { }
+            catch (UnauthorizedAccessException ex) { }
+            catch (IOException ex) { }
+            catch (ArgumentException ex) { }
         }
 
         public Package ScanPackageDirectory(string directory)
