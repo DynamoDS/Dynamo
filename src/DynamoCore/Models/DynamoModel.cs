@@ -628,9 +628,18 @@ namespace Dynamo.Models
             // config.UpdateManager has to be cast to IHostUpdateManager in order to extract the HostVersion and HostName
             // see IHostUpdateManager summary for more details 
             var hostUpdateManager = (IHostUpdateManager) config.UpdateManager;
-            HostName = hostUpdateManager == null ? string.Empty : hostUpdateManager.HostName; 
-            HostVersion = hostUpdateManager == null ? null : hostUpdateManager.HostVersion == null ? null : hostUpdateManager.HostVersion.ToString();
 
+            if (hostUpdateManager != null)
+            {
+                HostName = hostUpdateManager.HostName;
+                HostVersion = hostUpdateManager.HostVersion == null ? null : hostUpdateManager.HostVersion.ToString();
+            }
+            else
+            {
+                HostName = string.Empty;
+                HostVersion = null;
+            }
+            
             UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode && !IsHeadless)
             {

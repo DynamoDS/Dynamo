@@ -621,13 +621,8 @@ namespace Dynamo.Updates
         /// <summary>
         /// BinaryVersion version of HostVersion
         /// </summary>
-        public BinaryVersion BinaryHostVersion
-        {
-            get
-            {
-                return HostVersion == null ? null : BinaryVersion.FromString(HostVersion.ToString());
-            }
-        }
+        private BinaryVersion BinaryHostVersion() { return HostVersion == null ? BinaryVersion.FromString("0.0.0.0") 
+                : BinaryVersion.FromString(HostVersion.ToString()); }
 
         /// <summary>
         ///     Obtains available update version string 
@@ -699,7 +694,7 @@ namespace Dynamo.Updates
 
                 // checks if a new version is available for either the Host version 
                 // even if the Core version has already been updated
-                bool HostVersionUpdate = HostVersion == null ? false : AvailableVersion > BinaryHostVersion;
+                bool HostVersionUpdate = HostVersion == null ? false : AvailableVersion > BinaryHostVersion();
 
                 return ForceUpdate || AvailableVersion > ProductVersion || HostVersionUpdate;
             }
@@ -883,7 +878,8 @@ namespace Dynamo.Updates
             {
                 if (useStable) //Check stables
                 {
-                    if (latestBuildVersion > ProductVersion || latestBuildVersion > BinaryHostVersion)
+                    if (latestBuildVersion > ProductVersion || BinaryHostVersion() != BinaryVersion.FromString("0.0.0.0") &&
+                        latestBuildVersion > BinaryHostVersion())
                     {
                         SetUpdateInfo(latestBuildVersion, latestBuildDownloadUrl, latestBuildSignatureUrl);
                     }
