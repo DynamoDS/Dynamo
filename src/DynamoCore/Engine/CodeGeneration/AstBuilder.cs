@@ -331,6 +331,14 @@ namespace Dynamo.Engine.CodeGeneration
                     ? scopedNode.BuildAstInScope(inputAstNodes, verboseLogging, this)
                     : node.BuildAst(inputAstNodes, context);
 
+            foreach (var astNode in astNodes)
+            {
+                if (astNode.Kind == AstKind.BinaryExpression)
+                {
+                    (astNode as BinaryExpressionNode).guid = node.GUID;
+                }
+            }
+
             if (verboseLogging)
             {
                 foreach (var n in astNodes)

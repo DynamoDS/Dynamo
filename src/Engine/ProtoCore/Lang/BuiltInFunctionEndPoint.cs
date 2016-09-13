@@ -693,14 +693,7 @@ namespace ProtoCore.Lang
                                                stackFrame.GetRegisters(), 
                                                0);
 
-            ProtoCore.CallSite callsite = runtimeData.GetCallSite(
-                runtime.exe.ExecutingGraphnode, 
-                thisObjectType, 
-                functionName, 
-                runtime.exe,
-                runtimeCore.RunningBlock,
-                runtimeCore.Options, 
-                runtimeCore.RuntimeStatus);
+            ProtoCore.CallSite callsite = runtimeData.GetCallSite( thisObjectType, functionName, runtime.exe, runtimeCore);
             Validity.Assert(null != callsite);
 
             // TODO: Disabling support for stepping into replicated function calls temporarily - pratapa

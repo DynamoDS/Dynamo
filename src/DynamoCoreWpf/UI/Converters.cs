@@ -949,6 +949,13 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Obsolete class of ShowHideConsoleMenuItemConverter
+    /// Using of this class will produce compile warnings
+    /// TODO: To be removed in Dynamo 2.0
+    /// TODO: Resource String DynamoViewViewMenuHideConsole to be removed in Dynamo 2.0
+    /// </summary>
+    [System.Obsolete("This class is obsolete.")]
     public class ShowHideConsoleMenuItemConverter : IValueConverter
     {
         #region IValueConverter Members
@@ -975,20 +982,51 @@ namespace Dynamo.Controls
         #endregion
     }
 
+    public class ConsoleHeightToBooleanConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if ((int)value > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+
+        #endregion
+    }
+
+
+    /// <summary>
+    /// Obsolete class of ShowHidePreviewBubblesConverter
+    /// Using of this class will produce compile warnings
+    /// TODO: To be removed in Dynamo 2.0
+    /// </summary>
+    [System.Obsolete("This class is obsolete, string converter for Preview Bubble Display Option only returns single value now. ")]
     public class ShowHidePreviewBubblesConverter : IValueConverter
     {
         #region IValueConverter Members
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (bool) value
-                ? Resources.DynamoViewSettingsMenuHidePreviewBubbles
-                : Resources.DynamoViewSettingsMenuShowPreviewBubbles;
+            return Resources.DynamoViewSettingsMenuShowPreviewBubbles;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (string)value == Resources.DynamoViewSettingsMenuHidePreviewBubbles;
+            return (string)value == Resources.DynamoViewSettingsMenuShowPreviewBubbles;
         }
 
         #endregion
@@ -2834,7 +2872,7 @@ namespace Dynamo.Controls
         {
             if (value is int)
             {
-                var margin = (int)value == 1 ? new Thickness(3, 0, 0, 0) : new Thickness();
+                var margin = (int)value == 1 ? new Thickness(4, 3, 0, 0) : new Thickness(2,3,0,0);
                 return margin; 
             }
             return new Thickness();

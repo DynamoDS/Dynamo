@@ -648,7 +648,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 case "CachedValue":
                     Debug.WriteLine(string.Format("Requesting render packages for {0}", node.GUID));
-                    RemoveGeometryForNode(node);
                     node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
                     break;
 
@@ -677,11 +676,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public override void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(IEnumerable<IRenderPackage> taskPackages)
         {
-            foreach (var p in taskPackages)
+            /*foreach (var p in taskPackages)
             {
                 Debug.WriteLine(string.Format("Processing render packages for {0}", p.Description));
             }
-
+            */
             recentlyAddedNodes.Clear();
 
 #if DEBUG
@@ -760,6 +759,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var geometryModels = FindAllGeometryModel3DsForNode(identifier);
             DeleteGeometries(geometryModels, requestUpdate); 
         }
+
+        protected override void OnRenderPackagesUpdated(NodeModel node, IEnumerable<IRenderPackage> packages)
+        {
+            RemoveGeometryForNode(node);
+            base.OnRenderPackagesUpdated(node,packages);
+        }
+
 
         protected override void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -1792,6 +1798,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         internal void UpdateNearClipPlane()
         {
+
+            if (camera == null) return;
+
             var near = camera.NearPlaneDistance;
             var far = camera.FarPlaneDistance;
 

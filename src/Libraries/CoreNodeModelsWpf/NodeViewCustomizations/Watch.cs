@@ -191,6 +191,9 @@ namespace CoreNodeModelsWpf.Nodes
             // then update on the ui thread
             t.ThenPost((_) =>
             {
+                //If wvm is not computed successfully then don't post.
+                if (wvm == null) return;
+
                 // store in temp variable to silence binding
                 var temp = rootWatchViewModel.Children;
 

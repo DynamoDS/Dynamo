@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-30 20:40-0700\n"
+"POT-Creation-Date: 2016-08-14 16:01-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -280,6 +280,15 @@ msgstr ""
 msgid "Casted object is not a Circle"
 msgstr ""
 
+msgid "Arc by by_best_fit needs 3 or more points"
+msgstr ""
+
+msgid "Arc by by_best_fit could not determine plane for arc"
+msgstr ""
+
+msgid "Arc by by_best_fit could not best fit arc"
+msgstr ""
+
 msgid "Circle radius must be non-zero"
 msgstr ""
 
@@ -349,7 +358,7 @@ msgstr ""
 msgid "Cannot intersect a closed Curve with a Solid."
 msgstr ""
 
-msgid "The path Curve must be planar to perform sweep"
+msgid "The profile Curve must be planar to perform sweep"
 msgstr ""
 
 msgid "Unable to set the profile and the path!"
@@ -691,15 +700,6 @@ msgid "Arc by by_fillet_tangent_to_curve failed"
 msgstr ""
 
 msgid "could not solve for arc"
-msgstr ""
-
-msgid "Arc by by_best_fit needs 3 or more points"
-msgstr ""
-
-msgid "Arc by by_best_fit could not determine plane for arc"
-msgstr ""
-
-msgid "Arc by by_best_fit could not best fit arc"
 msgstr ""
 
 msgid " tangent vectors should be coplanar relatie to points to make bi_arc"

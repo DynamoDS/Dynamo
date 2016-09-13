@@ -13,6 +13,7 @@ Check these if you believe they are true
 - [ ] User facing strings, if any, are extracted into `*.resx` files
 - [ ] All tests pass using the self-service CI.
 - [ ] Snapshot of UI changes, if any.
+- [ ] Follows [Semantic Versioning](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Versions) standards (*No change of public methods or types etc..*)
 
 ### Reviewers
 

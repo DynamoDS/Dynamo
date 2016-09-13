@@ -67,11 +67,6 @@
                 </Setter>
             </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}">
-                <Setter Property="IsExpanded"
-                        Value="{Binding IsNodeExpanded}" />
-            </Style>
-            
             <!-- Expander Button Style -->
             <Style x:Key="ExpandCollapseToggleStyleWT" TargetType="ToggleButton">
                 <Setter Property="Focusable" Value="False"/>
@@ -217,9 +212,32 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            
+            <!--ScrollViewer Control Style-->
+            <Style TargetType="ScrollViewer">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                            <Grid x:Name="Grid" Background="{TemplateBinding Background}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Rectangle x:Name="Corner" Grid.Column="1" Fill="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Row="1"/>
+                                <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="0" Margin="{TemplateBinding Padding}" Grid.Row="0"/>
+                                <ScrollBar x:Name="PART_VerticalScrollBar" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Grid.Column="1" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Grid.Row="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}"/>
+                                <ScrollBar x:Name="PART_HorizontalScrollBar" AutomationProperties.AutomationId="HorizontalScrollBar" Cursor="Arrow" Grid.Column="0" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Orientation="Horizontal" Grid.Row="1" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}" Margin="0,-6,0,-5"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    
     <Grid>
 
         <Grid.RowDefinitions>
@@ -236,9 +254,20 @@
                   VirtualizingStackPanel.VirtualizationMode="Recycling"
                   ItemContainerStyle="{StaticResource WatchTreeViewItem}"
                   SelectedItemChanged="TreeView1_OnSelectedItemChanged">
+
+            <TreeView.Style>
+                <Style TargetType="TreeView">
+                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.Style>
+
             <TreeView.ItemsPanel>
                 <ItemsPanelTemplate>
-                                       
                     <VirtualizingStackPanel>
                         <VirtualizingPanel.Style>
                             <Style TargetType="{x:Type VirtualizingPanel}">
@@ -296,9 +325,9 @@
             </TreeView.ItemTemplate>
         </TreeView>
 
-        <Border BorderBrush="#aaaaaa" BorderThickness="1" Grid.Row="1">
+        <Border BorderBrush="#d4d4d4" BorderThickness="1" Grid.Row="1" HorizontalAlignment="Stretch">
 
-        <Grid Name ="ListLevelsDisplay" Grid.Row="1" >
+        <Grid Name ="ListLevelsDisplay" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -316,7 +345,7 @@
             <!-- Shows list@level labels in List -->
             
             <ListView Name="listLevelsView"
-                      Grid.Column ="0" Margin="7,3,0,7" 
+                      Grid.Column ="0" Margin="6,3,0,7" 
                       Background="Transparent"
                       Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                       BorderThickness="0">
@@ -325,6 +354,14 @@
                         <Style TargetType="ListViewItem">
                             <Setter Property="Margin" Value="{Binding Path=. , Converter= {StaticResource LeftThicknessConverter} }"></Setter>
                                 <Setter Property="Focusable" Value="False"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </ListView.ItemContainerStyle>
 

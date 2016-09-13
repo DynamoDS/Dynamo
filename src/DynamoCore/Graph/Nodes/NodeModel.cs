@@ -1575,21 +1575,7 @@ namespace Dynamo.Graph.Nodes
                 case "UsingDefaultValue":
                 case "Level":
                 case "UseLevels":
-                    OnNodeModified();
-                    break;
-
                 case "ShouldKeepListStructure":
-                    var portModel = sender as PortModel;
-                    if (portModel != null && portModel.ShouldKeepListStructure)
-                    {
-                        foreach (var inport in InPorts)
-                        {
-                            if (inport != portModel && inport.ShouldKeepListStructure)
-                            {
-                                inport.ShouldKeepListStructure = false;  
-                            }
-                        }
-                    }
                     OnNodeModified();
                     break;
 
@@ -1790,6 +1776,58 @@ namespace Dynamo.Graph.Nodes
                     }
                     return true;
 
+                case "UseLevels":
+                    var parts = value.Split(new[] { ':' });
+                    if (parts != null && parts.Count() == 2)
+                    {
+                        int portIndex;
+                        bool useLevels;
+                        if (int.TryParse(parts[0], out portIndex) &&
+                            bool.TryParse(parts[1], out useLevels))
+                        {
+                            inPorts[portIndex].UseLevels = useLevels;
+                        }
+                    }
+                    return true;
+
+                case "KeepListStructure":
+                    var keepListStructureInfos = value.Split(new[] { ':' });
+                    if (keepListStructureInfos != null && keepListStructureInfos.Count() == 2)
+                    {
+                        int portIndex;
+                        bool keepListStructure;
+                        if (int.TryParse(keepListStructureInfos[0], out portIndex) &&
+                            bool.TryParse(keepListStructureInfos[1], out keepListStructure))
+                        {
+                            inPorts[portIndex].ShouldKeepListStructure = keepListStructure;
+                            if (keepListStructure)
+                            {
+                                // Only allow one input port to keep list structure
+                                for (int i = 0; i < inPorts.Count; i++)
+                                {
+                                    if (portIndex != i && inPorts[i].ShouldKeepListStructure)
+                                    {
+                                        inPorts[i].ShouldKeepListStructure = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return true;
+
+                case "ChangeLevel":
+                    var changeLevelInfos = value.Split(new[] { ':' });
+                    if (changeLevelInfos != null && changeLevelInfos.Count() == 2)
+                    {
+                        int portIndex;
+                        int level;
+                        if (int.TryParse(changeLevelInfos[0], out portIndex) &&
+                            int.TryParse(changeLevelInfos[1], out level))
+                        {
+                            inPorts[portIndex].Level = level;
+                        }
+                    }
+                    return true;
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -1902,20 +1940,20 @@ namespace Dynamo.Graph.Nodes
                         }
 
                         attrValue = subNode.Attributes["useLevels"];
+                        bool useLevels = false;
                         if (attrValue != null)
                         {
-                            bool useLevels = false;
                             bool.TryParse(attrValue.Value, out useLevels);
-                            inPorts[index].UseLevels = useLevels;
                         }
+                        inPorts[index].UseLevels = useLevels;
 
                         attrValue = subNode.Attributes["shouldKeepListStructure"];
+                        bool shouldKeepListStructure = false;
                         if (attrValue != null)
                         {
-                            bool shouldKeepListStructure = false;
                             bool.TryParse(attrValue.Value, out shouldKeepListStructure);
-                            inPorts[index].ShouldKeepListStructure = shouldKeepListStructure;
                         }
+                        inPorts[index].ShouldKeepListStructure = shouldKeepListStructure;
 
                         attrValue = subNode.Attributes["level"];
                         if (attrValue != null)
@@ -2088,15 +2126,15 @@ namespace Dynamo.Graph.Nodes
         private void OnRenderPackageUpdateCompleted(AsyncTask asyncTask)
         {
             var task = asyncTask as UpdateRenderPackageAsyncTask;
+            var packages = new List<IRenderPackage>();
             if (task.RenderPackages.Any())
             {
-                var packages = new List<IRenderPackage>();
-
                 packages.AddRange(task.RenderPackages);
                 packages.AddRange(OnRequestRenderPackages());
 
-                OnRenderPackagesUpdated(packages);
             }
+            OnRenderPackagesUpdated(packages);
+
         }
 
         /// <summary>
@@ -2245,11 +2283,11 @@ namespace Dynamo.Graph.Nodes
     public enum LacingStrategy
     {
         Disabled,
-        Auto,
         First,
         Shortest,
         Longest,
-        CrossProduct
+        CrossProduct,
+        Auto
     };
 
     /// <summary>

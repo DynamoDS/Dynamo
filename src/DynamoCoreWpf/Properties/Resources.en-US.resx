@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1739,10 +1739,6 @@ Do you want to install the latest Dynamo update?</value>
   <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
     <value>Show Edges</value>
   </data>
-  <data name="DynamoViewSettingsMenuHidePreviewBubbles" xml:space="preserve">
-    <value>Hide Preview Bubbles</value>
-    <comment>Settings menu | Hide preview bubbles</comment>
-  </data>
   <data name="DynamoViewSettingsMenuShowPreviewBubbles" xml:space="preserve">
     <value>Show Preview Bubbles</value>
     <comment>Settings menu | Show preview bubbles</comment>
@@ -2057,10 +2053,10 @@ Next assemblies were loaded several times:
     <value>Keep 1 input list's nesting</value>
   </data>
   <data name="UseLevelKeepListStructurePopupMenuItem" xml:space="preserve">
-    <value>Keep list structure?</value>
+    <value>Keep list structure</value>
   </data>
   <data name="UseLevelPopupMenuItem" xml:space="preserve">
-    <value>Use Levels?</value>
+    <value>Use Levels</value>
   </data>
   <data name="DirectoryNotFound" xml:space="preserve">
     <value>Directory Not Found</value>
@@ -2074,5 +2070,35 @@ Next assemblies were loaded several times:
   </data>
   <data name="UnableToAccessPackageDirectory" xml:space="preserve">
     <value>Unable To Access Package Directory</value>
+  </data>
+  <data name="DynamoViewFileMenuExport3DAsImage" xml:space="preserve">
+    <value>_Export Background 3D Preview as Image...</value>
+    <comment>File menu | Export Background 3D Preview as image</comment>
+  </data>
+  <data name="DynamoViewToolbarExport3DButtonTooltip" xml:space="preserve">
+    <value>Export Background Preview As Image</value>
+    <comment>Toolbar export button tooltip</comment>
+  </data>
+  <data name="ScreenShotFrom3DParameter" xml:space="preserve">
+    <value>screenshot_3D</value>
+  </data>
+  <data name="ScreenShotFrom3DShortcutParameter" xml:space="preserve">
+    <value>screenshot_3D_shortcut</value>
+  </data>
+  <data name="FileNotPublishCaption" xml:space="preserve">
+    <value>Publish Fail!</value>
+  </data>
+  <data name="FileNotPublishMessage" xml:space="preserve">
+    <value>File(s) were not found or are contained inside of a package. Please only add files that are located outside of packages.
+
+Failed to publish file(s): 
+{0}</value>
+  </data>
+  <data name="PublishPackageDialogCaption" xml:space="preserve">
+    <value>Published Successfully</value>
+  </data>
+  <data name="PublishPackageMessage" xml:space="preserve">
+    <value>Package published successfully. 
+Want to publish a different package?</value>
   </data>
 </root>

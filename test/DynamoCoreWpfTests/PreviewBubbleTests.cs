@@ -336,7 +336,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.PreviewControl.IsHidden, "Preview bubble is not hidden");
 
             // turn off preview bubbles
-            ViewModel.TogglePreviewBubblesShowingCommand.Execute(null);
+            ViewModel.ShowPreviewBubbles = false;
             Assert.IsFalse(ViewModel.ShowPreviewBubbles, "Preview bubbles have not been turned off");
 
             RaiseMouseEnterOnNode(nodeView);

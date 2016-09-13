@@ -1153,6 +1153,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Export Background 3D Preview as Image....
+        /// </summary>
+        public static string DynamoViewFileMenuExport3DAsImage {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuExport3DAsImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Export Workspace As Image....
         /// </summary>
         public static string DynamoViewFileMenuExportAsImage {
@@ -1760,15 +1769,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide Preview Bubbles.
-        /// </summary>
-        public static string DynamoViewSettingsMenuHidePreviewBubbles {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuHidePreviewBubbles", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show Edges.
         /// </summary>
         public static string DynamoViewSettingsMenuShowEdges {
@@ -1792,6 +1792,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewSettingsMenuVisualizationSettings {
             get {
                 return ResourceManager.GetString("DynamoViewSettingsMenuVisualizationSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export Background Preview As Image.
+        /// </summary>
+        public static string DynamoViewToolbarExport3DButtonTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewToolbarExport3DButtonTooltip", resourceCulture);
             }
         }
         
@@ -2197,6 +2206,27 @@ namespace Dynamo.Wpf.Properties {
         public static string FileDialogSTLModels {
             get {
                 return ResourceManager.GetString("FileDialogSTLModels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish Fail!.
+        /// </summary>
+        public static string FileNotPublishCaption {
+            get {
+                return ResourceManager.GetString("FileNotPublishCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File(s) were not found or are contained inside of a package. Please only add files that are located outside of packages.
+        ///
+        ///Failed to publish file(s): 
+        ///{0}.
+        /// </summary>
+        public static string FileNotPublishMessage {
+            get {
+                return ResourceManager.GetString("FileNotPublishMessage", resourceCulture);
             }
         }
         
@@ -4089,11 +4119,30 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Published Successfully.
+        /// </summary>
+        public static string PublishPackageDialogCaption {
+            get {
+                return ResourceManager.GetString("PublishPackageDialogCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Locally.
         /// </summary>
         public static string PublishPackageLocally {
             get {
                 return ResourceManager.GetString("PublishPackageLocally", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package published successfully. 
+        ///Want to publish a different package?.
+        /// </summary>
+        public static string PublishPackageMessage {
+            get {
+                return ResourceManager.GetString("PublishPackageMessage", resourceCulture);
             }
         }
         
@@ -4373,6 +4422,24 @@ namespace Dynamo.Wpf.Properties {
         public static string SaveWorkbenToImageDialogTitle {
             get {
                 return ResourceManager.GetString("SaveWorkbenToImageDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to screenshot_3D.
+        /// </summary>
+        public static string ScreenShotFrom3DParameter {
+            get {
+                return ResourceManager.GetString("ScreenShotFrom3DParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to screenshot_3D_shortcut.
+        /// </summary>
+        public static string ScreenShotFrom3DShortcutParameter {
+            get {
+                return ResourceManager.GetString("ScreenShotFrom3DShortcutParameter", resourceCulture);
             }
         }
         
@@ -5027,7 +5094,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keep list structure?.
+        ///   Looks up a localized string similar to Keep list structure.
         /// </summary>
         public static string UseLevelKeepListStructurePopupMenuItem {
             get {
@@ -5036,7 +5103,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use Levels?.
+        ///   Looks up a localized string similar to Use Levels.
         /// </summary>
         public static string UseLevelPopupMenuItem {
             get {
