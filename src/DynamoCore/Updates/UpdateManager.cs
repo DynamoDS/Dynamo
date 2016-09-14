@@ -619,10 +619,26 @@ namespace Dynamo.Updates
         public string HostName { get; set; }
 
         /// <summary>
-        /// BinaryVersion version of HostVersion
+        /// CoreHostVersionComparison is a method which compares the current Dynamo Core Version and the HostVersion 
+        /// (DynamoRevit/DynamoStudio etc.)
+        /// It then returns the BinaryVersion of whichever Version is earlier. 
+        /// This allows subsequent methods to do a single check and if there is an updated version (to either Core/Host
+        /// versions), the subsequent methods will poll the server for an update.
         /// </summary>
-        private BinaryVersion BinaryHostVersion() { return HostVersion == null ? BinaryVersion.FromString("0.0.0.0") 
-                : BinaryVersion.FromString(HostVersion.ToString()); }
+        private BinaryVersion CoreHostVersionComparison()
+        {
+
+            var binaryHostVersion = HostVersion == null ? BinaryVersion.FromString("0.0.0.0") : BinaryVersion.FromString(HostVersion.ToString());
+
+            if (ProductVersion < binaryHostVersion)
+            {
+                return ProductVersion;
+            }
+            else
+            {
+                return binaryHostVersion != BinaryVersion.FromString("0.0.0.0") ? binaryHostVersion : ProductVersion; 
+            }
+        }
 
         /// <summary>
         ///     Obtains available update version string 
@@ -635,7 +651,7 @@ namespace Dynamo.Updates
                 // This causes the UI to display the update button only after the download has
                 // completed.
                 return downloadedUpdateInfo == null
-                    ? ProductVersion : updateInfo.Version;
+                    ? CoreHostVersionComparison() : updateInfo.Version;
             }
         }
 
@@ -692,11 +708,7 @@ namespace Dynamo.Updates
                 if (DownloadedUpdateInfo == null)
                     return false;
 
-                // checks if a new version is available for either the Host version 
-                // even if the Core version has already been updated
-                bool HostVersionUpdate = HostVersion == null ? false : AvailableVersion > BinaryHostVersion();
-
-                return ForceUpdate || AvailableVersion > ProductVersion || HostVersionUpdate;
+                return ForceUpdate || AvailableVersion > CoreHostVersionComparison();
             }
         }
 
@@ -878,8 +890,7 @@ namespace Dynamo.Updates
             {
                 if (useStable) //Check stables
                 {
-                    if (latestBuildVersion > ProductVersion || BinaryHostVersion() != BinaryVersion.FromString("0.0.0.0") &&
-                        latestBuildVersion > BinaryHostVersion())
+                    if (latestBuildVersion > CoreHostVersionComparison())
                     {
                         SetUpdateInfo(latestBuildVersion, latestBuildDownloadUrl, latestBuildSignatureUrl);
                     }
