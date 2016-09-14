@@ -19,11 +19,6 @@ class Point
 		Y = y;
 		Z = z;
     }
-	
-	def MidValue : double[]()
-	{
-		return = {X/2, Y/2, Z/2};
-	}
 }
 
 class Line
