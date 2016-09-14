@@ -3235,7 +3235,7 @@ namespace ProtoCore.AST.AssociativeAST
                 AstFactory.BuildBooleanNode(true)
             };
 
-            return BuildFunctionCall("Function", inputParams);
+            return BuildFunctionCall("__CreateFunctionObject", inputParams);
         }
 
         /// <summary>
