@@ -1530,7 +1530,6 @@ namespace ProtoCore.AST.AssociativeAST
         {
             Variables = new List<AssociativeNode>();
             Procedures = new List<AssociativeNode>();
-            BaseClasses = new List<string>();
             IsImportedClass = false;
         }
 
@@ -1543,9 +1542,7 @@ namespace ProtoCore.AST.AssociativeAST
             if (null != rhs.Attributes)
                 Attributes.AddRange(rhs.Attributes.Select(NodeUtils.Clone));
 
-            BaseClasses = new List<string>();
-            if (null != rhs.BaseClasses)
-                BaseClasses.AddRange(rhs.BaseClasses);
+            BaseClass = rhs.BaseClass;
 
             Variables = new List<AssociativeNode>();
             if (null != rhs.Variables)
@@ -1562,7 +1559,7 @@ namespace ProtoCore.AST.AssociativeAST
         public bool IsImportedClass { get; set; }
         public string ClassName { get; set; }
         public List<AssociativeNode> Attributes { get; set; }
-        public List<string> BaseClasses { get; set; }
+        public string BaseClass { get; set; }
         public List<AssociativeNode> Variables { get; set; }
         public List<AssociativeNode> Procedures { get; set; }
         public bool IsExternLib { get; set; }
@@ -1573,17 +1570,10 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var buf = new StringBuilder();
             buf.Append(Keyword.Class + " " + ClassName);
-            if (null != BaseClasses)
+            if (!string.IsNullOrEmpty(BaseClass))
             {
-                if (BaseClasses.Count > 0)
-                    buf.Append(" " + Keyword.Extend + " ");
-
-                for (int i = 0; i < BaseClasses.Count; ++i)
-                {
-                    buf.Append(BaseClasses[i]);
-                    if (i < BaseClasses.Count - 1)
-                        buf.Append(", ");
-                }
+                buf.Append(" " + Keyword.Extend + " ");
+                buf.Append(BaseClass);
             }
             buf.AppendLine();
 
@@ -1616,7 +1606,7 @@ namespace ProtoCore.AST.AssociativeAST
             //not comparing isImportedClass, isExternLib, ExternLibName
             return (ClassName != null && ClassName.Equals(otherNode.ClassName)) &&
                    Attributes.SequenceEqual(otherNode.Attributes) &&
-                   BaseClasses.SequenceEqual(otherNode.BaseClasses) &&
+                   BaseClass.SequenceEqual(otherNode.BaseClass) &&
                    Variables.SequenceEqual(otherNode.Variables) &&
                    Procedures.SequenceEqual(otherNode.Procedures);
         }
@@ -1626,7 +1616,7 @@ namespace ProtoCore.AST.AssociativeAST
             var classNameHashCode =
                 (ClassName == null ? base.GetHashCode() : ClassName.GetHashCode());
             var superClassHashCode =
-                (BaseClasses == null ? base.GetHashCode() : BaseClasses.GetHashCode());
+                (BaseClass == null ? base.GetHashCode() : BaseClass.GetHashCode());
             var varlistHashCode =
                 (Variables == null ? base.GetHashCode() : Variables.GetHashCode());
             var attributesHashCode =

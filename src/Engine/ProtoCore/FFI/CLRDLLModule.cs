@@ -335,8 +335,7 @@ namespace ProtoFFI
             {
                 string baseTypeName = CLRObjectMarshler.GetTypeName(baseType);
 
-                classnode.BaseClasses = new List<string>();
-                classnode.BaseClasses.Add(baseTypeName);
+                classnode.BaseClass = baseTypeName;
                 //Make sure that base class is imported properly.
                 CLRModuleType.GetInstance(baseType, Module, string.Empty);
             }
@@ -364,7 +363,7 @@ namespace ProtoFFI
             }
 
             BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static;
-            bool isDerivedClass = (classnode.BaseClasses != null) && classnode.BaseClasses.Count > 0;
+            bool isDerivedClass = !string.IsNullOrEmpty(classnode.BaseClass);
             if (isDerivedClass) //has base class
                 flags |= BindingFlags.DeclaredOnly; //for derived class, parse only class declared methods.
 

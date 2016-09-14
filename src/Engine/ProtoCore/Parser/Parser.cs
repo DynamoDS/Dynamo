@@ -914,13 +914,8 @@ public Node root { get; set; }
 		if (la.kind == 28) {
 			Get();
 			Expect(1);
-			classnode.BaseClasses = new List<string>();
-			classnode.BaseClasses.Add(t.val); 
+			classnode.BaseClass = t.val;
 			
-			while (la.kind == 1) {
-				Get();
-				classnode.BaseClasses.Add(t.val); 
-			}
 		}
 		Expect(45);
 		while (StartOf(5)) {

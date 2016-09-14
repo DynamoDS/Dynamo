@@ -2934,40 +2934,37 @@ namespace ProtoAssociative
             ProtoCore.DSASM.ClassNode thisClass = core.ClassTable.ClassNodes[thisClassIndex];
 
             // Handle member vars from base class
-            if (null != classDecl.BaseClasses)
+            if (!string.IsNullOrEmpty(classDecl.BaseClass))
             {
-                for (int n = 0; n < classDecl.BaseClasses.Count; ++n)
+                int baseClassIndex = core.ClassTable.GetClassId(classDecl.BaseClass);
+                if (ProtoCore.DSASM.Constants.kInvalidIndex != baseClassIndex)
                 {
-                    int baseClassIndex = core.ClassTable.GetClassId(classDecl.BaseClasses[n]);
-                    if (ProtoCore.DSASM.Constants.kInvalidIndex != baseClassIndex)
+                    // To handle the case that a base class is defined after
+                    // this class.
+                    if (unPopulatedClasses.ContainsKey(baseClassIndex))
                     {
-                        // To handle the case that a base class is defined after
-                        // this class.
-                        if (unPopulatedClasses.ContainsKey(baseClassIndex))
-                        {
-                            EmitMemberVariables(unPopulatedClasses[baseClassIndex], graphNode);
-                            globalClassIndex = thisClassIndex;
-                        }
+                        EmitMemberVariables(unPopulatedClasses[baseClassIndex], graphNode);
+                        globalClassIndex = thisClassIndex;
+                    }
 
-                        ClassNode baseClass = core.ClassTable.ClassNodes[baseClassIndex];
-                        // Append the members variables of every class that this class inherits from
-                        foreach (ProtoCore.DSASM.SymbolNode symnode in baseClass.Symbols.symbolList.Values)
+                    ClassNode baseClass = core.ClassTable.ClassNodes[baseClassIndex];
+                    // Append the members variables of every class that this class inherits from
+                    foreach (ProtoCore.DSASM.SymbolNode symnode in baseClass.Symbols.symbolList.Values)
+                    {
+                        // It is a member variables
+                        if (ProtoCore.DSASM.Constants.kGlobalScope == symnode.functionIndex)
                         {
-                            // It is a member variables
-                            if (ProtoCore.DSASM.Constants.kGlobalScope == symnode.functionIndex)
-                            {
-                                Validity.Assert(!symnode.isArgument);
-                                int symbolIndex = AllocateMemberVariable(thisClassIndex, symnode.isStatic ? symnode.classScope : baseClassIndex, symnode.name, symnode.datatype.rank, symnode.access, symnode.isStatic);
+                            Validity.Assert(!symnode.isArgument);
+                            int symbolIndex = AllocateMemberVariable(thisClassIndex, symnode.isStatic ? symnode.classScope : baseClassIndex, symnode.name, symnode.datatype.rank, symnode.access, symnode.isStatic);
 
-                                if (symbolIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
-                                    thisClass.Size += ProtoCore.DSASM.Constants.kPointerSize;
-                            }
+                            if (symbolIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
+                                thisClass.Size += ProtoCore.DSASM.Constants.kPointerSize;
                         }
                     }
-                    else
-                    {
-                        Validity.Assert(false, "n-pass compile error, fixme Jun....");
-                    }
+                }
+                else
+                {
+                    Validity.Assert(false, "n-pass compile error, fixme Jun....");
                 }
             }
 
@@ -3163,38 +3160,35 @@ namespace ProtoAssociative
                 ProtoCore.DSASM.ClassNode thisClass = core.ClassTable.ClassNodes[globalClassIndex];
 
                 // Verify and store the list of classes it inherits from 
-                if (null != classDecl.BaseClasses)
+                if (!string.IsNullOrEmpty(classDecl.BaseClass))
                 {
-                    for (int n = 0; n < classDecl.BaseClasses.Count; ++n)
+                    int baseClass = core.ClassTable.GetClassId(classDecl.BaseClass);
+                    if (baseClass == globalClassIndex)
                     {
-                        int baseClass = core.ClassTable.GetClassId(classDecl.BaseClasses[n]);
-                        if (baseClass == globalClassIndex)
+                        string message = string.Format("Class '{0}' cannot derive from itself (DED0A61F).\n", classDecl.ClassName);
+                        buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
+                        throw new BuildHaltException(message);
+                    }
+
+                    if (ProtoCore.DSASM.Constants.kInvalidIndex != baseClass)
+                    {
+                        if (core.ClassTable.ClassNodes[baseClass].IsImportedClass && !thisClass.IsImportedClass)
                         {
-                            string message = string.Format("Class '{0}' cannot derive from itself (DED0A61F).\n", classDecl.ClassName);
+                            string message = string.Format("Cannot derive from FFI class {0} (DA87AC4D).\n",
+                                core.ClassTable.ClassNodes[baseClass].Name);
+
                             buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
                             throw new BuildHaltException(message);
                         }
 
-                        if (ProtoCore.DSASM.Constants.kInvalidIndex != baseClass)
-                        {
-                            if (core.ClassTable.ClassNodes[baseClass].IsImportedClass && !thisClass.IsImportedClass)
-                            {
-                                string message = string.Format("Cannot derive from FFI class {0} (DA87AC4D).\n",
-                                    core.ClassTable.ClassNodes[baseClass].Name);
-
-                                buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
-                                throw new BuildHaltException(message);
-                            }
-
-                            thisClass.Bases.Add(baseClass);
-                            thisClass.CoerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.CoerceBaseClass);
-                        }
-                        else
-                        {
-                            string message = string.Format("Unknown base class '{0}' (9E44FFB3).\n", classDecl.BaseClasses[n]);
-                            buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
-                            throw new BuildHaltException(message);
-                        }
+                        thisClass.Base = baseClass;
+                        thisClass.CoerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.CoerceBaseClass);
+                    }
+                    else
+                    {
+                        string message = string.Format("Unknown base class '{0}' (9E44FFB3).\n", classDecl.BaseClass);
+                        buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
+                        throw new BuildHaltException(message);
                     }
                 }
             }
@@ -3207,32 +3201,25 @@ namespace ProtoAssociative
                 ProtoCore.DSASM.ClassNode thisClass = core.ClassTable.ClassNodes[globalClassIndex];
 
                 // Verify and store the list of classes it inherits from 
-                if (null != classDecl.BaseClasses)
+                if (!string.IsNullOrEmpty(classDecl.BaseClass))
                 {
-                    for (int n = 0; n < classDecl.BaseClasses.Count; ++n)
+                    int baseClass = core.ClassTable.GetClassId(classDecl.BaseClass);
+
+                    // Iterate through all the base classes until the the root class
+                    // For every base class, add the coercion score
+                    ProtoCore.DSASM.ClassNode tmpCNode = core.ClassTable.ClassNodes[baseClass];
+                    if (tmpCNode.Base != Constants.kInvalidIndex)
                     {
-                        int baseClass = core.ClassTable.GetClassId(classDecl.BaseClasses[n]);
-
-                        // baseClass is already resovled in the previous pass
-                        Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != baseClass);
-
-                            
-                        // Iterate through all the base classes until the the root class
-                        // For every base class, add the coercion score
-                        ProtoCore.DSASM.ClassNode tmpCNode = core.ClassTable.ClassNodes[baseClass];
-                        if (tmpCNode.Bases.Count > 0)
+                        baseClass = tmpCNode.Base;
+                        while (ProtoCore.DSASM.Constants.kInvalidIndex != baseClass)
                         {
-                            baseClass = tmpCNode.Bases[0];
-                            while (ProtoCore.DSASM.Constants.kInvalidIndex != baseClass)
-                            {
-                                thisClass.CoerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.CoerceBaseClass);
-                                tmpCNode = core.ClassTable.ClassNodes[baseClass];
+                            thisClass.CoerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.CoerceBaseClass);
+                            tmpCNode = core.ClassTable.ClassNodes[baseClass];
 
-                                baseClass = ProtoCore.DSASM.Constants.kInvalidIndex;
-                                if (tmpCNode.Bases.Count > 0)
-                                {
-                                    baseClass = tmpCNode.Bases[0];
-                                }
+                            baseClass = ProtoCore.DSASM.Constants.kInvalidIndex;
+                            if (tmpCNode.Base != Constants.kInvalidIndex)
+                            {
+                                baseClass = tmpCNode.Base;
                             }
                         }
                     }
@@ -3405,7 +3392,7 @@ namespace ProtoAssociative
             {
                 if (baseConstructor.Function == null)
                 {
-                    int baseClassIndex = core.ClassTable.ClassNodes[thisClassIndex].Bases[0];
+                    int baseClassIndex = core.ClassTable.ClassNodes[thisClassIndex].Base;
                     baseConstructorName = core.ClassTable.ClassNodes[baseClassIndex].Name; 
                 }
                 else
@@ -3425,8 +3412,8 @@ namespace ProtoAssociative
                     argTypeList.Add(paramType);
                 }
 
-                List<int> myBases = core.ClassTable.ClassNodes[globalClassIndex].Bases;
-                foreach (int bidx in myBases)
+                int bidx = core.ClassTable.ClassNodes[globalClassIndex].Base;
+                if (bidx != Constants.kInvalidIndex )
                 {
                     int cidx = core.ClassTable.ClassNodes[bidx].ProcTable.IndexOf(baseConstructorName, argTypeList);
                     if ((cidx != ProtoCore.DSASM.Constants.kInvalidIndex) &&
@@ -3434,7 +3421,6 @@ namespace ProtoAssociative
                     {
                         ctorIndex = cidx;
                         baseIndex = bidx;
-                        break;
                     }
                 }
             }
@@ -3442,8 +3428,8 @@ namespace ProtoAssociative
             {
                 // call base class's default constructor
                 // TODO keyu: to support multiple inheritance
-                List<int> myBases = core.ClassTable.ClassNodes[globalClassIndex].Bases;
-                foreach (int bidx in myBases)
+                int bidx = core.ClassTable.ClassNodes[globalClassIndex].Base;
+                if (bidx != Constants.kInvalidIndex)
                 {
                     baseConstructorName = core.ClassTable.ClassNodes[bidx].Name;
                     int cidx = core.ClassTable.ClassNodes[bidx].ProcTable.IndexOf(baseConstructorName, argTypeList);
@@ -4052,11 +4038,9 @@ namespace ProtoAssociative
                     if (ProtoCore.DSASM.Constants.kInvalidIndex != ci)
                     {
                         ProtoCore.DSASM.ClassNode cnode = core.ClassTable.ClassNodes[ci];
-                        if (cnode.Bases.Count > 0)
+                        if (cnode.Base != Constants.kInvalidIndex)
                         {
-                            Validity.Assert(1 == cnode.Bases.Count, "We don't support multiple inheritance yet");
-
-                            ci = cnode.Bases[0];
+                            ci = cnode.Base;
 
                             Dictionary<string, FunctionGroup> tgroup = new Dictionary<string, FunctionGroup>();
                             int callsiteCI = ci + 1;
@@ -4606,7 +4590,7 @@ namespace ProtoAssociative
             // foreach class in classtable
             foreach (ProtoCore.DSASM.ClassNode cnode in core.ClassTable.ClassNodes)
             {
-                if (cnode.Bases.Count > 0)
+                if (cnode.Base != Constants.kInvalidIndex)
                 {
                     // Get the current class functiongroup
                     int ci = cnode.ID;
@@ -4617,7 +4601,7 @@ namespace ProtoAssociative
                     }
 
                     // If it has a baseclass, get its function group 'basegroup'
-                    int baseCI = cnode.Bases[0];
+                    int baseCI = cnode.Base;
                     Dictionary<string, FunctionGroup> baseGroupList = new Dictionary<string, FunctionGroup>();
                     bool groupListExists = core.FunctionTable.GlobalFuncTable.TryGetValue(baseCI + 1, out baseGroupList);
                     if (groupListExists)

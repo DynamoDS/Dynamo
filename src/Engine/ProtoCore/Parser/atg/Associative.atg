@@ -221,12 +221,8 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node.>
     [
         kw_extend
         ident                                   (.
-                                                    classnode.BaseClasses = new List<string>();
-                                                    classnode.BaseClasses.Add(t.val); 
+                                                    classnode.BaseClass = t.val;
                                                 .)
-        {
-            ident                               (. classnode.BaseClasses.Add(t.val); .)  
-        }
     ]
     '{'
         {										
