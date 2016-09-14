@@ -619,25 +619,19 @@ namespace Dynamo.Updates
         public string HostName { get; set; }
 
         /// <summary>
-        /// CoreHostVersionComparison is a method which compares the current Dynamo Core Version and the HostVersion 
-        /// (DynamoRevit/DynamoStudio etc.)
-        /// It then returns the BinaryVersion of whichever Version is earlier. 
+        /// BaseVersion is a method which compares the current Dynamo Core Version and the HostVersion
+        /// (DynamoRevit/DynamoStudio etc.) and returns the earlier (lower) Version.
         /// This allows subsequent methods to do a single check and if there is an updated version (to either Core/Host
         /// versions), the subsequent methods will poll the server for an update.
         /// </summary>
-        private BinaryVersion CoreHostVersionComparison()
+        private BinaryVersion BaseVersion()
         {
+            if (HostVersion == null) return ProductVersion;
 
-            var binaryHostVersion = HostVersion == null ? BinaryVersion.FromString("0.0.0.0") : BinaryVersion.FromString(HostVersion.ToString());
+            var binaryHostVersion = BinaryVersion.FromString(HostVersion.ToString());
 
-            if (ProductVersion < binaryHostVersion)
-            {
-                return ProductVersion;
-            }
-            else
-            {
-                return binaryHostVersion != BinaryVersion.FromString("0.0.0.0") ? binaryHostVersion : ProductVersion; 
-            }
+            if (ProductVersion < binaryHostVersion) return ProductVersion;
+            else return binaryHostVersion;
         }
 
         /// <summary>
@@ -651,7 +645,7 @@ namespace Dynamo.Updates
                 // This causes the UI to display the update button only after the download has
                 // completed.
                 return downloadedUpdateInfo == null
-                    ? CoreHostVersionComparison() : updateInfo.Version;
+                    ? BaseVersion() : updateInfo.Version;
             }
         }
 
@@ -708,7 +702,7 @@ namespace Dynamo.Updates
                 if (DownloadedUpdateInfo == null)
                     return false;
 
-                return ForceUpdate || AvailableVersion > CoreHostVersionComparison();
+                return ForceUpdate || AvailableVersion > BaseVersion();
             }
         }
 
@@ -890,7 +884,7 @@ namespace Dynamo.Updates
             {
                 if (useStable) //Check stables
                 {
-                    if (latestBuildVersion > CoreHostVersionComparison())
+                    if (latestBuildVersion > BaseVersion())
                     {
                         SetUpdateInfo(latestBuildVersion, latestBuildDownloadUrl, latestBuildSignatureUrl);
                     }
