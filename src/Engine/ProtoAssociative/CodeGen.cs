@@ -2939,54 +2939,10 @@ namespace ProtoAssociative
             foreach (VarDeclNode vardecl in classDecl.Variables)
             {
                 IdentifierNode varIdent = null;
+
                 if (vardecl.NameNode is IdentifierNode)
-                {   
+                {
                     varIdent = vardecl.NameNode as IdentifierNode;
-
-                    BinaryExpressionNode bNode = new BinaryExpressionNode();
-
-                    var thisNode =AstFactory.BuildIdentifier(ProtoCore.DSDefinitions.Keyword.This);
-                    var propNode =AstFactory.BuildIdentifier(varIdent.Value);
-                    bNode.LeftNode = AstFactory.BuildIdentList(thisNode, propNode);
-
-                    NodeUtils.CopyNodeLocation(bNode, vardecl);
-                    bNode.Optr = ProtoCore.DSASM.Operator.assign;
-
-                    bool skipInitialization = false;
-
-                    // Initialize it to default value by manually add the right hand side node
-                    if (vardecl.ArgumentType.rank == 0)
-                    {
-                        switch (vardecl.ArgumentType.Name)
-                        {
-                            case "double": bNode.RightNode = new DoubleNode(0); break;
-                            case "int": bNode.RightNode = new IntNode(0); break;
-                            case "bool": bNode.RightNode = new BooleanNode(false); break;
-                            default: skipInitialization = true; break;
-                        }
-                    }
-                    else if (vardecl.ArgumentType.rank > 0)
-                    {
-                        if (!vardecl.ArgumentType.Name.Equals("var"))
-                            bNode.RightNode = new ExprListNode();
-                        else
-                            skipInitialization = true;
-                    }
-                    else if(vardecl.ArgumentType.rank.Equals(ProtoCore.DSASM.Constants.kArbitraryRank))
-                    {
-                        if (!vardecl.ArgumentType.Name.Equals("var"))
-                            bNode.RightNode = new NullNode();
-                        else
-                            skipInitialization = true;
-                    }
-
-                    if (!skipInitialization)
-                    {
-                        if (vardecl.IsStatic)
-                            staticPropertyInitList.Add(bNode);
-                        else
-                            thisClass.DefaultArgExprList.Add(bNode);
-                    }
                 }
                 else if (vardecl.NameNode is BinaryExpressionNode)
                 {
@@ -3531,6 +3487,7 @@ namespace ProtoAssociative
                 }
 
                 var procNode = core.ClassTable.ClassNodes[globalClassIndex].ProcTable.GetFunctionBySignature(funcDef.Name, argList);
+
                 globalProcIndex = procNode == null ? Constants.kInvalidIndex : procNode.ID;
 
                 Validity.Assert(null == localProcedure);
@@ -6050,8 +6007,6 @@ namespace ProtoAssociative
                             graphNode.dependentList[0].updateNodeRefList[0].nodeList[0].dimensionNodeList
                                 = graphNode.dependentList[1].updateNodeRefList[0].nodeList[0].dimensionNodeList;
                         }
-
-
 
                         graphNode.allowDependents = false;
 
