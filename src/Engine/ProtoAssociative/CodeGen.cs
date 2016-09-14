@@ -13,18 +13,6 @@ using ProtoAssociative.Properties;
 
 namespace ProtoAssociative
 {
-    public class ThisPointerProcOverload
-    {
-        public int classIndex { get; set; }
-        public FunctionDefinitionNode procNode { get; set; }
-
-        public ThisPointerProcOverload()
-        {
-            classIndex = Constants.kInvalidIndex;
-            procNode = null;
-        }
-    }
-
     public partial class CodeGen : ProtoCore.CodeGen
     {
         public ProtoCore.CompilerDefinitions.CompilePass compilePass;
@@ -62,21 +50,12 @@ namespace ProtoAssociative
             classOffset = 0;
 
             //  either of these should set the console to flood
-            //
             emitReplicationGuide = false;
-
             setConstructorStartPC = false;
 
             // Re-use the existing procedureTable and symbolTable to access the built-in and predefined functions
             ProcedureTable procTable = core.CodeBlockList[0].procedureTable;
             codeBlock = BuildNewCodeBlock(procTable);
-
-            
-            // Remove global symbols from existing symbol table for subsequent run in Graph UI            
-            //SymbolTable sTable = core.CodeBlockList[0].symbolTable;
-            //sTable.RemoveGlobalSymbols();
-            //codeBlock = core.CodeBlockList[0];
-
             compilePass = ProtoCore.CompilerDefinitions.CompilePass.ClassName;
 
             // Bouncing to this language codeblock from a function should immediately set the first instruction as the entry point
@@ -95,10 +74,8 @@ namespace ProtoAssociative
             classOffset = 0;
 
             //  either of these should set the console to flood
-            //
             emitReplicationGuide = false;
             setConstructorStartPC = false;
-
 
             // Comment Jun: Get the codeblock to use for this codegenerator
             if (core.Options.IsDeltaExecution)
@@ -131,7 +108,6 @@ namespace ProtoAssociative
                 // TODO Jun: Handle nested codeblock here when we support scoping in the graph
 
                 // This is a nested block
-
                 // parentBlock == codeBlock happens when the core is in 
                 // delta exectuion and at the same time we create a dynamic 
                 // code block (e.g., inline condition)
@@ -638,9 +614,6 @@ namespace ProtoAssociative
             instr.debug = GetDebugObject(line, col, endline, endcol, ProtoCore.DSASM.Constants.kInvalidIndex);
             
             codeBlock.instrStream.instrList.Add(instr);
-
-            // TODO: Figure out why using AppendInstruction fails for adding these instructions to ExpressionInterpreter
-            //AppendInstruction(instr, line, col);
             updatePcDictionary(line, col);
         }
 
@@ -657,9 +630,6 @@ namespace ProtoAssociative
             instr.debug = GetDebugObject(line, col, endline, endcol, ProtoCore.DSASM.Constants.kInvalidIndex);
             
             codeBlock.instrStream.instrList.Add(instr);
-
-            // TODO: Figure out why using AppendInstruction fails for adding these instructions to ExpressionInterpreter
-            //AppendInstruction(instr, line, col);
             updatePcDictionary(line, col);
         }
         
@@ -674,9 +644,6 @@ namespace ProtoAssociative
             ++pc;
             instr.debug = GetDebugObject(line, col, endline, endcol, ProtoCore.DSASM.Constants.kInvalidIndex);
             codeBlock.instrStream.instrList.Add(instr);
-
-            // TODO: Figure out why using AppendInstruction fails for adding these instructions to ExpressionInterpreter
-            //AppendInstruction(instr, line, col);
             updatePcDictionary(line, col);
         }
 
@@ -706,9 +673,6 @@ namespace ProtoAssociative
 
             ++pc;
             codeBlock.instrStream.instrList.Add(instr);
-
-            // TODO: Figure out why using AppendInstruction fails for adding these instructions to ExpressionInterpreter
-            //AppendInstruction(instr);
 
             if (!core.Options.IsDeltaExecution)
             {
@@ -3257,21 +3221,35 @@ namespace ProtoAssociative
                     }
 
                     // This is a function, create its parameterized this pointer overload
-                    ThisPointerProcOverload thisProc = new ThisPointerProcOverload();
-                    thisProc.classIndex = globalClassIndex;
-                    thisProc.procNode = new FunctionDefinitionNode(funcDef);
+                    var procNode = new FunctionDefinitionNode(funcDef);
                     var thisPtrArg = new VarDeclNode()
                     {
                         Access = ProtoCore.CompilerDefinitions.AccessModifier.Public,
                         NameNode = AstFactory.BuildIdentifier(thisPtrArgName),
                         ArgumentType = new ProtoCore.Type { Name = classDecl.ClassName, UID = globalClassIndex, rank = 0 }
                     };
-                    thisProc.procNode.Signature.Arguments.Insert(0, thisPtrArg);
-                    thisProc.procNode.IsAutoGeneratedThisProc = true;
+                    procNode.Signature.Arguments.Insert(0, thisPtrArg);
+                    procNode.IsAutoGeneratedThisProc = true;
 
                     if (CoreUtils.IsGetterSetter(funcDef.Name))
                     {
-                        InsertThisPointerAtBody(thisProc);
+                        for (int n = 0; n < procNode.FunctionBody.Body.Count; ++n)
+                        {
+                            if (procNode.FunctionBody.Body[n] is BinaryExpressionNode)
+                            {
+                                var assocNode = procNode.FunctionBody.Body[n] as BinaryExpressionNode;
+                                AssociativeNode outLNode = null;
+                                AssociativeNode outRNode = null;
+
+                                // This is the first traversal of this statement and is therefore the assignment op
+                                Validity.Assert(Operator.assign == assocNode.Optr);
+                                TraverseAndAppendThisPtrArg(assocNode.LeftNode, ref outLNode);
+                                TraverseAndAppendThisPtrArg(assocNode.RightNode, ref outRNode);
+
+                                assocNode.LeftNode = outLNode;
+                                assocNode.RightNode = outRNode;
+                            }
+                        }
                     }
                     else
                     {
@@ -3280,11 +3258,18 @@ namespace ProtoAssociative
                         //     { 
                         //        return = a.f()
                         //     }
-                        thisProc.procNode.IsStatic = true;
-                        BuildThisFunctionBody(thisProc);
+                        procNode.IsStatic = true;
+                        var args = procNode.Signature.Arguments.Select(a => a.NameNode).ToList();
+                        var fcall = AstFactory.BuildFunctionCall(procNode.Name, args) as FunctionCallNode;
+
+                        // Build the dotcall node
+                        var lhs = procNode.Signature.Arguments[0].NameNode;
+                        var right = CoreUtils.GenerateCallDotNode(lhs, fcall, core);
+                        var body = AstFactory.BuildReturnStatement(right);
+                        procNode.FunctionBody.Body = new List<AssociativeNode> { body };
                     }
 
-                    thisPtrOverloadList.Add(thisProc.procNode);
+                    thisPtrOverloadList.Add(procNode);
                 }
 
                 foreach (var overloadFunc in thisPtrOverloadList)
@@ -4919,91 +4904,6 @@ namespace ProtoAssociative
             else
             {
                 newIdentList = node;
-            }
-        }
-
-        
-        private void BuildThisFunctionBody(ThisPointerProcOverload procOverload)
-        {
-            BinaryExpressionNode thisFunctionBody = new BinaryExpressionNode();
-            IdentifierNode leftNode = new IdentifierNode();
-            leftNode.Name = leftNode.Value = ProtoCore.DSDefinitions.Keyword.Return;
-            thisFunctionBody.LeftNode = leftNode;
-
-            thisFunctionBody.Optr = Operator.assign;
-
-
-            // Build the function call and pass it the arguments including the this pointer
-            FunctionCallNode fcall = new FunctionCallNode();
-            IdentifierNode identNode = new IdentifierNode();
-            identNode.Name = procOverload.procNode.Name;
-            fcall.Function = identNode;
-
-            // Set the arguments passed into the function excluding the 'this' argument
-            List<AssociativeNode> args = new List<AssociativeNode>();
-            for (int n = 1; n < procOverload.procNode.Signature.Arguments.Count; ++n)
-            {
-                VarDeclNode varDecl = procOverload.procNode.Signature.Arguments[n];
-                args.Add(varDecl.NameNode);
-            }
-            fcall.FormalArguments = args;
-
-
-            // Build the dotcall node
-            procOverload.procNode.FunctionBody.Body = new List<AssociativeNode>();
-            procOverload.procNode.FunctionBody.Body.Add(thisFunctionBody);
-
-            thisFunctionBody.RightNode = CoreUtils.GenerateCallDotNode(procOverload.procNode.Signature.Arguments[0].NameNode, fcall, core);
-        }
-        
-
-        private void InsertThisPointerAtBody(ThisPointerProcOverload procOverload)
-        {
-            for (int n = 0; n < procOverload.procNode.FunctionBody.Body.Count; ++n)
-            {
-                if (procOverload.procNode.FunctionBody.Body[n] is BinaryExpressionNode)
-                {
-                    BinaryExpressionNode assocNode = procOverload.procNode.FunctionBody.Body[n] as BinaryExpressionNode;
-                    AssociativeNode outLNode = null;
-                    AssociativeNode outRNode = null;
-
-                    // This is the first traversal of this statement and is therefore the assignment op
-                    Validity.Assert(Operator.assign == assocNode.Optr);
-                    TraverseAndAppendThisPtrArg(assocNode.LeftNode, ref outLNode);
-                    TraverseAndAppendThisPtrArg(assocNode.RightNode, ref outRNode);
-
-                    assocNode.LeftNode = outLNode;
-                    assocNode.RightNode = outRNode;
-                }
-                else if (procOverload.procNode.FunctionBody.Body[n] is LanguageBlockNode)
-                {
-                    LanguageBlockNode langBlockNode = procOverload.procNode.FunctionBody.Body[n] as LanguageBlockNode;
-                    if (langBlockNode.CodeBlockNode is ProtoCore.AST.ImperativeAST.CodeBlockNode)
-                    {
-                        ProtoCore.AST.ImperativeAST.CodeBlockNode iCodeBlockNode = langBlockNode.CodeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode;
-                        for (int i = 0; i < iCodeBlockNode.Body.Count; ++i)
-                        {
-                            if (iCodeBlockNode.Body[i] is ProtoCore.AST.ImperativeAST.BinaryExpressionNode)
-                            {
-                                ProtoCore.AST.ImperativeAST.BinaryExpressionNode iNode = iCodeBlockNode.Body[i] as ProtoCore.AST.ImperativeAST.BinaryExpressionNode;
-                                ProtoCore.AST.ImperativeAST.ImperativeNode outLNode = null;
-                                ProtoCore.AST.ImperativeAST.ImperativeNode outRNode = null;
-
-                                // This is the first traversal of this statement and is therefore the assignment op
-                                Validity.Assert(Operator.assign == iNode.Optr);
-                                TraverseAndAppendThisPtrArg(iNode.LeftNode, ref outLNode);
-                                TraverseAndAppendThisPtrArg(iNode.RightNode, ref outRNode);
-
-                                iNode.LeftNode = outLNode;
-                                iNode.RightNode = outRNode;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Validity.Assert(false, "We dont have other langauges besides associative and imperative");
-                    }
-                }
             }
         }
 
