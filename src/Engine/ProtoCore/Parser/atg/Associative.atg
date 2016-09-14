@@ -248,12 +248,6 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node.>
                         kw_static               (. isStatic = true; .) 
                     ]
                     (
-                        (
-                                                (. ProtoCore.AST.AssociativeAST.AssociativeNode funcnode; .)
-                            Associative_functiondecl<out funcnode, access, isStatic>      
-                                                (. classnode.Procedures.Add(funcnode); .)
-                        )
-                        |
                         (   
                                                 (. ProtoCore.AST.AssociativeAST.AssociativeNode varnode = null; .)  
                             Associative_vardecl<out varnode, access, isStatic>    
