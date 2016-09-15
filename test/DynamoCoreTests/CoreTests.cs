@@ -727,25 +727,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void SerializationTest()
-        {
-            var openPath = Path.Combine(TestDirectory, @"core\input_nodes\NumberNodeAndNumberSlider.dyn");
-            OpenModel(openPath);
-
-            var settings = new JsonSerializerSettings
-            {
-                Error = (sender, args) =>
-                {
-                    args.ErrorContext.Handled = true;
-                },
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            };
-            //settings.Converters.Add(new WorkspaceConverter());
-            var json = JsonConvert.SerializeObject(CurrentDynamoModel.CurrentWorkspace, settings);
-            Assert.IsNotNullOrEmpty(json);
-        }
-
-        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_3166()
         {

@@ -103,6 +103,7 @@
     <Compile Include="NodeToCodeTest.cs" />
     <Compile Include="PresetsTests.cs" />
     <Compile Include="PeriodicEvaluationTests.cs" />
+    <Compile Include="SerializationTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
