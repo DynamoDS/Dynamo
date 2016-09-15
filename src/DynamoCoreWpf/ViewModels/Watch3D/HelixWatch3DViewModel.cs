@@ -760,13 +760,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             DeleteGeometries(geometryModels, requestUpdate); 
         }
 
-        protected override void OnRenderPackagesUpdated(NodeModel node, IEnumerable<IRenderPackage> packages)
-        {
-            RemoveGeometryForNode(node);
-            base.OnRenderPackagesUpdated(node,packages);
-        }
-
-
         protected override void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
