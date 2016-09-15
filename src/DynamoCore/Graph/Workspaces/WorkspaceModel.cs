@@ -424,6 +424,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Are there unsaved changes in the workspace?
         /// </summary>
+        [JsonIgnore]
         public bool HasUnsavedChanges
         {
             get { return hasUnsavedChanges; }
@@ -512,7 +513,7 @@ namespace Dynamo.Graph.Workspaces
             {
                 return nodes.SelectMany(
                     node => node.OutPorts.SelectMany(port => port.Connectors))
-                    .Distinct();
+                    .Distinct().ToList();
             }
         }
 
