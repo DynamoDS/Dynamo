@@ -40,6 +40,25 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
+### 1.2.0 ###
+
+New Functionality : 
+- New out-of-the-box Revit functionality, including FaceBased Family creation, Coordinates, Detail Curves, Dimensions, Filled Region, Filters, Location enhancements, Materials, Parameters, Revisions, Rooms, Tag, Text notes, and Element queries.
+- New list management tools found on node input ports that can greatly simplify many workflows and reduce the need for List.Map and List.Combine in most places.
+- Geometry Preview state of nodes shown in color change
+
+Important Bug Fixes: 
+- Number from Feet and Inches rounds input text incorrectly and output is confusing
+- Circle.ByBestFitThroughPoints is always horizontal
+- Preview Control Crash when deleting ObjectSelector node before running completed
+- Crashes with adjacent install of some Autodesk products
+- Solid By Sweep 2 Rails incorrect with rotated NURBS curve
+- Opening dyn file whose dyn extension is missing corrupts Dynamo
+- Arc.ByStartPointEndPointStartTangent doesn't work well with all Tangents
+- Graphs with large vertex counts consume whole processor when program is idle
+- CoordinateSystem Scale methods do not work
+- Add option to Curve.ByBlendBetweenCurves to create G2 continuous blend curves
+
 ### 1.1.0 ###
 
 New Functionality : 
