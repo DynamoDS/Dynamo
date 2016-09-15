@@ -33,6 +33,11 @@ namespace Dynamo.Graph.Nodes
         #region public members
 
         /// <summary>
+        /// A <see cref="PortData"/> object used for the construction of the node.
+        /// </summary>
+        public PortData Data { get { return portData; } }
+
+        /// <summary>
         /// Returns the connectors between the specified ports.
         /// </summary>
         [JsonIgnore]
@@ -70,7 +75,6 @@ namespace Dynamo.Graph.Nodes
         /// Type of the port.
         /// It can be incoming or outcoming.
         /// </summary>
-        [JsonIgnore]
         public PortType PortType
         {
             get;
@@ -80,7 +84,6 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Returns the Node.
         /// </summary>
-        [JsonIgnore]
         public NodeModel Owner
         {
             get;
@@ -274,6 +277,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="portType">Type of the Port</param>
         /// <param name="owner">Parent Node</param>
         /// <param name="data">Information about port</param>
+        [JsonConstructor]
         public PortModel(PortType portType, NodeModel owner, PortData data)
         {
             IsConnected = false;
@@ -419,8 +423,8 @@ namespace Dynamo.Graph.Nodes
         /// Creates PortData.
         /// </summary>
         /// <param name="nickName">Nickname of the port</param>
-        /// <param name="tip">Tooltip of the port</param>
-        public PortData(string nickName, string tip) : this(nickName, tip, null) { }
+        /// <param name="toolTipString">Tooltip of the port</param>
+        public PortData(string nickName, string toolTipString) : this(nickName, toolTipString, null) { }
 
         /// <summary>
         /// Creates PortData.
@@ -428,6 +432,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="nickName">Nickname of the port</param>
         /// <param name="toolTipString">Tooltip of the port</param>
         /// <param name="defaultValue">Default value of the port</param>
+        [JsonConstructor]
         public PortData(string nickName, string toolTipString, AssociativeNode defaultValue)
         {
             NickName = nickName;
