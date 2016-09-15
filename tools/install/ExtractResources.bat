@@ -11,6 +11,18 @@ IF /I "%2"=="x86" set OPT_Platform=x86
 
 set binroot=%cwd%..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%
 set wwlroot=%cwd%..\..\bin\wwl
+set nugetroot=%cwd%..\NuGet
+set player=%cwd%..\..\bin\DynamoPlayer
+
+echo -------------------------------------------------------------------------------
+echo NuGet restore playlist packages
+echo DynamoPlayer folder: %player%
+echo %nugetroot%\NuGet.exe restore -ConfigFile %cwd%..\..\dynamo-nuget.config -PackagesDirectory %player%
+echo -------------------------------------------------------------------------------
+rd /s/q %player%
+%nugetroot%\NuGet.exe restore -ConfigFile %cwd%..\..\dynamo-nuget.config -PackagesDirectory %player%
+robocopy "%player%\DynamoPlayer-Revit2017.1.0.2\Revit_2017" "%binroot%\Revit_2017" /e
+robocopy "%player%\DynamoPlayer-SampleScripts-localized-Revit2017.1.0.2" "%binroot%\samples" /e
 
 echo .
 echo -------------------------------------------------------------------------------
