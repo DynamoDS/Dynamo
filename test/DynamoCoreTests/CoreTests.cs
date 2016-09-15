@@ -852,27 +852,6 @@ namespace Dynamo.Tests
             {
                 Assert.IsTrue(node.UpstreamCache.SetEquals(node.AllUpstreamNodes(new List<NodeModel>())));
             }
-
-
-
-        }
-    }
-
-    internal class WorkspaceConverter : JsonConverter
-    {
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            //
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            return string.Empty;
-        }
-
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType != typeof (StackValue);
         }
     }
 }
