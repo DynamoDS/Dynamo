@@ -351,11 +351,9 @@ namespace ProtoCore.Utils
                 argList.Exprs.Add(arg);
             }
 
-
             FunctionCallNode funCallNode = new FunctionCallNode();
-            IdentifierNode funcName = new IdentifierNode { Value = Constants.kDotArgMethodName, Name = Constants.kDotArgMethodName };
-            funCallNode.Function = funcName;
-            funCallNode.Name = Constants.kDotArgMethodName;
+            funCallNode.Function = AstFactory.BuildIdentifier(Constants.kDotMethodName);
+            funCallNode.Name = Constants.kDotMethodName;
 
             NodeUtils.CopyNodeLocation(funCallNode, lhs);
             int rhsIdx = DSASM.Constants.kInvalidIndex;
@@ -437,7 +435,6 @@ namespace ProtoCore.Utils
             // 
             NodeUtils.SetNodeEndLocation(funDotCallNode.DotCall, rhsCall);
             NodeUtils.CopyNodeLocation(funDotCallNode, funDotCallNode.DotCall);
-
 
             return funDotCallNode;
         }

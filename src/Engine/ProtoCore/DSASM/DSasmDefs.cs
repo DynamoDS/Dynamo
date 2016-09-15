@@ -382,7 +382,6 @@ namespace ProtoCore.DSASM
         public const string kFunctionPointerCall = "%FunctionPointerCall";
         public const string kFunctionRangeExpression = "%generate_range";
         public const string kDotMethodName = "%dot";
-        public const string kDotArgMethodName = "%dotarg";
         public const string kInlineConditionalMethodName = "%inlineconditional";
         public const string kGetTypeMethodName = "%get_type";
         public const string kNodeAstFailed = "%nodeAstFailed";

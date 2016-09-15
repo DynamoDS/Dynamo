@@ -1213,19 +1213,16 @@ namespace ProtoCore.AST.AssociativeAST
         public FunctionCallNode DotCall { get; set; }
         public FunctionCallNode FunctionCall { get; set; }
         public bool isLastSSAIdentListFactor { get; set; }
-        public string LeftName { get; set; }
 
         public FunctionDotCallNode(FunctionCallNode callNode)
         {
             DotCall = new FunctionCallNode();
             FunctionCall = callNode;
-            LeftName = string.Empty;
             isLastSSAIdentListFactor = false;
         }
 
         public FunctionDotCallNode(string lhsName, FunctionCallNode callNode)
         {
-            this.LeftName = lhsName;
             FunctionCall = callNode;
             isLastSSAIdentListFactor = false;
         }
@@ -1234,7 +1231,6 @@ namespace ProtoCore.AST.AssociativeAST
         {
             DotCall = new FunctionCallNode(rhs.DotCall);
             FunctionCall = new FunctionCallNode(rhs.FunctionCall);
-            LeftName = rhs.LeftName;
             isLastSSAIdentListFactor = rhs.isLastSSAIdentListFactor;
         }
 
@@ -1255,21 +1251,18 @@ namespace ProtoCore.AST.AssociativeAST
             if (null == otherNode)
                 return false;
 
-            return LeftName.Equals(otherNode.LeftName) &&
-                   DotCall.Equals(otherNode.DotCall) &&
+            return DotCall.Equals(otherNode.DotCall) &&
                    FunctionCall.Equals(otherNode.FunctionCall);
         }
 
         public override int GetHashCode()
         {
-            var lhsNameHashCode =
-                (LeftName == null ? base.GetHashCode() : LeftName.GetHashCode());
             var dotCallHashCode =
                 (DotCall == null ? base.GetHashCode() : DotCall.GetHashCode());
             var functionCallHashCode =
                 (FunctionCall == null ? base.GetHashCode() : FunctionCall.GetHashCode());
 
-            return lhsNameHashCode ^ dotCallHashCode ^ functionCallHashCode;
+            return dotCallHashCode ^ functionCallHashCode;
         }
 
         public override string ToString()
