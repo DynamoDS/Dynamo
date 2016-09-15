@@ -2,6 +2,7 @@
 using System.Xml;
 using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Connectors
 {
@@ -63,6 +64,15 @@ namespace Dynamo.Graph.Connectors
             }
 
             return null;
+        }
+
+        [JsonConstructor]
+        private ConnectorModel(PortModel start, PortModel end, Guid guid)
+        {
+            Start = start;
+            Start.Connect(this);
+            Connect(end);
+            GUID = guid;
         }
 
         private ConnectorModel(
