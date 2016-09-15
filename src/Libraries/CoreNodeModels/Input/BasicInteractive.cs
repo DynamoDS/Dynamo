@@ -3,6 +3,9 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using System.Collections.Generic;
+using Dynamo.Utilities;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.Input
 {
@@ -37,6 +40,14 @@ namespace CoreNodeModels.Input
         // with their implementations rather than default silently taking over.
         protected abstract T DeserializeValue(string val);
         protected abstract string SerializeValue();
+
+        protected BasicInteractive(IEnumerable<PortModel> inPorts,
+            IEnumerable<PortModel> outPorts)
+        {
+            Type type = typeof(T);
+            InPorts.AddRange(inPorts);
+            OutPorts.AddRange(outPorts);
+        }
 
         protected BasicInteractive()
         {

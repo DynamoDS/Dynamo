@@ -1,5 +1,7 @@
 using Dynamo.Engine;
+using Dynamo.Utilities;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -14,6 +16,15 @@ namespace Dynamo.Graph.Nodes
         ///     Controller used to sync node with a function definition.
         /// </summary>
         public TController Controller { get; private set; }
+
+        protected FunctionCallBase(TController controller,
+            IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
+        {
+            InPorts.AddRange(inPorts);
+            OutPorts.AddRange(outPorts);
+            Controller = controller;
+            NickName = controller.NickName;
+        }
 
         /// <summary>
         /// Default constructor

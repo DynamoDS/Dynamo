@@ -1,5 +1,7 @@
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Engine;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Dynamo.Graph.Nodes.ZeroTouch
 {
@@ -22,10 +24,19 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             get { return false; }
         }
 
+        [JsonConstructor]
+        private DSFunction(FunctionDescriptor description, 
+            IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :
+            base(new ZeroTouchNodeController<FunctionDescriptor>(description),
+                inPorts, outPorts)
+        {
+            Description = description;
+        }
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="DSFunction"/> class.
         /// </summary>
-        /// <param name="descriptor">Function descritor.</param>
+        /// <param name="description">Function descritor.</param>
         public DSFunction(FunctionDescriptor description) 
             : base(new ZeroTouchNodeController<FunctionDescriptor>(description)) 
         {

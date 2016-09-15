@@ -15,6 +15,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using CoreNodeModels.Properties;
 using System.Net;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.Input
 {
@@ -96,6 +97,16 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("Dynamo.Nodes.DoubleInput", "Dynamo.Nodes.dynDoubleInput", "DSCoreNodesUI.Input.DoubleInput")]
     public class DoubleInput : NodeModel
     {
+        [JsonConstructor]
+        private DoubleInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
+        {
+            InPorts.AddRange(inPorts);
+            OutPorts.AddRange(outPorts);
+            ShouldDisplayPreviewCore = false;
+            ConvertToken = Convert;
+            Value = "0";
+        }
+
         public DoubleInput()
         {
             OutPortData.Add(new PortData("", ""));
@@ -104,8 +115,6 @@ namespace CoreNodeModels.Input
             ShouldDisplayPreviewCore = false;
             ConvertToken = Convert;
             Value = "0";
-
-            //ws.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
         }
 
         public virtual double Convert(double value)
