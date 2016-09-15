@@ -142,6 +142,7 @@
     <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
     <controls:LibraryTreeItemsHostVisibilityConverter x:Key="LibraryTreeItemsHostVisibilityConverter" />
     <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
+    <controls:NullValueToGridRow1Converter x:Key="NullValueToGridRow1Converter"/>
     <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
     <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
     <controls:NodeTypeToColorConverter x:Key="NodeTypeToColorConverter"
