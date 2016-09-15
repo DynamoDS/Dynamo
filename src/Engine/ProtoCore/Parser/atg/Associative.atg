@@ -250,7 +250,7 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node.>
                     (
                         (   
                                                 (. ProtoCore.AST.AssociativeAST.AssociativeNode varnode = null; .)  
-                            Associative_vardecl<out varnode, access, isStatic>    
+                            Associative_memvardecl<out varnode, access, isStatic>    
                                                 (. classnode.Variables.Add(varnode); .)
 
                                                 (. 
@@ -496,7 +496,7 @@ Associative_ArgumentSignatureDefinition<out ProtoCore.AST.AssociativeAST.Associa
                                                 (. argumentSign = argumentSignature; .)
 .
 
-Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false.>    
+Associative_memvardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false.>    
 = 
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
@@ -552,21 +552,7 @@ Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Prot
             varDeclNode.ArgumentType = argtype;
         .)
     ]
-
-        [
-        '=' 
-                                    (. ProtoCore.AST.AssociativeAST.AssociativeNode rhsNode; .)     
-        Associative_Expression<out rhsNode>         
-                                    (.
-                                        ProtoCore.AST.AssociativeAST.BinaryExpressionNode bNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-                                        NodeUtils.CopyNodeLocation(bNode, varDeclNode);
-                                        bNode.LeftNode = tNode;
-                                        bNode.RightNode = rhsNode;
-                                        bNode.Optr = Operator.assign;
-                                        varDeclNode.NameNode = bNode;       
-                                    .)  
-         ]
-
+   
                                     (. 
                                         node = varDeclNode; 
                                         //if(!isGlobalScope) {

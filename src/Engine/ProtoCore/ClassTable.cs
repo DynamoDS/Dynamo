@@ -13,7 +13,6 @@ namespace ProtoCore.DSASM
     {
         public string Name { get; set; }
         public SymbolTable Symbols { get; set; }
-        public List<AssociativeNode> DefaultArgExprList { get; set; } 
         public ProcedureTable ProcTable { get; set; }
         public int Size { get; set; }
         public int Rank { get; set; }
@@ -45,7 +44,6 @@ namespace ProtoCore.DSASM
             disposeMethod = null;
             Rank = ProtoCore.DSASM.Constants.kDefaultClassRank;
             Symbols = new SymbolTable("classscope", 0);
-            DefaultArgExprList = new List<AST.AssociativeAST.AssociativeNode>();
             ID = (int)PrimitiveType.InvalidType;
 
             // Jun TODO: how significant is runtime index for class procedures?
@@ -74,7 +72,6 @@ namespace ProtoCore.DSASM
             {
                 Symbols = new SymbolTable(rhs.Symbols.ScopeName, rhs.Symbols.RuntimeIndex);
             }
-            DefaultArgExprList = new List<AST.AssociativeAST.AssociativeNode>();
             ID = rhs.ID;
 
             int classRuntimProc = ProtoCore.DSASM.Constants.kInvalidIndex;

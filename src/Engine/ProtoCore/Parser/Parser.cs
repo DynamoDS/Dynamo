@@ -940,7 +940,7 @@ public Node root { get; set; }
 				}
 				if (la.kind == 1) {
 					ProtoCore.AST.AssociativeAST.AssociativeNode varnode = null; 
-					Associative_vardecl(out varnode, access, isStatic);
+					Associative_memvardecl(out varnode, access, isStatic);
 					classnode.Variables.Add(varnode); 
 					if (la.val != ";")
 					   SynErr(Resources.SemiColonExpected);  
@@ -1240,7 +1240,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		constrNode = constr; 
 	}
 
-	void Associative_vardecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false) {
+	void Associative_memvardecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false) {
 		ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
 		varDeclNode.Access = access;
@@ -1264,7 +1264,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				Get();
 				Expect(11);
 				argtype.rank = 1; 
-				if (la.kind == 10 || la.kind == 24 || la.kind == 52) {
+				if (la.kind == 10 || la.kind == 24) {
 					if (la.kind == 24) {
 						Get();
 						Expect(10);
@@ -1296,18 +1296,6 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			tNode.datatype = argtype;
 			varDeclNode.NameNode = tNode;
 			varDeclNode.ArgumentType = argtype;
-			
-		}
-		if (la.kind == 52) {
-			Get();
-			ProtoCore.AST.AssociativeAST.AssociativeNode rhsNode; 
-			Associative_Expression(out rhsNode);
-			ProtoCore.AST.AssociativeAST.BinaryExpressionNode bNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-			NodeUtils.CopyNodeLocation(bNode, varDeclNode);
-			bNode.LeftNode = tNode;
-			bNode.RightNode = rhsNode;
-			bNode.Optr = Operator.assign;
-			varDeclNode.NameNode = bNode;       
 			
 		}
 		node = varDeclNode; 

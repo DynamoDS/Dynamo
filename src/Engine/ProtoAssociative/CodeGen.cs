@@ -2118,13 +2118,6 @@ namespace ProtoAssociative
                 }
 
                 compilePass++;
-
-                // We have compiled all classes
-                if (compilePass == ProtoCore.CompilerDefinitions.CompilePass.GlobalScope && isTopBlock)
-                {
-                    EmitFunctionCallToInitStaticProperty(codeblock.Body);
-                }
-
             }
 
             ResolveSSADependencies();
@@ -2151,32 +2144,6 @@ namespace ProtoAssociative
             core.CallsiteGuidMap = new Dictionary<Guid, int>();
 
             return codeBlock.codeBlockId;
-        }
-
-        private void EmitFunctionCallToInitStaticProperty(List<AssociativeNode> codeblock)
-        {
-            List<AssociativeNode> functionCalls = new List<AssociativeNode>();
-
-            for (int i = 0; i < core.ClassTable.ClassNodes.Count; ++i)
-            {
-                var classNode = core.ClassTable.ClassNodes[i];
-                if (classNode.ProcTable != null &&
-                    classNode.ProcTable.Procedures.Exists(procNode => procNode.Name == ProtoCore.DSASM.Constants.kStaticPropertiesInitializer && procNode.IsStatic))
-                {
-                    // classname.%_init_static_properties();
-                    var thisClass =AstFactory.BuildIdentifier(classNode.Name);
-                    var initializer = AstFactory.BuildFunctionCall(Constants.kStaticPropertiesInitializer, new List<AssociativeNode>());
-                    var staticCall = AstFactory.BuildIdentList(thisClass, initializer);
-
-                    // %tmpRet = classname.%_init_static_properties(); 
-                    var ret =AstFactory.BuildIdentifier(Constants.kTempFunctionReturnVar);
-                    var functionCall = AstFactory.BuildBinaryExpression(ret, staticCall, Operator.assign);
-
-                    functionCalls.Add(functionCall);
-                }
-            }
-
-            codeblock.InsertRange(0, functionCalls);
         }
 
         public int AllocateMemberVariable(int classIndex, int classScope, string name, int rank = 0, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false)
@@ -2929,47 +2896,11 @@ namespace ProtoAssociative
                 }
             }
 
-            // This list will store all static properties initialization
-            // expression (say x = 1).
-            List<BinaryExpressionNode> staticPropertyInitList = new List<BinaryExpressionNode>();
-
             foreach (VarDeclNode vardecl in classDecl.Variables)
             {
-                IdentifierNode varIdent = null;
-
-                if (vardecl.NameNode is IdentifierNode)
-                {
-                    varIdent = vardecl.NameNode as IdentifierNode;
-                }
-                else if (vardecl.NameNode is BinaryExpressionNode)
-                {
-                    BinaryExpressionNode bNode = vardecl.NameNode as BinaryExpressionNode;
-                    varIdent = bNode.LeftNode as IdentifierNode;
-
-                    bNode.endCol = vardecl.endCol;
-                    bNode.endLine = vardecl.endLine;
-
-                    if (vardecl.IsStatic)
-                        staticPropertyInitList.Add(bNode);
-                    else
-                        thisClass.DefaultArgExprList.Add(bNode);
-                }
-                else
-                {
-                    Validity.Assert(false, "Check generated AST");
-                }
-
-                // It is possible that fail to allocate variable. In that 
-                // case we should remove initializing expression from 
-                // cnode's defaultArgExprList
+                IdentifierNode varIdent = vardecl.NameNode as IdentifierNode;
                 int symbolIndex = AllocateMemberVariable(thisClassIndex, thisClassIndex, varIdent.Value, vardecl.ArgumentType.rank, vardecl.Access, vardecl.IsStatic);
-                if (symbolIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
-                {
-                    Validity.Assert(thisClass.DefaultArgExprList.Count > 0);
-                    thisClass.DefaultArgExprList.RemoveAt(thisClass.DefaultArgExprList.Count - 1);
-                }
-                // Only generate getter/setter for non-ffi class
-                else if (!classDecl.IsExternLib)
+                if (symbolIndex != Constants.kInvalidIndex && !classDecl.IsExternLib)
                 {
                     ProtoCore.DSASM.SymbolNode prop =
                         vardecl.IsStatic
@@ -3001,28 +2932,6 @@ namespace ProtoAssociative
                 }
             }
             classOffset = 0;
-
-            // Now we are going to create a static function __init_static_properties()
-            // which will initialize all static properties. We will emit a 
-            // call to this function after all classes have been compiled.
-            if (staticPropertyInitList.Count > 0 && !classDecl.IsExternLib)
-            {
-                FunctionDefinitionNode initFunc = new FunctionDefinitionNode
-                {
-                    Name = ProtoCore.DSASM.Constants.kStaticPropertiesInitializer,
-                    Signature = new ArgumentSignatureNode(),
-                    ReturnType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)PrimitiveType.Null), UID = (int)PrimitiveType.Null },
-                    FunctionBody = new CodeBlockNode(),
-                    IsExternLib = false,
-                    ExternLibName = null,
-                    Access = ProtoCore.CompilerDefinitions.AccessModifier.Public,
-                    IsStatic = true
-                };
-                classDecl.Procedures.Add(initFunc);
-
-                staticPropertyInitList.ForEach(bNode => initFunc.FunctionBody.Body.Add(bNode));
-                initFunc.FunctionBody.Body.Add(AstFactory.BuildReturnStatement(new NullNode()));
-            }
 
             unPopulatedClasses.Remove(thisClassIndex);
         }
@@ -3504,22 +3413,6 @@ namespace ProtoAssociative
                 {
                     // Traverse default assignment for the class
                     emitDebugInfo = false;
-
-                    List<AssociativeNode> defaultArgList = core.ClassTable.ClassNodes[globalClassIndex].DefaultArgExprList;
-                    defaultArgList = BuildSSA(defaultArgList, context);
-                    foreach (BinaryExpressionNode bNode in defaultArgList)
-                    {
-                        ProtoCore.AssociativeGraph.GraphNode graphNode = new ProtoCore.AssociativeGraph.GraphNode();
-                        graphNode.exprUID = bNode.ExpressionUID;
-                        graphNode.ssaExpressionUID = bNode.SSAExpressionUID;
-                        graphNode.procIndex = globalProcIndex;
-                        graphNode.classIndex = globalClassIndex;
-                        graphNode.languageBlockId = codeBlock.codeBlockId;
-                        graphNode.isAutoGenerated = true;
-                        bNode.IsProcedureOwned = graphNode.ProcedureOwned = true;
-
-                        EmitBinaryExpressionNode(bNode, ref inferedType, false, graphNode, subPass);
-                    }
 
                     //Traverse default argument for the constructor
                     foreach (ProtoCore.DSASM.ArgumentInfo argNode in localProcedure.ArgumentInfos)

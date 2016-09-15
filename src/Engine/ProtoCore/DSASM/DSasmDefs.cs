@@ -366,7 +366,6 @@ namespace ProtoCore.DSASM
  
         public const string termline = ";\n";
         public const string kInternalNamePrefix = "%";
-        public const string kStaticPropertiesInitializer = "%init_static_properties";
         public const string kGetterPrefix = "%get_";
         public const string kSetterPrefix = "%set_";
         public const string kLHS = "%lhs";
