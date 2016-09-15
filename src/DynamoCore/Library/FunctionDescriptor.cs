@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Dynamo.Engine
 {
@@ -154,6 +155,41 @@ namespace Dynamo.Engine
         private string summary;
 
         private readonly IPathManager pathManager;
+
+        [JsonConstructor]
+        private FunctionDescriptor(string summary,
+            IPathManager pathManager,
+            string assembly,
+            string className,
+            string functionName,
+            IEnumerable<TypedParameter> parameters,
+            FunctionType functionType,
+            ProtoCore.Type returnType,
+            FunctionType type,
+            IEnumerable<string> returnKeys,
+            bool isVarArg,
+            bool isVisibleInLibrary,
+            string obsoleteMessage,
+            bool canUpdatePeriodically,
+            bool isBuiltIn,
+            bool isPackageMember
+            ) : this(new FunctionDescriptorParams()
+                {
+                    Summary = summary,
+                    PathManager = pathManager,
+                    Assembly = assembly,
+                    ClassName = className,
+                    FunctionName = functionName,
+                    Parameters = parameters,
+                    FunctionType = functionType,
+                    ReturnKeys = returnKeys,
+                    IsVarArg = isVarArg,
+                    IsVisibleInLibrary = isVisibleInLibrary,
+                    ObsoleteMsg = obsoleteMessage,
+                    CanUpdatePeriodically = canUpdatePeriodically,
+                    IsBuiltIn = isBuiltIn,
+                    IsPackageMember = isPackageMember})
+        { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FunctionDescriptor"/> class.
@@ -508,6 +544,7 @@ namespace Dynamo.Engine
         /// <summary>
         ///     Returns instance of IPathManager
         /// </summary>
+        [JsonIgnore]
         public IPathManager PathManager { get { return pathManager; } }
 
         /// <summary>
