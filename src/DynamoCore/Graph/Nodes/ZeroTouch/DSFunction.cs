@@ -12,6 +12,8 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     [AlsoKnownAs("Dynamo.Nodes.DSFunction")]
     public class DSFunction : DSFunctionBase
     {
+        public FunctionDescriptor Description{get;set;}
+
         /// <summary>
         ///     Indicates whether Node is input or not.
         /// </summary>
@@ -24,9 +26,11 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         ///     Initializes a new instance of the <see cref="DSFunction"/> class.
         /// </summary>
         /// <param name="descriptor">Function descritor.</param>
-        public DSFunction(FunctionDescriptor descriptor) 
-            : base(new ZeroTouchNodeController<FunctionDescriptor>(descriptor)) 
-        { }
+        public DSFunction(FunctionDescriptor description) 
+            : base(new ZeroTouchNodeController<FunctionDescriptor>(description)) 
+        {
+            Description = description;
+        }
     }
 }
 
