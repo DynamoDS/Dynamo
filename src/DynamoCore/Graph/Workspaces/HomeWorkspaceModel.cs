@@ -52,6 +52,7 @@ namespace Dynamo.Graph.Workspaces
         ///     This flag is critical to ensuring that crashing run-auto files
         ///     are not left in run-auto upon reopening.  
         /// </summary>
+        [JsonIgnore]
         public bool HasRunWithoutCrash { get; private set; }
 
         /// <summary>
@@ -176,6 +177,19 @@ namespace Dynamo.Graph.Workspaces
         #region Constructors
 
         [JsonConstructor]
+        public HomeWorkspaceModel(IEnumerable<NodeModel> nodes,
+            IEnumerable<NoteModel> notes,
+            IEnumerable<AnnotationModel> annotations,
+            string fileName = ""
+            ) : base(nodes,
+                Enumerable.Empty<NoteModel>(),
+                Enumerable.Empty<AnnotationModel>(),
+                new WorkspaceInfo() { FileName = fileName, Name = "Home" },
+                null,
+                Enumerable.Empty<PresetModel>(),
+                new ElementResolver())
+        { }
+
         /// <summary>
         /// Initializes a new empty instance of the <see cref="HomeWorkspaceModel"/> class
         /// </summary>
