@@ -16,17 +16,17 @@ namespace Dynamo.Library
         /// <summary>
         /// This function creates TypedParameter
         /// </summary>
-        /// <param name="parameter">parameter name</param>
+        /// <param name="name">parameter name</param>
         /// <param name="type">parameter type</param>
         /// <param name="defaultValue">parameter default value</param>
         /// <param name="shortArgumentName">short name is used as tooltip</param>
         /// <param name="summary">parameter description</param>
-        public TypedParameter(string parameter, ProtoCore.Type type, AssociativeNode defaultValue = null, string shortArgumentName = null, string summary = null)
+        public TypedParameter(string name, ProtoCore.Type type, AssociativeNode defaultValue = null, string shortArgumentName = null, string summary = null)
         {
-            if (parameter == null)
+            if (name == null)
                 throw new ArgumentNullException("parameter");
 
-            Name = parameter;
+            Name = name;
             Type = type;
             DefaultValue = defaultValue;
 
