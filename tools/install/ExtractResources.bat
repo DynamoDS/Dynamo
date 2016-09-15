@@ -22,7 +22,7 @@ echo ---------------------------------------------------------------------------
 rd /s/q %player%
 %nugetroot%\NuGet.exe restore -ConfigFile %cwd%..\..\dynamo-nuget.config -PackagesDirectory %player%
 robocopy "%player%\DynamoPlayer-Revit2017.1.0.2\Revit_2017" "%binroot%\Revit_2017" /e
-robocopy "%player%\DynamoPlayer-SampleScripts-localized-Revit2017.1.0.2" "%binroot%\samples" /e
+robocopy "%player%\DynamoPlayer-SampleScripts-localized-Revit2017.1.0.2" "%binroot%\samples" /e -XF *.nupkg [Content_Types].xml
 
 echo .
 echo -------------------------------------------------------------------------------
