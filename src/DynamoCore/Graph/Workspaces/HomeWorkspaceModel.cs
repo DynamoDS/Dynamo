@@ -175,6 +175,7 @@ namespace Dynamo.Graph.Workspaces
 
         #region Constructors
 
+        [JsonConstructor]
         /// <summary>
         /// Initializes a new empty instance of the <see cref="HomeWorkspaceModel"/> class
         /// </summary>
