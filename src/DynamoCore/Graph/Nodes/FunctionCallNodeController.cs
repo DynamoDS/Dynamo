@@ -41,9 +41,9 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Default constructor.
         /// </summary>
-        protected FunctionCallNodeController(T def)
+        protected FunctionCallNodeController(T definition)
         {
-            Definition = def;
+            Definition = definition;
         }
 
         /// <summary>
