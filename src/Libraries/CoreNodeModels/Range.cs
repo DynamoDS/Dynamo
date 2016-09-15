@@ -29,7 +29,7 @@ namespace CoreNodeModels
 
             RegisterAllPorts();
 
-            ArgumentLacing = LacingStrategy.Longest;
+            ArgumentLacing = LacingStrategy.Shortest;
         }
 
         public override bool IsConvertible
@@ -102,7 +102,7 @@ namespace CoreNodeModels
 
             RegisterAllPorts();
 
-            ArgumentLacing = LacingStrategy.Longest;
+            ArgumentLacing = LacingStrategy.Shortest;
         }
 
         public override bool IsConvertible
