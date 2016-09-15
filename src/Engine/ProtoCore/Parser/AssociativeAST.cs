@@ -1210,26 +1210,20 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class FunctionDotCallNode : AssociativeNode
     {
-        public FunctionCallNode DotCall { get; set; }
+        public IList<AssociativeNode> Arguments { get; private set; }
         public FunctionCallNode FunctionCall { get; set; }
         public bool isLastSSAIdentListFactor { get; set; }
 
-        public FunctionDotCallNode(FunctionCallNode callNode)
+        public FunctionDotCallNode(FunctionCallNode callNode, List<AssociativeNode> arguments)
         {
-            DotCall = new FunctionCallNode();
-            FunctionCall = callNode;
-            isLastSSAIdentListFactor = false;
-        }
-
-        public FunctionDotCallNode(string lhsName, FunctionCallNode callNode)
-        {
+            Arguments = arguments;
             FunctionCall = callNode;
             isLastSSAIdentListFactor = false;
         }
 
         public FunctionDotCallNode(FunctionDotCallNode rhs): base(rhs)
         {
-            DotCall = new FunctionCallNode(rhs.DotCall);
+            Arguments = new List<AssociativeNode>(rhs.Arguments);
             FunctionCall = new FunctionCallNode(rhs.FunctionCall);
             isLastSSAIdentListFactor = rhs.isLastSSAIdentListFactor;
         }
@@ -1238,7 +1232,7 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var inode = new IdentifierListNode
             {
-                LeftNode = DotCall.FormalArguments[0],
+                LeftNode = Arguments[0],
                 Optr = Operator.dot,
                 RightNode = FunctionCall.Function
             };
@@ -1251,24 +1245,22 @@ namespace ProtoCore.AST.AssociativeAST
             if (null == otherNode)
                 return false;
 
-            return DotCall.Equals(otherNode.DotCall) &&
+            return Arguments.SequenceEqual(otherNode.Arguments) &&
                    FunctionCall.Equals(otherNode.FunctionCall);
         }
 
         public override int GetHashCode()
         {
-            var dotCallHashCode =
-                (DotCall == null ? base.GetHashCode() : DotCall.GetHashCode());
             var functionCallHashCode =
                 (FunctionCall == null ? base.GetHashCode() : FunctionCall.GetHashCode());
 
-            return dotCallHashCode ^ functionCallHashCode;
+            return functionCallHashCode;
         }
 
         public override string ToString()
         {
             var buf = new StringBuilder();
-            buf.Append(DotCall.FormalArguments[0]);
+            buf.Append(Arguments[0]);
             buf.Append(".");
             buf.Append(FunctionCall);
             return buf.ToString();

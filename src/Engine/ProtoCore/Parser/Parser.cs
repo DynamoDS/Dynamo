@@ -2348,9 +2348,9 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			   }
 			   else if (expr is ProtoCore.AST.AssociativeAST.FunctionDotCallNode)
 			   {
-			       var dotCall = (expr as ProtoCore.AST.AssociativeAST.FunctionDotCallNode).DotCall;
-			       var arrayExpr = (dotCall.FormalArguments[2] as ProtoCore.AST.AssociativeAST.ExprListNode);
-			       var dimCount = (dotCall.FormalArguments[3] as ProtoCore.AST.AssociativeAST.IntNode);
+			       var dotCall = expr as ProtoCore.AST.AssociativeAST.FunctionDotCallNode;
+			       var arrayExpr = (dotCall.Arguments[2] as ProtoCore.AST.AssociativeAST.ExprListNode);
+			       var dimCount = (dotCall.Arguments[3] as ProtoCore.AST.AssociativeAST.IntNode);
 			
 			       var dims = dimCount.Value;
 			       var newdims = dims;
@@ -2365,7 +2365,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			               newarray = (newarray.Type as ProtoCore.AST.AssociativeAST.ArrayNode);
 			           }
 			           
-			           (dotCall.FormalArguments[3] as ProtoCore.AST.AssociativeAST.IntNode).Value = newdims;
+			           (dotCall.Arguments[3] as ProtoCore.AST.AssociativeAST.IntNode).Value = newdims;
 			       }
 			       groupExprNode.ArrayDimensions = null;
 			   }

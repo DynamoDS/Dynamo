@@ -706,7 +706,7 @@ namespace ProtoAssociative
                                       int type,
                                       List<ProtoCore.Type> arglist, 
                                       ProcedureNode procNode, 
-                                      FunctionCallNode funcCall, 
+                                      ProtoCore.AST.Node funcCall, 
                                       bool isGetter = false, 
                                       BinaryExpressionNode parentExpression = null)
         {
@@ -756,8 +756,7 @@ namespace ProtoAssociative
         }
         
         
-        private void TraverseDotCallArguments(FunctionCallNode funcCall, 
-                                              FunctionDotCallNode dotCall,
+        private void TraverseDotCallArguments(FunctionDotCallNode dotCall,
                                               ProcedureNode procCallNode,
                                               List<ProtoCore.Type> arglist,
                                               string procName,
@@ -785,7 +784,7 @@ namespace ProtoAssociative
             }
 
             int funtionArgCount = 0;
-            for (int n = 0; n < funcCall.FormalArguments.Count; ++n)
+            for (int n = 0; n < dotCall.Arguments.Count; ++n)
             {
                 if (isStaticCall || isConstructor)
                 {
@@ -795,7 +794,7 @@ namespace ProtoAssociative
                     }
                 }
 
-                AssociativeNode paramNode = funcCall.FormalArguments[n];
+                AssociativeNode paramNode = dotCall.Arguments[n];
                 ProtoCore.Type paramType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
 
                 emitReplicationGuide = false;
@@ -1017,10 +1016,9 @@ namespace ProtoAssociative
             string className = string.Empty;
 
             var dotCall = new FunctionDotCallNode(node as FunctionDotCallNode);
-            var funcCall = dotCall.DotCall;
             var procName = dotCall.FunctionCall.Function.Name;
 
-            var firstArgument = dotCall.DotCall.FormalArguments[0];
+            var firstArgument = dotCall.Arguments[0];
             if (firstArgument is FunctionDotCallNode)
             {
                 isUnresolvedDot = true;
@@ -1066,7 +1064,7 @@ namespace ProtoAssociative
 
                 if (toResolveMethodOnClass)
                 {
-                    dotCall.DotCall.FormalArguments[0] = new IntNode(classIndex);
+                    dotCall.Arguments[0] = new IntNode(classIndex);
                     inferedType.UID = dotCallType.UID = classIndex;
 
                     // Now the left hand side of dot call is a valid class name.
@@ -1196,8 +1194,8 @@ namespace ProtoAssociative
                                 buildStatus.LogWarning(WarningID.CallingConstructorOnInstance,
                                                        message,
                                                        core.CurrentDSFileName,
-                                                       funcCall.line,
-                                                       funcCall.col, 
+                                                       -1,
+                                                       -1, 
                                                        graphNode);
                                 EmitNullNode(new NullNode(), ref inferedType);
                             }
@@ -1212,11 +1210,11 @@ namespace ProtoAssociative
                             if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.None)
                             {
                                 string message = String.Format(ProtoCore.Properties.Resources.kMethodIsInaccessible, procName);
-                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.AccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                                buildStatus.LogWarning(ProtoCore.BuildData.WarningID.AccessViolation, message, core.CurrentDSFileName, dotCall.line, dotCall.col, graphNode);
                             }
                         }
 
-                        var dynamicRhsIndex = (int)(dotCall.DotCall.FormalArguments[1] as IntNode).Value;
+                        var dynamicRhsIndex = (int)(dotCall.Arguments[1] as IntNode).Value;
                         var dynFunc = core.DynamicFunctionTable.GetFunctionAtIndex(dynamicRhsIndex);
                         dynFunc.ClassIndex = procCallNode.ClassID;
                     }
@@ -1229,8 +1227,7 @@ namespace ProtoAssociative
 
             // Its an accceptable method at this point
             List<ProtoCore.Type> arglist = new List<ProtoCore.Type>();
-            TraverseDotCallArguments(funcCall, 
-                                     dotCall,
+            TraverseDotCallArguments(dotCall,
                                      procCallNode, 
                                      arglist,
                                      procName, 
@@ -1249,9 +1246,9 @@ namespace ProtoAssociative
 
             if (!isConstructor && !isStaticCall)
             {
-                Validity.Assert(dotCall.DotCall.FormalArguments[ProtoCore.DSASM.Constants.kDotArgIndexArrayArgs] is ExprListNode);
-                ExprListNode functionArgs = dotCall.DotCall.FormalArguments[ProtoCore.DSASM.Constants.kDotArgIndexArrayArgs] as ExprListNode;
-                functionArgs.Exprs.Insert(0, dotCall.DotCall.FormalArguments[ProtoCore.DSASM.Constants.kDotArgIndexPtr]);
+                Validity.Assert(dotCall.Arguments[ProtoCore.DSASM.Constants.kDotArgIndexArrayArgs] is ExprListNode);
+                ExprListNode functionArgs = dotCall.Arguments[ProtoCore.DSASM.Constants.kDotArgIndexArrayArgs] as ExprListNode;
+                functionArgs.Exprs.Insert(0, dotCall.Arguments[ProtoCore.DSASM.Constants.kDotArgIndexPtr]);
             }
            
             // From here on, handle the actual procedure call 
@@ -1338,7 +1335,7 @@ namespace ProtoAssociative
                         if (!isAccessible)
                         {
                             string message = String.Format(ProtoCore.Properties.Resources.kMethodIsInaccessible, procName);
-                            buildStatus.LogWarning(WarningID.AccessViolation, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                            buildStatus.LogWarning(WarningID.AccessViolation, message, core.CurrentDSFileName, dotCall.line, dotCall.col, graphNode);
 
                             inferedType.UID = (int)PrimitiveType.Null;
                             EmitPushNull();
@@ -1358,11 +1355,11 @@ namespace ProtoAssociative
                 var procNode = CoreUtils.GetFunctionByName(Constants.kDotMethodName, codeBlock);
                 if (CoreUtils.IsGetter(procName))
                 {
-                    EmitFunctionCall(depth, type, arglist, procNode, funcCall, true);
+                    EmitFunctionCall(depth, type, arglist, procNode, dotCall, true);
                 }
                 else
                 {
-                    EmitFunctionCall(depth, type, arglist, procNode, funcCall, false, bnode);
+                    EmitFunctionCall(depth, type, arglist, procNode, dotCall, false, bnode);
                 }
                 return procNode;
             }
@@ -1392,23 +1389,23 @@ namespace ProtoAssociative
                 if (isConstructor || isStaticCall)
                 {
                     bool isGetter = CoreUtils.IsGetter(procName);
-                    EmitFunctionCall(depth, procCallNode.ClassID, arglist, procCallNode, funcCall, isGetter, bnode);
+                    EmitFunctionCall(depth, procCallNode.ClassID, arglist, procCallNode, dotCall, isGetter, bnode);
                 }
                 else
                 {
                     var procNode = CoreUtils.GetFunctionByName(Constants.kDotMethodName, codeBlock);
                     if (CoreUtils.IsSetter(procName))
                     {
-                        EmitFunctionCall(depth, type, arglist, procNode, funcCall);
+                        EmitFunctionCall(depth, type, arglist, procNode, dotCall);
                     }
                     // Do not emit breakpoint at getters only - pratapa
                     else if (CoreUtils.IsGetter(procName))
                     {
-                        EmitFunctionCall(depth, type, arglist, procNode, funcCall, true);
+                        EmitFunctionCall(depth, type, arglist, procNode, dotCall, true);
                     }
                     else
                     {
-                        EmitFunctionCall(depth, type, arglist, procNode, funcCall, false, bnode);
+                        EmitFunctionCall(depth, type, arglist, procNode, dotCall, false, bnode);
                     }
 
                     if (dotCallType.UID != (int)PrimitiveType.Var)
@@ -4657,7 +4654,7 @@ namespace ProtoAssociative
             else if (node is FunctionDotCallNode)
             {
                 FunctionDotCallNode dotCall = node as FunctionDotCallNode;
-                string name = dotCall.DotCall.FormalArguments[0].Name;
+                string name = dotCall.Arguments[0].Name;
 
                 // TODO Jun: If its a constructor, leave it as it is. 
                 // After the first version of global instance functioni s implemented, 2nd phase would be to remove dotarg methods completely
@@ -5088,7 +5085,7 @@ namespace ProtoAssociative
                     FunctionDotCallNode dotcall = bnode.RightNode as FunctionDotCallNode;
                     Validity.Assert(dotcall.FunctionCall.Function is IdentifierNode);
 
-                    string className = dotcall.DotCall.FormalArguments[0].Name;
+                    string className = dotcall.Arguments[0].Name;
                     string fullyQualifiedClassName = string.Empty;
                     bool isClassName = core.ClassTable.TryGetFullyQualifiedName(className, out fullyQualifiedClassName);
 
@@ -5097,7 +5094,7 @@ namespace ProtoAssociative
                         //string className = dotcall.DotCall.FormalArguments[0].Name;
                         if (isClassName)
                         {
-                            ssaPointerStack.Peek().Add(dotcall.DotCall.FormalArguments[0]);
+                            ssaPointerStack.Peek().Add(dotcall.Arguments[0]);
                         }
 
                         // This function is an internal getter or setter, store the identifier node
