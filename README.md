@@ -48,6 +48,7 @@ New Functionality :
 - Geometry Preview state of nodes shown in color change
 
 Important Bug Fixes: 
+- All Elements Of Category fails for Views
 - Number from Feet and Inches rounds input text incorrectly and output is confusing
 - Circle.ByBestFitThroughPoints is always horizontal
 - Preview Control Crash when deleting ObjectSelector node before running completed
