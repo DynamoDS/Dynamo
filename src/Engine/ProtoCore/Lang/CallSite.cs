@@ -1095,7 +1095,7 @@ namespace ProtoCore
 
             //Walk the class tree structure to find the method
 
-            if (runtimeCore.DSExecutable.classTable.ClassNodes[typeID].Base != Constants.kInvalidIndex)
+            while (runtimeCore.DSExecutable.classTable.ClassNodes[typeID].Base != Constants.kInvalidIndex)
             {
                 typeID = runtimeCore.DSExecutable.classTable.ClassNodes[typeID].Base;
 
