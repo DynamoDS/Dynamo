@@ -49,7 +49,6 @@ New Functionality :
 
 Important Bug Fixes:
 - 4 most common crashes identified through crash error reporting have been fixed.  These failures were a combination of divide by zero and Null reference exception thrown from preview and some issues during initialization with Revit, which account for 30% of all reported crashes in Dynamo 1.1.
-- Yes, that was 30% of all crashes in 1.1
 - All Elements Of Category fails for Views
 - Number from Feet and Inches rounds input text incorrectly and output is confusing
 - Circle.ByBestFitThroughPoints is always horizontal
