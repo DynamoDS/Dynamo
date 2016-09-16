@@ -6687,7 +6687,7 @@ import(DummyBase from ""FFITarget.dll"");
             Assert.IsTrue((Int64)o.Payload == 868760);
         }
 
-        [Test]
+        [Test, Ignore]
         [Category("Debugger")]
         public void TestFFISetPropertyAssociative()
         {

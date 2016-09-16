@@ -93,9 +93,9 @@ namespace Dynamo.Engine.NodeToCode
                         break;
                 }
 
-                if (classNode.Bases.Any())
+                if (classNode.Base != Constants.kInvalidIndex)
                 {
-                    var baseIndex = classNode.Bases[0];
+                    var baseIndex = classNode.Base;
                     classNode = core.ClassTable.ClassNodes[baseIndex];
                 }
                 else

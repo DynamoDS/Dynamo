@@ -13,12 +13,11 @@ namespace ProtoCore.DSASM
     {
         public string Name { get; set; }
         public SymbolTable Symbols { get; set; }
-        public List<AssociativeNode> DefaultArgExprList { get; set; } 
         public ProcedureTable ProcTable { get; set; }
         public int Size { get; set; }
         public int Rank { get; set; }
         public int ID { get; set; }
-        public List<int> Bases { get; set; }
+        public int Base { get; set; }
         public bool IsImportedClass { get; set; }
         public ClassAttributes ClassAttributes { get; set; }
 
@@ -45,13 +44,12 @@ namespace ProtoCore.DSASM
             disposeMethod = null;
             Rank = ProtoCore.DSASM.Constants.kDefaultClassRank;
             Symbols = new SymbolTable("classscope", 0);
-            DefaultArgExprList = new List<AST.AssociativeAST.AssociativeNode>();
             ID = (int)PrimitiveType.InvalidType;
 
             // Jun TODO: how significant is runtime index for class procedures?
             int classRuntimProc = ProtoCore.DSASM.Constants.kInvalidIndex;
             ProcTable = new ProcedureTable(classRuntimProc);
-            Bases = new List<int>();
+            Base = Constants.kInvalidIndex;
             ExternLib = string.Empty;
 
             // Set default allowed coerce types
@@ -74,7 +72,6 @@ namespace ProtoCore.DSASM
             {
                 Symbols = new SymbolTable(rhs.Symbols.ScopeName, rhs.Symbols.RuntimeIndex);
             }
-            DefaultArgExprList = new List<AST.AssociativeAST.AssociativeNode>();
             ID = rhs.ID;
 
             int classRuntimProc = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -83,7 +80,7 @@ namespace ProtoCore.DSASM
             {
                 ProcTable = new ProcedureTable(rhs.ProcTable);
             }
-            Bases = new List<int>(rhs.Bases);
+            Base = rhs.Base; 
             ExternLib = rhs.ExternLib;
             TypeSystem = rhs.TypeSystem;
             CoerceTypes = new Dictionary<int, int>(rhs.CoerceTypes);
@@ -156,13 +153,12 @@ namespace ProtoCore.DSASM
             if ((int)PrimitiveType.InvalidType == type)
                 return false;
 
-            foreach (int baseIndex in Bases)
+            if (Base != Constants.kInvalidIndex)
             {
-                Validity.Assert(baseIndex != (int)PrimitiveType.InvalidType);
-                if (type == baseIndex)
+                if (type == Base)
                     return true;
 
-                ClassNode baseClassNode = TypeSystem.classTable.ClassNodes[baseIndex];
+                ClassNode baseClassNode = TypeSystem.classTable.ClassNodes[Base];
                 if (baseClassNode.IsMyBase(type))
                     return true;
             }
@@ -233,11 +229,9 @@ namespace ProtoCore.DSASM
                 return procNode;
             }
 
-            foreach (int baseClassIndex in Bases)
+            if (Base != Constants.kInvalidIndex)
             {
-                procNode = TypeSystem.classTable.ClassNodes[baseClassIndex].GetMemberFunction(procName, argTypeList, classScope, out isAccessible, out functionHostClassIndex, isStaticOrConstructor);
-                if (procNode != null && isAccessible)
-                    break;
+                procNode = TypeSystem.classTable.ClassNodes[Base].GetMemberFunction(procName, argTypeList, classScope, out isAccessible, out functionHostClassIndex, isStaticOrConstructor);
             }
 
             return procNode;
@@ -256,14 +250,10 @@ namespace ProtoCore.DSASM
                 return procNode;
             }
 
-            foreach (int baseClassIndex in Bases)
+            if (Base != Constants.kInvalidIndex)
             {
-                var baseClass = TypeSystem.classTable.ClassNodes[baseClassIndex];
+                var baseClass = TypeSystem.classTable.ClassNodes[Base];
                 procNode = baseClass.GetFirstMemberFunctionBy(procName);
-                if (null != procNode)
-                {
-                    break;
-                }
             }
             return procNode;
         }
@@ -277,14 +267,10 @@ namespace ProtoCore.DSASM
                 return procNode;
             }
 
-            foreach (int baseClassIndex in Bases)
+            if (Base != Constants.kInvalidIndex)
             {
-                var baseClass = TypeSystem.classTable.ClassNodes[baseClassIndex];
+                var baseClass = TypeSystem.classTable.ClassNodes[Base];
                 procNode = baseClass.GetFirstMemberFunctionBy(procName, argCount);
-                if (null != procNode)
-                {
-                    break;
-                }
             }
             return procNode;
         }
@@ -316,14 +302,10 @@ namespace ProtoCore.DSASM
                 return procNode;
             }
 
-            foreach (int baseClassIndex in Bases)
+            if (Base != Constants.kInvalidIndex)
             {
-                var baseClass = TypeSystem.classTable.ClassNodes[baseClassIndex];
+                var baseClass = TypeSystem.classTable.ClassNodes[Base];
                 procNode = baseClass.GetFirstStaticFunctionBy(procName);
-                if (null != procNode)
-                {
-                    break;
-                }
             }
             return procNode;
         }
@@ -343,14 +325,10 @@ namespace ProtoCore.DSASM
                 return procNode;
             }
 
-            foreach (int baseClassIndex in Bases)
+            if (Base != Constants.kInvalidIndex)
             {
-                var baseClass = TypeSystem.classTable.ClassNodes[baseClassIndex];
+                var baseClass = TypeSystem.classTable.ClassNodes[Base];
                 procNode = baseClass.GetFirstStaticFunctionBy(procName, argCount);
-                if (null != procNode)
-                {
-                    break;
-                }
             }
             return procNode;
         }

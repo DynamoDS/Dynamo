@@ -340,14 +340,10 @@ namespace ProtoCore
                 Validity.Assert(staticCore != null);
 
                 ClassNode cNode = ClassNode;
-                while (cNode.Bases.Count > 0)
+                if (cNode.Base != Constants.kInvalidIndex)
                 {
-
-                    int ci = cNode.Bases[0];
-                    Validity.Assert(ci != ProtoCore.DSASM.Constants.kInvalidIndex);
-
+                    int ci = cNode.Base;
                     baseClasses.Add(new ClassMirror(staticCore, staticCore.ClassTable.ClassNodes[ci], this.libraryMirror));
-
                     cNode = staticCore.ClassTable.ClassNodes[ci];
                 }
                 return baseClasses;
