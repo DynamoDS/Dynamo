@@ -2107,6 +2107,25 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// This converter was created for AboutWindow.xaml in order to accomodate the changes required
+    /// for the display for both Core/Host versions. 
+    /// </summary>
+    public class NullValueToGridRow1Converter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null) return 1;
+            return 2;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     // Depending on the number of points in FullCategoryName margin will be done.
     // E.g. Geometry -> Margin="5,0,0,0"
     // E.g. RootCategory.Namespace1.Namespace2 -> Margin="45,0,20,0"
