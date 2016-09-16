@@ -23,7 +23,7 @@ namespace ProtoCore.Utils
             ret.Add(runtimeCore.DSExecutable.classTable.ClassNodes.IndexOf(cn));
 
             ClassNode target = cn;
-            if (target.Base != Constants.kInvalidIndex)
+            while (target.Base != Constants.kInvalidIndex)
             {
                 ret.Add(target.Base);
                 target = runtimeCore.DSExecutable.classTable.ClassNodes[target.Base];
