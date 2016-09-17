@@ -604,9 +604,9 @@ namespace ProtoCore.DSASM
             ProcedureNode pn = cn.GetDisposeMethod();
             while (pn == null)
             {
-                if (cn.Bases != null && cn.Bases.Count != 0) 
+                if (cn.Base != Constants.kInvalidIndex)
                 {
-                    classIndex = cn.Bases[0];
+                    classIndex = cn.Base;
                     cn = exe.exe.classTable.ClassNodes[classIndex];
                     pn = cn.GetDisposeMethod();
                 }

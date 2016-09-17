@@ -38,7 +38,7 @@ namespace CoreNodeModels
                     AstFactory.BuildBooleanNode(true)
                 };
 
-                rhs = AstFactory.BuildFunctionCall("Function", inputParams);
+                rhs = AstFactory.BuildFunctionCall("__CreateFunctionObject", inputParams);
             }
             else
             {

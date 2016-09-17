@@ -853,7 +853,7 @@ namespace ProtoCore
                 // This is the first non-auto generated procedure found in the identifier list
                 if (null != procnode)
                 {
-                    if (!procnode.IsConstructor && !procnode.Name.Equals(ProtoCore.DSASM.Constants.kStaticPropertiesInitializer))
+                    if (!procnode.IsConstructor)
                     {
                         functionCallStack.Add(procnode);
                     }
