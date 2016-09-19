@@ -78,34 +78,24 @@ namespace ProtoCore
             List<List<StackValue>> reducedFormalParams,
             StackFrame stackFrame,
             RuntimeCore runtimeCore,
-            out Dictionary<FunctionEndPoint, int> lookup)
+            out HashSet<FunctionEndPoint> lookup)
         {
-            List<ReplicationInstruction> replicationInstructions = new List<ReplicationInstruction>(); //We've already done the reduction before calling this
-
-            int unresolvable = 0;
-            lookup = new Dictionary<FunctionEndPoint, int>();
-
+            lookup = new HashSet<FunctionEndPoint>();
             foreach (List<StackValue> formalParamSet in reducedFormalParams)
             {
-                List<FunctionEndPoint> feps = GetExactTypeMatches(context,
-                                                                  formalParamSet, replicationInstructions, stackFrame,
-                                                                  runtimeCore);
+                List<FunctionEndPoint> feps = GetExactTypeMatches(context, formalParamSet, new List<ReplicationInstruction>(), stackFrame, runtimeCore);
                 if (feps.Count == 0)
                 {
-                    //We have an arugment set that couldn't be resolved
-                    unresolvable++;
+                    return false;
                 }
 
                 foreach (FunctionEndPoint fep in feps)
                 {
-                    if (lookup.ContainsKey(fep))
-                        lookup[fep]++;
-                    else
-                        lookup.Add(fep, 1);
+                    lookup.Add(fep);
                 }
              }
 
-             return unresolvable == 0;
+            return true;
         }
 
 

@@ -547,7 +547,7 @@ namespace ProtoCore
                 foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
                 {
                     List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, replicationOption, runtimeCore);
-                    Dictionary<FunctionEndPoint, int> lookups;
+                    HashSet<FunctionEndPoint> lookups;
                     if (funcGroup.CanGetExactMatchStatics(context, reducedParams, stackFrame, runtimeCore, out lookups))
                     {
                         return true; //Replicates against cluster
@@ -793,11 +793,11 @@ namespace ProtoCore
             #region Case 1a: Replicate only according to the replication guides, but with a sub-typing match
             {
                 List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, instructions, runtimeCore);
-                Dictionary<FunctionEndPoint, int> lookups; 
+                HashSet<FunctionEndPoint> lookups; 
                 if (funcGroup.CanGetExactMatchStatics( context, reducedParams, stackFrame, runtimeCore, out lookups))
                 {
                     //Otherwise we have a cluster of FEPs that can be used to dispatch the array
-                    resolvesFeps = new List<FunctionEndPoint>(lookups.Keys);
+                    resolvesFeps = new List<FunctionEndPoint>(lookups);
                     replicationInstructions = instructions;
                     return;
                 }
@@ -813,11 +813,11 @@ namespace ProtoCore
                 foreach (List<ReplicationInstruction> repOption in replicationTrials)
                 {
                     List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, repOption, runtimeCore);
-                    Dictionary<FunctionEndPoint, int> lookups;
+                    HashSet<FunctionEndPoint> lookups;
                     if (funcGroup.CanGetExactMatchStatics(context, reducedParams, stackFrame, runtimeCore, out lookups))
                     {
                         //Otherwise we have a cluster of FEPs that can be used to dispatch the array
-                        resolvesFeps = new List<FunctionEndPoint>(lookups.Keys);
+                        resolvesFeps = new List<FunctionEndPoint>(lookups);
                         replicationInstructions = repOption;
                         return;
                     }
