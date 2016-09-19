@@ -73,14 +73,17 @@ namespace ProtoCore
         /// <param name="core"></param>
         /// <param name="unresolvable">The number of argument sets that couldn't be resolved</param>
         /// <returns></returns>
-        public Dictionary<FunctionEndPoint, int> GetExactMatchStatistics(
+        public bool CanGetExactMatchStatics(
             Runtime.Context context,
-            List<List<StackValue>> reducedFormalParams, StackFrame stackFrame, RuntimeCore runtimeCore, out int unresolvable)
+            List<List<StackValue>> reducedFormalParams,
+            StackFrame stackFrame,
+            RuntimeCore runtimeCore,
+            out Dictionary<FunctionEndPoint, int> lookup)
         {
             List<ReplicationInstruction> replicationInstructions = new List<ReplicationInstruction>(); //We've already done the reduction before calling this
 
-            unresolvable = 0;
-            Dictionary<FunctionEndPoint, int> ret = new Dictionary<FunctionEndPoint, int>();
+            int unresolvable = 0;
+            lookup = new Dictionary<FunctionEndPoint, int>();
 
             foreach (List<StackValue> formalParamSet in reducedFormalParams)
             {
@@ -95,14 +98,14 @@ namespace ProtoCore
 
                 foreach (FunctionEndPoint fep in feps)
                 {
-                    if (ret.ContainsKey(fep))
-                        ret[fep]++;
+                    if (lookup.ContainsKey(fep))
+                        lookup[fep]++;
                     else
-                        ret.Add(fep, 1);
+                        lookup.Add(fep, 1);
                 }
              }
 
-             return ret;
+             return unresolvable == 0;
         }
 
 
