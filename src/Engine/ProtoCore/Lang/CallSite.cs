@@ -528,11 +528,8 @@ namespace ProtoCore
            var instructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
 
             #region First Case: Replicate only according to the replication guides
-
             {
-                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, instructions,
-                                                                stackFrame,
-                                                                runtimeCore, new StringBuilder());
+                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
                 if (fep != null)
                 {
                     //found an exact match
@@ -543,7 +540,6 @@ namespace ProtoCore
             #endregion
 
             #region Case 2: Replication with no type cast
-
             {
                 //Build the possible ways in which we might replicate
                 replicationTrials = Replicator.BuildReplicationCombinations(instructions, arguments, runtimeCore);
@@ -776,7 +772,6 @@ namespace ProtoCore
         }
 
         private void ComputeFeps(
-            StringBuilder log, 
             Context context, 
             List<StackValue> arguments,
             FunctionGroup funcGroup,
@@ -791,28 +786,17 @@ namespace ProtoCore
             //Exact match
             //Match with single elements
             //Match with single elements with upcast
-
             //Try replication without type cast
-
             //Match with type conversion
             //Match with type conversion with upcast
-
             //Try replication + type casting
-
             //Try replication + type casting + Array promotion
 
             #region First Case: Replicate only according to the replication guides
             {
-                log.AppendLine("Case 1: Exact Match");
-
-                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, instructions,
-                                                                stackFrame,
-                                                                runtimeCore, log);
+                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
                 if (fep != null)
                 {
-                    if (runtimeCore.Options.DumpFunctionResolverLogic)
-                        runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
-
                     resolvesFeps = new List<FunctionEndPoint>() { fep };
                     replicationInstructions = instructions;
 
@@ -824,25 +808,15 @@ namespace ProtoCore
 
             #region Case 1a: Replicate only according to the replication guides, but with a sub-typing match
             {
-                log.AppendLine("Case 1a: Replication guides + auto-replication + no cases");
                 List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, instructions, runtimeCore);
                 int resolutionFailures;
 
-                Dictionary<FunctionEndPoint, int> lookups = funcGroup.GetExactMatchStatistics(
-                    context, reducedParams, stackFrame, runtimeCore,
-                    out resolutionFailures);
+                var lookups = funcGroup.GetExactMatchStatistics( context, reducedParams, stackFrame, runtimeCore, out resolutionFailures);
 
                 if (resolutionFailures == 0)
                 {
-                    log.AppendLine("Resolution succeeded against FEP Cluster");
-                    foreach (FunctionEndPoint fep in lookups.Keys)
-                        log.AppendLine("\t - " + fep);
-
                     List<FunctionEndPoint> feps = new List<FunctionEndPoint>();
                     feps.AddRange(lookups.Keys);
-
-                    if (runtimeCore.Options.DumpFunctionResolverLogic)
-                        runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
 
                     //Otherwise we have a cluster of FEPs that can be used to dispatch the array
                     resolvesFeps = feps;
@@ -859,30 +833,18 @@ namespace ProtoCore
             #region Case 2: Replication with no type cast
 
             {
-                log.AppendLine("Case 2: Beginning Auto-replication, no casts");
-
                 //Build the possible ways in which we might replicate
                 foreach (List<ReplicationInstruction> repOption in replicationTrials)
                 {
                     List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, repOption, runtimeCore);
                     int resolutionFailures;
-
-                    Dictionary<FunctionEndPoint, int> lookups = funcGroup.GetExactMatchStatistics(
-                        context, reducedParams, stackFrame, runtimeCore,
-                        out resolutionFailures);
+                    var lookups = funcGroup.GetExactMatchStatistics(context, reducedParams, stackFrame, runtimeCore, out resolutionFailures);
 
                     if (resolutionFailures > 0)
                         continue;
 
-                    log.AppendLine("Resolution succeeded against FEP Cluster");
-                    foreach (FunctionEndPoint fep in lookups.Keys)
-                        log.AppendLine("\t - " + fep);
-
                     List<FunctionEndPoint> feps = new List<FunctionEndPoint>();
                     feps.AddRange(lookups.Keys);
-
-                    if (runtimeCore.Options.DumpFunctionResolverLogic)
-                        runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
 
                     //Otherwise we have a cluster of FEPs that can be used to dispatch the array
                     resolvesFeps = feps;
@@ -896,17 +858,10 @@ namespace ProtoCore
 
             #region Case 3: Match with type conversion, but no array promotion
             {
-                log.AppendLine("Case 3: Type conversion");
-
                 FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
 
                 if (compliantTarget != null)
                 {
-                    log.AppendLine("Resolution Succeeded: " + compliantTarget);
-
-                    if (runtimeCore.Options.DumpFunctionResolverLogic)
-                        runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
-
                     resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
                     replicationInstructions = instructions;
                     return;
@@ -916,8 +871,6 @@ namespace ProtoCore
             #endregion
 
             #region Case 4: Match with type conversion and replication
-
-            log.AppendLine("Case 4: Replication + Type conversion");
             {
                 if (arguments.Any(arg => arg.IsArray))
                 {
@@ -927,11 +880,6 @@ namespace ProtoCore
                         FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore);
                         if (compliantTarget != null)
                         {
-                            log.AppendLine("Resolution Succeeded: " + compliantTarget);
-
-                            if (runtimeCore.Options.DumpFunctionResolverLogic)
-                                runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
-
                             resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
                             replicationInstructions = replicationOption;
                             return;
@@ -943,8 +891,6 @@ namespace ProtoCore
             #endregion
 
             #region Case 5: Match with type conversion, replication and array promotion
-
-            log.AppendLine("Case 5: Replication + Type conversion + Array promotion");
             {
                 //Add as a first attempt a no-replication, but allowing up-promoting
                 replicationTrials.Add(new List<ReplicationInstruction>());
@@ -955,10 +901,6 @@ namespace ProtoCore
                     FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore, true);
                     if (compliantTarget != null)
                     {
-                        log.AppendLine("Resolution Succeeded: " + compliantTarget);
-
-                        if (runtimeCore.Options.DumpFunctionResolverLogic)
-                            runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
                         resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
                         replicationInstructions = replicationOption;
                         return;
@@ -1012,7 +954,7 @@ namespace ProtoCore
         private FunctionEndPoint Case1GetCompleteMatchFEP(Context context, List<StackValue> arguments,
                                                           FunctionGroup funcGroup,
                                                           List<ReplicationInstruction> replicationInstructions, StackFrame stackFrame,
-                                                          RuntimeCore runtimeCore, StringBuilder log)
+                                                          RuntimeCore runtimeCore)
         {
             //Exact match
             List<FunctionEndPoint> exactTypeMatchingCandindates =
@@ -1026,7 +968,6 @@ namespace ProtoCore
                 {
                     //Exact match
                     fep = exactTypeMatchingCandindates[0];
-                    log.AppendLine("1 exact match found - FEP selected" + fep);
                 }
                 else
                 {
@@ -1034,8 +975,6 @@ namespace ProtoCore
                     fep = SelectFEPFromMultiple(stackFrame,
                                                 runtimeCore,
                                                 exactTypeMatchingCandindates, arguments);
-
-                    log.AppendLine(exactTypeMatchingCandindates.Count + "exact matches found - FEP selected" + fep);
                 }
             }
 
@@ -1430,7 +1369,7 @@ namespace ProtoCore
             List<ReplicationInstruction> replicationInstructions;
 
             arguments = PerformRepGuideForcedPromotion(arguments, partialReplicationGuides, runtimeCore);
-            ComputeFeps(log, context, arguments, funcGroup, partialInstructions, stackFrame, runtimeCore, out resolvesFeps, out replicationInstructions);
+            ComputeFeps(context, arguments, funcGroup, partialInstructions, stackFrame, runtimeCore, out resolvesFeps, out replicationInstructions);
 
             if (resolvesFeps.Count == 0)
             {
