@@ -529,7 +529,7 @@ namespace ProtoCore
 
             #region First Case: Replicate only according to the replication guides
             {
-                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
+                FunctionEndPoint fep = GetCompleteMatchFunctionEndPoint(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
                 if (fep != null)
                 {
                     //found an exact match
@@ -780,7 +780,7 @@ namespace ProtoCore
         {
             #region First Case: Replicate only according to the replication guides
             {
-                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
+                FunctionEndPoint fep = GetCompleteMatchFunctionEndPoint(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
                 if (fep != null)
                 {
                     resolvesFeps = new List<FunctionEndPoint>() { fep };
@@ -796,13 +796,9 @@ namespace ProtoCore
                 Dictionary<FunctionEndPoint, int> lookups; 
                 if (funcGroup.CanGetExactMatchStatics( context, reducedParams, stackFrame, runtimeCore, out lookups))
                 {
-                    List<FunctionEndPoint> feps = new List<FunctionEndPoint>();
-                    feps.AddRange(lookups.Keys);
-
                     //Otherwise we have a cluster of FEPs that can be used to dispatch the array
-                    resolvesFeps = feps;
+                    resolvesFeps = new List<FunctionEndPoint>(lookups.Keys);
                     replicationInstructions = instructions;
-
                     return;
                 }
             }
@@ -820,13 +816,9 @@ namespace ProtoCore
                     Dictionary<FunctionEndPoint, int> lookups;
                     if (funcGroup.CanGetExactMatchStatics(context, reducedParams, stackFrame, runtimeCore, out lookups))
                     {
-                        List<FunctionEndPoint> feps = new List<FunctionEndPoint>();
-                        feps.AddRange(lookups.Keys);
-
                         //Otherwise we have a cluster of FEPs that can be used to dispatch the array
-                        resolvesFeps = feps;
+                        resolvesFeps = new List<FunctionEndPoint>(lookups.Keys);
                         replicationInstructions = repOption;
-
                         return;
                     }
                 }
@@ -926,31 +918,31 @@ namespace ProtoCore
         /// <param name="core"></param>
         /// <param name="log"></param>
         /// <returns></returns>
-        private FunctionEndPoint Case1GetCompleteMatchFEP(Context context, List<StackValue> arguments,
-                                                          FunctionGroup funcGroup,
-                                                          List<ReplicationInstruction> replicationInstructions, StackFrame stackFrame,
-                                                          RuntimeCore runtimeCore)
+        private FunctionEndPoint GetCompleteMatchFunctionEndPoint(
+            Context context, List<StackValue> arguments,
+            FunctionGroup funcGroup,
+            List<ReplicationInstruction> replicationInstructions,
+            StackFrame stackFrame,
+            RuntimeCore runtimeCore)
         {
             //Exact match
-            List<FunctionEndPoint> exactTypeMatchingCandindates =
-                funcGroup.GetExactTypeMatches(context, arguments, replicationInstructions, stackFrame, runtimeCore);
+            var exactTypeMatchingCandindates = funcGroup.GetExactTypeMatches(context, arguments, replicationInstructions, stackFrame, runtimeCore);
+
+            if (exactTypeMatchingCandindates.Count == 0)
+            {
+                return null;
+            }
 
             FunctionEndPoint fep = null;
-
-            if (exactTypeMatchingCandindates.Count > 0)
+            if (exactTypeMatchingCandindates.Count == 1)
             {
-                if (exactTypeMatchingCandindates.Count == 1)
-                {
-                    //Exact match
-                    fep = exactTypeMatchingCandindates[0];
-                }
-                else
-                {
-                    //Exact match with upcast
-                    fep = SelectFEPFromMultiple(stackFrame,
-                                                runtimeCore,
-                                                exactTypeMatchingCandindates, arguments);
-                }
+                //Exact match
+                fep = exactTypeMatchingCandindates[0];
+            }
+            else
+            {
+                //Exact match with upcast
+                fep = SelectFEPFromMultiple(stackFrame, runtimeCore, exactTypeMatchingCandindates, arguments);
             }
 
             return fep;
