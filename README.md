@@ -50,6 +50,7 @@ New Functionality :
 Important Bug Fixes:
 - 4 most common crashes identified through crash error reporting have been fixed.  These failures were a combination of divide by zero and Null reference exception thrown from preview and some issues during initialization with Revit, which account for 30% of all reported crashes in Dynamo 1.1.
 - All Elements Of Category fails for Views
+- Package Manager Crash and upload fixes
 - Custom node can only place family instance(s) in isolation. Multiple use of same CN on graph results in 'last node wins'
 - Number from Feet and Inches rounds input text incorrectly and output is confusing
 - Circle.ByBestFitThroughPoints is always horizontal
