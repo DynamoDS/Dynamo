@@ -969,7 +969,6 @@ namespace ProtoCore
 
             #endregion
 
-
             resolvesFeps = new List<FunctionEndPoint>();
             replicationInstructions = instructions;
         }
@@ -1431,7 +1430,7 @@ namespace ProtoCore
             }
 
             arguments.ForEach(x => runtimeCore.AddCallSiteGCRoot(CallSiteID, x));
-            StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, runtimeCore, funcGroup);
+            StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, runtimeCore);
             if (!ret.IsExplicitCall)
             {
                 ret = AtLevelHandler.RestoreDominantStructure(ret, domintListStructure, replicationInstructions, runtimeCore); 
@@ -1447,8 +1446,7 @@ namespace ProtoCore
             List<StackValue> formalParameters, 
             List<ReplicationInstruction> replicationInstructions, 
             StackFrame stackFrame, 
-            RuntimeCore runtimeCore, 
-            FunctionGroup funcGroup)
+            RuntimeCore runtimeCore)
         {
             SingleRunTraceData singleRunTraceData = (invokeCount < traceData.Count) ? traceData[invokeCount] : new SingleRunTraceData();
             SingleRunTraceData newTraceData = new SingleRunTraceData();
@@ -1457,14 +1455,12 @@ namespace ProtoCore
             if (replicationInstructions.Count == 0)
             {
                 c.IsReplicating = false;
-                ret = ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, runtimeCore, funcGroup,
-                    singleRunTraceData, newTraceData);
+                ret = ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, runtimeCore, singleRunTraceData, newTraceData);
             }
             else //replicated call
             {
                 c.IsReplicating = true;
-                ret = ExecWithRISlowPath(functionEndPoint, c, formalParameters, replicationInstructions, stackFrame,
-                                         runtimeCore, funcGroup, singleRunTraceData, newTraceData);
+                ret = ExecWithRISlowPath(functionEndPoint, c, formalParameters, replicationInstructions, stackFrame, runtimeCore, singleRunTraceData, newTraceData);
             }
 
             //Do a trace save here
@@ -1498,7 +1494,6 @@ namespace ProtoCore
             List<ReplicationInstruction> replicationInstructions, 
             StackFrame stackFrame, 
             RuntimeCore runtimeCore, 
-            FunctionGroup funcGroup, 
             SingleRunTraceData previousTraceData, 
             SingleRunTraceData newTraceData)
         {
@@ -1508,7 +1503,7 @@ namespace ProtoCore
             //Recursion base case
             if (replicationInstructions.Count == 0)
             {
-                return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, runtimeCore, funcGroup, previousTraceData, newTraceData);
+                return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, runtimeCore, previousTraceData, newTraceData);
             }
 
             //Get the replication instruction that this call will deal with
@@ -1638,8 +1633,7 @@ namespace ProtoCore
 
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
-                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore,
-                                                    funcGroup, lastExecTrace, cleanRetTrace);
+                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace);
 
                     runtimeCore.AddCallSiteGCRoot(CallSiteID, retSVs[i]);
 
@@ -1703,8 +1697,7 @@ namespace ProtoCore
                     List<StackValue> newFormalParams = new List<StackValue>();
                     newFormalParams.AddRange(formalParameters);
 
-                    return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore,
-                                                funcGroup, previousTraceData, newTraceData);
+                    return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, previousTraceData, newTraceData);
                 }
 
                 //Now iterate over each of these options
@@ -1749,8 +1742,7 @@ namespace ProtoCore
                     //previousTraceData = lastExecTrace;
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
-                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore,
-                                                    funcGroup, lastExecTrace, cleanRetTrace);
+                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace);
 
                     runtimeCore.AddCallSiteGCRoot(CallSiteID, retSVs[i]);
 
@@ -1776,7 +1768,7 @@ namespace ProtoCore
         /// </summary>
         private StackValue ExecWithZeroRI(List<FunctionEndPoint> functionEndPoint, Context c,
                                           List<StackValue> formalParameters, StackFrame stackFrame, RuntimeCore runtimeCore,
-                                          FunctionGroup funcGroup, SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
+                                          SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
             if (runtimeCore.CancellationPending)
             {
