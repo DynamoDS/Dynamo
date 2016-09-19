@@ -839,7 +839,7 @@ namespace Dynamo.Tests
             NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsTrue(result != null && result.AstNodes != null);
 
-            var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().EndsWith(".X"));
+            var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().Contains("get_X"));
             Assert.IsTrue(rhs.All(r => r));
         }
 
