@@ -1402,6 +1402,20 @@ namespace ProtoCore
             //If we got here then the function group got resolved
             log.AppendLine("Function group resolved: " + funcGroup);
 
+            List<FunctionEndPoint> candidatesFeps = new List<FunctionEndPoint>();
+            int argumentNumber = arguments.Count;
+            foreach (var fep in funcGroup.FunctionEndPoints)
+            {
+                int defaultParamNumber = fep.procedureNode.ArgumentInfos.Count(x => x.IsDefault);
+                int parameterNumber = fep.procedureNode.ArgumentTypes.Count;
+
+                if (argumentNumber <= parameterNumber && parameterNumber - argumentNumber <= defaultParamNumber)
+                {
+                    candidatesFeps.Add(fep);
+                }
+            }
+            funcGroup = new FunctionGroup(candidatesFeps);
+
             #endregion
 
             partialReplicationGuides = PerformRepGuideDemotion(arguments, partialReplicationGuides, runtimeCore);
