@@ -579,7 +579,7 @@ namespace Dynamo.Tests
 
             var expr = result.AstNodes.Last() as BinaryExpressionNode;
             Assert.IsNotNull(expr);
-            Assert.AreEqual("t1.DistanceTo(t2)", expr.RightNode.ToString());
+            Assert.AreEqual("Geometry.DistanceTo(t1, t2)", expr.RightNode.ToString());
         }
 
         [Test]
