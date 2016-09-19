@@ -781,7 +781,6 @@ namespace ProtoCore
             List<StackValue> arguments,
             FunctionGroup funcGroup,
             List<ReplicationInstruction> instructions, 
-            List<List<ReplicationGuide>> partialReplicationGuides,
             StackFrame stackFrame,
             RuntimeCore runtimeCore,
             out List<FunctionEndPoint> resolvesFeps,
@@ -1431,7 +1430,7 @@ namespace ProtoCore
             List<ReplicationInstruction> replicationInstructions;
 
             arguments = PerformRepGuideForcedPromotion(arguments, partialReplicationGuides, runtimeCore);
-            ComputeFeps(log, context, arguments, funcGroup, partialInstructions, partialReplicationGuides, stackFrame, runtimeCore, out resolvesFeps, out replicationInstructions);
+            ComputeFeps(log, context, arguments, funcGroup, partialInstructions, stackFrame, runtimeCore, out resolvesFeps, out replicationInstructions);
 
             if (resolvesFeps.Count == 0)
             {
