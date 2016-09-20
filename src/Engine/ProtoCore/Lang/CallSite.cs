@@ -794,7 +794,7 @@ namespace ProtoCore
             {
                 List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, instructions, runtimeCore);
                 HashSet<FunctionEndPoint> lookups; 
-                if (funcGroup.CanGetExactMatchStatics( context, reducedParams, stackFrame, runtimeCore, out lookups))
+                if (funcGroup.CanGetExactMatchStatics(context, reducedParams, stackFrame, runtimeCore, out lookups))
                 {
                     //Otherwise we have a cluster of FEPs that can be used to dispatch the array
                     resolvesFeps = new List<FunctionEndPoint>(lookups);
@@ -822,6 +822,7 @@ namespace ProtoCore
                         return;
                     }
                 }
+
             }
 
             #endregion
@@ -1307,6 +1308,7 @@ namespace ProtoCore
             //If we got here then the function group got resolved
             log.AppendLine("Function group resolved: " + funcGroup);
 
+            // Filter function end point
             List<FunctionEndPoint> candidatesFeps = new List<FunctionEndPoint>();
             int argumentNumber = arguments.Count;
             foreach (var fep in funcGroup.FunctionEndPoints)

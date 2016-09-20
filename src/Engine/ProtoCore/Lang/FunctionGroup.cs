@@ -116,7 +116,7 @@ namespace ProtoCore
             bool isInstance = thisptr.IsPointer && thisptr.Pointer!= Constants.kInvalidIndex;
             bool isGlobal = thisptr.IsPointer && thisptr.Pointer == Constants.kInvalidIndex;
                                   
-            foreach (FunctionEndPoint fep in FunctionEndPoints)
+            foreach (FunctionEndPoint fep in FunctionEndPoints) 
             {
                 var proc = fep.procedureNode;
 
@@ -134,21 +134,14 @@ namespace ProtoCore
                     continue;
                 }
 
-                bool typesOK = true;
-                foreach (List<StackValue> reducedParamSVs in allReducedParamSVs)
+                if (allReducedParamSVs.All(ps => fep.DoesTypeDeepMatch(ps, runtimeCore)))
                 {
-                    if (!fep.DoesTypeDeepMatch(reducedParamSVs, runtimeCore))
-                    {
-                        typesOK = false;
-                        break;
-                    }
-                }
 
-                if (typesOK)
                     ret.Add(fep);
+                }
             }
 
-            return ret;
+            return ret; 
         }
 
         /// <summary>
