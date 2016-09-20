@@ -6220,7 +6220,7 @@ import(""FFITarget.dll"");
             TestFrameWork.Verify(mirror, "v", 3);
             TestFrameWork.Verify(mirror, "w", 3);
             TestFrameWork.Verify(mirror, "x", new object[] { 1, 1 });
-            TestFrameWork.Verify(mirror, "y", 3);
+            TestFrameWork.Verify(mirror, "y", new object[] { new object[] { 1, 1 } });
         }
 
         [Test]

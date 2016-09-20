@@ -1733,6 +1733,56 @@ r2 = foo(a, {1});
             thisTest.Verify("r1", new object[] {41});
             thisTest.Verify("r2", new object[] {42});
         }
+
+        [Test]
+        public void TestMethodResolutionOnHeterogeneousArray01()
+        {
+            string code = @"
+def foo(x : int)
+{
+    return = x;
+}
+
+r = foo({""foo"", ""bar"", 33.9});
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { null, null, 40 });
+        }
+
+        [Test]
+        public void TestMethodResolutionOnHeterogeneousArray02()
+        {
+            string code = @"
+def foo(x: int, y : string)
+{
+    return = x;
+}
+
+xs = {""foo"", 10, ""bar""};
+ys = { 12, ""ding"", ""dang""};
+r = foo(xs, ys);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { null, 10, null});
+        }
+
+        [Test]
+        public void TestMethodResolutionOnHeterogeneousArray03()
+        {
+            string code = @"
+def foo(x: int, y : string)
+{
+    return = x;
+}
+
+xs = {""foo"", 10, ""bar""};
+ys = { 12, ""ding"", ""dang""};
+r = foo(xs<1>, ys<1>);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { null, 10, null });
+        }
+
     }
 }
 
