@@ -1,0 +1,16 @@
+<Workspace Version="1.2.0.2513" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="a26a599a-e608-4d6f-8de8-309f7fb0972d" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="320" y="268" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="&quot;hello\\&quot;;" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="060f6309-80b1-4a15-bc8d-accb2dd24d22" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="330" y="413" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="&quot;hello\&quot;;" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="2e28c888-77b4-4bd5-a946-d8588368e014" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="332" y="538" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="&quot;hello\&quot;;&#xA;&quot;world&quot;;" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="90109553-56c2-4afd-ab3d-27356e5c2f07" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="537" y="345" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="&quot;hello\&quot;&quot;;&#xA;&quot;world&quot;;" ShouldFocus="false" />
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>
