@@ -778,7 +778,7 @@ namespace ProtoCore
             out List<FunctionEndPoint> resolvesFeps,
             out List<ReplicationInstruction> replicationInstructions)
         {
-            #region First Case: Replicate only according to the replication guides
+            #region Case 1: Replicate only according to the replication guides
             {
                 FunctionEndPoint fep = GetCompleteMatchFunctionEndPoint(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
                 if (fep != null)
@@ -790,41 +790,25 @@ namespace ProtoCore
             }
             #endregion
 
-            #region Case 1a: Replicate only according to the replication guides, but with a sub-typing match
-            {
-                List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, instructions, runtimeCore);
-                HashSet<FunctionEndPoint> lookups; 
-                if (funcGroup.CanGetExactMatchStatics(context, reducedParams, stackFrame, runtimeCore, out lookups))
-                {
-                    //Otherwise we have a cluster of FEPs that can be used to dispatch the array
-                    resolvesFeps = new List<FunctionEndPoint>(lookups);
-                    replicationInstructions = instructions;
-                    return;
-                }
-            }
-            #endregion
-
-
             var replicationTrials = Replicator.BuildReplicationCombinations(instructions, arguments, runtimeCore);
 
             #region Case 2: Replication with no type cast
             {
                 //Build the possible ways in which we might replicate
-                foreach (List<ReplicationInstruction> repOption in replicationTrials)
+                foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
                 {
-                    List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, repOption, runtimeCore);
+                    List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, replicationOption, runtimeCore);
                     HashSet<FunctionEndPoint> lookups;
                     if (funcGroup.CanGetExactMatchStatics(context, reducedParams, stackFrame, runtimeCore, out lookups))
                     {
                         //Otherwise we have a cluster of FEPs that can be used to dispatch the array
                         resolvesFeps = new List<FunctionEndPoint>(lookups);
-                        replicationInstructions = repOption;
+                        replicationInstructions = replicationOption;
                         return;
                     }
                 }
 
             }
-
             #endregion
 
             #region Case 3: Match with type conversion, but no array promotion
@@ -845,7 +829,6 @@ namespace ProtoCore
                 {
                     foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
                     {
-                        //@TODO: THis should use the proper reducer?
                         FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore);
                         if (compliantTarget != null)
                         {
@@ -866,7 +849,6 @@ namespace ProtoCore
 
                 foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
                 {
-                    //@TODO: THis should use the proper reducer?
                     FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore, true);
                     if (compliantTarget != null)
                     {
