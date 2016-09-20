@@ -25,16 +25,6 @@ namespace ProtoCore
 			set;
 		}
 		
-		public bool FuncHasOverloads { //If the function has overloads and the type distance has changed, we'll have to do a re-resolution
-			get;
-			internal set;
-		}
-		
-		public bool FuncHasPredicates { //If the function has predicates, we need to retest
-			get;
-			internal set;
-		}
-
         // In which block it is defined?
         public int BlockScope { get; set; }
 
