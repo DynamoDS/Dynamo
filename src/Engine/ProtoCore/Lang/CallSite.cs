@@ -768,6 +768,46 @@ namespace ProtoCore
             return compliantTarget;
         }
 
+        private FunctionEndPoint GetLooseCompliantFEP(
+           Context context,
+           List<StackValue> arguments,
+           FunctionGroup funcGroup,
+           List<ReplicationInstruction> replicationInstructions,
+           StackFrame stackFrame,
+           RuntimeCore runtimeCore)
+        {
+            Dictionary<FunctionEndPoint, int> candidatesWithDistances =
+                funcGroup.GetLooseConversionDistances(
+                    context,
+                    arguments,
+                    replicationInstructions,
+                    runtimeCore.DSExecutable.classTable,
+                    runtimeCore);
+
+            Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
+                funcGroup.GetCastDistances(
+                    context,
+                    arguments,
+                    replicationInstructions,
+                    runtimeCore.DSExecutable.classTable,
+                    runtimeCore);
+
+            List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame, candidatesWithDistances);
+
+            FunctionEndPoint compliantTarget =
+                GetCompliantTarget(
+                    context,
+                    arguments,
+                    replicationInstructions,
+                    stackFrame,
+                    runtimeCore,
+                    candidatesWithCastDistances,
+                    candidateFunctions,
+                    candidatesWithDistances);
+
+            return compliantTarget;
+        }
+
         private void ComputeFeps(
             Context context, 
             List<StackValue> arguments,
@@ -778,7 +818,7 @@ namespace ProtoCore
             out List<FunctionEndPoint> resolvesFeps,
             out List<ReplicationInstruction> replicationInstructions)
         {
-            #region Case 1: Replicate only according to the replication guides
+            #region Case 1: Replication guide with exact match 
             {
                 FunctionEndPoint fep = GetCompleteMatchFunctionEndPoint(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
                 if (fep != null)
@@ -792,7 +832,7 @@ namespace ProtoCore
 
             var replicationTrials = Replicator.BuildReplicationCombinations(instructions, arguments, runtimeCore);
 
-            #region Case 2: Replication with no type cast
+            #region Case 2: Replication and replication guide with exact match
             {
                 //Build the possible ways in which we might replicate
                 foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
@@ -811,7 +851,7 @@ namespace ProtoCore
             }
             #endregion
 
-            #region Case 3: Match with type conversion, but no array promotion
+            #region Case 3: Replciation with type conversion
             {
                 FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, instructions, stackFrame, runtimeCore);
                 if (compliantTarget != null)
@@ -823,7 +863,7 @@ namespace ProtoCore
             }
             #endregion
 
-            #region Case 4: Match with type conversion and replication
+            #region Case 4: Replication and replication guide with type conversion
             {
                 if (arguments.Any(arg => arg.IsArray))
                 {
@@ -842,7 +882,7 @@ namespace ProtoCore
 
             #endregion
 
-            #region Case 5: Match with type conversion, replication and array promotion
+            #region Case 5: Replication and replciation guide with type conversion and array promotion
             {
                 //Add as a first attempt a no-replication, but allowing up-promoting
                 replicationTrials.Add(new List<ReplicationInstruction>());
@@ -850,6 +890,21 @@ namespace ProtoCore
                 foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
                 {
                     FunctionEndPoint compliantTarget = GetCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore, true);
+                    if (compliantTarget != null)
+                    {
+                        resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };
+                        replicationInstructions = replicationOption;
+                        return;
+                    }
+                }
+            }
+            #endregion
+
+            #region Case 6: Replication and replication guide with type conversion and array promotion, and OK if not all convertible
+            {
+                foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
+                {
+                    FunctionEndPoint compliantTarget = GetLooseCompliantFEP(context, arguments, funcGroup, replicationOption, stackFrame, runtimeCore);
                     if (compliantTarget != null)
                     {
                         resolvesFeps = new List<FunctionEndPoint>() { compliantTarget };

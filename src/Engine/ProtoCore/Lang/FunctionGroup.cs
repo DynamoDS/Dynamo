@@ -173,6 +173,40 @@ namespace ProtoCore
             return ret;
         }
 
+        /// <summary>
+        /// Returns a dictionary of the function end points that are type loosely compatible
+        /// with the costs of the associated conversions. 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="formalParams"></param>
+        /// <param name="replicationInstructions"></param>
+        /// <param name="classTable"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns></returns>
+        public Dictionary<FunctionEndPoint, int> GetLooseConversionDistances(Runtime.Context context,
+            List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions,
+            ClassTable classTable, RuntimeCore runtimeCore)
+        {
+            Dictionary<FunctionEndPoint, int> ret = new Dictionary<FunctionEndPoint, int>();
+
+            List<FunctionEndPoint> feps = FunctionEndPoints;
+            var reducedParams = Replicator.ComputeAllReducedParams(formalParams, replicationInstructions, runtimeCore);
+
+            foreach (FunctionEndPoint fep in feps)
+            {
+                foreach (var reducedParam in reducedParams)
+                {
+                    int distance = fep.GetConversionDistance(reducedParam, classTable, true, runtimeCore);
+                    if (distance != (int)ProcedureDistance.InvalidDistance)
+                    {
+                        ret.Add(fep, distance);
+                        break;
+                    } 
+                }
+            }
+
+            return ret;
+        }
 
         public static bool CheckInvalidArrayCoersion(FunctionEndPoint fep, List<StackValue> reducedSVs, ClassTable classTable, RuntimeCore runtimeCore, bool allowArrayPromotion)
         {
