@@ -174,8 +174,8 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Returns a dictionary of the function end points that are type loosely compatible
-        /// with the costs of the associated conversions. 
+        /// Returns a dictionary of the function end points that are type compatible
+        /// with any branch of replicated parameters. 
         /// </summary>
         /// <param name="context"></param>
         /// <param name="formalParams"></param>
@@ -183,16 +183,17 @@ namespace ProtoCore
         /// <param name="classTable"></param>
         /// <param name="runtimeCore"></param>
         /// <returns></returns>
-        public Dictionary<FunctionEndPoint, int> GetLooseConversionDistances(Runtime.Context context,
-            List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions,
-            ClassTable classTable, RuntimeCore runtimeCore)
+        public Dictionary<FunctionEndPoint, int> GetLooseConversionDistances(
+            Runtime.Context context,
+            List<StackValue> formalParams,
+            List<ReplicationInstruction> replicationInstructions,
+            ClassTable classTable,
+            RuntimeCore runtimeCore)
         {
             Dictionary<FunctionEndPoint, int> ret = new Dictionary<FunctionEndPoint, int>();
-
-            List<FunctionEndPoint> feps = FunctionEndPoints;
             var reducedParams = Replicator.ComputeAllReducedParams(formalParams, replicationInstructions, runtimeCore);
 
-            foreach (FunctionEndPoint fep in feps)
+            foreach (FunctionEndPoint fep in FunctionEndPoints)
             {
                 foreach (var reducedParam in reducedParams)
                 {
