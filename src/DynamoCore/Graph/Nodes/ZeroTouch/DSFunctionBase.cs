@@ -277,7 +277,6 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             {
                 case FunctionType.Constructor:
                 case FunctionType.StaticMethod:
-                case FunctionType.InstanceMethod:
                     if (model.IsPartiallyApplied)
                     {
                         var functionNode = new IdentifierListNode
@@ -308,24 +307,70 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                     break;
 
                 case FunctionType.InstanceProperty:
+
                     // Only handle getter here. Setter could be handled in CBN.
                     if (model.IsPartiallyApplied)
                     {
                         var functionNode = new IdentifierListNode
                         {
                             LeftNode = new IdentifierNode(Definition.ClassName),
-                            RightNode = new IdentifierNode(ProtoCore.DSASM.Constants.kGetterPrefix + Definition.FunctionName)
+                            RightNode = new IdentifierNode(Definition.FunctionName)
                         };
                         rhs = CreateFunctionObject(model, functionNode, inputAstNodes);
                     }
                     else
                     {
-                        model.UseLevelAndReplicationGuide(inputAstNodes);
-                        rhs = AstFactory.BuildFunctionCall(
-                            Definition.ClassName,
-                            ProtoCore.DSASM.Constants.kGetterPrefix + Definition.FunctionName,
-                            inputAstNodes);
+                        rhs = new NullNode();
+                        if (inputAstNodes != null && inputAstNodes.Count >= 1)
+                        {
+                            var thisNode = inputAstNodes[0];
+                            if (thisNode != null && !(thisNode is NullNode))
+                            {
+                                var insProp = new IdentifierListNode
+                                {
+                                    LeftNode = inputAstNodes[0],
+                                    RightNode = new IdentifierNode(Definition.FunctionName)
+                                };
+                                rhs = insProp;
+                            }
+                        }
                     }
+
+                    break;
+
+                case FunctionType.InstanceMethod:
+                    if (model.IsPartiallyApplied)
+                    {
+                        var functionNode = new IdentifierListNode
+                        {
+                            LeftNode = new IdentifierNode(Definition.ClassName),
+                            RightNode = new IdentifierNode(Definition.FunctionName)
+                        };
+                        rhs = CreateFunctionObject(model, functionNode, inputAstNodes);
+                    }
+                    else
+                    {
+                        rhs = new NullNode();
+                        model.UseLevelAndReplicationGuide(inputAstNodes);
+
+                        if (inputAstNodes != null && inputAstNodes.Count >= 1)
+                        {
+                            var thisNode = inputAstNodes[0];
+                            inputAstNodes.RemoveAt(0); // remove this pointer
+
+                            if (thisNode != null && !(thisNode is NullNode))
+                            {
+                                var memberFunc = new IdentifierListNode
+                                {
+                                    LeftNode = thisNode,
+                                    RightNode =
+                                        AstFactory.BuildFunctionCall(function, inputAstNodes)
+                                };
+                                rhs = memberFunc;
+                            }
+                        }
+                    }
+
                     break;
 
                 default:

@@ -1075,15 +1075,6 @@ namespace Dynamo.Tests
             AssertPreviewValue("b0d7b844-93a9-43fa-b8f1-15cbb7469a84", true);
             AssertPreviewValue("d1942e84-355f-4083-bb1c-6b7203ee192c", true);
         }
-
-        [Test]
-        public void TestHeterogeneousArray()
-        {
-            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\heterogenous-input.dyn");
-            OpenModel(dynFilePath);
-            AssertPreviewValue("4bc89f87-5496-4932-88c1-9f184da70f58", new object[] {null, null, 2, 5 });
-            AssertPreviewValue("d1d6bc0b-aea9-4a62-9a27-af7c502f9e62", new object[] {null, null, 7, 16 });
-        }
     }
 
     [Category("DSCustomNode")]
