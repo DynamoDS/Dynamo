@@ -28,7 +28,7 @@
       <PortInfo index="2" default="True" />
     </Dynamo.Nodes.DSFunction>
     <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="da9c1757-2cd4-4a25-b4a6-0e90ede88bf7" nickname="Code Block" x="-606" y="-614" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0.1;" ShouldFocus="false" />
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="b8f4c8fb-fa8b-4c10-96b7-70c5763917cd" nickname="Surface.Area" x="-210.836870097748" y="-555.736219208454" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Surface.Area" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="b8f4c8fb-fa8b-4c10-96b7-70c5763917cd" nickname="Solid.Area" x="-210.836870097748" y="-555.736219208454" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Solid.Area" />
   </Elements>
   <Connectors>
     <Dynamo.Models.ConnectorModel start="ebd1f642-ee18-46d7-ad76-490d6adcf3f0" start_index="0" end="a95a201d-c07b-4b11-9154-5ad0ee995243" end_index="2" portType="0" />
