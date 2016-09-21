@@ -73,36 +73,29 @@ namespace ProtoCore
         /// <param name="core"></param>
         /// <param name="unresolvable">The number of argument sets that couldn't be resolved</param>
         /// <returns></returns>
-        public Dictionary<FunctionEndPoint, int> GetExactMatchStatistics(
+        public bool CanGetExactMatchStatics(
             Runtime.Context context,
-            List<List<StackValue>> reducedFormalParams, StackFrame stackFrame, RuntimeCore runtimeCore, out int unresolvable)
+            List<List<StackValue>> reducedFormalParams,
+            StackFrame stackFrame,
+            RuntimeCore runtimeCore,
+            out HashSet<FunctionEndPoint> lookup)
         {
-            List<ReplicationInstruction> replicationInstructions = new List<ReplicationInstruction>(); //We've already done the reduction before calling this
-
-            unresolvable = 0;
-            Dictionary<FunctionEndPoint, int> ret = new Dictionary<FunctionEndPoint, int>();
-
+            lookup = new HashSet<FunctionEndPoint>();
             foreach (List<StackValue> formalParamSet in reducedFormalParams)
             {
-                List<FunctionEndPoint> feps = GetExactTypeMatches(context,
-                                                                  formalParamSet, replicationInstructions, stackFrame,
-                                                                  runtimeCore);
+                List<FunctionEndPoint> feps = GetExactTypeMatches(context, formalParamSet, new List<ReplicationInstruction>(), stackFrame, runtimeCore);
                 if (feps.Count == 0)
                 {
-                    //We have an arugment set that couldn't be resolved
-                    unresolvable++;
+                    return false;
                 }
 
                 foreach (FunctionEndPoint fep in feps)
                 {
-                    if (ret.ContainsKey(fep))
-                        ret[fep]++;
-                    else
-                        ret.Add(fep, 1);
+                    lookup.Add(fep);
                 }
              }
 
-             return ret;
+            return true;
         }
 
 
@@ -123,7 +116,7 @@ namespace ProtoCore
             bool isInstance = thisptr.IsPointer && thisptr.Pointer!= Constants.kInvalidIndex;
             bool isGlobal = thisptr.IsPointer && thisptr.Pointer == Constants.kInvalidIndex;
                                   
-            foreach (FunctionEndPoint fep in FunctionEndPoints)
+            foreach (FunctionEndPoint fep in FunctionEndPoints) 
             {
                 var proc = fep.procedureNode;
 
@@ -141,21 +134,14 @@ namespace ProtoCore
                     continue;
                 }
 
-                bool typesOK = true;
-                foreach (List<StackValue> reducedParamSVs in allReducedParamSVs)
+                if (allReducedParamSVs.All(ps => fep.DoesTypeDeepMatch(ps, runtimeCore)))
                 {
-                    if (!fep.DoesTypeDeepMatch(reducedParamSVs, runtimeCore))
-                    {
-                        typesOK = false;
-                        break;
-                    }
-                }
 
-                if (typesOK)
                     ret.Add(fep);
+                }
             }
 
-            return ret;
+            return ret; 
         }
 
         /// <summary>
@@ -187,6 +173,41 @@ namespace ProtoCore
             return ret;
         }
 
+        /// <summary>
+        /// Returns a dictionary of the function end points that are type compatible
+        /// with any branch of replicated parameters. 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="formalParams"></param>
+        /// <param name="replicationInstructions"></param>
+        /// <param name="classTable"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns></returns>
+        public Dictionary<FunctionEndPoint, int> GetLooseConversionDistances(
+            Runtime.Context context,
+            List<StackValue> formalParams,
+            List<ReplicationInstruction> replicationInstructions,
+            ClassTable classTable,
+            RuntimeCore runtimeCore)
+        {
+            Dictionary<FunctionEndPoint, int> ret = new Dictionary<FunctionEndPoint, int>();
+            var reducedParams = Replicator.ComputeAllReducedParams(formalParams, replicationInstructions, runtimeCore);
+
+            foreach (FunctionEndPoint fep in FunctionEndPoints)
+            {
+                foreach (var reducedParam in reducedParams)
+                {
+                    int distance = fep.GetConversionDistance(reducedParam, classTable, true, runtimeCore);
+                    if (distance != (int)ProcedureDistance.InvalidDistance)
+                    {
+                        ret.Add(fep, distance);
+                        break;
+                    } 
+                }
+            }
+
+            return ret;
+        }
 
         public static bool CheckInvalidArrayCoersion(FunctionEndPoint fep, List<StackValue> reducedSVs, ClassTable classTable, RuntimeCore runtimeCore, bool allowArrayPromotion)
         {
