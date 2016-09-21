@@ -54,7 +54,11 @@ namespace Dynamo.PackageManager
                     e.Path = dialog.SelectedPath;
                 }
             }
-           
+            else if (e.Path.CompareTo(string.Empty) != 0)
+            {
+                e.Cancel = false;
+            }
+
         }
     }
 

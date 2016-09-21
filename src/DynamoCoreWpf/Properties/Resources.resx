@@ -2103,4 +2103,7 @@ Failed to publish file(s):
     <value>Package published successfully. 
 Want to publish a different package?</value>
   </data>
+  <data name="SolutionToFolderNotWritatbleError" xml:space="preserve">
+    <value>Please go to Manage Node and Package Paths in Setting to change your default directory.</value>
+  </data>
 </root>

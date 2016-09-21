@@ -4525,6 +4525,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please go to Manage Node and Package Paths in Setting to change your default directory..
+        /// </summary>
+        public static string SolutionToFolderNotWritatbleError {
+            get {
+                return ResourceManager.GetString("SolutionToFolderNotWritatbleError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Advanced Tutorials.
         /// </summary>
         public static string StartPageAdvancedTutorials {
