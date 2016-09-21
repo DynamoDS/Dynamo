@@ -1746,7 +1746,7 @@ def foo(x : int)
 r = foo({""foo"", ""bar"", 33.9});
 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r", new object[] { null, null, 40 });
+            thisTest.Verify("r", new object[] { null, null, 34 });
         }
 
         [Test]
