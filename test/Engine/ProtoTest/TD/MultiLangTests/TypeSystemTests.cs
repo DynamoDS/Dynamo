@@ -3894,7 +3894,6 @@ import(""FFITarget.dll"");
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
-        [Category("Failure")]
         public void TS0120_typedassignment_To_Jagged_Vararray()
         {
             string code =
@@ -5563,7 +5562,6 @@ import(""FFITarget.dll"");
 
         [Test]
         [Category("Type System")]
-        [Category("Failure")]
         public void TS0177_typeconversion_replication()
         {
             string code =
