@@ -688,8 +688,7 @@ namespace ProtoFFI
                 return node;
             }
 
-            //Need to hide property accessor from design script users, prefix with %
-            string prefix = isOperator ? "%" : "";
+            string prefix = isOperator ? Constants.kInternalNamePrefix : string.Empty;
             var func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
 
             if (isOperator)
