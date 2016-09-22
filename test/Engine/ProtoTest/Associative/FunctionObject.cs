@@ -16,8 +16,8 @@ namespace ProtoTest.Associative
 import (""FunctionObject.ds"");
 def add1(x) { return = x + 1; }
 def lt10(x) { return = x < 10; }
-add1fo = Function(add1, 1, {}, {null}, true);
-lt10fo = Function(lt10, 1, {}, {null}, true);
+add1fo = __CreateFunctionObject(add1, 1, {}, {null}, true);
+lt10fo = __CreateFunctionObject(lt10, 1, {}, {null}, true);
 r = LoopWhile(0, lt10fo, add1fo);
 ";
             thisTest.RunScriptSource(code);
@@ -33,7 +33,7 @@ import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 
 // fo = add(?, 42);
-fo = Function(add, 2, {1}, {null, 42}, true);
+fo = __CreateFunctionObject(add, 2, {1}, {null, 42}, true);
 r = __Apply(fo, 3);
 ";
             thisTest.RunScriptSource(code);
@@ -49,7 +49,7 @@ import (""FunctionObject.ds"");
 def add(x,y,z) { return = x + y + z;}
 
 // foo1 = add(?, 42, ?);
-fo1 = Function(add, 3, {1}, {null, 42, null}, true);
+fo1 = __CreateFunctionObject(add, 3, {1}, {null, 42, null}, true);
 
 // foo2 = add(100, 42, ?);
 fo2 = __Apply(fo1, 100);
@@ -69,7 +69,7 @@ import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 
 // fo = add(?, {100, 200});
-fo = Function(add, 2, {1}, {null, {100, 200}}, true);
+fo = __CreateFunctionObject(add, 2, {1}, {null, {100, 200}}, true);
 r = __Apply(fo, {1, 2});
 ";
             thisTest.RunScriptSource(code);
@@ -85,7 +85,7 @@ import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 
 // fo = add(?, {100, 200});
-fo = Function(add, 2, {1}, {null, {100, 200}}, true);
+fo = __CreateFunctionObject(add, 2, {1}, {null, {100, 200}}, true);
 r = __Apply(fo, 1);
 ";
             thisTest.RunScriptSource(code);
@@ -101,7 +101,7 @@ import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 
 // fo = add(?, {100, 200});
-fo = Function(add, 2, {1}, {null, {100, 200}}, true);
+fo = __CreateFunctionObject(add, 2, {1}, {null, {100, 200}}, true);
 r = __Apply(fo, {1});
 ";
             thisTest.RunScriptSource(code);
@@ -119,7 +119,7 @@ def add(x,y) { return = x + y;}
 
 def getFunctionObject()
 {
-    return = Function(add, 2, {1}, {null, 100}, true);
+    return = __CreateFunctionObject(add, 2, {1}, {null, 100}, true);
 }
 
 fo = getFunctionObject();
@@ -142,7 +142,7 @@ def add(x,y) { return = x + y;}
 def mul(x,y) { return = x * y;}
 def getFunctionObject(f:function)
 {
-    return = Function(f, 2, {1}, {null, 100}, true);
+    return = __CreateFunctionObject(f, 2, {1}, {null, 100}, true);
 }
 
 fo1 = getFunctionObject(add);
@@ -166,7 +166,7 @@ def add(x,y) { return = x + y;}
 def mul(x,y) { return = x * y;}
 def getFunctionObject(f:function)
 {
-    return = Function(f, 2, {1}, {null, 100}, true);
+    return = __CreateFunctionObject(f, 2, {1}, {null, 100}, true);
 }
 
 fo = getFunctionObject({add, mul});
@@ -185,9 +185,9 @@ import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 def mul(x, y) { return = x * y;}
 
-fo1 = Function(add, 2, {1}, {null, 100}, true);
-fo2 = Function(mul, 2, {0}, {3, null}, true);
-fo3 = _ComposedFunctionObject({fo1, fo2});
+fo1 = __CreateFunctionObject(add, 2, {1}, {null, 100}, true);
+fo2 = __CreateFunctionObject(mul, 2, {0}, {3, null}, true);
+fo3 = __CreateComposedFunctionObject({fo1, fo2});
 
 // r = 2 * 3 + 100
 r = __Apply(fo3, 2);
@@ -205,8 +205,8 @@ import (""FunctionObject.ds"");
 def add(x,y) { return = x + y;}
 def mul(x, y) { return = x * y;}
 
-fo1 = Function(add, 2, {1}, {null, 100}, true);
-fo2 = _ComposedFunctionObject({fo1, fo1});
+fo1 = __CreateFunctionObject(add, 2, {1}, {null, 100}, true);
+fo2 = __CreateComposedFunctionObject({fo1, fo1});
 
 // r = 42 + 100 + 100
 r = __Apply(fo2, 42);
@@ -227,8 +227,8 @@ def add(x, y) { return = x + y; }
 
 def mul(x, y) { return = x * y; }
 
-fo1 = Function(add, 2, { 1 }, { null, 3}, true);
-fo2 = Function(mul, 2, { 0 }, { 5, null }, true);
+fo1 = __CreateFunctionObject(add, 2, { 1 }, { null, 3}, true);
+fo2 = __CreateFunctionObject(mul, 2, { 0 }, { 5, null }, true);
 
 r1 = __Apply(fo1, 7);     // 3 + 7
 r2 = __Apply(fo2, 11);    // 5 * 11
@@ -262,7 +262,7 @@ def foo(x, y)
     return = x + y;
 }
 
-fo = Function(foo, 2, { 1 }, { null, 100 }, true);
+fo = __CreateFunctionObject(foo, 2, { 1 }, { null, 100 }, true);
 r = __Apply(fo, 3);
 ";
             thisTest.RunScriptSource(code);
@@ -283,7 +283,7 @@ def Foo(x, y)
 }
 
 
-c = Function(Foo, 2, { 1 }, { null, 100 }, true);
+c = __CreateFunctionObject(Foo, 2, { 1 }, { null, 100 }, true);
 f = __Apply(c, 3);
 r = f;
 ";
@@ -311,7 +311,7 @@ def getCoordinateValue(p : DummyPoint)
     return = p.X + p.Y + p.Z;
 }
 
-getPointKey = Function(getCoordinateValue, 1, { }, { }, true);
+getPointKey = __CreateFunctionObject(getCoordinateValue, 1, { }, { }, true);
 r1 = SortByFunction(null, getPointKey);
 r2 = SortByFunction({ }, getPointKey);
 
@@ -351,7 +351,7 @@ def getCoordinateValue(p : DummyPoint)
     return = p.X + p.Y + p.Z;
 }
 
-getPointKey = Function(getCoordinateValue, 1, { }, { }, true);
+getPointKey = __CreateFunctionObject(getCoordinateValue, 1, { }, { }, true);
 r1 = GroupByFunction(null, getPointKey);
 r2 = GroupByFunction({ }, getPointKey);
 
@@ -394,7 +394,7 @@ def odd(x)
     return = x % 2 == 1;
 }
 
-pred = Function(odd, 1, { }, { }, true);
+pred = __CreateFunctionObject(odd, 1, { }, { }, true);
 r1 = __Filter(1..10, pred);
 ";
             thisTest.RunScriptSource(code);
@@ -412,7 +412,7 @@ def odd(x)
     return = x % 2 == 1;
 }
 
-pred = Function(odd, 1, { }, { }, true);
+pred = __CreateFunctionObject(odd, 1, { }, { }, true);
 r1 = __Filter({}, pred);
 
 r2 = r1[0];
@@ -439,8 +439,8 @@ def sum(x, y)
     return = x + y;
 }
 
-acc1 = Function(mul, 2, { }, { }, true);
-acc2 = Function(sum, 2, { }, { }, true);
+acc1 = __CreateFunctionObject(mul, 2, { }, { }, true);
+acc2 = __CreateFunctionObject(sum, 2, { }, { }, true);
 
 v1 = __Reduce(acc1, 1, 1..10);
 v2 = __Reduce(acc2, 0, 1..10);

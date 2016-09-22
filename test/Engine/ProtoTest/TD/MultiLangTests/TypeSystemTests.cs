@@ -6207,7 +6207,7 @@ import(""FFITarget.dll"");
             TestFrameWork.Verify(mirror, "y", 3);
         }
 
-        [Test]
+        [Test, Ignore]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0198_method_resolution_1467273_3()

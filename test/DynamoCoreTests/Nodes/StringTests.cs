@@ -211,7 +211,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
+        [Test, Ignore]
         public void TestNumberToStringInvalidInput()
         {
             string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestNumberToString_invalidInput.dyn");

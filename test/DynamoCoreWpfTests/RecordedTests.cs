@@ -2880,6 +2880,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test, RequiresSTA]
+        [Ignore]
         [Category("RegressionTests")]
         public void Defect_MAGN_2563()
         {
