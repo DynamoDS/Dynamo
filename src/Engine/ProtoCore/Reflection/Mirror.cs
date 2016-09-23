@@ -136,9 +136,7 @@ namespace ProtoCore
 
             public static IEnumerable<ClassMirror> GetClasses(Core core)
             {
-                return core.ClassTable.ClassNodes.Skip((int)PrimitiveType.MaxPrimitive).
-                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.Name)).
-                    Select(x => new ClassMirror(core, x));
+                return GetAllTypes(core).Skip((int) PrimitiveType.MaxPrimitive);
             }
 
             public static IEnumerable<ClassMirror> GetAllTypes(Core core)
@@ -147,7 +145,7 @@ namespace ProtoCore
                 // if not used in the language: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6752
                 return core.ClassTable.ClassNodes.
                     Where(x => !CoreUtils.StartsWithSingleUnderscore(x.Name)
-                    && x.Name != DSDefinitions.Keyword.PointerReserved).
+                    && !x.IsEmpty && x.Name != DSDefinitions.Keyword.PointerReserved).
                     Select(x => new ClassMirror(core, x));
             }
 
