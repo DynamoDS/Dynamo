@@ -49,23 +49,15 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Name="DynamoCoreLabel"
+                <TextBlock Name="DynamoCoreVersion"
                            Grid.Row="0"
-                           Text="Dynamo Core"
-                           Margin="12,0,0,0"
+                           HorizontalAlignment="Center"
                            Background="Transparent" 
                            Foreground="#898989"
-                           FontSize="14"/>
-
-                <TextBlock Name ="DynamoCoreVersionNumber" 
-                         Grid.Row="0"
-                         Background="Transparent" 
-                         Foreground="#bbbbbb" 
-                         FontSize="14" 
-                         FontFamily="{StaticResource OpenSansRegular}" 
-                         Margin="105,0,0,0" 
-                         Text="{Binding Version, Mode=OneWay}" 
-                         PreviewMouseDown="OnPreviewMouseDown"/>
+                           FontSize="14">
+                           <Run Text="Dynamo Core"/>
+                           <Run Foreground="#bbbbbb" Text="{Binding Version, Mode=OneWay}"/>
+                </TextBlock>
 
                 <TextBlock Name="GenericHostVersion"
                            Grid.Row="1"
