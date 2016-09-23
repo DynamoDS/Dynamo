@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using ProtoCore.AST.AssociativeAST;
@@ -32,6 +33,15 @@ namespace ProtoCore.DSASM
         public List<AttributeEntry> Attributes { get; set; }
         // A map of allowed coercions and their respective scores
         public Dictionary<int, int> CoerceTypes { get; set; }
+
+        // Is the classnode a dummy (placeholder) class
+        public bool IsEmpty
+        {
+            get
+            {
+                return IsImportedClass && string.IsNullOrEmpty(ExternLib);
+            }
+        }
 
         private ProcedureNode disposeMethod;
         private bool hasCachedDisposeMethod;
