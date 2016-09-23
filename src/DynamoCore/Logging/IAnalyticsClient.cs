@@ -15,6 +15,8 @@ namespace Dynamo.Logging
         Command,
         FileOperation,
         SearchUX,
+        Preferences,
+        Upgrade,
     }
 
     /// <summary>
@@ -38,6 +40,8 @@ namespace Dynamo.Logging
         EngineFailure,
         FilterButtonClicked,
         Unresolved,
+        Downloaded,
+        Installed,
     }
 
     /// <summary>
@@ -80,6 +84,14 @@ namespace Dynamo.Logging
         /// <param name="description">Event description</param>
         /// <param name="value">A metric value associated with the event</param>
         void TrackEvent(Actions action, Categories category, string description, int? value);
+
+        /// <summary>
+        /// Tracks a preference setting and its value.
+        /// </summary>
+        /// <param name="name">Name of the preference</param>
+        /// <param name="stringValue">Preference value as string</param>
+        /// <param name="metricValue">Metric value of the preference</param>
+        void TrackPreference(string name, string stringValue, int? metricValue);
 
         /// <summary>
         /// Tracks a timed event, when it has completed.
