@@ -75,7 +75,7 @@ namespace CoreNodeModels
                 {
                     AstFactory.BuildAssignment(
                         GetAstIdentifierForOutputIndex(0),
-                        AstFactory.BuildFunctionCall("Function", inputParams))
+                        AstFactory.BuildFunctionCall("__CreateFunctionObject", inputParams))
                 };
             }
 

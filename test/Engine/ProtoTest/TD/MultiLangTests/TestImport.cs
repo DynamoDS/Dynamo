@@ -142,23 +142,6 @@ endPtZ = endPt.Z;";
         [Test]
         [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
-        public void T009_BasicImport_TestClassInstanceMethod()
-        {
-            string code = @"
-import (""basicImport.ds"");
-x = 10.1;
-y = 20.2;
-z = 30.3;
-myPoint = Point.ByCoordinates(10.1, 20.2, 30.3);
-midValue = myPoint.MidValue();";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
-            object[] midValue = { 5.05, 10.1, 15.15 };
-            thisTest.Verify("midValue", midValue);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("SmokeTest")]
         public void T010_BaseImportWithVariableClassInstance_top()
         {
             string code = @"

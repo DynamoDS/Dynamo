@@ -9,6 +9,7 @@ using ProtoFFITests;
 using ProtoTestFx.TD;
 using System.Linq;
 using ProtoFFI;
+using System.Reflection;
 
 namespace ProtoTest.FFITests
 {
@@ -44,6 +45,69 @@ namespace ProtoTest.FFITests
             var methodCustomAttributes = ffiMethodAttributes.Attributes;
             Assert.AreEqual(2, methodCustomAttributes.Count());
             Assert.IsTrue(methodCustomAttributes.SequenceEqual(testMethod.GetCustomAttributes(false)));
+        }
+
+        [Test]
+        public void AttributeUtilsTest()
+        {
+            var type = typeof(Attributes.CantImportInVM);
+            Assert.IsTrue(CheckAttributes(type, AttributeUtils.SupressImportIntoVM), "Can't validate SupressImportIntoVMAttribute");
+
+            var invisible = type.GetProperty("InvisibleProperty");
+            Assert.IsTrue(CheckAttributes(invisible, AttributeUtils.HiddenInDynamoLibrary), "Can't validate IsVisibleInDynamoLibraryAttribute");
+
+            var visible = type.GetMethod("VisibleMethod");
+            Assert.IsFalse(CheckAttributes(visible, AttributeUtils.HiddenInDynamoLibrary), "Can't validate IsVisibleInDynamoLibraryAttribute");
+
+            var simple = type.GetMethod("SimpleMethod");
+            Assert.IsFalse(CheckAttributes(simple, AttributeUtils.SupressImportIntoVM), "SimpleMethod has SupressImportIntoVMAttribute");
+            Assert.IsFalse(CheckAttributes(simple, AttributeUtils.HiddenInDynamoLibrary), "SimpleMethod is Hidden in library");
+        }
+
+        private bool CheckAttributes(MemberInfo m, Func<Attribute, bool> check)
+        {
+            var attributes = m.GetCustomAttributes();
+            foreach (Attribute item in attributes)
+            {
+                if (check(item)) return true;
+            }
+
+            return false;
+        }
+    }
+
+    namespace Attributes
+    {
+        [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
+        public sealed class SupressImportIntoVMAttribute : Attribute
+        {
+        }
+
+        /// <summary>
+        /// This attribute is used to specify whether the item will be displayed
+        /// in the library.
+        /// </summary>
+        [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
+        public sealed class IsVisibleInDynamoLibraryAttribute : Attribute
+        {
+            public IsVisibleInDynamoLibraryAttribute(bool visible)
+            {
+                Visible = visible;
+            }
+
+            public bool Visible { get; private set; }
+        }
+
+        [SupressImportIntoVM]
+        public class CantImportInVM
+        {
+            [IsVisibleInDynamoLibrary(false)]
+            public bool InvisibleProperty { get; set; }
+
+            [IsVisibleInDynamoLibrary(true)]
+            public void VisibleMethod() { }
+
+            public void SimpleMethod() { }
         }
     }
 }

@@ -1,6 +1,6 @@
 import("FunctionObject.ds");
 
-def NewtonRootFind1DNoDeriv(objFunc: _FunctionObject, start: double, maxIters: int)
+def NewtonRootFind1DNoDeriv(objFunc: Function, start: double, maxIters: int)
 {
 	return = [Imperative]
 	{
@@ -26,7 +26,7 @@ def NewtonRootFind1DNoDeriv(objFunc: _FunctionObject, start: double, maxIters: i
 	}
 }
 
-def NewtonRootFind1DWithDeriv(objFunc: _FunctionObject, derivFunc: _FunctionObject, start: double, maxIters: int)
+def NewtonRootFind1DWithDeriv(objFunc: Function, derivFunc: Function, start: double, maxIters: int)
 {
 	return = [Imperative]
 	{

@@ -25,16 +25,6 @@ namespace ProtoCore
 			set;
 		}
 		
-		public bool FuncHasOverloads { //If the function has overloads and the type distance has changed, we'll have to do a re-resolution
-			get;
-			internal set;
-		}
-		
-		public bool FuncHasPredicates { //If the function has predicates, we need to retest
-			get;
-			internal set;
-		}
-
         // In which block it is defined?
         public int BlockScope { get; set; }
 
@@ -107,7 +97,6 @@ namespace ProtoCore
             return true;
         }
 
-
         internal int ComputeCastDistance(List<StackValue> args, ClassTable classTable, RuntimeCore runtimeCore)
         {
             //Compute the cost to migrate a class calls argument types to the coresponding base types
@@ -122,50 +111,44 @@ namespace ProtoCore
             {
                 return 0;
             }
-            else
+
+            int distance = 0;
+            for (int i = 0; i < args.Count; ++i)
             {
-                int distance = 0;
-                // Check if all the types match the current function at 'n'
-                for (int i = 0; i < args.Count; ++i)
+                int rcvdType = args[i].metaData.type;
+
+                // If its a default argumnet, then it wasnt provided by the caller
+                // The rcvdType is the type of the argument signature
+                if (args[i].IsDefaultArgument)
                 {
-                    int rcvdType = args[i].metaData.type;
-
-                    // If its a default argumnet, then it wasnt provided by the caller
-                    // The rcvdType is the type of the argument signature
-                    if (args[i].IsDefaultArgument)
-                    {
-                        rcvdType = FormalParams[i].UID;
-                    }
-
-                    int expectedType = FormalParams[i].UID;
-
-                    if (FormalParams[i].IsIndexable != args[i].IsArray) //Replication code will take care of this
-                    {
-                        continue;
-                    }
-                    else if (FormalParams[i].IsIndexable)  // both are arrays
-                    {
-                        continue;
-                    }
-                    else if (expectedType == rcvdType)
-                    {
-                        continue;
-                    }
-                    else if (rcvdType != Constants.kInvalidIndex && expectedType != Constants.kInvalidIndex)
-                    {
-                        int currentCost = ClassUtils.GetUpcastCountTo(
-                            classTable.ClassNodes[rcvdType], 
-                            classTable.ClassNodes[expectedType], 
-                            runtimeCore);
-                        distance += currentCost;
-                    }
+                    rcvdType = FormalParams[i].UID;
                 }
-                return distance;
+
+                int expectedType = FormalParams[i].UID;
+
+                if (FormalParams[i].IsIndexable != args[i].IsArray) //Replication code will take care of this
+                {
+                    continue;
+                }
+                else if (FormalParams[i].IsIndexable)  // both are arrays
+                {
+                    continue;
+                }
+                else if (expectedType == rcvdType)
+                {
+                    continue;
+                }
+                else if (rcvdType != Constants.kInvalidIndex && expectedType != Constants.kInvalidIndex)
+                {
+                    int currentCost = ClassUtils.GetUpcastCountTo(
+                        classTable.ClassNodes[rcvdType],
+                        classTable.ClassNodes[expectedType],
+                        runtimeCore);
+                    distance += currentCost;
+                }
             }
+            return distance;
         }
-
-
-
 
 	    /// <summary>
         /// Compute the number of type transforms needed to turn the current type into the target type
@@ -175,105 +158,87 @@ namespace ProtoCore
         /// <returns></returns>
         public int ComputeTypeDistance(List<StackValue> args, ProtoCore.DSASM.ClassTable classTable, RuntimeCore runtimeCore, bool allowArrayPromotion = false)
         {
-            //Modified from proc Table, does not use quite the same arguments
-                
-            int distance = (int)ProcedureDistance.MaxDistance;
-
-            if (0 == args.Count && 0 == FormalParams.Length)
+            if (args.Count == 0 && FormalParams.Length == 0)
             {
-                distance = (int)ProcedureDistance.ExactMatchDistance;
+                return (int)ProcedureDistance.ExactMatchDistance;
             }
-            else
+
+            if (args.Count != FormalParams.Length)
             {
-                // Jun Comment:
-                // Default args not provided by the caller would have been pushed by the call instruction as optype = DefaultArs
-                if (FormalParams.Length == args.Count)
+                return (int)ProcedureDistance.MaxDistance;
+            }
+
+            int distance = (int)ProcedureDistance.MaxDistance;
+            // Jun Comment:
+            // Default args not provided by the caller would have been pushed by the call instruction as optype = DefaultArs
+            for (int i = 0; i < args.Count; ++i)
+            {
+                int rcvdType = args[i].metaData.type;
+
+                // If its a default argumnet, then it wasnt provided by the caller
+                // The rcvdType is the type of the argument signature
+                if (args[i].IsDefaultArgument)
                 {
-                    // Check if all the types match the current function at 'n'
-                    for (int i = 0; i < args.Count; ++i)
+                    rcvdType = FormalParams[i].UID;
+                }
+
+                int expectedType = FormalParams[i].UID;
+                int currentScore = (int)ProcedureDistance.NotMatchScore;
+
+                //sv rank > param rank
+                if (allowArrayPromotion)
+                {
+                    //stop array -> single
+                    if (args[i].IsArray && !FormalParams[i].IsIndexable) //Replication code will take care of this
                     {
-                        int rcvdType = args[i].metaData.type;
-
-                        // If its a default argumnet, then it wasnt provided by the caller
-                        // The rcvdType is the type of the argument signature
-                        if (args[i].IsDefaultArgument)
-                        {
-                            rcvdType = FormalParams[i].UID; 
-                        }
-
-                        int expectedType = FormalParams[i].UID;
-                        int currentScore = (int)ProcedureDistance.NotMatchScore;
-
-                        //Fuqiang: For now disable rank check
-                        //if function is expecting array, but non-array or array of lower rank is passed, break.
-                        //if (args[i].rank != -1 && args[i].UID != (int)PrimitiveType.kTypeVar && args[i].rank < argTypeList[i].rank)
-
-                        //Only enable type check, and array and non-array check
-                       /*  SUSPECTED REDUNDANT Luke,Jun
-                        * if (args[i].rank != -1 && args[i].UID != (int)PrimitiveType.kTypeVar && !args[i].IsIndexable && FormalParams[i].IsIndexable)
-                        {
-                            distance = (int)ProcedureDistance.kMaxDistance;
-                            break;
-                        }
-                        else */
-
-                        //sv rank > param rank
-
-                        if (allowArrayPromotion)
-                        {
-                            //stop array -> single
-                            if (args[i].IsArray && !FormalParams[i].IsIndexable) //Replication code will take care of this
-                            {
-                                distance = (int)ProcedureDistance.MaxDistance;
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            //stop array -> single && single -> array
-                            if (args[i].IsArray != FormalParams[i].IsIndexable)
-                            //Replication code will take care of this
-                            {
-                                distance = (int)ProcedureDistance.MaxDistance;
-                                break;
-                            }
-                        }
-                        
-                        if (FormalParams[i].IsIndexable && (FormalParams[i].IsIndexable == args[i].IsArray))
-                        {
-                            //In case of conversion from double to int, add a conversion score.
-                            //There are overloaded methods and the difference is the parameter type between int and double.
-                            //Add this to make it call the correct one. - Randy
-                            bool bContainsDouble = ArrayUtils.ContainsDoubleElement(args[i], runtimeCore);
-                            if (FormalParams[i].UID == (int)PrimitiveType.Integer && bContainsDouble)
-                            {
-                                currentScore = (int)ProcedureDistance.CoerceDoubleToIntScore;
-                            }
-                            else if (FormalParams[i].UID == (int)PrimitiveType.Double && !bContainsDouble)
-                            {
-                                currentScore = (int)ProcedureDistance.CoerceIntToDoubleScore;
-                            }
-                            else
-                            {
-                                currentScore = (int)ProcedureDistance.ExactMatchScore;
-                            }
-                        }
-                        else if (expectedType == rcvdType && (FormalParams[i].IsIndexable == args[i].IsArray))
-                        {
-                            currentScore = (int)ProcedureDistance.ExactMatchScore;
-                        }
-                        else if (rcvdType != ProtoCore.DSASM.Constants.kInvalidIndex)
-                        {
-                            currentScore = classTable.ClassNodes[rcvdType].GetCoercionScore(expectedType);
-                            if (currentScore == (int)ProcedureDistance.NotMatchScore)
-                            {
-                                distance = (int)ProcedureDistance.MaxDistance;
-                                break;
-                            }
-                        }
-                        distance -= currentScore;
+                        distance = (int)ProcedureDistance.MaxDistance;
+                        break;
                     }
                 }
+                else
+                {
+                    //stop array -> single && single -> array
+                    if (args[i].IsArray != FormalParams[i].IsIndexable)
+                    //Replication code will take care of this
+                    {
+                        distance = (int)ProcedureDistance.MaxDistance;
+                        break;
+                    }
+                }
+
+                if (FormalParams[i].IsIndexable && (FormalParams[i].IsIndexable == args[i].IsArray))
+                {
+                    //In case of conversion from double to int, add a conversion score.
+                    //There are overloaded methods and the difference is the parameter type between int and double.
+                    //Add this to make it call the correct one. - Randy
+                    bool bContainsDouble = ArrayUtils.ContainsDoubleElement(args[i], runtimeCore);
+                    if (FormalParams[i].UID == (int)PrimitiveType.Integer && bContainsDouble)
+                    {
+                        currentScore = (int)ProcedureDistance.CoerceDoubleToIntScore;
+                    }
+                    else if (FormalParams[i].UID == (int)PrimitiveType.Double && !bContainsDouble)
+                    {
+                        currentScore = (int)ProcedureDistance.CoerceIntToDoubleScore;
+                    }
+                    else
+                    {
+                        currentScore = (int)ProcedureDistance.ExactMatchScore;
+                    }
+                }
+                else if (expectedType == rcvdType && (FormalParams[i].IsIndexable == args[i].IsArray))
+                {
+                    currentScore = (int)ProcedureDistance.ExactMatchScore;
+                }
+                else if (rcvdType != ProtoCore.DSASM.Constants.kInvalidIndex)
+                {
+                    currentScore = classTable.ClassNodes[rcvdType].GetCoercionScore(expectedType);
+                    if (currentScore == (int)ProcedureDistance.NotMatchScore)
+                    {
+                        distance = (int)ProcedureDistance.MaxDistance;
+                        break;
+                    }
+                }
+                distance -= currentScore;
             }
             return distance;
         }

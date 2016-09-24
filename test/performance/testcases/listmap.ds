@@ -5,5 +5,5 @@ def add(x,y)
     return = x + y;
 }
 
-add100 = Function(add, 2, {1}, {null, 100}, true);
+add100 = __CreateFunctionObject(add, 2, {1}, {null, 100}, true);
 v1 = __Map(add100, 1..5000);

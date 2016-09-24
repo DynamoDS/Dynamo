@@ -639,15 +639,11 @@ namespace ProtoCore.Lang
             if (procNode == null)
             {
                 var currentClassNode = classNode;
-                while (currentClassNode.Bases.Any())
+                if (currentClassNode.Base != Constants.kInvalidIndex)
                 {
-                    int baseCI = currentClassNode.Bases[0];
+                    int baseCI = currentClassNode.Base;
                     currentClassNode = runtime.exe.classTable.ClassNodes[baseCI];
                     procNode = currentClassNode.ProcTable.GetFunctionsByName(functionName).FirstOrDefault();
-                    if (procNode != null)
-                    {
-                        break;
-                    }
                 }
             }
 

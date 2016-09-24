@@ -203,19 +203,25 @@ namespace Dynamo.PackageManager
 
         private void ScanPackageDirectories(string root, IPreferences preferences)
         {
-            if (!Directory.Exists(root))
+            try
             {
-                this.Log(string.Format(Resources.InvalidPackageFolderWarning, root));
-                return;
-            }
+                if (!Directory.Exists(root))
+                {
+                    this.Log(string.Format(Resources.InvalidPackageFolderWarning, root));
+                    return;
+                }
 
-            foreach (var dir in
-                Directory.EnumerateDirectories(root, "*", SearchOption.TopDirectoryOnly))
-            {
-                var pkg = ScanPackageDirectory(dir);
-                if (pkg != null && preferences.PackageDirectoriesToUninstall.Contains(dir)) 
-                    pkg.MarkForUninstall(preferences);
+                foreach (var dir in
+                    Directory.EnumerateDirectories(root, "*", SearchOption.TopDirectoryOnly))
+                {
+                    var pkg = ScanPackageDirectory(dir);
+                    if (pkg != null && preferences.PackageDirectoriesToUninstall.Contains(dir))
+                        pkg.MarkForUninstall(preferences);
+                }
             }
+            catch (UnauthorizedAccessException ex) { }
+            catch (IOException ex) { }
+            catch (ArgumentException ex) { }
         }
 
         public Package ScanPackageDirectory(string directory)

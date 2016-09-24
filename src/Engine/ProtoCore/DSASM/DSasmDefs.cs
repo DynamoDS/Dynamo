@@ -366,7 +366,6 @@ namespace ProtoCore.DSASM
  
         public const string termline = ";\n";
         public const string kInternalNamePrefix = "%";
-        public const string kStaticPropertiesInitializer = "%init_static_properties";
         public const string kGetterPrefix = "%get_";
         public const string kSetterPrefix = "%set_";
         public const string kLHS = "%lhs";
@@ -382,7 +381,6 @@ namespace ProtoCore.DSASM
         public const string kFunctionPointerCall = "%FunctionPointerCall";
         public const string kFunctionRangeExpression = "%generate_range";
         public const string kDotMethodName = "%dot";
-        public const string kDotArgMethodName = "%dotarg";
         public const string kInlineConditionalMethodName = "%inlineconditional";
         public const string kGetTypeMethodName = "%get_type";
         public const string kNodeAstFailed = "%nodeAstFailed";

@@ -63,8 +63,13 @@ namespace Dynamo.ViewModels
             authenticationManager = touParams.AuthenticationManager;
         }
 
+        [Obsolete("Please use the other overridden method")]
+        public void Execute()
+        {
+            Execute(true); // Redirected to call the alternative method.
+        }
 
-        public void Execute(bool preventReentrant = true)
+        internal void Execute(bool preventReentrant)
         {
             if (preventReentrant && Interlocked.Increment(ref lockCount) > 1)
             {

@@ -2894,7 +2894,7 @@ namespace DynamoCoreWpfTests
             NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                 ("aeed3ffe-7294-43a9-8a05-83b5ff05f527");
 
-            Assert.AreEqual(ElementState.Warning, node.State);
+            Assert.AreEqual(ElementState.Dead, node.State);
         }
 
         [Test, RequiresSTA]
