@@ -199,6 +199,16 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Current Version of the Host (i.e. DynamoRevit/DynamoStudio)
+        /// </summary>
+        public string HostVersion { get; set; }
+
+        /// <summary>
+        /// Name of the Host (i.e. DynamoRevit/DynamoStudio)
+        /// </summary>
+        public string HostName { get; set; }
+
+        /// <summary>
         /// UpdateManager to handle automatic upgrade to higher version.
         /// </summary>
         public IUpdateManager UpdateManager { get; private set; }
@@ -614,6 +624,22 @@ namespace Dynamo.Models
             AuthenticationManager = new AuthenticationManager(config.AuthProvider);
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
+
+            // config.UpdateManager has to be cast to IHostUpdateManager in order to extract the HostVersion and HostName
+            // see IHostUpdateManager summary for more details 
+            var hostUpdateManager = config.UpdateManager as IHostUpdateManager;
+          
+            if (hostUpdateManager != null)
+            {
+                HostName = hostUpdateManager.HostName;
+                HostVersion = hostUpdateManager.HostVersion == null ? null : hostUpdateManager.HostVersion.ToString();
+            }
+            else
+            {
+                HostName = string.Empty;
+                HostVersion = null;
+            }
+            
             UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode && !IsHeadless)
             {
