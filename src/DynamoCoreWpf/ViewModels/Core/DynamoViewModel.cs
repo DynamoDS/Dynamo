@@ -348,6 +348,16 @@ namespace Dynamo.ViewModels
             get { return model.Version; }
         }
 
+        public string HostVersion
+        {
+            get { return model.HostVersion; }
+        }
+
+        public string HostName
+        {
+            get { return model.HostName; }
+        }
+
         public bool IsUpdateAvailable
         {
             get

@@ -23,12 +23,10 @@ namespace ProtoCore.Utils
             ret.Add(runtimeCore.DSExecutable.classTable.ClassNodes.IndexOf(cn));
 
             ClassNode target = cn;
-            while (target.Bases.Count > 0)
+            while (target.Base != Constants.kInvalidIndex)
             {
-                Validity.Assert(target.Bases.Count == 1, "Multiple Inheritence not yet supported, {F5DDC58D-F721-4319-854A-622175AC43F8}");
-                ret.Add(target.Bases[0]);
-
-                target = runtimeCore.DSExecutable.classTable.ClassNodes[target.Bases[0]];
+                ret.Add(target.Base);
+                target = runtimeCore.DSExecutable.classTable.ClassNodes[target.Base];
             }
 
             if (!ret.Contains((int)(PrimitiveType.Var)))

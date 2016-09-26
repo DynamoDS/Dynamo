@@ -236,6 +236,10 @@ namespace ProtoCore.Utils
             {
                 return new ProtoCore.AST.ImperativeAST.UnaryExpressionNode(rhsNode as ProtoCore.AST.ImperativeAST.UnaryExpressionNode);
             }
+            else if (rhsNode is AST.ImperativeAST.InlineConditionalNode)
+            {
+                return new AST.ImperativeAST.InlineConditionalNode(rhsNode as AST.ImperativeAST.InlineConditionalNode);
+            }
 
             Validity.Assert(false);
             return null;

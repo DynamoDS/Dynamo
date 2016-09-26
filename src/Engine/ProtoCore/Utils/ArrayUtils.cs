@@ -122,14 +122,13 @@ namespace ProtoCore.Utils
 
         public static Dictionary<int, StackValue> GetTypeExamplesForLayer(StackValue array, RuntimeCore runtimeCore)
         {
+            Dictionary<int, StackValue> usageFreq = new Dictionary<int, StackValue>();
+
             if (!array.IsArray)
             {
-                Dictionary<int, StackValue> ret = new Dictionary<int, StackValue>();
-                ret.Add(array.metaData.type, array);
-                return ret;
+                usageFreq.Add(array.metaData.type, array);
+                return usageFreq;
             }
-
-            Dictionary<int, StackValue> usageFreq = new Dictionary<int, StackValue>();
 
             //This is the element on the heap that manages the data structure
             var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);

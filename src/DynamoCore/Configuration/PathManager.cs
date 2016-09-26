@@ -324,9 +324,14 @@ namespace Dynamo.Core
             // Current user specific directories.
             userDataDir = GetUserDataFolder(pathResolver);
 
-            logDirectory = Path.Combine(userDataDir, LogsDirectoryName);
+            // When running as a headless process, put the logs directory in a consistent
+            // location that doesn't change every time the version number changes.
+            var userDataDirNoVersion = Directory.GetParent(userDataDir).FullName;
+            logDirectory = Path.Combine(Dynamo.Models.DynamoModel.IsHeadless ? userDataDirNoVersion : userDataDir,
+                                        LogsDirectoryName);
+
             preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
-            backupDirectory = Path.Combine(Directory.GetParent(userDataDir).FullName, BackupDirectoryName);
+            backupDirectory = Path.Combine(userDataDirNoVersion, BackupDirectoryName);
 
             // Common directories.
             commonDataDir = GetCommonDataFolder(pathResolver);

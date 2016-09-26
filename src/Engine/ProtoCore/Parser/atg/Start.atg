@@ -602,7 +602,6 @@ TOKENS
     literal_true = "true".
     literal_false = "false".
     literal_null = "null".
-    replicationguide_postfix = 'L'.
 
 PRAGMAS
 

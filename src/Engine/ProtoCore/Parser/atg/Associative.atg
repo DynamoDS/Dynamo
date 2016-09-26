@@ -221,12 +221,8 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node.>
     [
         kw_extend
         ident                                   (.
-                                                    classnode.BaseClasses = new List<string>();
-                                                    classnode.BaseClasses.Add(t.val); 
+                                                    classnode.BaseClass = t.val;
                                                 .)
-        {
-            ident                               (. classnode.BaseClasses.Add(t.val); .)  
-        }
     ]
     '{'
         {										
@@ -252,15 +248,9 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node.>
                         kw_static               (. isStatic = true; .) 
                     ]
                     (
-                        (
-                                                (. ProtoCore.AST.AssociativeAST.AssociativeNode funcnode; .)
-                            Associative_functiondecl<out funcnode, access, isStatic>      
-                                                (. classnode.Procedures.Add(funcnode); .)
-                        )
-                        |
                         (   
                                                 (. ProtoCore.AST.AssociativeAST.AssociativeNode varnode = null; .)  
-                            Associative_vardecl<out varnode, access, isStatic>    
+                            Associative_memvardecl<out varnode, access, isStatic>    
                                                 (. classnode.Variables.Add(varnode); .)
 
                                                 (. 
@@ -506,7 +496,7 @@ Associative_ArgumentSignatureDefinition<out ProtoCore.AST.AssociativeAST.Associa
                                                 (. argumentSign = argumentSignature; .)
 .
 
-Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false.>    
+Associative_memvardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false.>    
 = 
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
@@ -562,21 +552,7 @@ Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Prot
             varDeclNode.ArgumentType = argtype;
         .)
     ]
-
-        [
-        '=' 
-                                    (. ProtoCore.AST.AssociativeAST.AssociativeNode rhsNode; .)     
-        Associative_Expression<out rhsNode>         
-                                    (.
-                                        ProtoCore.AST.AssociativeAST.BinaryExpressionNode bNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode();
-                                        NodeUtils.CopyNodeLocation(bNode, varDeclNode);
-                                        bNode.LeftNode = tNode;
-                                        bNode.RightNode = rhsNode;
-                                        bNode.Optr = Operator.assign;
-                                        varDeclNode.NameNode = bNode;       
-                                    .)  
-         ]
-
+   
                                     (. 
                                         node = varDeclNode; 
                                         //if(!isGlobalScope) {
@@ -1660,9 +1636,9 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                                 }
                                                 else if (expr is ProtoCore.AST.AssociativeAST.FunctionDotCallNode)
                                                 {
-                                                    var dotCall = (expr as ProtoCore.AST.AssociativeAST.FunctionDotCallNode).DotCall;
-                                                    var arrayExpr = (dotCall.FormalArguments[2] as ProtoCore.AST.AssociativeAST.ExprListNode);
-                                                    var dimCount = (dotCall.FormalArguments[3] as ProtoCore.AST.AssociativeAST.IntNode);
+                                                    var dotCall = expr as ProtoCore.AST.AssociativeAST.FunctionDotCallNode;
+                                                    var arrayExpr = (dotCall.Arguments[2] as ProtoCore.AST.AssociativeAST.ExprListNode);
+                                                    var dimCount = (dotCall.Arguments[3] as ProtoCore.AST.AssociativeAST.IntNode);
 
                                                     var dims = dimCount.Value;
                                                     var newdims = dims;
@@ -1677,7 +1653,7 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                                             newarray = (newarray.Type as ProtoCore.AST.AssociativeAST.ArrayNode);
                                                         }
                                                         
-                                                        (dotCall.FormalArguments[3] as ProtoCore.AST.AssociativeAST.IntNode).Value = newdims;
+                                                        (dotCall.Arguments[3] as ProtoCore.AST.AssociativeAST.IntNode).Value = newdims;
                                                     }
                                                     groupExprNode.ArrayDimensions = null;
                                                 }

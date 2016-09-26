@@ -1268,7 +1268,12 @@ namespace Dynamo.PackageManager
             if (!IsDirectoryWritable(folder))
             {
                 ErrorString = String.Format(Resources.FolderNotWritableError, folder);
-                return string.Empty;
+                var ErrorMessage = ErrorString + "\n" + Resources.SolutionToFolderNotWritatbleError;
+                DialogResult response = DynamoModel.IsTestMode ? DialogResult.OK : System.Windows.Forms.MessageBox.Show(ErrorMessage, Resources.FileNotPublishCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (response == DialogResult.OK)
+                {
+                    return string.Empty;
+                }
             }
 
             var pkgSubFolder = Path.Combine(folder, PathManager.PackagesDirectoryName);
