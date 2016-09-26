@@ -98,7 +98,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CanCreatePreset()
         {
-            //////////////////////////////////////////////////////////////////////////////
             // Positive test for input node
 
             // Create a valid input node
@@ -113,7 +112,7 @@ namespace DynamoCoreWpfTests
             // Check for input nodes in selection (should pass)
             Assert.AreEqual(true, ViewModel.GetInputNodesFromSelectionForPresets().Any());
 
-            //////////////////////////////////////////////////////////////////////////////
+
             // Negative test for input node
 
             // Create a non-input node and select it
@@ -125,7 +124,7 @@ namespace DynamoCoreWpfTests
             // Check for input nodes in selection (should fail)
             Assert.AreEqual(false, ViewModel.GetInputNodesFromSelectionForPresets().Any());
 
-            //////////////////////////////////////////////////////////////////////////////
+
             // Re-test positive test for input node
 
             // Select the first created input node
@@ -134,7 +133,7 @@ namespace DynamoCoreWpfTests
             // Check for input nodes in selection (should pass)
             Assert.AreEqual(true, ViewModel.GetInputNodesFromSelectionForPresets().Any());
 
-            //////////////////////////////////////////////////////////////////////////////
+
             // Positive test for File Path node
 
             // Create a File Path input node and select it
