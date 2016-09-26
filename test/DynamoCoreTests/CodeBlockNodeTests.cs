@@ -1460,10 +1460,10 @@ var06 = g;
             string code = "im";
             var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
 
-            // Expected 5 completion items
-            Assert.AreEqual(5, completions.Count());
+            // Expected 4 completion items
+            Assert.AreEqual(4, completions.Count());
 
-            string[] expected = { "Decimal", "Imperative", "ImportFromCSV", "Minimal", "MinimalTracedClass" };
+            string[] expected = { "Imperative", "ImportFromCSV", "Minimal", "MinimalTracedClass" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);
