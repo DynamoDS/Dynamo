@@ -1075,6 +1075,14 @@ namespace Dynamo.Tests
             AssertPreviewValue("b0d7b844-93a9-43fa-b8f1-15cbb7469a84", true);
             AssertPreviewValue("d1942e84-355f-4083-bb1c-6b7203ee192c", true);
         }
+
+        [Test]
+        public void TestIntegerOverflow()
+        {
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\integer_overflow.dyn");
+            OpenModel(dynFilePath);
+            AssertPreviewValue("17aae6a5-c4d5-4ba9-862c-5fd2e99c334e", 8388608);
+        }
     }
 
     [Category("DSCustomNode")]
