@@ -304,19 +304,9 @@ namespace Dynamo.Graph.Nodes
 
             value = CodeBlockUtils.FormatUserText(value);
 
-            //Since an empty Code Block Node should not exist, this checks for such instances.
-            // If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
-            // an empty Code Block Node should not be recorded, this method also checks and removes
-            // any unwanted recordings
-            if (value == "")
-            {
-                Code = "";
-            }
-            else
-            {
-                if (!value.Equals(Code))
-                    SetCodeContent(value, workspaceElementResolver);
-            }
+            if (!value.Equals(Code))
+               SetCodeContent(value, workspaceElementResolver);
+
             return true;
         }
 
