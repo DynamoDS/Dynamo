@@ -314,26 +314,16 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                         var functionNode = new IdentifierListNode
                         {
                             LeftNode = new IdentifierNode(Definition.ClassName),
-                            RightNode = new IdentifierNode(Definition.FunctionName)
+                            RightNode = new IdentifierNode(ProtoCore.DSASM.Constants.kGetterPrefix + Definition.FunctionName)
                         };
                         rhs = CreateFunctionObject(model, functionNode, inputAstNodes);
                     }
                     else
-                    {
-                        rhs = new NullNode();
-                        if (inputAstNodes != null && inputAstNodes.Count >= 1)
-                        {
-                            var thisNode = inputAstNodes[0];
-                            if (thisNode != null && !(thisNode is NullNode))
-                            {
-                                var insProp = new IdentifierListNode
-                                {
-                                    LeftNode = inputAstNodes[0],
-                                    RightNode = new IdentifierNode(Definition.FunctionName)
-                                };
-                                rhs = insProp;
-                            }
-                        }
+                    { 
+                        rhs = AstFactory.BuildFunctionCall(
+                            Definition.ClassName, 
+                            ProtoCore.DSASM.Constants.kGetterPrefix + Definition.FunctionName,
+                            inputAstNodes);
                     }
 
                     break;
