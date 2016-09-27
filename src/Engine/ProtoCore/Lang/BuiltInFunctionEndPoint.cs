@@ -39,8 +39,6 @@ namespace ProtoCore.Lang
                     {
                         if (!formalParameters[0].IsArray)
                             ret = ProtoCore.DSASM.StackValue.BuildInt(1);
-                        else if (!ArrayUtils.ContainsNonArrayElement(formalParameters[0], runtimeCore))
-                            ret = ProtoCore.DSASM.StackValue.BuildInt(0);
                         else
                             ret = ProtoCore.DSASM.StackValue.BuildInt(ArrayUtilsForBuiltIns.Count(formalParameters[0], interpreter));
                         break;
