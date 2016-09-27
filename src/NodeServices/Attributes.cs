@@ -333,4 +333,9 @@ namespace Autodesk.DesignScript.Runtime
     public class KeepReferenceThisAttribute : Attribute
     {
     }
+
+    [AttributeUsage(AttributeTargets.Method)]
+    public class IsLacingDisabledAttribute : Attribute
+    {
+    }
 }
