@@ -5284,6 +5284,20 @@ namespace DynamoCoreWpfTests
             });
         }
 
+        [Test]
+        public void TestNoLacingOnListJoin()
+        {
+            RunCommandsFromFile("CreateListJoin.xml", (commandTag) =>
+            {
+                if (commandTag == "Run")
+                {
+                    var workspace = ViewModel.Model.CurrentWorkspace;
+                    var node = workspace.NodeFromWorkspace<Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction>("ac563e6a-ebc5-4b88-bd64-3cfe8f9e96d7");
+                    Assert.IsNotNull(node);
+                    Assert.AreEqual(LacingStrategy.Disabled, node.ArgumentLacing);
+                }
+            });
+        }
     }
 
 }

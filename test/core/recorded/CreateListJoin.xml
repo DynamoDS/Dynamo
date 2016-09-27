@@ -1,0 +1,9 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand X="265" Y="174" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>ac563e6a-ebc5-4b88-bd64-3cfe8f9e96d7</ModelGuid>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction guid="ac563e6a-ebc5-4b88-bd64-3cfe8f9e96d7" type="Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction" nickname="List.Join" x="265" y="174" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.List.Join@var[]..[]" inputcount="1">
+      <PortInfo index="0" default="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction>
+  </CreateNodeCommand>
+  <PausePlaybackCommand Tag="Run" PauseDurationInMs="20" />
+</Commands>
