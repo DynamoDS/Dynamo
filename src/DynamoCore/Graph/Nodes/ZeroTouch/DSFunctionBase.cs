@@ -81,7 +81,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
-            return Controller.BuildAst(this, inputAstNodes);
+            return Controller.BuildAst(this, inputAstNodes, context);
         }
 
         /// <summary>
@@ -267,7 +267,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                 inputs);
         }
 
-        protected override AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes)
+        protected override AssociativeNode GetFunctionApplicationWithContext(NodeModel model, List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
             AssociativeNode rhs;
 
@@ -319,11 +319,31 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                         rhs = CreateFunctionObject(model, functionNode, inputAstNodes);
                     }
                     else
-                    { 
-                        rhs = AstFactory.BuildFunctionCall(
-                            Definition.ClassName, 
-                            ProtoCore.DSASM.Constants.kGetterPrefix + Definition.FunctionName,
-                            inputAstNodes);
+                    {
+                        if (context == CompilationContext.NodeToCode)
+                        {
+                            rhs = new NullNode();
+                            if (inputAstNodes != null && inputAstNodes.Count >= 1)
+                            {
+                                var thisNode = inputAstNodes[0];
+                                if (thisNode != null && !(thisNode is NullNode))
+                                {
+                                    var insProp = new IdentifierListNode
+                                    {
+                                        LeftNode = inputAstNodes[0],
+                                        RightNode = new IdentifierNode(Definition.FunctionName)
+                                    };
+                                    rhs = insProp;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            rhs = AstFactory.BuildFunctionCall(
+                                Definition.ClassName,
+                                ProtoCore.DSASM.Constants.kGetterPrefix + Definition.FunctionName,
+                                inputAstNodes);
+                        }
                     }
 
                     break;

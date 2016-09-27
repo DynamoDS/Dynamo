@@ -6,6 +6,7 @@ using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Library;
 using ProtoCore.AST.AssociativeAST;
+using Dynamo.Engine.CodeGeneration;
 
 namespace Dynamo.Graph.Nodes.ZeroTouch
 {
@@ -123,7 +124,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             }
         }
 
-        protected override void BuildOutputAst(NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst)
+        protected override void BuildOutputAst(NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst, CompilationContext context)
         {
             // All inputs are provided, then we should pack all inputs that
             // belong to variable input parameter into a single array.
@@ -146,7 +147,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                 inputAstNodes.Add(argPack);
             }
 
-            base.BuildOutputAst(model, inputAstNodes, resultAst);
+            base.BuildOutputAst(model, inputAstNodes, resultAst, context);
         }
     }
 }
