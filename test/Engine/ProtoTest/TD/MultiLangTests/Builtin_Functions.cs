@@ -4329,8 +4329,7 @@ def foo ()
 x = 0;
 y = RemoveKey(x, x);
 ";
-            Assert.DoesNotThrow(() => thisTest.RunScriptSource(code));
-            thisTest.Verify("y", false);
+            thisTest.Verify("y", 0);
         }
 
         [Test]
