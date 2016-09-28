@@ -39,6 +39,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// The unique name that the node was created by
         /// </summary>
+        [JsonIgnore]
         public override string CreationName
         {
             get
