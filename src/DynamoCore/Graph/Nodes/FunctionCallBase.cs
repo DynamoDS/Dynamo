@@ -15,6 +15,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Controller used to sync node with a function definition.
         /// </summary>
+        [JsonIgnore]
         public TController Controller { get; private set; }
 
         protected FunctionCallBase(TController controller,
@@ -32,7 +33,7 @@ namespace Dynamo.Graph.Nodes
         protected FunctionCallBase(TController controller)
         {
             Controller = controller;
-            Controller.SyncNodeWithDefinition(this);
+            controller.SyncNodeWithDefinition(this);
         }
 
         /// <summary>

@@ -189,6 +189,7 @@ namespace Dynamo.Graph
         /// <summary>
         /// Unique ID.
         /// </summary>
+        [JsonProperty("Guid")]
         public Guid GUID
         {
             get

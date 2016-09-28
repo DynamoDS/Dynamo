@@ -14,7 +14,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     [AlsoKnownAs("Dynamo.Nodes.DSFunction")]
     public class DSFunction : DSFunctionBase
     {
-        public FunctionDescriptor Description{get;set;}
+        public FunctionDescriptor FunctionDescription{get;set;}
 
         /// <summary>
         ///     Indicates whether Node is input or not.
@@ -25,22 +25,22 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         }
 
         [JsonConstructor]
-        private DSFunction(FunctionDescriptor description, 
+        private DSFunction(FunctionDescriptor functionDescription, 
             IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :
-            base(new ZeroTouchNodeController<FunctionDescriptor>(description),
+            base(new ZeroTouchNodeController<FunctionDescriptor>(functionDescription),
                 inPorts, outPorts)
         {
-            Description = description;
+            FunctionDescription = functionDescription;
         }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DSFunction"/> class.
         /// </summary>
         /// <param name="description">Function descritor.</param>
-        public DSFunction(FunctionDescriptor description) 
-            : base(new ZeroTouchNodeController<FunctionDescriptor>(description)) 
+        public DSFunction(FunctionDescriptor functionDescription) 
+            : base(new ZeroTouchNodeController<FunctionDescriptor>(functionDescription)) 
         {
-            Description = description;
+            FunctionDescription = functionDescription;
         }
     }
 }
