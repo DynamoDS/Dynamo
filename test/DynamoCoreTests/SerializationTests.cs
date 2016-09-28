@@ -8,6 +8,8 @@ using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Engine;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
+using System.Collections.Generic;
 
 namespace Dynamo.Tests
 {
@@ -19,10 +21,10 @@ namespace Dynamo.Tests
         {
             var openPath = Path.Combine(TestDirectory, @"core\input_nodes\NumberNodeAndNumberSlider.dyn");
             OpenModel(openPath);
-            
+
             var settings = new JsonSerializerSettings
             {
-                Error = (sender, args)=>
+                Error = (sender, args) =>
                 {
                     args.ErrorContext.Handled = true;
                     Console.WriteLine(args.ErrorContext.Error);
@@ -31,7 +33,8 @@ namespace Dynamo.Tests
                 TypeNameHandling = TypeNameHandling.Objects,
                 Formatting = Formatting.Indented,
                 PreserveReferencesHandling = PreserveReferencesHandling.Objects,
-                Converters = new[] {new FunctionDescriptorConverter(CurrentDynamoModel.LibraryServices) }
+                Converters = new[] { new FunctionDescriptorConverter(CurrentDynamoModel.LibraryServices) },
+                ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
 
             var json = JsonConvert.SerializeObject(CurrentDynamoModel.CurrentWorkspace, settings);
@@ -92,8 +95,8 @@ namespace Dynamo.Tests
         {
             var jObject = JObject.Load(reader);
 
-            var asm = jObject["assembly"].Value<string>();
-            var mangledName = jObject["name"].Value<string>();
+            var asm = jObject["Assembly"].Value<string>();
+            var mangledName = jObject["Name"].Value<string>();
 
             return string.IsNullOrEmpty(asm) ?
                 libraryServices.GetFunctionDescriptor(mangledName) :
@@ -104,11 +107,64 @@ namespace Dynamo.Tests
         {
             var fd = (FunctionDescriptor)value;
             writer.WriteStartObject();
-            writer.WritePropertyName("assembly");
-            writer.WriteValue(fd.Assembly);
-            writer.WritePropertyName("name");
+            writer.WritePropertyName("Assembly");
+            writer.WriteValue(fd.IsBuiltIn? "": fd.Assembly);
+            writer.WritePropertyName("Name");
             writer.WriteValue(fd.MangledName);
             writer.WriteEndObject();
+        }
+    }
+
+    /// <summary>
+    /// The IdReferenceResolver class allows us to use the Guid of
+    /// an object as the reference id during serialization.
+    /// </summary>
+    public class IdReferenceResolver : IReferenceResolver
+    {
+        private readonly IDictionary<Guid, object> models = new Dictionary<Guid, object>();
+
+        public void AddReference(object context, string reference, object value)
+        {
+            Guid id = new Guid(reference);
+            models[id] = value;
+        }
+
+        private static Guid GetGuidPropertyValue(object value)
+        {
+            // Use reflection to find the Guid or the GUID
+            // property on the object.
+
+            var pi = value.GetType().GetProperty("Guid");
+            if (pi == null)
+            {
+                pi = value.GetType().GetProperty("GUID");
+            }
+
+            var id = pi == null ? Guid.NewGuid() : (Guid)pi.GetValue(value);
+            return id;
+        }
+
+        public string GetReference(object context, object value)
+        {
+            models[GetGuidPropertyValue(value)] = value;
+
+            return GetGuidPropertyValue(value).ToString();
+        }
+
+        public bool IsReferenced(object context, object value)
+        {
+            var id = GetGuidPropertyValue(value);
+            return models.ContainsKey(id);
+        }
+
+        public object ResolveReference(object context, string reference)
+        {
+            var id = new Guid(reference);
+
+            object model;
+            models.TryGetValue(id, out model);
+
+            return model;
         }
     }
 }

@@ -438,6 +438,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Returns if current workspace is readonly.
         /// </summary>
+        [JsonIgnore]
         public bool IsReadOnly
         {
             get { return isReadOnly; }
