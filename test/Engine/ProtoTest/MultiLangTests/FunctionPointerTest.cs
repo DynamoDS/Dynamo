@@ -267,18 +267,14 @@ class A
         [Category("Failure")]
         public void T14_NegativeTest_UsingFunctionNameInNonAssignBinaryExpr()
         {
-            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4038
-            string err = "MAGN-4038 Compilation error for use of function pointer as a variable not reported";
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
+            string code = @"
 def foo:int(x:int)
 {
 	return = x;
 }
 a = foo + 2;";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
-            });
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", null);
         }
 
         [Test]
