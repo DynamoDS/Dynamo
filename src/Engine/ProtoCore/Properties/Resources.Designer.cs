@@ -2142,6 +2142,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Removes a copy of array with specified key removed.
+        /// </summary>
+        public static string RemoveKeys1 {
+            get {
+                return ResourceManager.GetString("RemoveKeys1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Removes the members of the list which are not members of the specified type.
         /// </summary>
         public static string RemovesTheMembersofTheList {

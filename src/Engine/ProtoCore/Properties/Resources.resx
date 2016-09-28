@@ -911,4 +911,7 @@ Parameter name: {0}</value>
   <data name="InvalidFunction" xml:space="preserve">
     <value>Not an valid function.</value>
   </data>
+  <data name="RemoveKeys1" xml:space="preserve">
+    <value>Removes a copy of array with specified key removed</value>
+  </data>
 </root>
