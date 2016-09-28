@@ -4889,65 +4889,6 @@ x = n.X;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failure")]
-        public void T91_1467547()
-        {
-            String code = @"
- 
-        def foo()
-        {
-            return = a + 7;
-        }
-        def bar()
-        {
-            return = 3;
-        }
-        def ding()
-        {
-            return = a < 100? foo(): bar();
-        }
-        a = 10;
-        t = ding();
-        a = 50;
-";
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1502
-            string errmsg = "MAGN-1502: Function pointer doesn't get update";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t", 57);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        [Category("Failure")]
-        public void T91_1467547_2()
-        {
-            String code = @"
- 
-        def foo()
-        {
-            return = a + 7;
-        }
-        def bar()
-        {
-            return = 3;
-        }
-        def ding()
-        {
-            return = a < 100? foo: bar;
-        }
-        a = 10;
-        t = ding();
-        z=t()
-        a = 50;
-";
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1502
-            string errmsg = "MAGN-1502: Function pointer doesn't get update";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t", 57);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
         public void T91_1467547_3()
         {
             String code = @"
