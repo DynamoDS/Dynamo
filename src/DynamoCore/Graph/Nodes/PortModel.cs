@@ -35,6 +35,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// A <see cref="PortData"/> object used for the construction of the node.
         /// </summary>
+        [JsonIgnore]
         public PortData Data { get { return portData; } }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Name of the port.
         /// </summary>
-        [JsonIgnore]
+        [JsonProperty("NickName")]
         public string PortName
         {
             get { return portData.NickName; }
@@ -59,7 +60,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Tooltip of the port.
         /// </summary>
-        [JsonIgnore]
+        [JsonProperty("ToolTip")]
         public string ToolTipContent
         {
             get
@@ -93,6 +94,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Index of the port.
         /// </summary>
+        [JsonIgnore]
         public int Index
         {
             get { return Owner.GetPortModelIndex(this); }
@@ -101,7 +103,6 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Returns the LineIndex of that port. The vertical position of PortModel is dependent on LineIndex.
         /// </summary>
-        [JsonIgnore]
         public int LineIndex
         {
             get { return portData.LineIndex; }
@@ -271,13 +272,33 @@ namespace Dynamo.Graph.Nodes
 
         #endregion
 
+        [JsonConstructor]
+        private PortModel(PortType portType, NodeModel owner, 
+            string nickName, string toolTip, int lineIndex, double height)
+        {
+            IsConnected = false;
+            PortType = portType;
+            Owner = owner;
+            UseLevels = false;
+            ShouldKeepListStructure = false;
+            Level = 2;
+
+            var data = new PortData(nickName, toolTip);
+            data.LineIndex = lineIndex;
+            data.Height = height;
+
+            SetPortData(data);
+
+            MarginThickness = new Thickness(0);
+            Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
+        }
+
         /// <summary>
         /// Creates PortModel.
         /// </summary>
         /// <param name="portType">Type of the Port</param>
         /// <param name="owner">Parent Node</param>
         /// <param name="data">Information about port</param>
-        [JsonConstructor]
         public PortModel(PortType portType, NodeModel owner, PortData data)
         {
             IsConnected = false;
