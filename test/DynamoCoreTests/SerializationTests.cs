@@ -10,6 +10,9 @@ using Dynamo.Engine;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
+using Dynamo.Graph.Nodes;
+using System.Collections.ObjectModel;
+using Newtonsoft.Json.Converters;
 
 namespace Dynamo.Tests
 {
@@ -19,7 +22,7 @@ namespace Dynamo.Tests
         [Test]
         public void SerializationTest()
         {
-            var openPath = Path.Combine(TestDirectory, @"core\input_nodes\NumberNodeAndNumberSlider.dyn");
+            var openPath = Path.Combine(TestDirectory, @"core\serialization\serialization.dyn");
             OpenModel(openPath);
 
             var settings = new JsonSerializerSettings
@@ -33,7 +36,9 @@ namespace Dynamo.Tests
                 TypeNameHandling = TypeNameHandling.Objects,
                 Formatting = Formatting.Indented,
                 PreserveReferencesHandling = PreserveReferencesHandling.Objects,
-                Converters = new[] { new FunctionDescriptorConverter(CurrentDynamoModel.LibraryServices) },
+                Converters = new List<JsonConverter>{
+                    new FunctionDescriptorConverter(CurrentDynamoModel.LibraryServices),
+                    new CodeBlockNodeConverter(CurrentDynamoModel.LibraryServices)},
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
 
@@ -63,7 +68,7 @@ namespace Dynamo.Tests
             
         }
     }
-
+    
     /// <summary>
     /// The FunctionDescriptorConverter is responsible for deserializing
     /// and serializing the FunctionDescription property on DSFunction. 
@@ -112,6 +117,21 @@ namespace Dynamo.Tests
             writer.WritePropertyName("Name");
             writer.WriteValue(fd.MangledName);
             writer.WriteEndObject();
+        }
+    }
+
+    public class CodeBlockNodeConverter : CustomCreationConverter<CodeBlockNodeModel>
+    {
+        private LibraryServices libraryServices;
+
+        public CodeBlockNodeConverter(LibraryServices libraryServices)
+        {
+            this.libraryServices = libraryServices;
+        }
+
+        public override CodeBlockNodeModel Create(Type objectType)
+        {
+            return new CodeBlockNodeModel(libraryServices);
         }
     }
 

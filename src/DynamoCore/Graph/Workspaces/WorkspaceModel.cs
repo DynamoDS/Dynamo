@@ -539,7 +539,6 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns all of the annotations currently present in the workspace.
         /// </summary>
-        [JsonIgnore]
         public IEnumerable<AnnotationModel> Annotations
         {
             get

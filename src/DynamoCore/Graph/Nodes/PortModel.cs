@@ -51,7 +51,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Name of the port.
         /// </summary>
-        [JsonProperty("NickName")]
+        [JsonProperty("DisplayName")]
         public string PortName
         {
             get { return portData.NickName; }
@@ -103,6 +103,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Returns the LineIndex of that port. The vertical position of PortModel is dependent on LineIndex.
         /// </summary>
+        [JsonIgnore]
         public int LineIndex
         {
             get { return portData.LineIndex; }
@@ -273,8 +274,8 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         [JsonConstructor]
-        private PortModel(PortType portType, NodeModel owner, 
-            string nickName, string toolTip, int lineIndex, double height)
+        internal PortModel(PortType portType, NodeModel owner, 
+            string nickName, string toolTip)
         {
             IsConnected = false;
             PortType = portType;
@@ -284,8 +285,8 @@ namespace Dynamo.Graph.Nodes
             Level = 2;
 
             var data = new PortData(nickName, toolTip);
-            data.LineIndex = lineIndex;
-            data.Height = height;
+            data.LineIndex = -1;
+            data.Height = 0.0;
 
             SetPortData(data);
 

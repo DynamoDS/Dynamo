@@ -1,0 +1,34 @@
+<Workspace Version="1.2.1.2717" X="-9.57432003421064" Y="100.733122916787" zoom="1.02988563947099" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <CoreNodeModels.Input.DoubleInput guid="6e1f2eb8-c11d-4e9e-aeed-39ec72fbd484" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="302.5" y="206" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
+      <System.Double value="5" />
+    </CoreNodeModels.Input.DoubleInput>
+    <CoreNodeModels.Input.DoubleSlider guid="12e2d38d-b9dc-4656-af66-7e41ebde44c2" type="CoreNodeModels.Input.DoubleSlider" nickname="Number Slider" x="222.5" y="304" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.Double>3</System.Double>
+      <Range min="0" max="100" step="0.1" />
+    </CoreNodeModels.Input.DoubleSlider>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="71761ab1-41d1-4660-86d2-c573b1a2f1dd" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="+" x="657.5" y="216" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="Operators" function="+@var[]..[],var[]..[]">
+      <PortInfo index="0" default="False" />
+      <PortInfo index="1" default="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="75c15621-c106-4798-83d6-85a9d8825e10" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="543.921778975276" y="412.023466307417" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="a=42.0;&#xA;b=cat;" ShouldFocus="false">
+      <PortInfo index="0" default="False" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="6e1f2eb8-c11d-4e9e-aeed-39ec72fbd484" start_index="0" end="71761ab1-41d1-4660-86d2-c573b1a2f1dd" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="12e2d38d-b9dc-4656-af66-7e41ebde44c2" start_index="0" end="71761ab1-41d1-4660-86d2-c573b1a2f1dd" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations>
+    <Dynamo.Graph.Annotations.AnnotationModel guid="ecd2d225-e651-4599-89ad-6d7c8389fb4a" annotationText="This is a group." left="212.5" top="176" width="319.5" height="196" fontSize="14" InitialTop="206" InitialHeight="196" TextblockHeight="20" backgrouund="#FFC1D676">
+      <Models ModelGuid="6e1f2eb8-c11d-4e9e-aeed-39ec72fbd484" />
+      <Models ModelGuid="12e2d38d-b9dc-4656-af66-7e41ebde44c2" />
+    </Dynamo.Graph.Annotations.AnnotationModel>
+  </Annotations>
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

@@ -112,6 +112,15 @@ namespace Dynamo.Graph
         }
 
         /// <summary>
+        /// Override in derived classes to specify whether
+        /// to serialize the X property.
+        /// </summary>
+        public virtual bool ShouldSerializeX()
+        {
+            return false;
+        }
+
+        /// <summary>
         /// The Y coordinate of the node in canvas space.
         /// </summary>
         public double Y
@@ -124,6 +133,14 @@ namespace Dynamo.Graph
             }
         }
 
+        /// <summary>
+        /// Override in derived classes to specify whether
+        /// to serialize the Y property.
+        /// </summary>
+        public virtual bool ShouldSerializeY()
+        {
+            return false;
+        }
         /// <summary>
         /// A position defined by the x and y components.
         /// Used for notification in situations where you don't

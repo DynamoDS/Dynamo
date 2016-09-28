@@ -72,6 +72,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// The unique name that was created the node by
         /// </summary>
+        [JsonIgnore]
         public virtual string CreationName { get { return this.Name; } }
 
         /// <summary>
@@ -301,6 +302,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     The name that is displayed in the UI for this NodeModel.
         /// </summary>
+        [JsonProperty("DisplayName")]
         public string NickName
         {
             get { return nickName; }
@@ -683,6 +685,16 @@ namespace Dynamo.Graph.Nodes
                     OnUpdateASTCollection();                  
                 }
             }
+        }
+
+        public override bool ShouldSerializeX()
+        {
+            return true;
+        }
+
+        public override bool ShouldSerializeY()
+        {
+            return true;
         }
 
         #endregion

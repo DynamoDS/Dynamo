@@ -6,6 +6,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Properties;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Annotations
 {
@@ -29,33 +30,39 @@ namespace Dynamo.Graph.Annotations
         /// <summary>
         /// Required to calculate the TOP position in a group
         /// </summary>
+        [JsonIgnore]
         public double InitialTop { get; set; }
 
         /// <summary>
         /// Required to calculate the HEIGHT of a group
         /// </summary>
+        [JsonIgnore]
         public double InitialHeight { get; set; }
 
         /// <summary>
         /// Returns default background of the group
         /// </summary>
+        [JsonIgnore]
         public string GroupBackground = "#FFC1D676";
 
         /// <summary>
         /// DeletedModelBases is used to keep track of deleted / ungrouped models. 
         /// During Undo operations this is used to get those models that are deleted from the group
         /// </summary>
+        [JsonIgnore]
         public List<ModelBase> DeletedModelBases { get; set; }
 
         /// <summary>
         /// Indicates if group properties should be read from xml data
         /// </summary>
+        [JsonIgnore]
         public bool loadFromXML { get; set; }
 
         private double width;
         /// <summary>
         /// Returns width of the group
         /// </summary>
+        [JsonIgnore]
         public override double Width
         {
             get
@@ -73,6 +80,7 @@ namespace Dynamo.Graph.Annotations
         /// <summary>
         /// Returns height of the group
         /// </summary>
+        [JsonIgnore]
         public override double Height
         {
             get
@@ -91,6 +99,7 @@ namespace Dynamo.Graph.Annotations
         /// <summary>
         /// Returns text of the group
         /// </summary>
+        [JsonIgnore]
         public string Text
         {
             get { return text; }
@@ -120,6 +129,7 @@ namespace Dynamo.Graph.Annotations
         /// <summary>
         /// Returns background of the group
         /// </summary>
+        [JsonIgnore]
         public string Background
         {
             get { return background ?? GroupBackground; }
@@ -156,6 +166,7 @@ namespace Dynamo.Graph.Annotations
         /// This queries the actual RECT of the group. 
         /// This is required to make the group as ILocatable.
         /// </summary>      
+        [JsonIgnore]
         public override Rect2D Rect
         {
             get { return new Rect2D(this.X, this.Y, this.Width, this.Height); }
@@ -165,6 +176,7 @@ namespace Dynamo.Graph.Annotations
         /// <summary>
         /// Returns height of the text area of the group
         /// </summary>
+        [JsonIgnore]
         public double TextBlockHeight
         {
             get { return textBlockHeight; }
@@ -183,6 +195,7 @@ namespace Dynamo.Graph.Annotations
         /// <summary>
         /// Returns font size of the text of the group
         /// </summary>
+        [JsonIgnore]
         public double FontSize
         {
             get { return fontSize; }
@@ -194,6 +207,12 @@ namespace Dynamo.Graph.Annotations
         }
 
         #endregion
+
+        [JsonConstructor]
+        private AnnotationModel(IEnumerable<ModelBase> selectedModels)
+        {
+            SelectedModels = selectedModels;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AnnotationModel"/> class.

@@ -19,6 +19,7 @@ using ProtoCore.Utils;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
+using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -55,6 +56,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Returns <see cref="ElementResolver"/> for CodeBlock node
         /// </summary>
+        [JsonIgnore]
         public ElementResolver ElementResolver { get; set; }
 
         private struct Formatting
@@ -78,6 +80,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="libraryServices"><see cref="LibraryServices"/> object to manage
         ///  builtin libraries as well as imported libraries</param>
+        [JsonConstructor]
         public CodeBlockNodeModel(LibraryServices libraryServices)
         {
             ArgumentLacing = LacingStrategy.Disabled;
@@ -276,6 +279,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Temporary variables that generated in code.
         /// </summary>
+        [JsonIgnore]
         public IEnumerable<string> TempVariables
         {
             get { return tempVariables; }
@@ -284,6 +288,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Code statement of CBN
         /// </summary>
+        [JsonIgnore]
         public IEnumerable<Statement> CodeStatements
         {
             get { return codeStatements; }
