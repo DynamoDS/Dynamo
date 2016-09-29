@@ -15,7 +15,6 @@ using Newtonsoft.Json.Converters;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Notes;
-using System.Runtime.Serialization;
 
 namespace Dynamo.Tests
 {
@@ -80,6 +79,13 @@ namespace Dynamo.Tests
         }
     }
 
+    /// <summary>
+    /// The AnnotationConverter is used to serialize and deserialize AnnotationModels.
+    /// The SelectedModels property on AnnotationModel is a list of references
+    /// to ModelBase objects. During serialization we want to refer to these objects
+    /// by their ids. During deserialization, we use the ReferenceResolver to
+    /// find the correct ModelBase instances to reference.
+    /// </summary>
     public class AnnotationConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
@@ -114,19 +120,18 @@ namespace Dynamo.Tests
             var anno = (AnnotationModel)value;
 
             writer.WriteStartObject();
-            writer.WritePropertyName("Uuid");
-            writer.WriteValue(anno.GUID.ToString());
+            
             writer.WritePropertyName("Title");
             writer.WriteValue(anno.AnnotationText);
             writer.WritePropertyName("SelectedModels");
             writer.WriteStartArray();
-
             foreach(var m in anno.SelectedModels)
             {
                 writer.WriteValue(m.GUID.ToString());
             }
-
             writer.WriteEndArray();
+            writer.WritePropertyName("Uuid");
+            writer.WriteValue(anno.GUID.ToString());
 
             writer.WriteEndObject();
         }
@@ -244,68 +249,6 @@ namespace Dynamo.Tests
         }
     }
 
-    public class PortConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(PortModel);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            var obj = JObject.Load(reader);
-            var displayName = obj["DisplayName"].Value<string>();
-            var toolTip = obj["ToolTip"].Value<string>();
-            var portTypeStr = obj["PortType"].Value<string>();
-            var portType = (PortType)Enum.Parse(typeof(PortType), portTypeStr);
-            var usingDefaultValue = obj["UsingDefaultValue"].Value<bool>();
-            var level = obj["Level"].Value<int>();
-            var useLevels = obj["UseLevels"].Value<bool>();
-            var shouldKeepListStructure = obj["ShouldKeepListStructure"].Value<bool>();
-            var guidStr = obj["Uuid"].Value<string>();
-            var guid = Guid.Parse(guidStr);
-
-            var port = new PortModel(displayName, toolTip);
-
-            port.UsingDefaultValue = usingDefaultValue;
-            port.Level = level;
-            port.UseLevels = useLevels;
-            port.ShouldKeepListStructure = shouldKeepListStructure;
-            port.GUID = guid;
-
-            serializer.ReferenceResolver.AddReference(serializer.Context, port.GUID.ToString(), port);
-            return port;
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var port = (PortModel)value;
-
-            writer.WriteStartObject();
-
-            writer.WritePropertyName("DisplayName");
-            writer.WriteValue(port.PortName);
-            writer.WritePropertyName("ToolTip");
-            writer.WriteValue(port.ToolTipContent);
-            writer.WritePropertyName("PortType");
-            writer.WriteValue(Enum.GetName(typeof(PortType), port.PortType));
-            writer.WritePropertyName("Owner");
-            writer.WriteValue(port.Owner.GUID.ToString());
-            writer.WritePropertyName("UsingDefaultValue");
-            writer.WriteValue(port.UsingDefaultValue);
-            writer.WritePropertyName("Level");
-            writer.WriteValue(port.Level);
-            writer.WritePropertyName("UseLevels");
-            writer.WriteValue(port.UseLevels);
-            writer.WritePropertyName("ShouldKeepListStructure");
-            writer.WriteValue(port.ShouldKeepListStructure);
-            writer.WritePropertyName("Uuid");
-            writer.WriteValue(port.GUID.ToString());
-
-            writer.WriteEndObject();
-        }
-    }
-    
     /// <summary>
     /// The IdReferenceResolver class allows us to use the Guid of
     /// an object as the reference id during serialization.
