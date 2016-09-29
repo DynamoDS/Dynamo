@@ -1509,71 +1509,6 @@ z2 = z;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_UpdateWithinDSClass")]
-        [Category("Failure")]
-        [Category("Update")]
-        public void T31_Defect_1459777_5()
-        {
-            string code = @"
-class A
-{
-    a : int;	
-}
-class B 
-{
-    b : var;
-    constructor B ( a : A )
-    { 
-	    a.a = 2;
-		b = a.a + 2;
-    }	
-	
-}
-y = A.A();
-z = y.a;
-x = B.B(y);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //Assert.Fail("1466076 - Sprint 22 : rev 2396 : Update issue : when an instance property is updated inside function/method scope, it does not update the outer associative scope variable ");
-            thisTest.Verify("z", 2);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_UpdateWithinDSClass")]
-        [Category("Failure")]
-        [Category("Update")]
-        public void T31_Defect_1459777_6()
-        {
-            string code = @"
-	
-class A
-{
-    a : int;	
-}
-class B 
-{
-    b : var;
-    constructor B ( a : A )
-    { 
-	    a.a = 3;
-    }	
-	def foo ( a : A )
-	{
-	    a.a = 3;
-		return = true;
-	}
-	
-}
-y = A.A();
-z = y.a;
-x1 = B.B( y );
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //Assert.Fail("1466076 - Sprint 22 : rev 2396 : Update issue : when an instance property is updated inside function/method scope, it does not update the outer associative scope variable ");
-            thisTest.Verify("z", 3);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Update")]
         public void T31_Defect_1459777_7()
@@ -4885,65 +4820,6 @@ x = n.X;
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyRuntimeWarningCount(0);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        [Category("Failure")]
-        public void T91_1467547()
-        {
-            String code = @"
- 
-        def foo()
-        {
-            return = a + 7;
-        }
-        def bar()
-        {
-            return = 3;
-        }
-        def ding()
-        {
-            return = a < 100? foo(): bar();
-        }
-        a = 10;
-        t = ding();
-        a = 50;
-";
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1502
-            string errmsg = "MAGN-1502: Function pointer doesn't get update";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t", 57);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        [Category("Failure")]
-        public void T91_1467547_2()
-        {
-            String code = @"
- 
-        def foo()
-        {
-            return = a + 7;
-        }
-        def bar()
-        {
-            return = 3;
-        }
-        def ding()
-        {
-            return = a < 100? foo: bar;
-        }
-        a = 10;
-        t = ding();
-        z=t()
-        a = 50;
-";
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1502
-            string errmsg = "MAGN-1502: Function pointer doesn't get update";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t", 57);
         }
 
         [Test]
