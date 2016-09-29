@@ -649,4 +649,10 @@ value : bool = false</value>
   <data name="NoneString" xml:space="preserve">
     <value>none</value>
   </data>
+  <data name="FactorialOverflow" xml:space="preserve">
+    <value>The return value of Math.Factorial is limited to integers from the range of –9,223,372,036,854,775,808 to 9,223,372,036,854,775,807.</value>
+  </data>
+  <data name="FactorialNegativeInt" xml:space="preserve">
+    <value>The input value of Math.Factorial cannot be negative.</value>
+  </data>
 </root>

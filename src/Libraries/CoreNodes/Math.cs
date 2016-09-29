@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using CSMath = System.Math;
+using Dynamo.Properties;
 
 namespace DSCore
 {
@@ -520,11 +521,34 @@ namespace DSCore
         /// <search>!</search>
         public static long Factorial(long number)
         {
-            if (number < 0)
+            checked
             {
-                return -1;
+                try
+                {
+                    long factorial = 1;
+
+                    if (number < 0)
+                    {
+                        throw new ArgumentNullException(Resources.FactorialNegativeInt);
+                    }
+
+                    if (number == 0)
+                    {
+                        return factorial;
+                    }
+
+                    for (long i = number; i > 0; i--)
+                    {
+                        factorial = i * factorial;
+                    }
+                    return factorial;
+                }
+
+                catch (System.OverflowException)
+                {
+                    throw new OverflowException(Resources.FactorialOverflow);
+                }
             }
-            return (number > 1) ? number * Factorial(number - 1) : 1;
         }
 
         private static readonly Random mRandom = new Random();
