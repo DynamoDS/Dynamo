@@ -33,6 +33,7 @@ namespace Dynamo.Graph.Workspaces
     /// Represents base class for all kind of workspaces which contains general data
     /// such as Name, collections of nodes, notes, annotations, etc.
     /// </summary>
+    [JsonObject(IsReference = false)]
     public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable, IWorkspaceModel
     {
 
