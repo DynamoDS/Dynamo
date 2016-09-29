@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json.Converters;
 using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Notes;
 
 namespace Dynamo.Tests
 {
@@ -39,7 +41,7 @@ namespace Dynamo.Tests
                 Converters = new List<JsonConverter>{
                     new FunctionDescriptorConverter(CurrentDynamoModel.LibraryServices),
                     new CodeBlockNodeConverter(CurrentDynamoModel.LibraryServices),
-                    new ConnectorConverter(), new PortConverter()
+                    new ConnectorConverter(), new PortConverter(), new AnnotationConverter()
                 },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
@@ -68,6 +70,58 @@ namespace Dynamo.Tests
             // Set the ws as the current home workspace
             // and try to run it.
             
+        }
+    }
+
+    public class AnnotationConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(AnnotationModel);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var obj = JObject.Load(reader);
+            var title = obj["Title"].Value<string>();
+            var guid = Guid.Parse(obj["Guid"].Value<string>());
+
+            // This is a collection of string Guids, which
+            // should be accessible in the ReferenceResolver.
+            var models = obj["SelectedModels"].Values<JValue>();
+
+            var existing = models.Select(m => serializer.ReferenceResolver.ResolveReference(serializer.Context, m.Value<string>()));
+
+            var nodes = existing.Where(m => typeof(NodeModel).IsAssignableFrom(m.GetType())).Cast<NodeModel>();
+            var notes = existing.Where(m => typeof(NoteModel).IsAssignableFrom(m.GetType())).Cast<NoteModel>();
+
+            var anno = new AnnotationModel(nodes, notes);
+            anno.AnnotationText = title;
+            anno.GUID = guid;
+
+            return anno;
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var anno = (AnnotationModel)value;
+
+            writer.WriteStartObject();
+            writer.WritePropertyName("Guid");
+            writer.WriteValue(anno.GUID.ToString());
+            writer.WritePropertyName("Title");
+            writer.WriteValue(anno.AnnotationText);
+            writer.WritePropertyName("SelectedModels");
+            writer.WriteStartArray();
+
+            foreach(var m in anno.SelectedModels)
+            {
+                writer.WriteValue(m.GUID.ToString());
+            }
+
+            writer.WriteEndArray();
+
+            writer.WriteEndObject();
         }
     }
 
@@ -122,6 +176,10 @@ namespace Dynamo.Tests
         }
     }
 
+    /// <summary>
+    /// The CodeBlockNodeConverter is used to serialize and deserializing CodeBlockNodeModels. 
+    /// CodeBlockNodeModel requires an instance of LibraryServices for construction.
+    /// </summary>
     public class CodeBlockNodeConverter : CustomCreationConverter<CodeBlockNodeModel>
     {
         private LibraryServices libraryServices;
@@ -193,12 +251,16 @@ namespace Dynamo.Tests
             var shouldKeepListStructure = obj["ShouldKeepListStructure"].Value<bool>();
             var guidStr = obj["Guid"].Value<string>();
             var guid = Guid.Parse(guidStr);
-            var port = new PortModel(portType, null, displayName, toolTip);
+
+            var ownerNode = (NodeModel)serializer.ReferenceResolver.ResolveReference(serializer.Context, owner);
+            var port = new PortModel(portType, ownerNode, displayName, toolTip);
+
             port.UsingDefaultValue = usingDefaultValue;
             port.Level = level;
             port.UseLevels = useLevels;
             port.ShouldKeepListStructure = shouldKeepListStructure;
             port.GUID = guid;
+
             serializer.ReferenceResolver.AddReference(serializer.Context, port.GUID.ToString(), port);
             return port;
         }
