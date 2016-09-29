@@ -4329,6 +4329,7 @@ def foo ()
 x = 0;
 y = RemoveKey(x, x);
 ";
+            thisTest.RunScriptSource(code);
             thisTest.Verify("y", 0);
         }
 
