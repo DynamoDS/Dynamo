@@ -1659,6 +1659,7 @@ namespace ProtoCore.AST.AssociativeAST
         protected List<string> returnKeys;
         public string ObsoleteMessage { get; protected set; }
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
+        public bool IsLacingDisabled { get; protected set; }
 
         /// <summary>
         /// Returns/Sets description for the method.

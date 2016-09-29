@@ -141,6 +141,11 @@ namespace Dynamo.Engine
         ///     Indicates if the function is packaged element (either zero-touch DLLs or DYFs)
         /// </summary>
         public bool IsPackageMember { get; set; }
+
+        /// <summary>
+        ///     Indicates if the lacing strategy is disabled on the function
+        /// </summary>
+        public bool IsLacingDisabled { get; set; } 
     }
 
     /// <summary>
@@ -200,6 +205,7 @@ namespace Dynamo.Engine
             CanUpdatePeriodically = funcDescParams.CanUpdatePeriodically;
             IsBuiltIn = funcDescParams.IsBuiltIn;
             IsPackageMember = funcDescParams.IsPackageMember;
+            IsLacingDisabled = funcDescParams.IsLacingDisabled;
         }
 
         /// <summary>
@@ -509,6 +515,11 @@ namespace Dynamo.Engine
         ///     Returns instance of IPathManager
         /// </summary>
         public IPathManager PathManager { get { return pathManager; } }
+
+        /// <summary>
+        ///     Returns if the lacing strategy is disabled
+        /// </summary>
+        public bool IsLacingDisabled { get; private set; }
 
         /// <summary>
         ///     Overrides equality check of two <see cref="FunctionDescriptor"/> objects
