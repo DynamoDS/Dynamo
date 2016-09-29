@@ -76,19 +76,21 @@ namespace Dynamo.Graph.Nodes
         /// Type of the port.
         /// It can be incoming or outcoming.
         /// </summary>
+        [JsonIgnore]
         public PortType PortType
         {
             get;
-            private set;
+            internal set;
         }
 
         /// <summary>
         /// Returns the Node.
         /// </summary>
+        [JsonIgnore]
         public NodeModel Owner
         {
             get;
-            private set;
+            internal set;
         }
 
         /// <summary>
@@ -274,12 +276,9 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         [JsonConstructor]
-        internal PortModel(PortType portType, NodeModel owner, 
-            string nickName, string toolTip)
+        internal PortModel(string nickName, string toolTip)
         {
             IsConnected = false;
-            PortType = portType;
-            Owner = owner;
             UseLevels = false;
             ShouldKeepListStructure = false;
             Level = 2;

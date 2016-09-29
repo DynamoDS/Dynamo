@@ -727,6 +727,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// A unique identifier for the workspace.
         /// </summary>
+        [JsonProperty("Uuid")]
         public Guid Guid
         {
             get { return guid; }

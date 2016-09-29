@@ -23,6 +23,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
+using System.Runtime.Serialization;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -1848,6 +1849,28 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         #region Serialization/Deserialization Methods
+
+        /// <summary>
+        /// The OnDeserializedMethod allows us to set this Node ports' Owner
+        /// property after deserialization is complete. This allows us to
+        /// avoid having to serialize the Owner property on the PortModel.
+        /// </summary>
+        /// <param name="context"></param>
+        [OnDeserialized]
+        internal void OnDeserializedMethod(StreamingContext context)
+        {
+            foreach(var p in OutPorts)
+            {
+                p.Owner = this;
+                p.PortType = PortType.Output;
+            }
+
+            foreach(var p in InPorts)
+            {
+                p.Owner = this;
+                p.PortType = PortType.Input;
+            }
+        }
 
         /// <summary>
         ///     Called when the node's Workspace has been saved.

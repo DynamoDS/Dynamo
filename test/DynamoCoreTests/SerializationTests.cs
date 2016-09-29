@@ -41,7 +41,7 @@ namespace Dynamo.Tests
                 Converters = new List<JsonConverter>{
                     new FunctionDescriptorConverter(CurrentDynamoModel.LibraryServices),
                     new CodeBlockNodeConverter(CurrentDynamoModel.LibraryServices),
-                    new ConnectorConverter(), new PortConverter(), new AnnotationConverter()
+                    new ConnectorConverter(), new AnnotationConverter()
                 },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
@@ -67,10 +67,15 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, funcNode.InPorts.Count);
 
             Assert.AreEqual(2,ws.Connectors.Count());
-            
+
+            Assert.True(ws.Nodes.All(n => n.InPorts.All(p => p.Owner == n)));
+            Assert.True(ws.Nodes.All(n => n.OutPorts.All(p => p.Owner == n)));
+            Assert.True(ws.Nodes.All(n => n.InPorts.All(p => p.PortType == PortType.Input)));
+            Assert.True(ws.Nodes.All(n => n.OutPorts.All(p => p.PortType == PortType.Output)));
+
             // Set the ws as the current home workspace
             // and try to run it.
-            
+
         }
     }
 
@@ -178,7 +183,7 @@ namespace Dynamo.Tests
     }
 
     /// <summary>
-    /// The CodeBlockNodeConverter is used to serialize and deserializing CodeBlockNodeModels. 
+    /// The CodeBlockNodeConverter is used to serialize and deserialize CodeBlockNodeModels. 
     /// CodeBlockNodeModel requires an instance of LibraryServices for construction.
     /// </summary>
     public class CodeBlockNodeConverter : CustomCreationConverter<CodeBlockNodeModel>
@@ -196,6 +201,13 @@ namespace Dynamo.Tests
         }
     }
 
+    /// <summary>
+    /// The ConnectorConverter is used to serialize and deserialize ConnectorModels.
+    /// The Start and End of a ConnectorModel are references to PortModels, but
+    /// we want the serialized representation of a Connector to reference these 
+    /// ports by Id. This converter resolves the reference to the correct NodeModel
+    /// instance by id, and constructs the ConnectorModel.
+    /// </summary>
     public class ConnectorConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
@@ -245,7 +257,6 @@ namespace Dynamo.Tests
             var toolTip = obj["ToolTip"].Value<string>();
             var portTypeStr = obj["PortType"].Value<string>();
             var portType = (PortType)Enum.Parse(typeof(PortType), portTypeStr);
-            var owner = obj["Owner"].Value<string>();
             var usingDefaultValue = obj["UsingDefaultValue"].Value<bool>();
             var level = obj["Level"].Value<int>();
             var useLevels = obj["UseLevels"].Value<bool>();
@@ -253,8 +264,7 @@ namespace Dynamo.Tests
             var guidStr = obj["Uuid"].Value<string>();
             var guid = Guid.Parse(guidStr);
 
-            var ownerNode = (NodeModel)serializer.ReferenceResolver.ResolveReference(serializer.Context, owner);
-            var port = new PortModel(portType, ownerNode, displayName, toolTip);
+            var port = new PortModel(displayName, toolTip);
 
             port.UsingDefaultValue = usingDefaultValue;
             port.Level = level;
