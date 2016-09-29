@@ -5302,25 +5302,21 @@ namespace DynamoCoreWpfTests
         [Test]
         public void MAGN10382()
         {
+            var nodeGuid = "86107112-5c2d-43ae-9d7c-e2d756a80bf3";
+
             // github issue: https://github.com/DynamoDS/Dynamo/issues/7151
             RunCommandsFromFile("CodeBlockNode_DefineDictionary.xml", (commandTag) =>
             {
                 switch (commandTag)
                 {
                     case "CreateDictionary":
-                        AssertPreviewValue("86107112-5c2d-43ae-9d7c-e2d756a80bf3", new object[] { 1, 2, 3 });
-                        break;
                     case "ChangeName1":
-                        AssertPreviewValue("86107112-5c2d-43ae-9d7c-e2d756a80bf3", new object[] { 1, 2, 3 });
-                        break;
                     case "ChangeName2":
-                        AssertPreviewValue("86107112-5c2d-43ae-9d7c-e2d756a80bf3", new object[] { 1, 2, 3 });
+                    case "ChangeName4":
+                        AssertPreviewValue(nodeGuid, new object[] { 1, 2, 3 });
                         break;
                     case "ChangeName3":
-                        AssertPreviewValue("86107112-5c2d-43ae-9d7c-e2d756a80bf3", null);
-                        break;
-                    case "ChangeName4":
-                        AssertPreviewValue("86107112-5c2d-43ae-9d7c-e2d756a80bf3", new object[] { 1, 2, 3 });
+                        AssertPreviewValue(nodeGuid, null);
                         break;
                     default:
                         break;
