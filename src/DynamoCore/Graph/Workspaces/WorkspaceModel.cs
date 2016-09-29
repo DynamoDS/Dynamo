@@ -386,6 +386,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     The date of the last save.
         /// </summary>
+        [JsonProperty("LastModified")]
         public DateTime LastSaved
         {
             get { return lastSaved; }
@@ -399,6 +400,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     An author of the workspace
         /// </summary>
+        [JsonProperty("LastModifiedBy")]
         public string Author
         {
             get { return author; }
@@ -584,6 +586,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns or set the X position of the workspace.
         /// </summary>
+        [JsonIgnore]
         public double X
         {
             get { return x; }
@@ -597,6 +600,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns or set the Y position of the workspace
         /// </summary>
+        [JsonIgnore]
         public double Y
         {
             get { return y; }
@@ -610,6 +614,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Get or set the zoom value of the workspace.
         /// </summary>
+        [JsonIgnore]
         public double Zoom
         {
             get { return zoom; }
@@ -623,6 +628,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns the height of the workspace's bounds.
         /// </summary>
+        [JsonIgnore]
         public double Height
         {
             get { return height; }
@@ -636,6 +642,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns the width of the workspace's bounds.
         /// </summary>
+        [JsonIgnore]
         public double Width
         {
             get { return width; }
@@ -731,6 +738,7 @@ namespace Dynamo.Graph.Workspaces
         /// This is used by ProtoGeometry to scale geometric values appropriately before passing them to ASM.
         /// This property is set either when reading the setting from a DYN file or when the setting is updated from the UI.
         /// </summary>
+        [JsonIgnore]
         public double ScaleFactor
         {
             get { return scaleFactor; }

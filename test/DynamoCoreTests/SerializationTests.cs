@@ -47,6 +47,7 @@ namespace Dynamo.Tests
             };
 
             var json = JsonConvert.SerializeObject(CurrentDynamoModel.CurrentWorkspace, settings);
+            
             Console.WriteLine(json);
 
             Assert.IsNotNullOrEmpty(json);
@@ -84,7 +85,7 @@ namespace Dynamo.Tests
         {
             var obj = JObject.Load(reader);
             var title = obj["Title"].Value<string>();
-            var guid = Guid.Parse(obj["Guid"].Value<string>());
+            var guid = Guid.Parse(obj["Uuid"].Value<string>());
 
             // This is a collection of string Guids, which
             // should be accessible in the ReferenceResolver.
@@ -107,7 +108,7 @@ namespace Dynamo.Tests
             var anno = (AnnotationModel)value;
 
             writer.WriteStartObject();
-            writer.WritePropertyName("Guid");
+            writer.WritePropertyName("Uuid");
             writer.WriteValue(anno.GUID.ToString());
             writer.WritePropertyName("Title");
             writer.WriteValue(anno.AnnotationText);
@@ -211,7 +212,7 @@ namespace Dynamo.Tests
             var startPort = (PortModel)serializer.ReferenceResolver.ResolveReference(serializer.Context, startId);
             var endPort = (PortModel)serializer.ReferenceResolver.ResolveReference(serializer.Context, endId);
 
-            var connectorId = Guid.Parse(obj["Guid"].Value<string>());
+            var connectorId = Guid.Parse(obj["Uuid"].Value<string>());
             return new ConnectorModel(startPort, endPort, connectorId);
         }
 
@@ -224,7 +225,7 @@ namespace Dynamo.Tests
             writer.WriteValue(connector.Start.GUID.ToString());
             writer.WritePropertyName("End");
             writer.WriteValue(connector.End.GUID.ToString());
-            writer.WritePropertyName("Guid");
+            writer.WritePropertyName("Uuid");
             writer.WriteValue(connector.GUID.ToString());
             writer.WriteEndObject();
         }
@@ -249,7 +250,7 @@ namespace Dynamo.Tests
             var level = obj["Level"].Value<int>();
             var useLevels = obj["UseLevels"].Value<bool>();
             var shouldKeepListStructure = obj["ShouldKeepListStructure"].Value<bool>();
-            var guidStr = obj["Guid"].Value<string>();
+            var guidStr = obj["Uuid"].Value<string>();
             var guid = Guid.Parse(guidStr);
 
             var ownerNode = (NodeModel)serializer.ReferenceResolver.ResolveReference(serializer.Context, owner);
@@ -287,12 +288,13 @@ namespace Dynamo.Tests
             writer.WriteValue(port.UseLevels);
             writer.WritePropertyName("ShouldKeepListStructure");
             writer.WriteValue(port.ShouldKeepListStructure);
-            writer.WritePropertyName("Guid");
+            writer.WritePropertyName("Uuid");
             writer.WriteValue(port.GUID.ToString());
 
             writer.WriteEndObject();
         }
     }
+    
     /// <summary>
     /// The IdReferenceResolver class allows us to use the Guid of
     /// an object as the reference id during serialization.

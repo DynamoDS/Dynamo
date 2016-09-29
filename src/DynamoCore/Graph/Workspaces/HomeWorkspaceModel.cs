@@ -71,6 +71,7 @@ namespace Dynamo.Graph.Workspaces
         ///     Returns <see cref="EngineController"/> object containing properties to control
         /// how execution is carried out.
         /// </summary>
+        [JsonIgnore]
         public readonly RunSettings RunSettings;
 
         /// <summary>
