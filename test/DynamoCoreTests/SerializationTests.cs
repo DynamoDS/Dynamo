@@ -11,7 +11,6 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
 using Dynamo.Graph.Nodes;
-using System.Collections.ObjectModel;
 using Newtonsoft.Json.Converters;
 using Dynamo.Graph.Connectors;
 
@@ -40,7 +39,7 @@ namespace Dynamo.Tests
                 Converters = new List<JsonConverter>{
                     new FunctionDescriptorConverter(CurrentDynamoModel.LibraryServices),
                     new CodeBlockNodeConverter(CurrentDynamoModel.LibraryServices),
-                    new ConnectorConverter()
+                    new ConnectorConverter(), new PortConverter()
                 },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
@@ -173,6 +172,65 @@ namespace Dynamo.Tests
         }
     }
 
+    public class PortConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(PortModel);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var obj = JObject.Load(reader);
+            var displayName = obj["DisplayName"].Value<string>();
+            var toolTip = obj["ToolTip"].Value<string>();
+            var portTypeStr = obj["PortType"].Value<string>();
+            var portType = (PortType)Enum.Parse(typeof(PortType), portTypeStr);
+            var owner = obj["Owner"].Value<string>();
+            var usingDefaultValue = obj["UsingDefaultValue"].Value<bool>();
+            var level = obj["Level"].Value<int>();
+            var useLevels = obj["UseLevels"].Value<bool>();
+            var shouldKeepListStructure = obj["ShouldKeepListStructure"].Value<bool>();
+            var guidStr = obj["Guid"].Value<string>();
+            var guid = Guid.Parse(guidStr);
+            var port = new PortModel(portType, null, displayName, toolTip);
+            port.UsingDefaultValue = usingDefaultValue;
+            port.Level = level;
+            port.UseLevels = useLevels;
+            port.ShouldKeepListStructure = shouldKeepListStructure;
+            port.GUID = guid;
+            serializer.ReferenceResolver.AddReference(serializer.Context, port.GUID.ToString(), port);
+            return port;
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var port = (PortModel)value;
+
+            writer.WriteStartObject();
+
+            writer.WritePropertyName("DisplayName");
+            writer.WriteValue(port.PortName);
+            writer.WritePropertyName("ToolTip");
+            writer.WriteValue(port.ToolTipContent);
+            writer.WritePropertyName("PortType");
+            writer.WriteValue(Enum.GetName(typeof(PortType), port.PortType));
+            writer.WritePropertyName("Owner");
+            writer.WriteValue(port.Owner.GUID.ToString());
+            writer.WritePropertyName("UsingDefaultValue");
+            writer.WriteValue(port.UsingDefaultValue);
+            writer.WritePropertyName("Level");
+            writer.WriteValue(port.Level);
+            writer.WritePropertyName("UseLevels");
+            writer.WriteValue(port.UseLevels);
+            writer.WritePropertyName("ShouldKeepListStructure");
+            writer.WriteValue(port.ShouldKeepListStructure);
+            writer.WritePropertyName("Guid");
+            writer.WriteValue(port.GUID.ToString());
+
+            writer.WriteEndObject();
+        }
+    }
     /// <summary>
     /// The IdReferenceResolver class allows us to use the Guid of
     /// an object as the reference id during serialization.
