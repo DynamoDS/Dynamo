@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Dynamo.Graph.Nodes;
 using System.Collections.ObjectModel;
 using Newtonsoft.Json.Converters;
+using Dynamo.Graph.Connectors;
 
 namespace Dynamo.Tests
 {
@@ -38,7 +39,9 @@ namespace Dynamo.Tests
                 PreserveReferencesHandling = PreserveReferencesHandling.Objects,
                 Converters = new List<JsonConverter>{
                     new FunctionDescriptorConverter(CurrentDynamoModel.LibraryServices),
-                    new CodeBlockNodeConverter(CurrentDynamoModel.LibraryServices)},
+                    new CodeBlockNodeConverter(CurrentDynamoModel.LibraryServices),
+                    new ConnectorConverter()
+                },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
 
@@ -132,6 +135,41 @@ namespace Dynamo.Tests
         public override CodeBlockNodeModel Create(Type objectType)
         {
             return new CodeBlockNodeModel(libraryServices);
+        }
+    }
+
+    public class ConnectorConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType ==  typeof(ConnectorModel);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var obj = JObject.Load(reader);
+            var startId = obj["Start"].Value<string>();
+            var endId = obj["End"].Value<string>();
+
+            var startPort = (PortModel)serializer.ReferenceResolver.ResolveReference(serializer.Context, startId);
+            var endPort = (PortModel)serializer.ReferenceResolver.ResolveReference(serializer.Context, endId);
+
+            var connectorId = Guid.Parse(obj["Guid"].Value<string>());
+            return new ConnectorModel(startPort, endPort, connectorId);
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var connector = (ConnectorModel)value;
+
+            writer.WriteStartObject();
+            writer.WritePropertyName("Start");
+            writer.WriteValue(connector.Start.GUID.ToString());
+            writer.WritePropertyName("End");
+            writer.WriteValue(connector.End.GUID.ToString());
+            writer.WritePropertyName("Guid");
+            writer.WriteValue(connector.GUID.ToString());
+            writer.WriteEndObject();
         }
     }
 

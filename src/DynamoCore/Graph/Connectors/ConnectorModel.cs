@@ -32,12 +32,26 @@ namespace Dynamo.Graph.Connectors
         /// <summary>
         /// Returns start port model.
         /// </summary>
+        [JsonIgnore]
         public PortModel Start { get; private set; }
+
+        [JsonProperty("Start")]
+        public Guid StartId
+        {
+            get { return Start.GUID; }
+        }
 
         /// <summary>
         /// Returns end port model.
         /// </summary>
+        [JsonIgnore]
         public PortModel End { get; private set; }
+
+        [JsonProperty("End")]
+        public Guid EndId
+        {
+            get { return End.GUID; }
+        }
 
         #endregion 
 
@@ -67,7 +81,7 @@ namespace Dynamo.Graph.Connectors
         }
 
         [JsonConstructor]
-        private ConnectorModel(PortModel start, PortModel end, Guid guid)
+        public ConnectorModel(PortModel start, PortModel end, Guid guid)
         {
             Start = start;
             Start.Connect(this);
