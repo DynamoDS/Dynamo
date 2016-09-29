@@ -189,7 +189,9 @@ namespace Dynamo.Graph.Workspaces
                 null,
                 Enumerable.Empty<PresetModel>(),
                 new ElementResolver())
-        { }
+        {
+            RunSettings = new RunSettings() { RunType = RunType.Automatic };
+        }
 
         /// <summary>
         /// Initializes a new empty instance of the <see cref="HomeWorkspaceModel"/> class
