@@ -415,7 +415,7 @@
     <value>Produces the set union of two sequences by using the default equality comparer</value>
   </data>
   <data name="RemoveKeys" xml:space="preserve">
-    <value>Removes a copy of array with specified key removed</value>
+    <value>Removes key from list</value>
   </data>
   <data name="RemovesTheMembersofTheList" xml:space="preserve">
     <value>Removes the members of the list which are not members of the specified type</value>
