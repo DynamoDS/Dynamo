@@ -15,6 +15,7 @@ using Newtonsoft.Json.Converters;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Notes;
+using System.Runtime.Serialization;
 
 namespace Dynamo.Tests
 {
@@ -35,7 +36,7 @@ namespace Dynamo.Tests
                     Console.WriteLine(args.ErrorContext.Error);
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Objects,
+                TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
                 PreserveReferencesHandling = PreserveReferencesHandling.Objects,
                 Converters = new List<JsonConverter>{
