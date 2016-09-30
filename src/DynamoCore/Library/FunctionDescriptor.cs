@@ -10,7 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Newtonsoft.Json;
 
 namespace Dynamo.Engine
 {
@@ -206,19 +205,16 @@ namespace Dynamo.Engine
         /// <summary>
         ///     Indicates if the function overloads
         /// </summary>
-        [JsonIgnore]
         public bool IsOverloaded { get; set; }
 
         /// <summary>
         ///     Full path to the assembly which defined this function
         /// </summary>
-        [JsonIgnore]
         public string Assembly { get; private set; }
 
         /// <summary>
         ///     Class name of this function. If the function is global, return String.Empty.
         /// </summary>
-        [JsonIgnore]
         public string ClassName { get; private set; }
 
         /// <summary>
@@ -229,63 +225,53 @@ namespace Dynamo.Engine
         /// <summary>
         ///     Function parameters.
         /// </summary>
-        [JsonIgnore]
         public IEnumerable<TypedParameter> Parameters { get; private set; }
 
         /// <summary>
         ///     Function return type.
         /// </summary>
-        [JsonIgnore]
         public ProtoCore.Type ReturnType { get; private set; }
 
         /// <summary>
         ///     If the function returns a dictionary, ReturnKeys is the key collection
         ///     used in returned dictionary.
         /// </summary>
-        [JsonIgnore]
         public IEnumerable<string> ReturnKeys { get; private set; }
 
         /// <summary>
         ///     Does the function accept a variable number of arguments?
         /// </summary>
-        [JsonIgnore]
         public bool IsVarArg { get; private set; }
 
         /// <summary>
         ///     Indicates if it is a built-in function
         /// </summary>
-        [JsonIgnore]
         public bool IsBuiltIn { get; private set; }
 
         /// <summary>
         ///     Indicates if the function is packaged element (either zero-touch DLLs or DYFs)
         /// </summary>
-        [JsonIgnore]
         public bool IsPackageMember { get; private set; }
 
         /// <summary>
         ///     Message specified if function is obsolete
         /// </summary>
-        [JsonIgnore]
         public string ObsoleteMessage { get; protected set; }
 
         /// <summary>
         /// Indicates if the function is obsolete
         /// </summary>
-        [JsonIgnore]
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
 
         /// <summary>
         ///     Function type.
         /// </summary>
-        [JsonIgnore]
         public FunctionType Type { get; private set; }
 
         /// <summary>
         ///     Returns summary of the function from its documentation xml 
         /// using the corresponding FunctionDescriptor object.
         /// </summary>
-        [JsonIgnore]
         public string Summary
         {
             get { return summary ?? (summary = this.GetSummary()); }
@@ -294,7 +280,6 @@ namespace Dynamo.Engine
         /// <summary>
         ///     A comment describing the function along with the signature
         /// </summary>
-        [JsonIgnore]
         public string Description
         {
             get { return !String.IsNullOrEmpty(Summary) ? Summary : string.Empty; }
@@ -309,13 +294,11 @@ namespace Dynamo.Engine
         /// 
         ///     Otherwise, this list will be empty.
         /// </summary>
-        [JsonIgnore]
         public IEnumerable<Tuple<string, string>> Returns { get { return returns ?? (returns = this.GetReturns()); } }
 
         /// <summary>
         ///     Inputs for Node
         /// </summary>
-        [JsonIgnore]
         public IEnumerable<Tuple<string, string>> InputParameters
         {
             get;
@@ -325,7 +308,6 @@ namespace Dynamo.Engine
         /// <summary>
         ///     The category of this function.
         /// </summary>
-        [JsonIgnore]
         public string Category
         {
             get
@@ -392,7 +374,6 @@ namespace Dynamo.Engine
         /// <summary>
         ///     The string that is used to search for this function.
         /// </summary>
-        [JsonIgnore]
         public string QualifiedName
         {
             get
@@ -407,7 +388,6 @@ namespace Dynamo.Engine
         ///     A unique name to identify a function. It is necessary when a
         ///     function is overloaded.
         /// </summary>
-        [JsonIgnore]
         public string MangledName
         {
             get
@@ -421,7 +401,6 @@ namespace Dynamo.Engine
         /// <summary>
         ///     The full signature of the function.
         /// </summary>
-        [JsonIgnore]
         public string Signature
         {
             get
@@ -451,7 +430,6 @@ namespace Dynamo.Engine
         ///     Return a user friendly name. E.g., for operator '+' it will return
         ///     'Add'
         /// </summary>
-        [JsonIgnore]
         public string UserFriendlyName
         {
             get
@@ -473,7 +451,6 @@ namespace Dynamo.Engine
         /// <summary>
         ///     QualifiedName with leading namespaces removed.
         /// </summary>
-        [JsonIgnore]
         public string DisplayName
         {
             get
@@ -491,19 +468,16 @@ namespace Dynamo.Engine
         /// <summary>
         ///     This attribute sets, if this function is shown in library or not.
         /// </summary>
-        [JsonIgnore]
         public bool IsVisibleInLibrary { get; private set; }
 
         /// <summary>
         ///     This attribute sets whether the function enables periodic update of the workspace.
         /// </summary>
-        [JsonIgnore]
         public bool CanUpdatePeriodically { get; private set; }
 
         /// <summary>
         ///     Returns class name without namespace
         /// </summary>
-        [JsonIgnore]
         public string UnqualifedClassName
         {
             get
@@ -519,7 +493,6 @@ namespace Dynamo.Engine
         /// <summary>
         ///     Returns namespace where the function is specified
         /// </summary>
-        [JsonIgnore]
         public string Namespace
         {
             get
@@ -535,7 +508,6 @@ namespace Dynamo.Engine
         /// <summary>
         ///     Returns instance of IPathManager
         /// </summary>
-        [JsonIgnore]
         public IPathManager PathManager { get { return pathManager; } }
 
         /// <summary>

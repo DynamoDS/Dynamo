@@ -2,7 +2,6 @@
 using System.Xml;
 using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
-using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Connectors
 {
