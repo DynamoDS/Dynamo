@@ -43,13 +43,13 @@ namespace DSCore
         {
             if (a is double || a is float)
             {
-                if (b is int)
-                    return (double)a >= (int)b;
+                if (b is int || b is long)
+                    return (double)a >= (long)b;
             }
-            else if (a is int)
+            else if (a is long || a is int)
             {
                 if (b is double || b is float)
-                    return (int)a >= (double)b;
+                    return (long)a >= (double)b;
             }
             return ((IComparable)a).CompareTo(b) >= 0;
         }
