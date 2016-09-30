@@ -23,11 +23,18 @@ namespace DSCore
             {
                 if (b is int)
                     return (double)a > (int)b;
+                else if (b is long)
+                    return (double)a > (long)b;
             }
             else if (a is int)
             {
                 if (b is double || b is float)
                     return (int)a > (double)b;
+            }
+            else if (a is long)
+            {
+                if (b is double || b is float)
+                    return (long)a > (double)b;
             }
             return ((IComparable)a).CompareTo(b) > 0;
         }
@@ -43,10 +50,17 @@ namespace DSCore
         {
             if (a is double || a is float)
             {
-                if (b is int || b is long)
+                if (b is int)
+                    return (double)a >= (int)b;
+                else if (b is long)
                     return (double)a >= (long)b;
             }
-            else if (a is long || a is int)
+            else if (a is int)
+            {
+                if (b is double || b is float)
+                    return (int)a >= (double)b;
+            }
+            else if (a is long)
             {
                 if (b is double || b is float)
                     return (long)a >= (double)b;
@@ -67,11 +81,18 @@ namespace DSCore
             {
                 if (b is int)
                     return (double)a < (int)b;
+                else if (b is long)
+                    return (double)a < (long)b;
             }
             else if (a is int)
             {
                 if (b is double || b is float)
                     return (int)a < (double)b;
+            }
+            else if (a is long)
+            {
+                if (b is double || b is float)
+                    return (long)a < (double)b;
             }
             return ((IComparable)a).CompareTo(b) < 0;
         }
@@ -89,11 +110,18 @@ namespace DSCore
             {
                 if (b is int)
                     return (double)a <= (int)b;
+                else if (b is long)
+                    return (double)a <= (long)b;
             }
             else if (a is int)
             {
                 if (b is double || b is float)
                     return (int)a <= (double)b;
+            }
+            else if (a is long)
+            {
+                if (b is double || b is float)
+                    return (long)a <= (double)b;
             }
             return ((IComparable)a).CompareTo(b) <= 0;
         }
