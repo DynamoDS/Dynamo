@@ -1083,6 +1083,17 @@ namespace Dynamo.Tests
             OpenModel(dynFilePath);
             AssertPreviewValue("17aae6a5-c4d5-4ba9-862c-5fd2e99c334e", 8388608);
         }
+
+        [Test]
+        public void TestDictionaryDefintion()
+        {
+            // Regression test for https://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-10382
+            // To test that variable could still be properly renamed.
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\define_dictionary.dyn");
+            OpenModel(dynFilePath);
+            AssertPreviewValue("a0227846-04ca-4323-9074-2bd1ea9ac8cf", new object[] { 1, 2, 3 });
+            AssertPreviewValue("ada2d384-626f-4240-b251-7df6e395f3f2", new object[] {"Bob", "Sally", "Pat" });
+        }
     }
 
     [Category("DSCustomNode")]

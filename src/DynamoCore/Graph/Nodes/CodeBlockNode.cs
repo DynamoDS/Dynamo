@@ -1294,9 +1294,22 @@ namespace Dynamo.Graph.Nodes
                 //First get all the defined variables
                 while (parsedNode is BinaryExpressionNode)
                 {
-                    IdentifierNode assignedVar = GetDefinedIdentifier((parsedNode as BinaryExpressionNode).LeftNode);
+                    var binaryExpression = parsedNode as BinaryExpressionNode;
+                    IdentifierNode assignedVar = GetDefinedIdentifier(binaryExpression.LeftNode);
                     if (assignedVar != null)
+                    {
                         definedVariables.Add(new Variable(assignedVar));
+
+                        // Handle case "a;" which is compiled to "t6BBA4B28C5E54CF89F300D510499A00E_x = a;"
+                        if (assignedVar.Name.StartsWith(ProtoCore.DSASM.Constants.kTempVarForNonAssignment) && binaryExpression.Optr == Operator.assign)
+                        {
+                            var rightNode = binaryExpression.RightNode as IdentifierNode;
+                            if (rightNode != null)
+                            {
+                                definedVariables.Add(new Variable(rightNode));
+                            }
+                        }
+                    }
                     parsedNode = (parsedNode as BinaryExpressionNode).RightNode;
                 }
 
