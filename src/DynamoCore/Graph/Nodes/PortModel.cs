@@ -60,7 +60,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Tooltip of the port.
         /// </summary>
-        [JsonProperty("ToolTip")]
+        [JsonProperty("Description")]
         public string ToolTipContent
         {
             get
