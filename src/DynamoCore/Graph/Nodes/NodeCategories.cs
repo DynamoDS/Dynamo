@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Xml;
 using Dynamo.Configuration;
@@ -420,8 +421,8 @@ namespace Dynamo.Graph.Nodes
             var documentUri = new Uri(basePath, UriKind.Absolute);
             var assemblyUri = new Uri(subjectPath, UriKind.Absolute);
 
-            var relativeUri = documentUri.MakeRelativeUri(assemblyUri);
-            var relativePath = relativeUri.OriginalString.Replace('/', '\\');
+            var relativeUri = documentUri.MakeRelativeUri(assemblyUri).OriginalString;
+            var relativePath = WebUtility.UrlDecode(relativeUri.Replace("+", "%2B")).Replace('/', '\\');
             if (!HasPathInformation(relativePath))
             {
                 relativePath = ".\\" + relativePath;
