@@ -945,6 +945,8 @@ namespace Dynamo.PackageManager
 
             if (fDialog.ShowDialog() != DialogResult.OK) return;
 
+            UploadState = PackageUploadHandle.State.Ready;
+
             foreach (var file in fDialog.FileNames)
             {
                 AddFile(file);

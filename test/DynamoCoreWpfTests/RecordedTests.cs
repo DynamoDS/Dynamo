@@ -5284,6 +5284,45 @@ namespace DynamoCoreWpfTests
             });
         }
 
+        [Test]
+        public void TestNoLacingOnListJoin()
+        {
+            RunCommandsFromFile("CreateListJoin.xml", (commandTag) =>
+            {
+                if (commandTag == "Run")
+                {
+                    var workspace = ViewModel.Model.CurrentWorkspace;
+                    var node = workspace.NodeFromWorkspace<Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction>("ac563e6a-ebc5-4b88-bd64-3cfe8f9e96d7");
+                    Assert.IsNotNull(node);
+                    Assert.AreEqual(LacingStrategy.Disabled, node.ArgumentLacing);
+                }
+            });
+        }
+
+        [Test]
+        public void MAGN10382()
+        {
+            var nodeGuid = "86107112-5c2d-43ae-9d7c-e2d756a80bf3";
+
+            // github issue: https://github.com/DynamoDS/Dynamo/issues/7151
+            RunCommandsFromFile("CodeBlockNode_DefineDictionary.xml", (commandTag) =>
+            {
+                switch (commandTag)
+                {
+                    case "CreateDictionary":
+                    case "ChangeName1":
+                    case "ChangeName2":
+                    case "ChangeName4":
+                        AssertPreviewValue(nodeGuid, new object[] { 1, 2, 3 });
+                        break;
+                    case "ChangeName3":
+                        AssertPreviewValue(nodeGuid, null);
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
     }
 
 }

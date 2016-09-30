@@ -984,13 +984,13 @@ namespace Dynamo.Tests
             RunModel(dynFilePath);
             // Fix expected result after MAGN-7639 is fixed.
 
-            AssertPreviewValue("bd89982a-c3e6-4a4e-898c-2bdc8f1f8c3e", false);
+            AssertPreviewValue("bd89982a-c3e6-4a4e-898c-2bdc8f1f8c3e", null);
 
             // Reset engine and mark all nodes as dirty. A.k.a., force re-execute.
             CurrentDynamoModel.ForceRun();
 
             // Fix expected result after MAGN-7639 is fixed.
-            AssertPreviewValue("980dcd47-84e7-412c-8d9e-d66f166d2370", true);
+            AssertPreviewValue("980dcd47-84e7-412c-8d9e-d66f166d2370", new object[] { 1, 2, 3, 4 });
 
         }
 
@@ -1074,6 +1074,25 @@ namespace Dynamo.Tests
             AssertPreviewValue("863e8d06-0175-42ec-8613-305e9efa95d0", true);
             AssertPreviewValue("b0d7b844-93a9-43fa-b8f1-15cbb7469a84", true);
             AssertPreviewValue("d1942e84-355f-4083-bb1c-6b7203ee192c", true);
+        }
+
+        [Test]
+        public void TestIntegerOverflow()
+        {
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\integer_overflow.dyn");
+            OpenModel(dynFilePath);
+            AssertPreviewValue("17aae6a5-c4d5-4ba9-862c-5fd2e99c334e", 8388608);
+        }
+
+        [Test]
+        public void TestDictionaryDefintion()
+        {
+            // Regression test for https://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-10382
+            // To test that variable could still be properly renamed.
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\define_dictionary.dyn");
+            OpenModel(dynFilePath);
+            AssertPreviewValue("a0227846-04ca-4323-9074-2bd1ea9ac8cf", new object[] { 1, 2, 3 });
+            AssertPreviewValue("ada2d384-626f-4240-b251-7df6e395f3f2", new object[] {"Bob", "Sally", "Pat" });
         }
     }
 

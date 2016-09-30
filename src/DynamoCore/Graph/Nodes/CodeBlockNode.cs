@@ -310,19 +310,9 @@ namespace Dynamo.Graph.Nodes
 
             value = CodeBlockUtils.FormatUserText(value);
 
-            //Since an empty Code Block Node should not exist, this checks for such instances.
-            // If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
-            // an empty Code Block Node should not be recorded, this method also checks and removes
-            // any unwanted recordings
-            if (value == "")
-            {
-                Code = "";
-            }
-            else
-            {
-                if (!value.Equals(Code))
-                    SetCodeContent(value, workspaceElementResolver);
-            }
+            if (!value.Equals(Code))
+               SetCodeContent(value, workspaceElementResolver);
+
             return true;
         }
 
@@ -1310,9 +1300,22 @@ namespace Dynamo.Graph.Nodes
                 //First get all the defined variables
                 while (parsedNode is BinaryExpressionNode)
                 {
-                    IdentifierNode assignedVar = GetDefinedIdentifier((parsedNode as BinaryExpressionNode).LeftNode);
+                    var binaryExpression = parsedNode as BinaryExpressionNode;
+                    IdentifierNode assignedVar = GetDefinedIdentifier(binaryExpression.LeftNode);
                     if (assignedVar != null)
+                    {
                         definedVariables.Add(new Variable(assignedVar));
+
+                        // Handle case "a;" which is compiled to "t6BBA4B28C5E54CF89F300D510499A00E_x = a;"
+                        if (assignedVar.Name.StartsWith(ProtoCore.DSASM.Constants.kTempVarForNonAssignment) && binaryExpression.Optr == Operator.assign)
+                        {
+                            var rightNode = binaryExpression.RightNode as IdentifierNode;
+                            if (rightNode != null)
+                            {
+                                definedVariables.Add(new Variable(rightNode));
+                            }
+                        }
+                    }
                     parsedNode = (parsedNode as BinaryExpressionNode).RightNode;
                 }
 

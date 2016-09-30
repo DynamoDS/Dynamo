@@ -249,6 +249,8 @@ namespace Dynamo.Graph.Nodes
                 if (useLevels != value)
                 {
                     useLevels = value;
+                    
+                    if (!useLevels) ShouldKeepListStructure = useLevels;
                     RaisePropertyChanged("UseLevels");
                 }
             }
