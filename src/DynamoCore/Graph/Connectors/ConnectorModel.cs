@@ -66,7 +66,6 @@ namespace Dynamo.Graph.Connectors
             return null;
         }
 
-        [JsonConstructor]
         public ConnectorModel(PortModel start, PortModel end, Guid guid)
         {
             Start = start;
