@@ -847,7 +847,7 @@ namespace ProtoFFI
             switch (addressType)
             {
                 case AddressType.Int:
-                    return typeof(int);
+                    return typeof(long);
                 case AddressType.Double:
                     return typeof(double);
                 case AddressType.Boolean:
