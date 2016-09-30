@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Presets;
+using ProtoCore;
+using Type = System.Type;
 
 namespace Dynamo.Serialization
 {
@@ -54,6 +56,9 @@ namespace Dynamo.Serialization
             var lastModified = DateTime.Parse(lastModifiedStr);
             var author = obj["LastModifiedBy"].Value<string>();
             var description = obj["Description"].Value<string>();
+            var guidStr = obj["Uuid"].Value<string>();
+            var guid = Guid.Parse(guidStr);
+            var name = obj["Name"].Value<string>();
 
             // nodes
             var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
@@ -70,17 +75,25 @@ namespace Dynamo.Serialization
             // annotations
             var annotations = obj["Annotations"].ToObject<IEnumerable<AnnotationModel>>(serializer);
 
+            var info = new WorkspaceInfo()
+            {
+                Name = name,
+                Description = description,
+                RunType = Models.RunType.Automatic
+            };
+
             if (isCustomNode)
             {
                 return null;
             }
             else
             {
-                return new HomeWorkspaceModel(
-                    engine, scheduler,
-                    nodes, notes, annotations,
-                    Enumerable.Empty<PresetModel>(),
-                    factory, verboseLogging, isTestMode, description);
+                var ws = new HomeWorkspaceModel(engine, scheduler, factory, 
+                    Enumerable.Empty<KeyValuePair<Guid, List<CallSite.RawTraceData>>>(), nodes, notes, annotations, 
+                    Enumerable.Empty<PresetModel>(), new ProtoCore.Namespace.ElementResolver(), 
+                    info, verboseLogging, isTestMode);
+                ws.Guid = guid;
+                return ws;
             }
         }
 
@@ -90,6 +103,8 @@ namespace Dynamo.Serialization
 
             writer.WriteStartObject();
 
+            writer.WritePropertyName("Uuid");
+            writer.WriteValue(ws.Guid.ToString());
             writer.WritePropertyName("IsCustomNode");
             writer.WriteValue(value is CustomNodeWorkspaceModel ? true : false);
             writer.WritePropertyName("LastModified");
@@ -98,6 +113,8 @@ namespace Dynamo.Serialization
             writer.WriteValue(ws.Author);
             writer.WritePropertyName("Description");
             writer.WriteValue(ws.Description);
+            writer.WritePropertyName("Name");
+            writer.WriteValue(ws.Name);
 
             //nodes
             writer.WritePropertyName("Nodes");

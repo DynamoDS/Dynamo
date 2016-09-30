@@ -22,6 +22,7 @@ namespace Dynamo.Tests
             OpenModel(openPath);
 
             var model = CurrentDynamoModel;
+            var originalGuid = model.CurrentWorkspace.Guid;
 
             var settings = new JsonSerializerSettings
             {
@@ -53,8 +54,10 @@ namespace Dynamo.Tests
             CurrentDynamoModel.Load(json);
 
             var ws = CurrentDynamoModel.CurrentWorkspace;
-
             Assert.NotNull(ws);
+
+            Assert.AreEqual(originalGuid, ws.Guid);
+
             var doubleNode = ws.Nodes.First(n => n is DoubleInput);
             Assert.AreEqual(1, doubleNode.OutPorts.Count);
             Assert.AreEqual(0, doubleNode.InPorts.Count);

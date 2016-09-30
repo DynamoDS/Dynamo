@@ -88,7 +88,7 @@ namespace Dynamo.Graph.Workspaces
         private readonly UndoRedoRecorder undoRecorder;
         private double scaleFactor;
         private bool hasNodeInSyncWithDefinition;
-        private Guid guid;
+        protected Guid guid;
 
         /// <summary>
         /// This is set to true after a workspace is added.
@@ -706,6 +706,7 @@ namespace Dynamo.Graph.Workspaces
         public Guid Guid
         {
             get { return guid; }
+            internal set { guid = value; }
         }
 
         /// <summary>

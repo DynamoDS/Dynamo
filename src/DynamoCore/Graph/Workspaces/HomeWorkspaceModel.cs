@@ -177,36 +177,6 @@ namespace Dynamo.Graph.Workspaces
 
         #region Constructors
 
-        [JsonConstructor]
-        public HomeWorkspaceModel(EngineController engine,
-            DynamoScheduler scheduler,
-            IEnumerable<NodeModel> nodes,
-            IEnumerable<NoteModel> notes,
-            IEnumerable<AnnotationModel> annotations,
-            IEnumerable<PresetModel> presets,
-            NodeFactory factory,
-            bool verboseLogging,
-            bool isTestMode,
-            string description="",
-            string fileName=""
-            ) : base(nodes,
-                notes,
-                annotations,
-                new WorkspaceInfo() { FileName = fileName, Name = "Home", Description = description },
-                factory,
-                presets,
-                new ElementResolver())
-        {
-            EvaluationCount = 0;
-
-            RunSettings = new RunSettings() { RunType = RunType.Automatic };
-
-            this.scheduler = scheduler;
-            this.verboseLogging = verboseLogging;
-            IsTestMode = isTestMode;
-            EngineController = engine;
-        }
-
         /// <summary>
         /// Initializes a new empty instance of the <see cref="HomeWorkspaceModel"/> class
         /// </summary>

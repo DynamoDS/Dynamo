@@ -195,11 +195,6 @@ namespace Dynamo.Graph.Annotations
 
         #endregion
 
-        private AnnotationModel(IEnumerable<ModelBase> selectedModels)
-        {
-            SelectedModels = selectedModels;
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="AnnotationModel"/> class.
         /// </summary>

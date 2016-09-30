@@ -65,7 +65,7 @@ namespace Dynamo.Graph.Connectors
             return null;
         }
 
-        public ConnectorModel(PortModel start, PortModel end, Guid guid)
+        internal ConnectorModel(PortModel start, PortModel end, Guid guid)
         {
             Start = start;
             Start.Connect(this);
