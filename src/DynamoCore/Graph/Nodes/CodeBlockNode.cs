@@ -86,6 +86,7 @@ namespace Dynamo.Graph.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
             this.libraryServices = libraryServices;
             this.ElementResolver = new ElementResolver();
+            ProcessCodeDirect();
         }
 
         /// <summary>

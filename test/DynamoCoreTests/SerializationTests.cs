@@ -8,6 +8,7 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using System.Collections.Generic;
 using Dynamo.Graph.Nodes;
 using Dynamo.Serialization;
+using Dynamo.Models;
 
 namespace Dynamo.Tests
 {
@@ -19,6 +20,8 @@ namespace Dynamo.Tests
         {
             var openPath = Path.Combine(TestDirectory, @"core\serialization\serialization.dyn");
             OpenModel(openPath);
+
+            var model = CurrentDynamoModel;
 
             var settings = new JsonSerializerSettings
             {
@@ -34,7 +37,9 @@ namespace Dynamo.Tests
                 Converters = new List<JsonConverter>{
                     new FunctionDescriptorConverter(CurrentDynamoModel.LibraryServices),
                     new CodeBlockNodeConverter(CurrentDynamoModel.LibraryServices),
-                    new ConnectorConverter(), new AnnotationConverter()
+                    new ConnectorConverter(),
+                    new AnnotationConverter(),
+                    new WorkspaceConverter(model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, model.DebugSettings.VerboseLogging)
                 },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
@@ -71,7 +76,8 @@ namespace Dynamo.Tests
 
             // Set the ws as the current home workspace
             // and try to run it.
-
+            RunCurrentModel();
+            Assert.AreEqual(funcNode.CachedValue.Data, 8.0);
         }
     }
 }

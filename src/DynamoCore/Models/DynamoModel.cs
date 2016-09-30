@@ -1403,7 +1403,9 @@ namespace Dynamo.Models
                 Converters = new List<JsonConverter>{
                     new FunctionDescriptorConverter(LibraryServices),
                     new CodeBlockNodeConverter(LibraryServices),
-                    new ConnectorConverter(), new AnnotationConverter()
+                    new ConnectorConverter(),
+                    new AnnotationConverter(),
+                    new WorkspaceConverter(EngineController, Scheduler, NodeFactory, IsTestMode, DebugSettings.VerboseLogging)
                 },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };

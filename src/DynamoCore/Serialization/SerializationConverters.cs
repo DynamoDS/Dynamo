@@ -3,6 +3,7 @@ using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
+using Dynamo.Graph.Workspaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -10,9 +11,108 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ProtoCore.Namespace;
+using Dynamo.Graph.Nodes.NodeLoaders;
+using Dynamo.Graph.Presets;
 
 namespace Dynamo.Serialization
 {
+    public class WorkspaceConverter : JsonConverter
+    {
+        Scheduler.DynamoScheduler scheduler;
+        EngineController engine;
+        NodeFactory factory;
+        bool isTestMode;
+        bool verboseLogging;
+
+        public WorkspaceConverter(EngineController engine, 
+            Scheduler.DynamoScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging)
+        {
+            this.scheduler = scheduler;
+            this.engine = engine;
+            this.factory = factory;
+            this.isTestMode = isTestMode;
+            this.verboseLogging = verboseLogging;
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return typeof(WorkspaceModel).IsAssignableFrom(objectType);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var obj = JObject.Load(reader);
+
+            var isCustomNode = obj["IsCustomNode"].Value<bool>();
+            var lastModifiedStr = obj["LastModified"].Value<string>();
+            var lastModified = DateTime.Parse(lastModifiedStr);
+            var author = obj["LastModifiedBy"].Value<string>();
+            var description = obj["Description"].Value<string>();
+
+            // nodes
+            var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
+            
+            // notes
+            var notes = obj["Notes"].ToObject<IEnumerable<NoteModel>>(serializer);
+
+            // connectors
+            // Although connectors are not used in the construction of the workspace
+            // we need to deserialize this collection, so that they connect to their
+            // relevant ports.
+            var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
+
+            // annotations
+            var annotations = obj["Annotations"].ToObject<IEnumerable<AnnotationModel>>(serializer);
+
+            if (isCustomNode)
+            {
+                return null;
+            }
+            else
+            {
+                return new HomeWorkspaceModel(
+                    engine, scheduler,
+                    nodes, notes, annotations,
+                    Enumerable.Empty<PresetModel>(),
+                    factory, verboseLogging, isTestMode, description);
+            }
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var ws = (WorkspaceModel)value;
+
+            writer.WriteStartObject();
+
+            writer.WritePropertyName("IsCustomNode");
+            writer.WriteValue(value is CustomNodeWorkspaceModel ? true : false);
+            writer.WritePropertyName("LastModified");
+            writer.WriteValue(ws.LastSaved);
+            writer.WritePropertyName("LastModifiedBy");
+            writer.WriteValue(ws.Author);
+            writer.WritePropertyName("Description");
+            writer.WriteValue(ws.Description);
+
+            //nodes
+            writer.WritePropertyName("Nodes");
+            serializer.Serialize(writer, ws.Nodes);
+
+            //notes
+            writer.WritePropertyName("Notes");
+            serializer.Serialize(writer, ws.Notes);
+
+            //connectors
+            writer.WritePropertyName("Connectors");
+            serializer.Serialize(writer, ws.Connectors);
+
+            //annotations
+            writer.WritePropertyName("Annotations");
+            serializer.Serialize(writer, ws.Annotations);
+
+            writer.WriteEndObject();
+        }
+    }
 
     /// <summary>
     /// The AnnotationConverter is used to serialize and deserialize AnnotationModels.
