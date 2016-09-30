@@ -217,7 +217,9 @@ namespace Dynamo.Graph.Nodes
         public SnapExtensionEdges extensionEdges { get; set; }
 
         /// <summary>
-        /// List at level.
+        /// The Level at which objects will be
+        /// extracted from a nested list. The deepest
+        /// level of a nested list is -1.
         /// </summary>
         public int Level
         {
@@ -236,7 +238,8 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// If use level is enabled.
+        /// A flag which determines whether this Port will 
+        /// extract data from a specific level in a nested list.
         /// </summary>
         public bool UseLevels
         {
@@ -257,7 +260,9 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// If needs to keep list structure.
+        /// A flag which determines whether data from this
+        /// node will be re-aligned into the original structure
+        /// of the nested list.
         /// </summary>
         public bool ShouldKeepListStructure
         {
