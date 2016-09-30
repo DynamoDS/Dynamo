@@ -82,19 +82,23 @@ namespace Dynamo.Serialization
                 RunType = Models.RunType.Automatic
             };
 
+            WorkspaceModel ws;
             if (isCustomNode)
             {
-                return null;
+                info.ID = guid.ToString();
+                ws = new CustomNodeWorkspaceModel(factory, nodes, notes, annotations, 
+                    Enumerable.Empty<PresetModel>(), new ProtoCore.Namespace.ElementResolver(), info);
             }
             else
             {
-                var ws = new HomeWorkspaceModel(engine, scheduler, factory, 
+                ws = new HomeWorkspaceModel(engine, scheduler, factory, 
                     Enumerable.Empty<KeyValuePair<Guid, List<CallSite.RawTraceData>>>(), nodes, notes, annotations, 
                     Enumerable.Empty<PresetModel>(), new ProtoCore.Namespace.ElementResolver(), 
                     info, verboseLogging, isTestMode);
                 ws.Guid = guid;
-                return ws;
             }
+
+            return ws;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -107,6 +111,11 @@ namespace Dynamo.Serialization
             writer.WriteValue(ws.Guid.ToString());
             writer.WritePropertyName("IsCustomNode");
             writer.WriteValue(value is CustomNodeWorkspaceModel ? true : false);
+            if(value is CustomNodeWorkspaceModel)
+            {
+                writer.WritePropertyName("Category");
+                writer.WriteValue(((CustomNodeWorkspaceModel)value).Category);
+            }
             writer.WritePropertyName("LastModified");
             writer.WriteValue(ws.LastSaved);
             writer.WritePropertyName("LastModifiedBy");
