@@ -688,11 +688,23 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// The default behavior for ModelBase objects is to not serialize the X and Y
+        /// properties. This overload allows the serialization of the X property
+        /// for NodeModel.
+        /// </summary>
+        /// <returns>True.</returns>
         public override bool ShouldSerializeX()
         {
             return true;
         }
 
+        /// <summary>
+        /// The default behavior for ModelBase objects is to not serialize the X and Y
+        /// properties. This overload allows the serialization of the Y property
+        /// for NodeModel.
+        /// </summary>
+        /// <returns>True</returns>
         public override bool ShouldSerializeY()
         {
             return true;

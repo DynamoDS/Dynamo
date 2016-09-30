@@ -33,7 +33,7 @@ namespace Dynamo.Graph.Nodes
         protected FunctionCallBase(TController controller)
         {
             Controller = controller;
-            controller.SyncNodeWithDefinition(this);
+            Controller.SyncNodeWithDefinition(this);
         }
 
         /// <summary>
