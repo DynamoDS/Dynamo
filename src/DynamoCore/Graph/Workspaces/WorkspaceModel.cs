@@ -16,7 +16,6 @@ using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Newtonsoft.Json;
 using ProtoCore.Namespace;
 using System;
 using System.Collections.Generic;
@@ -33,20 +32,17 @@ namespace Dynamo.Graph.Workspaces
     /// Represents base class for all kind of workspaces which contains general data
     /// such as Name, collections of nodes, notes, annotations, etc.
     /// </summary>
-    [JsonObject(IsReference = false)]
     public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable, IWorkspaceModel
     {
 
         /// <summary>
         /// Represents maximum value of workspace zoom
         /// </summary>
-        [JsonIgnore]
         public const double ZOOM_MAXIMUM = 4.0;
 
         /// <summary>
         /// Represents minimum value of workspace zoom
         /// </summary>
-        [JsonIgnore]
         public const double ZOOM_MINIMUM = 0.01;
 
         #region private/internal members
@@ -374,19 +370,16 @@ namespace Dynamo.Graph.Workspaces
         ///     A NodeFactory used by this workspace to create Nodes.
         /// </summary>
         //TODO(Steve): This should only live on DynamoModel, not here. It's currently used to instantiate NodeModels during UndoRedo. -- MAGN-5713
-        [JsonIgnore]
         public readonly NodeFactory NodeFactory;
 
         /// <summary>
         ///     A set of input parameter states, this can be used to set the graph to a serialized state.
         /// </summary>
-        [JsonIgnore]
         public IEnumerable<PresetModel> Presets { get { return presets;} }
 
         /// <summary>
         ///     The date of the last save.
         /// </summary>
-        [JsonProperty("LastModified")]
         public DateTime LastSaved
         {
             get { return lastSaved; }
@@ -400,7 +393,6 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     An author of the workspace
         /// </summary>
-        [JsonProperty("LastModifiedBy")]
         public string Author
         {
             get { return author; }
@@ -427,7 +419,6 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Are there unsaved changes in the workspace?
         /// </summary>
-        [JsonIgnore]
         public bool HasUnsavedChanges
         {
             get { return hasUnsavedChanges; }
@@ -441,7 +432,6 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Returns if current workspace is readonly.
         /// </summary>
-        [JsonIgnore]
         public bool IsReadOnly
         {
             get { return isReadOnly; }
@@ -468,7 +458,6 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        [JsonIgnore]
         public IEnumerable<NodeModel> CurrentSelection
         {
             get
@@ -524,7 +513,6 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns the notes <see cref="NoteModel"/> collection.
         /// </summary>
-        [JsonIgnore]
         public IEnumerable<NoteModel> Notes
         {
             get
@@ -559,7 +547,6 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Path to the file this workspace is associated with. If null or empty, this workspace has never been saved.
         /// </summary>
-        [JsonIgnore]
         public string FileName
         {
             get { return fileName; }
@@ -586,7 +573,6 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns or set the X position of the workspace.
         /// </summary>
-        [JsonIgnore]
         public double X
         {
             get { return x; }
@@ -600,7 +586,6 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns or set the Y position of the workspace
         /// </summary>
-        [JsonIgnore]
         public double Y
         {
             get { return y; }
@@ -614,7 +599,6 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Get or set the zoom value of the workspace.
         /// </summary>
-        [JsonIgnore]
         public double Zoom
         {
             get { return zoom; }
@@ -628,7 +612,6 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns the height of the workspace's bounds.
         /// </summary>
-        [JsonIgnore]
         public double Height
         {
             get { return height; }
@@ -642,7 +625,6 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns the width of the workspace's bounds.
         /// </summary>
-        [JsonIgnore]
         public double Width
         {
             get { return width; }
@@ -656,7 +638,6 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns the bounds of the workspace.
         /// </summary>
-        [JsonIgnore]
         public Rect2D Rect
         {
             get { return new Rect2D(x, y, width, height); }
@@ -665,7 +646,6 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Determine if undo operation is currently possible.
         /// </summary>
-        [JsonIgnore]
         public bool CanUndo
         {
             get { return ((null != undoRecorder) && undoRecorder.CanUndo); }
@@ -674,7 +654,6 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Determine if redo operation is currently possible.
         /// </summary>
-        [JsonIgnore]
         public bool CanRedo
         {
             get { return ((null != undoRecorder) && undoRecorder.CanRedo); }
@@ -687,7 +666,6 @@ namespace Dynamo.Graph.Workspaces
         /// Implements <see cref="ILocatable.CenterX"/> property.
         /// </summary>
         // TODO: make a better implementation of this property
-        [JsonIgnore]
         public double CenterX
         {
             get { return 0; }
@@ -698,7 +676,6 @@ namespace Dynamo.Graph.Workspaces
         /// Implements <see cref="ILocatable.CenterY"/> property.
         /// </summary>
         // TODO: make a better implementation of this property
-        [JsonIgnore]
         public double CenterY
         {
             get { return 0; }
@@ -721,13 +698,11 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Returns <see cref="ElementResolver"/>. This property resolves partial class name to fully resolved name.
         /// </summary>
-        [JsonIgnore]
         public ElementResolver ElementResolver { get; protected set; }
 
         /// <summary>
         /// A unique identifier for the workspace.
         /// </summary>
-        [JsonProperty("Uuid")]
         public Guid Guid
         {
             get { return guid; }
@@ -739,7 +714,6 @@ namespace Dynamo.Graph.Workspaces
         /// This is used by ProtoGeometry to scale geometric values appropriately before passing them to ASM.
         /// This property is set either when reading the setting from a DYN file or when the setting is updated from the UI.
         /// </summary>
-        [JsonIgnore]
         public double ScaleFactor
         {
             get { return scaleFactor; }
