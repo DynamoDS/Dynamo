@@ -44,7 +44,10 @@ namespace FFITarget
         }
         public static char ToChar(object o)
         {
-            return (char)(int)o;
+            if (o is int)
+                return (char)(int)o;
+            else 
+                return (char)(long)o;
         }
         public static int ToAscii(char c)
         {
@@ -360,7 +363,10 @@ namespace FFITarget
             IEnumerator y2 = y.GetEnumerator();
             y2.Reset();
             y2.MoveNext();
-            return (int)y2.Current;
+            if (y2.Current is int)
+                return (int)y2.Current;
+            else
+                return (int)(long)y2.Current;
         }
         public object GetIEnumerable()
         {
@@ -514,18 +520,22 @@ namespace FFITarget
             return maxSubListDepth + 1;
         }
 
-        public static int SumList(IList arr)
+        public static long SumList(IList arr)
         {
-            int sum = 0;
+            long sum = 0;
             foreach (var item in arr)
             {
                 if (item is System.Collections.IList)
                 {
                     sum += SumList(item as System.Collections.IList);
                 }
-                else if (item is Int32)
+                else if (item is int) 
                 {
-                    sum += (Int32)item;
+                    sum += (int)item;
+                }
+                else if (item is long)
+                {
+                    sum += (long)item;
                 }
             }
 
