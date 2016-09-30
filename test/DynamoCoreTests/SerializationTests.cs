@@ -1,14 +1,10 @@
 ﻿using NUnit.Framework;
 using System.IO;
-using Newtonsoft.Json;
 using System;
 using System.Linq;
 using CoreNodeModels.Input;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using System.Collections.Generic;
 using Dynamo.Graph.Nodes;
-using Dynamo.Serialization;
-using Dynamo.Models;
 
 namespace Dynamo.Tests
 {
@@ -24,34 +20,13 @@ namespace Dynamo.Tests
             var model = CurrentDynamoModel;
             var originalGuid = model.CurrentWorkspace.Guid;
 
-            var settings = new JsonSerializerSettings
-            {
-                Error = (sender, args) =>
-                {
-                    args.ErrorContext.Handled = true;
-                    Console.WriteLine(args.ErrorContext.Error);
-                },
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Formatting.Indented,
-                PreserveReferencesHandling = PreserveReferencesHandling.Objects,
-                Converters = new List<JsonConverter>{
-                    new FunctionDescriptorConverter(CurrentDynamoModel.LibraryServices),
-                    new CodeBlockNodeConverter(CurrentDynamoModel.LibraryServices),
-                    new ConnectorConverter(),
-                    new AnnotationConverter(),
-                    new WorkspaceConverter(model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, model.DebugSettings.VerboseLogging)
-                },
-                ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
-            };
-
-            var json = JsonConvert.SerializeObject(CurrentDynamoModel.CurrentWorkspace, settings);
+            var json = model.SaveCurrentWorkspaceToJson();
             
             Console.WriteLine(json);
 
             Assert.IsNotNullOrEmpty(json);
 
-            CurrentDynamoModel.Load(json);
+            CurrentDynamoModel.LoadWorkspaceFromJson(json);
 
             var ws = CurrentDynamoModel.CurrentWorkspace;
             Assert.NotNull(ws);

@@ -1387,7 +1387,12 @@ namespace Dynamo.Models
             };
         }
 
-        internal void Load(string workspaceJson)
+        /// <summary>
+        /// Load a WorkspaceModel from json. If the WorkspaceModel is a HomeWorkspaceModel
+        /// it will be set as the current workspace.
+        /// </summary>
+        /// <param name="json"></param>
+        internal void LoadWorkspaceFromJson(string json)
         {
             var settings = new JsonSerializerSettings
             {
@@ -1410,47 +1415,87 @@ namespace Dynamo.Models
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
 
-            var ws = JsonConvert.DeserializeObject<HomeWorkspaceModel>(workspaceJson, settings);
+            var ws = JsonConvert.DeserializeObject<WorkspaceModel>(json, settings);
 
-            // TODO: #4258
-            // The logic to remove all other home workspaces from the model
-            // was moved from the ViewModel. When #4258 is implemented, we will need to
-            // remove this step.
-            var currentHomeSpaces = Workspaces.OfType<HomeWorkspaceModel>().ToList();
-            if (currentHomeSpaces.Any())
+            if(ws is CustomNodeWorkspaceModel)
             {
-                // If the workspace we're opening is a home workspace,
-                // then remove all the other home workspaces. Otherwise,
-                // Remove all but the first home workspace.
-                var end = ws is HomeWorkspaceModel ? 0 : 1;
-
-                for (var i = currentHomeSpaces.Count - 1; i >= end; i--)
-                {
-                    RemoveWorkspace(currentHomeSpaces[i]);
-                }
+                AddCustomNodeWorkspace((CustomNodeWorkspaceModel)ws);
             }
 
-            AddWorkspace(ws);
-
-            // TODO: #4258
-            // The following logic to start periodic evaluation will need to be moved
-            // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
-            // as it causes an immediate crash due to the above ResetEngine call.
-            var hws = ws as HomeWorkspaceModel;
-            if (hws != null)
+            if(ws is HomeWorkspaceModel)
             {
                 // TODO: #4258
-                // Remove this ResetEngine call when multiple home workspaces is supported.
-                // This call formerly lived in DynamoViewModel
-                ResetEngine();
-
-                if (hws.RunSettings.RunType == RunType.Periodic)
+                // The logic to remove all other home workspaces from the model
+                // was moved from the ViewModel. When #4258 is implemented, we will need to
+                // remove this step.
+                var currentHomeSpaces = Workspaces.OfType<HomeWorkspaceModel>().ToList();
+                if (currentHomeSpaces.Any())
                 {
-                    hws.StartPeriodicEvaluation();
-                }
-            }
+                    // If the workspace we're opening is a home workspace,
+                    // then remove all the other home workspaces. Otherwise,
+                    // Remove all but the first home workspace.
+                    var end = ws is HomeWorkspaceModel ? 0 : 1;
 
-            CurrentWorkspace = ws;
+                    for (var i = currentHomeSpaces.Count - 1; i >= end; i--)
+                    {
+                        RemoveWorkspace(currentHomeSpaces[i]);
+                    }
+                }
+
+                AddWorkspace(ws);
+
+                // TODO: #4258
+                // The following logic to start periodic evaluation will need to be moved
+                // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
+                // as it causes an immediate crash due to the above ResetEngine call.
+                var hws = ws as HomeWorkspaceModel;
+                if (hws != null)
+                {
+                    // TODO: #4258
+                    // Remove this ResetEngine call when multiple home workspaces is supported.
+                    // This call formerly lived in DynamoViewModel
+                    ResetEngine();
+
+                    if (hws.RunSettings.RunType == RunType.Periodic)
+                    {
+                        hws.StartPeriodicEvaluation();
+                    }
+                }
+
+                CurrentWorkspace = ws;
+            }
+            
+        }
+
+        /// <summary>
+        /// Save a Workspace to json.
+        /// </summary>
+        /// <returns>A string representing the serialized WorkspaceModel.</returns>
+        internal string SaveCurrentWorkspaceToJson()
+        {
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                Converters = new List<JsonConverter>{
+                    new FunctionDescriptorConverter(LibraryServices),
+                    new CodeBlockNodeConverter(LibraryServices),
+                    new ConnectorConverter(),
+                    new AnnotationConverter(),
+                    new WorkspaceConverter(EngineController, Scheduler, NodeFactory, 
+                    IsTestMode, DebugSettings.VerboseLogging)
+                },
+                ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
+            };
+
+            return JsonConvert.SerializeObject(this.currentWorkspace, settings);
         }
 
         #endregion
