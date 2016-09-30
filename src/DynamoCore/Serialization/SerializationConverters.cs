@@ -11,12 +11,17 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ProtoCore.Namespace;
 using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Presets;
 
 namespace Dynamo.Serialization
 {
+    /// <summary>
+    /// The WorkspaceConverter is used to serialize and deserialize WorkspaceModels.
+    /// Construction of a WorkspaceModel requires things like an EngineController,
+    /// a NodeFactory, and a Scheduler. These must be supplied at the time of 
+    /// construction and should not be serialized.
+    /// </summary>
     public class WorkspaceConverter : JsonConverter
     {
         Scheduler.DynamoScheduler scheduler;
@@ -173,9 +178,9 @@ namespace Dynamo.Serialization
     }
 
     /// <summary>
-    /// The FunctionDescriptorConverter is responsible for deserializing
-    /// and serializing the FunctionDescription property on DSFunction. 
-    /// Because a lookup in LibraryServices is required during deserialization,
+    /// The FunctionDescriptorConverter is used to serialize and deserialize
+    /// the FunctionDescription property on DSFunction. Because a lookup in 
+    /// LibraryServices is required during deserialization,
     /// we use this converter to find the correct FunctionDescriptor, and
     /// call a node constructor which constructs a ZeroTouchNodeController
     /// using the FunctionDescriptor.
