@@ -914,7 +914,7 @@ namespace ProtoCore.Lang
 
                 new BuiltInMethod
                 {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0),
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
                     Parameters = new List<KeyValuePair<string, Type>> 
                     {
                         new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),

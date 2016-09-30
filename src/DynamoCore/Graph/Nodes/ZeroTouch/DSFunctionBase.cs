@@ -22,18 +22,31 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         protected DSFunctionBase(ZeroTouchNodeController<FunctionDescriptor> controller)
             : base(controller)
         {
-            ArgumentLacing = LacingStrategy.Shortest;
+            if (controller.Definition.IsLacingDisabled)
+            {
+                ArgumentLacing = LacingStrategy.Disabled;
+            }
+            else
+            {
+                ArgumentLacing = LacingStrategy.Shortest;
+            }
             Category = Controller.Category;
 
             if (controller.Definition.IsObsolete)
+            {
                 Warning(controller.Definition.ObsoleteMessage, true);
+            }
 
             if (controller.Definition.CanUpdatePeriodically)
+            {
                 CanUpdatePeriodically = true;
+            }
 
             string signature = String.Empty;
             if (Controller.Definition is FunctionDescriptor)
+            {
                 signature = Controller.Definition.Signature;
+            }
             Description = String.IsNullOrEmpty(Controller.Description) ? signature : Controller.Description + "\n\n" + signature;
         }
 

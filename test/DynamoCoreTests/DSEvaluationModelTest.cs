@@ -984,13 +984,13 @@ namespace Dynamo.Tests
             RunModel(dynFilePath);
             // Fix expected result after MAGN-7639 is fixed.
 
-            AssertPreviewValue("bd89982a-c3e6-4a4e-898c-2bdc8f1f8c3e", false);
+            AssertPreviewValue("bd89982a-c3e6-4a4e-898c-2bdc8f1f8c3e", null);
 
             // Reset engine and mark all nodes as dirty. A.k.a., force re-execute.
             CurrentDynamoModel.ForceRun();
 
             // Fix expected result after MAGN-7639 is fixed.
-            AssertPreviewValue("980dcd47-84e7-412c-8d9e-d66f166d2370", true);
+            AssertPreviewValue("980dcd47-84e7-412c-8d9e-d66f166d2370", new object[] { 1, 2, 3, 4 });
 
         }
 

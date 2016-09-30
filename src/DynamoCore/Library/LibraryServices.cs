@@ -960,6 +960,7 @@ namespace Dynamo.Engine
                     return new TypedParameter(arg.Name, argType, defaultArgumentNode, shortName);
                 }).ToList();
 
+            bool isLacingDisabled = false;
             IEnumerable<string> returnKeys = null;
             if (proc.MethodAttribute != null)
             {
@@ -967,6 +968,7 @@ namespace Dynamo.Engine
                     returnKeys = proc.MethodAttribute.ReturnKeys;
                 if (proc.MethodAttribute.IsObsolete)
                     obsoleteMessage = proc.MethodAttribute.ObsoleteMessage;
+                isLacingDisabled = proc.MethodAttribute.IsLacingDisabled;
             }
 
             var function = new FunctionDescriptor(new FunctionDescriptorParams
@@ -984,7 +986,8 @@ namespace Dynamo.Engine
                 ObsoleteMsg = obsoleteMessage,
                 CanUpdatePeriodically = canUpdatePeriodically,
                 IsBuiltIn = pathManager.PreloadedLibraries.Contains(library),
-                IsPackageMember = packagedLibraries.Contains(library)
+                IsPackageMember = packagedLibraries.Contains(library),
+                IsLacingDisabled = isLacingDisabled
             });
 
             AddImportedFunctions(library, new[] { function });

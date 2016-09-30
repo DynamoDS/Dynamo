@@ -1994,7 +1994,6 @@ r2 = ContainsKey(a, true);
         }
 
         [Test]
-        [Category("Failure")]
         public void TestDictionary22()
         {
             // Test builtin functions RemoveKey() for array
@@ -2003,17 +2002,15 @@ r2 = ContainsKey(a, true);
 a[true] = 41;
 a[""x""] = ""foo"";
 r1 = RemoveKey(a, ""x"");
-r2 = RemoveKey(a, true);
-r3 = ContainsKey(a, ""x"");
-r4 = ContainsKey(a, true);
+r2 = RemoveKey(r1, true);
+r3 = ContainsKey(r2, ""x"");
+r4 = ContainsKey(r2, true);
 ";
             // Tracked in:http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4155
             string errmsg = "MAGN-4155 : ContainsKey returns wrong value";
             thisTest.RunScriptSource(code, errmsg);
-            thisTest.Verify("r1", true);
-            thisTest.Verify("r2", true);
             thisTest.Verify("r3", false);
-            thisTest.Verify("r4", true);
+            thisTest.Verify("r4", false);
         }
 
         [Test]

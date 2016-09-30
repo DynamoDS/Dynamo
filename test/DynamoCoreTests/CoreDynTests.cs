@@ -235,6 +235,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             AssertPreviewValue("4a780dfb-74b1-453a-86ef-2f4a5c46792e", 0.0);
+            AssertPreviewValue("4839daee-5add-4686-a89d-dd36ec868993", 3);
+            AssertPreviewValue("2d1dd88e-6d47-48c5-9b79-560a6bf406ee", 3.0);
         }
 
         [Test]

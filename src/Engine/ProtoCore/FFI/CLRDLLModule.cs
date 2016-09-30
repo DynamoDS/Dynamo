@@ -1312,6 +1312,10 @@ namespace ProtoFFI
                 {
                     CanUpdatePeriodically = (attr as CanUpdatePeriodicallyAttribute).CanUpdatePeriodically;
                 }
+                else if (attr is IsLacingDisabledAttribute)
+                {
+                    IsLacingDisabled = true; 
+                }
             }
         }
 
