@@ -150,25 +150,5 @@ y = f(10);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y", 55);
         }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void TestEmptyArray()
-        {
-            String code =
-@"
-class C
-{
-    constructor C(i : int, j :int[]..[])
-    {
-    }
-}
-a = 1;
-p = C.C(a, {{}});
-a = 10;
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 10);
-        }
     }
 }
