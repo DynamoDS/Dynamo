@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FFITarget
+{
+    public class TestOverloadA 
+    {
+        public int execute(TestOverloadA a)
+        {
+            return 1;
+        }
+
+        public int unique(TestOverloadA a)
+        {
+            return 4;
+        }
+    }
+
+    public class TestOverloadB : TestOverloadA
+    {
+        public int execute(TestOverloadB b)
+        {
+            return 2;
+        }
+
+        public int execute(TestOverloadB[] bs)
+        {
+            return 3;
+        }
+    }
+
+    public class TestOverloadC: TestOverloadB { }
+}

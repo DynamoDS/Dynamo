@@ -64,19 +64,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redunadant")]
-        public void T004_DotOp_DefautConstructor_04()
-        {
-            String code =
-@"	class C	{		fx : var;		fy : var;	}	c = C.C();	x = c.fx;	y = c.fy;";
-            thisTest.RunScriptSource(code);
-            Object v1 = new Object();
-            v1 = null;
-            thisTest.Verify("x", v1);
-            thisTest.Verify("y", v1);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         public void T002_DotOp_DefautConstructor_ArrayProperty()
         {
