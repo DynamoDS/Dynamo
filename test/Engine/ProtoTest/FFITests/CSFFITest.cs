@@ -1017,29 +1017,6 @@ p11;
         }
 
         [Test]
-        [Ignore]
-        [Category("Replication")]
-        [Category("PortToCodeBlocks")]
-        public void coercion_notimplmented()
-        {
-            String code =
-            @"
-               import (""FFITarget.dll"");
-           vec =  DummyVector.ByCoordinates(1,0,0);
-           newVec=vec.Scale({1,null});//array
-           prop = VecGuarantedProperties(vec);
-           def VecGuarantedProperties(vec :DummyVector)
-           {
-              return = {vec.GetLengthSquare() };
-            }
-        
-            ";
-            object[] c = new object[] { new object[] { 1.0 }, null };
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("prop", c);
-        }
-
-        [Test]
         [Category("Update")]
         public void SimplePropertyUpdate()
         {
