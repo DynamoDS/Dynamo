@@ -17,6 +17,11 @@ namespace FFITarget
         {
             return 4;
         }
+
+        public int foo(double x)
+        {
+            return 100;
+        }
     }
 
     public class TestOverloadB : TestOverloadA
@@ -29,6 +34,11 @@ namespace FFITarget
         public int execute(TestOverloadB[] bs)
         {
             return 3;
+        }
+
+        public int foo(object x)
+        {
+            return 200;
         }
     }
 
