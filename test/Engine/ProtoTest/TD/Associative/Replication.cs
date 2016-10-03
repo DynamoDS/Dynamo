@@ -4179,38 +4179,6 @@ test = foo ( {arr, arr },  { arr, arr} );
         }
 
         [Test]
-        [Ignore]
-        [Category("DSDefinedClass_DSClassSemantics")]
-        [Category("Replication")]
-        public void T84_Defect_1467313_4()
-        {
-            String code =
-@"
-class A
-{
-    a : var[];
-    b : var[];
-    constructor A ( a1 : var[] , b1 : var[])
-    {
-        a = a1;
-        b = b1;        
-    }
-    def foo ()
-    {
-        return  = a + b;
-    }
-}
-arr = {1, 2};
-t1 = A.A({arr, arr },  { arr, arr} );
-test = t1.foo( );
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new Object[] { new Object[] { 2, 4 }, new Object[] { 2, 4 } });
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void AddArrayFunctionArg02()

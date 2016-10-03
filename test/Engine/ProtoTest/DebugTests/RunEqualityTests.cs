@@ -1567,20 +1567,6 @@ a = a + 2;	// I am assuming that this statement (on line 27) is executed after t
         }
 
         [Test]
-        public void DebugEQT002_Associative_Function_SinglelineFunction()
-        {
-            string code = @"
-[Associative]
-{
-	def singleLine : int(a:int, b:int) = 10;
-	d = singleLine(1,3);
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT002_BasicImport_AbsoluteDirectory()
         {
 
@@ -2221,27 +2207,6 @@ b  = b2 + 2;    // 5
         }
 
         [Test]
-        public void DebugEQT007_Inline_Using_Collections_And_Replication_CollectionFunctionCall()
-        {
-            string code = @"
-[Imperative]
-{
-	def even : int(a : int)
-	{
-		return = a * 2;
-	}
-	a =1..10..1 ; //{1,2,3,4,5,6,7,8,9,10}
-	i = 1..5; 
-	b = ((a[i] % 2) > 0)? even(a[i]) : a ;  // { 1, 6, 3, 10, 5 }	
-	c = ((a[0] % 2) > 0)? even(a[i]) : a ; // { 4, 6, 8, `0, `2 }
-	d = ((a[-2] % 2) == 0)? even(a[i]) : a ; // { 1, 2,..10}
-	e1 = (a[-2] == d[9])? 9 : a[1..2]; // { 2, 3 }
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT007_LanguageBlockScope_AssociativeParallelImperative()
         {
             string code = @"
@@ -2444,30 +2409,6 @@ j = 0;
         }
 
         [Test]
-        public void DebugEQT009_Inline_Using_Function_Call_And_Collection_And_Replication()
-        {
-            string code = @"
-[Imperative]
-{
-	def even(a : int)
-	{
-		return = a * 2;
-	}
-	def odd(a : int ) 
-	{
-	return = a* 2 + 1;
-	}
-	x = 1..3;
-	a = ((even(5) > odd(3)))? even(5) : even(3); //10
-	b = ((even(x) > odd(x+1)))?odd(x+1):even(x) ; // {2,4,6}
-	c = odd(even(3)); // 13
-	d = ((a > c))?even(odd(c)) : odd(even(c)); //53
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT009_LanguageBlockScope_UpdateVariableInNestedLanguageBlock_IA()
         {
             string code = @"
@@ -2487,38 +2428,6 @@ j = 0;
 	newB = b;
 	newC = c;
 }
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT009_SomeNulls_DynamicArray()
-        {
-            string code = @"
-result = 
-[Imperative]
-{
-	a1 = {
-	{{null},{}},
-	{1,2,4},
-	{@a,@b,@null},//{null,null,null}
-	{null}
-	};
-	a2 = {};
-	i = 0;
-	j = 0; 
-	while(i < Count(a1))
-	{
-		if(SomeNulls(a1[i]))
-		{
-			a2[j] = a1[i];
-			j = j+1;
-			
-		}
-		i = i+1;
-	}
-	return = Count(a2);
-} 
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -3329,27 +3238,6 @@ a = 10;
         }
 
         [Test]
-        public void DebugEQT017_CountTrue_Inline()
-        {
-            string code = @"
-[Imperative]
-{
-def foo(x:var[]..[])
-{
-	if(CountTrue(x) > 0)
-		return = true;
-	return = false;
-}
-a = {null,1};//0
-b = {null,20,30,null,{10,0},true,{false,0,{true,{false},5,2,false}}};//2
-c = {1,2,foo(b)};
-result = CountTrue(c) > 0 ? CountTrue(a):CountTrue(b);
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT017_Inline_In_Function_Scope()
         {
             string code = @"
@@ -3462,29 +3350,6 @@ a1 = b && true ? -1 : 1;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
-
-
-        [Test]
-        public void DebugEQT019_LanguageBlockScope_ImperativeNestedAssociative_Function()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo : int(a : int, b : int)
-	{
-		return = a - b;
-	}
-	[Associative]	
-	{
-	x = 20;
-	y = 10;
-	z = foo (x, y);
-	}
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
 
         [Test]
         public void DebugEQT019_Update_General()
@@ -3844,38 +3709,6 @@ result =
         }
 
         [Test]
-        public void DebugEQT020_CountTrue_DynamicArray()
-        {
-            string code = @"
-result = 
-[Imperative]
-{
-	a1 = {
-	{{true},{}},
-	{@a,2,{false}},
-	{@a,@b,@null},//{null,null,null}
-	{null}
-	};
-	a2 = {};
-	i = 0;
-	j = 0; 
-	while(i < CountTrue(a1))
-	{
-		if(CountTrue(a1[i])>0)
-		{
-			a2[j] = a1[i];
-			j = j+1;
-			
-		}
-		i = i+1;
-	}
-	return = CountTrue(a2);
-} 
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT020_LanguageBlockScope_AssociativeNestedImperative_Function()
         {
             string code = @"
@@ -3962,36 +3795,6 @@ b = a * 2;
 {
     a = { 0, 1, 2}; 
     xx = a < 1 ? 1 : 0;
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT021_LanguageBlockScope_DeepNested_IAI_Function()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo : int(a : int, b : int)
-	{
-		return = a - b;
-	}
-	[Associative]	
-	{
-		x_1 = 20;
-		y_1 = 10;
-		z_1 = foo (x_1, y_1);
-	
-	
-	[Imperative]
-		{
-			x_2 = 100;
-			y_2 = 100;
-			z_2 = foo (x_2, y_2);
-			
-		}
-	}
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -4205,31 +4008,6 @@ b[2..3] = 5;
         }
 
         [Test]
-        public void DebugEQT024_LanguageBlockScope_ImperativeParallelAssociative_Function()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo : int(a : int, b : int)
-	{
-		return = a - b;
-	}
-	 
-	a = 10;
-	
-}
-[Associative]	
-{
-	x = 20;
-	y = 0;
-	z = foo (x, y);
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT025_CountFalse_WhileLoop()
         {
             string code = @"
@@ -4326,31 +4104,6 @@ result = foo(b);
         }
 
         [Test]
-        public void DebugEQT026_LanguageBlockScope_ImperativeParallelImperative_Function()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo : int(a : int, b : int)
-	{
-		return = a - b;
-	}
-	 
-	a = 10;
-	
-}
-[Imperative]	
-{
-	x = 20;
-	y = 0;
-	z = foo (x, y);
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT027_LanguageBlockScope_MultipleParallelLanguageBlocks_AIA_Function()
         {
             string code = @"
@@ -4372,58 +4125,6 @@ result = foo(b);
 	
 }
 [Associative]
-{
-	x_2 = 20;
-	y_2 = 0;
-	z_2 = foo (x_2, y_2);
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT028_CountFalse_Inline()
-        {
-            string code = @"
-[Imperative]
-{
-def foo(x:var[])
-{
-	if(CountFalse(x) > 0)
-		return = true;
-	return = false;
-}
-a = {null,0};//0
-b = {null,20,30,null,{10,0},false,{true,0,{true,{false},5,2,true}}};//2
-c = {1,2,foo(b)};
-result = CountFalse(c) > 0 ? CountFalse(a):CountFalse(b);
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT028_LanguageBlockScope_MultipleParallelLanguageBlocks_IAI_Function()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo : int(a : int, b : int)
-	{
-		return = a - b;
-	}
-	 
-	a = 10;
-	
-}
-[Associative]	
-{
-	x_1 = 20;
-	y_1 = 0;
-	z_1 = foo (x_1, y_1);
-	
-}
-[Imperative]
 {
 	x_2 = 20;
 	y_2 = 0;
@@ -4555,23 +4256,6 @@ list6 = list2 / list1; // { 5, 2, 0, 3 }
 	
 	b[0] = {2,2};
 	e = b[0];
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT02_Function_In_Imp_Scope()
-        {
-            string code = @"
-[Imperative]
-{
-    def foo : double( a:double, b : int )
-    {
-	   return = a * b;
-	}
-	
-    a = foo( 2.5, 2 );
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -4768,126 +4452,6 @@ c = {{{false}}};//1
 d = {{false},{false,{true,false,0}}};//3
 arr = {CountFalse(a),CountFalse(b),CountFalse(c),CountFalse(d)};
 result = foo(arr);
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT030_LanguageBlockScope_ParallelInsideNestedBlock_ImperativeNested_AA()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo : int(a : int, b : int)
-	{
-		return = a - b;
-	}
-	 
-	[Associative]
-	{
-		x_A1 = 30;
-		y_A1 = 12;
-		z_A1 = foo (x_A1, y_A1);
-	
-	}
-	
-	x_I1 = 50;
-	y_I1 = 50;
-	z_I1 = foo (x_I1, y_I1);
-	
-	[Associative]
-	{
-		x_A2 = 0;
-		y_A2 = -10;
-		z_A2 = foo (x_A2, y_A2);
-	}
-	
-	x_I2 = 0;
-	y_I2 = 12;
-	z_I2 = foo (x_I2, y_I2);
-	
-	
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT031_CountFalse_DynamicArray()
-        {
-            string code = @"
-result = 
-[Imperative]
-{
-	a1 = {
-	{{false},{}},
-	{@a,2,{true}},
-	{@a,@b,@null},//{null,null,null}
-	{null}
-	};
-	a2 = {};
-	i = 0;
-	j = 0; 
-	while(i < CountFalse(a1))
-	{
-		if(CountFalse(a1[i])>0)
-		{
-			a2[j] = a1[i];
-			j = j+1;
-			
-		}
-		i = i+1;
-	}
-	return = CountFalse(a2);
-} 
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT031_Defect_1450594()
-        {
-            string code = @"
-[Imperative]
-{
-   a = 2;
-    [Associative]
-    {
-        
-        i = 3;
-    }
-    f = i;
-}
-[Associative]
-{
-	def foo1 ( i )
-	{
-		x = 1;
-		return = x;
-	}
-	p = x;
-	q = a;
-}
-y = 1;
-[Imperative]
-{
-   def foo ( i )
-   {
-		x = 2;
-		if( i < x ) 
-		{
-		    y = 3;
-			return = y * i;
-		}
-		return = y;
-	}
-	x = y;
-	y1 = foo ( 1 );
-	y2 = foo ( 3 );
-	z = x * 2;
-	
-}
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -5128,32 +4692,6 @@ def foo ( a:int[] )
             break;
         sum = sum + x;
     }
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT03_Function_In_Nested_Scope()
-        {
-            string code = @"
-[Imperative]
-{
-    def foo : double( a:double, b : int )
-    {
-	   return = a * b;
-	}
-	a = 3;
-	[Associative]
-	{
-		a = foo( 2.5, 1 );
-	}
-	b = 
-	[Associative]
-	{
-		a = foo( 2.5, 1 );
-		return = a;
-	}
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -5634,24 +5172,6 @@ x = f(""hello"");
         }
 
         [Test]
-        public void DebugEQT04_GlobalFunctionInImperBlk()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo:double(x:int, y:double = 2.0)
-	{
-		return = x + y;
-	}
-	a = foo;
-	b = foo(3); //b=5.0;
-	c = foo(2, 4.0); //c = 6.0
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT04_IfStatementExpressions()
         {
             string code = @"
@@ -5671,43 +5191,6 @@ x = f(""hello"");
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
-
-       
-        [Test]
-        public void DebugEQT04_SimpleRangeExpressionUsingFunctions()
-        {
-            string code = @"
-[Imperative]
-{
-	def twice : double( a : double ) 
-	{
-		return = 2 * a;
-	}
-	z1 = 1..twice(4)..twice(1);
-	z2 = 1..twice(4)..twice(1)-1;
-	z3 = 1..twice(4)..(twice(1)-1);
-	z4 = 2*twice(1)..1..-1;
-	z5 = (2*twice(1))..1..-1;
-	//z6 = z5 - z2 + 0.3;
-	z7 = (z3[0]+0.3)..4..#1 ; 
-   
-}
-/*
-Succesfully created function 'twice' 
-    Updated variable z1 = { 1, 3, 5, 7 }
-    Updated variable z2 = { 1, 2, 3, ... , 6, 7, 8 }
-    Updated variable z3 = { 1, 2, 3, ... , 6, 7, 8 }
-    Updated variable z4 = { 4, 3, 2, 1 }
-    Updated variable z5 = { 4, 3, 2, 1 }
-    //Updated variable z6 = { 3.3, 1.3, -1.7, -2.7 }
-    Updated variable z7 = { 1.3 }
-	*/
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-
-
 
         [Test]
         public void DebugEQT051_Sum_Inline()
@@ -5830,33 +5313,6 @@ d = Flatten(c);
         }
 
         [Test]
-        public void DebugEQT05_FunctionBreakContinue()
-        {
-            string code = @"
-[Imperative]
-{
-    def ding:int(x:int)
-    {
-        if (x >= 5)
-            break;
-        return = 2 * x;
-    }
-    def dong:int(x: int)
-    {
-        if (x >= 5)
-            continue;
-        return = 2 * x;
-    }
-    a = ding(1);
-    b = ding(6);
-    c = dong(2);
-    d = dong(7);
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT05_Function_outside_Any_Block()
         {
             string code = @"
@@ -5880,49 +5336,6 @@ b = 3.5;
 		return = a;
 	}
 }
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT05_InsideFunction()
-        {
-            string code = @"
-[Imperative]
-{
-	def fn1:int(a:int)
-	{   
-		if(a>=0)
-			return = 1;
-		else 
-			return = 0;
-	}
-    def fn2:int(a:int)
-	{   
-	   
-		if( a < 0 )
-		{
-			return = 0;
-		}
-		elseif	( a == 2 )
-		{
-			return = 2;
-		}
-		else
-		{
-			return = 1;
-		}
-	}
-	
-    temp = 0;
-    temp2 = 0;
-	 if(fn1(-1)==0)
-		 temp=fn1(2);	 
-		 
-	
-	if(fn2(2)==2)
-	   temp2=fn2(1);
-} 
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -5963,35 +5376,6 @@ list8 = list9 || list6; // { true, false, true }
 	n = 0.1..0.9..~0.3;
 	k = 0.02..0.03..#3;
 	l = 0.9..1..#5;
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT05_String_ForLoop()
-        {
-            string code = @"
-a = ""hello"";
-b = ""world"";
-c = { a, b };
-j = 0;
-//s = { };
-r = 
-[Imperative]
-{
-	for(i in c)
-	{
-	    s[j] = String(i);
-	    j = j + 1;
-	}
-	
-	def String(x : string)
-	{
-	    return = x;
-}
-    return = s;
-  
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -6052,31 +5436,6 @@ r =
 {
     b = a = 2;
 }
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT05_WithinFunction()
-        {
-            string code = @"
-[Imperative]
-{
-	def fn1 : int (a : int)
-	{   
-		i = 0;
-		temp = 1;
-		while ( i < a )
-		{
-		    temp = temp + 1;
-		    i = i + 1;
-		}
-		return = temp;
-	}
-	testvar = fn1(5);
-} 
-	
-	
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -6242,48 +5601,6 @@ list8 = list4 || list6; // { true, false, true, false, false }
         }
 
         [Test]
-        public void DebugEQT06_NestedIfElse()
-        {
-            string code = @"
-[Imperative]
-{
-def fn1:int(a:int)
-{   
-     if( a >= 0 )
-		return = 1;
-	else
-		return = 0;
-}
- a = 1;
- b = 2;
- temp1 = 1;
- 
- if( a/b == 0 )
- {
-  temp1=0;
-  if( a*b == 1 )
-  { 
-	temp1=2;
-  }  
-  else if( a*b == 4 )
-  { 
-	temp1=5;
-  }  
-  else
-  {
-	temp1=3;
-	if( fn1(-1)>-1 )
-	{
-		temp1=4;
-	}
-  }
- } 
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT06_RangeExpressionWithIncrement()
         {
             string code = @"
@@ -6361,66 +5678,12 @@ def collection :int[] ( a :int[] , b:int , c:int )
         }
 
         [Test]
-        public void DebugEQT07_Function_Assoc_Inside_Imp()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo : int( a:int, b : int )
-	{
-		return = a * b;
-	}
-	a = 3.5;
-	b = 3.5;
-	[Associative]
-	{
-		a = foo( 2, 1 );
-	}
-	b = 
-	[Associative]
-	{
-		c = foo( 2, 1 );
-		return = c;
-	}
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT07_Logic_Mixed()
         {
             string code = @"
 list1 = { 1, 5, 8, 3, 6 };
 list2 = { 4, 1, 6, 3 };
 list3 = (list1 > 1) && (list2 > list1) || (list2 < 5); // { true, true, false , true }
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT07_RangeExpressionWithIncrementUsingFunctionCall()
-        {
-            string code = @"
-[Imperative]
-{
-	def increment : double[] (x : double[]) 
-	{
-		j = 0;
-		for( i in x )
-		{
-			x[j] = x[j] + 1 ;
-			j = j + 1;
-		}
-		return = x;
-	}
-	a = {1,2,3};
-	b = {3,4,5} ;
-	c = {1.5,2.5,4,3.65};
-	f = {7,8*2,9+1,5-3,-1,-0.34};
-	//nested collection
-	d = {3.5,increment(c)};
-}
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -6648,62 +5911,6 @@ list13 = false || list2; // { true, true, false, false, false }
         }
 
         [Test]
-        public void DebugEQT08_RangeExpressionWithIncrementUsingVariables()
-        {
-            string code = @"
-[Imperative]
-{
-	def square : double ( x :double ) 
-	{
-		return = x * x;
-	}
-	z = square(4);
-	x = 1 ;
-	y = -2 ;
-	a = 1..2 ;
-	b = 1..6..3;
-	c = 2..3..1;
-	d = 2..10..2;
-	e1 = 1..3..0.5;
-	f = 2..4..0.2 ;
-	//using variables
-	h = z..3..-4;
-	i = 1..z..x;
-	j = z..x..y; 
-	k = a..b..x ;
-	l = a..c..x ;
-	//using function call 
-	g = 6..9.5..square(-1);
-	m = 0.8..square(1)..0.1; 
-	n = square(1)..0.8..-0.1;
-	o = 0.8..square(0.9)..0.01; 
-}
-/*
-result
-z = 16
-x = 1
-y = -2
-a = {1,2}
-b = {1,4}
-c = {2,3}
-d = {2,4,6,8,10}
-e1 = {1.000000,1.500000,2.000000,2.500000,3.000000}
-f = {2.000000,2.200000,2.400000,2.600000,2.800000,3.000000,3.200000,3.400000,3.600000,3.800000,4.000000}
-h = {16,12,8,4}
-i = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16}
-j = {16,14,12,10,8,6,4,2}
-k = {{1},{2,3,4}}
-l = {{1,2},{2,3}}
-g = {6.000000,7.000000,8.000000,9.000000}
-m = {0.800000,0.900000,1.000000}
-n = {1.000000,0.900000,0.800000}
-o = {0.800000,0.810000}
-*/
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT08_String_Inline()
         {
             string code = @"
@@ -6753,34 +5960,6 @@ b = ""a"";
         b = a *3;
         a = 6.5;
         a = b / 3; 
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT08_TestForLoopInsideFunctionDeclaration()
-        {
-            string code = @"
-[Imperative]
-{
-	def sum : double ( a : double, b : double, c : double )
-	{   
-		x = 0;
-	    z = {a, b, c};
-		for(y in z)
-		{
-			x = x + y;
-		}
-		
-		return = x;
-	}
-	
-	
-	
-	y = sum ( 1.0, 2.5, -3.5 );
-	
-	z = sum ( -4.0, 5.0, 6.0 );
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -6925,32 +6104,6 @@ b = a();
 		i = i + 1;
 	}
 }  
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT09_RangeExpressionWithApproximateIncrement()
-        {
-            string code = @"
-[Imperative]
-{
-	def square : double ( x: double ) 
-	{
-		return = x * x;
-	}
-	
-	x = 0.1; 
-	a = 0..2..~0.5;
-	b = 0..0.1..~square(0.1);
-	f = 0..0.1..~x;      
-	g = 0.2..0.3..~x;    
-	h = 0.3..0.2..~-0.1; 
-	
-	j = 0.8..0.5..~-0.3;
-	k = 0.5..0.8..~0.3; 
-	l = 0.2..0.3..~0.0;
-}
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -7123,45 +6276,10 @@ f = d;
         }
 
         [Test]
-        public void DebugEQT10_Defect_1449732()
-        {
-            string code = @"
-[Imperative]
-{
-	def fn1:int(a:int,b:int)
-	{
-	return = a + b -1;
-	}
- 
-	c = fn1(3,2);
-} 
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-
-        [Test]
         public void DebugEQT10_TestInFunctionScope__2_()
         {
             string code = @"
 [Associative]
-{
-	 def add:double( n1:int, n2:double )
-	 {
-		  
-		  return = n1 + n2;
-	 }
-	 test = add(2,2.5);
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT10_TestInFunctionScope()
-        {
-            string code = @"
-[Imperative]
 {
 	 def add:double( n1:int, n2:double )
 	 {
@@ -7250,25 +6368,6 @@ e = c;
         }
 
         [Test]
-        public void DebugEQT11_Defect_1450174()
-        {
-            string code = @"
-[Imperative]
-{
-	def function1:double(a:int,b:double)
-	{ 
-	return = a * b;
-	}	
- 
-	c = function1(2 + 3,4.0 + 6.0 / 4.0);
-}
-  
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-
-        [Test]
         public void DebugEQT11_String_Imperative()
         {
             string code = @"
@@ -7313,42 +6412,6 @@ m = m+n;
 		x = x + 1;
 	}
 } 
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT11_TestIfElseUsingFunctionCall()
-        {
-            string code = @"
-[Imperative]
-{
- def add : double (a :double, b:double)
- {
-     return  = a + b;
- }
- 
- a=4.0;
- b = 4.0;
- if(a<add(1.0,2.0))
- {
-     a = 1;
- }
- else
- {
-     a = 0;
- }
- 
- if(add(1.5,2.0) >= a)
- {
-     b = 1;
- }
- else
- {
-     b = 0;
- }
- 
-}
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -7583,34 +6646,6 @@ c = b;
         }
 
         [Test]
-        public void DebugEQT12_WhileWithFunctionCall()
-        {
-            string code = @"
-[Imperative]
-{ 
-	def fn1 :int ( a : int )
-	{   
-		i = 0;
-		temp = 1;
-		while ( i < a )
-		{
-			temp = temp + 1;
-			i = i + 1;
-		}
-		return = temp;
-	}
-	testvar = 8;
-	
-	while ( testvar != fn1(6) )
-	{ 
-		testvar=testvar-1;
-	}
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT13_2D_Collection_Assignment_Block_Return_Statement()
         {
             string code = @"
@@ -7658,30 +6693,6 @@ c1;c2;
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
-
-        [Test]
-        public void DebugEQT13_Function_From_Inside_Function()
-        {
-            string code = @"
-def add_1 : double( a:double )
-{
-	return = a + 1;
-}
-[Imperative]
-{
-	def add_2 : double( a:double )
-	{
-		return = add_1( a ) + 1;
-	}
-	
-	a = 1.5;
-	b = add_2 (a );
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
         [Test]
         public void DebugEQT13_IfElseIf()
         {
@@ -7704,33 +6715,6 @@ def add_1 : double( a:double )
  
   
  }
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT13_RangeExpressionWithStartEndValuesUsingFunctionCall()
-        {
-            string code = @"
-[Imperative]
-{
-	def even : double (a : int) 
-	{
-		if((a % 2)>0)
-		return = (a+(a * 0.5));
-		else
-		return = (a-(a * 0.5));
-	}
-	d = 3;
-	x = 1..2..#d;
-	a = even(2) ;
-	b = 1..a;
-	c = even(3)..even(5)..#6;
-	d = even(5)..even(6)..#4;
-	e1 = e..4..#3;  //e takes default value 2.17
-	f = even(3)..(even(8)+4*0.5)..#3;
-	g = even(2)+1..1..#5;
-}
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -7833,58 +6817,6 @@ y = {1,2,3};
 	
 }
 p1 = pts[1][1];
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT14_Defect_1450550()
-        {
-            string code = @"
-[Associative]
-{
-	a = 4;
-	b = a*2;
-	x = [Imperative]
-	{
-		def fn:int(a:int)
-		{
-		    return = a;
-		}
-		
-		_i = fn(0);
-		
-		return = _i; 
-	}
-	a = x;
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT14_Function_Recursive_imperative()
-        {
-            string code = @"
-[Imperative]
-{
-	def factorial : int( n : int )
-	{
-		if ( n > 1 ) 
-		{
-		    return = n * factorial ( n - 1 );
-		}
-		else 
-		{
-		    return = 1;
-		}		
-	}
-	
-	a = 3;
-	b = factorial (a );
-	
-}
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -8062,37 +6994,6 @@ x = false;
         }
 
         [Test]
-        public void DebugEQT15_Function_From_Parallel_Blocks()
-        {
-            string code = @"
-[Imperative]
-{
-	def factorial : int( n : int )
-	{
-		if ( n > 1 ) 
-		{
-		    return = n * factorial ( n - 1 );
-		}
-		else 
-		{
-		    return = 1;
-		}		
-	}
-	
-	
-	
-}
-[Imperative]
-{
-	a = 3;
-	b = factorial (a );
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT15_SimpleRangeExpression_1()
         {
             string code = @"
@@ -8150,49 +7051,6 @@ x = false;
 		y = i * y;       
     }
 	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT15_TestInRecursiveFunctionScope__2_()
-        {
-            string code = @"
-[Imperative]
-{
-	
-	def fac : int ( n : int )
-    {
-        if(n == 0 )
-        {
-			return = 1;
-        }
-		//return = 2;
-		return = n * fac (n-1 );
-	}
-    val = fac(5);				
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT15_TestInRecursiveFunctionScope()
-        {
-            string code = @"
-[Imperative]
-{
-	
-	def fac : int ( n : int )
-	{
-	    if(n == 0 )
-        {
-		    return = 1;
-        }
-		return = n * fac (n-1 );
-	}
-    val = fac(5);				
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -8275,37 +7133,6 @@ y = foo (x );
 [Imperative]
 {
     x = 2;
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT16_Function_From_Parallel_Blocks()
-        {
-            string code = @"
-[Imperative]
-{
-	def factorial : int( n : int )
-	{
-		if ( n > 1 ) 
-		{
-		    return = n * factorial ( n - 1 );
-		}
-		else 
-		{
-		    return = 1;
-		}		
-	}
-	
-	
-	
-}
-[Associative]
-{
-	a = 3;
-	b = factorial (a );
-	
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -8648,32 +7475,6 @@ c = foo1(a, 3);
         }
 
         [Test]
-        public void DebugEQT18_Function_Recursive_associative()
-        {
-            string code = @"
-[Imperative]
-{
-	def factorial : int( n : int )
-	{
-		if ( n > 1 ) 
-		{
-		    return = n * factorial ( n - 1 );
-		}
-		else 
-		{
-		    return = 1;
-		}		
-	}
-	
-	a = 3;
-	b = factorial (a );
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT18_SimpleRangeExpression_4()
         {
             string code = @"
@@ -8740,33 +7541,6 @@ c = foo1(a, 3);
     test3 = add (add(1.5,0.5), 4.5 ) ;  
     test4 = add (1+1, 4.5 ) ;
     test5 = add ( add(1,1) + add(1,0.5), 3.0 ) ;
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT18_TestMethodCallInExpr()
-        {
-            string code = @"
-[Imperative]
-{
-	   def  mul : double ( n1 : double, n2 : double )
-        {
-        	return = n1 * n2;
-        }
-        def add : double ( n1 : double, n2 : double )
-        {
-        	return = n1 + n2;
-        }
-        test0 = add (-1 , 7.5 ) ;
-        test1 = add ( mul(1,2), 4.5 ) ;  
-        test2 = add (mul(1,2.5), 4 ) ; 
-        test3 = add (add(1.5,0.5), 4.5 ) ;  
-        test4 = add (1+1, 4.5 ) ;
-        test5 = add (add(1,1)+add(1,0.5), 3.0 ) ;
-       
-       			
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -8926,38 +7700,6 @@ z = val[0];
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
-        [Test]
-        public void DebugEQT19_Function_From_Imperative_While_And_For_Loops()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo : int( n : int )
-	{
-		return = n * n;	
-	}
-	
-	a = { 0, 1, 2, 3, 4, 5 };
-	x = 0;
-	for ( i in a )
-	{
-	    x = x + foo ( i );
-	}
-	
-	y = 0;
-	j = 0;
-	while ( a[j] <= 4 )
-	{
-	    y = y + foo ( a[j] );
-		j = j + 1;
-	}
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        
         [Test]
         public void DebugEQT19_SimpleRangeExpression_5()
         {
@@ -9298,40 +8040,6 @@ t2 = y2[1];
         }
 
         [Test]
-        public void DebugEQT20_RangeExpressionsUsingPowerOperator()
-        {
-            string code = @"
-[Imperative]
-{
-	def power : double (a:double,b:int) 
-	{
-		temp = 1;
-		while( b > 0 )
-		{
-			temp = temp * a;
-			b = b - 1;
-		}
-		return = temp;
-	}
-	a = 3;
-	b = 2; 
-	c = power(2,3);
-	d = b..a;
-	e1 = b..c..power(2,1);
-	f = power(1.0,1)..power(2,2)..power(0.5,1);   
-	/*h = power(0.1,2)..power(0.2,2)..~power(0.1,2);
-	i = power(0.1,1)..power(0.2,1)..~power(0.1,1);         has not been implemented yet
-	j = power(0.4,1)..power(0.45,1)..~power(0.05,1);
-	k = power(1.2,1)..power(1.4,1)..~power(0.2,1);
-	l = power(1.2,1)..power(1.3,1)..~power(0.1,1); 
-	m = power(0.8,1)..power(0.9,1)..~power(0.1,1);
-	n = power(0.08,1)..power(0.3,2)..~power(0.1,2); */
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT20_TestForLoopWithoutBracket()
         {
             string code = @"
@@ -9481,53 +8189,6 @@ f = a + b;
         }
 
         [Test]
-        public void DebugEQT21_Function_From_Nested_Imperative_Loops()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo : int( n : int )
-	{
-		return = n ;	
-	}
-	
-	a = { 0, 1, 2, 3, 4, 5 };
-	x = 0;
-	for ( i in a )
-	{
-	    for ( j in a )
-		{
-		    x = x + foo ( j );
-		}
-	}
-	
-	y = 0;
-	j = 0;
-	while ( j <= 4 )
-	{
-	    p = 0;
-		while ( p <= 4)
-		{
-		    y = y + foo ( a[p] );
-			p = p + 1;
-		}
-		j = j + 1;
-	}
-	
-	if( x < 100 )
-	{
-	    if ( x > 20 )
-		{
-		    x = x + foo (x );
-		}
-	}
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT21_IfElseWithArray_negative()
         {
             string code = @"
@@ -9547,35 +8208,6 @@ f = a + b;
 } 
  
  
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT21_RangeExpressionsUsingEvenFunction()
-        {
-            string code = @"
-[Imperative]
-{
-	def even : int (a : int) 
-	{	
-		if(( a % 2 ) > 0 )
-			return = a + 1;
-		
-		else 
-			return = a;
-	}
-	x = 1..3..1;
-	y = 1..9..2;
-	z = 11..19..2;
-	c = even(x); // 2,2,4
-	d = even(x)..even(c)..(even(0)+0.5); // {2,2,4}
-	e1 = even(y)..even(z)..1; // {2,4,6,8,10} .. {12,14,16,18,20}..1
-	f = even(e1[0])..even(e1[1]); // even({2,3,4,5,6,7,8,9,10,11,12} ..even({4,5,6,7,8,9,10,11,12,13,14})
-   /*  {2,4,4,6,6,8,8,10,10,12,12} .. {4,6,6,8,8,10,10,12,12,14,14}
-*/ 
-	g = even(y)..even(z)..f[0][1];  // {2,4,6,8,10} .. {12,14,16,18,20} .. 3
-}
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -9832,26 +8464,6 @@ x2 = test(0);
         }
 
         [Test]
-        public void DebugEQT23_Create_Dynamic_Array_Using_Replication_In_Imperative_Scope()
-        {
-            string code = @"
-[Imperative]
-{
-	def CreateArray ( x : var[] , i )
-	{
-		x[i] = i;
-		return = x;
-	}
-	test = { };
-	test = CreateArray ( test, 0 );
-	test = CreateArray ( test, 1 );
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT23_Function_Call_As_Function_Call_Arguments()
         {
             string code = @"
@@ -10093,41 +8705,6 @@ a = b;
         }
 
         [Test]
-        public void DebugEQT24_Function_Call_In_Range_Expression()
-        {
-            string code = @"
-[Associative]
-{
-	def foo : double ( a : double , b :double )
-	{
-		return = a + b ;	
-	}
-	
-	a1 = 1..foo(2,3)..foo(1,1);
-	a2 = 1..foo(2,3)..#foo(1,1);
-	a3 = 1..foo(2,3)..~foo(1,1);
-	a4 = { foo(1,0), foo(1,1), 3 };
-	
-}
-[Imperative]
-{
-	def foo_2 : double ( a : double , b :double )
-	{
-		return = a + b ;	
-	}
-	
-	a1 = 1..foo_2(2,3)..foo_2(1,1);
-	a2 = 1..foo_2(2,3)..#foo_2(1,1);
-	a3 = 1..foo_2(2,3)..~foo_2(1,1);
-	a4 = { foo_2(1,0), foo_2(1,1), 3 };
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-
-        [Test]
         public void DebugEQT24_TestForLoopToModifyCollection()
         {
             string code = @"
@@ -10313,43 +8890,6 @@ b = { 1,2 };
         }
 
         [Test]
-        public void DebugEQT25_Function_Call_In_Mathematical_And_Logical_Expr()
-        {
-            string code = @"
-[Associative]
-{
-	def foo : double ( a : double , b :double )
-	{
-		return = a + b ;	
-	}
-	
-	a1 = 1 + foo(2,3);
-	a2 = 2.0 / foo(2,3);
-	a3 = 1 && foo(2,2);	
-}
-[Imperative]
-{
-	def foo_2 : double( a : double , b :double )
-	{
-		return = a + b ;	
-	}
-	
-	a1 = 1 + foo_2(2,3);
-	a2 = 2.0 / foo_2(2,3);
-	a3 = 1 && foo_2(2,2);
-	a4 = 0;
-	
-	if( foo_2(1,2) > foo_2(1,0) )
-	{
-	    a4 = 1;
-	}
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT25_RangeExpression_WithDefaultDecrement()
         {
             string code = @"
@@ -10477,46 +9017,6 @@ c = b;
         }
 
         [Test]
-        public void DebugEQT26_Function_Call_In_Mathematical_And_Logical_Expr()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo_2 : double ( a : double , b :double )
-	{
-		return = a + b ;	
-	}
-	a4 = 0;
-	if( foo_2(1,2) < foo_2(1,0) )
-	{
-	    a4 = 1;
-	}
-	elseif( foo_2(1,2) && foo_2(1,0) )
-	{
-	    a4 = 2;
-	}
-	
-	x = 0;	
-	while (x < foo_2(1,2))
-	{
-	    x = x + 1;
-	}
-	
-	c = { 0, 1, 2 };
-	for (i in c )
-	{
-		if( foo_2(1,2) > foo_2(1,0) )
-		{
-		    x = x + 1;
-		}
-	}
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT26_IfElseWithNegatedCondition()
         {
             string code = @"
@@ -10551,33 +9051,6 @@ y = x.a;
 {
     x1 = 1;
     y1 = x1.a;
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT26_RangeExpression_Function_tilda_1457845()
-        {
-            string code = @"
-[Imperative]
-{
-	def square : double ( x: double ) 
-	{
-		return = x * x;
-	}
-	
-	x = 0.1; 
-	a = 0..2..~0.5;
-	b = 0..0.1..~square(0.1);
-	f = 0..0.1..~x;      
-	g = 0.2..0.3..~x;    
-	h = 0.3..0.2..~-0.1; 
-	
-	j = 0.8..0.5..~-0.3;
-	k = 0.5..0.8..~0.3; 
-	l = 0.2..0.3..~0.0;
-	m = 0.2..0.3..~1/2; // division 
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -10688,35 +9161,6 @@ b=a[2];
         }
 
         [Test]
-        public void DebugEQT27_Function_Call_Before_Declaration()
-        {
-            string code = @"
-[Associative]
-{ 
-	def Level1 : int (a : int) 
-	{  
-		return = Level2(a+1); 
-	}  
-	def Level2 : int (a : int) 
-	{  
-		return = a + 1; 
-	} 
-	input = 3; 
-	result = Level1(input); 
-}
-[Imperative]
-{ 
-	a = foo(1); 
-	def foo : int (a : int)
-	{
-		return = a + 1; 
-	}
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT27_RangeExpression_Function_Associative_1463472()
         {
             string code = @"
@@ -10790,30 +9234,6 @@ c=twice(4);
         }
 
         [Test]
-        public void DebugEQT27_TestCallingFunctionInsideForLoop()
-        {
-            string code = @"
-[Imperative]
-{
-	def function1 : double ( a : double )
-	{		
-		return = a + 0.7;
-	}
-	
-	a = { 1.3, 2.3, 3.3, 4.3 };
-	
-	x = 3;
-	
-	for ( i in a )
-	{	
-		x = x + function1( i );
-	}
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT27_defect_1464429_DynamicArray()
         {
             string code = @"
@@ -10869,57 +9289,6 @@ count = -2..-1;
         }
 
         [Test]
-        public void DebugEQT28_Function_Arguments_Declared_Before_Function_Def()
-        {
-            string code = @"
-result = [Associative]
-{ 
-	a = 0;
-	b = 1;
-	def foo : int (a : int, b: int)
-	{
-		return = a + b; 
-	}
-	
-	result = foo( a, b); 
-	return = result;
-}
-result2 = 
-[Imperative]
-{ 
-	a = 3;
-	b = 4;
-	def foo : int (a : int, b: int)
-	{
-		return = a + b; 
-	}
-	
-	result2 = foo( a, b); 
-	return = result2;
-}
-result3 = 
-[Associative]
-{ 
-	a = 5;
-	b = 6;
-	result3 = [Imperative]
-	{
-		def foo : int (a : int, b: int)
-		{
-			return = a + b; 
-		}
-		
-		result3 = foo( a, b); 
-		return = result3;
-	}
-	return = result3;
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-
-        [Test]
         public void DebugEQT28_Update_With_Inline_Condition()
         {
             string code = @"
@@ -10948,50 +9317,6 @@ a1[0] = 0;
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
-        [Test]
-        public void DebugEQT28_defect_1465706__DynamicArray_Imperative()
-        {
-            string code = @"
-[Imperative]
-{
-def CreateArray ( x : var[] , i )
-{
-x[i] = i;
-return = x;
-}
-test = { };
-test = CreateArray ( test, 0 );
-test = CreateArray ( test, 1 );
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT28_defect_1465706__DynamicArray_Imperative_2()
-        {
-            string code = @"
-[Imperative]
-{
-    def test (i:int)
-    {
-        loc = {};
-        for(j in i)
-        {
-            loc[j] = j;
-        }
-        return = loc;
-    }
-    a={3,4,5};
-    t = test(a);
-    r = {t[0][3], t[1][4], t[2][5]};
-    return = r;
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-      
         [Test]
         public void DebugEQT29_Defect_1452966_2()
         {
@@ -11054,41 +9379,6 @@ test = CreateArray ( test, 1 );
         }
 
         [Test]
-        public void DebugEQT29_Function_With_Different_Arguments()
-        {
-            string code = @"
-[Imperative]
-{ 
-	 def foo : double ( a : int, b : double, c : bool, d : int[], e : double[][], f:int[]..[], g : bool[] )
-	 {
-	     x = -1;
-		 if ( c == true && g[0] == true)
-		 {
-		     x = x + a + b + d[0] + e[0][0];
-		 }
-		 else
-		 {
-		     x = 0;
-		 }
-         return  = x;
-	 }
-	 
-	 a = 1;
-	 b = 1;
-	 c = true;
-	 d = { 1, 2 };
-	 e = { { 1, 1 }, {2, 2 } } ;
-	 f = { {0, 1}, 2 };
-	 g = { true, false };
-	 
-	 y = foo ( a, b, c, d, e, f, g );
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-       
-        [Test]
         public void DebugEQT30_ForLoopNull()
         {
             string code = @"
@@ -11106,28 +9396,6 @@ test = CreateArray ( test, 1 );
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
-
-        [Test]
-        public void DebugEQT30_Function_With_Mismatching_Return_Type_DS()
-        {
-            string code = @"
-[Imperative]
-{ 
-	 def foo1 : double ( a : double )
-	 {
-	    return = true;
-	 }
-	 
-	 dummyArg = 1.5;
-	
-	b1 = foo1 ( dummyArg );
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-
 
         [Test]
         public void DebugEQT30_Update_Global_Variables_Imperative_Scope()
@@ -11221,28 +9489,6 @@ y = x;
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
-
-        [Test]
-        public void DebugEQT31_Function_With_Mismatching_Return_Type()
-        {
-            string code = @"
-[Imperative]
-{ 
-	 def foo2 : double ( a : double )
-	 {
-	    return = 5;
-	 }
-	 
-	dummyArg = 1.5;
-	
-	b2 = foo2 ( dummyArg );
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        
         [Test]
         public void DebugEQT32_Defect_1449877_2__2_()
         {
@@ -11262,46 +9508,6 @@ y = x;
         }
 
         [Test]
-        public void DebugEQT32_Defect_1449877_2()
-        {
-            string code = @"
-[Imperative]
-{
-	def func:int(a:int,b:int)
-	{
-	return = b + a;
-	}
-	a = 3;
-	b = -1;
-	d = func(a,b);
-} 
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-       
-        [Test]
-        public void DebugEQT32_Function_With_Mismatching_Return_Type()
-        {
-            string code = @"
-[Imperative]
-{ 
-	 def foo3 : int ( a : double )
-	 {
-	    return = 5.5;
-	 }
-	 
-	dummyArg = 1.5;
-	
-	b2 = foo3 ( dummyArg );
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-
-        [Test]
         public void DebugEQT32_Update_With_Range_Expr()
         {
             string code = @"
@@ -11318,25 +9524,6 @@ z1 = y1;
         {
             string code = @"
 [Associative]
-{
-	def check:double( _a:double, _b:int )
-	{
-	_c = _a * _b;
-	return = _c;
-	} 
-	_a_test = check(2.5,5);
-	_b = 4.5;
-	_c = true;
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT33_Defect_1450003()
-        {
-            string code = @"
-[Imperative]
 {
 	def check:double( _a:double, _b:int )
 	{
@@ -11463,25 +9650,6 @@ a4 = dummyArray[1][1];
         {
             string code = @"
 [Associative]
-{
-	def neg_float:double(x:double,y:double)
-	{
-	a = x;
-	b = y;
-	return = a + b;
-	}
-	z = neg_float(-2.3,-5.8);
- 
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT35_Defect_1450727_2()
-        {
-            string code = @"
-[Imperative]
 {
 	def neg_float:double(x:double,y:double)
 	{
@@ -11637,27 +9805,6 @@ a4 = dummyArray[1][1];
         }
 
         [Test]
-        public void DebugEQT36_IfElseInsideFunctionScope()
-        {
-            string code = @"
-[Imperative]
-{ 
- def crushcode:int (a:int, b:int)
- {
-  if(a<=b)
-      return = a+b;  
-  else 
-     return = 0;           
- }                                
- temp=crushcode(2,3);  
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-       
-
-        [Test]
         public void DebugEQT37_Defect_1450920()
         {
             string code = @"
@@ -11787,64 +9934,6 @@ testArrayMember2 = c2;
  b = -6.9;
  c = a / b;
 } 
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT38_Defect_1450939()
-        {
-            string code = @"
-[Imperative]
-{
-   	def test:int( a:int, b:int )
-	{
-		c = 0;
-	    if( !(a == b) ) 
-		{
-			c = 0;
-		}
-		elseif ( !(a==b) )
-		{
-			c = 1;
-		}
-		else
-		{
-			c = 2;
-		}
-		
-		return = c;
-	}
-	
-	
-	a = 1;
-	b = 1;
-    c = 0;
-    d = 0;
-	if( !(a == b) ) 
-	{
-		d = 0;
-	}
-	elseif ( !(a==b) )
-	{
-		d = 1;
-	}
-	else
-	{
-		d = 2;
-	}
-	
-	
-	if( ! (test ( a, b ) == 2 ) )
-	{
-		c = 3;
-	}
-	else
-	{
-		c = 2;
-	}
-		
-}
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -11999,28 +10088,6 @@ d=0;
 		{
 			x = x + y;
 		}
-	}
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT39_Defect_1452951_1()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo ( a : int[])
-	{
-	    a[1] = 4;
-		return = a;
-	}
-	a = { 4,5 };
-   
-	[Associative]
-	{
-	   x = foo(a);
 	}
 }
 ";
@@ -12525,44 +10592,6 @@ list4 = foo(list1, list2, list3, 4, 23);
         }
 
         [Test]
-        public void DebugEQT44_Defect_1450706_2()
-        {
-            string code = @"
-[Imperative]
-{
-	def float_fn:int(a:int)
-	{
-		if( a < 2 )
-			return = 0;
-		else
-			return = 1;
-	}
-	 
-	x = float_fn(1);
- 
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT44_Function_With_Null_Argument()
-        {
-            string code = @"
-[Imperative]
-{ 
-	 def foo : double ( a : double )
-	 {
-	    return = 1.5;
-     }
-	
-	 b2 = foo ( null );	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT44_Pass_3_List_Same_Length()
         {
             string code = @"
@@ -12697,24 +10726,6 @@ list4 = foo(list1, list2, list3, 26, 43); // { 27, -43, -115, 19, -57, -135, -7,
 [Imperative]
 {
 	a = 4 + true;
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT46_Function_With_Mismatching_Argument_Type()
-        {
-            string code = @"
-[Imperative]
-{ 
-	 def foo : double ( a : int )
-	 {
-	    return = 1.5;
-     }
-	
-	 b2 = foo ( 1.5);
-     c = 3;	 
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -12914,34 +10925,6 @@ list2 = foo(list1); // { { 1, 4, 9 }, { 16, 25, 36 }, { 49, 64, 81 } }
         }
 
         [Test]
-        public void DebugEQT48_Defect_1450858_2()
-        {
-            string code = @"
-[Imperative]
-{	
-	def factorial:int(a:int)
-	{
-		 fact = 1;
-		 
-		 if( a != 0)
-		 {
-			 while( a > 0 )
-			 { 
-				fact = fact * a;
-				a = a - 1;
-			 }
-		}	 
-		
-		return = fact;
-	}
-	
-	test = factorial(4);
-}	
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT48_Pass_Single_List()
         {
             string code = @"
@@ -13022,37 +11005,6 @@ list6 = c > a ? 1 : 0; // { 1, 1, 0, 0 }
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
-
-        [Test]
-        public void DebugEQT50_Defect_1450817()
-        {
-            string code = @"
-[Imperative]
-{ 
-	def fn:int(a:int)
-	{
-		if( a < 0 )
-		if( a < -1 )
-		return = 0;
-		else
-		return = -1;
-		
-		return = 1;
-	}
-	
-	x = fn(-1);
-	
-	temp = 1;
-	
-	if (fn(2))
-	{
-		temp = fn(5);
-	}
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
         [Test]
         public void DebugEQT50_Defect_1456713()
         {
@@ -13078,29 +11030,6 @@ b = a * 3;
 	 aa = { };
 	 b2 = foo ( aa );	
 	 c = 3;	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT50_Replication_Imperative_Scope()
-        {
-            string code = @"
-[Imperative]
-{
-	def even : int (a : int) 
-	{	
-		if(( a % 2 ) > 0 )
-			return = a + 1;		
-		else 
-			return = a;
-		
-		return = 0;
-	}
-    x = { 1, 2, 3 };
-	c = even(x);
-	
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -13173,15 +11102,6 @@ c6 = a [-1.5];
 	 b2 = foo ( aa );	
 	 c = 3;	
 }
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT51_Using_Special_Characters_In_Identifiers()
-        {
-            string code = @"
-@a = 1;
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -13281,27 +11201,6 @@ y = x;
         }
 
         [Test]
-        public void DebugEQT53_Defect_1452575()
-        {
-            string code = @"
-[Imperative]
-{ 
-	def float_fn:int(a:double)
-	{
-		if( a < 2.0 )
-			return = 0;
-		else
-			return = 1;
-	}
-	 
-	x = float_fn(-1.5);
-     
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT53_Function_Updating_Argument_Values()
         {
             string code = @"
@@ -13349,40 +11248,6 @@ y = test.foo (1);
         }
 
         [Test]
-        public void DebugEQT53_Undefined_Class_negative_imperative_1467091_12()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo ( x : int)
-	{
-		return = x + 1;
-	}
-	y = test.foo (1);
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT53_Undefined_Class_negative_imperative_1467107_11()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo(x:int)
-	{
-		return = x + 1;
-	}
-	//y1 = test.foo(2);
-	m=null;
-	y2 = m.foo(2);
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT54_3_of_3_Exprs_are_Lists_Different_Length()
         {
             string code = @"
@@ -13397,44 +11262,6 @@ a = { 3, 0, -1 };
 b = { 2, 1, 0, 3 };
 c = { -2, 4, 1, 2, 0 };
 list8 = a < c ? b + c : a + c; // { 1, 4, 1 }
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT54_Defect_1451089()
-        {
-            string code = @"
-[Imperative]
-{ 
- def foo:double (a:int, b:int, c : double)
- {
-  if(a<=b && b > c)
-      return = a+b+c;  
-  else 
-     return = 0;           
- }                                
- temp=foo(2,3,2.5);  
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT54_Function_Updating_Argument_Values()
-        {
-            string code = @"
-[Imperative]
-{ 
-	 def foo : double ( a : double )
-	 {
-	    a = 4.5;
-		return = a;
-     }
-	 aa = 1.5;
-	 b2 = foo ( aa );	
-	 c = 3;	
-}
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -13489,25 +11316,6 @@ list6 = a > b ? b + c : b - c; // { -4, -1, 8 }
         }
 
         [Test]
-        public void DebugEQT55_Function_Updating_Argument_Values()
-        {
-            string code = @"
-[Imperative]
-{ 
-	 def foo : int ( a : double )
-	 {
-	    a = 5;
-		return = a;
-     }
-	 aa = 5.0;
-	 b2 = foo ( aa );	
-	 c = 3;	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT56_Function_Updating_Argument_Values()
         {
             string code = @"
@@ -13554,27 +11362,6 @@ list2 = !list1; // { false, false, true, true, false, true }
 	 bb = foo ( aa );
      c = 3;	 
 	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT57_Function_With_If_Else_But_No_Default_Return_Statement()
-        {
-            string code = @"
-[Imperative]
-{
-	def even : int (a : int) 
-	{	
-		if(( a % 2 ) > 0 )
-			return = a + 1;
-		
-		else 
-			return = a;
-	}
-	x = even(1);
-	y = even(2);
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -13830,29 +11617,6 @@ x = foo ( 3 );
         }
 
         [Test]
-        public void DebugEQT61_Function_With_Void_Return_Stmt()
-        {
-            string code = @"
-[Associative]
-{
-	 a = 1;
-	 [Imperative]
-	 {
-		def foo : void  ( )
-		{
-			a = 2;		
-		}
-		foo();
-        b = a;	    
-	 }
-}
-	 
-	 
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT61_TestBooleanOperationOnNull()
         {
             string code = @"
@@ -13977,39 +11741,6 @@ c2 = 3  - true;
         }
 
         [Test]
-        public void DebugEQT62_Function_Modifying_Globals_Values()
-        {
-            string code = @"
-[Associative]
-{
-	 a = 1;
-	 [Imperative]
-	 {
-		def foo : int  ( )
-		{
-			c = a;
-			a = 2;	
-                        return = c + 1;			
-		}
-		b = foo();
-            
-	 }
-}
-x = 1;
-def foo2 : int  ( )
-{
-    y = x;
-    x = 2;	
-    return = y + 1;			
-}
-z = foo2();
-	 
-	 
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT63_Create_MultiDimension_Dynamic_Array_OnTheFly()
         {
             string code = @"
@@ -14098,47 +11829,6 @@ z=5;
         }
 
         [Test]
-        public void DebugEQT63_Function_Modifying_Globals_Values()
-        {
-            string code = @"
-x = [Imperative]
-{
-	a = 1;
-	def foo : int  ( )
-	{
-		c = a;
-		a = 2;	
-                return = c + 1;			
-	}
-	b = foo();
-        return = { a, b };    
-}
-	 
-	 
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT63_return_in_if_1467073()
-        {
-            string code = @"
-[Imperative]
-{
-def even : int (a : int)
- { 
-   if( ( a % 2 ) > 0 )
-        return = a + 1;
-   else 
-           return = a;
-}
-c = even(1);
- }
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT64_Defect_1450715()
         {
             string code = @"
@@ -14147,29 +11837,6 @@ c = even(1);
     a = { 1, 0.5, null, {2,3 } ,{{0.4, 5}, true } };
 	
 }
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT64_Function_Modifying_Globals_Values_Negative()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo : int  ( )
-	{
-		c = a;
-		a = 2;	
-                return = c + 1;			
-	}
-	a = 1;
-	b = foo();
-	c = 3;
-            
-}
-	 
-	 
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -14237,27 +11904,6 @@ b[0]=false;
         }
 
         [Test]
-        public void DebugEQT65_Function_With_No_Return_Type()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo (  )
-	{
-		return = true;			
-	}
-	
-	a = foo();
-	b = 3;
-            
-}
-	 
-	 
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT66_Array_CannotBeUsedToIndex1467069()
         {
             string code = @"
@@ -14286,29 +11932,6 @@ b[0]=false;
         }
 
         [Test]
-        public void DebugEQT66_Function_Returning_Null()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo : int ( a : int )
-	{
-		c = d + a;
-        return = c;		
-	}
-	
-	a = 1;
-	b = foo(a);
-	c = b + 2;
-            
-}
-	 
-	 
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT67_Array_Remove_Item()
         {
             string code = @"
@@ -14326,50 +11949,6 @@ a=Remove(a,4);//expected {1,2,3,4,6,7}
 a={1,2,3,4,5,6,7};
 a=Remove(a,0);// expected :{2,3,4,5,6,7}
 a=Insert(a,4,6);//expected {1,2,3,4,6,7}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT67_Function_Returning_Collection()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo : int[] ( a : int )
-	{
-		c = { a + 1, a + 2.5 };
-        return = c;		
-	}
-	
-	a = 1;
-	b = foo(a);
-            
-}
-	 
-	 
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT68_Function_Returning_Null()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo : int[] ( a : int )
-	{
-		c = { a + 1, a + 2.5 };
-        return = null;		
-	}
-	
-	a = 1;
-	b = foo(a);
-            
-}
-	 
-	 
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -14406,25 +11985,6 @@ test = a[0]; //= 10Ö i.e. a change in ëbí causes a change to ëaí
 }
 	 
 	 
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT74_Function_With_Simple_Replication_Imperative()
-        {
-            string code = @"
-[Imperative]
-{
-    def foo : int ( a : int )
-	{
-		return  = a + 1;
-	}
-	
-	x = { 1, 2, 3 };
-	y = foo(x);
-	
-}	 
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -14509,30 +12069,6 @@ b = a;
         }
 
         [Test]
-        public void DebugEQT77_Defect_1460274_Class_Update_5()
-        {
-            string code = @"
-geometry1 = {};
-geometry1[0] = 5;
-geometry1[1] = 10;
-geometry1[2] = {
-                  geometry1[0]+ geometry1[1];
-              }
-geometry1[4] = {
-                  geometry1[1]+ 1;
-              }
-test1 = geometry1;
-geometry = {};
-geometry[0] = 5;
-geometry[1] = 10;
-geometry[2] = geometry[0]+ geometry[1];
-geometry[4] = geometry[1]+1;
-test = geometry;
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT77_Function_With_Simple_Replication_Guide()
         {
             string code = @"
@@ -14568,31 +12104,6 @@ test = geometry;
 	{
 		a = a + b;
 		b = 2;
-		return  = a + b;
-	}
-	
-	a = 1;
-	b = 2;
-	c = foo (a, b );
-	d = a + b;
-	
-}
-	 
-	 
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT79_Function_call_By_Reference()
-        {
-            string code = @"
-[Imperative]
-{
-    def foo : int ( a : int, b : int )
-	{
-		a = a + b;
-		b = 2 * a;
 		return  = a + b;
 	}
 	
@@ -14664,38 +12175,6 @@ test = geometry;
         }
 
         [Test]
-        public void DebugEQT82_Function_Calling_Assoc_From_Imp()
-        {
-            string code = @"
-[Imperative]
-{
-    def foo : int ( a : int )
-	{
-		d = 0;
-		if( a > 1 )
-	    {
-		     d = [Associative]
-			 {
-			     return = a + 1;
-			 }
-		}
-		else
-		{
-		    d = a + 2;
-		}
-		return  = a + d;
-	}
-	
-	a = 2;
-	b = foo (a );	
-}
-	 
-	 
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQT83_Function_With_Null_Arg()
         {
             string code = @"
@@ -14708,71 +12187,6 @@ def foo:int ( a : int )
 	b = foo( null );
 }
 	
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT85_Function_With_No_Type()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo( a )
-	{
-		a = a + 1;
-		return = a;
-	}
-	c = { 1,2,3 };
-	d = foo ( c ) ;
-		
-	a1 = d[0];
-	a2 = d[1];
-	a3 = d[2];
-}
-[Associative]
-{
-	def foo( a )
-	{
-		a = a + 1;
-		return = a;
-	}
-	c = { 1,2,3 };
-	d = foo ( c ) ;
-		
-	a1 = d[0];
-	a2 = d[1];
-	a3 = d[2];
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQT86_Function_With_For_Loop()
-        {
-            string code = @"
-[Imperative]
-{	
-	def foo: int( a : int )
-	{
-		for( i in a )		
-		{					
-		}		
-		return = a;	
-	}	
-	d = { 1,2,3 };	
-	//c = foo( d );	
-	j = 0;	
-	for( i in d )	
-	{		
-		d[j] = i + 1;		
-		j = j + 1;	
-	}	
-	a1 = d[0];	
-	a2 = d[1];	
-	a3 = d[2];
-}
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -15274,282 +12688,6 @@ c = 5;
         }
 
         [Test]
-        public void DebugEQTV00_Function_With_If_Statements()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo:int( a:int, b:int, c:int )
-	{
-		if( a < b )
-		{
-			if( a < c ) 
-				return = a;
-		}
-	
-		else if ( b < c ) 
-			return = b;
-		
-		else if (a == b && b == c ) 
-			return  = 1;
-			
-		return = c;
-	}
-	
-	a = foo( -9,3,-7 );
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV01_Function_With_While_Statements()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo:int( a:int, b:int)
-	{	
-		c = 1;
-		
-		while( b > 0 )
-		{
-			c = c * a;
-			b = b - 1;
-		}
-	
-		return = c;
-	}
-	
-	d = foo( 2,3 );
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV02_Function_With_For_Statements()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo:int( a:int )
-	{	
-		c = { 1,2,3,4,5 };
-		temp = 0;
-		
-		for( i in c )
-		{
-			if( i == a )
-			temp = 1;
-			
-		}
-	
-		if(temp) 
-			return = a;
-		
-		return = 0;
-	
-	}
-	
-	d = foo( 6 );
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV03_Function_With_Recursion()
-        {
-            string code = @"
-[Imperative]
-{
-	def factorial: int( a:int )
-	{	
-		if(!a)
-			return = 1;
-		
-		if( a < 0 )
-			return = 0;
-			
-		else 
-			return = a * factorial( a - 1 );
-	}
-		x = factorial(5);
-}
-		
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV04_Function_With_RangeExpression()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo:double( a:int )
-	{
-		b = 2..4..#3;
-		
-		sum = b[0] + b[1] + b[2];
-		
-		return = sum + 0.5;
-	}
-	d = foo( 1 );
-}
-		
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV05_Function_With_RangeExpression_2()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo: int( a:int[] )
-	{
-		sum = 0;
-		
-		for( i in a )
-		{
-			sum = sum + i ;
-		}
-		return = sum;
-	}
-	a = 2..4..#3;
-	
-	d = foo( a );
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV06_Function_With_Logical_Operators()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo:int( a:int , b:int, c:int )
-	{
-		if(a > 0 || b > 0 || c > 0)
-		{
-			if((a > 0 && b < 0)||(a > 0 && c < 0))
-				return = a;
-			else
-				return = 0;
-		}
-		
-		return = 1;
-	}
-	
-	a = foo( 2,3,4 );
-}
-			
-			
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV07_Function_With_Math_Operators()
-        {
-            string code = @"
-[Imperative]
-{
-	def math: double(a:double, b:double, c:int)
-	{
-		if( c == 1 )
-		{
-			return = a + b;
-		}
-			if( c == 2 )
-		{
-			return = a - b;
-		}
-		
-		if( c == 3 )
-		{
-			return = a * b;
-		}
-		
-		else
-			return = a / b;
-		
-			
-	}
-	a = 18;
-	b = 2;
-	c = 1;
-	
-	a = math(a,b,2+1);
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV08_Function_With_Outer_Function_Calls()
-        {
-            string code = @"
-[Imperative]
-{
-	def is_negative:int(a :int)
-	{
-		if( a < 0 )
-			return = 1;
-			
-			return = 0;
-	}
-	
-	def make_negative:int(a :int)
-	{
-		return = a * -1;
-	}
-	
-	def absolute:int(a :int)
-	{
-		if(is_negative(a))
-			a = make_negative(a);
-		
-		return = a;
-	}
-	x = -7;
-	x = absolute(x);
-	y = absolute(11);
-}	
-		
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV09_Function_With_Argument_Update_Imperative()
-        {
-            string code = @"
-[Imperative]
-{
-	def update:int( a:int, b:int )
-	{
-		a = a + 1;
-		b = b + 1;
-		return = a + b;
-	}
-	
-	c = 5;
-	d = 5;
-	e = update(c,d);
-	e = c;
-	f = d;
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQTV101_Indexing_IntoArray_InFunctionCall_1463234()
         {
             string code = @"
@@ -15633,29 +12771,6 @@ t = foo()[0];
         }
 
         [Test]
-        public void DebugEQTV11_Function_Update_Local_Variables()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo:int ( a : int )
-	{
-		b = a + 2.5;
-		c = true;
-		c = a;
-		d = c + b;
-		return = d;
-	}
-	
-	r = foo(1);
-	r = b;
-}
-	
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQTV12_Function_With_Argument_Update_Associative()
         {
             string code = @"
@@ -15673,22 +12788,6 @@ t = foo()[0];
 	e = update(c,d);
 	e = c;
 	f = d;
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV13_Empty_Functions_Imperative()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo:int ( a : int )
-	{
-	}
-	
-	b = foo( 1 );
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -16067,32 +13166,6 @@ f = foo ( 1, 2 );
         }
 
         [Test]
-        public void DebugEQTV34_Implicit_Conversion_Int_To_Bool()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo:int ( a : bool )
-	{
-		if(a)
-			return = 1;
-		else
-			return = 0;
-	}
-	
-	b = foo( 1 );
-	c = foo( 1.5 );
-	d = 0;
-	if(1.5 == true ) 
-	{
-	    d = 3;
-	}
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQTV35_Implicit_Conversion_Int_To_Double()
         {
             string code = @"
@@ -16148,52 +13221,6 @@ d = foo ( 2.3, 2 );
         }
 
         [Test]
-        public void DebugEQTV38_Defect_1449956()
-        {
-            string code = @"
-[Imperative]
-{
-	def factorial: int( a:int )
-	{	
-		if(!a)
-			return = 1;
-		
-		if( a < 0 )
-			return = 0;
-			
-		else 
-			return = a * factorial( a - 1 );
-	}
-		x = factorial(5);
-		y = factorial(7);
-		}
-	
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV39_Defect_1449956_2()
-        {
-            string code = @"
-[Imperative]
-{
-def recursion: int ( a : int )
-{
-	if ( a ==0 || a < 0)
-		return = 0;
-	
-	 
-		return = a + recursion(a - 1);
-}
-	x = recursion( 10 );
-	y = recursion( -1 );
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQTV40_Defect_1449956_3()
         {
             string code = @"
@@ -16213,38 +13240,6 @@ def recursion: int ( a : int )
 	}
 	x = recursion( 4 );
 	y = recursion( -1 );
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV41_Defect_1454959()
-        {
-            string code = @"
-[Associative]
-{
- def Level1 : int (a : int)
- {
-  return = Level2(a+1);
- }
- 
- def Level2 : int (a : int)
- {
-  return = a + 1;
- }
- input = 3;
- result = Level1(input); 
-}
-[Imperative]
-{
- 
- b = 1;
- a = foo(b);
- def foo : int (a : int)
- {
-     return = a + 1;
- }
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -16281,117 +13276,6 @@ def foo ( a )
 def foo2 ( a ) 
 {
     return = a;
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV43_Defect_1455143()
-        {
-            string code = @"
-[Associative]
-{ 
-	 def foo1 : int[] ( a : int[] )
-	 {
-	    a[0] = 0;
-            return = a;
-         }
-	 aa = { 1, 2 };
-	 bb = foo1 ( aa );	
-	 a = aa[0];
-	 b = bb[0];
-	 cc = [Imperative]
-	 {
-	     return = foo1(aa);
-	 };	
-	 c = cc[0];
-}
-[Imperative]
-{ 
-	 def foo  ( a : int[] )
-	 {
-	    a[0] = 0;
-            return = a;
-         }
-	 aa = { 1, 2 };
-	 bb = foo ( aa );	
-	 a = aa[0];
-	 b = bb[0];
-	 c = 3;	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV44_Defect_1455245()
-        {
-            string code = @"
-[Associative]
-{
-	a = 1;
-	[Imperative]
-	{
-		def foo : int ( x : int )
-	    {
-	        return = a + x;
-        }
-	 
-	    b = foo(1) ;	
-	}
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV45_Defect_1455278()
-        {
-            string code = @"
-[Associative]
-{
-    def foo : int ( a : int )
-	{
-		c = [Imperative]
-		{
-		    d = 0;
-			if( a > 1 )
-			{
-				d = 1;
-			}
-			return = d;	
-		}
-		return  = a + c;
-	}
-	
-	a = 2;
-	b = foo (a );	
-}
-[Imperative]
-{
-    def foo2 : int ( a : int )
-	{
-		
-		c = [Associative]
-		{
-            return = [Imperative]
-            { 
-                d = 0;
-                if( a > 1 )
-                {
-                    d = 1;
-                }
-                return = d;	
-            }
-        }
-		return  = a + c;
-		
-	}
-	
-	a = 2;
-	b = foo2 (a );	
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -16490,81 +13374,6 @@ a = 10;
 [Imperative]
 {
 	x = recursion(a); 
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV50_Defect_1456108()
-        {
-            string code = @"
-[Imperative]
-{
-	def collection:int[](a : int[] )
-	{
-		j = 0;
-		for ( i in a )
-		{
-			a[j] = a[j] + 1;
-			j = j + 1;
-		}
-		
-		return = a;
-	}
-	
-	[Associative]
-	{
-		c = { 1,2,3 };
-		c = collection( c );
-	}
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV51_Defect_1456108_2()
-        {
-            string code = @"
-[Imperative]
-{
-	def collection:double[](a : double[] )
-	{
-		j = 0;
-		for ( i in a )
-		{
-			a[j] = a[j] + 1;
-			j = j + 1;
-		}
-		
-		return = a;
-	}
-	
-	c = { 1.0,2.0,3.0 };
-	c = collection( c );
-	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV54_Defect_1456397_3()
-        {
-            string code = @"
-[Imperative]
-{
-	def CreateVal ( a )
-	{
-		x = 1;
-		y = [Associative]
-		{
-			return = a;
-		}
-		return = x + y;
-	}
-	b1 = CreateVal( 1 );
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -16745,33 +13554,6 @@ def multiply : double[] (a : double[])
         }
 
         [Test]
-        public void DebugEQTV61_Defect_1456100()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo: int( a : int )
-	{
-		for( i in a )
-		{
-		}
-		return = a;
-	}
-	
-	d = { 1,2,3 };
-	j = 0;
-	
-	for( i in d )
-	{
-		d[j] = i + 1;
-		j = j + 1;
-	}
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQTV62_Defect_1455090()
         {
             string code = @"
@@ -16783,34 +13565,6 @@ def multiply : double[] (a : double[])
 	b = { {0,2,3}, {4,5,6} };
 	d = foo( b );
 	c = d[0];
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV62_Defect_1456100()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo: int( a : int )
-	{
-		for( i in a )
-		{
-		}
-		return = a;
-	}
-	
-	d = { 1,2,3 };
-	//c = foo( d );
-	j = 0;
-	
-	for( i in d )
-	{
-		d[j] = i + 1;
-		j = j + 1;
-	}
-}
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -16844,57 +13598,6 @@ def multiply : double[] (a : double[])
         }
 
         [Test]
-        public void DebugEQTV64_Defect_1455090_3()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo ( a : double[]..[] )
-	{
-		a[0][0] = 2.5;
-		return = a;
-	}
-	
-	a = { {2.3,3.5},{4.5,5.5} };
-	
-	a = foo( a );
-	c = a[0];
-	
-	[Associative]
-	{
-		b = { {2.3}, {2.5} };
-		b = foo( b );
-		d = b[0];
-	}
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV71_Defect_1456108()
-        {
-            string code = @"
-[Imperative]
-{
-	def collectioninc: int[]( a : int[] )
-	{
-		j = 0;
-		for( i in a )
-		{
-			a[j] = a[j] + 1;
-			j = j + 1;
-		}
-		return = a;
-	}
-	d = { 1,2,3 };
-	c = collectioninc( d );
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQTV71_Defect_1456108_2()
         {
             string code = @"
@@ -16919,55 +13622,6 @@ def multiply : double[] (a : double[])
 	{
 		b = collectioninc( d );
 	}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV72_Defect_1454541()
-        {
-            string code = @"
-[Associative]
-{
-    def singleLine1 : int( a:int ) = a * 10;
-    d = singleLine1( 2 );
-}
-[Imperative]
-{
-    def singleLine2 : int( a:int ) = a * 10;
-    d = singleLine2( 2 );
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV72_Defect_1454541_1()
-        {
-            string code = @"
-[Associative]
-{
-    def singleLine1 : int( a:int ) { return = a * 10; } 
-    d = singleLine1( 2 );
-}
-[Imperative]
-{
-    def singleLine2 : int( a:int ) { return = a * 10; } 
-    d = singleLine2( 2 );
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV72_Defect_1454541_2()
-        {
-            string code = @"
-def singleLine1 : int( a:int[] ) = a[0] ;
-d = singleLine1( {20,20} );
-def singleLine2 : int[]( a:int[] ) = a ;
-d1 = singleLine2( {20,20} );
-d2 = d1[1];
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -17006,64 +13660,6 @@ d2 = d1[1];
 	y = test ( a , b, c, d);
 	
 		
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV74_Defect_1456426()
-        {
-            string code = @"
-def foo1 : int ( a : int )
-{
-	c = [Imperative]
-	{
-		d = 0;
-		if( a > 1 )
-		{
-			d = 1;
-		}
-		return = d;	
-	}
-	return  = a + c;
-}
-b1 = foo1(3);
-	
-[Associative]
-{
-    def foo : int ( a : int )
-	{
-		c = [Imperative]
-		{
-		    d = 0;
-			if( a > 1 )
-			{
-				d = 1;
-			}
-			return = d;	
-		}
-		return  = a + c;
-	}
-	
-	b2 = foo (2 );	
-}
-[Imperative]
-{
-    def foo2 : int ( a : int )
-	{
-		
-		d = 0;
-		if( a > 1 )
-		{
-			d = 1;
-		}
-			
-		return = a + d;
-	}
-	
-	
-	b3 = foo2 (4 );	
 }
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
@@ -17138,46 +13734,6 @@ def foo1 : double (arr : double[][])
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
-
-        [Test]
-        public void DebugEQTV78_Defect_1460866()
-        {
-            string code = @"
-def foo( a:int )
-{
-    b = a + 1;
-}
-y = foo ( 1 );
-x = [Imperative]
-{
-	def foo2(x:int)
-	{
-	    if (x > 0)
-		      return = 1;
-	}
-	t = foo2(-1);
-	return  = t;
-}
-z1 = [Imperative]
-{
-	a = 1;
-	if ( a > 2 ) 
-	    return = 2;
-}
-z2 = [Imperative]
-{
-	def foo2(x:int)
-	{
-	    if (x > 0)
-		      return = 1;
-	}
-	t = foo2(1);
-	return  = t;	
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
 
         [Test]
         public void DebugEQTV81_Defect_1458187()
@@ -17658,27 +14214,6 @@ b1 = foo ( a1 );
         }
 
         [Test]
-        public void DebugEQTV90_Defect_1463474()
-        {
-            string code = @"
-[Associative]
-{
-	 a = 1;
-	 [Imperative]
-	 {
-		def foo : void  ( )
-		{
-			a = 2;		
-		}
-		foo();
-        b = a;	    
-	 }
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
         public void DebugEQTV90_Defect_1463474_2()
         {
             string code = @"
@@ -17705,141 +14240,6 @@ def foo : void  (  )
 }
 c1 = foo();
 b1 = a;	
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV94_Method_Resolution_Nested_Language_Blocks()
-        {
-            string code = @"
-def foo( a:double )
-{
-    b = a + 1;
-	return = b;
-}
-y = foo ( 1 );
-x = [Imperative]
-{
-	def foo (x:int)
-	{
-	    if (x > 0)
-		      return = 1;
-	    return = 2;
-	}
-	t = foo(-1);
-	return  = t;
-}
-y = foo ( -2 );
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        [Category("Failure")]
-        public void DebugEQTV94_Method_Resolution_Nested_Language_Blocks_2()
-        {
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4290
-            string code = @"
-def foo(  )
-{
-    return = 1;
-}
-y = foo (  );
-x = [Imperative]
-{
-	def foo2 ()
-	{
-	    return = 2;
-	}
-	t1 = foo2();
-	t2 = foo();
-	return  = { t2, t1 };
-}
-y = [Imperative]
-{
-	def foo2 ()
-	{
-	    return = 3;
-	}
-	t1 = foo2();
-	t2 = foo();
-	return  = { t2, t1 };
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV96_Defect_DNL_1465794()
-        {
-            string code = @"
-x = [Imperative]
-{    
-    a = 1;    
-	def foo : int  ( )    
-	{        
-	    c = a;        
-		a = 2;                    
-		return = c + 1;                
-	}    
-	b = foo();        
-	return = { a, b };    
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV96_Defect_DNL_1465794_2()
-        {
-            string code = @"
-x = [Imperative]
-{    
-        a = 2;    
-	def foo : int  ( )    
-	{        
-	    c = 0;
-	    if ( a > 1 )
-	    {
-	        for ( i in 0..1 )
-                {
-		    a = a + i;
-                }
-                c = 1;                                    
-	    }
-	    return = c;                
-	}    
-	b = foo();        
-	return = { a, b };    
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQTV96_Defect_DNL_1465794_3()
-        {
-            string code = @"
-x = [Imperative]
-{    
-        a = { { 1, 2 } , { 3, 4 } };    
-	def foo : int  ( )    
-	{        
-	    c = 0;
-	    if ( a[0][0] == 1 )
-	    {
-	        for ( i in 0..1 )
-                {
-		    a[0][0] = a[0][0] + i;
-                }
-                c = 1;                                    
-	    }
-	    return = c;                
-	}    
-	b = foo();        
-	return = { a, b };    
-}
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }
@@ -18029,24 +14429,6 @@ r3 = 'h' + 1;
             DebugTestFx.CompareDebugAndRunResults(code);
         }
 
-        [Test]
-        public void DebugEQTestStringTypeConversion()
-        {
-            string code = @"
-[Imperative]
-{
-	def foo:bool(x:bool)
-	{
-	    return=x;
-	}
-	r1 = foo('h');
-	r2 = 'h' && true;
-	r3 = 'h' + 1;
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-      
         [Test]
         public void DebugEQTest_4_10_contains()
         {
@@ -18872,55 +15254,6 @@ count = 10;
 // import other module
 import (""./include/header2.ds"");
 x = 100;
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-
-        [Test]
-        public void DebugEQimperative_Replication_1467070()
-        {
-            string code = @"
-[Imperative]
-{
-        def test (i:int)
-        {
-                loc = {};
-                for(j in i)
-                {
-                        loc[j] = j;
-                        
-                }
-                return = loc;
-        }
-a={3,4,5};
-        t = test(a);
-return = t;
-}
-";
-            DebugTestFx.CompareDebugAndRunResults(code);
-        }
-
-        [Test]
-        public void DebugEQimperative_Replication_1467070_2()
-        {
-            string code = @"
-[Imperative]
-{
-        def CreateArray ( x : var[] , i )
-        {
-        
-                x[i] = i;
-                return = x;
-        }
-        test = { };
-         z=0..5;
-         for (i in z)
-         {
-                test[i] = CreateArray ( test, z );
-            
-        }
-}
 ";
             DebugTestFx.CompareDebugAndRunResults(code);
         }

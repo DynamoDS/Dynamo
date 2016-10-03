@@ -1972,7 +1972,8 @@ z2 = z;
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z2", 1);
         }
-        [Test, Ignore]
+
+        [Test]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void T51_Defect_1461388()
@@ -4142,7 +4143,6 @@ x1 = 4;
         }
 
         [Test]
-        [Category("DSDefinedClass_InvalidTest")]
         [Category("SmokeTest")]
         public void T90_1467510_cyclic()
         {

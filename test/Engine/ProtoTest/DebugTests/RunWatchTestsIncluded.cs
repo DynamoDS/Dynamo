@@ -843,27 +843,6 @@ j = n <= 100 + 1;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch88_TestStringTypeConversion()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"[Imperative]
-{
-	def foo:bool(x:bool)
-	{
-	    return=x;
-	}
-	r1 = foo('h');
-	r2 = 'h' && true;
-	r3 = 'h' + 1;
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch93_header2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -913,28 +892,6 @@ c = foo(2, 4.0); //c = 6.0";
 b;
 c;
 [Associative]
-{
-	def foo:double(x:int, y:double = 2.0)
-	{
-		return = x + y;
-	}
-	a = foo;
-	b = foo(3); //b=5.0;
-	c = foo(2, 4.0); //c = 6.0
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch98_T04_GlobalFunctionInImperBlk()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;
-b;
-c;
-[Imperative]
 {
 	def foo:double(x:int, y:double = 2.0)
 	{
@@ -1240,31 +1197,6 @@ c3;
   c2 = 1 && 0;
   c3 = null && true;
   
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch148_T15_TestInRecursiveFunctionScope()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"val;
-[Imperative]
-{
-	
-	def fac : int ( n : int )
-    {
-        if(n == 0 )
-        {
-			return = 1;
-        }
-		//return = 2;
-		return = n * fac (n-1 );
-	}
-    val = fac(5);				
 }
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -1866,22 +1798,6 @@ sum;
 	
 	sum = Sum (a, b);
 	
-	
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch294_T002_Associative_Function_SinglelineFunction()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"d;
-[Associative]
-{
-	def singleLine : int(a:int, b:int) = 10;
-	d = singleLine(1,3);
 	
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -2814,32 +2730,6 @@ list2 = foo(list1, 34, 18); // { 16, 50, 84, 118, 152, 186, 220, 254, 288, 322 }
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch379_T50_Replication_Imperative_Scope()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"c;
-[Imperative]
-{
-	def even : int (a : int) 
-	{	
-		if(( a % 2 ) > 0 )
-			return = a + 1;		
-		else 
-			return = a;
-		
-		return = 0;
-	}
-    x = { 1, 2, 3 };
-	c = even(x);
-	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch380_T50_1_of_3_Exprs_is_List()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3378,26 +3268,6 @@ e;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch473_T10_TestInFunctionScope()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"test;
-[Imperative]
-{
-	 def add:double( n1:int, n2:double )
-	 {
-		  
-		  return = n1 + n2;
-	 }
-	 test = add(2,2.5);
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch475_T12_TestUsingMathAndLogicalExpr()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3488,66 +3358,6 @@ c3;
   c2 = 1 && 0;
   c3 = null && true;
   
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch478_T15_TestInRecursiveFunctionScope()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"val;
-[Imperative]
-{
-	
-	def fac : int ( n : int )
-	{
-	    if(n == 0 )
-        {
-		    return = 1;
-        }
-		return = n * fac (n-1 );
-	}
-    val = fac(5);				
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch481_T18_TestMethodCallInExpr()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"test0;
-test1;
-test2;
-test3;
-test4;
-test5;
-[Imperative]
-{
-	   def  mul : double ( n1 : double, n2 : double )
-        {
-        	return = n1 * n2;
-        }
-        def add : double ( n1 : double, n2 : double )
-        {
-        	return = n1 + n2;
-        }
-        test0 = add (-1 , 7.5 ) ;
-        test1 = add ( mul(1,2), 4.5 ) ;  
-        test2 = add (mul(1,2.5), 4 ) ; 
-        test3 = add (add(1.5,0.5), 4.5 ) ;  
-        test4 = add (1+1, 4.5 ) ;
-        test5 = add (add(1,1)+add(1,0.5), 3.0 ) ;
-       
-       			
 }
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -3727,49 +3537,6 @@ e;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch494_T32_Defect_1449877_2()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"d;
-[Imperative]
-{
-	def func:int(a:int,b:int)
-	{
-	return = b + a;
-	}
-	a = 3;
-	b = -1;
-	d = func(a,b);
-} ";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch495_T33_Defect_1450003()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"_a_test;
-_b;
-_c;
-[Imperative]
-{
-	def check:double( _a:double, _b:int )
-	{
-	_c = _a * _b;
-	return = _c;
-	} 
-	_a_test = check(2.5,5);
-	_b = 4.5;
-	_c = true;
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch496_T34_Defect_1450727()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3780,27 +3547,6 @@ _c;
 	y = -4.2;
  
 	z = x + y;
- 
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch497_T35_Defect_1450727_2()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"z;
-[Imperative]
-{
-	def neg_float:double(x:double,y:double)
-	{
-	a = x;
-	b = y;
-	return = a + b;
-	}
-	z = neg_float(-2.3,-5.8);
  
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -4284,45 +4030,6 @@ f;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch536_T10_Defect_1449732()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"c;
-[Imperative]
-{
-	def fn1:int(a:int,b:int)
-	{
-	return = a + b -1;
-	}
- 
-	c = fn1(3,2);
-} ";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch537_T11_Defect_1450174()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"c;
-[Imperative]
-{
-	def function1:double(a:int,b:double)
-	{ 
-	return = a * b;
-	}	
- 
-	c = function1(2 + 3,4.0 + 6.0 / 4.0);
-}
-  ";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch539_T13_Defect_1450527()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4342,34 +4049,6 @@ f;
 	a = 2;
 }
 ";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch540_T14_Defect_1450550()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;
-[Associative]
-{
-	a = 4;
-	b = a*2;
-	x = [Imperative]
-	{
-		def fn:int(a:int)
-		{
-		    return = a;
-		}
-		
-		_i = fn(0);
-		
-		return = _i; 
-	}
-	a = x;
-	
-}";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -4540,40 +4219,6 @@ y;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch550_T05_FunctionBreakContinue()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;
-b;
-c;
-d;
-[Imperative]
-{
-    def ding:int(x:int)
-    {
-        if (x >= 5)
-            break;
-        return = 2 * x;
-    }
-    def dong:int(x: int)
-    {
-        if (x >= 5)
-            continue;
-        return = 2 * x;
-    }
-    a = ding(1);
-    b = ding(6);
-    c = dong(2);
-    d = dong(7);
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch555_T05_TestForLoopInsideNestedBlocks()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4635,37 +4280,6 @@ d;
         x = local_var + y;		
 	}
 	z = local_var;
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch558_T08_TestForLoopInsideFunctionDeclaration()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"y;
-z;
-[Imperative]
-{
-	def sum : double ( a : double, b : double, c : double )
-	{   
-		x = 0;
-	    z = {a, b, c};
-		for(y in z)
-		{
-			x = x + y;
-		}
-		
-		return = x;
-	}
-	
-	
-	
-	y = sum ( 1.0, 2.5, -3.5 );
-	
-	z = sum ( -4.0, 5.0, 6.0 );
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -5154,32 +4768,6 @@ a7;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch577_T27_TestCallingFunctionInsideForLoop()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x;
-[Imperative]
-{
-	def function1 : double ( a : double )
-	{		
-		return = a + 0.7;
-	}
-	
-	a = { 1.3, 2.3, 3.3, 4.3 };
-	
-	x = 3;
-	
-	for ( i in a )
-	{	
-		x = x + function1( i );
-	}
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch578_T28_Defect_1452966()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5449,30 +5037,6 @@ b;
 		{
 			x = x + y;
 		}
-	}
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch591_T39_Defect_1452951_1()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x;
-[Imperative]
-{
-	def foo ( a : int[])
-	{
-	    a[1] = 4;
-		return = a;
-	}
-	a = { 4,5 };
-   
-	[Associative]
-	{
-	   x = foo(a);
 	}
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -5759,96 +5323,6 @@ z;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch606_T05_InsideFunction()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"temp;
-temp2;
-[Imperative]
-{
-	def fn1:int(a:int)
-	{   
-		if(a>=0)
-			return = 1;
-		else 
-			return = 0;
-	}
-    def fn2:int(a:int)
-	{   
-	   
-		if( a < 0 )
-		{
-			return = 0;
-		}
-		elseif	( a == 2 )
-		{
-			return = 2;
-		}
-		else
-		{
-			return = 1;
-		}
-	}
-	
-    temp = 0;
-    temp2 = 0;
-	 if(fn1(-1)==0)
-		 temp=fn1(2);	 
-		 
-	
-	if(fn2(2)==2)
-	   temp2=fn2(1);
-} ";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch607_T06_NestedIfElse()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"temp1;
-[Imperative]
-{
-def fn1:int(a:int)
-{   
-     if( a >= 0 )
-		return = 1;
-	else
-		return = 0;
-}
- a = 1;
- b = 2;
- temp1 = 1;
- 
- if( a/b == 0 )
- {
-  temp1=0;
-  if( a*b == 1 )
-  { 
-	temp1=2;
-  }  
-  else if( a*b == 4 )
-  { 
-	temp1=5;
-  }  
-  else
-  {
-	temp1=3;
-	if( fn1(-1)>-1 )
-	{
-		temp1=4;
-	}
-  }
- } 
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch608_T07_ScopeVariableInBlocks()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5952,45 +5426,6 @@ temp;
     a=4.0;
     if(a==4)
         temp=1;
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch612_T11_TestIfElseUsingFunctionCall()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;
-b;
-[Imperative]
-{
- def add : double (a :double, b:double)
- {
-     return  = a + b;
- }
- 
- a=4.0;
- b = 4.0;
- if(a<add(1.0,2.0))
- {
-     a = 1;
- }
- else
- {
-     a = 0;
- }
- 
- if(add(1.5,2.0) >= a)
- {
-     b = 1;
- }
- else
- {
-     b = 0;
- }
- 
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -6398,27 +5833,6 @@ f;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch637_T36_IfElseInsideFunctionScope()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"temp;
-[Imperative]
-{ 
- def crushcode:int (a:int, b:int)
- {
-  if(a<=b)
-      return = a+b;  
-  else 
-     return = 0;           
- }                                
- temp=crushcode(2,3);  
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch638_T37_Defect_1450920()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6458,68 +5872,6 @@ c;
 		c =  3;
 	}		
 }";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch639_T38_Defect_1450939()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"c;
-d;
-[Imperative]
-{
-   	def test:int( a:int, b:int )
-	{
-		c = 0;
-	    if( !(a == b) ) 
-		{
-			c = 0;
-		}
-		elseif ( !(a==b) )
-		{
-			c = 1;
-		}
-		else
-		{
-			c = 2;
-		}
-		
-		return = c;
-	}
-	
-	
-	a = 1;
-	b = 1;
-    c = 0;
-    d = 0;
-	if( !(a == b) ) 
-	{
-		d = 0;
-	}
-	elseif ( !(a==b) )
-	{
-		d = 1;
-	}
-	else
-	{
-		d = 2;
-	}
-	
-	
-	if( ! (test ( a, b ) == 2 ) )
-	{
-		c = 3;
-	}
-	else
-	{
-		c = 2;
-	}
-		
-}
-";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -6686,29 +6038,6 @@ temp2;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch645_T44_Defect_1450706_2()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x;
-[Imperative]
-{
-	def float_fn:int(a:int)
-	{
-		if( a < 2 )
-			return = 0;
-		else
-			return = 1;
-	}
-	 
-	x = float_fn(1);
- 
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch646_T45_Defect_1450506()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6796,36 +6125,6 @@ c;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch649_T48_Defect_1450858_2()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"test;
-[Imperative]
-{	
-	def factorial:int(a:int)
-	{
-		 fact = 1;
-		 
-		 if( a != 0)
-		 {
-			 while( a > 0 )
-			 { 
-				fact = fact * a;
-				a = a - 1;
-			 }
-		}	 
-		
-		return = fact;
-	}
-	
-	test = factorial(4);
-}	";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch650_T49_Defect_1450783()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6841,38 +6140,6 @@ c;
 	b = i;
 } 
 ";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch651_T50_Defect_1450817()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"temp;
-[Imperative]
-{ 
-	def fn:int(a:int)
-	{
-		if( a < 0 )
-		if( a < -1 )
-		return = 0;
-		else
-		return = -1;
-		
-		return = 1;
-	}
-	
-	x = fn(-1);
-	
-	temp = 1;
-	
-	if (fn(2))
-	{
-		temp = fn(5);
-	}
-}";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -6919,52 +6186,6 @@ c;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch654_T53_Defect_1452575()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x;
-[Imperative]
-{ 
-	def float_fn:int(a:double)
-	{
-		if( a < 2.0 )
-			return = 0;
-		else
-			return = 1;
-	}
-	 
-	x = float_fn(-1.5);
-     
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch655_T54_Defect_1451089()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"temp;
-[Imperative]
-{ 
- def foo:double (a:int, b:int, c : double)
- {
-  if(a<=b && b > c)
-      return = a+b+c;  
-  else 
-     return = 0;           
- }                                
- temp=foo(2,3,2.5);  
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch656_T55_Defect_1450506()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6980,31 +6201,6 @@ c;
 	    i2 = i2 - 1;
     }     
  
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch658_T57_Function_With_If_Else_But_No_Default_Return_Statement()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x;
-y;
-[Imperative]
-{
-	def even : int (a : int) 
-	{	
-		if(( a % 2 ) > 0 )
-			return = a + 1;
-		
-		else 
-			return = a;
-	}
-	x = even(1);
-	y = even(2);
 }
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -7206,56 +6402,6 @@ A;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch669_T63_return_in_if_1467073()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"c;
-[Imperative]
-{
-def even : int (a : int)
- { 
-   if( ( a % 2 ) > 0 )
-        return = a + 1;
-   else 
-           return = a;
-}
-c = even(1);
- }
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch670_T001_Inline_Using_Function_Call()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"smallest2;
-largest2;
-[Imperative]
-{
-	def fo1 : int(a1 : int)
-	{
-		return = a1 * a1;
-	}
-	a	=	10;				
-	b	=	20;
-				
-	smallest1   =   a	<   b   ?   a	:	b;
-	largest1	=   a	>   b   ?   a	:	b;
-	d = fo1(a);
-	smallest2   =   (fo1(a))	<   (fo1(b))  ?   (fo1(a))	:	(fo1(a));	//100
-	largest2	=   (fo1(a)) >   (fo1(b))  ?   (fo1(a))	:	(fo1(b)); //400
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch672_T003_Inline_Using_Collection()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -7325,29 +6471,6 @@ largest2;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch675_T007_Inline_Using_Collections_And_ReplicationCollectionFunctionCall()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"[Imperative]
-{
-	def even : int(a : int)
-	{
-		return = a * 2;
-	}
-	a =1..10..1 ; //{1,2,3,4,5,6,7,8,9,10}
-	i = 1..5; 
-	b = ((a[i] % 2) > 0)? even(a[i]) : a ;  // { 1, 6, 3, 10, 5 }	
-	c = ((a[0] % 2) > 0)? even(a[i]) : a ; // { 4, 6, 8, `0, `2 }
-	d = ((a[-2] % 2) == 0)? even(a[i]) : a ; // { 1, 2,..10}
-	e1 = (a[-2] == d[9])? 9 : a[1..2]; // { 2, 3 }
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch676_T008_Inline_Returing_Different_Ranks()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -7358,32 +6481,6 @@ largest2;
 	x = a > 1 ? 0 : {1,1}; // { 1, 1} ? 
 	x_0 = x[0];
 	x_1 = x[1];
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch677_T009_Inline_Using_Function_Call_And_Collection_And_Replication()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"[Imperative]
-{
-	def even(a : int)
-	{
-		return = a * 2;
-	}
-	def odd(a : int ) 
-	{
-	return = a* 2 + 1;
-	}
-	x = 1..3;
-	a = ((even(5) > odd(3)))? even(5) : even(3); //10
-	b = ((even(x) > odd(x+1)))?odd(x+1):even(x) ; // {2,4,6}
-	c = odd(even(3)); // 13
-	d = ((a > c))?even(odd(c)) : odd(even(c)); //53
 }
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -7570,34 +6667,6 @@ a3 = 1 > 2 ? true : b;";
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
 
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch695_T05_WithinFunction()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"testvar;
-[Imperative]
-{
-	def fn1 : int (a : int)
-	{   
-		i = 0;
-		temp = 1;
-		while ( i < a )
-		{
-		    temp = temp + 1;
-		    i = i + 1;
-		}
-		return = temp;
-	}
-	testvar = fn1(5);
-} 
-	
-	";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
         [Test]
         [Category("WatchFx Tests")]
         public void DebugWatch696_T06_InsideNestedBlock()
@@ -7759,36 +6828,6 @@ p;
  
 }		
 ";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch702_T12_WhileWithFunctionCall()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"testvar;
-[Imperative]
-{ 
-	def fn1 :int ( a : int )
-	{   
-		i = 0;
-		temp = 1;
-		while ( i < a )
-		{
-			temp = temp + 1;
-			i = i + 1;
-		}
-		return = temp;
-	}
-	testvar = 8;
-	
-	while ( testvar != fn1(6) )
-	{ 
-		testvar=testvar-1;
-	}
-}";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -8753,39 +7792,6 @@ j = 0;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch768_T009_SomeNulls_DynamicArray()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"result = 
-[Imperative]
-{
-	a1 = {
-	{{null},{}},
-	{1,2,4},
-	{@a,@b,@null},//{null,null,null}
-	{null}
-	};
-	a2 = {};
-	i = 0;
-	j = 0; 
-	while(i < Count(a1))
-	{
-		if(SomeNulls(a1[i]))
-		{
-			a2[j] = a1[i];
-			j = j+1;
-			
-		}
-		i = i+1;
-	}
-	return = Count(a2);
-} ";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch769_T010_SomeNulls_AssociativeImperative_01()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8979,29 +7985,6 @@ result = foo(b);
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch779_T017_CountTrue_Inline()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"result;
-[Imperative]
-{
-def foo(x:var[]..[])
-{
-	if(CountTrue(x) > 0)
-		return = true;
-	return = false;
-}
-a = {null,1};//0
-b = {null,20,30,null,{10,0},true,{false,0,{true,{false},5,2,false}}};//2
-c = {1,2,foo(b)};
-result = CountTrue(c) > 0 ? CountTrue(a):CountTrue(b);
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch780_T018_CountTrue_RangeExpression_01()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -9074,40 +8057,6 @@ c = {{{true}}};//1
 d = {{true},{false,{true,true}}};//3
 arr = {CountTrue(a),CountTrue(b),CountTrue(c),CountTrue(d)};
 result = foo(arr);";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch784_T020_CountTrue_DynamicArray()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a2;
-result = 
-[Imperative]
-{
-	a1 = {
-	{{true},{}},
-	{@a,2,{false}},
-	{@a,@b,@null},//{null,null,null}
-	{null}
-	};
-	a2 = {};
-	i = 0;
-	j = 0; 
-	while(i < CountTrue(a1))
-	{
-		if(CountTrue(a1[i])>0)
-		{
-			a2[j] = a1[i];
-			j = j+1;
-			
-		}
-		i = i+1;
-	}
-	return = CountTrue(a2);
-} ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -9250,29 +8199,6 @@ result = foo(b);
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch792_T028_CountFalse_Inline()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"result;
-[Imperative]
-{
-def foo(x:var[]..[])
-{
-	if(CountFalse(x) > 0)
-		return = true;
-	return = false;
-}
-a = {null,0};//0
-b = {null,20,30,null,{10,0},false,{true,0,{true,{false},5,2,true}}};//2
-c = {1,2,foo(b)};
-result = CountFalse(c) > 0 ? CountFalse(a):CountFalse(b);
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch793_T029_CountFalse_RangeExpression_01()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -9327,40 +8253,6 @@ c = {{{false}}};//1
 d = {{false},{false,{true,false,0}}};//3
 arr = {CountFalse(a),CountFalse(b),CountFalse(c),CountFalse(d)};
 result = foo(arr);";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch796_T031_CountFalse_DynamicArray()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a2;
-result = 
-[Imperative]
-{
-	a1 = {
-	{{false},{}},
-	{@a,2,{true}},
-	{@a,@b,@null},//{null,null,null}
-	{null}
-	};
-	a2 = {};
-	i = 0;
-	j = 0; 
-	while(i < CountFalse(a1))
-	{
-		if(CountFalse(a1[i])>0)
-		{
-			a2[j] = a1[i];
-			j = j+1;
-			
-		}
-		i = i+1;
-	}
-	return = CountFalse(a2);
-} ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -10052,46 +8944,6 @@ y = test.foo (1);
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch929_T53_Undefined_Class_negative_imperative_1467091_12()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"y;
-[Imperative]
-{
-	def foo ( x : int)
-	{
-		return = x + 1;
-	}
-	y = test.foo (1);
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch930_T53_Undefined_Class_negative_imperative_1467107_11()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"y2;
-[Imperative]
-{
-	def foo(x:int)
-	{
-		return = x + 1;
-	}
-	//y1 = test.foo(2);
-	m=null;
-	y2 = m.foo(2);
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch960_T77_Defect_1460274_Class_Update()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10121,31 +8973,6 @@ b = a;";
 	a1[0] = b1;
 	c1 = Count(a1);
 }";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch964_T77_Defect_1460274_Class_Update_5()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"geometry1 = {};
-geometry1[0] = 5;
-geometry1[1] = 10;
-geometry1[2] = {
-                  geometry1[0]+ geometry1[1];
-              }
-geometry1[4] = {
-                  geometry1[1]+ 1;
-              }
-test1 = geometry1;
-geometry = {};
-geometry[0] = 5;
-geometry[1] = 10;
-geometry[2] = geometry[0]+ geometry[1];
-geometry[4] = geometry[1]+1;
-test = geometry;";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -10212,37 +9039,6 @@ d;
 {
 	d = foo( 2+1 , -3-1 );
 }";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch979_Collection_Assignment_4()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"c;
-[Imperative]
-{
-	def collectioninc: int[]( a : int[] )
-	{
-		b = a;
-		j = 0;
-	
-		for( i in b )
-		{
-			a[j] = a[j] + 1;
-			j = j + 1;
-		}
-		return = a;
-	}
-		d = { 1,2,3 };
-		c = collectioninc( d );
-		a1 = c[0];
-		a2 = c[1];
-		a3 = c[2];
-}
-	";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -10713,29 +9509,6 @@ b = CreateArray ( b, count );
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1005_T23_Create_Dynamic_Array_Using_Replication_In_Imperative_Scope()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"test;
-[Imperative]
-{
-	def CreateArray ( x : var[] , i )
-	{
-		x[i] = i;
-		return = x;
-	}
-	test = { };
-	test = CreateArray ( test, 0 );
-	test = CreateArray ( test, 1 );
-	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1007_T24_Dynamic_Array_Argument_Function_1465802_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -11050,56 +9823,6 @@ count = -2..-1;";
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"a={};
 b=a[2];
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1053_T28_defect_1465706__DynamicArray_Imperative()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"test;
-[Imperative]
-{
-def CreateArray ( x : var[] , i )
-{
-x[i] = i;
-return = x;
-}
-test = { };
-test = CreateArray ( test, 0 );
-test = CreateArray ( test, 1 );
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1054_T28_defect_1465706__DynamicArray_Imperative_2()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;
-r;
-[Imperative]
-{
-    def test (i:int)
-    {
-        loc = {};
-        for(j in i)
-        {
-            loc[j] = j;
-        }
-        return = loc;
-    }
-    a={3,4,5};
-    t = test(a);
-    r = {t[0][3], t[1][4], t[2][5]};
-    return = r;
-}
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -11495,53 +10218,6 @@ test = a[0]; //= 10� i.e. a change in �b� causes a change to �a�
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1099_T02_Function_In_Imp_Scope()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;
-[Imperative]
-{
-    def foo : double( a:double, b : int )
-    {
-	   return = a * b;
-	}
-	
-    a = foo( 2.5, 2 );
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1100_T03_Function_In_Nested_Scope()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;b;
-[Imperative]
-{
-    def foo : double( a:double, b : int )
-    {
-	   return = a * b;
-	}
-	a = 3;
-	[Associative]
-	{
-		a = foo( 2.5, 1 );
-	}
-	b = 
-	[Associative]
-	{
-		a = foo( 2.5, 1 );
-		return = a;
-	}
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1101_T04_Function_In_Nested_Scope()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -11628,35 +10304,6 @@ b = 3.5;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1104_T07_Function_Assoc_Inside_Imp()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;b;
-[Imperative]
-{
-	def foo : int( a:int, b : int )
-	{
-		return = a * b;
-	}
-	a = 3.5;
-	b = 3.5;
-	[Associative]
-	{
-		a = foo( 2, 1 );
-	}
-	b = 
-	[Associative]
-	{
-		c = foo( 2, 1 );
-		return = c;
-	}
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1111_T12_Function_From_Inside_Function()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -11674,125 +10321,6 @@ a;b;
 	
 	a = 1.5;
 	b = add_2 (a );
-	
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1112_T13_Function_From_Inside_Function()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;b;
-def add_1 : double( a:double )
-{
-	return = a + 1;
-}
-[Imperative]
-{
-	def add_2 : double( a:double )
-	{
-		return = add_1( a ) + 1;
-	}
-	
-	a = 1.5;
-	b = add_2 (a );
-	
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1113_T14_Function_Recursive_imperative()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;b;
-[Imperative]
-{
-	def factorial : int( n : int )
-	{
-		if ( n > 1 ) 
-		{
-		    return = n * factorial ( n - 1 );
-		}
-		else 
-		{
-		    return = 1;
-		}		
-	}
-	
-	a = 3;
-	b = factorial (a );
-	
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1114_T15_Function_From_Parallel_Blocks()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;b;
-[Imperative]
-{
-	def factorial : int( n : int )
-	{
-		if ( n > 1 ) 
-		{
-		    return = n * factorial ( n - 1 );
-		}
-		else 
-		{
-		    return = 1;
-		}		
-	}
-	
-	
-	
-}
-[Imperative]
-{
-	a = 3;
-	b = factorial (a );
-	
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1115_T16_Function_From_Parallel_Blocks()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;b;
-[Imperative]
-{
-	def factorial : int( n : int )
-	{
-		if ( n > 1 ) 
-		{
-		    return = n * factorial ( n - 1 );
-		}
-		else 
-		{
-		    return = 1;
-		}		
-	}
-	
-	
-	
-}
-[Associative]
-{
-	a = 3;
-	b = factorial (a );
 	
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -11821,68 +10349,6 @@ def add_1 : double( a:double )
 	b = foo (a );
 	
 }";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1117_T18_Function_Recursive_associative()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;b;
-[Imperative]
-{
-	def factorial : int( n : int )
-	{
-		if ( n > 1 ) 
-		{
-		    return = n * factorial ( n - 1 );
-		}
-		else 
-		{
-		    return = 1;
-		}		
-	}
-	
-	a = 3;
-	b = factorial (a );
-	
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1118_T19_Function_From_Imperative_While_And_For_Loops()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x;y;
-[Imperative]
-{
-	def foo : int( n : int )
-	{
-		return = n * n;	
-	}
-	
-	a = { 0, 1, 2, 3, 4, 5 };
-	x = 0;
-	for ( i in a )
-	{
-	    x = x + foo ( i );
-	}
-	
-	y = 0;
-	j = 0;
-	while ( a[j] <= 4 )
-	{
-	    y = y + foo ( a[j] );
-		j = j + 1;
-	}
-	
-}
-";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -11956,56 +10422,6 @@ def add_1 : double( a:double )
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1120_T21_Function_From_Nested_Imperative_Loops()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x;y;
-[Imperative]
-{
-	def foo : int( n : int )
-	{
-		return = n ;	
-	}
-	
-	a = { 0, 1, 2, 3, 4, 5 };
-	x = 0;
-	for ( i in a )
-	{
-	    for ( j in a )
-		{
-		    x = x + foo ( j );
-		}
-	}
-	
-	y = 0;
-	j = 0;
-	while ( j <= 4 )
-	{
-	    p = 0;
-		while ( p <= 4)
-		{
-		    y = y + foo ( a[p] );
-			p = p + 1;
-		}
-		j = j + 1;
-	}
-	
-	if( x < 100 )
-	{
-	    if ( x > 20 )
-		{
-		    x = x + foo (x );
-		}
-	}
-	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1122_T23_Function_Call_As_Function_Call_Arguments()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -12025,315 +10441,6 @@ def add_1 : double( a:double )
 	a1 = 2;
 	b1 = 4;
 	c1 = foo2( foo (a1, b1 ), foo ( a1, foo (a1, b1 ) ) );
-	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1123_T24_Function_Call_In_Range_Expression()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a1;a2;a3;a4;
-[Associative]
-{
-	def foo : double ( a : double , b :double )
-	{
-		return = a + b ;	
-	}
-	
-	a1 = 1..foo(2,3)..foo(1,1);
-	a2 = 1..foo(2,3)..#foo(1,1);
-	a3 = 1..foo(2,3)..~foo(1,1);
-	a4 = { foo(1,0), foo(1,1), 3 };
-	
-}
-[Imperative]
-{
-	def foo_2 : double ( a : double , b :double )
-	{
-		return = a + b ;	
-	}
-	
-	a1 = 1..foo_2(2,3)..foo_2(1,1);
-	a2 = 1..foo_2(2,3)..#foo_2(1,1);
-	a3 = 1..foo_2(2,3)..~foo_2(1,1);
-	a4 = { foo_2(1,0), foo_2(1,1), 3 };
-	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1124_T25_Function_Call_In_Mathematical_And_Logical_Expr()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a1;a2;a3;a4;
-[Associative]
-{
-	def foo : double ( a : double , b :double )
-	{
-		return = a + b ;	
-	}
-	
-	a1 = 1 + foo(2,3);
-	a2 = 2.0 / foo(2,3);
-	a3 = 1 && foo(2,2);	
-}
-[Imperative]
-{
-	def foo_2 : double( a : double , b :double )
-	{
-		return = a + b ;	
-	}
-	
-	a1 = 1 + foo_2(2,3);
-	a2 = 2.0 / foo_2(2,3);
-	a3 = 1 && foo_2(2,2);
-	a4 = 0;
-	
-	if( foo_2(1,2) > foo_2(1,0) )
-	{
-	    a4 = 1;
-	}
-	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1125_T26_Function_Call_In_Mathematical_And_Logical_Expr()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x;a4;
-[Imperative]
-{
-	def foo_2 : double ( a : double , b :double )
-	{
-		return = a + b ;	
-	}
-	a4 = 0;
-	if( foo_2(1,2) < foo_2(1,0) )
-	{
-	    a4 = 1;
-	}
-	elseif( foo_2(1,2) && foo_2(1,0) )
-	{
-	    a4 = 2;
-	}
-	
-	x = 0;	
-	while (x < foo_2(1,2))
-	{
-	    x = x + 1;
-	}
-	
-	c = { 0, 1, 2 };
-	for (i in c )
-	{
-		if( foo_2(1,2) > foo_2(1,0) )
-		{
-		    x = x + 1;
-		}
-	}
-	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1126_T27_Function_Call_Before_Declaration()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"[Associative]
-{ 
-	def Level1 : int (a : int) 
-	{  
-		return = Level2(a+1); 
-	}  
-	def Level2 : int (a : int) 
-	{  
-		return = a + 1; 
-	} 
-	input = 3; 
-	result = Level1(input); 
-}
-[Imperative]
-{ 
-	a = foo(1); 
-	def foo : int (a : int)
-	{
-		return = a + 1; 
-	}
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1127_T28_Function_Arguments_Declared_Before_Function_Def()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"result = [Associative]
-{ 
-	a = 0;
-	b = 1;
-	def foo : int (a : int, b: int)
-	{
-		return = a + b; 
-	}
-	
-	result = foo( a, b); 
-	return = result;
-}
-result2 = 
-[Imperative]
-{ 
-	a = 3;
-	b = 4;
-	def foo : int (a : int, b: int)
-	{
-		return = a + b; 
-	}
-	
-	result2 = foo( a, b); 
-	return = result2;
-}
-result3 = 
-[Associative]
-{ 
-	a = 5;
-	b = 6;
-	result3 = [Imperative]
-	{
-		def foo : int (a : int, b: int)
-		{
-			return = a + b; 
-		}
-		
-		result3 = foo( a, b); 
-		return = result3;
-	}
-	return = result3;
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1128_T29_Function_With_Different_Arguments()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"y;
-[Imperative]
-{ 
-	 def foo : double ( a : int, b : double, c : bool, d : int[], e : double[][], f:int[]..[], g : bool[] )
-	 {
-	     x = -1;
-		 if ( c == true && g[0] == true)
-		 {
-		     x = x + a + b + d[0] + e[0][0];
-		 }
-		 else
-		 {
-		     x = 0;
-		 }
-         return  = x;
-	 }
-	 
-	 a = 1;
-	 b = 1;
-	 c = true;
-	 d = { 1, 2 };
-	 e = { { 1, 1 }, {2, 2 } } ;
-	 f = { {0, 1}, 2 };
-	 g = { true, false };
-	 
-	 y = foo ( a, b, c, d, e, f, g );
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1129_T30_Function_With_Mismatching_Return_Type()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"b1;
-[Imperative]
-{ 
-	 def foo1 : double ( a : double )
-	 {
-	    return = true;
-	 }
-	 
-	 dummyArg = 1.5;
-	
-	b1 = foo1 ( dummyArg );
-	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1130_T31_Function_With_Mismatching_Return_Type()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"b2;
-[Imperative]
-{ 
-	 def foo2 : double ( a : double )
-	 {
-	    return = 5;
-	 }
-	 
-	dummyArg = 1.5;
-	
-	b2 = foo2 ( dummyArg );
-	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1131_T32_Function_With_Mismatching_Return_Type()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"b2;
-[Imperative]
-{ 
-	 def foo3 : int ( a : double )
-	 {
-	    return = 5.5;
-	 }
-	 
-	dummyArg = 1.5;
-	
-	b2 = foo3 ( dummyArg );
 	
 }
 ";
@@ -12542,26 +10649,6 @@ result3 =
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1143_T44_Function_With_Null_Argument()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"b2;
-[Imperative]
-{ 
-	 def foo : double ( a : double )
-	 {
-	    return = 1.5;
-     }
-	
-	 b2 = foo ( null );	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1144_T45_Function_With_Mismatching_Argument_Type()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -12574,27 +10661,6 @@ result3 =
      }
 	
 	 b2 = foo ( 1 );	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1145_T46_Function_With_Mismatching_Argument_Type()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"c;
-[Imperative]
-{ 
-	 def foo : double ( a : int )
-	 {
-	    return = 1.5;
-     }
-	
-	 b2 = foo ( 1.5);
-     c = 3;	 
 }
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -12699,50 +10765,6 @@ result3 =
 		return = a;
      }
 	 aa = 1.5;
-	 b2 = foo ( aa );	
-	 c = 3;	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1153_T54_Function_Updating_Argument_Values()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"aa;b2;c;
-[Imperative]
-{ 
-	 def foo : double ( a : double )
-	 {
-	    a = 4.5;
-		return = a;
-     }
-	 aa = 1.5;
-	 b2 = foo ( aa );	
-	 c = 3;	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1154_T55_Function_Updating_Argument_Values()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"aa;b2;c;
-[Imperative]
-{ 
-	 def foo : int ( a : double )
-	 {
-	    a = 5;
-		return = a;
-     }
-	 aa = 5.0;
 	 b2 = foo ( aa );	
 	 c = 3;	
 }
@@ -12870,218 +10892,6 @@ result3 =
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1160_T61_Function_With_Void_Return_Stmt()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"[Associative]
-{
-	 a = 1;
-	 [Imperative]
-	 {
-		def foo : void  ( )
-		{
-			a = 2;		
-		}
-		foo();
-        b = a;	    
-	 }
-}
-	 
-	 
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1161_T62_Function_Modifying_Globals_Values()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;b;
-[Associative]
-{
-	 a = 1;
-	 [Imperative]
-	 {
-		def foo : int  ( )
-		{
-			c = a;
-			a = 2;	
-                        return = c + 1;			
-		}
-		b = foo();
-            
-	 }
-}
-x = 1;
-def foo2 : int  ( )
-{
-    y = x;
-    x = 2;	
-    return = y + 1;			
-}
-z = foo2();
-	 
-	 
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1162_T63_Function_Modifying_Globals_Values()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x = [Imperative]
-{
-	a = 1;
-	def foo : int  ( )
-	{
-		c = a;
-		a = 2;	
-                return = c + 1;			
-	}
-	b = foo();
-        return = { a, b };    
-}
-	 
-	 
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1163_T64_Function_Modifying_Globals_Values_Negative()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;b;c;
-[Imperative]
-{
-	def foo : int  ( )
-	{
-		c = a;
-		a = 2;	
-                return = c + 1;			
-	}
-	a = 1;
-	b = foo();
-	c = 3;
-            
-}
-	 
-	 
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1164_T65_Function_With_No_Return_Type()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;b;
-[Imperative]
-{
-	def foo (  )
-	{
-		return = true;			
-	}
-	
-	a = foo();
-	b = 3;
-            
-}
-	 
-	 
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1165_T66_Function_Returning_Null()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;b;c;
-[Imperative]
-{
-	def foo : int ( a : int )
-	{
-		c = d + a;
-        return = c;		
-	}
-	
-	a = 1;
-	b = foo(a);
-	c = b + 2;
-            
-}
-	 
-	 
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1166_T67_Function_Returning_Collection()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;b;
-[Imperative]
-{
-	def foo : int[] ( a : int )
-	{
-		c = { a + 1, a + 2.5 };
-        return = c;		
-	}
-	
-	a = 1;
-	b = foo(a);
-            
-}
-	 
-	 
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1167_T68_Function_Returning_Null()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;b;
-[Imperative]
-{
-	def foo : int[] ( a : int )
-	{
-		c = { a + 1, a + 2.5 };
-        return = null;		
-	}
-	
-	a = 1;
-	b = foo(a);
-            
-}
-	 
-	 
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1173_T74_Function_With_Simple_Replication_Associative()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -13099,28 +10909,6 @@ z = foo2();
 }
 	 
 	 
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1174_T74_Function_With_Simple_Replication_Imperative()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x;y;
-[Imperative]
-{
-    def foo : int ( a : int )
-	{
-		return  = a + 1;
-	}
-	
-	x = { 1, 2, 3 };
-	y = foo(x);
-	
-}	 
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -13237,34 +11025,6 @@ z = foo2();
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1179_T79_Function_call_By_Reference()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"c;d;
-[Imperative]
-{
-    def foo : int ( a : int, b : int )
-	{
-		a = a + b;
-		b = 2 * a;
-		return  = a + b;
-	}
-	
-	a = 1;
-	b = 2;
-	c = foo (a, b );
-	d = a + b;
-	
-}
-	 
-	 
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1180_T80_Function_call_By_Reference()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -13331,41 +11091,6 @@ z = foo2();
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1182_T82_Function_Calling_Assoc_From_Imp()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"b;
-[Imperative]
-{
-    def foo : int ( a : int )
-	{
-		d = 0;
-		if( a > 1 )
-	    {
-		     d = [Associative]
-			 {
-			     return = a + 1;
-			 }
-		}
-		else
-		{
-		    d = a + 2;
-		}
-		return  = a + d;
-	}
-	
-	a = 2;
-	b = foo (a );	
-}
-	 
-	 
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1183_T83_Function_With_Null_Arg()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -13379,76 +11104,6 @@ def foo:int ( a : int )
 	b = foo( null );
 }
 	";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1185_T85_Function_With_No_Type()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a11;a21;a31;
-a12;a22;a32;
-[Imperative]
-{
-	def foo( a )
-	{
-		a = a + 1;
-		return = a;
-	}
-	c = { 1,2,3 };
-	d = foo ( c ) ;
-		
-	a11 = d[0];
-	a21 = d[1];
-	a31 = d[2];
-}
-[Associative]
-{
-	def foo( a )
-	{
-		a = a + 1;
-		return = a;
-	}
-	c = { 1,2,3 };
-	d = foo ( c ) ;
-		
-	a12 = d[0];
-	a22 = d[1];
-	a32 = d[2];
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1186_T86_Function_With_For_Loop()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a1;a2;a3;
-[Imperative]
-{	
-	def foo: int( a : int )
-	{
-		for( i in a )		
-		{					
-		}		
-		return = a;	
-	}	
-	d = { 1,2,3 };	
-	//c = foo( d );	
-	j = 0;	
-	for( i in d )	
-	{		
-		d[j] = i + 1;		
-		j = j + 1;	
-	}	
-	a1 = d[0];	
-	a2 = d[1];	
-	a3 = d[2];
-}";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -13561,302 +11216,6 @@ e = foo(1, 2.0, 3); // not found, null
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1194_TV00_Function_With_If_Statements()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;
-[Imperative]
-{
-	def foo:int( a:int, b:int, c:int )
-	{
-		if( a < b )
-		{
-			if( a < c ) 
-				return = a;
-		}
-	
-		else if ( b < c ) 
-			return = b;
-		
-		else if (a == b && b == c ) 
-			return  = 1;
-			
-		return = c;
-	}
-	
-	a = foo( -9,3,-7 );
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1195_TV01_Function_With_While_Statements()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"d;
-[Imperative]
-{
-	def foo:int( a:int, b:int)
-	{	
-		c = 1;
-		
-		while( b > 0 )
-		{
-			c = c * a;
-			b = b - 1;
-		}
-	
-		return = c;
-	}
-	
-	d = foo( 2,3 );
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1196_TV02_Function_With_For_Statements()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"d;
-[Imperative]
-{
-	def foo:int( a:int )
-	{	
-		c = { 1,2,3,4,5 };
-		temp = 0;
-		
-		for( i in c )
-		{
-			if( i == a )
-			temp = 1;
-			
-		}
-	
-		if(temp) 
-			return = a;
-		
-		return = 0;
-	
-	}
-	
-	d = foo( 6 );
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1197_TV03_Function_With_Recursion()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x;
-[Imperative]
-{
-	def factorial: int( a:int )
-	{	
-		if(!a)
-			return = 1;
-		
-		if( a < 0 )
-			return = 0;
-			
-		else 
-			return = a * factorial( a - 1 );
-	}
-		x = factorial(5);
-}
-		";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1198_TV04_Function_With_RangeExpression()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"d;
-[Imperative]
-{
-	def foo:double( a:int )
-	{
-		b = 2..4..#3;
-		
-		sum = b[0] + b[1] + b[2];
-		
-		return = sum + 0.5;
-	}
-	d = foo( 1 );
-}
-		";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1199_TV05_Function_With_RangeExpression_2()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;d;
-[Imperative]
-{
-	def foo: int( a:int[] )
-	{
-		sum = 0;
-		
-		for( i in a )
-		{
-			sum = sum + i ;
-		}
-		return = sum;
-	}
-	a = 2..4..#3;
-	
-	d = foo( a );
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1200_TV06_Function_With_Logical_Operators()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;
-[Imperative]
-{
-	def foo:int( a:int , b:int, c:int )
-	{
-		if(a > 0 || b > 0 || c > 0)
-		{
-			if((a > 0 && b < 0)||(a > 0 && c < 0))
-				return = a;
-			else
-				return = 0;
-		}
-		
-		return = 1;
-	}
-	
-	a = foo( 2,3,4 );
-}
-			
-			";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1201_TV07_Function_With_Math_Operators()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;
-[Imperative]
-{
-	def math: double(a:double, b:double, c:int)
-	{
-		if( c == 1 )
-		{
-			return = a + b;
-		}
-			if( c == 2 )
-		{
-			return = a - b;
-		}
-		
-		if( c == 3 )
-		{
-			return = a * b;
-		}
-		
-		else
-			return = a / b;
-		
-			
-	}
-	a = 18;
-	b = 2;
-	c = 1;
-	
-	a = math(a,b,2+1);
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1202_TV08_Function_With_Outer_Function_Calls()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x;y;
-[Imperative]
-{
-	def is_negative:int(a :int)
-	{
-		if( a < 0 )
-			return = 1;
-			
-			return = 0;
-	}
-	
-	def make_negative:int(a :int)
-	{
-		return = a * -1;
-	}
-	
-	def absolute:int(a :int)
-	{
-		if(is_negative(a))
-			a = make_negative(a);
-		
-		return = a;
-	}
-	x = -7;
-	x = absolute(x);
-	y = absolute(11);
-}	
-		";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1203_TV09_Function_With_Argument_Update_Imperative()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"e;f;
-[Imperative]
-{
-	def update:int( a:int, b:int )
-	{
-		a = a + 1;
-		b = b + 1;
-		return = a + b;
-	}
-	
-	c = 5;
-	d = 5;
-	e = update(c,d);
-	e = c;
-	f = d;
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1204_TV101_Indexing_IntoArray_InFunctionCall_1463234()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -13865,24 +11224,6 @@ e = foo(1, 2.0, 3); // not found, null
 return = {1,2};
 }
 t = foo()[0];";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1205_TV101_Indexing_IntoArray_InFunctionCall_1463234_2()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"t;
-[Imperative]
-{
-def foo()
-{
-return = {1,2};
-}
-t = foo()[0];
-}";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -13965,31 +11306,6 @@ t = foo()[0];";
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1219_TV11_Function_Update_Local_Variables()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"r;
-[Imperative]
-{
-	def foo:int ( a : int )
-	{
-		b = a + 2.5;
-		c = true;
-		c = a;
-		d = c + b;
-		return = d;
-	}
-	
-	r = foo(1);
-	r = b;
-}
-	";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1220_TV12_Function_With_Argument_Update_Associative()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -14008,24 +11324,6 @@ t = foo()[0];";
 	e = update(c,d);
 	e = c;
 	f = d;
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1221_TV13_Empty_Functions_Imperative()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"b;
-[Imperative]
-{
-	def foo:int ( a : int )
-	{
-	}
-	
-	b = foo( 1 );
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -14447,34 +11745,6 @@ f = foo ( 1, 2 );
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1246_TV34_Implicit_Conversion_Int_To_Bool()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"b;c;d;
-[Imperative]
-{
-	def foo:int ( a : bool )
-	{
-		if(a)
-			return = 1;
-		else
-			return = 0;
-	}
-	
-	b = foo( 1 );
-	c = foo( 1.5 );
-	d = 0;
-	if(1.5 == true ) 
-	{
-	    d = 3;
-	}
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1247_TV35_Implicit_Conversion_Int_To_Double()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -14534,56 +11804,6 @@ d = foo ( 2.3, 2 );
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1250_TV38_Defect_1449956()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x;
-y;
-[Imperative]
-{
-	def factorial: int( a:int )
-	{	
-		if(!a)
-			return = 1;
-		
-		if( a < 0 )
-			return = 0;
-			
-		else 
-			return = a * factorial( a - 1 );
-	}
-		x = factorial(5);
-		y = factorial(7);
-		}
-	";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1251_TV39_Defect_1449956_2()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"[Imperative]
-{
-def recursion: int ( a : int )
-{
-	if ( a ==0 || a < 0)
-		return = 0;
-	
-	 
-		return = a + recursion(a - 1);
-}
-	x = recursion( 10 );
-	y = recursion( -1 );
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1252_TV40_Defect_1449956_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -14604,41 +11824,6 @@ def recursion: int ( a : int )
 	}
 	x = recursion( 4 );
 	y = recursion( -1 );
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1253_TV41_Defect_1454959()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"result;
-a;
-[Associative]
-{
- def Level1 : int (a : int)
- {
-  return = Level2(a+1);
- }
- 
- def Level2 : int (a : int)
- {
-  return = a + 1;
- }
- input = 3;
- result = Level1(input); 
-}
-[Imperative]
-{
- 
- b = 1;
- a = foo(b);
- def foo : int (a : int)
- {
-     return = a + 1;
- }
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -14677,127 +11862,6 @@ def foo ( a )
 def foo2 ( a ) 
 {
     return = a;
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1255_TV43_Defect_1455143()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a1;b1;c1;
-a2;b2;c2;
-[Associative]
-{ 
-	 def foo1 : int[] ( a : int[] )
-	 {
-	    a[0] = 0;
-            return = a;
-         }
-	 aa = { 1, 2 };
-	 bb = foo1 ( aa );	
-	 a1 = aa[0];
-	 b1 = bb[0];
-	 cc = [Imperative]
-	 {
-	     return = foo1(aa);
-	 };	
-	 c1 = cc[0];
-}
-[Imperative]
-{ 
-	 def foo  ( a : int[] )
-	 {
-	    a[0] = 0;
-            return = a;
-         }
-	 aa = { 1, 2 };
-	 bb = foo ( aa );	
-	 a2 = aa[0];
-	 b2 = bb[0];
-	 c2 = 3;	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1256_TV44_Defect_1455245()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;b;
-[Associative]
-{
-	a = 1;
-	[Imperative]
-	{
-		def foo : int ( x : int )
-	    {
-	        return = a + x;
-        }
-	 
-	    b = foo(1) ;	
-	}
-	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1257_TV45_Defect_1455278()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"b1;b2;
-[Associative]
-{
-    def foo : int ( a : int )
-	{
-		c = [Imperative]
-		{
-		    d = 0;
-			if( a > 1 )
-			{
-				d = 1;
-			}
-			return = d;	
-		}
-		return  = a + c;
-	}
-	
-	a = 2;
-	b1 = foo (a );	
-}
-[Imperative]
-{
-    def foo2 : int ( a : int )
-	{
-		
-		c = [Associative]
-		{
-            return = [Imperative]
-            { 
-                d = 0;
-                if( a > 1 )
-                {
-                    d = 1;
-                }
-                return = d;	
-            }
-        }
-		return  = a + c;
-		
-	}
-	
-	a = 2;
-	b2 = foo2 (a );	
 }
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -14907,88 +11971,6 @@ a = 10;
 [Imperative]
 {
 	x = recursion(a); 
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1263_TV50_Defect_1456108()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"c;
-[Imperative]
-{
-	def collection:int[](a : int[] )
-	{
-		j = 0;
-		for ( i in a )
-		{
-			a[j] = a[j] + 1;
-			j = j + 1;
-		}
-		
-		return = a;
-	}
-	
-	[Associative]
-	{
-		c = { 1,2,3 };
-		c = collection( c );
-	}
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1264_TV51_Defect_1456108_2()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"c;
-[Imperative]
-{
-	def collection:double[](a : double[] )
-	{
-		j = 0;
-		for ( i in a )
-		{
-			a[j] = a[j] + 1;
-			j = j + 1;
-		}
-		
-		return = a;
-	}
-	
-	c = { 1.0,2.0,3.0 };
-	c = collection( c );
-	
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1270_TV54_Defect_1456397_3()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"b1;
-[Imperative]
-{
-	def CreateVal ( a )
-	{
-		x = 1;
-		y = [Associative]
-		{
-			return = a;
-		}
-		return = x + y;
-	}
-	b1 = CreateVal( 1 );
 }
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -15206,35 +12188,6 @@ x;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1283_TV61_Defect_1456100()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"d;
-[Imperative]
-{
-	def foo: int( a : int )
-	{
-		for( i in a )
-		{
-		}
-		return = a;
-	}
-	
-	d = { 1,2,3 };
-	j = 0;
-	
-	for( i in d )
-	{
-		d[j] = i + 1;
-		j = j + 1;
-	}
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1284_TV62_Defect_1455090()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -15246,36 +12199,6 @@ x;
 	b = { {0,2,3}, {4,5,6} };
 	d = foo( b );
 	c = d[0];";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1285_TV62_Defect_1456100()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"[Imperative]
-{
-	def foo: int( a : int )
-	{
-		for( i in a )
-		{
-		}
-		return = a;
-	}
-	
-	d = { 1,2,3 };
-	//c = foo( d );
-	j = 0;
-	
-	for( i in d )
-	{
-		d[j] = i + 1;
-		j = j + 1;
-	}
-}
-";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -15312,62 +12235,6 @@ x;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1287_TV64_Defect_1455090_3()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"c;d;
-[Imperative]
-{
-	def foo ( a : double[]..[] )
-	{
-		a[0][0] = 2.5;
-		return = a;
-	}
-	
-	a = { {2.3,3.5},{4.5,5.5} };
-	
-	a = foo( a );
-	c = a[0];
-	
-	[Associative]
-	{
-		b = { {2.3}, {2.5} };
-		b = foo( b );
-		d = b[0];
-	}
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1296_TV71_Defect_1456108()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"c;
-[Imperative]
-{
-	def collectioninc: int[]( a : int[] )
-	{
-		j = 0;
-		for( i in a )
-		{
-			a[j] = a[j] + 1;
-			j = j + 1;
-		}
-		return = a;
-	}
-	d = { 1,2,3 };
-	c = collectioninc( d );
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1297_TV71_Defect_1456108_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -15392,63 +12259,6 @@ x;
 	{
 		b = collectioninc( d );
 	}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1298_TV72_Defect_1454541()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"d1;d2;
-[Associative]
-{
-    def singleLine1 : int( a:int ) = a * 10;
-    d1 = singleLine1( 2 );
-}
-[Imperative]
-{
-    def singleLine2 : int( a:int ) = a * 10;
-    d2 = singleLine2( 2 );
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1299_TV72_Defect_1454541_1()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"d1;d2;
-[Associative]
-{
-    def singleLine1 : int( a:int ) { return = a * 10; } 
-    d1 = singleLine1( 2 );
-}
-[Imperative]
-{
-    def singleLine2 : int( a:int ) { return = a * 10; } 
-    d2 = singleLine2( 2 );
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1300_TV72_Defect_1454541_2()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"def singleLine1 : int( a:int[] ) = a[0] ;
-d = singleLine1( {20,20} );
-def singleLine2 : int[]( a:int[] ) = a ;
-d1 = singleLine2( {20,20} );
-d2 = d1[1];
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -15490,67 +12300,6 @@ d2 = d1[1];
 	y = test ( a , b, c, d);
 	
 		
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1302_TV74_Defect_1456426()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"def foo1 : int ( a : int )
-{
-	c = [Imperative]
-	{
-		d = 0;
-		if( a > 1 )
-		{
-			d = 1;
-		}
-		return = d;	
-	}
-	return  = a + c;
-}
-b1 = foo1(3);
-b2;b3;
-	
-[Associative]
-{
-    def foo : int ( a : int )
-	{
-		c = [Imperative]
-		{
-		    d = 0;
-			if( a > 1 )
-			{
-				d = 1;
-			}
-			return = d;	
-		}
-		return  = a + c;
-	}
-	
-	b2 = foo (2 );	
-}
-[Imperative]
-{
-    def foo2 : int ( a : int )
-	{
-		
-		d = 0;
-		if( a > 1 )
-		{
-			d = 1;
-		}
-			
-		return = a + d;
-	}
-	
-	
-	b3 = foo2 (4 );	
 }
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -15632,48 +12381,6 @@ sum1;sum2;
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1308_TV78_Defect_1460866()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"def foo( a:int )
-{
-    b = a + 1;
-}
-y = foo ( 1 );
-x = [Imperative]
-{
-	def foo2(x:int)
-	{
-	    if (x > 0)
-		      return = 1;
-	}
-	t = foo2(-1);
-	return  = t;
-}
-z1 = [Imperative]
-{
-	a = 1;
-	if ( a > 2 ) 
-	    return = 2;
-}
-z2 = [Imperative]
-{
-	def foo2(x:int)
-	{
-	    if (x > 0)
-		      return = 1;
-	}
-	t = foo2(1);
-	return  = t;	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
 
         [Test]
         [Category("WatchFx Tests")]
@@ -16190,30 +12897,6 @@ b1 = foo ( a1 );";
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1345_TV90_Defect_1463474()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;b;
-[Associative]
-{
-	 a = 1;
-	 [Imperative]
-	 {
-		def foo : void  ( )
-		{
-			a = 2;		
-		}
-		foo();
-        b = a;	    
-	 }
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1346_TV90_Defect_1463474_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -16242,151 +12925,6 @@ def foo : void  (  )
 }
 c1 = foo();
 b1 = a;	
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1357_TV94_Method_Resolution_Nested_Language_Blocks()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"def foo( a:double )
-{
-    b = a + 1;
-	return = b;
-}
-y = foo ( 1 );
-x = [Imperative]
-{
-	def foo (x:int)
-	{
-	    if (x > 0)
-		      return = 1;
-	    return = 2;
-	}
-	t = foo(-1);
-	return  = t;
-}
-y = foo ( -2 );
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        [Category("Failure")]
-        public void DebugWatch1358_TV94_Method_Resolution_Nested_Language_Blocks_2()
-        {
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4290
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"def foo(  )
-{
-    return = 1;
-}
-y = foo (  );
-x = [Imperative]
-{
-	def foo2 ()
-	{
-	    return = 2;
-	}
-	t1 = foo2();
-	t2 = foo();
-	return  = { t2, t1 };
-}
-y = [Imperative]
-{
-	def foo2 ()
-	{
-	    return = 3;
-	}
-	t1 = foo2();
-	t2 = foo();
-	return  = { t2, t1 };
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1360_TV96_Defect_DNL_1465794()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x = [Imperative]
-{    
-    a = 1;    
-	def foo : int  ( )    
-	{        
-	    c = a;        
-		a = 2;                    
-		return = c + 1;                
-	}    
-	b = foo();        
-	return = { a, b };    
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1361_TV96_Defect_DNL_1465794_2()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x = [Imperative]
-{    
-        a = 2;    
-	def foo : int  ( )    
-	{        
-	    c = 0;
-	    if ( a > 1 )
-	    {
-	        for ( i in 0..1 )
-                {
-		    a = a + i;
-                }
-                c = 1;                                    
-	    }
-	    return = c;                
-	}    
-	b = foo();        
-	return = { a, b };    
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1362_TV96_Defect_DNL_1465794_3()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x = [Imperative]
-{    
-        a = { { 1, 2 } , { 3, 4 } };    
-	def foo : int  ( )    
-	{        
-	    c = 0;
-	    if ( a[0][0] == 1 )
-	    {
-	        for ( i in 0..1 )
-                {
-		    a[0][0] = a[0][0] + i;
-                }
-                c = 1;                                    
-	    }
-	    return = c;                
-	}    
-	b = foo();        
-	return = { a, b };    
-}
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -16468,24 +13006,6 @@ t = val[0]; //expected 100, received 1";
 	b = twice(a);	
 }
 ";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1371_BaseImportImperative()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"[Imperative]
-{
-	a = 5;
-	def twice : int (val: int)
-	{
-		return = val * 2;
-	}
-	b = twice(a);
-}";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -17046,41 +13566,6 @@ count_test8=Count(null);    // null .. count of null
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1419_T04_SimpleRangeExpressionUsingFunctions()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"z1;z2;z3;z4;z5;z7;
-[Imperative]
-{
-	def twice : double( a : double ) 
-	{
-		return = 2 * a;
-	}
-	z1 = 1..twice(4)..twice(1);
-	z2 = 1..twice(4)..twice(1)-1;
-	z3 = 1..twice(4)..(twice(1)-1);
-	z4 = 2*twice(1)..1..-1;
-	z5 = (2*twice(1))..1..-1;
-	//z6 = z5 - z2 + 0.3;
-	z7 = (z3[0]+0.3)..4..#1 ; 
-   
-}
-/*
-Succesfully created function 'twice' 
-    Updated variable z1 = { 1, 3, 5, 7 }
-    Updated variable z2 = { 1, 2, 3, ... , 6, 7, 8 }
-    Updated variable z3 = { 1, 2, 3, ... , 6, 7, 8 }
-    Updated variable z4 = { 4, 3, 2, 1 }
-    Updated variable z5 = { 4, 3, 2, 1 }
-    //Updated variable z6 = { 3.3, 1.3, -1.7, -2.7 }
-    Updated variable z7 = { 1.3 }
-	*/";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1420_T05_RangeExpressionWithIncrement()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -17118,122 +13603,6 @@ Succesfully created function 'twice'
 	b = 0.1..0.3..0.2;
 	c = 0.1..0.3..0.1;
 }";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1422_T07_RangeExpressionWithIncrementUsingFunctionCall()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"d;f;
-[Imperative]
-{
-	def increment : double[] (x : double[]) 
-	{
-		j = 0;
-		for( i in x )
-		{
-			x[j] = x[j] + 1 ;
-			j = j + 1;
-		}
-		return = x;
-	}
-	a = {1,2,3};
-	b = {3,4,5} ;
-	c = {1.5,2.5,4,3.65};
-	f = {7,8*2,9+1,5-3,-1,-0.34};
-	//nested collection
-	d = {3.5,increment(c)};
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1423_T08_RangeExpressionWithIncrementUsingVariables()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"h;i;j;k;l;
-[Imperative]
-{
-	def square : double ( x :double ) 
-	{
-		return = x * x;
-	}
-	z = square(4);
-	x = 1 ;
-	y = -2 ;
-	a = 1..2 ;
-	b = 1..6..3;
-	c = 2..3..1;
-	d = 2..10..2;
-	e1 = 1..3..0.5;
-	f = 2..4..0.2 ;
-	//using variables
-	h = z..3..-4;
-	i = 1..z..x;
-	j = z..x..y; 
-	k = a..b..x ;
-	l = a..c..x ;
-	//using function call 
-	g = 6..9.5..square(-1);
-	m = 0.8..square(1)..0.1; 
-	n = square(1)..0.8..-0.1;
-	o = 0.8..square(0.9)..0.01; 
-}
-/*
-result
-z = 16
-x = 1
-y = -2
-a = {1,2}
-b = {1,4}
-c = {2,3}
-d = {2,4,6,8,10}
-e1 = {1.000000,1.500000,2.000000,2.500000,3.000000}
-f = {2.000000,2.200000,2.400000,2.600000,2.800000,3.000000,3.200000,3.400000,3.600000,3.800000,4.000000}
-h = {16,12,8,4}
-i = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16}
-j = {16,14,12,10,8,6,4,2}
-k = {{1},{2,3,4}}
-l = {{1,2},{2,3}}
-g = {6.000000,7.000000,8.000000,9.000000}
-m = {0.800000,0.900000,1.000000}
-n = {1.000000,0.900000,0.800000}
-o = {0.800000,0.810000}
-*/";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1424_T09_RangeExpressionWithApproximateIncrement()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a;b;f;g;h;j;k;l;
-[Imperative]
-{
-	def square : double ( x: double ) 
-	{
-		return = x * x;
-	}
-	
-	x = 0.1; 
-	a = 0..2..~0.5;
-	b = 0..0.1..~square(0.1);
-	f = 0..0.1..~x;      
-	g = 0.2..0.3..~x;    
-	h = 0.3..0.2..~-0.1; 
-	
-	j = 0.8..0.5..~-0.3;
-	k = 0.5..0.8..~0.3; 
-	l = 0.2..0.3..~0.0;
-}
-";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -17284,36 +13653,6 @@ o = {0.800000,0.810000}
 	j = 1..0.9..#4;// {1.0, 0.96,.93,0.9}
 	k= 1..3..#0;//null
 }";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1428_T13_RangeExpressionWithStartEndValuesUsingFunctionCall()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x;b;c;e1;f;g;
-[Imperative]
-{
-	def even : double (a : int) 
-	{
-		if((a % 2)>0)
-		return = (a+(a * 0.5));
-		else
-		return = (a-(a * 0.5));
-	}
-	d = 3;
-	x = 1..2..#d;
-	a = even(2) ;
-	b = 1..a;
-	c = even(3)..even(5)..#6;
-	d = even(5)..even(6)..#4;
-	e1 = e..4..#3;  //e takes default value 2.17
-	f = even(3)..(even(8)+4*0.5)..#3;
-	g = even(2)+1..1..#5;
-}
-";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -17437,74 +13776,6 @@ o = {0.800000,0.810000}
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1435_T20_RangeExpressionsUsingPowerOperator()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"e1;f;
-[Imperative]
-{
-	def power : double (a:double,b:int) 
-	{
-		temp = 1;
-		while( b > 0 )
-		{
-			temp = temp * a;
-			b = b - 1;
-		}
-		return = temp;
-	}
-	a = 3;
-	b = 2; 
-	c = power(2,3);
-	d = b..a;
-	e1 = b..c..power(2,1);
-	f = power(1.0,1)..power(2,2)..power(0.5,1);   
-	/*h = power(0.1,2)..power(0.2,2)..~power(0.1,2);
-	i = power(0.1,1)..power(0.2,1)..~power(0.1,1);         has not been implemented yet
-	j = power(0.4,1)..power(0.45,1)..~power(0.05,1);
-	k = power(1.2,1)..power(1.4,1)..~power(0.2,1);
-	l = power(1.2,1)..power(1.3,1)..~power(0.1,1); 
-	m = power(0.8,1)..power(0.9,1)..~power(0.1,1);
-	n = power(0.08,1)..power(0.3,2)..~power(0.1,2); */
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1436_T21_RangeExpressionsUsingEvenFunction()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"c;d;e1;f;g;
-[Imperative]
-{
-	def even : int (a : int) 
-	{	
-		if(( a % 2 ) > 0 )
-			return = a + 1;
-		
-		else 
-			return = a;
-	}
-	x = 1..3..1;
-	y = 1..9..2;
-	z = 11..19..2;
-	c = even(x); // 2,2,4
-	d = even(x)..even(c)..(even(0)+0.5); // {2,2,4}
-	e1 = even(y)..even(z)..1; // {2,4,6,8,10} .. {12,14,16,18,20}..1
-	f = even(e1[0])..even(e1[1]); // even({2,3,4,5,6,7,8,9,10,11,12} ..even({4,5,6,7,8,9,10,11,12,13,14})
-   /*  {2,4,4,6,6,8,8,10,10,12,12} .. {4,6,6,8,8,10,10,12,12,14,14}
-*/ 
-	g = even(y)..even(z)..f[0][1];  // {2,4,6,8,10} .. {12,14,16,18,20} .. 3
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1439_T25_RangeExpression_WithDefaultDecrement()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -17534,36 +13805,6 @@ d=1..-0.5;
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
             string src = @"a=(5..1).. (1..5);
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1442_T26_RangeExpression_Function_tilda_1457845()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"x;a;b;f;g;h;j;k;l;m;
-[Imperative]
-{
-	def square : double ( x: double ) 
-	{
-		return = x * x;
-	}
-	
-	x = 0.1; 
-	a = 0..2..~0.5;
-	b = 0..0.1..~square(0.1);
-	f = 0..0.1..~x;      
-	g = 0.2..0.3..~x;    
-	h = 0.3..0.2..~-0.1; 
-	
-	j = 0.8..0.5..~-0.3;
-	k = 0.5..0.8..~0.3; 
-	l = 0.2..0.3..~0.0;
-	m = 0.2..0.3..~1/2; // division 
-}
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
@@ -18558,29 +14799,6 @@ aA;bA;cA;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1497_T019_LanguageBlockScope_ImperativeNestedAssociative_Function()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"z;
-[Imperative]
-{
-	def foo : int(a : int, b : int)
-	{
-		return = a - b;
-	}
-	[Associative]	
-	{
-	x = 20;
-	y = 10;
-	z = foo (x, y);
-	}
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1498_T020_LanguageBlockScope_AssociativeNestedImperative_Function()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -18596,39 +14814,6 @@ aA;bA;cA;
 	x = 20;
 	y = 10;
 	z = foo (x, y);
-	}
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1499_T021_LanguageBlockScope_DeepNested_IAI_Function()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"z_1;
-z_2;
-[Imperative]
-{
-	def foo : int(a : int, b : int)
-	{
-		return = a - b;
-	}
-	[Associative]	
-	{
-		x_1 = 20;
-		y_1 = 10;
-		z_1 = foo (x_1, y_1);
-	
-	
-	[Imperative]
-		{
-			x_2 = 100;
-			y_2 = 100;
-			z_2 = foo (x_2, y_2);
-			
-		}
 	}
 }";
             WatchTestFx.GeneratePrintStatements(src, ref map);
@@ -18697,33 +14882,6 @@ z_2;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1502_T024_LanguageBlockScope_ImperativeParallelAssociative_Function()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"z;
-[Imperative]
-{
-	def foo : int(a : int, b : int)
-	{
-		return = a - b;
-	}
-	 
-	a = 10;
-	
-}
-[Associative]	
-{
-	x = 20;
-	y = 0;
-	z = foo (x, y);
-	
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1503_T025_LanguageBlockScope_AssociativeParallelAssociative_Function()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -18739,33 +14897,6 @@ z_2;
 	
 }
 [Associative]	
-{
-	x = 20;
-	y = 0;
-	z = foo (x, y);
-	
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1504_T026_LanguageBlockScope_ImperativeParallelImperative_Function()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"z;
-[Imperative]
-{
-	def foo : int(a : int, b : int)
-	{
-		return = a - b;
-	}
-	 
-	a = 10;
-	
-}
-[Imperative]	
 {
 	x = 20;
 	y = 0;
@@ -18801,40 +14932,6 @@ z_2;
 	
 }
 [Associative]
-{
-	x_2 = 20;
-	y_2 = 0;
-	z_2 = foo (x_2, y_2);
-}";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1506_T028_LanguageBlockScope_MultipleParallelLanguageBlocks_IAI_Function()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"z_1;
-z_2;
-[Imperative]
-{
-	def foo : int(a : int, b : int)
-	{
-		return = a - b;
-	}
-	 
-	a = 10;
-	
-}
-[Associative]	
-{
-	x_1 = 20;
-	y_1 = 0;
-	z_1 = foo (x_1, y_1);
-	
-}
-[Imperative]
 {
 	x_2 = 20;
 	y_2 = 0;
@@ -18882,103 +14979,6 @@ z_A2;
 	y_A2 = -10;
 	z_A2 = foo (x_A2, y_A2);
 	
-	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1508_T030_LanguageBlockScope_ParallelInsideNestedBlock_ImperativeNested_AA()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"z_A1;
-z_I1;
-z_A2;
-z_I2;
-[Imperative]
-{
-	def foo : int(a : int, b : int)
-	{
-		return = a - b;
-	}
-	 
-	[Associative]
-	{
-		x_A1 = 30;
-		y_A1 = 12;
-		z_A1 = foo (x_A1, y_A1);
-	
-	}
-	
-	x_I1 = 50;
-	y_I1 = 50;
-	z_I1 = foo (x_I1, y_I1);
-	
-	[Associative]
-	{
-		x_A2 = 0;
-		y_A2 = -10;
-		z_A2 = foo (x_A2, y_A2);
-	}
-	
-	x_I2 = 0;
-	y_I2 = 12;
-	z_I2 = foo (x_I2, y_I2);
-	
-	
-	
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1509_T031_Defect_1450594()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"f;p;q;x;y1;z;y2;
-[Imperative]
-{
-   a = 2;
-    [Associative]
-    {
-        
-        i = 3;
-    }
-    f = i;
-}
-[Associative]
-{
-	def foo1 ( i )
-	{
-		x = 1;
-		return = x;
-	}
-	p = x;
-	q = a;
-}
-y = 1;
-[Imperative]
-{
-   def foo ( i )
-   {
-		x = 2;
-		if( i < x ) 
-		{
-		    y = 3;
-			return = y * i;
-		}
-		return = y;
-	}
-	x = y;
-	y1 = foo ( 1 );
-	y2 = foo ( 3 );
-	z = x * 2;
 	
 }
 ";
@@ -19207,37 +15207,6 @@ x = f(""hello"");
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1523_T05_String_ForLoop()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"a = ""hello"";
-b = ""world"";
-c = { a, b };
-j = 0;
-s = { };
-r = 
-[Imperative]
-{
-	for(i in c)
-	{
-	    s[j] = String(i);
-	    j = j + 1;
-	}
-	
-	def String(x : string)
-	{
-	    return = x;
-}
-    return = s;
-  
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1525_T07_String_Replication()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -19419,34 +15388,6 @@ t6 = cartesian_sum[2][0];
 ";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1546_T00011_Geometry_008_trim_then_tube_4()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (""GeometryLibForLanguageTesting.ds"");
-myPoint = Point.ByCartesianCoordinates( (2..10..2)<1>, (2..10..2)<2>, 2 ); // create 2D point array
-controlPoint_1 = Point.ByCartesianCoordinates( 5, 5, 5 ); 		// create control point
-controlPoint_2 = Point.ByCartesianCoordinates( 5, 10, 5 ); 	// create control point
-myLine = Line.ByStartPointEndPoint( myPoint[1], controlPoint_1 ); 	// select 1d array of points to create a 1D array lines
-//myLine[2] = myLine[2].Trim({0.9, 0.1}, false); 	// trim one member of the array of points (modify a member of a collection)
-myLine[2] = myLine[2].Trim( 0.5 );
-//tubes   = Tube.ByStartPointEndPointRadius(myLine.StartPoint, myLine.EndPoint, 0.25, 0.125); // use the whole array of lines for tubing
-//tubes   = Solid.Cone(myLine.StartPoint, myLine.EndPoint, 0.25, 0.125); // use the whole array of lines for tubing
-tubes      = Solid.Cone(myLine.StartPoint, myLine.EndPoint, 0.25, 0.125);
-controlPoint_1 = Point.ByCartesianCoordinates( 7, 7, 5 ); 		// move the control point, change gets propagated to lines, trim and tubes, 
-//myLine[3] = myLine[3].Trim({0.9, 0.2}, false); 		// trim another member of the array of points (modify a member of a collection)
-myLine[3] = myLine[3].Trim( 0.8); 	
-controlPoint_1 = Point.ByCartesianCoordinates( 8, 7, 5 ); 		// move the control point, change gets propagated to lines, trim and tubes, 
-t1 = tubes[0].EndPoint.X;
-t2 = tubes[1].EndPoint.X;
-t3 = tubes[2].EndPoint.X;
-t4 = tubes[3].EndPoint.X;
-t5 = tubes[4].EndPoint.X;";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(importpath, src, map);
         }
 
         [Test]
@@ -20509,48 +16450,6 @@ y = 0.0..ySize..#yCount;  //  actually this evalutes to 30 but to keep life simp
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1714_Fibonacci()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"[Imperative]
-{
-    def fibonacci_recursive:int(number : int)
-    {
-        if( number < 2)
-        {
-            return = 1;
-        }
-        return = fibonacci_recursive(number-1) + fibonacci_recursive(number -2);
-    }
-    
-    def fibonacci_iterative:int(number : int)
-    {
-        one = 0;
-        two = 1;
-       counter = 1;
-        
-        while( counter <= number )
-        {
-            temp = one + two;
-            one = two;
-            two = temp;
-            
-            //    now increment the counter
-            counter = counter + 1;
-        }
-        
-        return = two;
-    }
-    fib10_r = fibonacci_recursive(20);
-    fib10_i = fibonacci_iterative(20);
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1715_FunctionCall_With_Default_Arg()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -20561,115 +16460,6 @@ y = 0.0..ySize..#yCount;  //  actually this evalutes to 30 but to keep life simp
 	// Type is recognized as A, actual type is B
 testFoo1 = foo(6); // foo1 does not exist in A, function not found warning; testFoo1 =6;
 testFoo2 = foo();";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1717_imperative_Replication_1467070()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"[Imperative]
-{
-        def test (i:int)
-        {
-                loc = {};
-                for(j in i)
-                {
-                        loc[j] = j;
-                        
-                }
-                return = loc;
-        }
-a={3,4,5};
-        t = test(a);
-return = t;
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1718_imperative_Replication_1467070_2()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"[Imperative]
-{
-        def CreateArray ( x : var[] , i )
-        {
-        
-                x[i] = i;
-                return = x;
-        }
-        test = { };
-         z=0..5;
-         for (i in z)
-         {
-                test[i] = CreateArray ( test, z );
-            
-        }
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1719_SquareRoot()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"sqrt_10;
-sqrt_20;
-[Imperative]
-{
-    def abs : double( val : double )
-    {
-        if( val < 0 )
-        {
-            return = -1 * val;
-        }
-        return = val;
-    }
-    
-    //    this is famous as the first ever algo to evaluate
-    //    square-root - also known as Babylonian algo
-    //    developed by Heron and coded by Sarang :)
-    //    
-    def sqrt_heron : double ( val : double )
-    {
-        counter = 0;
-        temp_cur = val / 2.0;
-        temp_pre = temp_cur - 1.0;
-        abs_diff = abs(temp_cur - temp_pre);
-        tolerance = 0.00001;
-        max_iterations = 100;
-        
-        while( abs_diff > tolerance && counter < max_iterations )
-        {
-            temp_pre = temp_cur;
-            temp_cur = 0.5 * (temp_cur + val / temp_cur );
-            
-            abs_diff = abs(temp_cur - temp_pre);
-            counter = counter + 1;
-        }
-        
-        return = temp_cur;
-    }
-    
-    def sqrt : double ( val : double )
-    {
-        return = sqrt_heron( val);
-    }
-    
-    sqrt_10 = sqrt(10.0);
-    sqrt_20 = sqrt(20.0);
- 
-}
-";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
@@ -20918,37 +16708,6 @@ result2;
 
         [Test]
         [Category("WatchFx Tests")]
-        public void DebugWatch1755_Regress_1455935()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"b;
-c;
-d;
-[Imperative]
-{
-	def foo:int ( a : bool )
-	{
-		if(a)
-			return = 1;
-		else
-			return = 0;
-	}
-	
-	b = foo( 1 );
-	c = foo( 1.5 );
-	d = 0;
-	if(1.5 == true ) 
-	{
-	    d = 3;
-	}
-}
-";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
         public void DebugWatch1765_Regress_1456713()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -21099,36 +16858,6 @@ return = i;
 x =  1;
 a1 = foo(x);
 a2 = 3;";
-            WatchTestFx.GeneratePrintStatements(src, ref map);
-            WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
-        }
-
-        [Test]
-        [Category("WatchFx Tests")]
-        public void DebugWatch1797_Regress_1459171_2()
-        {
-            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"e1;
-[Imperative]
-{
-	def even : int (a : int) 
-	{	
-		if(( a % 2 ) > 0 )
-			return = a + 1;
-		
-		else 
-			return = a;
-	}
-	x = 1..3..1;
-	y = 1..9..2;
-	z = 11..19..2;
-	c = even(x);
-	d = even(x)..even(c)..(even(0)+0.5);
-	e1 = even(y)..even(z)..1;
-	f = even(e1[0])..even(e1[1]); 
-	g = even(y)..even(z)..f[0][1]; 
-}
-";
             WatchTestFx.GeneratePrintStatements(src, ref map);
             WatchTestFx fx = new WatchTestFx(); fx.CompareRunAndWatchResults(null, src, map);
         }
