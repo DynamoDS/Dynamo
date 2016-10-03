@@ -598,5 +598,14 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("e9ad17aa-e30f-4fcb-9d43-71ec2ab027f4", new[] { 5, 4, 3, 2, 1 });
         }
+
+        [Test]
+        public void TestBigNumber()
+        {
+            RunModel(Path.Combine(TestDirectory, @"core\number\TestBigNumber.dyn"));
+            long value = 6640000000;
+            AssertPreviewValue("b64d00bd-695b-496f-91e2-45caadd56535", value);
+            AssertPreviewValue("8540896e-90c8-45aa-a1b3-b2d93d98668d", value);
+        }
     }
 }

@@ -1555,14 +1555,23 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Returns the selected nodes that are "input" nodes, and makes an 
-        /// exception for CodeBlockNodes as these are marked false so they 
-        /// do not expose a IsInput checkbox
+        /// exception for CodeBlockNodes and Filename nodes as these are marked 
+        /// false so they do not expose a IsInput checkbox
         /// </summary>
         /// <returns></returns>
         internal IEnumerable<NodeModel> GetInputNodesFromSelectionForPresets()
         {
             return DynamoSelection.Instance.Selection.OfType<NodeModel>()
-                                .Where(x => x.IsInputNode || x is CodeBlockNodeModel);
+                .Where(
+                    x => x.IsInputNode ||
+                    x is CodeBlockNodeModel ||
+
+                    // NOTE: The Filename node is being matched by name due to the node definition
+                    //       being in the CoreNodeModels project instead of the DynamoCore project.
+                    //       After some discussions it was decided that this was the least bad way to 
+                    //       make this check (versus either adding a new, overridable property to 
+                    //       NodeModel, or moving Filename and the associated classes into DynamoCore).
+                    x.GetType().Name == "Filename");
         }
 
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)

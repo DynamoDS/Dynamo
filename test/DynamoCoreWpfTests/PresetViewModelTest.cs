@@ -98,33 +98,53 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CanCreatePreset()
         {
-            //Create a Node
+            // Positive test for input node
+
+            // Create a valid input node
             var numberNode = new DoubleInput();
             numberNode.Value = "1";
             ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(numberNode, false);
 
-            //verify the node was created
+            // Verify the node was created and select it
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
-          
             DynamoSelection.Instance.Selection.Add(numberNode);
 
-            //Check for input nodes
+            // Check for input nodes in selection (should pass)
             Assert.AreEqual(true, ViewModel.GetInputNodesFromSelectionForPresets().Any());
 
+
+            // Negative test for input node
+
+            // Create a non-input node and select it
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
             ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
-
             DynamoSelection.Instance.ClearSelection();
-
             DynamoSelection.Instance.Selection.Add(addNode);
 
+            // Check for input nodes in selection (should fail)
             Assert.AreEqual(false, ViewModel.GetInputNodesFromSelectionForPresets().Any());
 
+
+            // Re-test positive test for input node
+
+            // Select the first created input node
             DynamoSelection.Instance.Selection.Add(numberNode);
 
-            //Check for input nodes
+            // Check for input nodes in selection (should pass)
             Assert.AreEqual(true, ViewModel.GetInputNodesFromSelectionForPresets().Any());
 
+
+            // Positive test for File Path node
+
+            // Create a File Path input node and select it
+            var filePathNode = new Filename();
+            filePathNode.Value = "C:\\foo.txt";
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(filePathNode, false);
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(filePathNode);
+
+            // Check for input nodes in selection (should pass)
+            Assert.AreEqual(true, ViewModel.GetInputNodesFromSelectionForPresets().Any());
         }
     }
 }
