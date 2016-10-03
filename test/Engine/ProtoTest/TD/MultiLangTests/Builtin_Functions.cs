@@ -1081,52 +1081,6 @@ result = {foo(AllFalse(a1)),foo(AllFalse(a2)),foo(AllFalse(a3))};//true,true,fal
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("SmokeTest")]
-        public void T038_AllFalse_Class()
-        {
-            string code = @"
-class C
-{
-	x: var;
-	y :int;
-	constructor C(b:bool)
-	{
-		x = b;
-		y = 0.0;
-	}
-	
-	def foo(z:var[]..[])
-	{
-	temp = 
-	[Imperative]
-		{
-			if(AllFalse(z)== x )
-			{
-				
-				return = true;
-			}
-			else{
-		
-			return = false;
-			}
-		}
-	    return = temp;
-	}
-}
-c = C.C(true);;
-d = c.x;
-e = c.y;
-g = {false,{false}};
-f = c.foo(g);//true
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("d", true, 0);
-            thisTest.Verify("e", 0, 0);
-            thisTest.Verify("f", true, 0);
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T039_AllFalse_Inline()
         {
@@ -1390,66 +1344,6 @@ result = foo(c);
             string errmsg = "MAGN-4171: Replication method resolution";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, errmsg);
             thisTest.Verify("result", 1.9, 0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Failing")]
-        [Category("SmokeTest"), Category("Failure")]
-        public void T050_Sum_Class()
-        {
-            string code = @"
-class C 
-{
-	x: int;
-	y: bool;
-	sum : var;
-	
-	constructor C(a:var[]..[])
-	{
-		x = 10.0;
-		y = false;
-		arr = {Sum(a),x,y};
-		
-		sum = Sum(arr);
-	}
-	
-	def foo(b:var[]..[])
-	{
-		r = 
-		[Imperative]
-		{	
-			c = {};
-			i = 0;
-			while(i<Count(b))
-			{
-				c[i] = Sum(b[i]);
-				i = i+1;
-			}
-			if(Sum(c) == Sum(b)){
-				return  = true;
-				
-			}else
-			{return = false;}
-		}
-		return = r;
-	}
-}
-a = {1,-1};
-b = {null, "" "",{1}};
-c = {a,b};
-d = C.C(c);
-m = d.sum;
-p = d.x;
-q = d.y;
-n= d.foo(c);
-result = {m,n,Sum({m,n})};
-//11.0,true,11.0
-";
-            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4103
-            string err = "MAGN-4103 Type coercion issue from conversion of bool, null, empty arrays to numbers";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
-            Object[] v1 = new Object[] { 11.0, true, 11.0 };
-            thisTest.Verify("result", v1, 0);
         }
 
         [Test]
@@ -1720,35 +1614,6 @@ r1 = Print(arr);
 arr2 = {0,{1},{{}}};
 r2 = Print(arr2);";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_InvalidTest_NoVerification")]
-        [Category("Built in Functions")]
-        public void TV1467193_print()
-        {
-            String code =
- @"
-class A{}
-r1 = Print(A.A());
-a = A.A();
-r2 = Print(a);
-class B{
-fb:var;
-constructor B(x:int)
-{
-    fb = Print(x);
-  
-}
-  def foo()
-    {
-        return  = 10;
-    }
-}
- r3 = Print(B.B(2));
-r4 = Print(B.B(2).foo());
-";
-            thisTest.RunScriptSource(code);
         }
 
         [Test]
@@ -2308,7 +2173,6 @@ def sorterFunction(a : double, b : int)
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Failing")]
         [Category("Failure")]
         public void BIM32_Sort_class()
         {
@@ -2338,7 +2202,6 @@ y=z.create();
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Failing")]
         [Category("Failure")]
         public void BIM33_Sort_class_2()
         {
@@ -3733,7 +3596,6 @@ t8 = Math.Factorial(arr);
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T069_Defect_1467556_Sort_Over_Derived_Classes()
         {
             String code =
@@ -3769,7 +3631,6 @@ b = Sort(sorter,a).X;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T069_Defect_1467556_Sort_Over_Derived_Classes_2()
         {
             String code =
@@ -3808,7 +3669,6 @@ b = Sort(sorter,a).X;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T069_Defect_1467556_Sort_Over_Derived_Classes_3()
         {
             String code =
@@ -4071,78 +3931,6 @@ def foo ()
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("test", new Object[] { null, 3, 3.5, true, null, new Object[] { null } });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        public void T074_Defect_1467750_4()
-        {
-            String code =
-@"
-class A
-{
-}
-test = B.foo();
-class B
-{
-    static def foo ()
-    {
-        return = [Imperative]
-        {
-            x = A.A();
-            x1 = Flatten(a) ; 
-            x2 = Flatten(3) ;
-            x3 = Flatten(3.5) ;
-            x4 = Flatten(true) ;
-            x5 = Flatten(x) ;
-            x6 = Flatten(null) ;
-            x7 = Flatten({}) ;
-            x8 = Flatten({null}) ;
-            return = { x1, x2, x3, x4, x5, x6, x8 };
-        }
-    }
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("test", new Object[] { null, null, null, null, null, null, new Object[] { null } });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        public void T074_Defect_1467750_5()
-        {
-            String code =
-@"
-class A
-{
-}
-test = B.foo();
-class B
-{
-    static def foo ()
-    {
-        return = [Imperative]
-        {
-            if ( 1 )
-            {
-                x = A.A();
-                x1 = Flatten(a) ; 
-                x2 = Flatten(3) ;
-                x3 = Flatten(3.5) ;
-                x4 = Flatten(true) ;
-                x5 = Flatten(x) ;
-                x6 = Flatten(null) ;
-                x7 = Flatten({}) ;
-                x8 = Flatten({null}) ;
-                return = { x1, x2, x3, x4, x5, x6, x8 };
-           }
-           else return = 1;
-        }
-    }
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("test", new Object[] { null, null, null, null, null, null, new Object[] { null } });
         }
 
         [Test]

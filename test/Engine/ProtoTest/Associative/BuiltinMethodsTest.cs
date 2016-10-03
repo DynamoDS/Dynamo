@@ -928,47 +928,6 @@ x = foo({ Evaluate, Evaluate }, { f1, f2 }, { { 41 }, { 42 } });
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void Test_EvaluateFunctionPointer09()
-        {
-            // Nested call
-            string code = 
-@"
-class Foo
-{
-    fptr : function;
-    params : var[]..[];
-    
-    constructor Foo(f : function, p: var[]..[])
-    {
-        fptr = f;
-        params = p;
-    }
-    
-    def DoEvaluate()
-    {
-        return = Evaluate(fptr, params, true);
-    }
-}
-
-def foo(x)
-{
-    return = 2 * x;
-}
-
-def constructFoo(f : function, p : var[]..[])
-{
-    return = Foo(f, p);
-}
-
-x = constructFoo(foo, { 42 });
-y = x.DoEvaluate();
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("y", 84);
-        }
-
-        [Test]
         public void Test_EvaluateFunctionPointer10()
         {
             // Recursive call
