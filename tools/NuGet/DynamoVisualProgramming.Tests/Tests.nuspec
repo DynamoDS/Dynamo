@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>DynamoVisualProgramming.Tests</id>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
@@ -16,7 +16,7 @@
     <copyright>Copyright Autodesk 2016</copyright>
     <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
     <dependencies>
-        <dependency id="DynamoVisualProgramming.Core" version="1.1.0"/>
+        <dependency id="DynamoVisualProgramming.Core" version="1.2.0"/>
     </dependencies>
   </metadata>
 </package>
