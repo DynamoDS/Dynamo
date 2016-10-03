@@ -1420,47 +1420,6 @@ a1.a = 2;
         }
 
         [Test]
-        [Category("Update")]
-        public void T33_Defect_1466107_2()
-        {
-            string code = @"
-class B
-{
-    b : int;	
-}
-class A extends B
-{
-    a : int;	
-}
-def foo ( x ) 
-{
-    return  = x + 1;
-}
-x1 =  { A.A(), A.A() };
-a1 = A.A();
-x2 =  { a1.a, a1.a };
-y2 = foo ( x2[0] );
-y1 = foo ( x1[1].b );
-def foo1 ( t1 : A )
-{
-    t1.b = 2;
-	return = null;
-}
-def foo2 ( t1 : A )
-{
-    t1.a = 2;
-	return = null;
-}
-dummy1 = foo1 ( x1[1] );
-dummy2 = foo2 ( a1 );
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //Assert.Fail("1459478 - Sprint 17 : Rev 1459 : Issue with Update mechanism when updating a collection inside a function using pass-by-reference");
-            thisTest.Verify("y1", 3);
-            thisTest.Verify("y2", 3);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T34_Defect_DNL_1463327()

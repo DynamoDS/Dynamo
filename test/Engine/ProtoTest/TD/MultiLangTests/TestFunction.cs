@@ -5239,6 +5239,7 @@ b = f2( { null, null } );
 
 
         [Test]
+        [Category("Failure")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027()
         {
@@ -5257,6 +5258,7 @@ class B
 	
 }
 def goo : var()
+
 {
     return = A.A();
 }
@@ -5279,6 +5281,7 @@ t11;t12;t13;t14;t15;
 	t14 = a.a;
 	t15 = a.b.b;
 }";
+            //members are not initialized
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object v1 = null;
             thisTest.Verify("t1", 0.0);
@@ -5293,62 +5296,6 @@ t11;t12;t13;t14;t15;
             thisTest.Verify("t14", a);
             thisTest.Verify("t15", v1);
 
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void TV87_Defect_1464027_2()
-        {
-            string code = @"
-class A
-{
-    x : double;
-	y : int;
-	z : bool;
-	a : int[];
-	b : B;
-}
-class B
-{
-    b : double;
-	
-}
-def goo : var[]()
-{
-    return = {A.A(), A.A()};
-}
-def foo : A[] ()
-{
-    return = {A.A(), A.A()};
-}
-a1 = foo();
-a = a1[1];
-t1 = a.x;
-t2 = a.y;
-t3 = a.z;
-t4 = a.a;
-t5 = a.b.b;
-t11;t12;t13;t14;t15;
-[Imperative]
-{
-    t11 = a.x;
-	t12 = a.y;
-	t13 = a.z;
-	t14 = a.a;
-	t15 = a.b.b;
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", 0.0);
-            thisTest.Verify("t2", 0);
-            thisTest.Verify("t3", false);
-            object a = new object[] { };
-            thisTest.Verify("t4", a);
-            thisTest.Verify("t5", null);
-            thisTest.Verify("t11", 0.0);
-            thisTest.Verify("t12", 0);
-            thisTest.Verify("t13", false);
-            thisTest.Verify("t14", a);
-            thisTest.Verify("t15", null);
         }
 
         [Test]

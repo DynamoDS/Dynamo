@@ -5024,7 +5024,11 @@ c = { { 3 } } + d;
 @"
 class A
 { 
-    a = 1; 
+    a; 
+    constructor A()
+    {
+        a = 1;
+    }
 }
 def foo( x:A[] )
 {
@@ -5037,7 +5041,6 @@ d1 = d.a;
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
             thisTest.Verify("d1", new Object[] { 1 });
         }
 

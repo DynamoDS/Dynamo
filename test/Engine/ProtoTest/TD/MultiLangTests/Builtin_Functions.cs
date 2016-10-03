@@ -3934,43 +3934,6 @@ def foo ()
         }
 
         [Test]
-        public void T074_Defect_1467750_5()
-        {
-            String code =
-@"
-class A
-{
-}
-test = B.foo();
-class B
-{
-    static def foo ()
-    {
-        return = [Imperative]
-        {
-            if ( 1 )
-            {
-                x = A.A();
-                x1 = Flatten(a) ; 
-                x2 = Flatten(3) ;
-                x3 = Flatten(3.5) ;
-                x4 = Flatten(true) ;
-                x5 = Flatten(x) ;
-                x6 = Flatten(null) ;
-                x7 = Flatten({}) ;
-                x8 = Flatten({null}) ;
-                return = { x1, x2, x3, x4, x5, x6, x8 };
-           }
-           else return = 1;
-        }
-    }
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("test", new Object[] { null, null, null, null, null, null, new Object[] { null } });
-        }
-
-        [Test]
         public void T074_Defect_1467301()
         {
             String code =
