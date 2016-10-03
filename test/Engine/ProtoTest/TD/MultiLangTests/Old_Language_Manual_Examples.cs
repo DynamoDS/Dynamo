@@ -12,30 +12,6 @@ namespace ProtoTest.TD.MultiLangTests
         string importPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_ComplexUseCase")]
-        [Category("SmokeTest")]
-        public void Test_4_4_properties_1()
-        {
-            string errmsg = "";
-            string code = @"import (""GeometryLibForLanguageTesting.ds"");
-myPoint = Point.ByCartesianCoordinates(2..10..2, 5, 0);
-mySingleXvalue 	  = myPoint[1].X; 	// = 4 
-// referencing a member of the myPoint collection 
-// and then one of its properties
-myCollectionXvalues = myPoint.X; 		// = {2, 4, 6, 8, 10}
-// referencing the complete myPoint collection 
-// and one of its properties as a collection
-myAltSingleXvalue   = myPoint.X[1]; 	// = 4
-// referencing all of the myPoint collection and then
-// indexing into one of member of one of its properties
-";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg, importPath);
-            thisTest.Verify("myCollectionXvalues", new Object[] { 2.0, 4.0, 6.0, 8.0, 10.0 });
-            thisTest.Verify("mySingleXvalue", 4.0);
-            thisTest.Verify("myAltSingleXvalue", 4.0);
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void Test_4_9_count()
         {
@@ -97,27 +73,6 @@ g = d[f+1]; // c
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("f", 1);
             thisTest.Verify("g", 9);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_ComplexUseCase")]
-        [Category("SmokeTest")]
-        public void Test_4_12_isRectangular()
-        {
-            string errmsg = "DNL-1467324 rev 3883: Built-in method IsRectagular is not implemented";
-            errmsg = "";//DNL-1467282 Replication guides not working in constructor of class";
-            string code = @"import(""GeometryLibForLanguageTesting.ds"");
-x = 1..2;
-y = 6..7;
-collection = Point.ByCartesianCoordinates(x<1>,y<2>,0);
-test1 = collection.X;
-raggedCollection = {collection[0][1], {collection[1][0], collection[1][1]}, collection[0][0]};
-result =  IsRectangular(raggedCollection)? BSplineSurface.ByPoints(raggedCollection): BSplineSurface.ByPoints(collection); // Known Limitation : both paths of the inline conditional will be executed, which will lead to some error messages currently
-test2 = result.P1.X;
-";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg, importPath);
-            thisTest.Verify("test1", new Object[] { new Object[] { 1.0, 1.0 }, new Object[] { 2.0, 2.0 } });
-            thisTest.Verify("test2", new Object[] { new Object[] { 1.0, 1.0 }, new Object[] { 2.0, 2.0 } });
         }
 
         [Test]

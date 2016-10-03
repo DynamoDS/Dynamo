@@ -1296,7 +1296,6 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Type System")]
         public void TS37_userdefinedTo_null()
         {
@@ -1386,7 +1385,6 @@ import(""FFITarget.dll"");
 
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS038_return_single_AlltypeTo_UserDefined()
         {
@@ -1422,7 +1420,6 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS039_userdefined_covariance()
         {
@@ -1461,37 +1458,6 @@ import(""FFITarget.dll"");
             thisTest.Verify("c", null);
             thisTest.Verify("c1", null);
             thisTest.Verify("c2", null);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("Type System")]
-        public void TS039_userdefined_covariance_2()
-        {
-            string code =
-                @"
-               
-                    class B extends A{ b=2; }
-                    class A{
-                        a : B;
-                        c : ClassFunctionality;
-                    }
-                    def foo( x)
-                    {
-                        test = A.A();
-                        test.a = x;
-                        test.c = x;
-                        return = test;
-                    }
-                    a1 = foo( B.B() );
-                    b1 = a1.a.b;
-                    b2 = a1.c.b;
-                    c1 = foo(A.A());
-                    d1= c1.a.b;";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("b1", 2);
-            thisTest.Verify("b2", 2);
-            thisTest.Verify("d1", null);
         }
 
         [Test]
@@ -2863,7 +2829,6 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS074_Param_singleton_AlltypeTo_UserDefinedArray()
         {
@@ -2900,7 +2865,6 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS075_return_singleton_AlltypeTo_UserDefinedArray()
         {
@@ -2935,7 +2899,6 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS076_UserDefinedCovariance_ArrayPromotion()
         {
@@ -5714,32 +5677,6 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("Type System")]
-        public void TS0184_TypeConversion_1467352()
-        {
-            string code =
-                @"
-                class B
-                    {
-                    constructor B()
-                    {
-                    }
-                    def foo()
-                    {
-                    return = 1;
-                    }
-                    }
-                    arr = { 0, B.B() };
-                    x = arr[1];
-                    test = x.foo();
-                                            ";
-            string error = "1467359 - Sprint 27 - rev 4017 arithematic operations , the type must be converted higer up in the chain , currently does based on the first item in the array";
-            var mirror = thisTest.RunScriptSource(code, error);
-            TestFrameWork.Verify(mirror, "test", 1);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0184_TypeConversion_1467352_2()
@@ -6069,42 +6006,6 @@ import(""FFITarget.dll"");
             string error = "MAGN-1679 Sprint 27 - rev 4184 - when heterogenous array is passed and the type is user defined , it does not replicate unless the first item is user defined";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "b", new object[] { null, 0, 0 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("Type System")]
-        [Category("Failure")]
-        public void TS0197_getter_dotoperator_1467419()
-        {
-            string code =
-                @"
-                   class A 
-                    {
-                    x : int[];
-                    constructor A( y)
-                    {
-                    x = y;
-                    }
-                    }
-                    class B extends A 
-                    {
-                    t : int[];
-                    constructor B(y : var[])
-                    {
-                    x = y;
-                    t = x + 1;
-                    }
-                    }
-                    a1 = { B.B(1), { ClassFunctionality.ClassFunctionality(2), { B.B(0), B.B(1) } } };
-                    // received :{{1},null}
-                    //expected:{{1},{{0},{1}}}
-                    z = a1.x;
-                    ";
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1683
-            string error = "MAGN-1683 Sprint 29 - Rev 4502 - the .operator is doing rank reduction where it is expected to replicate";
-            var mirror = thisTest.RunScriptSource(code, error);
-            TestFrameWork.Verify(mirror, "z", new object[] { new object[] { 1 }, new object[] { new object[] { 0 }, new object[] { 1 } } });
         }
 
         [Test]

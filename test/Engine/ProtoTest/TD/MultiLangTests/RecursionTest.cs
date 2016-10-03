@@ -239,30 +239,5 @@ c = 3.0..5.0;//3.0,4.0,5.0
             thisTest.RunScriptSource(code);
 
         }
-
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        public void TestCallingConstructor()
-        {
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4134
-            string err = "MAGN-4134 Calling a constructor within itself is not allowed";
-            string code = @"
-class A
-{
-    x;
-    y;
-    constructor A(i)
-    {
-        y = i;
-        x = (i > 0) ? A.A(i - 1) : null;
-    }
-}
-a = A.A(3);  // a.x = null now. 
-r = a.x;
-";
-            thisTest.VerifyRunScriptSource(code, err);
-            thisTest.Verify("r", null);
-        }
     }
 }

@@ -1024,50 +1024,6 @@ a;b;c;d;e1;f;g;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("Type System")]
-        public void TS039_userdefined_covariance_Imperative()
-        {
-            string code =
-                @"class A
-                    {
-	                    a:int;
-	                    constructor A (b:int)
-	                    {
-		                    a=b;
-                        }
-                    }
-                    class B extends A
-                    {
-	                    b:int;
-	                    constructor B (c:int)
-	                    {
-		                    b=c;
-                        }
-                    }
-a1;b1;b2;c;c1;c2;
-                    [Imperative]{
-               
-                    
-              a:A=A.A(1);
-                    a1=a.a;
-                    b:A=B.B(2);
-                    b1=b.b;
-                    b2=b.a;
-                    c:B=A.A(3);
-                    c1=c.b;
-                    c2=c.a;
-}";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a1", 1);
-            thisTest.Verify("b1", 2);
-            thisTest.Verify("b2", 0);
-            thisTest.Verify("c", null);
-            thisTest.Verify("c1", null);
-            thisTest.Verify("c2", null);
-        }
-
-        [Test]
         [Category("Type System")]
         public void TS40_null_toBool_1467231_Imperative()
         {
@@ -2183,36 +2139,6 @@ d;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("Type System")]
-        public void TS0189_TypeConversion_class_member_1467599()
-        {
-            string code =
-                @"
-                 class test
-                    {
-                        t : double;
-        
-                        constructor test()
-                        {
-                            [Imperative]
-                            {
-                                t = true;
-                            }
-                        }
-                    }
-                    a = test.test();
-                    b=a.t;
-                                     
-                 ";
-            string error = " ";
-            var mirror = thisTest.RunScriptSource(code, error);
-            //TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kTypeMismatch);
-            thisTest.VerifyRuntimeWarningCount(1);
-            thisTest.Verify("b", null);
-        }
-
-        [Test]
         [Category("Type System")]
         public void TS0190_TypeConversion_nested_block_1467568()
         {
@@ -2356,81 +2282,6 @@ myRangeExpressionResult ;
             string error = " ";
             var mirror = thisTest.RunScriptSource(code, error);
             thisTest.Verify("myRangeExpressionResult", new object[] { 0.0, 0.5, 1.0 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("Type System")]
-        public void TS0195_TypeConversion_nested_block_1467568()
-        {
-            string code =
-                @"
-class A
-{
-    myValue = 1;
-    x;
-    constructor A()
-    {        
-        myIntRangeExpression = 0..2;             
-        [Imperative]
-        {
-            while( myValue < 2) 
-            {
-                [Associative] 
-                {
-                    myIntRangeExpression = 0..2;            
-                    x = myIntRangeExpression * myValue;             
-                }        
-                myValue = myValue + 0.5;        
-            }
-        }
-    }
-}
-a = A.A();
-t1 = a.myValue;
-t2 = a.x;";
-            string error = " ";
-            var mirror = thisTest.RunScriptSource(code, error);
-            thisTest.Verify("t1", 2.000000);
-            thisTest.Verify("t2", new object[] { 0.0000000, 1.500000, 3.000000 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("Type System")]
-        public void TS0196_TypeConversion_nested_block_1467568()
-        {
-            string code =
-                @"
-class A
-{
-    myValue = 1;
-    x;
-    def foo()
-    {        
-        myIntRangeExpression = 0..2;             
-        [Imperative]
-        {
-            while( myValue < 2) 
-            {
-                [Associative] 
-                {
-                    myIntRangeExpression = 0..2;            
-                    x = myIntRangeExpression * myValue;             
-                }        
-                myValue = myValue + 0.5;        
-            }
-        }
-    }
-}
-a = A.A();
-a.foo();
-t1 = a.myValue;
-t2 = a.x;";
-            string error = " ";
-            var mirror = thisTest.RunScriptSource(code, error);
-            thisTest.Verify("t1", 2.000000);
-            thisTest.Verify("t2", new object[] { 0.0000000, 1.500000, 3.000000 });
         }
     }
 }
