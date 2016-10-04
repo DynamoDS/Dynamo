@@ -450,24 +450,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The input value of Math.Factorial cannot be negative..
-        /// </summary>
-        public static string FactorialNegativeInt {
-            get {
-                return ResourceManager.GetString("FactorialNegativeInt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The return value of Math.Factorial is limited to integers from the range of –9,223,372,036,854,775,808 to 9,223,372,036,854,775,807..
-        /// </summary>
-        public static string FactorialOverflow {
-            get {
-                return ResourceManager.GetString("FactorialOverflow", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to get mirror for variable:  {0}; reason: {1}..
         /// </summary>
         public static string FailedToGetMirrorVariable {

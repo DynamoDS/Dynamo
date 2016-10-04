@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using CSMath = System.Math;
-using Dynamo.Properties;
+using DSCore.Properties;
 
 namespace DSCore
 {
@@ -529,7 +529,7 @@ namespace DSCore
 
                     if (number < 0)
                     {
-                        throw new ArgumentNullException(Resources.FactorialNegativeInt);
+                        throw new ArgumentException(Resources.FactorialNegativeInt);
                     }
 
                     if (number == 0)
