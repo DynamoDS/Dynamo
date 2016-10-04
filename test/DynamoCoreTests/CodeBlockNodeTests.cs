@@ -1437,7 +1437,7 @@ var06 = g;
             // Expected 5 completion items
             Assert.AreEqual(5, completions.Count());
 
-            string[] expected = { "Decimal", "Imperative", "ImportFromCSV", "Minimal", "MinimalTracedClass" };
+            string[] expected = { "Imperative", "ImportFromCSV", "Minimal", "MinimalTracedClass" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);

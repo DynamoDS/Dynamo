@@ -377,7 +377,7 @@ namespace Dynamo.Tests
             // odd numbers between 0 and 5
             Assert.IsNotNull(watchNode.CachedValue);
             Assert.IsTrue(watchNode.CachedValue is ICollection);
-            var list = ((ICollection)watchNode.CachedValue).Cast<int>();
+            var list = ((ICollection)watchNode.CachedValue).Cast<long>();
 
             Assert.AreEqual(new[] { 1, 3, 5 }, list.ToList());
         }
