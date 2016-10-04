@@ -1817,7 +1817,6 @@ xdata = { 1.5, 2 };
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignore_DSClassInheritance")]
         [Category("SmokeTest")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_5()
         {
@@ -1858,7 +1857,6 @@ xdata = { 1.5, 2 };
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("SmokeTest")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_6()
         {
@@ -2510,49 +2508,6 @@ rad = foo(a, d);
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_ReplicationWithinDSClass")]
-        public void Array_Ranks_Match_argumentdefinition_1467190()
-        {
-            String code =
-            @"
-              class B
-              {
-                    value : int;
-                    constructor B (b : int)
-                    {
-                        value = b;
-                    }
-               }
-               class A
-               {
-                     a1 : var;
-                     constructor A ( b1 : int)
-                     {                
-                        a1 = b1;
-                     } 
-                     def foo( arr : B[])  
-                     {  
-                        return = arr.value;  
-                     }
-                } 
-                arr = { B.B(1), B.B(2), B.B(3), B.B(4) }; 
-                q = A.A( {6,7,8,9} );
-                t = q.foo(arr);
-            ";
-            //Assert.Fail("1467190 -Sprint 25 - Rev 3185 it replicates when not expected ");
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object t = new Object[]
-                           {
-                               new object[] { 1, 2, 3, 4 },
-                               new object[] { 1, 2, 3, 4 },
-                               new object[] { 1, 2, 3, 4 },
-                               new object[] { 1, 2, 3, 4 }
-                           };
-            thisTest.Verify("t", t);
-        }
-
-        [Test]
         [Category("Replication")]
         public void T66_Defect_1467198_Inline_Condition_With_Jagged_Array()
         {
@@ -2828,8 +2783,6 @@ test = a1.X;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        [Category("Replication")]
         [Category("Failure")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_8()
         {
@@ -2863,7 +2816,6 @@ test = a1.x; //expected :  { 1, { 2, { 0, 1 } } }
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Replication")]
         [Category("Failure")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_9()
@@ -2926,7 +2878,6 @@ x = { };
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassTypeSemantics")]
         [Category("Replication")]
         public void T70_Defect_1467266()
         {
@@ -2999,7 +2950,6 @@ test3 = (a.X)[0];
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassTypeSemantics")]
         [Category("Replication")]
         public void T71_Defect_1467209_3()
         {
@@ -3031,7 +2981,6 @@ a1 = t1[0];
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassTypeSemantics")]
         [Category("Replication")]
         public void T71_Defect_1467209_4()
         {
@@ -3473,65 +3422,6 @@ test2 = sum ( (0..1)<1>, (2..3)<2>);
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_NoReplication")]
-        [Category("Replication")]
-        public void T76_Defect_1467254()
-        {
-            String code =
-@"
-class A
-{ 
-    public x : var ;   
-    constructor A ()
-    {
-        x = 10;       
-    }
-    public def foo ()
-    {
-       return = x + 1;
-    }        
-}
-a = A.A();
-a1 = a.foo(); //expected 5, received 11
-a.x = 4;
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a1", 11);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_NoReplication")]
-        [Category("Replication")]
-        public void T76_Defect_1467254_2()
-        {
-            String code =
-@"
-class A
-{ 
-    public x : var ;   
-    constructor A ()
-    {
-        x = 10;       
-    }
-    public def foo (p)
-    {
-       return = x + p;
-    }        
-}
-a = A.A();
-p = a.x;
-a1 = a.foo(p); //expected 5, received 11
-a.x = 4;
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a1", 8);
-        }
-
-        [Test]
         [Category("Replication")]
         public void T77_Defect_1467081()
         {
@@ -3570,7 +3460,6 @@ y = x [ {0,1} ][{0,1}];
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassTypeSemantics")]
         [Category("Replication")]
         public void T77_Defect_1467081_3()
         {
@@ -3876,7 +3765,6 @@ b = -DummyVector.ByCoordinates(1,2,3).X;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T80_Defect_1467297_6()
         {
@@ -3908,7 +3796,6 @@ b = -A.A().a;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T80_Defect_1467297_7()
         {
@@ -3940,7 +3827,6 @@ b = {A.A(), A.A()}.a;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T80_Defect_1467297_8()
         {
@@ -4293,38 +4179,6 @@ test = foo ( {arr, arr },  { arr, arr} );
         }
 
         [Test]
-        [Ignore]
-        [Category("DSDefinedClass_DSClassSemantics")]
-        [Category("Replication")]
-        public void T84_Defect_1467313_4()
-        {
-            String code =
-@"
-class A
-{
-    a : var[];
-    b : var[];
-    constructor A ( a1 : var[] , b1 : var[])
-    {
-        a = a1;
-        b = b1;        
-    }
-    def foo ()
-    {
-        return  = a + b;
-    }
-}
-arr = {1, 2};
-t1 = A.A({arr, arr },  { arr, arr} );
-test = t1.foo( );
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new Object[] { new Object[] { 2, 4 }, new Object[] { 2, 4 } });
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void AddArrayFunctionArg02()
@@ -4409,122 +4263,6 @@ test = foo ( arr,  { arr, arr} );
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        [Category("Replication")]
-        public void T85_Defect_1467076()
-        {
-            String code =
-                    @"
-                    class A
-                    {
-                        def foo(x : double)
-                    { return = 1; }
-    
-                    }
-                    class B extends A
-                    {
-                        def foo(x : double)
-                            { return = 2; }
-                    }
-                    a = A.A();
-                    val1 = a.foo();
-                    
-                    ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "1467076 - Function overloading in derived class causes Internal error: Recursion past base case {158ECB5E-2139-4DD7-9470-F64A42CE0D6D} ";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("val1", null);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        [Category("Replication")]
-        public void T85_Defect_1467076_a()
-        {
-            String code =
-                    @"
-                    class A
-                    {
-                        def foo(x : double)
-                    { return = 1; }
-    
-                    }
-                    class B extends A
-                    {
-                        def foo(x : double)
-                            { return = 2; }
-                    }
-                    a = A.A();
-                    val1 = a.foo(0.0);
-                    
-                    ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "1467076 - Function overloading in derived class causes Internal error: Recursion past base case {158ECB5E-2139-4DD7-9470-F64A42CE0D6D} ";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("val1", 1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        [Category("Replication")]
-        public void T85_Defect_1467076_2()
-        {
-            String code =
-                    @"
-                    class A
-                    {
-                        def foo(x : double)
-                    { return = 1; }
-    
-                    }
-                    class B extends A
-                    {
-                        def foo(x : double)
-                            { return = 2; }
-                    }
-                    a = A.A();
-                    val1 = a.foo();
-                    b = B.B();
-                    val2 = b.foo();
-                    ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "1467076 - Function overloading in derived class causes Internal error: Recursion past base case {158ECB5E-2139-4DD7-9470-F64A42CE0D6D} ";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("val1", null);
-            thisTest.Verify("val2", null);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        [Category("Replication")]
-        public void T85_Defect_1467076_2b()
-        {
-            String code =
-                    @"
-                    class A
-                    {
-                        def foo(x : double)
-                    { return = 1; }
-    
-                    }
-                    class B extends A
-                    {
-                        def foo(x : double)
-                            { return = 2; }
-                    }
-                    a = A.A();
-                    val1 = a.foo(1.0);
-                    b = B.B();
-                    val2 = b.foo(1.0);
-                    ";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "1467076 - Function overloading in derived class causes Internal error: Recursion past base case {158ECB5E-2139-4DD7-9470-F64A42CE0D6D} ";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("val1", 1);
-            thisTest.Verify("val2", 2);
-        }
-
-        [Test]
         [Category("Replication")]
         public void T86_Defect_1467285()
         {
@@ -4593,36 +4331,6 @@ y = x;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignore_Failing")]
-        [Category("Replication")]
-        [Category("Failure")]
-        public void T87_Defect_1467284()
-        {
-            String code =
-@"
-class A
-{
-}
-def foo ()
-{
-    return = 1.5;
-}
-a = A.A();
-x = { { { 0.6, foo()}, {5.1,0.0} }, {{null,b}, {true,a}} };
-x[0..1][0..1][0..1] = 2 ;
-y = x;
-test = x[0..1][0..1][0..1];
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";//DNL-1467284 Sprint25: rev 3705: replication on array indices should follow zipped collection rule";
-
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("y", new Object[] { new Object[] { new Object[] { 2, 1.5 }, new Object[] { 5.1, 0.0 } }, new Object[] { new Object[] { n1, n1 }, new Object[] { true, 2 } } });
-            thisTest.Verify("test", new Object[] { 2, 2 });
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
         public void T88_Defect_1467296()
@@ -4642,7 +4350,6 @@ b = ArrayMember.Ctor({ 1, 2, 3}).X[i];
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T88_Defect_1467296_2()
         {
@@ -4675,7 +4382,6 @@ b = A.A(i).a[i];
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T88_Defect_1467296_3()
         {
@@ -4708,7 +4414,6 @@ b = { A.A(i).a[i], -A.A(i).a[i] };
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         [Category("Replication")]
         public void T88_Defect_1467296_4()
         {
@@ -4883,69 +4588,6 @@ c = foo(a,b);
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        [Category("Replication")]
-        public void T93_Defect_1467315_2()
-        {
-            String code =
-@"
-class B
-{
-    c : int;
-    
-    def foo(a : int, b : int)
-    {
-        c = a + b;
-        return = c;
-    }
-    
-}
-class A extends B
-{
-    
-}
-a = { {5, 6}, {5,6} };
-b = { {0, 1}, {0,1} };
-y = A.A().foo(a<1><2>,b<3><4>);
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            // verification 
-            thisTest.Verify("y", new Object[] { new Object[] { new Object[] { new Object[] { 5, 6 }, new Object[] { 5, 6 } }, new Object[] { new Object[] { 6, 7 }, new Object[] { 6, 7 } } }, new Object[] { new Object[] { new Object[] { 5, 6 }, new Object[] { 5, 6 } }, new Object[] { new Object[] { 6, 7 }, new Object[] { 6, 7 } } } });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        [Category("Replication")]
-        public void T93_Defect_1467315_3()
-        {
-            String code =
-@"
-class A
-{
-    b : B = B.B();   
-}
-class B
-{
-    def foo(a : int, b : int)
-    {
-        c = a + b;
-        return = c;
-    }
-}
-a = { {5, 6}, {5,6} };
-b = { {0, 1}, {0,1} };
-y = A.A().b.foo(a<1><2>,b<3><4>);
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            // verification 
-            thisTest.Verify("y", new Object[] { new Object[] { new Object[] { new Object[] { 5, 6 }, new Object[] { 5, 6 } }, new Object[] { new Object[] { 6, 7 }, new Object[] { 6, 7 } } }, new Object[] { new Object[] { new Object[] { 5, 6 }, new Object[] { 5, 6 } }, new Object[] { new Object[] { 6, 7 }, new Object[] { 6, 7 } } } });
-        }
-
-        [Test]
         [Category("Replication")]
         public void T93_Defect_1467315_4()
         {
@@ -5065,7 +4707,6 @@ test = [Imperative]
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T94_Defect_1467265_4()
         {
             String code =
@@ -5157,50 +4798,6 @@ test2 = DummyPoint2D.ByCoordinates( (0..1)<1>, (2..3)<2>).X;
             thisTest.Verify("test", new Object[] { new Object[] { 0, 0 }, new Object[] { 1, 1 } });
             thisTest.Verify("test1", new Object[] { new Object[] { 0, 0 }, new Object[] { 1, 1 } });
             thisTest.Verify("test2", new Object[] { new Object[] { 0, 0 }, new Object[] { 1, 1 } });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T95_Defect_1467398_Replication_Guides_On_Collection_2()
-        {
-            String code =
-@"
-class A
-{
-    x : var;
-    y : var;
-    constructor A ( x1, y1)
-    {
-        x = x1;
-        y = y1;
-    }
-    def foo1 (a:int[], b:int[])
-    {
-        return = A.A ( a<1>, b<2>).x;
-    }
-    def foo2 ()
-    {
-        return = A.A ( {0,1}<1>, {2,3}<2>).x;
-    }
-    def foo3 ()
-    {
-        return = A.A ( (0..1)<1>, (2..3)<2>).x;
-    }
-}
-a = {0,1};
-b = {2,3};
-a1 = A.A(a<1>,b<2>);
-test = a1.foo1(a, b);
-test1 = a1.foo2();
-test2 = a1.foo3();
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object[] v1 = new Object[] { new Object[] { new Object[] { new Object[] { 0, 0 }, new Object[] { 1, 1 } }, new Object[] { new Object[] { 0, 0 }, new Object[] { 1, 1 } } }, new Object[] { new Object[] { new Object[] { 0, 0 }, new Object[] { 1, 1 } }, new Object[] { new Object[] { 0, 0 }, new Object[] { 1, 1 } } } };
-            thisTest.Verify("test", v1);
-            thisTest.Verify("test1", v1);
-            thisTest.Verify("test2", v1);
         }
 
         [Test]
@@ -5322,7 +4919,6 @@ d2 = [Imperative]
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T96_Defect_1467192_Replication_Inline_Condition_3()
         {
             String code =
@@ -5390,477 +4986,17 @@ c = { { 3 } } + d;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_01()
-        {
-            String code =
-@"
-class C
-{
-	def f(a : int)
-	{
-		return = 1;
-	} 
-}
-p = C.C();
-a = p.f({1,2}); 
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-
-            thisTest.Verify("a", new Object[] { 1, 1 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_02()
-        {
-            String code =
-@"
-class C
-{
-	def f(a : int)
-	{
-		return = 1;
-	}
-	def f(a : double)
-	{
-		return = 3;
-	}
-    
-}
-p = {C.C(), C.C()};
-a = p.f({1,2.1}); 
- 
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a", new Object[] { 1, 3 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_03()
-        {
-            String code =
-@"
-class C
-{
-	def f(a : int)
-	{
-		return = 1;
-	}
-	def f(a : double)
-	{
-		return = 3;
-	}
-    
-}
-p = {C.C(), C.C()};
-a = p.f({1,2.1,2}); 
- 
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a", new Object[] { 1, 3 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_04()
-        {
-            String code =
-@"
-class C
-{
-	def f(a : int)
-	{
-		return = 1;
-	}
-	def f(a : double)
-	{
-		return = 3;
-	}
-    
-}
-p = {C.C(), C.C()};
-a = p.f({1}); 
- 
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("a", new Object[] { 1 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_05()
-        {
-            String code =
-@"
-class C
-{
-	def f(a : int)
-	{
-		return = 1;
-	}
-	def f(a : double)
-	{
-		return = 3;
-	}
-    
-}
-p = {C.C(), C.C(), C.C()};
-a = p.f({1, 1.5}); 
- 
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("a", new Object[] { 1, 3 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        [Category("Failure")]
-        public void T100_Replication_On_Class_Instance_06()
-        {
-            String code =
-@"
-class C
-{
-	x : int[];
-    def f(a : int[])
-	{
-		return = 1;
-	}
-	def f(a : double[])
-	{
-		return = 3;
-	}
-    def f(a : var)
-	{
-		return = 2;
-	}
-    
-}
-p = {C.C(), C.C()};
-a = p.f({1, 1.5}); 
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            //String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
-            String errmsg = "MAGN-4098  Replication vs function override ";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("a", new Object[] { 3, 3 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_07()
-        {
-            String code =
-@"
-class C
-{
-	x : int[];
-    def f(a : int[])
-	{
-		return = 1;
-	} 
-}
-p = {C.C(), C.C()};
-a = p.f({1, 2}); 
- 
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("a", new Object[] { 1, 1 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_08()
-        {
-            String code =
-@"
-class C
-{
-	def f(a : int)
-	{
-		return = 1;
-	} 
-}
-def foo ( t : C[])
-{
-    return = t.f({1,2});
-}
-p = {C.C(), C.C()};
-a = foo(p); 
- 
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("a", new Object[] { 1, 1 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_09()
-        {
-            String code =
-@"
-class C
-{
-	def f(a : int)
-	{
-		return = 1;
-	} 
-}
-def foo ( t : C[])
-{
-    return = t.f(1..2);
-}
-p = {C.C(), C.C()};
-a = foo(p); 
- 
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("a", new Object[] { 1, 1 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_10()
-        {
-            String code =
-@"
-class C
-{
-	def f(a : int)
-	{
-		return = 1;
-	} 
-}
-def foo ( t : C[], a, b)
-{
-    return = t.f(a..b);
-}
-p = {C.C(), C.C()};
-a = foo(p, 1, 2); 
- 
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("a", new Object[] { 1, 1 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_11()
-        {
-            String code =
-@"
-class C
-{
-	def f(a : int)
-	{
-		return = 1;
-	} 
-}
-def foo ( t : C[], a, b)
-{
-    return = t.f(a..b);
-}
-p = {C.C(), C.C()};
-x = 1;
-y = 2;
-a = foo(p, x, y); 
-y = 1;
- 
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("a", new Object[] { 1 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_12()
-        {
-            String code =
-@"
-class C
-{
-	def f(a : int)
-	{
-		return = 1;
-	} 
-}
-class D
-{
-	static def foo ( t : C[], a, b)
-    {
-        return = t.f(a..b);
-    }
-}
-p = {C.C(), C.C()};
-x = 1;
-y = 2;
-a = D.foo(p, x, y); 
-y = 3;
- 
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("a", new Object[] { 1, 1 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_13()
-        {
-            String code =
-@"
-class C
-{
-	def f(a : int)
-	{
-		return = a;
-	} 
-}
-p = {C.C(), C.C()};
-x = 1;
-y = 2;
-a = p.f(x..y); 
-y = 3;
- 
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("a", new Object[] { 1, 2 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_14()
-        {
-            String code =
-@"
-class C
-{
-	def t ( )
-    {
-        return = D.D();
-    }
-}
-class D
-{
-	def f(a : int)
-	{
-		return = a;
-	} 
-}
-p = {C.C(), C.C()};
-x = 1;
-y = 2;
-a = p.t().f(x..y); 
-y = 3;
- 
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("a", new Object[] { 1, 2 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_15()
-        {
-            String code =
-@"
-class C
-{
-	def f(a : int)
-	{
-		return = a;
-	} 
-}
-p = {C.C(), C.C()};
-a = p.f({0,1,2,3}[1..2]); 
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("a", new Object[] { 1, 2 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_16()
-        {
-            String code =
-@"
-class C
-{
-	def t ( )
-    {
-        return = D.D();
-    }
-}
-class D
-{
-	def f(a : int)
-	{
-		return = a;
-	} 
-}
-p = {C.C(), C.C()};
-x = 0;
-y = 3;
-a = p.t().f((x..y)[1..2]); 
-y = 4;
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("a", new Object[] { 1, 2 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
         public void T100_Replication_On_Class_Instance_17()
         {
             String code =
 @"
 class A
 { 
-    a = 1; 
+    a; 
+    constructor A()
+    {
+        a = 1;
+    }
 }
 def foo( x:A[] )
 {
@@ -5873,318 +5009,9 @@ d1 = d.a;
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
             thisTest.Verify("d1", new Object[] { 1 });
         }
 
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_18()
-        {
-            String code =
-@"
-class B{ b1=0;}
-class A
-{
-	x : var[];
-	def foo (y)
-	{
-		x = y;
-		return = x;
-	}
-}
-s = A.A();
-y = s.foo(B.B()).b1;
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("y", new Object[] { 0 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_19()
-        {
-            String code =
-@"
-class A
-{
-    a : int = 0;            
-}
-def foo ( x1 : A)
-{
-    x1.a = -1;
-    return = x1;
-}
-a1 = A.A();
-a1 = foo ( a1);
-b = a1.a;
-a1.a = 2;
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("b", 2);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_20()
-        {
-            String code =
-@"
-class A
-{ 
-    a : int;    
-    def foo(x : int)
-    {
-       a =
-        {
-            x => a1;    
-            
-        }
-        return = a ;
-    }
-}
-ax = A.A();
-res = ax.foo(1);
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object n1 = null;
-            thisTest.Verify("res", 1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_21()
-        {
-            String code =
-@"
-class A
-{ 
-    a : int = 0;    
-    def foo(x : int)
-    {
-       a =
-        {
-            x => a1;    
-            
-        }
-        return = a ;
-    }
-}
-ax = { A.A(), A.A() };
-res;
-[Imperative]
-{
-    if(ax[0].a == 0)
-    {
-        [Associative]
-        {
-            res = ax.foo( 1..2) ;
-        }
-    }
-}
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("res", new Object[] { 1, 2 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_22()
-        {
-            String code =
-@"
-class A
-{ 
-    a : int = 0;    
-    def foo(x : int)
-    {
-       a =
-        {
-            x => a1; 
-            +1;           
-        }
-        return = a ;
-    }
-}
-ax = { A.A(), A.A() };
-res = foo( ax );
-def foo ( xx : A[] )
-{
-    ret;
-    [Imperative]
-    {
-        if(ax[0].a == 0)
-        {
-            [Associative]
-            {
-                ret = xx.foo( 1..2) ;
-            }
-        }
-    }
-    return = ret;
-}
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("res", new Object[] { 2, 3 });
-        }
-
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_23()
-        {
-            String code =
-@"
-class A
-{ 
-    a : int = 0;    
-    def foo(x : int)
-    {
-       a =
-        {
-            x => a1; 
-            +1;           
-        }
-        return = a ;
-    }
-}
-ax = { A.A(), A.A() };
-res = foo( ax );
-def foo ( xx : A[] )
-{
-    ret;
-    [Imperative]
-    {
-        if(ax[0].a == 0)
-        {
-            [Associative]
-            {
-                ret = xx.foo( 1..2) ;
-            }
-        }
-    }
-    return = ret;
-}
-ax = { A.A(), A.A(), A.A() };
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("res", new Object[] { 2, 3 });
-        }
-
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_24()
-        {
-            String code =
-@"
-class A
-{ 
-    a : int = 0;    
-    def foo(x : int)
-    {
-       a = x;
-       return = a ;
-    }
-}
-ax = { A.A(), A.A() };
-res = {
-            ax.foo( {1,2} ); 
-            +1;           
-       }
-ax = { A.A(), A.A() , A.A()};
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("res", new Object[] { 2, 3 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_25()
-        {
-            String code =
-@"
-class A
-{ 
-    a : int = 0;    
-    def foo(x : int)
-    {
-       a = x;
-       return = a ;
-    }    
-}
-class B
-{ 
-    static def test_foo(a: A[], b : int[])
-    {
-       return = a.foo(b) ;
-    } 
-    static def test_foo(a: A[], b : int)
-    {
-       return = a.foo(b) ;
-    }   
-}
-ax = { A.A(), A.A() };
-bx = { 2, 3};
-res = B.test_foo(ax, bx );
-bx = 2;
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("res", new Object[] { 2, 2 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T100_Replication_On_Class_Instance_26()
-        {
-            String code =
-@"
-class A
-{ 
-    a : int = 0;    
-    def foo(x : int)
-    {
-       a = x;
-       return = a ;
-    }    
-}
-class B
-{ 
-    static def test_foo(a: A[], b : int[])
-    {
-       return = a.foo(b) ;
-    }       
-}
-ax = { A.A(), A.A() };
-bx = { 2, 3};
-res = B.test_foo(ax, bx );
-bx = 2;
-";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            String errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("res", new Object[] { 2 });
-        }
-   
-    
         [Test]
         public void T101_Replication_Empty_List()
         {

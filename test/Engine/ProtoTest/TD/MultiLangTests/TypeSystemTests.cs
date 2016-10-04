@@ -1296,31 +1296,6 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("Type System")]
-        public void TS37_userdefinedTo_null()
-        {
-            string code =
-                @"
-                class B{b=0;}
-                class A
-                    {
-	                    a:int;
-	                    constructor A (b:B)
-	                    {
-		                    a=1;
-                        }
-                    }
-                    //d:bool='1.5';
-                    d=A.A(null); // user def to bool - > if not null true 
-                    d1 = d.a;";
-
-            thisTest.RunScriptSource(code);
-            //Assert.Fail("1467240 - Sprint 26 - Rev 3426 user defined type not convertible to bool");
-            thisTest.Verify("d1", 1);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS038_eachType_To_Userdefined()
@@ -1386,43 +1361,6 @@ import(""FFITarget.dll"");
 
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("Type System")]
-        public void TS038_return_single_AlltypeTo_UserDefined()
-        {
-            string code =
-                @"
-                      class B extends A{ b=2; }
-                        class A{ a=1; }
-                        def foo :A( x)
-                        {
-	                        b1= x ;
-	                        return =b1;
-                        }
-                        a = foo(1.5);
-                        z:var=1.5;
-                        a1=foo(z);
-                        b = foo(1);
-                        c = foo( ""1.5"" );
-                        c1 = foo( '1');
-                        d = foo( B.B() );
-                        d1 = d.b;
-                        e = foo(false);
-                        f = foo( null );";
-            string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
-            thisTest.RunScriptSource(code, error);
-            thisTest.Verify("a", null);
-            thisTest.Verify("a1", null);
-            thisTest.Verify("b", null);
-            thisTest.Verify("c", null);
-            thisTest.Verify("c1", null);
-            thisTest.Verify("d1", 2);
-            thisTest.Verify("e", null);
-            thisTest.Verify("f", null);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Type System")]
         public void TS039_userdefined_covariance()
         {
@@ -1449,7 +1387,6 @@ import(""FFITarget.dll"");
                     a1=a.a;
                     b:A=B.B(2);
                     b1=b.b;
-                    b2=b.a;
                     c:B=A.A(3);
                     c1=c.b;
                     c2=c.a;
@@ -1457,41 +1394,9 @@ import(""FFITarget.dll"");
             thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 1);
             thisTest.Verify("b1", 2);
-            thisTest.Verify("b2", 0);
             thisTest.Verify("c", null);
             thisTest.Verify("c1", null);
             thisTest.Verify("c2", null);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("Type System")]
-        public void TS039_userdefined_covariance_2()
-        {
-            string code =
-                @"
-               
-                    class B extends A{ b=2; }
-                    class A{
-                        a : B;
-                        c : ClassFunctionality;
-                    }
-                    def foo( x)
-                    {
-                        test = A.A();
-                        test.a = x;
-                        test.c = x;
-                        return = test;
-                    }
-                    a1 = foo( B.B() );
-                    b1 = a1.a.b;
-                    b2 = a1.c.b;
-                    c1 = foo(A.A());
-                    d1= c1.a.b;";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("b1", 2);
-            thisTest.Verify("b2", 2);
-            thisTest.Verify("d1", null);
         }
 
         [Test]
@@ -2860,121 +2765,6 @@ import(""FFITarget.dll"");
             thisTest.Verify("d", null);
             thisTest.Verify("e", null);
             thisTest.Verify("f", null);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("Type System")]
-        public void TS074_Param_singleton_AlltypeTo_UserDefinedArray()
-        {
-            string code =
-                @"
-                    class A{ a=1; }
-                    class B extends A{ b=2; }
-                        def foo ( x:A[])
-                        {
-	                        b1= x ;
-	                        return =b1;
-                        }
-                        a = foo(1.5);
-                        z:var=1.5;
-                        a1=foo(z);
-                        b = foo(1);
-                        c = foo( ""1.5"" );
-                        c1 = foo( '1');
-                        d = foo( B.B() );
-                        d1 = d.b;
-                        e = foo(false);
-                        f = foo( null );";
-            string error = "1467314 - Sprint 26 - Rev 3805 user defined type to array of user defined type does not upgrade to array ";
-            thisTest.RunScriptSource(code, error);
-            thisTest.Verify("a", null);
-            thisTest.Verify("a1", null);
-            thisTest.Verify("b", null);
-            thisTest.Verify("c", null);
-            thisTest.Verify("c1", null);
-
-            thisTest.Verify("d1", new object[] { 2 });
-            thisTest.Verify("e", null);
-            thisTest.Verify("f", null);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("Type System")]
-        public void TS075_return_singleton_AlltypeTo_UserDefinedArray()
-        {
-            string code =
-                @"
-                      class B extends A{ b=2; }
-                        class A{ a=1; }
-                        def foo :A[]( x)
-                        {
-	                        b1= x ;
-	                        return =b1;
-                        }
-                        a = foo(1.5);
-                        z:var=1.5;
-                        a1=foo(z);
-                        b = foo(1);
-                        c = foo( ""1.5"" );
-                        c1 = foo( '1');
-                        d = foo( B.B() );
-                        d1 = d.b;
-                        e = foo(false);
-                        f = foo( null );";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a", null);
-            thisTest.Verify("a1", null);
-            thisTest.Verify("b", null);
-            thisTest.Verify("c", null);
-            thisTest.Verify("c1", null);
-            thisTest.Verify("d1", new object[] { 2 });
-            thisTest.Verify("e", null);
-            thisTest.Verify("f", null);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("Type System")]
-        public void TS076_UserDefinedCovariance_ArrayPromotion()
-        {
-            string code =
-                @" class A
-                    {
-	                        a:int;
-	                        constructor A (b:int)
-	                        {
-		                        a=b;
-                            }
-                    }
-                    class B extends A
-                    {
-	                        b:int;
-	                        constructor B (c:int)
-	                        {
-    		                    b=c;
-                            }
-                    }
-                   
-                    a:A[]=A.A(1); 
-                    a1=a.a; 
-                    b:A[]=B.B(2); 
-                    b1=b.b; 
-                    b2=b.a; 
-                    c:B[]=A.A(3); 
-                    c1=c.b; 
-                    c2=c.a;
-
-                    ";
-            string error = "1467251 - sprint 26 - Rev 3485 type conversion from var to var array promotion is not happening ";
-            thisTest.RunScriptSource(code, error);
-            thisTest.Verify("a1", new object[] { 1 });
-            thisTest.Verify("b1", new object[] { 2 });
-            thisTest.Verify("b2", new object[] { 0 });
-            thisTest.Verify("c", null);
-            thisTest.Verify("c1", null);
-            thisTest.Verify("c2", null);
         }
 
         [Test]
@@ -5714,32 +5504,6 @@ import(""FFITarget.dll"");
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("Type System")]
-        public void TS0184_TypeConversion_1467352()
-        {
-            string code =
-                @"
-                class B
-                    {
-                    constructor B()
-                    {
-                    }
-                    def foo()
-                    {
-                    return = 1;
-                    }
-                    }
-                    arr = { 0, B.B() };
-                    x = arr[1];
-                    test = x.foo();
-                                            ";
-            string error = "1467359 - Sprint 27 - rev 4017 arithematic operations , the type must be converted higer up in the chain , currently does based on the first item in the array";
-            var mirror = thisTest.RunScriptSource(code, error);
-            TestFrameWork.Verify(mirror, "test", 1);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
         public void TS0184_TypeConversion_1467352_2()
@@ -6069,42 +5833,6 @@ import(""FFITarget.dll"");
             string error = "MAGN-1679 Sprint 27 - rev 4184 - when heterogenous array is passed and the type is user defined , it does not replicate unless the first item is user defined";
             var mirror = thisTest.RunScriptSource(code, error);
             TestFrameWork.Verify(mirror, "b", new object[] { null, 0, 0 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("Type System")]
-        [Category("Failure")]
-        public void TS0197_getter_dotoperator_1467419()
-        {
-            string code =
-                @"
-                   class A 
-                    {
-                    x : int[];
-                    constructor A( y)
-                    {
-                    x = y;
-                    }
-                    }
-                    class B extends A 
-                    {
-                    t : int[];
-                    constructor B(y : var[])
-                    {
-                    x = y;
-                    t = x + 1;
-                    }
-                    }
-                    a1 = { B.B(1), { ClassFunctionality.ClassFunctionality(2), { B.B(0), B.B(1) } } };
-                    // received :{{1},null}
-                    //expected:{{1},{{0},{1}}}
-                    z = a1.x;
-                    ";
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1683
-            string error = "MAGN-1683 Sprint 29 - Rev 4502 - the .operator is doing rank reduction where it is expected to replicate";
-            var mirror = thisTest.RunScriptSource(code, error);
-            TestFrameWork.Verify(mirror, "z", new object[] { new object[] { 1 }, new object[] { new object[] { 0 }, new object[] { 1 } } });
         }
 
         [Test]
