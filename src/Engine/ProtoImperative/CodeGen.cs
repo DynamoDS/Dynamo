@@ -313,6 +313,12 @@ namespace ProtoImperative
                         {
                             procNode = classNode.GetFirstStaticFunctionBy(procName, arglist.Count);
                         }
+
+                        if (procNode != null)
+                        {
+                            isAccessible = procNode.AccessModifier == ProtoCore.CompilerDefinitions.AccessModifier.Public;
+                            realType = refClassIndex;
+                        }
                     }
 
                     if (procNode != null)
