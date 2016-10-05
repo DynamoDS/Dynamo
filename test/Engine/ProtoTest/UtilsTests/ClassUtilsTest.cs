@@ -12,7 +12,6 @@ namespace ProtoTest.UtilsTests
     class ClassUtilsTest : ProtoTestBase
     {
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void GetUpcastChainTest()
         {
             String code =

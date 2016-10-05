@@ -260,8 +260,6 @@ namespace ProtoImperative
                 return null;
             }
 
-            //Validity.Assert(null == graphNode);
-
             FunctionCallNode funcCall = node as FunctionCallNode;
             string procName = funcCall.Function.Name;
             List<ProtoCore.Type> arglist = new List<ProtoCore.Type>();
@@ -286,11 +284,11 @@ namespace ProtoImperative
             bool isStatic = false;
             bool hasLogError = false;
 
-            int refClassIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
-            if (parentNode != null && parentNode is ProtoCore.AST.ImperativeAST.IdentifierListNode)
+            int refClassIndex = Constants.kInvalidIndex;
+            if (parentNode != null && parentNode is IdentifierListNode)
             {
-                ProtoCore.AST.Node leftnode = (parentNode as ProtoCore.AST.ImperativeAST.IdentifierListNode).LeftNode;
-                if (leftnode != null && leftnode is ProtoCore.AST.ImperativeAST.IdentifierNode)
+                ProtoCore.AST.Node leftnode = (parentNode as IdentifierListNode).LeftNode;
+                if (leftnode != null && leftnode is IdentifierNode)
                 {
                     refClassIndex = core.ClassTable.IndexOf(leftnode.Name);
                 }
@@ -302,14 +300,29 @@ namespace ProtoImperative
                 bool isAccessible;
                 int realType;
 
-                if (procName != ProtoCore.DSASM.Constants.kFunctionPointerCall)
+                if (procName != Constants.kFunctionPointerCall)
                 {
-                    bool isStaticOrConstructor = refClassIndex != ProtoCore.DSASM.Constants.kInvalidIndex;
-                    procNode = core.ClassTable.ClassNodes[inferedType.UID].GetMemberFunction(procName, arglist, globalClassIndex, out isAccessible, out realType, isStaticOrConstructor);
+                    bool isStaticOrConstructor = refClassIndex != Constants.kInvalidIndex;
+                    var classNode = core.ClassTable.ClassNodes[inferedType.UID];
+                    procNode = classNode.GetMemberFunction(procName, arglist, globalClassIndex, out isAccessible, out realType, isStaticOrConstructor);
+
+                    if (isStaticOrConstructor)
+                    {
+                        procNode = classNode.GetFirstConstructorBy(procName, arglist.Count);
+                        if (procNode == null)
+                        {
+                            procNode = classNode.GetFirstStaticFunctionBy(procName, arglist.Count);
+                        }
+
+                        if (procNode != null)
+                        {
+                            isAccessible = procNode.AccessModifier == ProtoCore.CompilerDefinitions.AccessModifier.Public;
+                            realType = refClassIndex;
+                        }
+                    }
 
                     if (procNode != null)
                     {
-                        Validity.Assert(realType != ProtoCore.DSASM.Constants.kInvalidIndex);
                         isConstructor = procNode.IsConstructor;
                         isStatic = procNode.IsStatic;
                         type = lefttype = realType;

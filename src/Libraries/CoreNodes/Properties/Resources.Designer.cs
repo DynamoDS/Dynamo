@@ -133,6 +133,24 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The input value of Math.Factorial cannot be negative..
+        /// </summary>
+        internal static string FactorialNegativeInt {
+            get {
+                return ResourceManager.GetString("FactorialNegativeInt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The return value of Math.Factorial is out of range..
+        /// </summary>
+        internal static string FactorialOverflow {
+            get {
+                return ResourceManager.GetString("FactorialOverflow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must provide a center point..
         /// </summary>
         internal static string FindPointsWithinRadiusNullPointMessage {

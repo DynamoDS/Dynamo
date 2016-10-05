@@ -140,29 +140,6 @@ endPtZ = endPt.Z;";
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("SmokeTest")]
-        public void T010_BaseImportWithVariableClassInstance_top()
-        {
-            string code = @"
-import (""BaseImportWithVariableClassInstance.ds"");
-c = a + b;
-myPointX = myPoint.X;
-arr = Scale(midValue, 4.0);";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
-            object a = 5;
-            object b = 10;
-            object c = 15;
-            object myPointX = 10.1;
-            object[] arr = { 20.2, 40.4, 60.6 };
-            thisTest.Verify("a", a);
-            thisTest.Verify("b", b);
-            thisTest.Verify("c", c);
-            thisTest.Verify("myPointX", myPointX);
-            thisTest.Verify("arr", arr);
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T012_BaseImportImperative()
         {
@@ -264,44 +241,6 @@ a = 10;";
             thisTest.Verify("a", 10);
             thisTest.Verify("b", 20);
             thisTest.Verify("c", 30);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("SmokeTest")]
-        public void T018_MultipleImport()
-        {
-            string code = @"
-import (""basicImport1.ds"");
-import (""basicImport2.ds"");
-myPoint = Point.ByCoordinates(10.1, 20.2, 30.3);
-z = myPoint.Z;
-midValue = myPoint.MidValue();
-arr = Scale(midValue, 4.0);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
-            object z = 30.3;
-            object[] arr = { 20.2, 40.4, 60.6 };
-            thisTest.Verify("z", z);
-            thisTest.Verify("arr", arr);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("SmokeTest")]
-        public void T019_MultipleImport_ClashFunctionClassRedifinition()
-        {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
-import (""basicImport.ds"");
-import (""basicImport2.ds"");
-myPoint = Point.ByCoordinates(10.1, 20.2, 30.3);
-z = myPoint.Z;
-midValue = myPoint.MidValue(myPoint);
-arr = Scale(midValue, 4.0);";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code, "", importPath);
-            });
         }
 
         [Test]

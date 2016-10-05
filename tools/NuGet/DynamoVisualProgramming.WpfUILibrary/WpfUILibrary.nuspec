@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>DynamoVisualProgramming.WpfUILibrary</id>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
@@ -23,7 +23,7 @@
         <frameworkAssembly assemblyName="PresentationFramework"/>
     </frameworkAssemblies>
     <dependencies>
-        <dependency id="DynamoVisualProgramming.Core" version="1.1.0"/>
+        <dependency id="DynamoVisualProgramming.Core" version="1.2.0"/>
     </dependencies>
   </metadata>
 </package>
