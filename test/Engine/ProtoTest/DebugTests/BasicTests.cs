@@ -3918,81 +3918,6 @@ a = x < foo(22) ? 3 : 55;
             }
 
         }
-        [Test]
-        [Category("Debugger")]
-        public void SteppingOverinline_Imperative_723_5()
-        {
-            string src =
-            @"import(""DSCoreNodes.dll"");
-                x = 330;
-                [Imperative]
-                {
-    
-                    a = x > 1 ? Math.Cos(60) : Math.Cos(45);
-                    b = 22;
-                }";
-            fsr.PreStart(src);
-            DebugRunner.VMState vms = fsr.Step();
-
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-
-
-            {
-
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a");
-                Obj objExecVal = mirror.GetWatchValue();
-                TestFrameWork.Verify(mirror, "a", 0.5, 1);
-
-            }
-            vms = fsr.StepOver();
-            {
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"b");
-                Obj objExecVal = mirror.GetWatchValue();
-                TestFrameWork.Verify(mirror, "b", 22, 1);
-            }
-
-        }
-
-        [Test]
-        [Category("Debugger")]
-        public void SteppingOverinline_Imperative_723_6()
-        {
-            string src =
-            @"import(""DSCoreNodes.dll"");
-                x = -330;
-                [Imperative]
-                {
-    
-                    a = x > 1 ? Math.Cos(60) : Math.Cos(45);
-                    b = 22;
-                }";
-            fsr.PreStart(src);
-            DebugRunner.VMState vms = fsr.Step();
-
-            vms = fsr.StepOver();
-            vms = fsr.StepOver();
-
-
-            {
-
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"a");
-                Obj objExecVal = mirror.GetWatchValue();
-                TestFrameWork.Verify(mirror, "a", 0.707106, 1);
-
-            }
-            vms = fsr.StepOver();
-            {
-                ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-                ExecutionMirror mirror = watchRunner.Execute(@"b");
-                Obj objExecVal = mirror.GetWatchValue();
-                TestFrameWork.Verify(mirror, "b", 22, 1);
-            }
-
-        }
 
         [Test]
         [Category("Failure")]
@@ -5010,85 +4935,6 @@ r = 0;
         [Test]
         [Category("ExpressionInterpreterRunner")]
         [Category("Failure")]
-        public void inlineconditional_656_2()
-        {
-            // Execute and verify the main script in a debug session
-            fsr.PreStart(
- @"
-import(""DSCoreNodes.dll"");
-x = 330;
-a;
-[Imperative]
-{
-    
-    a = x > 1 ? Math.Cos(60) : Math.Cos(45);
-    b = 22;
-}
-           
-");
-
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
-            Assert.Fail("IDE-656Regression: Debugging stops at inline condition");
-
-            DebugRunner.VMState vms = fsr.Step();    // x = 330;
-
-            vms = fsr.StepOver();    // a = x > 20 ?  foo(44) : 55 ;
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-            ExecutionMirror mirror = watchRunner.Execute(@"x");
-            Obj objExecVal = mirror.GetWatchValue();
-            TestFrameWork.Verify(mirror, "x", 330, 0);
-
-            vms = fsr.StepOver();   // b = 22;
-            TestFrameWork.Verify(mirror, "a", 0.5, 0);
-
-            TestFrameWork.Verify(mirror, "b", 22, 0);
-        }
-
-        [Test]
-        [Category("ExpressionInterpreterRunner")]
-        [Category("Failure")]
-        public void inlineconditional_stepin_656_2()
-        {
-            fsr.PreStart( // Execute and verify the main script in a debug session
-    @"
-import(""DSCoreNodes.dll"");
-x = 330;
-a;
-[Imperative]
-{
-    
-    a = x > 1 ? Math.Cos(60) : Math.Cos(45);
-    b = 22;
-}
-           
-");
-
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1568
-            Assert.Fail("IDE-656Regression: Debugging stops at inline condition");
-            DebugRunner.VMState vms = fsr.Step();    // x = 330;
-
-            vms = fsr.Step();    // a = x > 20 ?  foo(44) : 55 ;
-
-
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
-            ExecutionMirror mirror = watchRunner.Execute(@"x");
-            Obj objExecVal = mirror.GetWatchValue();
-            TestFrameWork.Verify(mirror, "x", 330, 0);
-            vms = fsr.Step();
-            TestFrameWork.Verify(mirror, "a", null, 0);
-            vms = fsr.Step();
-            vms = fsr.Step();   // b = 2;
-            TestFrameWork.Verify(mirror, "a", 0.5, 0);
-            vms = fsr.Step();    // b = 2;
-            // b = 2;
-            TestFrameWork.Verify(mirror, "b", 22, 0);
-            // b = 2;
-
-
-        }
-        [Test]
-        [Category("ExpressionInterpreterRunner")]
-        [Category("Failure")]
         public void inlineconditional_656_3()
         {
             // Execute and verify the main script in a debug session
@@ -6044,7 +5890,6 @@ a = 7;
         [Test]
         [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
-        [Category("ReleaseCriteria")]
         public void UseCase_Robert_simple_copy_and_modiy_collection_1()
         {
             // Execute and verify the main script in a debug session
@@ -6085,7 +5930,6 @@ d = b[0..(Count(b) - 1)..2]; // rnage expression used for indexing into a collec
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("ReleaseCriteria")]
         public void UseCase_Robert_modifiying_replicated_inline_conditional_1()
         {
             // Execute and verify the main script in a debug session
