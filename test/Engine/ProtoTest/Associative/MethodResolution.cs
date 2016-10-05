@@ -171,7 +171,6 @@ val = v[0];
 
         [Test]
         [Category("Method Resolution")]
-        [Category("Escalate")]
         [Category("DSDefinedClass_Ported")]
         public void TestDispatchEmptyArray()
         {

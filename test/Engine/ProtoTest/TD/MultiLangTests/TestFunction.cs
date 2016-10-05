@@ -6832,40 +6832,6 @@ x = foo(); // null
 
         [Test]
         [Category("SmokeTest")]
-        public void T64_Function_notDeclared_3()
-        {
-            String code = @"
-import(""DSCoreNodes.dll"");
-c = Math.Floor(3.0);
-d = Floor(3);
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("d", null);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.FunctionNotFound);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T64_Function_notDeclared_imperative_4()
-        {
-            String code = @"
-import(""DSCoreNodes.dll"");
-c;d;
-[Imperative]
-{
-    c = Math.Floor(3.0);
-    d = Floor(3);
-}
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("d", null);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.FunctionNotFound);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
         public void T65_1467115_warning_on_function_resolution_1()
         {
             String code = @"

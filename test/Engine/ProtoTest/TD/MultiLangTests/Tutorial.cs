@@ -195,35 +195,6 @@ startPt = DummyPoint.ByCoordinates( 2, 1, 0 );
 
         }
 
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void T00007_Geometry_004_circle_all_combinations()
-        {
-            //Assert.Fail("1456568 - Sprint 16 : Rev 982 : Replication does not work on operators ");
-            string errmsg = "";//DNL-1467282 Replication guides not working in constructor of class";
-            string code = @"
-import(""FFITarget.dll"");
-import(""DSCoreNodes.dll"");
-circlePoint = DummyPoint.ByCoordinates( 10.0 * Math.Cos(0..(360)..#4), 10.0 * Math.Sin(0..(360)..#4), 0.0);
-lines = DummyLine.ByStartPointEndPoint(circlePoint<1>,circlePoint<2>);
-lines_StartPoint_X = lines.Start.X; 
-t1 = lines[0][0].Start.X;
-t2 = lines[1][0].Start.X;
-t3 = lines[2][0].Start.X;
-t4 = lines[3][0].Start.X;
-";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg, importPath);
-
-            //Object[] v1 = new Object[] { new Object[] { 10.000, 10.000, 10.000, 10.000 }, new Object[] { -5.000, -5.000, -5.000, -5.000 }, new Object[] { -5.000, -5.000, -5.000, -5.000 }, new Object[] { 10.000, 10.000, 10.000, 10.000 } };
-            //thisTest.Verify("lines_StartPoint_X", v1, 0);
-            thisTest.Verify("t1", 10.0, 0);
-            thisTest.Verify("t2", -5.0, 0);
-            thisTest.Verify("t3", -5.0, 0);
-            thisTest.Verify("t4", 10.0, 0);
-        }
-
-
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Replication")]
@@ -251,7 +222,6 @@ t2 = lines[1][2].Start.X;";
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("Feature")]
         public void T00016_Geometry_012_centroid_1()
         {
             string code = @"
