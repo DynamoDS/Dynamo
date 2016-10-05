@@ -267,7 +267,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                 inputs);
         }
 
-        protected override AssociativeNode GetFunctionApplicationWithContext(NodeModel model, List<AssociativeNode> inputAstNodes, CompilationContext context)
+        protected override AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
             AssociativeNode rhs;
 

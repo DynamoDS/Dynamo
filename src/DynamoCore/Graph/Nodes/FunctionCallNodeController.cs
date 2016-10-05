@@ -52,6 +52,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="model">NodeModel to produce an AST for.</param>
         /// <param name="inputAstNodes">Arguments to the function call.</param>
+        /// <returns>AST nodes that generated from the node.</returns>
         public IEnumerable<AssociativeNode> BuildAst(NodeModel model, List<AssociativeNode> inputAstNodes)
         {
             return BuildAst(model, inputAstNodes, CompilationContext.DeltaExecution); 
@@ -63,6 +64,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="model">NodeModel to produce an AST for.</param>
         /// <param name="inputAstNodes">Arguments to the function call.</param>
         /// <param name="context">Compilation context</param>
+        /// <returns>AST nodes that generated from the node.</returns>
         public IEnumerable<AssociativeNode> BuildAst(NodeModel model, List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
             var resultAst = new List<AssociativeNode>();
@@ -163,7 +165,7 @@ namespace Dynamo.Graph.Nodes
         protected virtual void BuildOutputAst(
             NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst, CompilationContext context)
         {
-            AssociativeNode rhs = GetFunctionApplicationWithContext(model, inputAstNodes, context);
+            AssociativeNode rhs = GetFunctionApplication(model, inputAstNodes, context);
 
             if (!model.IsPartiallyApplied || model.OutPortData.Count == 1)
                 AssignIdentifiersForFunctionCall(model, rhs, resultAst);
@@ -191,9 +193,10 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="model">Node to produce a function application for.</param>
         /// <param name="inputAstNodes">Arguments to the function application.</param>
+        /// <returns>Function call node</returns>
         protected virtual AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes)
         {
-            return GetFunctionApplicationWithContext(model, inputAstNodes, CompilationContext.DeltaExecution);
+            return GetFunctionApplication(model, inputAstNodes, CompilationContext.DeltaExecution);
         }
 
         /// <summary>
@@ -203,7 +206,8 @@ namespace Dynamo.Graph.Nodes
         /// <param name="model">Node to produce a function application for.</param>
         /// <param name="inputAstNodes">Arguments to the function application.</param>
         /// <param name="context">Compilation context</param>
-        protected abstract AssociativeNode GetFunctionApplicationWithContext(NodeModel model, List<AssociativeNode> inputAstNodes, CompilationContext context);
+        /// <returns>Function call node</returns>
+        protected abstract AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes, CompilationContext context);
 
         /// <summary>
         ///     Deserializes Controller information from XML.
