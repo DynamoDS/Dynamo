@@ -1683,12 +1683,13 @@ namespace ProtoImperative
                 EmitSetExpressionUID(core.ExpressionUID++);
         }
 
-        private void EmitUnaryExpressionNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AST.ImperativeAST.BinaryExpressionNode parentNode)
+        private void EmitUnaryExpressionNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AST.ImperativeAST.BinaryExpressionNode parentNode,
+            ProtoCore.AssociativeGraph.GraphNode graphNode)
         {
             if (IsParsingGlobal())
             {
                 UnaryExpressionNode u = node as UnaryExpressionNode;
-                DfsTraverse(u.Expression, ref inferedType, false, null, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
+                DfsTraverse(u.Expression, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
 
                 string op = Op.GetUnaryOpName(u.Operator);
                 EmitInstrConsole(op);
@@ -1926,7 +1927,7 @@ namespace ProtoImperative
             }
         }
 
-        private void EmitInlineConditionalNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AST.ImperativeAST.BinaryExpressionNode parentNode = null)
+        private void EmitInlineConditionalNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AST.ImperativeAST.BinaryExpressionNode parentNode = null, ProtoCore.AssociativeGraph.GraphNode graphNode)
         {
             InlineConditionalNode inlineConNode = node as InlineConditionalNode;
             IfStmtNode ifNode = new IfStmtNode();
@@ -1943,7 +1944,7 @@ namespace ProtoImperative
             newOptions |= DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint;
             core.DebuggerProperties.breakOptions = newOptions;
 
-            EmitIfStmtNode(ifNode, ref inferedType, parentNode, true);
+            EmitIfStmtNode(ifNode, ref inferedType, parentNode, true, graphNode);
 
             core.DebuggerProperties.breakOptions = oldOptions;
         }
@@ -2454,13 +2455,13 @@ namespace ProtoImperative
                     EmitBinaryExpressionNode(node, ref inferedType, isBooleanOp, graphNode, parentNode as BinaryExpressionNode);
                     break;
                 case AstKind.UnaryExpression:
-                    EmitUnaryExpressionNode(node, ref inferedType, parentNode as BinaryExpressionNode);
+                    EmitUnaryExpressionNode(node, ref inferedType, parentNode as BinaryExpressionNode, graphNode);
                     break;
                 case AstKind.ForLoop:
                     EmitForLoopNode(node, ref inferedType, isBooleanOp, graphNode);
                     break;
                 case AstKind.InlineConditional:
-                    EmitInlineConditionalNode(node, ref inferedType, parentNode as BinaryExpressionNode);
+                    EmitInlineConditionalNode(node, ref inferedType, parentNode as BinaryExpressionNode, graphNode);
                     break;
                 case AstKind.RangeExpression:
                     EmitRangeExprNode(node, ref inferedType, graphNode);
