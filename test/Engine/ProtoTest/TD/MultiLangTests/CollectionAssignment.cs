@@ -2416,7 +2416,6 @@ b[0]=false;
 
         [Test]
         [Category("Replication")]
-        [Category("Feature")]
         public void T66_Array_CannotBeUsedToIndex1467069()
         {
             string code = @"
@@ -2433,7 +2432,6 @@ x;
 
         [Test]
         [Category("Replication")]
-        [Category("Feature")]
         public void T66_Array_CannotBeUsedToIndex1467069_2()
         {
             string code = @"

@@ -222,7 +222,6 @@ t2 = lines[1][2].Start.X;";
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("Feature")]
         public void T00016_Geometry_012_centroid_1()
         {
             string code = @"
