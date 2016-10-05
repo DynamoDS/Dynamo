@@ -10,20 +10,20 @@ using ProtoImperative.Properties;
 
 namespace ProtoImperative
 {
-    public class BackpatchMap
-    {
-        public BackpatchMap()
-        {
-            BreakTable = new Dictionary<int, BackpatchTable>();
-            EntryTable = new Dictionary<int, int>();
-        }
-
-        public Dictionary<int, BackpatchTable> BreakTable;
-        public Dictionary<int, int> EntryTable;
-    }
-
     public class CodeGen : ProtoCore.CodeGen
     {
+        private class BackpatchMap
+        {
+            public BackpatchMap()
+            {
+                BreakTable = new Dictionary<int, BackpatchTable>();
+                EntryTable = new Dictionary<int, int>();
+            }
+
+            public Dictionary<int, BackpatchTable> BreakTable;
+            public Dictionary<int, int> EntryTable;
+        }
+
         private readonly BackpatchMap backpatchMap;
         private NodeBuilder nodeBuilder;
 
@@ -708,10 +708,6 @@ namespace ProtoImperative
             ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
 
             ProtoCore.DSASM.SymbolNode symbolnode = null;
-            //bool isAllocated = VerifyAllocation(t.Value, out blockId, out localAllocBlock, out symindex, ref type);
-            //bool allocatedLocally = isAllocated && core.runtimeTableIndex == localAllocBlock;
-            //bool allocatedExternally = isAllocated && core.runtimeTableIndex > localAllocBlock;
-            //bool isVisible = isAllocated && core.runtimeTableIndex >= localAllocBlock;
             bool isAccessible = false;
             bool isAllocated = VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
             if (!isAllocated && null == t.ArrayDimensions)
@@ -832,10 +828,6 @@ namespace ProtoImperative
             if (IsParsingGlobal())
             {
                 LanguageBlockNode langblock = node as LanguageBlockNode;
-                //(Fuqiang, Ayush) : Throwing an assert stops NUnit. Negative tests expect to catch a 
-                // CompilerException, so we throw that instead.
-                //Validity.Assert(ProtoCore.Language.kInvalid != langblock.codeblock.language);
-
                 if (ProtoCore.Language.NotSpecified == langblock.codeblock.Language)
                 {
                     throw new ProtoCore.Exceptions.CompileErrorsOccured("Invalid language block");
@@ -892,7 +884,6 @@ namespace ProtoImperative
 
                 setBlkId(blockId);
                 inferedType = core.InferedType;
-                //Validity.Assert(codeBlock.children[codeBlock.children.Count - 1].blockType == ProtoCore.DSASM.CodeBlockType.kLanguage);
                 codeBlock.children[codeBlock.children.Count - 1].Attributes = PopulateAttributes(langblock.Attributes);
 
                 EmitInstrConsole("bounce " + blockId + ", " + entry.ToString());
@@ -2478,8 +2469,6 @@ namespace ProtoImperative
             }
 
             int blockId = codeBlock.codeBlockId; 
-            //updatePcDictionary(node, blockId);
-            //updatePcDictionary(node.line, node.col);
         }
     }
 
