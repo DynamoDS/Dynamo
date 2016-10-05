@@ -1927,7 +1927,7 @@ namespace ProtoImperative
             }
         }
 
-        private void EmitInlineConditionalNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AST.ImperativeAST.BinaryExpressionNode parentNode = null, ProtoCore.AssociativeGraph.GraphNode graphNode)
+        private void EmitInlineConditionalNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode, BinaryExpressionNode parentNode = null)
         {
             InlineConditionalNode inlineConNode = node as InlineConditionalNode;
             IfStmtNode ifNode = new IfStmtNode();
@@ -2461,7 +2461,7 @@ namespace ProtoImperative
                     EmitForLoopNode(node, ref inferedType, isBooleanOp, graphNode);
                     break;
                 case AstKind.InlineConditional:
-                    EmitInlineConditionalNode(node, ref inferedType, parentNode as BinaryExpressionNode, graphNode);
+                    EmitInlineConditionalNode(node, ref inferedType, graphNode, parentNode as BinaryExpressionNode);
                     break;
                 case AstKind.RangeExpression:
                     EmitRangeExprNode(node, ref inferedType, graphNode);
