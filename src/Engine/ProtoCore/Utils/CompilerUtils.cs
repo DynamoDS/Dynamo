@@ -234,8 +234,9 @@ namespace ProtoCore.Utils
             {
                 using (var provider = CodeDomProvider.CreateProvider("CSharp"))
                 {
-                    provider.GenerateCodeFromExpression(new CodePrimitiveExpression(input), writer, null);
+                    provider.GenerateCodeFromExpression(new CodePrimitiveExpression(input), writer, new CodeGeneratorOptions { IndentString = "\t" });
                     var literString = writer.ToString();
+                    literString = literString.Replace(string.Format("\" +{0}\t\"", Environment.NewLine), "");
                     return literString.Substring(1, literString.Length - 2);
                 }
             }

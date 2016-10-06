@@ -1005,7 +1005,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override string ToString()
         {
-            return "\"" + CompilerUtils.ToLiteral(Value) + "\"";
+            return "\"" + Value + "\"";
         }
 
         public override AstKind Kind
