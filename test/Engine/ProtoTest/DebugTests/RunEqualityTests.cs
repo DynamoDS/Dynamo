@@ -3701,7 +3701,7 @@ a3 = 1 > 2 ? true : b;
         public void DebugEQT021_Defect_1457354()
         {
             string code = @"
-import (""c:\wrongPath\test.ds"");
+import (""c:\\wrongPath\\test.ds"");
 a = 1;
 b = a * 2;
 ";
