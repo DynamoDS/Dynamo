@@ -94,7 +94,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
-            return Controller.BuildAst(this, inputAstNodes);
+            return Controller.BuildAst(this, inputAstNodes, context);
         }
 
         /// <summary>
@@ -280,7 +280,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                 inputs);
         }
 
-        protected override AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes)
+        protected override AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
             AssociativeNode rhs;
 
@@ -327,25 +327,35 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                         var functionNode = new IdentifierListNode
                         {
                             LeftNode = new IdentifierNode(Definition.ClassName),
-                            RightNode = new IdentifierNode(Definition.FunctionName)
+                            RightNode = new IdentifierNode(ProtoCore.DSASM.Constants.kGetterPrefix + Definition.FunctionName)
                         };
                         rhs = CreateFunctionObject(model, functionNode, inputAstNodes);
                     }
                     else
                     {
-                        rhs = new NullNode();
-                        if (inputAstNodes != null && inputAstNodes.Count >= 1)
+                        if (context == CompilationContext.NodeToCode)
                         {
-                            var thisNode = inputAstNodes[0];
-                            if (thisNode != null && !(thisNode is NullNode))
+                            rhs = new NullNode();
+                            if (inputAstNodes != null && inputAstNodes.Count >= 1)
                             {
-                                var insProp = new IdentifierListNode
+                                var thisNode = inputAstNodes[0];
+                                if (thisNode != null && !(thisNode is NullNode))
                                 {
-                                    LeftNode = inputAstNodes[0],
-                                    RightNode = new IdentifierNode(Definition.FunctionName)
-                                };
-                                rhs = insProp;
+                                    var insProp = new IdentifierListNode
+                                    {
+                                        LeftNode = inputAstNodes[0],
+                                        RightNode = new IdentifierNode(Definition.FunctionName)
+                                    };
+                                    rhs = insProp;
+                                }
                             }
+                        }
+                        else
+                        {
+                            rhs = AstFactory.BuildFunctionCall(
+                                Definition.ClassName,
+                                ProtoCore.DSASM.Constants.kGetterPrefix + Definition.FunctionName,
+                                inputAstNodes);
                         }
                     }
 
