@@ -1005,7 +1005,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override string ToString()
         {
-            return "\"" + Value + "\"";
+            return "\"" + CompilerUtils.ToLiteral(Value) + "\"";
         }
 
         public override AstKind Kind
@@ -2584,7 +2584,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override string ToString()
         {
-            return Keyword.Import + "(\"" + ModuleName + "\")" + Constants.termline;
+            return Keyword.Import + " (\"" + CompilerUtils.ToLiteral(ModuleName) + "\") " + Constants.termline;
         }
 
         public override AstKind Kind
