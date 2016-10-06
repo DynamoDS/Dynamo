@@ -31,23 +31,6 @@ namespace ProtoTest.TD.Associative
             thisTest.Verify("largest2", 400);
         }
 
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("SmokeTest")]
-        public void T002_Inline_Using_Math_Lib_Functions()
-        {
-            string src = @"    
-import(""DSCoreNodes.dll"");
-	a	=	9;				
-	b	=	25;
-	smallest   =   Math.Sqrt(b)	< a  ?   Math.Sqrt(a)	:	Math.Sqrt(b);	
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("smallest", 3);
-        }
-
-
         [Test]
         [Category("Replication")]
         public void T003_Inline_Using_Collection()
@@ -195,7 +178,6 @@ import(""DSCoreNodes.dll"");
 
 
         [Test]
-        [Category("Imperative")]
         public void T010_Defect_1456751_replication_issue()
         {
             String errmsg = "1467166 - VALIDATION NEEDED - Sprint24 : rev 3133 : Regression : comparison of collection with singleton should yield null in imperative scope";

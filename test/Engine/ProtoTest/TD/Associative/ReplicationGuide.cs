@@ -2438,28 +2438,6 @@ test8;
         }
 
         [Test]
-        public void T0125_ReplicationGudes_MathFunctions()
-        {
-            string code =
-@" 
-import(""DSCoreNodes.dll"");
-x = {0,1,2,3};
-y = {0,1};
-test1 = Math.Min( x, y); 
-test2 = Math.Min( x<1>, y<2>);
-test3 = Math.Max( x, y); 
-test4 = Math.Max( x<1>, y<2>);
-    
-";
-            string errmsg = "";
-            thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test1", new Object[] { 0, 1 });
-            thisTest.Verify("test2", new Object[] { new Object[] { 0, 0 }, new Object[] { 0, 1 }, new Object[] { 0, 1 }, new Object[] { 0, 1 } });
-            thisTest.Verify("test3", new Object[] { 0, 1 });
-            thisTest.Verify("test4", new Object[] { new Object[] { 0, 1 }, new Object[] { 1, 1 }, new Object[] { 2, 2 }, new Object[] { 3, 3 } });
-        }
-
-        [Test]
         public void T0129_ReplicationGudes_InlineCondition()
         {
             string code =

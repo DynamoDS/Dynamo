@@ -526,18 +526,6 @@ x = f();
         }
 
         [Test]
-        public void TestDefaultArgumenFFI01()
-        {
-            string code = @"    
-import(""DSCoreNodes.dll"");
-a = Math.Random();
-x = (a != null) ? 1 : 0;
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 1);
-        }
-
-        [Test]
         public void TestDefaultArgumentUntyped01()
         {
             string code = @"    

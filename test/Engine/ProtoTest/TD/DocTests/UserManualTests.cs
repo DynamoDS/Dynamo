@@ -193,26 +193,6 @@ s = Print(f2);
         }
 
         [Test]
-        public void UM32_NumberTypes()
-        {
-            string code =
-@"
-import(""DSCoreNodes.dll"");
-// create an index
-index = 1.0;
-// create a collection
-collection = 1..10;
-pass_value = collection[index];
-// floor converts a floating point value to an integer
-// this will correctly access a member of the collection
-value = collection[Math.Floor(index)];
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("pass_value", 2);
-            thisTest.Verify("value", 2);
-        }
-
-        [Test]
         public void UM33_NumberTypes()
         {
             string code =
@@ -293,26 +273,6 @@ s = Print(two_nums);
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);
             thisTest.Verify("y", 2);
-        }
-
-        [Test]
-        public void UM42_Math()
-        {
-            string code =
-@"
-import (""DSCoreNodes.dll"");
-
-val = 0.5;
-f = Math.Floor(val);
-c = Math.Ceiling(val);
-r = Math.Round(val);
-r2 = Math.Round(val + 0.001);
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("f", 0);
-            thisTest.Verify("c", 1);
-            thisTest.Verify("r", 0.0);
-            thisTest.Verify("r2", 1.0);
         }
 
         [Test]

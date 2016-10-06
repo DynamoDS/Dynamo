@@ -12,7 +12,6 @@ namespace ProtoTest.TD.Imperative
     {
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("Imperative")]
         public void T004_array_TypeConversion()
         {
             String code =
@@ -33,7 +32,6 @@ t1 = a;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("Imperative")]
         public void T005_ClassConstructorNestedScope_TypeConversion()
         {
             String code =
@@ -48,7 +46,6 @@ a = ClassFunctionality.ClassFunctionality(true);";
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("Imperative")]
         public void T009_ClassConstructorNestedScope_LogicalOperators()
         {
             String code =
@@ -103,7 +100,6 @@ result= test(false,true);
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("Imperative")]
         public void T010_ClassConstructorNestedScope_RelationalOperators()
         {
             String code =
@@ -188,7 +184,6 @@ return=d;
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("Imperative")]
         public void T011_ClassConstructorNestedScope_MathematicalOperators()
         {
             String code =
@@ -229,7 +224,6 @@ a1 = test();
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("Imperative")]
         public void T012_ClassConstructorNestedScope_ImplicitTypeConversion()
         {
             String code =
