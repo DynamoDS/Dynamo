@@ -7704,6 +7704,7 @@ import(DummyBase from ""FFITarget.dll"");
         }
 
         [Test]
+        [Category("Failure")]
         [Category("Debugger")]
         public void TestFFISetPropertyAssociative()
         {

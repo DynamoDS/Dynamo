@@ -1435,7 +1435,7 @@ var06 = g;
             var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
 
             // Expected 5 completion items
-            Assert.AreEqual(5, completions.Count());
+            Assert.AreEqual(4, completions.Count());
 
             string[] expected = { "Imperative", "ImportFromCSV", "Minimal", "MinimalTracedClass" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
