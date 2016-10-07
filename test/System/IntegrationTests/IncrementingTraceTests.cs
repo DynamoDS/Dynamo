@@ -1593,7 +1593,7 @@ mtcAID = mtcA.ID;";
 
             TestFrameWork.AssertValue("mtcAID", new List<int>() { 0, 1}, astLiveRunner);
 
-            Assert.IsTrue(astLiveRunner.RuntimeCore.RuntimeData.CallsiteCache.Count == 2);
+            Assert.IsTrue(astLiveRunner.RuntimeCore.RuntimeData.CallsiteCache.Count == 1);
 
 
             Console.WriteLine("==============Completed first verification ===================");
