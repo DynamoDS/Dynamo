@@ -3978,69 +3978,6 @@ c2 = 2;
         }
 
         [Test]
-        public void T068_Factorial_1()
-        {
-            String code =
-@"
-import (""DSCoreNodes.dll"");
-
-t1 = Math.Factorial(0.9);
-t2 = Math.Factorial(1.9);
-t3 = Math.Factorial(1.5);
-t4 = Math.Factorial(-1.5);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", 1);
-            thisTest.Verify("t2", 2);
-            thisTest.Verify("t3", 2);
-            thisTest.Verify("t4", -1);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void T068_Factorial_2()
-        {
-            string code = @"
-import (""DSCoreNodes.dll"");
-def foo ( x )
-{
-    return = Math.Factorial(x);
-}
-t2 = 0;
-arr = { -1, 0, 5};
-t3 = 0;
-
-t4;
-
-
-t7 = foo(5);
-t8 = Math.Factorial(arr);
-[Imperative]
-{
-    for ( i in arr )
-	{
-	    t2 = t2 + Math.Factorial(i);
-	}
-	t3 = [Associative]
-	{
-	    t4 = [Imperative]
-		{
-		    return = Math.Factorial(-3);
-		}
-		return = t4;
-	}
-}
- 
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t2", 120);
-            thisTest.Verify("t3", -1);
-            thisTest.Verify("t4", -1);
-            thisTest.Verify("t7", 120);
-            thisTest.Verify("t8", new Object[] { -1, 1, 120 });
-        }
-
-        [Test]
         [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void T069_Defect_1467556_Sort_Over_Derived_Classes()
         {

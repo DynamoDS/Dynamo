@@ -2343,7 +2343,7 @@ r = Equals(x, {41, 42});
             liveRunner.ResetVMAndResyncGraph(new List<string> { "FunctionObject.ds" });
             string code = @"
  def foo(x,y ) { return = x + y; }
- f = Function(foo, 2, {1}, {null, 42}, true); r = __Apply(f, 3);
+ f = __CreateFunctionObject(foo, 2, {1}, {null, 42}, true); r = __Apply(f, 3);
  ";
 
             Guid guid = System.Guid.NewGuid();
