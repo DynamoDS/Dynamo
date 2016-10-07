@@ -27,7 +27,7 @@ namespace Dynamo.Graph.Workspaces
             HasRunWithoutCrash = true;
         }
 
-        internal static bool FromXmlDocument(XmlDocument xmlDoc, string path, bool isTestMode, 
+        public static bool FromXmlDocument(XmlDocument xmlDoc, string path, bool isTestMode, 
             bool forceManualExecutionMode, ILogger logger, out WorkspaceInfo workspaceInfo)
         {
             try

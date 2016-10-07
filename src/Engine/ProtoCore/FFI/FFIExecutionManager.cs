@@ -81,10 +81,14 @@ namespace ProtoFFI
             {
                 if (mSessions.TryGetValue(sender, out session))
                 {
-                    mSessions.Remove(sender);
                     session.Dispose();
-                    sender.Dispose -= OnDispose;
-                    sender.ExecutionEvent -= OnExecutionEvent;
+                }
+
+                //Need unsubscribe from all events before deleting the singletone 
+                foreach (var item in mSessions)
+                {
+                    item.Key.Dispose -= OnDispose;
+                    item.Key.ExecutionEvent -= OnExecutionEvent;
                 }
                 mSelf = null;
             }

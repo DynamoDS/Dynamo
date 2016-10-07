@@ -268,24 +268,24 @@ namespace Dynamo.Models
                 RequestsCrashPrompt(this, args);
         }
 
-        internal delegate void TaskDialogHandler(object sender, TaskDialogEventArgs e);
-        internal event TaskDialogHandler RequestTaskDialog;
-        internal void OnRequestTaskDialog(object sender, TaskDialogEventArgs args)
+        public delegate void TaskDialogHandler(object sender, TaskDialogEventArgs e);
+        public event TaskDialogHandler RequestTaskDialog;
+        public void OnRequestTaskDialog(object sender, TaskDialogEventArgs args)
         {
             if (RequestTaskDialog != null)
                 RequestTaskDialog(sender, args);
         }
 
-        internal delegate void VoidHandler();
-        internal event VoidHandler RequestDownloadDynamo;
-        internal void OnRequestDownloadDynamo()
+        public delegate void VoidHandler();
+        public event VoidHandler RequestDownloadDynamo;
+        public void OnRequestDownloadDynamo()
         {
             if (RequestDownloadDynamo != null)
                 RequestDownloadDynamo();
         }
 
-        internal event VoidHandler RequestBugReport;
-        internal void OnRequestBugReport()
+        public event VoidHandler RequestBugReport;
+        public void OnRequestBugReport()
         {
             if (RequestBugReport != null)
                 RequestBugReport();

@@ -1350,22 +1350,14 @@ namespace Dynamo.Models
         private bool OpenHomeWorkspace(
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
-            var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
-
-            var newWorkspace = new HomeWorkspaceModel(
+            var newWorkspace = HomeWorkspaceModel.CreateFromXml(
+                xmlDoc,
                 EngineController,
                 Scheduler,
                 NodeFactory,
-                Utils.LoadTraceDataFromXmlDocument(xmlDoc),
-                nodeGraph.Nodes,
-                nodeGraph.Notes,
-                nodeGraph.Annotations,
-                nodeGraph.Presets,
-                nodeGraph.ElementResolver,
                 workspaceInfo,
                 DebugSettings.VerboseLogging,
-                IsTestMode
-               );
+                IsTestMode);
 
             RegisterHomeWorkspace(newWorkspace);
 
@@ -1407,7 +1399,7 @@ namespace Dynamo.Models
                 {
                     if (!workspace.HasUnsavedChanges)
                     {
-                        if (workspace.Nodes.Any() &&
+                        if (!workspace.Nodes.Any() &&
                             !workspace.Notes.Any())
                             continue;
 

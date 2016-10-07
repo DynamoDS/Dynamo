@@ -287,7 +287,7 @@ namespace Dynamo.Engine
         /// <param name="definition"></param>
         /// <param name="verboseLogging"></param>
         /// <returns></returns>
-        internal bool GenerateGraphSyncDataForCustomNode(IEnumerable<NodeModel> nodes, CustomNodeDefinition definition, bool verboseLogging)
+        public bool GenerateGraphSyncDataForCustomNode(IEnumerable<NodeModel> nodes, CustomNodeDefinition definition, bool verboseLogging)
         {
             lock (macroMutex)
             {

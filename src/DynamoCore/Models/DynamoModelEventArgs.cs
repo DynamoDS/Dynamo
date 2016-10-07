@@ -71,7 +71,7 @@ namespace Dynamo.Models
         }
     }
 
-    internal class TaskDialogEventArgs : EventArgs
+    public class TaskDialogEventArgs : EventArgs
     {
         List<Tuple<int, string, bool>> buttons = null;
 
@@ -107,16 +107,16 @@ namespace Dynamo.Models
         #region Public Class Properties
 
         // Settable properties.
-        internal int ClickedButtonId { get; set; }
-        internal Exception Exception { get; set; }
+        public int ClickedButtonId { get; set; }
+        public Exception Exception { get; set; }
 
         // Read-only properties.
-        internal Uri ImageUri { get; private set; }
-        internal string DialogTitle { get; private set; }
-        internal string Summary { get; private set; }
-        internal string Description { get; private set; }
+        public Uri ImageUri { get; private set; }
+        public string DialogTitle { get; private set; }
+        public string Summary { get; private set; }
+        public string Description { get; private set; }
 
-        internal IEnumerable<Tuple<int, string, bool>> Buttons
+        public IEnumerable<Tuple<int, string, bool>> Buttons
         {
             get { return buttons; }
         }

@@ -15,6 +15,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
+using Utils = Dynamo.Graph.Nodes.Utilities;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -168,7 +169,35 @@ namespace Dynamo.Graph.Workspaces
 
         #endregion
 
-        #region Constructors
+        #region Initializators and constructors
+
+        public static HomeWorkspaceModel CreateFromXml(
+            XmlDocument document,
+            EngineController engine,
+            DynamoScheduler scheduler,
+            NodeFactory factory,
+            WorkspaceInfo info,
+            bool verboseLogging,
+            bool isTestMode)
+        {
+            var nodeGraph = NodeGraph.LoadGraphFromXml(document, factory);
+
+            var newWorkspace = new HomeWorkspaceModel(
+                engine,
+                scheduler,
+                factory,
+                Utils.LoadTraceDataFromXmlDocument(document),
+                nodeGraph.Nodes,
+                nodeGraph.Notes,
+                nodeGraph.Annotations,
+                nodeGraph.Presets,
+                nodeGraph.ElementResolver,
+                info,
+                verboseLogging,
+                isTestMode);
+
+            return newWorkspace;
+        }
 
         /// <summary>
         /// Initializes a new empty instance of the <see cref="HomeWorkspaceModel"/> class
