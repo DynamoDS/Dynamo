@@ -15,9 +15,101 @@ using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Presets;
 using ProtoCore;
 using Type = System.Type;
+using Dynamo.Core;
+using Dynamo.Utilities;
 
 namespace Dynamo.Serialization
 {
+    /// <summary>
+    /// The NodeModelConverter is used to serialize and deserialize NodeModels.
+    /// These nodes require a CustomNodeDefinition which can only be supplied
+    /// by looking it up in the CustomNodeManager.
+    /// </summary>
+    public class NodeModelConverter : JsonConverter
+    {
+        private CustomNodeManager manager;
+        
+        public NodeModelConverter(CustomNodeManager manager)
+        {
+            this.manager = manager;
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(NodeModel);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            NodeModel node;
+
+            var obj = JObject.Load(reader);
+            var type = Type.GetType(obj["$type"].Value<string>());
+            
+            if (type == typeof(Graph.Nodes.CustomNodes.Function))
+            {
+                // Create an instance of the custom node using the 
+                // CustomNodeManager
+                var functionId = Guid.Parse(obj["FunctionUuid"].Value<string>());             
+                node = manager.CreateCustomNodeInstance(functionId);
+                
+                node.GUID = Guid.Parse(obj["Uuid"].Value<string>());
+                node.NickName = obj["DisplayName"].Value<string>();
+
+                // The instance created by the custom node manager will 
+                // need some work to look like the serialized version.
+                // Ports need to be re-identified.
+                node.InPorts.Clear();
+                node.OutPorts.Clear();
+                node.InPorts.AddRange(obj["InPorts"].ToArray().Select(t => t.ToObject<PortModel>()));
+                node.OutPorts.AddRange(obj["OutPorts"].ToArray().Select(t => t.ToObject<PortModel>()));
+                foreach(var p in node.InPorts)
+                {
+                    p.Owner = node;
+                }
+                foreach (var p in node.OutPorts)
+                {
+                    p.Owner = node;
+                }
+            }
+            else
+            {
+                node = (NodeModel)obj.ToObject(type);
+            }
+            serializer.ReferenceResolver.AddReference(serializer.Context, node.GUID.ToString(), node);
+            foreach(var p in node.InPorts)
+            {
+                serializer.ReferenceResolver.AddReference(serializer.Context, p.GUID.ToString(), p);
+            }
+            foreach (var p in node.OutPorts)
+            {
+                serializer.ReferenceResolver.AddReference(serializer.Context, p.GUID.ToString(), p);
+            }
+            return node;
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool CanRead
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public override bool CanWrite
+        {
+            get
+            {
+                return false;
+            }
+        }
+    }
+
     /// <summary>
     /// The WorkspaceConverter is used to serialize and deserialize WorkspaceModels.
     /// Construction of a WorkspaceModel requires things like an EngineController,
@@ -255,14 +347,14 @@ namespace Dynamo.Serialization
     }
 
     /// <summary>
-    /// The CodeBlockNodeConverter is used to serialize and deserialize CodeBlockNodeModels. 
+    /// The CodeBlockNodeCreator is used to construct CodeBlockNodeModels. 
     /// CodeBlockNodeModel requires an instance of LibraryServices for construction.
     /// </summary>
-    public class CodeBlockNodeConverter : CustomCreationConverter<CodeBlockNodeModel>
+    public class CodeBlockNodeCreator : CustomCreationConverter<CodeBlockNodeModel>
     {
         private LibraryServices libraryServices;
 
-        public CodeBlockNodeConverter(LibraryServices libraryServices)
+        public CodeBlockNodeCreator(LibraryServices libraryServices)
         {
             this.libraryServices = libraryServices;
         }

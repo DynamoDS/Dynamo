@@ -1407,10 +1407,11 @@ namespace Dynamo.Models
                 PreserveReferencesHandling = PreserveReferencesHandling.Objects,
                 Converters = new List<JsonConverter>{
                     new FunctionDescriptorConverter(LibraryServices),
-                    new CodeBlockNodeConverter(LibraryServices),
+                    new CodeBlockNodeCreator(LibraryServices),
                     new ConnectorConverter(),
                     new AnnotationConverter(),
-                    new WorkspaceConverter(EngineController, Scheduler, NodeFactory, IsTestMode, DebugSettings.VerboseLogging)
+                    new WorkspaceConverter(EngineController, Scheduler, NodeFactory, IsTestMode, DebugSettings.VerboseLogging),
+                    new NodeModelConverter(CustomNodeManager)
                 },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
@@ -1486,11 +1487,12 @@ namespace Dynamo.Models
                 PreserveReferencesHandling = PreserveReferencesHandling.Objects,
                 Converters = new List<JsonConverter>{
                     new FunctionDescriptorConverter(LibraryServices),
-                    new CodeBlockNodeConverter(LibraryServices),
+                    new CodeBlockNodeCreator(LibraryServices),
                     new ConnectorConverter(),
                     new AnnotationConverter(),
                     new WorkspaceConverter(EngineController, Scheduler, NodeFactory, 
-                    IsTestMode, DebugSettings.VerboseLogging)
+                    IsTestMode, DebugSettings.VerboseLogging),
+                    new NodeModelConverter(CustomNodeManager)
                 },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
