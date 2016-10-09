@@ -24,6 +24,8 @@ namespace Dynamo.Tests
             public int NoteCount { get; set; }
             public Dictionary<Guid,Type> NodeTypeMap { get; set; }
             public Dictionary<Guid,MirrorData> NodeDataMap { get; set; }
+            public Dictionary<Guid,int> InportCountMap { get; set; }
+            public Dictionary<Guid,int> OutportCountMap { get; set; }
 
             public WorkspaceComparisonData(WorkspaceModel workspace)
             {
@@ -34,21 +36,37 @@ namespace Dynamo.Tests
                 NoteCount = workspace.Notes.Count();
                 NodeTypeMap = new Dictionary<Guid, Type>();
                 NodeDataMap = new Dictionary<Guid, MirrorData>();
+                InportCountMap = new Dictionary<Guid, int>();
+                OutportCountMap = new Dictionary<Guid, int>();
 
                 foreach (var n in workspace.Nodes)
                 {
                     NodeTypeMap.Add(n.GUID, n.GetType());
                     NodeDataMap.Add(n.GUID, n.CachedValue);
+                    InportCountMap.Add(n.GUID, n.InPorts.Count);
+                    OutportCountMap.Add(n.GUID, n.OutPorts.Count);
                 }
             }
         }
 
         private void CompareWorkspaces(WorkspaceComparisonData a, WorkspaceComparisonData b)
         {
-            Assert.AreEqual(a.NodeCount, b.NodeCount);
-            Assert.AreEqual(a.ConnectorCount, b.ConnectorCount);
-            Assert.AreEqual(a.GroupCount, b.GroupCount);
-            Assert.AreEqual(a.NoteCount, b.NoteCount);
+            Assert.AreEqual(a.NodeCount, b.NodeCount, "The workspaces don't have the same number of nodes.");
+            Assert.AreEqual(a.ConnectorCount, b.ConnectorCount, "The workspaces don't have the same number of connectors.");
+            Assert.AreEqual(a.GroupCount, b.GroupCount, "The workspaces don't have the same number of groups.");
+            Assert.AreEqual(a.NoteCount, b.NoteCount, "The workspaces don't have the same number of notes.");
+            foreach(var kvp in a.InportCountMap)
+            {
+                var countA = kvp.Value;
+                var countB = b.InportCountMap[kvp.Key];
+                Assert.AreEqual(countA, countB, string.Format("One {0} node has {1} inports, while the other has {2}", a.NodeTypeMap[kvp.Key], countA, countB));
+            }
+            foreach (var kvp in a.OutportCountMap)
+            {
+                var countA = kvp.Value;
+                var countB = b.OutportCountMap[kvp.Key];
+                Assert.AreEqual(countA, countB, string.Format("One {0} node has {1} outports, while the other has {2}", a.NodeTypeMap[kvp.Key], countA, countB));
+            }
         }
 
         [Test]
