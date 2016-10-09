@@ -17,6 +17,7 @@ using ProtoCore;
 using Type = System.Type;
 using Dynamo.Core;
 using Dynamo.Utilities;
+using Dynamo.Graph.Nodes.CustomNodes;
 
 namespace Dynamo.Serialization
 {
@@ -46,7 +47,7 @@ namespace Dynamo.Serialization
             var obj = JObject.Load(reader);
             var type = Type.GetType(obj["$type"].Value<string>());
             
-            if (type == typeof(Graph.Nodes.CustomNodes.Function))
+            if (type == typeof(Function))
             {
                 // Create an instance of the custom node using the 
                 // CustomNodeManager
