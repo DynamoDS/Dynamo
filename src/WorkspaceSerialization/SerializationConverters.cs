@@ -4,6 +4,7 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Scheduler;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -18,8 +19,10 @@ using Type = System.Type;
 using Dynamo.Core;
 using Dynamo.Utilities;
 using Dynamo.Graph.Nodes.CustomNodes;
+using ProtoCore.Namespace;
+using Dynamo.Graph.Nodes.ZeroTouch;
 
-namespace Dynamo.Serialization
+namespace Workspaces.Serialization
 {
     /// <summary>
     /// The NodeModelConverter is used to serialize and deserialize NodeModels.
@@ -29,10 +32,14 @@ namespace Dynamo.Serialization
     public class NodeModelConverter : JsonConverter
     {
         private CustomNodeManager manager;
-        
-        public NodeModelConverter(CustomNodeManager manager)
+        private LibraryServices libraryServices;
+        private ElementResolver elementResolver;
+
+        public NodeModelConverter(CustomNodeManager manager, LibraryServices libraryServices, ElementResolver elementResolver)
         {
             this.manager = manager;
+            this.libraryServices = libraryServices;
+            this.elementResolver = elementResolver;
         }
 
         public override bool CanConvert(Type objectType)
@@ -47,36 +54,55 @@ namespace Dynamo.Serialization
             var obj = JObject.Load(reader);
             var type = Type.GetType(obj["$type"].Value<string>());
             
+            var guid = Guid.Parse(obj["Uuid"].Value<string>());
+            var displayName = obj["DisplayName"].Value<string>();
+            var x = obj["X"].Value<double>();
+            var y = obj["Y"].Value<double>();
+
+            var inPorts = obj["InPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
+            var outPorts = obj["OutPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
+
+            var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
+
             if (type == typeof(Function))
             {
-                // Create an instance of the custom node using the 
-                // CustomNodeManager
-                var functionId = Guid.Parse(obj["FunctionUuid"].Value<string>());             
+                var functionId = Guid.Parse(obj["FunctionUuid"].Value<string>());
                 node = manager.CreateCustomNodeInstance(functionId);
-                
-                node.GUID = Guid.Parse(obj["Uuid"].Value<string>());
-                node.NickName = obj["DisplayName"].Value<string>();
+                RemapPorts(node, inPorts, outPorts, resolver);
+            }
+            else if(type == typeof(CodeBlockNodeModel))
+            {
+                var code = obj["Code"].Value<string>();
+                node = new CodeBlockNodeModel(code, guid, x, y, libraryServices, elementResolver);
+                RemapPorts(node, inPorts, outPorts, resolver);
+            }
+            else if (typeof(VariableInputNode).IsAssignableFrom(type))
+            {
+                throw new NotImplementedException();
+            }
+            else if(type == typeof(DSFunction))
+            {
+                var fd = obj["FunctionDescription"];
+                var asm = fd["Assembly"].Value<string>();
+                var mangledName = fd["Name"].Value<string>();
 
-                // The instance created by the custom node manager will 
-                // need some work to look like the serialized version.
-                // Ports need to be re-identified.
-                node.InPorts.Clear();
-                node.OutPorts.Clear();
-                node.InPorts.AddRange(obj["InPorts"].ToArray().Select(t => t.ToObject<PortModel>()));
-                node.OutPorts.AddRange(obj["OutPorts"].ToArray().Select(t => t.ToObject<PortModel>()));
-                foreach(var p in node.InPorts)
-                {
-                    p.Owner = node;
-                }
-                foreach (var p in node.OutPorts)
-                {
-                    p.Owner = node;
-                }
+                var description = string.IsNullOrEmpty(asm) ?
+                    libraryServices.GetFunctionDescriptor(mangledName) :
+                    libraryServices.GetFunctionDescriptor(asm, mangledName);
+
+                node = new DSFunction(description);
+                RemapPorts(node, inPorts, outPorts, resolver);
             }
             else
             {
                 node = (NodeModel)obj.ToObject(type);
             }
+
+            node.GUID = guid;
+            node.NickName = displayName;
+            node.X = x;
+            node.Y = y;
+
             serializer.ReferenceResolver.AddReference(serializer.Context, node.GUID.ToString(), node);
             foreach(var p in node.InPorts)
             {
@@ -87,6 +113,25 @@ namespace Dynamo.Serialization
                 serializer.ReferenceResolver.AddReference(serializer.Context, p.GUID.ToString(), p);
             }
             return node;
+        }
+
+        /// <summary>
+        /// Map old Guids to new Models in the IdReferenceResolver.
+        /// </summary>
+        /// <param name="node">The newly created node.</param>
+        /// <param name="inPorts">The deserialized input ports.</param>
+        /// <param name="outPorts">The deserialized output ports.</param>
+        /// <param name="resolver">The IdReferenceResolver used during deserialization.</param>
+        private static void RemapPorts(NodeModel node, PortModel[] inPorts, PortModel[] outPorts, IdReferenceResolver resolver)
+        {
+            foreach (var p in node.InPorts)
+            {
+                resolver.AddToReferenceMap(inPorts[p.Index].GUID, p);
+            }
+            foreach (var p in node.OutPorts)
+            {
+                resolver.AddToReferenceMap(outPorts[p.Index].GUID, p);
+            }
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -119,14 +164,14 @@ namespace Dynamo.Serialization
     /// </summary>
     public class WorkspaceConverter : JsonConverter
     {
-        Scheduler.DynamoScheduler scheduler;
+        DynamoScheduler scheduler;
         EngineController engine;
         NodeFactory factory;
         bool isTestMode;
         bool verboseLogging;
 
         public WorkspaceConverter(EngineController engine, 
-            Scheduler.DynamoScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging)
+            DynamoScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging)
         {
             this.scheduler = scheduler;
             this.engine = engine;
@@ -168,27 +213,20 @@ namespace Dynamo.Serialization
             // annotations
             var annotations = obj["Annotations"].ToObject<IEnumerable<AnnotationModel>>(serializer);
 
-            var info = new WorkspaceInfo()
-            {
-                Name = name,
-                Description = description,
-                RunType = Models.RunType.Automatic
-            };
+            var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
 
             WorkspaceModel ws;
             if (isCustomNode)
             {
-                info.ID = guid.ToString();
                 ws = new CustomNodeWorkspaceModel(factory, nodes, notes, annotations, 
-                    Enumerable.Empty<PresetModel>(), new ProtoCore.Namespace.ElementResolver(), info);
+                    Enumerable.Empty<PresetModel>(), new ElementResolver(), info);
             }
             else
             {
-                ws = new HomeWorkspaceModel(engine, scheduler, factory, 
+                ws = new HomeWorkspaceModel(guid, engine, scheduler, factory, 
                     Enumerable.Empty<KeyValuePair<Guid, List<CallSite.RawTraceData>>>(), nodes, notes, annotations, 
-                    Enumerable.Empty<PresetModel>(), new ProtoCore.Namespace.ElementResolver(), 
+                    Enumerable.Empty<PresetModel>(), new ElementResolver(), 
                     info, verboseLogging, isTestMode);
-                ws.Guid = guid;
             }
 
             return ws;
@@ -315,7 +353,15 @@ namespace Dynamo.Serialization
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType.IsAssignableFrom(typeof(FunctionDescriptor));
+            return objectType == typeof(FunctionDescriptor);
+        }
+
+        public override bool CanRead
+        {
+            get
+            {
+                return false;
+            }
         }
 
         public FunctionDescriptorConverter(LibraryServices libraryServices)
@@ -325,14 +371,7 @@ namespace Dynamo.Serialization
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var jObject = JObject.Load(reader);
-
-            var asm = jObject["Assembly"].Value<string>();
-            var mangledName = jObject["Name"].Value<string>();
-
-            return string.IsNullOrEmpty(asm) ?
-                libraryServices.GetFunctionDescriptor(mangledName) :
-                libraryServices.GetFunctionDescriptor(asm, mangledName);
+            throw new NotImplementedException();
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -344,25 +383,6 @@ namespace Dynamo.Serialization
             writer.WritePropertyName("Name");
             writer.WriteValue(fd.MangledName);
             writer.WriteEndObject();
-        }
-    }
-
-    /// <summary>
-    /// The CodeBlockNodeCreator is used to construct CodeBlockNodeModels. 
-    /// CodeBlockNodeModel requires an instance of LibraryServices for construction.
-    /// </summary>
-    public class CodeBlockNodeCreator : CustomCreationConverter<CodeBlockNodeModel>
-    {
-        private LibraryServices libraryServices;
-
-        public CodeBlockNodeCreator(LibraryServices libraryServices)
-        {
-            this.libraryServices = libraryServices;
-        }
-
-        public override CodeBlockNodeModel Create(Type objectType)
-        {
-            return new CodeBlockNodeModel(libraryServices);
         }
     }
 
@@ -386,8 +406,23 @@ namespace Dynamo.Serialization
             var startId = obj["Start"].Value<string>();
             var endId = obj["End"].Value<string>();
 
-            var startPort = (PortModel)serializer.ReferenceResolver.ResolveReference(serializer.Context, startId);
-            var endPort = (PortModel)serializer.ReferenceResolver.ResolveReference(serializer.Context, endId);
+            var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
+
+            var startPort = (PortModel)resolver.ResolveReference(serializer.Context, startId);
+            var endPort = (PortModel)resolver.ResolveReference(serializer.Context, endId);
+
+            // If the start or end ports can't be found in the resolver,
+            // try to resolve them from the resolver's map, which maps
+            // the persisted port ids to the new port ids.
+            if(startPort == null)
+            {
+                startPort = (PortModel)resolver.ResolveReferenceFromMap(serializer.Context, startId);
+            }
+
+            if(endPort == null)
+            {
+                endPort = (PortModel)resolver.ResolveReferenceFromMap(serializer.Context, endId);
+            }
 
             var connectorId = Guid.Parse(obj["Uuid"].Value<string>());
             return new ConnectorModel(startPort, endPort, connectorId);
@@ -415,6 +450,18 @@ namespace Dynamo.Serialization
     public class IdReferenceResolver : IReferenceResolver
     {
         private readonly IDictionary<Guid, object> models = new Dictionary<Guid, object>();
+        private readonly IDictionary<Guid, object> modelMap = new Dictionary<Guid, object>();
+
+        /// <summary>
+        /// Add a reference to a newly created object, referencing
+        /// an old Guid.
+        /// </summary>
+        /// <param name="oldGuid">The old Guid of the object.</param>
+        /// <param name="newObject">The new object which maps to the old Guid.</param>
+        public void AddToReferenceMap(Guid oldGuid, object newObject)
+        {
+            modelMap.Add(oldGuid, newObject);
+        }
 
         public void AddReference(object context, string reference, object value)
         {
@@ -456,6 +503,23 @@ namespace Dynamo.Serialization
 
             object model;
             models.TryGetValue(id, out model);
+
+            return model;
+        }
+
+        /// <summary>
+        /// Resolve a reference to a newly created object, given
+        /// the original Guid for the object.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="reference"></param>
+        /// <returns></returns>
+        public object ResolveReferenceFromMap(object context, string reference)
+        {
+            var id = new Guid(reference);
+
+            object model;
+            modelMap.TryGetValue(id, out model);
 
             return model;
         }

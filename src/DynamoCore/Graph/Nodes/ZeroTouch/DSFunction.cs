@@ -1,7 +1,5 @@
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Engine;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace Dynamo.Graph.Nodes.ZeroTouch
 {
@@ -22,15 +20,6 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         public override bool IsInputNode
         {
             get { return false; }
-        }
-
-        [JsonConstructor]
-        private DSFunction(FunctionDescriptor functionDescription, 
-            IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :
-            base(new ZeroTouchNodeController<FunctionDescriptor>(functionDescription),
-                inPorts, outPorts)
-        {
-            FunctionDescription = functionDescription;
         }
 
         /// <summary>

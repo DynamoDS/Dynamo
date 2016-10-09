@@ -202,6 +202,21 @@ namespace Dynamo.Graph.Workspaces
                 verboseLogging,
                 isTestMode) { }
 
+        public HomeWorkspaceModel(Guid guid, EngineController engine,
+            DynamoScheduler scheduler,
+            NodeFactory factory,
+            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> traceData,
+            IEnumerable<NodeModel> nodes,
+            IEnumerable<NoteModel> notes,
+            IEnumerable<AnnotationModel> annotations,
+            IEnumerable<PresetModel> presets,
+            ElementResolver resolver,
+            WorkspaceInfo info,
+            bool verboseLogging,
+            bool isTestMode):this(engine, scheduler, factory, traceData, nodes, notes, 
+                annotations, presets, resolver, info, verboseLogging, isTestMode)
+        { Guid = guid; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="HomeWorkspaceModel"/> class
         /// by given information about it and specified item collections

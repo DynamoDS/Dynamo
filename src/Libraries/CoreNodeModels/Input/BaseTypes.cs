@@ -26,6 +26,12 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("Dynamo.Nodes.StringInput", "Dynamo.Nodes.dynStringInput", "DSCoreNodesUI.Input.StringInput")]
     public class StringInput : String
     {
+        [JsonConstructor]
+        private StringInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) {
+            Value = "";
+            ShouldDisplayPreviewCore = false;
+        }
+
         public StringInput()
         {
             RegisterAllPorts();

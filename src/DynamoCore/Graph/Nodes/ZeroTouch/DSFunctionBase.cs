@@ -15,25 +15,6 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     public abstract class DSFunctionBase 
         : FunctionCallBase<ZeroTouchNodeController<FunctionDescriptor>, FunctionDescriptor>
     {
-        protected DSFunctionBase(ZeroTouchNodeController<FunctionDescriptor> controller,
-            IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : 
-            base(controller, inPorts, outPorts)
-        {
-            ArgumentLacing = LacingStrategy.Shortest;
-            Category = Controller.Category;
-
-            if (controller.Definition.IsObsolete)
-                Warning(controller.Definition.ObsoleteMessage, true);
-
-            if (controller.Definition.CanUpdatePeriodically)
-                CanUpdatePeriodically = true;
-
-            string signature = String.Empty;
-            if (Controller.Definition is FunctionDescriptor)
-                signature = Controller.Definition.Signature;
-            Description = String.IsNullOrEmpty(Controller.Description) ? signature : Controller.Description + "\n\n" + signature;
-        }
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="DSFunctionBase"/> class.
         /// </summary>

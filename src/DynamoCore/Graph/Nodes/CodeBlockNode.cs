@@ -80,7 +80,6 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="libraryServices"><see cref="LibraryServices"/> object to manage
         ///  builtin libraries as well as imported libraries</param>
-        [JsonConstructor]
         public CodeBlockNodeModel(LibraryServices libraryServices)
         {
             ArgumentLacing = LacingStrategy.Disabled;
@@ -92,15 +91,15 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Initilizes a new instance of the <see cref="CodeBlockNodeModel"/> class
         /// </summary>
-        /// <param name="userCode">Code block content</param>
-        /// <param name="xPos">X coordinate of the code block</param>
-        /// <param name="yPos">Y coordinate of the code block</param>
+        /// <param name="code">Code block content</param>
+        /// <param name="x">X coordinate of the code block</param>
+        /// <param name="y">Y coordinate of the code block</param>
         /// <param name="libraryServices"><see cref="LibraryServices"/> object to manage
         ///  builtin libraries as well as imported libraries</param>
         /// <param name="resolver">Responsible for resolving 
         /// a partial class name to its fully resolved name</param>
-        public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices, ElementResolver resolver)
-            : this(userCode, Guid.NewGuid(), xPos, yPos, libraryServices, resolver) { }
+        public CodeBlockNodeModel(string code, double x, double y, LibraryServices libraryServices, ElementResolver resolver)
+            : this(code, Guid.NewGuid(), x, y, libraryServices, resolver) { }
 
         /// <summary>
         ///     Initilizes a new instance of the <see cref="CodeBlockNodeModel"/> class

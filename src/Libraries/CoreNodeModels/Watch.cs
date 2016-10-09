@@ -7,6 +7,8 @@ using Dynamo.Scheduler;
 using Dynamo.Visualization;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
+using Dynamo.Utilities;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -26,6 +28,18 @@ namespace CoreNodeModels
         ///     is technically not accurate.
         /// </summary>
         public bool HasRunOnce { get; private set; }
+
+        [JsonConstructor]
+        private Watch(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
+        {
+            InPorts.AddRange(inPorts);
+            OutPorts.AddRange(outPorts);
+
+            ArgumentLacing = LacingStrategy.Disabled;
+
+            ShouldDisplayPreviewCore = false;
+            HasRunOnce = false;
+        }
 
         public Watch()
         {

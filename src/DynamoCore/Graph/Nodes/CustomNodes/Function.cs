@@ -12,8 +12,6 @@ using ProtoCore.Namespace;
 using ProtoCore.Utils;
 using ProtoCore.BuildData;
 using Newtonsoft.Json;
-using Dynamo.Core;
-using Dynamo.Serialization;
 
 namespace Dynamo.Graph.Nodes.CustomNodes
 {
