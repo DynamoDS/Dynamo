@@ -11,7 +11,6 @@ using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.CustomNodes;
-using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Migration;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
@@ -66,9 +65,6 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         #region public members
-
-        private readonly Dictionary<int, Tuple<int, NodeModel>> inputNodes;
-        private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> outputNodes;
 
         /// <summary>
         /// The unique name that was created the node by
@@ -343,13 +339,42 @@ namespace Dynamo.Graph.Nodes
         [JsonIgnore]
         public IDictionary<int, Tuple<int, NodeModel>> InputNodes
         {
-            get { return inputNodes; }
+            get
+            {
+                var inputMap = new Dictionary<int, Tuple<int, NodeModel>>();
+                foreach(var p in inPorts)
+                {
+                    if (p.Connectors.Count > 0)
+                    {
+                        var inNode = p.Connectors[0].Start.Owner;
+                        var startPort = p.Connectors[0].Start;
+                        inputMap[p.Index] = Tuple.Create(startPort.Index, inNode);
+                    } 
+                }
+                return inputMap; 
+            }
         }
 
         [JsonIgnore]
         public IDictionary<int, HashSet<Tuple<int, NodeModel>>> OutputNodes
         {
-            get { return outputNodes; }
+            get
+            {
+                var outputMap = new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
+                foreach(var p in outPorts)
+                {
+                    if(p.Connectors.Count > 0)
+                    {
+                        var portConnectionMap = new HashSet<Tuple<int, NodeModel>>();
+                        foreach(var c in p.Connectors)
+                        {
+                            portConnectionMap.Add(new Tuple<int, NodeModel>(c.Start.Index, c.End.Owner));
+                        }
+                        outputMap[p.Index] = portConnectionMap;
+                    }
+                }
+                return outputMap;
+            }
         }
 
         /// <summary>
@@ -812,9 +837,6 @@ namespace Dynamo.Graph.Nodes
             InPortData = new ObservableCollection<PortData>();
             OutPortData = new ObservableCollection<PortData>();
 
-            inputNodes = new Dictionary<int, Tuple<int, NodeModel>>();
-            outputNodes = new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
-
             IsVisible = true;
             IsUpstreamVisible = true;
             ShouldDisplayPreviewCore = true;
@@ -1101,23 +1123,6 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        internal void ConnectInput(int inputData, int outputData, NodeModel node)
-        {
-            inputNodes[inputData] = Tuple.Create(outputData, node);
-        }
-
-        internal void ConnectOutput(int portData, int inputData, NodeModel nodeLogic)
-        {
-            if (!outputNodes.ContainsKey(portData))
-                outputNodes[portData] = new HashSet<Tuple<int, NodeModel>>();
-            outputNodes[portData].Add(Tuple.Create(inputData, nodeLogic));
-        }
-
-        internal void DisconnectInput(int data)
-        {
-            inputNodes[data] = null;
-        }
-
         /// <summary>
         ///     Attempts to get the input for a certain port.
         /// </summary>
@@ -1126,7 +1131,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns>True if there is an input, false otherwise.</returns>
         public bool TryGetInput(int data, out Tuple<int, NodeModel> input)
         {
-            return inputNodes.TryGetValue(data, out input) && input != null;
+            return InputNodes.TryGetValue(data, out input) && input != null;
         }
 
         /// <summary>
@@ -1137,7 +1142,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns>True if there is an output, false otherwise.</returns>
         public bool TryGetOutput(int output, out HashSet<Tuple<int, NodeModel>> newOutputs)
         {
-            return outputNodes.TryGetValue(output, out newOutputs);
+            return OutputNodes.TryGetValue(output, out newOutputs);
         }
 
         /// <summary>
@@ -1158,7 +1163,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns>True if there is an input, false otherwise.</returns>
         public bool HasConnectedInput(int data)
         {
-            return inputNodes.ContainsKey(data) && inputNodes[data] != null;
+            return InputNodes.ContainsKey(data) && InputNodes[data] != null;
         }
 
         /// <summary>
@@ -1168,14 +1173,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns>True if there is an output, false otherwise.</returns>
         public bool HasOutput(int portData)
         {
-            return outputNodes.ContainsKey(portData) && outputNodes[portData].Any();
-        }
-
-        internal void DisconnectOutput(int portData, int inPortData, NodeModel nodeModel)
-        {
-            HashSet<Tuple<int, NodeModel>> output;
-            if (outputNodes.TryGetValue(portData, out output))
-                output.RemoveWhere(x => x.Item2 == nodeModel && x.Item1 == inPortData);
+            return OutputNodes.ContainsKey(portData) && OutputNodes[portData].Any();
         }
 
         #endregion
@@ -1636,11 +1634,6 @@ namespace Dynamo.Graph.Nodes
 
             if (port.PortType != PortType.Input) return;
 
-            var data = InPorts.IndexOf(port);
-            var startPort = connector.Start;
-            var outData = startPort.Owner.OutPorts.IndexOf(startPort);
-            ConnectInput(data, outData, startPort.Owner);
-            startPort.Owner.ConnectOutput(outData, data, this);
             OnConnectorAdded(connector);
 
             OnNodeModified();
@@ -1651,11 +1644,6 @@ namespace Dynamo.Graph.Nodes
             ValidateConnections();
 
             if (port.PortType != PortType.Input) return;
-
-            var data = InPorts.IndexOf(port);
-            var startPort = port.Connectors[0].Start;
-            DisconnectInput(data);
-            startPort.Owner.DisconnectOutput(startPort.Owner.OutPorts.IndexOf(startPort), data, this);
 
             OnNodeModified();
         }
