@@ -171,7 +171,20 @@ namespace Dynamo.Graph.Workspaces
 
         #region Initializators and constructors
 
-        public static HomeWorkspaceModel CreateFromXml(
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HomeWorkspaceModel"/> class
+        /// by given information about it and its parsed xml representation
+        /// </summary>
+        /// <param name="document">XmlDocument representing the parsed home workspace</param>
+        /// <param name="engine"><see cref="EngineController"/> object assosiated with this home workspace
+        /// to coordinate the interactions between some DesignScript sub components.</param>
+        /// <param name="scheduler"><see cref="DynamoScheduler"/> object to add tasks in queue to execute</param>
+        /// <param name="factory">Node factory to create nodes</param>
+        /// <param name="info">Information for creating custom node workspace</param>
+        /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
+        /// <param name="isTestMode">Indicates if current code is running in tests</param>
+        /// <returns></returns>
+        public static HomeWorkspaceModel FromXmlDocument(
             XmlDocument document,
             EngineController engine,
             DynamoScheduler scheduler,

@@ -925,6 +925,15 @@ namespace Dynamo.Graph.Workspaces
             return true;
         }
 
+        /// <summary>
+        ///     Serializes the workspace to XmlDocument
+        /// </summary>
+        /// <param name="targetPath">The path associated with xml file.
+        /// Empty string can be passed if xml document shouldn't be related to a file on disk.</param>
+        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object
+        /// to obtain serialized trace data for node list to save.</param>
+        /// <param name="document">Xml representation of the workspace filled inside the function</param>
+        /// <returns></returns>
         public bool SerializeAsXml(
             string targetPath, ProtoCore.RuntimeCore runtimeCore, out XmlDocument document)
         {

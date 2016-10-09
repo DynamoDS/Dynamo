@@ -549,6 +549,10 @@ namespace Dynamo.Engine.NodeToCode
         }
     }
 
+    /// <summary>
+    /// The class to get string representation from a set of <see cref="NodeModel"/> objects.
+    /// String is written on DesignScipt programming language and can be used in code block node or by DesignScript evaluation engine
+    /// </summary>
     public class NodeToCodeCompiler
     {
         /// <summary>
@@ -695,7 +699,7 @@ namespace Dynamo.Engine.NodeToCode
         /// </summary>
         /// <param name="selection"></param>
         /// <returns></returns>
-        public static List<List<NodeModel>> GetCliques(
+        internal static List<List<NodeModel>> GetCliques(
             IEnumerable<NodeModel> selection)
         {
             var selectionSet = new HashSet<NodeModel>(selection);

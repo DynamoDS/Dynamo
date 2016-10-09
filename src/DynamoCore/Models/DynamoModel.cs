@@ -1350,7 +1350,7 @@ namespace Dynamo.Models
         private bool OpenHomeWorkspace(
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
-            var newWorkspace = HomeWorkspaceModel.CreateFromXml(
+            var newWorkspace = HomeWorkspaceModel.FromXmlDocument(
                 xmlDoc,
                 EngineController,
                 Scheduler,
