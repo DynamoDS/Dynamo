@@ -144,7 +144,8 @@ namespace Dynamo.Tests
                 "excel",
                 "CASE",
                 "WatchPreviewBubble",
-                "visualization"
+                "visualization",
+                "migration"
             };
 
             if (bannedTests.Any(t=>filePath.Contains(t)))

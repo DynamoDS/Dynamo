@@ -14,6 +14,7 @@ using System.Xml;
 using System.Globalization;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Newtonsoft.Json;
 
 namespace GeometryUI
 {
@@ -46,6 +47,16 @@ namespace GeometryUI
                 this.OnNodeModified();
                 RaisePropertyChanged("SelectedExportedUnit");
             }
+        }
+
+        [JsonConstructor]
+        private ExportWithUnits(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):
+            base(inPorts, outPorts)
+        {
+            SelectedExportedUnit = ConversionUnit.Feet;
+            SelectedExportedUnitsSource =
+                Conversions.ConversionMetricLookup[ConversionMetricUnit.Length];
+            ShouldDisplayPreviewCore = true;
         }
 
         public ExportWithUnits()
