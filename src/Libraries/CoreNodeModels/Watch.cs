@@ -27,16 +27,13 @@ namespace CoreNodeModels
         ///     Has the Watch node been run once?  If not, the CachedValue
         ///     is technically not accurate.
         /// </summary>
+        [JsonIgnore]
         public bool HasRunOnce { get; private set; }
 
         [JsonConstructor]
-        private Watch(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
+        private Watch(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
         {
-            InPorts.AddRange(inPorts);
-            OutPorts.AddRange(outPorts);
-
             ArgumentLacing = LacingStrategy.Disabled;
-
             ShouldDisplayPreviewCore = false;
             HasRunOnce = false;
         }

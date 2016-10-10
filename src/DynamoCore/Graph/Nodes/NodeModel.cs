@@ -154,6 +154,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Returns whether the node is to be included in visualizations.
         /// </summary>
+        [JsonIgnore]
         public bool IsVisible
         {
             get
@@ -551,6 +552,7 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        [JsonIgnore]
         public bool CanUpdatePeriodically
         {
             get { return canUpdatePeriodically; }
@@ -686,6 +688,7 @@ namespace Dynamo.Graph.Nodes
         /// <value>
         ///   <c>true</c> if this node is frozen; otherwise, <c>false</c>.
         /// </value>
+        [JsonIgnore]
         public bool IsFrozen
         {
             get
@@ -831,6 +834,49 @@ namespace Dynamo.Graph.Nodes
             }
         }
         #endregion
+
+        /// <summary>
+        /// Protected constructor used during deserialization.
+        /// </summary>
+        /// <param name="inPorts"></param>
+        /// <param name="outPorts"></param>
+        protected NodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
+        {
+            InPortData = new ObservableCollection<PortData>();
+            OutPortData = new ObservableCollection<PortData>();
+
+            // Set the ports from the deserialized data
+            InPorts.AddRange(inPorts);
+            OutPorts.AddRange(outPorts);
+
+            IsVisible = true;
+            IsUpstreamVisible = true;
+            ShouldDisplayPreviewCore = true;
+            executionHint = ExecutionHints.Modified;
+
+            PropertyChanged += delegate (object sender, PropertyChangedEventArgs args)
+            {
+                switch (args.PropertyName)
+                {
+                    case ("OverrideName"):
+                        RaisePropertyChanged("NickName");
+                        break;
+                }
+            };
+
+            //Register port connection events.
+            PortConnected += OnPortConnected;
+            PortDisconnected += OnPortDisconnected;
+
+            //Fetch the element name from the custom attribute.
+            SetNickNameFromAttribute();
+
+            IsSelected = false;
+            State = ElementState.Dead;
+            ArgumentLacing = LacingStrategy.Disabled;
+
+            RaisesModificationEvents = true;
+        }
 
         protected NodeModel()
         {

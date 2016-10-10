@@ -4,6 +4,7 @@ using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.HigherOrder
 {
@@ -14,11 +15,7 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCoreNodesUI.HigherOrder.ApplyFunction")]
     public class ApplyFunction : VariableInputNode
     {
-        /// <summary>
-        /// Private constructor used for serialization.
-        /// </summary>
-        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
-        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        [JsonConstructor]
         private ApplyFunction(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
@@ -81,11 +78,7 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCoreNodesUI.HigherOrder.ComposeFunctions")]
     public class ComposeFunctions : VariableInputNode
     {
-        /// <summary>
-        /// Private constructor used for serialization.
-        /// </summary>
-        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
-        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        [JsonConstructor]
         private ComposeFunctions(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;

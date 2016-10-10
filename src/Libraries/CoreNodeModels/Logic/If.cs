@@ -4,6 +4,7 @@ using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.Logic
 {
@@ -14,6 +15,9 @@ namespace CoreNodeModels.Logic
     [AlsoKnownAs("DSCoreNodesUI.Logic.If")]
     public class If : NodeModel
     {
+        [JsonConstructor]
+        private If(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
         public If()
         {
             InPortData.Add(new PortData("test", Resources.PortDataTestBlockToolTip));

@@ -52,6 +52,11 @@ namespace Dynamo.Tests
 
         private void CompareWorkspaces(WorkspaceComparisonData a, WorkspaceComparisonData b)
         {
+            var nodeDiff = a.NodeTypeMap.Except(b.NodeTypeMap);
+            if (nodeDiff.Any())
+            {
+                Assert.Fail("The workspaces don't have the same number of nodes. The json workspace is missing: " + string.Join(",", nodeDiff.Select(i => i.Value.ToString())));
+            }
             Assert.AreEqual(a.NodeCount, b.NodeCount, "The workspaces don't have the same number of nodes.");
             Assert.AreEqual(a.ConnectorCount, b.ConnectorCount, "The workspaces don't have the same number of connectors.");
             Assert.AreEqual(a.GroupCount, b.GroupCount, "The workspaces don't have the same number of groups.");
@@ -112,6 +117,19 @@ namespace Dynamo.Tests
         private void DoWorkspaceOpenAndCompare(string filePath)
         {
             var openPath = filePath;
+
+            var bannedTests = new List<string>()
+            {
+                "NestedIF",
+                "recorded",
+                "excel"
+            };
+
+            if (bannedTests.Any(t=>filePath.Contains(t)))
+            {
+                Assert.Inconclusive("Skipping...");
+            }
+
             OpenModel(openPath);
 
             var model = CurrentDynamoModel;
@@ -134,6 +152,23 @@ namespace Dynamo.Tests
                 model.CustomNodeManager, new ProtoCore.Namespace.ElementResolver());
 
             Assert.IsNotNullOrEmpty(json);
+
+            var fi = new FileInfo(filePath);
+
+            var tempPath = Path.GetTempPath();
+            var jsonFolder = Path.Combine(tempPath, "json");
+            
+            if (!Directory.Exists(jsonFolder))
+            {
+                Directory.CreateDirectory(jsonFolder);
+            }
+
+            var jsonPath = Path.Combine(Path.GetTempPath() + @"\json\" + Path.GetFileNameWithoutExtension(fi.Name) + ".json");
+            if (File.Exists(jsonPath))
+            {
+                File.Delete(jsonPath);
+            }
+            File.WriteAllText(jsonPath, json);
 
             var ws2 = Workspaces.Serialization.Workspaces.LoadWorkspaceFromJson(json, model.LibraryServices,
                 model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false,

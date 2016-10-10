@@ -17,6 +17,9 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.Map", "DSCoreNodesUI.HigherOrder.Map")]
     public class Map : NodeModel
     {
+        [JsonConstructor]
+        private Map(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
         public Map()
         {
             InPortData.Add(new PortData("list", Resources.MapPortDataListToolTip));
@@ -48,11 +51,6 @@ namespace CoreNodeModels.HigherOrder
     {
         private readonly int minPorts;
 
-        /// <summary>
-        /// Private constructor used for serialization.
-        /// </summary>
-        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
-        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
         protected CombinatorNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
         {
             InPorts.AddRange(inPorts);
@@ -100,11 +98,6 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.Combine", "DSCoreNodesUI.HigherOrder.Combine")]
     public class Combine : CombinatorNode
     {
-        /// <summary>
-        /// Private constructor used for serialization.
-        /// </summary>
-        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
-        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
         [JsonConstructor]
         private Combine(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) { }
 
@@ -134,11 +127,6 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.ForEach", "DSCoreNodesUI.HigherOrder.ForEach")]
     public class ForEach : CombinatorNode
     {
-        /// <summary>
-        /// Private constructor used for serialization.
-        /// </summary>
-        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
-        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
         [JsonConstructor]
         private ForEach(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) { }
   
@@ -170,11 +158,6 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.LaceShortest", "DSCoreNodesUI.HigherOrder.LaceShortest")]
     public class LaceShortest : CombinatorNode
     {
-        /// <summary>
-        /// Private constructor used for serialization.
-        /// </summary>
-        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
-        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
         [JsonConstructor]
         private LaceShortest(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
 
@@ -204,11 +187,6 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.LaceLongest", "DSCoreNodesUI.HigherOrder.LaceLongest")]
     public class LaceLongest : CombinatorNode
     {
-        /// <summary>
-        /// Private constructor used for serialization.
-        /// </summary>
-        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
-        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
         [JsonConstructor]
         private LaceLongest(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
 
@@ -239,11 +217,6 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.CartesianProduct", "DSCoreNodesUI.HigherOrder.CartesianProduct")]
     public class CartesianProduct : CombinatorNode
     {
-        /// <summary>
-        /// Private constructor used for serialization.
-        /// </summary>
-        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
-        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
         [JsonConstructor]
         private CartesianProduct(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
 
@@ -274,11 +247,6 @@ namespace CoreNodeModels.HigherOrder
     {
         private readonly PortData reductorPort;
 
-        /// <summary>
-        /// Private constructor used for serialization.
-        /// </summary>
-        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
-        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
         [JsonConstructor]
         private Reduce(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
 
@@ -371,11 +339,6 @@ namespace CoreNodeModels.HigherOrder
     {
         private readonly PortData reductorPort;
 
-        /// <summary>
-        /// Private constructor used for serialization.
-        /// </summary>
-        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
-        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
         [JsonConstructor]
         private ScanList(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
 
@@ -466,6 +429,9 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.Filter", "DSCoreNodesUI.HigherOrder.Filter")]
     public class Filter : NodeModel
     {
+        [JsonConstructor]
+        private Filter(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
         public Filter()
         {
             InPortData.Add(new PortData("list", Resources.FilterPortDataListToolTip));
@@ -510,6 +476,9 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.Replace", "DSCoreNodesUI.HigherOrder.Replace")]
     public class Replace : NodeModel
     {
+        [JsonConstructor]
+        private Replace(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
         public Replace()
         {
             InPortData.Add(new PortData("item", Resources.ReplacePortDataItemToolTip));

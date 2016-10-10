@@ -14,10 +14,13 @@ namespace Dynamo.Graph.Nodes
     /// </summary>
     public abstract class VariableInputNode : NodeModel
     {
-        protected VariableInputNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
+        /// <summary>
+        /// Protected constructor for deserialization
+        /// </summary>
+        /// <param name="inPorts"></param>
+        /// <param name="outPorts"></param>
+        protected VariableInputNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts,outPorts)
         {
-            InPorts.AddRange(inPorts);
-            OutPorts.AddRange(outPorts);
             VariableInputController = new BasicVariableInputNodeController(this);
         }
 

@@ -6,6 +6,7 @@ using ProtoCore.AST.AssociativeAST;
 using System.Xml;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -103,7 +104,16 @@ namespace CoreNodeModels
                 RaisePropertyChanged("SelectionFromBoxToolTip");
             }
         }
-      
+
+        [JsonConstructor]
+        private DynamoConvert(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            SelectedMetricConversion = ConversionMetricUnit.Length;
+            ShouldDisplayPreviewCore = true;
+            IsSelectionFromBoxEnabled = true;
+            RegisterAllPorts();
+        }
+
         public DynamoConvert()
         {           
             SelectedMetricConversion = ConversionMetricUnit.Length;  
