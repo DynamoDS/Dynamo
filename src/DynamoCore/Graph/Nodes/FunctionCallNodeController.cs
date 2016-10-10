@@ -6,7 +6,6 @@ using Dynamo.Engine;
 using Dynamo.Logging;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Lang;
-using Dynamo.Engine.CodeGeneration;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -52,23 +51,10 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="model">NodeModel to produce an AST for.</param>
         /// <param name="inputAstNodes">Arguments to the function call.</param>
-        /// <returns>AST nodes that generated from the node.</returns>
         public IEnumerable<AssociativeNode> BuildAst(NodeModel model, List<AssociativeNode> inputAstNodes)
         {
-            return BuildAst(model, inputAstNodes, CompilationContext.DeltaExecution); 
-        }
-
-        /// <summary>
-        ///     Produces AST for a function call. Takes into account multi-outputs and partial application.
-        /// </summary>
-        /// <param name="model">NodeModel to produce an AST for.</param>
-        /// <param name="inputAstNodes">Arguments to the function call.</param>
-        /// <param name="context">Compilation context</param>
-        /// <returns>AST nodes that generated from the node.</returns>
-        public IEnumerable<AssociativeNode> BuildAst(NodeModel model, List<AssociativeNode> inputAstNodes, CompilationContext context)
-        {
             var resultAst = new List<AssociativeNode>();
-            BuildOutputAst(model, inputAstNodes, resultAst, context);
+            BuildOutputAst(model, inputAstNodes, resultAst);
             return resultAst;
         }
 
@@ -148,24 +134,10 @@ namespace Dynamo.Graph.Nodes
         /// <param name="model">NodeModel to produce AST for.</param>
         /// <param name="inputAstNodes">Arguments to the function call.</param>
         /// <param name="resultAst">Result accumulator: add all new output AST to this list.</param>
-        /// <param name="context">Compilation context</param>
-        protected virtual void BuildOutputAst(NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst)
-        {
-            BuildOutputAst(model, inputAstNodes, resultAst, CompilationContext.DeltaExecution);
-        }
-
-        /// <summary>
-        ///     Produces AST for the given NodeModel that will call the underlying
-        ///     Function and assign all Identifiers for the node.
-        /// </summary>
-        /// <param name="model">NodeModel to produce AST for.</param>
-        /// <param name="inputAstNodes">Arguments to the function call.</param>
-        /// <param name="resultAst">Result accumulator: add all new output AST to this list.</param>
-        /// <param name="context">Compilation context</param>
         protected virtual void BuildOutputAst(
-            NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst, CompilationContext context)
+            NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst)
         {
-            AssociativeNode rhs = GetFunctionApplication(model, inputAstNodes, context);
+            AssociativeNode rhs = GetFunctionApplication(model, inputAstNodes);
 
             if (!model.IsPartiallyApplied || model.OutPortData.Count == 1)
                 AssignIdentifiersForFunctionCall(model, rhs, resultAst);
@@ -193,22 +165,8 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="model">Node to produce a function application for.</param>
         /// <param name="inputAstNodes">Arguments to the function application.</param>
-        /// <returns>Function call node</returns>
-        protected virtual AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes)
-        {
-            return GetFunctionApplication(model, inputAstNodes, CompilationContext.DeltaExecution);
-        }
-
-        /// <summary>
-        ///     Produces AST representing a function application for the given NodeModel, using the
-        ///     given arguments. This should not assign any of the node's identifiers.
-        /// </summary>
-        /// <param name="model">Node to produce a function application for.</param>
-        /// <param name="inputAstNodes">Arguments to the function application.</param>
-        /// <param name="context">Compilation context</param>
-        /// <returns>Function call node</returns>
-        protected abstract AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes, CompilationContext context);
-
+        protected abstract AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes);
+        
         /// <summary>
         ///     Deserializes Controller information from XML.
         /// </summary>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using ProtoCore.AST.AssociativeAST;
-using Dynamo.Engine.CodeGeneration;
 
 namespace Dynamo.Graph.Nodes.CustomNodes
 {
@@ -51,7 +50,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             }
         }
 
-        protected override AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes, CompilationContext context)
+        protected override AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes)
         {
             if (!model.IsPartiallyApplied)
             {
@@ -95,7 +94,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 base.AssignIdentifiersForFunctionCall(model, rhs, resultAst);
         }
 
-        protected override void BuildOutputAst(NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst, CompilationContext context)
+        protected override void BuildOutputAst(NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst)
         {
             if (Definition == null)
             {
@@ -105,7 +104,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             }
             else
             {
-                base.BuildOutputAst(model, inputAstNodes, resultAst, context);
+                base.BuildOutputAst(model, inputAstNodes, resultAst);
             }
         }
 
