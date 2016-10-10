@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Utilities;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -13,6 +14,13 @@ namespace Dynamo.Graph.Nodes
     /// </summary>
     public abstract class VariableInputNode : NodeModel
     {
+        protected VariableInputNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
+        {
+            InPorts.AddRange(inPorts);
+            OutPorts.AddRange(outPorts);
+            VariableInputController = new BasicVariableInputNodeController(this);
+        }
+
         protected VariableInputNode()
         {
             VariableInputController = new BasicVariableInputNodeController(this);

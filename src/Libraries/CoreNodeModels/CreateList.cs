@@ -3,6 +3,8 @@ using System.Linq;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
+using Dynamo.Utilities;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -14,6 +16,17 @@ namespace CoreNodeModels
     [AlsoKnownAs("DSCoreNodesUI.CreateList")]
     public class CreateList : VariableInputNode
     {
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        [JsonConstructor]
+        private CreateList(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
         public CreateList()
         {
             InPortData.Add(new PortData("item0", Resources.CreateListPortDataIndex0ToolTip));

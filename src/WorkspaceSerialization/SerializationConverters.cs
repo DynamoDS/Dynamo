@@ -76,10 +76,6 @@ namespace Workspaces.Serialization
                 node = new CodeBlockNodeModel(code, guid, x, y, libraryServices, elementResolver);
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
-            else if (typeof(VariableInputNode).IsAssignableFrom(type))
-            {
-                throw new NotImplementedException();
-            }
             else if(type == typeof(DSFunction))
             {
                 var fd = obj["FunctionDescription"];

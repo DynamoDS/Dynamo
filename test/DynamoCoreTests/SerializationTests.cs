@@ -68,20 +68,32 @@ namespace Dynamo.Tests
                 var countB = b.OutportCountMap[kvp.Key];
                 Assert.AreEqual(countA, countB, string.Format("One {0} node has {1} outports, while the other has {2}", a.NodeTypeMap[kvp.Key], countA, countB));
             }
+
+            foreach (var kvp in a.NodeDataMap)
+            {
+                var valueA = kvp.Value;
+                var valueB = b.NodeDataMap[kvp.Key];
+
+                Assert.AreEqual(valueA, valueB,
+                    string.Format("Node Type:{0} value, {1} is not equal to {2}",
+                    a.NodeTypeMap[kvp.Key], valueA, valueB));
+
+                Assert.AreEqual(a.NodeTypeMap[kvp.Key], b.NodeTypeMap[kvp.Key]);
+            }
         }
 
         [Test]
         public void CustomNodeSerializationTest()
         {
             var customNodeTestPath = Path.Combine(TestDirectory , @"core\CustomNodes\TestAdd.dyn");
-            DowWorkspaceOpenAndCompare(customNodeTestPath);
+            DoWorkspaceOpenAndCompare(customNodeTestPath);
         }
 
         [Test]
         public void AllTypesSerialize()
         {
             var customNodeTestPath = Path.Combine(TestDirectory, @"core\serialization\serialization.dyn");
-            DowWorkspaceOpenAndCompare(customNodeTestPath);
+            DoWorkspaceOpenAndCompare(customNodeTestPath);
         }
 
         public object[] FindWorkspaces()
@@ -94,10 +106,10 @@ namespace Dynamo.Tests
         [Test, TestCaseSource("FindWorkspaces")]
         public void SerializationTest(string filePath)
         {
-            DowWorkspaceOpenAndCompare(filePath);
+            DoWorkspaceOpenAndCompare(filePath);
         }
 
-        private void DowWorkspaceOpenAndCompare(string filePath)
+        private void DoWorkspaceOpenAndCompare(string filePath)
         {
             var openPath = filePath;
             OpenModel(openPath);
@@ -132,18 +144,14 @@ namespace Dynamo.Tests
                 model.AddCustomNodeWorkspace((CustomNodeWorkspaceModel)ws2);
             }
 
+            // The following logic is taken from the DynamoModel.Open method.
+            // It assumes a single home workspace model. So, we remove all 
+            // others, before adding a new one.
             if (ws2 is HomeWorkspaceModel)
             {
-                // TODO: #4258
-                // The logic to remove all other home workspaces from the model
-                // was moved from the ViewModel. When #4258 is implemented, we will need to
-                // remove this step.
                 var currentHomeSpaces = model.Workspaces.OfType<HomeWorkspaceModel>().ToList();
                 if (currentHomeSpaces.Any())
                 {
-                    // If the workspace we're opening is a home workspace,
-                    // then remove all the other home workspaces. Otherwise,
-                    // Remove all but the first home workspace.
                     var end = ws2 is HomeWorkspaceModel ? 0 : 1;
 
                     for (var i = currentHomeSpaces.Count - 1; i >= end; i--)
@@ -154,16 +162,9 @@ namespace Dynamo.Tests
 
                 model.AddWorkspace(ws2);
 
-                // TODO: #4258
-                // The following logic to start periodic evaluation will need to be moved
-                // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
-                // as it causes an immediate crash due to the above ResetEngine call.
                 var hws = ws2 as HomeWorkspaceModel;
                 if (hws != null)
                 {
-                    // TODO: #4258
-                    // Remove this ResetEngine call when multiple home workspaces is supported.
-                    // This call formerly lived in DynamoViewModel
                     model.ResetEngine();
 
                     if (hws.RunSettings.RunType == RunType.Periodic)
@@ -177,9 +178,10 @@ namespace Dynamo.Tests
 
             Assert.NotNull(ws2);
 
-            if(ws2.Nodes.Any(n=>n is DummyNode))
+            var dummyNodes = ws2.Nodes.Where(n => n is DummyNode);
+            if(dummyNodes.Any())
             {
-                Assert.Inconclusive("Workspace contains Dummy Nodes.");
+                Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",",dummyNodes.Select(n=>n.NickName).ToArray()));
             }
 
             var wcd2 = new WorkspaceComparisonData(ws2);
@@ -198,22 +200,6 @@ namespace Dynamo.Tests
                 Assert.NotNull(c.End.Owner);
                 Assert.True(ws2.Nodes.Contains(c.Start.Owner));
                 Assert.True(ws2.Nodes.Contains(c.End.Owner));
-            }
-
-            // Set the ws as the current home workspace
-            // and try to run it.
-            //RunCurrentModel();
-
-            foreach (var n in ws2.Nodes)
-            {
-                if(wcd1.NodeDataMap[n.GUID] == null && n.CachedValue == null)
-                {
-                    continue;
-                }
-                Assert.True(wcd1.NodeDataMap[n.GUID].Equals(n.CachedValue.IsNull? null : n.CachedValue.Data), 
-                    string.Format("Node Type:{0} value, {1} is not equal to {2}", 
-                    n.GetType(), n.CachedValue == null? "null" : n.CachedValue.Data, wcd1.NodeDataMap[n.GUID]));
-                Assert.AreEqual(wcd2.NodeTypeMap[n.GUID], n.GetType());
             }
         }
     }

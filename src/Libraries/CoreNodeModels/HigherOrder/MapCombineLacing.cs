@@ -4,6 +4,8 @@ using Autodesk.DesignScript.Runtime;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
+using Dynamo.Utilities;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.HigherOrder
 {
@@ -46,6 +48,17 @@ namespace CoreNodeModels.HigherOrder
     {
         private readonly int minPorts;
 
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        protected CombinatorNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
+        {
+            InPorts.AddRange(inPorts);
+            OutPorts.AddRange(outPorts);
+        }
+
         protected CombinatorNode() : this(3)
         {
             InPortData.Add(new PortData("comb", Resources.CombinatorPortDataCombToolTip));
@@ -87,6 +100,14 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.Combine", "DSCoreNodesUI.HigherOrder.Combine")]
     public class Combine : CombinatorNode
     {
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        [JsonConstructor]
+        private Combine(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
@@ -113,6 +134,14 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.ForEach", "DSCoreNodesUI.HigherOrder.ForEach")]
     public class ForEach : CombinatorNode
     {
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        [JsonConstructor]
+        private ForEach(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) { }
+  
         public ForEach() : base(2) { }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -141,6 +170,14 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.LaceShortest", "DSCoreNodesUI.HigherOrder.LaceShortest")]
     public class LaceShortest : CombinatorNode
     {
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        [JsonConstructor]
+        private LaceShortest(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
@@ -167,6 +204,14 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.LaceLongest", "DSCoreNodesUI.HigherOrder.LaceLongest")]
     public class LaceLongest : CombinatorNode
     {
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        [JsonConstructor]
+        private LaceLongest(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
@@ -194,6 +239,14 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.CartesianProduct", "DSCoreNodesUI.HigherOrder.CartesianProduct")]
     public class CartesianProduct : CombinatorNode
     {
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        [JsonConstructor]
+        private CartesianProduct(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
@@ -211,68 +264,6 @@ namespace CoreNodeModels.HigherOrder
         }
     }
 
-    /*
-    [NodeName("True For Any")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
-    [NodeDescription("Tests to see if any elements in a sequence satisfy the given predicate.")]
-    [IsDesignScriptCompatible]
-    public class TrueForAny : NodeModel
-    {
-        public TrueForAny()
-        {
-            InPortData.Add(new PortData("list", "The list to test."));
-            InPortData.Add(new PortData("p(x)", "The predicate used to test elements"));
-
-            OutPortData.Add(new PortData("any?", "Whether or not any elements satisfy the given predicate."));
-
-            RegisterAllPorts();
-        }
-
-        public override IEnumerable<AssociativeNode> BuildOutputAst(
-            List<AssociativeNode> inputAstNodes)
-        {
-            return new[]
-            {
-                AstFactory.BuildAssignment(
-                    GetAstIdentifierForOutputIndex(0),
-                    AstFactory.BuildFunctionCall(
-                        "TrueForAny",
-                        (inputAstNodes as IEnumerable<AssociativeNode>).Reverse().ToList()))
-            };
-        }
-    }
-
-    [NodeName("True For All")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
-    [NodeDescription("Tests to see if all elements in a sequence satisfy the given predicate.")]
-    [IsDesignScriptCompatible]
-    public class TrueForAll : NodeModel
-    {
-        public TrueForAll()
-        {
-            InPortData.Add(new PortData("list", "The list to test."));
-            InPortData.Add(new PortData("p(x)", "The predicate used to test items"));
-
-            OutPortData.Add(new PortData("all?", "Whether or not all items satisfy the given predicate."));
-
-            RegisterAllPorts();
-        }
-
-        public override IEnumerable<AssociativeNode> BuildOutputAst(
-            List<AssociativeNode> inputAstNodes)
-        {
-            return new[]
-            {
-                AstFactory.BuildAssignment(
-                    GetAstIdentifierForOutputIndex(0),
-                    AstFactory.BuildFunctionCall(
-                        "TrueForAll",
-                        (inputAstNodes as IEnumerable<AssociativeNode>).Reverse().ToList()))
-            };
-        }
-    }
-    */
-
     [NodeName("List.Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ListReduceDescription", typeof(Resources))]
@@ -282,6 +273,14 @@ namespace CoreNodeModels.HigherOrder
     public class Reduce : VariableInputNode
     {
         private readonly PortData reductorPort;
+
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        [JsonConstructor]
+        private Reduce(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
 
         public Reduce()
         {
@@ -371,6 +370,14 @@ namespace CoreNodeModels.HigherOrder
     public class ScanList : VariableInputNode
     {
         private readonly PortData reductorPort;
+
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        [JsonConstructor]
+        private ScanList(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
 
         public ScanList()
         {
