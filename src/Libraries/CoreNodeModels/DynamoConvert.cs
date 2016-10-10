@@ -111,7 +111,6 @@ namespace CoreNodeModels
             SelectedMetricConversion = ConversionMetricUnit.Length;
             ShouldDisplayPreviewCore = true;
             IsSelectionFromBoxEnabled = true;
-            RegisterAllPorts();
         }
 
         public DynamoConvert()

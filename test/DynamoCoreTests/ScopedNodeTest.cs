@@ -53,19 +53,19 @@ namespace Dynamo.Tests
             var cbn1 = createCbn("n1;");
 
             var cbn2 = createCbn("n2;");
-            cbn2.ConnectInput(0, 0, cbn1);
+            //cbn2.ConnectInput(0, 0, cbn1);
 
             var cbn3 = createCbn("n3;");
 
             var cbn4 = createCbn("n4=x+y;");
-            cbn4.ConnectInput(0, 0, cbn2);
-            cbn4.ConnectInput(1, 0, cbn3);
+            //cbn4.ConnectInput(0, 0, cbn2);
+            //cbn4.ConnectInput(1, 0, cbn3);
 
             var cbn5 = createCbn("n5;");
 
             var s1 = new TwoScopedInputs();
-            s1.ConnectInput(0, 0, cbn4);
-            s1.ConnectInput(1, 0, cbn5);
+            //s1.ConnectInput(0, 0, cbn4);
+            //s1.ConnectInput(1, 0, cbn5);
 
             var scopedNodes = s1.GetInScopeNodesForInport(0).ToList();
             Assert.AreEqual(4, scopedNodes.Count());
@@ -79,13 +79,13 @@ namespace Dynamo.Tests
             Assert.IsTrue(scopedNodes.Contains(cbn5));
 
             var cbn6 = createCbn("n6;");
-            cbn6.ConnectInput(0, 0, s1);
+            //cbn6.ConnectInput(0, 0, s1);
 
             var cbn7 = createCbn("n7;");
-            cbn7.ConnectInput(0, 0, cbn6);
+            //cbn7.ConnectInput(0, 0, cbn6);
 
             var s2 = new TwoScopedInputs();
-            s2.ConnectInput(0, 0, cbn7);
+            //s2.ConnectInput(0, 0, cbn7);
 
             scopedNodes = s2.GetInScopeNodesForInport(0).ToList();
             Assert.AreEqual(8, scopedNodes.Count());
@@ -118,19 +118,19 @@ namespace Dynamo.Tests
             var cbn1 = createCbn("n1;");
 
             var cbn2 = createCbn("n2;");
-            cbn2.ConnectInput(0, 0, cbn1);
+            //cbn2.ConnectInput(0, 0, cbn1);
 
             var cbn3 = createCbn("n3;");
 
             var cbn4 = createCbn("n4=x+y;");
-            cbn4.ConnectInput(0, 0, cbn2);
-            cbn4.ConnectInput(1, 0, cbn3);
+            //cbn4.ConnectInput(0, 0, cbn2);
+            //cbn4.ConnectInput(1, 0, cbn3);
 
             var cbn5 = createCbn("n5;");
-            cbn5.ConnectInput(0, 0, cbn4);
+            //cbn5.ConnectInput(0, 0, cbn4);
 
             var s1 = new TwoScopedInputs();
-            s1.ConnectInput(0, 0, cbn4);
+            //s1.ConnectInput(0, 0, cbn4);
 
             var scopedNodes = s1.GetInScopeNodesForInport(0);
             Assert.AreEqual(0, scopedNodes.Count());
@@ -154,19 +154,19 @@ namespace Dynamo.Tests
             var cbn1 = createCbn("n1;");
 
             var cbn2 = createCbn("n2;");
-            cbn2.ConnectInput(0, 0, cbn1);
+            //cbn2.ConnectInput(0, 0, cbn1);
 
             var cbn3 = createCbn("n3;");
 
             var cbn4 = createCbn("n4=x+y;");
-            cbn4.ConnectInput(0, 0, cbn2);
-            cbn4.ConnectInput(1, 0, cbn3);
+            //cbn4.ConnectInput(0, 0, cbn2);
+            //cbn4.ConnectInput(1, 0, cbn3);
 
             var cbn5 = createCbn("n5;");
-            cbn5.ConnectInput(0, 0, cbn2);
+            //cbn5.ConnectInput(0, 0, cbn2);
 
             var s1 = new TwoScopedInputs();
-            s1.ConnectInput(0, 0, cbn4);
+            //s1.ConnectInput(0, 0, cbn4);
 
             var scopedNodes = s1.GetInScopeNodesForInport(0).ToList();
             Assert.AreEqual(2, scopedNodes.Count());

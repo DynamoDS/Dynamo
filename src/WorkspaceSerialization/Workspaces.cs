@@ -37,7 +37,7 @@ namespace Workspaces.Serialization
                         new ConnectorConverter(),
                         new AnnotationConverter(),
                         new WorkspaceConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
-                        new NodeModelConverter(manager, libraryServices, elementResolver)
+                        new NodeModelConverter(manager, libraryServices)
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
@@ -72,7 +72,7 @@ namespace Workspaces.Serialization
                         new AnnotationConverter(),
                         new WorkspaceConverter(engineController, scheduler, factory,
                         isTestMode, verboseLogging),
-                        new NodeModelConverter(manager, libraryServices, elementResolver)
+                        new NodeModelConverter(manager, libraryServices)
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };

@@ -33,13 +33,13 @@ namespace Workspaces.Serialization
     {
         private CustomNodeManager manager;
         private LibraryServices libraryServices;
-        private ElementResolver elementResolver;
+        
+        public ElementResolver ElementResolver { get; set; }
 
-        public NodeModelConverter(CustomNodeManager manager, LibraryServices libraryServices, ElementResolver elementResolver)
+        public NodeModelConverter(CustomNodeManager manager, LibraryServices libraryServices)
         {
             this.manager = manager;
             this.libraryServices = libraryServices;
-            this.elementResolver = elementResolver;
         }
 
         public override bool CanConvert(Type objectType)
@@ -73,7 +73,7 @@ namespace Workspaces.Serialization
             else if(type == typeof(CodeBlockNodeModel))
             {
                 var code = obj["Code"].Value<string>();
-                node = new CodeBlockNodeModel(code, guid, x, y, libraryServices, elementResolver);
+                node = new CodeBlockNodeModel(code, guid, x, y, libraryServices, ElementResolver);
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
             else if(type == typeof(DSFunction))
@@ -194,6 +194,10 @@ namespace Workspaces.Serialization
             var guid = Guid.Parse(guidStr);
             var name = obj["Name"].Value<string>();
 
+            var elementResolver = obj["ElementResolver"].ToObject<ElementResolver>(serializer);
+            var nmc = (NodeModelConverter)serializer.Converters.First(c => c is NodeModelConverter);
+            nmc.ElementResolver = elementResolver;
+
             // nodes
             var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
             
@@ -251,6 +255,10 @@ namespace Workspaces.Serialization
             writer.WriteValue(ws.Description);
             writer.WritePropertyName("Name");
             writer.WriteValue(ws.Name);
+
+            //element resolver
+            writer.WritePropertyName("ElementResolver");
+            serializer.Serialize(writer, ws.ElementResolver);
 
             //nodes
             writer.WritePropertyName("Nodes");

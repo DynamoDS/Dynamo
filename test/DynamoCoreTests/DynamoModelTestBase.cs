@@ -62,7 +62,10 @@ namespace Dynamo
         protected virtual void StartDynamo(IPreferences settings = null)
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
+            //preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
+            var testConfig = new TestSessionConfiguration();
+            preloader = new Preloader(testConfig.DynamoCorePath, testConfig.RequestedLibraryVersion);
+
             preloader.Preload();
 
             var preloadedLibraries = new List<string>();
