@@ -21,6 +21,8 @@ namespace CoreNodeModels
     public class Watch : NodeModel
     {
         public event Action<Object> EvaluationComplete;
+
+        [JsonIgnore]
         public new object CachedValue;
 
         /// <summary>

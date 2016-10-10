@@ -201,16 +201,17 @@ namespace Dynamo.Graph.Nodes
             // operation, as the node may reject attempts to create
             // or remove too many ports.  As such, we ignore any
             // failures to add or remove ports.
-            for (int current = model.InPortData.Count; current != numInputs; )
+            for (int current = model.InPorts.Count; current != numInputs; )
             {
                 if (current < numInputs)
                 {
-                    AddInputToModel();
+                    var idx = GetInputIndexFromModel();
+                    model.InPorts.Add(new PortModel(PortType.Input, model, new PortData(GetInputName(idx), GetInputTooltip(idx))));
                     ++current;
                 }
                 else
                 {
-                    RemoveInputFromModel();
+                    model.InPorts.RemoveAt(model.InPorts.Count() - 1);
                     --current;
                 }
             }

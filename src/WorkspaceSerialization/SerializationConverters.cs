@@ -6,7 +6,6 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Scheduler;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System;
@@ -49,7 +48,7 @@ namespace Workspaces.Serialization
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            NodeModel node;
+            NodeModel node = null;
 
             var obj = JObject.Load(reader);
             var type = Type.GetType(obj["$type"].Value<string>());
@@ -76,7 +75,7 @@ namespace Workspaces.Serialization
                 node = new CodeBlockNodeModel(code, guid, x, y, libraryServices, ElementResolver);
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
-            else if(type == typeof(DSFunction))
+            else if(typeof(DSFunctionBase).IsAssignableFrom(type))
             {
                 var fd = obj["FunctionDescription"];
                 var asm = fd["Assembly"].Value<string>();
@@ -86,7 +85,25 @@ namespace Workspaces.Serialization
                     libraryServices.GetFunctionDescriptor(mangledName) :
                     libraryServices.GetFunctionDescriptor(asm, mangledName);
 
-                node = new DSFunction(description);
+                if(type == typeof(DSVarArgFunction))
+                {
+                    node = new DSVarArgFunction(description);
+                    // The node syncs with the function definition.
+                    // Then we need to make the inport count correct
+                    var varg = (DSVarArgFunction)node;
+                    varg.VarInputController.SetNumInputs(inPorts.Count());
+                }
+                else if(type == typeof(DSFunction))
+                {
+                    node = new DSFunction(description);
+                    
+                }
+                RemapPorts(node, inPorts, outPorts, resolver);
+            }
+            else if (type == typeof(DSVarArgFunction))
+            {
+                var functionId = Guid.Parse(obj["FunctionUuid"].Value<string>());
+                node = manager.CreateCustomNodeInstance(functionId);
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
             else
@@ -219,13 +236,13 @@ namespace Workspaces.Serialization
             if (isCustomNode)
             {
                 ws = new CustomNodeWorkspaceModel(factory, nodes, notes, annotations, 
-                    Enumerable.Empty<PresetModel>(), new ElementResolver(), info);
+                    Enumerable.Empty<PresetModel>(), elementResolver, info);
             }
             else
             {
                 ws = new HomeWorkspaceModel(guid, engine, scheduler, factory, 
                     Enumerable.Empty<KeyValuePair<Guid, List<CallSite.RawTraceData>>>(), nodes, notes, annotations, 
-                    Enumerable.Empty<PresetModel>(), new ElementResolver(), 
+                    Enumerable.Empty<PresetModel>(), elementResolver, 
                     info, verboseLogging, isTestMode);
             }
 

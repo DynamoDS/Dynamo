@@ -19,7 +19,7 @@ namespace Workspaces.Serialization
         /// <param name="json"></param>
         public static WorkspaceModel LoadWorkspaceFromJson(string json, LibraryServices libraryServices,
             EngineController engineController, DynamoScheduler scheduler, NodeFactory factory,
-            bool isTestMode, bool verboseLogging, CustomNodeManager manager, ElementResolver elementResolver)
+            bool isTestMode, bool verboseLogging, CustomNodeManager manager)
         {
             var settings = new JsonSerializerSettings
             {
@@ -53,7 +53,7 @@ namespace Workspaces.Serialization
         /// <returns>A string representing the serialized WorkspaceModel.</returns>
         public static string SaveWorkspaceToJson(WorkspaceModel workspace, LibraryServices libraryServices, 
             EngineController engineController, DynamoScheduler scheduler, NodeFactory factory,
-            bool isTestMode, bool verboseLogging, CustomNodeManager manager, ElementResolver elementResolver)
+            bool isTestMode, bool verboseLogging, CustomNodeManager manager)
         {
             var settings = new JsonSerializerSettings
             {

@@ -7,12 +7,21 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using System.Xml;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
     class SerializationTests : DynamoModelTestBase
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         /// <summary>
         /// Caches workspaces data for comparison.
         /// </summary>
@@ -133,12 +142,27 @@ namespace Dynamo.Tests
                 "NestedIF",
                 "recorded",
                 "excel",
-                "CASE"
+                "CASE",
+                "WatchPreviewBubble",
+                "visualization"
             };
 
             if (bannedTests.Any(t=>filePath.Contains(t)))
             {
-                Assert.Inconclusive("Skipping...");
+                Assert.Inconclusive("Skipping test known to kill the test framework...");
+            }
+
+            // Find the version in the root
+            
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(openPath);
+            WorkspaceInfo info;
+            if(WorkspaceInfo.FromXmlDocument(xmlDoc, openPath, false, false, CurrentDynamoModel.Logger, out info))
+            {
+                if (Version.Parse(info.Version) < new Version(1, 0))
+                {
+                    Assert.Inconclusive("The test file was from before version 1.0.");
+                }
             }
 
             OpenModel(openPath);
@@ -146,12 +170,13 @@ namespace Dynamo.Tests
             var model = CurrentDynamoModel;
             var ws1 = model.CurrentWorkspace;
 
-            if (ws1.WorkspaceVersion < new Version(1, 0))
+            var dummyNodes = ws1.Nodes.Where(n => n is DummyNode);
+            if (dummyNodes.Any())
             {
-                Assert.Inconclusive("The test file was from before version 1.0.");
+                Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.NickName).ToArray()));
             }
 
-            if(((HomeWorkspaceModel)ws1).RunSettings.RunType== Models.RunType.Manual)
+            if (((HomeWorkspaceModel)ws1).RunSettings.RunType== Models.RunType.Manual)
             {
                 RunCurrentModel();
             }
@@ -160,7 +185,7 @@ namespace Dynamo.Tests
 
             var json = Workspaces.Serialization.Workspaces.SaveWorkspaceToJson(model.CurrentWorkspace, model.LibraryServices,
                 model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false, 
-                model.CustomNodeManager, new ProtoCore.Namespace.ElementResolver());
+                model.CustomNodeManager);
 
             Assert.IsNotNullOrEmpty(json);
 
@@ -183,11 +208,17 @@ namespace Dynamo.Tests
 
             var ws2 = Workspaces.Serialization.Workspaces.LoadWorkspaceFromJson(json, model.LibraryServices,
                 model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false,
-                model.CustomNodeManager, new ProtoCore.Namespace.ElementResolver());
+                model.CustomNodeManager);
 
             if (ws2 is CustomNodeWorkspaceModel)
             {
                 model.AddCustomNodeWorkspace((CustomNodeWorkspaceModel)ws2);
+            }
+
+            foreach(var c in ws2.Connectors)
+            {
+                Assert.NotNull(c.Start.Owner, "The node is not set for the start of connector " + c.GUID + ". The end node is " + c.End.Owner + ".");
+                Assert.NotNull(c.End.Owner, "The node is not set for the end of connector " + c.GUID + ". The start node is " + c.Start.Owner + ".");
             }
 
             // The following logic is taken from the DynamoModel.Open method.
@@ -224,7 +255,7 @@ namespace Dynamo.Tests
 
             Assert.NotNull(ws2);
 
-            var dummyNodes = ws2.Nodes.Where(n => n is DummyNode);
+            dummyNodes = ws2.Nodes.Where(n => n is DummyNode);
             if(dummyNodes.Any())
             {
                 Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",",dummyNodes.Select(n=>n.NickName).ToArray()));
