@@ -12,6 +12,7 @@ namespace Dynamo.Controls
     public partial class WatchTree : UserControl
     {
         private WatchViewModel _vm;
+        private TreeViewItem prevTVI;
 
         public WatchTree()
         {
@@ -39,18 +40,36 @@ namespace Dynamo.Controls
                 node.Click();
         }
 
-        private void TreeView1_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void treeviewItem_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var node = e.NewValue as WatchViewModel;
-            if (node == null)
+            TreeViewItem tvi = (TreeViewItem)sender;
+            var node = tvi.DataContext as WatchViewModel;
+
+            if (tvi == null || node == null)
                 return;
+
+            // checks to see if the currently selected node is the same as the previous selected node
+            // if so, then de-select the currently selected node.
+
+            if (tvi == this.prevTVI)
+            {
+                this.prevTVI = null;
+                if (tvi.IsSelected)
+                {
+                    tvi.IsSelected = false;
+                    tvi.Focus();
+                }
+            }
+            else
+            {
+                this.prevTVI = tvi;
+            }
 
             if (_vm.FindNodeForPathCommand.CanExecute(node.Path))
             {
                 _vm.FindNodeForPathCommand.Execute(node.Path);
             }
+            e.Handled = true; 
         }
-
     }
-
 }
