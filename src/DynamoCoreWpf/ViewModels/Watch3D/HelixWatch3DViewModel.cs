@@ -124,6 +124,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private List<Model3D> sceneItems;
 
+        private Dictionary<string, string> nodesSelected = new Dictionary<string, string>();
+
+
 #if DEBUG
         private readonly Stopwatch renderTimer = new Stopwatch();
 #endif
@@ -553,6 +556,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 labelPlaces.Clear();
+                nodesSelected = new Dictionary<string, string>();
             }
 
             OnSceneItemsChanged();
@@ -1291,25 +1295,40 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     (requestedLabelPlaces = labelPlaces[nodePath]
                         .Where(pair => pair.Item1 == path || pair.Item1.StartsWith(path + ":")).ToList()).Any())
                 {
-                    // second, add requested labels
-                    var textGeometry = HelixRenderPackage.InitText3D();
-                    var bbText = new BillboardTextModel3D
-                    {
-                        Geometry = textGeometry
-                    };
+                    // If the nodesSelected Dictionary does not contain the current nodePath as a key,
+                    // or if the current value of the nodePath key is null or not the same as the current path
+                    // then, create new labels for the Watch3DView.
+                    // Else, allow the labels to be removed.
 
-                    foreach (var id_position in requestedLabelPlaces)
+                    if (!nodesSelected.ContainsKey(nodePath) || nodesSelected[nodePath] == null || nodesSelected[nodePath] != path)
                     {
-                        var text = HelixRenderPackage.CleanTag(id_position.Item1);
-                        var textPosition = id_position.Item2 + defaultLabelOffset;
+                        // second, add requested labels
+                        var textGeometry = HelixRenderPackage.InitText3D();
+                        var bbText = new BillboardTextModel3D
+                        {
+                            Geometry = textGeometry
+                        };
 
-                        var textInfo = new TextInfo(text, textPosition);
-                        textGeometry.TextInfo.Add(textInfo);
+                        foreach (var id_position in requestedLabelPlaces)
+                        {
+                            var text = HelixRenderPackage.CleanTag(id_position.Item1);
+                            var textPosition = id_position.Item2 + defaultLabelOffset;
+
+                            var textInfo = new TextInfo(text, textPosition);
+                            textGeometry.TextInfo.Add(textInfo);
+                        }
+
+                        Model3DDictionary.Add(labelName, bbText);
+                        sceneItemsChanged = true;
+                        AttachAllGeometryModel3DToRenderHost();
+                        nodesSelected[nodePath] = path;
                     }
 
-                    Model3DDictionary.Add(labelName, bbText);
-                    sceneItemsChanged = true;
-                    AttachAllGeometryModel3DToRenderHost();
+                    // if no node is being selected, that means the current node is being unselected.
+                    else
+                    {
+                        nodesSelected[nodePath] = null;
+                    }
                 }
 
                 if (sceneItemsChanged)
