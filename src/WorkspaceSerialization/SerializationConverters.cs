@@ -112,7 +112,10 @@ namespace Workspaces.Serialization
             node.X = x;
             node.Y = y;
 
+            // Add references to the node and the ports to the reference resolver,
+            // so that they are available for entities which are deserialized later.
             serializer.ReferenceResolver.AddReference(serializer.Context, node.GUID.ToString(), node);
+
             foreach(var p in node.InPorts)
             {
                 serializer.ReferenceResolver.AddReference(serializer.Context, p.GUID.ToString(), p);

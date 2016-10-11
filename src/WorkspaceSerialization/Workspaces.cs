@@ -71,7 +71,6 @@ namespace Workspaces.Serialization
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
-                PreserveReferencesHandling = PreserveReferencesHandling.Objects,
                 Converters = new List<JsonConverter>{
                         new FunctionDescriptorConverter(libraryServices),
                         new ConnectorConverter(),
@@ -106,7 +105,6 @@ namespace Workspaces.Serialization
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
-                PreserveReferencesHandling = PreserveReferencesHandling.Objects,
                 Converters = new List<JsonConverter>{
                         new FunctionDescriptorConverter(libraryServices),
                         new ConnectorConverter(),
