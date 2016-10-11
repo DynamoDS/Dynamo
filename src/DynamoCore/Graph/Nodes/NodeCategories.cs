@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Xml;
 using Dynamo.Configuration;
@@ -420,12 +421,21 @@ namespace Dynamo.Graph.Nodes
             var documentUri = new Uri(basePath, UriKind.Absolute);
             var assemblyUri = new Uri(subjectPath, UriKind.Absolute);
 
-            var relativeUri = documentUri.MakeRelativeUri(assemblyUri);
-            var relativePath = relativeUri.OriginalString.Replace('/', '\\');
+            var relativeUri = documentUri.MakeRelativeUri(assemblyUri).OriginalString;
+
+            // MakeRelativePath should not return a URL encoded path.
+            // new Uri() results in a URL encoded path.
+            // Therefore, to undo that, we need to call UrlDecode on it.
+            // Also, UrlDecode will convert + to space, but the Uri creation
+            // doesn't encode + as %2B. In order to avoid + in the filename
+            // being converted to space, we need to encode + as %2B before calling it.
+            var relativePath = WebUtility.UrlDecode(relativeUri.Replace("+", "%2B")).Replace('/', '\\');
+
             if (!HasPathInformation(relativePath))
             {
                 relativePath = ".\\" + relativePath;
             }
+
             return relativePath;
         }
 
