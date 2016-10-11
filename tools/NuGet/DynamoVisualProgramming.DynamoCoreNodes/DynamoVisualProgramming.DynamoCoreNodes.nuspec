@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>DynamoVisualProgramming.DynamoCoreNodes</id>
+        <version>1.2.0</version>
+        <authors>Autodesk</authors>
+        <licenseUrl>https://opensource.org/licenses/Apache-2.0</licenseUrl>
+        <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
+        <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Build core nodes for Dynamo 1.2.0.  It contains the following files:
+
+1)DsCoreNodes.dll
+
+2)Display.dll</description>
+        <copyright>Copyright Autodesk 2016</copyright>
+        <dependencies>
+            <group targetFramework=".NETFramework4.5">
+                <dependency id="DynamoVisualProgramming.DynamoServices" version="1.2.0" />
+                <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="1.2.0" />
+            </group>
+        </dependencies>
+    </metadata>
+</package>
