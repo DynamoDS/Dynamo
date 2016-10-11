@@ -15,7 +15,6 @@ using System.Text.RegularExpressions;
 
 namespace Workspaces.Serialization
 {
-
     public static class Workspaces
     {
         private static Dictionary<string, Type> NodeNameMap = new Dictionary<string, Type>()
@@ -72,7 +71,6 @@ namespace Workspaces.Serialization
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
                 Converters = new List<JsonConverter>{
-                        new FunctionDescriptorConverter(libraryServices),
                         new ConnectorConverter(),
                         new AnnotationConverter(),
                         new WorkspaceConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
@@ -106,7 +104,6 @@ namespace Workspaces.Serialization
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
                 Converters = new List<JsonConverter>{
-                        new FunctionDescriptorConverter(libraryServices),
                         new ConnectorConverter(),
                         new AnnotationConverter(),
                         new WorkspaceConverter(engineController, scheduler, factory,
@@ -122,6 +119,14 @@ namespace Workspaces.Serialization
             return result;
         }
 
+        /// <summary>
+        /// Strips $type references from the generated json, replacing them with 
+        /// type names matching those expected by the server.
+        /// </summary>
+        /// <param name="json">The json to parse.</param>
+        /// <param name="fromServer">A flag indicating whether this json is coming from the server, and thus
+        /// needs to be converted back to its Json.net friendly format.</param>
+        /// <returns></returns>
         private static string ReplaceTypeDeclarations(string json, bool fromServer = false)
         {
             var result = json;

@@ -355,58 +355,6 @@ namespace Workspaces.Serialization
     }
 
     /// <summary>
-    /// The FunctionDescriptorConverter is used to serialize and deserialize
-    /// the FunctionDescription property on DSFunction. Because a lookup in 
-    /// LibraryServices is required during deserialization,
-    /// we use this converter to find the correct FunctionDescriptor, and
-    /// call a node constructor which constructs a ZeroTouchNodeController
-    /// using the FunctionDescriptor.
-    /// </summary>
-    public class FunctionDescriptorConverter : JsonConverter
-    {
-        /// <summary>
-        /// A reference to an instance of the LibraryServices class.
-        /// This is required to properly setup the function given
-        /// the assembly and function name.
-        /// </summary>
-        private LibraryServices libraryServices;
-
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(FunctionDescriptor);
-        }
-
-        public override bool CanRead
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public FunctionDescriptorConverter(LibraryServices libraryServices)
-        {
-            this.libraryServices = libraryServices;
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var fd = (FunctionDescriptor)value;
-            writer.WriteStartObject();
-            writer.WritePropertyName("Assembly");
-            writer.WriteValue(fd.IsBuiltIn ? "" : fd.Assembly);
-            writer.WritePropertyName("Name");
-            writer.WriteValue(fd.MangledName);
-            writer.WriteEndObject();
-        }
-    }
-
-    /// <summary>
     /// The ConnectorConverter is used to serialize and deserialize ConnectorModels.
     /// The Start and End of a ConnectorModel are references to PortModels, but
     /// we want the serialized representation of a Connector to reference these 
