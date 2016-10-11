@@ -126,6 +126,13 @@ namespace Dynamo.Tests
             return fis.Select(fi=>fi.FullName).ToArray();
         }
 
+        /// <summary>
+        /// This parameterized test finds all .dyn files in directories within
+        /// the test directory, opens them and executes, then converts them to
+        /// json and executes again, comparing the values from the two runs.
+        /// </summary>
+        /// <param name="filePath">The path to a .dyn file. This parameter is supplied
+        /// by the test framework.</param>
         [Test, TestCaseSource("FindWorkspaces")]
         public void SerializationTest(string filePath)
         {

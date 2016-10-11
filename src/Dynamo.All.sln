@@ -215,7 +215,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoManipulation", "Dynam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications", "Notifications\Notifications.csproj", "{09F48994-BB2F-4A26-8CCD-469FE3F7F904}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workspaces.Serialization", "WorkspaceSerialization\Workspaces.Serialization.csproj", "{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workspaces", "Workspaces\Workspaces.csproj", "{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
