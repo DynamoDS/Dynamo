@@ -7,7 +7,6 @@ using Dynamo.Engine;
 using Dynamo.Library;
 using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
-using Dynamo.Utilities;
 
 namespace Dynamo.Graph.Nodes.ZeroTouch
 {
@@ -20,7 +19,13 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     [AlsoKnownAs("Dynamo.Nodes.DSVarArgFunction")]
     public class DSVarArgFunction : DSFunctionBase
     {
-        public FunctionDescriptor FunctionDescription { get; set; }
+        public string FunctionName
+        {
+            get
+            {
+                return Controller.Definition.MangledName;
+            }
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DSVarArgFunction"/> class.
@@ -31,7 +36,6 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         {
             VarInputController = new ZeroTouchVarInputController(this);
             defaultNumInputs = descriptor.Parameters.Count();
-            FunctionDescription = descriptor;
         }
 
         /// <summary>

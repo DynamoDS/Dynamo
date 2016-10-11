@@ -12,7 +12,13 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     [AlsoKnownAs("Dynamo.Nodes.DSFunction")]
     public class DSFunction : DSFunctionBase
     {
-        public FunctionDescriptor FunctionDescription{get;set;}
+        public string FunctionName
+        {
+            get
+            {
+                return Controller.Definition.MangledName;
+            }
+        }
 
         /// <summary>
         ///     Indicates whether Node is input or not.
@@ -29,7 +35,6 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         public DSFunction(FunctionDescriptor functionDescription) 
             : base(new ZeroTouchNodeController<FunctionDescriptor>(functionDescription)) 
         {
-            FunctionDescription = functionDescription;
         }
     }
 }

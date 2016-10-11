@@ -77,13 +77,9 @@ namespace Workspaces.Serialization
             }
             else if(typeof(DSFunctionBase).IsAssignableFrom(type))
             {
-                var fd = obj["FunctionDescription"];
-                var asm = fd["Assembly"].Value<string>();
-                var mangledName = fd["Name"].Value<string>();
+                var mangledName = obj["FunctionName"].Value<string>();
 
-                var description = string.IsNullOrEmpty(asm) ?
-                    libraryServices.GetFunctionDescriptor(mangledName) :
-                    libraryServices.GetFunctionDescriptor(asm, mangledName);
+                var description = libraryServices.GetFunctionDescriptor(mangledName);
 
                 if(type == typeof(DSVarArgFunction))
                 {

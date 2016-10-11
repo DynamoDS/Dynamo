@@ -47,6 +47,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Indicates whether code block should not be in focus upon undo/redo actions on node
         /// </summary>
+        [JsonIgnore]
         public bool ShouldFocus
         {
             get { return shouldFocus; }

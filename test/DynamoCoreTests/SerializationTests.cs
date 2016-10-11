@@ -7,7 +7,6 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using System.Xml;
 
 namespace Dynamo.Tests
 {
