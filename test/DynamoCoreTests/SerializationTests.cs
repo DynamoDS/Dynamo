@@ -155,7 +155,7 @@ namespace Dynamo.Tests
 
             // Find the version in the root
             
-            var xmlDoc = new XmlDocument();
+            /*var xmlDoc = new XmlDocument();
             xmlDoc.Load(openPath);
             WorkspaceInfo info;
             if(WorkspaceInfo.FromXmlDocument(xmlDoc, openPath, false, false, CurrentDynamoModel.Logger, out info))
@@ -164,7 +164,7 @@ namespace Dynamo.Tests
                 {
                     Assert.Inconclusive("The test file was from before version 1.0.");
                 }
-            }
+            }*/
 
             OpenModel(openPath);
 
