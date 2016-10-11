@@ -1,17 +1,57 @@
-﻿using Dynamo.Core;
+﻿using CoreNodeModels;
+using CoreNodeModels.Input;
+using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Scheduler;
 using Newtonsoft.Json;
-using ProtoCore.Namespace;
+using PythonNodeModels;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Workspaces.Serialization
 {
+
     public static class Workspaces
     {
+        private static Dictionary<string, Type> NodeNameMap = new Dictionary<string, Type>()
+        {
+            {"CodeBlockNode", typeof(CodeBlockNodeModel)},
+            {"ConvertBetweenUnitsNode", typeof(DynamoConvert)},
+            {"FormulaNode", typeof(Formula)},
+            {"FunctionNode", typeof(Function)},
+            {"InputNode", typeof(Symbol)},
+            {"OutputNode", typeof(Output)},
+            {"PythonScriptNode", typeof(PythonNode)},
+            {"IntegerRangeInputNode", typeof(IntegerSlider)},
+            {"FloatRangeInputNode", typeof(DoubleSlider)},
+            {"NumberInputNode", typeof(DoubleInput)},
+            //{"IntegerInputNode", typeof()},
+            {"StringInputNode", typeof(StringInput)},
+            {"BooleanInputNode", typeof(BoolSelector)},
+        };
+
+        private static Dictionary<Type, string> NodeTypeMap = new Dictionary<Type, string>()
+        {
+            {typeof(CodeBlockNodeModel), "CodeBlockNode"},
+            {typeof(DynamoConvert), "ConvertBetweenUnitsNode"},
+            {typeof(Formula), "FormulaNode"},
+            {typeof(Function), "FunctionNode"},
+            {typeof(Symbol), "InputNode"},
+            {typeof(Output), "OutputNode"},
+            {typeof(PythonNode), "PythonScriptNode"},
+            {typeof(IntegerSlider), "IntegerRangeInputNode"},
+            {typeof(DoubleSlider), "FloatRangeInputNode"},
+            {typeof(DoubleInput), "NumberInputNode"},
+            //{"IntegerInputNode", typeof()},
+            {typeof(StringInput), "StringInputNode"},
+            {typeof(BoolSelector), "BooleanInputNode"},
+        };
+
         /// <summary>
         /// Load a WorkspaceModel from json. If the WorkspaceModel is a HomeWorkspaceModel
         /// it will be set as the current workspace.
@@ -42,7 +82,8 @@ namespace Workspaces.Serialization
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
 
-            var ws = JsonConvert.DeserializeObject<WorkspaceModel>(json, settings);
+            var result = ReplaceTypeDeclarations(json, true);
+            var ws = JsonConvert.DeserializeObject<WorkspaceModel>(result, settings);
 
             return ws;
         }
@@ -77,7 +118,38 @@ namespace Workspaces.Serialization
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
 
-            return JsonConvert.SerializeObject(workspace, settings);
+            var json = JsonConvert.SerializeObject(workspace, settings);
+            var result = ReplaceTypeDeclarations(json);
+
+            return result;
+        }
+
+        private static string ReplaceTypeDeclarations(string json, bool fromServer = false)
+        {
+            var result = json;
+
+            foreach (var kvp in NodeNameMap)
+            {
+                var t = kvp.Value;
+                var typeName = t.FullName + ", " + t.Assembly.GetName().Name;
+                var typeDeclBase = "\"{0}\": \"{1}\"";
+                string existingTypeDecl, newTypeDecl;
+                if (fromServer)
+                {
+                    existingTypeDecl = string.Format(typeDeclBase, "NodeType", kvp.Key);
+                    newTypeDecl = string.Format(typeDeclBase, "$type", typeName);
+                }
+                else
+                {
+                    typeName = typeName.Replace(".", "\\.");
+                    existingTypeDecl = string.Format(typeDeclBase, "\\$type", typeName);
+                    newTypeDecl = string.Format(typeDeclBase, "NodeType", kvp.Key);
+                }
+
+                var rgx = new Regex(existingTypeDecl);
+                result = rgx.Replace(result, newTypeDecl);
+            }
+            return result;
         }
     }
 }

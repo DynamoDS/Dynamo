@@ -12,6 +12,8 @@ namespace CoreNodeModels.Input
     public abstract class BasicInteractive<T> : NodeModel
     {
         private T value;
+
+        [JsonProperty("InputValue")]
         public virtual T Value
         {
             get
