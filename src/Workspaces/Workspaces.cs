@@ -135,23 +135,36 @@ namespace Autodesk.Workspaces
             {
                 var t = kvp.Value;
                 var typeName = t.FullName + ", " + t.Assembly.GetName().Name;
-                var typeDeclBase = "\"{0}\": \"{1}\"";
+                var typeDeclBase = "\"{0}\"";
                 string existingTypeDecl, newTypeDecl;
                 if (fromServer)
                 {
-                    existingTypeDecl = string.Format(typeDeclBase, "NodeType", kvp.Key);
-                    newTypeDecl = string.Format(typeDeclBase, "$type", typeName);
+                    existingTypeDecl = string.Format(typeDeclBase, kvp.Key);
+                    newTypeDecl = string.Format(typeDeclBase, typeName);
                 }
                 else
                 {
                     typeName = typeName.Replace(".", "\\.");
-                    existingTypeDecl = string.Format(typeDeclBase, "\\$type", typeName);
-                    newTypeDecl = string.Format(typeDeclBase, "NodeType", kvp.Key);
+                    existingTypeDecl = string.Format(typeDeclBase, typeName);
+                    newTypeDecl = string.Format(typeDeclBase, kvp.Key);
                 }
 
                 var rgx = new Regex(existingTypeDecl);
                 result = rgx.Replace(result, newTypeDecl);
+
+                if (fromServer)
+                {
+                    var rgx2 = new Regex(@"NodeType");
+                    result = rgx2.Replace(result, "$type");
+                }
+                else
+                {
+                    var rgx2 = new Regex(@"\$type");
+                    result = rgx2.Replace(result, "NodeType");
+                }
             }
+
+            // Do one final pass to replace all $type 
             return result;
         }
     }
