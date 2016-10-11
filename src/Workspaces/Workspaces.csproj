@@ -7,8 +7,8 @@
     <ProjectGuid>{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Workspaces.Serialization</RootNamespace>
-    <AssemblyName>Workspaces.Serialization</AssemblyName>
+    <RootNamespace>Autodesk.Workspaces</RootNamespace>
+    <AssemblyName>Workspaces</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

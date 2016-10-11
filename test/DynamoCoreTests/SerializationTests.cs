@@ -7,6 +7,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using Autodesk.Workspaces;
 
 namespace Dynamo.Tests
 {
@@ -190,7 +191,7 @@ namespace Dynamo.Tests
 
             var wcd1 = new WorkspaceComparisonData(ws1);
 
-            var json = Workspaces.Serialization.Workspaces.SaveWorkspaceToJson(model.CurrentWorkspace, model.LibraryServices,
+            var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(model.CurrentWorkspace, model.LibraryServices,
                 model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false, 
                 model.CustomNodeManager);
 
@@ -213,7 +214,7 @@ namespace Dynamo.Tests
             }
             File.WriteAllText(jsonPath, json);
 
-            var ws2 = Workspaces.Serialization.Workspaces.LoadWorkspaceFromJson(json, model.LibraryServices,
+            var ws2 = Autodesk.Workspaces.Utilities.LoadWorkspaceFromJson(json, model.LibraryServices,
                 model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false,
                 model.CustomNodeManager);
 

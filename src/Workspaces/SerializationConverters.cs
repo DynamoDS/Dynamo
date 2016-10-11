@@ -21,7 +21,7 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using ProtoCore.Namespace;
 using Dynamo.Graph.Nodes.ZeroTouch;
 
-namespace Workspaces.Serialization
+namespace Autodesk.Workspaces
 {
     /// <summary>
     /// The NodeModelConverter is used to serialize and deserialize NodeModels.

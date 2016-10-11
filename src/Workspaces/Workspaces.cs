@@ -13,9 +13,9 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Workspaces.Serialization
+namespace Autodesk.Workspaces
 {
-    public static class Workspaces
+    public static class Utilities
     {
         private static Dictionary<string, Type> NodeNameMap = new Dictionary<string, Type>()
         {
