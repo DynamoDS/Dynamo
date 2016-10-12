@@ -45,6 +45,7 @@ Thumbs.db
 *.cache
 *.suo
 *.user
+*.opendb
 .vs
 
 # PYTHON #
@@ -89,3 +90,7 @@ src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs
 GregStandaloneAuth.dll
 /src/Libraries/Watch3DNodeModels/*.resources
 *.resources
+src/TestResults
+test/core/customast/test.txt
+test/core/files/test.png
+test/core/migration/writetext.txt
