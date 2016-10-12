@@ -118,6 +118,7 @@
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
                 <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
                 <EventSetter Event="MouseLeftButtonUp" Handler="treeviewItem_MouseLeftButtonUp" />
+                <EventSetter Event="KeyUp" Handler="treeviewItem_KeyUp" />
 
                 <Setter Property="Template">
                     <Setter.Value>

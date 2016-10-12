@@ -12,7 +12,7 @@ namespace Dynamo.Controls
     public partial class WatchTree : UserControl
     {
         private WatchViewModel _vm;
-        private TreeViewItem prevTVI;
+        private WatchViewModel prevVM;
 
         public WatchTree()
         {
@@ -45,31 +45,68 @@ namespace Dynamo.Controls
             TreeViewItem tvi = (TreeViewItem)sender;
             var node = tvi.DataContext as WatchViewModel;
 
+            HandleItemChanged(tvi, node);
+
+            e.Handled = true; 
+        }
+        private void treeviewItem_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Up || e.Key == System.Windows.Input.Key.Down)
+            {
+                TreeViewItem tvi = sender as TreeViewItem;
+                var node = tvi.DataContext as WatchViewModel;
+
+                HandleItemChanged(tvi, node);
+            }
+            e.Handled = true;
+        }
+
+        private void HandleItemChanged (TreeViewItem tvi, WatchViewModel node)
+        {
             if (tvi == null || node == null)
                 return;
 
             // checks to see if the currently selected node is the same as the previous selected node
             // if so, then de-select the currently selected node.
 
-            if (tvi == this.prevTVI)
+            if (prevVM == null || node.Path != this.prevVM.Path)
             {
-                this.prevTVI = null;
+                this.prevVM = node;
+            }
+            else
+            {
+                this.prevVM = null;
                 if (tvi.IsSelected)
                 {
                     tvi.IsSelected = false;
                     tvi.Focus();
                 }
             }
-            else
-            {
-                this.prevTVI = tvi;
-            }
 
             if (_vm.FindNodeForPathCommand.CanExecute(node.Path))
             {
                 _vm.FindNodeForPathCommand.Execute(node.Path);
             }
-            e.Handled = true; 
         }
+
+
+
+        //private void treeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        //{
+
+        //    TreeView tv = sender as TreeView;
+        //    //WatchViewModel vm = tv.SelectedItem as WatchViewModel; 
+
+        //    var node = e.NewValue as WatchViewModel;
+        //    if ( node == null)
+        //        return;
+
+        //    this.prevVM = node;
+
+        //    if (_vm.FindNodeForPathCommand.CanExecute(node.Path))
+        //    {
+        //        _vm.FindNodeForPathCommand.Execute(node.Path);
+        //    }
+        //}
     }
 }
