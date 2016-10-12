@@ -884,6 +884,8 @@ namespace Dynamo.Graph.Workspaces
             X = 0.0;
             Y = 0.0;
             Zoom = 1.0;
+            // Reset the workspace offset
+            OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(X, Y)));
             workspaceLoaded = true;
         }
 
