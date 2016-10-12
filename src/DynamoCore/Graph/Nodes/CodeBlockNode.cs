@@ -569,8 +569,6 @@ namespace Dynamo.Graph.Nodes
                             // Create a statement variable from the generated nodes
                             codeStatements.Add(Statement.CreateInstance(parsedNode));
                         }
-
-                        SetPreviewVariable(parseParam.ParsedNodes);
                     }
                 }
 
@@ -616,6 +614,8 @@ namespace Dynamo.Graph.Nodes
                     inputIdentifiers.Clear();
                     inputPortNames.Clear();
                 }
+
+                SetPreviewVariable(parseParam.ParsedNodes);
             }
             catch (Exception e)
             {
