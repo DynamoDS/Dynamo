@@ -88,25 +88,5 @@ namespace Dynamo.Controls
                 _vm.FindNodeForPathCommand.Execute(node.Path);
             }
         }
-
-
-
-        //private void treeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        //{
-
-        //    TreeView tv = sender as TreeView;
-        //    //WatchViewModel vm = tv.SelectedItem as WatchViewModel; 
-
-        //    var node = e.NewValue as WatchViewModel;
-        //    if ( node == null)
-        //        return;
-
-        //    this.prevVM = node;
-
-        //    if (_vm.FindNodeForPathCommand.CanExecute(node.Path))
-        //    {
-        //        _vm.FindNodeForPathCommand.Execute(node.Path);
-        //    }
-        //}
     }
 }
