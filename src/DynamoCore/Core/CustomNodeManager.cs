@@ -1206,8 +1206,8 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Returns identifiers of other custom node which are dependencies
-        ///     of the passed custom node.
+        ///     Returns identifiers of custom nodes which are dependencies
+        ///     of the given custom node.
         /// </summary>
         /// <param name="def">Custom node definition to search dependencies for</param>
         /// <returns></returns>
