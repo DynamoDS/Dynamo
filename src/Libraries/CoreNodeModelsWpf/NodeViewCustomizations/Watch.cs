@@ -167,6 +167,11 @@ namespace CoreNodeModelsWpf.Nodes
             // Without doing this, the preview would say "null"
             if (watch.IsPartiallyApplied)
             {
+                foreach (var node in rootWatchViewModel.Children)
+                {
+                    dynamoViewModel.BackgroundPreviewViewModel.ClearPathLabel(node.Path);
+                }
+
                 rootWatchViewModel.Children.Clear();
                 rootWatchViewModel.IsCollection = false;
                 return;
