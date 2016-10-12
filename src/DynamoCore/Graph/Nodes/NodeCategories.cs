@@ -449,9 +449,11 @@ namespace Dynamo.Graph.Nodes
             // If base path is not provided then other path should be absolute
             if (string.IsNullOrEmpty(basePath))
             {
-                if (!Uri.IsWellFormedUriString(relativePath, UriKind.Absolute))
+                //Check if relativePath is already in absolute form
+                Uri uri;
+                if (!Uri.TryCreate(relativePath, UriKind.Absolute, out uri))
                     throw new ArgumentNullException(basePath);
-                return relativePath;
+                return uri.LocalPath;
             }
 
             var baseUri = new Uri(basePath, UriKind.Absolute);
