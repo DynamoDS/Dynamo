@@ -38657,7 +38657,7 @@ c = Scale(a,b);
         public void DebugWatch1379_T004_BasicImport_CurrentDirectoryWithDotAndSlash()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import ("".\basicImport.ds"");
+            string src = @"import ("".\\basicImport.ds"");
 a = {1.1,2.2};
 b = 2;
 c = Scale(a,b);";
@@ -38670,7 +38670,7 @@ c = Scale(a,b);";
         public void DebugWatch1380_T005_BasicImport_RelativePath()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import ("".\ExtraFolderToTestRelativePath\basicImport.ds"");
+            string src = @"import ("".\\ExtraFolderToTestRelativePath\\basicImport.ds"");
 a = {1.1,2.2};
 b = 2;
 c = Scale(a,b);";
