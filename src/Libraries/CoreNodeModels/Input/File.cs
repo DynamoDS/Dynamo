@@ -87,6 +87,8 @@ namespace CoreNodeModels.Input
     [NodeDescription("FilenameNodeDescription", typeof(Resources))]
     [NodeSearchTags("FilePathSearchTags", typeof(Resources))]
     [SupressImportIntoVM]
+    [InPortTypes("UI Input")]
+    [OutPortTypes("string")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.Filename", "DSCoreNodesUI.Input.Filename")]
     public class Filename : FileSystemBrowser
@@ -101,6 +103,8 @@ namespace CoreNodeModels.Input
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("DirectoryNodeDescription", typeof(Resources))]
     [NodeSearchTags("DirectoryPathSearchTags", typeof(Resources))]
+    [InPortTypes("UI Input")]
+    [OutPortTypes("bool")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.Directory", "DSCoreNodesUI.Input.Directory")]
@@ -227,6 +231,10 @@ namespace CoreNodeModels.Input
     [NodeDescription("FileObjectNodeDescription", typeof(Resources))]
     [NodeSearchTags("FilePathSearchTags", typeof(Resources))]
     [SupressImportIntoVM]
+    [InPortNames("path")]
+    [InPortTypes("string")]
+    [OutPortNames("file")]
+    [OutPortTypes("object")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.FileObject", "DSCoreNodesUI.Input.FileObject")]
     public class FileObject : FileSystemObject<FileInfo>
