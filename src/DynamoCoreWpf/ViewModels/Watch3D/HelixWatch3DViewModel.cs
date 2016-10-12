@@ -732,6 +732,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Model3DDictionary.Remove(kvp.Key);
                     var nodePath = kvp.Key.Split(':')[0];
                     labelPlaces.Remove(nodePath);
+                    nodesSelected.Remove(nodePath);
                 }
             }
 
