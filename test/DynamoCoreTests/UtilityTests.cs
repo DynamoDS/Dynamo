@@ -501,6 +501,19 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void MakeRelativePath07()
+        {
+            var tempPath = Path.GetTempPath();
+            var basePath = Path.Combine(tempPath, "home.dyn");
+            var testFilename = "SpecialCharactersSpace Plus+Percent%.txt";
+            var testPath = Path.Combine(tempPath, testFilename);
+
+            var relativePath = Graph.Nodes.Utilities.MakeRelativePath(basePath, testPath);
+            Assert.AreEqual(relativePath, ".\\" + testFilename);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void MakeAbsolutePath00()
         {
             Assert.Throws<ArgumentNullException>(() =>
