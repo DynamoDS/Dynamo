@@ -1515,7 +1515,7 @@ a = a + 2;	// I am assuming that this statement (on line 27) is executed after t
 
 
             string code = @"
-import (""..\..\..\test\Engine\ProtoTest\ImportFiles\basicImport.ds"");
+import (""..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\basicImport.ds"");
 a = {1.1,2.2};
 b = 2;
 c = Scale(a,b);
@@ -1881,7 +1881,7 @@ a  = a2 + b;    // 6
         public void DebugEQT005_BasicImport_RelativePath()
         {
             string code = @"
-import ("".\ExtraFolderToTestRelativePath\basicImport.ds"");
+import ("".\\ExtraFolderToTestRelativePath\\basicImport.ds"");
 a = {1.1,2.2};
 b = 2;
 c = Scale(a,b);
@@ -3701,7 +3701,7 @@ a3 = 1 > 2 ? true : b;
         public void DebugEQT021_Defect_1457354()
         {
             string code = @"
-import (""c:\wrongPath\test.ds"");
+import (""c:\\wrongPath\\test.ds"");
 a = 1;
 b = a * 2;
 ";

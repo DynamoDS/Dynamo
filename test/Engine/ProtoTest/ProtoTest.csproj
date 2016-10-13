@@ -155,6 +155,7 @@
     </Compile>
     <Compile Include="MultiLangTests\UnicodeTest.cs" />
     <Compile Include="NameSpaceTests.cs" />
+    <Compile Include="ParserTest\ParserTest.cs" />
     <Compile Include="ProtoAST\AstFactoryTest.cs" />
     <Compile Include="ProtoAST\ProtoASTExecutionTests.cs" />
     <Compile Include="ProtoAST\RoundTripTests.cs" />
