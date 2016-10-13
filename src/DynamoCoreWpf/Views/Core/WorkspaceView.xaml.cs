@@ -167,6 +167,13 @@ namespace Dynamo.Views
             }
         }
 
+        public void HidePopUp()
+        {
+            ContextMenuPopup.IsOpen = false;
+            InCanvasSearchBar.IsOpen = false;
+        }
+
+
         internal Point GetCenterPoint()
         {
             var x = outerCanvas.ActualWidth / 2.0;

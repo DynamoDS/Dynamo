@@ -775,6 +775,10 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
+
+            var workspace = this.ChildOfType<WorkspaceView>();
+            workspace.HidePopUp();
+
             var dialogText = "";
             // If the file is read only, display a different message.
             if (e.Workspace.IsReadOnly)

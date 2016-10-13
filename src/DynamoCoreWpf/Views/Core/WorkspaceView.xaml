@@ -328,7 +328,7 @@
         </StackPanel>
 
         <Popup Name="InCanvasSearchBar"
-               StaysOpen="False"
+               StaysOpen="True"
                AllowsTransparency="True"
                Placement="MousePoint"
                DataContext="{Binding InCanvasSearchViewModel}">
@@ -336,7 +336,7 @@
         </Popup>
 
         <Popup Name="ContextMenuPopup" Style="{StaticResource WorkspaceContextMenuStylePopup}"
-               Opened="OnContextMenuOpened" StaysOpen="False" AllowsTransparency="True" Placement="MousePoint">
+               Opened="OnContextMenuOpened" StaysOpen="True" AllowsTransparency="True" Placement="MousePoint">
             <Popup.Resources>
                 <Style TargetType="{x:Type MenuItem}">
                     <Setter Property="Focusable" Value="False" />
