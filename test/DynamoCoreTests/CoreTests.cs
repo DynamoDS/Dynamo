@@ -134,7 +134,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Slow")]
         public void CanAdd100NodesToClipboard()
         {
             int numNodes = 100;
@@ -221,7 +221,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Slow")]
         public void CanAdd100NodesToClipboardAndPaste()
         {
             int numNodes = 100;
@@ -306,7 +306,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Slow")]
         public void CanAdd100NodesToClipboardAndPaste3Times()
         {
             int numNodes = 100;

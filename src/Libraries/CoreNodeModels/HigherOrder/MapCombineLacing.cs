@@ -161,6 +161,8 @@ namespace CoreNodeModels.HigherOrder
         [JsonConstructor]
         private LaceShortest(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
 
+        public LaceShortest() : base() { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
@@ -189,6 +191,8 @@ namespace CoreNodeModels.HigherOrder
     {
         [JsonConstructor]
         private LaceLongest(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
+
+        public LaceLongest() : base() { }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -219,6 +223,8 @@ namespace CoreNodeModels.HigherOrder
     {
         [JsonConstructor]
         private CartesianProduct(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
+
+        public CartesianProduct() : base() { }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {

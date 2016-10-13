@@ -7,11 +7,10 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Autodesk.Workspaces;
 
 namespace Dynamo.Tests
 {
-    [TestFixture]
+    [TestFixture, Category("Serialization")]
     class SerializationTests : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)

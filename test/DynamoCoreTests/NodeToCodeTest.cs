@@ -913,7 +913,7 @@ namespace Dynamo.Tests
 
 
         [Test]
-        [Category("UnitTest")]
+        [Category("UnitTests")]
         public void TestNodeToCodeUndoRecorder()
         {
             NodeToCodeUndoHelper recorder = new NodeToCodeUndoHelper();

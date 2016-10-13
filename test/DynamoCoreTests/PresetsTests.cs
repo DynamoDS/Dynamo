@@ -70,7 +70,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("UnitTest")]
+        [Category("UnitTests")]
         public void CanSavePinState()
         {
             var model = CurrentDynamoModel;
