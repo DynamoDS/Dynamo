@@ -820,6 +820,9 @@ namespace Dynamo.Graph.Nodes
             InPortData = new ObservableCollection<PortData>();
             OutPortData = new ObservableCollection<PortData>();
 
+            inputNodes = new Dictionary<int, Tuple<int, NodeModel>>();
+            outputNodes = new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
+
             // Set the ports from the deserialized data
             InPorts.AddRange(inPorts);
             OutPorts.AddRange(outPorts);
