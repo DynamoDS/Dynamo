@@ -1082,39 +1082,7 @@ namespace Dynamo.Tests
 
 
         }
-        [Test]
-        public void WriteModifyGraph()
-        {
-
-            // 1.  Write into  an Existing excel file and Run
-            // 2.  Modify the contents written to an excel file wiht option overwrite
-            //3.  Rerun the file  
-            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteModifyGraph.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
-
-            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Filename>();
-
-            // remap the filename as Excel requires an absolute path
-            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
-
-            ViewModel.HomeSpace.Run();
-            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
-            var watch2 = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile"); // {5,6,7,8,9,10}
-            var watch3 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("17bf44dd-0285-496f-a388-58649cadbff8");
-            Assert.IsTrue(watch.CachedValue.IsCollection);
-            var data = new object[] { new object[] { 5 }, new object[] { 6 }, new object[] { 7 }, new object[] { 8 }, new object[] { 9 }, new object[] { 10 } };
-            AssertPreviewValue(watch.GUID.ToString(), data);
-            // change the data written into Excel
-
-            ConnectorModel.Make(watch3, watch2, 0, 4);
-            ViewModel.HomeSpace.Run();
-            Assert.IsTrue(watch2.CachedValue.IsCollection);
-           
-            var data2 = new object[] { new object[] { 0 }, new object[] { 1 }, new object[] { 2 }, new object[] { 3 }, new object[] { 4 }, new object[] { 5 } };
-            AssertPreviewValue(watch2.GUID.ToString(), data2);
-
-
-        }
+       
         [Test,Category("Failure")]
         public void WriteModifyGraph_2()
         {
