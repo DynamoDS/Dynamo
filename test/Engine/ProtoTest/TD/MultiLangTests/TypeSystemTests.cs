@@ -2324,7 +2324,6 @@ import(""FFITarget.dll"");
                     a = foo({ 1.5, 2.5 });
                     z:var={ 1.5,2.5 };
                     a1=foo(z);
-//                    a1 : var = foo({ 1.5,2.5 });
                     b = foo({ 1, 0 });
                     c = foo({ ""1.5"" ,""""});
                     d = foo({ '1', '0' });
@@ -2332,12 +2331,11 @@ import(""FFITarget.dll"");
                                                   ";
             string error = "1467258 - sprint 26 - Rev 3541 if the return type is bool array , type conversion does not happen for some cases  ";
             thisTest.RunScriptSource(code, error);
-            thisTest.Verify("a", new object[] { true, true });
-            thisTest.Verify("a1", new object[] { true, true });
-            thisTest.Verify("b", new object[] { true, false });
-            thisTest.Verify("c", new object[] { true, false });
-            thisTest.Verify("d", new object[] { true, true });
-            thisTest.Verify("e", new object[] { true, true });
+            thisTest.Verify("a", new object[] { new object[] { true }, new object[] { true } });
+            thisTest.Verify("b", new object[] { new object[] { true }, new object[] { false } });
+            thisTest.Verify("c", new object[] { new object[] { true }, new object[] { false } });
+            thisTest.Verify("d", new object[] { new object[] { true }, new object[] { true } });
+            thisTest.Verify("e", new object[] { new object[] { true }, new object[] { true } });
         }
 
         [Test]
@@ -2362,11 +2360,10 @@ import(""FFITarget.dll"");
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1665
             string error = "MAGN-1665 Sprint 26 - Rev 3782  adds an additonal rank while returning as array, when the rank matches";
             thisTest.RunScriptSource(code, error);
-            thisTest.Verify("a", new object[] { true, true });
-            thisTest.Verify("a1", new object[] { true, true });
-            thisTest.Verify("b", new object[] { true, false });
-            thisTest.Verify("c", new object[] { true, false });
-            thisTest.Verify("d", new object[] { true, true });
+            thisTest.Verify("a", new object[] { new object[] { true }, new object[] { true } });
+            thisTest.Verify("b", new object[] { new object[] { true }, new object[] { false } });
+            thisTest.Verify("c", new object[] { new object[] { true }, new object[] { false } });
+            thisTest.Verify("d", new object[] { new object[] { true }, new object[] { true } });
         }
 
         [Test]
