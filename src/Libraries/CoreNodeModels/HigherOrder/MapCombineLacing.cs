@@ -101,6 +101,8 @@ namespace CoreNodeModels.HigherOrder
         [JsonConstructor]
         private Combine(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) { }
 
+        public Combine() : base() { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
