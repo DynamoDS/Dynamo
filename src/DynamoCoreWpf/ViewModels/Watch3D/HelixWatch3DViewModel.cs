@@ -1321,7 +1321,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         
         /// <summary>
-        /// 
+        /// Remove the labels for geometry based on their paths
         /// </summary>
         /// <param name="path"></param>
         public override void ClearPathLabel(string path)

@@ -169,6 +169,7 @@ namespace CoreNodeModelsWpf.Nodes
             {
                 foreach (var node in rootWatchViewModel.Children)
                 {
+                    // remove all labels upon disconnect of Watch Node
                     dynamoViewModel.BackgroundPreviewViewModel.ClearPathLabel(node.Path);
                 }
 
