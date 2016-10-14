@@ -2277,7 +2277,6 @@ import(""FFITarget.dll"");
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
-        [Category("Failure")]
         public void TS056_Return_AlltypeTo_BoolArray()
         {
             string code =
@@ -2301,14 +2300,14 @@ import(""FFITarget.dll"");
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3968
             string error = "MAGN-3968: Type conversion from var to bool array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
-            thisTest.Verify("a", new object[] { true, true });
-            thisTest.Verify("a1", new object[] { true, true });
-            thisTest.Verify("b", new object[] { true, false });
-            thisTest.Verify("c", new object[] { true, false });
-            thisTest.Verify("d", new object[] { true, false });
-            thisTest.Verify("e", new object[] { true, true });
-            thisTest.Verify("f", new object[] { false, true });
-            thisTest.Verify("g", null);
+            thisTest.Verify("a", new object[] { new object[] { true }, new object[] { true } });
+            thisTest.Verify("a1", new object[] { new object[] { true }, new object[] { true } });
+            thisTest.Verify("b", new object[] { new object[] { true }, new object[] { false } });
+            thisTest.Verify("c", new object[] { new object[] { true }, new object[] { false } });
+            thisTest.Verify("d", new object[] { new object[] { true }, new object[] { false } });
+            thisTest.Verify("e", new object[] { new object[] { true }, new object[] { true } });
+            thisTest.Verify("f", new object[] { new object[] { false }, new object[] { true } });
+            thisTest.Verify("g", new object[] { null, null });
         }
 
         [Test]
