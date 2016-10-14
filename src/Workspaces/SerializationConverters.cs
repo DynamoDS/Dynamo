@@ -219,6 +219,13 @@ namespace Autodesk.Workspaces
             
             // notes
             var notes = obj["Notes"].ToObject<IEnumerable<NoteModel>>(serializer);
+            if (notes.Any())
+            {
+                foreach(var n in notes)
+                {
+                    serializer.ReferenceResolver.AddReference(serializer.Context, n.GUID.ToString(), n);
+                }
+            }
 
             // connectors
             // Although connectors are not used in the construction of the workspace

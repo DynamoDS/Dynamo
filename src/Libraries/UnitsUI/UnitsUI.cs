@@ -23,6 +23,7 @@ using Dynamo.Wpf;
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
 using UnitsUI.Properties;
+using Newtonsoft.Json;
 
 namespace UnitsUI
 {
@@ -128,6 +129,10 @@ namespace UnitsUI
             }
         }
 
+        public MeasurementInputBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) { }
+
+        public MeasurementInputBase() : base() { }
+
         internal void ForceValueRaisePropertyChanged()
         {
             RaisePropertyChanged("Value");
@@ -205,7 +210,13 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class LengthFromString : MeasurementInputBase
     {
-        public LengthFromString()
+        [JsonConstructor]
+        private LengthFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        {
+            Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
+        }
+
+        public LengthFromString():base()
         {
             Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
 

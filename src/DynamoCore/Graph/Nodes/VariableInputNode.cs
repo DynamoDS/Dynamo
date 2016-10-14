@@ -146,13 +146,13 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public virtual int GetInputIndexFromModel()
         {
-            return model.InPortData.Count;
+            return model.InPorts.Count;
         }
 
         private void MarkNodeDirty()
         {
-            var dirty = model.InPortData.Count != inputAmtLastBuild
-                || Enumerable.Range(0, model.InPortData.Count).Any(idx => connectedLastBuild[idx] == model.HasInput(idx));
+            var dirty = model.InPorts.Count != inputAmtLastBuild
+                || Enumerable.Range(0, model.InPorts.Count).Any(idx => connectedLastBuild[idx] == model.HasInput(idx));
 
             if (dirty)
             {
@@ -165,9 +165,12 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public virtual void RemoveInputFromModel()
         {
-            var count = model.InPortData.Count;
+            var count = model.InPorts.Count;
             if (count > 0)
-                model.InPortData.RemoveAt(count - 1);
+            {
+                //model.InPortData.RemoveAt(count - 1);
+                model.InPorts.RemoveAt(count - 1);
+            }
 
             MarkNodeDirty();
         }
@@ -178,8 +181,8 @@ namespace Dynamo.Graph.Nodes
         public virtual void AddInputToModel()
         {
             var idx = GetInputIndexFromModel();
-            model.InPortData.Add(new PortData(GetInputName(idx), GetInputTooltip(idx)));
-
+            //model.InPortData.Add(new PortData(GetInputName(idx), GetInputTooltip(idx)));
+            model.InPorts.Add(new PortModel(GetInputName(idx), GetInputTooltip(idx)));
             MarkNodeDirty();
         }
 
