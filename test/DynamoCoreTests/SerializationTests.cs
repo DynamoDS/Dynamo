@@ -151,7 +151,9 @@ namespace Dynamo.Tests
                 "CASE",
                 "WatchPreviewBubble",
                 "visualization",
-                "migration"
+                "migration",
+                "missing_custom_node",
+                "Dummy.dyn"
             };
 
             if (bannedTests.Any(t=>filePath.Contains(t)))
