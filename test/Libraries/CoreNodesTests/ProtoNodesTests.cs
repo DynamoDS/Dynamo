@@ -5,6 +5,7 @@ using System.Text;
 using Autodesk.DesignScript.Geometry;
 using NUnit.Framework;
 using List = DSCore.List;
+using TestServices;
 
 namespace DSCoreNodesTests
 {
@@ -14,15 +15,12 @@ namespace DSCoreNodesTests
     /// It should probably get refactored out at some point.
     /// </summary>
     [TestFixture]
-    internal static class ProtoNodesTests
+    internal class ProtoNodesTests: GeometricTestBase
     {
         [Test]
-        [Category("Failure")]
         [Category("UnitTests")]
         public static void CanDoSimpleLoft()
         {
-            HostFactory.Instance.StartUp();
-
             var points0 = new Point[10];
             var points1 = new Point[10];
 
@@ -39,8 +37,6 @@ namespace DSCoreNodesTests
             Assert.NotNull(srf);
 
             Console.WriteLine(srf.PointAtParameter(0.5,0.5));
-
-            HostFactory.Instance.ShutDown();
         }
 
     }
