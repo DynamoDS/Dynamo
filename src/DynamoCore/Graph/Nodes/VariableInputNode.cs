@@ -168,7 +168,6 @@ namespace Dynamo.Graph.Nodes
             var count = model.InPorts.Count;
             if (count > 0)
             {
-                //model.InPortData.RemoveAt(count - 1);
                 model.InPorts.RemoveAt(count - 1);
             }
 
@@ -181,8 +180,7 @@ namespace Dynamo.Graph.Nodes
         public virtual void AddInputToModel()
         {
             var idx = GetInputIndexFromModel();
-            //model.InPortData.Add(new PortData(GetInputName(idx), GetInputTooltip(idx)));
-            model.InPorts.Add(new PortModel(GetInputName(idx), GetInputTooltip(idx)));
+            model.InPorts.Add(new PortModel(PortType.Input,model, new PortData(GetInputName(idx), GetInputTooltip(idx))));
             MarkNodeDirty();
         }
 
@@ -204,7 +202,7 @@ namespace Dynamo.Graph.Nodes
             // operation, as the node may reject attempts to create
             // or remove too many ports.  As such, we ignore any
             // failures to add or remove ports.
-            for (int current = model.InPortData.Count; current != numInputs; )
+            for (int current = model.InPorts.Count; current != numInputs; )
             {
                 if (current < numInputs)
                 {
@@ -224,9 +222,9 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public void OnBuilt()
         {
-            inputAmtLastBuild = model.InPortData.Count;
+            inputAmtLastBuild = model.InPorts.Count;
 
-            foreach (var idx in Enumerable.Range(0, model.InPortData.Count))
+            foreach (var idx in Enumerable.Range(0, model.InPorts.Count))
                 connectedLastBuild[idx] = model.HasInput(idx);
         }
 
@@ -249,8 +247,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="context">save context</param>
         public void SerializeCore(XmlElement element, SaveContext context)
         {
-            //base.SerializeCore(element, context); //Base implementation must be called
-            SerializeInputCount(element, model.InPortData.Count);
+            SerializeInputCount(element, model.InPorts.Count);
         }
 
         /// <summary>
@@ -260,10 +257,8 @@ namespace Dynamo.Graph.Nodes
         /// <param name="context">save context</param>
         public void DeserializeCore(XmlElement element, SaveContext context)
         {
-            //base.DeserializeCore(element, context); //Base implementation must be called
             int amt = Convert.ToInt32(element.Attributes["inputcount"].Value);
             SetNumInputs(amt);
-            model.RegisterAllPorts();
         }
 
         #endregion
@@ -300,16 +295,12 @@ namespace Dynamo.Graph.Nodes
             {
                 case "AddInPort":
                     AddInputToModel();
-                    model.RegisterAllPorts();
                     return true; // Handled here.
                 case "RemoveInPort":
                     RemoveInputFromModel();
-                    model.RegisterAllPorts();
                     return true; // Handled here.
                 case "SetInPortCount":
                     SetNumInputs(value);
-                    model.RegisterAllPorts();
-
                     return true; // Handled here.
             }
 
