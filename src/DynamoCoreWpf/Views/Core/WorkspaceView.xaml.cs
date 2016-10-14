@@ -168,7 +168,10 @@ namespace Dynamo.Views
                     break;
             }
         }
-
+        /// <summary>
+        /// Hides Context Menu as well as InCanvasControl (Right Click PopUp)
+        /// </summary>
+        /// <param name="flag"></param>
         public void HidePopUp(ShowHideFlags flag)
         {
             ShowHideContextMenu(flag);
