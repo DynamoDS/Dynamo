@@ -589,6 +589,22 @@ namespace Dynamo.Controls
             };
             BackgroundPreview.SetBinding(VisibilityProperty, vizBinding);
             TrackStartupAnalytics();
+
+            // In native host scenario (e.g. Revit), the "Application.Current" will be "null". Therefore, the InCanvasSearchControl.OnRequestShowInCanvasSearch
+            // will not work. Instead, we have to check if the Owner Window (DynamoView) is deactivated or not.  
+            if (Application.Current == null)
+            {
+                this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(ShowHideFlags.Hide); };
+            }
+        }
+        /// <summary>
+        /// Close Popup when the Dynamo window is not in the foreground.
+        /// </summary>
+        /// <param name="flag"></param>
+        private void HidePopupWhenWindowDeactivated(ShowHideFlags flag)
+        {
+            var workspace = this.ChildOfType<WorkspaceView>();
+            workspace.HidePopUp(flag);
         }
 
         private void TrackStartupAnalytics()
@@ -617,6 +633,7 @@ namespace Dynamo.Controls
         /// 
         private bool DisplayTermsOfUseForAcceptance()
         {
+            HidePopupWhenWindowDeactivated(ShowHideFlags.Hide);
             var prefSettings = dynamoViewModel.Model.PreferenceSettings;
             if (prefSettings.PackageDownloadTouAccepted)
                 return true; // User accepts the terms of use.
@@ -635,6 +652,7 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestAboutWindow(DynamoViewModel model)
         {
+            HidePopupWhenWindowDeactivated(ShowHideFlags.Hide);
             var aboutWindow = model.BrandingResourceProvider.CreateAboutBox(model);
             aboutWindow.Owner = this;
             aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -649,6 +667,7 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestShowHideGallery(bool showGallery)
         {
+            HidePopupWhenWindowDeactivated(ShowHideFlags.Hide);
             if (showGallery)
             {
                 if (galleryView == null) //On-demand instantiation
@@ -682,6 +701,7 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestRequestPackageManagerPublish(PublishPackageViewModel model)
         {
+            HidePopupWhenWindowDeactivated(ShowHideFlags.Hide);
             var cmd = Analytics.TrackCommandEvent("PublishPackage");
             if (_pubPkgView == null)
             {
@@ -704,6 +724,7 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
+            HidePopupWhenWindowDeactivated(ShowHideFlags.Hide);
             if (!DisplayTermsOfUseForAcceptance())
                 return; // Terms of use not accepted.
 
@@ -733,6 +754,7 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestPackagePaths(object sender, EventArgs e)
         {
+            HidePopupWhenWindowDeactivated(ShowHideFlags.Hide);
             var loadPackagesParams = new LoadPackageParams {
                 Preferences = dynamoViewModel.PreferenceSettings,
                 PathManager = dynamoViewModel.Model.PathManager,
@@ -748,6 +770,7 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestShowInstalledPackages(object s, EventArgs e)
         {
+            HidePopupWhenWindowDeactivated(ShowHideFlags.Hide);
             var cmd = Analytics.TrackCommandEvent("ManagePackage");
             if (_installedPkgsView == null)
             {
@@ -776,8 +799,7 @@ namespace Dynamo.Controls
         private void DynamoViewModelRequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
 
-            var workspace = this.ChildOfType<WorkspaceView>();
-            workspace.HidePopUp();
+            HidePopupWhenWindowDeactivated(ShowHideFlags.Hide);
 
             var dialogText = "";
             // If the file is read only, display a different message.
@@ -837,24 +859,28 @@ namespace Dynamo.Controls
 
         private void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
+            HidePopupWhenWindowDeactivated(ShowHideFlags.Hide);
             var prompt = new CrashPrompt(args, dynamoViewModel);
             prompt.ShowDialog();
         }
 
         private void Controller_RequestTaskDialog(object sender, TaskDialogEventArgs e)
         {
+            HidePopupWhenWindowDeactivated(ShowHideFlags.Hide);
             var taskDialog = new UI.Prompts.GenericTaskDialog(e);
             taskDialog.ShowDialog();
         }
 
         private void DynamoViewModelRequestSaveImage(object sender, ImageSaveEventArgs e)
         {
+            HidePopupWhenWindowDeactivated(ShowHideFlags.Hide);
             var workspace = this.ChildOfType<WorkspaceView>();
             workspace.SaveWorkspaceAsImage(e.Path);
         }
 
         private void DynamoViewModelRequestSave3DImage(object sender, ImageSaveEventArgs e)
         {
+            HidePopupWhenWindowDeactivated(ShowHideFlags.Hide);
             var canvas = (DPFCanvas)BackgroundPreview.View.RenderHost;
 
             var encoder = new PngBitmapEncoder();
@@ -904,6 +930,7 @@ namespace Dynamo.Controls
         /// <returns></returns>
         internal void ShowNewFunctionDialog(FunctionNamePromptEventArgs e)
         {
+            HidePopupWhenWindowDeactivated(ShowHideFlags.Hide);
             var categorized =
                 SearchCategoryUtil.CategorizeSearchEntries(
                     dynamoViewModel.Model.SearchModel.SearchEntries,
@@ -968,6 +995,7 @@ namespace Dynamo.Controls
         /// </summary>
         internal void ShowNewPresetDialog(PresetsNamePromptEventArgs e)
         {
+            HidePopupWhenWindowDeactivated(ShowHideFlags.Hide);
             string error = "";
 
             do
@@ -1010,6 +1038,7 @@ namespace Dynamo.Controls
 
         private void ShowPresetWarning()
         {
+            HidePopupWhenWindowDeactivated(ShowHideFlags.Hide);
             var newDialog = new  PresetOverwritePrompt()
             {
                 Owner = this,

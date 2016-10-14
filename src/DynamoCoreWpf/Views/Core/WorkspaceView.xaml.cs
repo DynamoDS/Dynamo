@@ -110,6 +110,7 @@ namespace Dynamo.Views
 
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            ViewModel.DynamoViewModel.RequestHidePopUp += HidePopUp;
 
             infiniteGridView.AttachToZoomBorder(zoomBorder);
         }
@@ -136,6 +137,7 @@ namespace Dynamo.Views
             {
                 ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
                 ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+                ViewModel.DynamoViewModel.RequestHidePopUp -= HidePopUp;
             }
 
             infiniteGridView.DetachFromZoomBorder(zoomBorder);
@@ -167,12 +169,11 @@ namespace Dynamo.Views
             }
         }
 
-        public void HidePopUp()
+        public void HidePopUp(ShowHideFlags flag)
         {
-            ContextMenuPopup.IsOpen = false;
-            InCanvasSearchBar.IsOpen = false;
+            ShowHideContextMenu(flag);
+            ShowHideInCanvasControl(flag);
         }
-
 
         internal Point GetCenterPoint()
         {
