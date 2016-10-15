@@ -5464,6 +5464,8 @@ namespace ProtoAssociative
 
                             if (dimensions > 0)
                             {
+                                string message = String.Format(ProtoCore.Properties.Resources.kUnboundIdentifierMsg, t.Value);
+                                buildStatus.LogUnboundVariableWarning(symbolnode, message, core.CurrentDSFileName, t.line, t.col, graphNode);
                                 symbolnode.datatype.rank = dimensions;
                             }
                         }

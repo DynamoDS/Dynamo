@@ -5313,10 +5313,8 @@ namespace DynamoCoreWpfTests
                     case "ChangeName1":
                     case "ChangeName2":
                     case "ChangeName4":
-                        AssertPreviewValue(nodeGuid, new object[] { 1, 2, 3 });
-                        break;
                     case "ChangeName3":
-                        AssertPreviewValue(nodeGuid, null);
+                        AssertPreviewValue(nodeGuid, new object[] { 1, 2, 3 });
                         break;
                     default:
                         break;
