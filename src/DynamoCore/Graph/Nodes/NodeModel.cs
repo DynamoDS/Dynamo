@@ -356,6 +356,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Control how arguments lists of various sizes are laced.
         /// </summary>
+        [JsonProperty("Replication")]
         public LacingStrategy ArgumentLacing
         {
             get
@@ -397,6 +398,7 @@ namespace Dynamo.Graph.Nodes
         /// <value>
         ///     If the node has a name attribute, return it.  Otherwise return empty string.
         /// </value>
+        [JsonIgnore]
         public string Name
         {
             get

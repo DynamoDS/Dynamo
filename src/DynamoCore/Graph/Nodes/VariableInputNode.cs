@@ -29,6 +29,15 @@ namespace Dynamo.Graph.Nodes
             VariableInputController = new BasicVariableInputNodeController(this);
         }
 
+        /// <summary>
+        /// A flag used during serialization to indicated that
+        /// the node has a variable number of input ports.
+        /// </summary>
+        public bool VariableInputPorts
+        {
+            get { return true; }
+        }
+
         private BasicVariableInputNodeController VariableInputController { get; set; }
 
         private sealed class BasicVariableInputNodeController : VariableInputNodeController
