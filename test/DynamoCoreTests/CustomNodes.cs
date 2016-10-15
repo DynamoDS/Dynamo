@@ -334,7 +334,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
         }
 
-        [Test, Category("Slow")]
+        [Test]
         public void ReduceAndRecursion()
         {
             string openPath = Path.Combine(TestDirectory, @"core\reduce_and_recursion\reduce-example.dyn");
