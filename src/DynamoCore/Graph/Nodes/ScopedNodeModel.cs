@@ -32,7 +32,7 @@ namespace Dynamo.Graph.Nodes
                 return false;
             }
 
-            foreach (var index in Enumerable.Range(0, node.OutPortData.Count))
+            foreach (var index in Enumerable.Range(0, node.OutPorts.Count))
             {
                 HashSet<Tuple<int, NodeModel>> outputTuples = null;
                 if (!node.TryGetOutput(index, out outputTuples))
@@ -108,7 +108,7 @@ namespace Dynamo.Graph.Nodes
                     continue;
                 }
 
-                foreach (int index in Enumerable.Range(0, currentNode.InPortData.Count))
+                foreach (int index in Enumerable.Range(0, currentNode.InPorts.Count))
                 {
                     if (currentNode.TryGetInput(index, out inputTuple))
                     {
@@ -142,7 +142,7 @@ namespace Dynamo.Graph.Nodes
         {
             var inScopedNodes = new List<NodeModel>();
 
-            foreach (int index in Enumerable.Range(0, InPortData.Count))
+            foreach (int index in Enumerable.Range(0, InPorts.Count))
             {
                 if (!IsScopedInport(index))
                 {
