@@ -318,6 +318,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Collection of PortModels representing all Input ports.
         /// </summary>
+        [JsonProperty("InputPorts")]
         public ObservableCollection<PortModel> InPorts
         {
             get { return inPorts; }
@@ -331,6 +332,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Collection of PortModels representing all Output ports.
         /// </summary>
+        [JsonProperty("OutputPorts")]
         public ObservableCollection<PortModel> OutPorts
         {
             get { return outPorts; }

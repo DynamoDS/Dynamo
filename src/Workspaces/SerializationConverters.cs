@@ -20,6 +20,7 @@ using Dynamo.Utilities;
 using Dynamo.Graph.Nodes.CustomNodes;
 using ProtoCore.Namespace;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using System.Globalization;
 
 namespace Autodesk.Workspaces
 {
@@ -58,8 +59,8 @@ namespace Autodesk.Workspaces
             var x = obj["X"].Value<double>();
             var y = obj["Y"].Value<double>();
 
-            var inPorts = obj["InPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
-            var outPorts = obj["OutPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
+            var inPorts = obj["InputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
+            var outPorts = obj["OutputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
 
@@ -203,7 +204,7 @@ namespace Autodesk.Workspaces
 
             var isCustomNode = obj["IsCustomNode"].Value<bool>();
             var lastModifiedStr = obj["LastModified"].Value<string>();
-            var lastModified = DateTime.Parse(lastModifiedStr);
+            var lastModified = DateTime.ParseExact(lastModifiedStr,"yyyy-MM-dd",CultureInfo.InvariantCulture);
             var author = obj["LastModifiedBy"].Value<string>();
             var description = obj["Description"].Value<string>();
             var guidStr = obj["Uuid"].Value<string>();
@@ -271,7 +272,7 @@ namespace Autodesk.Workspaces
                 writer.WriteValue(((CustomNodeWorkspaceModel)value).Category);
             }
             writer.WritePropertyName("LastModified");
-            writer.WriteValue(ws.LastSaved);
+            writer.WriteValue(ws.LastSaved.ToString("yyyy-MM-dd"));
             writer.WritePropertyName("LastModifiedBy");
             writer.WriteValue(ws.Author);
             writer.WritePropertyName("Description");
@@ -298,6 +299,24 @@ namespace Autodesk.Workspaces
             //annotations
             writer.WritePropertyName("Annotations");
             serializer.Serialize(writer, ws.Annotations);
+
+            //cameras
+            writer.WritePropertyName("Cameras");
+            writer.WriteStartArray();
+            writer.WriteEndArray();
+
+            writer.WritePropertyName("Dependencies");
+            writer.WriteStartArray();
+            var functions = ws.Nodes.Where(n => n is Function);
+            if (functions.Any())
+            {
+                var deps = functions.Cast<Function>().Select(f => f.Definition.FunctionId).Distinct();
+                foreach(var d in deps)
+                {
+                    writer.WriteValue(d);
+                }
+            }
+            writer.WriteEndArray();
 
             writer.WriteEndObject();
         }
@@ -497,6 +516,69 @@ namespace Autodesk.Workspaces
             modelMap.TryGetValue(id, out model);
 
             return model;
+        }
+    }
+
+    /// <summary>
+    /// The LacingStrategyConverter is used to serialize and deserialize LacingStrategy enum values.
+    /// The mapping to string like 'applyDisabled' is to support the historical representation
+    /// of 'lacing' on Flood.
+    /// </summary>
+    public class LacingStrategyConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(LacingStrategy);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var obj = JObject.Load(reader);
+            var s = obj.Value<string>();
+            switch (s)
+            {
+                case "applyAuto":
+                    return LacingStrategy.Auto;
+                case "applyCartesianProduct":
+                    return LacingStrategy.CrossProduct;
+                case "applyDisabled":
+                    return LacingStrategy.Disabled;
+                case "applyFirst":
+                    return LacingStrategy.First;
+                case "applyLongest":
+                    return LacingStrategy.Longest;
+                case "applyShortest":
+                    return LacingStrategy.Shortest;
+                default:
+                    return LacingStrategy.Disabled;
+            }
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var s = (LacingStrategy)value;
+
+            switch(s){
+
+                case LacingStrategy.Auto:
+                    writer.WriteValue("applyAuto");
+                    break;
+                case LacingStrategy.CrossProduct:
+                    writer.WriteValue("applyCartesianProduct");
+                    break;
+                case LacingStrategy.Disabled:
+                    writer.WriteValue("applyDisabled");
+                    break;
+                case LacingStrategy.First:
+                    writer.WriteValue("applyFirst");
+                    break;
+                case LacingStrategy.Longest:
+                    writer.WriteValue("applyLongest");
+                    break;
+                case LacingStrategy.Shortest:
+                    writer.WriteValue("applyShortest");
+                    break;
+            }
         }
     }
 }

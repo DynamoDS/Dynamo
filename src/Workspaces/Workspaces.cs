@@ -74,7 +74,8 @@ namespace Autodesk.Workspaces
                         new ConnectorConverter(),
                         new AnnotationConverter(),
                         new WorkspaceConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
-                        new NodeModelConverter(manager, libraryServices)
+                        new NodeModelConverter(manager, libraryServices),
+                        new LacingStrategyConverter(),
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
@@ -108,7 +109,8 @@ namespace Autodesk.Workspaces
                         new AnnotationConverter(),
                         new WorkspaceConverter(engineController, scheduler, factory,
                         isTestMode, verboseLogging),
-                        new NodeModelConverter(manager, libraryServices)
+                        new NodeModelConverter(manager, libraryServices),
+                        new LacingStrategyConverter(),
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };
