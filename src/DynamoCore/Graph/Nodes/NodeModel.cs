@@ -699,7 +699,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns>True.</returns>
         public override bool ShouldSerializeX()
         {
-            return true;
+            return false;
         }
 
         /// <summary>
@@ -710,7 +710,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns>True</returns>
         public override bool ShouldSerializeY()
         {
-            return true;
+            return false;
         }
 
         #endregion
