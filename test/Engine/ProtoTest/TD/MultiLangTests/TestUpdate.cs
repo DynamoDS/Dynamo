@@ -1910,7 +1910,6 @@ z2 = z;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failure")]
         public void T51_Defect_1461388()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4094
