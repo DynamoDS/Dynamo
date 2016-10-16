@@ -569,8 +569,6 @@ namespace Dynamo.Graph.Nodes
                             // Create a statement variable from the generated nodes
                             codeStatements.Add(Statement.CreateInstance(parsedNode));
                         }
-
-                        SetPreviewVariable(parseParam.ParsedNodes);
                     }
                 }
 
@@ -616,6 +614,13 @@ namespace Dynamo.Graph.Nodes
                     inputIdentifiers.Clear();
                     inputPortNames.Clear();
                 }
+
+                // Set preview variable after gathering input identifiers. As a variable
+                // will be renamed only if it is not the preview variable and is either a
+                // variable defined in code block node or in on the right hand side of 
+                // expression as an input variable, a variable may not be renamed properly
+                // if SetPreviewVariable() is called before gathering input identifiers.
+                SetPreviewVariable(parseParam.ParsedNodes);
             }
             catch (Exception e)
             {
