@@ -10,6 +10,7 @@ namespace CoreNodeModels.Input
     [NodeName("Date Time")]
     [NodeDescription("DateTimeDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [OutPortTypes("var")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.DateTime", "DSCoreNodesUI.Input.DateTime")]
     public class DateTime : BasicInteractive<System.DateTime>

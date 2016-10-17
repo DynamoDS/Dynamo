@@ -251,7 +251,12 @@ namespace DSCore
             if (obj.GetType() != this.GetType()) return false;
             return Equals((Color)obj);
         }
-
+        /// <summary>
+        /// Returns a new color based on the combination of ARGB values from two input colors.
+        /// </summary>
+        /// <param name="c1"></param>
+        /// <param name="c2"></param>
+        /// <returns></returns>
         public static Color Add(Color c1, Color c2)
         {
             return ByARGB(
@@ -260,7 +265,12 @@ namespace DSCore
                 c1.Green + c2.Green,
                 c1.Blue + c2.Blue);
         }
-
+        /// <summary>
+        /// Returns a new color after multiplying an input color's ARGB values with an input multiplier.
+        /// </summary>
+        /// <param name="c1"></param>
+        /// <param name="div"></param>
+        /// <returns></returns>
         public static Color Multiply(Color c1, double div)
         {
             return ByARGB(
@@ -269,7 +279,12 @@ namespace DSCore
                 (int)(c1.Green * div),
                 (int)(c1.Blue * div));
         }
-
+        /// <summary>
+        /// Returns a new color after dividing an input color's ARGB values with an input divisor.
+        /// </summary>
+        /// <param name="c1"></param>
+        /// <param name="div"></param>
+        /// <returns></returns>
         public static Color Divide(Color c1, double div)
         {
             return ByARGB(

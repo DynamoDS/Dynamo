@@ -56,6 +56,7 @@ namespace CoreNodeModels
     [NodeDescription("StringfromObjectDescription", typeof(Resources))]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromObjectSearchTags", typeof(Resources))]
+    [OutPortTypes("string")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.StringNodes.FromObject", "DSCoreNodesUI.FromObject")]
     public class FromObject: ToStringNodeBase 
@@ -73,6 +74,7 @@ namespace CoreNodeModels
     [NodeDescription("StringfromArrayDescription", typeof(Resources))]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromArraySearchTags", typeof(Resources))]
+    [OutPortTypes("string")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.StringNodes.FromArray", "DSCoreNodesUI.FromArray")]
     public class FromArray : ToStringNodeBase 

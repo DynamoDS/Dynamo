@@ -13,6 +13,7 @@ namespace CoreNodeModels
     [NodeName("Convert Between Units")]
     [NodeDescription("ConversionNodeDescription", typeof(Properties.Resources))]
     [NodeSearchTags("DynamoConvertSearchTags", typeof(Properties.Resources))]
+    [OutPortTypes("double")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.DynamoConvert")]
     public class DynamoConvert : NodeModel

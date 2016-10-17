@@ -15,6 +15,7 @@ namespace CoreNodeModels
     [NodeDescription("FormulaDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
+    [OutPortTypes("Function")]
     [AlsoKnownAs("DSCoreNodesUI.Formula")]
     public class Formula : NodeModel
     {

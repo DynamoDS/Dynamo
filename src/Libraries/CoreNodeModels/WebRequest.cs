@@ -11,6 +11,7 @@ namespace CoreNodeModels
     [NodeDescription("WebRequestDescription", typeof(Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_WEB)]
     [IsDesignScriptCompatible]
+    [OutPortTypes("object")]
     [AlsoKnownAs("DSCoreNodesUI.WebRequest")]
     public class WebRequest : NodeModel
     {

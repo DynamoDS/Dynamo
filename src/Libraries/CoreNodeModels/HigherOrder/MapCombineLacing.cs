@@ -137,6 +137,7 @@ namespace CoreNodeModels.HigherOrder
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ListLaceShortestDescription", typeof(Resources))]
     [NodeSearchTags("ListLaceShortestSearchTags", typeof(Resources))]
+    [OutPortTypes("List")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.LaceShortest", "DSCoreNodesUI.HigherOrder.LaceShortest")]
     public class LaceShortest : CombinatorNode
@@ -163,6 +164,7 @@ namespace CoreNodeModels.HigherOrder
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ListLaceLongestDescription", typeof(Resources))]
     [NodeSearchTags("ListLaceLongestSearchTags", typeof(Resources))]
+    [OutPortTypes("List")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.LaceLongest", "DSCoreNodesUI.HigherOrder.LaceLongest")]
     public class LaceLongest : CombinatorNode
@@ -191,6 +193,7 @@ namespace CoreNodeModels.HigherOrder
     [NodeDescription("ListCartesianProductDescription", typeof(Resources))]
     [NodeSearchTags("ListCartesianProductSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
+    [OutPortTypes("List")]
     [AlsoKnownAs("DSCore.CartesianProduct", "DSCoreNodesUI.HigherOrder.CartesianProduct")]
     public class CartesianProduct : CombinatorNode
     {

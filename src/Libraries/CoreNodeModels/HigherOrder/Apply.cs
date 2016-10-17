@@ -11,18 +11,14 @@ namespace CoreNodeModels.HigherOrder
     [NodeDescription("FunctionApplyDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.HigherOrder.ApplyFunction")]
-    [InPortNames("func" , "args1..n")]
-    [InPortTypes("Function", "var[]")]
-    [OutPortNames("func")]
-    [OutPortTypes("Function")]
     public class ApplyFunction : VariableInputNode
     {
         public ApplyFunction() : base()
         {
-            //InPortData.Add(new PortData("func", Resources.ApplyPortDataFuncToolTip));
-            //OutPortData.Add(new PortData("func(args)", Resources.ApplyPortDataFuncArgToolTip));
+            InPortData.Add(new PortData("func", Resources.ApplyPortDataFuncToolTip));
+            OutPortData.Add(new PortData("func(args)", Resources.ApplyPortDataFuncArgToolTip));
             AddInput();
-            //RegisterAllPorts();
+            RegisterAllPorts();
         }
 
         protected override string GetInputName(int index)
@@ -78,7 +74,6 @@ namespace CoreNodeModels.HigherOrder
         {
             InPortData.Add(new PortData("func0", Resources.ComposePortDataFunc0ToolTip));
             InPortData.Add(new PortData("func1", Resources.ComposePortDataFunc1ToolTip));
-
             OutPortData.Add(new PortData("func", Resources.ComposePortDataResultToolTip));
             RegisterAllPorts();
         }

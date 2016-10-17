@@ -65,6 +65,7 @@ namespace CoreNodeModels.Logic
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
     [NodeDescription("AndDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
+    [OutPortTypes("bool")]
     [AlsoKnownAs("DSCore.Logic.And", "DSCoreNodesUI.Logic.And")]
     public class And : BinaryLogic
     {
@@ -78,6 +79,7 @@ namespace CoreNodeModels.Logic
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
     [NodeDescription("OrDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
+    [OutPortTypes("bool")]
     [AlsoKnownAs("DSCore.Logic.Or", "DSCoreNodesUI.Logic.Or")]
     public class Or : BinaryLogic
     {

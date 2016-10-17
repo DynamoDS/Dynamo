@@ -114,7 +114,7 @@ namespace UnitsUI
     public abstract class MeasurementInputBase : NodeModel
     {
         public SIUnit Measure { get; protected set; }
-        
+
         public double Value
         {
             get
@@ -200,8 +200,9 @@ namespace UnitsUI
 
     [NodeName("Number From Feet and Inches")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
-    [NodeDescription("LengthFromStringDescription",typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("LengthFromStringDescription", typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("LengthFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
+    [OutPortTypes("double")]
     [IsDesignScriptCompatible]
     public class LengthFromString : MeasurementInputBase
     {
@@ -260,7 +261,7 @@ namespace UnitsUI
 
     [NodeName("Area From String")]
     [NodeCategory("Units.Area.Create")]
-    [NodeDescription("AreaFromStringDescription",typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("AreaFromStringDescription", typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("AreaFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     [NodeDeprecated]
@@ -293,7 +294,7 @@ namespace UnitsUI
 
     [NodeName("Volume From String")]
     [NodeCategory("Units.Volume.Create")]
-    [NodeDescription("VolumeFromStringDescription",typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("VolumeFromStringDescription", typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("VolumeFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     [NodeDeprecated]
@@ -319,6 +320,7 @@ namespace UnitsUI
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeDescription("UnitTypesDescription", typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("UnitTypesSearchTags", typeof(UnitsUI.Properties.Resources))]
+    [OutPortTypes("type")]
     [IsDesignScriptCompatible]
     public class UnitTypes : AllChildrenOfType<SIUnit>
     {
