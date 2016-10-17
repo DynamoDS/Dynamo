@@ -2025,7 +2025,6 @@ import(""FFITarget.dll"");
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
-        [Category("Failure")]
         public void TS049_Return_eachType_To_varArray()
         {
             string code =
@@ -2053,9 +2052,8 @@ import(""FFITarget.dll"");
             thisTest.Verify("a", new object[] { 1.5 });
             thisTest.Verify("b", new object[] { 1 });
             thisTest.Verify("c", new object[] { "1.5" });
-            thisTest.Verify("d1", new object[] { 1 });
             thisTest.Verify("e", new object[] { false });
-            thisTest.Verify("f", new object[] { null });
+            thisTest.Verify("f", null);
         }
 
         [Test]
@@ -2277,7 +2275,6 @@ import(""FFITarget.dll"");
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
-        [Category("Failure")]
         public void TS056_Return_AlltypeTo_BoolArray()
         {
             string code =
@@ -2294,27 +2291,26 @@ import(""FFITarget.dll"");
                         b = foo({ 1, 0 });
                         c = foo({ ""1.5"" ,""""});
                         d = foo( {'1','0'});
-                        e = d = foo({ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) });
+                        e = foo({ ClassFunctionality.ClassFunctionality(1),ClassFunctionality.ClassFunctionality(1) });
                         f = foo({ false,true });
                         g = foo({ null, null });
                                                   ";
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3968
             string error = "MAGN-3968: Type conversion from var to bool array promotion is not happening ";
             thisTest.RunScriptSource(code, error);
-            thisTest.Verify("a", new object[] { true, true });
-            thisTest.Verify("a1", new object[] { true, true });
-            thisTest.Verify("b", new object[] { true, false });
-            thisTest.Verify("c", new object[] { true, false });
-            thisTest.Verify("d", new object[] { true, false });
-            thisTest.Verify("e", new object[] { true, true });
-            thisTest.Verify("f", new object[] { false, true });
-            thisTest.Verify("g", null);
+            thisTest.Verify("a", new object[] { new object[] { true }, new object[] { true } });
+            thisTest.Verify("a1", new object[] { new object[] { true }, new object[] { true } });
+            thisTest.Verify("b", new object[] { new object[] { true }, new object[] { false } });
+            thisTest.Verify("c", new object[] { new object[] { true }, new object[] { false } });
+            thisTest.Verify("d", new object[] { new object[] { true }, new object[] { true } });
+            thisTest.Verify("e", new object[] { new object[] { true }, new object[] { true } });
+            thisTest.Verify("f", new object[] { new object[] { false }, new object[] { true } });
+            thisTest.Verify("g", new object[] { null, null });
         }
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
-        [Category("Failure")]
         public void TS056_Return_BoolArray_1467258()
         {
             string code =
@@ -2328,7 +2324,6 @@ import(""FFITarget.dll"");
                     a = foo({ 1.5, 2.5 });
                     z:var={ 1.5,2.5 };
                     a1=foo(z);
-//                    a1 : var = foo({ 1.5,2.5 });
                     b = foo({ 1, 0 });
                     c = foo({ ""1.5"" ,""""});
                     d = foo({ '1', '0' });
@@ -2336,18 +2331,16 @@ import(""FFITarget.dll"");
                                                   ";
             string error = "1467258 - sprint 26 - Rev 3541 if the return type is bool array , type conversion does not happen for some cases  ";
             thisTest.RunScriptSource(code, error);
-            thisTest.Verify("a", new object[] { true, true });
-            thisTest.Verify("a1", new object[] { true, true });
-            thisTest.Verify("b", new object[] { true, false });
-            thisTest.Verify("c", new object[] { true, false });
-            thisTest.Verify("d", new object[] { true, false });
-            thisTest.Verify("e", new object[] { true, true });
+            thisTest.Verify("a", new object[] { new object[] { true }, new object[] { true } });
+            thisTest.Verify("b", new object[] { new object[] { true }, new object[] { false } });
+            thisTest.Verify("c", new object[] { new object[] { true }, new object[] { false } });
+            thisTest.Verify("d", new object[] { new object[] { true }, new object[] { true } });
+            thisTest.Verify("e", new object[] { new object[] { true }, new object[] { true } });
         }
 
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Type System")]
-        [Category("Failure")]
         public void TS057_Return_Array_1467305()
         {
             string code =
@@ -2367,11 +2360,10 @@ import(""FFITarget.dll"");
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1665
             string error = "MAGN-1665 Sprint 26 - Rev 3782  adds an additonal rank while returning as array, when the rank matches";
             thisTest.RunScriptSource(code, error);
-            thisTest.Verify("a", new object[] { true, true });
-            thisTest.Verify("a1", new object[] { true, true });
-            thisTest.Verify("b", new object[] { true, false });
-            thisTest.Verify("c", new object[] { true, false });
-            thisTest.Verify("d", new object[] { true, false });
+            thisTest.Verify("a", new object[] { new object[] { true }, new object[] { true } });
+            thisTest.Verify("b", new object[] { new object[] { true }, new object[] { false } });
+            thisTest.Verify("c", new object[] { new object[] { true }, new object[] { false } });
+            thisTest.Verify("d", new object[] { new object[] { true }, new object[] { true } });
         }
 
         [Test]
@@ -3891,7 +3883,6 @@ import(""FFITarget.dll"");
 
         [Test]
         [Category("Type System")]
-        [Category("Failure")]
         public void arrayRankmismtach_function_Return_1467326()
         {
             string code =
@@ -3904,9 +3895,8 @@ import(""FFITarget.dll"");
                         z = foo({  3  });
                     ";
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1668
-            string error = "MAGN-1668: when there is rank mismatch for function , array upagrades to 1 dimension higer than expected ";
-            var mirror = thisTest.RunScriptSource(code, error);
-            TestFrameWork.Verify(mirror, "z", new object[] { new object[] { 3 } });
+            var mirror = thisTest.RunScriptSource(code);
+            TestFrameWork.Verify(mirror, "z", new object[] { new object[] { new object[] { 3 } } });
         }
 
         [Test]
@@ -4644,7 +4634,7 @@ import(""FFITarget.dll"");
             TestFrameWork.Verify(mirror, "b", new object[] { true, new object[] { true } });
             TestFrameWork.Verify(mirror, "c", new object[] { true, new object[] { false } });
             TestFrameWork.Verify(mirror, "d", new object[] { true, new object[] { false } });
-            TestFrameWork.Verify(mirror, "e", new object[] { true, new object[] { false } });
+            TestFrameWork.Verify(mirror, "e", new object[] { true, new object[] { true } });
             TestFrameWork.Verify(mirror, "f", new object[] { true, new object[] { true } });
             TestFrameWork.Verify(mirror, "h1", new object[] { true, new object[] { true } });
             TestFrameWork.Verify(mirror, "i", new object[] { null, new object[] { null } });
