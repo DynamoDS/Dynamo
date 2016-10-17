@@ -108,6 +108,7 @@ namespace CoreNodeModels.Input
             //ws.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
         }
 
+        //if the string can be parsed to a common numeric type return true
         private bool validateInput(string value)
         {
             bool canConvert = false;
@@ -143,6 +144,12 @@ namespace CoreNodeModels.Input
         private string _value;
         protected ConversionDelegate ConvertToken;
 
+        /// <summary>
+        /// This property sets the value of the number node, but validates
+        /// that the input is numeric first - it does not allow range syntax
+        /// or unassigned identifier syntax.i.e *start..end*
+        /// This property should be used going forward from Dynamo 1.2.
+        /// </summary>
         public string NumericalValue {
             get { return _value; }
             set
@@ -160,6 +167,7 @@ namespace CoreNodeModels.Input
             }
         }
 
+        [Obsolete("Please use the NumericalValue property, this property still exists for backwards comptability")]
         public string Value
         {
             get { return _value; }
@@ -211,11 +219,13 @@ namespace CoreNodeModels.Input
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
 
+            //We must still handle Value updates from deserialization or webUI.
             if (name == "Value")
             {
                 Value = value;
                 return true; // UpdateValueCore handled.
             }
+            //UI is now bound to NumericalValue so we must handle that update value.
             if (name == "NumericalValue")
             {
                 NumericalValue = value;
