@@ -103,12 +103,28 @@ namespace CoreNodeModels.Input
 
             ShouldDisplayPreviewCore = false;
             ConvertToken = Convert;
-            Value = "0";
+            NumericalValue = "0";
 
             //ws.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
         }
 
-        public virtual double Convert(double value)
+        private bool validateInput(string value)
+        {
+            bool canConvert = false;
+
+            int intVal;
+            var canConvertInt = int.TryParse(value, out intVal);
+            double doubleVal;
+            var canConvertDouble = double.TryParse(value, out doubleVal);
+            long longVal;
+            var canConvertLong = long.TryParse(value, out longVal);
+
+            canConvert = canConvertInt || canConvertDouble || canConvertLong;
+
+            return canConvert;
+    }
+
+    public virtual double Convert(double value)
         {
             return value;
         }
@@ -126,6 +142,23 @@ namespace CoreNodeModels.Input
         private List<IDoubleSequence> _parsed;
         private string _value;
         protected ConversionDelegate ConvertToken;
+
+        public string NumericalValue {
+            get { return _value; }
+            set
+            {
+                if (_value != null && _value.Equals(value))
+                    return;
+                if (validateInput(value))
+                {
+                    Value = value;
+                }
+                else
+                {
+                    Error("Input Must Be Number");
+                }
+            }
+        }
 
         public string Value
         {
@@ -181,6 +214,11 @@ namespace CoreNodeModels.Input
             if (name == "Value")
             {
                 Value = value;
+                return true; // UpdateValueCore handled.
+            }
+            if (name == "NumericalValue")
+            {
+                NumericalValue = value;
                 return true; // UpdateValueCore handled.
             }
 

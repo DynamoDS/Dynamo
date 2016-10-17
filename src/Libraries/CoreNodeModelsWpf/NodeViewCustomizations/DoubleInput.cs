@@ -14,7 +14,7 @@ namespace CoreNodeModelsWpf.Nodes
         public void CustomizeView(DoubleInput nodeModel, NodeView nodeView)
         {
             //add a text box to the input grid of the control
-            var tb = new DynamoTextBox(nodeModel.Value ?? "0.0")
+            var tb = new DynamoTextBox(nodeModel.NumericalValue ?? "0.0")
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -28,7 +28,7 @@ namespace CoreNodeModelsWpf.Nodes
 
             tb.DataContext = nodeModel;
 
-            tb.BindToProperty(new Binding("Value")
+            tb.BindToProperty(new Binding("NumericalValue")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleInputDisplay(),
