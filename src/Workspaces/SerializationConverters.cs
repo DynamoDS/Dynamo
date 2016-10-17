@@ -56,8 +56,8 @@ namespace Autodesk.Workspaces
             
             var guid = Guid.Parse(obj["Uuid"].Value<string>());
             var displayName = obj["DisplayName"].Value<string>();
-            var x = obj["X"].Value<double>();
-            var y = obj["Y"].Value<double>();
+            //var x = obj["X"].Value<double>();
+            //var y = obj["Y"].Value<double>();
 
             var inPorts = obj["InputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
             var outPorts = obj["OutputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
@@ -73,7 +73,7 @@ namespace Autodesk.Workspaces
             else if(type == typeof(CodeBlockNodeModel))
             {
                 var code = obj["Code"].Value<string>();
-                node = new CodeBlockNodeModel(code, guid, x, y, libraryServices, ElementResolver);
+                node = new CodeBlockNodeModel(code, guid, 0.0, 0.0, libraryServices, ElementResolver);
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
             else if(typeof(DSFunctionBase).IsAssignableFrom(type))
@@ -110,8 +110,8 @@ namespace Autodesk.Workspaces
 
             node.GUID = guid;
             node.NickName = displayName;
-            node.X = x;
-            node.Y = y;
+            //node.X = x;
+            //node.Y = y;
 
             // Add references to the node and the ports to the reference resolver,
             // so that they are available for entities which are deserialized later.
@@ -516,69 +516,6 @@ namespace Autodesk.Workspaces
             modelMap.TryGetValue(id, out model);
 
             return model;
-        }
-    }
-
-    /// <summary>
-    /// The LacingStrategyConverter is used to serialize and deserialize LacingStrategy enum values.
-    /// The mapping to string like 'applyDisabled' is to support the historical representation
-    /// of 'lacing' on Flood.
-    /// </summary>
-    public class LacingStrategyConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(LacingStrategy);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            var obj = JObject.Load(reader);
-            var s = obj.Value<string>();
-            switch (s)
-            {
-                case "applyAuto":
-                    return LacingStrategy.Auto;
-                case "applyCartesianProduct":
-                    return LacingStrategy.CrossProduct;
-                case "applyDisabled":
-                    return LacingStrategy.Disabled;
-                case "applyFirst":
-                    return LacingStrategy.First;
-                case "applyLongest":
-                    return LacingStrategy.Longest;
-                case "applyShortest":
-                    return LacingStrategy.Shortest;
-                default:
-                    return LacingStrategy.Disabled;
-            }
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var s = (LacingStrategy)value;
-
-            switch(s){
-
-                case LacingStrategy.Auto:
-                    writer.WriteValue("applyAuto");
-                    break;
-                case LacingStrategy.CrossProduct:
-                    writer.WriteValue("applyCartesianProduct");
-                    break;
-                case LacingStrategy.Disabled:
-                    writer.WriteValue("applyDisabled");
-                    break;
-                case LacingStrategy.First:
-                    writer.WriteValue("applyFirst");
-                    break;
-                case LacingStrategy.Longest:
-                    writer.WriteValue("applyLongest");
-                    break;
-                case LacingStrategy.Shortest:
-                    writer.WriteValue("applyShortest");
-                    break;
-            }
         }
     }
 }

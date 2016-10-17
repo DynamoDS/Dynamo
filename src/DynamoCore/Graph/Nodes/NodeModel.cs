@@ -24,6 +24,7 @@ using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using System.Runtime.Serialization;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -357,7 +358,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Control how arguments lists of various sizes are laced.
         /// </summary>
-        [JsonProperty("Replication")]
+        [JsonProperty("Replication"), JsonConverter(typeof(LacingStrategyConverter))]
         public LacingStrategy ArgumentLacing
         {
             get
@@ -2423,5 +2424,68 @@ namespace Dynamo.Graph.Nodes
         /// Action to call on UI thread.
         /// </summary>
         public Action ActionToDispatch { get; set; }
+    }
+
+    /// <summary>
+    /// The LacingStrategyConverter is used to serialize and deserialize LacingStrategy enum values.
+    /// The mapping to string like 'applyDisabled' is to support the historical representation
+    /// of 'lacing' on Flood.
+    /// </summary>
+    public class LacingStrategyConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(LacingStrategy);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var s = reader.Value.ToString();
+            switch (s)
+            {
+                case "applyAuto":
+                    return LacingStrategy.Auto;
+                case "applyCartesianProduct":
+                    return LacingStrategy.CrossProduct;
+                case "applyDisabled":
+                    return LacingStrategy.Disabled;
+                case "applyFirst":
+                    return LacingStrategy.First;
+                case "applyLongest":
+                    return LacingStrategy.Longest;
+                case "applyShortest":
+                    return LacingStrategy.Shortest;
+                default:
+                    return LacingStrategy.Disabled;
+            }
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var s = (LacingStrategy)value;
+
+            switch (s)
+            {
+
+                case LacingStrategy.Auto:
+                    writer.WriteValue("applyAuto");
+                    break;
+                case LacingStrategy.CrossProduct:
+                    writer.WriteValue("applyCartesianProduct");
+                    break;
+                case LacingStrategy.Disabled:
+                    writer.WriteValue("applyDisabled");
+                    break;
+                case LacingStrategy.First:
+                    writer.WriteValue("applyFirst");
+                    break;
+                case LacingStrategy.Longest:
+                    writer.WriteValue("applyLongest");
+                    break;
+                case LacingStrategy.Shortest:
+                    writer.WriteValue("applyShortest");
+                    break;
+            }
+        }
     }
 }
