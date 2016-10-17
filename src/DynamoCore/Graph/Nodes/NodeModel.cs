@@ -61,7 +61,6 @@ namespace Dynamo.Graph.Nodes
         // Input and output port related data members.
         private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
         private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
-        private readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
 
         #endregion
 
@@ -1277,6 +1276,10 @@ namespace Dynamo.Graph.Nodes
 
         #region Node State
 
+        /// <summary>
+        /// Sets the <seealso cref="ElementState"/> for the node based on
+        /// the port's default value status and connectivity.
+        /// </summary>
         public void ValidateConnections()
         {
             // if there are inputs without connections
@@ -1412,10 +1415,6 @@ namespace Dynamo.Graph.Nodes
                 //distribute the ports along the 
                 //edges of the icon
                 PortModel port = AddPort(PortType.Input, pd, count);
-                //MVVM: AddPort now returns a port model. You can't set the data context here.
-                //port.DataContext = this;
-
-                portDataDict[port] = pd;
                 count++;
             }
 
@@ -1424,7 +1423,6 @@ namespace Dynamo.Graph.Nodes
                 foreach (PortModel inport in inPorts.Skip(count))
                 {
                     inport.DestroyConnectors();
-                    portDataDict.Remove(inport);
                 }
 
                 for (int i = inPorts.Count - 1; i >= count; i--)
@@ -1472,11 +1470,6 @@ namespace Dynamo.Graph.Nodes
                 //distribute the ports along the 
                 //edges of the icon
                 PortModel port = AddPort(PortType.Output, pd, count);
-
-                //MVVM : don't set the data context in the model
-                //port.DataContext = this;
-
-                portDataDict[port] = pd;
                 count++;
             }
 
@@ -1487,8 +1480,6 @@ namespace Dynamo.Graph.Nodes
 
                 for (int i = outPorts.Count - 1; i >= count; i--)
                     outPorts.RemoveAt(i);
-
-                //OutPorts.RemoveRange(count, outPorts.Count - count);
             }
 
             //configure snap edges

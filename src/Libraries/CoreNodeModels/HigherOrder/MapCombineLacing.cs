@@ -85,7 +85,7 @@ namespace CoreNodeModels.HigherOrder
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > minPorts)
+            if (InPorts.Count > minPorts)
                 base.RemoveInput();
         }
     }
@@ -271,33 +271,31 @@ namespace CoreNodeModels.HigherOrder
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 3)
+            if (InPorts.Count > 3)
             {
                 base.RemoveInput();
-                //UpdateReductorPort();
             }
         }
 
         protected override void AddInput()
         {
             base.AddInput();
-            //UpdateReductorPort();
         }
 
         private void UpdateReductorPort()
         {
-            if (InPortData.Count > 6) 
+            if (InPorts.Count > 6) 
                 reductorPort.NickName = "f(x1, x2, ... xN, a)";
             else
             {
-                if (InPortData.Count == 3) 
+                if (InPorts.Count == 3) 
                     reductorPort.NickName = "f(x, a)";
                 else
                 {
                     reductorPort.NickName = "f("
                         + string.Join(
                             ", ",
-                            Enumerable.Range(0, InPortData.Count - 2).Select(x => "x" + (x + 1)))
+                            Enumerable.Range(0, InPorts.Count - 2).Select(x => "x" + (x + 1)))
                         + ", a)";
                 }
             }
@@ -316,7 +314,7 @@ namespace CoreNodeModels.HigherOrder
 
         protected override int GetInputIndex()
         {
-            return InPortData.Count - 1;
+            return InPorts.Count - 1;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -363,33 +361,31 @@ namespace CoreNodeModels.HigherOrder
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 3)
+            if (InPorts.Count > 3)
             {
                 base.RemoveInput();
-                //UpdateReductorPort();
             }
         }
 
         protected override void AddInput()
         {
             base.AddInput();
-            //UpdateReductorPort();
         }
 
         private void UpdateReductorPort()
         {
-            if (InPortData.Count > 6)
+            if (InPorts.Count > 6)
                 reductorPort.NickName = "f(x1, x2, ... xN, a)";
             else
             {
-                if (InPortData.Count == 3)
+                if (InPorts.Count == 3)
                     reductorPort.NickName = "f(x, a)";
                 else
                 {
                     reductorPort.NickName = "f("
                         + string.Join(
                             ", ",
-                            Enumerable.Range(0, InPortData.Count - 2).Select(x => "x" + (x + 1)))
+                            Enumerable.Range(0, InPorts.Count - 2).Select(x => "x" + (x + 1)))
                         + ", a)";
                 }
             }
@@ -408,7 +404,7 @@ namespace CoreNodeModels.HigherOrder
 
         protected override int GetInputIndex()
         {
-            return InPortData.Count - 1;
+            return InPorts.Count - 1;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)

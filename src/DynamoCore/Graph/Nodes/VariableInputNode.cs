@@ -177,7 +177,10 @@ namespace Dynamo.Graph.Nodes
             var count = model.InPorts.Count;
             if (count > 0)
             {
-                model.InPorts.RemoveAt(count - 1);
+                var port = model.InPorts[count - 1];
+                port.DestroyConnectors();
+                model.InPorts.Remove(port);
+                model.ValidateConnections();
             }
 
             MarkNodeDirty();
