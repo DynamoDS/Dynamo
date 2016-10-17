@@ -266,7 +266,6 @@ namespace Dynamo.Graph.Nodes
         /// node will be re-aligned into the original structure
         /// of the nested list.
         /// </summary>
-        [JsonConverter(typeof(BoolToStringConverter))]
         public bool ShouldKeepListStructure
         {
             get
@@ -471,30 +470,6 @@ namespace Dynamo.Graph.Nodes
             DefaultValue = defaultValue;
             LineIndex = -1;
             Height = 0;
-        }
-    }
-
-    /// <summary>
-    /// This class to be removed when the server supports
-    /// bool for the ShouldKeepListStructure field.
-    /// </summary>
-    internal class BoolToStringConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(bool);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            var obj = JObject.Load(reader);
-            return bool.Parse(obj.Value<string>());
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var flag = (bool)value;
-            writer.WriteValue(flag.ToString());
         }
     }
 }
