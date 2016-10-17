@@ -1835,11 +1835,11 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(3, cbn.OutPorts[1].LineIndex);
+            Assert.AreEqual("b", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(3, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("a", cbn.OutPorts[2].ToolTipContent);
-            Assert.AreEqual(5, cbn.OutPorts[2].LineIndex);
+            Assert.AreEqual("a", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(5, cbn.OutPorts[1].LineIndex);
         }
 
         [Test, RequiresSTA]
