@@ -157,7 +157,9 @@ namespace Dynamo.Tests
                 // Tests which require late initialization
                 // of custom nodes...
                 "noro.dyn",
-                "Number1.dyn"
+                "Number1.dyn",
+                "MultipleIF",
+                "packageTest"
             };
 
             if (bannedTests.Any(t=>filePath.Contains(t)))

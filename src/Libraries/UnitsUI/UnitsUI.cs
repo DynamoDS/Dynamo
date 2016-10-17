@@ -114,6 +114,7 @@ namespace UnitsUI
 
     public abstract class MeasurementInputBase : NodeModel
     {
+        [JsonIgnore]
         public SIUnit Measure { get; protected set; }
         
         public double Value
@@ -277,6 +278,13 @@ namespace UnitsUI
     [NodeDeprecated]
     public class AreaFromString : MeasurementInputBase
     {
+        [JsonConstructor]
+        private AreaFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        {
+            Measure = Area.FromDouble(0.0, AreaUnit.SquareMeter);
+            Warning("AreaFromString is obsolete.", true);
+        }
+
         public AreaFromString()
         {
             Measure = Area.FromDouble(0.0, AreaUnit.SquareMeter);
@@ -310,6 +318,13 @@ namespace UnitsUI
     [NodeDeprecated]
     public class VolumeFromString : MeasurementInputBase
     {
+        [JsonConstructor]
+        private VolumeFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        {
+            Measure = Volume.FromDouble(0.0, VolumeUnit.CubicMeter);
+            Warning("AreaFromString is obsolete.", true);
+        }
+
         public VolumeFromString()
         {
             Measure = Volume.FromDouble(0.0, VolumeUnit.CubicMeter);
