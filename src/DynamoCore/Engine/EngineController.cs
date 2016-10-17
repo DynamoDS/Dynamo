@@ -367,7 +367,7 @@ namespace Dynamo.Engine
             var codeBlockNodes = new HashSet<Guid>(
                 nodes.Where(n => n is CodeBlockNodeModel).Select(n => n.GUID));
 
-            if (reExecuteNodesIds.Any())
+            if (reExecuteNodesIds.Any() || codeBlockNodes.Any())
             {
                 for (int i = 0; i < graphSyncdata.ModifiedSubtrees.Count; ++i)
                 {
