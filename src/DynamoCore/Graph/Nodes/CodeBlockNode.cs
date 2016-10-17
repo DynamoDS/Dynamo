@@ -603,10 +603,15 @@ namespace Dynamo.Graph.Nodes
                 {
                     inputIdentifiers = new List<string>();
                     inputPortNames = new List<string>();
+
+                    var definedVariables = new HashSet<string>(CodeBlockUtils.GetStatementVariables(codeStatements, true).SelectMany(s => s));
                     foreach (var kvp in parseParam.UnboundIdentifiers)
                     {
-                        inputIdentifiers.Add(kvp.Value);
-                        inputPortNames.Add(kvp.Key);
+                        if (!definedVariables.Contains(kvp.Value))
+                        {
+                            inputIdentifiers.Add(kvp.Value);
+                            inputPortNames.Add(kvp.Key);
+                        }
                     }
                 }
                 else
