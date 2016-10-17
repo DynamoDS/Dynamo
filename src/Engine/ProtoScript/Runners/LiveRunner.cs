@@ -29,16 +29,40 @@ namespace ProtoScript.Runners
     /// </summary>
     public struct Subtree
     {
-        public Guid GUID;
+        /// <summary>
+        /// The GUID of corresponding UI node.
+        /// </summary>
+        public Guid GUID
+        {
+            get; private set;
+        }
+
+        /// <summary>
+        /// Specify if all ast nodes should be executed.
+        /// </summary>
+        public bool ForceExecution
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Sepcify if the VM should do delta computation for these ASTs
+        /// By default it is true.
+        /// </summary>
+        public bool DeltaComputation
+        {
+            get; set;
+        } 
+
         public List<AssociativeNode> AstNodes;
         public List<AssociativeNode> ModifiedAstNodes;
-        public bool ForceExecution;
 
         public Subtree(List<AssociativeNode> astNodes, System.Guid guid)
         {
             GUID = guid;
             AstNodes = astNodes;
             ForceExecution = false;
+            DeltaComputation = true;
             ModifiedAstNodes = new List<AssociativeNode>();
         }
 
@@ -789,14 +813,18 @@ namespace ProtoScript.Runners
             {
                 // Check if node exists in the prev AST list
                 bool nodeFound = false;
-                foreach (AssociativeNode prevNode in st.AstNodes)
+                if (subtree.DeltaComputation)
                 {
-                    if (prevNode.Equals(node))
+                    foreach (AssociativeNode prevNode in st.AstNodes)
                     {
-                        nodeFound = true;
-                        break;
+                        if (prevNode.Equals(node))
+                        {
+                            nodeFound = true;
+                            break;
+                        }
                     }
                 }
+
                 if (!nodeFound)
                 {
                     // At this point, the ast was determined to have been modified

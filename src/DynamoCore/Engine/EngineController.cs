@@ -364,15 +364,22 @@ namespace Dynamo.Engine
                 nodes.Where(n => n.NeedsForceExecution)
                      .Select(n => n.GUID));
 
+            var codeBlockNodes = new HashSet<Guid>(
+                nodes.Where(n => n is CodeBlockNodeModel).Select(n => n.GUID));
+
             if (reExecuteNodesIds.Any())
             {
                 for (int i = 0; i < graphSyncdata.ModifiedSubtrees.Count; ++i)
                 {
                     var st = graphSyncdata.ModifiedSubtrees[i];
-                    if (reExecuteNodesIds.Contains(st.GUID))
+                    var forceExecution = reExecuteNodesIds.Contains(st.GUID);
+                    var isCodeBlockNode = codeBlockNodes.Contains(st.GUID);
+                    
+                    if (forceExecution || isCodeBlockNode) 
                     {
                         Subtree newSt = new Subtree(st.AstNodes, st.GUID);
-                        newSt.ForceExecution = true;
+                        newSt.ForceExecution = forceExecution;
+                        newSt.DeltaComputation = !isCodeBlockNode;
                         graphSyncdata.ModifiedSubtrees[i] = newSt;
                     }
                 }
