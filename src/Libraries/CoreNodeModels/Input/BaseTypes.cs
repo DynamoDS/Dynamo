@@ -155,7 +155,7 @@ namespace CoreNodeModels.Input
                 }
                 else
                 {
-                    Error("Input Must Be Number");
+                    Error(Resources.NumberNodeInputMustBeNumeric);
                 }
             }
         }
