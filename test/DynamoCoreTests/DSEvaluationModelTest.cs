@@ -1102,16 +1102,10 @@ namespace Dynamo.Tests
             // To test that variable could still be properly renamed.
             var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\define_dictionary2.dyn");
             OpenModel(dynFilePath);
-            AssertPreviewValue("14da40b5-f836-4178-85ff-882195917bbc", "bar");
-            AssertPreviewValue("69f1ec59-6a8c-49b1-a4d7-6690c6a1e594", 1024);
-            AssertPreviewValue("82b91c7e-e7cf-41e0-b392-ab737326ccaa", new object[] { 1024 });
-            AssertPreviewValue("372c04aa-4088-4224-a922-d34fc2869fc1", "qux");
-            AssertPreviewValue("58a3e8e3-9648-4253-81c1-cd2960629d70", new object[] { "qux" });
-            AssertPreviewValue("231d235b-0d7f-4bd8-b19a-5dda561aea3d", 1024);
+            AssertPreviewValue("231d235b-0d7f-4bd8-b19a-5dda561aea3d", new object[] { 1024 });
+            AssertPreviewValue("372c04aa-4088-4224-a922-d34fc2869fc1", new object[] { "qux" });
             AssertPreviewValue("e7bf0921-cf77-4f37-8336-8aa9c56b22a6", new object[] { "qux" });
             AssertPreviewValue("756497b4-4f7a-4ae3-9e5c-de5f69762d16", new object[] { 1024 });
-            AssertPreviewValue("bd3c1997-9785-49d0-acc7-62e168ec3125", "qux");
-            AssertPreviewValue("962dc07d-c213-459c-87b5-f36b7075091f", 1024);
         }
     }
 

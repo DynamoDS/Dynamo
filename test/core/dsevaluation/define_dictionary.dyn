@@ -1,4 +1,4 @@
-<Workspace Version="1.2.1.2722" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+<Workspace Version="1.2.1.2902" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <CoreNodeModels.Watch guid="a0227846-04ca-4323-9074-2bd1ea9ac8cf" type="CoreNodeModels.Watch" nickname="Watch" x="388" y="125" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
@@ -7,12 +7,16 @@
     <CoreNodeModels.Watch guid="ada2d384-626f-4240-b251-7df6e395f3f2" type="CoreNodeModels.Watch" nickname="Watch" x="464" y="345" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
       <PortInfo index="0" default="False" />
     </CoreNodeModels.Watch>
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="1e454a5a-3828-4c74-bf53-fc3249704183" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="167" y="351" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="s[&quot;a&quot;]=&quot;Bob&quot;;&#xA;s[&quot;b&quot;]=&quot;Sally&quot;;&#xA;s[&quot;c&quot;]=&quot;Pat&quot;;&#xA;s;" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="ab406c15-3272-4085-8fdb-2662bcc52276" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="166" y="160" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="s[&quot;a&quot;]=1;&#xA;s[&quot;b&quot;]=2;&#xA;s[&quot;c&quot;]=3;&#xA;s;" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="1e454a5a-3828-4c74-bf53-fc3249704183" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="167" y="351" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="s[&quot;a&quot;]=&quot;Bob&quot;;&#xA;s[&quot;b&quot;]=&quot;Sally&quot;;&#xA;s[&quot;c&quot;]=&quot;Pat&quot;;&#xA;s;" ShouldFocus="false">
+      <PortInfo index="0" default="False" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="ab406c15-3272-4085-8fdb-2662bcc52276" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="166" y="160" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="s[&quot;a&quot;]=1;&#xA;s[&quot;b&quot;]=2;&#xA;s[&quot;c&quot;]=3;&#xA;s;" ShouldFocus="false">
+      <PortInfo index="0" default="False" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
   </Elements>
   <Connectors>
-    <Dynamo.Graph.Connectors.ConnectorModel start="1e454a5a-3828-4c74-bf53-fc3249704183" start_index="3" end="ada2d384-626f-4240-b251-7df6e395f3f2" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="ab406c15-3272-4085-8fdb-2662bcc52276" start_index="3" end="a0227846-04ca-4323-9074-2bd1ea9ac8cf" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="1e454a5a-3828-4c74-bf53-fc3249704183" start_index="0" end="ada2d384-626f-4240-b251-7df6e395f3f2" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="ab406c15-3272-4085-8fdb-2662bcc52276" start_index="0" end="a0227846-04ca-4323-9074-2bd1ea9ac8cf" end_index="0" portType="0" />
   </Connectors>
   <Notes />
   <Annotations />
