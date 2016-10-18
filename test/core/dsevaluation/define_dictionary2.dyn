@@ -1,0 +1,47 @@
+<Workspace Version="1.2.1.2902" X="-119" Y="19" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="dfa4f4e3-6e74-4866-a196-95c2c981ba30" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="253" y="129" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="true" CodeText="s[&quot;foo&quot;] = &quot;bar&quot;;" ShouldFocus="false">
+      <PortInfo index="0" default="False" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="f769c8ab-a865-4681-b41f-0b0c1dfe9fc9" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="256" y="322" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="true" CodeText="s[&quot;foo&quot;] = 1024;" ShouldFocus="false">
+      <PortInfo index="0" default="False" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="a2985ad3-2ec3-4b9c-a987-bb86584ca2d2" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="703" y="145" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="t[&quot;bar&quot;] = &quot;qux&quot;;&#xA;t;" ShouldFocus="false">
+      <PortInfo index="0" default="False" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="a718b332-346c-4df0-838b-be93b70e1aae" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="708" y="337" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="t[&quot;bar&quot;] = 1024;&#xA;t;" ShouldFocus="false">
+      <PortInfo index="0" default="False" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+    <CoreNodeModels.Watch guid="372c04aa-4088-4224-a922-d34fc2869fc1" type="CoreNodeModels.Watch" nickname="watch-qux" x="978" y="37" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
+      <PortInfo index="0" default="False" />
+    </CoreNodeModels.Watch>
+    <CoreNodeModels.Watch guid="231d235b-0d7f-4bd8-b19a-5dda561aea3d" type="CoreNodeModels.Watch" nickname="watch-1024" x="988" y="325" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
+      <PortInfo index="0" default="False" />
+    </CoreNodeModels.Watch>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="047660dc-be17-4b29-84ec-1059d9637e07" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="1177" y="209" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="m;&#xA;m[&quot;bar&quot;] = &quot;qux&quot;;" ShouldFocus="false">
+      <PortInfo index="0" default="False" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="d74944a0-098c-421d-911f-cf5935aa0d20" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="1187" y="396" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="m;&#xA;m[&quot;bar&quot;] = 1024;" ShouldFocus="false">
+      <PortInfo index="0" default="False" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+    <CoreNodeModels.Watch guid="e7bf0921-cf77-4f37-8336-8aa9c56b22a6" type="CoreNodeModels.Watch" nickname="watch {qux}" x="1430.5" y="79.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
+      <PortInfo index="0" default="False" />
+    </CoreNodeModels.Watch>
+    <CoreNodeModels.Watch guid="756497b4-4f7a-4ae3-9e5c-de5f69762d16" type="CoreNodeModels.Watch" nickname="watch{1024}" x="1422.5" y="392.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
+      <PortInfo index="0" default="False" />
+    </CoreNodeModels.Watch>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="a2985ad3-2ec3-4b9c-a987-bb86584ca2d2" start_index="0" end="372c04aa-4088-4224-a922-d34fc2869fc1" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="a718b332-346c-4df0-838b-be93b70e1aae" start_index="0" end="231d235b-0d7f-4bd8-b19a-5dda561aea3d" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="047660dc-be17-4b29-84ec-1059d9637e07" start_index="0" end="e7bf0921-cf77-4f37-8336-8aa9c56b22a6" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="d74944a0-098c-421d-911f-cf5935aa0d20" start_index="0" end="756497b4-4f7a-4ae3-9e5c-de5f69762d16" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

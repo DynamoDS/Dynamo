@@ -39,8 +39,6 @@ namespace ProtoCore.Lang
                     {
                         if (!formalParameters[0].IsArray)
                             ret = ProtoCore.DSASM.StackValue.BuildInt(1);
-                        else if (!ArrayUtils.ContainsNonArrayElement(formalParameters[0], runtimeCore))
-                            ret = ProtoCore.DSASM.StackValue.BuildInt(0);
                         else
                             ret = ProtoCore.DSASM.StackValue.BuildInt(ArrayUtilsForBuiltIns.Count(formalParameters[0], interpreter));
                         break;
@@ -500,13 +498,9 @@ namespace ProtoCore.Lang
                         StackValue key = formalParameters[1];
                         if (array.IsArray)
                         {
-                            bool result = runtimeCore.Heap.ToHeapObject<DSArray>(array).RemoveKey(key);
-                            ret = StackValue.BuildBoolean(result);
+                            runtimeCore.Heap.ToHeapObject<DSArray>(array).RemoveKey(key);
                         }
-                        else
-                        {
-                            ret = StackValue.BuildBoolean(false);
-                        }
+                        return array;
                         break;
                     }
                 case BuiltInMethods.MethodID.Evaluate:

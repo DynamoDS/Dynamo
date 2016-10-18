@@ -1659,6 +1659,7 @@ namespace ProtoCore.AST.AssociativeAST
         protected List<string> returnKeys;
         public string ObsoleteMessage { get; protected set; }
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
+        public bool IsLacingDisabled { get; protected set; }
 
         /// <summary>
         /// Returns/Sets description for the method.
@@ -2583,7 +2584,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override string ToString()
         {
-            return Keyword.Import + "(\"" + ModuleName + "\")" + Constants.termline;
+            return Keyword.Import + " (\"" + CompilerUtils.ToLiteral(ModuleName) + "\") " + Constants.termline;
         }
 
         public override AstKind Kind

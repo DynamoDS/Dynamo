@@ -26,40 +26,6 @@ p.IntVal = 10;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        public void UpdateMember02()
-        {
-            String code =
-@"
-class complex
-{
-	mx : var;
-	my : var;
-	constructor complex(px : int, py : int)
-	{
-		mx = px; 
-		my = py; 
-	}
-	def scale : int(s : int)
-	{
-		mx = mx * s; 
-		my = my * s; 
-		return = 0;
-	}
-}
-p = complex.complex(8,16);
-i = p.mx;
-j = p.my;
-k1 = p.scale(2); 
-k2 = p.scale(10); 
-k3 = p.scale(10); 
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("i", 1600);
-            thisTest.Verify("j", 3200);
-        }
-
-        [Test]
         public void ArrayAssignmentNoCycle1()
         {
             String code =
@@ -96,87 +62,6 @@ y = x[i]; // 1
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void UpdateMemberArray1()
-        {
-            String code =
-@"
-class C
-{
-    x;
-    constructor C()
-    {
-        x = {1,2,3};
-    }
-}
-p = C.C();
-a = p.x[2];
-p.x = {10,20,30};
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 30);
-        }
-
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void UpdateMemberArray2()
-        {
-            String code =
-@"
-class C
-{
-    x;
-    constructor C()
-    {
-        x = {{1,2,3},{10,20,30}};
-    }
-}
-i = 0;
-j = 1;
-p = C.C();
-g = C.C();
-a = p.x[i][j] + g.x[j][2];
-g.x = {{1},{100,200,300,400}}; 
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 302);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void UpdateMemberArray3()
-        {
-            String code =
-@"
-class A
-{
-	x : var[];
-	
-	constructor A()
-	{
-		x = { B.B(), B.B(), B.B() };
-	}
-}
-class B
-{
-	y : var[]..[];
-	
-	constructor B()
-	{
-		y = { { 1, 2 }, { 3, 4 }, { 5, 6 }};		
-	}
-}
-a = { A.A(), A.A(), A.A() };
-g = 2;
-b = a[0].x[1].y[g][0]; 
-a[0].x[1].y[g][0] = 100;
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("b", 100);
-        }
-
-        [Test]
         public void TestReplicationGuide01()
         {
             String code =
@@ -206,48 +91,6 @@ y = a[1];
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", new object[] { 2, 3 });
             thisTest.Verify("y", new object[] { 3, 4 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void TestReplicationGuideOnProperty01()
-        {
-            String code =
-@"
-class A
-{
-    x : var[];
-    constructor A()
-    {
-        x = {1,2};
-    }
-}
-a = A.A();
-b = A.A();
-c = a.x<1> + b.x<2>;
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("c", new Object[] { new object[] { 2, 3 }, new object[] { 3, 4 } });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void TestReplicationGuideOnProperty02()
-        {
-            String code =
-@"
-class C
-{
-    def f(a : int)
-    {
-        return = 10;
-    }
-}
-p = {C.C(), C.C()};
-x = p<1>.f({1,2}<2>);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x", new Object[] { new object[] { 10, 10 }, new object[] { 10, 10 } });
         }
 
         [Test]
@@ -306,26 +149,6 @@ y = f(10);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("y", 55);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void TestEmptyArray()
-        {
-            String code =
-@"
-class C
-{
-    constructor C(i : int, j :int[]..[])
-    {
-    }
-}
-a = 1;
-p = C.C(a, {{}});
-a = 10;
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 10);
         }
     }
 }

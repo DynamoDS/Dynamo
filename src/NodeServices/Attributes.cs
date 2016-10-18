@@ -333,4 +333,13 @@ namespace Autodesk.DesignScript.Runtime
     public class KeepReferenceThisAttribute : Attribute
     {
     }
+
+    /// <summary>
+    /// This attribute is applied to a function to indicate whether to
+    /// disable lacing strategy on this function or not.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public class IsLacingDisabledAttribute : Attribute
+    {
+    }
 }

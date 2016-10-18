@@ -696,7 +696,6 @@ namespace ProtoTest.LiveRunner
 
             //==============================================
             //
-            // import ("ProtoGeometry.dll");
             // p = Point.Bycoordinates(10.0, 10.0, 10.0);
             // newPoint = p.Translate(1.0,2.0,3.0);
             // xval = newPoint.X;
@@ -729,7 +728,6 @@ namespace ProtoTest.LiveRunner
 
             //==============================================
             //
-            // import ("ProtoGeometry.dll");
             // p = Point.Bycoordinates(10.0, 10.0, 10.0);
             // newPoint = p.Translate(1.0,2.0,3.0);
             // xval = newPoint.X;
@@ -750,7 +748,6 @@ namespace ProtoTest.LiveRunner
 
             //==============================================
             //
-            // import ("ProtoGeometry.dll");
             // p = Point.Bycoordinates(10.0, 10.0, 10.0);
             // newPoint = p.Translate(1.0,2.0,3.0);
             // xval = newPoint.X;

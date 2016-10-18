@@ -943,44 +943,5 @@ d = DisposeTestClassD.count;
             thisTest.RunScriptSource(code, errorString);
             thisTest.Verify("d", 1);
         }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        public void T074_DG1465049()
-        {
-            string code = @"class Obj{    static s_dispose = 0;    mi : int;    constructor Obj(i:int)    {        mi = i;    }        def _Dispose()    {        s_dispose = s_dispose + 1;    }    def Translate(i)    {        newi = mi + i;        return = Obj.Obj(newi);    }}as = {Obj.Obj(2), Obj.Obj(3), Obj.Obj(5)};as[1] = as[1].Translate(100);as = null;__GC();d = Obj.s_dispose;";
-            thisTest.RunScriptSource(code);
-
-            // IT gc's the line where it calls translate when variable as is nullified
-            // It disposes 3 ssa temporaries and 1 element in the array 'as'
-            thisTest.Verify("d", 4);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        public void TestReferenceCountForMembers()
-        {
-            string code = @"a_dispose = 0;class AA{    def _Dispose()    {        a_dispose = a_dispose + 1;    }}class Obj{    as : AA[]..[];    constructor Obj()    {        [Imperative]        {            as = {AA.AA()};        }    }}[Associative]{    b = Obj.Obj();}__GC();";
-            thisTest.RunScriptSource(code, "");
-            thisTest.Verify("a_dispose", 1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        public void TestReferenceCountForStaticMembers()
-        {
-            string code = @"a_dispose = 0;class AA{    def _Dispose()    {        a_dispose = a_dispose + 1;    }}class BB{    static sas : AA[]..[];    constructor BB()    {        [Imperative]        {            sas[0] = {AA.AA()};        }    }}[Associative]{    b = BB.BB();    b.sas = null;}__GC();";
-            thisTest.RunScriptSource(code, "");
-            thisTest.Verify("a_dispose", 1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        public void TestReferenceCountForStaticMembers2()
-        {
-            string code = @"a_dispose = 0;class AA{    static x;    def _Dispose()    {        a_dispose = a_dispose + 1;    }}class BB{    sas : AA[]..[];    constructor BB()    {        [Imperative]        {            sas = {AA.AA()};            sas = {AA.AA()};        }    }}[Associative]{    b = BB.BB();    b.sas = null;}__GC();";
-            thisTest.RunScriptSource(code, "");
-            thisTest.Verify("a_dispose", 2);
-        }
     }
 }

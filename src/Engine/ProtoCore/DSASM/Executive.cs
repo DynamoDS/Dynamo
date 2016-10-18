@@ -3652,14 +3652,30 @@ namespace ProtoCore.DSASM
                     }
                     else
                     {
-                        opdata2 = StackValue.BuildInt(lhs % rhs);
+                        var intMod = lhs % rhs;
+
+                        // In order to follow the conventions of Java, Python, Scala and Google's calculator,
+                        // the returned modulo will follow the sign of the divisor (not the dividend). 
+
+                        if (intMod < 0 && rhs > 0 || intMod > 0 && rhs < 0)
+                        {
+                            intMod = intMod + rhs;
+                        }
+
+                        opdata2 = StackValue.BuildInt(intMod);
                     }
                 }
                 else
                 {
                     double lhs = opdata2.IsDouble ? opdata2.DoubleValue : opdata2.IntegerValue;
                     double rhs = opdata1.IsDouble ? opdata1.DoubleValue : opdata1.IntegerValue;
-                    opdata2 = StackValue.BuildDouble(lhs % rhs);
+                    var doubleMod = lhs % rhs;
+
+                    if (doubleMod < 0 && rhs > 0 || doubleMod > 0 && rhs < 0)
+                    {
+                        doubleMod = doubleMod + rhs;
+                    }
+                    opdata2 = StackValue.BuildDouble(doubleMod);
                 }
             }
             else

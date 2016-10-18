@@ -399,7 +399,7 @@ namespace ProtoCore.DSASM
             get
             {
                 Check(IsInteger, "The Type of StackValue is not Integer");
-                return (int)opdata;
+                return opdata;
             }
         }
 

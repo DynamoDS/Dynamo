@@ -304,19 +304,9 @@ namespace Dynamo.Graph.Nodes
 
             value = CodeBlockUtils.FormatUserText(value);
 
-            //Since an empty Code Block Node should not exist, this checks for such instances.
-            // If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
-            // an empty Code Block Node should not be recorded, this method also checks and removes
-            // any unwanted recordings
-            if (value == "")
-            {
-                Code = "";
-            }
-            else
-            {
-                if (!value.Equals(Code))
-                    SetCodeContent(value, workspaceElementResolver);
-            }
+            if (!value.Equals(Code))
+               SetCodeContent(value, workspaceElementResolver);
+
             return true;
         }
 
@@ -579,8 +569,6 @@ namespace Dynamo.Graph.Nodes
                             // Create a statement variable from the generated nodes
                             codeStatements.Add(Statement.CreateInstance(parsedNode));
                         }
-
-                        SetPreviewVariable(parseParam.ParsedNodes);
                     }
                 }
 
@@ -615,10 +603,15 @@ namespace Dynamo.Graph.Nodes
                 {
                     inputIdentifiers = new List<string>();
                     inputPortNames = new List<string>();
+
+                    var definedVariables = new HashSet<string>(CodeBlockUtils.GetStatementVariables(codeStatements, true).SelectMany(s => s));
                     foreach (var kvp in parseParam.UnboundIdentifiers)
                     {
-                        inputIdentifiers.Add(kvp.Value);
-                        inputPortNames.Add(kvp.Key);
+                        if (!definedVariables.Contains(kvp.Value))
+                        {
+                            inputIdentifiers.Add(kvp.Value);
+                            inputPortNames.Add(kvp.Key);
+                        }
                     }
                 }
                 else
@@ -626,6 +619,13 @@ namespace Dynamo.Graph.Nodes
                     inputIdentifiers.Clear();
                     inputPortNames.Clear();
                 }
+
+                // Set preview variable after gathering input identifiers. As a variable
+                // will be renamed only if it is not the preview variable and is either a
+                // variable defined in code block node or in on the right hand side of 
+                // expression as an input variable, a variable may not be renamed properly
+                // if SetPreviewVariable() is called before gathering input identifiers.
+                SetPreviewVariable(parseParam.ParsedNodes);
             }
             catch (Exception e)
             {
@@ -1241,7 +1241,13 @@ namespace Dynamo.Graph.Nodes
             if(leftNode is TypedIdentifierNode)
                 return new IdentifierNode(leftNode as IdentifierNode);
             if (leftNode is IdentifierNode)
-                return leftNode as IdentifierNode;
+            {
+                var identiferNode = leftNode as IdentifierNode;
+                if (identiferNode.ArrayDimensions != null)
+                    return null;
+                else
+                    return identiferNode;
+            }
             else if (leftNode is IdentifierListNode || leftNode is FunctionCallNode)
                 return null;
             else
@@ -1304,9 +1310,12 @@ namespace Dynamo.Graph.Nodes
                 //First get all the defined variables
                 while (parsedNode is BinaryExpressionNode)
                 {
-                    IdentifierNode assignedVar = GetDefinedIdentifier((parsedNode as BinaryExpressionNode).LeftNode);
+                    var binaryExpression = parsedNode as BinaryExpressionNode;
+                    IdentifierNode assignedVar = GetDefinedIdentifier(binaryExpression.LeftNode);
                     if (assignedVar != null)
+                    {
                         definedVariables.Add(new Variable(assignedVar));
+                    }
                     parsedNode = (parsedNode as BinaryExpressionNode).RightNode;
                 }
 
@@ -1382,7 +1391,7 @@ namespace Dynamo.Graph.Nodes
             if (identNode == null)
                 throw new ArgumentNullException();
 
-            Name = identNode.ToString();
+            Name = identNode.Name;
             Row = identNode.line;
             StartColumn = identNode.col;
         }

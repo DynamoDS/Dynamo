@@ -1678,7 +1678,7 @@ namespace Dynamo.Controls
             if (value == null)
                 return Resources.FilePathConverterNoFileSelected;
 
-            var str = WebUtility.UrlDecode(value.ToString());
+            var str = value.ToString();
 
             if (string.IsNullOrEmpty(str))
                 return Resources.FilePathConverterNoFileSelected;
@@ -1733,7 +1733,7 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return WebUtility.UrlEncode(value.ToString());
+            return value.ToString();
         }
     }
 
