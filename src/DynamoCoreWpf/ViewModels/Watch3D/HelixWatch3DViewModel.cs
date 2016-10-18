@@ -1314,7 +1314,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         
         /// <summary>
-        /// Remove the labels for geometry based on their paths
+        /// Remove the labels (in Watch3D View) for geometry once the Watch node is disconnected
         /// </summary>
         /// <param name="path"></param>
         public override void ClearPathLabel(string path)
