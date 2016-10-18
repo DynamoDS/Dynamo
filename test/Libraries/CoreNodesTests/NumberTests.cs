@@ -48,7 +48,7 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
-        public static void validateNumericPassesNonNumericInputs()
+        public static void validateNumericPassesOnNumericInputs()
         {
             var number = new DoubleInput();
 
