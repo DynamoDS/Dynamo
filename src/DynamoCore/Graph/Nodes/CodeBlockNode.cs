@@ -603,10 +603,15 @@ namespace Dynamo.Graph.Nodes
                 {
                     inputIdentifiers = new List<string>();
                     inputPortNames = new List<string>();
+
+                    var definedVariables = new HashSet<string>(CodeBlockUtils.GetStatementVariables(codeStatements, true).SelectMany(s => s));
                     foreach (var kvp in parseParam.UnboundIdentifiers)
                     {
-                        inputIdentifiers.Add(kvp.Value);
-                        inputPortNames.Add(kvp.Key);
+                        if (!definedVariables.Contains(kvp.Value))
+                        {
+                            inputIdentifiers.Add(kvp.Value);
+                            inputPortNames.Add(kvp.Key);
+                        }
                     }
                 }
                 else
@@ -1236,7 +1241,13 @@ namespace Dynamo.Graph.Nodes
             if(leftNode is TypedIdentifierNode)
                 return new IdentifierNode(leftNode as IdentifierNode);
             if (leftNode is IdentifierNode)
-                return leftNode as IdentifierNode;
+            {
+                var identiferNode = leftNode as IdentifierNode;
+                if (identiferNode.ArrayDimensions != null)
+                    return null;
+                else
+                    return identiferNode;
+            }
             else if (leftNode is IdentifierListNode || leftNode is FunctionCallNode)
                 return null;
             else
@@ -1304,16 +1315,6 @@ namespace Dynamo.Graph.Nodes
                     if (assignedVar != null)
                     {
                         definedVariables.Add(new Variable(assignedVar));
-
-                        // Handle case "a;" which is compiled to "t6BBA4B28C5E54CF89F300D510499A00E_x = a;"
-                        if (assignedVar.Name.StartsWith(ProtoCore.DSASM.Constants.kTempVarForNonAssignment) && binaryExpression.Optr == Operator.assign)
-                        {
-                            var rightNode = binaryExpression.RightNode as IdentifierNode;
-                            if (rightNode != null)
-                            {
-                                definedVariables.Add(new Variable(rightNode));
-                            }
-                        }
                     }
                     parsedNode = (parsedNode as BinaryExpressionNode).RightNode;
                 }
@@ -1390,7 +1391,7 @@ namespace Dynamo.Graph.Nodes
             if (identNode == null)
                 throw new ArgumentNullException();
 
-            Name = identNode.ToString();
+            Name = identNode.Name;
             Row = identNode.line;
             StartColumn = identNode.col;
         }
