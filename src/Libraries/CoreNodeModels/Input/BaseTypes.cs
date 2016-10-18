@@ -109,16 +109,16 @@ namespace CoreNodeModels.Input
         }
 
         //if the string can be parsed to a common numeric type return true
-        private bool validateInput(string value)
+        internal bool validateInput(string value)
         {
             bool canConvert = false;
 
             int intVal;
-            var canConvertInt = int.TryParse(value, out intVal);
+            var canConvertInt = int.TryParse(value,NumberStyles.Integer,CultureInfo.InvariantCulture, out intVal);
             double doubleVal;
-            var canConvertDouble = double.TryParse(value, out doubleVal);
+            var canConvertDouble = double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out doubleVal);
             long longVal;
-            var canConvertLong = long.TryParse(value, out longVal);
+            var canConvertLong = long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out longVal);
 
             canConvert = canConvertInt || canConvertDouble || canConvertLong;
 
