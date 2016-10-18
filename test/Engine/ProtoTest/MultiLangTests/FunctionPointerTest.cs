@@ -107,7 +107,6 @@ foo = 3;";
 
         [Test]
         [Category("Negative")]
-        [Category("Failure")]
         public void T14_NegativeTest_UsingFunctionNameInNonAssignBinaryExpr()
         {
             string code = @"
