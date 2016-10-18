@@ -750,71 +750,6 @@ b = foo ( a ) ;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("Update")]
-        [Category("Failure")]
-        public void T20_Defect_1461391_4()
-        {
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4085
-            string err = "MAGN-4085: Updating a class property using a class method from an imperative scope is not working now";
-            string code = @"
-import(""FFITarget.dll"");
-x = { 1, 2 };
-y1 = ClassFunctionality.ClassFunctionality(x);
-y2 = { y1[0].IntVal, y1[1].IntVal };
-[Imperative]
-{ 
-	for ( count in 0..1)
-	{
-	    temp = y1[count].Set(0);	
-	}
-}
-t1 = y2[0];
-t2 = y2[1];
-";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, err);
-            Object[] v = new Object[] { 0, 0 };
-            thisTest.Verify("y2", v);
-            thisTest.Verify("t1", 1);
-            thisTest.Verify("t2", 2);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("Update")]
-        [Category("Failure")]
-        public void T20_Defect_1461391_5()
-        {
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4086
-            string errmsg = "MAGN-4086: Update of class instance by updating its property is not propagating the proper update";
-            string code = @"
-import(""FFITarget.dll"");
-
-def foo ( a : ClassFunctionality) 
-{
-    return = a.IntVal;
-}
-x = { 1, 2 };
-y1 = ClassFunctionality.ClassFunctionality(x);
-y2 = foo ( y1);
-[Imperative]
-{ 
-	count = 0;
-	for ( i in y1)
-	{
-	    temp = y1[count].Set(0);	
-        count = count + 1;		
-	}
-}
-t1 = y2[0];
-t2 = y2[1];
-";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t1", 0);
-            thisTest.Verify("t2", 0);
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T20_Defect_1461391_6()
         {
@@ -1975,7 +1910,6 @@ z2 = z;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failure")]
         public void T51_Defect_1461388()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4094
@@ -3429,27 +3363,6 @@ a = 2;
             string errmsg = "1467532 - a variable used inside an inner associative within an imperative does not trigger update";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("SmokeTest")]
-        [Category("Failure")]
-        public void T74_TestUpdate_1467533()
-        {
-            String code = @"
-import(""FFITarget.dll"");
-a = ClassFunctionality.ClassFunctionality(17);
-t = a.IntVal;
-[Imperative]
-{
-    r = a.Set(41);
-}
-";
-            //Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4085
-            string errmsg = "MAGN-4085: when Property of class is modified using a method in Imperative, does not trigger update of the variable where it is used";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t", 41);
         }
 
         [Test]
