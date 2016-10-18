@@ -17,13 +17,6 @@ using ProtoCore.DSASM;
 
 namespace ProtoScript.Runners
 {
-    public enum EventStatus
-    {
-        OK,
-        Error,
-        Warning
-    }
-
     /// <summary>
     /// A subtree represents a node in graph. It contains a list of AST node.
     /// </summary>
