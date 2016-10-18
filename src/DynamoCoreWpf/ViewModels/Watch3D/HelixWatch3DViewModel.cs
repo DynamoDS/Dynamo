@@ -1297,11 +1297,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         .Where(pair => pair.Item1 == path || pair.Item1.StartsWith(path + ":")).ToList()).Any())
                 {
                     // If the nodesSelected Dictionary does not contain the current nodePath as a key,
-                    // or if the current value of the nodePath key is null or not the same as the current path
-                    // then, create new labels for the Watch3DView.
-                    // Else, allow the labels to be removed.
+                    // or if the current value of the nodePath key is not the same as the current path 
+                    // (which is currently being selected) then, create new label(s) for the Watch3DView.
+                    // Else, remove the label(s) in the Watch 3D View.
 
-                    if (!nodesSelected.ContainsKey(nodePath) || nodesSelected[nodePath] == null || nodesSelected[nodePath] != path)
+                    if (!nodesSelected.ContainsKey(nodePath) || nodesSelected[nodePath] != path)
                     {
                         // second, add requested labels
                         var textGeometry = HelixRenderPackage.InitText3D();
@@ -1325,10 +1325,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         nodesSelected[nodePath] = path;
                     }
 
-                    // if no node is being selected, that means the current node is being unselected.
+                    // if no node is being selected, that means the current node is being unselected
+                    // and no node within the parent node is currently selected.
                     else
                     {
-                        nodesSelected[nodePath] = null;
+                        nodesSelected.Remove(nodePath);
                     }
                 }
 

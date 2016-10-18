@@ -12,7 +12,7 @@ namespace Dynamo.Controls
     public partial class WatchTree : UserControl
     {
         private WatchViewModel _vm;
-        private WatchViewModel prevVM;
+        private WatchViewModel prevWatchViewModel;
 
         public WatchTree()
         {
@@ -66,21 +66,21 @@ namespace Dynamo.Controls
             if (tvi == null || node == null)
                 return;
 
-            // checks to see if the currently selected node is the same as the previous selected node
+            // checks to see if the node to be selected is the same as the currently selected node
             // if so, then de-select the currently selected node.
 
-            if (prevVM == null || node.Path != this.prevVM.Path)
+            if (node == prevWatchViewModel)
             {
-                this.prevVM = node;
-            }
-            else
-            {
-                this.prevVM = null;
+                this.prevWatchViewModel = null;
                 if (tvi.IsSelected)
                 {
                     tvi.IsSelected = false;
                     tvi.Focus();
                 }
+            }
+            else
+            {
+                this.prevWatchViewModel = node;
             }
 
             if (_vm.FindNodeForPathCommand.CanExecute(node.Path))
