@@ -28,7 +28,7 @@ namespace PythonNodeModels
 
         protected PythonNodeBase()
         {
-            OutPortData.Add(new PortData("OUT", Properties.Resources.PythonNodePortDataOutputToolTip));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("OUT", Properties.Resources.PythonNodePortDataOutputToolTip)));
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
@@ -95,8 +95,8 @@ namespace PythonNodeModels
                 + "OUT = 0";
 
             AddInput();
-
-            RegisterAllPorts();
+            ConfigureSnapEdges(InPorts);
+            ValidateConnections();
         }
 
         private string script;
@@ -146,7 +146,6 @@ namespace PythonNodeModels
             base.SerializeCore(element, context);
 
             XmlElement script = element.OwnerDocument.CreateElement("Script");
-            //script.InnerText = this.tb.Text;
             script.InnerText = this.script;
             element.AppendChild(script);
         }
@@ -191,7 +190,7 @@ namespace PythonNodeModels
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 1)
+            if (InPorts.Count > 1)
                 base.RemoveInput();
         }
 

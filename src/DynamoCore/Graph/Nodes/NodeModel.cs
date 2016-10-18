@@ -1554,9 +1554,12 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Configures the snap edges.
+        /// This class was made protected during refactoring for serialization. When
+        /// RegisterInputPorts and RegisterOutputPorts are finally removed, this method
+        /// should be called in a collection changed event handler on InPorts and OutPorts.
         /// </summary>
         /// <param name="ports">The ports.</param>
-        private static void ConfigureSnapEdges(IList<PortModel> ports)
+        protected static void ConfigureSnapEdges(IList<PortModel> ports)
         {
             switch (ports.Count)
             {
