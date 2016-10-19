@@ -474,15 +474,7 @@ namespace ProtoScript.Runners
                 }
 
                 // Build the nullify ASTs
-                var nullNodes = BuildNullAssignments(deletedBinaryExpressions);
-                foreach (AssociativeNode node in nullNodes)
-                {
-                    var bnode = node as BinaryExpressionNode;
-                    if (bnode != null)
-                    {
-                        bnode.guid = st.GUID;
-                    }
-                }
+                var nullNodes = BuildNullAssignments(deletedBinaryExpressions, st.GUID);
                 deltaAstList.AddRange(nullNodes);
 
                 core.BuildStatus.ClearWarningsForGraph(st.GUID);
@@ -583,7 +575,7 @@ namespace ProtoScript.Runners
         /// </summary>
         /// <param name="st"></param>
         /// <param name="modifiedASTList"></param>
-        private List<AssociativeNode> UpdateCachedASTList(Subtree st, List<AssociativeNode> modifiedASTList)
+        private void UpdateCachedASTList(Subtree st, List<AssociativeNode> modifiedASTList)
         {
             List<AssociativeNode> removedModifiedNodes = new List<AssociativeNode>();
 
@@ -607,17 +599,6 @@ namespace ProtoScript.Runners
                     core.BuildStatus.ClearWarningsForAst(removedAST.ID);
                     runtimeCore.RuntimeStatus.ClearWarningsForAst(removedAST.ID);
                 }
-
-                var nullNodes = BuildNullAssignments(csData.RemovedBinaryNodesFromModification);
-                foreach (AssociativeNode node in nullNodes)
-                {
-                    var bnode = node as BinaryExpressionNode;
-                    if (bnode != null)
-                    {
-                        bnode.guid = st.GUID;
-                    }
-                }
-                removedModifiedNodes.AddRange(nullNodes);
             }
 
             // Cache the modifed functions
@@ -673,8 +654,6 @@ namespace ProtoScript.Runners
                     currentSubTreeList[st.GUID] = st;
                 }
             }
-
-            return removedModifiedNodes;
         }
 
 
@@ -694,29 +673,68 @@ namespace ProtoScript.Runners
 
             for (int n = 0; n < modifiedSubTrees.Count(); ++n)
             {
-                if (modifiedSubTrees[n].AstNodes == null)
+                var modifiedSubTree = modifiedSubTrees[n];
+
+                if (modifiedSubTree.AstNodes == null)
                 {
                     continue;
                 }
 
-                // Get modified statements
-                var modifiedSubTree = modifiedSubTrees[n];
-                var modifiedASTList = GetModifiedNodes(modifiedSubTree);
-                modifiedSubTree.ModifiedAstNodes.Clear();
-                modifiedSubTree.ModifiedAstNodes.AddRange(modifiedASTList);
-                deltaAstList.AddRange(modifiedASTList);
-
-                foreach (AssociativeNode node in modifiedASTList)
+                if (modifiedSubTree.DeltaComputation)
                 {
-                    var bnode = node as BinaryExpressionNode;
-                    if (bnode != null)
-                    {
-                        bnode.guid = modifiedSubTrees[n].GUID;
-                    }
-                    SetNestedLanguageBlockASTGuids(modifiedSubTree.GUID, new List<ProtoCore.AST.Node>() { bnode });
-                }
+                    // Get modified statements
+                    var modifiedASTList = GetModifiedNodes(modifiedSubTree);
+                    modifiedSubTree.ModifiedAstNodes.Clear();
+                    modifiedSubTree.ModifiedAstNodes.AddRange(modifiedASTList);
+                    deltaAstList.AddRange(modifiedASTList);
 
-                deltaAstList.AddRange(UpdateCachedASTList(modifiedSubTree, modifiedSubTree.ModifiedAstNodes));
+                    foreach (AssociativeNode node in modifiedASTList)
+                    {
+                        var bnode = node as BinaryExpressionNode;
+                        if (bnode != null)
+                        {
+                            bnode.guid = modifiedSubTrees[n].GUID;
+                        }
+                        SetNestedLanguageBlockASTGuids(modifiedSubTree.GUID, new List<ProtoCore.AST.Node>() { bnode });
+                    }
+
+                    UpdateCachedASTList(modifiedSubTree, modifiedSubTree.ModifiedAstNodes);
+                }
+                else
+                {
+                    // No delta computation.
+                    Subtree oldSubTree;
+                    List<AssociativeNode> deletedExpressions = new List<AssociativeNode>();
+                    if (currentSubTreeList.TryGetValue(modifiedSubTree.GUID, out oldSubTree) && oldSubTree.AstNodes != null)
+                    {
+                        csData.DeletedFunctionDefASTNodes.AddRange(oldSubTree.AstNodes.Where(f => f is FunctionDefinitionNode));
+                        deletedExpressions.AddRange(oldSubTree.AstNodes);
+                        var nullNodes = BuildNullAssignments(deletedExpressions, modifiedSubTree.GUID);
+                        deltaAstList.AddRange(nullNodes);
+                    }
+                    currentSubTreeList.Remove(modifiedSubTree.GUID);
+
+                    core.BuildStatus.ClearWarningsForGraph(modifiedSubTree.GUID);
+                    runtimeCore.RuntimeStatus.ClearWarningsForGraph(modifiedSubTree.GUID);
+                    csData.DeletedBinaryExprASTNodes.AddRange(deletedExpressions);
+
+                    currentSubTreeList.Add(modifiedSubTree.GUID, modifiedSubTree);
+                    deltaAstList.AddRange(modifiedSubTree.AstNodes);
+
+                    foreach (AssociativeNode node in modifiedSubTree.AstNodes)
+                    {
+                        var bnode = node as BinaryExpressionNode;
+                        if (bnode != null)
+                        {
+                            bnode.guid = modifiedSubTree.GUID;
+                        }
+
+                        SetNestedLanguageBlockASTGuids(modifiedSubTree.GUID, new List<ProtoCore.AST.Node>() { bnode });
+                    }
+
+                    var modifiedFunctions = modifiedSubTree.AstNodes.Where(f => f is FunctionDefinitionNode);
+                    csData.ModifiedFunctions.AddRange(modifiedFunctions);
+                }
             }
 
             return deltaAstList;
@@ -816,15 +834,12 @@ namespace ProtoScript.Runners
             {
                 // Check if node exists in the prev AST list
                 bool nodeFound = false;
-                if (subtree.DeltaComputation)
+                foreach (AssociativeNode prevNode in st.AstNodes)
                 {
-                    foreach (AssociativeNode prevNode in st.AstNodes)
+                    if (prevNode.Equals(node))
                     {
-                        if (prevNode.Equals(node))
-                        {
-                            nodeFound = true;
-                            break;
-                        }
+                        nodeFound = true;
+                        break;
                     }
                 }
 
@@ -948,7 +963,7 @@ namespace ProtoScript.Runners
         /// </summary>
         /// <param name="astList"></param>
         /// <returns></returns>
-        private List<BinaryExpressionNode> BuildNullAssignments(List<AssociativeNode> astList)
+        private List<BinaryExpressionNode> BuildNullAssignments(List<AssociativeNode> astList, Guid guid)
         {
             var astNodeList = new List<BinaryExpressionNode>();
             if (astList == null)
@@ -959,10 +974,20 @@ namespace ProtoScript.Runners
             foreach (var node in astList)
             {
                 BinaryExpressionNode bNode = node as BinaryExpressionNode;
-                if (bNode != null)
+                if (bNode == null)
                 {
-                    astNodeList.Add(AstFactory.BuildAssignment(bNode.LeftNode, AstFactory.BuildNullNode()));
+                    continue;
                 }
+
+                IdentifierNode leftNode = bNode.LeftNode as IdentifierNode;
+                if (leftNode == null || leftNode.ArrayDimensions != null)
+                {
+                    continue;
+                }
+                
+                var nullAssignment = AstFactory.BuildAssignment(leftNode, AstFactory.BuildNullNode());
+                nullAssignment.guid = guid;
+                astNodeList.Add(nullAssignment);
             }
 
             return astNodeList;
