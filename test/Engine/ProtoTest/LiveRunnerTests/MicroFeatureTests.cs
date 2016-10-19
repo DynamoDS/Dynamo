@@ -5505,10 +5505,10 @@ a = p.UpdateCount;
             deleted.Add(subtree);
 
             var guid3 = Guid.NewGuid();
-            var code3 = "__GC();";
+            var code3 = "__GC();z = DisposeTracer.DisposeCount;";
             syncData = new GraphSyncData(deleted, new List<Subtree> { ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, code3)}, null);
             liveRunner.UpdateGraph(syncData);
-            AssertValue("y", 1);
+            AssertValue("z", 1);
         }
 
         [Test]
