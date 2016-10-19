@@ -254,7 +254,7 @@ b = c[w][x][y][z];";
             // After code changes, there should be two output ports.
             UpdateCodeBlockNodeContent(codeBlockNode, "a = 1..6;\na[2]=a[2] + 1;");
             Assert.AreEqual(0, codeBlockNode.InPortData.Count);
-            Assert.AreEqual(2, codeBlockNode.OutPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
         }
 
         [Test]
