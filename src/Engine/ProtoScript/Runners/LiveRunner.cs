@@ -226,6 +226,7 @@ namespace ProtoScript.Runners
         {
             DeactivateGraphnodes(changeSet.DeletedBinaryExprASTNodes);
             UndefineFunctions(changeSet.DeletedFunctionDefASTNodes);
+            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(runtimeCore, changeSet.DeletedFunctionDefASTNodes);
         }
 
         private void ApplyChangeSetModified(ChangeSetData changeSet)
