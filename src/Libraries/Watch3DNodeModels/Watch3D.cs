@@ -13,6 +13,7 @@ using Dynamo.Visualization;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
 using Watch3DNodeModels.Properties;
+using Newtonsoft.Json;
 
 namespace Watch3DNodeModels
 {
@@ -127,6 +128,16 @@ namespace Watch3DNodeModels
         public delegate void VoidHandler();
 
         #region constructors
+
+        [JsonConstructor]
+        private Watch3D(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+            WatchWidth = 200;
+            WatchHeight = 200;
+            ShouldDisplayPreviewCore = false;
+            Camera = new Watch3DCamera();
+        }
 
         public Watch3D()
         {

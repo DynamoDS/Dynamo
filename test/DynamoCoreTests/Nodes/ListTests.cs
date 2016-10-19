@@ -2249,7 +2249,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Regression")]
+        [Category("RegressionTests")]
         public void TestListChop()
         {
             string openPath = Path.Combine(TestDirectory, @"core\list\testListChop.dyn");

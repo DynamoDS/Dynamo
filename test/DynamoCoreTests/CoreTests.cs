@@ -15,7 +15,9 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Newtonsoft.Json;
 using NUnit.Framework;
+using ProtoCore.DSASM;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
@@ -132,7 +134,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Slow")]
         public void CanAdd100NodesToClipboard()
         {
             int numNodes = 100;
@@ -219,7 +221,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Slow")]
         public void CanAdd100NodesToClipboardAndPaste()
         {
             int numNodes = 100;
@@ -304,7 +306,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("Slow")]
         public void CanAdd100NodesToClipboardAndPaste3Times()
         {
             int numNodes = 100;
@@ -850,9 +852,6 @@ namespace Dynamo.Tests
             {
                 Assert.IsTrue(node.UpstreamCache.SetEquals(node.AllUpstreamNodes(new List<NodeModel>())));
             }
-
-
-
         }
     }
 }

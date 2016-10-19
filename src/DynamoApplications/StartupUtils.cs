@@ -93,16 +93,20 @@ namespace Dynamo.Applications
                 //
                 var verbose = string.Empty;
 
+                var convertFile = false;
+
                 bool showHelp = false;
                 var optionsSet = new OptionSet().Add("o=|O=", "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
-                .Add("c=|C=", "CommandFilePath, Instruct Dynamo to open a commandfile and run the commands it contains at this path,"+ 
+                .Add("c=|C=", "CommandFilePath, Instruct Dynamo to open a commandfile and run the commands it contains at this path," +
                 "this option is only supported when run from DynamoSandbox", c => commandFilePath = c)
-                .Add("l=|L=", "Running Dynamo under a different locale setting",l => locale = l)
+                .Add("l=|L=", "Running Dynamo under a different locale setting", l => locale = l)
                 .Add("p=|P=", "PresetFile, Instruct Dynamo to import the presets at this path into the opened .dyn", p => presetFile = p)
                 .Add("s=|S=", "PresetStateID, Instruct Dynamo to set the graph to the specified preset by name," +
                 "this can be set to a statename or 'all', which will evaluate all states in the dyn", s => presetStateid = s)
                 .Add("v=|V=", "Verbose, Instruct Dynamo to output all evalautions it performs to an xml file at this path", v => verbose = v)
-                .Add("h|H|help", "Get some help", h => showHelp = h!=null);
+                .Add("x|X", "When used in combination with the 'O' flag, opens a .dyn file from the specified path and converts it to .json." + 
+                "File will have the .json extension and be located in the same directory as the original file.", x => convertFile = x != null)
+                .Add("h|H|help", "Get some help", h => showHelp = h != null);
 
                 optionsSet.Parse(args);
 
@@ -124,6 +128,7 @@ namespace Dynamo.Applications
                     PresetStateID = presetStateid,
                     PresetFilePath = presetFile,
                     Verbose = verbose,
+                    ConvertFile = convertFile
                 };
             }
 
@@ -140,6 +145,8 @@ namespace Dynamo.Applications
             public string PresetStateID { get; set; }
             public string PresetFilePath { get; set; }
             public string Verbose { get; set; }
+            
+            public bool ConvertFile { get; set; }
         }
 
         public static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)

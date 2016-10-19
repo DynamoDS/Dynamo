@@ -291,7 +291,7 @@ namespace Dynamo.Engine
             get { return !String.IsNullOrEmpty(Summary) ? Summary : string.Empty; }
         }
 
-        private IEnumerable<Tuple<string, string>> returns; 
+        private IEnumerable<Tuple<string, string>> returns;
 
         /// <summary>
         ///     If the XML documentation for the function includes a returns field,

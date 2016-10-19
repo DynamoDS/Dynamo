@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 using Autodesk.DesignScript.Runtime;
@@ -11,16 +9,26 @@ using Autodesk.DesignScript.Runtime;
 using DSIronPython;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
 using ProtoCore.AST.AssociativeAST;
+using Newtonsoft.Json;
 
 namespace PythonNodeModels
 {
     public abstract class PythonNodeBase : VariableInputNode
     {
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        protected PythonNodeBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base( inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
         protected PythonNodeBase()
         {
-            OutPortData.Add(new PortData("OUT", Properties.Resources.PythonNodePortDataOutputToolTip));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("OUT", Properties.Resources.PythonNodePortDataOutputToolTip)));
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
@@ -69,6 +77,14 @@ namespace PythonNodeModels
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
     {
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        [JsonConstructor]
+        private PythonNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
         public PythonNode()
         {
             script = "import clr\nclr.AddReference('ProtoGeometry')\n"
@@ -79,8 +95,8 @@ namespace PythonNodeModels
                 + "OUT = 0";
 
             AddInput();
-
-            RegisterAllPorts();
+            ConfigureSnapEdges(InPorts);
+            ValidateConnections();
         }
 
         private string script;
@@ -130,7 +146,6 @@ namespace PythonNodeModels
             base.SerializeCore(element, context);
 
             XmlElement script = element.OwnerDocument.CreateElement("Script");
-            //script.InnerText = this.tb.Text;
             script.InnerText = this.script;
             element.AppendChild(script);
         }
@@ -158,6 +173,14 @@ namespace PythonNodeModels
     [IsDesignScriptCompatible]
     public sealed class PythonStringNode : PythonNodeBase
     {
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        [JsonConstructor]
+        private PythonStringNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
         public PythonStringNode()
         {
             InPortData.Add(new PortData("script", Properties.Resources.PythonStringPortDataScriptToolTip));
@@ -167,7 +190,7 @@ namespace PythonNodeModels
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 1)
+            if (InPorts.Count > 1)
                 base.RemoveInput();
         }
 

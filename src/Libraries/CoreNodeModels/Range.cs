@@ -5,6 +5,7 @@ using ProtoCore.AST.AssociativeAST;
 using System.Collections.Generic;
 using Dynamo.Graph.Nodes;
 using ProtoCore.DSASM;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -19,6 +20,12 @@ namespace CoreNodeModels
         private readonly IntNode startPortDefaultValue = new IntNode(0);
         private readonly IntNode endPortDefaultValue = new IntNode(9);
         private readonly IntNode stepPortDefaultValue = new IntNode(1);
+
+        [JsonConstructor]
+        private Range(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Shortest;
+        }
 
         public Range()
         {
@@ -92,6 +99,12 @@ namespace CoreNodeModels
         private readonly IntNode startPortDefaultValue = new IntNode(0);
         private readonly IntNode amountPortDefaultValue = new IntNode(10);
         private readonly IntNode stepPortDefaultValue = new IntNode(1);
+
+        [JsonConstructor]
+        private Sequence(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Shortest;
+        }
 
         public Sequence()
         {

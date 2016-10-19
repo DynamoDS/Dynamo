@@ -23,6 +23,7 @@ using Dynamo.Wpf;
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
 using UnitsUI.Properties;
+using Newtonsoft.Json;
 
 namespace UnitsUI
 {
@@ -113,6 +114,7 @@ namespace UnitsUI
 
     public abstract class MeasurementInputBase : NodeModel
     {
+        [JsonIgnore]
         public SIUnit Measure { get; protected set; }
         
         public double Value
@@ -127,6 +129,10 @@ namespace UnitsUI
                 RaisePropertyChanged("Value");
             }
         }
+
+        public MeasurementInputBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) { }
+
+        public MeasurementInputBase() : base() { }
 
         internal void ForceValueRaisePropertyChanged()
         {
@@ -205,7 +211,13 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class LengthFromString : MeasurementInputBase
     {
-        public LengthFromString()
+        [JsonConstructor]
+        private LengthFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        {
+            Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
+        }
+
+        public LengthFromString():base()
         {
             Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
 
@@ -266,6 +278,13 @@ namespace UnitsUI
     [NodeDeprecated]
     public class AreaFromString : MeasurementInputBase
     {
+        [JsonConstructor]
+        private AreaFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        {
+            Measure = Area.FromDouble(0.0, AreaUnit.SquareMeter);
+            Warning("AreaFromString is obsolete.", true);
+        }
+
         public AreaFromString()
         {
             Measure = Area.FromDouble(0.0, AreaUnit.SquareMeter);
@@ -299,6 +318,13 @@ namespace UnitsUI
     [NodeDeprecated]
     public class VolumeFromString : MeasurementInputBase
     {
+        [JsonConstructor]
+        private VolumeFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        {
+            Measure = Volume.FromDouble(0.0, VolumeUnit.CubicMeter);
+            Warning("AreaFromString is obsolete.", true);
+        }
+
         public VolumeFromString()
         {
             Measure = Volume.FromDouble(0.0, VolumeUnit.CubicMeter);

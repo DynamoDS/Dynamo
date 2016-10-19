@@ -4,6 +4,8 @@ using Autodesk.DesignScript.Runtime;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
+using Dynamo.Utilities;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.HigherOrder
 {
@@ -15,6 +17,9 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.Map", "DSCoreNodesUI.HigherOrder.Map")]
     public class Map : NodeModel
     {
+        [JsonConstructor]
+        private Map(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
         public Map()
         {
             InPortData.Add(new PortData("list", Resources.MapPortDataListToolTip));
@@ -46,6 +51,12 @@ namespace CoreNodeModels.HigherOrder
     {
         private readonly int minPorts;
 
+        protected CombinatorNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
+        {
+            InPorts.AddRange(inPorts);
+            OutPorts.AddRange(outPorts);
+        }
+
         protected CombinatorNode() : this(3)
         {
             InPortData.Add(new PortData("comb", Resources.CombinatorPortDataCombToolTip));
@@ -74,7 +85,7 @@ namespace CoreNodeModels.HigherOrder
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > minPorts)
+            if (InPorts.Count > minPorts)
                 base.RemoveInput();
         }
     }
@@ -87,6 +98,11 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.Combine", "DSCoreNodesUI.HigherOrder.Combine")]
     public class Combine : CombinatorNode
     {
+        [JsonConstructor]
+        private Combine(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) { }
+
+        public Combine() : base() { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
@@ -113,6 +129,9 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.ForEach", "DSCoreNodesUI.HigherOrder.ForEach")]
     public class ForEach : CombinatorNode
     {
+        [JsonConstructor]
+        private ForEach(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) { }
+  
         public ForEach() : base(2) { }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -141,6 +160,11 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.LaceShortest", "DSCoreNodesUI.HigherOrder.LaceShortest")]
     public class LaceShortest : CombinatorNode
     {
+        [JsonConstructor]
+        private LaceShortest(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
+
+        public LaceShortest() : base() { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
@@ -167,6 +191,11 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.LaceLongest", "DSCoreNodesUI.HigherOrder.LaceLongest")]
     public class LaceLongest : CombinatorNode
     {
+        [JsonConstructor]
+        private LaceLongest(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
+
+        public LaceLongest() : base() { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
@@ -194,6 +223,11 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.CartesianProduct", "DSCoreNodesUI.HigherOrder.CartesianProduct")]
     public class CartesianProduct : CombinatorNode
     {
+        [JsonConstructor]
+        private CartesianProduct(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
+
+        public CartesianProduct() : base() { }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
@@ -211,68 +245,6 @@ namespace CoreNodeModels.HigherOrder
         }
     }
 
-    /*
-    [NodeName("True For Any")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
-    [NodeDescription("Tests to see if any elements in a sequence satisfy the given predicate.")]
-    [IsDesignScriptCompatible]
-    public class TrueForAny : NodeModel
-    {
-        public TrueForAny()
-        {
-            InPortData.Add(new PortData("list", "The list to test."));
-            InPortData.Add(new PortData("p(x)", "The predicate used to test elements"));
-
-            OutPortData.Add(new PortData("any?", "Whether or not any elements satisfy the given predicate."));
-
-            RegisterAllPorts();
-        }
-
-        public override IEnumerable<AssociativeNode> BuildOutputAst(
-            List<AssociativeNode> inputAstNodes)
-        {
-            return new[]
-            {
-                AstFactory.BuildAssignment(
-                    GetAstIdentifierForOutputIndex(0),
-                    AstFactory.BuildFunctionCall(
-                        "TrueForAny",
-                        (inputAstNodes as IEnumerable<AssociativeNode>).Reverse().ToList()))
-            };
-        }
-    }
-
-    [NodeName("True For All")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
-    [NodeDescription("Tests to see if all elements in a sequence satisfy the given predicate.")]
-    [IsDesignScriptCompatible]
-    public class TrueForAll : NodeModel
-    {
-        public TrueForAll()
-        {
-            InPortData.Add(new PortData("list", "The list to test."));
-            InPortData.Add(new PortData("p(x)", "The predicate used to test items"));
-
-            OutPortData.Add(new PortData("all?", "Whether or not all items satisfy the given predicate."));
-
-            RegisterAllPorts();
-        }
-
-        public override IEnumerable<AssociativeNode> BuildOutputAst(
-            List<AssociativeNode> inputAstNodes)
-        {
-            return new[]
-            {
-                AstFactory.BuildAssignment(
-                    GetAstIdentifierForOutputIndex(0),
-                    AstFactory.BuildFunctionCall(
-                        "TrueForAll",
-                        (inputAstNodes as IEnumerable<AssociativeNode>).Reverse().ToList()))
-            };
-        }
-    }
-    */
-
     [NodeName("List.Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ListReduceDescription", typeof(Resources))]
@@ -282,6 +254,9 @@ namespace CoreNodeModels.HigherOrder
     public class Reduce : VariableInputNode
     {
         private readonly PortData reductorPort;
+
+        [JsonConstructor]
+        private Reduce(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
 
         public Reduce()
         {
@@ -296,33 +271,31 @@ namespace CoreNodeModels.HigherOrder
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 3)
+            if (InPorts.Count > 3)
             {
                 base.RemoveInput();
-                //UpdateReductorPort();
             }
         }
 
         protected override void AddInput()
         {
             base.AddInput();
-            //UpdateReductorPort();
         }
 
         private void UpdateReductorPort()
         {
-            if (InPortData.Count > 6) 
+            if (InPorts.Count > 6) 
                 reductorPort.NickName = "f(x1, x2, ... xN, a)";
             else
             {
-                if (InPortData.Count == 3) 
+                if (InPorts.Count == 3) 
                     reductorPort.NickName = "f(x, a)";
                 else
                 {
                     reductorPort.NickName = "f("
                         + string.Join(
                             ", ",
-                            Enumerable.Range(0, InPortData.Count - 2).Select(x => "x" + (x + 1)))
+                            Enumerable.Range(0, InPorts.Count - 2).Select(x => "x" + (x + 1)))
                         + ", a)";
                 }
             }
@@ -341,7 +314,7 @@ namespace CoreNodeModels.HigherOrder
 
         protected override int GetInputIndex()
         {
-            return InPortData.Count - 1;
+            return InPorts.Count - 1;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -372,6 +345,9 @@ namespace CoreNodeModels.HigherOrder
     {
         private readonly PortData reductorPort;
 
+        [JsonConstructor]
+        private ScanList(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
         public ScanList()
         {
             InPortData.Add(new PortData("reductor", Resources.ScanPortDataReductorToolTip));
@@ -385,33 +361,31 @@ namespace CoreNodeModels.HigherOrder
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 3)
+            if (InPorts.Count > 3)
             {
                 base.RemoveInput();
-                //UpdateReductorPort();
             }
         }
 
         protected override void AddInput()
         {
             base.AddInput();
-            //UpdateReductorPort();
         }
 
         private void UpdateReductorPort()
         {
-            if (InPortData.Count > 6)
+            if (InPorts.Count > 6)
                 reductorPort.NickName = "f(x1, x2, ... xN, a)";
             else
             {
-                if (InPortData.Count == 3)
+                if (InPorts.Count == 3)
                     reductorPort.NickName = "f(x, a)";
                 else
                 {
                     reductorPort.NickName = "f("
                         + string.Join(
                             ", ",
-                            Enumerable.Range(0, InPortData.Count - 2).Select(x => "x" + (x + 1)))
+                            Enumerable.Range(0, InPorts.Count - 2).Select(x => "x" + (x + 1)))
                         + ", a)";
                 }
             }
@@ -430,7 +404,7 @@ namespace CoreNodeModels.HigherOrder
 
         protected override int GetInputIndex()
         {
-            return InPortData.Count - 1;
+            return InPorts.Count - 1;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -459,6 +433,9 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.Filter", "DSCoreNodesUI.HigherOrder.Filter")]
     public class Filter : NodeModel
     {
+        [JsonConstructor]
+        private Filter(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
         public Filter()
         {
             InPortData.Add(new PortData("list", Resources.FilterPortDataListToolTip));
@@ -503,6 +480,9 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCore.Replace", "DSCoreNodesUI.HigherOrder.Replace")]
     public class Replace : NodeModel
     {
+        [JsonConstructor]
+        private Replace(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
         public Replace()
         {
             InPortData.Add(new PortData("item", Resources.ReplacePortDataItemToolTip));
