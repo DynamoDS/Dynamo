@@ -707,7 +707,7 @@ namespace ProtoScript.Runners
                     List<AssociativeNode> deletedExpressions = new List<AssociativeNode>();
                     if (currentSubTreeList.TryGetValue(modifiedSubTree.GUID, out oldSubTree) && oldSubTree.AstNodes != null)
                     {
-                        csData.DeletedFunctionDefASTNodes.AddRange(oldSubTree.AstNodes.Where(f => f is FunctionDefinitionNode));
+                        csData.RemovedFunctionDefNodesFromModification.AddRange(oldSubTree.AstNodes.Where(f => f is FunctionDefinitionNode));
                         deletedExpressions.AddRange(oldSubTree.AstNodes);
                         var nullNodes = BuildNullAssignments(deletedExpressions, modifiedSubTree.GUID);
                         deltaAstList.AddRange(nullNodes);
