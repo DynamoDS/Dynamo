@@ -432,63 +432,64 @@ namespace ProtoScript.Runners
         private IEnumerable<AssociativeNode> GetDeltaAstListDeleted(IEnumerable<Subtree> deletedSubTrees)
         {
             var deltaAstList = new List<AssociativeNode>();
-
             csData.DeletedBinaryExprASTNodes = new List<AssociativeNode>();
             csData.DeletedFunctionDefASTNodes = new List<AssociativeNode>();
 
-            if (deletedSubTrees != null)
+            if (deletedSubTrees == null || !deletedSubTrees.Any())
             {
-                foreach (var st in deletedSubTrees)
-                {
-                    var deletedBinaryExpressions = new List<AssociativeNode>();
-
-                    if (st.AstNodes != null && st.AstNodes.Count > 0)
-                    {
-                        deletedBinaryExpressions.AddRange(st.AstNodes);
-                    }
-                    else
-                    {
-                        // Handle the case where only the GUID of the deleted subtree was provided
-                        // Get the cached subtree that is now being deleted
-                        Subtree removeSubTree = new Subtree();
-                        if (currentSubTreeList.TryGetValue(st.GUID, out removeSubTree))
-                        {
-                            if (removeSubTree.AstNodes != null)
-                            {
-                                deletedBinaryExpressions.AddRange(removeSubTree.AstNodes);
-                            }
-                        }
-                    }
-
-                    // Cache removed function definitions
-                    Subtree oldSubTree;
-                    if (currentSubTreeList.TryGetValue(st.GUID, out oldSubTree))
-                    {
-                        if (oldSubTree.AstNodes != null)
-                        {
-                            csData.DeletedFunctionDefASTNodes.AddRange(oldSubTree.AstNodes.Where(n => n is FunctionDefinitionNode));
-                        }
-                        currentSubTreeList.Remove(st.GUID);
-                    }
-
-                    // Build the nullify ASTs
-                    var nullNodes = BuildNullAssignments(deletedBinaryExpressions);
-                    foreach (AssociativeNode node in nullNodes)
-                    {
-                        var bnode = node as BinaryExpressionNode;
-                        if (bnode != null)
-                        {
-                            bnode.guid = st.GUID;
-                        }
-                    }
-                    deltaAstList.AddRange(nullNodes);
-
-                    core.BuildStatus.ClearWarningsForGraph(st.GUID);
-
-                    runtimeCore.RuntimeStatus.ClearWarningsForGraph(st.GUID);
-                    csData.DeletedBinaryExprASTNodes.AddRange(deletedBinaryExpressions);
-                }
+                return deltaAstList;
             }
+
+            foreach (var st in deletedSubTrees)
+            {
+                var deletedBinaryExpressions = new List<AssociativeNode>();
+
+                if (st.AstNodes != null && st.AstNodes.Any())
+                {
+                    deletedBinaryExpressions.AddRange(st.AstNodes);
+                }
+                else
+                {
+                    // Handle the case where only the GUID of the deleted subtree was provided
+                    // Get the cached subtree that is now being deleted
+                    Subtree removeSubTree = new Subtree();
+                    if (currentSubTreeList.TryGetValue(st.GUID, out removeSubTree))
+                    {
+                        if (removeSubTree.AstNodes != null)
+                        {
+                            deletedBinaryExpressions.AddRange(removeSubTree.AstNodes);
+                        }
+                    }
+                }
+
+                // Cache removed function definitions
+                Subtree oldSubTree;
+                if (currentSubTreeList.TryGetValue(st.GUID, out oldSubTree))
+                {
+                    if (oldSubTree.AstNodes != null)
+                    {
+                        csData.DeletedFunctionDefASTNodes.AddRange(oldSubTree.AstNodes.Where(n => n is FunctionDefinitionNode));
+                    }
+                    currentSubTreeList.Remove(st.GUID);
+                }
+
+                // Build the nullify ASTs
+                var nullNodes = BuildNullAssignments(deletedBinaryExpressions);
+                foreach (AssociativeNode node in nullNodes)
+                {
+                    var bnode = node as BinaryExpressionNode;
+                    if (bnode != null)
+                    {
+                        bnode.guid = st.GUID;
+                    }
+                }
+                deltaAstList.AddRange(nullNodes);
+
+                core.BuildStatus.ClearWarningsForGraph(st.GUID);
+                runtimeCore.RuntimeStatus.ClearWarningsForGraph(st.GUID);
+                csData.DeletedBinaryExprASTNodes.AddRange(deletedBinaryExpressions);
+            }
+
             return deltaAstList;
         }
 
@@ -577,30 +578,15 @@ namespace ProtoScript.Runners
             }
         }
 
-        public void UpdateCachedASTFromSubtrees(List<Subtree> modifiedSubTrees)
-        {
-            if (modifiedSubTrees != null)
-            {
-                for (int n = 0; n < modifiedSubTrees.Count(); ++n)
-                {
-                    Subtree subtree = modifiedSubTrees[n];
-                    if (subtree.AstNodes == null)
-                    {
-                        continue;
-                    }
-
-                    UpdateCachedASTList(subtree, subtree.ModifiedAstNodes);
-                }
-            }
-        }
-
         /// <summary>
         /// Update the cached ASTs in the subtree given the modified ASTs
         /// </summary>
         /// <param name="st"></param>
         /// <param name="modifiedASTList"></param>
-        private void UpdateCachedASTList(Subtree st, List<AssociativeNode> modifiedASTList)
+        private List<AssociativeNode> UpdateCachedASTList(Subtree st, List<AssociativeNode> modifiedASTList)
         {
+            List<AssociativeNode> removedModifiedNodes = new List<AssociativeNode>();
+
             // Disable removed nodes from the cache
             Subtree oldSubTree;
             bool cachedTreeExists = currentSubTreeList.TryGetValue(st.GUID, out oldSubTree);
@@ -621,6 +607,17 @@ namespace ProtoScript.Runners
                     core.BuildStatus.ClearWarningsForAst(removedAST.ID);
                     runtimeCore.RuntimeStatus.ClearWarningsForAst(removedAST.ID);
                 }
+
+                var nullNodes = BuildNullAssignments(csData.RemovedBinaryNodesFromModification);
+                foreach (AssociativeNode node in nullNodes)
+                {
+                    var bnode = node as BinaryExpressionNode;
+                    if (bnode != null)
+                    {
+                        bnode.guid = st.GUID;
+                    }
+                }
+                removedModifiedNodes.AddRange(nullNodes);
             }
 
             // Cache the modifed functions
@@ -676,6 +673,8 @@ namespace ProtoScript.Runners
                     currentSubTreeList[st.GUID] = st;
                 }
             }
+
+            return removedModifiedNodes;
         }
 
 
@@ -701,9 +700,10 @@ namespace ProtoScript.Runners
                 }
 
                 // Get modified statements
-                var modifiedASTList = GetModifiedNodes(modifiedSubTrees[n]);
-                modifiedSubTrees[n].ModifiedAstNodes.Clear();
-                modifiedSubTrees[n].ModifiedAstNodes.AddRange(modifiedASTList);
+                var modifiedSubTree = modifiedSubTrees[n];
+                var modifiedASTList = GetModifiedNodes(modifiedSubTree);
+                modifiedSubTree.ModifiedAstNodes.Clear();
+                modifiedSubTree.ModifiedAstNodes.AddRange(modifiedASTList);
                 deltaAstList.AddRange(modifiedASTList);
 
                 foreach (AssociativeNode node in modifiedASTList)
@@ -713,9 +713,12 @@ namespace ProtoScript.Runners
                     {
                         bnode.guid = modifiedSubTrees[n].GUID;
                     }
-                    SetNestedLanguageBlockASTGuids(modifiedSubTrees[n].GUID, new List<ProtoCore.AST.Node>() { bnode });
+                    SetNestedLanguageBlockASTGuids(modifiedSubTree.GUID, new List<ProtoCore.AST.Node>() { bnode });
                 }
+
+                deltaAstList.AddRange(UpdateCachedASTList(modifiedSubTree, modifiedSubTree.ModifiedAstNodes));
             }
+
             return deltaAstList;
         }
 
@@ -723,11 +726,18 @@ namespace ProtoScript.Runners
         public List<AssociativeNode> GetDeltaASTList(GraphSyncData syncData)
         {
             csData = new ChangeSetData();
-            List<AssociativeNode> finalDeltaAstList = new List<AssociativeNode>();
-            finalDeltaAstList.AddRange(GetDeltaAstListDeleted(syncData.DeletedSubtrees));
-            finalDeltaAstList.AddRange(GetDeltaAstListAdded(syncData.AddedSubtrees));
-            finalDeltaAstList.AddRange(GetDeltaAstListModified(syncData.ModifiedSubtrees));
-            csData.ContainsDeltaAST = finalDeltaAstList.Count > 0;
+            var finalDeltaAstList = new List<AssociativeNode>();
+
+            var deletedDeltaAsts = GetDeltaAstListDeleted(syncData.DeletedSubtrees);
+            finalDeltaAstList.AddRange(deletedDeltaAsts);
+
+            var addedDeltaAsts = GetDeltaAstListAdded(syncData.AddedSubtrees);
+            finalDeltaAstList.AddRange(addedDeltaAsts);
+
+            var modifiedDeltaAsts = GetDeltaAstListModified(syncData.ModifiedSubtrees);
+            finalDeltaAstList.AddRange(modifiedDeltaAsts);
+
+            csData.ContainsDeltaAST = finalDeltaAstList.Any();
             return finalDeltaAstList;
         }
 
@@ -938,21 +948,23 @@ namespace ProtoScript.Runners
         /// </summary>
         /// <param name="astList"></param>
         /// <returns></returns>
-        private List<AssociativeNode> BuildNullAssignments(List<AssociativeNode> astList)
+        private List<BinaryExpressionNode> BuildNullAssignments(List<AssociativeNode> astList)
         {
-            var astNodeList = new List<AssociativeNode>();
-            if (null != astList)
+            var astNodeList = new List<BinaryExpressionNode>();
+            if (astList == null)
             {
-                foreach (var node in astList)
+                return astNodeList;
+            }
+
+            foreach (var node in astList)
+            {
+                BinaryExpressionNode bNode = node as BinaryExpressionNode;
+                if (bNode != null)
                 {
-                    BinaryExpressionNode bNode = node as BinaryExpressionNode;
-                    if (bNode != null)
-                    {
-                        BinaryExpressionNode newBNode = new BinaryExpressionNode(bNode.LeftNode, new NullNode(), ProtoCore.DSASM.Operator.assign);
-                        astNodeList.Add(newBNode);
-                    }
+                    astNodeList.Add(AstFactory.BuildAssignment(bNode.LeftNode, AstFactory.BuildNullNode()));
                 }
             }
+
             return astNodeList;
         }
     }
@@ -1019,16 +1031,6 @@ namespace ProtoScript.Runners
                 {
                     return searchDirectories;
                 }
-            }
-
-            /// <summary>
-            /// If the Interpreter mode is true, the LiveRunner takes in code 
-            /// statements as input strings and not SyncData
-            /// </summary>
-            public bool InterpreterMode
-            {
-                get;
-                set;
             }
 
             public Configuration()
@@ -1436,7 +1438,6 @@ namespace ProtoScript.Runners
 
             // Get AST list that need to be executed
             var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
-            changeSetComputer.UpdateCachedASTFromSubtrees(syncData.ModifiedSubtrees);
 
             // Prior to execution, apply state modifications to the VM given the delta AST's
             bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
