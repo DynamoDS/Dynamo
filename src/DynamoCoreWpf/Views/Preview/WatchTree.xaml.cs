@@ -49,15 +49,28 @@ namespace Dynamo.Controls
 
             e.Handled = true; 
         }
+
         private void treeviewItem_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Up || e.Key == System.Windows.Input.Key.Down)
+            if (prevWatchViewModel != null)
             {
-                TreeViewItem tvi = sender as TreeViewItem;
-                var node = tvi.DataContext as WatchViewModel;
+                if (e.Key == System.Windows.Input.Key.Up || e.Key == System.Windows.Input.Key.Down)
+                {
+                    TreeViewItem tvi = sender as TreeViewItem;
+                    var node = tvi.DataContext as WatchViewModel;
+                    
+                    // checks to see if the currently selected WatchViewModel is the top most item in the tree
+                    // if so, prevent the user from using the up arrow.
 
-                HandleItemChanged(tvi, node);
+                    // also if the current selected node is equal to the previous selected node, do not execute the change.
+
+                    if (!(e.Key == System.Windows.Input.Key.Up && prevWatchViewModel.IsTopLevel) && node != prevWatchViewModel)
+                    {
+                        HandleItemChanged(tvi, node);
+                    }
+                }
             }
+
             e.Handled = true;
         }
 
