@@ -972,9 +972,10 @@ namespace ProtoScript.Runners
                 return astNodeList;
             }
 
-            foreach (var node in astList)
+            Stack<AssociativeNode> workingStack = new Stack<AssociativeNode>(astList);
+            while (workingStack.Any())
             {
-                BinaryExpressionNode bNode = node as BinaryExpressionNode;
+                var bNode = workingStack.Pop() as BinaryExpressionNode;
                 if (bNode == null)
                 {
                     continue;
@@ -989,6 +990,11 @@ namespace ProtoScript.Runners
                 var nullAssignment = AstFactory.BuildAssignment(leftNode, AstFactory.BuildNullNode());
                 nullAssignment.guid = guid;
                 astNodeList.Add(nullAssignment);
+
+                if (bNode.RightNode is BinaryExpressionNode)
+                {
+                    workingStack.Push(bNode.RightNode);
+                }
             }
 
             return astNodeList;
