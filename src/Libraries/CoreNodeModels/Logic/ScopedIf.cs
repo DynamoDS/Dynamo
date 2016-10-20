@@ -10,6 +10,7 @@ using ProtoCore.AST.AssociativeAST;
 
 using CodeBlockNode = ProtoCore.AST.AssociativeAST.CodeBlockNode;
 using LanguageBlockNode = ProtoCore.AST.AssociativeAST.LanguageBlockNode;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.Logic
 {
@@ -18,6 +19,9 @@ namespace CoreNodeModels.Logic
     [AlsoKnownAs("DSCoreNodesUI.Logic.ScopedIf")]
     public class ScopedIf : ScopedNodeModel
     {
+        [JsonConstructor]
+        private ScopedIf(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
         public ScopedIf() : base()
         {
             InPortData.Add(new PortData("test", Resources.PortDataTestBlockToolTip));

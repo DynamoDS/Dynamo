@@ -1,15 +1,11 @@
 ﻿using Autodesk.DesignScript.Runtime;
-using Dynamo.Models;
-using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Newtonsoft.Json;
 
-namespace TestUINodes 
+namespace TestUINodes
 {
     [NodeName("NodeWithFailingASTOutput")]
     [NodeCategory("TestUINodes")]
@@ -17,6 +13,9 @@ namespace TestUINodes
     [IsVisibleInDynamoLibrary(false)]
     public class NodeWithFailingASTOutput: NodeModel
     {
+        [JsonConstructor]
+        private NodeWithFailingASTOutput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
         public NodeWithFailingASTOutput()
         {
             InPortData.Add(new PortData("input", "dummy input"));

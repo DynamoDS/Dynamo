@@ -17,11 +17,14 @@ using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Visualization;
+using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
+using System.Runtime.Serialization;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -59,7 +62,6 @@ namespace Dynamo.Graph.Nodes
         // Input and output port related data members.
         private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
         private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
-        private readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
 
         #endregion
 
@@ -71,6 +73,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// The unique name that was created the node by
         /// </summary>
+        [JsonIgnore]
         public virtual string CreationName { get { return this.Name; } }
 
         /// <summary>
@@ -121,17 +124,20 @@ namespace Dynamo.Graph.Nodes
         ///     Definitions for the Input Ports of this NodeModel.
         /// </summary>
         [Obsolete("InPortData is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
+        [JsonIgnore]
         public ObservableCollection<PortData> InPortData { get; private set; }
 
         /// <summary>
         ///     Definitions for the Output Ports of this NodeModel.
         /// </summary>
         [Obsolete("OutPortData is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute, and OutPortTypesAttribute instead.")]
+        [JsonIgnore]
         public ObservableCollection<PortData> OutPortData { get; private set; }
 
         /// <summary>
         ///     All of the connectors entering and exiting the NodeModel.
         /// </summary>
+        [JsonIgnore]
         public IEnumerable<ConnectorModel> AllConnectors
         {
             get
@@ -143,6 +149,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Returns whether this node represents a built-in or custom function.
         /// </summary>
+        [JsonIgnore]
         public bool IsCustomFunction
         {
             get { return this is Function; }
@@ -151,6 +158,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Returns whether the node is to be included in visualizations.
         /// </summary>
+        [JsonIgnore]
         public bool IsVisible
         {
             get
@@ -172,6 +180,7 @@ namespace Dynamo.Graph.Nodes
         ///     Returns whether the node aggregates its upstream connections
         ///     for visualizations.
         /// </summary>
+        [JsonIgnore]
         public bool IsUpstreamVisible
         {
             get
@@ -194,6 +203,7 @@ namespace Dynamo.Graph.Nodes
         /// strings, bool, code blocks and custom nodes, which don't specify path. This property 
         /// is true for nodes that are potential inputs for Customizers and Presets.
         /// </summary>
+        [JsonIgnore]
         public virtual bool IsInputNode
         {
             get
@@ -207,6 +217,7 @@ namespace Dynamo.Graph.Nodes
         /// This property is user-controllable via a checkbox and is set to true when a user wishes to include
         /// this node in a Customizer as an interactive control.
         /// </summary>
+        [JsonIgnore]
         public bool IsSetAsInput
         {
             get
@@ -226,6 +237,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     The Node's state, which determines the coloring of the Node in the canvas.
         /// </summary>
+        [JsonIgnore]
         public ElementState State
         {
             get { return state; }
@@ -246,6 +258,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///   If the state of node is Error or AstBuildBroken
         /// </summary>
+        [JsonIgnore]
         public bool IsInErrorState
         {
             get
@@ -257,11 +270,13 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Indicates if node preview is pinned
         /// </summary>
+        [JsonIgnore]
         public bool PreviewPinned { get; internal set; }
 
         /// <summary>
         ///     Text that is displayed as this Node's tooltip.
         /// </summary>
+        [JsonIgnore]
         public string ToolTipText
         {
             get { return toolTipText; }
@@ -275,6 +290,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Should we override the displayed name with this Node's NickName property?
         /// </summary>
+        [JsonIgnore]
         public bool OverrideNameWithNickName
         {
             get { return overrideNameWithNickName; }
@@ -288,6 +304,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     The name that is displayed in the UI for this NodeModel.
         /// </summary>
+        [JsonProperty("DisplayName")]
         public string NickName
         {
             get { return nickName; }
@@ -301,6 +318,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Collection of PortModels representing all Input ports.
         /// </summary>
+        [JsonProperty("InputPorts")]
         public ObservableCollection<PortModel> InPorts
         {
             get { return inPorts; }
@@ -314,6 +332,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Collection of PortModels representing all Output ports.
         /// </summary>
+        [JsonProperty("OutputPorts")]
         public ObservableCollection<PortModel> OutPorts
         {
             get { return outPorts; }
@@ -324,11 +343,13 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        [JsonIgnore]
         public IDictionary<int, Tuple<int, NodeModel>> InputNodes
         {
             get { return inputNodes; }
         }
 
+        [JsonIgnore]
         public IDictionary<int, HashSet<Tuple<int, NodeModel>>> OutputNodes
         {
             get { return outputNodes; }
@@ -337,6 +358,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Control how arguments lists of various sizes are laced.
         /// </summary>
+        [JsonProperty("Replication"), JsonConverter(typeof(LacingStrategyConverter))]
         public LacingStrategy ArgumentLacing
         {
             get
@@ -378,6 +400,7 @@ namespace Dynamo.Graph.Nodes
         /// <value>
         ///     If the node has a name attribute, return it.  Otherwise return empty string.
         /// </value>
+        [JsonIgnore]
         public string Name
         {
             get
@@ -400,6 +423,7 @@ namespace Dynamo.Graph.Nodes
         /// <value>
         ///     If the node has a category, return it.  Other wise return empty string.
         /// </value>
+        [JsonIgnore]
         public string Category
         {
             get
@@ -436,6 +460,7 @@ namespace Dynamo.Graph.Nodes
         /// to access this value without using the active Scheduler. Use the Scheduler to 
         /// remove the possibility of race conditions.
         /// </summary>
+        [JsonIgnore]
         public MirrorData CachedValue
         {
             get
@@ -475,6 +500,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Search tags for this Node.
         /// </summary>
+        [JsonIgnore]
         public List<string> Tags
         {
             get
@@ -505,6 +531,7 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        [JsonIgnore]
         public bool CanUpdatePeriodically
         {
             get { return canUpdatePeriodically; }
@@ -519,6 +546,7 @@ namespace Dynamo.Graph.Nodes
         ///     ProtoAST Identifier for result of the node before any output unpacking has taken place.
         ///     If there is only one output for the node, this is equivalent to GetAstIdentifierForOutputIndex(0).
         /// </summary>
+        [JsonIgnore]
         public IdentifierNode AstIdentifierForPreview
         {
             get { return AstFactory.BuildIdentifier(AstIdentifierBase); }
@@ -527,6 +555,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     If this node is allowed to be converted to AST node in nodes to code conversion.
         /// </summary>
+        [JsonIgnore]
         public virtual bool IsConvertible
         {
             get
@@ -541,6 +570,7 @@ namespace Dynamo.Graph.Nodes
         ///     of this node. E.g., code block node may want to display the value
         ///     of the left hand side variable of last statement.
         /// </summary>
+        [JsonIgnore]
         public virtual string AstIdentifierBase
         {
             get
@@ -552,6 +582,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     A unique ID that will be appended to all identifiers of this node.
         /// </summary>
+        [JsonIgnore]
         public string AstIdentifierGuid
         {
             get
@@ -563,6 +594,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Enable or disable label display. Default is false.
         /// </summary>
+        [JsonIgnore]
         public bool DisplayLabels
         {
             get { return displayLabels; }
@@ -579,6 +611,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Is this node being applied partially, resulting in a partial function?
         /// </summary>
+        [JsonIgnore]
         public bool IsPartiallyApplied //TODO(Steve): Move to Graph level -- MAGN-5710
         {
             get { return !Enumerable.Range(0, InPorts.Count).All(HasInput); }
@@ -634,6 +667,7 @@ namespace Dynamo.Graph.Nodes
         /// <value>
         ///   <c>true</c> if this node is frozen; otherwise, <c>false</c>.
         /// </value>
+        [JsonIgnore]
         public bool IsFrozen
         {
             get
@@ -659,6 +693,28 @@ namespace Dynamo.Graph.Nodes
                     OnUpdateASTCollection();                  
                 }
             }
+        }
+
+        /// <summary>
+        /// The default behavior for ModelBase objects is to not serialize the X and Y
+        /// properties. This overload allows the serialization of the X property
+        /// for NodeModel.
+        /// </summary>
+        /// <returns>True.</returns>
+        public override bool ShouldSerializeX()
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// The default behavior for ModelBase objects is to not serialize the X and Y
+        /// properties. This overload allows the serialization of the Y property
+        /// for NodeModel.
+        /// </summary>
+        /// <returns>True</returns>
+        public override bool ShouldSerializeY()
+        {
+            return false;
         }
 
         #endregion
@@ -758,6 +814,52 @@ namespace Dynamo.Graph.Nodes
         }
         #endregion
 
+        /// <summary>
+        /// Protected constructor used during deserialization.
+        /// </summary>
+        /// <param name="inPorts"></param>
+        /// <param name="outPorts"></param>
+        protected NodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
+        {
+            InPortData = new ObservableCollection<PortData>();
+            OutPortData = new ObservableCollection<PortData>();
+
+            inputNodes = new Dictionary<int, Tuple<int, NodeModel>>();
+            outputNodes = new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
+
+            // Set the ports from the deserialized data
+            InPorts.AddRange(inPorts);
+            OutPorts.AddRange(outPorts);
+
+            IsVisible = true;
+            IsUpstreamVisible = true;
+            ShouldDisplayPreviewCore = true;
+            executionHint = ExecutionHints.Modified;
+
+            PropertyChanged += delegate (object sender, PropertyChangedEventArgs args)
+            {
+                switch (args.PropertyName)
+                {
+                    case ("OverrideName"):
+                        RaisePropertyChanged("NickName");
+                        break;
+                }
+            };
+
+            //Register port connection events.
+            PortConnected += OnPortConnected;
+            PortDisconnected += OnPortDisconnected;
+
+            //Fetch the element name from the custom attribute.
+            SetNickNameFromAttribute();
+
+            IsSelected = false;
+            State = ElementState.Dead;
+            ArgumentLacing = LacingStrategy.Disabled;
+
+            RaisesModificationEvents = true;
+        }
+
         protected NodeModel()
         {
             InPortData = new ObservableCollection<PortData>();
@@ -824,6 +926,7 @@ namespace Dynamo.Graph.Nodes
         ///     always should be true, unless is temporarily set to false to 
         ///     avoid flood of Modified event. 
         /// </summary>
+        [JsonIgnore]
         public bool RaisesModificationEvents { get; set; }
 
         /// <summary>
@@ -1034,6 +1137,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// If node is connected to some other node(other than Output) then it is not a 'top' node
         /// </summary>
+        [JsonIgnore]
         public bool IsTopMostNode
         {
             get
@@ -1173,6 +1277,10 @@ namespace Dynamo.Graph.Nodes
 
         #region Node State
 
+        /// <summary>
+        /// Sets the <seealso cref="ElementState"/> for the node based on
+        /// the port's default value status and connectivity.
+        /// </summary>
         public void ValidateConnections()
         {
             // if there are inputs without connections
@@ -1308,10 +1416,6 @@ namespace Dynamo.Graph.Nodes
                 //distribute the ports along the 
                 //edges of the icon
                 PortModel port = AddPort(PortType.Input, pd, count);
-                //MVVM: AddPort now returns a port model. You can't set the data context here.
-                //port.DataContext = this;
-
-                portDataDict[port] = pd;
                 count++;
             }
 
@@ -1320,7 +1424,6 @@ namespace Dynamo.Graph.Nodes
                 foreach (PortModel inport in inPorts.Skip(count))
                 {
                     inport.DestroyConnectors();
-                    portDataDict.Remove(inport);
                 }
 
                 for (int i = inPorts.Count - 1; i >= count; i--)
@@ -1368,11 +1471,6 @@ namespace Dynamo.Graph.Nodes
                 //distribute the ports along the 
                 //edges of the icon
                 PortModel port = AddPort(PortType.Output, pd, count);
-
-                //MVVM : don't set the data context in the model
-                //port.DataContext = this;
-
-                portDataDict[port] = pd;
                 count++;
             }
 
@@ -1383,8 +1481,6 @@ namespace Dynamo.Graph.Nodes
 
                 for (int i = outPorts.Count - 1; i >= count; i--)
                     outPorts.RemoveAt(i);
-
-                //OutPorts.RemoveRange(count, outPorts.Count - count);
             }
 
             //configure snap edges
@@ -1458,9 +1554,12 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Configures the snap edges.
+        /// This class was made protected during refactoring for serialization. When
+        /// RegisterInputPorts and RegisterOutputPorts are finally removed, this method
+        /// should be called in a collection changed event handler on InPorts and OutPorts.
         /// </summary>
         /// <param name="ports">The ports.</param>
-        private static void ConfigureSnapEdges(IList<PortModel> ports)
+        protected static void ConfigureSnapEdges(IList<PortModel> ports)
         {
             switch (ports.Count)
             {
@@ -1812,6 +1911,28 @@ namespace Dynamo.Graph.Nodes
         #region Serialization/Deserialization Methods
 
         /// <summary>
+        /// The OnDeserializedMethod allows us to set this Node ports' Owner
+        /// property after deserialization is complete. This allows us to
+        /// avoid having to serialize the Owner property on the PortModel.
+        /// </summary>
+        /// <param name="context"></param>
+        [OnDeserialized]
+        internal void OnDeserializedMethod(StreamingContext context)
+        {
+            foreach(var p in OutPorts)
+            {
+                p.Owner = this;
+                p.PortType = PortType.Output;
+            }
+
+            foreach(var p in InPorts)
+            {
+                p.Owner = this;
+                p.PortType = PortType.Input;
+            }
+        }
+
+        /// <summary>
         ///     Called when the node's Workspace has been saved.
         /// </summary>
         protected internal virtual void OnSave() { }
@@ -1995,11 +2116,13 @@ namespace Dynamo.Graph.Nodes
 
         private ExecutionHints executionHint;
 
+        [JsonIgnore]
         public bool IsModified
         {
             get { return GetExecutionHintsCore().HasFlag(ExecutionHints.Modified); }
         }
 
+        [JsonIgnore]
         public bool NeedsForceExecution
         {
             get { return GetExecutionHintsCore().HasFlag(ExecutionHints.ForceExecute); }
@@ -2213,6 +2336,7 @@ namespace Dynamo.Graph.Nodes
 
         #endregion
 
+        [JsonIgnore]
         public bool ShouldDisplayPreview
         {
             get
@@ -2303,5 +2427,68 @@ namespace Dynamo.Graph.Nodes
         /// Action to call on UI thread.
         /// </summary>
         public Action ActionToDispatch { get; set; }
+    }
+
+    /// <summary>
+    /// The LacingStrategyConverter is used to serialize and deserialize LacingStrategy enum values.
+    /// The mapping to string like 'applyDisabled' is to support the historical representation
+    /// of 'lacing' on Flood.
+    /// </summary>
+    public class LacingStrategyConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(LacingStrategy);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var s = reader.Value.ToString();
+            switch (s)
+            {
+                case "applyAuto":
+                    return LacingStrategy.Auto;
+                case "applyCartesianProduct":
+                    return LacingStrategy.CrossProduct;
+                case "applyDisabled":
+                    return LacingStrategy.Disabled;
+                case "applyFirst":
+                    return LacingStrategy.First;
+                case "applyLongest":
+                    return LacingStrategy.Longest;
+                case "applyShortest":
+                    return LacingStrategy.Shortest;
+                default:
+                    return LacingStrategy.Disabled;
+            }
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var s = (LacingStrategy)value;
+
+            switch (s)
+            {
+
+                case LacingStrategy.Auto:
+                    writer.WriteValue("applyAuto");
+                    break;
+                case LacingStrategy.CrossProduct:
+                    writer.WriteValue("applyCartesianProduct");
+                    break;
+                case LacingStrategy.Disabled:
+                    writer.WriteValue("applyDisabled");
+                    break;
+                case LacingStrategy.First:
+                    writer.WriteValue("applyFirst");
+                    break;
+                case LacingStrategy.Longest:
+                    writer.WriteValue("applyLongest");
+                    break;
+                case LacingStrategy.Shortest:
+                    writer.WriteValue("applyShortest");
+                    break;
+            }
+        }
     }
 }

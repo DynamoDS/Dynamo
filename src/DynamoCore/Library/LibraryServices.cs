@@ -377,7 +377,7 @@ namespace Dynamo.Engine
         /// <param name="library">Library path</param>
         /// <param name="mangledName">Mangled function name</param>
         /// <returns></returns>
-        internal FunctionDescriptor GetFunctionDescriptor(string library, string mangledName)
+        public FunctionDescriptor GetFunctionDescriptor(string library, string mangledName)
         {
             if (null == library || null == mangledName)
                 throw new ArgumentNullException();
@@ -399,7 +399,7 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="managledName"></param>
         /// <returns></returns>
-        internal FunctionDescriptor GetFunctionDescriptor(string managledName)
+        public FunctionDescriptor GetFunctionDescriptor(string managledName)
         {
             if (string.IsNullOrEmpty(managledName))
                 throw new ArgumentException("Invalid arguments");

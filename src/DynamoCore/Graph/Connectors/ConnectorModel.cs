@@ -65,6 +65,20 @@ namespace Dynamo.Graph.Connectors
             return null;
         }
 
+        /// <summary>
+        /// Constructor used when only the start and end <see cref="PortModel"/> are known.
+        /// </summary>
+        /// <param name="start">The start <see cref="PortModel"/>.</param>
+        /// <param name="end">The end <see cref="PortModel"/>.</param>
+        /// <param name="guid">The unique identifier for the <see cref="ConnectorModel"/>.</param>
+        public ConnectorModel(PortModel start, PortModel end, Guid guid)
+        {
+            Start = start;
+            Start.Connect(this);
+            Connect(end);
+            GUID = guid;
+        }
+
         private ConnectorModel(
             NodeModel start, NodeModel end, int startIndex, int endIndex, Guid guid)
         {

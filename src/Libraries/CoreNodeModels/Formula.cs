@@ -8,6 +8,7 @@ using NCalc;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using Expression = NCalc.Expression;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -46,6 +47,12 @@ namespace CoreNodeModels
                     }
                 }
             }
+        }
+
+        [JsonConstructor]
+        private Formula(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Auto;
         }
 
         public Formula()
