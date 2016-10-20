@@ -276,18 +276,29 @@ namespace ProtoScript.Runners
                 return;
             }
 
-            foreach (var node in nodeList)
+            var workingStack = new Stack<AssociativeNode>(nodeList);
+            var astIDs = new HashSet<int>();
+
+            while (workingStack.Any())
             {
-                BinaryExpressionNode bNode = node as BinaryExpressionNode;
-                if (bNode != null)
+                var node = workingStack.Pop() as BinaryExpressionNode;
+                if (node != null)
                 {
-                    foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
-                    {
-                        if (gnode.OriginalAstID == bNode.OriginalAstID)
-                        {
-                            gnode.isActive = false;
-                        }
-                    }
+                    astIDs.Add(node.OriginalAstID);
+                    workingStack.Push(node.RightNode);
+                }
+            }
+
+            if (!astIDs.Any())
+            {
+                return;
+            }
+
+            foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
+            {
+                if (astIDs.Contains(gnode.OriginalAstID))
+                {
+                    gnode.isActive = false;
                 }
             }
         }
