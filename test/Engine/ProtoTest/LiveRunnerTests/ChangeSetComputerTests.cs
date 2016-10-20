@@ -262,7 +262,7 @@ namespace ProtoTest.LiveRunner
             // The list must be in the order that it is expected
             List<string> expectedCode = new List<string>() 
             {
-                "b = null; c = null; c = 1;"
+                "b = null; a = null; c = 1;"
             };
             List<AssociativeNode> expectedAstList = ProtoCore.Utils.CoreUtils.BuildASTList(core, expectedCode);
 
