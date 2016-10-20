@@ -203,10 +203,8 @@ namespace Dynamo.Core
             {
                 if (!Directory.Exists(path))
                 {
-                    throw new Exception(String.Format(Resources.NoBinFolder, path));
-                }
-                  
-
+                    throw new Exception(String.Format(Resources.DirectoryNotFound, path));
+                }                 
                 additionalResolutionPaths.Add(path);
             }
         }
