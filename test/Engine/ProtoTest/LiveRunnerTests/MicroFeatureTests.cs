@@ -5209,13 +5209,13 @@ v = foo(t);
 @"
     a = [Imperative]
     {
-        return = 10;
+        return = 20;
     }
 
     b = [Imperative]
     {
     
-        return = 20;
+        return = 30;
     }
 
 
@@ -5226,7 +5226,7 @@ v = foo(t);
         {
             e = 40;
         }
-        return = 50;
+        return = 60;
     }
 ",
 
@@ -5246,12 +5246,18 @@ v = foo(t);
             List<Subtree> modified = new List<Subtree>();
             Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]);
             modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("a", 20);
+            AssertValue("b", 30);
+            AssertValue("c", 60);
+            AssertValue("f", null);
 
             // Create a new CBN to add the removed line
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
-            syncData = new GraphSyncData(null, added, modified);
+            syncData = new GraphSyncData(null, added, null);
             liveRunner.UpdateGraph(syncData);
             AssertValue("f", 60);
 
