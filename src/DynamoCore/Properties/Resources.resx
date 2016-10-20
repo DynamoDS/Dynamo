@@ -623,7 +623,7 @@ value : bool = false</value>
     <value>codeblock;</value>
   </data>
   <data name="DirectoryNotFound" xml:space="preserve">
-    <value>Directory Not Found {0}</value>
+    <value>Directory not found : {0}</value>
   </data>
   <data name="CustomNodeFolderLoadFailure" xml:space="preserve">
     <value>Failed to load custom node directory. Do you have permission to access {0}?</value>
