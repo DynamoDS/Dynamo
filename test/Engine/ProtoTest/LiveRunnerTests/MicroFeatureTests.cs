@@ -2982,7 +2982,6 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
-        [Category("Failure")]
         public void TestCodeBlockDeleteLine01()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4159
