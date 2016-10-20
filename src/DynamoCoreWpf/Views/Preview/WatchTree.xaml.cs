@@ -12,6 +12,7 @@ namespace Dynamo.Controls
     public partial class WatchTree : UserControl
     {
         private WatchViewModel _vm;
+        private WatchViewModel prevWatchViewModel;
 
         public WatchTree()
         {
@@ -39,18 +40,66 @@ namespace Dynamo.Controls
                 node.Click();
         }
 
-        private void TreeView1_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void treeviewItem_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var node = e.NewValue as WatchViewModel;
-            if (node == null)
+            TreeViewItem tvi = (TreeViewItem)sender;
+            var node = tvi.DataContext as WatchViewModel;
+
+            HandleItemChanged(tvi, node);
+
+            e.Handled = true; 
+        }
+
+        private void treeviewItem_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (prevWatchViewModel != null)
+            {
+                if (e.Key == System.Windows.Input.Key.Up || e.Key == System.Windows.Input.Key.Down)
+                {
+                    TreeViewItem tvi = sender as TreeViewItem;
+                    var node = tvi.DataContext as WatchViewModel;
+                    
+                    // checks to see if the currently selected WatchViewModel is the top most item in the tree
+                    // if so, prevent the user from using the up arrow.
+
+                    // also if the current selected node is equal to the previous selected node, do not execute the change.
+
+                    if (!(e.Key == System.Windows.Input.Key.Up && prevWatchViewModel.IsTopLevel) && node != prevWatchViewModel)
+                    {
+                        HandleItemChanged(tvi, node);
+                    }
+                }
+            }
+
+            e.Handled = true;
+        }
+
+        private void HandleItemChanged (TreeViewItem tvi, WatchViewModel node)
+        {
+            if (tvi == null || node == null)
                 return;
+
+            // checks to see if the node to be selected is the same as the currently selected node
+            // if so, then de-select the currently selected node.
+
+            if (node == prevWatchViewModel)
+            {
+                this.prevWatchViewModel = null;
+                if (tvi.IsSelected)
+                {
+                    tvi.IsSelected = false;
+                    tvi.Focus();
+                }
+            }
+            else
+            {
+                this.prevWatchViewModel = node;
+            }
 
             if (_vm.FindNodeForPathCommand.CanExecute(node.Path))
             {
                 _vm.FindNodeForPathCommand.Execute(node.Path);
             }
         }
-
     }
-
 }
