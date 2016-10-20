@@ -2982,7 +2982,6 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
-        [Category("Failure")]
         public void TestCodeBlockDeleteLine01()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4159
@@ -5210,13 +5209,13 @@ v = foo(t);
 @"
     a = [Imperative]
     {
-        return = 10;
+        return = 20;
     }
 
     b = [Imperative]
     {
     
-        return = 20;
+        return = 30;
     }
 
 
@@ -5227,7 +5226,7 @@ v = foo(t);
         {
             e = 40;
         }
-        return = 50;
+        return = 60;
     }
 ",
 
@@ -5247,12 +5246,18 @@ v = foo(t);
             List<Subtree> modified = new List<Subtree>();
             Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]);
             modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("a", 20);
+            AssertValue("b", 30);
+            AssertValue("c", 60);
+            AssertValue("f", null);
 
             // Create a new CBN to add the removed line
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
-            syncData = new GraphSyncData(null, added, modified);
+            syncData = new GraphSyncData(null, added, null);
             liveRunner.UpdateGraph(syncData);
             AssertValue("f", 60);
 
@@ -5505,10 +5510,10 @@ a = p.UpdateCount;
             deleted.Add(subtree);
 
             var guid3 = Guid.NewGuid();
-            var code3 = "__GC();";
+            var code3 = "__GC();z = DisposeTracer.DisposeCount;";
             syncData = new GraphSyncData(deleted, new List<Subtree> { ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, code3)}, null);
             liveRunner.UpdateGraph(syncData);
-            AssertValue("y", 1);
+            AssertValue("z", 1);
         }
 
         [Test]
