@@ -3,11 +3,17 @@ using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using CoreNodeModels.Properties;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.Input
 {
     public abstract class Bool : BasicInteractive<bool>
     {
+        [JsonConstructor]
+        protected Bool(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
+        protected Bool() : base() { }
+
         protected override bool DeserializeValue(string val)
         {
             try
@@ -53,6 +59,12 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("DSCoreNodesUI.BoolSelector", "DSCoreNodesUI.Input.BoolSelector", "Dynamo.Nodes.BoolSelector")]
     public class BoolSelector : Bool
     {
+        [JsonConstructor]
+        private BoolSelector(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ShouldDisplayPreviewCore = false;
+        }
+
         public BoolSelector()
         {
             Value = false;

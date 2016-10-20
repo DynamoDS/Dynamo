@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using System.Threading;
 using System.IO;
 using Dynamo.Models;
-using Dynamo.Core;
 using DynamoUtilities;
 using Dynamo.Applications;
 using Dynamo.Graph;
+using Autodesk.Workspaces;
 
 namespace DynamoCLI
 {
@@ -44,6 +43,7 @@ namespace DynamoCLI
             model.OpenFileFromPath(cmdLineArgs.OpenFilePath, true);
             Console.WriteLine("loaded file");
             model.EvaluationCompleted += (o, args) => { evalComplete = true; };
+
             if (!string.IsNullOrEmpty(cmdLineArgs.PresetFilePath))
             {
                 //first load the openfile nodegraph
@@ -173,8 +173,26 @@ namespace DynamoCLI
             }
         }
 
+        private static void OpenWorkspaceAndConvert(DynamoModel model, string dynPath)
+        {
+            model.OpenFileFromPath(dynPath);
+
+            var ws = model.CurrentWorkspace;
+            var json = Utilities.SaveWorkspaceToJson(ws, model.LibraryServices, model.EngineController,
+                model.Scheduler, model.NodeFactory, false, false, model.CustomNodeManager);
+
+            var newFilePath = Path.Combine(Path.GetDirectoryName(dynPath), Path.GetFileNameWithoutExtension(dynPath) + ".json");
+            File.WriteAllText(newFilePath, json);
+        }
+
         public void Run(StartupUtils.CommandLineArguments args)
         {
+            if (args.ConvertFile)
+            {
+                OpenWorkspaceAndConvert(model, args.OpenFilePath);
+                return;
+            }
+
             var doc = RunCommandLineArgs(this.model, args);
             if (doc != null && Directory.Exists(new FileInfo(args.Verbose).Directory.FullName))
             {

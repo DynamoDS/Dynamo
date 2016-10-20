@@ -7,6 +7,7 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Models;
 using Dynamo.Scheduler;
+using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.Namespace;
 using System;
@@ -36,11 +37,13 @@ namespace Dynamo.Graph.Workspaces
         /// to coordinate the interactions between some DesignScript
         /// sub components like library managment, live runner and so on.
         /// </summary>
+        [JsonIgnore]
         public EngineController EngineController { get; private set; }
 
         /// <summary>
         ///     Flag specifying if this workspace is operating in "test mode".
         /// </summary>
+        [JsonIgnore]
         public bool IsTestMode { get; set; }
 
         /// <summary>
@@ -49,6 +52,7 @@ namespace Dynamo.Graph.Workspaces
         ///     This flag is critical to ensuring that crashing run-auto files
         ///     are not left in run-auto upon reopening.  
         /// </summary>
+        [JsonIgnore]
         public bool HasRunWithoutCrash { get; private set; }
 
         /// <summary>
@@ -60,18 +64,21 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Indicates if detailed descriptions should be logged
         /// </summary>
+        [JsonIgnore]
         public readonly bool VerboseLogging;
 
         /// <summary>
         ///     Returns <see cref="EngineController"/> object containing properties to control
         /// how execution is carried out.
         /// </summary>
+        [JsonIgnore]
         public readonly RunSettings RunSettings;
 
         /// <summary>
         /// Evaluation count is incremented whenever the graph is evaluated. 
         /// It is set to zero when the graph is Cleared.
         /// </summary>
+        [JsonIgnore]
         public long EvaluationCount { get; private set; }
 
         /// <summary>
@@ -194,6 +201,21 @@ namespace Dynamo.Graph.Workspaces
                 new WorkspaceInfo() { FileName = fileName, Name = "Home" },
                 verboseLogging,
                 isTestMode) { }
+
+        public HomeWorkspaceModel(Guid guid, EngineController engine,
+            DynamoScheduler scheduler,
+            NodeFactory factory,
+            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> traceData,
+            IEnumerable<NodeModel> nodes,
+            IEnumerable<NoteModel> notes,
+            IEnumerable<AnnotationModel> annotations,
+            IEnumerable<PresetModel> presets,
+            ElementResolver resolver,
+            WorkspaceInfo info,
+            bool verboseLogging,
+            bool isTestMode):this(engine, scheduler, factory, traceData, nodes, notes, 
+                annotations, presets, resolver, info, verboseLogging, isTestMode)
+        { Guid = guid; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HomeWorkspaceModel"/> class

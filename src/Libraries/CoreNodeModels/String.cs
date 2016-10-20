@@ -2,6 +2,7 @@
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -11,6 +12,12 @@ namespace CoreNodeModels
     /// </summary>
     public class ToStringNodeBase : NodeModel
     {
+        [JsonConstructor]
+        protected ToStringNodeBase(string functionName, IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            this.functionName = functionName;
+        }
+
         public ToStringNodeBase(string functionName)
         {
             this.functionName = functionName;
@@ -60,6 +67,13 @@ namespace CoreNodeModels
     [AlsoKnownAs("DSCoreNodesUI.StringNodes.FromObject", "DSCoreNodesUI.FromObject")]
     public class FromObject: ToStringNodeBase 
     {
+        [JsonConstructor]
+        private FromObject(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : 
+            base("__ToStringFromObject",inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
         public FromObject() : base("__ToStringFromObject")
         {
             ArgumentLacing = LacingStrategy.Disabled;
@@ -77,6 +91,13 @@ namespace CoreNodeModels
     [AlsoKnownAs("DSCoreNodesUI.StringNodes.FromArray", "DSCoreNodesUI.FromArray")]
     public class FromArray : ToStringNodeBase 
     {
+        [JsonConstructor]
+        private FromArray(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : 
+            base("__ToStringFromArray", inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
         public FromArray() : base("__ToStringFromArray")
         {
             ArgumentLacing = LacingStrategy.Disabled;

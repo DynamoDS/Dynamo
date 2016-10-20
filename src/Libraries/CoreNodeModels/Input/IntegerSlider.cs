@@ -9,6 +9,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Migration;
 using ProtoCore.AST.AssociativeAST;
 using CoreNodeModels.Properties;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.Input
 {
@@ -21,6 +22,17 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("DSCoreNodesUI.Input.IntegerSlider")]
     public class IntegerSlider : SliderBase<int>
     {
+        [JsonConstructor]
+        private IntegerSlider(IEnumerable<PortModel> inPorts,
+            IEnumerable<PortModel> outPorts): base(inPorts, outPorts)
+        {
+            Min = 0;
+            Max = 100;
+            Step = 1;
+            Value = 1;
+            ShouldDisplayPreviewCore = false;
+        }
+
         public IntegerSlider()
         {
             RegisterAllPorts();

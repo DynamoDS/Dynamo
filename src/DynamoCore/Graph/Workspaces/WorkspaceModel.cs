@@ -34,6 +34,7 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable, IWorkspaceModel
     {
+
         /// <summary>
         /// Represents maximum value of workspace zoom
         /// </summary>
@@ -87,7 +88,7 @@ namespace Dynamo.Graph.Workspaces
         private readonly UndoRedoRecorder undoRecorder;
         private double scaleFactor;
         private bool hasNodeInSyncWithDefinition;
-        private Guid guid;
+        protected Guid guid;
 
         /// <summary>
         /// This is set to true after a workspace is added.
@@ -505,7 +506,7 @@ namespace Dynamo.Graph.Workspaces
             {
                 return nodes.SelectMany(
                     node => node.OutPorts.SelectMany(port => port.Connectors))
-                    .Distinct();
+                    .Distinct().ToList();
             }
         }
 
@@ -705,6 +706,7 @@ namespace Dynamo.Graph.Workspaces
         public Guid Guid
         {
             get { return guid; }
+            internal set { guid = value; }
         }
 
         /// <summary>

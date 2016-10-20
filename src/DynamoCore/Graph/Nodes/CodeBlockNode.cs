@@ -19,6 +19,7 @@ using ProtoCore.Utils;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
+using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -46,6 +47,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Indicates whether code block should not be in focus upon undo/redo actions on node
         /// </summary>
+        [JsonIgnore]
         public bool ShouldFocus
         {
             get { return shouldFocus; }
@@ -55,6 +57,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Returns <see cref="ElementResolver"/> for CodeBlock node
         /// </summary>
+        [JsonIgnore]
         public ElementResolver ElementResolver { get; set; }
 
         private struct Formatting
@@ -83,20 +86,21 @@ namespace Dynamo.Graph.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
             this.libraryServices = libraryServices;
             this.ElementResolver = new ElementResolver();
+            ProcessCodeDirect();
         }
 
         /// <summary>
         ///     Initilizes a new instance of the <see cref="CodeBlockNodeModel"/> class
         /// </summary>
-        /// <param name="userCode">Code block content</param>
-        /// <param name="xPos">X coordinate of the code block</param>
-        /// <param name="yPos">Y coordinate of the code block</param>
+        /// <param name="code">Code block content</param>
+        /// <param name="x">X coordinate of the code block</param>
+        /// <param name="y">Y coordinate of the code block</param>
         /// <param name="libraryServices"><see cref="LibraryServices"/> object to manage
         ///  builtin libraries as well as imported libraries</param>
         /// <param name="resolver">Responsible for resolving 
         /// a partial class name to its fully resolved name</param>
-        public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices, ElementResolver resolver)
-            : this(userCode, Guid.NewGuid(), xPos, yPos, libraryServices, resolver) { }
+        public CodeBlockNodeModel(string code, double x, double y, LibraryServices libraryServices, ElementResolver resolver)
+            : this(code, Guid.NewGuid(), x, y, libraryServices, resolver) { }
 
         /// <summary>
         ///     Initilizes a new instance of the <see cref="CodeBlockNodeModel"/> class
@@ -276,6 +280,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Temporary variables that generated in code.
         /// </summary>
+        [JsonIgnore]
         public IEnumerable<string> TempVariables
         {
             get { return tempVariables; }
@@ -284,6 +289,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Code statement of CBN
         /// </summary>
+        [JsonIgnore]
         public IEnumerable<Statement> CodeStatements
         {
             get { return codeStatements; }

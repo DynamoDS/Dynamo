@@ -25,6 +25,7 @@ using Dynamo.Utilities;
 using DynamoServices;
 using DynamoUnits;
 using Greg;
+using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.Runtime;
 using System;
@@ -2015,7 +2016,7 @@ namespace Dynamo.Models
         ///     Adds a workspace to the dynamo model.
         /// </summary>
         /// <param name="workspace"></param>
-        private void AddWorkspace(WorkspaceModel workspace)
+        public void AddWorkspace(WorkspaceModel workspace)
         {
             if (workspace == null) return;
 

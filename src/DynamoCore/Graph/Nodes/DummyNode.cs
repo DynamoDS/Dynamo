@@ -2,6 +2,8 @@
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -19,6 +21,12 @@ namespace Dynamo.Graph.Nodes
         public enum Nature
         {
             Deprecated, Unresolved
+        }
+
+        [JsonConstructor]
+        private DummyNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ShouldDisplayPreviewCore = false;
         }
 
         /// <summary>

@@ -5,7 +5,9 @@ using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Graph.Connectors;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -32,8 +34,15 @@ namespace Dynamo.Graph.Nodes
         #region public members
 
         /// <summary>
+        /// A <see cref="PortData"/> object used for the construction of the node.
+        /// </summary>
+        [JsonIgnore]
+        public PortData Data { get { return portData; } }
+
+        /// <summary>
         /// Returns the connectors between the specified ports.
         /// </summary>
+        [JsonIgnore]
         public ObservableCollection<ConnectorModel> Connectors
         {
             get { return connectors; }
@@ -43,6 +52,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Name of the port.
         /// </summary>
+        [JsonProperty("DisplayName")]
         public string PortName
         {
             get { return portData.NickName; }
@@ -51,6 +61,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Tooltip of the port.
         /// </summary>
+        [JsonProperty("Description")]
         public string ToolTipContent
         {
             get
@@ -66,24 +77,27 @@ namespace Dynamo.Graph.Nodes
         /// Type of the port.
         /// It can be incoming or outcoming.
         /// </summary>
+        [JsonIgnore]
         public PortType PortType
         {
             get;
-            private set;
+            internal set;
         }
 
         /// <summary>
         /// Returns the Node.
         /// </summary>
+        [JsonIgnore]
         public NodeModel Owner
         {
             get;
-            private set;
+            internal set;
         }
 
         /// <summary>
         /// Index of the port.
         /// </summary>
+        [JsonIgnore]
         public int Index
         {
             get { return Owner.GetPortModelIndex(this); }
@@ -92,6 +106,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Returns the LineIndex of that port. The vertical position of PortModel is dependent on LineIndex.
         /// </summary>
+        [JsonIgnore]
         public int LineIndex
         {
             get { return portData.LineIndex; }
@@ -101,6 +116,7 @@ namespace Dynamo.Graph.Nodes
         /// A flag indicating whether the port is considered connected.
         /// </summary>
         [Obsolete("Please use NodeModel.HasConnectedInput instead.")]
+        [JsonIgnore]
         public bool IsConnected
         {
             get;
@@ -110,6 +126,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Indicates whether the port is enabled or not.
         /// </summary>
+        [JsonIgnore]
         public bool IsEnabled
         {
             get
@@ -129,6 +146,7 @@ namespace Dynamo.Graph.Nodes
         /// offsets from the node origin based on the port's index in the 
         /// ports collection.
         /// </summary>
+        [JsonIgnore]
         public Point2D Center
         {
             get
@@ -154,6 +172,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Controls whether this port is set to use it's default value (true) or yield a closure (false).
         /// </summary>
+        [JsonIgnore]
         public bool UsingDefaultValue
         {
             get { return usingDefaultValue; }
@@ -168,6 +187,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Controls whether the Use Default Value option is available.
         /// </summary>
+        [JsonIgnore]
         public bool DefaultValueEnabled
         {
             get { return portData.DefaultValue != null; }
@@ -176,6 +196,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Default value for port.
         /// </summary>
+        [JsonIgnore]
         public AssociativeNode DefaultValue
         {
             get { return portData.DefaultValue; }
@@ -184,6 +205,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Controls the space between successive output ports
         /// </summary>
+        [JsonIgnore]
         public Thickness MarginThickness
         {
             get;
@@ -193,10 +215,13 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Based on extensionEdges port is aligned in UI.
         /// </summary>
+        [JsonIgnore]
         public SnapExtensionEdges extensionEdges { get; set; }
 
         /// <summary>
-        /// List at level.
+        /// The Level at which objects will be
+        /// extracted from a nested list. The deepest
+        /// level of a nested list is -1.
         /// </summary>
         public int Level
         {
@@ -215,7 +240,8 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// If use level is enabled.
+        /// A flag which determines whether this Port will 
+        /// extract data from a specific level in a nested list.
         /// </summary>
         public bool UseLevels
         {
@@ -236,7 +262,9 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// If needs to keep list structure.
+        /// A flag which determines whether data from this
+        /// node will be re-aligned into the original structure
+        /// of the nested list.
         /// </summary>
         public bool ShouldKeepListStructure
         {
@@ -255,6 +283,24 @@ namespace Dynamo.Graph.Nodes
         }
 
         #endregion
+
+        [JsonConstructor]
+        internal PortModel(string nickName, string toolTip)
+        {
+            IsConnected = false;
+            UseLevels = false;
+            ShouldKeepListStructure = false;
+            Level = 2;
+
+            var data = new PortData(nickName, toolTip);
+            data.LineIndex = -1;
+            data.Height = 0.0;
+
+            SetPortData(data);
+
+            MarginThickness = new Thickness(0);
+            Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
+        }
 
         /// <summary>
         /// Creates PortModel.
@@ -407,8 +453,8 @@ namespace Dynamo.Graph.Nodes
         /// Creates PortData.
         /// </summary>
         /// <param name="nickName">Nickname of the port</param>
-        /// <param name="tip">Tooltip of the port</param>
-        public PortData(string nickName, string tip) : this(nickName, tip, null) { }
+        /// <param name="toolTipString">Tooltip of the port</param>
+        public PortData(string nickName, string toolTipString) : this(nickName, toolTipString, null) { }
 
         /// <summary>
         /// Creates PortData.
@@ -416,6 +462,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="nickName">Nickname of the port</param>
         /// <param name="toolTipString">Tooltip of the port</param>
         /// <param name="defaultValue">Default value of the port</param>
+        [JsonConstructor]
         public PortData(string nickName, string toolTipString, AssociativeNode defaultValue)
         {
             NickName = nickName;

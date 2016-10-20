@@ -1965,7 +1965,7 @@ b = 0..10..a;
         }
 
         [Test]
-        [Category("Regression")]
+        [Category("RegressionTests")]
         public void TestRangeExpressionOverLimit01()
         {
             string src = @"x = 1..200000000;";
@@ -1974,7 +1974,7 @@ b = 0..10..a;
         }
 
         [Test]
-        [Category("Regression")]
+        [Category("RegressionTests")]
         public void TestRangeExpressionOverLimit02()
         {
             string src = @"x = 1..10000000000000000;";
@@ -1983,7 +1983,7 @@ b = 0..10..a;
         }
 
         [Test]
-        [Category("Regression")]
+        [Category("RegressionTests")]
         public void TestRangeExpressionOverLimit03()
         {
             string src = @"x = 1..10..#200000000;";
@@ -1992,7 +1992,7 @@ b = 0..10..a;
         }
 
         [Test]
-        [Category("Regression")]
+        [Category("RegressionTests")]
         public void TestRangeExpressionOverLimit04()
         {
             string src = @"x = 1..10..0.00000000001;";
