@@ -172,7 +172,11 @@ namespace Dynamo.PackageManager
             {
                 foreach (var pkg in LocalPackages)
                 {
-                    pathManager.AddResolutionPath(pkg.BinaryDirectory);
+                    if (File.Exists(pkg.BinaryDirectory))
+                    {
+                        pathManager.AddResolutionPath(pkg.BinaryDirectory);
+                    } 
+                    
                 }
             }
 
