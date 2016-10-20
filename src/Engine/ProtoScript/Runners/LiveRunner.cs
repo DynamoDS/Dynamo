@@ -714,7 +714,10 @@ namespace ProtoScript.Runners
                 }
                 else
                 {
-                    // No delta computation.
+                    // No delta computation. 
+                    // Right now it is only disabled for code block node, but we may
+                    // completely disable it. Details about why doing so:
+                    // https://github.com/DynamoDS/Dynamo/pull/7282
                     Subtree oldSubTree;
                     List<AssociativeNode> deletedExpressions = new List<AssociativeNode>();
                     if (currentSubTreeList.TryGetValue(modifiedSubTree.GUID, out oldSubTree) && oldSubTree.AstNodes != null)
