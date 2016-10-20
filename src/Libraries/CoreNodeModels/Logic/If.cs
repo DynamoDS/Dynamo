@@ -20,15 +20,13 @@ namespace CoreNodeModels.Logic
 
         public If()
         {
-            InPortData.Add(new PortData("test", Resources.PortDataTestBlockToolTip));
-            InPortData.Add(new PortData("true", Resources.PortDataTrueBlockToolTip));
-            InPortData.Add(new PortData("false", Resources.PortDataFalseBlockToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("test", Resources.PortDataTestBlockToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("true", Resources.PortDataTrueBlockToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("false", Resources.PortDataFalseBlockToolTip)));
 
-            OutPortData.Add(new PortData("result", Resources.PortDataResultToolTip));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("result", Resources.PortDataResultToolTip)));
 
             RegisterAllPorts();
-
-            //TODO: Default Values
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -38,7 +36,7 @@ namespace CoreNodeModels.Logic
 
             if (IsPartiallyApplied)
             {
-                var connectedInputs = Enumerable.Range(0, InPortData.Count)
+                var connectedInputs = Enumerable.Range(0, InPorts.Count)
                                             .Where(HasConnectedInput)
                                             .Select(x => new IntNode(x) as AssociativeNode)
                                             .ToList();

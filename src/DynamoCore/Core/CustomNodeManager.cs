@@ -1124,14 +1124,14 @@ namespace Dynamo.Core
                     foreach (var hanging in
                         selectedNodeSet.SelectMany(
                             node =>
-                                Enumerable.Range(0, node.OutPortData.Count)
+                                Enumerable.Range(0, node.OutPorts.Count)
                                 .Where(port => !node.HasOutput(port))
                                 .Select(port => new { node, port })).Distinct())
                     {
                         //Create Symbol Node
                         var node = new Output
                         {
-                            Symbol = hanging.node.OutPortData[hanging.port].NickName,
+                            Symbol = hanging.node.OutPorts[hanging.port].PortName,
                             X = rightMost + 75 - leftShift
                         };
                         node.Y = i*(50 + node.Height);

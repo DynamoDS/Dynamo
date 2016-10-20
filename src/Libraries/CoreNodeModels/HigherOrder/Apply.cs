@@ -23,8 +23,8 @@ namespace CoreNodeModels.HigherOrder
 
         public ApplyFunction() : base()
         {
-            InPortData.Add(new PortData("func", Resources.ApplyPortDataFuncToolTip));
-            OutPortData.Add(new PortData("func(args)", Resources.ApplyPortDataFuncArgToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("func", Resources.ApplyPortDataFuncToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("func(args)", Resources.ApplyPortDataFuncArgToolTip)));
             AddInput();
             RegisterAllPorts();
         }
@@ -47,7 +47,7 @@ namespace CoreNodeModels.HigherOrder
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 1)
+            if (InPorts.Count > 1)
                 base.RemoveInput();
         }
 
@@ -86,10 +86,10 @@ namespace CoreNodeModels.HigherOrder
 
         public ComposeFunctions()
         {
-            InPortData.Add(new PortData("func0", Resources.ComposePortDataFunc0ToolTip));
-            InPortData.Add(new PortData("func1", Resources.ComposePortDataFunc1ToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("func0", Resources.ComposePortDataFunc0ToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("func1", Resources.ComposePortDataFunc1ToolTip)));
 
-            OutPortData.Add(new PortData("func", Resources.ComposePortDataResultToolTip));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("func", Resources.ComposePortDataResultToolTip)));
             RegisterAllPorts();
         }
 
@@ -105,7 +105,7 @@ namespace CoreNodeModels.HigherOrder
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 2)
+            if (InPorts.Count > 2)
                 base.RemoveInput();
         }
 

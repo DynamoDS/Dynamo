@@ -42,8 +42,8 @@ namespace CoreNodeModels
 
         public Watch()
         {
-            InPortData.Add(new PortData("", Resources.WatchPortDataInputToolTip));
-            OutPortData.Add(new PortData("", Resources.WatchPortDataResultToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("", Resources.WatchPortDataInputToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Resources.WatchPortDataResultToolTip)));
 
             RegisterAllPorts();
 

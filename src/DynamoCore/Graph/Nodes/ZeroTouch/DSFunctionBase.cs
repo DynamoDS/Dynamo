@@ -169,7 +169,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             {
                 string varname = Definition.ClassName.Split('.').Last();
                 varname = char.ToLowerInvariant(varname[0]) + varname.Substring(1);
-                model.InPortData.Add(new PortData(varname, Definition.ClassName));
+                model.InPorts.Add(new PortModel(PortType.Input, model, new PortData(varname, Definition.ClassName)));
             }
 
             if (Definition.Parameters != null)
@@ -186,7 +186,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         protected virtual void InitializeFunctionParameters(NodeModel model, IEnumerable<TypedParameter> parameters)
         {
             foreach (var arg in parameters)
-                model.InPortData.Add(new PortData(arg.Name, arg.Description, arg.DefaultValue));
+                model.InPorts.Add(new PortModel(PortType.Input, model, new PortData(arg.Name, arg.Description, arg.DefaultValue)));
         }
 
         protected override void InitializeOutputs(NodeModel model)
@@ -209,7 +209,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                         ? returns[i].Item2
                         : "var";
                     
-                    model.OutPortData.Add(new PortData(portName, portDesc));
+                    model.OutPorts.Add(new PortModel(PortType.Output, model, new PortData(portName, portDesc)));
                     i++;
                 }
             }
@@ -221,13 +221,13 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
 
                 if (returns.Any())
                 {
-                    model.OutPortData.Add(new PortData(
+                    model.OutPorts.Add(new PortModel(PortType.Output, model, new PortData(
                         returns.ElementAt(0).Item1 ?? displayReturnType,
-                        returns.ElementAt(0).Item2 ?? displayReturnType));
+                        returns.ElementAt(0).Item2 ?? displayReturnType)));
                     return;
                 }
 
-                model.OutPortData.Add(new PortData(displayReturnType, displayReturnType));
+                model.OutPorts.Add(new PortModel(PortType.Output, model, new PortData(displayReturnType, displayReturnType)));
             }
         }
         

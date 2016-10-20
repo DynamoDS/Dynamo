@@ -68,10 +68,10 @@ namespace Dynamo
                                 // infinity output
                                 ? new[] {new {portIndex = 0, node = topNode, name = "∞"}}
                                 // otherwise, grab all ports with connected outputs and package necessary info
-                                : topNode.OutPortData
+                                : topNode.OutPorts
                                     .Select(
                                         (port, i) =>
-                                            new {portIndex = i, node = topNode, name = port.NickName})
+                                            new {portIndex = i, node = topNode, name = port.PortName})
                                     .Where(x => !topNode.HasOutput(x.portIndex)));
 
                 foreach (var rtnAndIndex in rtnPorts.Select((rtn, i) => new {rtn, idx = i}))

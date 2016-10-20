@@ -136,7 +136,7 @@ namespace Dynamo.Graph.Nodes
         private static IEnumerable<string> GetAllOutportAstIdentifiers(this NodeModel node)
         {
             var ids = new List<string>();
-            for (var i = 0; i < node.OutPortData.Count; ++i)
+            for (var i = 0; i < node.OutPorts.Count; ++i)
             {
                 var id = node.GetOneOutportAstIdentifier(i);
                 if (!string.IsNullOrEmpty(id))

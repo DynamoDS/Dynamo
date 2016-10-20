@@ -54,7 +54,7 @@ namespace CoreNodeModels.Input
         protected BasicInteractive()
         {
             Type type = typeof(T);
-            OutPortData.Add(new PortData("", type.Name));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", type.Name)));
             RegisterAllPorts();
         }
 

@@ -1601,7 +1601,7 @@ namespace Dynamo.Graph.Workspaces
             return
                 Nodes.Where(
                     node =>
-                        node.OutPortData.Any() && node.OutPorts.Any(port => !port.Connectors.Any()));
+                        node.OutPorts.Any() && node.OutPorts.Any(port => !port.Connectors.Any()));
         }
 
         /// <summary>

@@ -141,8 +141,8 @@ namespace Watch3DNodeModels
 
         public Watch3D()
         {
-            InPortData.Add(new PortData("", Resources.Watch3DPortDataInputToolTip));
-            OutPortData.Add(new PortData("", Resources.Watch3DPortDataInputToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("", Resources.Watch3DPortDataInputToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Resources.Watch3DPortDataInputToolTip)));
 
             RegisterAllPorts();
 

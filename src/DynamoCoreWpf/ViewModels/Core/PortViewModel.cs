@@ -31,7 +31,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string ToolTipContent
         {
-            get { return _port.ToolTipContent; }
+            get { return _port.ToolTip; }
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsConnected
         {
-            get { return _port.IsConnected; }
+            get { return _port.Owner.HasConnectedInput(_port.Index); }
         }
 
         /// <summary>

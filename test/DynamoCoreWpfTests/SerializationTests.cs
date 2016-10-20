@@ -267,7 +267,7 @@ namespace DynamoCoreWpfTests
             //Assert initial values
             Assert.AreEqual(400, formulaNode.X);
             Assert.AreEqual("x+y", formulaNode.FormulaString);
-            Assert.AreEqual(2, formulaNode.InPortData.Count);
+            Assert.AreEqual(2, formulaNode.InPorts.Count);
 
             //Serialize node and then change values
             XmlDocument xmlDoc = new XmlDocument();
@@ -277,14 +277,14 @@ namespace DynamoCoreWpfTests
 
             //Assert new changes
             Assert.AreEqual(250, formulaNode.X);
-            Assert.AreEqual(3, formulaNode.InPortData.Count);
+            Assert.AreEqual(3, formulaNode.InPorts.Count);
             Assert.AreEqual("x+y+z", formulaNode.FormulaString);
 
             //Deserialize and aasert old values
             formulaNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(400, formulaNode.X);
             Assert.AreEqual("x+y", formulaNode.FormulaString);
-            Assert.AreEqual(2, formulaNode.InPortData.Count);
+            Assert.AreEqual(2, formulaNode.InPorts.Count);
         }
 
         [Test]
@@ -308,27 +308,27 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(534.75, graphNode.X);
             Assert.AreEqual("07e6b150-d902-4abb-8103-79193552eee7", graphNode.Definition.FunctionId.ToString());
             Assert.AreEqual("GraphFunction", graphNode.NickName);
-            Assert.AreEqual(4, graphNode.InPortData.Count);
-            Assert.AreEqual("y", graphNode.InPortData[3].NickName);
+            Assert.AreEqual(4, graphNode.InPorts.Count);
+            Assert.AreEqual("y", graphNode.InPorts[3].PortName);
 
             //Serialize node and then change values
             XmlDocument xmlDoc = new XmlDocument();
             XmlElement serializedEl = graphNode.Serialize(xmlDoc, SaveContext.Undo);
             graphNode.X = 250;
             graphNode.NickName = "NewNode";
-            graphNode.InPortData.RemoveAt(graphNode.InPortData.Count - 1);
+            graphNode.InPorts.RemoveAt(graphNode.InPorts.Count - 1);
 
             //Assert new changes
             Assert.AreEqual(250, graphNode.X);
-            Assert.AreEqual(3, graphNode.InPortData.Count);
+            Assert.AreEqual(3, graphNode.InPorts.Count);
             Assert.AreEqual("NewNode", graphNode.NickName);
 
             //Deserialize and aasert old values
             graphNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(534.75, graphNode.X);
-            Assert.AreEqual(4, graphNode.InPortData.Count);
+            Assert.AreEqual(4, graphNode.InPorts.Count);
             Assert.AreEqual("GraphFunction", graphNode.NickName);
-            Assert.AreEqual("y", graphNode.InPortData[3].NickName);
+            Assert.AreEqual("y", graphNode.InPorts[3].PortName);
         }
 
         [Test]

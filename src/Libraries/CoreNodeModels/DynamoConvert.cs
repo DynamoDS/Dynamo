@@ -117,8 +117,8 @@ namespace CoreNodeModels
         {           
             SelectedMetricConversion = ConversionMetricUnit.Length;  
             AssociativeNode defaultNode = new DoubleNode(0.0);
-            InPortData.Add(new PortData("", Properties.Resources.UnitNodeFromPortTooltip, defaultNode));
-            OutPortData.Add(new PortData("", Properties.Resources.UnitNodeToPortToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("", Properties.Resources.UnitNodeFromPortTooltip, defaultNode)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Properties.Resources.UnitNodeToPortToolTip)));
 
             ShouldDisplayPreviewCore = true;
             IsSelectionFromBoxEnabled = true;
@@ -129,10 +129,10 @@ namespace CoreNodeModels
             List<AssociativeNode> inputAstNodes)
         {       
             var conversionToNode =
-                AstFactory.BuildDoubleNode(Conversions.ConversionDictionary[(ConversionUnit) SelectedToConversion]);
+                AstFactory.BuildDoubleNode(Conversions.ConversionDictionary[SelectedToConversion]);
 
             var conversionFromNode =
-                AstFactory.BuildDoubleNode(Conversions.ConversionDictionary[(ConversionUnit) SelectedFromConversion]);
+                AstFactory.BuildDoubleNode(Conversions.ConversionDictionary[SelectedFromConversion]);
             AssociativeNode node = null;
            
             node = AstFactory.BuildFunctionCall(

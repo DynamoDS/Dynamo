@@ -1134,16 +1134,16 @@ namespace DynamoCoreWpfTests
             //CBN OutPut Ports 
             //    > ToolTipContent stores name of variable
             //    > Margina thickness is for height.(is a multiple of 20, except for the first)
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
-            Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual("b", cbn.OutPorts[1].ToolTip);
             Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
-            Assert.AreEqual("c", cbn.OutPorts[2].ToolTipContent);
+            Assert.AreEqual("c", cbn.OutPorts[2].ToolTip);
             Assert.IsTrue(Math.Abs(cbn.OutPorts[2].MarginThickness.Top - 3*codeBlockPortHeight) <= tolerance);
 
-            Assert.AreEqual("d", cbn.OutPorts[3].ToolTipContent);
+            Assert.AreEqual("d", cbn.OutPorts[3].ToolTip);
             Assert.IsTrue(Math.Abs(cbn.OutPorts[3].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
             //CBN Input Ports
@@ -1237,10 +1237,10 @@ namespace DynamoCoreWpfTests
             Assert.AreNotEqual(ElementState.Error, cbn.State);
             Assert.AreEqual(2, cbn.OutPorts.Count);
 
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(2, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("c", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual("c", cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(9, cbn.OutPorts[1].LineIndex);
         }
 
@@ -1547,7 +1547,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
         }
@@ -1569,7 +1569,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
         }
@@ -1610,8 +1610,8 @@ namespace DynamoCoreWpfTests
             var cbn = GetNode("fc209d2f-1724-4485-bde4-92670802aaa3") as CodeBlockNodeModel;
             Assert.NotNull(cbn);
 
-            Assert.AreEqual(1, cbn.InPortData.Count);
-            Assert.AreEqual("b", cbn.InPortData[0].ToolTipString);
+            Assert.AreEqual(1, cbn.InPorts.Count);
+            Assert.AreEqual("b", cbn.InPorts[0].ToolTip);
         }
 
         [Test, RequiresSTA]
@@ -1772,13 +1772,13 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
-            Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual("b", cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
 
-            Assert.AreEqual("c", cbn.OutPorts[2].ToolTipContent);
+            Assert.AreEqual("c", cbn.OutPorts[2].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[2].MarginThickness.Top);
 
         }
@@ -1805,7 +1805,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(1, cbn.OutPorts[0].LineIndex);
         }
 
@@ -1835,10 +1835,10 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("b", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("b", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(3, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("a", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual("a", cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(5, cbn.OutPorts[1].LineIndex);
         }
 
@@ -1865,10 +1865,10 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("c", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual("c", cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(2, cbn.OutPorts[1].LineIndex);
 
             var connector = cbn.OutPorts[1].Connectors[0] as ConnectorModel;
@@ -1897,7 +1897,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
             //Out ports with temporary tooltips.
@@ -1927,10 +1927,10 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual("b", cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(3, cbn.OutPorts[1].LineIndex);
         }
 
@@ -1956,17 +1956,17 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
             Assert.AreEqual(2, cbn.OutPorts[1].LineIndex); // Random tool-tip.
 
-            Assert.AreEqual("d", cbn.OutPorts[2].ToolTipContent);
+            Assert.AreEqual("d", cbn.OutPorts[2].ToolTip);
             Assert.AreEqual(4, cbn.OutPorts[2].LineIndex);
 
             Assert.AreEqual(6, cbn.OutPorts[3].LineIndex); // Random tool-tip.
 
-            Assert.AreEqual("h", cbn.OutPorts[4].ToolTipContent);
+            Assert.AreEqual("h", cbn.OutPorts[4].ToolTip);
             Assert.AreEqual(8, cbn.OutPorts[4].LineIndex);
         }
 
@@ -2013,7 +2013,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
         }
 
@@ -2029,17 +2029,17 @@ namespace DynamoCoreWpfTests
 
             //Check the CBN for input and output ports count
             var cbn = ViewModel.Model.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>()
-                                                            .Where(c => c.InPortData.Count == 2)
+                                                            .Where(c => c.InPorts.Count == 2)
                                                             .First();
             Assert.AreNotEqual(ElementState.Error, cbn.State);
             Assert.AreEqual(2, cbn.OutPorts.Count);
             Assert.AreEqual(2, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("vector1", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("vector1", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
-            Assert.AreEqual("vector2", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual("vector2", cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
         }
 
@@ -2085,7 +2085,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
         }
 
@@ -2162,10 +2162,10 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports and their names
-            Assert.AreEqual("x", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("x", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("y", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual("y", cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(3, cbn.OutPorts[1].LineIndex);
         }
 
@@ -2186,10 +2186,10 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports and their names
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(2, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual("b", cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(5, cbn.OutPorts[1].LineIndex);
         }
 

@@ -183,7 +183,7 @@ namespace PythonNodeModels
 
         public PythonStringNode()
         {
-            InPortData.Add(new PortData("script", Properties.Resources.PythonStringPortDataScriptToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("script", Properties.Resources.PythonStringPortDataScriptToolTip)));
             AddInput();
             RegisterAllPorts();
         }

@@ -31,9 +31,9 @@ namespace CoreNodeModels.Logic
         {
             _op = op;
 
-            InPortData.Add(new PortData("bool0", Resources.PortDataOperandToolTip));
-            InPortData.Add(new PortData("bool1", Resources.PortDataOperandToolTip));
-            OutPortData.Add(new PortData("", Resources.PortDataResultToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("bool0", Resources.PortDataOperandToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("bool1", Resources.PortDataOperandToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Resources.PortDataResultToolTip)));
             RegisterAllPorts();
         }
 
@@ -54,7 +54,7 @@ namespace CoreNodeModels.Logic
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 2)
+            if (InPorts.Count > 2)
                 base.RemoveInput();
         }
 

@@ -200,7 +200,7 @@ namespace Dynamo.Engine.CodeGeneration
 
             nodeFlags[node] = MarkFlag.TempMark;
 
-            for (int i = 0; i < node.InPortData.Count; ++i)
+            for (int i = 0; i < node.InPorts.Count; ++i)
             {
                 Tuple<int, NodeModel> t;
                 if (!node.TryGetInput(i, out t))
@@ -270,7 +270,7 @@ namespace Dynamo.Engine.CodeGeneration
 
             var inputAstNodes = new List<AssociativeNode>();
             var inPortsCount = node.InPorts.Count;
-            var inPortDataCount = node.InPortData.Count;
+            var inPortDataCount = node.InPorts.Count;
 
             //TODO: inputsCount should be removed in future. 
             // InPortData won't be used anymore, so we shouldn't take into account InPortData.Count.

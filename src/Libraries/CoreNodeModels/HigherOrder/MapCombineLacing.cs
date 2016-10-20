@@ -22,10 +22,10 @@ namespace CoreNodeModels.HigherOrder
 
         public Map()
         {
-            InPortData.Add(new PortData("list", Resources.MapPortDataListToolTip));
-            InPortData.Add(new PortData("f(x)", Resources.MapPortDataFxToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list", Resources.MapPortDataListToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("f(x)", Resources.MapPortDataFxToolTip)));
 
-            OutPortData.Add(new PortData("mapped", Resources.MapPortDataResultToolTip));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("mapped", Resources.MapPortDataResultToolTip)));
 
             RegisterAllPorts();
         }
@@ -59,11 +59,11 @@ namespace CoreNodeModels.HigherOrder
 
         protected CombinatorNode() : this(3)
         {
-            InPortData.Add(new PortData("comb", Resources.CombinatorPortDataCombToolTip));
-            InPortData.Add(new PortData("list1", Resources.PortDataListToolTip + " #1"));
-            InPortData.Add(new PortData("list2", Resources.PortDataListToolTip + " #2"));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("comb", Resources.CombinatorPortDataCombToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list1", Resources.PortDataListToolTip + " #1")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list2", Resources.PortDataListToolTip + " #2")));
 
-            OutPortData.Add(new PortData("combined", Resources.CombinatorPortDataResultToolTip));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("combined", Resources.CombinatorPortDataResultToolTip)));
 
             RegisterAllPorts();
         }
@@ -260,11 +260,11 @@ namespace CoreNodeModels.HigherOrder
 
         public Reduce()
         {
-            InPortData.Add(new PortData("reductor", Resources.ReducePortDataReductorToolTip));
-            InPortData.Add(new PortData("seed", Resources.ReducePortDataSeedToolTip));
-            InPortData.Add(new PortData("list1", Resources.PortDataListToolTip + " #1"));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("reductor", Resources.ReducePortDataReductorToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("seed", Resources.ReducePortDataSeedToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list1", Resources.PortDataListToolTip + " #1")));
 
-            OutPortData.Add(new PortData("reduced", Resources.ReducePortDataResultToolTip));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("reduced", Resources.ReducePortDataResultToolTip)));
 
             RegisterAllPorts();
         }
@@ -350,11 +350,11 @@ namespace CoreNodeModels.HigherOrder
 
         public ScanList()
         {
-            InPortData.Add(new PortData("reductor", Resources.ScanPortDataReductorToolTip));
-            InPortData.Add(new PortData("seed", Resources.ScanPortDataSeedToolTip));
-            InPortData.Add(new PortData("list1", Resources.PortDataListToolTip + " #1"));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("reductor", Resources.ScanPortDataReductorToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("seed", Resources.ScanPortDataSeedToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list1", Resources.PortDataListToolTip + " #1")));
 
-            OutPortData.Add(new PortData("scanned", Resources.ScanPortDataResultToolTip));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("scanned", Resources.ScanPortDataResultToolTip)));
 
             RegisterAllPorts();
         }
@@ -438,11 +438,11 @@ namespace CoreNodeModels.HigherOrder
 
         public Filter()
         {
-            InPortData.Add(new PortData("list", Resources.FilterPortDataListToolTip));
-            InPortData.Add(new PortData("condition", Resources.FilterPortDataConditionToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list", Resources.FilterPortDataListToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("condition", Resources.FilterPortDataConditionToolTip)));
 
-            OutPortData.Add(new PortData("in", Resources.FilterPortDataResultInToolTip));
-            OutPortData.Add(new PortData("out", Resources.FilterPortDataResultOutToolTip));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("in", Resources.FilterPortDataResultInToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("out", Resources.FilterPortDataResultOutToolTip)));
 
             RegisterAllPorts();
         }
@@ -485,11 +485,11 @@ namespace CoreNodeModels.HigherOrder
 
         public Replace()
         {
-            InPortData.Add(new PortData("item", Resources.ReplacePortDataItemToolTip));
-            InPortData.Add(new PortData("replaceWith", Resources.ReplacePortDataReplaceWithToolTip));
-            InPortData.Add(new PortData("condition", Resources.ReplacePortDataConditionToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("item", Resources.ReplacePortDataItemToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("replaceWith", Resources.ReplacePortDataReplaceWithToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("condition", Resources.ReplacePortDataConditionToolTip)));
 
-            OutPortData.Add(new PortData("var", Resources.ReplacePortDataResultToolTip));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("var", Resources.ReplacePortDataResultToolTip)));
 
             RegisterAllPorts();
         }

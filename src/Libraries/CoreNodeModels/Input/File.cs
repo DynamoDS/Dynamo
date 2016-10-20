@@ -32,7 +32,7 @@ namespace CoreNodeModels.Input
         protected FileSystemBrowser(string tip)
             : base()
         {
-            OutPortData[0].ToolTipString = tip;
+            OutPorts[0].ToolTip = tip;
             RegisterAllPorts();
 
             Value = "";
@@ -272,8 +272,8 @@ namespace CoreNodeModels.Input
         public FileObject()
             : base(DSCore.IO.File.FromPath)
         {
-            InPortData.Add(new PortData("path", Resources.FileObjectPortDataPathToolTip));
-            OutPortData.Add(new PortData("file", Resources.FileObjectPortDataResultToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("path", Resources.FileObjectPortDataPathToolTip)));
+            OutPorts.Add(new PortModel(PortType.Input, this, new PortData("file", Resources.FileObjectPortDataResultToolTip)));
             RegisterAllPorts();
         }
 
@@ -332,8 +332,8 @@ namespace CoreNodeModels.Input
         public DirectoryObject()
             : base(DSCore.IO.Directory.FromPath)
         {
-            InPortData.Add(new PortData("path", Resources.DirectoryObjectPortDataPathToolTip));
-            OutPortData.Add(new PortData("directory", Resources.DirectoryObjectPortDataResultToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("path", Resources.DirectoryObjectPortDataPathToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("directory", Resources.DirectoryObjectPortDataResultToolTip)));
             RegisterAllPorts();
         }
 
