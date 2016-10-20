@@ -1362,6 +1362,64 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        ///     Reads inputs list and adds ports for each input.
+        /// </summary>
+        [Obsolete("RegisterInputPorts is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
+        public void RegisterInputPorts(IEnumerable<PortData> portDatas)
+        {
+            //read the inputs list and create a number of
+            //input ports
+            int count = 0;
+            foreach (PortData pd in portDatas)
+            {
+                //add a port for each input
+                //distribute the ports along the 
+                //edges of the icon
+                PortModel port = AddPort(PortType.Input, pd, count);
+                count++;
+            }
+
+            if (inPorts.Count > count)
+            {
+                foreach (PortModel inport in inPorts.Skip(count))
+                {
+                    inport.DestroyConnectors();
+                }
+
+                for (int i = inPorts.Count - 1; i >= count; i--)
+                    inPorts.RemoveAt(i);
+            }
+        }
+
+        /// <summary>
+        ///     Reads outputs list and adds ports for each output
+        /// </summary>
+        [Obsolete("RegisterOutputPorts is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute, and OutPortTypesAttribute instead.")]
+        public void RegisterOutputPorts(IEnumerable<PortData> portDatas)
+        {
+            //read the inputs list and create a number of
+            //input ports
+            int count = 0;
+            foreach (PortData pd in portDatas)
+            {
+                //add a port for each input
+                //distribute the ports along the 
+                //edges of the icon
+                PortModel port = AddPort(PortType.Output, pd, count);
+                count++;
+            }
+
+            if (outPorts.Count > count)
+            {
+                foreach (PortModel outport in outPorts.Skip(count))
+                    outport.DestroyConnectors();
+
+                for (int i = outPorts.Count - 1; i >= count; i--)
+                    outPorts.RemoveAt(i);
+            }
+        }
+
+        /// <summary>
         /// Tries to load ports names and descriptions from attributes.
         /// </summary>
         /// <param name="portType">Input or Output port type</param>
@@ -1461,6 +1519,24 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public void RegisterAllPorts()
         {
+            RaisesModificationEvents = false;
+
+            var inportDatas = GetPortDataFromAttributes(PortType.Input);
+            if (inportDatas.Any())
+            {
+                RegisterInputPorts(inportDatas);
+            }
+
+            var outPortDatas = GetPortDataFromAttributes(PortType.Output);
+            if (outPortDatas.Any())
+            {
+                RegisterOutputPorts(outPortDatas);
+            }
+                
+            RaisesModificationEvents = true;
+            ConfigureSnapEdges(inPorts);
+            areInputPortsRegistered = true;
+
             ValidateConnections();
         }
 
@@ -1471,7 +1547,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="data"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        public PortModel AddPort(PortType portType, int index, PortData data)
+        public PortModel AddPort(PortType portType, PortData data, int index)
         {
             PortModel p;
             switch (portType)
