@@ -110,6 +110,7 @@ namespace Dynamo.Views
 
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            ViewModel.DynamoViewModel.RequestHidePopUp += HidePopUp;
 
             infiniteGridView.AttachToZoomBorder(zoomBorder);
         }
@@ -136,6 +137,7 @@ namespace Dynamo.Views
             {
                 ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
                 ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+                ViewModel.DynamoViewModel.RequestHidePopUp -= HidePopUp;
             }
 
             infiniteGridView.DetachFromZoomBorder(zoomBorder);
@@ -165,6 +167,15 @@ namespace Dynamo.Views
                     ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
                     break;
             }
+        }
+        /// <summary>
+        /// Hides Context Menu as well as InCanvasControl (Right Click PopUp)
+        /// </summary>
+        /// <param name="flag"></param>
+        public void HidePopUp(ShowHideFlags flag)
+        {
+            ShowHideContextMenu(flag);
+            ShowHideInCanvasControl(flag);
         }
 
         internal Point GetCenterPoint()

@@ -1487,7 +1487,8 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="parameter"></param>
         private void ShowNewFunctionDialogAndMakeFunction(object parameter)
-        {           
+        {
+            HidePopUp();
             var args = new FunctionNamePromptEventArgs();
             this.Model.OnRequestsFunctionNamePrompt(this, args);
 
@@ -1510,6 +1511,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void ShowNewPresetStateDialogAndMakePreset(object parameter)
         {
+            HidePopUp();
             var selectedNodes = GetInputNodesFromSelectionForPresets().ToList();
 
             //If there are NO input nodes then show the error message
@@ -1835,6 +1837,13 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.Count > 0;
         }
 
+        internal event Action<ShowHideFlags> RequestHidePopUp;
+
+        public void HidePopUp()
+        {
+            if (RequestHidePopUp != null)
+                RequestHidePopUp (ShowHideFlags.Hide);
+        }
 
         public void SaveImage(object parameters)
         {
@@ -1857,6 +1866,7 @@ namespace Dynamo.ViewModels
 
         public void ShowSaveImageDialogAndSaveResult(object parameter)
         {
+            HidePopUp();
             FileDialog _fileDialog = null;
 
             if (_fileDialog == null)
@@ -2140,6 +2150,7 @@ namespace Dynamo.ViewModels
 
         public void ImportLibrary(object parameter)
         {
+            HidePopUp(); 
             string[] fileFilter = {string.Format(Resources.FileDialogLibraryFiles, "*.dll; *.ds" ), string.Format(Resources.FileDialogAssemblyFiles, "*.dll"), 
                                    string.Format(Resources.FileDialogDesignScriptFiles, "*.ds"), string.Format(Resources.FileDialogAllFiles,"*.*")};
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -2194,6 +2205,7 @@ namespace Dynamo.ViewModels
 
         private void ExportToSTL(object parameter)
         {
+            HidePopUp();
             FileDialog _fileDialog = null ?? new SaveFileDialog()
             {
                 AddExtension = true,
