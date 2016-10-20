@@ -349,6 +349,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Directory not found : {0}.
+        /// </summary>
+        public static string DirectoryNotFound {
+            get {
+                return ResourceManager.GetString("DirectoryNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely &quot;having great difficulties pulling itself together. It is &quot;recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
         ///
         ///If you don&apos;t mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed..
@@ -815,15 +824,6 @@ namespace Dynamo.Properties {
         public static string NewNoteString {
             get {
                 return ResourceManager.GetString("NewNoteString", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} contains a package without a bin folder.  Ignoring it..
-        /// </summary>
-        public static string NoBinFolder {
-            get {
-                return ResourceManager.GetString("NoBinFolder", resourceCulture);
             }
         }
         
