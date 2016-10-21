@@ -5313,12 +5313,14 @@ v = foo(t);
             List<Subtree> modified = new List<Subtree>();
             Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]);
             modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            liveRunner.UpdateGraph(syncData);
 
             // Create a new CBN to add the removed line
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
-            syncData = new GraphSyncData(null, added, modified);
+            syncData = new GraphSyncData(null, added, null);
             liveRunner.UpdateGraph(syncData);
             AssertValue("f", 60);
 
