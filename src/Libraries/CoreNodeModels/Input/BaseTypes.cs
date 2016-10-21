@@ -103,27 +103,10 @@ namespace CoreNodeModels.Input
 
             ShouldDisplayPreviewCore = false;
             ConvertToken = Convert;
-            NumericalValue = "0";
+            Value = "0";
 
             //ws.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
         }
-
-        //if the string can be parsed to a common numeric type return true
-        internal bool validateInput(string value)
-        {
-            bool canConvert = false;
-
-            int intVal;
-            var canConvertInt = int.TryParse(value,NumberStyles.Integer,CultureInfo.InvariantCulture, out intVal);
-            double doubleVal;
-            var canConvertDouble = double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out doubleVal);
-            long longVal;
-            var canConvertLong = long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out longVal);
-
-            canConvert = canConvertInt || canConvertDouble || canConvertLong;
-
-            return canConvert;
-    }
 
     public virtual double Convert(double value)
         {
@@ -156,16 +139,9 @@ namespace CoreNodeModels.Input
             {
                 if (_value != null && _value.Equals(value))
                     return;
-                if (validateInput(value))
-                {
-                    Value = value;
-                }
-                else
-                {
-                    Error(Resources.NumberNodeInputMustBeNumeric);
-                }
+                Value = value; }
             }
-        }
+        
 
         [Obsolete("Please use the NumericalValue property, this property still exists for backwards comptability")]
         public string Value

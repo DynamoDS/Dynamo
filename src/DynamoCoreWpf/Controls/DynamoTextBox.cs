@@ -201,8 +201,14 @@ namespace Dynamo.Nodes
                     // data source (also record the update for undo).
 
                     if (false == recordForUndo)
-                        expr.UpdateSource();
-                    else if (nvm != null)
+                    {
+                        if (expr.ValidateWithoutUpdate())
+                        {
+                            expr.UpdateSource();
+                        }
+                    }
+
+                    else if (nvm != null && expr.ValidateWithoutUpdate())
                     {
                         string propName = expr.ParentBinding.Path.Path;
                         nvm.DynamoViewModel.ExecuteCommand(

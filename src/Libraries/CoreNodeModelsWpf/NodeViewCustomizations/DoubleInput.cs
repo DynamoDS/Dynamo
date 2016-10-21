@@ -1,3 +1,5 @@
+using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -9,6 +11,45 @@ using Dynamo.Wpf;
 
 namespace CoreNodeModelsWpf.Nodes
 {
+    public class NumericValidationRule : ValidationRule
+    {
+        //if the string can be parsed to a common numeric type return true
+        internal bool validateInput(string value)
+        {
+            bool canConvert = false;
+
+            int intVal;
+            var canConvertInt = int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out intVal);
+            double doubleVal;
+            var canConvertDouble = double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out doubleVal);
+            long longVal;
+            var canConvertLong = long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out longVal);
+
+            canConvert = canConvertInt || canConvertDouble || canConvertLong;
+
+            return canConvert;
+        }
+
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            try
+            {
+                if (!validateInput(value as string))
+                {
+                    return new ValidationResult(false, "non numeric input");
+                }
+                else
+                {
+                    return new ValidationResult(true, null);
+                }
+            }
+            catch
+            {
+                return new ValidationResult(false, "trouble parsing input");
+            }
+        }
+    }
+   
     public class DoubleInputNodeViewCustomization : INodeViewCustomization<DoubleInput>
     {
         public void CustomizeView(DoubleInput nodeModel, NodeView nodeView)
@@ -19,7 +60,7 @@ namespace CoreNodeModelsWpf.Nodes
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Background =
-                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))  
             };
 
             nodeView.inputGrid.Children.Add(tb);
@@ -27,15 +68,19 @@ namespace CoreNodeModelsWpf.Nodes
             Grid.SetRow(tb, 0);
 
             tb.DataContext = nodeModel;
-
-            tb.BindToProperty(new Binding("NumericalValue")
+            var textToValueBinding = new Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleInputDisplay(),
                 NotifyOnValidationError = false,
                 Source = nodeModel,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            });
+            };
+            var numericalValidation = new NumericValidationRule();
+            numericalValidation.ValidationStep = ValidationStep.ConvertedProposedValue;
+            textToValueBinding.ValidationRules.Add(numericalValidation);
+            tb.BindToProperty(textToValueBinding);
+            Validation.SetErrorTemplate(tb, null);
         }
 
         public void Dispose()
