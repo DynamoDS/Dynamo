@@ -201,7 +201,8 @@ namespace Dynamo.Nodes
                     // data source (also record the update for undo).
 
                     if (false == recordForUndo)
-                    {
+                    {   //when first bound we do not update the
+                        //source unless the input text is valid
                         if (expr.ValidateWithoutUpdate())
                         {
                             expr.UpdateSource();
@@ -215,6 +216,11 @@ namespace Dynamo.Nodes
                             new DynamoModel.UpdateModelValueCommand(
                                 nodeViewModel.WorkspaceViewModel.Model.Guid,
                                 nvm.NodeModel.GUID, propName, Text));
+                    }
+
+                    if (expr.HasValidationError && nvm != null)
+                    {
+                        nvm.NodeModel.Error(expr.ValidationError.ErrorContent as string);
                     }
                 }
 
