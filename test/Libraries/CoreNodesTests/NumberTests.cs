@@ -14,15 +14,6 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
-        public static void SettingNumericalValueToRangeExpressionFails()
-        {
-              var number = new DoubleInput();
-            number.NumericalValue = "0..10";
-            Assert.IsFalse(number.Value == "0..10");
-        }
-
-        [Test]
-        [Category("UnitTests")]
         public static void SettingValueToRangeExpressionSucceeds()
         {
             var number = new DoubleInput();
@@ -32,31 +23,20 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
-        public static void validateNumericFailsOnNonNumericInputs()
+        public static void SettingValueToNumberSucceeds()
         {
             var number = new DoubleInput();
-
-            Assert.IsFalse(number.validateInput("0..10"));
-            Assert.IsFalse(number.validateInput("0..10..2"));
-            Assert.IsFalse(number.validateInput("0..10..#5"));
-            Assert.IsFalse(number.validateInput("0.0..10..0.5"));
-            Assert.IsFalse(number.validateInput("start..end"));
-            Assert.IsFalse(number.validateInput("a..b"));
-            Assert.IsFalse(number.validateInput("a"));
-
+            number.Value = "5";
+            Assert.True(number.Value == "5");
         }
 
         [Test]
         [Category("UnitTests")]
-        public static void validateNumericPassesOnNumericInputs()
+        public static void SettingValueToLetterSucceeds()
         {
             var number = new DoubleInput();
-
-            Assert.True(number.validateInput("10"));
-            Assert.True(number.validateInput("2147483647"));
-            Assert.True(number.validateInput("9223372036854775807"));
-            Assert.True(number.validateInput(".00000000001"));
-
+            number.Value = "a";
+            Assert.True(number.Value == "a");
         }
     }
 }

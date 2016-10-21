@@ -14,6 +14,7 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
+using CoreNodeModels.Input;
 
 namespace DynamoCoreWpfTests
 {
@@ -102,6 +103,36 @@ namespace DynamoCoreWpfTests
 
             var element = nodeView.ChildrenOfType<DynamoSlider>().First();
             Assert.AreEqual(1.0, element.slider.Value, 1e-6);
+        }
+
+        [Test]
+        public void doubleInputNodeWillNotAcceptRangeSyntax()
+        {
+            var number = new DoubleInput();
+            Model.AddNodeToCurrentWorkspace(number, true);
+            DispatcherUtil.DoEvents();
+            var nodeView = NodeViewWithGuid(number.GUID.ToString());
+            nodeView.inputGrid.ChildrenOfType<DynamoTextBox>().First().Text = "0..10";
+            DispatcherUtil.DoEvents();
+            Assert.IsTrue(number.Value != "0..10");
+            Assert.IsTrue(number.Value == "0");
+            Assert.IsTrue(number.IsInErrorState);
+
+        }
+
+        [Test]
+        public void doubleInputNodeWillNotAcceptIds()
+        {
+            var number = new DoubleInput();
+            Model.AddNodeToCurrentWorkspace(number, true);
+            DispatcherUtil.DoEvents();
+            var nodeView = NodeViewWithGuid(number.GUID.ToString());
+            nodeView.inputGrid.ChildrenOfType<DynamoTextBox>().First().Text = "start..end";
+            DispatcherUtil.DoEvents();
+            Assert.IsTrue(number.Value != "start..end");
+            Assert.IsTrue(number.Value == "0");
+            Assert.IsTrue(number.IsInErrorState);
+
         }
 
         [Test]
@@ -422,4 +453,5 @@ namespace DynamoCoreWpfTests
             }
         }
     }
+
 }

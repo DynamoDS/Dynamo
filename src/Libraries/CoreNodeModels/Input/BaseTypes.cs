@@ -184,7 +184,6 @@ namespace CoreNodeModels.Input
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
 
-            //We must still handle Value updates from deserialization or webUI.
             if (name == "Value")
             {
                 Value = value;

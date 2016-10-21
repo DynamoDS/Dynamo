@@ -18,6 +18,7 @@ using Dynamo.UI.Controls;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
 using NUnit.Framework;
+using CoreNodeModelsWpf.Nodes;
 
 namespace Dynamo.Tests
 {
@@ -682,5 +683,38 @@ namespace Dynamo.Tests
             equal = converter.Convert(objects, typeof(float), null, new CultureInfo("de-DE"));
             Assert.AreEqual(equal, true);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void validateNumericFailsOnNonNumericInputs()
+        {
+            var numericalRule = new NumericValidationRule();
+
+            Assert.IsFalse(numericalRule.Validate("0..10",CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(numericalRule.Validate("0..10..2", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(numericalRule.Validate("0..10..5", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(numericalRule.Validate("0..10..#5", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(numericalRule.Validate("0.0..10..0.5", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(numericalRule.Validate("start..end", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(numericalRule.Validate("a..b", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(numericalRule.Validate("a..10", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(numericalRule.Validate("a", CultureInfo.InvariantCulture).IsValid);
+
+        }
+        [Test]
+        [Category("UnitTests")]
+        public static void validateNumericPassesOnNumericInputs()
+        {
+            var numericalRule = new NumericValidationRule();
+
+            Assert.IsTrue(numericalRule.Validate("10", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsTrue(numericalRule.Validate("2147483647", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsTrue(numericalRule.Validate("9223372036854775807", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsTrue(numericalRule.Validate(".00000000001", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsTrue(numericalRule.Validate("100,000,000", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsTrue(numericalRule.Validate("1,2", CultureInfo.InvariantCulture).IsValid);
+
+        }
+
     }
 }
