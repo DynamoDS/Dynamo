@@ -40,42 +40,43 @@ namespace CoreNodeModelsWpf.Nodes
                 return new ValidationResult(true, null);
             }
         }
-   
-    public class DoubleInputNodeViewCustomization : INodeViewCustomization<DoubleInput>
-    {
-        public void CustomizeView(DoubleInput nodeModel, NodeView nodeView)
+
+        public class DoubleInputNodeViewCustomization : INodeViewCustomization<DoubleInput>
         {
-            //add a text box to the input grid of the control
-            var tb = new DynamoTextBox(nodeModel.Value ?? "0.0")
+            public void CustomizeView(DoubleInput nodeModel, NodeView nodeView)
             {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Background =
-                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))  
-            };
+                //add a text box to the input grid of the control
+                var tb = new DynamoTextBox(nodeModel.Value ?? "0.0")
+                {
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                    Background =
+                        new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                };
 
-            nodeView.inputGrid.Children.Add(tb);
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, 0);
+                nodeView.inputGrid.Children.Add(tb);
+                Grid.SetColumn(tb, 0);
+                Grid.SetRow(tb, 0);
 
-            tb.DataContext = nodeModel;
-            var textToValueBinding = new Binding("Value")
+                tb.DataContext = nodeModel;
+                var textToValueBinding = new Binding("Value")
+                {
+                    Mode = BindingMode.TwoWay,
+                    Converter = new DoubleInputDisplay(),
+                    NotifyOnValidationError = false,
+                    Source = nodeModel,
+                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                };
+                var numericalValidation = new NumericValidationRule();
+                numericalValidation.ValidationStep = ValidationStep.ConvertedProposedValue;
+                textToValueBinding.ValidationRules.Add(numericalValidation);
+                tb.BindToProperty(textToValueBinding);
+                Validation.SetErrorTemplate(tb, null);
+            }
+
+            public void Dispose()
             {
-                Mode = BindingMode.TwoWay,
-                Converter = new DoubleInputDisplay(),
-                NotifyOnValidationError = false,
-                Source = nodeModel,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            var numericalValidation = new NumericValidationRule();
-            numericalValidation.ValidationStep = ValidationStep.ConvertedProposedValue;
-            textToValueBinding.ValidationRules.Add(numericalValidation);
-            tb.BindToProperty(textToValueBinding);
-            Validation.SetErrorTemplate(tb, null);
-        }
-
-        public void Dispose()
-        {
+            }
         }
     }
 }
