@@ -8,6 +8,7 @@ using CoreNodeModels.Input;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Wpf;
+using CoreNodeModels.Properties;
 
 namespace CoreNodeModelsWpf.Nodes
 {
@@ -16,39 +17,29 @@ namespace CoreNodeModelsWpf.Nodes
         //if the string can be parsed to a common numeric type return true
         internal bool validateInput(string value)
         {
-            bool canConvert = false;
-
-            int intVal;
-            var canConvertInt = int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out intVal);
             double doubleVal;
-            var canConvertDouble = double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out doubleVal);
             long longVal;
-            var canConvertLong = long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out longVal);
 
-            canConvert = canConvertInt || canConvertDouble || canConvertLong;
-
-            return canConvert;
+            if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out doubleVal)
+                || long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out longVal))
+            {
+                return true;
+            }
+            return false;
         }
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            try
+
+            if (!validateInput(value as string))
             {
-                if (!validateInput(value as string))
-                {
-                    return new ValidationResult(false, "non numeric input");
-                }
-                else
-                {
-                    return new ValidationResult(true, null);
-                }
+                return new ValidationResult(false, Resources.NumberNodeInputMustBeNumeric);
             }
-            catch
+            else
             {
-                return new ValidationResult(false, "trouble parsing input");
+                return new ValidationResult(true, null);
             }
         }
-    }
    
     public class DoubleInputNodeViewCustomization : INodeViewCustomization<DoubleInput>
     {
