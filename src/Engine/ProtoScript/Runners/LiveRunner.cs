@@ -25,27 +25,18 @@ namespace ProtoScript.Runners
         /// <summary>
         /// The GUID of corresponding UI node.
         /// </summary>
-        public Guid GUID
-        {
-            get; private set;
-        }
+        public Guid GUID;
 
         /// <summary>
         /// Specify if all ast nodes should be executed.
         /// </summary>
-        public bool ForceExecution
-        {
-            get; set;
-        }
+        public bool ForceExecution;
 
         /// <summary>
         /// Sepcify if the VM should do delta computation for these ASTs
         /// By default it is true.
         /// </summary>
-        public bool DeltaComputation
-        {
-            get; set;
-        } 
+        public bool DeltaComputation;
 
         public List<AssociativeNode> AstNodes;
         public List<AssociativeNode> ModifiedAstNodes;
