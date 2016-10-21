@@ -187,6 +187,7 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
+        [Category("Failure")]
         public void TestModified01()
         {
             List<string> codes = new List<string>() 
@@ -232,6 +233,7 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
+        [Category("Failure")]
         public void TestModified02()
         {
             List<string> codes = new List<string>() 
