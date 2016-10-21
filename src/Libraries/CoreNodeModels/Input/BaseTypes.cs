@@ -108,7 +108,7 @@ namespace CoreNodeModels.Input
             //ws.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
         }
 
-    public virtual double Convert(double value)
+        public virtual double Convert(double value)
         {
             return value;
         }

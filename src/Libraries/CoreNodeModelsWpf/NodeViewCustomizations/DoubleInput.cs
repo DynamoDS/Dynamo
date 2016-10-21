@@ -40,6 +40,7 @@ namespace CoreNodeModelsWpf.Nodes
                 return new ValidationResult(true, null);
             }
         }
+    }
    
     public class DoubleInputNodeViewCustomization : INodeViewCustomization<DoubleInput>
     {
