@@ -11,7 +11,7 @@ using Dynamo.Wpf;
 
 namespace CoreNodeModelsWpf.Nodes
 {
-    public class NumericValidationRule : ValidationRule
+    internal class NumericValidationRule : ValidationRule
     {
         //if the string can be parsed to a common numeric type return true
         internal bool validateInput(string value)
