@@ -1961,6 +1961,7 @@ namespace ProtoAssociative
                 {
                     AssociativeNode lastNode = DFSEmitSplitAssign_AST(bnode.RightNode, ref astList);
                     var newBNode = AstFactory.BuildBinaryExpression(bnode.LeftNode, lastNode, Operator.assign);
+                    newBNode.OriginalAstID = bnode.OriginalAstID;
 
                     astList.Add(newBNode);
                     return bnode.LeftNode;
