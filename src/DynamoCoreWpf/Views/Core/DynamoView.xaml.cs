@@ -593,20 +593,23 @@ namespace Dynamo.Controls
             // In native host scenario (e.g. Revit), the "Application.Current" will be "null". Therefore, the InCanvasSearchControl.OnRequestShowInCanvasSearch
             // will not work. Instead, we have to check if the Owner Window (DynamoView) is deactivated or not.  
             if (Application.Current == null)
-                {
+            {
                 this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(); };
-                }
+            }
         }
+
         /// <summary>
         /// Close Popup when the Dynamo window is not in the foreground.
         /// </summary>
         /// <param name="flag"></param>
+
         private void HidePopupWhenWindowDeactivated()
         {
             var workspace = this.ChildOfType<WorkspaceView>();
             workspace.HidePopUp();
          }
-    private void TrackStartupAnalytics()
+
+        private void TrackStartupAnalytics()
         {
             if (!Analytics.ReportingAnalytics) return;
 
