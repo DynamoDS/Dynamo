@@ -42,7 +42,7 @@ namespace DynamoCoreWpfTests
             base.GetLibrariesToPreload(libraries);
         }
 
-        [Test, Category("Display Hardware Dependant")]
+        [Test, Category("Display Hardware Dependent")]
         public void Watch3DHasViewer()
         {
             var renderingTier = (System.Windows.Media.RenderCapability.Tier >> 16);
@@ -218,7 +218,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, items.Count());
         }
 
-       [Test, Category("Display Hardware Dependant")]
+       [Test, Category("Display Hardware Dependent")]
         public void WatchContainsExpectedUiElements()
         {
             OpenAndRun(@"UI\WatchUINodes.dyn");
@@ -232,7 +232,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(8, items.Count());
         }
 
-        [Test, Category("Display Hardware Dependant")]
+        [Test, Category("Display Hardware Dependent")]
         public void WatchImageCoreContainsImage()
         {
             OpenAndRun(@"UI\WatchUINodes.dyn");
@@ -352,7 +352,7 @@ namespace DynamoCoreWpfTests
             Assert.Pass(); // We should reach here safely without exception.
         }
 
-        [Test, Category("Display Hardware Dependant")]
+        [Test, Category("Display Hardware Dependent")]
         public void WatchConnectDisconnectTest()
         {
             WatchIsEmptyWhenLoaded();
