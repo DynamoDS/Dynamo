@@ -202,7 +202,7 @@ namespace UnitsUI
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeDescription("LengthFromStringDescription", typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("LengthFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
-    [OutPortTypes("double")]
+    [OutPortTypes("number")]
     [IsDesignScriptCompatible]
     public class LengthFromString : MeasurementInputBase
     {

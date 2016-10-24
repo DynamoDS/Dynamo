@@ -65,7 +65,7 @@ namespace PythonNodeModels
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [NodeDescription("PythonScriptDescription", typeof(Properties.Resources))]
-    [OutPortTypes("var[]")]
+    [OutPortTypes("var[]..[]")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
@@ -155,7 +155,7 @@ namespace PythonNodeModels
     [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [NodeDescription("PythonScriptFromStringDescription", typeof(Properties.Resources))]
-    [OutPortTypes("var[]")]
+    [OutPortTypes("var[]..[]")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public sealed class PythonStringNode : PythonNodeBase

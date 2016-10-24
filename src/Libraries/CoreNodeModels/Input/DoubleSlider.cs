@@ -15,7 +15,7 @@ namespace CoreNodeModels.Input
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("DoubleSliderNodeDescription", typeof(Properties.Resources))]
     [NodeSearchTags("DoubleSliderSearchTags", typeof(Properties.Resources))]
-    [OutPortTypes("double")]
+    [OutPortTypes("number")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.Input.DoubleSlider")]
