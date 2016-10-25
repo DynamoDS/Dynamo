@@ -1,0 +1,54 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <CreateNodeCommand X="168" Y="105" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>54e5d38d-9eb2-40e7-925a-6340e4a54a76</ModelGuid>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="54e5d38d-9eb2-40e7-925a-6340e4a54a76" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="76" y="74" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="a = 2;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="a = 1;" WorkspaceGuid="9da6679b-a514-4a5c-a21c-84315f8bec29">
+    <ModelGuid>54e5d38d-9eb2-40e7-925a-6340e4a54a76</ModelGuid>
+  </UpdateModelValueCommand>
+  <CreateNodeCommand X="277" Y="142" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>4b0823a7-7bb4-45fe-8c57-906378882578</ModelGuid>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="4b0823a7-7bb4-45fe-8c57-906378882578" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="185" y="111" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="x = a;&#xA;x = x + 1;" ShouldFocus="false">
+      <PortInfo index="0" default="False" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="x = a;&#xD;&#xA;x = x + 1;" WorkspaceGuid="9da6679b-a514-4a5c-a21c-84315f8bec29">
+    <ModelGuid>4b0823a7-7bb4-45fe-8c57-906378882578</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectInRegionCommand X="363" Y="175" Width="5" Height="2" IsCrossSelection="false" />
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>54e5d38d-9eb2-40e7-925a-6340e4a54a76</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="0" ConnectionMode="1">
+    <ModelGuid>4b0823a7-7bb4-45fe-8c57-906378882578</ModelGuid>
+  </MakeConnectionCommand>
+  <CreateNodeCommand X="465" Y="207" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>f00bc4f2-c20b-48be-a45b-cc13432db328</ModelGuid>
+    <CoreNodeModels.Watch guid="f00bc4f2-c20b-48be-a45b-cc13432db328" type="CoreNodeModels.Watch" nickname="Watch" x="465" y="207" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
+      <PortInfo index="0" default="False" />
+    </CoreNodeModels.Watch>
+  </CreateNodeCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>4b0823a7-7bb4-45fe-8c57-906378882578</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="0" ConnectionMode="1">
+    <ModelGuid>f00bc4f2-c20b-48be-a45b-cc13432db328</ModelGuid>
+  </MakeConnectionCommand>
+  <PausePlaybackCommand Tag="FirstRun" PauseDurationInMs="100" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="a = 2;" WorkspaceGuid="9da6679b-a514-4a5c-a21c-84315f8bec29">
+    <ModelGuid>54e5d38d-9eb2-40e7-925a-6340e4a54a76</ModelGuid>
+  </UpdateModelValueCommand>
+  <PausePlaybackCommand Tag="SecondRun" PauseDurationInMs="100" />
+</Commands>
