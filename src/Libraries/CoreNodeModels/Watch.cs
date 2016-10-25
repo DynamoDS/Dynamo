@@ -17,6 +17,7 @@ namespace CoreNodeModels
     [NodeDescription("WatchNodeDescription", typeof(Resources))]
     [NodeSearchTags("WatchNodeSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
+    [OutPortTypes("Node Output: var")]
     [AlsoKnownAs("Dynamo.Nodes.Watch", "DSCoreNodesUI.Watch")]
     public class Watch : NodeModel
     {
