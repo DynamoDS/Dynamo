@@ -601,7 +601,6 @@ namespace Dynamo.Controls
         /// <summary>
         /// Close Popup when the Dynamo window is not in the foreground.
         /// </summary>
-        /// <param name="flag"></param>
 
         private void HidePopupWhenWindowDeactivated()
         {
@@ -1706,8 +1705,7 @@ namespace Dynamo.Controls
 
         private void Window_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            var workspace = this.ChildOfType<WorkspaceView>();
-            workspace.HidePopUp();
+            HidePopupWhenWindowDeactivated();
         }
 
         public void Dispose()

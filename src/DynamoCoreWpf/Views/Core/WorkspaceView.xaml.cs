@@ -170,7 +170,6 @@ namespace Dynamo.Views
         /// <summary>
         /// Hides Context Menu as well as InCanvasControl (Right Click PopUp)
         /// </summary>
-        /// <param name="flag"></param>
         public void HidePopUp()
         {
             if (InCanvasSearchBar.IsOpen || ContextMenuPopup.IsOpen)
