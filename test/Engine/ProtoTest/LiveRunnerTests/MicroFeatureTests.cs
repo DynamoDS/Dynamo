@@ -2982,6 +2982,56 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
+        public void TestCodeBlockModification17()
+        {
+            // MAGN-10790
+            List<string> codes = new List<string>()
+            {
+                "x = 3;x =6;",
+                "x = 6;x = 3;"
+            };
+
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> subtrees = new List<Subtree>();
+            subtrees.Add(TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, subtrees, null);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("x", 6);
+
+            subtrees.Clear();
+            subtrees.Add(TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
+            syncData = new GraphSyncData(null, null, subtrees);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("x", 3);
+        }
+
+        [Test]
+        public void TestCodeBlockModification18()
+        {
+            // MAGN-3184
+            List<string> codes = new List<string>()
+            {
+                "b = a;a = 3; a = 5;",
+                "b = a;a = 3;"
+            };
+
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> subtrees = new List<Subtree>();
+            subtrees.Add(TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, subtrees, null);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("a", 5);
+
+            subtrees.Clear();
+            subtrees.Add(TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
+            syncData = new GraphSyncData(null, null, subtrees);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("a", 3);
+        }
+
+        [Test]
         public void TestCodeBlockDeleteLine01()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4159

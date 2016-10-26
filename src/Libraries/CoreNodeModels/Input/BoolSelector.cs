@@ -55,6 +55,7 @@ namespace CoreNodeModels.Input
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("BooleanDescription", typeof(Resources))]
     [NodeSearchTags("BooleanSelectorSearchTags", typeof(Resources))]
+    [OutPortTypes("bool")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.BoolSelector", "DSCoreNodesUI.Input.BoolSelector", "Dynamo.Nodes.BoolSelector")]
     public class BoolSelector : Bool
