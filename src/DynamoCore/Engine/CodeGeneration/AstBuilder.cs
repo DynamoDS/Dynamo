@@ -297,7 +297,7 @@ namespace Dynamo.Engine.CodeGeneration
                     if (node.InPorts.Count > index)
                     {
                         var port = node.InPorts[index];
-                        if (port.UsingDefaultValue && port.DefaultValueEnabled)
+                        if (port.UsingDefaultValue && port.DefaultValue != null)
                         {
                             inputAstNodes.Add(port.DefaultValue);
                         }

@@ -1132,7 +1132,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, cbn.InPorts.Count);
 
             //CBN OutPut Ports 
-            //    > ToolTipContent stores name of variable
+            //    > ToolTip stores name of variable
             //    > Margina thickness is for height.(is a multiple of 20, except for the first)
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
@@ -1992,7 +1992,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, cbn.InPorts.Count);
 
             //Check the position of ports
-            //Assert.AreEqual("Statement Output", cbn.OutPorts[0].ToolTipContent);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
         }
 
@@ -2060,10 +2059,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            //Assert.AreEqual("t_2", cbn.OutPorts[0].ToolTipContent);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
-            //Assert.AreEqual("t_1", cbn.OutPorts[1].ToolTipContent);
             Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
 
         }

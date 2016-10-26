@@ -839,6 +839,9 @@ namespace Dynamo.Graph.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
 
             RaisesModificationEvents = true;
+
+            InPorts.CollectionChanged += PortsCollectionChanged;
+            OutPorts.CollectionChanged += PortsCollectionChanged;
         }
 
         protected NodeModel()
@@ -873,6 +876,15 @@ namespace Dynamo.Graph.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
 
             RaisesModificationEvents = true;
+
+            InPorts.CollectionChanged += PortsCollectionChanged;
+            OutPorts.CollectionChanged += PortsCollectionChanged;
+        }
+
+        private void PortsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            ValidateConnections();
+            ConfigureSnapEdges(sender == InPorts?InPorts : OutPorts);
         }
 
         /// <summary>
@@ -1264,7 +1276,7 @@ namespace Dynamo.Graph.Nodes
             // if there are inputs without connections
             // mark as dead; otherwise, if the original state is dead,
             // update it as active.
-            if (inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled)))
+            if (inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValue != null)))
             {
                 if (State == ElementState.Active)
                 {
@@ -1367,15 +1379,10 @@ namespace Dynamo.Graph.Nodes
         [Obsolete("RegisterInputPorts is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
         public void RegisterInputPorts(IEnumerable<PortData> portDatas)
         {
-            //read the inputs list and create a number of
-            //input ports
             int count = 0;
             foreach (PortData pd in portDatas)
             {
-                //add a port for each input
-                //distribute the ports along the 
-                //edges of the icon
-                PortModel port = AddPort(PortType.Input, pd, count);
+                var port = AddPort(PortType.Input, pd, count);
                 count++;
             }
 
@@ -1397,15 +1404,10 @@ namespace Dynamo.Graph.Nodes
         [Obsolete("RegisterOutputPorts is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute, and OutPortTypesAttribute instead.")]
         public void RegisterOutputPorts(IEnumerable<PortData> portDatas)
         {
-            //read the inputs list and create a number of
-            //input ports
             int count = 0;
             foreach (PortData pd in portDatas)
             {
-                //add a port for each input
-                //distribute the ports along the 
-                //edges of the icon
-                PortModel port = AddPort(PortType.Output, pd, count);
+                var port = AddPort(PortType.Output, pd, count);
                 count++;
             }
 
@@ -1534,10 +1536,7 @@ namespace Dynamo.Graph.Nodes
             }
                 
             RaisesModificationEvents = true;
-            ConfigureSnapEdges(inPorts);
             areInputPortsRegistered = true;
-
-            ValidateConnections();
         }
 
         /// <summary>
@@ -1749,7 +1748,7 @@ namespace Dynamo.Graph.Nodes
                     {
                         var useDef = !bool.Parse(arr[i]);
                         // do not set true, if default value is disabled
-                        if (!useDef || InPorts[i].DefaultValueEnabled)
+                        if (!useDef || InPorts[i].DefaultValue != null)
                         {
                             InPorts[i].UsingDefaultValue = useDef;
                         }

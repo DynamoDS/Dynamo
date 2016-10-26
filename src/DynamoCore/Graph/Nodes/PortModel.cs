@@ -61,7 +61,7 @@ namespace Dynamo.Graph.Nodes
             get
             {
                 string useDefaultArgument = string.Empty;
-                if (!UsingDefaultValue && DefaultValueEnabled)
+                if (!UsingDefaultValue && DefaultValue != null)
                     useDefaultArgument = " " + Properties.Resources.DefaultValueDisabled;
                 return toolTip + useDefaultArgument;
             }
@@ -169,17 +169,8 @@ namespace Dynamo.Graph.Nodes
             {
                 usingDefaultValue = value;
                 RaisePropertyChanged("UsingDefaultValue");
-                RaisePropertyChanged("ToolTipContent");
+                RaisePropertyChanged("ToolTip");
             }
-        }
-
-        /// <summary>
-        /// Controls whether the Use Default Value option is available.
-        /// </summary>
-        [JsonIgnore]
-        public bool DefaultValueEnabled
-        {
-            get { return DefaultValue != null; }
         }
 
         /// <summary>
@@ -307,10 +298,11 @@ namespace Dynamo.Graph.Nodes
 
             Height = data.Height;
             DefaultValue = data.DefaultValue;
+            UsingDefaultValue = DefaultValue != null;
             LineIndex = data.LineIndex;
             toolTip = data.ToolTipString;
             PortName = data.NickName;
-
+            
             MarginThickness = new Thickness(0);
             Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
         }
