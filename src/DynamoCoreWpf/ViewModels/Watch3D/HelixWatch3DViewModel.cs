@@ -1366,7 +1366,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         private void ToggleTreeViewItemHighlighting (string path, bool isSelected)
         {
-            // Add Geometry Highlighting for selected TreeViewItems
             var geometryModels = Model3DDictionary.Where(x => x.Key.Contains(path) && x.Value is GeometryModel3D).ToArray();
 
             var modelValues = geometryModels.Select(x => x.Value);
