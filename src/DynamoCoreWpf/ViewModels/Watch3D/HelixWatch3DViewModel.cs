@@ -1312,10 +1312,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             textGeometry.TextInfo.Add(textInfo);
                         }
 
+                        if (nodesSelected.ContainsKey(nodePath))
+                        {
+                            ToggleTreeViewItemHighlighting(nodesSelected[nodePath], false); // switch off selection for previous path
+                        }
+                        
                         Model3DDictionary.Add(labelName, bbText);
                         sceneItemsChanged = true;
                         AttachAllGeometryModel3DToRenderHost();
                         nodesSelected[nodePath] = path;
+
+                        ToggleTreeViewItemHighlighting(path, true); // switch on selection for current path
                     }
 
                     // if no node is being selected, that means the current node is being unselected
@@ -1323,6 +1330,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     else
                     {
                         nodesSelected.Remove(nodePath);
+                        ToggleTreeViewItemHighlighting(path, false);
                     }
                 }
 
@@ -1352,6 +1360,22 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        /// <summary>
+        /// Toggles on the highlighting for the specific node (in Helix preview) when
+        /// selected in the PreviewBubble as well as the Watch Node
+        /// </summary>
+        private void ToggleTreeViewItemHighlighting (string path, bool isSelected)
+        {
+            // Add Geometry Highlighting for selected TreeViewItems
+            var geometryModels = Model3DDictionary.Where(x => x.Key.Contains(path) && x.Value is GeometryModel3D).ToArray();
+
+            var modelValues = geometryModels.Select(x => x.Value);
+
+            foreach (GeometryModel3D g in modelValues)
+            {
+                g.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
+            }
+        }
 
         /// <summary>
         /// Given a collection of render packages, generates
