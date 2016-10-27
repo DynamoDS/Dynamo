@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CoverageParams>
 	<TargetExecutable><!-- Required.   -->C:\Program Files (x86)\NUnit 2.6.2\bin\nunit-console.exe</TargetExecutable>
-	<TargetArguments>DataBridgeTests.dll DynamoCoreWpfTests.dll DSCoreNodesTests.dll DynamoServicesTests.dll DynamoPythonTests.dll DynamoMSOfficeTests.dll DynamoCoreTests.dll DynamoUtilitiesTests.dll IntegrationTests.dll ProtoTest.dll WorkflowTests.dll CommandLineTests.dll PackageManagerTests.dll DisplayTests.dll  --labels=On /noshadow /exclude:Failure /xml=nunit-result.xml</TargetArguments> 
+	<TargetArguments>DataBridgeTests.dll DynamoCoreWpfTests.dll DSCoreNodesTests.dll DynamoServicesTests.dll DynamoPythonTests.dll DynamoMSOfficeTests.dll DynamoCoreTests.dll DynamoUtilitiesTests.dll IntegrationTests.dll ProtoTest.dll WorkflowTests.dll CommandLineTests.dll PackageManagerTests.dll DisplayTests.dll  --labels=On /noshadow /exclude:Failure,DisplayHardwareDependent /xml=nunit-result.xml</TargetArguments> 
 	<TargetWorkingDir>..\bin\AnyCPU\Release\</TargetWorkingDir>
 	<Output>Snapshot.dcvr</Output>
 <Filters>

@@ -15,8 +15,9 @@ using Newtonsoft.Json;
 namespace CoreNodeModels.Logic
 {
     [NodeName("ScopeIf"), NodeCategory(BuiltinNodeCategories.LOGIC),
-     NodeDescription("ScopeIfDescription", typeof(Resources)), IsDesignScriptCompatible]
+    NodeDescription("ScopeIfDescription", typeof(Resources)), IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.Logic.ScopedIf")]
+    [OutPortTypes("Function")]
     public class ScopedIf : ScopedNodeModel
     {
         [JsonConstructor]

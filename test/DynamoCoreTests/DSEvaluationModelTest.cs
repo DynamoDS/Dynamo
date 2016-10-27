@@ -1107,6 +1107,16 @@ namespace Dynamo.Tests
             AssertPreviewValue("e7bf0921-cf77-4f37-8336-8aa9c56b22a6", new object[] { "qux" });
             AssertPreviewValue("756497b4-4f7a-4ae3-9e5c-de5f69762d16", new object[] { 1024 });
         }
+
+        [Test]
+        public void TestMAGN9507()
+        {
+            // x = {1, 2, 3};
+            // x = Count(x);
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\MAGN-9507.dyn");
+            OpenModel(dynFilePath);
+            AssertPreviewValue("3bf992eb-ecc9-4fcc-a90b-9b1ee7e925e9", 3);
+        }
     }
 
     [Category("DSCustomNode")]

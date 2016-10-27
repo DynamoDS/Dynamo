@@ -92,6 +92,7 @@ namespace Watch3DNodeModels
     [NodeName("Watch 3D")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Watch3DDescription", typeof(Resources))]
+    [OutPortTypes("var")]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview", "Dynamo.Nodes.Watch3D", "DynamoWatch3D.Watch3D")]
     [IsDesignScriptCompatible]
     public class Watch3D : NodeModel

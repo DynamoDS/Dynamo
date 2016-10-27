@@ -5305,6 +5305,29 @@ namespace DynamoCoreWpfTests
                 }
             });
         }
+
+        [Test]
+        public void MAGN9507()
+        {
+            // a = 1; ----> x = a; x = x + 1;
+            // a = 2;
+
+            var nodeGuid = "f00bc4f2-c20b-48be-a45b-cc13432db328";
+            RunCommandsFromFile("regress9507.xml", (commandTag) =>
+            {
+                switch (commandTag)
+                {
+                    case "FirstRun":
+                        AssertPreviewValue(nodeGuid, 2);
+                        break;
+                    case "SecondRun":
+                        AssertPreviewValue(nodeGuid, 3);
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
     }
 
 }
