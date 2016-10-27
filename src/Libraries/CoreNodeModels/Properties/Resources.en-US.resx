@@ -581,4 +581,7 @@
   <data name="SelectionPointsOutputPortName" xml:space="preserve">
     <value>Points</value>
   </data>
+  <data name="NumberNodeInputMustBeNumeric" xml:space="preserve">
+    <value>The input must be numeric.</value>
+  </data>
 </root>
