@@ -40,6 +40,13 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
+### 1.2.1 ###
+
+Important Bug Fixes:
+- Full Installation of Dynamo for Revit included in the Revit 2017.1 release will no longer remove Dynamo 1.x installations in previous versions of Revit.  Dynamo for Revit 1.2 will now also be installed for any installation of Revit 2015 or 2016 as well.
+- Dynamo for Revit is now included in Revit 2017.1 network deployments.
+- Dynamo Player no longer takes all of 1 processor when launched.
+
 ### 1.2.0 ###
 
 New Functionality : 
