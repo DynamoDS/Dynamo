@@ -117,6 +117,8 @@
                 <Setter Property="Padding" Value="1,0,0,0"/>
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
                 <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
+                <EventSetter Event="MouseLeftButtonUp" Handler="treeviewItem_MouseLeftButtonUp" />
+                <EventSetter Event="KeyUp" Handler="treeviewItem_KeyUp" />
 
                 <Setter Property="Template">
                     <Setter.Value>
@@ -252,8 +254,7 @@
                   BorderBrush="{x:Null}"
                   VirtualizingStackPanel.IsVirtualizing="True"
                   VirtualizingStackPanel.VirtualizationMode="Recycling"
-                  ItemContainerStyle="{StaticResource WatchTreeViewItem}"
-                  SelectedItemChanged="TreeView1_OnSelectedItemChanged">
+                  ItemContainerStyle="{StaticResource WatchTreeViewItem}">
 
             <TreeView.Style>
                 <Style TargetType="TreeView">

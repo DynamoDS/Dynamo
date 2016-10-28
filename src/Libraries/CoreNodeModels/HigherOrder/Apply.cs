@@ -88,7 +88,6 @@ namespace CoreNodeModels.HigherOrder
         {
             InPortData.Add(new PortData("func0", Resources.ComposePortDataFunc0ToolTip));
             InPortData.Add(new PortData("func1", Resources.ComposePortDataFunc1ToolTip));
-
             OutPortData.Add(new PortData("func", Resources.ComposePortDataResultToolTip));
             RegisterAllPorts();
         }

@@ -2076,11 +2076,6 @@ namespace ProtoCore.AST.AssociativeAST
         public bool isSSAPointerAssignment { get; set; }
         public bool IsFirstIdentListNode { get; set; }
 
-        // These properties are used only for the GraphUI ProtoAST
-        public uint Guid { get; set; }
-        //private uint splitFromUID = 0;
-        //public uint SplitFromUID { get { return splitFromUID; } set { splitFromUID = value; } }
-
         public BinaryExpressionNode(AssociativeNode left = null, AssociativeNode right = null, Operator optr = Operator.none)
         {
             isSSAAssignment = false;
