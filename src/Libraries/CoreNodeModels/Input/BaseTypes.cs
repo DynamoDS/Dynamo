@@ -142,6 +142,12 @@ namespace CoreNodeModels.Input
         private string _value;
         protected ConversionDelegate ConvertToken;
 
+        /// <summary>
+        /// This property sets the value of the number node, but is validated
+        /// on the view - it does not allow range syntax
+        /// or unassigned identifier syntax.i.e *start..end*
+        /// This property is only validated for new user input.
+        /// </summary>
         public string Value
         {
             get { return _value; }
@@ -198,7 +204,6 @@ namespace CoreNodeModels.Input
                 Value = value;
                 return true; // UpdateValueCore handled.
             }
-
             return base.UpdateValueCore(updateValueParams);
         }
 

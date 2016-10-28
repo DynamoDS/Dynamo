@@ -75,6 +75,7 @@
     <Compile Include="LogicTests.cs" />
     <Compile Include="MathTests.cs" />
     <Compile Include="NodeWithUITests.cs" />
+    <Compile Include="NumberTests.cs" />
     <Compile Include="ObjectTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtoNodesTests.cs" />
