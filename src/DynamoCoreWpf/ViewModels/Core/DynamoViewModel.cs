@@ -1,5 +1,4 @@
 ﻿using Dynamo.Configuration;
-using Dynamo.Engine;
 using Dynamo.Exceptions;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
@@ -35,7 +34,6 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
-using Dynamo.Controls;
 using ISelectable = Dynamo.Selection.ISelectable;
 
 
@@ -92,7 +90,7 @@ namespace Dynamo.ViewModels
 
         public bool ViewingHomespace
         {
-            get { return model.CurrentWorkspace == HomeSpace; }
+            get { return model.CurrentWorkspace is HomeWorkspaceModel; }
         }
 
         public bool IsAbleToGoHome
@@ -102,22 +100,41 @@ namespace Dynamo.ViewModels
 
         public HomeWorkspaceModel HomeSpace
         {
+            get { return HomeSpaceViewModel.Model as HomeWorkspaceModel; }
+        }
+
+        /// <summary>
+        /// The RunSettingsViewModel for the current workspace. If the current
+        /// workspace does not have this property, returns null.
+        /// </summary>
+        public RunSettingsViewModel RunSettingsViewModel
+        {
             get
             {
-                return model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+                var ws = currentWorkspaceViewModel as HomeWorkspaceViewModel;
+                if (ws == null) return null;
+                return ws.RunSettingsViewModel;
             }
         }
 
-        public WorkspaceViewModel HomeSpaceViewModel
+        /// <summary>
+        /// Property indicating whether the run button is enabled for the current
+        /// workspace. Returns false if the current workspace cannot be run.
+        /// </summary>
+        public bool RunButtonEnabled
         {
-            get { return Workspaces.FirstOrDefault(w => w.Model is HomeWorkspaceModel); }
+            get
+            {
+                if (RunSettingsViewModel == null) return false;
+                return RunSettingsViewModel.RunButtonEnabled;
+            }
         }
 
-        public EngineController EngineController { get { return Model.EngineController; } }
+        public WorkspaceViewModel HomeSpaceViewModel { get; private set; }
 
         public WorkspaceModel CurrentSpace
         {
-            get { return model.CurrentWorkspace; }
+            get { return Model.CurrentWorkspace; }
         }
 
         public double WorkspaceActualHeight { get; set; }
@@ -131,7 +148,11 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("WorkspaceActualWidth");
         }
 
+        /// <summary>
+        /// The currently active WorkspaceViewModel
+        /// </summary>
         private WorkspaceViewModel currentWorkspaceViewModel;
+
         /// <summary>
         /// The index in the collection of workspaces of the current workspace.
         /// This property is bound to the SelectedIndex property in the workspaces tab control
@@ -514,9 +535,8 @@ namespace Dynamo.ViewModels
 
             //add the initial workspace and register for future 
             //updates to the workspaces collection
-            var homespaceViewModel = new HomeWorkspaceViewModel(model.CurrentWorkspace as HomeWorkspaceModel, this);
-            workspaces.Add(homespaceViewModel);
-            currentWorkspaceViewModel = homespaceViewModel;
+            WorkspaceAdded(model.CurrentWorkspace);
+            currentWorkspaceViewModel = this.Workspaces.First();
 
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
@@ -864,11 +884,12 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("BackgroundColor");
                     RaisePropertyChanged("CurrentWorkspaceIndex");
                     RaisePropertyChanged("ViewingHomespace");
+                    RaisePropertyChanged("RunSettingsViewModel");
                     if (this.PublishCurrentWorkspaceCommand != null)
                         this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
-                    //RaisePropertyChanged("RunEnabled");
+                    RaisePropertyChanged("RunButtonEnabled");
                     break;
 
                 case "EnablePresetOptions":
@@ -876,20 +897,6 @@ namespace Dynamo.ViewModels
                     break;
             }
         }
-
-        // TODO(Sriram): This method is currently not used, but it should really 
-        // be. It watches property change notifications coming from the current 
-        // WorkspaceModel, and then enables/disables 'set timer' button on the UI.
-        // 
-        //void CurrentWorkspace_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        //{
-        //    switch (e.PropertyName)
-        //    {
-        //        case "RunEnabled":
-        //            RaisePropertyChanged(e.PropertyName);
-        //            break;
-        //    }
-        //}
 
         private void CleanUp()
         {
@@ -1067,24 +1074,25 @@ namespace Dynamo.ViewModels
             }  
         }
 
-        private void WorkspaceAdded(WorkspaceModel item)
+        private void WorkspaceAdded(WorkspaceModel ws)
         {
-            if (item is HomeWorkspaceModel)
+            if (ws is HomeWorkspaceModel)
             {
-                var newVm = new HomeWorkspaceViewModel(item as HomeWorkspaceModel, this);
-                workspaces.Insert(0, newVm);
+                var vm = new HomeWorkspaceViewModel(ws as HomeWorkspaceModel, this);
+                workspaces.Add(vm);
 
+                HomeSpaceViewModel = vm;
+                
                 // The RunSettings control is a child of the DynamoView, 
                 // but has its DataContext set to the RunSettingsViewModel 
                 // on the HomeWorkspaceViewModel. When the home workspace is changed,
                 // we need to raise a property change notification for the 
                 // homespace view model, so the RunSettingsControl's bindings
                 // get updated.
-                RaisePropertyChanged("HomeSpaceViewModel");
             }
             else
             {
-                var newVm = new WorkspaceViewModel(item, this);
+                var newVm = new WorkspaceViewModel(ws, this);
                 workspaces.Add(newVm);
             }
         }
@@ -1128,7 +1136,7 @@ namespace Dynamo.ViewModels
             };
 
             string ext, fltr;
-            if (workspace == HomeSpace)
+            if (workspace is IHomeWorkspaceModel)
             {
                 ext = ".dyn";
                 fltr = string.Format(Resources.FileDialogDynamoWorkspace,BrandingResourceProvider.ProductName,"*.dyn");
@@ -1353,9 +1361,9 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
+                Model.CurrentWorkspace.SaveAs(path);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 if (ex is IOException || ex is System.UnauthorizedAccessException)
                     System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
@@ -1373,7 +1381,7 @@ namespace Dynamo.ViewModels
             // crash sould always allow save as
             if (!String.IsNullOrEmpty(workspace.FileName) && !DynamoModel.IsCrashing)
             {
-                workspace.Save(EngineController.LiveRunnerRuntimeCore);
+                workspace.Save();
                 return true;
             }
             else
@@ -1384,7 +1392,7 @@ namespace Dynamo.ViewModels
                 var fd = this.GetSaveDialog(workspace);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
-                    workspace.SaveAs(fd.FileName, EngineController.LiveRunnerRuntimeCore);
+                    workspace.SaveAs(fd.FileName);
                     return true;
                 }
             }
@@ -1720,57 +1728,30 @@ namespace Dynamo.ViewModels
 
         public void MakeNewHomeWorkspace(object parameter)
         {
-            if (ClearHomeWorkspaceInternal())
-                this.ShowStartPage = false; // Hide start page if there's one.
+            var options = parameter as MakeNewHomeWorkspaceCommandOptions;
+
+            var firstWorkspace = this.model.Workspaces.FirstOrDefault();
+
+            // if the first workspace is empty and unsaved, it is essentially a new workspace
+            if (options != null && 
+                !options.ForceNewHomeWorkspace &&
+                firstWorkspace is HomeWorkspaceModel && 
+                String.IsNullOrEmpty(firstWorkspace.FileName) && 
+                !firstWorkspace.Nodes.Any())
+            {
+                // thus we simply hide the startpage if visible
+                this.ShowStartPage = false;
+            }
+            else
+            {
+                this.model.AddHomeWorkspace();
+                this.ShowStartPage = false;
+            }
         }
 
         internal bool CanMakeNewHomeWorkspace(object parameter)
         {
-            return HomeSpace.RunSettings.RunEnabled;
-        }
-
-        private void CloseHomeWorkspace(object parameter)
-        {
-            if (ClearHomeWorkspaceInternal())
-            {
-                // If after closing the HOME workspace, and there are no other custom 
-                // workspaces opened at the time, then we should show the start page.
-                this.ShowStartPage = (Model.Workspaces.Count() <= 1);
-            }
-        }
-
-        private bool CanCloseHomeWorkspace(object parameter)
-        {
-            return HomeSpace.RunSettings.RunEnabled;
-        }
-
-        /// <summary>
-        /// TODO(Ben): Both "CloseHomeWorkspace" and "MakeNewHomeWorkspace" are 
-        /// quite close in terms of functionality, but because their callers 
-        /// have different expectations in different scenarios, they remain 
-        /// separate now. A new task has been scheduled for them to be unified 
-        /// into one consistent way of handling.
-        /// 
-        ///     http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3813
-        /// 
-        /// </summary>
-        /// <returns>Returns true if the home workspace has been saved and 
-        /// cleared, or false otherwise.</returns>
-        /// 
-        private bool ClearHomeWorkspaceInternal()
-        {
-            // if the workspace is unsaved, prompt to save
-            // otherwise overwrite the home workspace with new workspace
-            if (!HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(HomeSpace))
-            {
-                Model.CurrentWorkspace = HomeSpace;
-
-                model.ClearCurrentWorkspace();
-
-                return true;
-            }
-
-            return false;
+            return true;
         }
 
         public void Exit(object allowCancel)
@@ -2155,7 +2136,7 @@ namespace Dynamo.ViewModels
                 {
                     foreach (var file in openFileDialog.FileNames)
                     {
-                        EngineController.ImportLibrary(file);
+                        Model.LibraryServices.ImportLibrary(file);
                     }
                     SearchViewModel.SearchAndUpdateResults();
                 }

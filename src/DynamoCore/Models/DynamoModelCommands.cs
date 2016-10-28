@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
 using Dynamo.Core;
+using Dynamo.Engine;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.Engine;
 using Dynamo.Engine.NodeToCode;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
@@ -433,9 +432,19 @@ namespace Dynamo.Models
 
         private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
         {
+            EngineController engineController;
+            if (this.CurrentWorkspace is HomeWorkspaceModel)
+            {
+                engineController = this.GetCurrentEngineController();
+            }
+            else
+            {
+                engineController = this.GetFirstEngineController();
+            }
+
             var libServices = new LibraryCustomizationServices(pathManager);
-            var namingProvider = new NamingProvider(EngineController.LibraryServices.LibraryManagementCore, libServices);
-            CurrentWorkspace.ConvertNodesToCodeInternal(EngineController, namingProvider);
+            var namingProvider = new NamingProvider(engineController.LibraryServices.LibraryManagementCore, libServices);
+            CurrentWorkspace.ConvertNodesToCodeInternal(engineController, namingProvider);
 
             CurrentWorkspace.HasUnsavedChanges = true;
         }

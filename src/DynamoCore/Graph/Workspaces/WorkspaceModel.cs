@@ -8,7 +8,6 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
-using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Logging;
@@ -896,18 +895,16 @@ namespace Dynamo.Graph.Workspaces
         ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
         /// </summary>
         /// <param name="newPath">The path to save to</param>
-        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object
-        /// to obtain serialized trace data for node list to save.</param>
         /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
         /// we should add it to recent files. Otherwise leave it.</param>
-        public virtual bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackup = false)
+        public virtual bool SaveAs(string newPath, bool isBackup = false)
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
             Log(String.Format(Resources.SavingInProgress, newPath));
             try
             {
-                if (SaveInternal(newPath, runtimeCore) && !isBackup)
+                if (SaveInternal(newPath) && !isBackup)
                     OnWorkspaceSaved();
             }
             catch (Exception ex)
@@ -1574,11 +1571,9 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Save assuming that the Filepath attribute is set.
         /// </summary>
-        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object
-        /// to obtain serialized trace data for node list to save.</param>
-        public virtual bool Save(ProtoCore.RuntimeCore runtimeCore)
+        public virtual bool Save()
         {
-            return SaveAs(FileName, runtimeCore);
+            return SaveAs(FileName);
         }
 
         internal void ResetWorkspace()
@@ -1748,7 +1743,7 @@ namespace Dynamo.Graph.Workspaces
 
         #region private/internal methods
 
-        private bool SaveInternal(string targetFilePath, ProtoCore.RuntimeCore runtimeCore)
+        private bool SaveInternal(string targetFilePath)
         {
             // Create the xml document to write to.
             var document = new XmlDocument();
@@ -1760,7 +1755,7 @@ namespace Dynamo.Graph.Workspaces
             if (!PopulateXmlDocument(document))
                 return false;
 
-            SerializeSessionData(document, runtimeCore);
+            SaveCustomData(document);
 
             try
             {
@@ -1887,41 +1882,12 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        // TODO(Ben): Documentation to come before pull request.
-        // TODO(Steve): This probably only belongs on HomeWorkspaceModel. -- MAGN-5715
-        protected virtual void SerializeSessionData(XmlDocument document, ProtoCore.RuntimeCore runtimeCore)
-        {
-            if (document.DocumentElement == null)
-            {
-                const string message = "Workspace should have been saved before this";
-                throw new InvalidOperationException(message);
-            }
-
-            try
-            {
-                if (runtimeCore == null) // No execution yet as of this point.
-                    return;
-
-                // Selecting all nodes that are either a DSFunction,
-                // a DSVarArgFunction or a CodeBlockNodeModel into a list.
-                var nodeGuids =
-                    Nodes.Where(
-                        n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel || n is Function)
-                        .Select(n => n.GUID);
-
-                var nodeTraceDataList = runtimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids, runtimeCore.DSExecutable);
-
-                if (nodeTraceDataList.Any())
-                    Utils.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
-            }
-            catch (Exception exception)
-            {
-                // We'd prefer file saving process to not crash Dynamo,
-                // otherwise user will lose the last hope in retaining data.
-                Log(exception.Message);
-                Log(exception.StackTrace);
-            }
-        }
+        /// <summary>
+        /// Allows a subclass of WorkspaceModel to attach custom data to the workspace being
+        /// saved. If WorkspaceModel.Save is overriden and not invoked, this will not be called.
+        /// </summary>
+        /// <param name="document">The XmlDocument being saved to, before serialization</param>
+        protected virtual void SaveCustomData(XmlDocument document) { }
 
         internal void SendModelEvent(Guid modelGuid, string eventName, int value)
         {

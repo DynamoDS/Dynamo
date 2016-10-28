@@ -263,7 +263,6 @@ namespace Dynamo.Wpf.ViewModels
                             dynamoViewModel.ShowOpenDialogAndOpenResultCommand.RaiseCanExecuteChanged();
                             dynamoViewModel.NewHomeWorkspaceCommand.RaiseCanExecuteChanged();
                             dynamoViewModel.OpenRecentCommand.RaiseCanExecuteChanged();
-                            dynamoViewModel.CloseHomeWorkspaceCommand.RaiseCanExecuteChanged();
                         }));
                     }
                     break;

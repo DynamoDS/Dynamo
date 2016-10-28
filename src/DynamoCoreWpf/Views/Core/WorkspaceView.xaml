@@ -15,7 +15,7 @@
              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
              MouseUp="OnMouseRelease"
              MouseMove="OnMouseMove"
-             IsHitTestVisible="{Binding IsCurrentSpace}"
+             IsHitTestVisible="{Binding IsCurrentWorkspace}"
              AllowDrop="True"
              Drop="OnWorkspaceDrop">
 

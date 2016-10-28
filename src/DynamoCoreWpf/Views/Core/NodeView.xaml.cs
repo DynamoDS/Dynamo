@@ -11,15 +11,13 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
 using Dynamo.UI;
+using Dynamo.UI.Controls;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using System.Windows.Threading;
 
 using DynCmd = Dynamo.Models.DynamoModel;
-
-using Dynamo.UI.Controls;
-using Dynamo.Nodes;
 
 namespace Dynamo.Controls
 {
@@ -126,7 +124,6 @@ namespace Dynamo.Controls
 
             nodeBorder.SizeChanged += OnSizeChanged;
             DataContextChanged += OnDataContextChanged;
-
 
             Panel.SetZIndex(this, 1);
         }

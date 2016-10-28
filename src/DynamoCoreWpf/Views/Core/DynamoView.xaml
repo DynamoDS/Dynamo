@@ -162,10 +162,9 @@
 
         <KeyBinding Key="F5"
                     Modifiers="Shift"
-                    Command="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.CancelRunCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                    Command="{Binding Path=DataContext.CancelRunCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="F5"
-                    Command="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.RunExpressionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                    CommandParameter="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.RunInDebug, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                    Command="{Binding Path=DataContext.RunCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <MouseBinding Gesture="Shift+LeftDoubleClick"
                       Command="{Binding Path=DataContext.HomeSpaceViewModel.ShowInCanvasSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                       CommandParameter="{x:Static viewModels:ShowHideFlags.Show}"/>
@@ -661,8 +660,8 @@
                                   IsChecked="{Binding ShowRunPreview}" 
                                   Header="{x:Static p:Resources.DynamoViewSettingShowRunPreview}"
                                   ToolTipService.ShowOnDisabled="True" 
-                                  ToolTip="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
-                                  IsEnabled="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewConverter}}"/>
+                                  ToolTip="{Binding RunButtonEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
+                                  IsEnabled="{Binding RunButtonEnabled, Converter={StaticResource RunPreviewConverter}}"/>
 
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuNumberFormat}"
@@ -746,8 +745,7 @@
                         </MenuItem>
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewHepMenuSamples}"
-                                  Name="SamplesMenu"
-                                  IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunEnabled}">
+                                  Name="SamplesMenu">
                             <MenuItem.Icon>
                                 <Image Source="/DynamoCoreWpf;component/UI/Images/OpenSelectedItemHS.png"
                                        Width="14"
@@ -787,15 +785,13 @@
                         <MenuItem Focusable="False"
                                   Name="ForceReexec"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuForceReExecute}"
-                                  Command="{Binding ForceRunExpressionCommand}"
-                                  CommandParameter="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunInDebug}"
-                                  IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled}"></MenuItem>
+                                  Command="{Binding RunCommand}"
+                                  IsEnabled="{Binding Path=RunButtonEnabled}"></MenuItem>
                         <MenuItem Focusable="False"
                                   Name="MutateTest"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuRunMutationTest}"
                                   Command="{Binding MutateTestDelegateCommand}"
-                                  CommandParameter="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunInDebug}"
-                                  IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled}"></MenuItem>
+                                  IsEnabled="{Binding Path=RunButtonEnabled}"></MenuItem>
                         <MenuItem Focusable="False"
                                   Name="CheckDailyBuilds"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuCheckDailyBuild}"
@@ -1288,7 +1284,7 @@
                                                                   VerticalAlignment="Center"
                                                                   ContentSource="Header" />
                                                 <Button Style="{StaticResource CloseButtonStyle}"
-                                                        Command="{Binding HideCommand}"
+                                                        Command="{Binding CloseCommand}"
                                                         Grid.Column="1">
                                                     <Image Width="16"
                                                            Height="16">
@@ -1323,18 +1319,6 @@
                     <TabControl.ItemTemplate>
 
                         <DataTemplate>
-
-                            <!--<Button>
-
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <ContentPresenter Content="{TemplateBinding Content}"/>
-                                </ControlTemplate>
-                            </Button.Template>
-
-                            <Button.InputBindings>
-                                <MouseBinding Gesture="MiddleClick" Command="{Binding HideCommand}" />
-                            </Button.InputBindings>-->
 
                             <Grid Height="20">
                                 <Grid.ColumnDefinitions>
@@ -1621,12 +1605,12 @@
                            Grid.Column="0"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch" 
-                           Visibility="{Binding IsAbleToGoHome, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                           Visibility="{Binding ViewingHomespace, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
                         <controls1:RunSettingsControl x:Name="RunSettingsControl"
                                                     Margin="2.5,5,5,5" 
                                                      VerticalAlignment="Stretch"
-                                                     DataContext="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel}"/>
+                                                     DataContext="{Binding Path=RunSettingsViewModel}"/>
                 </WrapPanel>
                 
                 <!--NotificationControl for showing run-time notifications-->

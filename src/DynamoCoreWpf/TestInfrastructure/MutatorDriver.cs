@@ -129,7 +129,7 @@ namespace Dynamo.TestInfrastructure
                     writer.Flush();
 
                     var engineController =
-                        dynamoViewModel.EngineController;
+                        dynamoViewModel.Model.GetFirstEngineController();
 
                     passed = mutator.RunTest(node, engineController, writer);
 

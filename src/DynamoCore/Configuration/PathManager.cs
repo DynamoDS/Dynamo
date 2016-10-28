@@ -10,6 +10,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Properties;
 using DynamoUtilities;
+using Dynamo.Models;
 
 namespace Dynamo.Core
 {

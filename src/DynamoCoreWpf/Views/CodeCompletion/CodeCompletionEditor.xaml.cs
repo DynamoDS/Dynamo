@@ -58,7 +58,7 @@ namespace Dynamo.UI.Controls
             this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
             this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
 
-            CodeHighlightingRuleFactory.CreateHighlightingRules(InnerTextEditor, dynamoViewModel.EngineController);
+            CodeHighlightingRuleFactory.CreateHighlightingRules(InnerTextEditor, dynamoViewModel.Model.GetCurrentEngineController());
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace Dynamo.UI.Controls
         private IEnumerable<ICompletionData> GetCompletionData(string code, string stringToComplete)
         {
             var engineController =
-                dynamoViewModel.EngineController;
+                dynamoViewModel.Model.GetCurrentEngineController();
 
             return engineController.CodeCompletionServices.GetCompletionsOnType(
                 code, stringToComplete, dynamoViewModel.CurrentSpace.ElementResolver).
@@ -164,7 +164,7 @@ namespace Dynamo.UI.Controls
 
         private IEnumerable<ICompletionData> SearchCompletions(string stringToComplete, Guid guid)
         {
-            var engineController = dynamoViewModel.EngineController;
+            var engineController = dynamoViewModel.Model.GetCurrentEngineController();
 
             return engineController.CodeCompletionServices.SearchCompletions(stringToComplete, guid,
                 dynamoViewModel.CurrentSpace.ElementResolver).Select(x => new CodeCompletionData(x));
@@ -172,7 +172,7 @@ namespace Dynamo.UI.Controls
 
         private IEnumerable<CodeCompletionInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
         {
-            var engineController = dynamoViewModel.EngineController;
+            var engineController = dynamoViewModel.Model.GetCurrentEngineController();
 
             return engineController.CodeCompletionServices.GetFunctionSignatures(
                 code, functionName, functionPrefix, dynamoViewModel.CurrentSpace.ElementResolver).

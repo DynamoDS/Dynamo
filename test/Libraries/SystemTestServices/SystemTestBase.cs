@@ -414,7 +414,7 @@ namespace SystemTestServices
         protected RuntimeMirror GetRuntimeMirror(string varName)
         {
             RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror = ViewModel.Model.EngineController.GetMirror(varName));
+            Assert.DoesNotThrow(() => mirror = ViewModel.Model.GetCurrentEngineController().GetMirror(varName));
             return mirror;
         }
 

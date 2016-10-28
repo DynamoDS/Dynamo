@@ -930,7 +930,7 @@ namespace Dynamo.Tests
 
             ViewModel.HomeSpace.Run();
 
-            ProtoCore.RuntimeCore runtimeCore = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
+            ProtoCore.RuntimeCore runtimeCore = ViewModel.Model.GetCurrentEngineController().LiveRunnerRuntimeCore;
             Assert.AreEqual(1, runtimeCore.RuntimeStatus.WarningCount);
 
             ProtoCore.Runtime.WarningEntry warningEntry = runtimeCore.RuntimeStatus.Warnings.ElementAt(0);

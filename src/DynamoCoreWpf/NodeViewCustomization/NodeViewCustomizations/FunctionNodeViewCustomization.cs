@@ -6,7 +6,6 @@ using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 
-
 namespace Dynamo.Wpf
 {
     public class FunctionNodeViewCustomization : INodeViewCustomization<Function>
@@ -101,7 +100,7 @@ namespace Dynamo.Wpf
                 ws.SetInfo(args.Name, args.Category, args.Description);
                 
                 if (!string.IsNullOrEmpty(ws.FileName))
-                    ws.Save(model.EngineController.LiveRunnerRuntimeCore);
+                    ws.Save();
             }
         }
 

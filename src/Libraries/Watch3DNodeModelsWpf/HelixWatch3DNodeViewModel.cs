@@ -59,7 +59,7 @@ namespace Watch3DNodeModelsWpf
             watchNode.VisibleUpstreamNodes(gathered);
 
             gathered.ForEach(n => n.WasRenderPackageUpdatedAfterExecution = false);
-            gathered.ForEach(n => n.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory));
+            gathered.ForEach(n => n.RequestVisualUpdateAsync(Scheduler, EngineController, renderPackageFactory));
         }
 
         protected override void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)

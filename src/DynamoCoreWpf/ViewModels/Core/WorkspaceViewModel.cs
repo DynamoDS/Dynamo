@@ -172,8 +172,6 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (Model == DynamoViewModel.HomeSpace)
-                    return "Home";
                 return Model.Name;
             }
         }
@@ -185,17 +183,17 @@ namespace Dynamo.ViewModels
 
         public bool CanEditName
         {
-            get { return Model != DynamoViewModel.HomeSpace; }
+            get { return true; }
         }
 
-        public bool IsCurrentSpace
+        public bool IsCurrentWorkspace
         {
             get { return Model == DynamoViewModel.CurrentSpace; }
         }
 
-        public bool IsHomeSpace
+        public bool IsHomeWorkspace
         {
-            get { return Model == DynamoViewModel.HomeSpace; }
+            get { return Model is HomeWorkspaceModel; }
         }
 
         public bool HasUnsavedChanges
@@ -489,9 +487,9 @@ namespace Dynamo.ViewModels
                     this.Model.OnZoomChanged(this, new ZoomEventArgs(Model.Zoom));
                     RaisePropertyChanged("Zoom");
                     break;
-                case "IsCurrentSpace":
-                    RaisePropertyChanged("IsCurrentSpace");
-                    RaisePropertyChanged("IsHomeSpace");
+                case "IsCurrentWorkspace":
+                    RaisePropertyChanged("IsCurrentWorkspace");
+                    RaisePropertyChanged("IsHomeWorkspace");
                     break;
                 case "HasUnsavedChanges":
                     RaisePropertyChanged("HasUnsavedChanges");
@@ -832,36 +830,23 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("SelectionArgumentLacing");
         }
 
-        private void Hide(object parameters)
+        private void Close(object parameters)
         {
-            // Closing of custom workspaces will simply close those workspaces,
-            // but closing Home workspace has a different meaning. First off, 
-            // Home workspace cannot be closed or hidden, it can only be cleared.
-            // As of this revision, pressing the "X" button on Home workspace 
-            // tab simply clears the Home workspace, and bring up the Start Page
-            // if there are no other custom workspace that is opened.
-            // 
+            if (!Model.HasUnsavedChanges || DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
+            {
+                DynamoViewModel.Model.RemoveWorkspace(Model);
 
-            if (this.IsHomeSpace)
-            {
-                if (DynamoViewModel.CloseHomeWorkspaceCommand.CanExecute(null))
-                    DynamoViewModel.CloseHomeWorkspaceCommand.Execute(null);
-            }
-            else
-            {
-                if (!Model.HasUnsavedChanges || DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
-                    DynamoViewModel.Model.RemoveWorkspace(Model);
+                // if there are no remaining home workspaces, add a new one
+                if (!DynamoViewModel.Model.Workspaces.OfType<HomeWorkspaceModel>().Any())
+                {
+                    DynamoViewModel.Model.AddHomeWorkspace();
+                    this.DynamoViewModel.ShowStartPage = true;
+                }
             }
         }
 
-        private static bool CanHide(object parameters)
+        private static bool CanClose(object parameters)
         {
-            // Workspaces other than HOME can be hidden (i.e. closed), but we 
-            // are enabling it also for the HOME workspace. When clicked, the 
-            // HOME workspace is cleared (i.e. equivalent of pressing the New 
-            // button), and if there is no other workspaces opened, then the 
-            // Start Page is displayed.
-            // 
             return true;
         }
 
@@ -1081,7 +1066,7 @@ namespace Dynamo.ViewModels
 
         internal void Loaded()
         {
-            RaisePropertyChanged("IsHomeSpace");
+            RaisePropertyChanged("IsHomeWorkspace");
 
             // New workspace or swapped workspace to follow it offset and zoom
             this.Model.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(Model.X, Model.Y)));

@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+<<<<<<< HEAD
 using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
+=======
+using Dynamo.Core.Threading;
+using Dynamo.Engine;
+>>>>>>> 49a846f08ea71ad26fcfe638b8f83e4426544a3d
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
@@ -122,9 +127,21 @@ namespace Dynamo
             CurrentDynamoModel.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
         }
 
-        protected void EmptyScheduler()
+        protected EngineController CurrentEngineController()
         {
-            while (CurrentDynamoModel.Scheduler.ProcessNextTask(false))
+            return CurrentDynamoModel.GetCurrentEngineController();
+        }
+
+        protected IScheduler CurrentScheduler()
+        {
+            return CurrentDynamoModel.GetCurrentScheduler();
+        }
+
+        protected void EmptyScheduler(HomeWorkspaceModel homeWorkspace = null)
+        {
+            var s = CurrentScheduler();
+
+            while (s.ProcessNextTask(false))
             {
 
             }

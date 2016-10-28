@@ -41,12 +41,12 @@ namespace Dynamo.Engine
         /// <summary>
         /// This event is fired when <see cref="UpdateGraphAsyncTask"/> is completed.
         /// </summary>
-        internal event Action<TraceReconciliationEventArgs> TraceReconcliationComplete;
+        public event Action<TraceReconciliationEventArgs> TraceReconciliationComplete;
         private void OnTraceReconciliationComplete(TraceReconciliationEventArgs e)
         {
-            if (TraceReconcliationComplete != null)
+            if (TraceReconciliationComplete != null)
             {
-                TraceReconcliationComplete(e);
+                TraceReconciliationComplete(e);
             }
         }
 
@@ -564,7 +564,17 @@ namespace Dynamo.Engine
         }
     }
 
-    internal class TraceReconciliationEventArgs : EventArgs
+    public class PostTraceReconciliationCompleteEventArgs : EventArgs
+    {
+        public Dictionary<Guid, List<ISerializable>> OrphanedSerializables { get; private set; }
+
+        public PostTraceReconciliationCompleteEventArgs(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
+        {
+            OrphanedSerializables = orphanedSerializables;
+        }
+    }
+
+    public class TraceReconciliationEventArgs : EventArgs
     {
         /// <summary>
         /// A list of ISerializable items.
@@ -577,8 +587,10 @@ namespace Dynamo.Engine
         }
     }
 
+    public delegate void PostTraceReconciliationCompleteHandler(PostTraceReconciliationCompleteEventArgs model);
     public interface ITraceReconciliationProcessor
     {
-        void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables);
+        event PostTraceReconciliationCompleteHandler PostTraceReconciliationComplete;
+        void OnPostTraceReconciliationComplete(Dictionary<Guid, List<ISerializable>> orphanedSerializables);
     }
 }

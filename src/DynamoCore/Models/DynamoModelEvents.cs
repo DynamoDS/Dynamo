@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using Dynamo.Annotations;
 using Dynamo.Core;
 using Dynamo.Events;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Properties;
 
 namespace Dynamo.Models
 {
@@ -292,6 +294,20 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// An event trigger when a graph evaluation begins.
+        /// </summary>
+        public event EventHandler<EvaluationStartedEventArgs> EvaluationStarted;
+        public virtual void OnEvaluationStarted(object sender, EvaluationStartedEventArgs e)
+        {
+            //TODO: Multiple Home Workspaces - Adjust execution session to take a workspace.
+            ExecutionEvents.OnGraphPreExecution(null);
+            if (EvaluationStarted != null)
+            {
+                EvaluationStarted(sender, e);
+            }
+        }
+
+        /// <summary>
         /// An event triggered when a single graph evaluation completes.
         /// </summary>
         public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
@@ -311,6 +327,11 @@ namespace Dynamo.Models
 
             if (EvaluationCompleted != null)
                 EvaluationCompleted(sender, e);
+
+            if (!e.EvaluationTookPlace) return;
+
+            var evalTimespan = new TimeSpan(e.EvaluationTimeElapsed);
+            Debug.WriteLine(String.Format(Resources.EvaluationCompleted, evalTimespan));
         }
 
         /// <summary>

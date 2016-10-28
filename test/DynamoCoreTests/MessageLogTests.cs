@@ -20,7 +20,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\messagelog\testwarningmessage.dyn");
             RunModel(openPath);
 
-            ProtoCore.RuntimeCore runtimeCore = CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore;
+            ProtoCore.RuntimeCore runtimeCore = CurrentDynamoModel.GetCurrentEngineController().LiveRunnerRuntimeCore;
             Assert.AreEqual(1, runtimeCore.RuntimeStatus.WarningCount);
 
             ProtoCore.Runtime.WarningEntry warningEntry = runtimeCore.RuntimeStatus.Warnings.ElementAt(0);

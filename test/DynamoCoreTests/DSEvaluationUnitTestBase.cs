@@ -107,7 +107,9 @@ namespace Dynamo.Tests
         protected RuntimeMirror GetRuntimeMirror(string varName)
         {
             RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror = GetModel().EngineController.GetMirror(varName));
+            var m = GetModel();
+            var ec = m.GetCurrentEngineController();
+            Assert.DoesNotThrow(() => mirror = ec.GetMirror(varName));
             return mirror;
         }
 
@@ -249,7 +251,7 @@ namespace Dynamo.Tests
         /// <returns></returns>
         protected ClassMirror GetClassMirror(string className)
         {
-            ProtoCore.Core core = GetModel().EngineController.LiveRunnerCore;
+            ProtoCore.Core core = GetModel().GetCurrentEngineController().LiveRunnerCore;
             var classMirror = new ClassMirror(className, core);
             return classMirror;
         }

@@ -142,6 +142,9 @@ limitations under the License.
     <Compile Include="Graph\Nodes\NodeLoaders\InputNodeLoader.cs" />
     <Compile Include="Graph\Nodes\Attributes.cs" />
     <Compile Include="Visualization\DefaultRenderPackageFactory.cs" />
+    <Compile Include="Interfaces\ISchedulerFactory.cs" />
+    <Compile Include="Core\Threading\MultiThreadedSchedulerFactory.cs" />
+    <Compile Include="Core\Threading\SingleThreadedSchedulerFactory.cs" />
     <Compile Include="Extensions\ExtensionDefinition.cs" />
     <Compile Include="Extensions\IExtensionLoader.cs" />
     <Compile Include="Extensions\IExtensionManager.cs" />
