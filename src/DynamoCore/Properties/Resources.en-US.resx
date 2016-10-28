@@ -353,7 +353,7 @@ Sorry about that.</value>
     <value>The package was found to be empty and was not installed.</value>
   </data>
   <data name="PackageTooLarge" xml:space="preserve">
-    <value>The package is too large!  The package must be less than 1 GB!</value>
+    <value>The package is too large!  The package must be less than 15 MB!</value>
   </data>
   <data name="PathNotRegconizableAsStableOrDailyBuild" xml:space="preserve">
     <value>The specified file path is not recognizable as a stable or a daily build</value>
@@ -622,8 +622,8 @@ value : bool = false</value>
   <data name="CodeBlockSearchTags" xml:space="preserve">
     <value>codeblock;</value>
   </data>
-  <data name="NoBinFolder" xml:space="preserve">
-    <value>{0} contains a package without a bin folder.  Ignoring it.</value>
+  <data name="DirectoryNotFound" xml:space="preserve">
+    <value>Directory not found : {0}</value>
   </data>
   <data name="CustomNodeFolderLoadFailure" xml:space="preserve">
     <value>Failed to load custom node directory. Do you have permission to access {0}?</value>
