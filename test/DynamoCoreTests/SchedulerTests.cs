@@ -1193,7 +1193,7 @@ namespace Dynamo.Tests
                 {
                     // See documentation for 'SchedulerIntegrationTests' above.
                     StartInTestMode = false,
-                    SchedulerFactory = new SingleThreadedSchedulerFactory(schedulerThread),
+                    SchedulerFactory = new SingleThreadedSchedulerFactory(schedulerThread, TaskProcessMode.Asynchronous),
                     PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
                     ProcessMode = TaskProcessMode.Asynchronous

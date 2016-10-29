@@ -15,6 +15,7 @@ using DynamoShapeManager;
 
 using NUnit.Framework;
 using TestServices;
+using Dynamo.Core.Threading;
 
 namespace Dynamo
 {

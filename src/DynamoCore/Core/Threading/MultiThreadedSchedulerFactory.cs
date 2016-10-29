@@ -8,10 +8,15 @@ namespace Dynamo.Core.Threading
     /// </summary>
     public class MultiThreadedSchedulerFactory : ISchedulerFactory
     {
+        TaskProcessMode processMode;
+
         /// <summary>
         /// Create a new MultiSchedulerFactory.
         /// </summary>
-        public MultiThreadedSchedulerFactory() { }
+        public MultiThreadedSchedulerFactory(TaskProcessMode processMode)
+        {
+            this.processMode = processMode;
+        }
 
         /// <summary>
         /// Create a completely new Scheduler for use with a Workspace along with a new
@@ -20,7 +25,7 @@ namespace Dynamo.Core.Threading
         /// <returns></returns>
         public DynamoScheduler Build()
         {
-            return new DynamoScheduler(new DynamoSchedulerThread(), TaskProcessMode.Asynchronous);
+            return new DynamoScheduler(new DynamoSchedulerThread(), processMode);
         }
     }
 }

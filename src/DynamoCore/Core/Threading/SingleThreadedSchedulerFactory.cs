@@ -9,15 +9,17 @@ namespace Dynamo.Core.Threading
     public class SingleThreadedSchedulerFactory : ISchedulerFactory
     {
         private readonly ISchedulerThread thread;
+        private TaskProcessMode processMode;
 
         /// <summary>
         /// Create a new SingleThreadedSchedulerFactory that reuses the thread passed
         /// as argument.
         /// </summary>
         /// <param name="thread">The scheduler thread to be used</param>
-        public SingleThreadedSchedulerFactory(ISchedulerThread thread)
+        public SingleThreadedSchedulerFactory(ISchedulerThread thread, TaskProcessMode processMode)
         {
             this.thread = thread;
+            this.processMode = processMode;
         }
 
         /// <summary>
@@ -26,7 +28,7 @@ namespace Dynamo.Core.Threading
         /// <returns></returns>
         public DynamoScheduler Build()
         {
-            return new DynamoScheduler(thread, TaskProcessMode.Synchronous);
+            return new DynamoScheduler(thread, processMode);
         }
     }
 }

@@ -510,7 +510,7 @@ namespace Dynamo.Models
             MigrationManager.MessageLogged += LogMessage;
             MigrationManager.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
-            this.SchedulerFactory = config.SchedulerFactory ?? new MultiThreadedSchedulerFactory();
+            SchedulerFactory = config.SchedulerFactory ?? new MultiThreadedSchedulerFactory(config.ProcessMode);
 
             geometryFactoryPath = config.GeometryFactoryPath;
 
