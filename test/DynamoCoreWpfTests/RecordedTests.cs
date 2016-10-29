@@ -2581,15 +2581,7 @@ namespace DynamoCoreWpfTests
 
             NodeModel nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(nodeGuid);
             Assert.AreNotEqual(ElementState.Warning, nodeModel.State);
-<<<<<<< HEAD
             AssertPreviewValue(nodeGuid, 11);
-=======
-
-            Assert.IsNotNull(nodeModel.GetCachedValueFromEngine(ViewModel.Model.GetCurrentEngineController()).Data);
-
-            AssertPreviewValue("3f309016-7b00-4487-9b68-f0640e892d39", 11);
-
->>>>>>> 49a846f08ea71ad26fcfe638b8f83e4426544a3d
         }
 
         [Test, RequiresSTA]

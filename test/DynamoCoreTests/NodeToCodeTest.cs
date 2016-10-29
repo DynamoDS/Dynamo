@@ -422,9 +422,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer1()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().ImportLibrary(libraryPath);
             }
 
             var functionCall = AstFactory.BuildFunctionCall(
@@ -434,13 +434,8 @@ namespace Dynamo.Tests
             var lhs = AstFactory.BuildIdentifier("lhs");
             var ast = AstFactory.BuildBinaryExpression(lhs, functionCall, ProtoCore.DSASM.Operator.assign);
 
-<<<<<<< HEAD
             NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
-                CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore.ClassTable, 
-=======
-            NodeToCodeUtils.ReplaceWithShortestQualifiedName(
                 CurrentDynamoModel.LibraryServices.LibraryManagementCore.ClassTable, 
->>>>>>> 49a846f08ea71ad26fcfe638b8f83e4426544a3d
                 new [] { ast });
 
             // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
@@ -453,9 +448,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer2()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             // Point.ByCoordinates(1,2); 
@@ -482,9 +477,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer3()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             // 1 -> Point.ByCoordinates(x, y); 
@@ -511,9 +506,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer4()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             // 1 -> Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, x); 
@@ -540,9 +535,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer5()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             // 1 -> Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, x); 
@@ -591,9 +586,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer7()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             // Point.ByCoordinates(1,2,3);
@@ -625,9 +620,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacerWithDefaultArgument()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             OpenModel(@"core\node2code\SphereDefaultArg.dyn");
@@ -654,9 +649,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacerWithDefaultArgument2()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             OpenModel(@"core\node2code\ShortenNodeNameWithDefaultArg.dyn");
@@ -683,9 +678,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacerWithStaticProperty()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             OpenModel(@"core\node2code\ShortenNodeNameWithStaticProperty.dyn");
@@ -807,9 +802,9 @@ namespace Dynamo.Tests
         public void TestShortName1()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             OpenModel(@"core\node2code\shortName1.dyn");
@@ -852,9 +847,9 @@ namespace Dynamo.Tests
         public void TestPropertyWontBeReplaced2()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             OpenModel(@"core\node2code\staticproperty.dyn");
@@ -1130,7 +1125,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestNameProvider()
         {
-            var core = CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
+            var core = CurrentDynamoModel.GetCurrentEngineController().LibraryServices.LibraryManagementCore;
             var libraryServices = new LibraryCustomizationServices(CurrentDynamoModel.PathManager);
             var nameProvider = new NamingProvider(core, libraryServices);
 
@@ -1297,11 +1292,11 @@ namespace Dynamo.Tests
         /// <param name="dynFilePath"></param>
         protected void MutationTest(string dynFilePath)
         {
-            CurrentDynamoModel.Scheduler.ProcessMode = TaskProcessMode.Asynchronous;
+            CurrentDynamoModel.GetCurrentScheduler().ProcessMode = TaskProcessMode.Asynchronous;
 
             RunModel(dynFilePath);
             // Block until all tasks are executed
-            while (CurrentDynamoModel.Scheduler.HasPendingTasks);
+            while (CurrentDynamoModel.GetCurrentScheduler().HasPendingTasks);
 
             var allNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Select(n => n.GUID).ToList();
             int nodeCount = allNodes.Count();
@@ -1322,7 +1317,7 @@ namespace Dynamo.Tests
                 var command = new DynamoModel.ConvertNodesToCodeCommand();
                 CurrentDynamoModel.ExecuteCommand(command);
                 // Block until all tasks are executed
-                while (CurrentDynamoModel.Scheduler.HasPendingTasks);
+                while (CurrentDynamoModel.GetCurrentScheduler().HasPendingTasks);
 
                 foreach (var node in otherNodes)
                 {
@@ -1336,7 +1331,7 @@ namespace Dynamo.Tests
                 var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
                 CurrentDynamoModel.ExecuteCommand(undo);
                 // Block until all tasks are executed
-                while (CurrentDynamoModel.Scheduler.HasPendingTasks) ;
+                while (CurrentDynamoModel.GetCurrentScheduler().HasPendingTasks) ;
 
                 // Verify after undo everything is OK
                 Assert.AreEqual(nodeCount, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());

@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using Dynamo.Annotations;
-using Dynamo.Interfaces;
-using Dynamo.Models;
-using System.Linq;
 
 namespace Dynamo.Scheduler
 {
@@ -84,6 +80,17 @@ namespace Dynamo.Scheduler
         /// AsyncTask base class calls this to obtain the new time-stamp value.
         /// </summary>
         TimeStamp NextTimeStamp { get; }
+
+        /// <summary>
+        /// A flag indicating whether the scheduler have any tasks in its queue.
+        /// </summary>
+        bool HasPendingTasks { get; }
+
+        /// <summary>
+        /// The <see cref="TaskProcessMode"/> that will be
+        /// used for processing the tasks.
+        /// </summary>
+        TaskProcessMode ProcessMode { get; set; }
 
         /// <summary>
         /// An ISchedulerThread implementation calls this method so scheduler 

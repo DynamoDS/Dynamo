@@ -57,7 +57,7 @@ namespace Autodesk.Workspaces
         /// </summary>
         /// <param name="json"></param>
         public static WorkspaceModel LoadWorkspaceFromJson(string json, LibraryServices libraryServices,
-            EngineController engineController, DynamoScheduler scheduler, NodeFactory factory,
+            EngineController engineController, IScheduler scheduler, NodeFactory factory,
             bool isTestMode, bool verboseLogging, CustomNodeManager manager)
         {
             var settings = new JsonSerializerSettings

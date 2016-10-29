@@ -199,7 +199,7 @@ namespace Dynamo.Tests
             var wcd1 = new WorkspaceComparisonData(ws1);
 
             var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(model.CurrentWorkspace, model.LibraryServices,
-                model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false, 
+                model.GetCurrentEngineController(), model.GetCurrentScheduler(), model.NodeFactory, DynamoModel.IsTestMode, false, 
                 model.CustomNodeManager);
 
             Assert.IsNotNullOrEmpty(json);
@@ -222,7 +222,7 @@ namespace Dynamo.Tests
             File.WriteAllText(jsonPath, json);
 
             var ws2 = Autodesk.Workspaces.Utilities.LoadWorkspaceFromJson(json, model.LibraryServices,
-                model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false,
+                model.GetCurrentEngineController(), model.GetCurrentScheduler(), model.NodeFactory, DynamoModel.IsTestMode, false,
                 model.CustomNodeManager);
 
             if (ws2 is CustomNodeWorkspaceModel)
