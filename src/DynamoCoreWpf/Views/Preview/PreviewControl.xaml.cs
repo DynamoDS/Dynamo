@@ -75,7 +75,7 @@ namespace Dynamo.UI.Controls
 
         public PreviewControl(NodeViewModel nodeViewModel)
         {
-            var ws = nodeViewModel.DynamoViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            var ws = nodeViewModel.DynamoViewModel.Model.GetFirstWorkspaceOfType<HomeWorkspaceModel>();
             if (ws == null) throw new InvalidOperationException("Cannot create a PreviewControl outside of a HomeWorkspaceModel");
 
             this.scheduler = ws.Scheduler;

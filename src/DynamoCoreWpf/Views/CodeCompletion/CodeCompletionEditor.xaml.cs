@@ -58,7 +58,7 @@ namespace Dynamo.UI.Controls
             this.InnerTextEditor.TextArea.TextEntering += OnTextAreaTextEntering;
             this.InnerTextEditor.TextArea.TextEntered += OnTextAreaTextEntered;
 
-            CodeHighlightingRuleFactory.CreateHighlightingRules(InnerTextEditor, dynamoViewModel.Model.GetCurrentEngineController());
+            CodeHighlightingRuleFactory.CreateHighlightingRules(InnerTextEditor, dynamoViewModel.Model.GetFirstEngineController());
         }
 
         /// <summary>

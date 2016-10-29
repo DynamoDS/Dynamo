@@ -1477,7 +1477,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Get an EngineController from the current workspace assuming it has one
         /// </summary>
-        /// <exception cref="InvalidOperationException">The current workspace does not have an EngineController</exception>
+        /// <exception cref="InvalidOperationException">The current workspace does not have an EngineController.</exception>
         public EngineController GetCurrentEngineController()
         {
             var ws = this.CurrentWorkspace as IHomeWorkspaceModel;
