@@ -808,6 +808,15 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The input must be numeric..
+        /// </summary>
+        public static string NumberNodeInputMustBeNumeric {
+            get {
+                return ResourceManager.GetString("NumberNodeInputMustBeNumeric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Boolean OR: Returns true if either of the inputs are true. If neither are true, returns false..
         /// </summary>
         public static string OrDescription {
