@@ -1113,6 +1113,12 @@ namespace Dynamo.Models
                         OnWorkspaceOpening(xmlDoc);
 
                         CurrentWorkspace = ws;
+
+                        foreach (var def in CustomNodeManager.LoadedDefinitions)
+                        {
+                            RegisterCustomNodeDefinitionWithEngine(def);
+                        }
+
                         return;
                     }
                 }
@@ -1158,11 +1164,6 @@ namespace Dynamo.Models
                 DebugSettings.VerboseLogging,
                 IsTestMode
                );
-
-            foreach (var def in CustomNodeManager.LoadedDefinitions)
-            {
-                RegisterCustomNodeDefinitionWithEngine(def);
-            }
 
             RegisterHomeWorkspace(newWorkspace);
 
