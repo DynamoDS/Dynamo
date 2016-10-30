@@ -1119,6 +1119,19 @@ namespace Dynamo.Models
                             RegisterCustomNodeDefinitionWithEngine(def);
                         }
 
+                        var hws = ws as HomeWorkspaceModel;
+                        if(hws != null)
+                        {
+                            if (hws.RunSettings.RunType == RunType.Periodic)
+                            {
+                                hws.StartPeriodicEvaluation();
+                            }
+                            else if (hws.RunSettings.RunType == RunType.Automatic)
+                            {
+                                hws.Run();
+                            }
+                        }
+
                         return;
                     }
                 }

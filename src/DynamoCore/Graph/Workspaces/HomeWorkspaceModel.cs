@@ -301,15 +301,6 @@ namespace Dynamo.Graph.Workspaces
                 copiedData.Add(new KeyValuePair<Guid, List<CallSite.RawTraceData>>(kvp.Key, callSiteTraceData));
             }
             historicalTraceData = copiedData;
-
-            if (this.RunSettings.RunType == RunType.Periodic)
-            {
-                this.StartPeriodicEvaluation();
-            }
-            else if (RunSettings.RunType == RunType.Automatic)
-            {
-                Run();
-            }
         }
 
         #endregion
