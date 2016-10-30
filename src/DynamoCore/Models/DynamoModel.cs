@@ -1063,7 +1063,7 @@ namespace Dynamo.Models
         {
             foreach (var ws in this.Workspaces.OfType<HomeWorkspaceModel>())
             {
-                ws.ResetEngine(this.LibraryServices, this.geometryFactoryPath, DebugSettings.VerboseLogging);
+                ws.ResetEngine(this.LibraryServices, this.geometryFactoryPath, true);
             }
 
             foreach (var def in CustomNodeManager.LoadedDefinitions)
