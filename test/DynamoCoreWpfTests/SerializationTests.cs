@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -411,6 +412,12 @@ namespace DynamoCoreWpfTests
             {
                 workspace.SetArgumentLacingCommand.Execute(LacingStrategy.Longest.ToString());
             });
+        }
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            base.GetLibrariesToPreload(libraries);
         }
     }
 }
