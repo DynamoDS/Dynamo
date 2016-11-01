@@ -2297,6 +2297,19 @@ namespace Dynamo.Graph.Nodes
                 RenderPackagesUpdated(this, packages);
             }
         }
+
+        /// <summary>
+        /// Removes event handlers for the NodeModel.
+        /// </summary>
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            InPorts.CollectionChanged -= PortsCollectionChanged;
+            OutPorts.CollectionChanged -= PortsCollectionChanged;
+            PortConnected -= OnPortConnected;
+            PortDisconnected -= OnPortDisconnected;
+        }
     }
 
     /// <summary>
