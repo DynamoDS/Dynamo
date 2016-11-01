@@ -696,7 +696,6 @@ namespace ProtoTest.LiveRunner
 
             //==============================================
             //
-            // import ("ProtoGeometry.dll");
             // p = Point.Bycoordinates(10.0, 10.0, 10.0);
             // newPoint = p.Translate(1.0,2.0,3.0);
             // xval = newPoint.X;
@@ -729,7 +728,6 @@ namespace ProtoTest.LiveRunner
 
             //==============================================
             //
-            // import ("ProtoGeometry.dll");
             // p = Point.Bycoordinates(10.0, 10.0, 10.0);
             // newPoint = p.Translate(1.0,2.0,3.0);
             // xval = newPoint.X;
@@ -750,7 +748,6 @@ namespace ProtoTest.LiveRunner
 
             //==============================================
             //
-            // import ("ProtoGeometry.dll");
             // p = Point.Bycoordinates(10.0, 10.0, 10.0);
             // newPoint = p.Translate(1.0,2.0,3.0);
             // xval = newPoint.X;
@@ -2330,7 +2327,7 @@ r = Equals(x, {41, 42});
             liveRunner.ResetVMAndResyncGraph(new List<string> { "FunctionObject.ds" });
             string code = @"
  def foo(x,y ) { return = x + y; }
- f = Function(foo, 2, {1}, {null, 42}, true); r = __Apply(f, 3);
+ f = __CreateFunctionObject(foo, 2, {1}, {null, 42}, true); r = __Apply(f, 3);
  ";
 
             Guid guid = System.Guid.NewGuid();
@@ -2985,7 +2982,56 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
-        [Category("Failure")]
+        public void TestCodeBlockModification17()
+        {
+            // MAGN-10790
+            List<string> codes = new List<string>()
+            {
+                "x = 3;x =6;",
+                "x = 6;x = 3;"
+            };
+
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> subtrees = new List<Subtree>();
+            subtrees.Add(TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, subtrees, null);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("x", 6);
+
+            subtrees.Clear();
+            subtrees.Add(TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
+            syncData = new GraphSyncData(null, null, subtrees);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("x", 3);
+        }
+
+        [Test]
+        public void TestCodeBlockModification18()
+        {
+            // MAGN-3184
+            List<string> codes = new List<string>()
+            {
+                "b = a;a = 3; a = 5;",
+                "b = a;a = 3;"
+            };
+
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> subtrees = new List<Subtree>();
+            subtrees.Add(TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, subtrees, null);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("a", 5);
+
+            subtrees.Clear();
+            subtrees.Add(TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
+            syncData = new GraphSyncData(null, null, subtrees);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("a", 3);
+        }
+
+        [Test]
         public void TestCodeBlockDeleteLine01()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4159
@@ -5213,13 +5259,13 @@ v = foo(t);
 @"
     a = [Imperative]
     {
-        return = 10;
+        return = 20;
     }
 
     b = [Imperative]
     {
     
-        return = 20;
+        return = 30;
     }
 
 
@@ -5230,7 +5276,7 @@ v = foo(t);
         {
             e = 40;
         }
-        return = 50;
+        return = 60;
     }
 ",
 
@@ -5250,12 +5296,18 @@ v = foo(t);
             List<Subtree> modified = new List<Subtree>();
             Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]);
             modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("a", 20);
+            AssertValue("b", 30);
+            AssertValue("c", 60);
+            AssertValue("f", null);
 
             // Create a new CBN to add the removed line
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
-            syncData = new GraphSyncData(null, added, modified);
+            syncData = new GraphSyncData(null, added, null);
             liveRunner.UpdateGraph(syncData);
             AssertValue("f", 60);
 
@@ -5508,10 +5560,10 @@ a = p.UpdateCount;
             deleted.Add(subtree);
 
             var guid3 = Guid.NewGuid();
-            var code3 = "__GC();";
+            var code3 = "__GC();z = DisposeTracer.DisposeCount;";
             syncData = new GraphSyncData(deleted, new List<Subtree> { ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, code3)}, null);
             liveRunner.UpdateGraph(syncData);
-            AssertValue("y", 1);
+            AssertValue("z", 1);
         }
 
         [Test]

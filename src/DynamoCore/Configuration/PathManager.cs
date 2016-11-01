@@ -56,6 +56,8 @@ namespace Dynamo.Core
         public const string ExtensionsDirectoryName = "extensions";
         public const string ViewExtensionsDirectoryName = "viewExtensions";
         public const string DefinitionsDirectoryName = "definitions";
+        public const string SamplesDirectoryName = "samples";
+        public const string GalleryDirectoryName = "gallery";
         public const string BackupDirectoryName = "backup";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
         public const string GalleryContentsFileName = "GalleryContents.xml";
@@ -201,10 +203,8 @@ namespace Dynamo.Core
             {
                 if (!Directory.Exists(path))
                 {
-                    throw new Exception(String.Format(Resources.NoBinFolder, path));
-                }
-                  
-
+                    throw new Exception(String.Format(Resources.DirectoryNotFound, path));
+                }                 
                 additionalResolutionPaths.Add(path);
             }
         }
@@ -322,9 +322,14 @@ namespace Dynamo.Core
             // Current user specific directories.
             userDataDir = GetUserDataFolder(pathResolver);
 
-            logDirectory = Path.Combine(userDataDir, LogsDirectoryName);
+            // When running as a headless process, put the logs directory in a consistent
+            // location that doesn't change every time the version number changes.
+            var userDataDirNoVersion = Directory.GetParent(userDataDir).FullName;
+            logDirectory = Path.Combine(Dynamo.Models.DynamoModel.IsHeadless ? userDataDirNoVersion : userDataDir,
+                                        LogsDirectoryName);
+
             preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
-            backupDirectory = Path.Combine(Directory.GetParent(userDataDir).FullName, BackupDirectoryName);
+            backupDirectory = Path.Combine(userDataDirNoVersion, BackupDirectoryName);
 
             // Common directories.
             commonDataDir = GetCommonDataFolder(pathResolver);
@@ -490,8 +495,25 @@ namespace Dynamo.Core
 
         private static string GetSamplesFolder(string dataRootDirectory)
         {
+            var versionedDirectory = dataRootDirectory;
+            if (!Directory.Exists(versionedDirectory))
+            {
+                // Try to see if folder "%ProgramData%\{...}\{major}.{minor}" exists, if it
+                // does not, then root directory would be "%ProgramData%\{...}".
+                //
+                dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
+            }
+            else if (!Directory.Exists(Path.Combine(versionedDirectory, SamplesDirectoryName)))
+            {
+                // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
+                // if the folder "%ProgramData%\{...}\{major}.{minor}\samples" exists. If it
+                // doesn't exist, then root directory would be "%ProgramData%\{...}".
+                //
+                dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
+            }
+
             var uiCulture = CultureInfo.CurrentUICulture.ToString();
-            var sampleDirectory = Path.Combine(dataRootDirectory, "samples", uiCulture);
+            var sampleDirectory = Path.Combine(dataRootDirectory, SamplesDirectoryName, uiCulture);
 
             // If the localized samples directory does not exist then fall back 
             // to using the en-US samples folder. Do an additional check to see 
@@ -502,7 +524,7 @@ namespace Dynamo.Core
                 !di.GetDirectories().Any() ||
                 !di.GetFiles("*.dyn", SearchOption.AllDirectories).Any())
             {
-                var neturalCommonSamples = Path.Combine(dataRootDirectory, "samples", "en-US");
+                var neturalCommonSamples = Path.Combine(dataRootDirectory, SamplesDirectoryName, "en-US");
                 if (Directory.Exists(neturalCommonSamples))
                     sampleDirectory = neturalCommonSamples;
             }
@@ -512,8 +534,25 @@ namespace Dynamo.Core
 
         private static string GetGalleryDirectory(string commonDataDir)
         {
+            var versionedDirectory = commonDataDir;
+            if (!Directory.Exists(versionedDirectory))
+            {
+                // Try to see if folder "%ProgramData%\{...}\{major}.{minor}" exists, if it
+                // does not, then root directory would be "%ProgramData%\{...}".
+                //
+                commonDataDir = Directory.GetParent(versionedDirectory).FullName;
+            }
+            else if (!Directory.Exists(Path.Combine(versionedDirectory, GalleryDirectoryName)))
+            {
+                // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
+                // if the folder "%ProgramData%\{...}\{major}.{minor}\gallery" exists. If it
+                // doesn't exist, then root directory would be "%ProgramData%\{...}".
+                //
+                commonDataDir = Directory.GetParent(versionedDirectory).FullName;
+            }
+
             var uiCulture = CultureInfo.CurrentUICulture.ToString();
-            var galleryDirectory = Path.Combine(commonDataDir, "gallery", uiCulture);
+            var galleryDirectory = Path.Combine(commonDataDir, GalleryDirectoryName, uiCulture);
 
             // If the localized gallery directory does not exist then fall back 
             // to using the en-US gallery folder. Do an additional check to see 
@@ -523,7 +562,7 @@ namespace Dynamo.Core
             if (!Directory.Exists(galleryDirectory) ||
                 !di.GetFiles("*.xml",SearchOption.TopDirectoryOnly).Any())
             {
-                var neutralCommonGallery = Path.Combine(commonDataDir, "gallery", "en-US");
+                var neutralCommonGallery = Path.Combine(commonDataDir, GalleryDirectoryName, "en-US");
                 if (Directory.Exists(neutralCommonGallery))
                     galleryDirectory = neutralCommonGallery;
             }

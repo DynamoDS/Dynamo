@@ -8,6 +8,7 @@ using NCalc;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using Expression = NCalc.Expression;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -15,6 +16,7 @@ namespace CoreNodeModels
     [NodeDescription("FormulaDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
+    [OutPortTypes("Function")]
     [AlsoKnownAs("DSCoreNodesUI.Formula")]
     public class Formula : NodeModel
     {
@@ -48,9 +50,15 @@ namespace CoreNodeModels
             }
         }
 
+        [JsonConstructor]
+        private Formula(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Auto;
+        }
+
         public Formula()
         {
-            ArgumentLacing = LacingStrategy.Shortest;
+            ArgumentLacing = LacingStrategy.Auto;
             OutPortData.Add(new PortData("", Properties.Resources.FormulaPortDataResultToolTip));
             RegisterAllPorts();
         }
@@ -242,7 +250,7 @@ namespace CoreNodeModels
             }
             else
             {
-                AppendReplicationGuides(inputAstNodes);
+                UseLevelAndReplicationGuide(inputAstNodes);
 
                 return new AssociativeNode[]
                 {

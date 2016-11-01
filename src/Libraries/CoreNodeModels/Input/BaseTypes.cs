@@ -15,6 +15,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using CoreNodeModels.Properties;
 using System.Net;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.Input
 {
@@ -25,6 +26,12 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("Dynamo.Nodes.StringInput", "Dynamo.Nodes.dynStringInput", "DSCoreNodesUI.Input.StringInput")]
     public class StringInput : String
     {
+        [JsonConstructor]
+        private StringInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) {
+            Value = "";
+            ShouldDisplayPreviewCore = false;
+        }
+
         public StringInput()
         {
             RegisterAllPorts();
@@ -96,6 +103,16 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("Dynamo.Nodes.DoubleInput", "Dynamo.Nodes.dynDoubleInput", "DSCoreNodesUI.Input.DoubleInput")]
     public class DoubleInput : NodeModel
     {
+        [JsonConstructor]
+        private DoubleInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
+        {
+            InPorts.AddRange(inPorts);
+            OutPorts.AddRange(outPorts);
+            ShouldDisplayPreviewCore = false;
+            ConvertToken = Convert;
+            Value = "0";
+        }
+
         public DoubleInput()
         {
             OutPortData.Add(new PortData("", ""));
@@ -104,8 +121,6 @@ namespace CoreNodeModels.Input
             ShouldDisplayPreviewCore = false;
             ConvertToken = Convert;
             Value = "0";
-
-            //ws.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
         }
 
         public virtual double Convert(double value)
@@ -127,6 +142,12 @@ namespace CoreNodeModels.Input
         private string _value;
         protected ConversionDelegate ConvertToken;
 
+        /// <summary>
+        /// This property sets the value of the number node, but is validated
+        /// on the view - it does not allow range syntax
+        /// or unassigned identifier syntax.i.e *start..end*
+        /// This property is only validated for new user input.
+        /// </summary>
         public string Value
         {
             get { return _value; }
@@ -183,7 +204,6 @@ namespace CoreNodeModels.Input
                 Value = value;
                 return true; // UpdateValueCore handled.
             }
-
             return base.UpdateValueCore(updateValueParams);
         }
 

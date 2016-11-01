@@ -23,6 +23,7 @@ using Dynamo.Wpf;
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
 using UnitsUI.Properties;
+using Newtonsoft.Json;
 
 namespace UnitsUI
 {
@@ -113,8 +114,9 @@ namespace UnitsUI
 
     public abstract class MeasurementInputBase : NodeModel
     {
+        [JsonIgnore]
         public SIUnit Measure { get; protected set; }
-        
+
         public double Value
         {
             get
@@ -127,6 +129,10 @@ namespace UnitsUI
                 RaisePropertyChanged("Value");
             }
         }
+
+        public MeasurementInputBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) { }
+
+        public MeasurementInputBase() : base() { }
 
         internal void ForceValueRaisePropertyChanged()
         {
@@ -200,12 +206,19 @@ namespace UnitsUI
 
     [NodeName("Number From Feet and Inches")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
-    [NodeDescription("LengthFromStringDescription",typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("LengthFromStringDescription", typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("LengthFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
+    [OutPortTypes("number")]
     [IsDesignScriptCompatible]
     public class LengthFromString : MeasurementInputBase
     {
-        public LengthFromString()
+        [JsonConstructor]
+        private LengthFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        {
+            Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
+        }
+
+        public LengthFromString():base()
         {
             Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
 
@@ -260,12 +273,19 @@ namespace UnitsUI
 
     [NodeName("Area From String")]
     [NodeCategory("Units.Area.Create")]
-    [NodeDescription("AreaFromStringDescription",typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("AreaFromStringDescription", typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("AreaFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     [NodeDeprecated]
     public class AreaFromString : MeasurementInputBase
     {
+        [JsonConstructor]
+        private AreaFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        {
+            Measure = Area.FromDouble(0.0, AreaUnit.SquareMeter);
+            Warning("AreaFromString is obsolete.", true);
+        }
+
         public AreaFromString()
         {
             Measure = Area.FromDouble(0.0, AreaUnit.SquareMeter);
@@ -293,12 +313,19 @@ namespace UnitsUI
 
     [NodeName("Volume From String")]
     [NodeCategory("Units.Volume.Create")]
-    [NodeDescription("VolumeFromStringDescription",typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("VolumeFromStringDescription", typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("VolumeFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     [NodeDeprecated]
     public class VolumeFromString : MeasurementInputBase
     {
+        [JsonConstructor]
+        private VolumeFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        {
+            Measure = Volume.FromDouble(0.0, VolumeUnit.CubicMeter);
+            Warning("AreaFromString is obsolete.", true);
+        }
+
         public VolumeFromString()
         {
             Measure = Volume.FromDouble(0.0, VolumeUnit.CubicMeter);
@@ -319,15 +346,25 @@ namespace UnitsUI
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeDescription("UnitTypesDescription", typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("UnitTypesSearchTags", typeof(UnitsUI.Properties.Resources))]
+    [OutPortTypes("type")]
     [IsDesignScriptCompatible]
     public class UnitTypes : AllChildrenOfType<SIUnit>
     {
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var typeName = AstFactory.BuildStringNode(Items[SelectedIndex].Name);
-            var assemblyName = AstFactory.BuildStringNode("DynamoUnits");
-            var functionCall = AstFactory.BuildFunctionCall(new Func<string, string, object>(Types.FindTypeByNameInAssembly), new List<AssociativeNode>() { typeName, assemblyName });
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+            AssociativeNode node;
+            if (SelectedIndex < 0 || SelectedIndex >= Items.Count)
+            {
+                node = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                var typeName = AstFactory.BuildStringNode(Items[SelectedIndex].Name);
+                var assemblyName = AstFactory.BuildStringNode("DynamoUnits");
+                node = AstFactory.BuildFunctionCall(new Func<string, string, object>(Types.FindTypeByNameInAssembly), new List<AssociativeNode>() { typeName, assemblyName });
+            }
+           
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
     }
 }

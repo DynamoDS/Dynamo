@@ -19,6 +19,7 @@ using ProtoCore.Utils;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
+using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -46,6 +47,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Indicates whether code block should not be in focus upon undo/redo actions on node
         /// </summary>
+        [JsonIgnore]
         public bool ShouldFocus
         {
             get { return shouldFocus; }
@@ -55,6 +57,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Returns <see cref="ElementResolver"/> for CodeBlock node
         /// </summary>
+        [JsonIgnore]
         public ElementResolver ElementResolver { get; set; }
 
         private struct Formatting
@@ -83,20 +86,21 @@ namespace Dynamo.Graph.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
             this.libraryServices = libraryServices;
             this.ElementResolver = new ElementResolver();
+            ProcessCodeDirect();
         }
 
         /// <summary>
         ///     Initilizes a new instance of the <see cref="CodeBlockNodeModel"/> class
         /// </summary>
-        /// <param name="userCode">Code block content</param>
-        /// <param name="xPos">X coordinate of the code block</param>
-        /// <param name="yPos">Y coordinate of the code block</param>
+        /// <param name="code">Code block content</param>
+        /// <param name="x">X coordinate of the code block</param>
+        /// <param name="y">Y coordinate of the code block</param>
         /// <param name="libraryServices"><see cref="LibraryServices"/> object to manage
         ///  builtin libraries as well as imported libraries</param>
         /// <param name="resolver">Responsible for resolving 
         /// a partial class name to its fully resolved name</param>
-        public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices, ElementResolver resolver)
-            : this(userCode, Guid.NewGuid(), xPos, yPos, libraryServices, resolver) { }
+        public CodeBlockNodeModel(string code, double x, double y, LibraryServices libraryServices, ElementResolver resolver)
+            : this(code, Guid.NewGuid(), x, y, libraryServices, resolver) { }
 
         /// <summary>
         ///     Initilizes a new instance of the <see cref="CodeBlockNodeModel"/> class
@@ -276,6 +280,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Temporary variables that generated in code.
         /// </summary>
+        [JsonIgnore]
         public IEnumerable<string> TempVariables
         {
             get { return tempVariables; }
@@ -284,6 +289,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Code statement of CBN
         /// </summary>
+        [JsonIgnore]
         public IEnumerable<Statement> CodeStatements
         {
             get { return codeStatements; }
@@ -304,19 +310,9 @@ namespace Dynamo.Graph.Nodes
 
             value = CodeBlockUtils.FormatUserText(value);
 
-            //Since an empty Code Block Node should not exist, this checks for such instances.
-            // If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
-            // an empty Code Block Node should not be recorded, this method also checks and removes
-            // any unwanted recordings
-            if (value == "")
-            {
-                Code = "";
-            }
-            else
-            {
-                if (!value.Equals(Code))
-                    SetCodeContent(value, workspaceElementResolver);
-            }
+            if (!value.Equals(Code))
+               SetCodeContent(value, workspaceElementResolver);
+
             return true;
         }
 
@@ -579,8 +575,6 @@ namespace Dynamo.Graph.Nodes
                             // Create a statement variable from the generated nodes
                             codeStatements.Add(Statement.CreateInstance(parsedNode));
                         }
-
-                        SetPreviewVariable(parseParam.ParsedNodes);
                     }
                 }
 
@@ -615,10 +609,15 @@ namespace Dynamo.Graph.Nodes
                 {
                     inputIdentifiers = new List<string>();
                     inputPortNames = new List<string>();
+
+                    var definedVariables = new HashSet<string>(CodeBlockUtils.GetStatementVariables(codeStatements, true).SelectMany(s => s));
                     foreach (var kvp in parseParam.UnboundIdentifiers)
                     {
-                        inputIdentifiers.Add(kvp.Value);
-                        inputPortNames.Add(kvp.Key);
+                        if (!definedVariables.Contains(kvp.Value))
+                        {
+                            inputIdentifiers.Add(kvp.Value);
+                            inputPortNames.Add(kvp.Key);
+                        }
                     }
                 }
                 else
@@ -626,6 +625,13 @@ namespace Dynamo.Graph.Nodes
                     inputIdentifiers.Clear();
                     inputPortNames.Clear();
                 }
+
+                // Set preview variable after gathering input identifiers. As a variable
+                // will be renamed only if it is not the preview variable and is either a
+                // variable defined in code block node or in on the right hand side of 
+                // expression as an input variable, a variable may not be renamed properly
+                // if SetPreviewVariable() is called before gathering input identifiers.
+                SetPreviewVariable(parseParam.ParsedNodes);
             }
             catch (Exception e)
             {
@@ -1241,7 +1247,13 @@ namespace Dynamo.Graph.Nodes
             if(leftNode is TypedIdentifierNode)
                 return new IdentifierNode(leftNode as IdentifierNode);
             if (leftNode is IdentifierNode)
-                return leftNode as IdentifierNode;
+            {
+                var identiferNode = leftNode as IdentifierNode;
+                if (identiferNode.ArrayDimensions != null)
+                    return null;
+                else
+                    return identiferNode;
+            }
             else if (leftNode is IdentifierListNode || leftNode is FunctionCallNode)
                 return null;
             else
@@ -1304,9 +1316,12 @@ namespace Dynamo.Graph.Nodes
                 //First get all the defined variables
                 while (parsedNode is BinaryExpressionNode)
                 {
-                    IdentifierNode assignedVar = GetDefinedIdentifier((parsedNode as BinaryExpressionNode).LeftNode);
+                    var binaryExpression = parsedNode as BinaryExpressionNode;
+                    IdentifierNode assignedVar = GetDefinedIdentifier(binaryExpression.LeftNode);
                     if (assignedVar != null)
+                    {
                         definedVariables.Add(new Variable(assignedVar));
+                    }
                     parsedNode = (parsedNode as BinaryExpressionNode).RightNode;
                 }
 
@@ -1382,7 +1397,7 @@ namespace Dynamo.Graph.Nodes
             if (identNode == null)
                 throw new ArgumentNullException();
 
-            Name = identNode.ToString();
+            Name = identNode.Name;
             Row = identNode.line;
             StartColumn = identNode.col;
         }

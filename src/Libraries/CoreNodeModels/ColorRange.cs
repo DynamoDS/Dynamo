@@ -11,6 +11,7 @@ using System.Globalization;
 
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -38,6 +39,16 @@ namespace CoreNodeModels
         {
             if (RequestChangeColorRange != null)
                 RequestChangeColorRange();
+        }
+
+        [JsonConstructor]
+        private ColorRange(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            this.PropertyChanged += ColorRange_PropertyChanged;
+            foreach (var port in InPorts)
+            {
+                port.Connectors.CollectionChanged += Connectors_CollectionChanged;
+            }
         }
 
         public ColorRange()

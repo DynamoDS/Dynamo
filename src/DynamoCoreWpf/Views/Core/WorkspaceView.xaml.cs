@@ -189,16 +189,48 @@ namespace Dynamo.Views
             var initialized = false;
             var bounds = new Rect();
 
+            double minX = 0.0, minY = 0.0;
             var dragCanvas = WpfUtilities.ChildOfType<DragCanvas>(this);
             var childrenCount = VisualTreeHelper.GetChildrenCount(dragCanvas);
             for (int index = 0; index < childrenCount; ++index)
             {
                 var child = VisualTreeHelper.GetChild(dragCanvas, index);
                 var firstChild = VisualTreeHelper.GetChild(child, 0);
-                if ((!(firstChild is NodeView)) && (!(firstChild is NoteView)) && (!(firstChild is AnnotationView)))
-                    continue;
 
+                switch (firstChild.GetType().Name)
+                {
+                    case "NodeView":
+                    case "NoteView":
+                    case "AnnotationView":
+                        break;
+
+                    // Until we completely removed InfoBubbleView (or fixed its broken 
+                    // size calculation), we will not be including it in our size 
+                    // calculation here. This means that the info bubble, if any, will 
+                    // still go beyond the boundaries of the final PNG file. I would 
+                    // prefer not to add this hack here as it introduces multiple issues 
+                    // (including NaN for Grid inside the view and the fix would be too 
+                    // ugly to type in). Suffice to say that InfoBubbleView is not 
+                    // included in the size calculation for screen capture (work-around 
+                    // should be obvious).
+                    // 
+                    // case "InfoBubbleView":
+                    //     child = WpfUtilities.ChildOfType<Grid>(child);
+                    //     break;
+
+                    // We do not take anything other than those above 
+                    // into consideration when the canvas size is measured.
+                    default:
+                        continue;
+                }
+
+                // Determine the smallest corner of all given visual elements on the 
+                // graph. This smallest top-left corner value will be useful in making 
+                // the offset later on.
+                // 
                 var childBounds = VisualTreeHelper.GetDescendantBounds(child as Visual);
+                minX = childBounds.X < minX ? childBounds.X : minX;
+                minY = childBounds.Y < minY ? childBounds.Y : minY;
                 childBounds.X = (double)(child as Visual).GetValue(Canvas.LeftProperty);
                 childBounds.Y = (double)(child as Visual).GetValue(Canvas.TopProperty);
 
@@ -221,7 +253,7 @@ namespace Dynamo.Views
             bounds.Height = 20 + ((((int)Math.Ceiling(bounds.Height)) + 1) & ~0x01);
 
             var currentTransformGroup = WorkspaceElements.RenderTransform as TransformGroup;
-            WorkspaceElements.RenderTransform = new TranslateTransform(10.0 - bounds.X, 10.0 - bounds.Y);
+            WorkspaceElements.RenderTransform = new TranslateTransform(10.0 - bounds.X - minX, 10.0 - bounds.Y - minY);
             WorkspaceElements.UpdateLayout();
 
             var rtb = new RenderTargetBitmap(((int)bounds.Width),

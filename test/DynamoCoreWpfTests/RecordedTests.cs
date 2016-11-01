@@ -1610,9 +1610,8 @@ namespace DynamoCoreWpfTests
             var cbn = GetNode("fc209d2f-1724-4485-bde4-92670802aaa3") as CodeBlockNodeModel;
             Assert.NotNull(cbn);
 
-            Assert.AreEqual(2, cbn.InPortData.Count);
-            Assert.AreEqual("a", cbn.InPortData[0].ToolTipString);
-            Assert.AreEqual("b", cbn.InPortData[1].ToolTipString);
+            Assert.AreEqual(1, cbn.InPortData.Count);
+            Assert.AreEqual("b", cbn.InPortData[0].ToolTipString);
         }
 
         [Test, RequiresSTA]
@@ -1832,18 +1831,15 @@ namespace DynamoCoreWpfTests
             //Check the CBN for input and output ports count
             var cbn = GetNode("c9929987-69c8-42bd-9cda-04ef90d029cb") as CodeBlockNodeModel;
             Assert.AreNotEqual(ElementState.Error, cbn.State);
-            Assert.AreEqual(3, cbn.OutPorts.Count);
+            Assert.AreEqual(2, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a[0]", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(1, cbn.OutPorts[0].LineIndex);
+            Assert.AreEqual("b", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(3, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(3, cbn.OutPorts[1].LineIndex);
-
-            Assert.AreEqual("a", cbn.OutPorts[2].ToolTipContent);
-            Assert.AreEqual(5, cbn.OutPorts[2].LineIndex);
+            Assert.AreEqual("a", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(5, cbn.OutPorts[1].LineIndex);
         }
 
         [Test, RequiresSTA]
@@ -2013,21 +2009,12 @@ namespace DynamoCoreWpfTests
             //Check the CBN for input and output ports count
             var cbn = GetNode("3c7c3458-70be-4588-b162-b1099cf30ebc") as CodeBlockNodeModel;
             Assert.AreNotEqual(ElementState.Error, cbn.State);
-            Assert.AreEqual(4, cbn.OutPorts.Count);
+            Assert.AreEqual(1, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
-
-            Assert.AreEqual("a[0]", cbn.OutPorts[1].ToolTipContent);
-            Assert.AreEqual(1, cbn.OutPorts[1].LineIndex);
-
-            Assert.AreEqual("a[1]", cbn.OutPorts[2].ToolTipContent);
-            Assert.AreEqual(2, cbn.OutPorts[2].LineIndex);
-
-            Assert.AreEqual("a[2]", cbn.OutPorts[3].ToolTipContent);
-            Assert.AreEqual(3, cbn.OutPorts[3].LineIndex);
         }
 
         [Test, RequiresSTA]
@@ -2894,7 +2881,7 @@ namespace DynamoCoreWpfTests
             NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                 ("aeed3ffe-7294-43a9-8a05-83b5ff05f527");
 
-            Assert.AreEqual(ElementState.Warning, node.State);
+            Assert.AreEqual(ElementState.Dead, node.State);
         }
 
         [Test, RequiresSTA]
@@ -5284,6 +5271,66 @@ namespace DynamoCoreWpfTests
             });
         }
 
+        [Test]
+        public void TestNoLacingOnListJoin()
+        {
+            RunCommandsFromFile("CreateListJoin.xml", (commandTag) =>
+            {
+                if (commandTag == "Run")
+                {
+                    var workspace = ViewModel.Model.CurrentWorkspace;
+                    var node = workspace.NodeFromWorkspace<Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction>("ac563e6a-ebc5-4b88-bd64-3cfe8f9e96d7");
+                    Assert.IsNotNull(node);
+                    Assert.AreEqual(LacingStrategy.Disabled, node.ArgumentLacing);
+                }
+            });
+        }
+
+        [Test]
+        public void MAGN10382()
+        {
+            var nodeGuid = "86107112-5c2d-43ae-9d7c-e2d756a80bf3";
+
+            // github issue: https://github.com/DynamoDS/Dynamo/issues/7151
+            RunCommandsFromFile("CodeBlockNode_DefineDictionary.xml", (commandTag) =>
+            {
+                switch (commandTag)
+                {
+                    case "CreateDictionary":
+                    case "ChangeName1":
+                    case "ChangeName2":
+                    case "ChangeName4":
+                    case "ChangeName3":
+                        AssertPreviewValue(nodeGuid, new object[] { 1, 2, 3 });
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+
+        [Test]
+        public void MAGN9507()
+        {
+            // a = 1; ----> x = a; x = x + 1;
+            // a = 2;
+
+            var nodeGuid = "f00bc4f2-c20b-48be-a45b-cc13432db328";
+            RunCommandsFromFile("regress9507.xml", (commandTag) =>
+            {
+                switch (commandTag)
+                {
+                    case "FirstRun":
+                        AssertPreviewValue(nodeGuid, 2);
+                        break;
+                    case "SecondRun":
+                        AssertPreviewValue(nodeGuid, 3);
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
     }
 
 }

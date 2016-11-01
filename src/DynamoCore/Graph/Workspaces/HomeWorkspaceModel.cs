@@ -7,6 +7,7 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Models;
 using Dynamo.Scheduler;
+using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.Namespace;
 using System;
@@ -29,18 +30,20 @@ namespace Dynamo.Graph.Workspaces
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
         private bool graphExecuted;
-        private IEnumerable<KeyValuePair<Guid, List<string>>> historicalTraceData;
+        private IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> historicalTraceData;
 
         /// <summary>
-        ///     Returns <see cref="EngineController"/> object assosiated with this home workspace
+        ///     Returns <see cref="EngineController"/> object assosiated with thisPreloadedTraceData home workspace
         /// to coordinate the interactions between some DesignScript
         /// sub components like library managment, live runner and so on.
         /// </summary>
+        [JsonIgnore]
         public EngineController EngineController { get; private set; }
 
         /// <summary>
         ///     Flag specifying if this workspace is operating in "test mode".
         /// </summary>
+        [JsonIgnore]
         public bool IsTestMode { get; set; }
 
         /// <summary>
@@ -49,6 +52,7 @@ namespace Dynamo.Graph.Workspaces
         ///     This flag is critical to ensuring that crashing run-auto files
         ///     are not left in run-auto upon reopening.  
         /// </summary>
+        [JsonIgnore]
         public bool HasRunWithoutCrash { get; private set; }
 
         /// <summary>
@@ -60,25 +64,28 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Indicates if detailed descriptions should be logged
         /// </summary>
+        [JsonIgnore]
         public readonly bool VerboseLogging;
 
         /// <summary>
         ///     Returns <see cref="EngineController"/> object containing properties to control
         /// how execution is carried out.
         /// </summary>
+        [JsonIgnore]
         public readonly RunSettings RunSettings;
 
         /// <summary>
         /// Evaluation count is incremented whenever the graph is evaluated. 
         /// It is set to zero when the graph is Cleared.
         /// </summary>
+        [JsonIgnore]
         public long EvaluationCount { get; private set; }
 
         /// <summary>
         /// In near future, the file loading mechanism will be completely moved 
         /// into WorkspaceModel, that's the time we removed this property setter below.
         /// </summary>
-        internal IEnumerable<KeyValuePair<Guid, List<string>>> PreloadedTraceData
+        internal IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> PreloadedTraceData
         {
             get
             {
@@ -97,7 +104,7 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
+        private IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> preloadedTraceData;
 
         internal bool IsEvaluationPending
         {
@@ -185,7 +192,7 @@ namespace Dynamo.Graph.Workspaces
             : this(engine,
                 scheduler,
                 factory,
-                Enumerable.Empty<KeyValuePair<Guid, List<string>>>(),
+                Enumerable.Empty<KeyValuePair<Guid, List<CallSite.RawTraceData>>>(),
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 Enumerable.Empty<AnnotationModel>(),
@@ -194,6 +201,21 @@ namespace Dynamo.Graph.Workspaces
                 new WorkspaceInfo() { FileName = fileName, Name = "Home" },
                 verboseLogging,
                 isTestMode) { }
+
+        public HomeWorkspaceModel(Guid guid, EngineController engine,
+            DynamoScheduler scheduler,
+            NodeFactory factory,
+            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> traceData,
+            IEnumerable<NodeModel> nodes,
+            IEnumerable<NoteModel> notes,
+            IEnumerable<AnnotationModel> annotations,
+            IEnumerable<PresetModel> presets,
+            ElementResolver resolver,
+            WorkspaceInfo info,
+            bool verboseLogging,
+            bool isTestMode):this(engine, scheduler, factory, traceData, nodes, notes, 
+                annotations, presets, resolver, info, verboseLogging, isTestMode)
+        { Guid = guid; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HomeWorkspaceModel"/> class
@@ -216,7 +238,7 @@ namespace Dynamo.Graph.Workspaces
         public HomeWorkspaceModel(EngineController engine, 
             DynamoScheduler scheduler, 
             NodeFactory factory,
-            IEnumerable<KeyValuePair<Guid, List<string>>> traceData, 
+            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> traceData, 
             IEnumerable<NodeModel> nodes, 
             IEnumerable<NoteModel> notes, 
             IEnumerable<AnnotationModel> annotations,
@@ -252,11 +274,12 @@ namespace Dynamo.Graph.Workspaces
             // nulled, to check for node deletions and reconcile the trace data.
             // We do a deep copy of this data because the PreloadedTraceData is
             // later set to null before the graph update.
-            var copiedData = new List<KeyValuePair<Guid, List<string>>>();
+            var copiedData = new List<KeyValuePair<Guid, List<CallSite.RawTraceData>>>();
             foreach (var kvp in PreloadedTraceData)
             {
-                var strings = kvp.Value.Select(string.Copy).ToList();
-                copiedData.Add(new KeyValuePair<Guid, List<string>>(kvp.Key, strings));
+                List<CallSite.RawTraceData> callSiteTraceData = new List<CallSite.RawTraceData>();
+                callSiteTraceData.AddRange(kvp.Value);
+                copiedData.Add(new KeyValuePair<Guid, List<CallSite.RawTraceData>>(kvp.Key, callSiteTraceData));
             }
             historicalTraceData = copiedData;
         }

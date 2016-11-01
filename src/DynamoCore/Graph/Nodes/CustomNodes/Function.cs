@@ -11,6 +11,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Namespace;
 using ProtoCore.Utils;
 using ProtoCore.BuildData;
+using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Nodes.CustomNodes
 {
@@ -24,6 +25,16 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     public class Function 
         : FunctionCallBase<CustomNodeController<CustomNodeDefinition>, CustomNodeDefinition>
     {
+        [JsonConstructor]
+        private Function(string nickName, string description, string category)
+            : base(new CustomNodeController<CustomNodeDefinition>(null))
+        {
+            ArgumentLacing = LacingStrategy.Shortest;
+            NickName = nickName;
+            Description = description;
+            Category = category;
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Function"/> class.
         /// </summary>
@@ -43,8 +54,26 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
+        /// A flag used during serialization to indicate
+        /// that the node is a custom node.
+        /// </summary>
+        public bool IsCustomNode
+        {
+            get { return true; }
+        }
+
+        /// <summary>
+        /// The unique id of the underlying function.
+        /// </summary>
+        public Guid FunctionUuid
+        {
+            get { return Definition.FunctionId; }
+        }
+
+        /// <summary>
         /// Returns customNode definition.
         /// </summary>
+        [JsonIgnore]
         public CustomNodeDefinition Definition { get { return Controller.Definition; } }
         
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
@@ -52,7 +81,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             return Controller.BuildAst(this, inputAstNodes);
         }
 
-        #region Serialization/Deserialization methods
+#region Serialization/Deserialization methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
@@ -199,7 +228,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                         }
                     }
 
-                    #region Legacy output support
+#region Legacy output support
 
                     else if (subNode.Name.Equals("Output"))
                     {
@@ -211,7 +240,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                             OutPortData.Add(data);
                     }
 
-                    #endregion
+#endregion
                 }
 
                 RegisterAllPorts();
@@ -228,7 +257,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                 Description = descNode.Attributes["value"].Value;
         }
 
-        #endregion
+#endregion
 
         private void ValidateDefinition(CustomNodeDefinition def)
         {

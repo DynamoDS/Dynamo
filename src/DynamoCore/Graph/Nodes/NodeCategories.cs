@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Library;
+using ProtoCore;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -280,7 +282,7 @@ namespace Dynamo.Graph.Nodes
         /// to be saved to the XmlDocument. This parameter cannot be null and 
         /// must represent a non-empty list of node-data-list pairs.</param>
         internal static void SaveTraceDataToXmlDocument(XmlDocument document,
-            IEnumerable<KeyValuePair<Guid, List<string>>> nodeTraceDataList)
+            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> nodeTraceDataList)
         {
             #region Parameter Validations
 
@@ -329,8 +331,9 @@ namespace Dynamo.Graph.Nodes
                 {
                     var callsiteXmlElement = document.CreateElement(
                         Configurations.CallsiteTraceDataXmlTag);
+                    callsiteXmlElement.SetAttribute(Configurations.CallSiteID, data.ID);
 
-                    callsiteXmlElement.InnerText = data;
+                    callsiteXmlElement.InnerText = data.Data;
                     nodeElement.AppendChild(callsiteXmlElement);
                 }
             }
@@ -346,7 +349,7 @@ namespace Dynamo.Graph.Nodes
         /// data-list pairs are to be deserialized.</param>
         /// <returns>Returns a dictionary of deserialized node-data-list pairs
         /// loaded from the given XmlDocument.</returns>
-        internal static IEnumerable<KeyValuePair<Guid, List<string>>>
+        internal static IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>>
             LoadTraceDataFromXmlDocument(XmlDocument document)
         {
             if (document == null)
@@ -364,7 +367,7 @@ namespace Dynamo.Graph.Nodes
                         where childNode.Name.Equals(sessionXmlTagName)
                         select childNode;
 
-            var loadedData = new Dictionary<Guid, List<string>>();
+            var loadedData = new Dictionary<Guid, List<CallSite.RawTraceData>>();
             if (!query.Any()) // There's no data, return empty dictionary.
                 return loadedData;
 
@@ -372,8 +375,18 @@ namespace Dynamo.Graph.Nodes
             foreach (XmlElement nodeElement in sessionElement.ChildNodes)
             {
                 var guid = Guid.Parse(nodeElement.GetAttribute(Configurations.NodeIdAttribName));
-                var callsites = nodeElement.ChildNodes.Cast<XmlElement>().Select(e => e.InnerText).ToList();
-                loadedData.Add(guid, callsites);
+                List<CallSite.RawTraceData> callsiteTraceData = new List<CallSite.RawTraceData>();
+                foreach (var child in nodeElement.ChildNodes.Cast<XmlElement>())
+                {
+                    var callsiteId = string.Empty;
+                    if (child.HasAttribute(Configurations.CallSiteID))
+                    {
+                        callsiteId = child.GetAttribute(Configurations.CallSiteID);
+                    }
+                    var traceData = child.InnerText;
+                    callsiteTraceData.Add(new CallSite.RawTraceData(callsiteId, traceData));
+                }
+                loadedData.Add(guid, callsiteTraceData);
             }
 
             return loadedData;
@@ -408,12 +421,21 @@ namespace Dynamo.Graph.Nodes
             var documentUri = new Uri(basePath, UriKind.Absolute);
             var assemblyUri = new Uri(subjectPath, UriKind.Absolute);
 
-            var relativeUri = documentUri.MakeRelativeUri(assemblyUri);
-            var relativePath = relativeUri.OriginalString.Replace('/', '\\');
+            var relativeUri = documentUri.MakeRelativeUri(assemblyUri).OriginalString;
+
+            // MakeRelativePath should not return a URL encoded path.
+            // new Uri() results in a URL encoded path.
+            // Therefore, to undo that, we need to call UrlDecode on it.
+            // Also, UrlDecode will convert + to space, but the Uri creation
+            // doesn't encode + as %2B. In order to avoid + in the filename
+            // being converted to space, we need to encode + as %2B before calling it.
+            var relativePath = WebUtility.UrlDecode(relativeUri.Replace("+", "%2B")).Replace('/', '\\');
+
             if (!HasPathInformation(relativePath))
             {
                 relativePath = ".\\" + relativePath;
             }
+
             return relativePath;
         }
 

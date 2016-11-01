@@ -8,6 +8,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Migration;
 using ProtoCore.AST.AssociativeAST;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.Input
 {
@@ -15,11 +16,23 @@ namespace CoreNodeModels.Input
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("DoubleSliderNodeDescription", typeof(Properties.Resources))]
     [NodeSearchTags("DoubleSliderSearchTags", typeof(Properties.Resources))]
+    [OutPortTypes("number")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.Input.DoubleSlider")]
     public class DoubleSlider : SliderBase<double>
     {
+        [JsonConstructor]
+        private DoubleSlider(IEnumerable<PortModel> inPorts,
+            IEnumerable<PortModel> outPorts): base(inPorts, outPorts)
+        {
+            Min = 0;
+            Max = 100;
+            Step = 0.1;
+            Value = 1;
+            ShouldDisplayPreviewCore = false;
+        }
+
         public DoubleSlider()
         {
             Min = 0;

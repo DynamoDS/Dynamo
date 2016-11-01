@@ -567,6 +567,7 @@ namespace DSCore
         /// <param name="lists">Lists to join into one.</param>
         /// <returns name="list">Joined list.</returns>
         /// <search>join lists,merge,concatenate</search>
+        [IsLacingDisabled]
         public static IList Join(params IList[] lists)
         {
             var result = new ArrayList();

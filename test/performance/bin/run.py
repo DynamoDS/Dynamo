@@ -9,13 +9,13 @@ import json
 import shutil
 import urllib2
 
-def run(profiler, dynamocli, test_case, test_output):
-    # memlog DynamoCLI /o test.dyn
+def run(hostapp, test_case, test_output):
+    # memlog hostapp test.ds
     # 
     # the output of memlog is cputime,managedheap,privateworkingset
     with open(test_output, "wb") as output: 
-        for x in range(0, 3):
-            proc = subprocess.Popen([profiler, dynamocli, '/o', test_case], stdout=output)
+        for x in range(0, 5):
+            proc = subprocess.Popen([hostapp, test_case], stdout=output)
             proc.wait()
     
 # harvest test case result from output_path 
@@ -51,11 +51,13 @@ def harvest(test_result_path, output_path, commits, tag, logfile):
 
             average_result = {} 
             for col in range(0, 3):
-                value = 0
                 rows = len(results)
-                for row in range(0, rows):
-                    value = value + results[row][col]
-                value = value / rows
+
+                values = [results[row][col] for row in range(0, rows)]
+                minValue = min(values)
+                maxValue = max(values)
+
+                value = (sum(values) - minValue - maxValue) / (rows - 2)
                 average_result[col] = value
 
             testcase_benchmark = {}
@@ -113,7 +115,7 @@ def main():
     args = parser.parse_args()
 
     logfile = args.logfile
-    log(logfile, datetime.datetime.now().isoformat() + ' run performance benchmark')
+    log(logfile, datetime.datetime.now().isoformat() + ' run language performance benchmark')
 
     commits = args.commits
     if commits is None:
@@ -133,19 +135,17 @@ def main():
         log(logfile, 'Error: Performance folder ' + performance_folder + ' does not exists.')
         sys.exit(1)
 
-    profiler = os.path.join(performance_folder, 'bin\\memlog.exe')
-    if not os.path.exists(profiler):
-        log(logfile, 'Error: Profiler path ' + profiler + ' does not exists.')
-        sys.exit(1)
-
     test_case_path = os.path.join(performance_folder, 'testcases') 
     if not os.path.exists(test_case_path):
         log(logfile, 'Error: Test cases path ' + test_case_path + ' does not exists.')
         sys.exit(1)
 
-    dynamocli = os.path.join(dynamo_path, 'bin\\AnyCPU\\Debug\\DynamoCLI.exe')
-    if not os.path.exists(dynamocli):
-        log(logfile, 'Error: DynamoCLI ' + dynamocli + ' does not exists.')
+    hostapp = os.path.join(dynamo_path, 'bin\\AnyCPU\\Release\\ProtoTestConsoleRunner.exe')
+    if not os.path.exists(hostapp):
+        hostapp = os.path.join(dynamo_path, 'bin\\AnyCPU\\Debug\\ProtoTestConsoleRunner.exe')
+
+    if not os.path.exists(hostapp):
+        log(logfile, 'Error: hostapp ' + hostapp + ' does not exists.')
         sys.exit(1)
 
     output_path = performance_folder
@@ -158,13 +158,13 @@ def main():
         os.mkdir(test_result_path)
 
     os.chdir(test_case_path)
-    for dyn_file in glob.glob("*.dyn"):
-        log(logfile, 'Running ' + dyn_file)
-        dyn_file_path = os.path.join(test_case_path, dyn_file)
-        test_case_name = os.path.splitext(dyn_file)[0]
+    for test_file in glob.glob("*.ds"):
+        log(logfile, 'Running ' + test_file)
+        dyn_file_path = os.path.join(test_case_path, test_file)
+        test_case_name = os.path.splitext(test_file)[0]
         test_result_file = os.path.join(test_result_path, test_case_name + '.out')
         try:
-            run(profiler, dynamocli, dyn_file_path, test_result_file) 
+            run(hostapp, dyn_file_path, test_result_file)
         except:
             log(logfile, 'Error: Failed to run test case ' + test_case_name)
 

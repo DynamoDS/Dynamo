@@ -335,8 +335,7 @@ namespace ProtoFFI
             {
                 string baseTypeName = CLRObjectMarshler.GetTypeName(baseType);
 
-                classnode.BaseClasses = new List<string>();
-                classnode.BaseClasses.Add(baseTypeName);
+                classnode.BaseClass = baseTypeName;
                 //Make sure that base class is imported properly.
                 CLRModuleType.GetInstance(baseType, Module, string.Empty);
             }
@@ -364,7 +363,7 @@ namespace ProtoFFI
             }
 
             BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static;
-            bool isDerivedClass = (classnode.BaseClasses != null) && classnode.BaseClasses.Count > 0;
+            bool isDerivedClass = !string.IsNullOrEmpty(classnode.BaseClass);
             if (isDerivedClass) //has base class
                 flags |= BindingFlags.DeclaredOnly; //for derived class, parse only class declared methods.
 
@@ -614,10 +613,9 @@ namespace ProtoFFI
                 }
             }
 
-            foreach (var item in atts)
+            foreach (Attribute item in atts)
             {
-                SupressImportIntoVMAttribute supressImport = item as SupressImportIntoVMAttribute;
-                if (null != supressImport)
+                if (item.SupressImportIntoVM())
                     return true;
             }
 
@@ -1214,10 +1212,9 @@ namespace ProtoFFI
             attributes = type.GetCustomAttributes(false).Cast<Attribute>().ToArray();
             foreach (var attr in attributes)
             {
-                if (attr is IsVisibleInDynamoLibraryAttribute)
+                if (attr.HiddenInDynamoLibrary())
                 {
-                    var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
-                    HiddenInLibrary = (visibleInLibraryAttr.Visible == false);
+                    HiddenInLibrary = true;
                 }
                 else if (attr is ObsoleteAttribute)
                 {
@@ -1293,10 +1290,9 @@ namespace ProtoFFI
                     var multiReturnAttr = (attr as MultiReturnAttribute);
                     returnKeys = multiReturnAttr.ReturnKeys.ToList();
                 }
-                else if (attr is IsVisibleInDynamoLibraryAttribute)
+                else if(attr.HiddenInDynamoLibrary())
                 {
-                    var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
-                    HiddenInLibrary = (visibleInLibraryAttr.Visible == false);
+                    HiddenInLibrary = true;
                 }
                 else if (attr is IsObsoleteAttribute)
                 {
@@ -1315,6 +1311,10 @@ namespace ProtoFFI
                 else if (attr is CanUpdatePeriodicallyAttribute)
                 {
                     CanUpdatePeriodically = (attr as CanUpdatePeriodicallyAttribute).CanUpdatePeriodically;
+                }
+                else if (attr is IsLacingDisabledAttribute)
+                {
+                    IsLacingDisabled = true; 
                 }
             }
         }
@@ -1365,6 +1365,51 @@ namespace ProtoFFI
                     AddAttribute("ArbitraryDimensionArrayImportAttribute", true);
                 }
             }
+        }
+    }
+
+    static class AttributeUtils
+    {
+        /// <summary>
+        /// Checks if the given attribute is of type SupressImportIntoVMAttribute
+        /// </summary>
+        /// <param name="attribute">Given attribute</param>
+        /// <returns>True if the given attribute is of type SupressImportIntoVMAttribute</returns>
+        public static bool SupressImportIntoVM(this Attribute attribute)
+        {
+            //TODO@Dynamo 2.0 
+            //Following code is to fix attribute resolution issue due to
+            //presence of DynamoServices.dll in Dynamo Studio folder. The DLL
+            //can be removed in 2.0, once we have removed the dlls we can restore
+            //following code.
+            //return attribute is SupressImportIntoVMAttribute;
+            
+            return null != attribute && attribute.GetType().Name == typeof(SupressImportIntoVMAttribute).Name;
+        }
+
+        /// <summary>
+        /// Checks if the given attribute is of type IsVisibleInDynamoLibraryAttribute
+        /// and has Visible property set to false.
+        /// </summary>
+        /// <param name="attribute">Given attribute</param>
+        /// <returns>True if the given attribute is of 
+        /// IsVisibleInDynamoLibraryAttribute type and has Visible property false.</returns>
+        public static bool HiddenInDynamoLibrary(this Attribute attribute)
+        {
+            var visibleInLibraryAttr = attribute as IsVisibleInDynamoLibraryAttribute;
+            if (visibleInLibraryAttr != null)
+            {
+                return visibleInLibraryAttr.Visible == false;
+            }
+            
+            //TODO@Dynamo 2.0 remove following code in 2.0
+            if (attribute == null || attribute.GetType().Name != typeof(IsVisibleInDynamoLibraryAttribute).Name)
+            {
+                return false;
+            }
+
+            var propInfo = attribute.GetType().GetProperty("Visible");
+            return propInfo != null && (bool)propInfo.GetValue(attribute) == false;
         }
     }
 }

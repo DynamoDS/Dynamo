@@ -22,18 +22,31 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         protected DSFunctionBase(ZeroTouchNodeController<FunctionDescriptor> controller)
             : base(controller)
         {
-            ArgumentLacing = LacingStrategy.Shortest;
+            if (controller.Definition.IsLacingDisabled)
+            {
+                ArgumentLacing = LacingStrategy.Disabled;
+            }
+            else
+            {
+                ArgumentLacing = LacingStrategy.Shortest;
+            }
             Category = Controller.Category;
 
             if (controller.Definition.IsObsolete)
+            {
                 Warning(controller.Definition.ObsoleteMessage, true);
+            }
 
             if (controller.Definition.CanUpdatePeriodically)
+            {
                 CanUpdatePeriodically = true;
+            }
 
             string signature = String.Empty;
             if (Controller.Definition is FunctionDescriptor)
+            {
                 signature = Controller.Definition.Signature;
+            }
             Description = String.IsNullOrEmpty(Controller.Description) ? signature : Controller.Description + "\n\n" + signature;
         }
 
@@ -105,9 +118,9 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         ///     Initializes a new instance of 
         /// the <see cref="ZeroTouchNodeController"/> class with FunctionDescriptor.
         /// </summary>
-        /// <param name="zeroTouchDef">FunctionDescriptor describing the function 
+        /// <param name="definition">FunctionDescriptor describing the function 
         /// that this controller will call.</param>
-        public ZeroTouchNodeController(T zeroTouchDef) : base(zeroTouchDef) { }
+        public ZeroTouchNodeController(T definition) : base(definition) { }
 
         /// <summary>
         ///     Description of function, taken from Definition.
@@ -288,7 +301,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                     }
                     else
                     {
-                        model.AppendReplicationGuides(inputAstNodes);
+                        model.UseLevelAndReplicationGuide(inputAstNodes);
                         rhs = AstFactory.BuildFunctionCall(
                             Definition.ClassName,
                             Definition.FunctionName,
@@ -351,7 +364,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                     else
                     {
                         rhs = new NullNode();
-                        model.AppendReplicationGuides(inputAstNodes);
+                        model.UseLevelAndReplicationGuide(inputAstNodes);
 
                         if (inputAstNodes != null && inputAstNodes.Count >= 1)
                         {
@@ -381,7 +394,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                     }
                     else
                     {
-                        model.AppendReplicationGuides(inputAstNodes);
+                        model.UseLevelAndReplicationGuide(inputAstNodes);
                         rhs = AstFactory.BuildFunctionCall(function, inputAstNodes);
                     }
                     break;

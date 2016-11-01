@@ -3,6 +3,8 @@ using System.Linq;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
+using Dynamo.Utilities;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.HigherOrder
 {
@@ -13,6 +15,12 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCoreNodesUI.HigherOrder.ApplyFunction")]
     public class ApplyFunction : VariableInputNode
     {
+        [JsonConstructor]
+        private ApplyFunction(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
         public ApplyFunction() : base()
         {
             InPortData.Add(new PortData("func", Resources.ApplyPortDataFuncToolTip));
@@ -70,11 +78,16 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCoreNodesUI.HigherOrder.ComposeFunctions")]
     public class ComposeFunctions : VariableInputNode
     {
+        [JsonConstructor]
+        private ComposeFunctions(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
         public ComposeFunctions()
         {
             InPortData.Add(new PortData("func0", Resources.ComposePortDataFunc0ToolTip));
             InPortData.Add(new PortData("func1", Resources.ComposePortDataFunc1ToolTip));
-
             OutPortData.Add(new PortData("func", Resources.ComposePortDataResultToolTip));
             RegisterAllPorts();
         }

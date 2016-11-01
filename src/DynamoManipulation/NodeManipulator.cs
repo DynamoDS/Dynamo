@@ -431,7 +431,11 @@ namespace Dynamo.Manipulation
             {
                 return packages;
             }
-            
+
+            // This check is required as for some reason LibG fails to load, geometry nodes are null
+            // and we must return immediately before proceeding with further calls to ProtoGeometry
+            if (IsNodeValueNull()) return packages;
+
             AssignInputNodes();
             
             active = UpdatePosition();
@@ -440,7 +444,7 @@ namespace Dynamo.Manipulation
             {
                 return packages;
             }
-            
+
             // Blocking call to build render packages only in UI thread
             // to avoid race condition with gizmo members b/w scheduler and UI threads.
             // Race condition can occur if say one gizmo is moving due to another gizmo
@@ -470,8 +474,9 @@ namespace Dynamo.Manipulation
             var gizmos = GetGizmos(false);
             foreach (var item in gizmos)
             {
-                BackgroundPreviewViewModel.DeleteGeometryForIdentifier(item.Name);
+                // Unsubscribe gizmos from camera-change events before updating the scene
                 item.Dispose();
+                BackgroundPreviewViewModel.DeleteGeometryForIdentifier(item.Name);
             }
         }
 
@@ -551,12 +556,17 @@ namespace Dynamo.Manipulation
         {
             if (Node.IsFrozen || !Node.IsVisible) return false;
 
-            if (Node.CachedValue == null || Node.CachedValue.IsNull)
+            if (IsNodeValueNull())
             {
                 return false;
             }
 
             return active;
+        }
+
+        public bool IsNodeValueNull()
+        {
+            return Node.CachedValue == null || Node.CachedValue.IsNull;
         }
         #endregion
     }

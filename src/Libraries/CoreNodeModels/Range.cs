@@ -5,6 +5,7 @@ using ProtoCore.AST.AssociativeAST;
 using System.Collections.Generic;
 using Dynamo.Graph.Nodes;
 using ProtoCore.DSASM;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -20,6 +21,12 @@ namespace CoreNodeModels
         private readonly IntNode endPortDefaultValue = new IntNode(9);
         private readonly IntNode stepPortDefaultValue = new IntNode(1);
 
+        [JsonConstructor]
+        private Range(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Shortest;
+        }
+
         public Range()
         {
             InPortData.Add(new PortData("start", Resources.RangePortDataStartToolTip, startPortDefaultValue));
@@ -29,7 +36,7 @@ namespace CoreNodeModels
 
             RegisterAllPorts();
 
-            ArgumentLacing = LacingStrategy.Longest;
+            ArgumentLacing = LacingStrategy.Shortest;
         }
 
         public override bool IsConvertible
@@ -93,6 +100,12 @@ namespace CoreNodeModels
         private readonly IntNode amountPortDefaultValue = new IntNode(10);
         private readonly IntNode stepPortDefaultValue = new IntNode(1);
 
+        [JsonConstructor]
+        private Sequence(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Shortest;
+        }
+
         public Sequence()
         {
             InPortData.Add(new PortData("start", Resources.RangePortDataStartToolTip, startPortDefaultValue));
@@ -102,7 +115,7 @@ namespace CoreNodeModels
 
             RegisterAllPorts();
 
-            ArgumentLacing = LacingStrategy.Longest;
+            ArgumentLacing = LacingStrategy.Shortest;
         }
 
         public override bool IsConvertible

@@ -506,6 +506,7 @@ namespace Dynamo.ViewModels
         {
             DynamoSelection.Instance.ClearSelection();
             Nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
+            Notes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.Model));
         }
 
         internal bool CanSelectAll(object parameter)
@@ -1047,6 +1048,8 @@ namespace Dynamo.ViewModels
         {
             Model.DoGraphAutoLayout();
             DynamoViewModel.RaiseCanExecuteUndoRedo();
+
+            Dynamo.Logging.Analytics.TrackCommandEvent("GraphLayout");
         }
 
         private static bool CanDoGraphAutoLayout(object o)
@@ -1071,6 +1074,9 @@ namespace Dynamo.ViewModels
             DynamoViewModel.Model.AddCustomNodeWorkspace(
                 DynamoViewModel.Model.CustomNodeManager.Collapse(selectedNodes,
                 selectedNotes, Model, DynamoModel.IsTestMode, args));
+
+            Dynamo.Logging.Analytics.TrackCommandEvent("NewCustomNode",
+                "NodeCount", selectedNodes.Count());
         }
 
         internal void Loaded()

@@ -81,6 +81,25 @@ namespace Dynamo.ViewModels
 
             SelectedIndex = 0;
         }
+        /// <summary>
+        /// This constructor overload has been added for backwards comptability.
+        /// </summary>
+        /// <param name="setting"></param>
+        public PackagePathViewModel(IPreferences setting)
+        {
+
+            RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
+
+            AddPathCommand = new DelegateCommand(p => InsertPath());
+            DeletePathCommand = new DelegateCommand(p => RemovePathAt((int)p), CanDelete);
+            MovePathUpCommand = new DelegateCommand(p => SwapPath((int)p, ((int)p) - 1), CanMoveUp);
+            MovePathDownCommand = new DelegateCommand(p => SwapPath((int)p, ((int)p) + 1), CanMoveDown);
+            UpdatePathCommand = new DelegateCommand(p => UpdatePathAt((int)p));
+            SaveSettingCommand = new DelegateCommand(CommitChanges);
+
+            SelectedIndex = 0;
+        }
+
 
         private void RaiseCanExecuteChanged()
         {
@@ -168,7 +187,10 @@ namespace Dynamo.ViewModels
         private void CommitChanges(object param)
         {
             setting.CustomPackageFolders = new List<string>(RootLocations);
-            this.packageLoader.LoadCustomNodesAndPackages(loadPackageParams,customNodeManager);
+            if (this.packageLoader != null)
+            {
+                this.packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
+            }
         }
 
     }

@@ -31,23 +31,6 @@ namespace ProtoTest.TD.Associative
             thisTest.Verify("largest2", 400);
         }
 
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("SmokeTest")]
-        public void T002_Inline_Using_Math_Lib_Functions()
-        {
-            string src = @"    
-import(""DSCoreNodes.dll"");
-	a	=	9;				
-	b	=	25;
-	smallest   =   Math.Sqrt(b)	< a  ?   Math.Sqrt(a)	:	Math.Sqrt(b);	
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("smallest", 3);
-        }
-
-
         [Test]
         [Category("Replication")]
         public void T003_Inline_Using_Collection()
@@ -165,32 +148,6 @@ import(""DSCoreNodes.dll"");
             thisTest.Verify("x", new object[] {1, 1});
         }
 
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_InlineInDSClass")]
-        [Category("Replication")]
-        public void T004_Inline_Inside_Class_Constructor_and_replication()
-        {
-            string src = @"class MyClass
-{
-    positive : var;
-    constructor ByValue(value : int)
-    {
-        positive = value >= 0 ? true : false;
-    }
-}
-number = 2;
-sample = MyClass.ByValue(number);
-values = sample.positive; // { true, false } 
-number = { 3, -3 };
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            // expected "StatementUsedInAssignment" warning
-            List<Object> values = new List<object>() { true, false };
-            thisTest.Verify("values", values);
-        }
-
-
         [Test]
         [Category("Replication")]
         public void T009_Inline_Using_Function_Call_And_Collection_And_Replication()
@@ -221,7 +178,6 @@ number = { 3, -3 };
 
 
         [Test]
-        [Category("Imperative")]
         public void T010_Defect_1456751_replication_issue()
         {
             String errmsg = "1467166 - VALIDATION NEEDED - Sprint24 : rev 3133 : Regression : comparison of collection with singleton should yield null in imperative scope";
@@ -356,32 +312,6 @@ a = c > 1 ? a : a + 1;
             thisTest.Verify("a", new Object[] { 1, 2, 3 });
         }
 
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_InlineInDSClass")]
-        public void T012_Defect_1467288_2()
-        {
-            string code =
-@"
-class A
-{
-    a:var[]..[];
-    constructor A( c )
-    {
-        a = { 0, 1, 2 };
-        a = c > 1 ? a : a + 1;
-    }
-}
-x = { A.A(0), A.A(2)};
-a1 = x.a;
-";
-            string errmsg = "";
-
-            thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a1", new Object[] { new Object[] { 1, 2, 3 }, new Object[] { 0, 1, 2 } });
-        }
-
-
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestInlineArrayInFunction()
@@ -401,87 +331,6 @@ test = foo({1,2});
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("test", new Object[] { 2, 3 });
         }
-
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_InlineDSClassConstructor")]
-        public void T012_Defect_1467288_4()
-        {
-            string code =
-@"
-class A
-{
-    a;
-    constructor A( c )
-    {
-        a = { 0, 1, 2 };
-        a = c > 1 ? a : a + 1;
-    }
-}
-x = { A.A(0), A.A(2)};
-a = x.a;
-//expected : { { 1,2,3}, {0,1,2} }
-";
-            string errmsg = "";
-
-            thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a", new Object[] { new Object[] { 1, 2, 3 }, new Object[] { 0, 1, 2 } });
-        }
-
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_InlineDSClassConstructor")]
-        public void T012_Defect_1467288_5()
-        {
-            string code =
-@"
-class A
-{
-    a : var[]..[];
-    constructor A( c )
-    {
-        a = { 0, 1, 2 };
-        a = c > 1 ? a : a + 1;
-    }
-}
-x = { A.A(0), A.A(2)};
-a = x.a;
-";
-            string errmsg = "1467288 - sprint25: rev 3731 : REGRESSION : NullReferenceException when using the same collection in both paths of a inline condition";
-            thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a", new Object[] { new Object[] { 1, 2, 3 }, new Object[] { 0, 1, 2 } });
-        }
-
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_InlineDSClassConstructor")]
-        public void T012_Defect_1467288_6()
-        {
-            string code =
-@"
-class A
-{
-    a:var[]..[];
-    constructor A( c )
-    {
-        a = { 0, 1, 2 };
-        a = c > 1 ? a : a + 1;
-    }
-    def foo (c)
-    {
-        a = c == 4 ? a : a + 1;
-        return = a;
-    }
-}
-x = { A.A(0), A.A(2)};
-a1 = x.a;
-test = x.foo(5);
-";
-            string errmsg = "";
-            thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a1", new Object[] { new Object[] { 2, 3, 4 }, new Object[] { 1, 2, 3 } });
-        }
-
 
         [Test]
         public void T013_Defect_1467290()
@@ -973,29 +822,6 @@ z = foo();
             thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z", 1);
         }
-
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_InlineDSClassConstructor")]
-        public void T021_1467442_4()
-        {
-            string code = @"
-class A
-{
-    constructor A ()
-    {
-        z = z + ((a > 0) ? a : 0);
-        a = 1;
-    }
-}
-z = 0;
-t1 = A.A();
-";
-            string errmsg = "";
-            thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("z", 1);
-        }
-
 
         [Test]
         public void T021_1467442_5()

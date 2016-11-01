@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Linq;
 using Dynamo;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
@@ -260,7 +261,10 @@ namespace DynamoPythonTests
 
             var completionData = completionProvider.GetCompletionData(str);
 
-            Assert.AreEqual(224, completionData.Length);
+            // Randomly verify some namepsaces are in the completion list
+            var completionList = completionData.Select(d => d.Text);
+            Assert.IsTrue(completionList.Any());
+            Assert.IsTrue(completionList.Intersect(new[] { "IO", "Console", "Reflection" }).Count() == 3);
             Assert.AreEqual(1, completionProvider.ImportedTypes.Count);
             Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
 
@@ -274,7 +278,9 @@ namespace DynamoPythonTests
             var completionProvider = new IronPythonCompletionProvider();
 
             var completionData = completionProvider.GetCompletionData(str);
-
+            var completionList = completionData.Select(d => d.Text);
+            Assert.IsTrue(completionList.Any());
+            Assert.IsTrue(completionList.Intersect(new[] { "Hashtable", "Queue", "Stack"}).Count() == 3);
             Assert.AreEqual(29, completionData.Length);
         }
 

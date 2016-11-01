@@ -4,16 +4,21 @@ using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.Logic
 {
     [NodeName("If")]
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
     [NodeDescription("IfDescription", typeof(Resources))]
+    [OutPortTypes("Function")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.Logic.If")]
     public class If : NodeModel
     {
+        [JsonConstructor]
+        private If(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
         public If()
         {
             InPortData.Add(new PortData("test", Resources.PortDataTestBlockToolTip));
@@ -51,7 +56,7 @@ namespace CoreNodeModels.Logic
                     AstFactory.BuildBooleanNode(true)
                 };
 
-                rhs = AstFactory.BuildFunctionCall("Function", inputParams);
+                rhs = AstFactory.BuildFunctionCall("__CreateFunctionObject", inputParams);
             }
             else
             {

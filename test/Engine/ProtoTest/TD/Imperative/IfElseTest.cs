@@ -2073,7 +2073,6 @@ c = even(1);
         //TDD for if condition/inline condition
 
         [Test]
-        [Category("TDDIfInline")]
         public void TDD_SimpleIfCondition_1()
         {
             String code =
@@ -2097,7 +2096,6 @@ r = [Imperative]
         }
 
         [Test]
-        [Category("TDDIfInline")]
         public void TDD_SimpleIfCondition_2()
         {
             String code =
@@ -2122,8 +2120,6 @@ r = [Imperative]
         }
 
         [Test]
-        [Category("TDDIfInline")]
-        // r = true!?
         public void TDD_NullAsArgs()
         {
             String code =
@@ -2141,7 +2137,6 @@ r:bool = foo(null);
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("TDDIfInline")]
         public void TDD_UserDefinedTypeConvertedToBool_NotNull_defect()
         {
             String code =
@@ -2155,7 +2150,6 @@ d:bool=ClassFunctionality.ClassFunctionality(5);
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("TDDIfInline")]
         //not null user defined var is not evaluated as true
         public void TDD_UserDefinedTypeConvertedToBool()
         {
@@ -2177,7 +2171,6 @@ if(a)
         }
 
         [Test]
-        [Category("TDDIfInline")]
         public void TDD_UserDefinedTypeConvertedToBool_Null()
         {
             String code =
@@ -2204,7 +2197,6 @@ return = foo(b);
         //inline
 
         [Test]
-        [Category("TDDIfInline")]
         public void TDD_SimpleInlineCondition_1()
         {
             String code =
@@ -2219,7 +2211,6 @@ return = null==false?""null==false"":""null==false is false"";
         }
 
         [Test]
-        [Category("TDDIfInline")]
         public void TDD_SimpleInlineCondition_2()
         {
             String code =
@@ -2236,7 +2227,6 @@ r = [Imperative]
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        [Category("TDDIfInline")]
         public void TDD_UserDefinedTypeConvertedToBool_Inline()
         {
             String code =

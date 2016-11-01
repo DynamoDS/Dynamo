@@ -254,7 +254,7 @@ b = c[w][x][y][z];";
             // After code changes, there should be two output ports.
             UpdateCodeBlockNodeContent(codeBlockNode, "a = 1..6;\na[2]=a[2] + 1;");
             Assert.AreEqual(0, codeBlockNode.InPortData.Count);
-            Assert.AreEqual(2, codeBlockNode.OutPortData.Count);
+            Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
         }
 
         [Test]
@@ -689,8 +689,34 @@ var06 = g;
             Assert.AreEqual(1, codeBlockNode.InPortData.Count);
         }
 
-        #region CodeBlockUtils Specific Tests
+        [Test]
+        public void TestEscapeSequenceAtEnd()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\dsevaluation\CBN_escapeseq.dyn");
+            OpenModel(openPath);
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
+            BeginRun();
+
+            AssertPreviewValue("a26a599a-e608-4d6f-8de8-309f7fb0972d", "hello\\");
+
+            var helloBrokenNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse("060f6309-80b1-4a15-bc8d-accb2dd24d22"));
+            int outportCount = helloBrokenNode.OutPorts.Count;
+            Assert.IsFalse(outportCount > 0);
+
+            var helloWorldNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>( 
+                Guid.Parse("90109553-56c2-4afd-ab3d-27356e5c2f07"));
+            AssertPreviewValue("90109553-56c2-4afd-ab3d-27356e5c2f07", "world");
+
+            var helloWorldBrokenNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse("2e28c888-77b4-4bd5-a946-d8588368e014"));
+            int outportBrokenNodeCount = helloBrokenNode.OutPorts.Count;
+            Assert.IsFalse(outportCount > 0);
+        }
+
+
+        #region CodeBlockUtils Specific Tests
         [Test]
         [Category("UnitTests")]
         public void TestSemiColonAddition()
@@ -1434,10 +1460,10 @@ var06 = g;
             string code = "im";
             var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
 
-            // Expected 5 completion items
-            Assert.AreEqual(5, completions.Count());
+            // Expected 4 completion items
+            Assert.AreEqual(4, completions.Count());
 
-            string[] expected = { "Decimal", "Imperative", "ImportFromCSV", "Minimal", "MinimalTracedClass" };
+            string[] expected = { "Imperative", "ImportFromCSV", "Minimal", "MinimalTracedClass" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);

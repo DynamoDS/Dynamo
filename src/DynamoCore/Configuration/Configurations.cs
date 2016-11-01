@@ -250,6 +250,7 @@ namespace Dynamo.Configuration
         internal static readonly string NodeTraceDataXmlTag = "NodeTraceData";
         internal static readonly string CallsiteTraceDataXmlTag = "CallsiteTraceData";
         internal static readonly string NodeIdAttribName = "NodeId";
+        internal static readonly string CallSiteID = "CallSiteID";
 
         #endregion
 

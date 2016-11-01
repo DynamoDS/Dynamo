@@ -137,6 +137,8 @@
     <Compile Include="..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="ListAtLevelTest.cs" />
+    <Compile Include="NoteViewTests.cs" />
     <Compile Include="NodeViewTests.cs" />
     <Compile Include="NodeExecutionUITest.cs" />
     <Compile Include="CustomNodeTests.cs" />

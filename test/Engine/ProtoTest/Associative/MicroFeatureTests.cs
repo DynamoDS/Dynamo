@@ -257,74 +257,6 @@ c = p.Z;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void TestClasses03()
-        {
-            String code =
-@"
-    class A
-    {
-        x : var;
-        constructor A()
-        {
-            x = 0;
-        }
-	    def Get : int()
-        {
-            return = 10;
-        }
-    }
-    class B extends A
-    {
-        constructor B()
-        {
-        }
-    }
-    p = B.B();
-    x = p.Get();
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x",10);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void TestClasses04()
-        {
-            String code =
-@"
-    class A
-    {
-        x : var;
-        constructor A()
-        {
-            x = 1;
-        }
-	    def Get : int()
-        {
-            return = 10;
-        }
-    }
-    
-    class B extends A
-    {
-        constructor B()
-        {
-            x = 2;
-        }
-    }
-    ptrA = A.A();
-    ax = ptrA.x;
-    ptrB = B.B();
-    bx = ptrB.x;
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("ax",1);
-            thisTest.Verify("bx",2);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
         public void TestClasses06()
         {
             String code =
@@ -372,129 +304,6 @@ x = ModifyMe();
             thisTest.Verify("x",64);
         }
 
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestClasses08()
-        {
-            String code =
-@"  
-class A
-{
-    public x = 1;
-}
-class B extends A
-{
-    private x = 2;
-}
-b = B.B();
-t = b.x;
-";
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                thisTest.RunScriptSource(code);
-            });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestClassHeirarchy01()
-        {
-            String code =
-@"
-class A
-{
-	constructor A()
-	{
-	}
-	
-	def foo : int()
-	{
-		return = 1;
-	}
-}
-
-class B extends A
-{
-
-	constructor B()
-	{
-	}
-}
-
-class C extends B
-{
-	constructor C()
-	{
-	}
-}
-
-class D
-{
-	def foo:int(a:A)
-	{
-		return = a.foo();
-	}
-}
-
-c = C.C();
-d = D.D();
-x = d.foo(c);
-
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestClassHeirarchy02()
-        {
-            String code =
-@"
-class A
-{
-	constructor A()
-	{
-	}
-	
-	def foo : int()
-	{
-		return = 1;
-	}
-}
-
-class C extends B
-{
-	constructor C()
-	{
-	}
-}
-
-class B extends A
-{
-
-	constructor B()
-	{
-	}
-}
-
-class D
-{
-	def foo:int(a:A)
-	{
-		return = a.foo();
-	}
-}
-
-c = C.C();
-d = D.D();
-x = d.foo(c);
-
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 1);
-        }
-
 
         [Test]
         [Category("DSDefinedClass_Ported")]
@@ -512,129 +321,6 @@ x = d.foo(c);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("x",12);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestClassFunction04()
-        {
-            String code =
-@"
-    class Sample
-    {
-        _val : var;
-        
-        constructor Sample()
-        {
-            _val = 5.0;
-        }
-        
-        constructor Sample(val : double)
-        {
-            _val = val;
-        }
-        
-        def get_Val : double ()
-        {
-            return = _val;
-        }
-    }
-    
-    def function1 : double (s : Sample )
-    {
-        return = s.get_Val();
-    }
-    
-    s1 = Sample.Sample();
-    s2 = Sample.Sample(100.0);
-    
-    one = function1(s1);
-    two = function1(s2);
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("one",5);
-            thisTest.Verify("two",100);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        public void TestClassFunction05()
-        {
-            String code =
-@"
-class Point
-{
-    _x : var;
-    _y : var;
-    _z : var;
-                                
-    constructor Point(xx : double, yy : double, zz : double)
-    {
-        _x = xx;
-        _y = yy;
-        _z = zz;
-    }
-                                
-    def get_X : double () 
-    {
-        return = _x;
-    }
-    def get_Y : double () 
-    {
-        return = _y;
-    }
-    def get_Z : double () 
-    {
-        return = _z;
-    }
-}
-                
-    
-class Line 
-                
-{
-    _sp : var;
-    _ep : var;
-                    
-    constructor Line(startPoint : Point, endPoint : Point)
-    {
-        _sp = startPoint; 
-        _ep = endPoint;
-                    
-    }
-    def get_StartPoint : Point ()
-    {                              
-        return = _sp;
-    }
-                                                
-    def get_EndPoint : Point () 
-    {
-        return = _ep;
-    }          
-}
-                
-pt1 = Point.Point(3.0,2.0,1.0);
-pt2 = Point.Point(31.0,21.0,11.0);
-  
-myline = Line.Line(pt1, pt2);
-v1 = myline._sp.get_X();
-v2 = myline._sp._x;
-v3 = myline.get_StartPoint().get_X();
-v4 = myline.get_StartPoint().get_Y();
-v5 = myline.get_StartPoint().get_Z();
-v6 = myline.get_EndPoint().get_X();
-v7 = myline.get_EndPoint().get_Y();
-v8 = myline.get_EndPoint().get_Z();
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("v1",3);
-            thisTest.Verify("v2",3);
-            thisTest.Verify("v3",3);
-            thisTest.Verify("v4",2);
-            thisTest.Verify("v5",1);
-            thisTest.Verify("v6",31);
-            thisTest.Verify("v7",21);
-            thisTest.Verify("v8",11);
         }
 
         [Test]
@@ -668,137 +354,6 @@ a;b;c;x;y;z;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestClassFunction07()
-        {
-            String code =
-@"
-class MyPoint
-{
-	X : double;
-	Y : double;
-	Z : double;
-                                
-    constructor MyPoint (x : double, y : double, z : double)
-    {
-		X = x;
-		Y = y;
-		Z = z;
-    }
-		
-		
-	def Get_X : double()
-	{
-		return = X;
-	}
-		
-	def Get_Y : double()
-	{
-		return = Y;
-	}
-	def Get_Z : double()
-	{
-		return = Z;
-	}
-}
-	
-def GetPointValue : double (pt : MyPoint)
-{
-	return = pt.Get_X() + pt.Get_Y()+ pt.Get_Z(); 
-}
-	
-p = MyPoint.MyPoint (10.0, 20.0, 30.0);
-val = GetPointValue(p);
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("val",60);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestClassFunction08()
-        {
-            String code =
-@"
-class Point
-{
-    _x : var;
-    _y : var;
-    _z : var;
-                                
-    constructor Point(xx : double, yy : double, zz : double)
-    {
-        _x = xx;
-        _y = yy;
-        _z = zz;
-    }
-                                
-    def get_X : double () 
-    {
-        return = _x;
-    }
-    def get_Y : double () 
-    {
-        return = _y;
-    }
-    def get_Z : double () 
-    {
-        return = _z;
-    }
-}
-                
-    
-class Line      
-{
-    _sp : var;
-    _ep : var;
-                    
-    constructor Line(startPoint : Point, endPoint : Point)
-    {
-        _sp = startPoint; 
-        _ep = endPoint;
-                    
-    }
-    def get_StartPoint : Point ()
-    {                              
-        return = _sp;
-    }
-                                                
-    def get_EndPoint : Point () 
-    {
-        return = _ep;
-    }
-               
-               
-               
-}
-                
-pt1 = Point.Point(3.0,2.0,1.0);
-pt2 = Point.Point(30.1, 20.1, 10.1);
-l = Line.Line(pt1, pt2);
-                
-l_sp = l.get_StartPoint();
-l_ep = l.get_EndPoint();
-      
-l_sp_x = l_sp.get_X();
-l_ep_x = l_ep.get_X();
-      
-l_sp_y = l_sp.get_Y();
-l_ep_y = l_ep.get_Y();
-l_sp_z = l_sp.get_Z();
-l_ep_z = l_ep.get_Z();
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("l_sp_x",3);
-            thisTest.Verify("l_ep_x",30.1);
-            thisTest.Verify("l_sp_y",2);
-            thisTest.Verify("l_ep_y",20.1);
-            thisTest.Verify("l_sp_z",1);
-            thisTest.Verify("l_ep_z",10.1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClassFunction10()
         {
             String code =
@@ -827,7 +382,6 @@ aa = 2;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestClassFunction11()
         {
             String code =
@@ -860,304 +414,14 @@ xval = cs2.origin.x;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestClassFunction12()
-        {
-            String code =
-@"
-class Tuple4
-{
-    X : var;
-    Y : var;
-    Z : var;
-    H : var;
-    
-    constructor XYZH(xValue : double, yValue : double, zValue : double, hValue : double)
-    {
-        X = xValue;
-        Y = yValue;
-        Z = zValue;
-        H = hValue;        
-    }
-}
-class Transform
-{
-    public C0 : var; 
-    public C1 : var; 
-    public C2 : var; 
-    public C3 : var;     
-    
-    public constructor ByTuples(t0 : Tuple4, t1 : Tuple4, t2 : Tuple4, t3 : Tuple4)
-    {
-        C0 = t0;
-        C1 = t1;
-        C2 = t2;
-        C3 = t3;
-    }
-    
-    
-    public def ApplyTransform : Tuple4 (t : Tuple4)
-    {
-        return = Tuple4.XYZH(0.0, 0.0, 0.0, 0.0);
-    }
-    
-    
-    public def NativeMultiply : Transform(other : Transform)
-    {              
-        tc0 = ApplyTransform(other.C0); // Test member functions having same local var names
-        tc1 = ApplyTransform(other.C1);
-        tc2 = ApplyTransform(other.C2);
-        tc3 = ApplyTransform(other.C3);
-        return = Transform.ByTuples(tc0, tc1, tc2, tc3);
-    }
-    
-    public def NativePreMultiply : Transform (other : Transform)
-    {     
-        tc0 = other.ApplyTransform(C0); // Test member functions having same local var names
-        tc1 = other.ApplyTransform(C1);
-        tc2 = other.ApplyTransform(C2);
-        tc3 = other.ApplyTransform(C3);
-        return = Transform.ByTuples(tc0, tc1, tc2, tc3);
-    }
-}
-";
-            thisTest.RunScriptSource(code);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestClassFunction13()
-        {
-            String code =
-@"
-class Tuple4
-{
-    X : var;
-    Y : var;
-    Z : var;
-    H : var;
-    
-    constructor XYZH(xValue : double, yValue : double, zValue : double, hValue : double)
-    {
-        X = xValue;
-        Y = yValue;
-        Z = zValue;
-        H = hValue;        
-    }
-    constructor ByCoordinates4(coordinates : double[] )
-    {
-        X = coordinates[0];
-        Y = coordinates[1];
-        Z = coordinates[2];
-        H = coordinates[3];    
-    }
-    
-    public def Multiply : double (other : Tuple4)
-    {
-        //return = (X * other.X) + (Y * other.Y) + (Z * other.Z) + (H * other.H);
-        return = 100.1;
-    }
-}
-class Vector
-{
-    X : var;
-    Y : var;
-    Z : var;
-    
-    public constructor ByCoordinates(xx : double, yy : double, zz : double)
-    {
-        X = xx;
-        Y = yy;
-        Z = zz;
-    }
-}
-class Transform
-{
-    public C0 : Tuple4; 
-    public C1 : Tuple4; 
-    public C2 : Tuple4; 
-    public C3 : Tuple4;     
-    
-    public constructor ByData(data : double[][])
-    {
-        C0 = Tuple4.ByCoordinates4(data[0]);
-        C1 = Tuple4.ByCoordinates4(data[1]);
-        C2 = Tuple4.ByCoordinates4(data[2]);
-        C3 = Tuple4.ByCoordinates4(data[3]);
-    }
-    
-    public def ApplyTransform : Tuple4 (t : Tuple4)
-    {
-        tx = Tuple4.XYZH(C0.X, C1.X, C2.X, C3.X);
-        return = t;
-    }
-    
-    public def TransformVector : Vector (p: Vector)
-    {    
-        tpa = Tuple4.XYZH(p.X, p.Y, p.Z, 0.0);
-        tpcv = ApplyTransform(tpa);
-        return = Vector.ByCoordinates(tpcv.X, tpcv.Y, tpcv.Z);    
-    }
-}
-data = {    
-            {1.0, 0.0, 0.0, 0.0},
-            {0.0, 1.0, 0.0, 0.0},
-            {0.0, 0.0, 1.0, 0.0},
-            {0.0, 0.0, 0.0, 1.0}
-        };
-        
-xform = Transform.ByData(data);
-vec111 = Vector.ByCoordinates(1.0,1.0,1.0);
-tempTuple = Tuple4.XYZH(vec111.X, vec111.Y, vec111.Z, 0.0);
-tempcv = xform.ApplyTransform(tempTuple);
-x = tempcv.X;
-y = tempcv.Y;
-z = tempcv.Z;
-h = tempcv.H;
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x",1);
-            thisTest.Verify("y",1);
-            thisTest.Verify("z",1);
-            thisTest.Verify("h",0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        [Category("JunToFix")]
-        public void TestClassFunction14()
-        {
-            String code =
-@"
-class TestClass
-    
-    {
-    
-    
-    X: var;
-    Y: var;
-    
-    constructor CreateByXY (x : double, y : double)
-        {
-        
-        X = x;
-        Y = y;
-        
-        }
-    
-    
-    def AddByOne : TestClass ()
-        {
-        
-        tempX = X;
-        tempY = Y;
-            
-        temp = TestClass.CreateByXY(tempX + 1, tempY + 1);
-        return = temp;
-        }
-        
-   
-    }
-    
-    
-    myInstance = TestClass.CreateByXY(10.0, 10.0);
-    myNewInstance = myInstance.AddByOne();
-    x = myNewInstance.X;
-    y = myNewInstance.Y;
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x",11);
-            thisTest.Verify("y",11);
-        }
-
-    [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestClassFunction16()
-        {
-            String code =
-@"
-class CoordinateSystem
-{}
-class Vector
-{
-    public GlobalCoordinates : var;
-    public X : var;
-    public Y : var;
-    public Z : var;
-    public Length : var;
-    public Normalized : var;
-    public ParentCoordinateSystem : var;
-    public XLocal : var;
-    public YLocal : var;
-    public ZLocal : var;
-    public constructor ByCoordinates(x : double, y : double, z : double)
-    {
-        X = x;
-        Y = y;
-        Z = z;
-    }
-    
-    public constructor ByCoordinates(cs: CoordinateSystem, xLocal : double, yLocal : double, zLocal : double )
-    {
-        ParentCoordinateSystem = cs;
-        XLocal = xLocal;
-        YLocal = yLocal;
-        ZLocal = zLocal;
-    }
-    public constructor ByCoordinateArray(coordinates : double[])
-    {
-        X = coordinates[0];
-        Y = coordinates[1];
-        Z = coordinates[2];    
-    }
-    public def Cross : Vector (otherVector : Vector)
-    {
-        return = Vector.ByCoordinates(
-            Y*otherVector.Z - Z*otherVector.Y,
-            Z*otherVector.X - X*otherVector.Z,
-            X*otherVector.Y - Y*otherVector.X);
-    }
-}
-";
-            thisTest.RunScriptSource(code);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestClassFunction17()
-        {
-            String code =
-@"
-class A
-{
-    constructor A() {}
-    def foo() { return = 1; }
-    def foo(i:int) { return = 10; }
-}
-class B
-{
-    constructor B() {}
-    def foo() { return = 2; }
-    def foo(i:int) { return = 20; }
-}
-p = B.B();
-a = p.foo();
-b = p.foo(1);
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a",2);
-            thisTest.Verify("b",20);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestStaticUpdate01()
         {
             string code = @"
 class Base
 {
-    static x : int = 1;
+    public static x;
 }
+Base.x = 1;
 t = Base.x;
 Base.x = 10; 
                 ";
@@ -1166,7 +430,6 @@ Base.x = 10;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestStaticUpdate02()
         {
             string code = @"
@@ -1182,17 +445,12 @@ Base.x = { 1, 2 };
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestStaticProperty01()
         {
             string code = @"
 class A
 {
     static x:int;
-    static def foo(i)
-    {
-        return = 2 * i;
-    }
 }
 a = A.A();
 a.x = 3;
@@ -1206,7 +464,6 @@ t2 = b.x;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestStaticProperty02()
         {
             string code = @"
@@ -1247,29 +504,6 @@ b = S.a;
             d = foo(c);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("d", 2);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestClassNegative01()
-        {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                thisTest.RunScriptSource(
-    @"
-class TestClass
-{
-    X: var;
-    constructor Create(x : double)
-    {
-        X = x;
-        return = x + y;
-    }
-}
-p = TestClass.Create(10.0);
-"
-                );
-            });
         }
 
         [Test]
@@ -1393,7 +627,6 @@ t[1] = a[1];
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestIndexingIntoArray01()
         {
             String code =
@@ -1715,7 +948,6 @@ r2 = a[""x""];
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestDictionary05()
         {
             // Using class instance as a key 
@@ -1994,7 +1226,6 @@ r2 = ContainsKey(a, true);
         }
 
         [Test]
-        [Category("Failure")]
         public void TestDictionary22()
         {
             // Test builtin functions RemoveKey() for array
@@ -2003,17 +1234,15 @@ r2 = ContainsKey(a, true);
 a[true] = 41;
 a[""x""] = ""foo"";
 r1 = RemoveKey(a, ""x"");
-r2 = RemoveKey(a, true);
-r3 = ContainsKey(a, ""x"");
-r4 = ContainsKey(a, true);
+r2 = RemoveKey(r1, true);
+r3 = ContainsKey(r2, ""x"");
+r4 = ContainsKey(r2, true);
 ";
             // Tracked in:http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4155
             string errmsg = "MAGN-4155 : ContainsKey returns wrong value";
             thisTest.RunScriptSource(code, errmsg);
-            thisTest.Verify("r1", true);
-            thisTest.Verify("r2", true);
             thisTest.Verify("r3", false);
-            thisTest.Verify("r4", true);
+            thisTest.Verify("r4", false);
         }
 
         [Test]
@@ -2315,56 +1544,6 @@ b = a[0];
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestReplicationGuidesOnDotOps04()
-        {
-            string code = @"
-class C
-{
-    def f(a : int)
-    {
-        return = 10;
-    }
-}
-p = {C.C(), C.C()};
-x = p<1>.f({1,2}<2>);
-y = x[0];
-z = x[1];
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("y", new object[] { 10, 10 });
-            thisTest.Verify("z", new object[] { 10, 10 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestReplicationGuidesOnDotOps05()
-        {
-            string code = @"
-class A
-{
-        x;
-        constructor A ( x1 )
-        {
-            x = x1;
-        }
-        def foo ( y )
-        {
-            return = x + y;
-        }
-}
-a = A.A (0..1);
-b = 2..3;
-x = a<1>.foo(b<2>);
-y = x[0];
-z = x[1];
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("y", new object[] { 2, 3 });
-            thisTest.Verify("z", new object[] { 3, 4 });
-        }
-
-        [Test]
         public void TestTypeArrayAssign4()
         {
             string code = @"
@@ -2507,7 +1686,6 @@ b;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestEq()
         {
             string code= @"
@@ -2672,37 +1850,6 @@ x4 = 0..#5..10;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void FunctionWithinConstr001()
-        {
-            String code =
-                        @"                        
-                        class Dummy
-                        {
-		                    x : var;
-                            def init : bool ()
-                            {       
-			                    x = 5;
-			                    return=false;
-                            }
-        
-                            constructor Create()
-                            {
-                                dummy = init();			
-                            }
-                        }
-a;
-                        [Associative]
-                        {    
-                            d = Dummy.Create();	
-	                        a = d.x;
-                        }
-                        ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a",5);
-        }
-
-        [Test]
         public void InlineCondition001()
         {
             String code =
@@ -2848,7 +1995,6 @@ b = 2.1 % 0;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void NegativeIndexOnCollection003()
         {
             String code =
@@ -2995,33 +2141,6 @@ t = 2;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestFunctionUpdate01()
-        {
-            String code =
-                @"
-class C
-{
-    x : int;
-    constructor C()
-    {
-        x = 1;
-    }
-}
-def f(a : C)
-{
-    a.x = 10;
-    return = 0;
-}
-p = C.C();
-i = p.x;
-t = f(p);
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("i",10);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestNoUpdate01()
         {
@@ -3073,7 +2192,6 @@ t = p;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestPropertyUpdate03()
         {
             String code =
@@ -3103,7 +2221,6 @@ p.m.x = 2;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestPropertyUpdate04()
         {
             String code =
@@ -3135,7 +2252,6 @@ t = p.m.x;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestPropertyUpdate07()
         {
             String code =
@@ -3159,7 +2275,7 @@ i = 7;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
+        [Category("Failure")]
         public void TestLHSUpdate01()
         {
             String code =
@@ -3343,39 +2459,6 @@ a = 10;
 
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestGCRefCount()
-        {
-            String code =
-                @"
-class point
-{
-    x : var;
-    y : var;
-    constructor point()
-    {
-        x = 10;
-        y = 20;
-    }
-    def _Dispose : int()
-    {
-        x = 100;
-        return = null;
-    }
-}
-def f : int()
-{
-    p = point.point();
-    p2 = p;
-    return = p.x;
-}
-i = f();
-n = point.point();
-                ";
-            thisTest.RunScriptSource(code);
-        }
-
-        [Test]
         public void TestGCRefCount002()
         {
             String code =
@@ -3410,90 +2493,6 @@ x = getx(p);
                 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("gx", 100);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestAttributeOnClass()
-        {
-            string src = @"class TestAttribute
-{
-	constructor TestAttribute()
-	{}
-}
-class VisibilityAttribute
-{
-	x : var;
-	constructor VisibilityAttribute(_x : var)
-	{
-		x = _x;
-	}
-}
-[Test, Visibility(1)]
-class Point
-{
-	
-[Test]
-	public x : var;
-	[Visibility(2)]
-	public y : var;
-	
-	[Test, Visibility(1)]
-	constructor Point()
-	{
-		x = 10; y = 10;
-	}
-	
-[Test]
-	public static def foo : int()
-	{
-		return = 10;
-	}
-}";
-            thisTest.RunScriptSource(src);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestAttributeOnGlobalFunction()
-        {
-            string src = @"class TestAttribute
-{
-	constructor TestAttribute()
-	{}
-}
-class VisibilityAttribute
-{
-	x : var;
-	constructor VisibilityAttribute(_x : var)
-	{
-		x = _x;
-	}
-}
-[Test, Visibility(1)]
-class Point
-{
-	
-[Test]
-	public x : var;
-	[Visibility(2)]
-	public y : var;
-	
-	[Test, Visibility(1)]
-	constructor Point()
-	{
-		x = 10; y = 10;
-	}
-	
-[Test]
-	public static def foo : int()
-	{
-		return = 10;
-	}
-}";
-            thisTest.RunScriptSource(src);
-            thisTest.VerifyBuildWarningCount(0);
         }
 
         [Test]
@@ -3618,29 +2617,6 @@ b = foo();
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestTypedAssignment01()
-        {
-            String code =
-@"
-class A
-{
-    x:int;
-    def foo()
-    {
-        x:double = 4.5;
-        return = null;
-    }
-}
-a = A.A();
-t = a.foo();
-x = a.x;
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 5);
-        }
-
-        [Test]
         public void TestTypedAssignment02()
         {
             string code =
@@ -3691,24 +2667,6 @@ t4;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestTypedAssignment04()
-        {
-            string code =
-@"
-class A
-{
-    x:int = 1;
-}
-t:A = A.A();
-r1 = t;
-t = 3;
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", null);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         public void TestTypedAssignment05()
         {
@@ -3742,8 +2700,6 @@ y:bool;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        [Category("Escalate")]
         [Category("ToFixJun")]
         public void TestPropAssignWithReplication()
         {
@@ -3770,7 +2726,6 @@ test = a1.t;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestPropAssignWithReplication02()
         {
             string code =
@@ -4352,63 +3307,6 @@ p = f();
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("p", 2);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestLocalFromMemberFunction01()
-        {
-            string code =
-@"
-class C
-{
-    a : int = 1;
-    def f()
-    {
-        a : local = 2;
-        return = a;
-    }
-}
-p = C.C();
-x = p.a;
-y = p.f();
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 1);
-            thisTest.Verify("y", 2);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestLocalFromMemberFunction02()
-        {
-            string code =
-@"
-class C
-{
-    a : int = 1;
-    def f()
-    {
-        a : local = 2;
-        return = a;
-    }
-
-
-    def g()
-    {
-        a : local = 3;
-        return = a;
-    }
-}
-p = C.C();
-x = p.a;
-y = p.f();
-z = p.g();
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 1);
-            thisTest.Verify("y", 2);
-            thisTest.Verify("z", 3);
         }
 
 

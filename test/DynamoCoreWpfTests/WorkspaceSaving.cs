@@ -13,6 +13,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Wpf.ViewModels;
 
 using NUnit.Framework;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Tests
 {
@@ -438,6 +439,43 @@ namespace Dynamo.Tests
                 lastSaveTime = saveTime;
             }
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EnsureSaveDialogIsShownOnOpenIfSaveCommand()
+        {
+            //workspace has unsaved changes
+            this.GetModel().CurrentWorkspace.HasUnsavedChanges = true;
+            //openPath
+            string openPath = Path.Combine(TestDirectory, (@"UI\GroupTest.dyn"));
+            var eventCount = 0;
+
+            var handler = new WorkspaceSaveEventHandler((o,e) => { eventCount = eventCount + 1; });
+            //attach handler to the save request
+            ViewModel.RequestUserSaveWorkflow += handler;
+            //send the command
+            ViewModel.OpenIfSavedCommand.Execute(new Dynamo.Models.DynamoModel.OpenFileCommand(openPath));
+            //assert the request was made
+            Assert.AreEqual(1,eventCount);
+            //dispose handler
+            ViewModel.RequestUserSaveWorkflow -= handler;
+
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EnsureOnOpenIfSaveCommandOpensDynFile()
+        {
+            
+            //openPath
+            string openPath = Path.Combine(TestDirectory, (@"UI\GroupTest.dyn"));
+            //send the command
+            ViewModel.OpenIfSavedCommand.Execute(new Dynamo.Models.DynamoModel.OpenFileCommand(openPath));
+
+            Assert.GreaterOrEqual(2, GetModel().CurrentWorkspace.Nodes.ToList().Count());
+
+        }
+
 
         [Test]
         [Category("UnitTests")]

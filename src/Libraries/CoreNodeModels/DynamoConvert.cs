@@ -6,6 +6,7 @@ using ProtoCore.AST.AssociativeAST;
 using System.Xml;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -13,6 +14,7 @@ namespace CoreNodeModels
     [NodeName("Convert Between Units")]
     [NodeDescription("ConversionNodeDescription", typeof(Properties.Resources))]
     [NodeSearchTags("DynamoConvertSearchTags", typeof(Properties.Resources))]
+    [OutPortTypes("number")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.DynamoConvert")]
     public class DynamoConvert : NodeModel
@@ -103,7 +105,15 @@ namespace CoreNodeModels
                 RaisePropertyChanged("SelectionFromBoxToolTip");
             }
         }
-      
+
+        [JsonConstructor]
+        private DynamoConvert(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            SelectedMetricConversion = ConversionMetricUnit.Length;
+            ShouldDisplayPreviewCore = true;
+            IsSelectionFromBoxEnabled = true;
+        }
+
         public DynamoConvert()
         {           
             SelectedMetricConversion = ConversionMetricUnit.Length;  

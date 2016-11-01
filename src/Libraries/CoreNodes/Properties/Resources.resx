@@ -141,6 +141,12 @@
   <data name="ExportToCSVObsolete" xml:space="preserve">
     <value>Use CSV.WriteToFile node instead</value>
   </data>
+  <data name="FactorialNegativeInt" xml:space="preserve">
+    <value>The input value of Math.Factorial cannot be negative.</value>
+  </data>
+  <data name="FactorialOverflow" xml:space="preserve">
+    <value>The return value of Math.Factorial is out of range.</value>
+  </data>
   <data name="FindPointsWithinRadiusNullPointMessage" xml:space="preserve">
     <value>You must provide a center point.</value>
   </data>
@@ -173,6 +179,12 @@
   </data>
   <data name="ReadTextObsolete" xml:space="preserve">
     <value>Use File.FromPath -&gt;  File.ReadText nodes instead.</value>
+  </data>
+  <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
+    <value>Count is out of range!</value>
+  </data>
+  <data name="StringRemoveStartIndexOutOfRangeMessage" xml:space="preserve">
+    <value>StartIndex is out of range!</value>
   </data>
   <data name="StringToNumberInvalidNumberMessage" xml:space="preserve">
     <value>Not a valid number.</value>

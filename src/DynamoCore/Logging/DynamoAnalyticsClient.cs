@@ -15,7 +15,7 @@ namespace Dynamo.Logging
         private UsageLog logger;
 
 #if DEBUG
-        private const string ANALYTICS_PROPERTY = "UA-78361914-1";
+        private const string ANALYTICS_PROPERTY = "UA-78361914-2";
 #else
         private const string ANALYTICS_PROPERTY = "UA-52186525-1";
 #endif
@@ -29,7 +29,12 @@ namespace Dynamo.Logging
         public void Start(DynamoModel model)
         {
             //Whether enabled or not, we still record the startup.
-            Service.Instance.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
+            var service = Service.Instance;
+            
+            //Some clients such as Revit may allow start/close Dynamo multiple times
+            //in the same session so register only if the factory is not registered.
+            if(service.GetTrackerFactory(GATrackerFactory.Name) == null)
+                service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
 
             StabilityCookie.Startup();
 
@@ -46,9 +51,11 @@ namespace Dynamo.Logging
             else
                 StabilityCookie.WriteCleanShutdown();
 
-            Service.Instance.Unregister(GATrackerFactory.Name);
             Service.ShutDown();
-
+            //Unregister the GATrackerFactory only after shutdown is recorded.
+            //Unregister is required, so that the host app can re-start Analytics service.
+            Service.Instance.Unregister(GATrackerFactory.Name);
+            
             if (null != heartbeat)
                 Heartbeat.DestroyInstance();
             heartbeat = null;
@@ -199,7 +206,7 @@ namespace Dynamo.Logging
                 Description = description,
                 Value = value
             };
-            e.Track();
+            //Timed event does not need startup tracking.
             return e;
         }
 
@@ -212,7 +219,7 @@ namespace Dynamo.Logging
             return e;
         }
 
-        public IDisposable CreateFileOperationEvent(string filepath, Actions operation, int size, string description)
+        public IDisposable TrackFileOperationEvent(string filepath, Actions operation, int size, string description)
         {
             if (!ReportingAnalytics) return Disposable;
 

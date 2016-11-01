@@ -4,6 +4,7 @@ using System.Linq;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Nodes.CustomNodes;
 using ProtoCore.AST.AssociativeAST;
+using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -13,6 +14,11 @@ namespace Dynamo.Graph.Nodes
     /// </summary>
     public class ScopedNodeModel: NodeModel
     {
+        [JsonConstructor]
+        protected ScopedNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
+        protected ScopedNodeModel() { }
+
         /// <summary>
         /// If all nodes that the node outputs to are in scopes list. I.e.,
         /// </summary>
@@ -26,7 +32,7 @@ namespace Dynamo.Graph.Nodes
                 return false;
             }
 
-            foreach (var index in Enumerable.Range(0, node.OutPortData.Count))
+            foreach (var index in Enumerable.Range(0, node.OutPorts.Count))
             {
                 HashSet<Tuple<int, NodeModel>> outputTuples = null;
                 if (!node.TryGetOutput(index, out outputTuples))
@@ -102,7 +108,7 @@ namespace Dynamo.Graph.Nodes
                     continue;
                 }
 
-                foreach (int index in Enumerable.Range(0, currentNode.InPortData.Count))
+                foreach (int index in Enumerable.Range(0, currentNode.InPorts.Count))
                 {
                     if (currentNode.TryGetInput(index, out inputTuple))
                     {
@@ -136,7 +142,7 @@ namespace Dynamo.Graph.Nodes
         {
             var inScopedNodes = new List<NodeModel>();
 
-            foreach (int index in Enumerable.Range(0, InPortData.Count))
+            foreach (int index in Enumerable.Range(0, InPorts.Count))
             {
                 if (!IsScopedInport(index))
                 {

@@ -152,41 +152,6 @@ d = [Imperative]
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("SmokeTest")]
-        public void T06_Collection_Assignment_Using_Class_2()
-        {
-            string code = @"
-class collection
-{
-	
-	public a : var[];
-	
-	constructor create( b )
-	{
-		a = { 1,2,b };
-	}
-	
-	def modify ( c )
-	{
-		a[0] = c;
-		return = a;
-	}
-}
-d;
-[Associative]
-{
-	c1 = collection.create( 3 );
-	
-	d = c1.modify( 4 );
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            object[] expectedResult2 = { 4, 2, 3 };
-            thisTest.Verify("d", expectedResult2);
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T07_Collection_Assignment_In_Function_Scope()
         {
@@ -229,44 +194,6 @@ def foo ( a )
             object[] expectedResult = { 4, 5, 6 };
             thisTest.Verify("a", expectedResult2);
             thisTest.Verify("b", expectedResult);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("SmokeTest")]
-        public void T09_2D_Collection_Assignment_In_Class_Scope()
-        {
-            string code = @"
-class coll
-{
-	a : var[][];
-	
-	constructor Create ()
-	{
-		a = { {1,2} , {3,4} };
-	}
-	
-	def ret ()
-	{
-		return= a;
-	}
-}
-	c1 = coll.Create();
-	b = c1.ret();
-	c = b[1];
-	d;
-	[Imperative]
-	{	
-		c2 = coll.Create();
-		b1 = c2.ret();
-		d = b1[0];
-	}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            object[] expectedResult2 = { 3, 4 };
-            object[] expectedResult = { 1, 2 };
-            thisTest.Verify("c", expectedResult2);
-            thisTest.Verify("d", expectedResult);
         }
 
         [Test]
@@ -712,70 +639,6 @@ x = createArray ( { 1, 2, 3, 4 } );
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_InvalidTest_NoVerification")]
-        [Category("SmokeTest")]
-        public void T24_Dynamic_Array_Accessing_Out_Of_Bound_Index()
-        {
-            // Assert.Fail("1465614 - Sprint 21: rev 2335 : Accessing out-of-bound index os dynamic array is throwing unexpected error ");
-
-            string code = @"
-class A
-{
-    Y : double;
-    constructor A( y : double)
-    {
-        Y = y;
-    }
-}
-class B
-{
-    A1 : A;
-    A2 : A;
-    constructor B( a1 : A, a2 : A)
-    {
-        A1 = a1;
-        A2 = a2;
-    }
-}
-def foo ( x : double)
-{
-    return = x + 1;
-}
-innerCircle2Rad = 100;
-basePoint = {  };
-basePoint2 = { };
-nsides = 4;
-a = 0..nsides - 1..1;
-b = 0..nsides - 1..2;
-collection = { };
-[Imperative]
-{
-    temp1 = {  };
-    temp2 = {  };
-    for(i in a)
-    {
-        basePoint[i] = A.A( innerCircle2Rad * foo(i * 360 / nsides) );
-        temp1[i] = basePoint[i].Y;
-    }
-    for(i in a)
-    {
-        if(i <= nsides-2)
-        {
-            basePoint2[i] = B.B(basePoint[i], basePoint[i+1]);        
-            temp2[i] = { basePoint2[i].A1.Y, basePoint2[i].A2.Y };                      
-        }
-        basePoint2[nsides-1] = B.B(basePoint[nsides-1], basePoint[0]);
-    }
-    collection = { temp1, temp2 };
-}   
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            // Object v1 = null;
-            // thisTest.Verify("test1", 1);
-            // thisTest.Verify("test2", v1);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T24_Dynamic_Array_1()
@@ -808,109 +671,6 @@ p = 4;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] v2 = new Object[] { 0, -1, -2, -3, -4 };
 
-            thisTest.Verify("b2", v2);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("SmokeTest")]
-        public void T24_Dynamic_Array_Class_Scope_2()
-        {
-            // Assert.Fail("1465637 - Sprint 22 : rev 2336 : Issue with populating multiple array properties of class using imperative block ");
-            string error = "1467321 rev 3878: class property specified as an empty array with no rank is becoming null when assigned a collection to it ";
-            string code = @"
-class A
-{
-    X = { };
-    Y = { };
-    Count1 :int;
-    
-    constructor A ( i : int )
-    {
-        X = 0..i;
-	[Imperative]
-	{
-	    Count1 = 0;	    
-	    
-	    for ( i in X ) 
-	    {
-	        Y[Count1] = i * -1;
-		Count1 = Count1+1;
-	    }          
-            	    
-	}
-	
-    }
-}
-p = 4;
-a = A.A(p);
-b1 = a.X;
-b2 = a.Y;
-b3 = a.Count1;
-//p = 4;
-";
-            thisTest.VerifyRunScriptSource(code, error);
-            Object[] v1 = new Object[] { 0, 1, 2, 3, 4 };
-            Object[] v2 = new Object[] { 0, -1, -2, -3, -4 };
-            thisTest.Verify("b1", v1);
-            thisTest.Verify("b2", v2);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void T24_Dynamic_Array_Class_Scope_3()
-        {
-            // Assert.Fail("1465704 - Sprint 22: rev 2346 : Adding elements to array from inside class methods is throwing System.IndexOutOfRangeException exception ");
-            //Assert.Fail("1467194 - Sprint 25 - rev Regressions created by array copy constructions");           
-            string errmsg = "";//1467187 - Sprint24: REGRESSION : rev 3177: When a class collection property is updated, the value if not reflected";
-            string code = @"class A
-{
-    X :int[] = { };
-    Y :int[] = { };
-    Count1 :int;
-    
-    constructor A ( i : int )
-    {
-        X = 0..i;
-	Y = i..0..-1;
-	Count1 = i+1;
-    }
-    
-    def update ( )
-    {
-        [Imperative]
-	{
-	    i = 0;
-	    while  ( i < Count1 )
-	    {
-	        temp = Y[i];
-		Y[i] = X[i];
-		X[i] = temp;
-		i = i + 1;
-	    }    
-	    X[Count1] = 100;
-	    Y[Count1] = 100;
-	    Count1 = Count1 + 1;
-	}
-	return = true;
-    }
-}
-p = 4;
-a = A.A(p);
-b1 = a.X;
-b2 = a.Y;
-b3 = a.Count1;
-test = a.update();
-c1 = a.X;
-c2 = a.Y;
-c3 = a.Count1;
-test = b1;
-";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            Object[] v1 = new Object[] { 4, 3, 2, 1, 0, 100 };
-            Object[] v2 = new Object[] { 0, 1, 2, 3, 4, 100 };
-            thisTest.Verify("b1", v1);
             thisTest.Verify("b2", v2);
         }
 
@@ -1198,37 +958,6 @@ x = add(); //x = {{0,0},{1,1,1},{2,2,2,2}}
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void T25_Adding_elements_tomemberofclass_1465704_2()
-        {
-            string code = @"
-class A
-{
-x : var[][];
-constructor A ( )
-{
-x = { { 0, 0 } , { 1, 1 } };
-}
-}
-def add ( a:A)
-{
-a.x[1][2] = 1;
-a.x[2] = { 2, 2, 2, 2 };
-return = a.x;
-}
-y = A.A();
-x = add(y); // expected { { 0,0 }, { 1, 1, 1 }, {2, 2, 2, 2} }
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v2 = new Object[] { 0, 0 };
-            Object[] v3 = new Object[] { 1, 1, 1 };
-            Object[] v4 = new Object[] { 2, 2, 2, 2 };
-            Object[] v5 = new Object[] { v2, v3, v4 };
-            thisTest.Verify("x", v5);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_tomemberofclass_1465704_3()
@@ -1313,39 +1042,6 @@ z = add(x);
         }
 
 
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("SmokeTest")]
-        public void T25_Adding_elements_tomemberofclass_1465704_6()
-        {
-            string code = @"
-class A
-{
-x : var[]..[];
-constructor A ( )
-{
-x = { { 0, 0 } , { 1, 1 } };
-}
-}
-class B extends A 
-{
-def add ( )
-{
-x[1][2] = 1;
-x[2] = { 2, false,{ 2, 2} };
-return = x;
-}
-}
-y = B.B();
-x = y.add(); // expected { { 0,0 }, { 1, 1, 1 }, {2, false, {2, 2}} }";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v2 = new Object[] { 0, 0 };
-            Object[] v3 = new Object[] { 1, 1, 1 };
-            Object[] v4 = new Object[] { 2, false, new Object[] { 2, 2 } };
-            Object[] v5 = new Object[] { v2, v3, v4 };
-            thisTest.Verify("x", v5);
-        }
 
         [Test]
         [Category("DSDefinedClass_Ported")]
@@ -1570,7 +1266,6 @@ c = [Imperative]
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Variable resolution")]
         [Category("Failure")]
         public void T26_Defct_DNL_1459616_5()
@@ -1725,42 +1420,6 @@ t2 = CreateArray(count );
             thisTest.Verify("count", new[] { 0, 1, 2 });
         }
 
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("SmokeTest")]
-        public void T27_defect_1464429_DynamicArray_class_inherit()
-        {
-
-            string errmsg = " 1467318 - Cannot return an array from a function whose return type is var with undefined rank (-2) ";
-            string code = @"class test
-{
-    y ={};
-	def CreateArray (  i :int)
-	{
-		y[1] = i;
-		return = y;
-	}
-}
-class test1 extends test
-{
-   def CreateArray (  i :int)
-	{
-		y[i] = i*-1;
-		return = y;
-	}
-}
-count = 0..2;
-a= test1.test1();
-t2 = a.CreateArray(  count );
-";
-            thisTest.VerifyRunScriptSource(code, errmsg);
-            Object[] count = new Object[] { 0, 1, 2 };
-            Object[] t2 = new Object[] { new Object[] { 0 }, new Object[] { 0, -1 }, new Object[] { 0, -1, -2 } };
-            thisTest.Verify("count", count);
-            thisTest.Verify("t2", t2);
-        }
-
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
@@ -1905,7 +1564,6 @@ aa = pts[null].IntVal;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T27_DynamicArray_Invalid_Index_1467104_2()
         {
             string code = @"
@@ -1931,7 +1589,6 @@ aa = pts[null].x[null];
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         public void T27_DynamicArray_Invalid_Index_1467104_3()
         {
             string code = @"
@@ -2234,7 +1891,6 @@ e1 = c[2].IntVal;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void T41_Accessing_Non_Existent_Property_FromArray_1467083_3()
         {
@@ -2352,7 +2008,6 @@ s=c[0].IntVal[0];// access non array variable as if its array ";
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("SmokeTest")]
         public void T61_Assign_Non_Existent_Array_Properties_1467082_4()
         {
@@ -2584,38 +2239,6 @@ c=test(d);
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void T62_Create_Dynamic_Array_OnTheFly_inaClass_methodoverload()
-        {
-            // Assert.Fail("1467139-Sprint 24 - Rev 2958 - an array created dynamically on the fly and passed as an arguemnt to method it gets garbage collected ");
-            string code = @"
-class test
-{
-b:int=10;
-	
-  constructor test(a:int)
-	{
-	b=0;
-	
-	}
- constructor test(a:int[])
-	{
-	b=1;
-	
-	}
-}
-d[0]=5;
-a=test.test(d);
-c= a.b;
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("d", new Object[] { 5 });
-            thisTest.Verify("c", 1);
-
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T62_Create_Dynamic_Array_OnTheFly_passargument_function()
         {
@@ -2633,29 +2256,6 @@ a=test(d);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("d", new Object[] { 5 });
             thisTest.Verify("a", 1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("SmokeTest")]
-        public void T63_Dynamic_array_onthefly_argument_class__1467139()
-        {
-            string code = @"
-class test
-{
-b:int=10;
-        
-  constructor test(a:int[])
-        {
-        b=1;
-        
-        }
-}
-d[0]=5;
-a=test.test(d);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("d", new Object[] { 5 });
         }
 
         [Test]
@@ -2816,7 +2416,6 @@ b[0]=false;
 
         [Test]
         [Category("Replication")]
-        [Category("Feature")]
         public void T66_Array_CannotBeUsedToIndex1467069()
         {
             string code = @"
@@ -2833,7 +2432,6 @@ x;
 
         [Test]
         [Category("Replication")]
-        [Category("Feature")]
         public void T66_Array_CannotBeUsedToIndex1467069_2()
         {
             string code = @"
@@ -3655,144 +3253,6 @@ test = foo().IntVal;
             thisTest.Verify("r", 10);
         }
 
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        public void T55_DictionaryKeyinClass()
-        {
-
-            String code =
-            @"
-               
-            class test
-                {
-                    a = { 1, 2, 3 };
-                    b = ""x"";
-                    def foo(c:int)
-                    {
-                        a[b] = c;
-                        return =a;
-                    }
-                }
-
-            z = test.test();
-            y = z.foo(5);
-            r=y[""x""];
-            ";
-
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 5);
-
-        }
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        public void T56_DictionaryKeyinClass_2()
-        {
-
-            String code =
-            @"
-               
-          class test
-            {
-                a = { 1, 2, 3 };
-                b = ""x"";
-                def foo(c:int)
-                {
-                    a[b] = c;
-                    return =a;
-                }
-            }
-
-            z = test.test();
-            y = z.foo(5);
-            x = y[z.b];
-            ";
-
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 5);
-
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        public void T57_DictionaryKeyinClass_inheritance()
-        {
-
-            String code =
-            @"
-               
-          
-            class test
-                {
-                    a = { 1, 2, 3 };
-                    b = ""x"";
-                    def foo(c:int)
-                    {
-                        a[b] = c;
-                        return =a;
-                    }
-                }
-            class mytest extends test
-            {
-                def foo1(d : int)
-                {
-                    a[b] = d;
-
-                    return = this.a;
-                }
-            }
-            z = mytest.mytest();
-            y = z.foo1(5);
-
-            x = y[z.b];
-            ";
-
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 5);
-
-        }
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        public void T58_DictionaryKeyinClass_inheritance2()
-        {
-
-            String code =
-            @"
-               
-          class test
-                {
-                    a = { 1, 2, 3 };
-                    b = ""x"";
-                    def foo(c:int)
-                    {
-                        a[b] = c;
-                        return =a;
-                    }
-                }
-            class mytest extends test
-            {
-                e = ""y"";
-                def foo1(d : int)
-                {
-                    a[b] = d;
-                    a[e] = d + 1;
-                    return = this.a;
-                }
-            }
-            z = mytest.mytest();
-            y = z.foo1(5);
-
-            x1 = y[z.b];
-            x2 = y[z.e];
-
-
-
-            ";
-
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x1", 5);
-            thisTest.Verify("x2", 6);
-
-        }
         [Test]
         [Category("DSDefinedClass_Ported")]
         public void T59_DotOperator()

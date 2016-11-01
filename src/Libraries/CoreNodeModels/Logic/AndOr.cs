@@ -5,6 +5,7 @@ using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.Logic
 {
@@ -15,6 +16,16 @@ namespace CoreNodeModels.Logic
     public abstract class BinaryLogic : VariableInputNode
     {
         private readonly Operator _op;
+
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        protected BinaryLogic(Operator op, IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            _op = op;
+        }
 
         protected BinaryLogic(Operator op)
         {
@@ -65,9 +76,18 @@ namespace CoreNodeModels.Logic
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
     [NodeDescription("AndDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
+    [OutPortTypes("bool")]
     [AlsoKnownAs("DSCore.Logic.And", "DSCoreNodesUI.Logic.And")]
     public class And : BinaryLogic
     {
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        [JsonConstructor]
+        private And(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base( Operator.and, inPorts, outPorts) { }
+
         public And() : base(Operator.and) { }
     }
 
@@ -78,9 +98,18 @@ namespace CoreNodeModels.Logic
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
     [NodeDescription("OrDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
+    [OutPortTypes("bool")]
     [AlsoKnownAs("DSCore.Logic.Or", "DSCoreNodesUI.Logic.Or")]
     public class Or : BinaryLogic
     {
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        [JsonConstructor]
+        private Or(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base( Operator.or, inPorts, outPorts) { }
+
         public Or() : base(Operator.or) { }
     }
 }

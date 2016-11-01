@@ -253,38 +253,6 @@ r =
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void T06_String_Class()
-        {
-            string code = @"
-class A
-{
-	str:string = ""a"";
-    def foo(s : string)
-    {
-        str = s;
-return = str;
-    }
-}
-a = A.A();
-str1;str2;str3;
-[Imperative]
-{
-	str1 = a.str;
-    str2 = a.foo(""foo"");
-    a.str = a.str + ""b"";
-	str3 =a.str;
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-
-            thisTest.Verify("str1", "a");
-            thisTest.Verify("str2", "foo");
-            thisTest.Verify("str3", "foob");
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T07_String_Replication()
         {
@@ -516,24 +484,6 @@ import(""FFITarget.dll"");
                 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("b", "aFFITarget.ClassFunctionality");
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("ConcatenationString")]
-        public void TV_ADD_StringPointer_2()
-        {
-            String code =
-                @"
-                class A {
-                    fx:int = 1;
-                }
-                a  = A.A();
-                b = ""a"" + a;
-    
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("b", "aA{fx = 1}");
         }
 
         [Test]

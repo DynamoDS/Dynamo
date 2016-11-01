@@ -12,6 +12,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.Input
 {
@@ -20,6 +21,13 @@ namespace CoreNodeModels.Input
     {
         private static readonly string HintPathString = "HintPath";
         public string HintPath { get; set; }
+
+        protected FileSystemBrowser(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            Value = "";
+            HintPath = Value;
+            PropertyChanged += OnPropertyChanged;
+        }
 
         protected FileSystemBrowser(string tip)
             : base()
@@ -87,25 +95,51 @@ namespace CoreNodeModels.Input
     [NodeDescription("FilenameNodeDescription", typeof(Resources))]
     [NodeSearchTags("FilePathSearchTags", typeof(Resources))]
     [SupressImportIntoVM]
+    [InPortNames("N/A")]
+    [InPortTypes("UI Input")]
+    [OutPortTypes("string")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.Filename", "DSCoreNodesUI.Input.Filename")]
     public class Filename : FileSystemBrowser
     {
+        [JsonConstructor]
+        private Filename(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ShouldDisplayPreviewCore = false;
+        }
+
         public Filename() : base("Filename")
         {
             ShouldDisplayPreviewCore = false;
         }
+
+      /// <summary>
+      ///     Indicates whether node is input node
+      /// </summary>
+      public override bool IsInputNode
+      {
+        get { return false; }
+      }
     }
 
     [NodeName("Directory Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("DirectoryNodeDescription", typeof(Resources))]
     [NodeSearchTags("DirectoryPathSearchTags", typeof(Resources))]
+    [InPortNames("N/A")]
+    [InPortTypes("UI Input")]
+    [OutPortTypes("bool")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.Directory", "DSCoreNodesUI.Input.Directory")]
     public class Directory : FileSystemBrowser
     {
+        [JsonConstructor]
+        private Directory(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ShouldDisplayPreviewCore = false;
+        }
+
         public Directory() : base("Directory")
         {
             ShouldDisplayPreviewCore = false;
@@ -124,6 +158,11 @@ namespace CoreNodeModels.Input
     {
         private IEnumerable<IDisposable> registrations = Enumerable.Empty<IDisposable>();
         private readonly Func<string, T> func;
+
+        protected FileSystemObject(Func<string, T> func, IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            this.func = func;
+        }
 
         protected FileSystemObject(Func<string, T> func)
         {
@@ -227,10 +266,16 @@ namespace CoreNodeModels.Input
     [NodeDescription("FileObjectNodeDescription", typeof(Resources))]
     [NodeSearchTags("FilePathSearchTags", typeof(Resources))]
     [SupressImportIntoVM]
+    [OutPortTypes("object")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.FileObject", "DSCoreNodesUI.Input.FileObject")]
     public class FileObject : FileSystemObject<FileInfo>
     {
+
+        [JsonConstructor]
+        private FileObject(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : 
+            base(DSCore.IO.File.FromPath, inPorts, outPorts) { }
+
         public FileObject()
             : base(DSCore.IO.File.FromPath)
         {
@@ -287,6 +332,10 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("DSCore.File.DirectoryObject", "DSCoreNodesUI.Input.DirectoryObject")]
     public class DirectoryObject : FileSystemObject<DirectoryInfo>
     {
+        [JsonConstructor]
+        private DirectoryObject(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : 
+            base(DSCore.IO.Directory.FromPath, inPorts, outPorts) { }
+
         public DirectoryObject()
             : base(DSCore.IO.Directory.FromPath)
         {

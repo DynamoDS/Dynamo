@@ -2,6 +2,8 @@
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -21,6 +23,12 @@ namespace Dynamo.Graph.Nodes
             Deprecated, Unresolved
         }
 
+        [JsonConstructor]
+        private DummyNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ShouldDisplayPreviewCore = false;
+        }
+
         /// <summary>
         /// This function creates DummyNode.
         /// DummyNode is used for tests or in case if node couldn't be loaded.
@@ -28,6 +36,7 @@ namespace Dynamo.Graph.Nodes
         public DummyNode()
         {
             LegacyNodeName = "Dynamo.Graph.Nodes.DummyNode";
+            LegacyFullName = LegacyNodeName;
             LegacyAssembly = string.Empty;
             NodeNature = Nature.Unresolved;
             Description = GetDescription();
@@ -48,6 +57,7 @@ namespace Dynamo.Graph.Nodes
             InputCount = inputCount;
             OutputCount = outputCount;
             LegacyNodeName = legacyName;
+            LegacyFullName = legacyName;
             NickName = legacyName;
             OriginalNodeContent = originalElement;
             LegacyAssembly = legacyAssembly;
@@ -55,6 +65,13 @@ namespace Dynamo.Graph.Nodes
 
             Description = GetDescription();
             ShouldDisplayPreviewCore = false;
+
+            if (OriginalNodeContent != null)
+            {
+                var legacyFullName = OriginalNodeContent.Attributes["function"];
+                if (legacyFullName != null)
+                    LegacyFullName = legacyFullName.Value;
+            }
 
             UpdatePorts();
 
@@ -84,6 +101,13 @@ namespace Dynamo.Graph.Nodes
                 foreach (XmlNode childNode in nodeElement.ChildNodes)
                     if (childNode.Name.Equals("OriginalNodeContent"))
                         OriginalNodeContent = (XmlElement)nodeElement.FirstChild.FirstChild;
+            }
+
+            if (OriginalNodeContent != null)
+            {
+                var legacyFullName = OriginalNodeContent.Attributes["type"];
+                if (legacyFullName != null)
+                    LegacyFullName = legacyFullName.Value;
             }
 
             var legacyAsm = nodeElement.Attributes["legacyAssembly"];
@@ -265,6 +289,11 @@ namespace Dynamo.Graph.Nodes
         /// Returns the node assembly
         /// </summary>
         public string LegacyAssembly { get; private set; }
+
+        /// <summary>
+        /// Returns the original node DSFunction description or UI node type
+        /// </summary>
+        public string LegacyFullName { get; private set; }
 
         /// <summary>
         /// Node can be Deprecated or Unresolved

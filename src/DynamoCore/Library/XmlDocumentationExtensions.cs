@@ -173,6 +173,7 @@ namespace Dynamo.Engine
 
             if (documentNode == null)
                 return String.Empty;
+
             if (property.Equals(DocumentElementType.Description) && !documentNode.Parameters.ContainsKey(paramName))
                 return String.Empty;
 

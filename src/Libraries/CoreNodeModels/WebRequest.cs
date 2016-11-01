@@ -4,6 +4,7 @@ using DSCore;
 using ProtoCore.AST.AssociativeAST;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -11,9 +12,16 @@ namespace CoreNodeModels
     [NodeDescription("WebRequestDescription", typeof(Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_WEB)]
     [IsDesignScriptCompatible]
+    [OutPortTypes("object")]
     [AlsoKnownAs("DSCoreNodesUI.WebRequest")]
     public class WebRequest : NodeModel
     {
+        [JsonConstructor]
+        private WebRequest(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            CanUpdatePeriodically = true;
+        }
+
         public WebRequest()
         {
             InPortData.Add(new PortData("url", Resources.WebRequestPortDataUrlToolTip));
