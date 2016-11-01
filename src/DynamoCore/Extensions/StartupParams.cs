@@ -16,6 +16,13 @@ namespace Dynamo.Extensions
     /// </summary>
     public class StartupParams
     {
+
+        /// <summary>
+        /// A handle to the <see cref="IExtensionManager"/>
+        /// </summary>
+        public IExtensionManager ExtensionManager { get { return extensionsManager; } }
+        private readonly IExtensionManager extensionsManager;
+
         /// <summary>
         /// Returns <see cref="IAuthProvider"/> for DynamoModel
         /// </summary>
@@ -61,9 +68,11 @@ namespace Dynamo.Extensions
         /// <param name="customNodeManager"><see cref="ICustomNodeManager"/> for DynamoModel</param>
         /// <param name="dynamoVersion"><see cref="Version"/> for DynamoModel</param>
         /// <param name="preferences"><see cref="IPreferences"/> for DynamoModel</param>
+        /// <param name="extensionsManager"><see cref="IExtensionManager"/> for DynamoModel</param>
+
         public StartupParams(IAuthProvider provider, IPathManager pathManager,
             ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager,
-            Version dynamoVersion, IPreferences preferences)
+            Version dynamoVersion, IPreferences preferences, IExtensionManager extensionsManager)
         {
             this.authProvider = provider;
             this.pathManager = pathManager;
@@ -71,6 +80,7 @@ namespace Dynamo.Extensions
             this.customNodeManager = customNodeManager;
             this.dynamoVersion = dynamoVersion;
             this.preferences = preferences;
+            this.extensionsManager = extensionsManager;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Extensions;
 
 namespace Dynamo.Notifications
 {
@@ -74,7 +75,7 @@ namespace Dynamo.Notifications
             this.Dispose();
         }
 
-        public void Startup(ViewStartupParams p)
+        public void Startup(StartupParams p)
         {
            
         }
