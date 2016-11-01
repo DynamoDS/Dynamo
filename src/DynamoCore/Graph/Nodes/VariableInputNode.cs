@@ -180,7 +180,6 @@ namespace Dynamo.Graph.Nodes
                 var port = model.InPorts[count - 1];
                 port.DestroyConnectors();
                 model.InPorts.Remove(port);
-                model.ValidateConnections();
             }
 
             MarkNodeDirty();

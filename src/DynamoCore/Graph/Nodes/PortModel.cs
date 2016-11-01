@@ -263,6 +263,13 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        internal bool IsDisconnected
+        {
+            get
+            {
+                return !Connectors.Any() && !(UsingDefaultValue && DefaultValue != null);
+            }
+        }
         #endregion
 
         [JsonConstructor]
@@ -339,8 +346,6 @@ namespace Dynamo.Graph.Nodes
             }
 
             connectors.Remove(connector);
-
-            Owner.ValidateConnections();
         }
 
         /// <summary>

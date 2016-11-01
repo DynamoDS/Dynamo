@@ -96,8 +96,6 @@ namespace PythonNodeModels
                 + "OUT = 0";
 
             AddInput();
-            ConfigureSnapEdges(InPorts);
-            ValidateConnections();
         }
 
         private string script;

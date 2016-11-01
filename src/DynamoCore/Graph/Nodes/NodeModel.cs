@@ -23,6 +23,7 @@ using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using System.Runtime.Serialization;
+using System.Diagnostics;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -883,8 +884,38 @@ namespace Dynamo.Graph.Nodes
 
         private void PortsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            ValidateConnections();
-            ConfigureSnapEdges(sender == InPorts?InPorts : OutPorts);
+            switch (e.Action)
+            {
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                    ConfigureSnapEdges(sender == InPorts ? InPorts : OutPorts);
+                    foreach(PortModel p in e.NewItems)
+                    {
+                        // For input ports, we want to watch the changes
+                        // to the connector collections, to set the state of the node.
+                        if(p.PortType == PortType.Input)
+                        {
+                            p.Connectors.CollectionChanged += Connectors_CollectionChanged;                         
+                        }
+                        p.PropertyChanged += OnPortPropertyChanged;
+                        SetNodeStateBasedOnConnectionAndDefaults();
+                    }
+                    break;
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                    foreach(PortModel p in e.OldItems)
+                    {
+                        if (p.PortType == PortType.Input)
+                        {
+                            p.Connectors.CollectionChanged -= Connectors_CollectionChanged;
+                        }
+                        p.PropertyChanged -= OnPortPropertyChanged;
+                    }
+                    break;
+            }
+        }
+
+        private void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            SetNodeStateBasedOnConnectionAndDefaults();
         }
 
         /// <summary>
@@ -1241,16 +1272,13 @@ namespace Dynamo.Graph.Nodes
         {
             if (!string.IsNullOrEmpty(persistentWarning))
             {
-                State = ElementState.PersistentWarning;
                 ToolTipText = persistentWarning;
             }
             else
             {
-                State = ElementState.Dead;
                 ClearTooltipText();
             }
-
-            ValidateConnections();
+            SetNodeStateBasedOnConnectionAndDefaults();
         }
 
         public void SelectNeighbors()
@@ -1271,28 +1299,26 @@ namespace Dynamo.Graph.Nodes
         /// Sets the <seealso cref="ElementState"/> for the node based on
         /// the port's default value status and connectivity.
         /// </summary>
-        public void ValidateConnections()
+        private void SetNodeStateBasedOnConnectionAndDefaults()
         {
+            Debug.WriteLine(string.Format("Validating Connections: Node type: {0}, {1} inputs, {2} outputs", this.GetType(), this.InPorts.Count(), this.OutPorts.Count()));
+
+            if (!string.IsNullOrEmpty(persistentWarning))
+            {
+                State = ElementState.PersistentWarning;
+                return;
+            }
+
             // if there are inputs without connections
             // mark as dead; otherwise, if the original state is dead,
             // update it as active.
-            if (inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValue != null)))
+            if (inPorts.Any(x => x.IsDisconnected))
             {
-                if (State == ElementState.Active)
-                {
-                    State = string.IsNullOrEmpty(persistentWarning)
-                        ? ElementState.Dead
-                        : ElementState.PersistentWarning;
-                }
+                State = ElementState.Dead;
             }
             else
             {
-                if (State == ElementState.Dead)
-                {
-                    State = string.IsNullOrEmpty(persistentWarning)
-                        ? ElementState.Active
-                        : ElementState.PersistentWarning;
-                }
+                State = ElementState.Active;
             }
         }
 
@@ -1546,7 +1572,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="data"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        public PortModel AddPort(PortType portType, PortData data, int index)
+        private PortModel AddPort(PortType portType, PortData data, int index)
         {
             PortModel p;
             switch (portType)
@@ -1586,13 +1612,15 @@ namespace Dynamo.Graph.Nodes
         {
             switch (args.PropertyName)
             {
-                case "UsingDefaultValue":
                 case "Level":
                 case "UseLevels":
                 case "ShouldKeepListStructure":
                     OnNodeModified();
                     break;
-
+                case "UsingDefaultValue":
+                    SetNodeStateBasedOnConnectionAndDefaults();
+                    OnNodeModified();
+                    break;
                 default:
                     break;
             }
@@ -1621,8 +1649,6 @@ namespace Dynamo.Graph.Nodes
 
         private void OnPortConnected(PortModel port, ConnectorModel connector)
         {
-            ValidateConnections();
-
             if (port.PortType != PortType.Input) return;
 
             var data = InPorts.IndexOf(port);
@@ -1637,8 +1663,6 @@ namespace Dynamo.Graph.Nodes
 
         private void OnPortDisconnected(PortModel port)
         {
-            ValidateConnections();
-
             if (port.PortType != PortType.Input) return;
 
             var data = InPorts.IndexOf(port);
@@ -1704,7 +1728,6 @@ namespace Dynamo.Graph.Nodes
 
         public override void Deselect()
         {
-            ValidateConnections();
             IsSelected = false;
         }
 

@@ -46,7 +46,7 @@ namespace Dynamo
     {
         public DerivedTestNode()
         {
-            AddPort(PortType.Input, new PortData("input B", "This is input B."), 1);
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("input B", "This is input B.")));
         }
     }
 
