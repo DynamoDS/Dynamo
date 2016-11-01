@@ -1041,24 +1041,7 @@ namespace Dynamo.Core
                         newNodes.Add(node);
                     }
 
-                    //var curriedNode = curriedNodeArgs.FirstOrDefault(x => x.OuterNode == inputNode);
-
-                    //if (curriedNode == null)
-                    //{
                     ConnectorModel.Make(node, inputReceiverNode, 0, inputReceiverData);
-                    //}
-                    //else
-                    //{
-                    //    //Connect it to the applier
-                    //    newNodeWorkspace.AddConnection(node, curriedNode.InnerNode, 0, 0);
-
-                    //    //Connect applier to the inner input receive
-                    //    newNodeWorkspace.AddConnection(
-                    //        curriedNode.InnerNode,
-                    //        inputReceiverNode,
-                    //        0,
-                    //        inputReceiverData);
-                    //}
                 }
 
                 #endregion
