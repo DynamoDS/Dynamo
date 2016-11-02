@@ -1301,7 +1301,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         private void SetNodeStateBasedOnConnectionAndDefaults()
         {
-            Debug.WriteLine(string.Format("Validating Connections: Node type: {0}, {1} inputs, {2} outputs", this.GetType(), this.InPorts.Count(), this.OutPorts.Count()));
+            //Debug.WriteLine(string.Format("Validating Connections: Node type: {0}, {1} inputs, {2} outputs", this.GetType(), this.InPorts.Count(), this.OutPorts.Count()));
 
             if (State == ElementState.PersistentWarning) return;
 

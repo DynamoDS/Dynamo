@@ -2,6 +2,7 @@
 using System.Xml;
 using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
+using System.Diagnostics;
 
 namespace Dynamo.Graph.Connectors
 {
@@ -62,6 +63,8 @@ namespace Dynamo.Graph.Connectors
                 return new ConnectorModel(start, end, startIndex, endIndex, guid ?? Guid.NewGuid());
             }
 
+            Debug.WriteLine("Could not create a connector!");
+
             return null;
         }
 
@@ -73,6 +76,8 @@ namespace Dynamo.Graph.Connectors
         /// <param name="guid">The unique identifier for the <see cref="ConnectorModel"/>.</param>
         public ConnectorModel(PortModel start, PortModel end, Guid guid)
         {
+            Debug.WriteLine("Creating a connector between ports {0}(owner:{1}) and {2}(owner:{3}).", 
+                start.GUID, start.Owner == null?"null":start.Owner.NickName, end.GUID, end.Owner == null?"null":end.Owner.NickName);
             Start = start;
             Start.Connect(this);
             Connect(end);
@@ -86,6 +91,9 @@ namespace Dynamo.Graph.Connectors
             Start = start.OutPorts[startIndex];
 
             PortModel endPort = end.InPorts[endIndex];
+
+            Debug.WriteLine("Creating a connector between ports {0}(owner:{1}) and {2}(owner:{3}).",
+                start.GUID, Start.Owner == null ? "null" : Start.Owner.NickName, end.GUID, endPort.Owner == null ? "null" : endPort.Owner.NickName);
 
             Start.Connect(this);
             Connect(endPort);

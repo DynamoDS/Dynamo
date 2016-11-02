@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using ProtoCore.AST.AssociativeAST;
+using System.Diagnostics;
 
 namespace Dynamo.Graph.Nodes.CustomNodes
 {
@@ -115,9 +116,18 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// <param name="model">Custom node model</param>
         public override void SyncNodeWithDefinition(NodeModel model)
         {
-            if (IsInSyncWithNode(model)) 
+            if (IsInSyncWithNode(model))
+            {
+                Debug.WriteLine("Custom node definition is already in sync for: " + 
+                    model.NickName + 
+                    string.Format(", {0} returns, {1} parameters", Definition.Returns.Count(), Definition.Parameters.Count()));
                 return;
-            
+            } 
+
+            Debug.WriteLine("Syncing custom node with definition for: " + 
+                model.NickName + 
+                string.Format(", {0} returns, {1} parameters", Definition.Returns.Count(), Definition.Parameters.Count()));
+
             base.SyncNodeWithDefinition(model);
 
             model.OnNodeModified();
