@@ -25,11 +25,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
             if(count > model.InPorts.Count)
             {
-                foreach (PortModel inport in model.InPorts.Skip(inputs.Count()))
-                {
-                    inport.DestroyConnectors();
-                }
-
                 for (int i = model.InPorts.Count - 1; i >= count; i--)
                 {
                     model.InPorts.RemoveAt(i);
@@ -59,11 +54,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             {
                 if(Definition.Returns.Count() > model.OutPorts.Count())
                 {
-                    foreach (PortModel outport in model.OutPorts.Skip(Definition.Returns.Count()))
-                    {
-                        outport.DestroyConnectors();
-                    }
-
                     for (int i = model.OutPorts.Count - 1; i >= Definition.Returns.Count(); i--)
                     {
                         model.OutPorts.RemoveAt(i);

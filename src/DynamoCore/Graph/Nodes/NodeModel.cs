@@ -894,7 +894,7 @@ namespace Dynamo.Graph.Nodes
                         // to the connector collections, to set the state of the node.
                         if(p.PortType == PortType.Input)
                         {
-                            p.Connectors.CollectionChanged += Connectors_CollectionChanged;                         
+                            p.Connectors.CollectionChanged += ConnectorsCollectionChanged;                         
                         }
                         p.PropertyChanged += OnPortPropertyChanged;
                         SetNodeStateBasedOnConnectionAndDefaults();
@@ -905,15 +905,17 @@ namespace Dynamo.Graph.Nodes
                     {
                         if (p.PortType == PortType.Input)
                         {
-                            p.Connectors.CollectionChanged -= Connectors_CollectionChanged;
+                            p.Connectors.CollectionChanged -= ConnectorsCollectionChanged;
                         }
                         p.PropertyChanged -= OnPortPropertyChanged;
+
+                        p.DestroyConnectors();
                     }
                     break;
             }
         }
 
-        private void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void ConnectorsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             SetNodeStateBasedOnConnectionAndDefaults();
         }
