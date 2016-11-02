@@ -49,7 +49,7 @@ namespace Dynamo.Graph.Nodes
         public string PortName
         {
             get;
-            private set;
+            internal set;
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace Dynamo.Graph.Nodes
         public AssociativeNode DefaultValue
         {
             get;
-            private set;
+            internal set;
         }
 
         /// <summary>

@@ -63,7 +63,7 @@ namespace Dynamo.Graph.Connectors
                 return new ConnectorModel(start, end, startIndex, endIndex, guid ?? Guid.NewGuid());
             }
 
-            Debug.WriteLine("Could not create a connector!");
+            Debug.WriteLine("Could not create a connector between {0} and {1}.", start.NickName, end.NickName);
 
             return null;
         }

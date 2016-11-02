@@ -17,24 +17,63 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         
         protected override void InitializeInputs(NodeModel model)
         {
-            model.InPorts.Clear();
-
             if (Definition.DisplayParameters == null || Definition.Parameters == null)
                 return;
 
-            var inputs = Definition.DisplayParameters.Zip(Definition.Parameters, (dp, p) => Tuple.Create(dp, p.Description, p.DefaultValue));
-            foreach (var p in inputs)
-                model.InPorts.Add(new PortModel(PortType.Input, model, new PortData(p.Item1, p.Item2, p.Item3)));
+            var inputs = Definition.DisplayParameters.Zip(Definition.Parameters, (dp, p) => Tuple.Create(dp, p.Description, p.DefaultValue)).ToList();
+            var count = inputs.Count();
+
+            if(count > model.InPorts.Count)
+            {
+                foreach (PortModel inport in model.InPorts.Skip(inputs.Count()))
+                {
+                    inport.DestroyConnectors();
+                }
+
+                for (int i = model.InPorts.Count - 1; i >= count; i--)
+                {
+                    model.InPorts.RemoveAt(i);
+                }
+            }
+
+            for (int i=0; i<inputs.Count(); i++)
+            {
+                var input = inputs[i];
+
+                if(model.InPorts.Count > 0)
+                {
+                    model.InPorts[i].PortName = input.Item1;
+                    model.InPorts[i].ToolTip = input.Item2;
+                    model.InPorts[i].DefaultValue = input.Item3;
+                }
+                else
+                {
+                    model.InPorts.Add(new PortModel(PortType.Input, model, new PortData(input.Item1, input.Item2, input.Item3)));
+                }
+            }
         }
 
         protected override void InitializeOutputs(NodeModel model)
         {
-            model.OutPorts.Clear();
-
             if (Definition.Returns.Any())
             {
-                foreach (var pair in Definition.Returns)
+                if(Definition.Returns.Count() > model.OutPorts.Count())
                 {
+                    foreach (PortModel outport in model.OutPorts.Skip(Definition.Returns.Count()))
+                    {
+                        outport.DestroyConnectors();
+                    }
+
+                    for (int i = model.OutPorts.Count - 1; i >= Definition.Returns.Count(); i--)
+                    {
+                        model.OutPorts.RemoveAt(i);
+                    }
+                }
+
+                var returns = Definition.Returns.ToList();
+                for(int i=0; i<Definition.Returns.Count(); i++)
+                {
+                    var pair = returns[i];
                     string key = pair.Item1;
                     string tooltip = pair.Item2;
 
@@ -43,11 +82,20 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                         tooltip = Properties.Resources.ToolTipReturnValue;
                     }
 
-                    model.OutPorts.Add(new PortModel(PortType.Output, model, new PortData(key, tooltip)));
+                    if(model.OutPorts.Count > i)
+                    {
+                        model.OutPorts[i].PortName = key;
+                        model.OutPorts[i].ToolTip = tooltip;
+                    }
+                    else
+                    {
+                        model.OutPorts.Add(new PortModel(PortType.Output, model, new PortData(key, tooltip)));
+                    }
                 }
             }
             else
             {
+                model.OutPorts.Clear();
                 model.OutPorts.Add(new PortModel(PortType.Output, model, new PortData("", Properties.Resources.ToolTipReturnValue)));
             }
         }
