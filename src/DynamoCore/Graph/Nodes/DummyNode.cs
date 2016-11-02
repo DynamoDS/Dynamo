@@ -130,7 +130,7 @@ namespace Dynamo.Graph.Nodes
             for (int input = 0; input < InputCount; input++)
             {
                 var name = string.Format("Port {0}", input + 1);
-                InPorts.Add(new PortModel(PortType.Output, this, new PortData(name, "")));
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData(name, "")));
             }
 
             OutPorts.Clear();

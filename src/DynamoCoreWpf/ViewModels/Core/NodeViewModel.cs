@@ -789,6 +789,14 @@ namespace Dynamo.ViewModels
                     InPorts.Remove(portToRemove);
                 }
             }
+            else if(e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                foreach(var p in InPorts)
+                {
+                    UnSubscribePortEvents(p);
+                }
+                InPorts.Clear();
+            }
         }
 
         private void outports_collectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -814,6 +822,14 @@ namespace Dynamo.ViewModels
                     PortViewModel portToRemove = UnSubscribePortEvents(OutPorts.ToList().First(x => x.PortModel == item));
                     OutPorts.Remove(portToRemove);
                 }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                foreach (var p in OutPorts)
+                {
+                    UnSubscribePortEvents(p);
+                }
+                OutPorts.Clear();
             }
         }
 

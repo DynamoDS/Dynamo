@@ -278,7 +278,7 @@ namespace CoreNodeModels.Input
             : base(DSCore.IO.File.FromPath)
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("path", Resources.FileObjectPortDataPathToolTip)));
-            OutPorts.Add(new PortModel(PortType.Input, this, new PortData("file", Resources.FileObjectPortDataResultToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("file", Resources.FileObjectPortDataResultToolTip)));
             RegisterAllPorts();
         }
 

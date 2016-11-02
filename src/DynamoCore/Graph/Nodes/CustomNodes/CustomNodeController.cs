@@ -29,6 +29,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         protected override void InitializeOutputs(NodeModel model)
         {
             model.OutPorts.Clear();
+
             if (Definition.Returns.Any())
             {
                 foreach (var pair in Definition.Returns)

@@ -76,7 +76,7 @@ namespace Dynamo.Nodes
         public Arduino()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("exec", Resources.ArduinoPortDataExecToolTip)));
-            OutPorts.Add(new PortModel(PortType.Input, this, new PortData("arduino", Resources.ArduinoPortDataOutputToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("arduino", Resources.ArduinoPortDataOutputToolTip)));
 
             RegisterAllPorts();
 

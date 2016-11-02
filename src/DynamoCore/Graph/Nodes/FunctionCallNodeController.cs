@@ -186,9 +186,6 @@ namespace Dynamo.Graph.Nodes
             if (Definition == null) return;
 
             OnSyncWithDefinitionStart(model);
-            model.InPorts.Clear();
-            model.OutPorts.Clear();
-
             InitializeInputs(model);
             InitializeOutputs(model);
             model.RegisterAllPorts();
