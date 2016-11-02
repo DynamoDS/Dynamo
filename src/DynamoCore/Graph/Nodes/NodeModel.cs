@@ -910,6 +910,8 @@ namespace Dynamo.Graph.Nodes
                         p.PropertyChanged -= OnPortPropertyChanged;
 
                         p.DestroyConnectors();
+
+                        SetNodeStateBasedOnConnectionAndDefaults();
                     }
                     break;
             }
