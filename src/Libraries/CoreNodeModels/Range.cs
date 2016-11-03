@@ -49,7 +49,7 @@ namespace CoreNodeModels
             if (IsPartiallyApplied)
             {
                 var connectedPorts = Enumerable.Range(0, this.InPorts.Count)
-                    .Where(this.HasInput)
+                    .Where(index=>this.InPorts[index].IsConnected)
                     .ToList();
 
                 // 3d, 4th, 5th are always connected.
@@ -128,7 +128,7 @@ namespace CoreNodeModels
             if (IsPartiallyApplied)
             {
                 var connectedPorts = Enumerable.Range(0, this.InPorts.Count)
-                    .Where(this.HasInput)
+                    .Where(index=>this.InPorts[index].IsConnected)
                     .ToList();
 
                 // 3d, 4th, 5th are always connected.

@@ -243,7 +243,7 @@ namespace CoreNodeModels
                         AstFactory.BuildFunctionObject(
                             functionDef.Name,
                             InPorts.Count,
-                            Enumerable.Range(0, InPorts.Count).Where(HasConnectedInput),
+                            Enumerable.Range(0, InPorts.Count).Where(index=>InPorts[index].IsConnected),
                             inputAstNodes))
                 };
             }

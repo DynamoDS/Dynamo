@@ -50,7 +50,7 @@ namespace Dynamo
             if (outputs.Any())
             {
                 topMost.AddRange(
-                    outputs.Where(x => x.HasInput(0)).Select(x => Tuple.Create(0, x as NodeModel)));
+                    outputs.Where(x => x.InPorts[0].IsConnected).Select(x => Tuple.Create(0, x as NodeModel)));
                 returns = outputs.Select(x => x.Return).ToList();
             }
             else
@@ -72,7 +72,7 @@ namespace Dynamo
                                     .Select(
                                         (port, i) =>
                                             new {portIndex = i, node = topNode, name = port.PortName})
-                                    .Where(x => !topNode.HasOutput(x.portIndex)));
+                                    .Where(x => !topNode.OutPorts[x.portIndex].IsConnected));
 
                 foreach (var rtnAndIndex in rtnPorts.Select((rtn, i) => new {rtn, idx = i}))
                 {

@@ -63,7 +63,7 @@ namespace CoreNodeModels
             if (IsPartiallyApplied)
             {
                 var connectedInput = Enumerable.Range(0, InPorts.Count)
-                                               .Where(HasConnectedInput)
+                                               .Where(index=>InPorts[index].IsConnected)
                                                .Select(x => new IntNode(x) as AssociativeNode)
                                                .ToList();
 

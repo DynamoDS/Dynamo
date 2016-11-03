@@ -276,7 +276,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             return AstFactory.BuildFunctionObject(
                 functionNode,
                 model.InPorts.Count(),
-                Enumerable.Range(0, model.InPorts.Count).Where(model.HasInput),
+                Enumerable.Range(0, model.InPorts.Count).Where(index=>model.InPorts[index].IsConnected),
                 inputs);
         }
 

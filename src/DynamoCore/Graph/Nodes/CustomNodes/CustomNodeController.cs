@@ -102,7 +102,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             return AstFactory.BuildFunctionObject(
                 Definition.FunctionName,
                 count,
-                Enumerable.Range(0, count).Where(model.HasInput),
+                Enumerable.Range(0, count).Where(index=>model.InPorts[index].IsConnected),
                 inputAstNodes);
         }
 

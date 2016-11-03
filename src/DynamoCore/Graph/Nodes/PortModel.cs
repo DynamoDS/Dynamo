@@ -263,11 +263,11 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        internal bool IsDisconnected
+        internal bool IsConnected
         {
             get
             {
-                return !Connectors.Any() && !(UsingDefaultValue && DefaultValue != null);
+                return Connectors.Any() || (UsingDefaultValue && DefaultValue != null);
             }
         }
         #endregion

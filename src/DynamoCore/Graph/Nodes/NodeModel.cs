@@ -599,7 +599,7 @@ namespace Dynamo.Graph.Nodes
         [JsonIgnore]
         public bool IsPartiallyApplied //TODO(Steve): Move to Graph level -- MAGN-5710
         {
-            get { return !Enumerable.Range(0, InPorts.Count).All(HasInput); }
+            get { return !inPorts.All(p => p.IsConnected); }
         }
 
         /// <summary>
@@ -1218,37 +1218,6 @@ namespace Dynamo.Graph.Nodes
             return outputNodes.TryGetValue(output, out newOutputs);
         }
 
-        /// <summary>
-        ///     Checks if there is an input for a certain port.
-        /// </summary>
-        /// <param name="data">Index of the port to look for an input for.</param>
-        /// <returns>True if there is an input, false otherwise.</returns>
-        public bool HasInput(int data)
-        {
-            return HasConnectedInput(data) || (InPorts.Count > data && InPorts[data].UsingDefaultValue);
-        }
-
-        /// <summary>
-        ///     Checks if there is a connected input for a certain port. This does
-        ///     not count default values as an input.
-        /// </summary>
-        /// <param name="data">Index of the port to look for an input for.</param>
-        /// <returns>True if there is an input, false otherwise.</returns>
-        public bool HasConnectedInput(int data)
-        {
-            return inputNodes.ContainsKey(data) && inputNodes[data] != null;
-        }
-
-        /// <summary>
-        ///     Checks if there is an output for a certain port.
-        /// </summary>
-        /// <param name="portData">Index of the port to look for an output for.</param>
-        /// <returns>True if there is an output, false otherwise.</returns>
-        public bool HasOutput(int portData)
-        {
-            return outputNodes.ContainsKey(portData) && outputNodes[portData].Any();
-        }
-
         internal void DisconnectOutput(int portData, int inPortData, NodeModel nodeModel)
         {
             HashSet<Tuple<int, NodeModel>> output;
@@ -1318,7 +1287,7 @@ namespace Dynamo.Graph.Nodes
             // if there are inputs without connections
             // mark as dead; otherwise, if the original state is dead,
             // update it as active.
-            if (inPorts.Any(x => x.IsDisconnected))
+            if (inPorts.Any(x => !x.IsConnected))
             {
                 State = ElementState.Dead;
             }
@@ -1693,12 +1662,12 @@ namespace Dynamo.Graph.Nodes
         {
             string nick = NickName.Replace(' ', '_');
 
-            if (!Enumerable.Range(0, InPorts.Count).Any(HasInput))
+            if (!InPorts.Any(p=>p.IsConnected))
                 return nick;
 
             string s = "";
 
-            if (Enumerable.Range(0, InPorts.Count).All(HasInput))
+            if (InPorts.All(p=>p.IsConnected))
             {
                 s += "(" + nick;
                 foreach (int data in Enumerable.Range(0, InPorts.Count))
@@ -1711,7 +1680,7 @@ namespace Dynamo.Graph.Nodes
             }
             else
             {
-                s += "(lambda (" + string.Join(" ", InPorts.Where((_, i) => !HasInput(i)).Select(x => x.PortName))
+                s += "(lambda (" + string.Join(" ", InPorts.Where((_, i) => !InPorts[i].IsConnected).Select(x => x.PortName))
                      + ") (" + nick;
                 foreach (int data in Enumerable.Range(0, InPorts.Count))
                 {

@@ -40,7 +40,7 @@ namespace CoreNodeModels.HigherOrder
                         ? AstFactory.BuildFunctionObject(
                             "__Map",
                             2,
-                            new[] { 0, 1 }.Where(HasConnectedInput).Select(x => 1 - x),
+                            new[] { 0, 1 }.Where(index=>InPorts[index].IsConnected).Select(x => 1 - x),
                             Enumerable.Reverse(inputAstNodes).ToList())
                         : AstFactory.BuildFunctionCall("__Map", Enumerable.Reverse(inputAstNodes).ToList()))
             };
