@@ -1319,6 +1319,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        
+        /// <summary>
+        /// Remove the labels (in Watch3D View) for geometry once the Watch node is disconnected
+        /// </summary>
+        /// <param name="path"></param>
+        public override void ClearPathLabel(string path)
+        {
+            var nodePath = path.Contains(':') ? path.Remove(path.IndexOf(':')) : path;
+            var labelName = nodePath + TextKey;
+            lock (Model3DDictionaryMutex)
+            {
+                var sceneItemsChanged = Model3DDictionary.Remove(labelName);
+                if (sceneItemsChanged)
+                {
+                    OnSceneItemsChanged();
+                }
+            }
+        }
+
+
         /// <summary>
         /// Given a collection of render packages, generates
         /// corresponding <see cref="GeometryModel3D"/> objects for visualization, and
