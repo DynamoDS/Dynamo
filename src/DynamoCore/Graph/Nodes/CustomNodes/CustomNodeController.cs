@@ -23,7 +23,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             var inputs = Definition.DisplayParameters.Zip(Definition.Parameters, (dp, p) => Tuple.Create(dp, p.Description, p.DefaultValue)).ToList();
             var count = inputs.Count();
 
-            if(count > model.InPorts.Count)
+            if(model.InPorts.Count > count)
             {
                 for (int i = model.InPorts.Count - 1; i >= count; i--)
                 {
@@ -35,7 +35,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             {
                 var input = inputs[i];
 
-                if(model.InPorts.Count > 0)
+                if(model.InPorts.Count > i)
                 {
                     model.InPorts[i].PortName = input.Item1;
                     model.InPorts[i].ToolTip = input.Item2;
@@ -52,7 +52,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         {
             if (Definition.Returns.Any())
             {
-                if(Definition.Returns.Count() > model.OutPorts.Count())
+                if(model.OutPorts.Count() > Definition.Returns.Count())
                 {
                     for (int i = model.OutPorts.Count - 1; i >= Definition.Returns.Count(); i--)
                     {
