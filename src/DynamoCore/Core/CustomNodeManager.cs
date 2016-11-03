@@ -771,7 +771,7 @@ namespace Dynamo.Core
                         selectedNodeSet.SelectMany(
                             node =>
                                 Enumerable.Range(0, node.InPorts.Count)
-                                .Where(index=>node.InPorts[index].IsConnected)
+                                .Where(index=>node.InPorts[index].Connectors.Any())
                                 .Select(data => Tuple.Create(node, data, node.InputNodes[data]))
                                 .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
 
@@ -780,7 +780,7 @@ namespace Dynamo.Core
                         selectedNodeSet.SelectMany(
                             node =>
                                 Enumerable.Range(0, node.OutPorts.Count)
-                                .Where(index=>node.OutPorts[index].IsConnected)
+                                .Where(index=>node.OutPorts[index].Connectors.Any())
                                 .SelectMany(
                                     data =>
                                         node.OutputNodes[data].Where(
@@ -856,7 +856,7 @@ namespace Dynamo.Core
                 foreach (var node in selectedNodeSet)
                 {                   
                     undoRecorder.RecordDeletionForUndo(node);
-                    currentWorkspace.RemoveNode(node);
+                    currentWorkspace.RemoveAndDisposeNode(node);
 
                     // Assign a new guid to this node, otherwise when node is
                     // compiled to AST, literally it is still in global scope
@@ -1002,11 +1002,6 @@ namespace Dynamo.Core
                         {
                             NodeModel outputSenderNode = output.Item1;
                             int outputSenderData = output.Item2;
-
-                            //NodeModel outputReceiverNode = output.Item3.Item2;
-
-                            //if (curriedNodeArgs.Any(x => x.OuterNode == outputReceiverNode))
-                            //    continue;
 
                             outportList.Add(Tuple.Create(outputSenderNode, outputSenderData));
 

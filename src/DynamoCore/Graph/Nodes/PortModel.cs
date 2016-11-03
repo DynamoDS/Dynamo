@@ -263,6 +263,10 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// Returns true if the port has connectors or if the 
+        /// default value is enabled and not null. Otherwise, returns false.
+        /// </summary>
         internal bool IsConnected
         {
             get
@@ -327,44 +331,6 @@ namespace Dynamo.Graph.Nodes
                 ConnectorModel connector = Connectors[0];
                 connector.Delete();
             }
-        }
-
-        internal void Connect(ConnectorModel connector)
-        {
-            connectors.Add(connector);
-            OnPortConnected(connector);
-        }
-
-        internal void Disconnect(ConnectorModel connector, bool silent = false)
-        {
-            if (!connectors.Contains(connector))
-                return;
-
-            if (!silent)
-            {
-                OnPortDisconnected();
-            }
-
-            connectors.Remove(connector);
-        }
-
-        /// <summary>
-        /// Called when a port is connected.
-        /// </summary>
-        /// <param name="connector"></param>
-        protected virtual void OnPortConnected(ConnectorModel connector)
-        {
-            if (Owner != null)
-                Owner.RaisePortConnectedEvent(this, connector);
-        }
-
-        /// <summary>
-        /// Called when a port is disconnected.
-        /// </summary>
-        protected virtual void OnPortDisconnected()
-        {
-            if (Owner != null)
-                Owner.RaisePortDisconnectedEvent(this);
         }
 
         #region Serialization/Deserialization Methods

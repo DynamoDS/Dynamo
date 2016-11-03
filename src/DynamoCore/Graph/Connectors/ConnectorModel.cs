@@ -79,7 +79,7 @@ namespace Dynamo.Graph.Connectors
             Debug.WriteLine("Creating a connector between ports {0}(owner:{1}) and {2}(owner:{3}).", 
                 start.GUID, start.Owner == null?"null":start.Owner.NickName, end.GUID, end.Owner == null?"null":end.Owner.NickName);
             Start = start;
-            Start.Connect(this);
+            Start.Connectors.Add(this);
             Connect(end);
             GUID = guid;
         }
@@ -95,7 +95,7 @@ namespace Dynamo.Graph.Connectors
             Debug.WriteLine("Creating a connector between ports {0}(owner:{1}) and {2}(owner:{3}).",
                 start.GUID, Start.Owner == null ? "null" : Start.Owner.NickName, end.GUID, endPort.Owner == null ? "null" : endPort.Owner.NickName);
 
-            Start.Connect(this);
+            Start.Connectors.Add(this);
             Connect(endPort);
         }
 
@@ -150,7 +150,7 @@ namespace Dynamo.Graph.Connectors
             //already has other connectors
             if (p.PortType == PortType.Input && p.Connectors.Count > 0)
             {
-                p.Disconnect(p.Connectors[0]);
+                p.Connectors.Remove(p.Connectors[0]);
             }
 
             //turn the line solid
@@ -158,7 +158,7 @@ namespace Dynamo.Graph.Connectors
 
             if (End != null)
             {
-                p.Connect(this);
+                p.Connectors.Add(this);
             }
 
             return;
@@ -167,17 +167,16 @@ namespace Dynamo.Graph.Connectors
         /// <summary>
         /// Delete the connector.
         /// </summary>
-        /// <param name="silent">If silent is true, the start and end ports will be disconnected
         /// without raising port disconnection events.</param>
-        internal void Delete(bool silent = false)
+        internal void Delete()
         {
             if (Start != null && Start.Connectors.Contains(this))
             {
-                Start.Disconnect(this, silent);
+                Start.Connectors.Remove(this);
             }
             if (End != null && End.Connectors.Contains(this))
             {
-                End.Disconnect(this, silent);
+                End.Connectors.Remove(this);
             }
             OnDeleted();
         }

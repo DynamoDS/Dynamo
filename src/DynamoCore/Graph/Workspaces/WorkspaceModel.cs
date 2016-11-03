@@ -984,7 +984,7 @@ namespace Dynamo.Graph.Workspaces
         /// This method does not raise a NodesModified event. (LC notes this is clearly not true)
         /// </summary>
         /// <param name="model">The node which is being removed from the worksapce.</param>
-        internal void RemoveNode(NodeModel model)
+        internal void RemoveAndDisposeNode(NodeModel model, bool dispose = true)
         {
             lock (nodes)
             {
@@ -992,20 +992,24 @@ namespace Dynamo.Graph.Workspaces
             }
 
             OnNodeRemoved(model);
-            DisposeNode(model);
+
+            if (dispose)
+            {
+                DisposeNode(model);
+            }
         }
 
-        protected virtual void DisposeNode(NodeModel model)
+        protected virtual void DisposeNode(NodeModel node)
         {
-            var functionNode = model as Function;
+            var functionNode = node as Function;
             if (functionNode != null)
             {
                 functionNode.Controller.SyncWithDefinitionStart -= OnSyncWithDefinitionStart;
                 functionNode.Controller.SyncWithDefinitionEnd -= OnSyncWithDefinitionEnd;
             }
-            model.ConnectorAdded -= OnConnectorAdded;
-            model.Modified -= NodeModified;
-            model.Dispose();
+            node.ConnectorAdded -= OnConnectorAdded;
+            node.Modified -= NodeModified;
+            node.Dispose();
         }
 
         private void AddNote(NoteModel note)
@@ -2059,7 +2063,7 @@ namespace Dynamo.Graph.Workspaces
                         totalX += node.X;
                         totalY += node.Y;
                         undoHelper.RecordDeletion(node);
-                        RemoveNode(node);
+                        RemoveAndDisposeNode(node);
                         #endregion
                     }
                     #endregion
@@ -2287,7 +2291,7 @@ namespace Dynamo.Graph.Workspaces
                         // Take a snapshot of the node before it goes away.
                         undoRecorder.RecordDeletionForUndo(node);
 
-                        RemoveNode(node);
+                        RemoveAndDisposeNode(node);
                     }
                     else if (model is ConnectorModel)
                     {
@@ -2360,7 +2364,7 @@ namespace Dynamo.Graph.Workspaces
             }
             else if (model is NodeModel)
             {
-                RemoveNode(model as NodeModel);
+                RemoveAndDisposeNode(model as NodeModel);
             }
             else
             {

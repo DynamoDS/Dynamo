@@ -828,10 +828,6 @@ namespace Dynamo.Graph.Nodes
                 }
             };
 
-            //Register port connection events.
-            PortConnected += OnPortConnected;
-            PortDisconnected += OnPortDisconnected;
-
             //Fetch the element name from the custom attribute.
             SetNickNameFromAttribute();
 
@@ -865,10 +861,6 @@ namespace Dynamo.Graph.Nodes
                 }
             };
 
-            //Register port connection events.
-            PortConnected += OnPortConnected;
-            PortDisconnected += OnPortDisconnected;
-
             //Fetch the element name from the custom attribute.
             SetNickNameFromAttribute();
 
@@ -890,12 +882,13 @@ namespace Dynamo.Graph.Nodes
                     ConfigureSnapEdges(sender == InPorts ? InPorts : OutPorts);
                     foreach(PortModel p in e.NewItems)
                     {
-                        // For input ports, we want to watch the changes
-                        // to the connector collections, to set the state of the node.
-                        if(p.PortType == PortType.Input)
+                        p.Connectors.CollectionChanged += (coll, args) =>
                         {
-                            p.Connectors.CollectionChanged += ConnectorsCollectionChanged;                         
-                        }
+                            // Call the collection changed handler, replacing
+                            // the 'sender' with the port, which is required
+                            // for the disconnect operations.
+                            ConnectorsCollectionChanged(p, args);
+                        };                        
                         p.PropertyChanged += OnPortPropertyChanged;
                         SetNodeStateBasedOnConnectionAndDefaults();
                     }
@@ -903,10 +896,6 @@ namespace Dynamo.Graph.Nodes
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
                     foreach(PortModel p in e.OldItems)
                     {
-                        if (p.PortType == PortType.Input)
-                        {
-                            p.Connectors.CollectionChanged -= ConnectorsCollectionChanged;
-                        }
                         p.PropertyChanged -= OnPortPropertyChanged;
 
                         p.DestroyConnectors();
@@ -919,6 +908,29 @@ namespace Dynamo.Graph.Nodes
 
         private void ConnectorsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            var p = (PortModel)sender;
+            
+            switch (e.Action)
+            {
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                    foreach(ConnectorModel c in e.NewItems)
+                    {
+                        OnPortConnected(p, c);
+                    }
+                    break;
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                    foreach (ConnectorModel c in e.OldItems)
+                    {
+                        OnPortDisconnected(p, c);
+                    }
+                    break;
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                    foreach (ConnectorModel c in e.OldItems)
+                    {
+                        OnPortDisconnected(p, c);
+                    }
+                    break;
+            }
             SetNodeStateBasedOnConnectionAndDefaults();
         }
 
@@ -1601,29 +1613,11 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        /// <summary>
-        /// This method to be called by the ports to raise the PortConnected event.
-        /// </summary>
-        /// <param name="port"></param>
-        /// <param name="connector"></param>
-        internal void RaisePortConnectedEvent(PortModel port, ConnectorModel connector)
+        private void OnPortConnected(PortModel port, ConnectorModel connector)
         {
             var handler = PortConnected;
             if (null != handler) handler(port, connector);
-        }
 
-        /// <summary>
-        /// This method to be called by the ports to raise the PortDisconnected event.
-        /// </summary>
-        /// <param name="port"></param>
-        internal void RaisePortDisconnectedEvent(PortModel port)
-        {
-            var handler = PortDisconnected;
-            if (null != handler) handler(port);
-        }
-
-        private void OnPortConnected(PortModel port, ConnectorModel connector)
-        {
             if (port.PortType != PortType.Input) return;
 
             var data = InPorts.IndexOf(port);
@@ -1636,12 +1630,15 @@ namespace Dynamo.Graph.Nodes
             OnNodeModified();
         }
 
-        private void OnPortDisconnected(PortModel port)
+        private void OnPortDisconnected(PortModel port, ConnectorModel connector)
         {
+            var handler = PortDisconnected;
+            if (null != handler) handler(port);
+
             if (port.PortType != PortType.Input) return;
 
             var data = InPorts.IndexOf(port);
-            var startPort = port.Connectors[0].Start;
+            var startPort = connector.Start;
             DisconnectInput(data);
             startPort.Owner.DisconnectOutput(startPort.Owner.OutPorts.IndexOf(startPort), data, this);
 
@@ -2294,19 +2291,6 @@ namespace Dynamo.Graph.Nodes
             {
                 RenderPackagesUpdated(this, packages);
             }
-        }
-
-        /// <summary>
-        /// Removes event handlers for the NodeModel.
-        /// </summary>
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            InPorts.CollectionChanged -= PortsCollectionChanged;
-            OutPorts.CollectionChanged -= PortsCollectionChanged;
-            PortConnected -= OnPortConnected;
-            PortDisconnected -= OnPortDisconnected;
         }
     }
 
