@@ -1,4 +1,4 @@
-<Workspace Version="1.2.1.2821" X="-91.400724876288" Y="81.9148479223557" zoom="0.572433706679817" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+<Workspace Version="1.2.1.3077" X="-91.400724876288" Y="81.9148479223557" zoom="0.572433706679817" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <CoreNodeModels.Input.DoubleInput guid="6e1f2eb8-c11d-4e9e-aeed-39ec72fbd484" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="315.25" y="36" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
@@ -49,10 +49,22 @@
       <PortInfo index="0" default="False" />
       <PortInfo index="1" default="False" />
     </CoreNodeModels.Logic.Or>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="6b8305a9-ae28-40bf-85e1-b247a6373b4d" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Point.ByCoordinates" x="1034.66835134078" y="-71.2511034560023" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="f3b8bad6-43a1-4861-a887-411c0cf8c173" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Circle.ByCenterPointRadius" x="1302.82167321681" y="-74.7449578126932" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
   </Elements>
   <Connectors>
     <Dynamo.Graph.Connectors.ConnectorModel start="6e1f2eb8-c11d-4e9e-aeed-39ec72fbd484" start_index="0" end="71761ab1-41d1-4660-86d2-c573b1a2f1dd" end_index="0" portType="0" />
     <Dynamo.Graph.Connectors.ConnectorModel start="12e2d38d-b9dc-4656-af66-7e41ebde44c2" start_index="0" end="71761ab1-41d1-4660-86d2-c573b1a2f1dd" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="71761ab1-41d1-4660-86d2-c573b1a2f1dd" start_index="0" end="6b8305a9-ae28-40bf-85e1-b247a6373b4d" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="71761ab1-41d1-4660-86d2-c573b1a2f1dd" start_index="0" end="6b8305a9-ae28-40bf-85e1-b247a6373b4d" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="71761ab1-41d1-4660-86d2-c573b1a2f1dd" start_index="0" end="6b8305a9-ae28-40bf-85e1-b247a6373b4d" end_index="2" portType="0" />
     <Dynamo.Graph.Connectors.ConnectorModel start="75c15621-c106-4798-83d6-85a9d8825e10" start_index="0" end="d3041cbf-b4d8-4d35-b528-c517d54187c1" end_index="0" portType="0" />
     <Dynamo.Graph.Connectors.ConnectorModel start="d8f56506-f9a9-40b0-998a-62f282506ca4" start_index="0" end="b8f9f4aa-4b46-4cb0-bca5-460e8095cb10" end_index="0" portType="0" />
     <Dynamo.Graph.Connectors.ConnectorModel start="d8f56506-f9a9-40b0-998a-62f282506ca4" start_index="0" end="b8f9f4aa-4b46-4cb0-bca5-460e8095cb10" end_index="1" portType="0" />
@@ -67,6 +79,7 @@
     <Dynamo.Graph.Connectors.ConnectorModel start="d66961ac-a2fe-482c-a31b-c4fd721cd72f" start_index="0" end="1312ff7b-ed2e-43e6-8be3-ee7764bd20ee" end_index="1" portType="0" />
     <Dynamo.Graph.Connectors.ConnectorModel start="e11d3e5a-7895-40a1-b6f5-e46341aeb8f7" start_index="0" end="d66961ac-a2fe-482c-a31b-c4fd721cd72f" end_index="0" portType="0" />
     <Dynamo.Graph.Connectors.ConnectorModel start="6db64051-516f-41da-bc8b-18aba3b5d619" start_index="0" end="d66961ac-a2fe-482c-a31b-c4fd721cd72f" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="6b8305a9-ae28-40bf-85e1-b247a6373b4d" start_index="0" end="f3b8bad6-43a1-4861-a887-411c0cf8c173" end_index="0" portType="0" />
   </Connectors>
   <Notes />
   <Annotations>

@@ -3,13 +3,25 @@ using System.IO;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Dynamo.Engine.NodeToCode;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using Newtonsoft.Json;
+using Dynamo.Engine;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Tests
 {
+    /* The Serialization tests compare the results of a workspace opened and executed from its 
+     * original .dyn format, to one converted to json, deserialized and executed. In the process,
+     * the tests save the following files:
+     *  - xxx.json file representing the serialized version of the workspace to json, where xxx is the 
+     *  original .dyn file name. 
+     *  - xxx_data.json file containing the cached values of each of the workspaces
+     *  - xxx.ds file containing the Design Script code for the workspace.
+     */ 
     [TestFixture, Category("Serialization")]
     class SerializationTests : DynamoModelTestBase
     {
@@ -32,11 +44,12 @@ namespace Dynamo.Tests
             public int GroupCount { get; set; }
             public int NoteCount { get; set; }
             public Dictionary<Guid,Type> NodeTypeMap { get; set; }
-            public Dictionary<Guid,object> NodeDataMap { get; set; }
+            public Dictionary<Guid,List<object>> NodeDataMap { get; set; }
             public Dictionary<Guid,int> InportCountMap { get; set; }
             public Dictionary<Guid,int> OutportCountMap { get; set; }
+            public string DesignScript { get; set; }
 
-            public WorkspaceComparisonData(WorkspaceModel workspace)
+            public WorkspaceComparisonData(WorkspaceModel workspace, EngineController controller)
             {
                 Guid = workspace.Guid;
                 NodeCount = workspace.Nodes.Count();
@@ -44,18 +57,39 @@ namespace Dynamo.Tests
                 GroupCount = workspace.Annotations.Count();
                 NoteCount = workspace.Notes.Count();
                 NodeTypeMap = new Dictionary<Guid, Type>();
-                NodeDataMap = new Dictionary<Guid, object>();
+                NodeDataMap = new Dictionary<Guid, List<object>>();
                 InportCountMap = new Dictionary<Guid, int>();
                 OutportCountMap = new Dictionary<Guid, int>();
 
                 foreach (var n in workspace.Nodes)
                 {
                     NodeTypeMap.Add(n.GUID, n.GetType());
-                    NodeDataMap.Add(n.GUID, n.CachedValue == null? null:n.CachedValue.Data);
+
+                    var portvalues = new List<object>();
+                    foreach (var p in n.OutPorts)
+                    {
+                        var value = n.GetValue(p.Index, controller);
+                        if (value.IsCollection)
+                        {
+                            portvalues.Add(GetStringRepOfCollection(value));
+                        }
+                        else
+                        {
+                            portvalues.Add(value.StringData);
+                        }
+                    }
+                    
+                    NodeDataMap.Add(n.GUID, portvalues);
                     InportCountMap.Add(n.GUID, n.InPorts.Count);
                     OutportCountMap.Add(n.GUID, n.OutPorts.Count);
                 }
             }
+        }
+
+        private static string GetStringRepOfCollection(ProtoCore.Mirror.MirrorData collection)
+        {
+            var items = string.Join(",", collection.GetElements().Select(x => x.IsCollection ? GetStringRepOfCollection(x) : x.StringData));
+            return "{" + items + "}";
         }
 
         private void CompareWorkspaces(WorkspaceComparisonData a, WorkspaceComparisonData b)
@@ -139,11 +173,7 @@ namespace Dynamo.Tests
             DoWorkspaceOpenAndCompare(filePath);
         }
 
-        private void DoWorkspaceOpenAndCompare(string filePath)
-        {
-            var openPath = filePath;
-
-            var bannedTests = new List<string>()
+        private static List<string> bannedTests = new List<string>()
             {
                 "NestedIF",
                 "recorded",
@@ -162,23 +192,14 @@ namespace Dynamo.Tests
                 "packageTest"
             };
 
-            if (bannedTests.Any(t=>filePath.Contains(t)))
+        private void DoWorkspaceOpenAndCompare(string filePath)
+        {
+            var openPath = filePath;
+
+            if (bannedTests.Any(t => filePath.Contains(t)))
             {
                 Assert.Inconclusive("Skipping test known to kill the test framework...");
             }
-
-            // Find the version in the root
-            
-            /*var xmlDoc = new XmlDocument();
-            xmlDoc.Load(openPath);
-            WorkspaceInfo info;
-            if(WorkspaceInfo.FromXmlDocument(xmlDoc, openPath, false, false, CurrentDynamoModel.Logger, out info))
-            {
-                if (Version.Parse(info.Version) < new Version(1, 0))
-                {
-                    Assert.Inconclusive("The test file was from before version 1.0.");
-                }
-            }*/
 
             OpenModel(openPath);
 
@@ -191,35 +212,21 @@ namespace Dynamo.Tests
                 Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.NickName).ToArray()));
             }
 
-            if (((HomeWorkspaceModel)ws1).RunSettings.RunType== Models.RunType.Manual)
+            if (((HomeWorkspaceModel)ws1).RunSettings.RunType == Models.RunType.Manual)
             {
                 RunCurrentModel();
             }
 
-            var wcd1 = new WorkspaceComparisonData(ws1);
-
-            var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(model.CurrentWorkspace, model.LibraryServices,
-                model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false, 
-                model.CustomNodeManager);
-
-            Assert.IsNotNullOrEmpty(json);
+            var wcd1 = new WorkspaceComparisonData(ws1, CurrentDynamoModel.EngineController);
 
             var fi = new FileInfo(filePath);
+            var filePathBase = Path.Combine(Path.GetTempPath() + @"\json\" + Path.GetFileNameWithoutExtension(fi.Name));
 
-            var tempPath = Path.GetTempPath();
-            var jsonFolder = Path.Combine(tempPath, "json");
-            
-            if (!Directory.Exists(jsonFolder))
-            {
-                Directory.CreateDirectory(jsonFolder);
-            }
+            string json = ConvertCurrentWorkspaceToJsonAndSave(model, filePathBase);
 
-            var jsonPath = Path.Combine(Path.GetTempPath() + @"\json\" + Path.GetFileNameWithoutExtension(fi.Name) + ".json");
-            if (File.Exists(jsonPath))
-            {
-                File.Delete(jsonPath);
-            }
-            File.WriteAllText(jsonPath, json);
+            SaveWorkspaceComparisonData(wcd1, filePathBase);
+
+            ConvertCurrentWorkspaceToDesignScriptAndSave(filePathBase);
 
             var ws2 = Autodesk.Workspaces.Utilities.LoadWorkspaceFromJson(json, model.LibraryServices,
                 model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false,
@@ -230,7 +237,7 @@ namespace Dynamo.Tests
                 model.AddCustomNodeWorkspace((CustomNodeWorkspaceModel)ws2);
             }
 
-            foreach(var c in ws2.Connectors)
+            foreach (var c in ws2.Connectors)
             {
                 Assert.NotNull(c.Start.Owner, "The node is not set for the start of connector " + c.GUID + ". The end node is " + c.End.Owner + ".");
                 Assert.NotNull(c.End.Owner, "The node is not set for the end of connector " + c.GUID + ". The start node is " + c.Start.Owner + ".");
@@ -271,28 +278,106 @@ namespace Dynamo.Tests
             Assert.NotNull(ws2);
 
             dummyNodes = ws2.Nodes.Where(n => n is DummyNode);
-            if(dummyNodes.Any())
+            if (dummyNodes.Any())
             {
-                Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",",dummyNodes.Select(n=>n.NickName).ToArray()));
+                Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.NickName).ToArray()));
             }
 
-            var wcd2 = new WorkspaceComparisonData(ws2);
+            var wcd2 = new WorkspaceComparisonData(ws1, CurrentDynamoModel.EngineController);
 
             CompareWorkspaces(wcd1, wcd2);
 
             var functionNodes = ws2.Nodes.Where(n => n is Function).Cast<Function>();
-            if(functionNodes.Any())
+            if (functionNodes.Any())
             {
                 Assert.True(functionNodes.All(n => CurrentDynamoModel.CustomNodeManager.LoadedDefinitions.Contains(n.Definition)));
             }
-            
-            foreach(var c in ws2.Connectors)
+
+            foreach (var c in ws2.Connectors)
             {
                 Assert.NotNull(c.Start.Owner);
                 Assert.NotNull(c.End.Owner);
                 Assert.True(ws2.Nodes.Contains(c.Start.Owner));
                 Assert.True(ws2.Nodes.Contains(c.End.Owner));
             }
+        }
+
+        private static void SaveWorkspaceComparisonData(WorkspaceComparisonData wcd1, string filePathBase)
+        {
+            var data = wcd1.NodeDataMap.Zip(wcd1.NodeTypeMap, (a, b) =>
+            {
+                var dict = new Dictionary<string, Dictionary<string, object>>();
+                var dataDict = new Dictionary<string, object>();
+                dataDict.Add("node_type", b.Value.ToString());
+                dataDict.Add("port_values", a.Value);
+                dict.Add(a.Key.ToString(), dataDict);
+                return dict;
+            });
+
+            var dataMapStr = JsonConvert.SerializeObject(data,
+                            new JsonSerializerSettings()
+                            {
+                                Formatting = Formatting.Indented,
+                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                            });
+
+            var dataPath = filePathBase + "_data.json";
+            if (File.Exists(dataPath))
+            {
+                File.Delete(dataPath);
+            }
+            File.WriteAllText(dataPath, dataMapStr);
+        }
+
+        private static string ConvertCurrentWorkspaceToJsonAndSave(DynamoModel model, string filePathBase)
+        {
+            var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(model.CurrentWorkspace, model.LibraryServices,
+                model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false,
+                model.CustomNodeManager);
+
+            Assert.IsNotNullOrEmpty(json);
+
+            var tempPath = Path.GetTempPath();
+            var jsonFolder = Path.Combine(tempPath, "json");
+
+            if (!Directory.Exists(jsonFolder))
+            {
+                Directory.CreateDirectory(jsonFolder);
+            }
+
+            var jsonPath = filePathBase + ".json";
+            if (File.Exists(jsonPath))
+            {
+                File.Delete(jsonPath);
+            }
+            File.WriteAllText(jsonPath, json);
+
+            return json;
+        }
+
+        private void ConvertCurrentWorkspaceToDesignScriptAndSave(string filePathBase)
+        {
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+
+            var libCore = CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
+            var libraryServices = new LibraryCustomizationServices(CurrentDynamoModel.PathManager);
+            var nameProvider = new NamingProvider(libCore, libraryServices);
+            var controller = CurrentDynamoModel.EngineController;
+            var resolver = new ElementResolver();
+            var namingProvider = new NamingProvider(controller.LibraryServices.LibraryManagementCore, libraryServices);
+
+            var result = NodeToCodeCompiler.NodeToCode(libCore, workspace.Nodes, workspace.Nodes, namingProvider);
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
+                    controller.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes, resolver);
+            var codegen = new ProtoCore.CodeGenDS(result.AstNodes);
+            var ds = codegen.GenerateCode();
+
+            var dsPath = filePathBase + ".ds";
+            if (File.Exists(dsPath))
+            {
+                File.Delete(dsPath);
+            }
+            File.WriteAllText(dsPath, ds);
         }
     }
 }
