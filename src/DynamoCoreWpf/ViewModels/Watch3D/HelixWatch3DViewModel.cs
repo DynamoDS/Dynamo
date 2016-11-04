@@ -625,11 +625,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         }
                     }
 
-                    var modelValues = geometryModels.Select(x => x.Value);
-
-                    foreach (GeometryModel3D g in modelValues)
+                    foreach (var geometryModel in geometryModels)
                     {
-                        g.SetValue(AttachedProperties.ShowSelectedProperty, false);
+                        geometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, false);
                     }
                     return;
 
@@ -1406,21 +1404,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             var nodeGeometryModels = Model3DDictionary.Where(x => x.Key.Contains(nodePath) && x.Value is GeometryModel3D).ToArray();
 
-            var nodeModelValues = nodeGeometryModels.Select(x => x.Value);
-
-            foreach (GeometryModel3D g in nodeModelValues)
+            foreach (var nodeGeometryModel in nodeGeometryModels)
             {
-                g.SetValue(AttachedProperties.ShowSelectedProperty, false);
+                nodeGeometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, false);
             }
 
             // Then, select the individual node
             var geometryModels = Model3DDictionary.Where(x => x.Key.Contains(path) && x.Value is GeometryModel3D).ToArray();
 
-            var modelValues = geometryModels.Select(x => x.Value);
-
-            foreach (GeometryModel3D g in modelValues)
+            foreach (var geometryModel in geometryModels)
             {
-                g.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
+                geometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
             }
         }
 
