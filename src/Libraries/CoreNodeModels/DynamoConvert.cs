@@ -79,7 +79,7 @@ namespace CoreNodeModels
             }
         }
 
-        [JsonProperty("FromConversion")]
+        [JsonProperty("ToConversion")]
         public ConversionUnit SelectedToConversion
         {
             get { return selectedToConversion; }
