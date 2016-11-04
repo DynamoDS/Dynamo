@@ -222,11 +222,11 @@ namespace Dynamo.Tests
             var fi = new FileInfo(filePath);
             var filePathBase = Path.Combine(Path.GetTempPath() + @"\json\" + Path.GetFileNameWithoutExtension(fi.Name));
 
+            ConvertCurrentWorkspaceToDesignScriptAndSave(filePathBase);
+
             string json = ConvertCurrentWorkspaceToJsonAndSave(model, filePathBase);
 
             SaveWorkspaceComparisonData(wcd1, filePathBase);
-
-            ConvertCurrentWorkspaceToDesignScriptAndSave(filePathBase);
 
             var ws2 = Autodesk.Workspaces.Utilities.LoadWorkspaceFromJson(json, model.LibraryServices,
                 model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false,
@@ -357,27 +357,36 @@ namespace Dynamo.Tests
 
         private void ConvertCurrentWorkspaceToDesignScriptAndSave(string filePathBase)
         {
-            var workspace = CurrentDynamoModel.CurrentWorkspace;
-
-            var libCore = CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
-            var libraryServices = new LibraryCustomizationServices(CurrentDynamoModel.PathManager);
-            var nameProvider = new NamingProvider(libCore, libraryServices);
-            var controller = CurrentDynamoModel.EngineController;
-            var resolver = new ElementResolver();
-            var namingProvider = new NamingProvider(controller.LibraryServices.LibraryManagementCore, libraryServices);
-
-            var result = NodeToCodeCompiler.NodeToCode(libCore, workspace.Nodes, workspace.Nodes, namingProvider);
-            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
-                    controller.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes, resolver);
-            var codegen = new ProtoCore.CodeGenDS(result.AstNodes);
-            var ds = codegen.GenerateCode();
-
-            var dsPath = filePathBase + ".ds";
-            if (File.Exists(dsPath))
+            try
             {
-                File.Delete(dsPath);
+
+
+                var workspace = CurrentDynamoModel.CurrentWorkspace;
+
+                var libCore = CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
+                var libraryServices = new LibraryCustomizationServices(CurrentDynamoModel.PathManager);
+                var nameProvider = new NamingProvider(libCore, libraryServices);
+                var controller = CurrentDynamoModel.EngineController;
+                var resolver = CurrentDynamoModel.CurrentWorkspace.ElementResolver;
+                var namingProvider = new NamingProvider(controller.LibraryServices.LibraryManagementCore, libraryServices);
+
+                var result = NodeToCodeCompiler.NodeToCode(libCore, workspace.Nodes, workspace.Nodes, namingProvider);
+                NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
+                        controller.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes, resolver);
+                var codegen = new ProtoCore.CodeGenDS(result.AstNodes);
+                var ds = codegen.GenerateCode();
+
+                var dsPath = filePathBase + ".ds";
+                if (File.Exists(dsPath))
+                {
+                    File.Delete(dsPath);
+                }
+                File.WriteAllText(dsPath, ds);
             }
-            File.WriteAllText(dsPath, ds);
+            catch
+            {
+                Assert.Inconclusive("The current workspace could not be converted to Design Script.");
+            }
         }
     }
 }
