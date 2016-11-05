@@ -595,7 +595,7 @@ namespace WpfVisualizationTests
 
             // Disconnect the port coming into the watch3d node.
             var connector = watch3DNode.InPorts[0].Connectors.First();
-            watch3DNode.InPorts[0].Disconnect(connector);
+            watch3DNode.InPorts[0].Connectors.Remove(connector);
 
             // Three items, the grid, the axes, and the light will remain.
             var view = FindFirstWatch3DNodeView();
