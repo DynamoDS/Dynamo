@@ -40,7 +40,7 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
-See the [Release Notes](https://github.com/DynamoDS/Dynamo/wiki/Release-Notes)
+See the [Release Notes](https://github.com/DynamoDS/Dynamo/wiki/Release-Notes).
 
 ## Instrumentation ##
 Dynamo contains an instrumentation system that anonymously reports usage data to the Dynamo team. This data will be used to enhance the usability of the product. Aggregated summaries of the data will be shared back with the Dynamo community.
