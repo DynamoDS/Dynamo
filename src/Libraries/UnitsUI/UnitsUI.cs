@@ -222,7 +222,7 @@ namespace UnitsUI
         {
             Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
 
-            OutPortData.Add(new PortData(Resources.LengthFromStringPortDataLengthToolTip, Resources.LengthFromStringPortDataLengthToolTip));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData(Resources.LengthFromStringPortDataLengthToolTip, Resources.LengthFromStringPortDataLengthToolTip)));
             RegisterAllPorts();
         }
 
@@ -289,7 +289,7 @@ namespace UnitsUI
         public AreaFromString()
         {
             Measure = Area.FromDouble(0.0, AreaUnit.SquareMeter);
-            OutPortData.Add(new PortData("area", Resources.AreaFromStringPortDataAreaToolTip));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("area", Resources.AreaFromStringPortDataAreaToolTip)));
             RegisterAllPorts();
 
             Warning("AreaFromString is obsolete.", true);
@@ -329,7 +329,7 @@ namespace UnitsUI
         public VolumeFromString()
         {
             Measure = Volume.FromDouble(0.0, VolumeUnit.CubicMeter);
-            OutPortData.Add(new PortData("volume", Resources.VolumeFromStringPortDataVolumeToolTip));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("volume", Resources.VolumeFromStringPortDataVolumeToolTip)));
             RegisterAllPorts();
 
             Warning("AreaFromString is obsolete.", true);

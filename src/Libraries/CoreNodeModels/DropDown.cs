@@ -80,7 +80,7 @@ namespace CoreNodeModels
 
         protected DSDropDownBase(string outputName)
         {
-            OutPortData.Add(new PortData(outputName, string.Format(Resources.DropDownPortDataResultToolTip, outputName)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData(outputName, string.Format(Resources.DropDownPortDataResultToolTip, outputName))));
             RegisterAllPorts();
             PopulateItems();
         }

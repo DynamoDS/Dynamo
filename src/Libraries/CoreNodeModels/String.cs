@@ -78,8 +78,8 @@ namespace CoreNodeModels
         public FromObject() : base("__ToStringFromObject")
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InPortData.Add(new PortData("obj", Resources.FromObjectPortDataObjToolTip));
-            OutPortData.Add(new PortData("str", Resources.FormulaPortDataResultToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("obj", Resources.FromObjectPortDataObjToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("str", Resources.FormulaPortDataResultToolTip)));
             RegisterAllPorts();
         }
     }
@@ -103,8 +103,8 @@ namespace CoreNodeModels
         public FromArray() : base("__ToStringFromArray")
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InPortData.Add(new PortData("arr", Resources.FromArrayPortDataArrayToolTip));
-            OutPortData.Add(new PortData("str", Resources.FromArrayPortDataResultToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("arr", Resources.FromArrayPortDataArrayToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("str", Resources.FromArrayPortDataResultToolTip)));
             RegisterAllPorts();
         }
     }

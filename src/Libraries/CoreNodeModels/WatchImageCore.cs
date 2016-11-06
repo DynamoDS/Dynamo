@@ -26,8 +26,8 @@ namespace CoreNodeModels
 
         public WatchImageCore()
         {
-            InPortData.Add(new PortData("image", Resources.PortDataImageToolTip));
-            OutPortData.Add(new PortData("image", Resources.PortDataImageToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("image", Resources.PortDataImageToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("image", Resources.PortDataImageToolTip)));
 
             RegisterAllPorts(); 
             

@@ -21,6 +21,7 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using ProtoCore.Namespace;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using System.Globalization;
+using CoreNodeModels;
 
 namespace Autodesk.Workspaces
 {
@@ -101,6 +102,11 @@ namespace Autodesk.Workspaces
             {
                 var functionId = Guid.Parse(obj["FunctionUuid"].Value<string>());
                 node = manager.CreateCustomNodeInstance(functionId);
+                RemapPorts(node, inPorts, outPorts, resolver);
+            }
+            else if(type == typeof(Formula))
+            {
+                node = (Formula)obj.ToObject(type);
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
             else

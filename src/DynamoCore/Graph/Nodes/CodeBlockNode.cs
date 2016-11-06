@@ -696,8 +696,8 @@ namespace Dynamo.Graph.Nodes
         /// 
         private void CreateInputOutputPorts()
         {
-            InPortData.Clear();
-            OutPortData.Clear();
+            InPorts.Clear();
+            OutPorts.Clear();
             if ((codeStatements == null || (codeStatements.Count == 0))
                 && (inputIdentifiers == null || (inputIdentifiers.Count == 0)))
             {
@@ -716,7 +716,7 @@ namespace Dynamo.Graph.Nodes
             // Generate input port data list from the unbound identifiers.
             var inportData = CodeBlockUtils.GenerateInputPortData(inputPortNames);
             foreach (var portData in inportData)
-                InPortData.Add(portData);
+                InPorts.Add(new PortModel(PortType.Input, this, portData));
         }
 
         private void SetOutputPorts()
@@ -732,11 +732,11 @@ namespace Dynamo.Graph.Nodes
                 if (tempVariables.Contains(def.Key))
                     tooltip = Formatting.TOOL_TIP_FOR_TEMP_VARIABLE;
 
-                OutPortData.Add(new PortData(string.Empty, tooltip)
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
                 {
                     LineIndex = def.Value - 1, // Logical line index.
                     Height = Configurations.CodeBlockPortHeightInPixels
-                });
+                }));
             }
         }
 
@@ -751,7 +751,7 @@ namespace Dynamo.Graph.Nodes
             //----------------------------Inputs---------------------------------
             foreach (var portModel in InPorts)
             {
-                var portName = portModel.ToolTipContent;
+                var portName = portModel.ToolTip;
                 if (portModel.Connectors.Count != 0)
                 {
                     inportConnections.Add(portName, new List<PortModel>());
@@ -777,8 +777,8 @@ namespace Dynamo.Graph.Nodes
             for (int i = 0; i < OutPorts.Count; i++)
             {
                 PortModel portModel = OutPorts[i];
-                string portName = portModel.ToolTipContent;
-                if (portModel.ToolTipContent.Equals(Formatting.TOOL_TIP_FOR_TEMP_VARIABLE))
+                string portName = portModel.ToolTip;
+                if (portModel.ToolTip.Equals(Formatting.TOOL_TIP_FOR_TEMP_VARIABLE))
                     portName += i.ToString(CultureInfo.InvariantCulture);
                 if (portModel.Connectors.Count != 0)
                 {
@@ -811,9 +811,9 @@ namespace Dynamo.Graph.Nodes
         {
             //----------------------------Inputs---------------------------------
             /* Input Port connections are matched only if the name is the same */
-            for (int i = 0; i < InPortData.Count; i++)
+            for (int i = 0; i < InPorts.Count; i++)
             {
-                string varName = InPortData[i].ToolTipString;
+                string varName = InPorts[i].ToolTip;
                 if (inportConnections.Contains(varName))
                 {
                     if (inportConnections[varName] != null)
@@ -842,9 +842,9 @@ namespace Dynamo.Graph.Nodes
              *   the new ports, it also finds the ports that didnt exist before
              */
             List<int> undefinedIndices = new List<int>();
-            for (int i = 0; i < OutPortData.Count; i++)
+            for (int i = 0; i < OutPorts.Count; i++)
             {
-                string varName = OutPortData[i].ToolTipString;
+                string varName = OutPorts[i].ToolTip;
                 if (outportConnections.Contains(varName))
                 {
                     if (outportConnections[varName] != null)

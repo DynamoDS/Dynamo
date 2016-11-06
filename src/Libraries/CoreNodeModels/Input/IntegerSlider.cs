@@ -17,7 +17,6 @@ namespace CoreNodeModels.Input
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("IntegerSliderNodeDescription", typeof(Resources))]
     [NodeSearchTags("IntegerSliderSearchTags", typeof(Resources))]
-    [InPortNames("N/A")]
     [InPortTypes("UI Input")]
     [OutPortTypes("int")]
     [SupressImportIntoVM]
