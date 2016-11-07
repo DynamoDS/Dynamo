@@ -75,8 +75,8 @@ namespace Dynamo.Nodes
 
         public Arduino()
         {
-            InPortData.Add(new PortData("exec", Resources.ArduinoPortDataExecToolTip));
-            OutPortData.Add(new PortData("arduino", Resources.ArduinoPortDataOutputToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("exec", Resources.ArduinoPortDataExecToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("arduino", Resources.ArduinoPortDataOutputToolTip)));
 
             RegisterAllPorts();
 
@@ -116,35 +116,6 @@ namespace Dynamo.Nodes
                     .Select(subNode => subNode.Attributes[0].Value)
                     .Last();
         }
-
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    if (((Value.Number)args[0]).Item == 1)
-        //    {
-        //        if (port != null)
-        //        {
-        //            bool isOpen = true;
-
-        //            if (isOpen == true)
-        //            {
-        //                if (!port.IsOpen)
-        //                {
-        //                    port.Open();
-        //                }
-
-
-        //            }
-        //            else if (isOpen == false)
-        //            {
-        //                if (port.IsOpen)
-        //                    port.Close();
-        //            }
-        //        }
-        //    }
-
-        //    return Value.NewContainer(port); // pass the port downstream
-        //}
-
     }
 
     [NodeName("Read Arduino")]
@@ -156,9 +127,9 @@ namespace Dynamo.Nodes
 
         public ArduinoRead()
         {
-            InPortData.Add(new PortData("arduino", Resources.PortDataArduinoToolTip));
-            InPortData.Add(new PortData("delimiter", Resources.ArduionReadPortDataDelimiterToolTip));
-            OutPortData.Add(new PortData("output", Resources.ArduinoReadPortDataOutputToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("arduino", Resources.PortDataArduinoToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("delimiter", Resources.ArduionReadPortDataDelimiterToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("output", Resources.ArduinoReadPortDataOutputToolTip)));
 
             RegisterAllPorts();
         }
@@ -170,34 +141,6 @@ namespace Dynamo.Nodes
             string[] allData = data.Split(delim.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             return allData.Any() ? allData[allData.Count()-2] : string.Empty;
         }
-
-
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-        //    port = (SerialPort)((Value.Container)args[0]).Item;
-        //    var delim = ((Value.String) args[1]).Item;
-
-        //    var lastValue = string.Empty;
-
-        //    if (port != null)
-        //    {
-        //        bool isOpen = true;
-
-        //        if (isOpen == true)
-        //        {
-        //            if (!port.IsOpen)
-        //            {
-        //                port.Open();
-        //            }
-
-        //            //get the values from the serial port as a list of strings
-        //            lastValue = GetArduinoData(port, delim);
-        //        }
-        //    }
-
-        //    return Value.NewString(lastValue);
-        //}
-
     }
 
     [NodeName("Write Arduino")]
@@ -209,51 +152,17 @@ namespace Dynamo.Nodes
 
         public ArduinoWrite()
         {
-            InPortData.Add(new PortData("arduino", Resources.PortDataArduinoToolTip));
-            InPortData.Add(new PortData("text", Resources.ArduionWritePortDataTextToolTip));
-            OutPortData.Add(new PortData("success?", Resources.ArduinoWritePortDataOutputToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("arduino", Resources.PortDataArduinoToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this,  new PortData("text", Resources.ArduionWritePortDataTextToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("success?", Resources.ArduinoWritePortDataOutputToolTip)));
 
             RegisterAllPorts();
         }
 
         private void WriteDataToArduino(string dataLine)
         {
-
             dataLine = dataLine + "\r\n"; //termination
             port.WriteLine(dataLine);
-
         }
-
-        //public override Value Evaluate(FSharpList<Value> args)
-        //{
-
-        //    port = (SerialPort)((Value.Container)args[0]).Item;
-        //    string dataToWrite = ((Value.String)args[1]).Item;// ((Value.Container)args[1]).Item;
-
-        //    if (port != null)
-        //    {
-        //        bool isOpen = true;// Convert.ToBoolean(InPortData[0].Object);
-
-        //        if (isOpen == true)
-        //        {
-        //            if (!port.IsOpen)
-        //            {
-        //                port.Open();
-        //            }
-
-        //            //write data to the serial port
-        //            WriteDataToArduino(dataToWrite);
-
-        //        }
-        //        else if (isOpen == false)
-        //        {
-        //            if (port.IsOpen)
-        //                port.Close();
-        //        }
-        //    }
-            
-
-        //    return Value.NewNumber(1);// catch failures here 
-        //}
     }
 }

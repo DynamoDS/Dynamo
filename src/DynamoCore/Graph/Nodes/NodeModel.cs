@@ -11,7 +11,6 @@ using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.CustomNodes;
-using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Migration;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
@@ -24,7 +23,7 @@ using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using System.Runtime.Serialization;
-using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -119,20 +118,6 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         #region public properties
-
-        /// <summary>
-        ///     Definitions for the Input Ports of this NodeModel.
-        /// </summary>
-        [Obsolete("InPortData is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
-        [JsonIgnore]
-        public ObservableCollection<PortData> InPortData { get; private set; }
-
-        /// <summary>
-        ///     Definitions for the Output Ports of this NodeModel.
-        /// </summary>
-        [Obsolete("OutPortData is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute, and OutPortTypesAttribute instead.")]
-        [JsonIgnore]
-        public ObservableCollection<PortData> OutPortData { get; private set; }
 
         /// <summary>
         ///     All of the connectors entering and exiting the NodeModel.
@@ -614,7 +599,7 @@ namespace Dynamo.Graph.Nodes
         [JsonIgnore]
         public bool IsPartiallyApplied //TODO(Steve): Move to Graph level -- MAGN-5710
         {
-            get { return !Enumerable.Range(0, InPorts.Count).All(HasInput); }
+            get { return !inPorts.All(p => p.IsConnected); }
         }
 
         /// <summary>
@@ -821,9 +806,6 @@ namespace Dynamo.Graph.Nodes
         /// <param name="outPorts"></param>
         protected NodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
         {
-            InPortData = new ObservableCollection<PortData>();
-            OutPortData = new ObservableCollection<PortData>();
-
             inputNodes = new Dictionary<int, Tuple<int, NodeModel>>();
             outputNodes = new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
@@ -846,10 +828,6 @@ namespace Dynamo.Graph.Nodes
                 }
             };
 
-            //Register port connection events.
-            PortConnected += OnPortConnected;
-            PortDisconnected += OnPortDisconnected;
-
             //Fetch the element name from the custom attribute.
             SetNickNameFromAttribute();
 
@@ -858,13 +836,13 @@ namespace Dynamo.Graph.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
 
             RaisesModificationEvents = true;
+
+            InPorts.CollectionChanged += PortsCollectionChanged;
+            OutPorts.CollectionChanged += PortsCollectionChanged;
         }
 
         protected NodeModel()
         {
-            InPortData = new ObservableCollection<PortData>();
-            OutPortData = new ObservableCollection<PortData>();
-
             inputNodes = new Dictionary<int, Tuple<int, NodeModel>>();
             outputNodes = new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
@@ -883,10 +861,6 @@ namespace Dynamo.Graph.Nodes
                 }
             };
 
-            //Register port connection events.
-            PortConnected += OnPortConnected;
-            PortDisconnected += OnPortDisconnected;
-
             //Fetch the element name from the custom attribute.
             SetNickNameFromAttribute();
 
@@ -895,6 +869,69 @@ namespace Dynamo.Graph.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
 
             RaisesModificationEvents = true;
+
+            InPorts.CollectionChanged += PortsCollectionChanged;
+            OutPorts.CollectionChanged += PortsCollectionChanged;
+        }
+
+        private void PortsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                    ConfigureSnapEdges(sender == InPorts ? InPorts : OutPorts);
+                    foreach(PortModel p in e.NewItems)
+                    {
+                        p.Connectors.CollectionChanged += (coll, args) =>
+                        {
+                            // Call the collection changed handler, replacing
+                            // the 'sender' with the port, which is required
+                            // for the disconnect operations.
+                            ConnectorsCollectionChanged(p, args);
+                        };                        
+                        p.PropertyChanged += OnPortPropertyChanged;
+                        SetNodeStateBasedOnConnectionAndDefaults();
+                    }
+                    break;
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                    foreach(PortModel p in e.OldItems)
+                    {
+                        p.PropertyChanged -= OnPortPropertyChanged;
+
+                        p.DestroyConnectors();
+
+                        SetNodeStateBasedOnConnectionAndDefaults();
+                    }
+                    break;
+            }
+        }
+
+        private void ConnectorsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            var p = (PortModel)sender;
+            
+            switch (e.Action)
+            {
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                    foreach(ConnectorModel c in e.NewItems)
+                    {
+                        OnPortConnected(p, c);
+                    }
+                    break;
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                    foreach (ConnectorModel c in e.OldItems)
+                    {
+                        OnPortDisconnected(p, c);
+                    }
+                    break;
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                    foreach (ConnectorModel c in e.OldItems)
+                    {
+                        OnPortDisconnected(p, c);
+                    }
+                    break;
+            }
+            SetNodeStateBasedOnConnectionAndDefaults();
         }
 
         /// <summary>
@@ -983,7 +1020,7 @@ namespace Dynamo.Graph.Nodes
         public virtual IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return
-                OutPortData.Enumerate()
+                OutPorts.Enumerate()
                            .Select(
                                output => AstFactory.BuildAssignment(
                                    GetAstIdentifierForOutputIndex(output.Index),
@@ -1049,7 +1086,7 @@ namespace Dynamo.Graph.Nodes
             return
                 result.Concat(new[] { previewIdInit })
                       .Concat(
-                          OutPortData.Select(
+                          OutPorts.Select(
                               (outNode, index) =>
                                   AstFactory.BuildAssignment(
                                       new IdentifierNode(AstIdentifierForPreview)
@@ -1057,7 +1094,7 @@ namespace Dynamo.Graph.Nodes
                                           ArrayDimensions =
                                               new ArrayNode
                                               {
-                                                  Expr = new StringNode { Value = outNode.NickName }
+                                                  Expr = new StringNode { Value = outNode.PortName }
                                               }
                                       },
                                       GetAstIdentifierForOutputIndex(index))));
@@ -1142,7 +1179,7 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                if (OutPortData.Count < 1)
+                if (OutPorts.Count < 1)
                     return false;
 
                 foreach (var port in OutPorts.Where(port => port.Connectors.Count != 0))
@@ -1193,37 +1230,6 @@ namespace Dynamo.Graph.Nodes
             return outputNodes.TryGetValue(output, out newOutputs);
         }
 
-        /// <summary>
-        ///     Checks if there is an input for a certain port.
-        /// </summary>
-        /// <param name="data">Index of the port to look for an input for.</param>
-        /// <returns>True if there is an input, false otherwise.</returns>
-        public bool HasInput(int data)
-        {
-            return HasConnectedInput(data) || (InPorts.Count > data && InPorts[data].UsingDefaultValue);
-        }
-
-        /// <summary>
-        ///     Checks if there is a connected input for a certain port. This does
-        ///     not count default values as an input.
-        /// </summary>
-        /// <param name="data">Index of the port to look for an input for.</param>
-        /// <returns>True if there is an input, false otherwise.</returns>
-        public bool HasConnectedInput(int data)
-        {
-            return inputNodes.ContainsKey(data) && inputNodes[data] != null;
-        }
-
-        /// <summary>
-        ///     Checks if there is an output for a certain port.
-        /// </summary>
-        /// <param name="portData">Index of the port to look for an output for.</param>
-        /// <returns>True if there is an output, false otherwise.</returns>
-        public bool HasOutput(int portData)
-        {
-            return outputNodes.ContainsKey(portData) && outputNodes[portData].Any();
-        }
-
         internal void DisconnectOutput(int portData, int inPortData, NodeModel nodeModel)
         {
             HashSet<Tuple<int, NodeModel>> output;
@@ -1251,16 +1257,13 @@ namespace Dynamo.Graph.Nodes
         {
             if (!string.IsNullOrEmpty(persistentWarning))
             {
-                State = ElementState.PersistentWarning;
                 ToolTipText = persistentWarning;
             }
             else
             {
-                State = ElementState.Dead;
                 ClearTooltipText();
             }
-
-            ValidateConnections();
+            SetNodeStateBasedOnConnectionAndDefaults();
         }
 
         public void SelectNeighbors()
@@ -1281,28 +1284,28 @@ namespace Dynamo.Graph.Nodes
         /// Sets the <seealso cref="ElementState"/> for the node based on
         /// the port's default value status and connectivity.
         /// </summary>
-        public void ValidateConnections()
+        private void SetNodeStateBasedOnConnectionAndDefaults()
         {
+            //Debug.WriteLine(string.Format("Validating Connections: Node type: {0}, {1} inputs, {2} outputs", this.GetType(), this.InPorts.Count(), this.OutPorts.Count()));
+
+            if (State == ElementState.PersistentWarning) return;
+
+            if (!string.IsNullOrEmpty(persistentWarning))
+            {
+                State = ElementState.PersistentWarning;
+                return;
+            }
+
             // if there are inputs without connections
             // mark as dead; otherwise, if the original state is dead,
             // update it as active.
-            if (inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled)))
+            if (inPorts.Any(x => !x.IsConnected))
             {
-                if (State == ElementState.Active)
-                {
-                    State = string.IsNullOrEmpty(persistentWarning)
-                        ? ElementState.Dead
-                        : ElementState.PersistentWarning;
-                }
+                State = ElementState.Dead;
             }
             else
             {
-                if (State == ElementState.Dead)
-                {
-                    State = string.IsNullOrEmpty(persistentWarning)
-                        ? ElementState.Active
-                        : ElementState.PersistentWarning;
-                }
+                State = ElementState.Active;
             }
         }
 
@@ -1387,35 +1390,12 @@ namespace Dynamo.Graph.Nodes
         ///     Reads inputs list and adds ports for each input.
         /// </summary>
         [Obsolete("RegisterInputPorts is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
-        public void RegisterInputPorts()
+        public void RegisterInputPorts(IEnumerable<PortData> portDatas)
         {
-            RaisesModificationEvents = false;
-
-            var inputs = new List<PortData>();
-
-            // Old version of input ports registration.
-            // Used InPortData.
-            if (InPortData.Count > 0)
-            {
-                inputs.AddRange(InPortData);
-            }
-
-            // New version of input ports registration.
-            // Used port Attributes.
-            if (!areInputPortsRegistered)
-            {
-                inputs.AddRange(GetPortDataFromAttributes(PortType.Input));
-            }
-
-            //read the inputs list and create a number of
-            //input ports
             int count = 0;
-            foreach (PortData pd in inputs)
+            foreach (PortData pd in portDatas)
             {
-                //add a port for each input
-                //distribute the ports along the 
-                //edges of the icon
-                PortModel port = AddPort(PortType.Input, pd, count);
+                var port = AddPort(PortType.Input, pd, count);
                 count++;
             }
 
@@ -1429,48 +1409,18 @@ namespace Dynamo.Graph.Nodes
                 for (int i = inPorts.Count - 1; i >= count; i--)
                     inPorts.RemoveAt(i);
             }
-
-            //Configure Snap Edges
-            ConfigureSnapEdges(inPorts);
-            areInputPortsRegistered = true;
-
-            RaisesModificationEvents = true;
-            OnNodeModified();
         }
 
         /// <summary>
         ///     Reads outputs list and adds ports for each output
         /// </summary>
         [Obsolete("RegisterOutputPorts is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute, and OutPortTypesAttribute instead.")]
-        public void RegisterOutputPorts()
+        public void RegisterOutputPorts(IEnumerable<PortData> portDatas)
         {
-            RaisesModificationEvents = false;
-
-            var outputs = new List<PortData>();
-
-            // Old version of output ports registration.
-            // Used OutPortData.
-            if (OutPortData.Count > 0)
-            {
-                outputs.AddRange(OutPortData);
-            }
-
-            // New version of output ports registration.
-            // Used port Attributes.
-            if (!areOutputPortsRegistered)
-            {
-                outputs.AddRange(GetPortDataFromAttributes(PortType.Output));
-            }
-
-            //read the inputs list and create a number of
-            //input ports
             int count = 0;
-            foreach (PortData pd in outputs)
+            foreach (PortData pd in portDatas)
             {
-                //add a port for each input
-                //distribute the ports along the 
-                //edges of the icon
-                PortModel port = AddPort(PortType.Output, pd, count);
+                var port = AddPort(PortType.Output, pd, count);
                 count++;
             }
 
@@ -1482,13 +1432,6 @@ namespace Dynamo.Graph.Nodes
                 for (int i = outPorts.Count - 1; i >= count; i--)
                     outPorts.RemoveAt(i);
             }
-
-            //configure snap edges
-            ConfigureSnapEdges(outPorts);
-            areOutputPortsRegistered = true;
-
-            RaisesModificationEvents = true;
-            OnNodeModified();
         }
 
         /// <summary>
@@ -1591,9 +1534,22 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public void RegisterAllPorts()
         {
-            RegisterInputPorts();
-            RegisterOutputPorts();
-            ValidateConnections();
+            RaisesModificationEvents = false;
+
+            var inportDatas = GetPortDataFromAttributes(PortType.Input);
+            if (inportDatas.Any())
+            {
+                RegisterInputPorts(inportDatas);
+            }
+
+            var outPortDatas = GetPortDataFromAttributes(PortType.Output);
+            if (outPortDatas.Any())
+            {
+                RegisterOutputPorts(outPortDatas);
+            }
+                
+            RaisesModificationEvents = true;
+            areInputPortsRegistered = true;
         }
 
         /// <summary>
@@ -1603,7 +1559,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="data"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        public PortModel AddPort(PortType portType, PortData data, int index)
+        private PortModel AddPort(PortType portType, PortData data, int index)
         {
             PortModel p;
             switch (portType)
@@ -1612,7 +1568,6 @@ namespace Dynamo.Graph.Nodes
                     if (inPorts.Count > index)
                     {
                         p = inPorts[index];
-                        p.SetPortData(data);
                     }
                     else
                     {
@@ -1627,7 +1582,6 @@ namespace Dynamo.Graph.Nodes
                     if (outPorts.Count > index)
                     {
                         p = outPorts[index];
-                        p.SetPortData(data);
                     }
                     else
                     {
@@ -1645,42 +1599,24 @@ namespace Dynamo.Graph.Nodes
         {
             switch (args.PropertyName)
             {
-                case "UsingDefaultValue":
                 case "Level":
                 case "UseLevels":
                 case "ShouldKeepListStructure":
                     OnNodeModified();
                     break;
-
+                case "UsingDefaultValue":
+                    SetNodeStateBasedOnConnectionAndDefaults();
+                    OnNodeModified();
+                    break;
                 default:
                     break;
             }
         }
 
-        /// <summary>
-        /// This method to be called by the ports to raise the PortConnected event.
-        /// </summary>
-        /// <param name="port"></param>
-        /// <param name="connector"></param>
-        internal void RaisePortConnectedEvent(PortModel port, ConnectorModel connector)
+        private void OnPortConnected(PortModel port, ConnectorModel connector)
         {
             var handler = PortConnected;
             if (null != handler) handler(port, connector);
-        }
-
-        /// <summary>
-        /// This method to be called by the ports to raise the PortDisconnected event.
-        /// </summary>
-        /// <param name="port"></param>
-        internal void RaisePortDisconnectedEvent(PortModel port)
-        {
-            var handler = PortDisconnected;
-            if (null != handler) handler(port);
-        }
-
-        private void OnPortConnected(PortModel port, ConnectorModel connector)
-        {
-            ValidateConnections();
 
             if (port.PortType != PortType.Input) return;
 
@@ -1694,14 +1630,15 @@ namespace Dynamo.Graph.Nodes
             OnNodeModified();
         }
 
-        private void OnPortDisconnected(PortModel port)
+        private void OnPortDisconnected(PortModel port, ConnectorModel connector)
         {
-            ValidateConnections();
+            var handler = PortDisconnected;
+            if (null != handler) handler(port);
 
             if (port.PortType != PortType.Input) return;
 
             var data = InPorts.IndexOf(port);
-            var startPort = port.Connectors[0].Start;
+            var startPort = connector.Start;
             DisconnectInput(data);
             startPort.Owner.DisconnectOutput(startPort.Owner.OutPorts.IndexOf(startPort), data, this);
 
@@ -1722,12 +1659,12 @@ namespace Dynamo.Graph.Nodes
         {
             string nick = NickName.Replace(' ', '_');
 
-            if (!Enumerable.Range(0, InPorts.Count).Any(HasInput))
+            if (!InPorts.Any(p=>p.IsConnected))
                 return nick;
 
             string s = "";
 
-            if (Enumerable.Range(0, InPorts.Count).All(HasInput))
+            if (InPorts.All(p=>p.IsConnected))
             {
                 s += "(" + nick;
                 foreach (int data in Enumerable.Range(0, InPorts.Count))
@@ -1740,7 +1677,7 @@ namespace Dynamo.Graph.Nodes
             }
             else
             {
-                s += "(lambda (" + string.Join(" ", InPorts.Where((_, i) => !HasInput(i)).Select(x => x.PortName))
+                s += "(lambda (" + string.Join(" ", InPorts.Where((_, i) => !InPorts[i].IsConnected).Select(x => x.PortName))
                      + ") (" + nick;
                 foreach (int data in Enumerable.Range(0, InPorts.Count))
                 {
@@ -1763,7 +1700,6 @@ namespace Dynamo.Graph.Nodes
 
         public override void Deselect()
         {
-            ValidateConnections();
             IsSelected = false;
         }
 
@@ -1807,7 +1743,7 @@ namespace Dynamo.Graph.Nodes
                     {
                         var useDef = !bool.Parse(arr[i]);
                         // do not set true, if default value is disabled
-                        if (!useDef || InPorts[i].DefaultValueEnabled)
+                        if (!useDef || InPorts[i].DefaultValue != null)
                         {
                             InPorts[i].UsingDefaultValue = useDef;
                         }
@@ -2259,7 +2195,7 @@ namespace Dynamo.Graph.Nodes
         private IEnumerable<string> GetDrawableIds()
         {
             var drawables = new List<String>();
-            for (int i = 0; i < OutPortData.Count; ++i)
+            for (int i = 0; i < OutPorts.Count; ++i)
             {
                 string id = GetDrawableId(i);
                 if (!string.IsNullOrEmpty(id))

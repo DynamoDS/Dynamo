@@ -366,17 +366,6 @@ namespace Dynamo.Controls
                 ViewModel.SetStateCommand.Execute(ElementState.Dead);
         }
 
-        internal void EnableInteraction()
-        {
-            foreach (UIElement e in inputGrid.Children)
-            {
-                if (enabledDict.ContainsKey(e))
-                    e.IsEnabled = enabledDict[e];
-            }
-
-            ViewModel.ValidateConnectionsCommand.Execute(null);
-        }
-
         private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             nodeWasClicked = true;

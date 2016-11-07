@@ -130,7 +130,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             {
                 var arg = parameters.Last();
                 var argName = arg.Name.Remove(arg.Name.Length - 1) + "0";
-                model.InPortData.Add(new PortData(argName, arg.Description, arg.DefaultValue));
+                model.InPorts.Add(new PortModel(PortType.Input, model, new PortData(argName, arg.Description, arg.DefaultValue)));
             }
         }
 

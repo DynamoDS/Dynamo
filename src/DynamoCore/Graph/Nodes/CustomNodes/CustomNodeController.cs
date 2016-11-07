@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using ProtoCore.AST.AssociativeAST;
+using System.Diagnostics;
 
 namespace Dynamo.Graph.Nodes.CustomNodes
 {
@@ -16,23 +17,53 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         
         protected override void InitializeInputs(NodeModel model)
         {
-            model.InPortData.Clear();
-
             if (Definition.DisplayParameters == null || Definition.Parameters == null)
                 return;
 
-            var inputs = Definition.DisplayParameters.Zip(Definition.Parameters, (dp, p) => Tuple.Create(dp, p.Description, p.DefaultValue));
-            foreach (var p in inputs)
-                model.InPortData.Add(new PortData(p.Item1, p.Item2, p.Item3));
+            var inputs = Definition.DisplayParameters.Zip(Definition.Parameters, (dp, p) => Tuple.Create(dp, p.Description, p.DefaultValue)).ToList();
+            var count = inputs.Count();
+
+            if(model.InPorts.Count > count)
+            {
+                for (int i = model.InPorts.Count - 1; i >= count; i--)
+                {
+                    model.InPorts.RemoveAt(i);
+                }
+            }
+
+            for (int i=0; i<inputs.Count(); i++)
+            {
+                var input = inputs[i];
+
+                if(model.InPorts.Count > i)
+                {
+                    model.InPorts[i].PortName = input.Item1;
+                    model.InPorts[i].ToolTip = input.Item2;
+                    model.InPorts[i].DefaultValue = input.Item3;
+                }
+                else
+                {
+                    model.InPorts.Add(new PortModel(PortType.Input, model, new PortData(input.Item1, input.Item2, input.Item3)));
+                }
+            }
         }
 
         protected override void InitializeOutputs(NodeModel model)
         {
-            model.OutPortData.Clear();
             if (Definition.Returns.Any())
             {
-                foreach (var pair in Definition.Returns)
+                if(model.OutPorts.Count() > Definition.Returns.Count())
                 {
+                    for (int i = model.OutPorts.Count - 1; i >= Definition.Returns.Count(); i--)
+                    {
+                        model.OutPorts.RemoveAt(i);
+                    }
+                }
+
+                var returns = Definition.Returns.ToList();
+                for(int i=0; i<Definition.Returns.Count(); i++)
+                {
+                    var pair = returns[i];
                     string key = pair.Item1;
                     string tooltip = pair.Item2;
 
@@ -41,12 +72,21 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                         tooltip = Properties.Resources.ToolTipReturnValue;
                     }
 
-                    model.OutPortData.Add(new PortData(key, tooltip));
+                    if(model.OutPorts.Count > i)
+                    {
+                        model.OutPorts[i].PortName = key;
+                        model.OutPorts[i].ToolTip = tooltip;
+                    }
+                    else
+                    {
+                        model.OutPorts.Add(new PortModel(PortType.Output, model, new PortData(key, tooltip)));
+                    }
                 }
             }
             else
             {
-                model.OutPortData.Add(new PortData("", Properties.Resources.ToolTipReturnValue));
+                model.OutPorts.Clear();
+                model.OutPorts.Add(new PortModel(PortType.Output, model, new PortData("", Properties.Resources.ToolTipReturnValue)));
             }
         }
 
@@ -62,7 +102,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             return AstFactory.BuildFunctionObject(
                 Definition.FunctionName,
                 count,
-                Enumerable.Range(0, count).Where(model.HasInput),
+                Enumerable.Range(0, count).Where(index=>model.InPorts[index].IsConnected),
                 inputAstNodes);
         }
 
@@ -88,7 +128,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         protected override void AssignIdentifiersForFunctionCall(
             NodeModel model, AssociativeNode rhs, List<AssociativeNode> resultAst)
         {
-            if (model.OutPortData.Count == 1)
+            if (model.OutPorts.Count == 1)
                 resultAst.Add(AstFactory.BuildAssignment(model.AstIdentifierForPreview, rhs));
             else
                 base.AssignIdentifiersForFunctionCall(model, rhs, resultAst);
@@ -114,9 +154,18 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// <param name="model">Custom node model</param>
         public override void SyncNodeWithDefinition(NodeModel model)
         {
-            if (IsInSyncWithNode(model)) 
+            if (IsInSyncWithNode(model))
+            {
+                Debug.WriteLine("Custom node definition is already in sync for: " + 
+                    model.NickName + 
+                    string.Format(", {0} returns, {1} parameters", Definition.Returns.Count(), Definition.Parameters.Count()));
                 return;
-            
+            } 
+
+            Debug.WriteLine("Syncing custom node with definition for: " + 
+                model.NickName + 
+                string.Format(", {0} returns, {1} parameters", Definition.Returns.Count(), Definition.Parameters.Count()));
+
             base.SyncNodeWithDefinition(model);
 
             model.OnNodeModified();
@@ -149,7 +198,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
             if (Definition.DisplayParameters != null)
             {
-                var paramNames = model.InPortData.Select(p => p.NickName);
+                var paramNames = model.InPorts.Select(p => p.PortName);
                 if (!Definition.DisplayParameters.SequenceEqual(paramNames))
                     return false;
             }
@@ -157,21 +206,21 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             if (Definition.Parameters != null)
             {
                 var defParamTypes = Definition.Parameters.Select(p => p.Type.ToShortString());
-                var paramTypes = model.InPortData.Select(p => p.ToolTipString);
+                var paramTypes = model.InPorts.Select(p => p.ToolTip);
                 if (!defParamTypes.SequenceEqual(paramTypes))
                     return false;
             }
 
             if (Definition.ReturnKeys != null)
             {
-                var returnKeys = model.OutPortData.Select(p => p.NickName);
+                var returnKeys = model.OutPorts.Select(p => p.PortName);
                 if (!Definition.ReturnKeys.SequenceEqual(returnKeys))
                     return false;
             }
 
             if (Definition.Returns != null)
             {
-                var tooltips = model.OutPortData.Select(p => p.ToolTipString);
+                var tooltips = model.OutPorts.Select(p => p.ToolTip);
                 if (!Definition.Returns.Select(r => string.IsNullOrEmpty(r.Item2) ? Properties.Resources.ToolTipReturnValue : r.Item2)
                                        .SequenceEqual(tooltips))
                     return false;
