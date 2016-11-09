@@ -1730,7 +1730,7 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Helix.Pitch">
             <summary>
-            The pitch of the helix in Degrees
+            The pitch of the helix
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Helix.Radius">
@@ -2540,7 +2540,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
             <summary>
-            Make PolyCurve from sequence of lines connecting points. For closed curve last point should be in same location as start point.
+            Make PolyCurve by connecting points. Set the 'connectLastToFirst' input to true to close the PolyCurve.
             </summary>
             <param name="points"> Points to make polycurve </param>
             <param name="connectLastToFirst"> make  close or open polycurve </param>
