@@ -68,6 +68,7 @@ namespace ProtoCore.Lang
             Break,
             GetKeys,
             GetValues,
+            GetValueForKey,
             RemoveKey,
             ContainsKey,
             Evaluate,
@@ -133,7 +134,8 @@ namespace ProtoCore.Lang
             Constants.kInlineConditionalMethodName,
             "Break",                    // kBreak
             "GetKeys",                  // kGetKeys    
-            "GetValues",                // kGetValues    
+            "GetValues",                // kGetValues  
+            "GetValueForKey",             
             "RemoveKey",                // kRemoveKey
             "ContainsKey",              // kContainsKey
             "Evaluate",                 // kEvaluateFunctionPointer
@@ -909,6 +911,19 @@ namespace ProtoCore.Lang
                     },
                     ID = MethodID.GetValues,
                      MethodAttributes = new MethodAttributes(){Description = Resources.GetValues}
+                    //MAGN_3382 MethodAttributes = new MethodAttributes(true),
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, Type>>
+                    {
+                        new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0))
+                    },
+                    ID = MethodID.GetValueForKey,
+                     MethodAttributes = new MethodAttributes(){Description = Resources.GetValueForKey}
                     //MAGN_3382 MethodAttributes = new MethodAttributes(true),
                 },
 

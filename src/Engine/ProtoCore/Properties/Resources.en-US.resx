@@ -911,4 +911,7 @@ Parameter name: {0}</value>
   <data name="InvalidFunction" xml:space="preserve">
     <value>Not an valid function.</value>
   </data>
+  <data name="GetValueForKey" xml:space="preserve">
+    <value>Returns the value corresponding to the supplied key from a key-value pair list</value>
+  </data>
 </root>
