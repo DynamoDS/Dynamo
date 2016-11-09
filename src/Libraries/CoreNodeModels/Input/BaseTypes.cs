@@ -148,6 +148,7 @@ namespace CoreNodeModels.Input
         /// or unassigned identifier syntax.i.e *start..end*
         /// This property is only validated for new user input.
         /// </summary>
+        [JsonProperty("InputValue")]
         public string Value
         {
             get { return _value; }

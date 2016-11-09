@@ -27,6 +27,7 @@ namespace CoreNodeModels
         private List<ConversionUnit> selectedFromConversionSource;
         private List<ConversionUnit> selectedToConversionSource;
 
+        [JsonIgnore]
         public List<ConversionUnit> SelectedFromConversionSource
         {
             get { return selectedFromConversionSource; }
@@ -37,6 +38,7 @@ namespace CoreNodeModels
             }
         }
 
+        [JsonIgnore]
         public List<ConversionUnit> SelectedToConversionSource
         {
             get { return selectedToConversionSource; }
@@ -47,6 +49,7 @@ namespace CoreNodeModels
             }
         }
 
+        [JsonProperty("MetricConversion")]
         public ConversionMetricUnit SelectedMetricConversion
         {
             get { return selectedMetricConversion; }
@@ -64,6 +67,7 @@ namespace CoreNodeModels
             }
         }
 
+        [JsonProperty("FromConversion")]
         public ConversionUnit SelectedFromConversion
         {
             get { return selectedFromConversion; }
@@ -75,6 +79,7 @@ namespace CoreNodeModels
             }
         }
 
+        [JsonProperty("ToConversion")]
         public ConversionUnit SelectedToConversion
         {
             get { return selectedToConversion; }
@@ -86,6 +91,7 @@ namespace CoreNodeModels
             }
         }
 
+        [JsonIgnore]
         public bool IsSelectionFromBoxEnabled
         {
             get { return isSelectionFromBoxEnabled; }
@@ -96,6 +102,7 @@ namespace CoreNodeModels
             }
         }
 
+        [JsonIgnore]
         public string SelectionFromBoxToolTip
         {
             get { return selectionFromBoxToolTip; }

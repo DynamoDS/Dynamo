@@ -21,6 +21,8 @@ namespace CoreNodeModels
     public class Formula : NodeModel
     {
         private string formulaString = "";
+
+        [JsonProperty("Formula")]
         public string FormulaString
         {
             get

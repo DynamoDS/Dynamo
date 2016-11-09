@@ -99,6 +99,8 @@ namespace PythonNodeModels
         }
 
         private string script;
+
+        [JsonProperty("Code")]
         public string Script
         {
             get { return script; }
