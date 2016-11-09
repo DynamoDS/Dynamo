@@ -179,7 +179,7 @@ namespace Dynamo.Views
             }
         }
 
-    internal Point GetCenterPoint()
+        internal Point GetCenterPoint()
         {
             var x = outerCanvas.ActualWidth / 2.0;
             var y = outerCanvas.ActualHeight / 2.0;
