@@ -29,8 +29,8 @@ namespace CoreNodeModels
 
         public CreateList()
         {
-            InPortData.Add(new PortData("item0", Resources.CreateListPortDataIndex0ToolTip));
-            OutPortData.Add(new PortData("list", Resources.CreateListPortDataResultToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("item0", Resources.CreateListPortDataIndex0ToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("list", Resources.CreateListPortDataResultToolTip)));
 
             RegisterAllPorts();
 
@@ -63,7 +63,7 @@ namespace CoreNodeModels
             if (IsPartiallyApplied)
             {
                 var connectedInput = Enumerable.Range(0, InPorts.Count)
-                                               .Where(HasConnectedInput)
+                                               .Where(index=>InPorts[index].IsConnected)
                                                .Select(x => new IntNode(x) as AssociativeNode)
                                                .ToList();
 

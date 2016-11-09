@@ -29,10 +29,10 @@ namespace CoreNodeModels
 
         public Range()
         {
-            InPortData.Add(new PortData("start", Resources.RangePortDataStartToolTip, startPortDefaultValue));
-            InPortData.Add(new PortData("end", Resources.RangePortDataEndToolTip, endPortDefaultValue));
-            InPortData.Add(new PortData("step", Resources.RangePortDataStepToolTip, stepPortDefaultValue));
-            OutPortData.Add(new PortData("seq", Resources.RangePortDataSeqToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("start", Resources.RangePortDataStartToolTip, startPortDefaultValue)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("end", Resources.RangePortDataEndToolTip, endPortDefaultValue)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("step", Resources.RangePortDataStepToolTip, stepPortDefaultValue)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("seq", Resources.RangePortDataSeqToolTip)));
 
             RegisterAllPorts();
 
@@ -49,7 +49,7 @@ namespace CoreNodeModels
             if (IsPartiallyApplied)
             {
                 var connectedPorts = Enumerable.Range(0, this.InPorts.Count)
-                    .Where(this.HasInput)
+                    .Where(index=>this.InPorts[index].IsConnected)
                     .ToList();
 
                 // 3d, 4th, 5th are always connected.
@@ -108,10 +108,10 @@ namespace CoreNodeModels
 
         public Sequence()
         {
-            InPortData.Add(new PortData("start", Resources.RangePortDataStartToolTip, startPortDefaultValue));
-            InPortData.Add(new PortData("amount", Resources.RangePortDataAmountToolTip, amountPortDefaultValue));
-            InPortData.Add(new PortData("step", Resources.RangePortDataStepToolTip, stepPortDefaultValue));
-            OutPortData.Add(new PortData("seq", Resources.RangePortDataSeqToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("start", Resources.RangePortDataStartToolTip, startPortDefaultValue)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("amount", Resources.RangePortDataAmountToolTip, amountPortDefaultValue)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("step", Resources.RangePortDataStepToolTip, stepPortDefaultValue)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("seq", Resources.RangePortDataSeqToolTip)));
 
             RegisterAllPorts();
 
@@ -128,7 +128,7 @@ namespace CoreNodeModels
             if (IsPartiallyApplied)
             {
                 var connectedPorts = Enumerable.Range(0, this.InPorts.Count)
-                    .Where(this.HasInput)
+                    .Where(index=>this.InPorts[index].IsConnected)
                     .ToList();
 
                 // 3d, 4th, 5th are always connected.

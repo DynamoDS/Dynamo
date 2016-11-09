@@ -12,6 +12,7 @@ using ProtoCore;
 using ProtoCore.Namespace;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -249,6 +250,8 @@ namespace Dynamo.Graph.Workspaces
             bool isTestMode)
             : base(nodes, notes,annotations, info, factory,presets, resolver)
         {
+            Debug.WriteLine("Creating a home workspace...");
+
             EvaluationCount = 0;
 
             // This protects the user from a file that might have crashed during

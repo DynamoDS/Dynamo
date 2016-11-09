@@ -115,7 +115,7 @@ namespace CoreNodeModels.Input
 
         public DoubleInput()
         {
-            OutPortData.Add(new PortData("", ""));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", "")));
             RegisterAllPorts();
 
             ShouldDisplayPreviewCore = false;
@@ -148,6 +148,7 @@ namespace CoreNodeModels.Input
         /// or unassigned identifier syntax.i.e *start..end*
         /// This property is only validated for new user input.
         /// </summary>
+        [JsonProperty("InputValue")]
         public string Value
         {
             get { return _value; }
@@ -164,17 +165,16 @@ namespace CoreNodeModels.Input
                 {
                     _parsed = ParseValue(value, new[] { '\n' }, idList, ConvertToken);
 
-                    InPortData.Clear();
+                    InPorts.Clear();
 
                     foreach (var id in idList)
                     {
-                        InPortData.Add(new PortData(id, "variable"));
+                        InPorts.Add(new PortModel(PortType.Input, this, new PortData(id, "variable")));
                     }
 
-                    RegisterInputPorts();
                     ClearRuntimeError();
 
-                    ArgumentLacing = InPortData.Any() ? LacingStrategy.Longest : LacingStrategy.Disabled;
+                    ArgumentLacing = InPorts.Any() ? LacingStrategy.Longest : LacingStrategy.Disabled;
                 }
                 catch (Exception e)
                 {
@@ -347,7 +347,7 @@ namespace CoreNodeModels.Input
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
-            var paramDict = InPortData.Select(x => x.NickName)
+            var paramDict = InPorts.Select(x => x.PortName)
                    .Zip<string, AssociativeNode, Tuple<string, AssociativeNode>>(inputAstNodes, Tuple.Create)
                    .ToDictionary(x => x.Item1, x => x.Item2);
 

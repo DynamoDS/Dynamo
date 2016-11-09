@@ -50,7 +50,7 @@ namespace Dynamo
             if (outputs.Any())
             {
                 topMost.AddRange(
-                    outputs.Where(x => x.HasInput(0)).Select(x => Tuple.Create(0, x as NodeModel)));
+                    outputs.Where(x => x.InPorts[0].IsConnected).Select(x => Tuple.Create(0, x as NodeModel)));
                 returns = outputs.Select(x => x.Return).ToList();
             }
             else
@@ -68,11 +68,11 @@ namespace Dynamo
                                 // infinity output
                                 ? new[] {new {portIndex = 0, node = topNode, name = "∞"}}
                                 // otherwise, grab all ports with connected outputs and package necessary info
-                                : topNode.OutPortData
+                                : topNode.OutPorts
                                     .Select(
                                         (port, i) =>
-                                            new {portIndex = i, node = topNode, name = port.NickName})
-                                    .Where(x => !topNode.HasOutput(x.portIndex)));
+                                            new {portIndex = i, node = topNode, name = port.PortName})
+                                    .Where(x => !topNode.OutPorts[x.portIndex].IsConnected));
 
                 foreach (var rtnAndIndex in rtnPorts.Select((rtn, i) => new {rtn, idx = i}))
                 {
