@@ -18,6 +18,7 @@ namespace Dynamo.PackageManager
         #region Fields & Properties
 
         private Action<Assembly> RequestLoadNodeLibraryHandler;
+        private Func<string,IExtension> RequestLoadExtensionHandler;
         private Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler; 
 
         public event Action<ILogMessage> MessageLogged;
@@ -57,6 +58,11 @@ namespace Dynamo.PackageManager
                 PackageLoader.RequestLoadCustomNodeDirectory -=
                     RequestLoadCustomNodeDirectoryHandler;
             }
+            if (RequestLoadExtensionHandler != null)
+            {
+                PackageLoader.RequestLoadExtensionHandler -=
+                    RequestLoadExtensionHandler;
+            }
         }
 
         /// <summary>
@@ -85,6 +91,7 @@ namespace Dynamo.PackageManager
             RequestLoadNodeLibraryHandler = startupParams.LibraryLoader.LoadNodeLibrary;
             RequestLoadCustomNodeDirectoryHandler = (dir) => startupParams.CustomNodeManager
                     .AddUninitializedCustomNodesInPath(dir, DynamoModel.IsTestMode, true);
+            RequestLoadExtensionHandler = startupParams.ExtensionManager.ExtensionLoader.Load;
 
             PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
             PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;
