@@ -31,7 +31,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string ToolTipContent
         {
-            get { return _port.ToolTipContent; }
+            get { return _port.ToolTip; }
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsConnected
         {
-            get { return _port.IsConnected; }
+            get { return _port.Owner.InPorts[_port.Index].IsConnected; }
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool DefaultValueEnabled
         {
-            get { return _port.DefaultValueEnabled; }
+            get { return _port.DefaultValue != null; }
         }
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case "ToolTipContent":
+                case "ToolTip":
                     RaisePropertyChanged("ToolTipContent");
                     break;
                 case "PortType":
@@ -268,8 +268,8 @@ namespace Dynamo.ViewModels
                 case "Center":
                     RaisePropertyChanged("Center");
                     break;
-                case "DefaultValueEnabled":
-                    RaisePropertyChanged("DefaultValueEnabled");
+                case "DefaultValue":
+                    RaisePropertyChanged("DefaultValue");
                     break;
                 case "UsingDefaultValue":
                     RaisePropertyChanged("UsingDefaultValue");

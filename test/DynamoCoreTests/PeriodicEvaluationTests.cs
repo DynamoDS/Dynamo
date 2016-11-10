@@ -53,7 +53,7 @@ namespace Dynamo.Tests
             this.actionId = ActionDict.Register(action);
             this.CanUpdatePeriodically = periodic;
 
-            OutPortData.Add(new PortData("", ""));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", "")));
             RegisterAllPorts();
         }
 

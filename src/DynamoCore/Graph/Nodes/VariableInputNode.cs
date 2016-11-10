@@ -161,7 +161,7 @@ namespace Dynamo.Graph.Nodes
         private void MarkNodeDirty()
         {
             var dirty = model.InPorts.Count != inputAmtLastBuild
-                || Enumerable.Range(0, model.InPorts.Count).Any(idx => connectedLastBuild[idx] == model.HasInput(idx));
+                || Enumerable.Range(0, model.InPorts.Count).Any(idx => connectedLastBuild[idx] == model.InPorts[idx].IsConnected);
 
             if (dirty)
             {
@@ -180,7 +180,6 @@ namespace Dynamo.Graph.Nodes
                 var port = model.InPorts[count - 1];
                 port.DestroyConnectors();
                 model.InPorts.Remove(port);
-                model.ValidateConnections();
             }
 
             MarkNodeDirty();
@@ -237,7 +236,7 @@ namespace Dynamo.Graph.Nodes
             inputAmtLastBuild = model.InPorts.Count;
 
             foreach (var idx in Enumerable.Range(0, model.InPorts.Count))
-                connectedLastBuild[idx] = model.HasInput(idx);
+                connectedLastBuild[idx] = model.InPorts[idx].IsConnected;
         }
 
         /// <summary>

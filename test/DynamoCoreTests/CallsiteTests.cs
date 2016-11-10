@@ -114,7 +114,7 @@ namespace Dynamo.Tests
             var traceNode = ws.Nodes.Where(n=>n is DSFunction).FirstOrDefault(f=>f.NickName == "TraceExampleWrapper.ByString");
             Assert.NotNull(traceNode);
 
-            ws.RemoveNode(traceNode);
+            ws.RemoveAndDisposeNode(traceNode);
 
             BeginRun();
         }
