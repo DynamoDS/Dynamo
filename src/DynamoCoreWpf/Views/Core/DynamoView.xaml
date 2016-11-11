@@ -454,7 +454,7 @@
                                   Name="ungroupGroup"
                                   InputGestureText="Ctrl + U" />
                         <MenuItem Focusable="False"                                
-                                  Header="{x:Static p:Resources.DynamoViewEditMenuCreateNodeFromSelection}"
+                                  Header="{x:Static p:Resources.DynamoViewEditMenuCreateCustomNode}"
                                   Command="{Binding Path=NodeFromSelectionCommand}"
                                   Name="nodeFromSelection"
                                   InputGestureText="Ctrl + D" />
