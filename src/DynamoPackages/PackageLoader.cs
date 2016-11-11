@@ -31,6 +31,8 @@ namespace Dynamo.PackageManager
         internal event Action<Assembly> RequestLoadNodeLibrary;
         internal event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
         internal event Func<string,IExtension> RequestLoadExtensionHandler;
+        internal Action<IExtension> RequestAddExtensionHandler;
+
         public event Action<Package> PackageAdded;
         public event Action<Package> PackageRemoved;
 
@@ -43,6 +45,7 @@ namespace Dynamo.PackageManager
         {
             get { return packagesDirectories[0]; }
         }
+
 
         public PackageLoader(string overridePackageDirectory)
             : this(new[] { overridePackageDirectory })
@@ -110,11 +113,20 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void OnRequestLoadExtension(string extensionPath)
+        private IExtension OnRequestLoadExtension(string extensionPath)
         {
             if (RequestLoadExtensionHandler != null)
             {
-                RequestLoadExtensionHandler(extensionPath);
+                return RequestLoadExtensionHandler(extensionPath);
+            }
+            return null;
+        }
+
+        private void OnRequestAddExtension(IExtension extension)
+        {
+            if (RequestAddExtensionHandler != null)
+            {
+                RequestAddExtensionHandler(extension);
             }
         }
 
@@ -164,12 +176,14 @@ namespace Dynamo.PackageManager
                 package.EnumerateAdditionalFiles();
                 //if the additional files contained an extension manifest
                 //request to load it
-                var extensions = package.AdditionalFiles.Where(file => file.Model.Name.Contains("extension.xml")).ToList();
-                foreach (var extPath in extensions)
+                var extensionManifests = package.AdditionalFiles.Where(file => file.Model.Name.Contains("ExtensionDefinition.xml")).ToList();
+                foreach (var extPath in extensionManifests)
                 {
-                    OnRequestLoadExtension(extPath.Model.FullName);
+                var extension = OnRequestLoadExtension(extPath.Model.FullName);
+                    OnRequestAddExtension(extension);
                 }
-
+                
+                //attemp to start the package
                 package.Loaded = true;
             }
             catch (Exception e)
