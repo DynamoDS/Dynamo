@@ -52,6 +52,14 @@ namespace CoreNodeModels
             }
         }
 
+        public override string NodeType
+        {
+            get
+            {
+                return "FormulaNode";
+            }
+        }
+
         [JsonConstructor]
         private Formula(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {

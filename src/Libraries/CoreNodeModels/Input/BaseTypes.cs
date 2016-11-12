@@ -4,17 +4,14 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Xml;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Migration;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using CoreNodeModels.Properties;
-using System.Net;
 using Newtonsoft.Json;
 
 namespace CoreNodeModels.Input
@@ -26,6 +23,14 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("Dynamo.Nodes.StringInput", "Dynamo.Nodes.dynStringInput", "DSCoreNodesUI.Input.StringInput")]
     public class StringInput : String
     {
+        public override string NodeType
+        {
+            get
+            {
+                return "StringInputNode";
+            }
+        }
+
         [JsonConstructor]
         private StringInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) {
             Value = "";
@@ -103,6 +108,14 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("Dynamo.Nodes.DoubleInput", "Dynamo.Nodes.dynDoubleInput", "DSCoreNodesUI.Input.DoubleInput")]
     public class DoubleInput : NodeModel
     {
+        public override string NodeType
+        {
+            get
+            {
+                return "RangeInputNode";
+            }
+        }
+
         [JsonConstructor]
         private DoubleInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
         {

@@ -300,6 +300,14 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         private string nickName = String.Empty;
         private ElementResolver workspaceElementResolver;
 
+        public override string NodeType
+        {
+            get
+            {
+                return "InputNode";
+            }
+        }
+
         /// <summary>
         ///     Responsible for resolving 
         ///     a partial class name to its fully resolved name
@@ -514,6 +522,14 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         private string outputIdentifier = string.Empty;
         private string description = string.Empty;
         private ElementResolver workspaceElementResolver;
+
+        public override string NodeType
+        {
+            get
+            {
+                return "OutputNode";
+            }
+        }
 
         /// <summary>
         /// Element resolver 

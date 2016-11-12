@@ -64,5 +64,10 @@ namespace Dynamo.Session
         /// is a number.
         /// </summary>
         public static readonly string MinorVersion = "MinorFileVersion";
+
+        /// <summary>
+        /// This key is used to get the duration of the last execution.
+        /// </summary>
+        public static readonly string LastExecutionDuration = "LastExecutionDuration";
     }
 }

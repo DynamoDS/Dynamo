@@ -7,6 +7,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using Dynamo.Events;
 
 namespace Dynamo.Tests
 {
@@ -191,10 +192,21 @@ namespace Dynamo.Tests
                 Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.NickName).ToArray()));
             }
 
+            TimeSpan desktopExecutionTime;
+
+            ExecutionStateHandler postExecHandler = (session) =>
+            {
+                desktopExecutionTime = (TimeSpan)session.GetParameterValue(Session.ParameterKeys.LastExecutionDuration);
+            };
+
+            ExecutionEvents.GraphPostExecution += postExecHandler;
+
             if (((HomeWorkspaceModel)ws1).RunSettings.RunType== Models.RunType.Manual)
             {
                 RunCurrentModel();
             }
+
+            ExecutionEvents.GraphPostExecution -= postExecHandler;
 
             var wcd1 = new WorkspaceComparisonData(ws1);
 
@@ -293,6 +305,11 @@ namespace Dynamo.Tests
                 Assert.True(ws2.Nodes.Contains(c.Start.Owner));
                 Assert.True(ws2.Nodes.Contains(c.End.Owner));
             }
+        }
+
+        private void ExecutionEvents_GraphPostExecution(Session.IExecutionSession session)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -24,6 +24,14 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("DSCoreNodesUI.Input.IntegerSlider")]
     public class IntegerSlider : SliderBase<int>
     {
+        public override string NodeType
+        {
+            get
+            {
+                return "RangeInputNode";
+            }
+        }
+
         [JsonConstructor]
         private IntegerSlider(IEnumerable<PortModel> inPorts,
             IEnumerable<PortModel> outPorts): base(inPorts, outPorts)

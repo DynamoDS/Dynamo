@@ -81,6 +81,11 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         internal HashSet<NodeModel> UpstreamCache = new HashSet<NodeModel>();
 
+        public virtual string NodeType
+        {
+            get { return "ExtensionNode"; }
+        }
+
         #endregion
 
         #region events

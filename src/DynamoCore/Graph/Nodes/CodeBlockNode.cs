@@ -44,6 +44,13 @@ namespace Dynamo.Graph.Nodes
 
         private bool shouldFocus = true;
 
+        public override string NodeType
+        {
+            get
+            {
+                return "CodeBlockNode";
+            }
+        }
         /// <summary>
         ///     Indicates whether code block should not be in focus upon undo/redo actions on node
         /// </summary>
