@@ -12,7 +12,15 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     [AlsoKnownAs("Dynamo.Nodes.DSFunction")]
     public class DSFunction : DSFunctionBase
     {
-        public string FunctionName
+        public override string NodeType
+        {
+            get
+            {
+                return "FunctionNode";
+            }
+        }
+
+        public string FunctionSignature
         {
             get
             {

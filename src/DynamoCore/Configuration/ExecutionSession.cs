@@ -23,6 +23,7 @@ namespace Dynamo.Configuration
             parameters[ParameterKeys.MajorVersion] = pathManager.MajorFileVersion;
             parameters[ParameterKeys.MinorVersion] = pathManager.MinorFileVersion;
             parameters[ParameterKeys.NumberFormat] = model.PreferenceSettings.NumberFormat;
+            parameters[ParameterKeys.LastExecutionDuration] = new TimeSpan(updateTask.ExecutionEndTime.TickCount - updateTask.ExecutionStartTime.TickCount);
         }
 
         /// <summary>

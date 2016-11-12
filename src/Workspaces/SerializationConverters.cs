@@ -79,7 +79,7 @@ namespace Autodesk.Workspaces
             }
             else if(typeof(DSFunctionBase).IsAssignableFrom(type))
             {
-                var mangledName = obj["FunctionName"].Value<string>();
+                var mangledName = obj["FunctionSignature"].Value<string>();
 
                 var description = libraryServices.GetFunctionDescriptor(mangledName);
 

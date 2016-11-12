@@ -78,6 +78,14 @@ namespace PythonNodeModels
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
     {
+        public override string NodeType
+        {
+            get
+            {
+                return "PythonScriptNode";
+            }
+        }
+
         /// <summary>
         /// Private constructor used for serialization.
         /// </summary>

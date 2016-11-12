@@ -22,6 +22,14 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("DSCoreNodesUI.Input.DoubleSlider")]
     public class DoubleSlider : SliderBase<double>
     {
+        public override string NodeType
+        {
+            get
+            {
+                return "RangeInputNode";
+            }
+        }
+
         [JsonConstructor]
         private DoubleSlider(IEnumerable<PortModel> inPorts,
             IEnumerable<PortModel> outPorts): base(inPorts, outPorts)

@@ -10,7 +10,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Newtonsoft.Json;
 using Dynamo.Engine;
-using ProtoCore.Namespace;
+using Dynamo.Events;
 
 namespace Dynamo.Tests
 {
@@ -21,16 +21,36 @@ namespace Dynamo.Tests
      *  original .dyn file name. 
      *  - xxx_data.json file containing the cached values of each of the workspaces
      *  - xxx.ds file containing the Design Script code for the workspace.
-     */ 
+     */
     [TestFixture, Category("Serialization")]
     class SerializationTests : DynamoModelTestBase
     {
+        private TimeSpan lastExecutionDuration = new TimeSpan();
+
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("VMDataBridge.dll");
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
+        }
+
+        [SetUp]
+        public override void Setup()
+        {
+            ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
+            base.Setup();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;
+        }
+
+        private void ExecutionEvents_GraphPostExecution(Session.IExecutionSession session)
+        {
+            lastExecutionDuration = (TimeSpan)session.GetParameterValue(Session.ParameterKeys.LastExecutionDuration);
         }
 
         /// <summary>
@@ -212,7 +232,7 @@ namespace Dynamo.Tests
                 Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.NickName).ToArray()));
             }
 
-            if (((HomeWorkspaceModel)ws1).RunSettings.RunType == Models.RunType.Manual)
+            if (((HomeWorkspaceModel)ws1).RunSettings.RunType== Models.RunType.Manual)
             {
                 RunCurrentModel();
             }
@@ -226,7 +246,9 @@ namespace Dynamo.Tests
 
             string json = ConvertCurrentWorkspaceToJsonAndSave(model, filePathBase);
 
-            SaveWorkspaceComparisonData(wcd1, filePathBase);
+            SaveWorkspaceComparisonData(wcd1, filePathBase, lastExecutionDuration);
+
+            lastExecutionDuration = new TimeSpan();
 
             var ws2 = Autodesk.Workspaces.Utilities.LoadWorkspaceFromJson(json, model.LibraryServices,
                 model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false,
@@ -302,26 +324,30 @@ namespace Dynamo.Tests
             }
         }
 
-        private static void SaveWorkspaceComparisonData(WorkspaceComparisonData wcd1, string filePathBase)
+        private static void SaveWorkspaceComparisonData(WorkspaceComparisonData wcd1, string filePathBase, TimeSpan executionDuration)
         {
-            var data = wcd1.NodeDataMap.Zip(wcd1.NodeTypeMap, (a, b) =>
+            var nodeData = wcd1.NodeDataMap.Zip(wcd1.NodeTypeMap, (a, b) =>
             {
                 var dict = new Dictionary<string, Dictionary<string, object>>();
-                var dataDict = new Dictionary<string, object>();
-                dataDict.Add("node_type", b.Value.ToString());
-                dataDict.Add("port_values", a.Value);
-                dict.Add(a.Key.ToString(), dataDict);
+                var nodeDataDict = new Dictionary<string, object>();
+                nodeDataDict.Add("node_type", b.Value.ToString());
+                nodeDataDict.Add("port_values", a.Value);
+                dict.Add(a.Key.ToString(), nodeDataDict);
                 return dict;
             });
 
-            var dataMapStr = JsonConvert.SerializeObject(data,
+            var workspaceDataDict = new Dictionary<string, object>();
+            workspaceDataDict.Add("node_data", nodeData);
+            workspaceDataDict.Add("execution_duration", executionDuration);
+
+            var dataMapStr = JsonConvert.SerializeObject(workspaceDataDict,
                             new JsonSerializerSettings()
                             {
                                 Formatting = Formatting.Indented,
                                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                             });
 
-            var dataPath = filePathBase + "_data.json";
+            var dataPath = filePathBase + ".data";
             if (File.Exists(dataPath))
             {
                 File.Delete(dataPath);

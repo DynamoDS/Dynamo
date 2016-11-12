@@ -27,6 +27,14 @@ namespace CoreNodeModels
         private List<ConversionUnit> selectedFromConversionSource;
         private List<ConversionUnit> selectedToConversionSource;
 
+        public override string NodeType
+        {
+            get
+            {
+                return "ConvertBetweenUnitsNode";
+            }
+        }
+
         [JsonIgnore]
         public List<ConversionUnit> SelectedFromConversionSource
         {
