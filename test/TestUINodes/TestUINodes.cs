@@ -18,8 +18,8 @@ namespace TestUINodes
 
         public NodeWithFailingASTOutput()
         {
-            InPortData.Add(new PortData("input", "dummy input"));
-            OutPortData.Add(new PortData("result", "dummy result"));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("input", "dummy input")));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("result", "dummy result")));
             RegisterAllPorts();
         }
 

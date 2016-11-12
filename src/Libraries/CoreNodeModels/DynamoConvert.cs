@@ -27,6 +27,7 @@ namespace CoreNodeModels
         private List<ConversionUnit> selectedFromConversionSource;
         private List<ConversionUnit> selectedToConversionSource;
 
+        [JsonIgnore]
         public List<ConversionUnit> SelectedFromConversionSource
         {
             get { return selectedFromConversionSource; }
@@ -37,6 +38,7 @@ namespace CoreNodeModels
             }
         }
 
+        [JsonIgnore]
         public List<ConversionUnit> SelectedToConversionSource
         {
             get { return selectedToConversionSource; }
@@ -47,6 +49,7 @@ namespace CoreNodeModels
             }
         }
 
+        [JsonProperty("MetricConversion")]
         public ConversionMetricUnit SelectedMetricConversion
         {
             get { return selectedMetricConversion; }
@@ -64,6 +67,7 @@ namespace CoreNodeModels
             }
         }
 
+        [JsonProperty("FromConversion")]
         public ConversionUnit SelectedFromConversion
         {
             get { return selectedFromConversion; }
@@ -75,6 +79,7 @@ namespace CoreNodeModels
             }
         }
 
+        [JsonProperty("ToConversion")]
         public ConversionUnit SelectedToConversion
         {
             get { return selectedToConversion; }
@@ -86,6 +91,7 @@ namespace CoreNodeModels
             }
         }
 
+        [JsonIgnore]
         public bool IsSelectionFromBoxEnabled
         {
             get { return isSelectionFromBoxEnabled; }
@@ -96,6 +102,7 @@ namespace CoreNodeModels
             }
         }
 
+        [JsonIgnore]
         public string SelectionFromBoxToolTip
         {
             get { return selectionFromBoxToolTip; }
@@ -118,8 +125,8 @@ namespace CoreNodeModels
         {           
             SelectedMetricConversion = ConversionMetricUnit.Length;  
             AssociativeNode defaultNode = new DoubleNode(0.0);
-            InPortData.Add(new PortData("", Properties.Resources.UnitNodeFromPortTooltip, defaultNode));
-            OutPortData.Add(new PortData("", Properties.Resources.UnitNodeToPortToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("", Properties.Resources.UnitNodeFromPortTooltip, defaultNode)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Properties.Resources.UnitNodeToPortToolTip)));
 
             ShouldDisplayPreviewCore = true;
             IsSelectionFromBoxEnabled = true;
@@ -130,10 +137,10 @@ namespace CoreNodeModels
             List<AssociativeNode> inputAstNodes)
         {       
             var conversionToNode =
-                AstFactory.BuildDoubleNode(Conversions.ConversionDictionary[(ConversionUnit) SelectedToConversion]);
+                AstFactory.BuildDoubleNode(Conversions.ConversionDictionary[SelectedToConversion]);
 
             var conversionFromNode =
-                AstFactory.BuildDoubleNode(Conversions.ConversionDictionary[(ConversionUnit) SelectedFromConversion]);
+                AstFactory.BuildDoubleNode(Conversions.ConversionDictionary[SelectedFromConversion]);
             AssociativeNode node = null;
            
             node = AstFactory.BuildFunctionCall(

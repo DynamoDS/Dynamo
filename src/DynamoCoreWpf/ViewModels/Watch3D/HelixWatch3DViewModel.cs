@@ -609,9 +609,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Reset:
-                    Model3DDictionary.Values.
-                        Where(v => v is GeometryModel3D).
-                        Cast<GeometryModel3D>().ToList().ForEach(g => g.SetValue(AttachedProperties.ShowSelectedProperty, false));
+
+                    // When deselecting (by clicking on the canvas), all the highlighted HelixWatch3D previews are switched off
+                    // This results in a scenario whereby the list item in the WatchTree/PreviewBubble is still selected, and its
+                    // labels are still displayed in the preview, but the highlighting has been switched off.
+                    // In order to prevent this unintuitive UX behavior, the nodes will first be checked if they are in the 
+                    // nodesSelected dictionary - if they are, they will not be switched off.
+                    var geometryModels = new Dictionary<string, Model3D>();
+                    foreach (var model in Model3DDictionary)
+                    {
+                        var nodePath = model.Key.Contains(':') ? model.Key.Remove(model.Key.IndexOf(':')) : model.Key;
+                        if (model.Value is GeometryModel3D && !nodesSelected.ContainsKey(nodePath))
+                        {
+                            geometryModels.Add(model.Key, model.Value);
+                        }
+                    }
+
+                    foreach (var geometryModel in geometryModels)
+                    {
+                        geometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, false);
+                    }
                     return;
 
                 case NotifyCollectionChangedAction.Remove:
@@ -1312,10 +1329,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             textGeometry.TextInfo.Add(textInfo);
                         }
 
+                        if (nodesSelected.ContainsKey(nodePath))
+                        {
+                            ToggleTreeViewItemHighlighting(nodesSelected[nodePath], false); // switch off selection for previous path
+                        }
+                        
                         Model3DDictionary.Add(labelName, bbText);
                         sceneItemsChanged = true;
                         AttachAllGeometryModel3DToRenderHost();
                         nodesSelected[nodePath] = path;
+
+                        ToggleTreeViewItemHighlighting(path, true); // switch on selection for current path
                     }
 
                     // if no node is being selected, that means the current node is being unselected
@@ -1323,6 +1347,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     else
                     {
                         nodesSelected.Remove(nodePath);
+                        ToggleTreeViewItemHighlighting(path, false);
                     }
                 }
 
@@ -1352,6 +1377,46 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        /// <summary>
+        /// Toggles on the highlighting for the specific node (in Helix preview) when
+        /// selected in the PreviewBubble as well as the Watch Node
+        /// </summary>
+        private void ToggleTreeViewItemHighlighting (string path, bool isSelected)
+        {
+            // First, deselect parentnode in DynamoSelection
+
+            var nodePath = path.Contains(':') ? path.Remove(path.IndexOf(':')) : path;
+
+            if (DynamoSelection.Instance.Selection.Any())
+            {
+                var selNodes = DynamoSelection.Instance.Selection.Where(s => s is NodeModel).Cast<NodeModel>().ToArray();
+                
+                foreach (var node in selNodes)
+                {
+                    if (node.AstIdentifierBase == nodePath)
+                    {
+                        node.Deselect();
+                    }
+                }
+            }
+
+            // Next, deselect the parentnode in HelixWatch3DView
+
+            var nodeGeometryModels = Model3DDictionary.Where(x => x.Key.Contains(nodePath) && x.Value is GeometryModel3D).ToArray();
+
+            foreach (var nodeGeometryModel in nodeGeometryModels)
+            {
+                nodeGeometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, false);
+            }
+
+            // Then, select the individual node
+            var geometryModels = Model3DDictionary.Where(x => x.Key.Contains(path) && x.Value is GeometryModel3D).ToArray();
+
+            foreach (var geometryModel in geometryModels)
+            {
+                geometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
+            }
+        }
 
         /// <summary>
         /// Given a collection of render packages, generates
