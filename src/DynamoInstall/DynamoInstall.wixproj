@@ -67,7 +67,7 @@
     <CreateProperty Value="Dynamo Core">
       <Output TaskParameter="Value" PropertyName="ProductName" />
     </CreateProperty>
-    <CreateProperty Value="{584B3E06-FE7A-4341-8C22-339B00ABD58A}">
+    <CreateProperty Value="{2E05E21E-FC6E-42AE-BE9D-228CF34341F2}">
       <Output TaskParameter="Value" PropertyName="UpgradeCode" />
     </CreateProperty>
     <CreateProperty Value="UpgradeCode=$(UpgradeCode);ProductName=$(ProductName);FullVersion=$(FullVersion);Major=$(Major);Minor=$(Minor);Rev=$(Rev);Build=$(Build);$(DefineConstants)">
