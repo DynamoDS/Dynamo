@@ -199,7 +199,7 @@
     <comment>Context menu item</comment>
   </data>
   <data name="ContextMenuNodesFromSelection" xml:space="preserve">
-    <value>New Node F_rom Selection</value>
+    <value>Create Custom Node</value>
     <comment>Context menu item</comment>
   </data>
   <data name="ContextMenuNodeToCode" xml:space="preserve">
