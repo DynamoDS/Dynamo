@@ -83,7 +83,10 @@ namespace Dynamo.Graph.Nodes
 
         public virtual string NodeType
         {
-            get { return "ExtensionNode"; }
+            get
+            {
+                return "ExtensionNode";
+            }
         }
 
         #endregion
