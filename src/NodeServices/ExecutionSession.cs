@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Dynamo.Session
 {
@@ -66,7 +67,7 @@ namespace Dynamo.Session
         public static readonly string MinorVersion = "MinorFileVersion";
 
         /// <summary>
-        /// This key is used to get the duration of the last execution.
+        /// The duration of an execution covered by an <see cref="IExecutionSession"/>
         /// </summary>
         public static readonly string LastExecutionDuration = "LastExecutionDuration";
     }

@@ -35,11 +35,10 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
-        [SetUp]
-        public override void Setup()
+        [TestFixtureSetUp]
+        public void FixtureSetup()
         {
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
-            base.Setup();
         }
 
         [TearDown]
@@ -209,7 +208,8 @@ namespace Dynamo.Tests
                 "noro.dyn",
                 "Number1.dyn",
                 "MultipleIF",
-                "packageTest"
+                "packageTest",
+                "reduce-example"
             };
 
         private void DoWorkspaceOpenAndCompare(string filePath)
