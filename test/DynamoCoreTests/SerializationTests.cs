@@ -209,7 +209,8 @@ namespace Dynamo.Tests
                 "Number1.dyn",
                 "MultipleIF",
                 "packageTest",
-                "reduce-example"
+                "reduce-example",
+                "TestFrozen"
             };
 
         private void DoWorkspaceOpenAndCompare(string filePath)
