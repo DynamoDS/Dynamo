@@ -1,19 +1,9 @@
-﻿using Dynamo.Models;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Extensions;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.Notifications
 {
@@ -44,7 +34,7 @@ namespace Dynamo.Notifications
         
         public void Dispose()
         {
-           UnregisterEventHandlers();
+            UnregisterEventHandlers();
             //for some reason the menuItem was not being gc'd in tests without manually removing it
             viewLoadedParams.dynamoMenu.Items.Remove(notificationsMenuItem.MenuItem);
             BindingOperations.ClearAllBindings(notificationsMenuItem.CountLabel);
@@ -64,9 +54,9 @@ namespace Dynamo.Notifications
             Notifications = new ObservableCollection<Logging.NotificationMessage>();
             
             notificationHandler = new Action<Logging.NotificationMessage>((notificationMessage) =>
-           {
-               Notifications.Add(notificationMessage);
-           });
+            {
+                Notifications.Add(notificationMessage);
+            });
 
             p.NotificationRecieved += notificationHandler;
              
@@ -74,9 +64,9 @@ namespace Dynamo.Notifications
             notificationsMenuItem = new NotificationsMenuItem(this);
             //null out the content of the notificationsMenu to get rid of 
             //the parent of the menuItem we created
-           (notificationsMenuItem.MenuItem.Parent as ContentControl).Content = null;
+            (notificationsMenuItem.MenuItem.Parent as ContentControl).Content = null;
             //place the menu into the DynamoMenu
-           p.dynamoMenu.Items.Add(notificationsMenuItem.MenuItem);
+            p.dynamoMenu.Items.Add(notificationsMenuItem.MenuItem);
         }
 
         public void Shutdown()

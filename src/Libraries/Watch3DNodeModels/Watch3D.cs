@@ -13,6 +13,7 @@ using Dynamo.Visualization;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
 using Watch3DNodeModels.Properties;
+using Newtonsoft.Json;
 
 namespace Watch3DNodeModels
 {
@@ -91,6 +92,7 @@ namespace Watch3DNodeModels
     [NodeName("Watch 3D")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Watch3DDescription", typeof(Resources))]
+    [OutPortTypes("var")]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview", "Dynamo.Nodes.Watch3D", "DynamoWatch3D.Watch3D")]
     [IsDesignScriptCompatible]
     public class Watch3D : NodeModel
@@ -128,10 +130,20 @@ namespace Watch3DNodeModels
 
         #region constructors
 
+        [JsonConstructor]
+        private Watch3D(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+            WatchWidth = 200;
+            WatchHeight = 200;
+            ShouldDisplayPreviewCore = false;
+            Camera = new Watch3DCamera();
+        }
+
         public Watch3D()
         {
-            InPortData.Add(new PortData("", Resources.Watch3DPortDataInputToolTip));
-            OutPortData.Add(new PortData("", Resources.Watch3DPortDataInputToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("", Resources.Watch3DPortDataInputToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Resources.Watch3DPortDataInputToolTip)));
 
             RegisterAllPorts();
 

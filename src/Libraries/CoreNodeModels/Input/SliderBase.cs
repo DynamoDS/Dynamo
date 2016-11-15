@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dynamo.Graph.Nodes;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace CoreNodeModels.Input
@@ -71,6 +73,12 @@ namespace CoreNodeModels.Input
 
                 RaisePropertyChanged("Step");
             }
+        }
+
+        protected SliderBase(IEnumerable<PortModel> inPorts,
+            IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            base.PropertyChanged += SliderBase_PropertyChanged;
         }
 
         protected SliderBase()

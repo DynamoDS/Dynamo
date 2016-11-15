@@ -14,6 +14,9 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
+using CoreNodeModels.Input;
+using CoreNodeModelsWpf.Nodes;
+using System.Globalization;
 
 namespace DynamoCoreWpfTests
 {
@@ -42,7 +45,7 @@ namespace DynamoCoreWpfTests
             base.GetLibrariesToPreload(libraries);
         }
 
-        [Test]
+        [Test, Category("DisplayHardwareDependent")]
         public void Watch3DHasViewer()
         {
             var renderingTier = (System.Windows.Media.RenderCapability.Tier >> 16);
@@ -103,6 +106,71 @@ namespace DynamoCoreWpfTests
             var element = nodeView.ChildrenOfType<DynamoSlider>().First();
             Assert.AreEqual(1.0, element.slider.Value, 1e-6);
         }
+
+        [Test]
+        public void doubleInputNodeWillNotAcceptRangeSyntax()
+        {
+            var number = new DoubleInput();
+            Model.AddNodeToCurrentWorkspace(number, true);
+            DispatcherUtil.DoEvents();
+            var nodeView = NodeViewWithGuid(number.GUID.ToString());
+            nodeView.inputGrid.ChildrenOfType<DynamoTextBox>().First().Text = "0..10";
+            DispatcherUtil.DoEvents();
+            Assert.IsTrue(number.Value != "0..10");
+            Assert.IsTrue(number.Value == "0");
+            Assert.IsTrue(number.IsInErrorState);
+
+        }
+
+        [Test]
+        public void doubleInputNodeWillNotAcceptIds()
+        {
+            var number = new DoubleInput();
+            Model.AddNodeToCurrentWorkspace(number, true);
+            DispatcherUtil.DoEvents();
+            var nodeView = NodeViewWithGuid(number.GUID.ToString());
+            nodeView.inputGrid.ChildrenOfType<DynamoTextBox>().First().Text = "start..end";
+            DispatcherUtil.DoEvents();
+            Assert.IsTrue(number.Value != "start..end");
+            Assert.IsTrue(number.Value == "0");
+            Assert.IsTrue(number.IsInErrorState);
+
+        }
+
+        //these tests live here as they have a dependencey on CoreNodesWpf which
+        //is only accessible at test time after it is loaded via Dynamo 
+        [Test]
+        [Category("UnitTests")]
+        public static void validateNumericFailsOnNonNumericInputs()
+        {
+            var numericalRule = new NumericValidationRule();
+
+            Assert.IsFalse(numericalRule.Validate("0..10", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(numericalRule.Validate("0..10..2", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(numericalRule.Validate("0..10..5", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(numericalRule.Validate("0..10..#5", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(numericalRule.Validate("0.0..10..0.5", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(numericalRule.Validate("start..end", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(numericalRule.Validate("a..b", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(numericalRule.Validate("a..10", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(numericalRule.Validate("a", CultureInfo.InvariantCulture).IsValid);
+
+        }
+        [Test]
+        [Category("UnitTests")]
+        public static void validateNumericPassesOnNumericInputs()
+        {
+            var numericalRule = new NumericValidationRule();
+
+            Assert.IsTrue(numericalRule.Validate("10", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsTrue(numericalRule.Validate("2147483647", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsTrue(numericalRule.Validate("9223372036854775807", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsTrue(numericalRule.Validate(".00000000001", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsTrue(numericalRule.Validate("100,000,000", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsTrue(numericalRule.Validate("1,2", CultureInfo.InvariantCulture).IsValid);
+
+        }
+
 
         [Test]
         public void IntegerSliderHasSliderAndCorrectValues()
@@ -187,7 +255,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             var inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(3, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(6, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
         [Test]
@@ -201,7 +269,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             var inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(4, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(8, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
         [Test]
@@ -218,7 +286,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, items.Count());
         }
 
-        [Test]
+       [Test, Category("DisplayHardwareDependent")]
         public void WatchContainsExpectedUiElements()
         {
             OpenAndRun(@"UI\WatchUINodes.dyn");
@@ -232,7 +300,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(8, items.Count());
         }
 
-        [Test]
+        [Test, Category("DisplayHardwareDependent")]
         public void WatchImageCoreContainsImage()
         {
             OpenAndRun(@"UI\WatchUINodes.dyn");
@@ -272,7 +340,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             var inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(3, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(6, inputPortControl.ChildrenOfType<TextBlock>().Count());
 
             nodeView = NodeViewWithGuid("2f031397-539e-4df4-bfca-d94d0bd02bc1"); // String.Concat node
 
@@ -280,7 +348,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(2, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(4, inputPortControl.ChildrenOfType<TextBlock>().Count());
 
             nodeView = NodeViewWithGuid("0cb04cce-1b05-47e0-a73f-ee81af4b7f43"); // List.Join node
 
@@ -288,7 +356,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(2, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(4, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
         [Test]
@@ -352,7 +420,7 @@ namespace DynamoCoreWpfTests
             Assert.Pass(); // We should reach here safely without exception.
         }
 
-        [Test]
+        [Test, Category("DisplayHardwareDependent")]
         public void WatchConnectDisconnectTest()
         {
             WatchIsEmptyWhenLoaded();
@@ -422,4 +490,5 @@ namespace DynamoCoreWpfTests
             }
         }
     }
+
 }

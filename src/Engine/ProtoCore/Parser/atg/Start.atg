@@ -24,7 +24,7 @@ COMPILER DesignScriptParser
     private int stmtsParsed = 0;
 
 
-    private static string GetEscapedString(string s)
+    private string GetEscapedString(string s)
     {
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
@@ -72,6 +72,9 @@ COMPILER DesignScriptParser
                         break;
                 }
             }
+			else if (s[i] == '\\' && i == s.Length - 1) {
+                 SynErr(Resources.EOF_expected);
+                }
             else
             {
                 sb.Append(s[i]);
@@ -544,7 +547,7 @@ CHARACTERS
     cr  = '\r'. 
     lf  = '\n'.
     tab = '\t'.
-    anyButDoubleQuote = ANY - '\"'.
+    anyButDoubleQuote = ANY - '\"' - '\\'.
     anyButQuote = ANY - '\''.
     anychar = ANY.
     other = ANY - '/' - '*'.
@@ -554,8 +557,8 @@ TOKENS
     ident = unicodeIdentifierStart {unicodeIdentifierPart}.
     number = digit {digit} .
     float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
-    textstring = '"' {anyButDoubleQuote | "\\\""} '"'.
-    char = '\'' (anyButQuote | "\\\'" | "\\\"" | "\\\\" | "\\0" | "\\a" | "\\b" | "\\f" | "\\n" | "\\r" | "\\t" | "\\v" | "\\u") '\''.
+    textstring = '"' {anyButDoubleQuote | "\\\'" | "\\\"" | "\\\\" | "\\0" | "\\a" | "\\b" | "\\f" | "\\n" | "\\r" | "\\t" | "\\v" | "\\u"} '"'.
+    char = "'" (anyButQuote | "\\\'" | "\\\"" | "\\\\" | "\\0" | "\\a" | "\\b" | "\\f" | "\\n" | "\\r" | "\\t" | "\\v" | "\\u") "'".
     period = '.'.
     postfixed_replicationguide = digit {digit} 'L'.
 
@@ -599,7 +602,6 @@ TOKENS
     literal_true = "true".
     literal_false = "false".
     literal_null = "null".
-    replicationguide_postfix = 'L'.
 
 PRAGMAS
 

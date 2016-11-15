@@ -15,8 +15,8 @@ namespace Dynamo
     {
         public TestNode()
         {
-            InPortData.Add(new PortData("input A", "This is input A."));
-            OutPortData.Add(new PortData("output A", "This is output A."));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("input A", "This is input A.")));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("output A", "This is output A.")));
             RegisterAllPorts();
         }
     }
@@ -46,7 +46,7 @@ namespace Dynamo
     {
         public DerivedTestNode()
         {
-            AddPort(PortType.Input, new PortData("input B", "This is input B."), 1);
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("input B", "This is input B.")));
         }
     }
 
@@ -57,21 +57,21 @@ namespace Dynamo
         public void TestNodeHasToolTipsOnInputPorts()
         {
             var node = new TestNode();
-            Assert.AreEqual(node.InPorts[0].ToolTipContent, "This is input A.");
+            Assert.AreEqual(node.InPorts[0].ToolTip, "This is input A.");
         }
 
         [Test]
         public void TestNodeHasToolTipsOnOutputPorts()
         {
             var node = new TestNode();
-            Assert.AreEqual(node.OutPorts[0].ToolTipContent, "This is output A.");
+            Assert.AreEqual(node.OutPorts[0].ToolTip, "This is output A.");
         }
 
         [Test]
         public void DerivedTestNodeHasToolTipsOnInputPorts()
         {
             var node = new DerivedTestNode();
-            Assert.AreEqual(node.InPorts[1].ToolTipContent, "This is input B.");
+            Assert.AreEqual(node.InPorts[1].ToolTip, "This is input B.");
         }
 
         [Test]
@@ -83,8 +83,8 @@ namespace Dynamo
             Assert.AreEqual("input1", node.InPorts[0].PortName);
             Assert.AreEqual("input2", node.InPorts[1].PortName);
 
-            Assert.AreEqual("This is input1", node.InPorts[0].ToolTipContent);
-            Assert.AreEqual("This is input2", node.InPorts[1].ToolTipContent);
+            Assert.AreEqual("This is input1", node.InPorts[0].ToolTip);
+            Assert.AreEqual("This is input2", node.InPorts[1].ToolTip);
 
             var typeLoadData = new TypeLoadData(node.GetType());
             Assert.AreEqual(2, typeLoadData.InputParameters.Count());
@@ -102,8 +102,8 @@ namespace Dynamo
             Assert.AreEqual("output1", node.OutPorts[0].PortName);
             Assert.AreEqual("output2", node.OutPorts[1].PortName);
 
-            Assert.AreEqual("some description", node.OutPorts[0].ToolTipContent);
-            Assert.AreEqual("", node.OutPorts[1].ToolTipContent);
+            Assert.AreEqual("some description", node.OutPorts[0].ToolTip);
+            Assert.AreEqual("", node.OutPorts[1].ToolTip);
 
             var typeLoadData = new TypeLoadData(node.GetType());
             Assert.AreEqual(2, typeLoadData.OutputParameters.Count());

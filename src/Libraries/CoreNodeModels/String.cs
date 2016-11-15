@@ -2,6 +2,7 @@
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -11,6 +12,12 @@ namespace CoreNodeModels
     /// </summary>
     public class ToStringNodeBase : NodeModel
     {
+        [JsonConstructor]
+        protected ToStringNodeBase(string functionName, IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            this.functionName = functionName;
+        }
+
         public ToStringNodeBase(string functionName)
         {
             this.functionName = functionName;
@@ -38,7 +45,7 @@ namespace CoreNodeModels
                     AstFactory.BuildBooleanNode(true)
                 };
 
-                rhs = AstFactory.BuildFunctionCall("Function", inputParams);
+                rhs = AstFactory.BuildFunctionCall("__CreateFunctionObject", inputParams);
             }
             else
             {
@@ -56,15 +63,23 @@ namespace CoreNodeModels
     [NodeDescription("StringfromObjectDescription", typeof(Resources))]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromObjectSearchTags", typeof(Resources))]
+    [OutPortTypes("string")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.StringNodes.FromObject", "DSCoreNodesUI.FromObject")]
     public class FromObject: ToStringNodeBase 
     {
+        [JsonConstructor]
+        private FromObject(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : 
+            base("__ToStringFromObject",inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
         public FromObject() : base("__ToStringFromObject")
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InPortData.Add(new PortData("obj", Resources.FromObjectPortDataObjToolTip));
-            OutPortData.Add(new PortData("str", Resources.FormulaPortDataResultToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("obj", Resources.FromObjectPortDataObjToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("str", Resources.FormulaPortDataResultToolTip)));
             RegisterAllPorts();
         }
     }
@@ -73,15 +88,23 @@ namespace CoreNodeModels
     [NodeDescription("StringfromArrayDescription", typeof(Resources))]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromArraySearchTags", typeof(Resources))]
+    [OutPortTypes("string")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.StringNodes.FromArray", "DSCoreNodesUI.FromArray")]
     public class FromArray : ToStringNodeBase 
     {
+        [JsonConstructor]
+        private FromArray(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : 
+            base("__ToStringFromArray", inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
         public FromArray() : base("__ToStringFromArray")
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InPortData.Add(new PortData("arr", Resources.FromArrayPortDataArrayToolTip));
-            OutPortData.Add(new PortData("str", Resources.FromArrayPortDataResultToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("arr", Resources.FromArrayPortDataArrayToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("str", Resources.FromArrayPortDataResultToolTip)));
             RegisterAllPorts();
         }
     }

@@ -4,16 +4,25 @@ using System.Globalization;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.Input
 {
     [NodeName("Date Time")]
     [NodeDescription("DateTimeDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [OutPortTypes("dateTime")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.DateTime", "DSCoreNodesUI.Input.DateTime")]
     public class DateTime : BasicInteractive<System.DateTime>
     {
+        [JsonConstructor]
+        private DateTime(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+            ShouldDisplayPreviewCore = false;
+        }
+
         public DateTime()
         {
             Value = System.DateTime.Now;

@@ -76,6 +76,29 @@
                       Offset="1" />
     </LinearGradientBrush>
 
+    <LinearGradientBrush x:Key="SpinnerNormalBrush" EndPoint="0,1" StartPoint="0,0">
+        <GradientStop Color="#EEE" Offset="0.0"/>
+        <GradientStop Color="#CBC6BE" Offset="1.0"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="SpinnerNormalBorderBrush" EndPoint="0,1" StartPoint="0,0">
+        <GradientStop Color="#CCC" Offset="0.0"/>
+        <GradientStop Color="#444" Offset="1.0"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="SpinnerHoverBrush" EndPoint="0,1" StartPoint="0,0">
+        <GradientStop Color="#FFF" Offset="0.0"/>
+        <GradientStop Color="#CBC6BE" Offset="1.0"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="SpinnerPressedBrush" EndPoint="0,1" StartPoint="0,0">
+        <GradientStop Color="#BBB" Offset="0.0"/>
+        <GradientStop Color="#EEE" Offset="0.1"/>
+        <GradientStop Color="#EEE" Offset="0.9"/>
+        <GradientStop Color="#FFF" Offset="1.0"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="SpinnerPressedBorderBrush" EndPoint="0,1" StartPoint="0,0">
+        <GradientStop Color="#444" Offset="0.0"/>
+        <GradientStop Color="#888" Offset="1.0"/>
+    </LinearGradientBrush>
+
     <!-- Embedded Font -->
     <!-- Open Sans (under Apache License, version 2.0)
          Link: http://www.google.com/fonts/specimen/Open+Sans -->
@@ -322,6 +345,36 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+
+    <!--Zoom fade preview-->
+    <Style x:Key="SZoomFadePreview"
+           TargetType="{x:Type Border}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}"
+                         Value="true">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0.4"
+                                             Duration="0:0:0.5" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0.7"
+                                             Duration="0:0:0.5" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+
 
     <Style x:Key="SZoomFadeTextBox"
            TargetType="{x:Type TextBox}">
@@ -1910,6 +1963,109 @@
                         Value="Hand" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type dynui:UseLevelSpinner}">
+        <Style.Resources>
+            <Style TargetType="{x:Type RepeatButton}" x:Key="IncreaseButton" BasedOn="{x:Null}">
+                <Setter Property="MinWidth" Value="12" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                            <Grid>
+                                <Border Name="Border" BorderThickness="1" BorderBrush="{StaticResource SpinnerNormalBorderBrush}" CornerRadius="0 1 0 0" Margin="0" Padding="0" Background="{StaticResource SpinnerNormalBrush}"></Border>
+                                <ContentPresenter HorizontalAlignment="Center" x:Name="ContentPresenter" VerticalAlignment="Center" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"/>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SpinnerHoverBrush}"/>
+                                </Trigger>
+
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SpinnerPressedBrush}"/>
+                                    <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource SpinnerPressedBorderBrush}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="{x:Type RepeatButton}" x:Key="DecreaseButton" BasedOn="{x:Null}">
+                <Setter Property="MinWidth" Value="12" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                            <Grid>
+                                <Border Name="Border" BorderThickness="1" BorderBrush="{StaticResource SpinnerNormalBorderBrush}" CornerRadius="0 0 1 0" Margin="0" Padding="0" Background="{StaticResource SpinnerNormalBrush}"></Border>
+                                <ContentPresenter HorizontalAlignment="Center" x:Name="ContentPresenter" VerticalAlignment="Center" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"/>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SpinnerHoverBrush}"/>
+                                </Trigger>
+
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SpinnerPressedBrush}"/>
+                                    <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource SpinnerPressedBorderBrush}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Style.Resources>
+
+        <Setter Property="Background" Value="#ffffffff" />
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="#ff848484"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type dynui:UseLevelSpinner}">
+                    <Grid SnapsToDevicePixels="True" Background="{TemplateBinding Background}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <TextBox 
+                            Name="textbox"
+                            BorderThickness="0"
+                            Margin="0"
+                            Grid.Column="0"
+                            Grid.RowSpan="2"
+                            Background="Transparent"
+                            VerticalContentAlignment="Center" 
+                            FontFamily="{StaticResource OpenSansRegular}"
+                            FontSize="10"
+                            IsEnabled="False"/>
+
+                        <RepeatButton Margin="0" Padding="0" Command="{x:Static dynui:UseLevelSpinner.IncreaseCommand}"
+                            Grid.Column="1" Grid.Row="0" Focusable="False" Style="{StaticResource IncreaseButton}">
+                            <Path Fill="{TemplateBinding Foreground}" Width="5" Height="3" Stretch="Fill" Stroke="{x:Null}" Data="M0,1L1,0 2,1z"/>
+                        </RepeatButton>
+
+                        <RepeatButton Margin="0" Padding="0" Command="{x:Static dynui:UseLevelSpinner.DecreaseCommand}"
+                            Grid.Column="1" Grid.Row="1" Focusable="False" Style="{StaticResource DecreaseButton}">
+                            <Path Fill="{TemplateBinding Foreground}" Width="5" Height="3" Stretch="Fill" Stroke="{x:Null}" Data="M0,0L2,0 1,1z"/>
+                        </RepeatButton>
+
+                        <Border CornerRadius="1" Grid.ColumnSpan="2" Grid.RowSpan="2" BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}">
+                        </Border>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 </ResourceDictionary>

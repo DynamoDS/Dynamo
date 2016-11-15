@@ -411,53 +411,6 @@ o = {0.800000,0.810000}
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void T11_RangeExpressionUsingClasses()
-        {
-            string src = @"class point
-{
-		x : var[];
-		
-		constructor point1(a : int[])
-		{
-			x = a;
-		}
-		
-		def foo(a : int)
-		{
-			return = a;
-		}
-}
-def foo1(a : int)
-		{
-			return = a;
-		}
-def foo2(a : int[])
-		{
-			return = a[2];
-		}
-a1;a2;a3;a4;
-[Imperative]
-{
-	x1 = 1..4;
-	//x1 = { 1, 2, 3, 4 };
-	a = point.point1(x1);
-	a1 = a.x;
-	a2 = a.foo(x1);	
-	a3 = foo1(x1[0]);
-	a4 = foo2(x1);
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("a3", 1);
-            thisTest.Verify("a4", 3);
-            List<Object> result = new List<Object> { 1, 2, 3, 4 };
-            thisTest.Verify("a1", result);
-            thisTest.Verify("a2", result);
-        }
-
-        [Test]
         public void T12_RangeExpressionUsingNestedRangeExpressions()
         {
             string src = @"b;c;d;e1;f;g;h;i;j;
@@ -529,39 +482,6 @@ a1;a2;a3;a4;
             thisTest.Verify("f", result9);
             List<Object> result10 = new List<Object> { 2.0, 1.75, 1.5, 1.25, 1.0 };
             thisTest.Verify("g", result10);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void T14_RangeExpressionUsingClassMethods()
-        {
-            string src = @"class collection
-{
-	x : var[];
-	constructor Create(a: int)
-	{
-		x = a..(a+3)..#4;
-	}
-	
-	public def get_x()
-	{
-		return = x;
-	}
-}
-b;
-[Imperative]
-{
-	a = collection.Create(5);
-	
-	b = a.get_x();
-	
-}
-     
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            List<Object> result = new List<Object> { 5, 6, 7, 8 };
-            thisTest.Verify("b", result);
         }
 
         [Test]
@@ -857,76 +777,6 @@ b;
             thisTest.Verify("g", g);
             //List<Object> result = new List<Object>()  {2,2,4};
             // thisTest.Verify("d", result);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void T22_RangeExpressionsUsingClassMethods_2()
-        {
-            string src = @"class addition
-{
-	a : var[];
-	constructor Create( y : int[] )
-	{
-		a = y;
-	}
-	def get_col ( x : int )
-	{
-		a[0] = x;
-		return = a; 
-	}
-}
-d;
-[Imperative]
-{
-	a = 2..10..2;
-	c = addition.Create( a );
-	d = c.get_col( 5 );
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            List<Object> result = new List<Object> { 5, 4, 6, 8, 10 };
-            thisTest.Verify("d", result);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        public void T23_RangeExpressionsUsingClassMethods_3()
-        {
-            //string err = "1467069 - Sprint 23: rev 2634: 328588 An array cannot be used to index into an array, must throw warning";
-            string err = "";
-            string code = @"class compare
-{
-	a ;
-	b ; 
-	constructor Create (x, y)
-	{
-		a = x ;
-		b = y ;
-	}
-	def get_max ()
-	{
-		return = (a > b) ? a : b ; 
-	}
-	def get_min ()
-	{
-		return = (a < b) ? a : b ; 
-	}
-}
-	a = 1..5..1;
-	b = 10..2..-2;
-	c = compare.Create(a,b); 
-	i = 4;
-	d = c[0..i].get_max();
-	e1 = c[0..i].get_min();
-";
-            thisTest.VerifyRunScriptSource(code, err);
-            List<Object> result2 = new List<Object>() { 10, 16, 18, 16, 10 };
-            // List<Object> result5 = new List<Object>() { { 11, 16, 18, 16, 10 }, { 10, 10, 9, 8, 7 }, { 10, 8, 6, 4, 5 }, { 1, 2, 3, 4, 2 } };
-            // thisTest.Verify("j", result5);
-            thisTest.Verify("d", new object[] { 10, 8, 6, 4, 5 });
-            thisTest.Verify("e1", new object[] { 1, 2, 3, 4, 2 });
         }
 
         [Test]
@@ -1607,30 +1457,6 @@ c=twice(4);
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        public void T27_RangeExpression_class_return_1463472_2()
-        {
-            string code = @"
-class twice
-{
-	def twice : int []( a : double )
-	{
-		c=1..a;
-		return = c;
-	}
-}
-d=1..4;
-a=twice.twice();
-c=a.twice(4);
-//	z1 = 1..twice(4)..twice(1);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] c = new Object[] { 1, 2, 3, 4 };
-            thisTest.Verify("c", c);
-        }
-
-
-        [Test]
         public void T27_RangeExpression_Function_Associative_replication()
         {
             string code = @"
@@ -2139,7 +1965,7 @@ b = 0..10..a;
         }
 
         [Test]
-        [Category("Regression")]
+        [Category("RegressionTests")]
         public void TestRangeExpressionOverLimit01()
         {
             string src = @"x = 1..200000000;";
@@ -2148,7 +1974,7 @@ b = 0..10..a;
         }
 
         [Test]
-        [Category("Regression")]
+        [Category("RegressionTests")]
         public void TestRangeExpressionOverLimit02()
         {
             string src = @"x = 1..10000000000000000;";
@@ -2157,7 +1983,7 @@ b = 0..10..a;
         }
 
         [Test]
-        [Category("Regression")]
+        [Category("RegressionTests")]
         public void TestRangeExpressionOverLimit03()
         {
             string src = @"x = 1..10..#200000000;";
@@ -2166,7 +1992,7 @@ b = 0..10..a;
         }
 
         [Test]
-        [Category("Regression")]
+        [Category("RegressionTests")]
         public void TestRangeExpressionOverLimit04()
         {
             string src = @"x = 1..10..0.00000000001;";

@@ -1255,10 +1255,10 @@ namespace Dynamo.Tests
 			var minWithKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("2b2b1e9c-2ae1-4ba2-8b82-e01311df5429");
 
 			// check that the nodes are migrated based on whether the key is connected or not
-			Assert.AreEqual(1, maxNoKey.InPortData.Count);
-			Assert.AreEqual(1, minNoKey.InPortData.Count);
-			Assert.AreEqual(2, maxWithKey.InPortData.Count);
-			Assert.AreEqual(2, minWithKey.InPortData.Count);
+			Assert.AreEqual(1, maxNoKey.InPorts.Count);
+			Assert.AreEqual(1, minNoKey.InPorts.Count);
+			Assert.AreEqual(2, maxWithKey.InPorts.Count);
+			Assert.AreEqual(2, minWithKey.InPorts.Count);
 			
 			// check output values
             Assert.AreEqual("eeee", maxNoKey.GetValue(0, CurrentDynamoModel.EngineController).Data);
@@ -2249,7 +2249,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Regression")]
+        [Category("RegressionTests")]
         public void TestListChop()
         {
             string openPath = Path.Combine(TestDirectory, @"core\list\testListChop.dyn");

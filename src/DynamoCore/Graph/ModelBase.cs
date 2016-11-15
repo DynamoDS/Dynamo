@@ -4,6 +4,7 @@ using Dynamo.Core;
 using Dynamo.Logging;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
 using ProtoCore.Namespace;
 
 namespace Dynamo.Graph
@@ -74,6 +75,7 @@ namespace Dynamo.Graph
         /// <summary>
         /// X coordinate of center point.
         /// </summary>
+        [JsonIgnore]
         public double CenterX
         {
             get { return X + Width / 2; }
@@ -86,6 +88,7 @@ namespace Dynamo.Graph
         /// <summary>
         /// Y coordinate of center point.
         /// </summary>
+        [JsonIgnore]
         public double CenterY
         {
             get { return Y + Height / 2; }
@@ -109,6 +112,15 @@ namespace Dynamo.Graph
         }
 
         /// <summary>
+        /// Override in derived classes to specify whether
+        /// to serialize the X property.
+        /// </summary>
+        public virtual bool ShouldSerializeX()
+        {
+            return false;
+        }
+
+        /// <summary>
         /// The Y coordinate of the node in canvas space.
         /// </summary>
         public double Y
@@ -122,10 +134,19 @@ namespace Dynamo.Graph
         }
 
         /// <summary>
+        /// Override in derived classes to specify whether
+        /// to serialize the Y property.
+        /// </summary>
+        public virtual bool ShouldSerializeY()
+        {
+            return false;
+        }
+        /// <summary>
         /// A position defined by the x and y components.
         /// Used for notification in situations where you don't
         /// want to have property notifications for X and Y
         /// </summary>
+        [JsonIgnore]
         public Point2D Position
         {
             get { return new Point2D(x, y); }
@@ -134,6 +155,7 @@ namespace Dynamo.Graph
         /// <summary>
         /// The height of the object.
         /// </summary>
+        [JsonIgnore]
         public virtual double Height
         {
             get { return height; }
@@ -147,6 +169,7 @@ namespace Dynamo.Graph
         /// <summary>
         /// The width of the object.
         /// </summary>
+        [JsonIgnore]
         public virtual double Width
         {
             get { return width; }
@@ -160,6 +183,7 @@ namespace Dynamo.Graph
         /// <summary>
         /// The bounds of the object.
         /// </summary>
+        [JsonIgnore]
         public virtual Rect2D Rect
         {
             get { return new Rect2D(x, y, width, height); }
@@ -168,6 +192,7 @@ namespace Dynamo.Graph
         /// <summary>
         /// Returns true if the object is selected otherwise false.
         /// </summary>
+        [JsonIgnore]
         public bool IsSelected
         {
             get { return isSelected; }
@@ -181,6 +206,7 @@ namespace Dynamo.Graph
         /// <summary>
         /// Unique ID.
         /// </summary>
+        [JsonProperty("Uuid")]
         public Guid GUID
         {
             get

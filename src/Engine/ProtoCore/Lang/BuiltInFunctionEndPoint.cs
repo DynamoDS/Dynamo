@@ -39,8 +39,6 @@ namespace ProtoCore.Lang
                     {
                         if (!formalParameters[0].IsArray)
                             ret = ProtoCore.DSASM.StackValue.BuildInt(1);
-                        else if (!ArrayUtils.ContainsNonArrayElement(formalParameters[0], runtimeCore))
-                            ret = ProtoCore.DSASM.StackValue.BuildInt(0);
                         else
                             ret = ProtoCore.DSASM.StackValue.BuildInt(ArrayUtilsForBuiltIns.Count(formalParameters[0], interpreter));
                         break;
@@ -500,13 +498,9 @@ namespace ProtoCore.Lang
                         StackValue key = formalParameters[1];
                         if (array.IsArray)
                         {
-                            bool result = runtimeCore.Heap.ToHeapObject<DSArray>(array).RemoveKey(key);
-                            ret = StackValue.BuildBoolean(result);
+                            runtimeCore.Heap.ToHeapObject<DSArray>(array).RemoveKey(key);
                         }
-                        else
-                        {
-                            ret = StackValue.BuildBoolean(false);
-                        }
+                        return array;
                         break;
                     }
                 case BuiltInMethods.MethodID.Evaluate:
@@ -639,15 +633,11 @@ namespace ProtoCore.Lang
             if (procNode == null)
             {
                 var currentClassNode = classNode;
-                while (currentClassNode.Bases.Any())
+                if (currentClassNode.Base != Constants.kInvalidIndex)
                 {
-                    int baseCI = currentClassNode.Bases[0];
+                    int baseCI = currentClassNode.Base;
                     currentClassNode = runtime.exe.classTable.ClassNodes[baseCI];
                     procNode = currentClassNode.ProcTable.GetFunctionsByName(functionName).FirstOrDefault();
-                    if (procNode != null)
-                    {
-                        break;
-                    }
                 }
             }
 
@@ -693,14 +683,7 @@ namespace ProtoCore.Lang
                                                stackFrame.GetRegisters(), 
                                                0);
 
-            ProtoCore.CallSite callsite = runtimeData.GetCallSite(
-                runtime.exe.ExecutingGraphnode, 
-                thisObjectType, 
-                functionName, 
-                runtime.exe,
-                runtimeCore.RunningBlock,
-                runtimeCore.Options, 
-                runtimeCore.RuntimeStatus);
+            ProtoCore.CallSite callsite = runtimeData.GetCallSite( thisObjectType, functionName, runtime.exe, runtimeCore);
             Validity.Assert(null != callsite);
 
             // TODO: Disabling support for stepping into replicated function calls temporarily - pratapa

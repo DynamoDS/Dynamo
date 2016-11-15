@@ -595,7 +595,7 @@ namespace WpfVisualizationTests
 
             // Disconnect the port coming into the watch3d node.
             var connector = watch3DNode.InPorts[0].Connectors.First();
-            watch3DNode.InPorts[0].Disconnect(connector);
+            watch3DNode.InPorts[0].Connectors.Remove(connector);
 
             // Three items, the grid, the axes, and the light will remain.
             var view = FindFirstWatch3DNodeView();
@@ -979,6 +979,40 @@ namespace WpfVisualizationTests
             var views = View.ChildrenOfType<Watch3DView>();
             return views.Last();
         }
+
+        [Test]
+        public void GeometryPreviewWhenClickingArrayItemInPreview()
+        {
+            OpenVisualizationTest("magn_10809.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            var vm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+            Assert.NotNull(vm);
+
+            // select original node
+            vm.AddLabelForPath("var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:0");
+            var originalNode = vm.Model3DDictionary["var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:0" + ":mesh"];
+            var otherNode = vm.Model3DDictionary["var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:1" + ":mesh"];
+            Assert.IsTrue((bool)originalNode.GetValue(AttachedProperties.ShowSelectedProperty)); 
+            Assert.IsFalse((bool)otherNode.GetValue(AttachedProperties.ShowSelectedProperty));
+
+            // deselect original node
+            vm.AddLabelForPath("var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:0");
+            Assert.IsFalse((bool)originalNode.GetValue(AttachedProperties.ShowSelectedProperty));
+            Assert.IsFalse((bool)otherNode.GetValue(AttachedProperties.ShowSelectedProperty));
+
+            // select another node
+            vm.AddLabelForPath("var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:1");
+            Assert.IsFalse((bool)originalNode.GetValue(AttachedProperties.ShowSelectedProperty));
+            Assert.IsTrue((bool)otherNode.GetValue(AttachedProperties.ShowSelectedProperty));
+
+            // Select node one level up
+            vm.AddLabelForPath("var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0");
+            Assert.IsTrue((bool)originalNode.GetValue(AttachedProperties.ShowSelectedProperty));
+            Assert.IsTrue((bool)otherNode.GetValue(AttachedProperties.ShowSelectedProperty));
+        }
+
     }
 
     internal static class GeometryDictionaryExtensions

@@ -7,6 +7,8 @@ using Dynamo.Scheduler;
 using Dynamo.Visualization;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
+using Dynamo.Utilities;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -15,22 +17,34 @@ namespace CoreNodeModels
     [NodeDescription("WatchNodeDescription", typeof(Resources))]
     [NodeSearchTags("WatchNodeSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
+    [OutPortTypes("Node Output: var")]
     [AlsoKnownAs("Dynamo.Nodes.Watch", "DSCoreNodesUI.Watch")]
     public class Watch : NodeModel
     {
         public event Action<Object> EvaluationComplete;
+
+        [JsonIgnore]
         public new object CachedValue;
 
         /// <summary>
         ///     Has the Watch node been run once?  If not, the CachedValue
         ///     is technically not accurate.
         /// </summary>
+        [JsonIgnore]
         public bool HasRunOnce { get; private set; }
+
+        [JsonConstructor]
+        private Watch(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+            ShouldDisplayPreviewCore = false;
+            HasRunOnce = false;
+        }
 
         public Watch()
         {
-            InPortData.Add(new PortData("", Resources.WatchPortDataInputToolTip));
-            OutPortData.Add(new PortData("", Resources.WatchPortDataResultToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("", Resources.WatchPortDataInputToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Resources.WatchPortDataResultToolTip)));
 
             RegisterAllPorts();
 

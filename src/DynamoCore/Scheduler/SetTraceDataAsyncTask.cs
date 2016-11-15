@@ -5,13 +5,14 @@ using Dynamo.Engine;
 using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using ProtoCore;
 
 namespace Dynamo.Scheduler
 {
     class SetTraceDataAsyncTask : AsyncTask
     {
         private EngineController engineController;
-        private IEnumerable<KeyValuePair<Guid, List<string>>> traceData;
+        private IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> traceData;
 
         public override TaskPriority Priority
         {

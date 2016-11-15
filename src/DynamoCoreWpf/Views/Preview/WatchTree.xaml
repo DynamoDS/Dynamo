@@ -67,14 +67,186 @@
                 </Setter>
             </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}">
-                <Setter Property="IsExpanded"
-                        Value="{Binding IsNodeExpanded}" />
+            <!-- Expander Button Style -->
+            <Style x:Key="ExpandCollapseToggleStyleWT" TargetType="ToggleButton">
+                <Setter Property="Focusable" Value="False"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Grid
+                              Width="17"
+                              Height="13"
+                              Background="White">       
+                                <Path x:Name="ExpandPath" HorizontalAlignment="Right" VerticalAlignment="Center" 
+                                      Margin="2,2,0,0" Fill="#0e67b1" Data="M 4 0 L 8 4 L 4 8 Z"/>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter Property="Data" TargetName="ExpandPath" Value="M 0 4 L 8 4 L 4 8 Z"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="TreeViewItemFocusVisual">
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Border>
+                                <Rectangle Margin="0,0,0,0"
+                     StrokeThickness="5"
+                     Stroke="IndianRed"
+                     StrokeDashArray="1 2"
+                     Opacity="0"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
+            <!-- TreeViewItem Control Style-->
+            <Style x:Key="WatchTreeViewItem" 
+                   TargetType="{x:Type TreeViewItem}">
+                <Setter Property="IsExpanded"
+                        Value="{Binding IsNodeExpanded}" />
+
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                <Setter Property="Padding" Value="1,0,0,0"/>
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
+                <EventSetter Event="MouseLeftButtonUp" Handler="treeviewItem_MouseLeftButtonUp" />
+                <EventSetter Event="KeyUp" Handler="treeviewItem_KeyUp" />
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                            <Grid Name="TreeGrid" Background="Transparent">
+
+                                <!--Set Column and Row Definitions for Grid Panel-->
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <!-- Insert Toggle Button for Expander-->
+
+                                <ToggleButton x:Name="Expander"
+                                      Background="Transparent"
+                                      ClickMode="Press"
+                                      Style="{StaticResource ExpandCollapseToggleStyleWT}"
+                                      HorizontalAlignment="Center" 
+                                      Visibility="{Binding IsTopLevel, Converter= {StaticResource InverseBoolToVisibilityCollapsedConverter} }"
+                                      IsChecked="{Binding IsExpanded, RelativeSource= {RelativeSource TemplatedParent}}">
+                                </ToggleButton>
+
+                                <!-- Set Border for ListNode-->
+
+                                <Border Name="Bd" Grid.Column="1" Grid.Row="0"
+                                    HorizontalAlignment="Left"
+                                    Background="{TemplateBinding Background}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                    Padding="{TemplateBinding Padding}" 
+                                    SnapsToDevicePixels="True">
+
+                                    <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" MinWidth="20"/>
+                                </Border>
+
+                                <Grid Grid.Column="0" Grid.Row="1">
+
+                                    <!-- Vertical line -->
+
+                                    <Rectangle 
+                                           x:Name="VerLn" Width="1" 
+                                           Stroke="Gray" 
+                                           Margin="8,0,0,0" 
+                                           Grid.RowSpan="2" 
+                                           SnapsToDevicePixels="true"
+                                           HorizontalAlignment="Center"
+                                           Fill="Black"/>
+
+                                    <!-- Draw Ellipse at the bottom of each vertical line -->
+
+                                    <Ellipse 
+                                             x:Name="LnEnd" 
+                                             Width="5" 
+                                             Height="5" 
+                                             Margin="8,0,0,0"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Bottom"
+                                             Stroke="Gray" Fill="Gray" SnapsToDevicePixels="True"/>
+
+                                </Grid>
+
+                                <!--ItemPresenter (specified in the Template) will be replaced with whatever is specified in the ItemsPanelTemplate.-->
+
+                                <ItemsPresenter x:Name="ItemsHost" Grid.Column="1" Grid.Row="1" />
+                            </Grid>
+
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="HasItems" Value="false">
+                                    <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
+                                    <Setter TargetName="VerLn" Property="Visibility" Value="Hidden" />
+                                    <Setter TargetName="LnEnd" Property="Visibility" Value="Hidden" />
+                                </Trigger>
+                                <Trigger Property="IsExpanded" Value="false">
+                                    <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
+                                    <Setter TargetName="VerLn" Property="Visibility" Value="Hidden" />
+                                    <Setter TargetName="LnEnd" Property="Visibility" Value="Collapsed" />
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="true">
+                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
+            <!--ScrollViewer Control Style-->
+            <Style TargetType="ScrollViewer">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                            <Grid x:Name="Grid" Background="{TemplateBinding Background}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Rectangle x:Name="Corner" Grid.Column="1" Fill="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Row="1"/>
+                                <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="0" Margin="{TemplateBinding Padding}" Grid.Row="0"/>
+                                <ScrollBar x:Name="PART_VerticalScrollBar" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Grid.Column="1" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Grid.Row="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}"/>
+                                <ScrollBar x:Name="PART_HorizontalScrollBar" AutomationProperties.AutomationId="HorizontalScrollBar" Cursor="Arrow" Grid.Column="0" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Orientation="Horizontal" Grid.Row="1" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}" Margin="0,-6,0,-5"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height ="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>        
+        
         <TreeView Name="treeView1"
                   ItemsSource="{Binding Children}"
                   Background="White"
@@ -82,7 +254,19 @@
                   BorderBrush="{x:Null}"
                   VirtualizingStackPanel.IsVirtualizing="True"
                   VirtualizingStackPanel.VirtualizationMode="Recycling"
-                  SelectedItemChanged="TreeView1_OnSelectedItemChanged">
+                  ItemContainerStyle="{StaticResource WatchTreeViewItem}">
+
+            <TreeView.Style>
+                <Style TargetType="TreeView">
+                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.Style>
+
             <TreeView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel>
@@ -105,23 +289,30 @@
                     </VirtualizingStackPanel>
                 </ItemsPanelTemplate>
             </TreeView.ItemsPanel>
+
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}"
                                           DataType="{x:Type viewModels:WatchViewModel}">
                     <VirtualizingStackPanel Orientation="Horizontal"
                                             Width="Auto">
-                        <TextBlock Text="{Binding Path=ViewPath}"
+                        <TextBlock x:Name="listIndex"
+                                   Text="{Binding Path=ViewPath}"
                                    VerticalAlignment="Center"
                                    Visibility="{Binding Path=ViewPath, Converter={StaticResource EmptyStringToCollapsedConverter}}"
                                    Width="Auto"
                                    FontFamily="Consolas"
-                                   Margin="0,0,4,0" />
+                                   FontStyle="Italic"
+                                   LineHeight="12"
+                                   Padding="0,0,0,-1"
+                                   LineStackingStrategy="BlockLineHeight"
+                                   Margin="{Binding Path=IsCollection, Converter={StaticResource ListIndexMarginConverter}}"
+                                   Background="{Binding Path=IsCollection, Converter={StaticResource ListIndexBackgroundConverter}}"/>
                         <TextBlock Text="{Binding Path=NodeLabel}"
                                    VerticalAlignment="Center"
                                    Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}"
                                    Width="Auto"
                                    FontFamily="Consolas"
-                                   Margin="0,0,4,0" />
+                                   Margin="{Binding Path =IsTopLevel, Converter={StaticResource TopLevelLabelMarginConverter}}" />
                         <Button Content="{Binding Path=Link}"
                                 RenderTransformOrigin="0.5,0.5"
                                 Margin="10,2,2,2"
@@ -134,5 +325,67 @@
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
+
+        <Border BorderBrush="#d4d4d4" BorderThickness="1" Grid.Row="1" HorizontalAlignment="Stretch">
+
+        <Grid Name ="ListLevelsDisplay" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="8" />
+            </Grid.ColumnDefinitions>
+            
+            <!-- Shows counts of all items in List -->
+            
+            <TextBlock Name="ListItems" Grid.Column="2" Margin="0,3,0,7" Foreground="Gray" FontStyle="Italic"
+                       Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            {<Run Foreground="DarkRed" Text="{Binding NumberOfItems}" />}
+                </TextBlock>
+
+            <!-- Shows list@level labels in List -->
+            
+            <ListView Name="listLevelsView"
+                      Grid.Column ="0" Margin="6,3,0,7" 
+                      Background="Transparent"
+                      Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                      BorderThickness="0">
+
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Margin" Value="{Binding Path=. , Converter= {StaticResource LeftThicknessConverter} }"></Setter>
+                                <Setter Property="Focusable" Value="False"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"></StackPanel>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontSize="9" FontFamily="Consolas">
+                                <Run Foreground="Gray">@</Run>
+                            </TextBlock>
+                            <TextBlock Name="indivListLevel" FontFamily="Consolas" FontSize="9">
+                                L<Run Foreground="Black" Text="{Binding Path =. }"></Run>
+                            </TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+        </Border>
     </Grid>
 </UserControl>

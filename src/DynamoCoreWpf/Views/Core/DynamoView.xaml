@@ -177,7 +177,8 @@
     <Grid Name="mainGrid"
           FocusManager.IsFocusScope="True"
           PreviewMouseDown="Window_PreviewMouseDown"
-          PreviewMouseUp="Window_PreviewMouseUp">
+          PreviewMouseUp="Window_PreviewMouseUp"
+          PreviewMouseLeftButtonUp="Window_PreviewMouseLeftButtonUp">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -365,6 +366,17 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.DynamoViewFileMenuExport3DAsImage}"
+                                  Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
+                                  CommandParameter="{x:Static p:Resources.ScreenShotFrom3DParameter}"
+                                  Name="save3DImage">
+                            <MenuItem.Icon>
+                                <Image Source="/DynamoCoreWpf;component/UI/Images/screenshot_normal.png"
+                                       Width="14"
+                                       Height="14" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewFileMenuExportToSTL}"
                                   Command="{Binding ExportToSTLCommand}"
                                   Name="saveSTL">
@@ -442,7 +454,7 @@
                                   Name="ungroupGroup"
                                   InputGestureText="Ctrl + U" />
                         <MenuItem Focusable="False"                                
-                                  Header="{x:Static p:Resources.DynamoViewEditMenuCreateNodeFromSelection}"
+                                  Header="{x:Static p:Resources.DynamoViewEditMenuCreateCustomNode}"
                                   Command="{Binding Path=NodeFromSelectionCommand}"
                                   Name="nodeFromSelection"
                                   InputGestureText="Ctrl + D" />
@@ -534,7 +546,10 @@
                                        InputGestureText="Ctrl + Alt + Down" />
                         </MenuItem>
 
-                        <MenuItem Header="{Binding Path=ConsoleHeight, Converter={StaticResource ShowHideConsoleMenuConverter}}"
+                        <MenuItem Focusable="False"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding Path=ConsoleHeight, Converter={StaticResource ConsoleHeightToBoolConverter},Mode=TwoWay}"
+                                  Header="{x:Static p:Resources.DynamoViewViewMenuShowConsole}"
                                   Command="{Binding ToggleConsoleShowingCommand}"
                                   InputGestureText="Ctrl + Shift + Up" />
 
@@ -702,8 +717,10 @@
                                   IsCheckable="True"
                                   IsChecked="{Binding Path=RenderPackageFactoryViewModel.ShowEdges, Mode=TwoWay}"
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuShowEdges}"></MenuItem>
-                        <MenuItem Header="{Binding Path=ShowPreviewBubbles, Converter={StaticResource ShowHidePreviewBubblesConverter}}"
-                                  Command="{Binding TogglePreviewBubblesShowingCommand}"/>
+                        <MenuItem Focusable="False"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding ShowPreviewBubbles, Mode=TwoWay}"
+                                  Header="{x:Static p:Resources.DynamoViewSettingsMenuShowPreviewBubbles}"/>
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
                                   Command="{Binding ManagePackagePathsCommand}"

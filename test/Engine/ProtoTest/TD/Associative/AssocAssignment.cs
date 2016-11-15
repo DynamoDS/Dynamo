@@ -190,30 +190,6 @@ e;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        [Category("SmokeTest")]
-        public void T11_TestInClassScope()
-        {
-            string src = @"
-                                 class A 
-                                 {
-                                      
-                                      P1:int;
-                                      constructor A(p1:int)
-                                      {
-                                          P1 = p1;
-                                      }
-          
-                                 }
-                                 a1 = A.A(2);
-                                 b1 = a1.P1;
-                            
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("b1", 2);
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T12_TestUsingMathAndLogicalExpr()
         {
@@ -585,80 +561,6 @@ y1;
                 ExecutionMirror mirror = thisTest.RunScriptSource(src);
                 thisTest.Verify("c", 3);
             });
-        }
-        [Ignore]
-        public void T27_Defect_1450847()
-        {
-            string src = @"[Imperative]
-{
-	 a = 2;
-	 b = 0;
-	 c = -1;
-	 d = null;
-	 
-	 a1 = ~a; 
-	 b1 = ~b;
-	 c1 = ~c;
-	 d1 = ~d;
-	 
-	 e = -0.5;
-	 e1 = ~e1;
-	 
-	 f1 = ~e + ~a;
- 
- }
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("a1", -3);
-            thisTest.Verify("b1", -1);
-            thisTest.Verify("c1", 0);
-            thisTest.Verify("d1", null);
-            thisTest.Verify("e1", null);
-            thisTest.Verify("f1", null);
-        }
-        [Ignore]
-        public void T29_Defect_1449887()
-        {
-            string src = @"[Associative]
-{  
-	a = 14;  
-	b = 7;  
-	c = a & b; 
-	d = a|b;
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("c", 6);
-            thisTest.Verify("d", 15);
-        }
-        [Ignore]
-        public void T30_Defect_1449887_2()
-        {
-            string src = @"[Associative]
-{   
- def ANDfunc:int(a:int,b:int)
- { 
-  
-  return = a & b; 
- 
- }
- def ORfunc:int(a:int,b:int)
- {
-   
-   return = a|b;
- 
- }
- 
- e = 14;
- 
- f = 7;
- 
- c = ANDfunc(e,f); 
- 
- d = ORfunc(e,f);
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.Verify("c", 6);
-            thisTest.Verify("d", 15);
         }
 
         [Test]
@@ -1364,58 +1266,6 @@ if(c < 1)
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void T60_Defect_1467525_5()
-        {
-            String code =
-            @"
-class A
-{
-    c : int;
-    constrcutor A ()
-    {
-        c = 0;
-        a = 2;
-        if(c < 1)
-        {
-            c = c +1;
-        }
-    }
-}
-";
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                thisTest.RunScriptSource(code);
-            });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void T60_Defect_1467525_6()
-        {
-            String code =
-            @"
-class A
-{
-    
-    def foo ()
-    {
-        c = 0;
-        a = 2;
-        if(c < 1)
-        {
-            c = c +1;
-        }
-    }
-}
-";
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                thisTest.RunScriptSource(code);
-            });
-        }
-
-        [Test]
         public void T61_Defect_1467546_1()
         {
             String code =
@@ -1471,54 +1321,6 @@ test = foo();
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void T61_Defect_1467546_4()
-        {
-            String code =
-            @"
-class A
-{
-    static def foo ()
-    {
-      a = 10
-      b = a + 1;
-    }
-}
-test = A.foo();
-";
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                Object n1 = null;
-                thisTest.RunScriptSource(code);
-                thisTest.Verify("test", n1);
-            });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void T61_Defect_1467546_5()
-        {
-            String code =
-            @"
-class A
-{
-    constructor A ()
-    {
-      a = 10
-      b = a + 1;
-    }
-}
-test = A.A();
-";
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                Object n1 = null;
-                thisTest.RunScriptSource(code);
-                thisTest.Verify("test", n1);
-            });
-        }
-
-        [Test]
         public void T61_Defect_1467546_6()
         {
             String code =
@@ -1547,32 +1349,6 @@ def foo()
 }
 x = 1;
 a = foo()
-b = a + 1;
- 
-";
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                Object n1 = null;
-                thisTest.RunScriptSource(code);
-                thisTest.Verify("test", n1);
-            });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void T61_Defect_1467546_8()
-        {
-            String code =
-            @"
-class A
-{
-    static def foo()
-    {
-        return = 1;
-    }
-}
-x = 1;
-a = A.foo()
 b = a + 1;
  
 ";

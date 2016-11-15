@@ -2133,11 +2133,20 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns true if the specified key is removed from list, otherwise returns false.
+        ///   Looks up a localized string similar to Removes key from list.
         /// </summary>
         public static string RemoveKeys {
             get {
                 return ResourceManager.GetString("RemoveKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removes a copy of array with specified key removed.
+        /// </summary>
+        public static string RemoveKeys1 {
+            get {
+                return ResourceManager.GetString("RemoveKeys1", resourceCulture);
             }
         }
         

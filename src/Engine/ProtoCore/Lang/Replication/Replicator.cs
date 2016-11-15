@@ -340,34 +340,35 @@ namespace ProtoCore.Lang.Replication
                 foreach (int index in indices)
                 {
                     //This should generally be a collection, so we need to do a one phase unboxing
-                    StackValue target = basicList[index];
-
-                    if (target.IsArray)
+                    var targets = reducedParams.Select(r => r[index]).ToList();
+                    foreach (var target in targets)
                     {
-                        var array = runtimeCore.Heap.ToHeapObject<DSArray>(target);
-
-                        //The elements of the array are still type structures
-                        if (array.Count != 0)
+                        if (!target.IsArray)
                         {
-                            var arrayStats = ArrayUtils.GetTypeExamplesForLayer(target, runtimeCore).Values;
+                            System.Console.WriteLine("WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
+                            continue;
+                        }
 
-                            List<List<StackValue>> clonedList = new List<List<StackValue>>(reducedParams);
-                            reducedParams.Clear();
+                        var array = runtimeCore.Heap.ToHeapObject<DSArray>(target);
+                        if (array.Count == 0)
+                        {
+                            continue;
+                        }
 
-                            foreach (StackValue sv in arrayStats)
+                        var arrayStats = ArrayUtils.GetTypeExamplesForLayer(target, runtimeCore).Values;
+
+                        List<List<StackValue>> clonedList = new List<List<StackValue>>(reducedParams);
+                        reducedParams.Clear();
+
+                        foreach (StackValue sv in arrayStats)
+                        {
+                            foreach (List<StackValue> lst in clonedList)
                             {
-                                foreach (List<StackValue> lst in clonedList)
-                                {
-                                    List<StackValue> newArgs = new List<StackValue>(lst);
-                                    newArgs[index] = sv;
-                                    reducedParams.Add(newArgs);
-                                }
+                                List<StackValue> newArgs = new List<StackValue>(lst);
+                                newArgs[index] = sv;
+                                reducedParams.Add(newArgs);
                             }
                         }
-                    }
-                    else
-                    {
-                        System.Console.WriteLine("WARNING: Replication unbox requested on Singleton. Trap: 437AD20D-9422-40A3-BFFD-DA4BAD7F3E5F");
                     }
                 }
             }

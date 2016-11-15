@@ -5,6 +5,7 @@ using ProtoCore.AST.AssociativeAST;
 using System.Collections.Generic;
 using Dynamo.Graph.Nodes;
 using ProtoCore.DSASM;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -20,16 +21,22 @@ namespace CoreNodeModels
         private readonly IntNode endPortDefaultValue = new IntNode(9);
         private readonly IntNode stepPortDefaultValue = new IntNode(1);
 
+        [JsonConstructor]
+        private Range(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Shortest;
+        }
+
         public Range()
         {
-            InPortData.Add(new PortData("start", Resources.RangePortDataStartToolTip, startPortDefaultValue));
-            InPortData.Add(new PortData("end", Resources.RangePortDataEndToolTip, endPortDefaultValue));
-            InPortData.Add(new PortData("step", Resources.RangePortDataStepToolTip, stepPortDefaultValue));
-            OutPortData.Add(new PortData("seq", Resources.RangePortDataSeqToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("start", Resources.RangePortDataStartToolTip, startPortDefaultValue)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("end", Resources.RangePortDataEndToolTip, endPortDefaultValue)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("step", Resources.RangePortDataStepToolTip, stepPortDefaultValue)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("seq", Resources.RangePortDataSeqToolTip)));
 
             RegisterAllPorts();
 
-            ArgumentLacing = LacingStrategy.Longest;
+            ArgumentLacing = LacingStrategy.Shortest;
         }
 
         public override bool IsConvertible
@@ -42,7 +49,7 @@ namespace CoreNodeModels
             if (IsPartiallyApplied)
             {
                 var connectedPorts = Enumerable.Range(0, this.InPorts.Count)
-                    .Where(this.HasInput)
+                    .Where(index=>this.InPorts[index].IsConnected)
                     .ToList();
 
                 // 3d, 4th, 5th are always connected.
@@ -93,16 +100,22 @@ namespace CoreNodeModels
         private readonly IntNode amountPortDefaultValue = new IntNode(10);
         private readonly IntNode stepPortDefaultValue = new IntNode(1);
 
+        [JsonConstructor]
+        private Sequence(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Shortest;
+        }
+
         public Sequence()
         {
-            InPortData.Add(new PortData("start", Resources.RangePortDataStartToolTip, startPortDefaultValue));
-            InPortData.Add(new PortData("amount", Resources.RangePortDataAmountToolTip, amountPortDefaultValue));
-            InPortData.Add(new PortData("step", Resources.RangePortDataStepToolTip, stepPortDefaultValue));
-            OutPortData.Add(new PortData("seq", Resources.RangePortDataSeqToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("start", Resources.RangePortDataStartToolTip, startPortDefaultValue)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("amount", Resources.RangePortDataAmountToolTip, amountPortDefaultValue)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("step", Resources.RangePortDataStepToolTip, stepPortDefaultValue)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("seq", Resources.RangePortDataSeqToolTip)));
 
             RegisterAllPorts();
 
-            ArgumentLacing = LacingStrategy.Longest;
+            ArgumentLacing = LacingStrategy.Shortest;
         }
 
         public override bool IsConvertible
@@ -115,7 +128,7 @@ namespace CoreNodeModels
             if (IsPartiallyApplied)
             {
                 var connectedPorts = Enumerable.Range(0, this.InPorts.Count)
-                    .Where(this.HasInput)
+                    .Where(index=>this.InPorts[index].IsConnected)
                     .ToList();
 
                 // 3d, 4th, 5th are always connected.

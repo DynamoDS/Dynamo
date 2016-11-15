@@ -25,9 +25,9 @@ namespace Dynamo.Tests
         {
             public TwoScopedInputs()
             {
-                InPortData.Add(new PortData("port1", "Port1 block"));
-                InPortData.Add(new PortData("port2", "Port2 block"));
-                OutPortData.Add(new PortData("result", "Result"));
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData("port1", "Port1 block")));
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData("port2", "Port2 block")));
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData("result", "Result")));
 
                 RegisterAllPorts();
             }

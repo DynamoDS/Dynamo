@@ -63,6 +63,7 @@ namespace Dynamo
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
+
             preloader.Preload();
 
             var preloadedLibraries = new List<string>();

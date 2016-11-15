@@ -412,37 +412,6 @@ test=VectorProperties(null);
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("SmokeTest")]
-        public void Z002_Defect_1461399_2()
-        {
-            string src = @"class Arc
-{
-	constructor Arc()
-	{
-		
-	}
-	def get_StartPoint()
-	{
-         return = 1;
-	}
-}
-def CurveProperties(curve : Arc)
-{
- return = {
-	curve[0].get_StartPoint(),
-	curve[0].get_StartPoint(),
-	curve[0].get_StartPoint()	
- };
-}
-test=CurveProperties(null);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Object[] v1 = new Object[] { null, null, null };
-            thisTest.Verify("test", v1);
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void Z003_Defect_1456728()
         {
@@ -551,18 +520,6 @@ def f (a : DummyPoint = DummyPoint.ByCoordinates(1,2,3))
 }
 
 x = f();
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("x", 1);
-        }
-
-        [Test]
-        public void TestDefaultArgumenFFI01()
-        {
-            string code = @"    
-import(""DSCoreNodes.dll"");
-a = Math.Random();
-x = (a != null) ? 1 : 0;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x", 1);

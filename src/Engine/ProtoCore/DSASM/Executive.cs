@@ -400,12 +400,12 @@ namespace ProtoCore.DSASM
             pc = (int)rmem.GetAtRelative(StackFrame.FrameIndexReturnAddress).IntegerValue;
         }
 
-        private void PushInterpreterProps(InterpreterProperties properties)
+        public void PushInterpreterProps(InterpreterProperties properties)
         {
             runtimeCore.InterpreterProps.Push(new InterpreterProperties(properties));
         }
 
-        private InterpreterProperties PopInterpreterProps()
+        public InterpreterProperties PopInterpreterProps()
         {
             return runtimeCore.InterpreterProps.Pop();
         }
@@ -728,14 +728,7 @@ namespace ProtoCore.DSASM
             }
 
             // Get the cached callsite, creates a new one for a first-time call
-            CallSite callsite = runtimeCore.RuntimeData.GetCallSite(
-                exe.ExecutingGraphnode, 
-                classIndex, 
-                fNode.Name, 
-                exe,
-                runtimeCore.RunningBlock, 
-                runtimeCore.Options, 
-                runtimeCore.RuntimeStatus);
+            CallSite callsite = runtimeCore.RuntimeData.GetCallSite(classIndex, fNode.Name, exe, runtimeCore);
             Validity.Assert(null != callsite);
 
             List<StackValue> registers = GetRegisters();
@@ -866,10 +859,7 @@ namespace ProtoCore.DSASM
 
             var stackFrame = new StackFrame(thisObject, classIndex, procIndex, pc + 1, 0, runtimeCore.RunningBlock, fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, 0, registers, 0);
 
-            var callsite = runtimeCore.RuntimeData.GetCallSite(exe.ExecutingGraphnode,
-                                            classIndex,
-                                            procNode.Name,
-                                            exe, runtimeCore.RunningBlock, runtimeCore.Options, runtimeCore.RuntimeStatus);
+            var callsite = runtimeCore.RuntimeData.GetCallSite(classIndex, procNode.Name, exe, runtimeCore);
 
             Validity.Assert(null != callsite);
 
@@ -3662,14 +3652,30 @@ namespace ProtoCore.DSASM
                     }
                     else
                     {
-                        opdata2 = StackValue.BuildInt(lhs % rhs);
+                        var intMod = lhs % rhs;
+
+                        // In order to follow the conventions of Java, Python, Scala and Google's calculator,
+                        // the returned modulo will follow the sign of the divisor (not the dividend). 
+
+                        if (intMod < 0 && rhs > 0 || intMod > 0 && rhs < 0)
+                        {
+                            intMod = intMod + rhs;
+                        }
+
+                        opdata2 = StackValue.BuildInt(intMod);
                     }
                 }
                 else
                 {
                     double lhs = opdata2.IsDouble ? opdata2.DoubleValue : opdata2.IntegerValue;
                     double rhs = opdata1.IsDouble ? opdata1.DoubleValue : opdata1.IntegerValue;
-                    opdata2 = StackValue.BuildDouble(lhs % rhs);
+                    var doubleMod = lhs % rhs;
+
+                    if (doubleMod < 0 && rhs > 0 || doubleMod > 0 && rhs < 0)
+                    {
+                        doubleMod = doubleMod + rhs;
+                    }
+                    opdata2 = StackValue.BuildDouble(doubleMod);
                 }
             }
             else

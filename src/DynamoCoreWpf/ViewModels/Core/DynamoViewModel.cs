@@ -35,6 +35,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using Dynamo.Controls;
 using ISelectable = Dynamo.Selection.ISelectable;
 
 
@@ -345,6 +346,16 @@ namespace Dynamo.ViewModels
         public string Version
         {
             get { return model.Version; }
+        }
+
+        public string HostVersion
+        {
+            get { return model.HostVersion; }
+        }
+
+        public string HostName
+        {
+            get { return model.HostName; }
         }
 
         public bool IsUpdateAvailable
@@ -1138,6 +1149,34 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Attempts to open a file using the passed open command, but wraps the call
+        /// with a check to make sure no unsaved changes to the HomeWorkspace are lost.
+        /// </summary>
+        /// <param name="openCommand"> <see cref="DynamoModel.OpenFileCommand"/> </param>
+        private void OpenIfSaved(object openCommand)
+        {
+            var command = openCommand as DynamoModel.OpenFileCommand;
+            if (command == null)
+            {
+                return;
+            }
+
+            if(HomeSpace != null && HomeSpace.HasUnsavedChanges)
+            {
+                if (AskUserToSaveWorkspaceOrCancel(HomeSpace))
+                {
+                    this.ExecuteCommand(command);
+                    this.ShowStartPage = false;
+                }
+            }
+            else
+            {
+                this.ExecuteCommand(command);
+                this.ShowStartPage = false;
+            }
+        }
+
+        /// <summary>
         /// Open a definition or workspace.
         /// </summary>
         /// <param name="parameters"></param>
@@ -1516,14 +1555,23 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Returns the selected nodes that are "input" nodes, and makes an 
-        /// exception for CodeBlockNodes as these are marked false so they 
-        /// do not expose a IsInput checkbox
+        /// exception for CodeBlockNodes and Filename nodes as these are marked 
+        /// false so they do not expose a IsInput checkbox
         /// </summary>
         /// <returns></returns>
         internal IEnumerable<NodeModel> GetInputNodesFromSelectionForPresets()
         {
             return DynamoSelection.Instance.Selection.OfType<NodeModel>()
-                                .Where(x => x.IsInputNode || x is CodeBlockNodeModel);
+                .Where(
+                    x => x.IsInputNode ||
+                    x is CodeBlockNodeModel ||
+
+                    // NOTE: The Filename node is being matched by name due to the node definition
+                    //       being in the CoreNodeModels project instead of the DynamoCore project.
+                    //       After some discussions it was decided that this was the least bad way to 
+                    //       make this check (versus either adding a new, overridable property to 
+                    //       NodeModel, or moving Filename and the associated classes into DynamoCore).
+                    x.GetType().Name == "Filename");
         }
 
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)
@@ -1796,6 +1844,12 @@ namespace Dynamo.ViewModels
                 "NodeCount", CurrentSpace.Nodes.Count());
         }
 
+        private void Save3DImage(object parameters)
+        {
+            // Save the parameters
+            OnRequestSave3DImage(this, new ImageSaveEventArgs(parameters.ToString()));
+        }
+
         internal bool CanSaveImage(object parameters)
         {
             return true;
@@ -1812,7 +1866,7 @@ namespace Dynamo.ViewModels
                     AddExtension = true,
                     DefaultExt = ".png",
                     FileName = Resources.FileDialogDefaultPNGName,
-                    Filter = string.Format(Resources.FileDialogPNGFiles,"*.png"),
+                    Filter = string.Format(Resources.FileDialogPNGFiles, "*.png"),
                     Title = Resources.SaveWorkbenToImageDialogTitle
                 };
             }
@@ -1824,12 +1878,34 @@ namespace Dynamo.ViewModels
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
 
-            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            if (_fileDialog.ShowDialog() != DialogResult.OK) return;
+            if (!CanSaveImage(_fileDialog.FileName)) return;
+
+            if (parameter == null)
             {
-                if (CanSaveImage(_fileDialog.FileName))
-                    SaveImage(_fileDialog.FileName);
+                SaveImage(_fileDialog.FileName);
+                return;
             }
 
+            if (parameter.ToString() == Resources.ScreenShotFrom3DParameter)
+            {
+                Save3DImage(_fileDialog.FileName);
+            }
+            else if (parameter.ToString() == Resources.ScreenShotFrom3DShortcutParameter)
+            {
+                if (BackgroundPreviewViewModel.CanNavigateBackground)
+                {
+                    Save3DImage(_fileDialog.FileName);
+                }
+                else
+                {
+                    SaveImage(_fileDialog.FileName);
+                }
+            }
+            else
+            {
+                SaveImage(_fileDialog.FileName);
+            }
         }
 
         internal bool CanShowSaveImageDialogAndSaveResult(object parameter)
@@ -1885,9 +1961,12 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Toggles Showing Preview Bubbles globally
+        /// Obsolete method toggles Showing Preview Bubbles globally
+        /// Using of this class will produce compile warnings
+        /// TODO: To be removed in Dynamo 2.0
         /// </summary>
         /// <param name="parameter">Command parameter</param>
+        [System.Obsolete("This method is obsolete, set DynamoViewModel.ShowPreviewBubbles directly instead.")]
         public void TogglePreviewBubblesShowing(object parameter)
         {
             ShowPreviewBubbles = !ShowPreviewBubbles;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using CSMath = System.Math;
+using DSCore.Properties;
 
 namespace DSCore
 {
@@ -393,41 +394,28 @@ namespace DSCore
         {
             return mRandom.NextDouble();
         }
-        
+
         /// <summary>
-        ///     Rounds a number to the nearest integer.
+        /// Rounds a number to the closest integral value.
+        /// Note that this method returns a double-precision floating-point number instead of an integral type.
         /// </summary>
         /// <param name="number">Number to round.</param>
-        /// <returns name="int">Integer closest to the number.</returns>
+        /// <returns name="number">Integral value closes to the number.</returns>
         public static double Round(double number)
         {
             return CSMath.Round(number);
         }
 
-        /* DISABLE - LC - 070 Pre-release
-        public static double Round(double value, MidpointRounding mode)
-        {
-            return CSMath.Round(value, mode);
-        }
-        */
-
         /// <summary>
-        ///     Rounds a number to the specified number of decimal places.
+        /// Rounds a number to a specified number of fractional digits. 
         /// </summary>
-        /// <param name="number">Number to round.</param>
-        /// <param name="digits">Number of digits beyond the decimal to round to.</param>
-        /// <returns name="number">Rounded number.</returns>
+        /// <param name="number">Number to be rounded.</param>
+        /// <param name="digits">Number of fractional digits in the return value.</param>
+        /// <returns name="number">The number nearest to value that contains a number of fractional digits equal to digits.</returns>
         public static double Round(double number, int digits)
         {
             return CSMath.Round(number, digits);
         }
-
-        /* DISABLE - LC - 070 Pre-release
-        public static double Round(double value, int digits, MidpointRounding mode)
-        {
-            return CSMath.Round(value, digits, mode);
-        }
-        */
 
         /// <summary>
         ///     Returns the sign of the number: -1, 0, or 1.
@@ -452,7 +440,7 @@ namespace DSCore
         /// <summary>
         ///     Finds the sine of an angle.
         /// </summary>
-        /// <param name="angle">Angle in degrees to take the cosine of.</param>
+        /// <param name="angle">Angle in degrees to take the sine of.</param>
         /// <returns name="sin">Sine of the angle.</returns>
         /// <search>sine</search>
         public static double Sin(double angle)
@@ -533,11 +521,34 @@ namespace DSCore
         /// <search>!</search>
         public static long Factorial(long number)
         {
-            if (number < 0)
+            checked
             {
-                return -1;
+                try
+                {
+                    long factorial = 1;
+
+                    if (number < 0)
+                    {
+                        throw new ArgumentException(Resources.FactorialNegativeInt);
+                    }
+
+                    if (number == 0)
+                    {
+                        return factorial;
+                    }
+
+                    for (long i = number; i > 0; i--)
+                    {
+                        factorial = i * factorial;
+                    }
+                    return factorial;
+                }
+
+                catch (System.OverflowException)
+                {
+                    throw new OverflowException(Resources.FactorialOverflow);
+                }
             }
-            return (number > 1) ? number * Factorial(number - 1) : 1;
         }
 
         private static readonly Random mRandom = new Random();

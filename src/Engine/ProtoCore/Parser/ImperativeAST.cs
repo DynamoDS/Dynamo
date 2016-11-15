@@ -1009,6 +1009,17 @@ namespace ProtoCore.AST.ImperativeAST
         public ImperativeNode TrueExpression { get; set; }
         public ImperativeNode FalseExpression { get; set; }
 
+        public InlineConditionalNode()
+        {
+        }
+
+        public InlineConditionalNode(InlineConditionalNode rhs) : base(rhs)
+        {
+            ConditionExpression = NodeUtils.Clone(rhs.ConditionExpression);
+            TrueExpression = NodeUtils.Clone(rhs.TrueExpression);
+            FalseExpression = NodeUtils.Clone(rhs.FalseExpression);
+        }
+
         public override bool Equals(object other)
         {
             if (null == ConditionExpression || null == TrueExpression || null == FalseExpression)

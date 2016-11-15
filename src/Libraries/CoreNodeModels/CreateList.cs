@@ -3,6 +3,8 @@ using System.Linq;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
+using Dynamo.Utilities;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -14,10 +16,21 @@ namespace CoreNodeModels
     [AlsoKnownAs("DSCoreNodesUI.CreateList")]
     public class CreateList : VariableInputNode
     {
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        [JsonConstructor]
+        private CreateList(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
         public CreateList()
         {
-            InPortData.Add(new PortData("item0", Resources.CreateListPortDataIndex0ToolTip));
-            OutPortData.Add(new PortData("list", Resources.CreateListPortDataResultToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("item0", Resources.CreateListPortDataIndex0ToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("list", Resources.CreateListPortDataResultToolTip)));
 
             RegisterAllPorts();
 
@@ -36,7 +49,7 @@ namespace CoreNodeModels
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 1)
+            if (InPorts.Count > 1)
                 base.RemoveInput();
         }
 
@@ -49,12 +62,12 @@ namespace CoreNodeModels
         {
             if (IsPartiallyApplied)
             {
-                var connectedInput = Enumerable.Range(0, InPortData.Count)
-                                               .Where(HasConnectedInput)
+                var connectedInput = Enumerable.Range(0, InPorts.Count)
+                                               .Where(index=>InPorts[index].IsConnected)
                                                .Select(x => new IntNode(x) as AssociativeNode)
                                                .ToList();
 
-                var paramNumNode = new IntNode(InPortData.Count);
+                var paramNumNode = new IntNode(InPorts.Count);
                 var positionNode = AstFactory.BuildExprList(connectedInput);
                 var arguments = AstFactory.BuildExprList(inputAstNodes);
                 var functionNode = new IdentifierListNode
@@ -75,7 +88,7 @@ namespace CoreNodeModels
                 {
                     AstFactory.BuildAssignment(
                         GetAstIdentifierForOutputIndex(0),
-                        AstFactory.BuildFunctionCall("Function", inputParams))
+                        AstFactory.BuildFunctionCall("__CreateFunctionObject", inputParams))
                 };
             }
 

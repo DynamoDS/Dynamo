@@ -68,7 +68,7 @@ namespace Dynamo.Wpf.Views
             };
 
             var wordList = engineController.CodeCompletionServices.GetClasses();
-            String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
+            String regex = String.Format(@"\b({0})\b", String.Join("|", wordList));
             classHighlightRule.Regex = new Regex(regex);
 
             return classHighlightRule;
@@ -90,7 +90,7 @@ namespace Dynamo.Wpf.Views
             };
 
             var wordList = engineController.CodeCompletionServices.GetGlobals();
-            String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
+            String regex = String.Format(@"\b({0})\b", String.Join("|", wordList));
             methodHighlightRule.Regex = new Regex(regex);
 
             return methodHighlightRule;

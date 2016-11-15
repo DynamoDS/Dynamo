@@ -788,7 +788,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
             <summary>
-            Get a CoordinateSystem with origin at the point at the given parameter. The XAxis is aligned with the curve normal and the YAxis is aligned with the curve tangent at this point
+            Get a CoordinateSystem with origin at the point at the given parameter. The XAxis is aligned with the curve normal,  the YAxis is aligned with the curve tangent at this point, and the ZAxis is aligned with the up-vector or binormal at this point
             </summary>
             <param name="param"> The parameter at which to evaluate </param>
             <returns> The aligned CoordinateSystem at the point </returns>
@@ -1730,7 +1730,7 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Helix.Pitch">
             <summary>
-            The pitch of the helix in Degrees
+            The pitch of the helix
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Helix.Radius">
@@ -2303,9 +2303,9 @@
             <summary>
             Create a the Plane containing the three input Points.
             </summary>
-            <param name="p1">  </param>
-            <param name="p2">  </param>
-            <param name="p3">  </param>
+            <param name="origin"> The plane origin </param>
+            <param name="planePoint"> Any point lying on the plane </param>
+            <param name="xAxisPoint"> The point lying on the X-axis of the plane wrt to the plane origin </param>
             <returns>  </returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.XY">
@@ -2540,7 +2540,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
             <summary>
-            Make PolyCurve from sequence of lines connecting points. For closed curve last point should be in same location as start point.
+            Make PolyCurve by connecting points. Set the 'connectLastToFirst' input to true to close the PolyCurve.
             </summary>
             <param name="points"> Points to make polycurve </param>
             <param name="connectLastToFirst"> make  close or open polycurve </param>
@@ -3023,8 +3023,8 @@
             <summary>
             Sweep a closed profile Curve along two rail Curves.
             </summary>
-            <param name="rail1">  </param>
-            <param name="rail2">  </param>
+            <param name="path"> The input path to sweep along. </param>
+            <param name="guideRail"> A rail to guide the orientation of the sweep. </param>
             <param name="profile">  </param>
             <returns>  </returns>
             <search>
@@ -3276,8 +3276,8 @@
             <summary>
             Sweep the cross section curve along a path guided by a two rails
             </summary>
-            <param name="rail1">  </param>
-            <param name="rail2">  </param>
+            <param name="path"> The input path to sweep along. </param>
+            <param name="guideRail"> A rail to guide the orientation of the sweep. </param>
             <param name="profile">  </param>
             <returns>  </returns>
             <search>

@@ -55,10 +55,6 @@
     <xsl:key name="nunit-search" match="wix:Component[contains(wix:File/@Source, 'nunit')]" use="@Id"/>
     <xsl:template match="wix:Component[key('nunit-search', @Id)]" />
 	
-    <!--Exclude OpenSans* fonts-->
-    <xsl:key name="OpenSans-search" match="wix:Component[contains(wix:File/@Source, 'OpenSans')]" use="@Id"/>
-    <xsl:template match="wix:Component[key('OpenSans-search', @Id)]" />
-  
     <!--Exclude *.vshost.exe*-->
     <xsl:key name="vshost-search" match="wix:Component[contains(wix:File/@Source, 'vshost.exe')]" use="@Id"/>
     <xsl:template match="wix:Component[key('vshost-search', @Id)]" />

@@ -106,18 +106,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public DelegateCommand ValidateConnectionsCommand
-        {
-            get
-            {
-                if(_validateConnectionsCommand == null)
-                    _validateConnectionsCommand = 
-                        new DelegateCommand(ValidateConnections, CanValidateConnections);
-
-                return _validateConnectionsCommand;
-            }
-        }
-
         public DelegateCommand ToggleIsVisibleCommand
         {
             get
@@ -210,6 +198,5 @@ namespace Dynamo.ViewModels
                 return _computeRunStateOfTheNodeCommand;
             }
         }
-        
     }
 }

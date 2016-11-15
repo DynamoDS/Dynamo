@@ -153,28 +153,31 @@ namespace ProtoCore.DSASM.Mirror
                 StringBuilder classtrace = new StringBuilder();
                 if (classnode.Symbols != null && classnode.Symbols.symbolList.Count > 0)
                 {
-                    bool firstPropertyDisplayed = false;
-                    for (int n = 0; n < obj.Count; ++n)
+                    if (!classnode.Name.Equals("Function"))
                     {
-                        SymbolNode symbol = classnode.Symbols.symbolList[n];
-                        string propName = symbol.name;
-
-                        if (firstPropertyDisplayed)
-                            classtrace.Append(", ");
-
-                        string propValue = "";
-                        if (symbol.isStatic)
+                        bool firstPropertyDisplayed = false;
+                        for (int n = 0; n < obj.Count; ++n)
                         {
-                            var staticSymbol = exe.runtimeSymbols[langblock].symbolList[symbol.symbolTableIndex];
-                            StackValue staticProp = rmem.GetSymbolValue(staticSymbol);
-                            propValue = GetStringValue(staticProp, heap, langblock, forPrint);
+                            SymbolNode symbol = classnode.Symbols.symbolList[n];
+                            string propName = symbol.name;
+
+                            if (firstPropertyDisplayed)
+                                classtrace.Append(", ");
+
+                            string propValue = "";
+                            if (symbol.isStatic)
+                            {
+                                var staticSymbol = exe.runtimeSymbols[langblock].symbolList[symbol.symbolTableIndex];
+                                StackValue staticProp = rmem.GetSymbolValue(staticSymbol);
+                                propValue = GetStringValue(staticProp, heap, langblock, forPrint);
+                            }
+                            else
+                            {
+                                propValue = GetStringValue(obj.GetValueFromIndex(symbol.index, runtimeCore), heap, langblock, forPrint);
+                            }
+                            classtrace.Append(string.Format("{0} = {1}", propName, propValue));
+                            firstPropertyDisplayed = true;
                         }
-                        else
-                        {
-                            propValue = GetStringValue(obj.GetValueFromIndex(symbol.index, runtimeCore), heap, langblock, forPrint);
-                        }
-                        classtrace.Append(string.Format("{0} = {1}", propName, propValue));
-                        firstPropertyDisplayed = true;
                     }
                 }
                 else
