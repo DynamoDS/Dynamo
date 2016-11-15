@@ -40,10 +40,12 @@ namespace Dynamo.PackageManager
 
         private void AddMenuItem(ViewLoadedParams p)
         {
+            #if DEBUG
             p.AddSeparator(MenuBarType.Packages, new Separator());
             packageManagerMenuItem = new MenuItem() { Header = "Package Manager", Name = "PackageManager" };
             packageManagerMenuItem.Click += (object sender, RoutedEventArgs e) => OnDiagnostics();
             p.AddMenuItem(MenuBarType.Packages, packageManagerMenuItem);
+            #endif
         }
 
         private void OnDiagnostics()
