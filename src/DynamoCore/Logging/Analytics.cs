@@ -77,6 +77,17 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
+        /// Tracks user preference setting and its value.
+        /// </summary>
+        /// <param name="name">Name of the preference</param>
+        /// <param name="stringValue">Preference value as string</param>
+        /// <param name="metricValue">Metric value of the preference</param>
+        public void TrackPreference(string name, string stringValue, int? metricValue)
+        {
+            if (client != null) client.TrackPreference(name, stringValue, metricValue);
+        }
+
+        /// <summary>
         /// Tracks a timed event, when it has completed.
         /// </summary>
         /// <param name="category">Event category</param>
