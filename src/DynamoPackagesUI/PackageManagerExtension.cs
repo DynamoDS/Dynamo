@@ -1,5 +1,6 @@
-﻿using Dynamo.Wpf.Extensions;
-using PackageManager;
+﻿using Dynamo.DynamoPackagesUI.ViewModels;
+using Dynamo.Wpf.Extensions;
+using DynamoPackagesUI.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Dynamo.PackageManager
+namespace Dynamo.DynamoPackagesUI
 {
     public class PackageManagerExtension : IViewExtension
     {
@@ -43,12 +44,12 @@ namespace Dynamo.PackageManager
             #if DEBUG
             p.AddSeparator(MenuBarType.Packages, new Separator());
             packageManagerMenuItem = new MenuItem() { Header = "Package Manager", Name = "PackageManager" };
-            packageManagerMenuItem.Click += (object sender, RoutedEventArgs e) => OnDiagnostics();
+            packageManagerMenuItem.Click += (object sender, RoutedEventArgs e) => OnPackageManagerClick();
             p.AddMenuItem(MenuBarType.Packages, packageManagerMenuItem);
             #endif
         }
 
-        private void OnDiagnostics()
+        private void OnPackageManagerClick()
         {
             var _packageManagerView = new PackageManagerView()
             {

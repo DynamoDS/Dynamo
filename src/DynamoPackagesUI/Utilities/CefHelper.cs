@@ -1,4 +1,6 @@
 ﻿using CefSharp.Wpf;
+using Dynamo.DynamoPackagesUI.ViewModels;
+using Dynamo.PackageManager;
 using Dynamo.ViewModels;
 using Newtonsoft.Json;
 using System;
@@ -8,14 +10,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Dynamo.PackageManager.Utilities
+namespace Dynamo.DynamoPackagesUI.Utilities
 {
-
+    /// <summary>
+    /// Base class for CEF which assits in all Package Manager functionalities
+    /// </summary>
     internal class CefHelper
     {
         internal readonly DynamoViewModel dynamoViewModel;
         internal PackageLoader Model { get; private set; }
 
+        //CEF Browser instance in which PM UI will be displayed
         public ChromiumWebBrowser CefBrowser { get; set; }
 
         public string SessionData

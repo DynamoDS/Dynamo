@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PackageManager
+namespace DynamoPackagesUI.Views
 {
     /// <summary>
     /// Interaction logic for PackageManagerView.xaml
@@ -23,6 +23,7 @@ namespace PackageManager
         public PackageManagerView()
         {
             InitializeComponent();
+
             this.Height = (System.Windows.SystemParameters.PrimaryScreenHeight * 0.95);
             this.Width = (System.Windows.SystemParameters.PrimaryScreenWidth * 0.75);
         }

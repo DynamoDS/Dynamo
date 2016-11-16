@@ -1,4 +1,5 @@
-﻿using Dynamo.PackageManager;
+﻿using Dynamo.DynamoPackagesUI.ViewModels;
+using Dynamo.PackageManager;
 using Dynamo.PackageManager.Interfaces;
 using Dynamo.ViewModels;
 using System;
@@ -7,8 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynamo.PackageManager.Utilities
+namespace Dynamo.DynamoPackagesUI.Utilities
 {
+    /// <summary>
+    /// CEF Class to assist Publishing the Dynamo Packages
+    /// </summary>
     internal class PublishCefHelper : CefHelper
     {
         //private readonly DynamoViewModel dynamoViewModel;
