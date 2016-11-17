@@ -33,4 +33,37 @@
     <Prefer32Bit>false</Prefer32Bit>
 	<UICulture>en-US</UICulture>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\AnyCPU\$(Configuration)</OutputPath>
+    <NunitPath Condition=" '$(NunitPath)' == '' ">$(SolutionDir)..\extern\NUnit</NunitPath>
+    <SharpDXDirectXVersion>DirectX11</SharpDXDirectXVersion>
+    <BaseIntermediateOutputPath>$(OutputPath)\int\</BaseIntermediateOutputPath>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+	<UICulture>en-US</UICulture>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\AnyCPU\$(Configuration)</OutputPath>
+    <NunitPath Condition=" '$(NunitPath)' == '' ">$(SolutionDir)..\extern\NUnit</NunitPath>
+    <SharpDXDirectXVersion>DirectX11</SharpDXDirectXVersion>
+    <BaseIntermediateOutputPath>$(OutputPath)\int\</BaseIntermediateOutputPath>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+	<UICulture>en-US</UICulture>
+  </PropertyGroup>
 </Project>
