@@ -26,7 +26,7 @@ namespace CoreNodeModels.Input
         {
             get
             {
-                return "RangeInputNode";
+                return "FloatRangeInputNode";
             }
         }
 

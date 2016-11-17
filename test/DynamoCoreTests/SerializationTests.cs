@@ -306,7 +306,7 @@ namespace Dynamo.Tests
                 Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.NickName).ToArray()));
             }
 
-            var wcd2 = new WorkspaceComparisonData(ws1, CurrentDynamoModel.EngineController);
+            var wcd2 = new WorkspaceComparisonData(ws2, CurrentDynamoModel.EngineController);
 
             CompareWorkspaces(wcd1, wcd2);
 
@@ -331,15 +331,15 @@ namespace Dynamo.Tests
             {
                 var dict = new Dictionary<string, Dictionary<string, object>>();
                 var nodeDataDict = new Dictionary<string, object>();
-                nodeDataDict.Add("node_type", b.Value.ToString());
-                nodeDataDict.Add("port_values", a.Value);
+                nodeDataDict.Add("nodeType", b.Value.ToString());
+                nodeDataDict.Add("portValues", a.Value);
                 dict.Add(a.Key.ToString(), nodeDataDict);
                 return dict;
             });
 
             var workspaceDataDict = new Dictionary<string, object>();
-            workspaceDataDict.Add("node_data", nodeData);
-            workspaceDataDict.Add("execution_duration", executionDuration);
+            workspaceDataDict.Add("nodeData", nodeData);
+            workspaceDataDict.Add("executionDuration", executionDuration);
 
             var dataMapStr = JsonConvert.SerializeObject(workspaceDataDict,
                             new JsonSerializerSettings()
