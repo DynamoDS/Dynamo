@@ -2390,17 +2390,17 @@ namespace Dynamo.Graph.Nodes
             var s = reader.Value.ToString();
             switch (s)
             {
-                case "applyAuto":
+                case "Auto":
                     return LacingStrategy.Auto;
-                case "applyCartesianProduct":
+                case "CartesianProduct":
                     return LacingStrategy.CrossProduct;
-                case "applyDisabled":
+                case "Disabled":
                     return LacingStrategy.Disabled;
-                case "applyFirst":
+                case "First":
                     return LacingStrategy.First;
-                case "applyLongest":
+                case "Longest":
                     return LacingStrategy.Longest;
-                case "applyShortest":
+                case "Shortest":
                     return LacingStrategy.Shortest;
                 default:
                     return LacingStrategy.Disabled;
@@ -2415,22 +2415,22 @@ namespace Dynamo.Graph.Nodes
             {
 
                 case LacingStrategy.Auto:
-                    writer.WriteValue("applyAuto");
+                    writer.WriteValue("Auto");
                     break;
                 case LacingStrategy.CrossProduct:
-                    writer.WriteValue("applyCartesianProduct");
+                    writer.WriteValue("CartesianProduct");
                     break;
                 case LacingStrategy.Disabled:
-                    writer.WriteValue("applyDisabled");
+                    writer.WriteValue("Disabled");
                     break;
                 case LacingStrategy.First:
-                    writer.WriteValue("applyFirst");
+                    writer.WriteValue("First");
                     break;
                 case LacingStrategy.Longest:
-                    writer.WriteValue("applyLongest");
+                    writer.WriteValue("Longest");
                     break;
                 case LacingStrategy.Shortest:
-                    writer.WriteValue("applyShortest");
+                    writer.WriteValue("Shortest");
                     break;
             }
         }
