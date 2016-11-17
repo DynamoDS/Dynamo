@@ -57,8 +57,6 @@ namespace Autodesk.Workspaces
             
             var guid = Guid.Parse(obj["Uuid"].Value<string>());
             var displayName = obj["DisplayName"].Value<string>();
-            //var x = obj["X"].Value<double>();
-            //var y = obj["Y"].Value<double>();
 
             var inPorts = obj["InputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
             var outPorts = obj["OutputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();

@@ -1,4 +1,4 @@
-<Workspace Version="1.2.1.2940" X="-276.266903987238" Y="-225.334606234142" zoom="0.627708853775582" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+<Workspace Version="2.0.0.3217" X="-371.379621295966" Y="-921.563258291016" zoom="0.927082347481458" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <CoreNodeModels.ColorRange guid="0f62dae4-3774-47fb-80e9-fb36d32b9ef5" type="CoreNodeModels.ColorRange" nickname="Color Range" x="1442.2680796461" y="737.235279333609" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
@@ -135,7 +135,7 @@
     </CoreNodeModels.Input.DoubleSlider>
     <CoreNodeModels.Input.Filename guid="7adb01ee-fc3e-45d7-9be2-50972465f4fd" type="CoreNodeModels.Input.Filename" nickname="File Path" x="2708.374132683" y="1146.93710983882" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
       <System.String>Home.dyn</System.String>
-      <HintPath>C:\Users\keyu\Desktop\dump\Home.dyn</HintPath>
+      <HintPath>C:\Users\Ian\Documents\GitHub\Dynamo\test\core\serialization\Home.dyn</HintPath>
     </CoreNodeModels.Input.Filename>
     <CoreNodeModels.Input.Directory guid="8742eba8-74ec-4027-8176-58d9d20c3a16" type="CoreNodeModels.Input.Directory" nickname="Directory Path" x="2708.374132683" y="1261.8573571356" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
       <System.String>C:\Go</System.String>
@@ -204,23 +204,11 @@ OUT = 0</Script>
       <PortInfo index="0" default="False" />
       <PortInfo index="1" default="True" />
     </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
-    <Dynamo.Graph.Nodes.CustomNodes.Function guid="1178a6a6-e566-4fe7-a24e-363c2dc5157e" type="Dynamo.Graph.Nodes.CustomNodes.Function" nickname="customNode" x="578.90128379227" y="1302.27438824308" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false">
-      <PortInfo index="0" default="False" />
-      <ID value="16d036da-8c76-442e-a616-1a0493bb0b24" />
-      <Name value="customNode" />
-      <Description value="Test" />
-      <Inputs>
-        <Input value="x" />
-      </Inputs>
-      <Outputs>
-        <Output value="x" />
-      </Outputs>
-    </Dynamo.Graph.Nodes.CustomNodes.Function>
   </Elements>
   <Connectors />
   <Notes />
   <Annotations>
-    <Dynamo.Graph.Annotations.AnnotationModel guid="a336fa81-d076-429c-b1ee-a506a438405c" annotationText="Core Nodes" left="1432.2680796461" top="676.032641048059" width="1585.1060530369" height="2032.35947198297" fontSize="36" InitialTop="729.032641048059" InitialHeight="2009.35947198297" TextblockHeight="43" backgrouund="#FFC1D676">
+    <Dynamo.Graph.Annotations.AnnotationModel guid="a336fa81-d076-429c-b1ee-a506a438405c" annotationText="Core Nodes" left="1432.2680796461" top="676.032641048059" width="1585.6060530369" height="2032.35947198297" fontSize="36" InitialTop="729.032641048059" InitialHeight="2009.35947198297" TextblockHeight="43" backgrouund="#FFC1D676">
       <Models ModelGuid="0f62dae4-3774-47fb-80e9-fb36d32b9ef5" />
       <Models ModelGuid="ca3af471-4ee6-42ea-8406-39866b9929fa" />
       <Models ModelGuid="5e30cdd3-e864-48d6-aaf3-488325d57cb7" />
@@ -256,31 +244,28 @@ OUT = 0</Script>
       <Models ModelGuid="2b6b3855-a353-42b6-b809-1f306087c54c" />
       <Models ModelGuid="ef5dc6c3-0ff4-4c79-bf55-9751c66ac666" />
     </Dynamo.Graph.Annotations.AnnotationModel>
-    <Dynamo.Graph.Annotations.AnnotationModel guid="02ae2f6a-8062-4886-b611-a4b08526e0d7" annotationText="Python nodes" left="3050.24784223814" top="680.929583125115" width="336.38912412888" height="177.020510195221" fontSize="36" InitialTop="733.929583125115" InitialHeight="275.156921295467" TextblockHeight="43" backgrouund="#FFC1D676">
+    <Dynamo.Graph.Annotations.AnnotationModel guid="02ae2f6a-8062-4886-b611-a4b08526e0d7" annotationText="Python nodes" left="3050.24784223814" top="680.929583125115" width="335.88912412888" height="177.020510195221" fontSize="36" InitialTop="733.929583125115" InitialHeight="275.156921295467" TextblockHeight="43" backgrouund="#FFC1D676">
       <Models ModelGuid="ac19b926-aa93-4e28-9941-cc2d9833abb9" />
       <Models ModelGuid="2e4ad40c-6c18-47e5-b366-c9e535313776" />
     </Dynamo.Graph.Annotations.AnnotationModel>
-    <Dynamo.Graph.Annotations.AnnotationModel guid="b7bac99e-89ca-44df-87fd-e1719cdbb9b4" annotationText="UnitsUI nodes" left="3423.94020602971" top="686.940675337955" width="463.61604366897" height="460.578790523595" fontSize="36" InitialTop="739.940675337955" InitialHeight="437.578790523597" TextblockHeight="43" backgrouund="#FFC1D676">
+    <Dynamo.Graph.Annotations.AnnotationModel guid="b7bac99e-89ca-44df-87fd-e1719cdbb9b4" annotationText="UnitsUI nodes" left="3423.94020602971" top="686.940675337955" width="464.61604366897" height="460.578790523595" fontSize="36" InitialTop="739.940675337955" InitialHeight="437.578790523597" TextblockHeight="43" backgrouund="#FFC1D676">
       <Models ModelGuid="c964f40f-9e42-4ea5-96ca-ac324f4548a8" />
       <Models ModelGuid="78c6dffe-e795-476b-9a7a-9e31d51de15f" />
       <Models ModelGuid="8219941c-f8ce-463a-abcc-a1408cc2d85b" />
     </Dynamo.Graph.Annotations.AnnotationModel>
-    <Dynamo.Graph.Annotations.AnnotationModel guid="c8327a19-94d3-4851-a528-38ce72d9f7a4" annotationText="Different Lacing" left="573.153967792046" top="968.01014702537" width="558.574587091549" height="207.13323767083" fontSize="60" InitialTop="1050.01014702537" InitialHeight="427.923127714843" TextblockHeight="72" backgrouund="#FFC1D676">
+    <Dynamo.Graph.Annotations.AnnotationModel guid="c8327a19-94d3-4851-a528-38ce72d9f7a4" annotationText="Different Lacing" left="573.153967792046" top="968.01014702537" width="558.074587091549" height="207.13323767083" fontSize="60" InitialTop="1050.01014702537" InitialHeight="427.923127714843" TextblockHeight="72" backgrouund="#FFC1D676">
       <Models ModelGuid="d8f0083e-a70a-426b-80ff-0c1b05e64c65" />
       <Models ModelGuid="ec53979d-4bcc-47b7-9147-2bd664b22f40" />
       <Models ModelGuid="25022012-dfd7-418e-970e-3156ecd85592" />
     </Dynamo.Graph.Annotations.AnnotationModel>
-    <Dynamo.Graph.Annotations.AnnotationModel guid="5971fea4-c293-47a5-9e1d-5e6962025585" annotationText="Var arg " left="964.86222763427" top="597.090878313924" width="130" height="302" fontSize="36" InitialTop="650.090878313924" InitialHeight="279" TextblockHeight="43" backgrouund="#FFC1D676">
+    <Dynamo.Graph.Annotations.AnnotationModel guid="5971fea4-c293-47a5-9e1d-5e6962025585" annotationText="Var arg " left="964.86222763427" top="597.090878313924" width="130.5" height="302" fontSize="36" InitialTop="650.090878313924" InitialHeight="279" TextblockHeight="43" backgrouund="#FFC1D676">
       <Models ModelGuid="2acc9d3d-9ad7-4e8a-90eb-bcea25866bd3" />
     </Dynamo.Graph.Annotations.AnnotationModel>
-    <Dynamo.Graph.Annotations.AnnotationModel guid="3bd6ee8a-4f76-4c12-be4e-a1bf226e9c5b" annotationText="Member function" left="571.053888950185" top="708.276850186848" width="236" height="215" fontSize="36" InitialTop="804.276850186848" InitialHeight="149" TextblockHeight="86" backgrouund="#FFC1D676">
+    <Dynamo.Graph.Annotations.AnnotationModel guid="3bd6ee8a-4f76-4c12-be4e-a1bf226e9c5b" annotationText="Member function" left="571.053888950185" top="707.776850186848" width="235" height="215.5" fontSize="36" InitialTop="804.276850186848" InitialHeight="149" TextblockHeight="86.5" backgrouund="#FFC1D676">
       <Models ModelGuid="06994797-ef3d-4a69-96f3-e5248f15a3fc" />
     </Dynamo.Graph.Annotations.AnnotationModel>
     <Dynamo.Graph.Annotations.AnnotationModel guid="ee4c0538-c4f8-4eb9-a270-86b16484213a" annotationText="Property" left="568.399344425158" top="529.456726508569" width="213" height="146" fontSize="36" InitialTop="582.456726508569" InitialHeight="123" TextblockHeight="43" backgrouund="#FFC1D676">
       <Models ModelGuid="7e343048-0706-4a9c-8ac6-b0020c8e17f7" />
-    </Dynamo.Graph.Annotations.AnnotationModel>
-    <Dynamo.Graph.Annotations.AnnotationModel guid="a89929b1-60fe-4b1f-9b8b-847a07a3a9af" annotationText="A custom node" left="568.90128379227" top="1206.27438824308" width="153" height="189" fontSize="36" InitialTop="1302.27438824308" InitialHeight="123" TextblockHeight="86" backgrouund="#FFC1D676">
-      <Models ModelGuid="1178a6a6-e566-4fe7-a24e-363c2dc5157e" />
     </Dynamo.Graph.Annotations.AnnotationModel>
   </Annotations>
   <Presets />
