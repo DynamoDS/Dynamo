@@ -153,6 +153,9 @@ namespace Dynamo.Logging
             //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
             Service.StartUp(new ProductInfo() { Name = "Dynamo", VersionString = appversion },
                 new UserInfo(Session.UserId), ReportingAnalytics ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
+
+            TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
+            TrackPreferenceInternal("ReportingUsage", "", ReportingUsage ? 1 : 0);
         }
 
         public void ShutDown()
@@ -165,6 +168,17 @@ namespace Dynamo.Logging
             if (!ReportingAnalytics) return;
 
             var e = AnalyticsEvent.Create(category.ToString(), action.ToString(), description, value);
+            e.Track();
+        }
+
+        public void TrackPreference(string name, string stringValue, int? metricValue)
+        {
+            if (ReportingAnalytics) TrackPreferenceInternal(name, stringValue, metricValue);
+        }
+
+        private void TrackPreferenceInternal(string name, string stringValue, int? metricValue)
+        {
+            var e = AnalyticsEvent.Create(Categories.Preferences.ToString(), name, stringValue, metricValue);
             e.Track();
         }
 
