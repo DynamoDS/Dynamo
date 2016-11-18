@@ -81,6 +81,11 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         internal HashSet<NodeModel> UpstreamCache = new HashSet<NodeModel>();
 
+        /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
         public virtual string NodeType
         {
             get
@@ -2378,7 +2383,7 @@ namespace Dynamo.Graph.Nodes
     /// The mapping to string like 'applyDisabled' is to support the historical representation
     /// of 'lacing' on Flood.
     /// </summary>
-    public class LacingStrategyConverter : JsonConverter
+    class LacingStrategyConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {

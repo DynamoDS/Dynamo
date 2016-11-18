@@ -300,6 +300,11 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         private string nickName = String.Empty;
         private ElementResolver workspaceElementResolver;
 
+        /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
         public override string NodeType
         {
             get
@@ -523,6 +528,11 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         private string description = string.Empty;
         private ElementResolver workspaceElementResolver;
 
+        /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
         public override string NodeType
         {
             get

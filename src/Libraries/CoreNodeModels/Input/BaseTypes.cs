@@ -23,6 +23,11 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("Dynamo.Nodes.StringInput", "Dynamo.Nodes.dynStringInput", "DSCoreNodesUI.Input.StringInput")]
     public class StringInput : String
     {
+        /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
         public override string NodeType
         {
             get
@@ -108,6 +113,11 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("Dynamo.Nodes.DoubleInput", "Dynamo.Nodes.dynDoubleInput", "DSCoreNodesUI.Input.DoubleInput")]
     public class DoubleInput : NodeModel
     {
+        /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
         public override string NodeType
         {
             get
@@ -161,7 +171,7 @@ namespace CoreNodeModels.Input
         /// or unassigned identifier syntax.i.e *start..end*
         /// This property is only validated for new user input.
         /// </summary>
-        [JsonProperty("InputValue")]
+        [JsonProperty("InputValue"),JsonConverter(typeof(DoubleInputValueSerializationConverter))]
         public string Value
         {
             get { return _value; }
@@ -219,7 +229,6 @@ namespace CoreNodeModels.Input
             }
             return base.UpdateValueCore(updateValueParams);
         }
-
 
         public override bool IsConvertible
         {
@@ -706,6 +715,26 @@ namespace CoreNodeModels.Input
                 if (Math.Floor(_d) == _d)
                     return AstFactory.BuildIntNode((int)_d);
                 return AstFactory.BuildDoubleNode(_d);
+            }
+        }
+
+        private class DoubleInputValueSerializationConverter : JsonConverter
+        {
+            public override bool CanConvert(Type objectType)
+            {
+                return objectType == typeof(string);
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                return reader.Value.ToString();
+            }
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                double d = 0.0;
+                double.TryParse((string)value, out d);
+                writer.WriteValue(d);
             }
         }
     }

@@ -78,6 +78,11 @@ namespace PythonNodeModels
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
     {
+        /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
         public override string NodeType
         {
             get

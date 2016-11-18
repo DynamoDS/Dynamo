@@ -327,15 +327,15 @@ namespace Dynamo.Tests
 
         private static void SaveWorkspaceComparisonData(WorkspaceComparisonData wcd1, string filePathBase, TimeSpan executionDuration)
         {
-            var nodeData = wcd1.NodeDataMap.Zip(wcd1.NodeTypeMap, (a, b) =>
+            var nodeData = new Dictionary<string, Dictionary<string, object>>();
+            foreach(var d in wcd1.NodeDataMap)
             {
-                var dict = new Dictionary<string, Dictionary<string, object>>();
+                var t = wcd1.NodeTypeMap[d.Key];
                 var nodeDataDict = new Dictionary<string, object>();
-                nodeDataDict.Add("nodeType", b.Value.ToString());
-                nodeDataDict.Add("portValues", a.Value);
-                dict.Add(a.Key.ToString(), nodeDataDict);
-                return dict;
-            });
+                nodeDataDict.Add("nodeType", t.ToString());
+                nodeDataDict.Add("portValues", d.Value);
+                nodeData.Add(d.Key.ToString(), nodeDataDict);
+            }
 
             var workspaceDataDict = new Dictionary<string, object>();
             workspaceDataDict.Add("nodeData", nodeData);
