@@ -547,6 +547,7 @@ namespace Dynamo.Controls
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
 
             dynamoViewModel.RequestUserSaveWorkflow += DynamoViewModelRequestUserSaveWorkflow;
+            dynamoViewModel.RequestUserSaveHomeSpace += DynamoViewModelRequestUserSaveCurrentHomeSpace;
 
             dynamoViewModel.Model.ClipBoard.CollectionChanged += ClipBoard_CollectionChanged;
 
@@ -824,6 +825,35 @@ namespace Dynamo.Controls
             }
         }
 
+        /// <summary>
+        /// This method is to handle the event when user was working on the homespace but the file was
+        /// deleted from external operation and we need to request user to SaveAs the current homespace
+        /// </summary>
+        private void DynamoViewModelRequestUserSaveCurrentHomeSpace(object sender, WorkspaceSaveEventArgs e)
+        {
+            var dialogText = "";
+            dialogText = Dynamo.Wpf.Properties.Resources.MessageConfirmToSaveHomeWorkSpace;
+            var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
+            var result = System.Windows.MessageBox.Show(this, dialogText,
+                Dynamo.Wpf.Properties.Resources.SaveConfirmationMessageBoxTitle,
+                buttons, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                dynamoViewModel.ShowSaveDialogAndSaveResult(e.Workspace);
+                e.Success = true;
+            }
+            else if (result == MessageBoxResult.Cancel)
+            {
+                //return false;
+                e.Success = false;
+            }
+            else
+            {
+                e.Success = true;
+            }
+
+        }
+
         private void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
@@ -1090,6 +1120,7 @@ namespace Dynamo.Controls
             DynamoSelection.Instance.Selection.CollectionChanged -= Selection_CollectionChanged;
 
             dynamoViewModel.RequestUserSaveWorkflow -= DynamoViewModelRequestUserSaveWorkflow;
+            dynamoViewModel.RequestUserSaveHomeSpace -= DynamoViewModelRequestUserSaveCurrentHomeSpace;
 
             if (dynamoViewModel.Model != null)
             {

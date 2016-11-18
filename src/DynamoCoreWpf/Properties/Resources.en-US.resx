@@ -2104,4 +2104,11 @@ Want to publish a different package?</value>
   <data name="SolutionToFolderNotWritatbleError" xml:space="preserve">
     <value>Please update the permissions or go to 'Settings &gt; Manage Node and Package Paths...' to change your default directory.</value>
   </data>
+  <data name="FileDirectoryNotAccessible" xml:space="preserve">
+    <value>A problem occurred when trying to access the directory of currently opened file. Dynamo is unable to obtain read/write access to
+{0}</value>
+  </data>
+  <data name="UnableToAccessFileDirectory" xml:space="preserve">
+    <value>Unable To Access File Directory</value>
+  </data>
 </root>

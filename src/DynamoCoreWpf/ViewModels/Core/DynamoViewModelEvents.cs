@@ -86,6 +86,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event WorkspaceSaveEventHandler RequestUserSaveHomeSpace;
+        public virtual void OnRequestUserSaveHomeSpace(Object sender, WorkspaceSaveEventArgs e)
+        {
+            if (RequestUserSaveHomeSpace != null)
+            {
+                RequestUserSaveHomeSpace(this, e);
+            }
+        }
+
         public event RequestAboutWindowHandler RequestAboutWindow;
         public virtual void OnRequestAboutWindow(DynamoViewModel vm)
         {
