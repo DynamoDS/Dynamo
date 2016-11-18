@@ -208,7 +208,7 @@ namespace Autodesk.Workspaces
 
             var isCustomNode = obj["IsCustomNode"].Value<bool>();
             var lastModifiedStr = obj["LastModified"].Value<string>();
-            var lastModified = DateTime.ParseExact(lastModifiedStr,"yyyy-MM-dd",CultureInfo.InvariantCulture);
+            var lastModified = DateTime.Parse(lastModifiedStr);
             var author = obj["LastModifiedBy"].Value<string>();
             var description = obj["Description"].Value<string>();
             var guidStr = obj["Uuid"].Value<string>();
@@ -276,7 +276,7 @@ namespace Autodesk.Workspaces
                 writer.WriteValue(((CustomNodeWorkspaceModel)value).Category);
             }
             writer.WritePropertyName("LastModified");
-            writer.WriteValue(ws.LastSaved.ToString("yyyy-MM-dd"));
+            writer.WriteValue(ws.LastSaved.ToUniversalTime());
             writer.WritePropertyName("LastModifiedBy");
             writer.WriteValue(ws.Author);
             writer.WritePropertyName("Description");
