@@ -4,17 +4,14 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Xml;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Migration;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using CoreNodeModels.Properties;
-using System.Net;
 using Newtonsoft.Json;
 
 namespace CoreNodeModels.Input
@@ -26,6 +23,19 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("Dynamo.Nodes.StringInput", "Dynamo.Nodes.dynStringInput", "DSCoreNodesUI.Input.StringInput")]
     public class StringInput : String
     {
+        /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "StringInputNode";
+            }
+        }
+
         [JsonConstructor]
         private StringInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) {
             Value = "";
@@ -103,6 +113,19 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("Dynamo.Nodes.DoubleInput", "Dynamo.Nodes.dynDoubleInput", "DSCoreNodesUI.Input.DoubleInput")]
     public class DoubleInput : NodeModel
     {
+        /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "FloatInputNode";
+            }
+        }
+
         [JsonConstructor]
         private DoubleInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
         {
@@ -148,7 +171,7 @@ namespace CoreNodeModels.Input
         /// or unassigned identifier syntax.i.e *start..end*
         /// This property is only validated for new user input.
         /// </summary>
-        [JsonProperty("InputValue")]
+        [JsonProperty("InputValue"),JsonConverter(typeof(DoubleInputValueSerializationConverter))]
         public string Value
         {
             get { return _value; }
@@ -206,7 +229,6 @@ namespace CoreNodeModels.Input
             }
             return base.UpdateValueCore(updateValueParams);
         }
-
 
         public override bool IsConvertible
         {
@@ -693,6 +715,26 @@ namespace CoreNodeModels.Input
                 if (Math.Floor(_d) == _d)
                     return AstFactory.BuildIntNode((int)_d);
                 return AstFactory.BuildDoubleNode(_d);
+            }
+        }
+
+        private class DoubleInputValueSerializationConverter : JsonConverter
+        {
+            public override bool CanConvert(Type objectType)
+            {
+                return objectType == typeof(string);
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                return reader.Value.ToString();
+            }
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                double d = 0.0;
+                double.TryParse((string)value, out d);
+                writer.WriteValue(d);
             }
         }
     }
