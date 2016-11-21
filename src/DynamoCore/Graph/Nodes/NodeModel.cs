@@ -2397,7 +2397,7 @@ namespace Dynamo.Graph.Nodes
             {
                 case "Auto":
                     return LacingStrategy.Auto;
-                case "CartesianProduct":
+                case "Cartesian":
                     return LacingStrategy.CrossProduct;
                 case "Disabled":
                     return LacingStrategy.Disabled;
@@ -2423,7 +2423,7 @@ namespace Dynamo.Graph.Nodes
                     writer.WriteValue("Auto");
                     break;
                 case LacingStrategy.CrossProduct:
-                    writer.WriteValue("CartesianProduct");
+                    writer.WriteValue("Cartesian");
                     break;
                 case LacingStrategy.Disabled:
                     writer.WriteValue("Disabled");
