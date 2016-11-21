@@ -1264,8 +1264,30 @@ namespace Dynamo.ViewModels
             // if you've got the current space path, use it as the inital dir
             if (!string.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
             {
-                var fi = new FileInfo(Model.CurrentWorkspace.FileName);
-                _fileDialog.InitialDirectory = fi.DirectoryName;
+                var path = Model.CurrentWorkspace.FileName;
+
+                // Create folder if the directory is no longer exist and check for error (errors are usually from inaccessible directory)
+                var errorCannotCreateFolder = PathHelper.CreateFolderIfNotExist(Path.GetDirectoryName(path));
+
+                // Ask user to SaveAs the current homespace if the homespace directory happened to be not existed
+                if (!Directory.Exists(path))
+                {
+                    var args = new WorkspaceSaveEventArgs(HomeSpace, true);
+                    OnRequestUserSaveHomeSpace(this, args);
+                }
+
+                // Handle for the case, args.Path does not exist.
+                if(errorCannotCreateFolder == null)
+                {
+                    var fi = new FileInfo(Model.CurrentWorkspace.FileName);
+                    _fileDialog.InitialDirectory = fi.DirectoryName;
+                }
+                else
+                {
+                    string errorMessage = string.Format(Wpf.Properties.Resources.FileDirectoryNotAccessible, path);
+                    System.Windows.Forms.MessageBox.Show(errorMessage, Wpf.Properties.Resources.UnableToAccessFileDirectory, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+               
             }
             else // use the samples directory, if it exists
             {

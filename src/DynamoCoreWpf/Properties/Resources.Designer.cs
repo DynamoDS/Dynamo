@@ -2210,6 +2210,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A problem occurred when trying to access the directory of currently opened file. Dynamo is unable to obtain read/write access to
+        ///{0}.
+        /// </summary>
+        public static string FileDirectoryNotAccessible {
+            get {
+                return ResourceManager.GetString("FileDirectoryNotAccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Fail!.
         /// </summary>
         public static string FileNotPublishCaption {
@@ -4800,6 +4810,15 @@ namespace Dynamo.Wpf.Properties {
         public static string TooltipCurrentIndex {
             get {
                 return ResourceManager.GetString("TooltipCurrentIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable To Access File Directory.
+        /// </summary>
+        public static string UnableToAccessFileDirectory {
+            get {
+                return ResourceManager.GetString("UnableToAccessFileDirectory", resourceCulture);
             }
         }
         
