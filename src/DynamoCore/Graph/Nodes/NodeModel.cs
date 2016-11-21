@@ -2397,7 +2397,7 @@ namespace Dynamo.Graph.Nodes
             {
                 case "Auto":
                     return LacingStrategy.Auto;
-                case "Cartesian:
+                case "Cartesian":
                     return LacingStrategy.CrossProduct;
                 case "Disabled":
                     return LacingStrategy.Disabled;
