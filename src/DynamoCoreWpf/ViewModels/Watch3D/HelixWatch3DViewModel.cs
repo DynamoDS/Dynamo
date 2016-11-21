@@ -1409,13 +1409,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 nodeGeometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, false);
             }
 
-            // Then, select the individual node
-            var pathInDict = path + ":";
-            var geometryModels = Model3DDictionary.Where(x => x.Key.Contains(pathInDict) && x.Value is GeometryModel3D).ToArray();
-
-            foreach (var geometryModel in geometryModels)
+            // Then, select the individual node only if isSelected is true since all geometryModels' Selected Property is set to false
+            if (isSelected)
             {
-                geometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
+                var geometryModels = Model3DDictionary.Where(x => x.Key.StartsWith(path + ":") && x.Value is GeometryModel3D).ToArray();
+                foreach (var geometryModel in geometryModels)
+                {
+                    geometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
+                }
             }
         }
 
