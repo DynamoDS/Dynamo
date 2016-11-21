@@ -1264,8 +1264,26 @@ namespace Dynamo.ViewModels
             // if you've got the current space path, use it as the inital dir
             if (!string.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
             {
-                var fi = new FileInfo(Model.CurrentWorkspace.FileName);
-                _fileDialog.InitialDirectory = fi.DirectoryName;
+                string path = Model.CurrentWorkspace.FileName;
+                if (File.Exists(path))
+                {
+                    var fi = new FileInfo(Model.CurrentWorkspace.FileName);
+                    _fileDialog.InitialDirectory = fi.DirectoryName;
+                }
+                else
+                {
+                    Model.CurrentWorkspace.FileName = string.Empty;
+                    HomeSpace.FileName = string.Empty;
+                    if (AskUserToSaveWorkspaceOrCancel(HomeSpace))
+                    {
+                        _fileDialog.InitialDirectory = string.Empty;
+                    }
+                    else
+                    {
+                        HomeSpace.HasUnsavedChanges = true;
+                        return;
+                    }
+                }
             }
             else // use the samples directory, if it exists
             {
@@ -1382,6 +1400,9 @@ namespace Dynamo.ViewModels
                 // sadly it's not usually possible to cancel a crash
 
                 var fd = this.GetSaveDialog(workspace);
+                // since the workspace file directory is null, we set the initial directory
+                // for the file to be MyDocument folder in the local computer. 
+                fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
                     workspace.SaveAs(fd.FileName, EngineController.LiveRunnerRuntimeCore);
