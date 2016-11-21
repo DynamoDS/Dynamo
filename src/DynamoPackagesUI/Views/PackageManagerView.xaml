@@ -1,0 +1,13 @@
+﻿<Window x:Class="DynamoPackagesUI.Views.PackageManagerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DynamoPackagesUI.Views"
+             xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
+             mc:Ignorable="d" WindowStartupLocation="CenterOwner">
+
+    <cefSharp:ChromiumWebBrowser x:Name="cefBrowser" Address="{Binding Address}"/>
+
+
+</Window>
