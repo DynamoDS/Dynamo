@@ -1,4 +1,5 @@
 ﻿using Dynamo.DynamoPackagesUI.ViewModels;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using DynamoPackagesUI.Views;
 using System;
@@ -14,6 +15,8 @@ namespace Dynamo.DynamoPackagesUI
     public class PackageManagerExtension : IViewExtension
     {
         private ViewLoadedParams viewLoadedParams;
+        private ViewStartupParams viewStartupParams;
+
         private MenuItem packageManagerMenuItem;
         private static bool enablePackageManager = false;
 
@@ -31,7 +34,7 @@ namespace Dynamo.DynamoPackagesUI
 
         public void Startup(ViewStartupParams p)
         {
-
+            viewStartupParams = p;
         }
         public void Loaded(ViewLoadedParams p)
         {
@@ -51,16 +54,15 @@ namespace Dynamo.DynamoPackagesUI
 
         private void OnPackageManagerClick()
         {
-            var _packageManagerView = new PackageManagerView()
+            var vm = new PackageManagerViewModel((DynamoViewModel)viewLoadedParams.DynamoWindow.DataContext, "assets");
+
+            var _packageManagerView = new PackageManagerView(vm)
             {
-                //Owner = this,
+                Owner = viewLoadedParams.DynamoWindow,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             };
 
-            //var vm = new PackageManagerViewModel(dynamoViewModel,
-            //        pmExtension.PackageLoader, "assets");
-
-            var vm = new PackageManagerViewModel("assets");
+            //var vm = new PackageManagerViewModel("assets");
             _packageManagerView.DataContext = vm;
 
             _packageManagerView.Closed += (sender, args) => _packageManagerView = null;

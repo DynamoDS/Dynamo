@@ -16,10 +16,10 @@ namespace Dynamo.PackageManager
         // These were used early on in order to identify packages with binaries and python scripts
         // This is now a bona fide field in the DB so they are obsolete. 
 
-        [Obsolete] internal static readonly string PackageContainsBinariesConstant =
+        [Obsolete] public static readonly string PackageContainsBinariesConstant =
             "|ContainsBinaries(5C698212-A139-4DDD-8657-1BF892C79821)";
 
-        [Obsolete] internal static readonly string PackageContainsPythonScriptsConstant =
+        [Obsolete] public static readonly string PackageContainsPythonScriptsConstant =
             "|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
 
         private readonly IGregClient client;
