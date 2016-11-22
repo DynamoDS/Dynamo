@@ -1272,17 +1272,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    Model.CurrentWorkspace.FileName = string.Empty;
-                    HomeSpace.FileName = string.Empty;
-                    if (AskUserToSaveWorkspaceOrCancel(HomeSpace))
-                    {
-                        _fileDialog.InitialDirectory = string.Empty;
-                    }
-                    else
-                    {
-                        HomeSpace.HasUnsavedChanges = true;
-                        return;
-                    }
+                    _fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
                 }
             }
             else // use the samples directory, if it exists
