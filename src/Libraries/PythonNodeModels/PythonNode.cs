@@ -79,6 +79,19 @@ namespace PythonNodeModels
     public sealed class PythonNode : PythonNodeBase
     {
         /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "PythonScriptNode";
+            }
+        }
+
+        /// <summary>
         /// Private constructor used for serialization.
         /// </summary>
         /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>

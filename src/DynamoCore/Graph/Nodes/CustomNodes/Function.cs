@@ -301,6 +301,19 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         private ElementResolver workspaceElementResolver;
 
         /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "InputNode";
+            }
+        }
+
+        /// <summary>
         ///     Responsible for resolving 
         ///     a partial class name to its fully resolved name
         /// </summary>
@@ -514,6 +527,19 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         private string outputIdentifier = string.Empty;
         private string description = string.Empty;
         private ElementResolver workspaceElementResolver;
+
+        /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "OutputNode";
+            }
+        }
 
         /// <summary>
         /// Element resolver 
