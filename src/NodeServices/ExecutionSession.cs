@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Dynamo.Session
 {
@@ -64,5 +65,10 @@ namespace Dynamo.Session
         /// is a number.
         /// </summary>
         public static readonly string MinorVersion = "MinorFileVersion";
+
+        /// <summary>
+        /// The duration of an execution covered by an <see cref="IExecutionSession"/>
+        /// </summary>
+        public static readonly string LastExecutionDuration = "LastExecutionDuration";
     }
 }

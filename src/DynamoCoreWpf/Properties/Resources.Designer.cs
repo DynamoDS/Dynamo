@@ -494,7 +494,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New Node F_rom Selection.
+        ///   Looks up a localized string similar to Create Custom Node.
         /// </summary>
         public static string ContextMenuNodesFromSelection {
             get {
@@ -1018,20 +1018,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Create Custom Node.
+        /// </summary>
+        public static string DynamoViewEditMenuCreateCustomNode {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuCreateCustomNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Create Group.
         /// </summary>
         public static string DynamoViewEditMenuCreateGroup {
             get {
                 return ResourceManager.GetString("DynamoViewEditMenuCreateGroup", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Create Node From Selection.
-        /// </summary>
-        public static string DynamoViewEditMenuCreateNodeFromSelection {
-            get {
-                return ResourceManager.GetString("DynamoViewEditMenuCreateNodeFromSelection", resourceCulture);
             }
         }
         

@@ -1,0 +1,4 @@
+<ViewExtensionDefinition>
+  <AssemblyPath>..\DynamoPackagesUI.dll</AssemblyPath>
+  <TypeName>Dynamo.DynamoPackagesUI.PackageManagerExtension</TypeName>
+</ViewExtensionDefinition>

@@ -21,6 +21,8 @@ namespace CoreNodeModels
     public class Formula : NodeModel
     {
         private string formulaString = "";
+
+        [JsonProperty("Formula")]
         public string FormulaString
         {
             get
@@ -47,6 +49,19 @@ namespace CoreNodeModels
                             RaisePropertyChanged("State");
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "FormulaNode";
             }
         }
 
