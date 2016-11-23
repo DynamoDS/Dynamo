@@ -1,7 +1,5 @@
-This folder contains scripts to build the Dynamo NuGet packages.
+This folder contains scripts to build and post the Dynamo NuGet packages.
 
-To update the packages to a new version:
+To build NuGet packages locally, run BuildPackages.bat.
 
-1. Update the version numbers in each of the .nuspec files located in the DynamoVisualProgramming.xxx subfolders. These version numbers support semantic versioning. More info can be found at https://docs.nuget.org/create/versioning.
-2. Run each of the Buildxxx scripts.
-3. Post the generated packages to NuGet.
+To post them as pre-release packages, skip the above step and run BuildAndPostPackages.bat. Supply the NuGet API Key as the only parameter for this batch file.
