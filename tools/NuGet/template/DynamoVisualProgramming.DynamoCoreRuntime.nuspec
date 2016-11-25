@@ -1,21 +1,18 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>DynamoVisualProgramming.ZeroTouchLibrary</id>
-    <version>@PKGVERSION@</version>
+    <id>DynamoVisualProgramming.DynamoCoreRuntime</id>
+    <version>@VERSION@</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Build zero touch node libraries for Dynamo. It contains the following files:
-1) ProtoGeometry.dll
-2) DynamoUnits.dll</description>
-    <summary>This package contains all that is required to get up and running building zero touch libraries for the Dynamo Visual Programming language.</summary>
+    <description>This package bundles all files from the Dynamo bin folder.</description>
     <copyright>Copyright Autodesk 2016</copyright>
-  <dependencies>
-    <dependency id="DynamoVisualProgramming.DynamoServices" version="@SHORTVERSION@"/>
-  </dependencies>
- </metadata>
+  </metadata>
+  <files>
+    <file src="**" target="lib\net45" />
+  </files>
 </package>

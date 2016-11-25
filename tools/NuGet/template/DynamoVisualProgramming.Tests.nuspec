@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>DynamoVisualProgramming.Core</id>
-    <version>@PKGVERSION@</version>
+    <id>DynamoVisualProgramming.Tests</id>
+    <version>@VERSION@</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
@@ -10,16 +10,16 @@
     <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Unit and system test infrastructure for Dynamo. It contains the following files:
-1) DynamoCore.dll
-2) ProtoCore.dll
-3) DynamoShapeManager.dll 
-4) DynamoUtilities.dll</description>
-    <summary>This package contains the core assemblies for Dynamo.</summary>
+1) TestServices.dll 
+2) SystemTestServices.dll</description>
+    <summary>This package contains all that is required to get up and running creating tests for Dynamo libraries.</summary>
     <copyright>Copyright Autodesk 2016</copyright>
     <dependencies>
-      <dependency id="Prism" version="4.1"/>
-      <dependency id="NUnit" version="2.6.3"/>
-      <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="@SHORTVERSION@"/>
+      <dependency id="DynamoVisualProgramming.Core" version="@VERSION@"/>
     </dependencies>
   </metadata>
+  <files>
+    <file src="..\..\..\bin\AnyCPU\Release\TestServices.dll" target="lib\net45" />
+    <!--file src="..\..\..\bin\AnyCPU\Release\SystemTestServices.xml" target="lib\net45" /-->
+  </files>
 </package>
