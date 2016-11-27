@@ -11,6 +11,7 @@ using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using ProtoCore.Namespace;
+using System.Diagnostics;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -80,6 +81,8 @@ namespace Dynamo.Graph.Workspaces
             WorkspaceInfo info)
             : base(nodes, notes, annotations, info, factory, presets, elementResolver)
         {
+            Debug.WriteLine("Creating a custom node workspace...");
+
             HasUnsavedChanges = false;
 
             CustomNodeId = Guid.Parse(info.ID);

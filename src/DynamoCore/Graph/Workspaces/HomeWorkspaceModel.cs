@@ -264,6 +264,8 @@ namespace Dynamo.Graph.Workspaces
             bool isTestMode)
             : base(nodes, notes,annotations, info, factory,presets, resolver)
         {
+            Debug.WriteLine("Creating a home workspace...");
+
             EvaluationCount = 0;
 
             // This protects the user from a file that might have crashed during

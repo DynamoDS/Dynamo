@@ -80,7 +80,7 @@ namespace CoreNodeModels
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            if (!HasConnectedInput(0) && !HasConnectedInput(1) && !HasConnectedInput(2))
+            if (!InPorts[0].IsConnected && !InPorts[1].IsConnected && !InPorts[2].IsConnected)
             {
                 return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode())};
             }
@@ -88,7 +88,7 @@ namespace CoreNodeModels
 
             // If either of the first two inputs does not have a connector
             // then build a default color range.
-            if (!HasConnectedInput(0) || !HasConnectedInput(1))
+            if (!InPorts[1].IsConnected || !InPorts[1].IsConnected)
             {
                 buildColorRangeNode =
                     AstFactory.BuildFunctionCall(
@@ -121,7 +121,7 @@ namespace CoreNodeModels
             List<double> parameters;
 
             // If there are colors supplied
-            if (HasConnectedInput(0))
+            if (InPorts[0].IsConnected)
             {
                 var colorsNode = InPorts[0].Connectors[0].Start.Owner;
                 var colorsIndex = InPorts[0].Connectors[0].Start.Index;
@@ -136,7 +136,7 @@ namespace CoreNodeModels
             }
 
             // If there are indices supplied
-            if (HasConnectedInput(1))
+            if (InPorts[1].IsConnected)
             {
                 var valuesNode = InPorts[1].Connectors[0].Start.Owner;
                 var valuesIndex = InPorts[1].Connectors[0].Start.Index;

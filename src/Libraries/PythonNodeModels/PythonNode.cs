@@ -79,6 +79,19 @@ namespace PythonNodeModels
     public sealed class PythonNode : PythonNodeBase
     {
         /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "PythonScriptNode";
+            }
+        }
+
+        /// <summary>
         /// Private constructor used for serialization.
         /// </summary>
         /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
@@ -96,11 +109,11 @@ namespace PythonNodeModels
                 + "OUT = 0";
 
             AddInput();
-            ConfigureSnapEdges(InPorts);
-            ValidateConnections();
         }
 
         private string script;
+
+        [JsonProperty("Code")]
         public string Script
         {
             get { return script; }
@@ -185,7 +198,7 @@ namespace PythonNodeModels
 
         public PythonStringNode()
         {
-            InPortData.Add(new PortData("script", Properties.Resources.PythonStringPortDataScriptToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("script", Properties.Resources.PythonStringPortDataScriptToolTip)));
             AddInput();
             RegisterAllPorts();
         }

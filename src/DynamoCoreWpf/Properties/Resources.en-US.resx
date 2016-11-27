@@ -166,7 +166,7 @@
     <comment>Context menu item</comment>
   </data>
   <data name="ContextMenuNodesFromSelection" xml:space="preserve">
-    <value>New Node F_rom Selection</value>
+    <value>Create Custom Node</value>
     <comment>Context menu item</comment>
   </data>
   <data name="ContextMenuNodeToCode" xml:space="preserve">
@@ -265,8 +265,8 @@
     <value>_Copy</value>
     <comment>Edit menu | Copy</comment>
   </data>
-  <data name="DynamoViewEditMenuCreateNodeFromSelection" xml:space="preserve">
-    <value>_Create Node From Selection</value>
+  <data name="DynamoViewEditMenuCreateCustomNode" xml:space="preserve">
+    <value>_Create Custom Node</value>
     <comment>Edit menu | Create custom node from selected nodes</comment>
   </data>
   <data name="DynamoViewEditMenuCreateNote" xml:space="preserve">
@@ -564,7 +564,7 @@ It does not contain your graph or any personal data</value>
     <comment>Setting menu | Experimental</comment>
   </data>
   <data name="DynamoViewSettingEnableTSplineNodes" xml:space="preserve">
-    <value>Enable T-Spline nodes</value>
+    <value>Enable T-Spline nodes (requires relaunch of Dynamo)</value>
     <comment>Setting menu | Experimental | Enable T-Spline nodes</comment>
   </data>
   <data name="DynamoViewToolbarExportButtonTooltip" xml:space="preserve">

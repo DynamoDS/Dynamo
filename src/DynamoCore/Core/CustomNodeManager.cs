@@ -17,6 +17,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -757,6 +758,9 @@ namespace Dynamo.Core
 
             CustomNodeWorkspaceModel newWorkspace;
 
+            Debug.WriteLine("Current workspace has {0} nodes and {1} connectors", 
+                currentWorkspace.Nodes.Count(), currentWorkspace.Connectors.Count());
+
             using (undoRecorder.BeginActionGroup())
             {
                 #region Determine Inputs and Outputs
@@ -767,7 +771,7 @@ namespace Dynamo.Core
                         selectedNodeSet.SelectMany(
                             node =>
                                 Enumerable.Range(0, node.InPorts.Count)
-                                .Where(node.HasConnectedInput)
+                                .Where(index=>node.InPorts[index].Connectors.Any())
                                 .Select(data => Tuple.Create(node, data, node.InputNodes[data]))
                                 .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
 
@@ -776,76 +780,12 @@ namespace Dynamo.Core
                         selectedNodeSet.SelectMany(
                             node =>
                                 Enumerable.Range(0, node.OutPorts.Count)
-                                .Where(node.HasOutput)
+                                .Where(index=>node.OutPorts[index].Connectors.Any())
                                 .SelectMany(
                                     data =>
                                         node.OutputNodes[data].Where(
                                             output => !selectedNodeSet.Contains(output.Item2))
                                         .Select(output => Tuple.Create(node, data, output)))));
-
-                #endregion
-
-                #region Detect 1-node holes (higher-order function extraction)
-
-                Log(Properties.Resources.CouldNotRepairOneNodeHoles, WarningLevel.Mild);
-                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5603
-
-                //var curriedNodeArgs =
-                //    new HashSet<NodeModel>(
-                //        inputs.Select(x => x.Item3.Item2)
-                //            .Intersect(outputs.Select(x => x.Item3.Item2))).Select(
-                //                outerNode =>
-                //                {
-                //                    //var node = new Apply1();
-                //                    var node = newNodeWorkspace.AddNode<Apply1>();
-                //                    node.SetNickNameFromAttribute();
-
-                //                    node.DisableReporting();
-
-                //                    node.X = outerNode.X;
-                //                    node.Y = outerNode.Y;
-
-                //                    //Fetch all input ports
-                //                    // in order
-                //                    // that have inputs
-                //                    // and whose input comes from an inner node
-                //                    List<int> inPortsConnected =
-                //                        Enumerable.Range(0, outerNode.InPortData.Count)
-                //                            .Where(
-                //                                x =>
-                //                                    outerNode.HasInput(x)
-                //                                        && selectedNodeSet.Contains(
-                //                                            outerNode.Inputs[x].Item2))
-                //                            .ToList();
-
-                //                    var nodeInputs =
-                //                        outputs.Where(output => output.Item3.Item2 == outerNode)
-                //                            .Select(
-                //                                output =>
-                //                                    new
-                //                                    {
-                //                                        InnerNodeInputSender = output.Item1,
-                //                                        OuterNodeInPortData = output.Item3.Item1
-                //                                    })
-                //                            .ToList();
-
-                //                    nodeInputs.ForEach(_ => node.AddInput());
-
-                //                    node.RegisterAllPorts();
-
-                //                    return
-                //                        new
-                //                        {
-                //                            OuterNode = outerNode,
-                //                            InnerNode = node,
-                //                            Outputs =
-                //                                inputs.Where(
-                //                                    input => input.Item3.Item2 == outerNode)
-                //                                    .Select(input => input.Item3.Item1),
-                //                            Inputs = nodeInputs,
-                //                            OuterNodePortDataList = inPortsConnected
-                //                        };
-                //                }).ToList();
 
                 #endregion
 
@@ -916,7 +856,7 @@ namespace Dynamo.Core
                 foreach (var node in selectedNodeSet)
                 {                   
                     undoRecorder.RecordDeletionForUndo(node);
-                    currentWorkspace.RemoveNode(node);
+                    currentWorkspace.RemoveAndDisposeNode(node);
 
                     // Assign a new guid to this node, otherwise when node is
                     // compiled to AST, literally it is still in global scope
@@ -1041,24 +981,7 @@ namespace Dynamo.Core
                         newNodes.Add(node);
                     }
 
-                    //var curriedNode = curriedNodeArgs.FirstOrDefault(x => x.OuterNode == inputNode);
-
-                    //if (curriedNode == null)
-                    //{
                     ConnectorModel.Make(node, inputReceiverNode, 0, inputReceiverData);
-                    //}
-                    //else
-                    //{
-                    //    //Connect it to the applier
-                    //    newNodeWorkspace.AddConnection(node, curriedNode.InnerNode, 0, 0);
-
-                    //    //Connect applier to the inner input receive
-                    //    newNodeWorkspace.AddConnection(
-                    //        curriedNode.InnerNode,
-                    //        inputReceiverNode,
-                    //        0,
-                    //        inputReceiverData);
-                    //}
                 }
 
                 #endregion
@@ -1079,11 +1002,6 @@ namespace Dynamo.Core
                         {
                             NodeModel outputSenderNode = output.Item1;
                             int outputSenderData = output.Item2;
-
-                            //NodeModel outputReceiverNode = output.Item3.Item2;
-
-                            //if (curriedNodeArgs.Any(x => x.OuterNode == outputReceiverNode))
-                            //    continue;
 
                             outportList.Add(Tuple.Create(outputSenderNode, outputSenderData));
 
@@ -1124,14 +1042,14 @@ namespace Dynamo.Core
                     foreach (var hanging in
                         selectedNodeSet.SelectMany(
                             node =>
-                                Enumerable.Range(0, node.OutPortData.Count)
-                                .Where(port => !node.HasOutput(port))
+                                Enumerable.Range(0, node.OutPorts.Count)
+                                .Where(index => !node.OutPorts[index].IsConnected)
                                 .Select(port => new { node, port })).Distinct())
                     {
                         //Create Symbol Node
                         var node = new Output
                         {
-                            Symbol = hanging.node.OutPortData[hanging.port].NickName,
+                            Symbol = hanging.node.OutPorts[hanging.port].PortName,
                             X = rightMost + 75 - leftShift
                         };
                         node.Y = i*(50 + node.Height);
@@ -1169,6 +1087,9 @@ namespace Dynamo.Core
                 newWorkspace.HasUnsavedChanges = true;
 
                 RegisterCustomNodeWorkspace(newWorkspace);
+
+                Debug.WriteLine("Collapsed workspace has {0} nodes and {1} connectors",
+                    newWorkspace.Nodes.Count(), newWorkspace.Connectors.Count());
 
                 var collapsedNode = CreateCustomNodeInstance(newId, isTestMode: isTestMode);
                 collapsedNode.X = avgX;

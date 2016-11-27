@@ -812,7 +812,7 @@ namespace Dynamo.Tests
             BeginRun();
 
             var customInstance = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(x => x is Function) as Function;
-            Assert.AreEqual("int", customInstance.InPorts.First().ToolTipContent);
+            Assert.AreEqual("int", customInstance.InPorts.First().ToolTip);
 
             OpenModel(Path.Combine(basePath, "inputWithType.dyf"));
             var customWorkspace = CurrentDynamoModel.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
@@ -828,7 +828,7 @@ namespace Dynamo.Tests
             customInstance.ResyncWithDefinition(customWorkspace.CustomNodeDefinition);
 
             Assert.AreEqual("x", customInstance.InPorts.First().PortName);
-            Assert.AreEqual("bool", customInstance.InPorts.First().ToolTipContent);
+            Assert.AreEqual("bool", customInstance.InPorts.First().ToolTip);
         }
 
         [Test]
@@ -944,32 +944,32 @@ namespace Dynamo.Tests
             OpenModel(filePath);
 
             var customInstance = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(x => x is Function) as Function;
-            Assert.AreEqual(5, customInstance.InPortData.Count());
-            Assert.AreEqual(3, customInstance.OutPortData.Count());
+            Assert.AreEqual(5, customInstance.InPorts.Count());
+            Assert.AreEqual(3, customInstance.OutPorts.Count());
 
-            Assert.AreEqual("", customInstance.InPortData[0].NickName);
-            Assert.AreEqual(@"var[]..[]", customInstance.InPortData[0].ToolTipString);
+            Assert.AreEqual("", customInstance.InPorts[0].PortName);
+            Assert.AreEqual(@"var[]..[]", customInstance.InPorts[0].ToolTip);
 
-            Assert.AreEqual("x1", customInstance.InPortData[1].NickName);
-            Assert.AreEqual("x1\n\nvar[]..[]", customInstance.InPortData[1].ToolTipString);
+            Assert.AreEqual("x1", customInstance.InPorts[1].PortName);
+            Assert.AreEqual("x1\n\nvar[]..[]", customInstance.InPorts[1].ToolTip);
 
-            Assert.AreEqual("x2", customInstance.InPortData[2].NickName);
-            Assert.AreEqual("x2:var\n\nvar", customInstance.InPortData[2].ToolTipString);
+            Assert.AreEqual("x2", customInstance.InPorts[2].PortName);
+            Assert.AreEqual("x2:var\n\nvar", customInstance.InPorts[2].ToolTip);
 
-            Assert.AreEqual("x3", customInstance.InPortData[3].NickName);
-            Assert.AreEqual("x3:var\n\nvar[]\nDefault value : {1}", customInstance.InPortData[3].ToolTipString);
+            Assert.AreEqual("x3", customInstance.InPorts[3].PortName);
+            Assert.AreEqual("x3:var\n\nvar[]\nDefault value : {1}", customInstance.InPorts[3].ToolTip);
 
-            Assert.AreEqual("x4", customInstance.InPortData[4].NickName);
-            Assert.AreEqual("comment1\ncomment2\ncomment3\n\nvar[]..[]", customInstance.InPortData[4].ToolTipString);
+            Assert.AreEqual("x4", customInstance.InPorts[4].PortName);
+            Assert.AreEqual("comment1\ncomment2\ncomment3\n\nvar[]..[]", customInstance.InPorts[4].ToolTip);
 
-            Assert.AreEqual("", customInstance.OutPortData[0].NickName);
-            Assert.AreEqual("return value", customInstance.OutPortData[0].ToolTipString);
+            Assert.AreEqual("", customInstance.OutPorts[0].PortName);
+            Assert.AreEqual("return value", customInstance.OutPorts[0].ToolTip);
 
-            Assert.AreEqual("y1", customInstance.OutPortData[1].NickName);
-            Assert.AreEqual("y1", customInstance.OutPortData[1].ToolTipString);
+            Assert.AreEqual("y1", customInstance.OutPorts[1].PortName);
+            Assert.AreEqual("y1", customInstance.OutPorts[1].ToolTip);
 
-            Assert.AreEqual("y2", customInstance.OutPortData[2].NickName);
-            Assert.AreEqual("comment1\ncomment2\ncomment3", customInstance.OutPortData[2].ToolTipString);
+            Assert.AreEqual("y2", customInstance.OutPorts[2].PortName);
+            Assert.AreEqual("comment1\ncomment2\ncomment3", customInstance.OutPorts[2].ToolTip);
         }
 
         [Test]
@@ -979,12 +979,12 @@ namespace Dynamo.Tests
             OpenModel(filePath);
 
             var customInstance = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(x => x is Function) as Function;
-            Assert.AreEqual(4, customInstance.OutPortData.Count());
+            Assert.AreEqual(4, customInstance.OutPorts.Count());
 
-            Assert.AreEqual("x", customInstance.OutPortData[0].NickName);
-            Assert.AreEqual("y", customInstance.OutPortData[1].NickName);
-            Assert.AreEqual("def foo() {}", customInstance.OutPortData[2].NickName);
-            Assert.AreEqual("class bar {}", customInstance.OutPortData[3].NickName);
+            Assert.AreEqual("x", customInstance.OutPorts[0].PortName);
+            Assert.AreEqual("y", customInstance.OutPorts[1].PortName);
+            Assert.AreEqual("def foo() {}", customInstance.OutPorts[2].PortName);
+            Assert.AreEqual("class bar {}", customInstance.OutPorts[3].PortName);
         }
 
         [Test]
@@ -994,8 +994,8 @@ namespace Dynamo.Tests
             OpenModel(filePath);
 
             var customInstance = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(x => x is Function) as Function;
-            Assert.AreEqual("comment", customInstance.OutPortData[0].ToolTipString);
-            Assert.AreEqual("Point", customInstance.OutPortData[0].NickName);
+            Assert.AreEqual("comment", customInstance.OutPorts[0].ToolTip);
+            Assert.AreEqual("Point", customInstance.OutPorts[0].PortName);
 
             var previewValue = GetPreviewValue(customInstance.GUID.ToString());
             Assert.AreEqual(21, previewValue);

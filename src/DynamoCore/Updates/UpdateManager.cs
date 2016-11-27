@@ -955,6 +955,7 @@ namespace Dynamo.Updates
                 p.StartInfo.Arguments += " " + hostApplicationProcessId;
             }
             p.Start();
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Installed, Categories.Upgrade, AvailableVersion.ToString());
         }
 
         public void RegisterExternalApplicationProcessId(int id)
@@ -988,6 +989,7 @@ namespace Dynamo.Updates
 
             UpdateFileLocation = (string)e.UserState;
             OnLog(new LogEventArgs("Update download complete.", LogLevel.Console));
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Downloaded, Categories.Upgrade, AvailableVersion.ToString());
 
             if (null != UpdateDownloaded)
                 UpdateDownloaded(this, new UpdateDownloadedEventArgs(e.Error, UpdateFileLocation));

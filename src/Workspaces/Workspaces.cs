@@ -29,7 +29,6 @@ namespace Autodesk.Workspaces
             {"IntegerRangeInputNode", typeof(IntegerSlider)},
             {"FloatRangeInputNode", typeof(DoubleSlider)},
             {"NumberInputNode", typeof(DoubleInput)},
-            //{"IntegerInputNode", typeof()},
             {"StringInputNode", typeof(StringInput)},
             {"BooleanInputNode", typeof(BoolSelector)},
         };
@@ -46,7 +45,6 @@ namespace Autodesk.Workspaces
             {typeof(IntegerSlider), "IntegerRangeInputNode"},
             {typeof(DoubleSlider), "FloatRangeInputNode"},
             {typeof(DoubleInput), "NumberInputNode"},
-            //{"IntegerInputNode", typeof()},
             {typeof(StringInput), "StringInputNode"},
             {typeof(BoolSelector), "BooleanInputNode"},
         };
@@ -131,40 +129,17 @@ namespace Autodesk.Workspaces
         {
             var result = json;
 
-            foreach (var kvp in NodeNameMap)
+            if (fromServer)
             {
-                var t = kvp.Value;
-                var typeName = t.FullName + ", " + t.Assembly.GetName().Name;
-                var typeDeclBase = "\"{0}\"";
-                string existingTypeDecl, newTypeDecl;
-                if (fromServer)
-                {
-                    existingTypeDecl = string.Format(typeDeclBase, kvp.Key);
-                    newTypeDecl = string.Format(typeDeclBase, typeName);
-                }
-                else
-                {
-                    typeName = typeName.Replace(".", "\\.");
-                    existingTypeDecl = string.Format(typeDeclBase, typeName);
-                    newTypeDecl = string.Format(typeDeclBase, kvp.Key);
-                }
-
-                var rgx = new Regex(existingTypeDecl);
-                result = rgx.Replace(result, newTypeDecl);
-
-                if (fromServer)
-                {
-                    var rgx2 = new Regex(@"NodeType");
-                    result = rgx2.Replace(result, "$type");
-                }
-                else
-                {
-                    var rgx2 = new Regex(@"\$type");
-                    result = rgx2.Replace(result, "NodeType");
-                }
+                var rgx2 = new Regex(@"ConcreteType");
+                result = rgx2.Replace(result, "$type");
+            }
+            else
+            {
+                var rgx2 = new Regex(@"\$type");
+                result = rgx2.Replace(result, "ConcreteType");
             }
 
-            // Do one final pass to replace all $type 
             return result;
         }
     }

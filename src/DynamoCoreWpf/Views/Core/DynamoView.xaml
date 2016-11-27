@@ -176,7 +176,8 @@
     <Grid Name="mainGrid"
           FocusManager.IsFocusScope="True"
           PreviewMouseDown="Window_PreviewMouseDown"
-          PreviewMouseUp="Window_PreviewMouseUp">
+          PreviewMouseUp="Window_PreviewMouseUp"
+          PreviewMouseLeftButtonUp="Window_PreviewMouseLeftButtonUp">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -452,7 +453,7 @@
                                   Name="ungroupGroup"
                                   InputGestureText="Ctrl + U" />
                         <MenuItem Focusable="False"                                
-                                  Header="{x:Static p:Resources.DynamoViewEditMenuCreateNodeFromSelection}"
+                                  Header="{x:Static p:Resources.DynamoViewEditMenuCreateCustomNode}"
                                   Command="{Binding Path=NodeFromSelectionCommand}"
                                   Name="nodeFromSelection"
                                   InputGestureText="Ctrl + D" />

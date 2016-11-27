@@ -20,8 +20,7 @@ using Dynamo.Utilities;
 using Dynamo.Graph.Nodes.CustomNodes;
 using ProtoCore.Namespace;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using System.Globalization;
-using Dynamo.Models;
+using CoreNodeModels;
 
 namespace Autodesk.Workspaces
 {
@@ -57,8 +56,6 @@ namespace Autodesk.Workspaces
             
             var guid = Guid.Parse(obj["Uuid"].Value<string>());
             var displayName = obj["DisplayName"].Value<string>();
-            //var x = obj["X"].Value<double>();
-            //var y = obj["Y"].Value<double>();
 
             var inPorts = obj["InputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
             var outPorts = obj["OutputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
@@ -79,7 +76,7 @@ namespace Autodesk.Workspaces
             }
             else if(typeof(DSFunctionBase).IsAssignableFrom(type))
             {
-                var mangledName = obj["FunctionName"].Value<string>();
+                var mangledName = obj["FunctionSignature"].Value<string>();
 
                 var description = libraryServices.GetFunctionDescriptor(mangledName);
 
@@ -102,6 +99,11 @@ namespace Autodesk.Workspaces
             {
                 var functionId = Guid.Parse(obj["FunctionUuid"].Value<string>());
                 node = manager.CreateCustomNodeInstance(functionId);
+                RemapPorts(node, inPorts, outPorts, resolver);
+            }
+            else if(type == typeof(Formula))
+            {
+                node = (Formula)obj.ToObject(type);
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
             else
@@ -205,7 +207,7 @@ namespace Autodesk.Workspaces
 
             var isCustomNode = obj["IsCustomNode"].Value<bool>();
             var lastModifiedStr = obj["LastModified"].Value<string>();
-            var lastModified = DateTime.ParseExact(lastModifiedStr,"yyyy-MM-dd",CultureInfo.InvariantCulture);
+            var lastModified = DateTime.Parse(lastModifiedStr);
             var author = obj["LastModifiedBy"].Value<string>();
             var description = obj["Description"].Value<string>();
             var guidStr = obj["Uuid"].Value<string>();
@@ -273,7 +275,7 @@ namespace Autodesk.Workspaces
                 writer.WriteValue(((CustomNodeWorkspaceModel)value).Category);
             }
             writer.WritePropertyName("LastModified");
-            writer.WriteValue(ws.LastSaved.ToString("yyyy-MM-dd"));
+            writer.WriteValue(ws.LastSaved.ToUniversalTime());
             writer.WritePropertyName("LastModifiedBy");
             writer.WriteValue(ws.Author);
             writer.WritePropertyName("Description");

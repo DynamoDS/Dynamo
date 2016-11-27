@@ -100,7 +100,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             element.AppendChild(outEl);
 
             outEl = xmlDoc.CreateElement("Inputs");
-            foreach (string input in InPortData.Select(x => x.NickName))
+            foreach (string input in InPorts.Select(x => x.PortName))
             {
                 XmlElement inputEl = xmlDoc.CreateElement("Input");
                 inputEl.SetAttribute("value", input);
@@ -109,7 +109,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             element.AppendChild(outEl);
 
             outEl = xmlDoc.CreateElement("Outputs");
-            foreach (string output in OutPortData.Select(x => x.NickName))
+            foreach (string output in OutPorts.Select(x => x.PortName))
             {
                 XmlElement outputEl = xmlDoc.CreateElement("Output");
                 outputEl.SetAttribute("value", output);
@@ -145,10 +145,10 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     for (int i = 0; i < outputs; i++)
                     {
                         data = new PortData("", "Output #" + (i + 1));
-                        if (OutPortData.Count > i)
-                            OutPortData[i] = data;
+                        if (OutPorts.Count > i)
+                            OutPorts[i] = new PortModel(PortType.Output, this, data);
                         else
-                            OutPortData.Add(data);
+                            OutPorts.Add(new PortModel(PortType.Output, this, data));
                     }
                 }
 
@@ -158,10 +158,10 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     for (int i = 0; i < inputs; i++)
                     {
                         data = new PortData("", "Input #" + (i + 1));
-                        if (InPortData.Count > i)
-                            InPortData[i] = data;
+                        if (InPorts.Count > i)
+                            InPorts[i] = new PortModel(PortType.Input, this, data);
                         else
-                            InPortData.Add(data);
+                            InPorts.Add(new PortModel(PortType.Input, this, data));
                     }
                 }
 
@@ -201,10 +201,10 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
                         foreach (var dataAndIdx in data)
                         {
-                            if (OutPortData.Count > dataAndIdx.idx)
-                                OutPortData[dataAndIdx.idx] = dataAndIdx.data;
+                            if (OutPorts.Count > dataAndIdx.idx)
+                                OutPorts[dataAndIdx.idx] = new PortModel(PortType.Output, this, dataAndIdx.data);
                             else
-                                OutPortData.Add(dataAndIdx.data);
+                                OutPorts.Add(new PortModel(PortType.Output, this, dataAndIdx.data));
                         }
                     }
                     else if (subNode.Name.Equals("Inputs"))
@@ -221,10 +221,10 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
                         foreach (var dataAndIdx in data)
                         {
-                            if (InPortData.Count > dataAndIdx.idx)
-                                InPortData[dataAndIdx.idx] = dataAndIdx.data;
+                            if (InPorts.Count > dataAndIdx.idx)
+                                InPorts[dataAndIdx.idx] = new PortModel(PortType.Input, this, dataAndIdx.data);
                             else
-                                InPortData.Add(dataAndIdx.data);
+                                InPorts.Add(new PortModel(PortType.Input, this, dataAndIdx.data));
                         }
                     }
 
@@ -234,10 +234,10 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     {
                         var data = new PortData(subNode.Attributes[0].Value, Properties.Resources.ToolTipFunctionOutput);
 
-                        if (OutPortData.Any())
-                            OutPortData[0] = data;
+                        if (OutPorts.Any())
+                            OutPorts[0] = new PortModel(PortType.Output, this, data);
                         else
-                            OutPortData.Add(data);
+                            OutPorts.Add(new PortModel(PortType.Output, this, data));
                     }
 
 #endregion
@@ -301,6 +301,19 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         private ElementResolver workspaceElementResolver;
 
         /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "InputNode";
+            }
+        }
+
+        /// <summary>
         ///     Responsible for resolving 
         ///     a partial class name to its fully resolved name
         /// </summary>
@@ -311,7 +324,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// </summary>
         public Symbol()
         {
-            OutPortData.Add(new PortData("", Properties.Resources.ToolTipSymbol));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Properties.Resources.ToolTipSymbol)));
 
             RegisterAllPorts();
 
@@ -516,6 +529,19 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         private ElementResolver workspaceElementResolver;
 
         /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "OutputNode";
+            }
+        }
+
+        /// <summary>
         /// Element resolver 
         /// </summary>
         public ElementResolver  ElementResolver { get; set;}
@@ -525,7 +551,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// </summary>
         public Output()
         {
-            InPortData.Add(new PortData("", ""));
+            InPorts.Add(new Nodes.PortModel(PortType.Input, this, new PortData("", "")));
 
             RegisterAllPorts();
 

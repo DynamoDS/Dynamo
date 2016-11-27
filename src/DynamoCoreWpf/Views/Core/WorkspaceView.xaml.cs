@@ -166,6 +166,18 @@ namespace Dynamo.Views
             }
         }
 
+        /// <summary>
+        /// Hides Context Menu as well as InCanvasControl (Right Click PopUp)
+        /// </summary>
+        public void HidePopUp()
+        {
+            if (InCanvasSearchBar.IsOpen || ContextMenuPopup.IsOpen)
+            {
+                ShowHideContextMenu(ShowHideFlags.Hide);
+                ShowHideInCanvasControl(ShowHideFlags.Hide);
+            }
+        }
+
         internal Point GetCenterPoint()
         {
             var x = outerCanvas.ActualWidth / 2.0;

@@ -17,7 +17,6 @@ namespace CoreNodeModels.Input
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("IntegerSliderNodeDescription", typeof(Resources))]
     [NodeSearchTags("IntegerSliderSearchTags", typeof(Resources))]
-    [InPortNames("N/A")]
     [InPortTypes("UI Input")]
     [OutPortTypes("int")]
     [SupressImportIntoVM]
@@ -25,6 +24,19 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("DSCoreNodesUI.Input.IntegerSlider")]
     public class IntegerSlider : SliderBase<int>
     {
+        /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "IntegerRangeInputNode";
+            }
+        }
+
         [JsonConstructor]
         private IntegerSlider(IEnumerable<PortModel> inPorts,
             IEnumerable<PortModel> outPorts): base(inPorts, outPorts)
