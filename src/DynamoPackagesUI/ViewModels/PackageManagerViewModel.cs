@@ -16,11 +16,13 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
     public class PackageManagerViewModel
     {
         public const string PACKAGE_MANAGER_URL = "http://dynamopackagemanager.com.s3-website-us-east-1.amazonaws.com";
+        
         public string Address { get; set; }
 
-        internal PackageManagerCefHelper CefHelper { get; set; }
+        internal PackageManagerCommands CefHelper { get; set; }
 
-        internal PublishCefHelper PublishCompCefHelper { get; set; }
+        internal PublishCommands PublishCompCefHelper { get; set; }
+
 
         /// <summary>
         /// Constructor
@@ -28,24 +30,16 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         /// <param name="dynamoViewModel"></param>
         /// <param name="model"></param>
         /// <param name="address"></param>
-        public PackageManagerViewModel(DynamoViewModel dynamoViewModel, PackageLoader model, string address)
+
+        public PackageManagerViewModel(DynamoViewModel dynamoViewModel, string address)
         {
-            CefHelper = new PackageManagerCefHelper(dynamoViewModel, model, this);
-            PublishCompCefHelper = new PublishCefHelper(dynamoViewModel, model, this);
+            CefHelper = new PackageManagerCommands(dynamoViewModel, dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader, this);
+            PublishCompCefHelper = new PublishCommands(dynamoViewModel, dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader, this);
 
             var path = this.GetType().Assembly.Location;
             var config = ConfigurationManager.OpenExeConfiguration(path);
             this.Address = PACKAGE_MANAGER_URL + "/#/" + address;
         }
 
-        public PackageManagerViewModel(string address)
-        {
-            //CefHelper = new PackageManagerCefHelper(dynamoViewModel, model, this);
-            //PublishCompCefHelper = new PublishCefHelper(dynamoViewModel, model, this);
-
-            var path = this.GetType().Assembly.Location;
-            var config = ConfigurationManager.OpenExeConfiguration(path);
-            this.Address = PACKAGE_MANAGER_URL + "/#/" + address;
-        }
     }
 }
