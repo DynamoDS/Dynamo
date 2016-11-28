@@ -421,7 +421,19 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public bool HasUnsavedChanges
         {
-            get { return hasUnsavedChanges; }
+            get 
+            {
+                if(!string.IsNullOrEmpty(this.FileName)) // if there is a filename
+                {
+                    if (!File.Exists(this.FileName)) // but the filename is invalid
+                    {
+                        this.fileName = string.Empty;
+                        hasUnsavedChanges = true;
+                    }
+                }
+
+                return hasUnsavedChanges;
+            }
             set
             {
                 hasUnsavedChanges = value;
