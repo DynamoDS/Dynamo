@@ -68,6 +68,10 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             dynamoViewModel.PackageManagerClientViewModel.GoToWebsite();
         }
 
+        /// <summary>
+        /// Install Dynamo Package
+        /// </summary>
+        /// <param name="downloadPath"></param>
         private void InstallPackage(string downloadPath)
         {
             var firstOrDefault = Model.LocalPackages.FirstOrDefault(pkg => pkg.ID == DownloadRequest.asset_id.ToString());
@@ -107,6 +111,10 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             }
         }
 
+        /// <summary>
+        /// Download and Install Dynamo Package
+        /// </summary>
+        /// <param name="pkg"></param>
         public void DownloadAndInstall(string pkg)
         {
             string[] temp = pkg.Split(',');
@@ -118,31 +126,6 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             Response res = DPClient.ExecuteDynamoRequest(fileReq);
             var pathToPackage = DPClient.GetFileFromResponse(res);
             InstallPackage(pathToPackage);
-        }
-
-        public string GetFileFromResponse(IRestResponse gregResponse)
-        {
-            var response = gregResponse;
-
-            if (!(response.ResponseUri != null && response.ResponseUri.AbsolutePath != null)) return "";
-
-            var tempOutput = System.IO.Path.Combine(FileUtilities.GetTempFolder(), System.IO.Path.GetFileName(response.ResponseUri.AbsolutePath));
-            using (var f = new FileStream(tempOutput, FileMode.Create))
-            {
-                f.Write(response.RawBytes, 0, (int)response.ContentLength);
-            }
-            //TODO: Jitendra verify if this needed
-            //var md5HeaderResp = response.Headers.FirstOrDefault(x => x.Name == "ETag");
-            //if (md5HeaderResp == null) throw new Exception("Could not check integrity of package download!");
-
-            //var md5HeaderComputed =
-            //    String.Join("", FileUtilities.GetMD5Checksum(tempOutput).Select(x => x.ToString("X"))).ToLower();
-
-            //if (md5HeaderResp.Value.ToString() == md5HeaderComputed )
-            //    throw new Exception("Could not validate package integrity!  Please try again!");
-
-            return tempOutput;
-
         }
 
         public string GetCustomPathForInstall()
@@ -194,7 +177,12 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             }));
         }
 
-
+        /// <summary>
+        /// Install button click event
+        /// </summary>
+        /// <param name="asset"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
         public string PackageOnExecuted(dynamic asset, dynamic version)
         {
             string downloadPath = this.PackageInstallPath;
@@ -405,7 +393,10 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             }
         }
 
-
+        /// <summary>
+        /// Uninstall Dynamo Package
+        /// </summary>
+        /// <returns></returns>
         public bool Uninstall()
         {
             Package localPkg = Model.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();

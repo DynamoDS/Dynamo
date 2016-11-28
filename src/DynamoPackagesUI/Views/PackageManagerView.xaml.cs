@@ -30,18 +30,22 @@ namespace DynamoPackagesUI.Views
             if (!Cef.IsInitialized)
             {
                 var settings = new CefSettings { RemoteDebuggingPort = 8088 };
+                //to fix Fickering set disable-gpu to true
                 settings.CefCommandLineArgs.Add("disable-gpu", "1");
                 Cef.Initialize(settings);
             }
+
             //viewModel.PublishCompCefHelper.PublishSuccess += PackageViewModelOnPublishSuccess;
 
             InitializeComponent();
 
             viewModel.CefHelper.ParentWindow = this;
+            //cefHelper object for Explore Packages, Explore Authors and My Packages Tab
             this.cefBrowser.RegisterJsObject("cefHelper", viewModel.CefHelper);
+            
+            //publishCefHelper for Publish Package Tab 
             this.cefBrowser.RegisterJsObject("publishCefHelper", viewModel.PublishCompCefHelper);
 
-            //this.cefBrowser.DownloadHandler = viewModel.CefCommands;
             viewModel.CefHelper.CefBrowser = this.cefBrowser;
             viewModel.PublishCompCefHelper.CefBrowser = this.cefBrowser;
 

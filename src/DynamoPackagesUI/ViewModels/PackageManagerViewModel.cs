@@ -30,7 +30,6 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         /// <param name="dynamoViewModel"></param>
         /// <param name="model"></param>
         /// <param name="address"></param>
-
         public PackageManagerViewModel(DynamoViewModel dynamoViewModel, string address)
         {
             CefHelper = new PackageManagerCommands(dynamoViewModel, dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader, this);
