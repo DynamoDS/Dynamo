@@ -179,7 +179,7 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
-        private double fontSize = 30;
+        private double fontSize = 36;
         /// <summary>
         /// Returns font size of the text of the group
         /// </summary>
