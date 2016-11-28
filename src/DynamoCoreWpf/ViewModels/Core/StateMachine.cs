@@ -42,6 +42,17 @@ namespace Dynamo.ViewModels
             get { return activeConnector; }
         }
 
+        internal bool HandleTouchDrag(object sender, ManipulationDeltaEventArgs e)
+        {
+            return stateMachine.HandleTouchDrag(sender, e);
+        }
+
+        internal bool HandleTouchRelease(object sender, ManipulationCompletedEventArgs e)
+        {
+            return stateMachine.HandleTouchRelease(sender, e);
+        }
+
+
         internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             return stateMachine.HandleLeftButtonDown(sender, e);
@@ -484,6 +495,31 @@ namespace Dynamo.ViewModels
             #endregion
 
             #region User Input Event Handlers
+
+            internal bool HandleTouchDrag(object sender, ManipulationDeltaEventArgs e)
+            {
+                var touchPos = e.Manipulators.First().GetPosition(sender as IInputElement);
+                var mousePos = new Point(
+                    (touchPos.X - owningWorkspace.Model.X) / owningWorkspace.Zoom,
+                    (touchPos.Y - owningWorkspace.Model.Y) / owningWorkspace.Zoom);
+
+                var selected = GetSelectableFromPoint(mousePos);
+                if (null != selected)
+                {
+                    e.Cancel();
+                    return true;
+                }
+
+                return false;
+            }
+
+            internal bool HandleTouchRelease(object sender, ManipulationCompletedEventArgs e)
+            {
+                if (this.currentState == State.DragSetup)
+                    SetCurrentState(State.None);
+
+                return false;
+            }
 
             internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
             {

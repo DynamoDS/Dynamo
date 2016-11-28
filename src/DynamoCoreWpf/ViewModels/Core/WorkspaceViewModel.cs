@@ -43,6 +43,7 @@ namespace Dynamo.ViewModels
         public event WorkspaceModel.ZoomEventHandler RequestZoomToViewportCenter;
         public event WorkspaceModel.ZoomEventHandler RequestZoomToViewportPoint;
         public event WorkspaceModel.ZoomEventHandler RequestZoomToFitView;
+        public event WorkspaceModel.ZoomEventHandler RequestZoomPinch;
 
         public event NodeEventHandler RequestCenterViewOnElement;
 
@@ -93,6 +94,19 @@ namespace Dynamo.ViewModels
             if (RequestZoomToFitView != null)
             {
                 RequestZoomToFitView(this, e);
+            }
+        }
+
+        /// <summary>
+        /// For requesting to change zoom level by touch screen pinch
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        internal void OnRequestZoomPinch(object sender, ZoomEventArgs e)
+        {
+            if (RequestZoomPinch != null)
+            {
+                RequestZoomPinch(this, e);
             }
         }
 

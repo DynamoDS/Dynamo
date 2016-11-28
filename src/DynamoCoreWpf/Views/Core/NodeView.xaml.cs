@@ -364,6 +364,19 @@ namespace Dynamo.Controls
             }
         }
 
+        private void topControl_TouchDown(object sender, TouchEventArgs e)
+        {
+            if (ViewModel == null || Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control) return;
+
+            var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+            ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
+            view.mainGrid.Focus();
+
+            Guid nodeGuid = ViewModel.NodeModel.GUID;
+            ViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
+        }
+
         private void topControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (ViewModel == null || Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control) return;

@@ -217,6 +217,7 @@ namespace Dynamo.Views
                 oldViewModel.RequestZoomToViewportCenter -= vm_ZoomAtViewportCenter;
                 oldViewModel.RequestZoomToViewportPoint -= vm_ZoomAtViewportPoint;
                 oldViewModel.RequestZoomToFitView -= vm_ZoomToFitView;
+                oldViewModel.RequestZoomPinch -= vm_ZoomPinch;
                 oldViewModel.RequestCenterViewOnElement -= CenterViewOnElement;
                 oldViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
                 oldViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
@@ -231,6 +232,7 @@ namespace Dynamo.Views
                 ViewModel.Model.ZoomChanged +=vm_ZoomChanged;
                 ViewModel.RequestZoomToViewportCenter += vm_ZoomAtViewportCenter;
                 ViewModel.RequestZoomToViewportPoint += vm_ZoomAtViewportPoint;
+                ViewModel.RequestZoomPinch += vm_ZoomPinch;
                 ViewModel.RequestZoomToFitView += vm_ZoomToFitView;
                 ViewModel.RequestCenterViewOnElement += CenterViewOnElement;
                 ViewModel.Model.RequestNodeCentered += vm_RequestNodeCentered;
@@ -415,6 +417,37 @@ namespace Dynamo.Views
             var adjustedZoom = (lowerLimit + (ViewModel.Model.Zoom / WorkspaceModel.ZOOM_MAXIMUM) * (upperLimit - lowerLimit)) * zoom;
 
             return adjustedZoom;
+        }
+
+        void vm_ZoomPinch(object sender, EventArgs e)
+        {
+            double resultZoom = (e as ZoomEventArgs).Zoom;
+            Point2D point = (e as ZoomEventArgs).Point;
+
+            ZoomPinch(resultZoom, point);
+        }
+
+        private void ZoomPinch(double resultZoom, Point2D relative)
+        {
+            // Limit zoom
+            if (resultZoom < WorkspaceModel.ZOOM_MINIMUM)
+                resultZoom = WorkspaceModel.ZOOM_MINIMUM;
+            else if (resultZoom > WorkspaceModel.ZOOM_MAXIMUM)
+                resultZoom = WorkspaceModel.ZOOM_MAXIMUM;
+
+            double absoluteX, absoluteY;
+            absoluteX = relative.X * ViewModel.Model.Zoom + ViewModel.Model.X;
+            absoluteY = relative.Y * ViewModel.Model.Zoom + ViewModel.Model.Y;
+            var resultOffset = new Point2D();
+            resultOffset.X = absoluteX - (relative.X * resultZoom);
+            resultOffset.Y = absoluteY - (relative.Y * resultZoom);
+
+            ViewModel.Model.Zoom = resultZoom;
+            ViewModel.Model.X = resultOffset.X;
+            ViewModel.Model.Y = resultOffset.Y;
+
+            vm_CurrentOffsetChanged(this, new PointEventArgs(resultOffset));
+            vm_ZoomChanged(this, new ZoomEventArgs(resultZoom));
         }
 
         void vm_ZoomAtViewportPoint(object sender, EventArgs e)

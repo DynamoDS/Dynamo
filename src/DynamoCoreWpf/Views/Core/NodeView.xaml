@@ -9,6 +9,7 @@
              Height="Auto"
              Width="Auto"
              Name="topControl"
+             TouchDown="topControl_TouchDown"
              MouseLeftButtonDown="topControl_MouseLeftButtonDown"
              MouseRightButtonDown="topControl_MouseRightButtonDown"
              MouseEnter="OnNodeViewMouseEnter"
