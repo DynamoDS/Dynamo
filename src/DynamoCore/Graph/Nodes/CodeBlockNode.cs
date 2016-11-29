@@ -45,6 +45,18 @@ namespace Dynamo.Graph.Nodes
         private bool shouldFocus = true;
 
         /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "CodeBlockNode";
+            }
+        }
+        /// <summary>
         ///     Indicates whether code block should not be in focus upon undo/redo actions on node
         /// </summary>
         [JsonIgnore]

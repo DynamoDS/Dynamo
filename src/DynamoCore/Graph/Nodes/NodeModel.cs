@@ -81,6 +81,19 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         internal HashSet<NodeModel> UpstreamCache = new HashSet<NodeModel>();
 
+        /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
+        public virtual string NodeType
+        {
+            get
+            {
+                return "ExtensionNode";
+            }
+        }
+
         #endregion
 
         #region events
@@ -2370,7 +2383,7 @@ namespace Dynamo.Graph.Nodes
     /// The mapping to string like 'applyDisabled' is to support the historical representation
     /// of 'lacing' on Flood.
     /// </summary>
-    public class LacingStrategyConverter : JsonConverter
+    class LacingStrategyConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
@@ -2382,17 +2395,17 @@ namespace Dynamo.Graph.Nodes
             var s = reader.Value.ToString();
             switch (s)
             {
-                case "applyAuto":
+                case "Auto":
                     return LacingStrategy.Auto;
-                case "applyCartesianProduct":
+                case "Cartesian":
                     return LacingStrategy.CrossProduct;
-                case "applyDisabled":
+                case "Disabled":
                     return LacingStrategy.Disabled;
-                case "applyFirst":
+                case "First":
                     return LacingStrategy.First;
-                case "applyLongest":
+                case "Longest":
                     return LacingStrategy.Longest;
-                case "applyShortest":
+                case "Shortest":
                     return LacingStrategy.Shortest;
                 default:
                     return LacingStrategy.Disabled;
@@ -2407,22 +2420,22 @@ namespace Dynamo.Graph.Nodes
             {
 
                 case LacingStrategy.Auto:
-                    writer.WriteValue("applyAuto");
+                    writer.WriteValue("Auto");
                     break;
                 case LacingStrategy.CrossProduct:
-                    writer.WriteValue("applyCartesianProduct");
+                    writer.WriteValue("Cartesian");
                     break;
                 case LacingStrategy.Disabled:
-                    writer.WriteValue("applyDisabled");
+                    writer.WriteValue("Disabled");
                     break;
                 case LacingStrategy.First:
-                    writer.WriteValue("applyFirst");
+                    writer.WriteValue("First");
                     break;
                 case LacingStrategy.Longest:
-                    writer.WriteValue("applyLongest");
+                    writer.WriteValue("Longest");
                     break;
                 case LacingStrategy.Shortest:
-                    writer.WriteValue("applyShortest");
+                    writer.WriteValue("Shortest");
                     break;
             }
         }
