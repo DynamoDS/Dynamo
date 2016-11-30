@@ -1,5 +1,4 @@
 ﻿using System;
-using Dynamo.Models;
 
 namespace Dynamo.Logging
 {
@@ -8,15 +7,55 @@ namespace Dynamo.Logging
     /// </summary>
     public enum Categories
     {
+        /// <summary>
+        /// Events Category related to application lifecycle
+        /// </summary>
         ApplicationLifecycle,
+
+        /// <summary>
+        /// Events Category related to product stability
+        /// </summary>
         Stability,
+
+        /// <summary>
+        /// Events Category related to Node operations
+        /// </summary>
         NodeOperations,
+
+        /// <summary>
+        /// Events Category related to Performance
+        /// </summary>
         Performance,
+
+        /// <summary>
+        /// Events Category related to Dynamo commands
+        /// </summary>
         Command,
+
+        /// <summary>
+        /// Events Category related to File operations
+        /// </summary>
         FileOperation,
+
+        /// <summary>
+        /// Events Category related to Search UX
+        /// </summary>
         SearchUX,
+
+        /// <summary>
+        /// Events Category related to user preferences
+        /// </summary>
         Preferences,
+
+        /// <summary>
+        /// Events Category related to Dynamo upgrade
+        /// </summary>
         Upgrade,
+
+        /// <summary>
+        /// Events Category related to DesignScript VM
+        /// </summary>
+        Engine,
     }
 
     /// <summary>
@@ -24,36 +63,103 @@ namespace Dynamo.Logging
     /// </summary>
     public enum Actions
     {
+        /// <summary>
+        /// Start of an event
+        /// </summary>
         Start,
+
+        /// <summary>
+        /// End of an event
+        /// </summary>
         End,
+
+        /// <summary>
+        /// Create Event, such as File create or Node create etc.
+        /// </summary>
         Create,
+
+        /// <summary>
+        /// Delete Event, such as Node delete
+        /// </summary>
         Delete,
+
+        /// <summary>
+        /// Move Event, such as Node move
+        /// </summary>
         Move,
+
+        /// <summary>
+        /// Copy Event, such as Node copy
+        /// </summary>
         Copy,
+
+        /// <summary>
+        /// Open Event, such as Open workspace
+        /// </summary>
         Open,
+
+        /// <summary>
+        /// Close Event, such as Close workspace
+        /// </summary>
         Close,
+
+        /// <summary>
+        /// Read Event, such as File read
+        /// </summary>
         Read,
+
+        /// <summary>
+        /// Write Event, such as File write
+        /// </summary>
         Write,
+
+        /// <summary>
+        /// Save Event, such as Save workspace
+        /// </summary>
         Save,
+
+        /// <summary>
+        /// SaveAs Event, such as Save workspace as.
+        /// </summary>
         SaveAs,
+
+        /// <summary>
+        /// New Event, such as New workspace
+        /// </summary>
         New,
+
+        /// <summary>
+        /// Engine Failure event
+        /// </summary>
         EngineFailure,
+
+        /// <summary>
+        /// Search Filter Button Clicked event
+        /// </summary>
         FilterButtonClicked,
+
+        /// <summary>
+        /// Unresolved Node found event
+        /// </summary>
         Unresolved,
+
+        /// <summary>
+        /// Update Downloaded event
+        /// </summary>
         Downloaded,
+
+        /// <summary>
+        /// Update Installed event
+        /// </summary>
         Installed,
     }
 
     /// <summary>
-    /// Implements analytics and logging functions.
+    /// Implements analytics and logging functions. This interface is defined 
+    /// for internal use only to implement analytics functions and mock the tests.
     /// </summary>
     public interface IAnalyticsClient
     {
-        /// <summary>
-        /// Gets session object for this client
-        /// </summary>
-        IAnalyticsSession Session { get; }
-
         /// <summary>
         /// Checks if analytics reporting is ON.
         /// </summary>
@@ -68,8 +174,7 @@ namespace Dynamo.Logging
         /// Starts the client when DynamoModel is created. This method initializes
         /// the Analytics service and application life cycle start is tracked.
         /// </summary>
-        /// <param name="model"></param>
-        void Start(DynamoModel model);
+        void Start();
 
         /// <summary>
         /// Shuts down the client. Application life cycle end is tracked.
@@ -153,33 +258,5 @@ namespace Dynamo.Logging
         /// <param name="tag">Usage tag</param>
         /// <param name="data">Usage data</param>
         void LogPiiInfo(string tag, string data);
-    }
-
-    /// <summary>
-    /// Defines analytics session interface.
-    /// </summary>
-    public interface IAnalyticsSession : IDisposable
-    {
-        /// <summary>
-        /// Get unique user id.
-        /// </summary>
-        string UserId { get; }
-
-        /// <summary>
-        /// Gets unique session id.
-        /// </summary>
-        string SessionId { get; }
-        
-        /// <summary>
-        /// Starts the session for the given DynamoModel. 
-        /// The Session is closed when Dispose() is called.
-        /// </summary>
-        /// <param name="model">DynamoModel</param>
-        void Start(DynamoModel model);
-
-        /// <summary>
-        /// Returns a logger to record usage.
-        /// </summary>
-        ILogger Logger { get; }
     }
 }

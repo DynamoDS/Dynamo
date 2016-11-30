@@ -116,8 +116,10 @@ namespace Dynamo.Logging
         }
 
         private IPreferences preferences = null;
-        
+
         public static IDisposable Disposable { get { return new Dummy(); } }
+
+        private ProductInfo product;
 
         public virtual IAnalyticsSession Session { get; private set; }
 
@@ -132,11 +134,10 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
-        /// Starts the client when DynamoModel is created. This method initializes
-        /// the Analytics service and application life cycle start is tracked.
+        /// Constructs DynamoAnalyticsClient with given DynamoModel
         /// </summary>
-        /// <param name="model"></param>
-        public void Start(DynamoModel dynamoModel)
+        /// <param name="dynamoModel">DynamoModel</param>
+        public DynamoAnalyticsClient(DynamoModel dynamoModel)
         {
             //Set the preferences, so that we can get live value of analytics 
             //reporting approved status.
@@ -150,8 +151,17 @@ namespace Dynamo.Logging
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
 
+            product = new ProductInfo() { Name = "Dynamo", VersionString = appversion };
+        }
+
+        /// <summary>
+        /// Starts the client when DynamoModel is created. This method initializes
+        /// the Analytics service and application life cycle start is tracked.
+        /// </summary>
+        public void Start()
+        {
             //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
-            Service.StartUp(new ProductInfo() { Name = "Dynamo", VersionString = appversion },
+            Service.StartUp(product,
                 new UserInfo(Session.UserId), ReportingAnalytics ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
 
             TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
