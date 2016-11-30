@@ -63,11 +63,6 @@ namespace Dynamo.DynamoPackagesUI.Utilities
 
         private string PackageInstallPath { get; set; }
 
-        public void GoToWebsite()
-        {
-            dynamoViewModel.PackageManagerClientViewModel.GoToWebsite();
-        }
-
         /// <summary>
         /// Install Dynamo Package
         /// </summary>
@@ -80,7 +75,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                 var dynModel = dynamoViewModel.Model;
                 try
                 {
-                    firstOrDefault.UninstallCore(dynModel.CustomNodeManager, dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader, dynModel.PreferenceSettings);
+                    firstOrDefault.UninstallCore(dynModel.CustomNodeManager, Model, dynModel.PreferenceSettings);
                 }
                 catch
                 {
@@ -97,14 +92,15 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             packageDownloadHandle.Name = DownloadRequest.asset_name;
             packageDownloadHandle.Done(downloadPath);
 
-            string installedPkgPath = string.Empty;
-            if (packageDownloadHandle.Extract(dynamoViewModel.Model, this.PackageInstallPath, out installedPkgPath))
+            //string installedPkgPath = string.Empty;
+            Package dynPkg = null;
+            if (packageDownloadHandle.Extract(dynamoViewModel.Model, this.PackageInstallPath, out dynPkg))
             {
-                var p = Package.FromDirectory(installedPkgPath, dynamoViewModel.Model.Logger);
+                var p = Package.FromDirectory(dynPkg.RootDirectory, dynamoViewModel.Model.Logger);
                 p.ID = DownloadRequest.asset_id;
                 Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
-                    dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader.Load(p);
+                    Model.Load(p);
                 }));
                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                 this.PackageInstallPath = string.Empty;
@@ -118,13 +114,13 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         public void DownloadAndInstall(string pkg)
         {
             string[] temp = pkg.Split(',');
-            PackageManagerRequest req = new PackageManagerRequest("assets/" + temp[0], Method.GET);
-            ResponseWithContentBody<dynamic> response = DPClient.ExecuteAndDeserializeDynamoRequest(req);
+            PackageManagerRequest req = new PackageManagerRequest(string.Format("assets/{0}", temp[0]), Method.GET);
+            ResponseWithContentBody<dynamic> response = Client.ExecuteAndDeserializeDynamoRequest(req);
             DownloadRequest = response.content;
 
-            PackageManagerRequest fileReq = new PackageManagerRequest(@"files/download?file_ids=" + temp[1] + "&asset_id=" + temp[0], Method.GET, true);
-            Response res = DPClient.ExecuteDynamoRequest(fileReq);
-            var pathToPackage = DPClient.GetFileFromResponse(res);
+            PackageManagerRequest fileReq = new PackageManagerRequest(string.Format("files/download?file_ids={0}&asset_id={1}", temp[1], temp[0]), Method.GET, true);
+            Response res = Client.ExecuteDynamoRequest(fileReq);
+            var pathToPackage = Client.GetFileFromResponse(res);
             InstallPackage(pathToPackage);
         }
 
@@ -197,8 +193,6 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                 Resources.PackageDownloadConfirmMessageBoxTitle,
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
-            var pmExt = dynamoViewModel.Model.GetPackageManagerExtension();
-
             if (PackagesToInstall == null)
                 PackagesToInstall = new List<string>();
             else
@@ -214,12 +208,12 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                     foreach (string depend in depends)
                     {
                         string[] temp = depend.Split('|');
-                        req = new PackageManagerRequest(("assets/" + temp[0] + "/customdata").Trim(), Method.GET);
-                        ResponseWithContentBody<dynamic> response = DPClient.ExecuteAndDeserializeDynamoRequest(req);
+                        req = new PackageManagerRequest((string.Format("assets/{0}/customdata", temp[0])).Trim(), Method.GET);
+                        ResponseWithContentBody<dynamic> response = Client.ExecuteAndDeserializeDynamoRequest(req);
                         var customData = response.content;
 
                         req = new PackageManagerRequest(("assets/" + temp[0]).Trim(), Method.GET);
-                        response = DPClient.ExecuteAndDeserializeDynamoRequest(req);
+                        response = Client.ExecuteAndDeserializeDynamoRequest(req);
                         var depAsset = response.content;
 
                         if (customData.custom_data.Count > 0)
@@ -228,20 +222,20 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                             string json;
                             for (int i = 0; i < customData.custom_data.Count; i++)
                             {
-                                if (customData.custom_data[i].key == "version:" + temp[1])
+                                if (customData.custom_data[i].key == string.Format("version:{0}", temp[1]))
                                 {
                                     json = System.Uri.UnescapeDataString(customData.custom_data[i].data.ToString());
                                     versionData = JsonConvert.DeserializeObject<dynamic>(json);
 
                                     packageVersionData.Add(new Tuple<dynamic, dynamic>(depAsset, versionData));
-                                    PackagesToInstall.Add(temp[0] + "," + versionData.file_id.Value + "," + depAsset.asset_name);
+                                    PackagesToInstall.Add(string.Format("{0},{1},{2}", temp[0], versionData.file_id.Value, depAsset.asset_name));
                                 }
                             }
                         }
                     }
                 }
 
-                PackagesToInstall.Add(asset["asset_id"] + "," + version["file_id"] + "," + asset["asset_name"]);
+                PackagesToInstall.Add(string.Format("{0},{1},{2}", asset["asset_id"], version["file_id"], asset["asset_name"]));
 
                 //    // determine if any of the packages contain binaries or python scripts.  
                 var containsBinaries =
@@ -291,7 +285,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                     }
                 }
 
-                var localPkgs = pmExt.PackageLoader.LocalPackages;
+                var localPkgs = Model.LocalPackages;
 
                 var uninstallsRequiringRestart = new List<Package>();
                 var uninstallRequiringUserModifications = new List<Package>();
@@ -377,7 +371,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
 
         public static string FormatPackageVersionList(List<Tuple<dynamic, dynamic>> packages)
         {
-            return String.Join("\r\n", packages.Select(x => x.Item1.name.ToString() + " " + x.Item2.version.ToString()));
+            return String.Join("\r\n", packages.Select(x => string.Format("{0} {1}", x.Item1.name.ToString(), x.Item2.version.ToString())));
         }
 
         public IEnumerable<Tuple<dynamic, dynamic>> FilterFuturePackages(List<Tuple<dynamic, dynamic>> pkgVersions, Version currentAppVersion, int numberOfFieldsToCompare = 3)
@@ -424,10 +418,9 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             try
             {
                 var dynModel = dynamoViewModel.Model;
-                var pmExtension = dynModel.GetPackageManagerExtension();
                 Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
-                    localPkg.UninstallCore(dynModel.CustomNodeManager, pmExtension.PackageLoader, dynModel.PreferenceSettings);
+                    localPkg.UninstallCore(dynModel.CustomNodeManager, Model, dynModel.PreferenceSettings);
                 }));
 
                 return true;
@@ -462,9 +455,9 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         {
             Package pkg = Model.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
             pkg.RefreshCustomNodesFromDirectory(dynamoViewModel.Model.CustomNodeManager, DynamoModel.IsTestMode);
-            //var vm = PublishCommands.FromLocalPackage(dynamoViewModel, pkg, PackageMgrViewMdodel);
+            //var vm = PublishCommands.FromLocalPackage(dynamoViewModel, pkg, ViewMdodel);
             //vm.PublishCompCefHelper.IsNewVersion = true;
-            //PackageMgrViewMdodel.PublishCompCefHelper = vm.PublishCompCefHelper;
+            //ViewMdodel.PublishCompCefHelper = vm.PublishCompCefHelper;
             //dynamoViewModel.OnRequestPackagePublishDialog(vm);
 
         }
@@ -473,10 +466,10 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         {
             Package pkg = Model.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
             pkg.RefreshCustomNodesFromDirectory(dynamoViewModel.Model.CustomNodeManager, DynamoModel.IsTestMode);
-            //var vm = PublishCommands.FromLocalPackage(dynamoViewModel, pkg, PackageMgrViewMdodel);
+            //var vm = PublishCommands.FromLocalPackage(dynamoViewModel, pkg, ViewMdodel);
             //vm.PublishCompCefHelper.IsNewVersion = false;
             //vm.PublishCompCefHelper.PublishLocal = true;
-            //PackageMgrViewMdodel.PublishCompCefHelper = vm.PublishCompCefHelper;
+            //ViewMdodel.PublishCompCefHelper = vm.PublishCompCefHelper;
             //dynamoViewModel.OnRequestPackagePublishDialog(vm);
 
         }

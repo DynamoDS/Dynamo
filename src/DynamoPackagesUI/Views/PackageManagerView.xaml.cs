@@ -46,8 +46,8 @@ namespace DynamoPackagesUI.Views
             //publishCefHelper for Publish Package Tab 
             this.cefBrowser.RegisterJsObject("publishCefHelper", viewModel.PublishCompCefHelper);
 
-            viewModel.CefHelper.CefBrowser = this.cefBrowser;
-            viewModel.PublishCompCefHelper.CefBrowser = this.cefBrowser;
+            viewModel.CefHelper.Browser = this.cefBrowser;
+            viewModel.PublishCompCefHelper.Browser = this.cefBrowser;
 
             this.Height = (System.Windows.SystemParameters.PrimaryScreenHeight * 0.95);
             this.Width = (System.Windows.SystemParameters.PrimaryScreenWidth * 0.75);

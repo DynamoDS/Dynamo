@@ -96,40 +96,10 @@ namespace Dynamo.PackageManager
                 File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
 
             // provide handle to installed package 
-            pkg = new Package(installedPath, Header.name, VersionName, Header.license);
-
-            return true;
-        }
-
-
-        public bool Extract(DynamoModel dynamoModel, string installDirectory, out string pkgInstalledPath)
-        {
-            this.DownloadState = State.Installing;
-
-            // unzip, place files
-            var unzipPath = Greg.Utility.FileUtilities.UnZip(DownloadPath);
-            if (!Directory.Exists(unzipPath))
-            {
-                throw new Exception(Properties.Resources.PackageEmpty);
-            }
-
-            if (String.IsNullOrEmpty(installDirectory))
-                installDirectory = dynamoModel.PathManager.DefaultPackagesDirectory;
-
-            var installedPath = BuildInstallDirectoryString(installDirectory);
-            Directory.CreateDirectory(installedPath);
-
-            // Now create all of the directories
-            foreach (string dirPath in Directory.GetDirectories(unzipPath, "*", SearchOption.AllDirectories))
-                Directory.CreateDirectory(dirPath.Replace(unzipPath, installedPath));
-
-            // Copy all the files
-            foreach (string newPath in Directory.GetFiles(unzipPath, "*.*", SearchOption.AllDirectories))
-                File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
-
-            // provide handle to installed package 
-            pkgInstalledPath = installedPath;
-
+            if(Header != null)
+                pkg = new Package(installedPath, Header.name, VersionName, Header.license);
+            else
+                pkg = Package.FromDirectory(installedPath, dynamoModel.Logger);
 
             return true;
         }

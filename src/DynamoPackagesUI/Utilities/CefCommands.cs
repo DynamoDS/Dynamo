@@ -18,13 +18,13 @@ namespace Dynamo.DynamoPackagesUI.Utilities
     /// </summary>
     internal class CefCommands
     {
-        internal DynamoPackagesUIClient DPClient { get; set; }
+        internal DynamoPackagesUIClient Client { get; set; }
 
         internal readonly DynamoViewModel dynamoViewModel;
         internal PackageLoader Model { get; private set; }
 
         //CEF Browser instance for rendering PM web UI
-        public ChromiumWebBrowser CefBrowser { get; set; }
+        public ChromiumWebBrowser Browser { get; set; }
 
         public string SessionData
         {
@@ -37,14 +37,14 @@ namespace Dynamo.DynamoPackagesUI.Utilities
 
         public Window ParentWindow { get; set; }
 
-        public PackageManagerViewModel PackageMgrViewMdodel { get; set; }
+        public PackageManagerViewModel ViewMdodel { get; set; }
 
-        public CefCommands(DynamoViewModel dynamoViewModel, PackageLoader model, PackageManagerViewModel packageMgrViewModel)
+        public CefCommands(DynamoViewModel dynamoViewModel, PackageLoader model, PackageManagerViewModel viewModel)
         {
             this.dynamoViewModel = dynamoViewModel;
             this.Model = model;
-            this.PackageMgrViewMdodel = packageMgrViewModel;
-            this.DPClient = new DynamoPackagesUIClient();
+            this.ViewMdodel = viewModel;
+            this.Client = new DynamoPackagesUIClient();
         }
 
         public string InstalledPackages
