@@ -52,9 +52,9 @@ namespace TestServices
 
                 var versions = new List<LibraryVersion>
                 {
-                    LibraryVersion.Version220,
+                    LibraryVersion.Version222,
                     LibraryVersion.Version221,
-                    LibraryVersion.Version222
+                    LibraryVersion.Version220
                 };
                 var shapeManagerPath = string.Empty;
                 RequestedLibraryVersion = Utilities.GetInstalledAsmVersion(versions, ref shapeManagerPath, dynamoCoreDirectory);
