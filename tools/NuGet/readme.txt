@@ -1,7 +1,6 @@
-This folder contains scripts to build the Dynamo NuGet packages.
+This folder contains scripts to build and post the DynamoVisualProgramming NuGet packages into NuGet Gallery and Artifactory.
 
-To update the packages to a new version:
+To build NuGet packages locally, run BuildPackages.bat.
 
-1. Update the version numbers in each of the .nuspec files located in the DynamoVisualProgramming.xxx subfolders. These version numbers support semantic versioning. More info can be found at https://docs.nuget.org/create/versioning.
-2. Run each of the Buildxxx scripts.
-3. Post the generated packages to NuGet.
+To post them as pre-release packages into NuGet Gallery and Artifactory, skip the above step and run BuildAndPostPackages.bat.
+Supply the NuGet Gallery API Key as the first parameter and the Artifactory API Key as the second parameter for this batch file.
