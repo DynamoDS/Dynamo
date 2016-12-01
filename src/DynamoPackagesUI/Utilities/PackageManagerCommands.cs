@@ -456,8 +456,8 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             Package pkg = Model.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
             pkg.RefreshCustomNodesFromDirectory(dynamoViewModel.Model.CustomNodeManager, DynamoModel.IsTestMode);
             //var vm = PublishCommands.FromLocalPackage(dynamoViewModel, pkg, ViewMdodel);
-            //vm.PublishCompCefHelper.IsNewVersion = true;
-            //ViewMdodel.PublishCompCefHelper = vm.PublishCompCefHelper;
+            //vm.PublishPkgCommands.IsNewVersion = true;
+            //ViewMdodel.PublishPkgCommands = vm.PublishPkgCommands;
             //dynamoViewModel.OnRequestPackagePublishDialog(vm);
 
         }
@@ -467,9 +467,9 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             Package pkg = Model.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
             pkg.RefreshCustomNodesFromDirectory(dynamoViewModel.Model.CustomNodeManager, DynamoModel.IsTestMode);
             //var vm = PublishCommands.FromLocalPackage(dynamoViewModel, pkg, ViewMdodel);
-            //vm.PublishCompCefHelper.IsNewVersion = false;
-            //vm.PublishCompCefHelper.PublishLocal = true;
-            //ViewMdodel.PublishCompCefHelper = vm.PublishCompCefHelper;
+            //vm.PublishPkgCommands.IsNewVersion = false;
+            //vm.PublishPkgCommands.PublishLocal = true;
+            //ViewMdodel.PublishPkgCommands = vm.PublishPkgCommands;
             //dynamoViewModel.OnRequestPackagePublishDialog(vm);
 
         }

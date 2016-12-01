@@ -14,6 +14,9 @@ namespace Dynamo.DynamoPackagesUI
 {
     public class PackageManagerExtension : IViewExtension
     {
+        private PackageManagerView _pkgMgrView;
+        private PackageManagerViewModel _pkgMgrViewModel;
+
         private ViewLoadedParams viewLoadedParams;
         private ViewStartupParams viewStartupParams;
 
@@ -54,20 +57,24 @@ namespace Dynamo.DynamoPackagesUI
 
         private void OnPackageManagerClick()
         {
-            var vm = new PackageManagerViewModel((DynamoViewModel)viewLoadedParams.DynamoWindow.DataContext, "assets");
+            
 
-            var _packageManagerView = new PackageManagerView(vm)
+            if (_pkgMgrView == null)
             {
-                Owner = viewLoadedParams.DynamoWindow,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
+                var vm = new PackageManagerViewModel((DynamoViewModel)viewLoadedParams.DynamoWindow.DataContext, "assets");
+                _pkgMgrView = new PackageManagerView(vm)
+                {
+                    Owner = viewLoadedParams.DynamoWindow,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
 
-            //var vm = new PackageManagerViewModel("assets");
-            _packageManagerView.DataContext = vm;
+                //var vm = new PackageManagerViewModel("assets");
+                _pkgMgrView.DataContext = vm;
 
-            _packageManagerView.Closed += (sender, args) => _packageManagerView = null;
-            _packageManagerView.Show();
-
+                _pkgMgrView.Closed += (sender, args) => _pkgMgrView = null;
+                _pkgMgrView.Show();
+            }
+            _pkgMgrView.Focus();
             //if (_packageManagerView.IsLoaded && IsLoaded) _packageManagerView.Owner = this;
         }
 

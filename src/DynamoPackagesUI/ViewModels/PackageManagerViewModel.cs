@@ -19,9 +19,9 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         
         public string Address { get; set; }
 
-        internal PackageManagerCommands CefHelper { get; set; }
+        internal PackageManagerCommands PkgMgrCommands { get; set; }
 
-        internal PublishCommands PublishCompCefHelper { get; set; }
+        internal PublishCommands PublishPkgCommands { get; set; }
 
 
         /// <summary>
@@ -32,8 +32,8 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         /// <param name="address"></param>
         public PackageManagerViewModel(DynamoViewModel dynamoViewModel, string address)
         {
-            CefHelper = new PackageManagerCommands(dynamoViewModel, dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader, this);
-            PublishCompCefHelper = new PublishCommands(dynamoViewModel, dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader, this);
+            PkgMgrCommands = new PackageManagerCommands(dynamoViewModel, dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader, this);
+            PublishPkgCommands = new PublishCommands(dynamoViewModel, dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader, this);
 
             var path = this.GetType().Assembly.Location;
             var config = ConfigurationManager.OpenExeConfiguration(path);
