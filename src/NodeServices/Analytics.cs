@@ -1,35 +1,30 @@
 ﻿using System;
-using System.Linq;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Models;
 
 namespace Dynamo.Logging
 {
     /// <summary>
     /// Utility class to support analytics tracking.
     /// </summary>
-    public class Analytics
+    public static class Analytics
     {
-        protected static IAnalyticsClient client = null;
-        
         /// <summary>
-        /// Starts the client when DynamoModel is created. This method initializes
-        /// the Analytics service and application life cycle start is tracked.
+        /// A dummy IDisposable class
         /// </summary>
-        /// <param name="model">DynamoModel</param>
-        internal static void Start(DynamoModel model)
+        class Dummy : IDisposable
         {
-            client = new DynamoAnalyticsClient();
-            client.Start(model);
-            model.WorkspaceAdded += OnWorkspaceAdded;
+            public void Dispose() { }
         }
 
-        static void OnWorkspaceAdded(WorkspaceModel obj)
+        private static IAnalyticsClient client = null;
+        
+        /// <summary>
+        /// Starts analytics client
+        /// </summary>
+        /// <param name="client"></param>
+        internal static void Start(IAnalyticsClient client)
         {
-            if (obj is CustomNodeWorkspaceModel)
-                TrackScreenView("CustomWorkspace");
-            else
-                TrackScreenView("Workspace");
+            Analytics.client = client;
+            client.Start();
         }
 
         /// <summary>
@@ -41,6 +36,15 @@ namespace Dynamo.Logging
 
             IDisposable disposable = client as IDisposable;
             if (disposable != null) disposable.Dispose();
+            client = null;
+        }
+
+        /// <summary>
+        /// Checks if anlytics tracking is enabled or not. Required for testing.
+        /// </summary>
+        internal static bool IsEnabled
+        {
+            get { return client != null; }
         }
 
         /// <summary>
@@ -54,11 +58,11 @@ namespace Dynamo.Logging
         /// <param name="productName">Dynamo product name</param>
         /// <param name="time">Elapsed time</param>
         /// <param name="description">Optional description</param>
-        public static void TrackStartupTime(string productName, TimeSpan time, string description="")
+        public static void TrackStartupTime(string productName, TimeSpan time, string description = "")
         {
-            if(client != null)
+            if (client != null)
             {
-                var desc = string.IsNullOrEmpty(description) 
+                var desc = string.IsNullOrEmpty(description)
                     ? productName : string.Format("{0}: {1}", productName, description);
                 client.TrackTimedEvent(Categories.Performance, "Startup", time, desc);
             }
@@ -82,7 +86,7 @@ namespace Dynamo.Logging
         /// <param name="name">Name of the preference</param>
         /// <param name="stringValue">Preference value as string</param>
         /// <param name="metricValue">Metric value of the preference</param>
-        public void TrackPreference(string name, string stringValue, int? metricValue)
+        public static void TrackPreference(string name, string stringValue, int? metricValue)
         {
             if (client != null) client.TrackPreference(name, stringValue, metricValue);
         }
@@ -96,7 +100,7 @@ namespace Dynamo.Logging
         /// <param name="description">Event description</param>
         public static void TrackTimedEvent(Categories category, string variable, TimeSpan time, string description = "")
         {
-            if(client != null) client.TrackTimedEvent(category, variable, time, description);
+            if (client != null) client.TrackTimedEvent(category, variable, time, description);
         }
 
         /// <summary>
@@ -105,7 +109,7 @@ namespace Dynamo.Logging
         /// <param name="viewName">Name of the screen</param>
         public static void TrackScreenView(string viewName)
         {
-            if(client != null) client.TrackScreenView(viewName);
+            if (client != null) client.TrackScreenView(viewName);
         }
 
         /// <summary>
@@ -115,7 +119,7 @@ namespace Dynamo.Logging
         /// <param name="isFatal">If it's fatal</param>
         public static void TrackException(Exception ex, bool isFatal)
         {
-            if(client != null) client.TrackException(ex, isFatal);
+            if (client != null) client.TrackException(ex, isFatal);
         }
 
         /// <summary>
@@ -129,7 +133,7 @@ namespace Dynamo.Logging
         /// <returns>Event as IDisposable</returns>
         public static IDisposable CreateTimedEvent(Categories category, string variable, string description = "", int? value = null)
         {
-            if (client == null) return DynamoAnalyticsClient.Disposable;
+            if (client == null) return new Dummy();
 
             return client.CreateTimedEvent(category, variable, description, value);
         }
@@ -144,7 +148,7 @@ namespace Dynamo.Logging
         /// <returns>Event as IDisposable</returns>
         public static IDisposable TrackCommandEvent(string name, string description = "", int? value = null)
         {
-            if (client == null) return DynamoAnalyticsClient.Disposable;
+            if (client == null) return new Dummy();
 
             return client.CreateCommandEvent(name, description, value);
         }
@@ -158,9 +162,9 @@ namespace Dynamo.Logging
         /// <param name="size">Size parameter</param>
         /// <param name="description">Event description</param>
         /// <returns>Event as IDisposable</returns>
-        public static IDisposable TrackFileOperationEvent(string filepath, Actions operation, int size, string description="")
+        public static IDisposable TrackFileOperationEvent(string filepath, Actions operation, int size, string description = "")
         {
-            if (client == null) return DynamoAnalyticsClient.Disposable;
+            if (client == null) return new Dummy();
 
             return client.TrackFileOperationEvent(filepath, operation, size, description);
         }
