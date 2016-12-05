@@ -767,7 +767,11 @@ namespace Dynamo.Controls
             var view = new Prompts.ChangeScaleFactorPrompt(dynamoViewModel.ScaleFactorLog) { Owner = this };
             if (view.ShowDialog() == true)
             {
-                dynamoViewModel.ScaleFactorLog = view.SliderValue;
+                if (dynamoViewModel.ScaleFactorLog != view.SliderValue)
+                {
+                    dynamoViewModel.ScaleFactorLog = view.SliderValue;
+                    dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+                }
             }
         }
 
