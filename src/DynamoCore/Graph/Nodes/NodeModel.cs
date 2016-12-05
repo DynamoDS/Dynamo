@@ -1268,6 +1268,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public virtual void ClearRuntimeError()
         {
+            SetNodeStateBasedOnConnectionAndDefaults();
             if (!string.IsNullOrEmpty(persistentWarning))
             {
                 ToolTipText = persistentWarning;
@@ -1276,7 +1277,6 @@ namespace Dynamo.Graph.Nodes
             {
                 ClearTooltipText();
             }
-            SetNodeStateBasedOnConnectionAndDefaults();
         }
 
         public void SelectNeighbors()
