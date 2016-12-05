@@ -78,8 +78,8 @@ limitations under the License.
     <Reference Include="Analytics.NET.Google">
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=1.0.5959.26179, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.1.0.5959.26179\lib\net45\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=1.0.6176.18754, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.1.0.6176.18754\lib\net45\Greg.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
@@ -117,9 +117,9 @@ limitations under the License.
     <Compile Include="Configuration\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
     <Compile Include="Exceptions\LibraryLoadFailedException.cs" />
-    <Compile Include="Logging\Analytics.cs" />
+    <Compile Include="Logging\AnalyticsService.cs" />
     <Compile Include="Logging\DynamoAnalyticsClient.cs" />
-    <Compile Include="Logging\IAnalyticsClient.cs" />
+    <Compile Include="Logging\IAnalyticsSession.cs" />
     <Compile Include="Logging\NotificationMessage.cs" />
     <Compile Include="Scheduler\Disposable.cs" />
     <Compile Include="Engine\LinkedListOfList.cs" />

@@ -1381,16 +1381,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// Toggles on the highlighting for the specific node (in Helix preview) when
         /// selected in the PreviewBubble as well as the Watch Node
         /// </summary>
-        private void ToggleTreeViewItemHighlighting (string path, bool isSelected)
+        private void ToggleTreeViewItemHighlighting(string path, bool isSelected)
         {
             // First, deselect parentnode in DynamoSelection
-
             var nodePath = path.Contains(':') ? path.Remove(path.IndexOf(':')) : path;
-
             if (DynamoSelection.Instance.Selection.Any())
             {
-                var selNodes = DynamoSelection.Instance.Selection.Where(s => s is NodeModel).Cast<NodeModel>().ToArray();
-                
+                var selNodes = DynamoSelection.Instance.Selection.ToList().OfType<NodeModel>();
                 foreach (var node in selNodes)
                 {
                     if (node.AstIdentifierBase == nodePath)
@@ -1401,20 +1398,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             // Next, deselect the parentnode in HelixWatch3DView
-
             var nodeGeometryModels = Model3DDictionary.Where(x => x.Key.Contains(nodePath) && x.Value is GeometryModel3D).ToArray();
-
             foreach (var nodeGeometryModel in nodeGeometryModels)
             {
                 nodeGeometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, false);
             }
 
-            // Then, select the individual node
-            var geometryModels = Model3DDictionary.Where(x => x.Key.Contains(path) && x.Value is GeometryModel3D).ToArray();
-
-            foreach (var geometryModel in geometryModels)
+            // Then, select the individual node only if isSelected is true since all geometryModels' Selected Property is set to false
+            if (isSelected)
             {
-                geometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
+                var geometryModels = Model3DDictionary.Where(x => x.Key.StartsWith(path + ":") && x.Value is GeometryModel3D).ToArray();
+                foreach (var geometryModel in geometryModels)
+                {
+                    geometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
+                }
             }
         }
 

@@ -19,7 +19,10 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     [AlsoKnownAs("Dynamo.Nodes.DSVarArgFunction")]
     public class DSVarArgFunction : DSFunctionBase
     {
-        public string FunctionName
+        /// <summary>
+        /// The function name with required parameters.
+        /// </summary>
+        public string FunctionSignature
         {
             get
             {

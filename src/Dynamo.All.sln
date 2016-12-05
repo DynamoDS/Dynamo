@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -217,6 +217,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications", "Notificati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workspaces", "Workspaces\Workspaces.csproj", "{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPackagesUI", "DynamoPackagesUI\DynamoPackagesUI.csproj", "{297F6290-0325-4C9B-9E77-DB9041EB61F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -227,8 +229,8 @@ Global
 		{7858FA8C-475F-4B8E-B468-1F8200778CF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7858FA8C-475F-4B8E-B468-1F8200778CF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7858FA8C-475F-4B8E-B468-1F8200778CF8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Debug|Any CPU.Build.0 = Debug|x64
 		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7318D5E5-9D15-4ABE-8A51-92F58D4F0B85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -495,6 +497,10 @@ Global
 		{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{297F6290-0325-4C9B-9E77-DB9041EB61F3}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{297F6290-0325-4C9B-9E77-DB9041EB61F3}.Debug|Any CPU.Build.0 = Debug|x64
+		{297F6290-0325-4C9B-9E77-DB9041EB61F3}.Release|Any CPU.ActiveCfg = Release|x64
+		{297F6290-0325-4C9B-9E77-DB9041EB61F3}.Release|Any CPU.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -50,14 +50,18 @@ namespace DynamoShapeManager
             {
                 var installations = GetAsmInstallations(rootFolder);
 
-                foreach (KeyValuePair<string, Tuple<int,int,int,int>> install in installations)
+                foreach (var v in versions)
                 {
-                    if (versions.Exists(v => (int)v == install.Value.Item1))
+                    foreach (KeyValuePair<string, Tuple<int, int, int, int>> install in installations)
                     {
-                        location = install.Key;
-                        return (LibraryVersion)install.Value.Item1;
+                        if ((int)v == install.Value.Item1)
+                        {
+                            location = install.Key;
+                            return (LibraryVersion)install.Value.Item1;
+                        }
                     }
                 }
+
 
                 //Fallback mechanism, look inside libg folders if any of them
                 //contain ASM dlls.
