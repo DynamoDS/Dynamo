@@ -1,133 +1,151 @@
-class _FunctionObject
+class Function
 {
-    def DoEvaluation(param:var[]..[])
-    {
-        return = null;
+   imp: var[]..[];
+}
+
+def __CreateFunctionObject(
+    fptr: function,
+    paramCount: int,
+    paramPositions: int[],
+    arguments: var[]..[],
+    unpackArgs: bool)
+{
+    f = {};
+    f["__fptr"] = fptr;
+    f["__pcount"] = paramCount;
+    f["__unpack"] = unpackArgs;
+
+    a = {};
+    hasArgAt[0..paramCount- 1] = false;
+    hasArgAt[paramPositions] = true;
+    a["__argflags"] = hasArgAt;
+    a["__args"] = arguments;
+
+    fobj = {};
+    fobj["__func"] = f;
+    fobj["__arginfo"] = a;
+    
+	fo = Function();
+	fo.imp = {};
+	fo.imp["__funcobj"] = fobj;
+    return = fo;
+}
+
+def __CreateComposedFunctionObject(fobjs: Function[])
+{
+    return = [Imperative] {
+        for (fobj in fobjs) {
+            if (fobj.imp["__funcobj"] == null && fobj.imp["__funcobjs"] == null) {
+                return = null;
+            }
+        }
+
+        composedObj = Function();
+		composedObj.imp = {};
+        composedObj.imp["__funcobjs"] = fobjs;
+        return = composedObj;
     }
 }
 
-class Function extends _FunctionObject
+def __GetNextParamPos(hasParamAt: bool[])
 {
-    __functionPointers : function;
-    __argumtNumber : int;
-    __params : var[]..[];
-    __hasParamAt : bool[];
-    __unpackParams: bool;
-    
-    constructor Function(fptr : function, 
-                                      argNumber: int, 
-                                      paramPositions : int[], 
-                                      params : var[]..[],
-                                      unpackParams: bool)
-    {
-        __functionPointers = fptr;
-        __argumtNumber = argNumber;
-        
-        __hasParamAt[0..__argumtNumber - 1] = false;
-        __hasParamAt[paramPositions] = true;
-        
-        __params = params;
-        __unpackParams = unpackParams;
-    }
-    
-    private def GetNextEmptyParamPos(hasParamAt : bool[])
-    {
-        return = [Imperative]
-        {
-            for(_i in 0..Count(hasParamAt) - 1)
-            {
-                if (!hasParamAt[_i])
-                    return = _i;
-            }
-            return = -1;
+    return = [Imperative] {
+        for(i in 0..Count(hasParamAt) - 1) {
+            if (!hasParamAt[i])
+                return = i;
         }
+        return = -1;
     }
-    
-    private def DoEvaluationImp(fptr : function, 
-                              params : var[]..[], 
-                              unpackParams: bool)
-    {
-        return = Evaluate(fptr, params, unpackParams);
+}
+
+def __EvaluateComposedFunctionObjects(fos: Function, arg:var[]..[])
+{
+    return = [Imperative] {
+        fobjs = fos.imp["__funcobjs"];
+		if (fobjs == null) {
+			return = null;
+		}
+        count = Count(fobjs);
+
+        v = arg;
+        for (i in (count - 1)..0) {
+            f = fobjs[i];
+            v = __EvaluateFunctionObject(f, v);
+        }
+
+        return = v;
     }
-    
-    def DoEvaluation(param: var[]..[])
-    {      
-        return = [Imperative]
-        {           
-            _nextParamPosition = GetNextEmptyParamPos(__hasParamAt);
+}
+
+def __EvaluateFunctionObject(fo: Function, arg: var[]..[])
+{      
+    return = [Imperative]
+    {           
+        fobjs = fo.imp["__funcobjs"];
+        if (fobjs != null) {
+            return = __EvaluateComposedFunctionObjects(fo, arg); 
+        }
+
+        fobj = fo.imp["__funcobj"];
+        if (fobj == null) {
+            return = null;
+        }
+
+        arginfo = fobj["__arginfo"];
+        if (arginfo == null) {
+            return = null;
+        }
+
+        func = fobj["__func"];
+        if (func == null) {
+            return = null;
+        }
+
+        nextParamPosition = __GetNextParamPos(arginfo["__argflags"]);
+        if (nextParamPosition < 0) {
+            return = null;
+        }
+        else
+        {
+            args = arginfo["__args"];
+            args[nextParamPosition] = arg;
+
+            hasArgAt = arginfo["__argflags"];
+            hasArgAt[nextParamPosition] = true;
             
-            if (_nextParamPosition < 0)
+            nextParamPosition = __GetNextParamPos(hasArgAt);
+            if (nextParamPosition < 0)
             {
-                return = null;
+                return = Evaluate(func["__fptr"], args, func["__unpack"]);
             }
             else
             {
-                _params = __params;
-                _hasParamAt = __hasParamAt;
-                
-                _params[_nextParamPosition] = param;
-                _hasParamAt[_nextParamPosition] = true;
-                
-                _nextParamPosition = GetNextEmptyParamPos(_hasParamAt);
-                if (_nextParamPosition < 0)
+                paramPositions = { };
+                for (i in 0..func["__pcount"] - 1)
                 {
-                    return = DoEvaluationImp(__functionPointers, _params, __unpackParams);
-                }
-                else
-                {
-                    _paramPositions = { };
-                    for (_i in 0..__argumtNumber - 1)
+                    if (hasArgAt[i])
                     {
-                        if (_hasParamAt[_i])
-                        {
-                            _paramPositions = Concat(_paramPositions, { _i });
-                        }
+                        paramPositions = Concat(paramPositions, { i });
                     }
-                
-                    return = Function.Function(
-                                                __functionPointers,
-                                                __argumtNumber,
-                                                _paramPositions,
-                                                _params,
-                                                __unpackParams);
                 }
-            }
-        }  
-    }
-}
-
-class _ComposedFunctionObject extends _FunctionObject
-{
-    __funcs : _FunctionObject[];
-    
-    constructor _ComposedFunctionObject(funcs : _FunctionObject[])
-    {
-        __funcs = funcs;
-    }
-    
-    def DoEvaluation(param:var[]..[])
-    {
-        return = [Imperative]
-        {
-            _count = Count(__funcs);
-            _v = param;
             
-            for(_i in (_count - 1).. 0)
-            {
-                _f = __funcs[_i];
-                _v = _f.DoEvaluation(_v);
+                return = __CreateFunctionObject(
+                            func["__fptr"],
+                            func["__pcount"],
+                            paramPositions,
+                            args,
+                            func["__unpack"]);
             }
-            return = _v;
         }
-    }
+    }  
 }
 
-def __Apply(functionObject: _FunctionObject, param: var[]..[])
+def __Apply(functionObject: Function, param: var[]..[])
 {
-    return = functionObject.DoEvaluation(param);
+    return = __EvaluateFunctionObject(functionObject, param);
 }
 
-def __ApplyList(functionObject: _FunctionObject, params: var[]..[])
+def __ApplyList(functionObject: Function, params: var[]..[])
 {
     return = [Imperative]
     {
@@ -145,30 +163,30 @@ def __GetOutput(outputs: var[]..[], key: var)
     return = outputs[key];
 }
 
-def __Compose(funcs : _FunctionObject[])
+def __Compose(funcs : Function[])
 {
-    return = _ComposedFunctionObject(funcs);
+    return = __CreateComposedFunctionObject(funcs);
 }
 
-def __ComposeBuffered(funcs: _FunctionObject[], amt: int, arg: var[]..[])
+def __ComposeBuffered(funcs: Function[], amt: int, arg: var[]..[])
 {
     return = [Imperative]
     {
         if (amt <= 1)
         {
-            return = __Apply(_ComposedFunctionObject(funcs), arg);
+            return = __Apply(__Compose(funcs), arg);
         }
         else
         {
             i = Count(funcs)-1;
             first = funcs[i];
             funcs[i] = __Apply(first, arg);
-            return = Function(__ComposeBuffered, 3, { 0, 1 }, { funcs, amt-1, null }, true);
+            return = __CreateFunctionObject(__ComposeBuffered, 3, { 0, 1 }, { funcs, amt-1, null }, true);
         }
     };
 }
 
-def MinimumItemByKey(list: var[]..[], keyProjector: _FunctionObject)
+def MinimumItemByKey(list: var[]..[], keyProjector: Function)
 {
     return = [Imperative]
     {
@@ -188,7 +206,7 @@ def MinimumItemByKey(list: var[]..[], keyProjector: _FunctionObject)
     }
 }
 
-def MaximumItemByKey(list: var[]..[], keyProjector: _FunctionObject)
+def MaximumItemByKey(list: var[]..[], keyProjector: Function)
 {
     return = [Imperative]
     {
@@ -208,7 +226,7 @@ def MaximumItemByKey(list: var[]..[], keyProjector: _FunctionObject)
     }
 }
 
-def __Replace(list: var, with: var, predicate: _FunctionObject)
+def __Replace(list: var, with: var, predicate: Function)
 {
     return = [Imperative]
     {
@@ -223,7 +241,7 @@ def __Replace(list: var, with: var, predicate: _FunctionObject)
     };
 }
 
-def __Filter(list: var[]..[], predicate: _FunctionObject)
+def __Filter(list: var[]..[], predicate: Function)
 {
     return = [Imperative]
     {
@@ -263,7 +281,7 @@ def __Filter(list: var[]..[], predicate: _FunctionObject)
     };
 }
 
-def __Combine(func : _FunctionObject, lists : var[]..[])
+def __Combine(func: Function, lists: var[]..[])
 {
     argList = Transpose(lists);
     return = [Imperative]
@@ -277,12 +295,12 @@ def __Combine(func : _FunctionObject, lists : var[]..[])
     };
 }
 
-def __Map(func : _FunctionObject, arg : var[]..[])
+def __Map(func: Function, arg: var[]..[])
 {
     return = __Combine(func, { arg });
 }
 
-def __LaceShortest(func : _FunctionObject, lists : var[]..[])
+def __LaceShortest(func: Function, lists : var[]..[])
 {
     return = [Imperative]
     {
@@ -311,7 +329,7 @@ def __LaceShortest(func : _FunctionObject, lists : var[]..[])
     };
 }
 
-def __LaceLongest(func : _FunctionObject, lists : var[]..[])
+def __LaceLongest(func: Function, lists : var[]..[])
 {
     return = [Imperative]
     {
@@ -345,7 +363,7 @@ def __LaceLongest(func : _FunctionObject, lists : var[]..[])
     };
 }
 
-def __ApplyNested(fs: var[]..[], xs: var[]..[], amt: int)
+def __ApplyNested(fs: Function, xs: var[]..[], amt: int)
 {
     return = [Imperative]
     {
@@ -368,7 +386,7 @@ def __ApplyNested(fs: var[]..[], xs: var[]..[], amt: int)
     };
 }
 
-def __CartesianProduct(func : _FunctionObject, lists : var[]..[])
+def __CartesianProduct(func: Function, lists : var[]..[])
 {
     return = [Imperative]
     {
@@ -391,7 +409,7 @@ def __CartesianProduct(func : _FunctionObject, lists : var[]..[])
     };
 }
 
-def __Scan(accumulator: _FunctionObject, seed: var[]..[], lists: var[]..[])
+def __Scan(accumulator: Function, seed: var[]..[], lists: var[]..[])
 {
     return = [Imperative]
     {
@@ -426,7 +444,7 @@ def __Scan(accumulator: _FunctionObject, seed: var[]..[], lists: var[]..[])
     };
 }
 
-def __Reduce(accumulator : _FunctionObject, seed: var[]..[], lists : var[]..[])
+def __Reduce(accumulator: Function, seed: var[]..[], lists : var[]..[])
 {
     return = [Imperative]
     {
@@ -458,7 +476,7 @@ def __Reduce(accumulator : _FunctionObject, seed: var[]..[], lists : var[]..[])
     };
 }
 
-def SortByFunction(list : var[]..[], func:_FunctionObject)
+def SortByFunction(list: var[]..[], func: Function)
 {
     return = [Imperative]
     {
@@ -483,7 +501,7 @@ def SortByFunction(list : var[]..[], func:_FunctionObject)
     };
 }
 
-def GroupByFunction(list : var[]..[], func: _FunctionObject)
+def GroupByFunction(list: var[]..[], func: Function)
 {
     return = [Imperative]
     {
@@ -508,7 +526,7 @@ def GroupByFunction(list : var[]..[], func: _FunctionObject)
     };
 }
 
-def TrueForAll(list: var[]..[], predicate: _FunctionObject)
+def TrueForAll(list: var[]..[], predicate: Function)
 {
     return = [Imperative]
     {
@@ -538,7 +556,7 @@ def TrueForAll(list: var[]..[], predicate: _FunctionObject)
     };
 }
 
-def TrueForAny(list: var[]..[], predicate: _FunctionObject)
+def TrueForAny(list: var[]..[], predicate: Function)
 {
     return = [Imperative]
     {
@@ -568,7 +586,7 @@ def TrueForAny(list: var[]..[], predicate: _FunctionObject)
     };
 }
 
-def __ForEach(functionObject: _FunctionObject, lists: var[]..[])
+def __ForEach(functionObject: Function, lists: var[]..[])
 {
     [Imperative]
     {
@@ -595,7 +613,7 @@ def __ForEach(functionObject: _FunctionObject, lists: var[]..[])
     };
 }
 
-def LoopWhile(init: var[]..[], continueWhile: _FunctionObject, loopBody: _FunctionObject)
+def LoopWhile(init: var[]..[], continueWhile: Function, loopBody: Function)
 {
 	return = [Imperative]
 	{

@@ -27,7 +27,6 @@
 
             <!-- MaxContentGrid = (MaxPreviewControl - (2 * Margin)) -->
             <fwk:Thickness x:Key="PreviewContentMargin">12,5,5,5</fwk:Thickness>
-            <clr:Double x:Key="MaxContentGridWidth">488.0</clr:Double>
             <clr:Double x:Key="MaxContentGridHeight">288</clr:Double>
             
         </ResourceDictionary>
@@ -125,7 +124,7 @@
             </Grid>
 
             <Grid Name="largeContentGrid"
-                  MaxWidth="{StaticResource MaxContentGridWidth}"
+                  HorizontalAlignment="Stretch"
                   MaxHeight="{StaticResource MaxContentGridHeight}"
                   MinWidth="{Binding RelativeSource={RelativeSource FindAncestor, 
                              AncestorType={x:Type controls:NodeView}}, 

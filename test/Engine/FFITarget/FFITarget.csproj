@@ -74,6 +74,7 @@
     <Compile Include="RegressionTargets.cs" />
     <Compile Include="TestDefaultArgumentAttributes.cs" />
     <Compile Include="TestMessageLog.cs" />
+    <Compile Include="TestMethodOverload.cs" />
     <Compile Include="TestNamespaceConflict.cs" />
     <Compile Include="TestNamespaceResolution.cs" />
     <Compile Include="TestObjects.cs" />

@@ -45,8 +45,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=1.0.5959.26179, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Greg.1.0.5959.26179\lib\net45\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=1.0.6176.18754, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\src\packages\Greg.1.0.6176.18754\lib\net45\Greg.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
@@ -83,6 +83,7 @@
     <Compile Include="AnalyticsTests.cs" />
     <Compile Include="AtLevelTest.cs" />
     <Compile Include="AttributeTest.cs" />
+    <Compile Include="ImperativeClodeBlockTest.cs" />
     <Compile Include="ListAtLevelTests.cs" />
     <Compile Include="MultiOutputNodeTest.cs" />
     <Compile Include="NodeExecutionTest.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="NodeToCodeTest.cs" />
     <Compile Include="PresetsTests.cs" />
     <Compile Include="PeriodicEvaluationTests.cs" />
+    <Compile Include="SerializationTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
@@ -191,9 +193,18 @@
       <Name>PythonNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\NodeServices\DynamoServices.csproj">
+      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+      <Name>DynamoServices</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
       <Name>DynamoShapeManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Workspaces\Workspaces.csproj">
+      <Project>{d2aaa2dd-6c7e-41f4-8e36-8e0d112cb8dc}</Project>
+      <Name>Workspaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\SystemTestServices\SystemTestServices.csproj">
       <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>

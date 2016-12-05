@@ -67,16 +67,16 @@
     <CreateProperty Value="Dynamo Core">
       <Output TaskParameter="Value" PropertyName="ProductName" />
     </CreateProperty>
-    <CreateProperty Value="{584B3E06-FE7A-4341-8C22-339B00ABD58A}">
+    <CreateProperty Value="{2E05E21E-FC6E-42AE-BE9D-228CF34341F2}">
       <Output TaskParameter="Value" PropertyName="UpgradeCode" />
     </CreateProperty>
     <CreateProperty Value="UpgradeCode=$(UpgradeCode);ProductName=$(ProductName);FullVersion=$(FullVersion);Major=$(Major);Minor=$(Minor);Rev=$(Rev);Build=$(Build);$(DefineConstants)">
       <Output TaskParameter="Value" PropertyName="DefineConstants" />
     </CreateProperty>
     <Exec Command="rd /s /q $(DYNAMO_HARVEST_PATH)" />
-    <Exec Command="robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) -XF %2aTest%2a.dll %2a.pdb TestResult.xml -e -XD int -XD Revit_2015 -XD Revit_2016 -XD Revit_2017 -XD samples -XD gallery -XD 0.8" IgnoreExitCode="true" />
+    <Exec Command="robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) -XF %2aTest%2a.dll %2a.pdb TestResult.xml -e -XD int -XD Revit_2016 -XD Revit_2017 -XD Revit_2018 -XD samples -XD gallery -XD 0.8" IgnoreExitCode="true" />
     <Exec Command="$(DYNAMO_BASE_PATH)\tools\install\Extra\InstallerSpec.exe $(DYNAMO_HARVEST_PATH) $(DYNAMO_HARVEST_PATH)\InstallSpec.xml" IgnoreExitCode="true" />
-    <Exec Condition="Exists('$(MSBuildProjectDirectory)\Digital_Sign.bat')" Command="$(MSBuildProjectDirectory)\Digital_Sign.bat $(DYNAMO_HARVEST_PATH)\binariestosign.txt" IgnoreExitCode="true" />
+    <Exec Condition="Exists('$(MSBuildProjectDirectory)\Digital_Sign.bat')" Command="$(MSBuildProjectDirectory)\Digital_Sign.bat $(DYNAMO_HARVEST_PATH)\binariestosign.txt" IgnoreExitCode="false" />
     
     <!-- Copy README file to install folder -->
     <Exec Command="xcopy /y $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration)\README.txt $(DYNAMO_BASE_PATH)\tools\install\Installers\" IgnoreExitCode="true" />

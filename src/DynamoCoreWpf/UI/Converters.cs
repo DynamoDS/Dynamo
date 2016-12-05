@@ -949,6 +949,13 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Obsolete class of ShowHideConsoleMenuItemConverter
+    /// Using of this class will produce compile warnings
+    /// TODO: To be removed in Dynamo 2.0
+    /// TODO: Resource String DynamoViewViewMenuHideConsole to be removed in Dynamo 2.0
+    /// </summary>
+    [System.Obsolete("This class is obsolete.")]
     public class ShowHideConsoleMenuItemConverter : IValueConverter
     {
         #region IValueConverter Members
@@ -975,20 +982,51 @@ namespace Dynamo.Controls
         #endregion
     }
 
+    public class ConsoleHeightToBooleanConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if ((int)value > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+
+        #endregion
+    }
+
+
+    /// <summary>
+    /// Obsolete class of ShowHidePreviewBubblesConverter
+    /// Using of this class will produce compile warnings
+    /// TODO: To be removed in Dynamo 2.0
+    /// </summary>
+    [System.Obsolete("This class is obsolete, string converter for Preview Bubble Display Option only returns single value now. ")]
     public class ShowHidePreviewBubblesConverter : IValueConverter
     {
         #region IValueConverter Members
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (bool) value
-                ? Resources.DynamoViewSettingsMenuHidePreviewBubbles
-                : Resources.DynamoViewSettingsMenuShowPreviewBubbles;
+            return Resources.DynamoViewSettingsMenuShowPreviewBubbles;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (string)value == Resources.DynamoViewSettingsMenuHidePreviewBubbles;
+            return (string)value == Resources.DynamoViewSettingsMenuShowPreviewBubbles;
         }
 
         #endregion
@@ -1640,7 +1678,7 @@ namespace Dynamo.Controls
             if (value == null)
                 return Resources.FilePathConverterNoFileSelected;
 
-            var str = WebUtility.UrlDecode(value.ToString());
+            var str = value.ToString();
 
             if (string.IsNullOrEmpty(str))
                 return Resources.FilePathConverterNoFileSelected;
@@ -1695,7 +1733,7 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return WebUtility.UrlEncode(value.ToString());
+            return value.ToString();
         }
     }
 
@@ -2060,6 +2098,25 @@ namespace Dynamo.Controls
         {
             if (value == null) return Visibility.Collapsed;
             return Visibility.Visible;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// This converter was created for AboutWindow.xaml in order to accomodate the changes required
+    /// for the display for both Core/Host versions. 
+    /// </summary>
+    public class NullValueToGridRow1Converter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null) return 1;
+            return 2;
         }
 
         public object ConvertBack(
@@ -2823,4 +2880,89 @@ namespace Dynamo.Controls
                 throw new NotImplementedException();
             }
         }
+
+    /// Converter is used in WatchTree.xaml
+    /// It converts the value of the padding required by each list level label to the required thickness (padding from the left)
+    /// It then supplies the required thickness to the margin property for each label
+    /// </summary>
+    public class LeftThicknessConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is int)
+            {
+                var margin = (int)value == 1 ? new Thickness(4, 3, 0, 0) : new Thickness(2,3,0,0);
+                return margin; 
+            }
+            return new Thickness();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
+
+    /// <summary>
+    /// Converter is used in WatchTree.xaml
+    /// It converts the boolean value of WatchViewModel.IsCollection to the background color of the each listnode label
+    /// </summary>
+    public class ListIndexBackgroundConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool) value)
+            {
+                return "Transparent";
+            }
+            return "#aaaaaa";
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converter is used in WatchTree.xaml 
+    /// It converts the boolean value of WatchViewModel.IsCollection to determine the margin of the listnode textblock
+    /// </summary>
+
+    public class ListIndexMarginConverter : IValueConverter
+    { 
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return new Thickness(0,0,4,0);
+            }
+            return new Thickness (-4,0,4,0);
+        }   
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converter is used in WatchTree.xaml 
+    /// It converts the boolean value of WatchViewModel.IsTopLevel to determine the margin of the list node label
+    /// </summary>
+
+    public class TopLevelLabelMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return new Thickness(-4,0,4,0);
+            }
+            return new Thickness(0,0,4,0);
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+}

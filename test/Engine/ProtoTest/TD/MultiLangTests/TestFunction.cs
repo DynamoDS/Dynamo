@@ -215,189 +215,6 @@ def foo : int( a:int, b : int )
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void T08_Function_From_Inside_Class_Constructor()
-        {
-            string code = @"
-def add_1 : int( a:int )
-{
-	return = a + 1;
-}
-class A
-{
-	a : var;
-	constructor CreateA ( a1 : int )
-	{
-		a = add_1(a1);
-	}
-}
-a;b;
-[Imperative]
-{
-	arg = 1;
-	b = 1;
-	
-    [Associative]
-	{
-		A_inst = A.CreateA( arg );
-		a = A_inst.a;
-	}
-    [Associative]
-    {
-        b = [Imperative]
-        {
-            A_inst = A.CreateA( arg );
-            return = A_inst.a;
-        }
-    }
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 2);
-            thisTest.Verify("b", 2);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void T09_Function_From_Inside_Class_Constructor()
-        {
-            string code = @"
-def add_1 : int( a:int )
-{
-	return = a + 1;
-}
-class A
-{
-	a : var;
-	constructor CreateA ( a1 : int )
-	{
-		a = add_1(a1);
-	}
-}
-a;b;
-[Associative]
-{
-	arg = 1;
-	b = 1;
-    [Imperative]
-    {
-        [Associative]
-        {
-            A_inst = A.CreateA( arg  );
-            a = A_inst.a;
-        }
-    }
-	b = 
-	[Imperative]
-	{
-		A_inst = A.CreateA( arg  );
-		return = A_inst.a;
-	}
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 2);
-            thisTest.Verify("b", 2);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void T10_Function_From_Inside_Class_Method()
-        {
-            string code = @"
-def add_1 : int( a:int )
-{
-	return = a + 1;
-}
-class A
-{
-	a : var;
-	constructor CreateA ( a1 : int )
-	{
-		a = add_1(a1);
-	}
-	def add1 : int(  )
-    {
-	    return = add_1(a);
-    }
-}
-a;b;
-[Associative]
-{
-	arg = 1;
-	b = 1;
-    [Imperative]
-    {
-        [Associative]
-        {
-            A_inst = A.CreateA( arg  );
-            a = A_inst.add1();
-        }
-    }
-	b = 
-	[Imperative]
-	{
-		A_inst = A.CreateA( arg  );
-		return = A_inst.add1();
-	}
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 3);
-            thisTest.Verify("b", 3);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void T11_Function_From_Inside_Class_Method()
-        {
-            string code = @"
-def add_1 : int( a:int )
-{
-	return = a + 1;
-}
-class A
-{
-	a : var;
-	constructor CreateA ( a1 : int )
-	{
-		a = add_1(a1);
-	}
-	def add1 : int(  )
-    {
-	    return = add_1(a);
-    }
-}
-a;b;
-[Imperative]
-{
-	arg = 1;
-	b = 1;
-	[Associative]
-	{
-		A_inst = A.CreateA( arg );
-		a = A_inst.add1();
-	}
-    b = [Associative]
-    {
-        return = [Imperative]
-        {
-            A_inst = A.CreateA( arg );
-            return = A_inst.add1();
-        }
-    }
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a", 3);
-            thisTest.Verify("b", 3);
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T12_Function_From_Inside_Function()
         {
@@ -1323,36 +1140,6 @@ c;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void T48_Function_With_Mismatching_Argument_Type()
-        {
-            string code = @"
-c;
-class A
-{
-    a : int;
-	constructor A1(a1 : int)
-	{
-	    a = a1;
-	}
-}
-	 def foo : double ( a : int )
-	 {
-	    return = 1.5;
-     }
-[Associative]
-{ 
-	 a = A.A1(1);
-	 b2 = foo ( a);	
-	 c = 3;	
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("c", 3, 0);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T49_Function_With_Matching_Return_Type()
@@ -1871,39 +1658,6 @@ a;b;
                 //thisTest.Verify("foo", 2, 0);
                 //thisTest.Verify("c", 3, 0);
                 //thisTest.Verify("b", 4, 0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void T72_Function_Name_Checking()
-        {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
-class foo
-{
-    a : int;
-	constructor foo ( b : int )
-	{
-	    a = b;
-	}
-}
-[Associative]
-{
-    def foo : int ( a : int )
-	{
-		foo = 3;
-		return  = a + foo;
-	}
-	foo = 1;
-	x = foo(foo);
-	y = foo.foo(foo);
-	z = y.a;
-} 
-";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            });
         }
 
         [Test]
@@ -2503,58 +2257,6 @@ e = foo(1, 2.0, 3); // not found, null
             thisTest.Verify("e", e);
         }
 
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        public void T93_Function_With_Default_Arg_In_Class()
-        {
-            string str = "";
-            string code = @"class Test
-{
-	a : int = 1;
-	b : int = 2;
-	c : int = 3;
-	constructor Test(k:int, m:int = 4)
-	{
-		a = k;
-		b = m;
-	}
-	def foo:double(x:int = 2, y:double = 5.0)
-	{
-		return = x + y + a + b + c;
-	}
-}
-i;j;k;a;b;c;
-[Associative]
-{
-	t = Test.Test(2); // a = 2, b = 4, c = 3
-	i = t.foo(); // i = 16.0
-	j = t.foo(1, 3.0); // j = 13.0
-	k = t.foo(); // k = 16.0
-}
-[Imperative]
-{
-	t = Test.Test(2); // a = 2, b = 4, c = 3
-	a = t.foo(); // a = 16.0
-	b = t.foo(1, 3.0); // b = 13.0
-	c = t.foo(); // c = 16.0
-}
-";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, str);
-            //Verification
-            object i = 16.0;
-            object j = 13.0;
-            object k = 16.0;
-            object a = 16.0;
-            object b = 13.0;
-            object c = 16.0;
-            thisTest.Verify("i", i);
-            thisTest.Verify("j", j);
-            thisTest.Verify("k", k);
-            thisTest.Verify("a", a);
-            thisTest.Verify("b", b);
-            thisTest.Verify("c", c);
-        }
-
 
         [Test]
         [Category("SmokeTest")]
@@ -3125,24 +2827,6 @@ b;c;
             thisTest.Verify("b", null);
             thisTest.Verify("c", null);
             //});
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_InvalidTest_NoVerification")]
-        [Category("SmokeTest")]
-        public void TV25_Defect_1454923()
-        {
-            string code = @"
-class Temp
-{
-	a : var;
-	
-	constructor CreateTemp ( a1 : int )
-	{
-		a = a1;
-	}
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
         [Test]
@@ -4247,63 +3931,6 @@ x;
             thisTest.Verify("x", 5);
         }
 
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void TV56_Defect_1456571_3()
-        {
-            string code = @"
-class A
-{
-	a : var;
-	
-	constructor A(b)
-	{
-		a = b;
-		[Imperative]
-		{
-			if(a > 3 ) 
-			{
-				a = 3 ;
-			}
-		}
-	}
-	def foo (b)
-	{
-		[Imperative]
-		{
-			if(a == 3 ) 
-			{
-				a = 3 + b;
-			}		
-		}
-		return = a;
-	}
-}
-f1;f2;f3;f4;
-[Associative]
-{
-	a1 = A.A(5);
-	a2 = A.A(1);
-	f1 = a1.foo(2);
-	f2 = a2.foo(2);
-	
-}
-[Imperative]
-{
-	a1 = A.A(5);
-	a2 = A.A(1);
-	f3 = a1.foo(2);
-	f4 = a2.foo(2);	
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("f1", 5);
-            thisTest.Verify("f2", 1);
-            thisTest.Verify("f3", 5);
-            thisTest.Verify("f4", 1);
-
-        }
-
         [Test] 
         [Category("SmokeTest")]
         public void TV57_Defect_1454932()
@@ -4651,7 +4278,6 @@ a2 = compare( b1, a, 1, 1 );
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void TV69_Defect_1456799()
         {
@@ -4687,7 +4313,6 @@ bcurvePtX = bcurvePt.X;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void TV69_Defect_1456799_2()
         {
@@ -4722,7 +4347,6 @@ bcurvePtX = bcurve.P[1].X;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
         [Category("SmokeTest")]
         public void TV69_Defect_1456799_3()
         {
@@ -5097,48 +4721,6 @@ x2;y12;y22;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void TV77_Defect_1455259_2()
-        {
-            // Assert.Fail("1463703 - Sprint 20 : rev 2147 : regression : ambiguous warning and wrong output for cases where the class method name and global method name is same ");
-
-            string code = @"
-def foo2 : int ( a : int )
-{
-	return  = a + 1;
-}
-class A
-{
-    a1: var;
-	constructor A ( a)
-	{
-	    a1 = a;
-	}
-	def foo2  ( a : int )
-	{
-	    return  = a + a1;
-	}
-    
-}
-b;c;d;
-[Imperative]
-{
-    
-	a = A.A(1);
-	b = a.a1;
-	c = a.foo2(1);	
-	d = foo2(1);
-	
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("b", 1, 0);
-            thisTest.Verify("d", 2, 0);
-            thisTest.Verify("c", 2, 0);
-        }
-
-        [Test]
         [Category("Method Resolution")]
         [Category("Failure")]
         public void TV78_Defect_1460866()
@@ -5185,48 +4767,6 @@ z2 = [Imperative]
             thisTest.Verify("z2", 1);
 
             thisTest.VerifyRuntimeWarningCount(0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void TV78_Defect_1460866_2()
-        {
-            string code = @"
-class A
-{
-    a : int;
-    constructor A ( a1 : int )
-    {
-        a = [Imperative]
-	{
-	    if(a1 > 2 )
-	        return = 2;
-	}
-    }
-    def foo ()
-    {
-        x = [Imperative]
-	{
-	    if(a == 2 )
-	        return = true;
-	}
-	return  = x;
-    }
-}
-x = A.A( 3 );
-y = x.a;
-z = x.foo();
-x2 = A.A( 1 );
-y2 = x2.a;
-z2 = x2.foo();
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object v1 = null;
-            thisTest.Verify("y", 2, 0);
-            thisTest.Verify("z", true, 0);
-            thisTest.Verify("y2", v1, 0);
-            thisTest.Verify("z2", v1, 0);
         }
 
         [Test]
@@ -5699,7 +5239,7 @@ b = f2( { null, null } );
 
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
+        [Category("Failure")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027()
         {
@@ -5718,6 +5258,7 @@ class B
 	
 }
 def goo : var()
+
 {
     return = A.A();
 }
@@ -5740,6 +5281,7 @@ t11;t12;t13;t14;t15;
 	t14 = a.a;
 	t15 = a.b.b;
 }";
+            //members are not initialized
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object v1 = null;
             thisTest.Verify("t1", 0.0);
@@ -5754,237 +5296,6 @@ t11;t12;t13;t14;t15;
             thisTest.Verify("t14", a);
             thisTest.Verify("t15", v1);
 
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void TV87_Defect_1464027_2()
-        {
-            string code = @"
-class A
-{
-    x : double;
-	y : int;
-	z : bool;
-	a : int[];
-	b : B;
-}
-class B
-{
-    b : double;
-	
-}
-def goo : var[]()
-{
-    return = {A.A(), A.A()};
-}
-def foo : A[] ()
-{
-    return = {A.A(), A.A()};
-}
-a1 = foo();
-a = a1[1];
-t1 = a.x;
-t2 = a.y;
-t3 = a.z;
-t4 = a.a;
-t5 = a.b.b;
-t11;t12;t13;t14;t15;
-[Imperative]
-{
-    t11 = a.x;
-	t12 = a.y;
-	t13 = a.z;
-	t14 = a.a;
-	t15 = a.b.b;
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", 0.0);
-            thisTest.Verify("t2", 0);
-            thisTest.Verify("t3", false);
-            object a = new object[] { };
-            thisTest.Verify("t4", a);
-            thisTest.Verify("t5", null);
-            thisTest.Verify("t11", 0.0);
-            thisTest.Verify("t12", 0);
-            thisTest.Verify("t13", false);
-            thisTest.Verify("t14", a);
-            thisTest.Verify("t15", null);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void TV87_Defect_1464027_3()
-        {
-            string code = @"
-class A
-{
-    x : double;
-	y : int;
-	z : bool;
-	a : int[];
-	b : B;
-	
-	def goo : var()
-	{
-		return = A.A();
-	}
-}
-class B
-{
-    b : double;
-	
-}
-def foo : A (x:A)
-{
-    return = x.goo();
-}
-a1 = A.A();
-a = foo ( a1 );
-t1 = a.x;
-t2 = a.y;
-t3 = a.z;
-t4 = a.a;
-t5 = a.b.b;
-t11;t12;t13;t14;t15;
-[Imperative]
-{
-    t11 = a.x;
-	t12 = a.y;
-	t13 = a.z;
-	t14 = a.a;
-	t15 = a.b.b;
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", 0.0);
-            thisTest.Verify("t2", 0);
-            thisTest.Verify("t3", false);
-            object a = new object[] { };
-            thisTest.Verify("t4", a);
-            thisTest.Verify("t5", null);
-            thisTest.Verify("t11", 0.0);
-            thisTest.Verify("t12", 0);
-            thisTest.Verify("t13", false);
-            thisTest.Verify("t14", a);
-            thisTest.Verify("t15", null);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void TV87_Defect_1464027_4()
-        {
-            string code = @"
-class A
-{
-    x : double;
-	y : int;
-	z : bool;
-	a : int[];
-	b : B;
-	
-	def goo : A()
-	{
-		return = A.A();
-	}
-}
-class B
-{
-    b : double;
-	
-}
-def foo : var (x:A)
-{
-    return = x.goo();
-}
-a1 = A.A();
-a = foo ( a1 );
-t1 = a.x;
-t2 = a.y;
-t3 = a.z;
-t4 = a.a;
-t5 = a.b.b;
-t11;t12;t13;t14;t15;
-[Imperative]
-{
-    t11 = a.x;
-	t12 = a.y;
-	t13 = a.z;
-	t14 = a.a;
-	t15 = a.b.b;
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", 0.0);
-            thisTest.Verify("t2", 0);
-            thisTest.Verify("t3", false);
-            object a = new object[] { };
-            thisTest.Verify("t4", a);
-            thisTest.Verify("t5", null);
-            thisTest.Verify("t11", 0.0);
-            thisTest.Verify("t12", 0);
-            thisTest.Verify("t13", false);
-            thisTest.Verify("t14", a);
-            thisTest.Verify("t15", null);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void TV87_Defect_1464027_5()
-        {
-            string code = @"
-class A
-{
-    x : double;
-	y : int;
-	z : bool;
-	a : int[];
-	b : B;
-	
-	def goo :var()
-	{
-		return = A.A();
-	}
-}
-class B
-{
-    b : double;
-	
-}
-def foo : var (x:A)
-{
-    return = x.goo();
-}
-a1 = A.A();
-a = foo ( a1 );
-t1 = a.x;
-t2 = a.y;
-t3 = a.z;
-t4 = a.a;
-t5 = a.b.b;
-t11;t12;t13;t14;t15;
-[Imperative]
-{
-    t11 = a.x;
-	t12 = a.y;
-	t13 = a.z;
-	t14 = a.a;
-	t15 = a.b.b;
-}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t1", 0.0);
-            thisTest.Verify("t2", 0);
-            thisTest.Verify("t3", false);
-            object a = new object[] { };
-            thisTest.Verify("t4", a);
-            thisTest.Verify("t5", null);
-            thisTest.Verify("t11", 0.0);
-            thisTest.Verify("t12", 0);
-            thisTest.Verify("t13", false);
-            thisTest.Verify("t14", a);
-            thisTest.Verify("t15", null);
         }
 
         [Test]
@@ -6196,155 +5507,6 @@ b;c;d;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        public void TV91_Defect_1463703_2()
-        {
-            //This failure is no longer related to this defect. Back to TD.
-            //Assert.Fail("1466269 - Sprint 22 - rev 2418 - Regression : DS throws warning Multiple type+pattern match parameters found, non-deterministic dispatch ");
-            string error = "1467080 sprint23 : rev 2681 : method overload issue over functions with same name and signature in multiple language blocks";
-            string code = @"def foo2 : int ( a : int )
-{
-	return  = a + 1;
-}
-class A
-{
-    a1: var;
-	constructor A ( a)
-	{
-	    a1 = a;
-	}
-	def foo2  ( a : int )
-	{
-	    return  = a + a1;
-	}
-    
-}
-y1;y2;y3;y4;
-[Associative]
-{
-    def foo : int ( a : int )
-	{
-		return  = a + 1;
-	}
-	
-	def foo1  ( a  )
-	{
-		return  = a + 1;
-	}
-	
-	x = 1;
-	y1 = foo(x);
-	y2 = foo1(x); //warning : (-1,-1) Warning:Ambiguous method dispatch.
-	
-}
-[Imperative]
-{
-    def foo : int ( a : int )
-	{
-		return  = a + 1;
-	}
-	
-	def foo1  ( a  )
-	{
-		return  = a + 1;
-	}
-	
-	x = 1;	
-	y3 = foo(x);
-	y4 = foo1(x); //warning : (-1,-1) Warning:Ambiguous method dispatch.
-	a = A.A(1);
-	b = a.a1;
-	c = a.foo2(1);	
-	
-}
-";
-            thisTest.VerifyRunScriptSource(code, error);
-            thisTest.Verify("y1", 2);
-            thisTest.Verify("y2", 2);
-            thisTest.Verify("y3", 2);
-            thisTest.Verify("y4", 2);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Failing")]
-        [Category("Method Resolution")]
-        [Category("Failure")]
-        public void TV91_Defect_1463703_3()
-        {
-            // Tracked  by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4013
-            string error = "MAGN-4013 Method overload issue over functions with same name and signature in multiple language blocks";
-            string code = @"def foo2 : int[] ( a : int[] )
-{
-	return  = a;
-}
-class A
-{
-    a1: var[];
-	constructor A ( a: var[])
-	{
-	    a1 = a;
-	}
-	def foo2  ( a : int[] )
-	{
-	    a1 = a;
-		return  = a1 ;
-	}
-    
-}
-x1 = 
-[Associative]
-{
-    def foo : int[] ( a : int[] )
-	{
-		a[0] = 0;
-		return  = a;
-	}
-	
-	def foo1  ( a : var[]  )
-	{
-		a[0] = 1;
-		return  = a;
-	}
-	
-	x = {9,9};
-	y1 = foo(x);
-	y2 = foo1(x); //warning : (-1,-1) Warning:Ambiguous method dispatch.
-	return = { y1, y2};
-}
-x2 = 
-[Imperative]
-{
-    def foo : int[] ( a : int[] )
-	{
-		a[0] = 2;
-		return  = a ;
-	}
-	
-	def foo1  ( a : var [] )
-	{
-		a[0] = 4;
-		return  = a ;
-	}
-	
-	x = { 9, 9 };	
-	y3 = foo(x);
-	y4 = foo1(x); //warning : (-1,-1) Warning:Ambiguous method dispatch.
-	a = A.A({1,2});
-	b = a.a1;
-	c = a.foo2({3,4});	
-	return = { y3, y4, b, c };
-	
-}
-";
-            thisTest.VerifyRunScriptSource(code, error);
-
-            Object[] v1 = new Object[] { new Object[] { 0, 9 }, new Object[] { 1, 9 } };
-            Object[] v2 = new Object[] { new Object[] { 2, 9 }, new Object[] { 4, 9 }, new Object[] { 1, 2 }, new Object[] { 3, 4 } };
-            thisTest.Verify("x1", v1);
-            thisTest.Verify("x2", v2);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV92_Accessing_Variables_Declared_Inside_Function_Body()
@@ -6501,7 +5663,6 @@ s1 = UnionBox(s, points, top_index);
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void TV95_Method_Resolution_Derived_Class_Arguments()
         {
@@ -6938,167 +6099,6 @@ t = val[0]; //expected 100, received 1";
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        public void T100_Class_inheritance_replication()
-        {
-            string code = @"
-class A
-{
-        def Test : int[] (a : A)
-        { return = {2}; }
-}
-class B extends A
-{
-        def Test : int (b : B)
-        { return = 5; }
-}
-class C extends B
-{
-}
- 
-c = C.C();
-b = c.Test(c);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("b", 5);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        public void T100_Class_inheritance_replication_2()
-        {
-            // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
-            string code = @"
-class A
-{
-        def Test : int(b : B)
-        { return = 2; }
-}
-class B extends A
-{
-        def Test : int[] (a : A)
-        { return = {5}; }
-}
-class C extends B
-{
-}
- 
-c = C.C();
-result = c.Test(c);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("result", 2);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("Method Resolution")]
-        public void T100_Defect_Class_inheritance_dispatch()
-        {
-            String code =
- @"
-class A
-{
-        def Test(b : B)
-        { return = 1; }
-}
-class B extends A
-{
-        def Test(a : A)
-        { return = 2; }
-}
- 
-a = A.A();
-b = B.B();
-r1 = a.Test(a);//null
-r2 = b.Test(b);//1
-";
-            thisTest.RunScriptSource(code);
-            //Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch\nunecpected result" );
-            thisTest.SetErrorMessage("1467307 - Sprint 25 - Rev 3784 : Method resolution failure on member function when actual parameter is the subtype of the formal parameter type");
-            Object v1 = null;
-            thisTest.Verify("r1", v1);
-            thisTest.Verify("r2", 1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("Method Resolution")]
-        public void T100_Defect_Class_inheritance_dispatch_a()
-        {
-            String code =
- @"
-class A
-{
-        def Test(b : B)
-        { return = 1; }
-}
-class B extends A
-{
-        def Test(a : A)
-        { return = 2; }
-}
- 
-b = B.B();
-r2 = b.Test(b);//1
-";
-            thisTest.RunScriptSource(code);
-            //Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch\nunecpected result" );
-            thisTest.SetErrorMessage("1467307 - Sprint 25 - Rev 3784 : Method resolution failure on member function when actual parameter is the subtype of the formal parameter type");
-            thisTest.Verify("r2", 1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        public void T100_Defect_Class_inheritance_replication_1()
-        {
-            String code =
- @"
-class A
-{
-        def Test(b : B)
-        { return = 1; }
-}
-class B extends A
-{
-        def Test(a : A)
-        { return = 2; }
-}
-class C extends B
-{
-    def Test(c:C)
-    {return = 3;}
-}
- 
-a = A.A();
-b = B.B();
-c = C.C();
-r1 = a.Test(a);//null
-r2 = b.Test(b);//1
-r3 = c.Test(c);//3
-r4 = a.Test(b);//1
-r5 = a.Test(c);//1
-r6 = b.Test(a);//2
-r7 = b.Test(c);//1
-r8 = c.Test(a);//2
-r9 = c.Test(b);//1
-";
-            thisTest.RunScriptSource(code);
-            //Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch\nunecpected result");
-            thisTest.SetErrorMessage("1467307 - Sprint 25 - Rev 3784 : Method resolution failure on member function when actual parameter is the subtype of the formal parameter type");
-            Object v1 = null;
-            thisTest.Verify("r1", v1);
-            thisTest.Verify("r2", 1);
-            thisTest.Verify("r3", 3);
-            thisTest.Verify("r4", 1);
-            thisTest.Verify("r5", 1);
-            thisTest.Verify("r6", 2);
-            thisTest.Verify("r7", 1);
-            thisTest.Verify("r8", 2);
-            thisTest.Verify("r9", 1);
-        }
-
-        [Test]
         public void TV101_Indexing_IntoArray_InFunctionCall_1463234()
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
@@ -7384,34 +6384,6 @@ c = foo(a);";
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("SmokeTest")]
-        public void TV103_Defect_1455090_Rank_Of_Arg_3()
-        {
-            String code =
-@"class A
-{
-    X : var[][][];
-    constructor A ( b : double[]..[] )
-    {
-        X = b;
-    }
-    def foo : var[][][] (  )
-    {
-        return = X ; 
-    }
-}
-a = { { { 0, 1} },  {2, 3}  };
-b = A.A ( a );
-c = b.foo();";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-
-            //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
-            thisTest.Verify("c", new Object[] { new Object[] { new Object[] { 0.0, 1.0 } }, new Object[] { new object[] { 2.0 }, new object[] { 3.0 } } });
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void TV103_Defect_1455090_Rank_Of_Arg_4()
@@ -7516,42 +6488,6 @@ b = foo ( a );";
             //Assert.Fail("1467183 - Sprint24: rev 3163 : replication on nested array is outputting extra brackets in some cases");
 
             thisTest.Verify("b", new Object[] { new object[] { 3 }, new Object[] { 0, 1 }, new object[] { 2 } });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("SmokeTest")]
-        public void TV104_Defect_1467112()
-        {
-            String code =
-@"class A
-{ 
-    public x : var ;     
-    public def foo1 (a)
-    {
-      return = 1;
-    }     
-}
-class B extends A
-{
-    public def foo1 (a)
-    {
-        return = 2;
-    }        
-}
-class C extends B
-{
-    public def foo1 (a)
-    {
-        return = 3;
-    }         
-}
-b = C.C();
-b1 = b.foo1(1);
-test = b1;";
-            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("test", 3);
         }
 
         [Test]
@@ -7891,40 +6827,6 @@ x = foo(); // null
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("x", null);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.FunctionNotFound);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T64_Function_notDeclared_3()
-        {
-            String code = @"
-import(""DSCoreNodes.dll"");
-c = Math.Floor(3.0);
-d = Floor(3);
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("d", null);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.FunctionNotFound);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T64_Function_notDeclared_imperative_4()
-        {
-            String code = @"
-import(""DSCoreNodes.dll"");
-c;d;
-[Imperative]
-{
-    c = Math.Floor(3.0);
-    d = Floor(3);
-}
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("d", null);
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.FunctionNotFound);
         }
 

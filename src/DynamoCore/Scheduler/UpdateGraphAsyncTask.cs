@@ -4,9 +4,6 @@ using System.Linq;
 using Dynamo.Engine;
 using ProtoCore.BuildData;
 using ProtoScript.Runners;
-
-using BuildWarning = ProtoCore.BuildData.WarningEntry;
-using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 
@@ -27,6 +24,7 @@ namespace Dynamo.Scheduler
 
         public IEnumerable<NodeModel> ModifiedNodes { get; protected set; }
         private List<NodeModel> executedNodes;
+
         public IEnumerable<NodeModel> ExecutedNodes { get { return executedNodes; } }
 
         #endregion

@@ -29,7 +29,12 @@ namespace Dynamo.Logging
         public void Start(DynamoModel model)
         {
             //Whether enabled or not, we still record the startup.
-            Service.Instance.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
+            var service = Service.Instance;
+            
+            //Some clients such as Revit may allow start/close Dynamo multiple times
+            //in the same session so register only if the factory is not registered.
+            if(service.GetTrackerFactory(GATrackerFactory.Name) == null)
+                service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
 
             StabilityCookie.Startup();
 
@@ -111,8 +116,10 @@ namespace Dynamo.Logging
         }
 
         private IPreferences preferences = null;
-        
+
         public static IDisposable Disposable { get { return new Dummy(); } }
+
+        private ProductInfo product;
 
         public virtual IAnalyticsSession Session { get; private set; }
 
@@ -127,11 +134,10 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
-        /// Starts the client when DynamoModel is created. This method initializes
-        /// the Analytics service and application life cycle start is tracked.
+        /// Constructs DynamoAnalyticsClient with given DynamoModel
         /// </summary>
-        /// <param name="model"></param>
-        public void Start(DynamoModel dynamoModel)
+        /// <param name="dynamoModel">DynamoModel</param>
+        public DynamoAnalyticsClient(DynamoModel dynamoModel)
         {
             //Set the preferences, so that we can get live value of analytics 
             //reporting approved status.
@@ -145,9 +151,21 @@ namespace Dynamo.Logging
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
 
+            product = new ProductInfo() { Name = "Dynamo", VersionString = appversion };
+        }
+
+        /// <summary>
+        /// Starts the client when DynamoModel is created. This method initializes
+        /// the Analytics service and application life cycle start is tracked.
+        /// </summary>
+        public void Start()
+        {
             //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
-            Service.StartUp(new ProductInfo() { Name = "Dynamo", VersionString = appversion },
+            Service.StartUp(product,
                 new UserInfo(Session.UserId), ReportingAnalytics ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
+
+            TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
+            TrackPreferenceInternal("ReportingUsage", "", ReportingUsage ? 1 : 0);
         }
 
         public void ShutDown()
@@ -160,6 +178,17 @@ namespace Dynamo.Logging
             if (!ReportingAnalytics) return;
 
             var e = AnalyticsEvent.Create(category.ToString(), action.ToString(), description, value);
+            e.Track();
+        }
+
+        public void TrackPreference(string name, string stringValue, int? metricValue)
+        {
+            if (ReportingAnalytics) TrackPreferenceInternal(name, stringValue, metricValue);
+        }
+
+        private void TrackPreferenceInternal(string name, string stringValue, int? metricValue)
+        {
+            var e = AnalyticsEvent.Create(Categories.Preferences.ToString(), name, stringValue, metricValue);
             e.Track();
         }
 

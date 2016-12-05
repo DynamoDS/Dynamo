@@ -5,6 +5,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Scheduler;
 using Dynamo.Visualization;
 using ProtoCore.AST.AssociativeAST;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -13,13 +14,20 @@ namespace CoreNodeModels
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeSearchTags("WatchImageSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
+    [OutPortTypes("var")]
     [AlsoKnownAs("Dynamo.Nodes.WatchImageCore", "DSCoreNodesUI.WatchImageCore")]
     public class WatchImageCore : NodeModel
     {
+        [JsonConstructor]
+        private WatchImageCore(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ShouldDisplayPreviewCore = false;
+        }
+
         public WatchImageCore()
         {
-            InPortData.Add(new PortData("image", Resources.PortDataImageToolTip));
-            OutPortData.Add(new PortData("image", Resources.PortDataImageToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("image", Resources.PortDataImageToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("image", Resources.PortDataImageToolTip)));
 
             RegisterAllPorts(); 
             

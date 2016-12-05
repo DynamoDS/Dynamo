@@ -150,8 +150,9 @@ namespace Dynamo.Migration
             Version fileVersion = VersionFromString(workspaceInfo.Version);
 
             var currentVersion = AssemblyHelper.GetDynamoVersion(includeRevisionNumber: false);
-
-            if (fileVersion > currentVersion)
+            // Only compare for major version difference. 
+            // For minor versions and build versions, we ignore the differences
+            if (fileVersion.Major > currentVersion.Major)
             {
                 bool resume = displayFutureFileMessage(
                     workspaceInfo.FileName,

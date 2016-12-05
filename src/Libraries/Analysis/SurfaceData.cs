@@ -383,6 +383,12 @@ namespace Analysis
 
     public static class AnalysisExtensions
     {
+        /// <summary>
+        /// Takes two planes (of type UV) and returns True if the difference between the two planes is smaller than 1.0e-6 and returns False otherwise.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public static bool IsAlmostEqualTo(this UV a, UV b)
         {
             return Math.Abs(a.U - b.U) < 1.0e-6 && Math.Abs(a.V - b.V) < 1.0e-6;

@@ -5,6 +5,7 @@ using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Graph.Connectors;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Graph.Nodes
@@ -22,11 +23,11 @@ namespace Dynamo.Graph.Nodes
         #region private fields
         ObservableCollection<ConnectorModel> connectors = new ObservableCollection<ConnectorModel>();
         private bool usingDefaultValue;
-        private PortData portData;
         private bool isEnabled = true;
         private bool useLevels = false;
         private bool shouldKeepListStructure = false;
         private int level = 1;
+        private string toolTip;
         #endregion
 
         #region public members
@@ -34,6 +35,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Returns the connectors between the specified ports.
         /// </summary>
+        [JsonIgnore]
         public ObservableCollection<ConnectorModel> Connectors
         {
             get { return connectors; }
@@ -43,22 +45,30 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Name of the port.
         /// </summary>
+        [JsonProperty("DisplayName")]
         public string PortName
         {
-            get { return portData.NickName; }
+            get;
+            internal set;
         }
 
         /// <summary>
         /// Tooltip of the port.
         /// </summary>
-        public string ToolTipContent
+        [JsonProperty("Description")]
+        public string ToolTip
         {
             get
             {
                 string useDefaultArgument = string.Empty;
-                if (!UsingDefaultValue && DefaultValueEnabled)
+                if (!UsingDefaultValue && DefaultValue != null)
                     useDefaultArgument = " " + Properties.Resources.DefaultValueDisabled;
-                return portData.ToolTipString + useDefaultArgument;
+                return toolTip + useDefaultArgument;
+            }
+            set
+            {
+                toolTip = value;
+                RaisePropertyChanged("ToolTip");
             }
         }
 
@@ -66,24 +76,27 @@ namespace Dynamo.Graph.Nodes
         /// Type of the port.
         /// It can be incoming or outcoming.
         /// </summary>
+        [JsonIgnore]
         public PortType PortType
         {
             get;
-            private set;
+            internal set;
         }
 
         /// <summary>
         /// Returns the Node.
         /// </summary>
+        [JsonIgnore]
         public NodeModel Owner
         {
             get;
-            private set;
+            internal set;
         }
 
         /// <summary>
         /// Index of the port.
         /// </summary>
+        [JsonIgnore]
         public int Index
         {
             get { return Owner.GetPortModelIndex(this); }
@@ -92,16 +105,8 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Returns the LineIndex of that port. The vertical position of PortModel is dependent on LineIndex.
         /// </summary>
+        [JsonIgnore]
         public int LineIndex
-        {
-            get { return portData.LineIndex; }
-        }
-
-        /// <summary>
-        /// A flag indicating whether the port is considered connected.
-        /// </summary>
-        [Obsolete("Please use NodeModel.HasConnectedInput instead.")]
-        public bool IsConnected
         {
             get;
             private set;
@@ -110,6 +115,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Indicates whether the port is enabled or not.
         /// </summary>
+        [JsonIgnore]
         public bool IsEnabled
         {
             get
@@ -129,6 +135,7 @@ namespace Dynamo.Graph.Nodes
         /// offsets from the node origin based on the port's index in the 
         /// ports collection.
         /// </summary>
+        [JsonIgnore]
         public Point2D Center
         {
             get
@@ -154,6 +161,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Controls whether this port is set to use it's default value (true) or yield a closure (false).
         /// </summary>
+        [JsonIgnore]
         public bool UsingDefaultValue
         {
             get { return usingDefaultValue; }
@@ -161,29 +169,24 @@ namespace Dynamo.Graph.Nodes
             {
                 usingDefaultValue = value;
                 RaisePropertyChanged("UsingDefaultValue");
-                RaisePropertyChanged("ToolTipContent");
+                RaisePropertyChanged("ToolTip");
             }
-        }
-
-        /// <summary>
-        /// Controls whether the Use Default Value option is available.
-        /// </summary>
-        public bool DefaultValueEnabled
-        {
-            get { return portData.DefaultValue != null; }
         }
 
         /// <summary>
         /// Default value for port.
         /// </summary>
+        [JsonIgnore]
         public AssociativeNode DefaultValue
         {
-            get { return portData.DefaultValue; }
+            get;
+            internal set;
         }
 
         /// <summary>
         /// Controls the space between successive output ports
         /// </summary>
+        [JsonIgnore]
         public Thickness MarginThickness
         {
             get;
@@ -193,10 +196,13 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Based on extensionEdges port is aligned in UI.
         /// </summary>
+        [JsonIgnore]
         public SnapExtensionEdges extensionEdges { get; set; }
 
         /// <summary>
-        /// List at level.
+        /// The Level at which objects will be
+        /// extracted from a nested list. The deepest
+        /// level of a nested list is -1.
         /// </summary>
         public int Level
         {
@@ -215,7 +221,8 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// If use level is enabled.
+        /// A flag which determines whether this Port will 
+        /// extract data from a specific level in a nested list.
         /// </summary>
         public bool UseLevels
         {
@@ -228,13 +235,17 @@ namespace Dynamo.Graph.Nodes
                 if (useLevels != value)
                 {
                     useLevels = value;
+                    
+                    if (!useLevels) ShouldKeepListStructure = useLevels;
                     RaisePropertyChanged("UseLevels");
                 }
             }
         }
 
         /// <summary>
-        /// If needs to keep list structure.
+        /// A flag which determines whether data from this
+        /// node will be re-aligned into the original structure
+        /// of the nested list.
         /// </summary>
         public bool ShouldKeepListStructure
         {
@@ -252,7 +263,35 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// Returns true if the port has connectors or if the 
+        /// default value is enabled and not null. Otherwise, returns false.
+        /// </summary>
+        internal bool IsConnected
+        {
+            get
+            {
+                return Connectors.Any() || (UsingDefaultValue && DefaultValue != null);
+            }
+        }
         #endregion
+
+        [JsonConstructor]
+        internal PortModel(string nickName, string toolTip)
+        {
+            UseLevels = false;
+            ShouldKeepListStructure = false;
+            Level = 2;
+
+            Height = 0.0;
+            DefaultValue = null;
+            LineIndex = -1;
+            this.toolTip = toolTip;
+            this.PortName = nickName;
+
+            MarginThickness = new Thickness(0);
+            Height = Math.Abs(Height) < 0.001 ? Configurations.PortHeightInPixels : Height;
+        }
 
         /// <summary>
         /// Creates PortModel.
@@ -262,31 +301,21 @@ namespace Dynamo.Graph.Nodes
         /// <param name="data">Information about port</param>
         public PortModel(PortType portType, NodeModel owner, PortData data)
         {
-            IsConnected = false;
             PortType = portType;
             Owner = owner;
             UseLevels = false;
             ShouldKeepListStructure = false;
             Level = 2;
 
-            SetPortData(data);
-
+            Height = data.Height;
+            DefaultValue = data.DefaultValue;
+            UsingDefaultValue = DefaultValue != null;
+            LineIndex = data.LineIndex;
+            toolTip = data.ToolTipString;
+            PortName = data.NickName;
+            
             MarginThickness = new Thickness(0);
             Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
-        }
-
-        /// <summary>
-        /// Sets the port data.
-        /// </summary>
-        /// <param name="data">The data.</param>
-        public void SetPortData(PortData data)
-        {
-            portData = data;
-
-            UsingDefaultValue = portData.DefaultValue != null;
-            RaisePropertyChanged("DefaultValueEnabled");
-            RaisePropertyChanged("PortName");
-            RaisePropertyChanged("TooltipContent");
         }
 
         /// <summary>
@@ -302,56 +331,6 @@ namespace Dynamo.Graph.Nodes
                 ConnectorModel connector = Connectors[0];
                 connector.Delete();
             }
-        }
-
-        internal void Connect(ConnectorModel connector)
-        {
-            connectors.Add(connector);
-
-            //throw the event for a connection
-            OnPortConnected(connector);
-
-            IsConnected = true;
-        }
-
-        internal void Disconnect(ConnectorModel connector, bool silent = false)
-        {
-            if (!connectors.Contains(connector))
-                return;
-
-            //throw the event for a disconnection
-            if (!silent)
-            {
-                OnPortDisconnected();
-            }
-
-            connectors.Remove(connector);
-
-            if (connectors.Count == 0)
-            {
-                IsConnected = false;
-            }
-
-            Owner.ValidateConnections();
-        }
-
-        /// <summary>
-        /// Called when a port is connected.
-        /// </summary>
-        /// <param name="connector"></param>
-        protected virtual void OnPortConnected(ConnectorModel connector)
-        {
-            if (Owner != null)
-                Owner.RaisePortConnectedEvent(this, connector);
-        }
-
-        /// <summary>
-        /// Called when a port is disconnected.
-        /// </summary>
-        protected virtual void OnPortDisconnected()
-        {
-            if (Owner != null)
-                Owner.RaisePortDisconnectedEvent(this);
         }
 
         #region Serialization/Deserialization Methods
@@ -405,8 +384,8 @@ namespace Dynamo.Graph.Nodes
         /// Creates PortData.
         /// </summary>
         /// <param name="nickName">Nickname of the port</param>
-        /// <param name="tip">Tooltip of the port</param>
-        public PortData(string nickName, string tip) : this(nickName, tip, null) { }
+        /// <param name="toolTipString">Tooltip of the port</param>
+        public PortData(string nickName, string toolTipString) : this(nickName, toolTipString, null) { }
 
         /// <summary>
         /// Creates PortData.
@@ -414,6 +393,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="nickName">Nickname of the port</param>
         /// <param name="toolTipString">Tooltip of the port</param>
         /// <param name="defaultValue">Default value of the port</param>
+        [JsonConstructor]
         public PortData(string nickName, string toolTipString, AssociativeNode defaultValue)
         {
             NickName = nickName;

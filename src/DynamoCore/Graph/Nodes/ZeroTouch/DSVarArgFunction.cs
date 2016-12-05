@@ -6,6 +6,7 @@ using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Library;
 using ProtoCore.AST.AssociativeAST;
+using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Nodes.ZeroTouch
 {
@@ -19,6 +20,17 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     public class DSVarArgFunction : DSFunctionBase
     {
         /// <summary>
+        /// The function name with required parameters.
+        /// </summary>
+        public string FunctionSignature
+        {
+            get
+            {
+                return Controller.Definition.MangledName;
+            }
+        }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="DSVarArgFunction"/> class.
         /// </summary>
         /// <param name="descriptor">Function descritor.</param>
@@ -30,9 +42,23 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         }
 
         /// <summary>
-        /// Returns the default number of inputs for the node
-        /// </summary>
-        private readonly int defaultNumInputs;
+         /// The NodeType property provides a name which maps to the 
+         /// server type for the node. This property should only be
+        /// used for serialization. 
+         /// </summary>
+         public override string NodeType
+         {
+             get
+             {
+                 return "FunctionNode";
+             }
+        }
+
+    /// <summary>
+    /// Returns the default number of inputs for the node
+    /// </summary>
+    private readonly int defaultNumInputs;
+        [JsonIgnore]
         internal int DefaultNumInputs { get { return defaultNumInputs; } }
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
@@ -56,6 +82,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         /// <summary>
         ///     Custom VariableInput controller for DSVarArgFunctions.
         /// </summary>
+        [JsonIgnore]
         public VariableInputNodeController VarInputController { get; private set; }
 
         #region VarInput Controller
@@ -119,7 +146,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             {
                 var arg = parameters.Last();
                 var argName = arg.Name.Remove(arg.Name.Length - 1) + "0";
-                model.InPortData.Add(new PortData(argName, arg.Description, arg.DefaultValue));
+                model.InPorts.Add(new PortModel(PortType.Input, model, new PortData(argName, arg.Description, arg.DefaultValue)));
             }
         }
 

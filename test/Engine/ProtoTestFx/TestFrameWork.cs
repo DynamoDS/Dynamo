@@ -892,6 +892,7 @@ namespace ProtoTestFx.TD
         {
             var cbn = ProtoCore.Utils.ParserUtils.Parse(code);
             var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
+            subtree.DeltaComputation = false;
             return subtree;
         }
 

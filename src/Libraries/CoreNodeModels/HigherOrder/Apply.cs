@@ -3,6 +3,8 @@ using System.Linq;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
+using Dynamo.Utilities;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.HigherOrder
 {
@@ -13,10 +15,16 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCoreNodesUI.HigherOrder.ApplyFunction")]
     public class ApplyFunction : VariableInputNode
     {
+        [JsonConstructor]
+        private ApplyFunction(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
         public ApplyFunction() : base()
         {
-            InPortData.Add(new PortData("func", Resources.ApplyPortDataFuncToolTip));
-            OutPortData.Add(new PortData("func(args)", Resources.ApplyPortDataFuncArgToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("func", Resources.ApplyPortDataFuncToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("func(args)", Resources.ApplyPortDataFuncArgToolTip)));
             AddInput();
             RegisterAllPorts();
         }
@@ -39,7 +47,7 @@ namespace CoreNodeModels.HigherOrder
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 1)
+            if (InPorts.Count > 1)
                 base.RemoveInput();
         }
 
@@ -70,12 +78,17 @@ namespace CoreNodeModels.HigherOrder
     [AlsoKnownAs("DSCoreNodesUI.HigherOrder.ComposeFunctions")]
     public class ComposeFunctions : VariableInputNode
     {
+        [JsonConstructor]
+        private ComposeFunctions(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
         public ComposeFunctions()
         {
-            InPortData.Add(new PortData("func0", Resources.ComposePortDataFunc0ToolTip));
-            InPortData.Add(new PortData("func1", Resources.ComposePortDataFunc1ToolTip));
-
-            OutPortData.Add(new PortData("func", Resources.ComposePortDataResultToolTip));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("func0", Resources.ComposePortDataFunc0ToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("func1", Resources.ComposePortDataFunc1ToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("func", Resources.ComposePortDataResultToolTip)));
             RegisterAllPorts();
         }
 
@@ -91,7 +104,7 @@ namespace CoreNodeModels.HigherOrder
 
         protected override void RemoveInput()
         {
-            if (InPortData.Count > 2)
+            if (InPorts.Count > 2)
                 base.RemoveInput();
         }
 

@@ -124,6 +124,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private List<Model3D> sceneItems;
 
+        private Dictionary<string, string> nodesSelected = new Dictionary<string, string>();
+
+
 #if DEBUG
         private readonly Stopwatch renderTimer = new Stopwatch();
 #endif
@@ -553,6 +556,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 labelPlaces.Clear();
+                nodesSelected = new Dictionary<string, string>();
             }
 
             OnSceneItemsChanged();
@@ -605,9 +609,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Reset:
-                    Model3DDictionary.Values.
-                        Where(v => v is GeometryModel3D).
-                        Cast<GeometryModel3D>().ToList().ForEach(g => g.SetValue(AttachedProperties.ShowSelectedProperty, false));
+
+                    // When deselecting (by clicking on the canvas), all the highlighted HelixWatch3D previews are switched off
+                    // This results in a scenario whereby the list item in the WatchTree/PreviewBubble is still selected, and its
+                    // labels are still displayed in the preview, but the highlighting has been switched off.
+                    // In order to prevent this unintuitive UX behavior, the nodes will first be checked if they are in the 
+                    // nodesSelected dictionary - if they are, they will not be switched off.
+                    var geometryModels = new Dictionary<string, Model3D>();
+                    foreach (var model in Model3DDictionary)
+                    {
+                        var nodePath = model.Key.Contains(':') ? model.Key.Remove(model.Key.IndexOf(':')) : model.Key;
+                        if (model.Value is GeometryModel3D && !nodesSelected.ContainsKey(nodePath))
+                        {
+                            geometryModels.Add(model.Key, model.Value);
+                        }
+                    }
+
+                    foreach (var geometryModel in geometryModels)
+                    {
+                        geometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, false);
+                    }
                     return;
 
                 case NotifyCollectionChangedAction.Remove:
@@ -648,7 +669,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 case "CachedValue":
                     Debug.WriteLine(string.Format("Requesting render packages for {0}", node.GUID));
-                    RemoveGeometryForNode(node);
                     node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
                     break;
 
@@ -677,11 +697,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public override void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(IEnumerable<IRenderPackage> taskPackages)
         {
-            foreach (var p in taskPackages)
+            /*foreach (var p in taskPackages)
             {
                 Debug.WriteLine(string.Format("Processing render packages for {0}", p.Description));
             }
-
+            */
             recentlyAddedNodes.Clear();
 
 #if DEBUG
@@ -729,6 +749,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Model3DDictionary.Remove(kvp.Key);
                     var nodePath = kvp.Key.Split(':')[0];
                     labelPlaces.Remove(nodePath);
+                    nodesSelected.Remove(nodePath);
                 }
             }
 
@@ -1285,30 +1306,111 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     (requestedLabelPlaces = labelPlaces[nodePath]
                         .Where(pair => pair.Item1 == path || pair.Item1.StartsWith(path + ":")).ToList()).Any())
                 {
-                    // second, add requested labels
-                    var textGeometry = HelixRenderPackage.InitText3D();
-                    var bbText = new BillboardTextModel3D
-                    {
-                        Geometry = textGeometry
-                    };
+                    // If the nodesSelected Dictionary does not contain the current nodePath as a key,
+                    // or if the current value of the nodePath key is not the same as the current path 
+                    // (which is currently being selected) then, create new label(s) for the Watch3DView.
+                    // Else, remove the label(s) in the Watch 3D View.
 
-                    foreach (var id_position in requestedLabelPlaces)
+                    if (!nodesSelected.ContainsKey(nodePath) || nodesSelected[nodePath] != path)
                     {
-                        var text = HelixRenderPackage.CleanTag(id_position.Item1);
-                        var textPosition = id_position.Item2 + defaultLabelOffset;
+                        // second, add requested labels
+                        var textGeometry = HelixRenderPackage.InitText3D();
+                        var bbText = new BillboardTextModel3D
+                        {
+                            Geometry = textGeometry
+                        };
 
-                        var textInfo = new TextInfo(text, textPosition);
-                        textGeometry.TextInfo.Add(textInfo);
+                        foreach (var id_position in requestedLabelPlaces)
+                        {
+                            var text = HelixRenderPackage.CleanTag(id_position.Item1);
+                            var textPosition = id_position.Item2 + defaultLabelOffset;
+
+                            var textInfo = new TextInfo(text, textPosition);
+                            textGeometry.TextInfo.Add(textInfo);
+                        }
+
+                        if (nodesSelected.ContainsKey(nodePath))
+                        {
+                            ToggleTreeViewItemHighlighting(nodesSelected[nodePath], false); // switch off selection for previous path
+                        }
+                        
+                        Model3DDictionary.Add(labelName, bbText);
+                        sceneItemsChanged = true;
+                        AttachAllGeometryModel3DToRenderHost();
+                        nodesSelected[nodePath] = path;
+
+                        ToggleTreeViewItemHighlighting(path, true); // switch on selection for current path
                     }
 
-                    Model3DDictionary.Add(labelName, bbText);
-                    sceneItemsChanged = true;
-                    AttachAllGeometryModel3DToRenderHost();
+                    // if no node is being selected, that means the current node is being unselected
+                    // and no node within the parent node is currently selected.
+                    else
+                    {
+                        nodesSelected.Remove(nodePath);
+                        ToggleTreeViewItemHighlighting(path, false);
+                    }
                 }
 
                 if (sceneItemsChanged)
                 {
                     OnSceneItemsChanged();
+                }
+            }
+        }
+
+        
+        /// <summary>
+        /// Remove the labels (in Watch3D View) for geometry once the Watch node is disconnected
+        /// </summary>
+        /// <param name="path"></param>
+        public override void ClearPathLabel(string path)
+        {
+            var nodePath = path.Contains(':') ? path.Remove(path.IndexOf(':')) : path;
+            var labelName = nodePath + TextKey;
+            lock (Model3DDictionaryMutex)
+            {
+                var sceneItemsChanged = Model3DDictionary.Remove(labelName);
+                if (sceneItemsChanged)
+                {
+                    OnSceneItemsChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Toggles on the highlighting for the specific node (in Helix preview) when
+        /// selected in the PreviewBubble as well as the Watch Node
+        /// </summary>
+        private void ToggleTreeViewItemHighlighting(string path, bool isSelected)
+        {
+            // First, deselect parentnode in DynamoSelection
+            var nodePath = path.Contains(':') ? path.Remove(path.IndexOf(':')) : path;
+            if (DynamoSelection.Instance.Selection.Any())
+            {
+                var selNodes = DynamoSelection.Instance.Selection.ToList().OfType<NodeModel>();
+                foreach (var node in selNodes)
+                {
+                    if (node.AstIdentifierBase == nodePath)
+                    {
+                        node.Deselect();
+                    }
+                }
+            }
+
+            // Next, deselect the parentnode in HelixWatch3DView
+            var nodeGeometryModels = Model3DDictionary.Where(x => x.Key.Contains(nodePath) && x.Value is GeometryModel3D).ToArray();
+            foreach (var nodeGeometryModel in nodeGeometryModels)
+            {
+                nodeGeometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, false);
+            }
+
+            // Then, select the individual node only if isSelected is true since all geometryModels' Selected Property is set to false
+            if (isSelected)
+            {
+                var geometryModels = Model3DDictionary.Where(x => x.Key.StartsWith(path + ":") && x.Value is GeometryModel3D).ToArray();
+                foreach (var geometryModel in geometryModels)
+                {
+                    geometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
                 }
             }
         }
@@ -1792,6 +1894,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         internal void UpdateNearClipPlane()
         {
+
+            if (camera == null) return;
+
             var near = camera.NearPlaneDistance;
             var far = camera.FarPlaneDistance;
 

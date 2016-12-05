@@ -41,9 +41,9 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Default constructor.
         /// </summary>
-        protected FunctionCallNodeController(T def)
+        protected FunctionCallNodeController(T definition)
         {
-            Definition = def;
+            Definition = definition;
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Dynamo.Graph.Nodes
             NodeModel model, AssociativeNode rhs, List<AssociativeNode> resultAst)
         {
             var missingAmt =
-                Enumerable.Range(0, model.InPortData.Count).Count(x => !model.HasInput(x));
+                Enumerable.Range(0, model.InPorts.Count).Count(x => !model.InPorts[x].IsConnected);
             var tmp =
                 AstFactory.BuildIdentifier("__partial_" + model.GUID.ToString().Replace('-', '_'));
             resultAst.Add(AstFactory.BuildAssignment(tmp, rhs));
@@ -139,7 +139,7 @@ namespace Dynamo.Graph.Nodes
         {
             AssociativeNode rhs = GetFunctionApplication(model, inputAstNodes);
 
-            if (!model.IsPartiallyApplied || model.OutPortData.Count == 1)
+            if (!model.IsPartiallyApplied || model.OutPorts.Count == 1)
                 AssignIdentifiersForFunctionCall(model, rhs, resultAst);
             else
                 BuildAstForPartialMultiOutput(model, rhs, resultAst);
@@ -186,9 +186,6 @@ namespace Dynamo.Graph.Nodes
             if (Definition == null) return;
 
             OnSyncWithDefinitionStart(model);
-            model.InPortData.Clear();
-            model.OutPortData.Clear();
-
             InitializeInputs(model);
             InitializeOutputs(model);
             model.RegisterAllPorts();

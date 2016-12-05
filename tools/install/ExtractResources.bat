@@ -33,13 +33,6 @@ rem required for translation tool to even open up localizable resource assemblie
 robocopy "%binroot%"                          "%wwlroot%"                           *.dll *.exe -XF *tests.dll *.customization.dll 
 robocopy "%binroot%\nodes"                    "%wwlroot%\nodes"                     *.dll
 
-IF EXIST "%binroot%\Revit_2015" (
-robocopy "%binroot%\Revit_2015"               "%wwlroot%\Revit_2015"                *.dll *.exe -XF *tests.dll *.customization.dll 
-robocopy "%binroot%\Revit_2015\en-US"         "%wwlroot%\Revit_2015\en-US"          *.resources.dll *.xml
-robocopy "%binroot%\Revit_2015\nodes"         "%wwlroot%\Revit_2015\nodes"          *.dll
-robocopy "%binroot%\Revit_2015\nodes\en-US"   "%wwlroot%\Revit_2015\nodes\en-US"    *.resources.dll *.xml
-)
-
 IF EXIST "%binroot%\Revit_2016" (
 robocopy "%binroot%\Revit_2016"               "%wwlroot%\Revit_2016"                *.dll *.exe -XF *tests.dll *.customization.dll 
 robocopy "%binroot%\Revit_2016\en-US"         "%wwlroot%\Revit_2016\en-US"          *.resources.dll *.xml
@@ -52,6 +45,13 @@ robocopy "%binroot%\Revit_2017"               "%wwlroot%\Revit_2017"            
 robocopy "%binroot%\Revit_2017\en-US"         "%wwlroot%\Revit_2017\en-US"          *.resources.dll *.xml
 robocopy "%binroot%\Revit_2017\nodes"         "%wwlroot%\Revit_2017\nodes"          *.dll
 robocopy "%binroot%\Revit_2017\nodes\en-US"   "%wwlroot%\Revit_2017\nodes\en-US"    *.resources.dll *.xml
+)
+
+IF EXIST "%binroot%\Revit_2018" (
+robocopy "%binroot%\Revit_2018"               "%wwlroot%\Revit_2018"                *.dll *.exe -XF *tests.dll *.customization.dll 
+robocopy "%binroot%\Revit_2018\en-US"         "%wwlroot%\Revit_2018\en-US"          *.resources.dll *.xml
+robocopy "%binroot%\Revit_2018\nodes"         "%wwlroot%\Revit_2018\nodes"          *.dll
+robocopy "%binroot%\Revit_2018\nodes\en-US"   "%wwlroot%\Revit_2018\nodes\en-US"    *.resources.dll *.xml
 )
 
 rem Reset error codes of "1" returned from "robocopy" for downstream scripts.

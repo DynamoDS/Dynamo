@@ -427,58 +427,6 @@ c1;c2;c3;c4;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        public void T015_Inline_In_Class_Scope()
-        {
-            // Assert.Fail("1467168 - Sprint24 : rev 3137 : Compiler error from  Inline Condition and class inheritance issue");
-
-            string code = @"
-class A
-{
-    a : int;
-	constructor A ( i : int)
-	{
-	    a = i < 0 ? i*i : i;
-	}
-	
-	def foo1 ( b )
-	{
-		x = b == a ? b : b+a;
-		return = x;
-	}
-	
-}
-class B extends A
-{
-    b : int;
-	constructor B ( i : int)
-	{
-	    a = i < 0 ? i*i : i;
-		b = i;
-	}
-	
-	def foo2 ( x )
-	{
-		y = b == a ? x+b : x+b+a;
-		return = y;
-	}
-	
-}
-b1 = B.B(1);
-b2 = B.B(-1);
-x1 = b1.foo2(3);
-x2 = b2.foo2(-3);
-a1 = A.A(-4);
-x3 = a1.foo1(3);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-
-            thisTest.Verify("x1", 4, 0);
-            thisTest.Verify("x2", -3, 0);
-            thisTest.Verify("x3", 19, 0);
-        }
-
-        [Test]
         [Category("Replication")]
         public void T016_Inline_Using_Operators()
         {
@@ -538,26 +486,6 @@ a2 = foo2(3);
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("a1", 5, 0);
             thisTest.Verify("a2", 8, 0);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        [Category("Failure")]
-        public void T018_Inline_Using_Recursion()
-        {
-            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4006
-            string err = "MAGN-4006 Recursion in Associative Inline condition does not work properly";
-            Assert.Fail("Cauing NUnit failures. Disabled");
-
-            string code = @"
-def factorial : int (num : int)
-{
-    return = num < 2 ? 1 : num * factorial(num-1);
-}
-fac = factorial(10);";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
-            thisTest.Verify("fac", 3628800, 0);
-
         }
 
         [Test]

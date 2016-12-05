@@ -24,26 +24,19 @@ namespace ProtoCore
         // Once generated these properties are consumed by the runtime-VM and are read-only
 
       
-        private Dictionary<Guid, List<string>> uiNodeToSerializedDataMap = null;
+        private Dictionary<Guid, List<CallSite.RawTraceData>> uiNodeToSerializedDataMap = null;
         public IDictionary<string, CallSite> CallsiteCache { get; set; }
         /// <summary>		
         /// Map from a callsite's guid to a graph UI node. 		
         /// </summary>
         public Dictionary<Guid, Guid> CallSiteToNodeMap { get; private set; }
  		 
-        /// <summary>		
-        /// Map from a AST node's ID to a callsite.		
-        /// </summary>
-        public Dictionary<int, CallSite> ASTToCallSiteMap { get; private set; }
-
-
  #endregion
 
         public RuntimeData()
         {
             CallsiteCache = new Dictionary<string, CallSite>();
             CallSiteToNodeMap = new Dictionary<Guid, Guid>();
-            ASTToCallSiteMap = new Dictionary<int, CallSite>();
         }
 
       
@@ -55,17 +48,31 @@ namespace ProtoCore
         /// <param name="core"></param>
         /// <param name="uid"></param>
         /// <returns></returns>
-        public CallSite GetCallSite(GraphNode graphNode,
-                                    int classScope,
-                                    string methodName,
-                                    Executable executable,
-                                    int runningBlock,
-                                    Options options,
-                                    RuntimeStatus runtimeStatus
-             )
+        public CallSite GetCallSite(int classScope, string methodName, Executable executable, RuntimeCore runtimeCore)
         {
             Validity.Assert(null != executable.FunctionTable);
             CallSite csInstance = null;
+            var graphNode = executable.ExecutingGraphnode;
+            var topGraphNode = graphNode;
+
+            // If it is a nested function call, append all callsite ids
+            List<string> callsiteIdentifiers = new List<string>();
+            foreach (var prop in runtimeCore.InterpreterProps)
+            {
+                if (prop != null && prop.executingGraphNode != null && graphNode != prop.executingGraphNode)
+                {
+                    topGraphNode = prop.executingGraphNode;
+                    if (!string.IsNullOrEmpty(topGraphNode.CallsiteIdentifier))
+                    {
+                        callsiteIdentifiers.Add(topGraphNode.CallsiteIdentifier);
+                    }
+                }
+            }
+            if (graphNode != null)
+            {
+                callsiteIdentifiers.Add(graphNode.CallsiteIdentifier);
+            }
+            var callsiteID = string.Join(";", callsiteIdentifiers.ToArray());
 
             // TODO Jun: Currently generates a new callsite for imperative and 
             // internally generated functions.
@@ -73,7 +80,7 @@ namespace ProtoCore
             // attempting to cache internal functions. This may require a 
             // secondary callsite cache for internal functions so they dont 
             // clash with the graphNode UID key
-            var language = executable.instrStreamList[runningBlock].language;
+            var language = executable.instrStreamList[runtimeCore.RunningBlock].language;
             bool isImperative = language == Language.Imperative;
             bool isInternalFunction = CoreUtils.IsInternalFunction(methodName);
 
@@ -82,31 +89,29 @@ namespace ProtoCore
                 csInstance = new CallSite(classScope,
                                           methodName,
                                           executable.FunctionTable,
-                                          options.ExecutionMode);
+                                          runtimeCore.Options.ExecutionMode);
             }
-            else if (!CallsiteCache.TryGetValue(graphNode.CallsiteIdentifier, out csInstance))
+            else if (!CallsiteCache.TryGetValue(callsiteID, out csInstance))
             {
                 // Attempt to retrieve a preloaded callsite data (optional).
-                var traceData = GetAndRemoveTraceDataForNode(graphNode.guid);
+                var traceData = GetAndRemoveTraceDataForNode(topGraphNode.guid, callsiteID);
 
                 csInstance = new CallSite(classScope,
                                           methodName,
                                           executable.FunctionTable,
-                                          options.ExecutionMode,
+                                          runtimeCore.Options.ExecutionMode,
                                           traceData);
 
-                CallsiteCache[graphNode.CallsiteIdentifier] = csInstance;
-                CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
-                ASTToCallSiteMap[graphNode.AstID] = csInstance;
-
+                CallsiteCache[callsiteID] = csInstance;
+                CallSiteToNodeMap[csInstance.CallSiteID] = topGraphNode.guid;
             }
 
             if (graphNode != null && !CoreUtils.IsDisposeMethod(methodName))
             {
                 csInstance.UpdateCallSite(classScope, methodName);
-                if (options.IsDeltaExecution)
+                if (runtimeCore.Options.IsDeltaExecution)
                 {
-                    runtimeStatus.ClearWarningForExpression(graphNode.exprUID);
+                    runtimeCore.RuntimeStatus.ClearWarningForExpression(graphNode.exprUID);
                 }
             }
 
@@ -175,13 +180,13 @@ namespace ProtoCore
         /// <returns>Returns a dictionary that maps each node Guid to its 
         /// corresponding list of serialized callsite trace data.</returns>
         /// 
-        public IDictionary<Guid, List<string>>
+        public IDictionary<Guid, List<CallSite.RawTraceData>>
             GetTraceDataForNodes(IEnumerable<Guid> nodeGuids, Executable executable)
         {
             if (nodeGuids == null)
                 throw new ArgumentNullException("nodeGuids");
 
-            var nodeDataPairs = new Dictionary<Guid, List<string>>();
+            var nodeDataPairs = new Dictionary<Guid, List<CallSite.RawTraceData>>();
 
             if (!nodeGuids.Any()) // Nothing to persist now.
                 return nodeDataPairs;
@@ -215,20 +220,31 @@ namespace ProtoCore
                     continue;
 
                 // Get all callsites that match the graph node ids.
+                // 
+                // Note we assume the graph node is the top-level graph node here.
+                // The callsite id is the concatenation of all graphnodes' callsite
+                // identifier along the nested function call. 
                 var matchingCallSites = (from cs in CallsiteCache
                                          from gn in graphNodeIds
-                                         where cs.Key == gn
-                                         select cs.Value);
+                                         where !string.IsNullOrEmpty(gn) && cs.Key.StartsWith(gn)
+                                         select new { cs.Key, cs.Value });
 
                 // Append each callsite element under node element.
-                var serializedCallsites =
-                    matchingCallSites.Select(callSite => callSite.GetTraceDataToSave())
-                        .Where(traceDataToSave => !String.IsNullOrEmpty(traceDataToSave))
-                        .ToList();
+                var serializedCallsites = new List<CallSite.RawTraceData>();
+                foreach (var site in matchingCallSites)
+                {
+                    var traceData = site.Value.GetTraceDataToSave();
+                    if (!string.IsNullOrEmpty(traceData))
+                    {
+                        serializedCallsites.Add(new CallSite.RawTraceData(site.Key, traceData));
+                    }
+                }
 
                 // No point adding serialized callsite data if it's empty.
-                if (serializedCallsites.Count > 0)
+                if (serializedCallsites.Any())
+                {
                     nodeDataPairs.Add(nodeGuid, serializedCallsites);
+                }
             }
 
             return nodeDataPairs;
@@ -242,13 +258,13 @@ namespace ProtoCore
         /// to its corresponding list of serialized callsite trace data.</param>
         /// 
         public void SetTraceDataForNodes(
-            IEnumerable<KeyValuePair<Guid, List<string>>> nodeDataPairs)
+            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> nodeDataPairs)
         {
             if (nodeDataPairs == null || (nodeDataPairs.Count() <= 0))
                 return; // There is no preloaded trace data.
 
             if (uiNodeToSerializedDataMap == null)
-                uiNodeToSerializedDataMap = new Dictionary<Guid, List<string>>();
+                uiNodeToSerializedDataMap = new Dictionary<Guid, List<CallSite.RawTraceData>>();
 
             foreach (var nodeData in nodeDataPairs)
                 uiNodeToSerializedDataMap.Add(nodeData.Key, nodeData.Value);
@@ -264,7 +280,7 @@ namespace ProtoCore
         /// <returns>Returns the serialized callsite trace data in Base64 encoded
         /// string for the given UI node.</returns>
         /// 
-        private string GetAndRemoveTraceDataForNode(Guid nodeGuid)
+        private string GetAndRemoveTraceDataForNode(Guid nodeGuid, string callsiteID)
         {
             if (uiNodeToSerializedDataMap == null)
                 return null; // There is no preloaded trace data.
@@ -272,27 +288,49 @@ namespace ProtoCore
                 return null; // There is no preloaded trace data.
 
             // Get the node element for the given node.
-            List<string> callsiteDataList = null;
+            List<CallSite.RawTraceData> callsiteDataList = null;
             if (!uiNodeToSerializedDataMap.TryGetValue(nodeGuid, out callsiteDataList))
+            {
                 return null;
+            }
 
             // There exists a node element matching the UI node's GUID, get its 
             // first child callsite element, remove it from the child node list,
             // and return it to the caller.
             // 
             string callsiteTraceData = null;
-            if (callsiteDataList != null && (callsiteDataList.Count > 0))
+            if (callsiteDataList != null)
             {
-                callsiteTraceData = callsiteDataList[0];
-                callsiteDataList.RemoveAt(0);
+                for (int i = 0; i < callsiteDataList.Count; i++)
+                {
+                    if (callsiteDataList[i].ID == callsiteID)
+                    {
+                        callsiteTraceData = callsiteDataList[i].Data;
+                        callsiteDataList.RemoveAt(i);
+                        // Remove the trace data
+                        if (callsiteDataList.Any())
+                        {
+                            uiNodeToSerializedDataMap[nodeGuid] = callsiteDataList;
+                        }
+                        else
+                        {
+                            uiNodeToSerializedDataMap.Remove(nodeGuid);
+                        }
+                        break;
+                    }
+                }
             }
 
-            // On removal of the last callsite trace data, the node entry
-            // itself will be removed from the uiNodeToSerializedDataMap.
-            if (callsiteDataList != null && (callsiteDataList.Count <= 0))
-                uiNodeToSerializedDataMap.Remove(nodeGuid);
-
-            return callsiteTraceData;
+            // For backword compatibility: old dyn file doesn't have CallSiteID
+            // attribute, so the call site id will be empty string.
+            if (callsiteTraceData == null && !string.IsNullOrEmpty(callsiteID))
+            {
+                return GetAndRemoveTraceDataForNode(nodeGuid, string.Empty);
+            }
+            else
+            {
+                return callsiteTraceData;
+            }
         }
 
         #endregion // Trace Data Serialization Methods/Members

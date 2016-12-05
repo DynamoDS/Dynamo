@@ -104,7 +104,7 @@ namespace CoreNodeModels
             this.selectionObjectType = selectionObjectType;
 
             string portName = GetOutputPortName();
-            OutPortData.Add(new PortData(portName, Resources.SelectionPortDataResultToolTip));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData(portName, Resources.SelectionPortDataResultToolTip)));
 
             RegisterAllPorts();
 

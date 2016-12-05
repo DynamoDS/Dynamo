@@ -3,11 +3,17 @@ using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using CoreNodeModels.Properties;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels.Input
 {
     public abstract class Bool : BasicInteractive<bool>
     {
+        [JsonConstructor]
+        protected Bool(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
+        protected Bool() : base() { }
+
         protected override bool DeserializeValue(string val)
         {
             try
@@ -49,14 +55,34 @@ namespace CoreNodeModels.Input
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("BooleanDescription", typeof(Resources))]
     [NodeSearchTags("BooleanSelectorSearchTags", typeof(Resources))]
+    [OutPortTypes("bool")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.BoolSelector", "DSCoreNodesUI.Input.BoolSelector", "Dynamo.Nodes.BoolSelector")]
     public class BoolSelector : Bool
     {
+        [JsonConstructor]
+        private BoolSelector(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ShouldDisplayPreviewCore = false;
+        }
+
         public BoolSelector()
         {
             Value = false;
             ShouldDisplayPreviewCore = false;
+        }
+
+        /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "BooleanInputNode";
+            }
         }
     }
 }

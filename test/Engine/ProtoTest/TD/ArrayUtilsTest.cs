@@ -194,7 +194,6 @@ a;b;c;d;e;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void TestArrayGetCommonSuperType()
         {
             String code =
@@ -321,7 +320,6 @@ tCCC = {C.C(), C.C(), C.C()};
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         public void Defect_TestArrayGetCommonSuperType()
         {
             String code =
@@ -381,7 +379,6 @@ tCD = { c, d };
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Method Resolution")]
         public void Defect_TestArrayGetCommonSuperType_2_EmptyArray()
         {
@@ -427,7 +424,6 @@ tE = {};//empty array
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Method Resolution")]
         public void Defect_TestArrayGetCommonSuperType_3()
         {

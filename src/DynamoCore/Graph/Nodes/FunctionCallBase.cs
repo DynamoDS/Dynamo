@@ -1,4 +1,5 @@
 using Dynamo.Engine;
+using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -12,6 +13,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Controller used to sync node with a function definition.
         /// </summary>
+        [JsonIgnore]
         public TController Controller { get; private set; }
 
         /// <summary>
@@ -26,6 +28,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// The unique name that the node was created by
         /// </summary>
+        [JsonIgnore]
         public override string CreationName
         {
             get

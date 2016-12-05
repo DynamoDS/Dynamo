@@ -2,12 +2,35 @@
 using ProtoCore;
 using ProtoScript.Runners;
 using ProtoCore.DSASM.Mirror;
+using System.Diagnostics;
 using System.IO;
+using System.Threading;
 
 namespace ProtoTestConsoleRunner
 {
     class Program
     {
+        static long maxNetMemory = 0;
+        static long maxPrivateWorkingSet = 0;
+        static bool done = false;
+
+        static void CollectingMemory()
+        {
+            Process currentProcess = Process.GetCurrentProcess();
+            var privateByteCounter = new PerformanceCounter("Process", "Working Set - Private", currentProcess.ProcessName);
+            var netMemoryCounter = new PerformanceCounter(".NET CLR Memory", "# Bytes in all Heaps", currentProcess.ProcessName);
+
+            while (!done)
+            {
+                maxNetMemory = Math.Max(netMemoryCounter.NextSample().RawValue / 1024, maxNetMemory);
+                maxPrivateWorkingSet = Math.Max(privateByteCounter.NextSample().RawValue / 1024, maxPrivateWorkingSet);
+                Thread.Sleep(100);
+            }
+
+            privateByteCounter.Dispose();
+            netMemoryCounter.Dispose();
+        }
+
         static void Run(string filename, bool verbose)
         {
             if (!File.Exists(filename))
@@ -15,6 +38,9 @@ namespace ProtoTestConsoleRunner
                 Console.WriteLine("Cannot find file " + filename);
                 return;
             }
+
+            var profilingThread = new Thread(new ThreadStart(CollectingMemory));
+            profilingThread.Start();
 
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
@@ -29,11 +55,14 @@ namespace ProtoTestConsoleRunner
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
 
             ProtoScriptRunner runner = new ProtoScriptRunner();
-
             runner.LoadAndExecute(filename, core);
             long ms = sw.ElapsedMilliseconds;
             sw.Stop();
-            Console.WriteLine(ms);
+
+            done = true;
+            profilingThread.Join();
+
+            Console.WriteLine("{0},{1},{2}", ms, maxNetMemory, maxPrivateWorkingSet);
         }
 
         static void DevRun()

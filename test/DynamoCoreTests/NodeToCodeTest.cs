@@ -276,7 +276,7 @@ namespace Dynamo.Tests
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
-            Assert.AreEqual(3, result.AstNodes.Count());
+            Assert.AreEqual(4, result.AstNodes.Count());
             Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
 
             var exprs = String.Concat(result.AstNodes
@@ -913,7 +913,7 @@ namespace Dynamo.Tests
 
 
         [Test]
-        [Category("UnitTest")]
+        [Category("UnitTests")]
         public void TestNodeToCodeUndoRecorder()
         {
             NodeToCodeUndoHelper recorder = new NodeToCodeUndoHelper();

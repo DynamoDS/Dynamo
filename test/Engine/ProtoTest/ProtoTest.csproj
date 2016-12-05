@@ -133,7 +133,6 @@
     <Compile Include="DSASM\ExecutionMirrorTests.cs" />
     <Compile Include="DSASM\HeapMarkSweepTests.cs" />
     <Compile Include="DSASM\MemorySafetyTest.cs" />
-    <Compile Include="DSASM\StackOverflowTests.cs" />
     <Compile Include="FFITests\ArgumentMarshalingTests.cs" />
     <Compile Include="FFITests\ContextInjectionTests.cs" />
     <Compile Include="FFITests\CSFFIDataMarshalingTest.cs" />
@@ -156,6 +155,7 @@
     </Compile>
     <Compile Include="MultiLangTests\UnicodeTest.cs" />
     <Compile Include="NameSpaceTests.cs" />
+    <Compile Include="ParserTest\ParserTest.cs" />
     <Compile Include="ProtoAST\AstFactoryTest.cs" />
     <Compile Include="ProtoAST\ProtoASTExecutionTests.cs" />
     <Compile Include="ProtoAST\RoundTripTests.cs" />
@@ -212,7 +212,6 @@
     <Compile Include="UtilsTests\CoreUtilsTest.cs" />
     <Compile Include="UtilsTests\ImperativeAstVistorTest.cs" />
     <Compile Include="UtilsTests\TextFxTests.cs" />
-    <Compile Include="VariableResolutionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj">

@@ -16,7 +16,12 @@ namespace Analysis
             this.point = point;
             this.label = label;
         }
-
+        /// <summary>
+        /// Returns a Label object given a point object and a string label.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="label"></param>
+        /// <returns></returns>
         public static Label ByPointAndString(Point point, string label)
         {
             if (point == null)

@@ -2,6 +2,8 @@
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -19,6 +21,12 @@ namespace Dynamo.Graph.Nodes
         public enum Nature
         {
             Deprecated, Unresolved
+        }
+
+        [JsonConstructor]
+        private DummyNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ShouldDisplayPreviewCore = false;
         }
 
         /// <summary>
@@ -118,18 +126,18 @@ namespace Dynamo.Graph.Nodes
 
         private void UpdatePorts()
         {
-            InPortData.Clear();
+            InPorts.Clear();
             for (int input = 0; input < InputCount; input++)
             {
                 var name = string.Format("Port {0}", input + 1);
-                InPortData.Add(new PortData(name, ""));
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData(name, "")));
             }
 
-            OutPortData.Clear();
+            OutPorts.Clear();
             for (int output = 0; output < OutputCount; output++)
             {
                 var name = string.Format("Port {0}", output + 1);
-                OutPortData.Add(new PortData(name, ""));
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(name, "")));
             }
 
             RegisterAllPorts();

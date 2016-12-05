@@ -50,7 +50,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void SimpleCtorResolution04()
         {
             String code =
@@ -91,157 +90,32 @@ d = s3.mx;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestMethodOverload1()
-        {
-            string code =
-                @"
-                class A
-                {
-	                def execute(a : A)
-	                {
-		                return = 1;
-	                }
-                }
-                class B extends A
-                {
-	                def execute(b : B)
-	                {
-		                return = 2;
-	                }
-                }
-                a = A.A();
-                b = B.B();
-                val = b.execute(a);
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("val", 1);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestMethodOverload2()
-        {
-            string code =
-                @"
-                class A
-                {
-	                def execute(a : A)
-	                {
-		                return = 1;
-	                }
-                }
-                class B extends A
-                {
-	                def execute(b : B)
-	                {
-		                return = 2;
-	                }
-                }
-                class C extends A
-                {
-                }
-                b = B.B();
-                c = C.C();
-                val = b.execute(c);
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("val", 1);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestMethodOverload3()
-        {
-            string code =
-                @"
-                class A
-                {
-	                def execute(a : A)
-	                {
-		                return = 1;
-	                }
-                }
-                class B extends A
-                {
-	                def execute(b : B)
-	                {
-		                return = 2;
-	                }
-                }
-                class C extends A
-                {
-                }
-                c = C.C();
-                val = c.execute(c);
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("val", 1);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodOverload4()
         {
             string code =
                 @"
-                class A
-                {
-	                def execute(a : A)
-	                {
-		                return = 1;
-	                }
-                }
-                class B extends A
-                {
-	                def execute(b : B)
-	                {
-		                return = 2;
-	                }
-                }
-                class C extends B
-                {
-                }
-                c = C.C();
-                val = c.execute(c);
+import (""FFITarget.dll"");
+c = TestOverloadC.TestOverloadC();
+val = c.execute(c);
                 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("val", 2);
-            thisTest.VerifyBuildWarningCount(0);
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodResolutionOverInheritance()
         {
             string code =
                 @"
-                class A
-                {
-	                def execute(a : A)
-	                {
-		                return = 1;
-	                }
-                }
-                class B extends A
-                {
-                }
-                class C extends B
-                {
-                }
-                c = C.C();
-                val = c.execute(c);
+import (""FFITarget.dll"");
+c = TestOverloadC.TestOverloadC();
+val = c.unique(c);
                 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("val", 1);
-            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("val", 4);
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void TestMethodOverloadArray()
         {
             string code =
@@ -263,139 +137,20 @@ d = s3.mx;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodOverlaodAndArrayInput2()
         {
             string code =
                 @"
-                class A
-                {
-                    def execute(a : A)
-                    { 
-                        return = -1; 
-                    }
-                }
-                class B extends A
-                {
-                    def execute(arr : B[])
-                    {
-                        return = 2;
-                    }
-                }
-                class C extends B
-                {
-                }
-                b = B.B();
-                arr = {C.C(), B.B(), C.C()};
-                val = b.execute(arr);
+import (""FFITarget.dll"");
+b = TestOverloadB.TestOverloadB();
+arr = {TestOverloadC.TestOverloadC(), TestOverloadB.TestOverloadB(), TestOverloadB.TestOverloadB()};
+val = b.execute(arr);
                 ";
-
             thisTest.RunScriptSource(code);
-            thisTest.Verify("val", 2);
-            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("val", 3);
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestMethodOverlaodAndArrayInput3()
-        {
-            string code =
-                @"
-                class A
-                {
-                }
-                class B extends A
-                {
-                    def execute(b : B)
-                    { 
-                        return = -1; 
-                    }
-                    def execute(arr : B[])
-                    {
-                        return = 2;
-                    }
-                }
-                class C extends B
-                {
-                }
-                b = B.B();
-                arr = {C.C(), B.B(), C.C()};
-                val = b.execute(arr);
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("val", 2);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestMethodOverlaodAndArrayInput4()
-        {
-            string code =
-                @"
-                class A
-                {
-                }
-                class B extends A
-                {
-                    static def execute(b : B)
-                    { 
-                        return = -1; 
-                    }
-                    def execute(arr : B[])
-                    {
-                        return = 2;
-                    }
-                }
-                class C extends B
-                {
-                }
-                arr = {C.C(), B.B(), C.C()};
-                val = B.execute(arr);
-                val1 = val[0];
-                val2 = val[1];
-                val3 = val[2];
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.VerifyBuildWarningCount(0);
-            thisTest.Verify("val1", -1);
-            thisTest.Verify("val2", -1);
-            thisTest.Verify("val3", -1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestMethodOverlaodAndArrayInput4Min()
-        {
-            string code =
-                @"
-                class A
-                {
-                }
-                class B extends A
-                {
-                    static def execute(b : B)
-                    { 
-                        return = -1; 
-                    }
-                    def execute(arr : B[])
-                    {
-                        return = 2;
-                    }
-                }
-                arr = {B.B(), B.B()};
-                val = B.execute(arr);
-                val1 = val[0];
-                val2 = val[1];
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.VerifyBuildWarningCount(0);
-            thisTest.Verify("val1", -1);
-            thisTest.Verify("val2", -1);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
         [Category("Method Resolution")]
         public void TestDispatchArray()
         {
@@ -416,7 +171,6 @@ val = v[0];
 
         [Test]
         [Category("Method Resolution")]
-        [Category("Escalate")]
         [Category("DSDefinedClass_Ported")]
         public void TestDispatchEmptyArray()
         {
@@ -434,69 +188,6 @@ val = v[0];
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestMethodOverlaodAndArrayInput5()
-        {
-            string code =
-                @"
-                class A
-                {}
-                class B extends A
-                {
-                    def execute(b : B)
-                    { 
-                        return = -1; 
-                    }
-                    static def execute(arr : B[])
-                    {
-                        return = 2;
-                    }
-                }
-                class C extends B
-                {}
-                class D extends B
-                {}
-                arr = {C.C(), D.D(), C.C()};
-                val = B.execute(arr);
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("val", 2);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestMethodOverlaodAndArrayInput6()
-        {
-            string code =
-                @"
-                class A
-                {
-                    def execute(a : A)
-                    { 
-                        return = -1; 
-                    }
-                }
-                class B extends A
-                {
-                    static def execute(arr : B[], i : int)
-                    {
-                        return = 2;
-                    }
-                }
-                class C extends B
-                {
-                }
-                arr = {C.C(), B.B(), C.C()};
-                val = B.execute(arr, 1);
-                ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("val", 2);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
         public void TestMethodWithArrayInput()
         {
             string code = @"
@@ -513,7 +204,6 @@ val = v[0];
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         public void TestMethodWithArrayInput2()
         {
             string code = @"
@@ -525,7 +215,7 @@ val = v[0];
                             }
                             def Test(arr : A[])
                             {
-                                    return = 123;
+                                return = 123;
                             }
                             a = {B.B(), A.A(), B.B()};
                             val = Test(a);
@@ -573,60 +263,6 @@ val = v[0];
             thisTest.RunScriptSource(code);
             thisTest.VerifyBuildWarningCount(0);
             thisTest.Verify("val", 2);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestMethodWithOverrides()
-        {
-            string code = @"
-                            class A
-                            {
-	                            def foo(x : double)
-                                { return = 1; }
-                            }
-                            class B extends A
-                            {
-                                def foo(x : double)
-                                { return = 2; }
-                            }
-                            
-                            a = A.A();
-                            val1 = a.foo(0.0);
-                            
-                          //  b = B.B();
-                            
-                          //  val2 =b.foo(0.0);
-                            ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("val1", 1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TestOverridenMethod()
-        {
-            string code = @"
-                            class A
-                            {
-	                            def foo(x : double)
-                                { return = 1; }
-                            }
-                            class B extends A
-                            {
-                                def foo(x : double)
-                                { return = 2; }
-                            }
-                            
-                          //  a = A.A();
-                          //  val1 = a.foo(0.0);
-                            
-                          b = B.B();
-                            
-                          val2 =b.foo(0.0);
-                            ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("val2", 2);
         }
 
         [Test]

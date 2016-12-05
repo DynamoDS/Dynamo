@@ -8,6 +8,7 @@ using NCalc;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using Expression = NCalc.Expression;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -15,10 +16,13 @@ namespace CoreNodeModels
     [NodeDescription("FormulaDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
+    [OutPortTypes("Function")]
     [AlsoKnownAs("DSCoreNodesUI.Formula")]
     public class Formula : NodeModel
     {
         private string formulaString = "";
+
+        [JsonProperty("Formula")]
         public string FormulaString
         {
             get
@@ -48,10 +52,29 @@ namespace CoreNodeModels
             }
         }
 
+        /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "FormulaNode";
+            }
+        }
+
+        [JsonConstructor]
+        private Formula(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Auto;
+        }
+
         public Formula()
         {
             ArgumentLacing = LacingStrategy.Auto;
-            OutPortData.Add(new PortData("", Properties.Resources.FormulaPortDataResultToolTip));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Properties.Resources.FormulaPortDataResultToolTip)));
             RegisterAllPorts();
         }
 
@@ -167,14 +190,13 @@ namespace CoreNodeModels
             }
             catch { }
 
-            InPortData.Clear();
+            InPorts.Clear();
 
             foreach (var p in parameters)
             {
-                InPortData.Add(new PortData(p, "variable"));
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData(p, "variable")));
             }
 
-            RegisterInputPorts();
             ClearRuntimeError();
         }
 
@@ -183,7 +205,7 @@ namespace CoreNodeModels
             Func<string, string[], object[], object> backingMethod = DSCore.Formula.Evaluate;
 
             // Format input names to be used as function parameters
-            var inputs = InPortData.Select(x => x.NickName.Replace(' ', '_')).ToList();
+            var inputs = InPorts.Select(x => x.PortName.Replace(' ', '_')).ToList();
 
 
             /*  def formula_partial(<params>) {
@@ -213,9 +235,9 @@ namespace CoreNodeModels
                                             {
                                                 AstFactory.BuildStringNode(FormulaString),
                                                 AstFactory.BuildExprList(
-                                                    InPortData.Select(
+                                                    InPorts.Select(
                                                         x =>
-                                                            AstFactory.BuildStringNode(x.NickName) as
+                                                            AstFactory.BuildStringNode(x.PortName) as
                                                             AssociativeNode).ToList()),
                                                 AstFactory.BuildExprList(
                                                     inputs.Select(AstFactory.BuildIdentifier)
@@ -235,8 +257,8 @@ namespace CoreNodeModels
                         GetAstIdentifierForOutputIndex(0),
                         AstFactory.BuildFunctionObject(
                             functionDef.Name,
-                            InPortData.Count,
-                            Enumerable.Range(0, InPortData.Count).Where(HasConnectedInput),
+                            InPorts.Count,
+                            Enumerable.Range(0, InPorts.Count).Where(index=>InPorts[index].IsConnected),
                             inputAstNodes))
                 };
             }

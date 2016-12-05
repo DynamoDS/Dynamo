@@ -12,7 +12,6 @@ namespace ProtoTest.Associative
     class MethodsFocusTeam : ProtoTestBase
     {
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void SimpleCtorResolution01()
         {
             String code =
@@ -33,7 +32,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void SimpleCtorResolution02()
         {
             String code =
@@ -43,7 +41,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T002_DotOp_DefautConstructor_IntProperty()
         {
             String code =
@@ -54,7 +51,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T002_DotOp_DefautConstructor_DoubleProperty()
         {
             String code =
@@ -64,20 +60,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redunadant")]
-        public void T004_DotOp_DefautConstructor_04()
-        {
-            String code =
-@"	class C	{		fx : var;		fy : var;	}	c = C.C();	x = c.fx;	y = c.fy;";
-            thisTest.RunScriptSource(code);
-            Object v1 = new Object();
-            v1 = null;
-            thisTest.Verify("x", v1);
-            thisTest.Verify("y", v1);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T002_DotOp_DefautConstructor_ArrayProperty()
         {
             String code =
@@ -87,7 +69,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T006_DotOp_SelfDefinedConstructor_01()
         {
             String code =
@@ -97,7 +78,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSConstructor")]
+        [Category("Class")]
         public void T007_DotOp_SelfDefinedConstructor_02()
         {
             String code =
@@ -127,7 +108,6 @@ namespace ProtoTest.Associative
 
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T008_DotOp_MultiConstructor_01()
         {
             String code =
@@ -138,7 +118,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T009_DotOp_FuncCall()
         {
             String code =
@@ -150,7 +129,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T010_DotOp_Property()
         {
             String code =
@@ -160,7 +138,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void ArrayInFunction()
         {
             String code =
@@ -171,7 +148,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Category("Class")]
         public void T012_DotOp_UserDefinedClass_01()
         {
             String code =
@@ -183,7 +160,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
+        [Category("Class")]
         public void T013_DotOp_UserDefinedClass_02()
         {
             String code =
@@ -198,175 +175,32 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassSemantics")]
-        public void T014_DotOp_UserDefinedClass_03()
-        {
-            String code =
-@"class A{	fx :var;	fb : B;	constructor A(x : var)	{		fx = x;		fb = B.B({x,10});		}}class B{	fy: var[];	constructor B(y : var[])	{		fy = y;			}	def foob()			{				fy = fy +1;				return = fy;			}}fa = A.A(1..3);r1 = fa.fx;//1..3r2 = fa.fb.fy;//{{1,10},{2,10},{3,10}}->{{2,11},{3,11},{4,11}}r3 = fa.fb.foob();//{{2,11},{3,11},{4,11}}";
-            thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 1, 2, 3 };
-            //Object[] v2 = new Object[] { 1, 10 };
-            //Object[] v3 = new Object[] { 2, 10 };
-            //Object[] v4 = new Object[] { 3, 10 };
-            //Object[] v5 = new Object[] { v2, v3, v4 };
-            Object[] v6 = new Object[] { 2, 11 };
-            Object[] v7 = new Object[] { 3, 11 };
-            Object[] v8 = new Object[] { 4, 11 };
-            Object[] v9 = new Object[] { v6, v7, v8 };
-            thisTest.Verify("r1", v1);
-            thisTest.Verify("r2", v9);
-            thisTest.Verify("r3", v9);
-            //Assert.Fail("1467135 - Sprint 24 - Rev 2941: non-deterministic dispatch warning message thrown out when using replication with dot opration");
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_TestAlreadyFails")]
-        [Category("Failure")]
-        public void TV1467135_DotOp_Replication_1()
-        {
-            String code =
-@"class A{    fx:int;    fb : B;     def foo()    {           return = 1;    }}class B{    fy :int;    def foo()    {        return  =2 ;    }}a = A.A();b = B.B();arr = {a,b};arr2 = {a.fb,b};r1 = arr.foo();r2 = arr2.foo();";
-            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1693
-            string str = "MAGN-1693 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
-            thisTest.VerifyRunScriptSource(code, str);
-            Object[] v1 = new Object[] { 1, 2 };
-            Object[] v2 = new Object[] { null, 2 };
-            thisTest.Verify("r1", v1);
-            thisTest.Verify("r2", v2);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_ReplicationInsideClass")]
-        public void TV1467135_DotOp_Replication_2()
-        {
-            String code =
-@"class A{    fx:int;    fb : B;    constructor A(x :int)    {        fx = x;        fb = B.B(x);    }      def foo()    {           return = 1;    }}class B{    fy :int;    constructor B(y:int)    {        fy = y;    }    def foo()    {        return  =2 ;    }}a = A.A({1,1});b = B.B({2,2});rfx = a.fx;raby = a.fb.fy;rfy = b.fy;";
-            thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 1, 1 };
-            Object[] v2 = new Object[] { 2, 2 };
-            thisTest.Verify("rfx", v1);
-            thisTest.Verify("raby", v1);
-            thisTest.Verify("rfy", v2);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_TestAlreadyFails")]
-        [Category("Failure")]
-        public void TV1467135_DotOp_Replication_3()
-        {
-            String code =
-@"class A{    fx:int;    fb : B;    constructor A(x :int)    {        fx = x;        fb = B.B(x);    }      def foo()    {           return = 1;    }}class B{    fy :int;    constructor B(y:int)    {        fy = y;    }    def foo()    {        return  =2 ;    }}a = A.A({1,1});b = B.B({2,2});rfoo = {a,b}.foo();";
-            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1693
-            string str = "MAGN-1693 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
-            thisTest.VerifyRunScriptSource(code, str);
-            Object[] v1 = new Object[] { 1, 1 };
-            Object[] v2 = new Object[] { 2, 2 };
-            Object[] v3 = new Object[] { v1, v2 };
-            thisTest.Verify("rfoo", v3);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
-        public void TV1467135_CallingFuncInSameScope()
-        {
-            String code =
-@"class C{    fz:int;    constructor C(z:int)    {        fz = foo(z);    }    def foo(z:int)    {        return = z+1;    }}c = C.C({3,3});rc = c.fz;";
-            thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 4, 4 };
-            thisTest.Verify("rc", v1);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
-        public void TV1467135_CallingFuncInSameScope_this()
-        {
-            String code =
-@"class C{    fz:int;    constructor C(z:int)    {        fz = this.foo(z);    }    def foo(z:int)    {        return = z+1;    }}c = C.C({3,3});rc = c.fz;";
-            thisTest.RunScriptSource(code);
-            thisTest.SetErrorMessage("1467372 - Sprint 27 - Rev 4107:\"this\" keyword doesn't return correct answer when using with replication");
-            Object[] v1 = new Object[] { 4, 4 };
-            thisTest.Verify("rc", v1);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
-        public void TV1467372_ThisKeyword()
-        {
-            String code =
-@"class C{    fz:int;    constructor C(z:int)    {        fz = this.foo(z);    }    def foo(z:int)    {        this.fz = z +1;        return = fz;    }}c = C.C({3,3});rc = c.fz;";
-            thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 4, 4 };
-            thisTest.Verify("rc", v1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
-        public void TV1467372_ThisKeyword_InMemberFunction_Replication()
-        {
-            String code =
-@"class C{    fz:int;    constructor C(z:int)    {        fz = this.foo(z);    }    def foo(z:int)    {        this.fz = this.foo();        return = fz;    }    def foo()    {        return = this.fz+1;    }}c = C.C({3,3});rc = c.fz;";
-            thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 1, 1 };
-            thisTest.Verify("rc", v1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
-        public void TV1467372_ThisKeyword_InMemberFunction_Replication_2()
-        {
-            String code =
-@"class C{    fz:int;    constructor C(z:int)    {        fz = this.foo(z);    }    def foo(z:int)    {        this.fz = this.foo() +z;        return = fz;    }    def foo()    {        return = this.fz+1;    }}c = C.C({3,3});r1 = c.foo();";
-            thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 5, 5 };
-            thisTest.Verify("r1", v1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
-        public void TV1467372_ThisKeyword_InMemberFunction_Replication_3()
-        {
-            String code =
-@"class C{    fz:int;    constructor C(z:int)    {        fz = this.foo(z);    }    def foo(z:int)    {        this.fz = this.foo() +z;        return = fz;    }    def foo()    {        return = this.fz+1;    }}c = C.C({3,3});r1 = c.foo(10);";
-            string str = "";
-            thisTest.RunScriptSource(code, str);
-            Object[] v1 = new Object[] { 15, 15 };
-            thisTest.Verify("r1", v1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
+        [Category("Class")]
         public void TV1467372_ThisKeyword_2()
         {
             String code =
-@"class A {    fx:int;    constructor A(x)    {        this.fx = this.fx +x;    }}a = A.A(1);ra = a.fx;";
+@"class A {    fx:int;    constructor A(x)    {        this.fx = 0;        this.fx = this.fx +x;    }}a = A.A(1);ra = a.fx;";
             thisTest.RunScriptSource(code);
             thisTest.Verify("ra", 1);
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
+        [Category("Class")]
         public void TV1467372_ThisKeyword_2_Replication()
         {
             String code =
-@"class A {    fx:int;    constructor A(x)    {        this.fx = this.fx +x;    }}a = A.A({1,1});ra = a.fx;";
+@"class A {    fx:int;    constructor A(x)    {        this.fx = 0;        this.fx = this.fx +x;    }}a = A.A({1,1});ra = a.fx;";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1, 1 };
             thisTest.Verify("ra", v1);
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
+        [Category("Class")]
         public void TV1467372_ThisKeyword_3()
         {
             String code =
-@"class A {    fx:int;    constructor A(x:int)    {        this.fx = this.fx +x;    }}class B extends A{    constructor B(y:int)    {        this.fx = this.fx + y;    }}a = A.A({1,1});b = B.B({2,2});ra = a.fx;rb = b.fx;";
+@"class A {    fx:int;    constructor A(x:int)    {        this.fx = 0;        this.fx = this.fx +x;    }}class B extends A{    constructor B(y:int)    {        this.fx = 0;        this.fx = this.fx + y;    }}a = A.A({1,1});b = B.B({2,2});ra = a.fx;rb = b.fx;";
             thisTest.RunScriptSource(code);
             Object[] v1 = new Object[] { 1, 1 };
             Object[] v2 = new Object[] { 2, 2 };
@@ -375,32 +209,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignore_UsingThisKeyword")]
-        public void TV1467372_ThisKeyword_InMemberFunction_1()
-        {
-            String code =
-@"class C{    fz:int = 0;    constructor C(z:int)    {        fz = this.foo(z);    }    def foo(z:int)    {        this.fz = this.foo();        return = fz;    }    def foo()    {        return = this.fz+1;    }}c = C.C(3);rc = c.fz;";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("rc", 1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignore_ReplicationWithinDSClass")]
-        public void TV1467135_DotOp_Replication_4()
-        {
-            String code =
-@"class A{    fx:int;    fb : B;    constructor A(x :int)    {        fx = x;        fb = B.B(x);    }      def foo()    {           return = 1;    }}class B{    fy :int;    fc:C;    constructor B(y:int)    {        fy = y;        fc = C.C(y);    }    def foo()    {        return  =2 ;    }}class C{    fz:int;    constructor C(z:int)    {        fz = foo(z);    }    def foo(z:int)    {        return = z+1;    }}t1 = A.A({1,1}).fb.fc.foo(10);t2 = A.A({1,1}).fb.fc.fz;t3 = A.A({1,1}).fb.foo();";
-            thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 11, 11 };
-            Object[] v2 = new Object[] { 2, 2 };
-            thisTest.Verify("t1", v1);
-            thisTest.Verify("t2", v2);
-            thisTest.Verify("t3", v2);
-            thisTest.VerifyBuildWarningCount(0);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T015_DotOp_Collection_01()
         {
             String code =
@@ -411,7 +219,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T015_DotOp_Collection_01a()
         {
             String code =
@@ -421,7 +228,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T016_Collection_02()
         {
             String code =
@@ -435,7 +241,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T017_DotOp_Collection_03()
         {
             String code =
@@ -446,7 +251,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T018_DotOp_Collection_04()
         {
             String code =
@@ -458,7 +262,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void TV018_DotOp_Collection_04_1()
         {
             String code =
@@ -479,7 +282,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void TV018_DotOp_Collection_04_3()
         {
             String code =
@@ -490,7 +292,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void TV018_DotOp_Collection_04_4()
         {
             String code =
@@ -519,7 +320,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T019_DotOp_Collection_05()
         {
             String code =
@@ -530,7 +330,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T019_DotOp_Collection_06()
         {
             String code =
@@ -544,7 +343,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
 
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T019_DotOp_Collection_07()
         {
             String code =
@@ -557,55 +355,20 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
-        public void TV1467137_DotOp_Indexing_1()
-        {
-            String code =
-@"class A {	fx: int;	fb: B[];		constructor A(x :int)	{		fx = x;		fb = B.B({10,11});		}}class B{	fy : int;	constructor B(y : int)	{		fy = y;	}    def foo()    {        fy = 100;        return = fy;    }}a = {1,2};va = A.A(a);r1 = va[0][0].fb.foo();r2 = va.fb[0][0].foo();r3 = va.fb.foo()[0][0];r4 = va[0].fb.foo()[0];r5 = va.fb[0].foo()[0];r6 = va.fb.foo()[0][0];";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", null);
-            thisTest.Verify("r2", 100);
-            thisTest.Verify("r3", 100);
-            thisTest.Verify("r4", 100);
-            thisTest.Verify("r5", 100);
-            thisTest.Verify("r6", 100);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Category("Class")]
         public void TV1467137_1_DotOp_Update()
         {
             String code =
-@"class A {	fx: int;	fb: B[];		constructor A(x :int)	{		fx = x;		fb = B.B({10,11});		}}class B{	fy : int;	constructor B(y : int)	{		fy = y;	}    def foo()    {        fy = 100;        return = fy;    }}a = {1,2};va = A.A(a);r1 = va[0].fb.fy;r2 = va.fb[0].fy;r3 = va.fb.fy[0];r4 = va[0].fb.foo()[0];r5 = va.fb[0].foo()[0];r6 = va.fb.foo()[0][0];";
+@"class A {	fx: int;	fb: B[];		constructor A(x :int)	{		fx = x;		fb = B.B({10,11});		}}class B{	fy : int;	constructor B(y : int)	{		fy = y;	}}a = {1,2};va = A.A(a);r1 = va[0].fb.fy;r2 = va.fb[0].fy;r3 = va.fb.fy[0];";
             thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 100, 100 };
-            thisTest.SetErrorMessage("1467137 - Sprint 24 - Rev 2941: wrong result when using dot opration to get property for more than two collections");
+            Object[] v1 = new Object[] { 10, 11 };
             thisTest.Verify("r1", v1);
             thisTest.Verify("r2", v1);
             thisTest.Verify("r3", v1);
-            thisTest.Verify("r4", 100);
-            thisTest.Verify("r5", 100);
-            thisTest.Verify("r6", 100);
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
-        public void T021_DotOp_Nested_03()
-        {
-            String code =
-@"class A {         fb: B =B.B({10,11}) ;      } class B {         constructor B(y : int)         {        }} va = A.A();s = va.fb;m:B = B.B({10,11});r = m==s;";
-            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4045
-            thisTest.SetErrorMessage("MAGN-4045 Initializing class member at class level with array of objects, causes crash");
-
-            thisTest.RunScriptSource(code);  
-            Object v1 = null;
-            thisTest.Verify("m", v1);
-            thisTest.Verify("s", v1);
-            thisTest.Verify("r", true);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Category("Class")]
         public void TV1467333()
         {
             String code =
@@ -620,45 +383,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        public void T022_DotOp_CallFunc_01()
-        {
-            String code =
-@"class A{	fb : B;	def fooa(x:var)	{			fb = B.B();        return = fb.foob(x);			}}class B{    x : var;	def foob(x : var)	{		this.x = x; 	return = this.x;	}}a = A.A();r1 =  a.fooa(1);r2 = a.fb.foob(2);b = B.B();r3 = b.foob(3);";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", 1);
-            thisTest.Verify("r2", 2);
-            thisTest.Verify("r3", 3);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass_AlreadyFailing")]
-        [Category("Failure")]
-        public void T023_DotOp_FuncCall_02()
-        {
-            // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4048
-            String code =
-@"class A{	fb : B;	def fooa(x:var)	{		fb = B.B();        return = fb.foob(x);	}}class B{	fa :A;	def foob(x : var)	{		fa = A.A();        return = fa.fooa(x);	}}a = A.A();r = a.fooa(1);";
-            Assert.Fail("MAGN-4048 Cyclic dependency undetected resulting in StackOverflowException");
-            thisTest.RunScriptSource(code);
-
-        }
-
-        [Test]
-        [Category("Failure")]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
-        public void T024_DotOp_FuncCall_03()
-        {
-            String code =
-@"class A{	fb : B;	def fooa(x:var)	{		fb = B.B();        return = fb.foob(x);	}}class B{	fc :C;	def foob(x : var)	{		fc = C.C();		return = fc.fooc(x); 	}}class C{	def fooc(x :var)	{		return = {x,true};	}}a = A.A();r = a.fooa(1);";
-
-            thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 1, true };
-            thisTest.Verify("r", v1);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T025_DotOp_FuncCall_04()
         {
             String code =
@@ -670,7 +394,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Category("Class")]
         public void TV025_1467140_1()
         {
             String code =
@@ -683,7 +407,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
+        [Category("Class")]
         public void TV025_1467140_2()
         {
             String code =
@@ -696,36 +420,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
-        public void T026_DotOp_FuncCall_05()
-        {
-            String code =
-@"class A{	fb : B;	fx: int;constructor A(x:int){		fx = x;}	def fooa(y:int)	{		fb = B.B();        return = fb.foob({fx,y});	}}class B{	def foob(x : int)	{		return = x;	}}a = A.A({0,1});m = a.fx;r1 = a.fooa({10,11});";
-            string str = "";
-            thisTest.VerifyRunScriptSource(code, str);
-            Object[] v1 = new Object[] { 0, 10 };
-            Object[] v2 = new Object[] { 1, 11 };
-            Object[] v3 = new Object[] { v1, v2 };
-            thisTest.Verify("r1", v3);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClasswithinDSClass")]
-        public void T027_DotOp_FuncCall_06()
-        {
-            String code =
-@"class A{	fb : B;	fx: int;constructor A(x:int){		fx = x;}	def fooa(y:int)	{		fb = B.B();        return = fb.foob({fx,y});	}}class B{	def foob(x : int)	{		return = x;	}}a = A.A({0,1});m = a.fx;r2 = a[0].fooa({20,21});";
-            thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { 0, 20 };
-            Object[] v2 = new Object[] { 0, 21 };
-            Object[] v3 = new Object[] { v1, v2 };
-
-            thisTest.Verify("r2", v3);
-        }
-        //////Inheritance
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Category("Class")]
         public void T028_Inheritance_Property()
         {
             String code =
@@ -735,13 +430,9 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
            {
                thisTest.RunScriptSource(code);
            });
-
-            //thisTest.Verify("r1", 1);
-
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         [Category("Class")]
         public void T029_Inheritance_Property_1()
         {
@@ -750,13 +441,13 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
 
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", 1);
-            thisTest.Verify("r2", 0);
+            thisTest.Verify("r2", null);
             thisTest.Verify("r3", 2);
             
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Category("Class")]
         public void T030_Inheritance_Property_2()
         {
             String code =
@@ -767,7 +458,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
 
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Category("Class")]
         public void T031_Inheritance_Property_3()
         {
             String code =
@@ -782,7 +473,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T032_ReservationCheck_rangeExp()
         {
             String code =
@@ -790,17 +480,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
             thisTest.RunScriptSource(code);
 
             thisTest.Verify("r1", 1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassProperty")]
-        public void T032_Defect_ReservationCheck_rangeExp()
-        {
-            String code =
-@"class R {    //RangeExpression :int;    constructor R()    {        //RangeExpression = 1;    }    def RangeExpression()    {        return = 1;    }}class RangeExpression{};r = R.R();r1 = RangeExpression.RangeExpression();r2 = r.RangeExpression();";
-            thisTest.RunScriptSource(code);
-            //thisTest.Verify("r1", 1);
-            thisTest.Verify("r2", 1);
         }
 
         [Test]
@@ -814,7 +493,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Category("Class")]
         public void T033_PushThroughCasting_UserDefinedType()
         {
             String code =
@@ -847,7 +526,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void TV1467147_PushThroughCastingWithReplication()
         {
             String code =
@@ -859,7 +537,7 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Category("Class")]
         public void T034_PushThroughCastingWithReplication_UserDefinedType()
         {
             String code =
@@ -1027,171 +705,36 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
 
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
+        [Category("Class")]
         public void T039_Inheritance_Method_1()
         {
             String code =
-@"class A{	fx:int = 1;	constructor A()	{		fx = 2;	}	def foo(x:var)	{		fx = x +10;		return = fx;	}}class B extends A{	fy:var;	constructor B(): base.A()	{		fx = 10;		fy = 20;	}}b = B.B();r1 = b.fx;r2 = b.fy; r3 = b.foo(1);";
+@"class A{	fx;	constructor A()	{		fx = 2;	}}class B extends A{	fy;	constructor B(): base.A()	{		fx = 10;		fy = 20;	}}b = B.B();r1 = b.fx;r2 = b.fy; ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", 11);
+            thisTest.Verify("r1", 10);
             thisTest.Verify("r2", 20);
-            thisTest.Verify("r3", 11);
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void TV1467161_Inheritance_Update_1()
-        {
-            String code =
-@"class A{	fx:int = 1;	constructor A()	{		fx = 2;	}	def foo(x:var)	{		fx = x +10;		return = fx;	}}class B extends A{	fy:var;	constructor B(): base.A()	{		fx = 10;		fy = 20;	}    def foo(x:var)	{		fx = x +100;        fy = fx; 		return = fx;	}}b = B.B();r1 = b.fx;r2 = b.fy; r3 = b.foo(1);";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", 101);
-            thisTest.Verify("r2", 101);
-            thisTest.Verify("r3", 101);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void TV1467161_Inheritance_Update_2()
-        {
-            String code =
-@"class A{	fx:int = 1;	constructor A()	{		fx = 2;	}	def foo(x:var)	{		fx = x +10;		return = fx;	}}class B extends A{	fy:var;	constructor B(): base.A()	{		fx = 10;		fy = 20;	}    def foo(x:var)	{		fx = x +100;		return = fx;	}}class C extends B{    fz:int = 100;}c:A = C.C();r1 = c.fx;r2 = c.fy; r3 = c.fz;r4 = c.foo(1);";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", 101);
-            thisTest.Verify("r2", 20);
-            thisTest.Verify("r3", 100);
-            thisTest.Verify("r4", 101);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T040_Inheritance_Dynamic_Typing_1()
-        {
-            String code =
-@"class A{	fx:int = 1;	constructor A()	{		fx = 2;	}	def foo(x:var)	{		fx = x +10;		return = fx;	}}class B extends A{	fy:var;	constructor B(): base.A()	{		fx = 10;		fy = 20;	}}b : B = B.B();r1 = b.fx;r2 = b.fy; r3 = b.foo(1);";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", 11);
-            thisTest.Verify("r2", 20);
-            thisTest.Verify("r3", 11);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T041_Inheritance_Dynamic_Typing_2()
-        {
-            String code =
-@"class A{	fx:int = 1;	constructor A()	{		fx = 2;	}	def foo(x:var)	{		fx = x +10;		return = fx;	}}class B extends A{	fy:var;	constructor B(): base.A()	{		fx = 10;		fy = 20;	} }a = A.A();r1 = a.fx;r2 = a.fy; r3 = a.foo(1);";
-            thisTest.RunScriptSource(code);
-            Object v1 = new Object();
-            v1 = null;
-            thisTest.Verify("r1", 11);
-            thisTest.Verify("r2", v1);
-            thisTest.Verify("r3", 11);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T042_Inheritance_Dynamic_Typing_3()
-        {
-            String code =
-@"class A{	fx:int = 1;	constructor A()	{		fx = 2;	}	def foo(x:var)	{		fx = x +10;		return = fx;	}}class B extends A{	fy:var;	constructor B(): base.A()	{		fx = 10;		fy = 20;	} }a:A = A.A();r1 = a.fx;r2 = a.fy; r3 = a.foo(1);";
-            thisTest.RunScriptSource(code);
-            Object v1 = new Object();
-            v1 = null;
-            thisTest.Verify("r1", 11);
-            thisTest.Verify("r2", v1);
-            thisTest.Verify("r3", 11);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T044_Function_Overriding_NoArgs()
-        {
-            String code =
-@"class A{	fx:int = 1;	constructor A()	{		fx = 2;	}	def foo()	{		return = 100;	}}class B extends A{	fy:var;	constructor B(): base.A()	{		fx = 10;		fy = 20;	} 		def foo()	{		return = 200;	}}a = A.A();b = B.B();r1 = a.foo();r2 = b.foo();";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", 100);
-            thisTest.Verify("r2", 200);
-
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T043_Function_Overriding_1()
-        {
-            String code =
-@"class A{	fx:int = 1;	constructor A()	{		fx = 2;	}	def foo(x:var)	{		fx = x +10;		return = fx;	}}class B extends A{	fy:var;	constructor B(): base.A()	{		fx = 10;		fy = 20;	} 		def foo(x:var)	{		fx = x;		return = fx;	}}a = A.A();b = B.B();r1 = a.foo(1);r2 = b.foo(100);r3 = a.fx;r4 = b.fx;";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", 11);
-            thisTest.Verify("r2", 100);
-            thisTest.Verify("r3", 11);
-            thisTest.Verify("r4", 100);
-
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T043_Function_Overriding_2()
-        {
-            String code =
-@"class A{	fx:int = 1;	constructor A()	{		fx = 2;	}	def foo(x:int)	{		fx = x +10;		return = fx;	}}class B extends A{	fy:var;	constructor B(): base.A()	{		fx = 10;		fy = 20;	} 		def foo(x:int)	{		fx = x;		return = fx;	}}a = A.A();b = B.B();r1 = a.foo(1);r2 = b.foo(100);r3 = a.fx;r4 = b.fx;";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", 11);
-            thisTest.Verify("r2", 100);
-            thisTest.Verify("r3", 11);
-            thisTest.Verify("r4", 100);
-
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        [Category("Failure")]
         public void TV1467063_Function_Overriding()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4054
             string err = "";
             String code =
-@"class A{	fx:int = 1;	constructor A()	{		fx = 2;	}	def foo(x:int)	{		fx = x +10;		return = fx;	}}class B extends A{	fy:var;	constructor B(): base.A()	{		fx = 10;		fy = 20;	} 		def foo(x:var)	{		fx = x;		return = fx;	}}a = A.A();b = B.B();r1 = a.foo(1);r2 = b.foo(100);r3 = a.fx;r4 = b.fx;";
+@"	def foo(x:int)	{        return = 100;	}		def foo(x:var)	{		return = 200;	}    r = foo(100);";
             thisTest.RunScriptSource(code, err);
             thisTest.SetErrorMessage("MAGN-4054: Function overriding: when using function overriding, wrong function is called");
-            thisTest.Verify("r1", 11);
-            thisTest.Verify("r2", 100);
-            thisTest.Verify("r3", 11);
-            thisTest.Verify("r4", 100);
+            thisTest.Verify("r", 100);
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T045_Inheritance_Method_02()
         {
             String code =
-@"class A{	fx:int;	constructor A()	{		fx = 0;	}	def foo(x:double)	{		fx = x;		return = fx;	}}class B extends A{	fy:var;	constructor B(): base.A()	{		fx = 10;		fy = 20;	} 		def foo(x:int)	{		fx = x +10;		return = fx;	}}b = B.B();r1 = b.foo(1.0);r2 = b.foo(1);";
+@"	def foo(x:int)	{        return = 100;	}		def foo(x: double)	{		return = 200;	}    r1 = foo(1.5);    r2 = foo(1);";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", 1);
-            thisTest.Verify("r2", 11);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T046_Inheritance_Method_03()
-        {
-            String code =
-@"class A{	fx:int;	constructor A()	{		fx = 0;	}	def foo(x:int)	{		fx = x;		return = fx;	}}class B extends A{	fy:var;	constructor B(): base.A()	{		fx = 10;		fy = 20;	} 		def foo(x:double)	{		fx = x +10;		return = fx;	}}b = B.B();r1 = b.foo(1.0);r2 = b.foo(1);";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", 11);
-            thisTest.Verify("r2", 1);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T047_Inheritance_Method_04()
-        {
-            String code =
-@"class A{	fx:int;	constructor A()	{		fx = 0;	}	def foo(x:int)	{		fx = x;		return = fx;	}}class B extends A{	fy:var;	constructor B(): base.A()	{		fx = 10;		fy = 20;	} 		def foo(x:var)	{		fx = x +10;		return = fx;	}}b = B.B();r1 = b.foo(1.0);r2 = b.foo(1);";
-            thisTest.RunScriptSource(code);
-            //Assert.Fail("1467175 - sprint 25 - Rev 3150: [design issue] :cast distance to a var comparing with cast distance to a double ");
-            thisTest.Verify("r1", 11);
-            thisTest.Verify("r2", 1);
+            thisTest.Verify("r1", 200);
+            thisTest.Verify("r2", 100);
         }
 
         [Test]
@@ -1214,74 +757,17 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void TV1467175_3()
         {
             String code =
-@"class A{def foo(x : double){    return = x ;}}class B extends A{def foo(x : var){    return = x ;}}a = A.A();b = B.B();ra = a.foo(1);rb = b.foo(1);";
+@"import (""FFITarget.dll"");a = TestOverloadA.TestOverloadA();b = TestOverloadB.TestOverloadB();ra = a.foo(1.1);rb = b.foo(1.1);";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("ra", 1.0);
-            thisTest.Verify("rb", 1.0);
+            thisTest.Verify("ra", 100);
+            thisTest.Verify("rb", 100);
         }
 
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void TV1467175_4()
-        {
-            String code =
-@"class A{def foo(x : var){    return = x ;}}class B extends A{def foo(x : double){    return = x ;}}a = A.A();b = B.B();ra = a.foo(1);rb = b.foo(1);";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("ra", 1);
-            thisTest.Verify("rb", 1.0);
-        }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T049_Inheritance_Update_01()
-        {
-            String code =
-@"    class A{    fx : int = 1;    def foo()    {        fx = 11;        return = fx;    }    }class B extends A{    def foo()    {        fx = 22;        return = fx;    }}a = A.A();b = B.B();r1 = a.fx;r2 = b.fx;r3 = a.foo();r4 = b.foo();";
-            thisTest.RunScriptSource(code);
-            // Assert.Fail("1467167 - Sprint 25 - Rev 3132: class member doesn't get updated correctly");
-            thisTest.Verify("r1", 11);
-            thisTest.Verify("r2", 22);
-            thisTest.Verify("r3", 11);
-            thisTest.Verify("r4", 22);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T049_Inheritance_Update_02()
-        {
-            String code =
-@"class A{    fx : int = 1;    def foo()    {        fx = 11;        return = fx;    }    }class B extends A{    def foo()    {        fx = 22;        return = fx;    }}class C extends A{    def foo()    {        fx = 33;        return = fx;    }}a = A.A();b = B.B();c = C.C();r1 = a.fx;r2 = b.fx;r3 = c.fx;r4 = a.foo();r5 = b.foo();r6 = c.foo();";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", 11);
-            thisTest.Verify("r2", 22);
-            thisTest.Verify("r3", 33);
-            thisTest.Verify("r4", 11);
-            thisTest.Verify("r5", 22);
-            thisTest.Verify("r6", 33);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T049_Inheritance_Update_03()
-        {
-            String code =
-@"class A{    fx : int = 1;    def foo()    {        fx = 11;        return = fx;    }    }class B extends A{    fy:int;    def foo()    {        fx = 22;        return = fx;    }}class C extends B{    def foo()    {        fy = 33;        return = fy;    }}a = A.A();b = B.B();c = C.C();r1 = a.fx;r2 = b.fx;r3 = c.fy;r4 = a.foo();r5 = b.foo();r6 = c.foo();";
-            thisTest.RunScriptSource(code);
-            thisTest.SetErrorMessage("1467167 - Sprint 25 - Rev 3132: class member doesn't get updated correctly");
-            thisTest.Verify("r1", 11);
-            thisTest.Verify("r2", 22);
-            thisTest.Verify("r3", 33);
-            thisTest.Verify("r4", 11);
-            thisTest.Verify("r5", 22);
-            thisTest.Verify("r6", 33);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
         public void FunctionOverload()
         {
             String code =
@@ -1293,34 +779,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
 
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T050_Transitive_Inheritance_01()
-        {
-            String code =
-@"class A{    fx : int = 1;    def foo()    {        fx = 11;        return = fx;    }    }class B extends A{    fy : int = 2;}class C extends B{    fz : int = 3;}c = C.C();r1 = c.fx;r2 = c.fy;r3 = c.fz;r4 = c.foo();";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r1", 11);
-            thisTest.Verify("r2", 2);
-            thisTest.Verify("r3", 3);
-            thisTest.Verify("r4", 11);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T050_Transitive_Inheritance_02()
-        {
-            String code =
-@"class A{    fx : int = 1;    def foo()    {        fx = 11;        return = fx;    }    }class B extends A{    fy : int = 2;    def foo()    {        fy = 22;        return = fy;    }}class C extends B{    fz : int = 3;}c = C.C();r1 = c.fx;r2 = c.fy;r3 = c.fz;r4 = c.foo();";
-            thisTest.RunScriptSource(code);
-            thisTest.SetErrorMessage("1467167 - Sprint 25 - Rev 3132: class member doesn't get updated correctly");
-            thisTest.Verify("r1", 1);
-            thisTest.Verify("r2", 22);
-            thisTest.Verify("r3", 3);
-            thisTest.Verify("r4", 22);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T050_Inheritance_Multi_Constructor_01()
         {
             String code =
@@ -1337,7 +795,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         [Category("ToFixJun")]
         [Category("Failure")]
         [Category("Class")]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T051_TransitiveInheritance_Constructor()
         {
             String code =
@@ -1351,7 +808,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
         public void T050_Inheritance_Multi_Constructor_02()
         {
             String code =
@@ -1366,7 +822,6 @@ import(""FFITarget.dll"");p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X[0
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
         public void T052_Defect_ReplicationMethodOverloading()
         {
             String code =
@@ -1449,54 +904,7 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
             Object[] v1 = new Object[] { 1, 2, 2, null };
             thisTest.Verify("r", v1);
         }
-        /*                
-[Test]                public void T050_Inheritance_Multi_Construc()                {                    String code =        @"        class A        {            fx : int;            constructor A()            {                fx = 0;            }                    constructor A(x:var)            {                fx = x+1;            }            constructor A(x:int)            {                fx = x+2;            }                 constructor A2(x:var)            {                fx = x+3;            }            }        class B extends A        {            constructor B() : base.A() { }            constructor B(x : var) : base.A(x) { }            constructor B(x : int) : base.A(x) { }            constructor B2(x : var) : base.A2(x) { }            constructor B2(x : int) : base.A2(x) { }        }        b1 = B.B();        r1 = b1.fx;        b2 = B.B(0);        r2 = b2.fx;        b3 = B.B2(0.0);        r3 = b3.fx;        b4 = B.B2(A.A()); //null        r4 = b4.fx;        b5 = B.B2(0);        r5 = b5.fx;            ";                    thisTest.RunScriptSource(code);                    Assert.Fail("1467179 - Sprint25 : rev 3152 : multiple inheritance base constructor causes method resolution");                    Object v1 = null;                    thisTest.Verify("r1", 0);                    thisTest.Verify("r2", 1);                    thisTest.Verify("r3", 1);                    thisTest.Verify("r4", v1);                }                */
 
-        [Test]
-        [Category("Failure")]
-        [Ignore][Category("DSDefinedClass_Ignore")]
-        public void T053_ReplicationWithDiffTypesInArr()
-        {
-            String code =
-@"class A{    def foo()    {        return = 1;    }}class B{    def foo()    {        return = 2;    }}m = { A.A(), B.B(), A.A() };n = { B.B(), A.A(), B.B() };r1 = m.foo();r2 = n.foo();";
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1693
-            string str = "MAGN-1693 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
-            thisTest.VerifyRunScriptSource(code, str);
-
-            Object[] v1 = new Object[] { 1, 2, 1 };
-            Object[] v2 = new Object[] { 2, 1, 2 };
-            thisTest.Verify("r1", v1);
-            thisTest.Verify("r2", v2);
-        }
-
-        [Test]
-        [Category("Failure")]
-        [Ignore][Category("DSDefinedClass_Ignore")]
-        public void T054_ReplicationWithInvalidTypesInArr()
-        {
-            String code =
-@"class A{    def foo()    {        return = 1;    }}class B{    def foo()    {        return = 2;    }}m = { A.A(), B.B(), null };n = { B.B(), A.A(), c, false };r1 = m.foo();r2 = n.foo();";
-            // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1693
-            string str = "MAGN-1693 Regression : Dot Operation using Replication on heterogenous array of instances is yielding wrong output";
-            thisTest.RunScriptSource(code, str);
-            Object v3 = null;
-            Object[] v1 = new Object[] { 1, 2, v3 };
-            Object[] v2 = new Object[] { 2, 1, v3, v3 };
-
-            thisTest.Verify("r1", v1);
-            thisTest.Verify("r2", v2);
-        }
-        
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignore_DSClassInheritance")]
-        public void T055_ReplicationWithDiffTypesInArr_UserDefined_Simpler()
-        {
-            String code =
-@"class A{def foo(a:A){    return = 1;}}class B extends A{def foo(b:B){    return = 2;}}m = {A.A(),B.B(),A.A()};a = A.A();r1a = a.foo(m);b = B.B();r1b = b.foo(m);";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("r1a", new object[] { 1, 1, 1 });
-            thisTest.Verify("r1b", new object[] { 1, 2, 1 });
-        }
 
         [Test]
         public void ReplicationSubDispatch()
@@ -1509,11 +917,10 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignore_DSClassInheritance")]
         public void Test()
         {
             String code =
-@"class A{        def Test(b : B)        { return = 1; }}class B extends A{        def Test(a : A)        { return = 2; }} a = A.A();b = B.B();r1 = a.Test(a);//nullr2 = b.Test(b);//2";
+@"class A{}class B extends A{}def TestA(b : B){ return = 1; }def TestB(a : A){ return = 2; }a = A.A();b = B.B();r1 = TestA(a);//nullr2 = TestB(b);//2";
             thisTest.RunScriptSource(code);
         }
 
@@ -1537,68 +944,6 @@ import(""FFITarget.dll"");a1 = DummyPoint.ByCoordinates(10, 20, 30);def foo(va
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
             TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.ConversionNotPossible);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T058_nonmatchingclass_1467162_3()
-        {
-            String code =
-            @"                class A                {                    fa = 1;                }                class M extends A{};                a:M = A.A();            ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.ConversionNotPossible);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T059_Polymphism()
-        {
-            String code =
-            @"class A{    private def bar()    {        return = ""A.bar()"";    }    public def foo()    {        return = bar();    }}class B extends A{}b = B.B();ret = b.foo();            ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("ret", "A.bar()");
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T059_Polymphism_2()
-        {
-            String code =
-            @"class A{    private def bar()    {        return = ""A.bar()"";    }    public def foo()    {        return = bar();    }}class B extends A{    private def bar()    {        return = ""B.bar()"";    }}b = B.B();ret = b.foo();            ";
-            string error = "1467150 Sprint 25 - Rev 3026 - Polymorphism in design script broken when nested function calls between the different class ";
-            thisTest.RunScriptSource(code, error);
-            thisTest.Verify("ret", "B.bar()");
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T059_Polymphism_3()
-        {
-            String code =
-            @"class A{    private def bar()    {        return = ""A.bar()"";    }}class B extends A{    public def foo()    {        return = bar();    }}b = B.B();ret = b.foo();            ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("ret", null);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T059_Polymphism_4()
-        {
-            String code =
-            @"class A{    public def foo()    {        return = bar();    }}class B extends A{    private def bar()    {        return = ""B.bar()"";    }}b = B.B();ret = b.foo();            ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("ret", null);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSClassInheritance")]
-        public void T059_Polymphism_5()
-        {
-            String code =
-            @"                class Geometry                {                        def Clone()                        {                            return = CreateNew();                        }                        def CreateNew()                        {                             return=0;                        }                }                class Curve extends Geometry                {                }                class Arc extends Curve                {                        def CreateNew()                        {                             return = 100;                        }                }                a=Arc.Arc();                g=a.Clone();             ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("g", 100);
         }
 
         [Test]
@@ -1733,6 +1078,56 @@ r2 = foo(a, {1});
             thisTest.Verify("r1", new object[] {41});
             thisTest.Verify("r2", new object[] {42});
         }
+
+        [Test]
+        public void TestMethodResolutionOnHeterogeneousArray01()
+        {
+            string code = @"
+def foo(x : int)
+{
+    return = x;
+}
+
+r = foo({""foo"", ""bar"", 33.9});
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { null, null, 34 });
+        }
+
+        [Test]
+        public void TestMethodResolutionOnHeterogeneousArray02()
+        {
+            string code = @"
+def foo(x: int, y : string)
+{
+    return = x;
+}
+
+xs = {""foo"", 10, ""bar""};
+ys = { 12, ""ding"", ""dang""};
+r = foo(xs, ys);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { null, 10, null});
+        }
+
+        [Test]
+        public void TestMethodResolutionOnHeterogeneousArray03()
+        {
+            string code = @"
+def foo(x: int, y : string)
+{
+    return = x;
+}
+
+xs = {""foo"", 10, ""bar""};
+ys = { 12, ""ding"", ""dang""};
+r = foo(xs<1>, ys<1>);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { null, 10, null });
+        }
+
     }
 }
 

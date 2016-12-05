@@ -157,6 +157,25 @@ namespace Dynamo.Updates
     }
 
     /// <summary>
+    /// HostUpdateManager to keep track of the latest host version (i.e. DynamoRevit/DynamoStudio)
+    /// This additional Interface is created to ensure backward compatibility when Host versions are older than Core versions
+    /// This Interface contains two getter/setter methods to update the Host Version and Name
+    /// This Interface should be removed and merged with UpdateManager in 2.0
+    /// </summary>
+    public interface IHostUpdateManager
+    {
+        /// <summary>
+        /// Get the current version of the Host
+        /// </summary>
+        Version HostVersion { get; set; }
+
+        /// <summary>
+        /// Get the current name of the Host
+        /// </summary>
+        String HostName { get; set; }
+    }
+
+    /// <summary>
     /// Interface provides methods, that get installed Dynamo paths and the last Dynamo version.
     /// </summary>
     public interface IDynamoLookUp
@@ -544,7 +563,7 @@ namespace Dynamo.Updates
     /// <summary>
     /// This class provides services for product update management.
     /// </summary>
-    internal sealed class UpdateManager : NotificationObject, IUpdateManager
+    internal sealed class UpdateManager : NotificationObject, IUpdateManager, IHostUpdateManager
     {
         #region Private Class Data Members
 
@@ -595,6 +614,26 @@ namespace Dynamo.Updates
             return productVersion;
         }
 
+        public Version HostVersion { get; set; }
+
+        public string HostName { get; set; }
+
+        /// <summary>
+        /// BaseVersion is a method which compares the current Dynamo Core Version and the HostVersion
+        /// (DynamoRevit/DynamoStudio etc.) and returns the earlier (lower) Version.
+        /// This allows subsequent methods to do a single check and if there is an updated version (to either Core/Host
+        /// versions), the subsequent methods will poll the server for an update.
+        /// </summary>
+        private BinaryVersion BaseVersion()
+        {
+            if (HostVersion == null) return ProductVersion;
+
+            var binaryHostVersion = BinaryVersion.FromString(HostVersion.ToString());
+
+            if (ProductVersion < binaryHostVersion) return ProductVersion;
+            else return binaryHostVersion;
+        }
+
         /// <summary>
         ///     Obtains available update version string 
         /// </summary>
@@ -606,7 +645,7 @@ namespace Dynamo.Updates
                 // This causes the UI to display the update button only after the download has
                 // completed.
                 return downloadedUpdateInfo == null
-                    ? ProductVersion : updateInfo.Version;
+                    ? BaseVersion() : updateInfo.Version;
             }
         }
 
@@ -660,10 +699,10 @@ namespace Dynamo.Updates
             get
             {
                 //Update is not available unitl it's downloaded
-                if(DownloadedUpdateInfo==null)
+                if (DownloadedUpdateInfo == null)
                     return false;
 
-                return ForceUpdate || AvailableVersion > ProductVersion;
+                return ForceUpdate || AvailableVersion > BaseVersion();
             }
         }
 
@@ -722,6 +761,8 @@ namespace Dynamo.Updates
         {
             this.configuration = configuration;
             PropertyChanged += UpdateManager_PropertyChanged;
+            HostVersion = null;
+            HostName = string.Empty;
         }
 
         void UpdateManager_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -843,7 +884,7 @@ namespace Dynamo.Updates
             {
                 if (useStable) //Check stables
                 {
-                    if (latestBuildVersion > ProductVersion)
+                    if (latestBuildVersion > BaseVersion())
                     {
                         SetUpdateInfo(latestBuildVersion, latestBuildDownloadUrl, latestBuildSignatureUrl);
                     }
@@ -914,6 +955,7 @@ namespace Dynamo.Updates
                 p.StartInfo.Arguments += " " + hostApplicationProcessId;
             }
             p.Start();
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Installed, Categories.Upgrade, AvailableVersion.ToString());
         }
 
         public void RegisterExternalApplicationProcessId(int id)
@@ -947,6 +989,7 @@ namespace Dynamo.Updates
 
             UpdateFileLocation = (string)e.UserState;
             OnLog(new LogEventArgs("Update download complete.", LogLevel.Console));
+            Dynamo.Logging.Analytics.TrackEvent(Actions.Downloaded, Categories.Upgrade, AvailableVersion.ToString());
 
             if (null != UpdateDownloaded)
                 UpdateDownloaded(this, new UpdateDownloadedEventArgs(e.Error, UpdateFileLocation));
@@ -1248,7 +1291,7 @@ namespace Dynamo.Updates
         /// update check if a newer version of the product is already installed.
         /// </summary>
         /// <param name="manager">Update manager instance using which product
-        /// update check nees to be done.</param>
+        /// update check needs to be done.</param>
         internal static void CheckForProductUpdate(IUpdateManager manager)
         {
             //If we already have higher version installed, don't look for product update.

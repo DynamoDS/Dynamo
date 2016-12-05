@@ -1,11 +1,16 @@
 ﻿using System.Collections.Generic;
 using Dynamo.Graph;
 using ProtoCore.AST.AssociativeAST;
+using Dynamo.Graph.Nodes;
 
 namespace CoreNodeModels.Input
 {
     public abstract class String : BasicInteractive<string>
     {
+        protected String() { }
+
+        protected String(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
         public override string PrintExpression()
         {
             return "\"" + base.PrintExpression() + "\"";

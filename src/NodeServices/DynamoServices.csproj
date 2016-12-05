@@ -47,10 +47,12 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="Analytics.cs" />
     <Compile Include="Attributes.cs" />
     <Compile Include="ExecutionEvents.cs" />
     <Compile Include="ExecutionSession.cs" />
     <Compile Include="GraphicsDataInterfaces.cs" />
+    <Compile Include="IAnalyticsClient.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="MessageEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -13,6 +13,27 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     public class DSFunction : DSFunctionBase
     {
         /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "FunctionNode";
+            }
+        }
+
+        public string FunctionSignature
+        {
+            get
+            {
+                return Controller.Definition.MangledName;
+            }
+        }
+
+        /// <summary>
         ///     Indicates whether Node is input or not.
         /// </summary>
         public override bool IsInputNode
@@ -23,10 +44,11 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         /// <summary>
         ///     Initializes a new instance of the <see cref="DSFunction"/> class.
         /// </summary>
-        /// <param name="descriptor">Function descritor.</param>
-        public DSFunction(FunctionDescriptor descriptor) 
-            : base(new ZeroTouchNodeController<FunctionDescriptor>(descriptor)) 
-        { }
+        /// <param name="description">Function descritor.</param>
+        public DSFunction(FunctionDescriptor functionDescription) 
+            : base(new ZeroTouchNodeController<FunctionDescriptor>(functionDescription)) 
+        {
+        }
     }
 }
 

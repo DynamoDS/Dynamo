@@ -114,39 +114,6 @@ b1 = a1.OverloadedAdd(t1);
             thisTest.Verify("b1", 4, 0);
         }
 
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void T05_Update_Class_Instance_Argument()
-        {
-            string code = @"
-class A
-{
-    a : int;
-	constructor A ( x : int )
-	{
-	    a = x;
-	}
-	def add ( x : int )
-	{
-	    a = a + x;
-		return = A.A(a);
-	}
-}
-t1 = 1;
-a1 = A.A(t1);
-b1 = a1.add(t1);
-t2 = b1.a;
-//t1 = 2;
-[Imperative]
-{
-	t1 = 2;
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("t2", 4, 0);
-        }
-
 
         [Test]
         [Category("SmokeTest")]
@@ -383,60 +350,6 @@ x = [Imperative]
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("SmokeTest")]
-        public void T14_Defect_1461209_3()
-        {
-            string code = @"
-class A
-{
-    a : var = foo (1);
-	
-	def foo (a1 : var)
-	{
-	    return = a1 + 1;
-	}
-}
-y = A.A( );
-a1 = y.a;
-a2 = y.foo(1);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-
-            thisTest.Verify("a1", 2, 0);
-            thisTest.Verify("a2", 2, 0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        public void T14_Defect_1461209_4()
-        {
-            string code = @"
-class A
-{
-    a : var ;
-	b = a + 1;
-	
-	constructor A (a1 : var)
-	{
-	    a = a1 + 1;
-	}
-}
-y = A.A( x );
-a1 = y.a;
-b1 = y.b;
-x = [Imperative]
-{
-    return = 3;
-}
-x = 2;
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("a1", 3, 0);
-            thisTest.Verify("b1", 4, 0);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T15_Defect_1460935()
@@ -645,43 +558,6 @@ y = foo (x );
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_UpdateWithinDSClass")]
-        [Category("SmokeTest")]
-        public void T16_Defect_1460623_4()
-        {
-            string code = @"
-class A
-{
-	x : var;
-	constructor A ( a )
-	{
-    	x = a;		
-		x = a + 1;
-		x = a + 2;
-	}
-	
-	def foo ()
-	{
-	    x = 4;
-		x = 5;
-		return = 5;
-	}
-}
-x1 = 1;
-a1 = A.A( x1 );
-y1 = a1.x;
-z1 = a1.foo();
-[Imperative]
-{
-    x1 = 2;
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("y1", 5, 0);
-            thisTest.Verify("z1", 5, 0);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T17_Defect_1459759()
@@ -810,36 +686,6 @@ b = c + 3;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_UpdateWithinDSClass")]
-        [Category("Update")]
-        public void T19_Update_Class_Properties_Thru_Methods()
-        {
-            string code = @"
-class A
-{
-    a : int = 0;
-	
-	constructor A ()
-	{
-	    a = 1;
-	}
-	
-	def Update ()
-	{
-	    a = 2;
-		return = true;
-	}
-}
-a1 = A.A();
-b1 = a1.a;
-x1 = a1.Update();
-b2 = b1;
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("b2", 2);
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T20_Defect_1461391()
         {
@@ -904,71 +750,6 @@ b = foo ( a ) ;
         }
 
         [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("Update")]
-        [Category("Failure")]
-        public void T20_Defect_1461391_4()
-        {
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4085
-            string err = "MAGN-4085: Updating a class property using a class method from an imperative scope is not working now";
-            string code = @"
-import(""FFITarget.dll"");
-x = { 1, 2 };
-y1 = ClassFunctionality.ClassFunctionality(x);
-y2 = { y1[0].IntVal, y1[1].IntVal };
-[Imperative]
-{ 
-	for ( count in 0..1)
-	{
-	    temp = y1[count].Set(0);	
-	}
-}
-t1 = y2[0];
-t2 = y2[1];
-";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, err);
-            Object[] v = new Object[] { 0, 0 };
-            thisTest.Verify("y2", v);
-            thisTest.Verify("t1", 1);
-            thisTest.Verify("t2", 2);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("Update")]
-        [Category("Failure")]
-        public void T20_Defect_1461391_5()
-        {
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4086
-            string errmsg = "MAGN-4086: Update of class instance by updating its property is not propagating the proper update";
-            string code = @"
-import(""FFITarget.dll"");
-
-def foo ( a : ClassFunctionality) 
-{
-    return = a.IntVal;
-}
-x = { 1, 2 };
-y1 = ClassFunctionality.ClassFunctionality(x);
-y2 = foo ( y1);
-[Imperative]
-{ 
-	count = 0;
-	for ( i in y1)
-	{
-	    temp = y1[count].Set(0);	
-        count = count + 1;		
-	}
-}
-t1 = y2[0];
-t2 = y2[1];
-";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t1", 0);
-            thisTest.Verify("t2", 0);
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T20_Defect_1461391_6()
         {
@@ -1019,60 +800,6 @@ c;
             thisTest.Verify("c", 3.5);
         }
 
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void T22_Update_Class_Instance()
-        {
-            //Assert.Fail("1463700 - Sprint 20 : rev 2147 : Update is not happening when a collection property of a class instance is updated using a class method ");
-
-            string code = @"
-class A
-{
-    a : int[];
-	constructor A ( a1 : int[] )
-	{
-	    a = a1;		
-	}
-	
-	def update ( a2 : int, i:int )
-	{
-	    a[i] = a2;
-		return = true;
-	}
-}
-y1 = { 1, 2 };
-y2 = { 3, 4 };
-x = { A.A (y1), A.A(y2) };
-t1 = x[0].a[0];
-t2 = x[1].a[1];
-dummy = 0;
-[Imperative]
-{ 
-	count = 0;
-	for ( i in y1)
-	{
-	    y1[count] = y1[count] + 1;	      
-		count = count + 1;		
-	}
-}
-dummy=1;
-[Imperative]
-{ 
-	count = 0;
-	for ( i in y2)
-	{
-	    y2[count] = y2[count] + 1;	      
-		count = count + 1;		
-	}
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-
-            thisTest.Verify("t1", 2);
-            thisTest.Verify("t2", 5);
-        }
 
         [Test]
         [Category("DSDefinedClass_Ported")]
@@ -1477,7 +1204,6 @@ c = [Imperative]
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("Update")]
         public void T31_Defect_1459777_4()
         {
@@ -1506,71 +1232,6 @@ z2 = z;
             thisTest.VerifyRunScriptSource(code, err);
             thisTest.Verify("z2", 1);
 
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_UpdateWithinDSClass")]
-        [Category("Failure")]
-        [Category("Update")]
-        public void T31_Defect_1459777_5()
-        {
-            string code = @"
-class A
-{
-    a : int;	
-}
-class B 
-{
-    b : var;
-    constructor B ( a : A )
-    { 
-	    a.a = 2;
-		b = a.a + 2;
-    }	
-	
-}
-y = A.A();
-z = y.a;
-x = B.B(y);
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //Assert.Fail("1466076 - Sprint 22 : rev 2396 : Update issue : when an instance property is updated inside function/method scope, it does not update the outer associative scope variable ");
-            thisTest.Verify("z", 2);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_UpdateWithinDSClass")]
-        [Category("Failure")]
-        [Category("Update")]
-        public void T31_Defect_1459777_6()
-        {
-            string code = @"
-	
-class A
-{
-    a : int;	
-}
-class B 
-{
-    b : var;
-    constructor B ( a : A )
-    { 
-	    a.a = 3;
-    }	
-	def foo ( a : A )
-	{
-	    a.a = 3;
-		return = true;
-	}
-	
-}
-y = A.A();
-z = y.a;
-x1 = B.B( y );
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //Assert.Fail("1466076 - Sprint 22 : rev 2396 : Update issue : when an instance property is updated inside function/method scope, it does not update the outer associative scope variable ");
-            thisTest.Verify("z", 3);
         }
 
         [Test]
@@ -1662,7 +1323,6 @@ z1 = y1;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void T33_Defect_1466107()
         {
@@ -1695,48 +1355,6 @@ a1.a = 2;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("Update")]
-        public void T33_Defect_1466107_2()
-        {
-            string code = @"
-class B
-{
-    b : int;	
-}
-class A extends B
-{
-    a : int;	
-}
-def foo ( x ) 
-{
-    return  = x + 1;
-}
-x1 =  { A.A(), A.A() };
-a1 = A.A();
-x2 =  { a1.a, a1.a };
-y2 = foo ( x2[0] );
-y1 = foo ( x1[1].b );
-def foo1 ( t1 : A )
-{
-    t1.b = 2;
-	return = null;
-}
-def foo2 ( t1 : A )
-{
-    t1.a = 2;
-	return = null;
-}
-dummy1 = foo1 ( x1[1] );
-dummy2 = foo2 ( a1 );
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            //Assert.Fail("1459478 - Sprint 17 : Rev 1459 : Issue with Update mechanism when updating a collection inside a function using pass-by-reference");
-            thisTest.Verify("y1", 3);
-            thisTest.Verify("y2", 3);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T34_Defect_DNL_1463327()
@@ -1756,7 +1374,6 @@ x = [Imperative]
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored")]
         [Category("SmokeTest")]
         public void T34_Defect_DNL_1463327_2()
         {
@@ -1849,45 +1466,6 @@ a = foo();
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        public void T35_Defect_DNL_1463700_2()
-        {
-            //Assert.Fail("1467194 - Sprint 25 - rev 3207[Regression] Regressions created by array copy constructions ");
-
-            Object[] v1 = new Object[] { 2, 4, 6 };
-            string errmsg = "DNL-1467318 Variable declared without type or rank cannot be assigned a collection any more";
-            string code = @"class A
-{        
-    x = {1,2,3};        
-    count = 3;
-    def foo()        
-    {                
-       count = 0;
-       [Imperative]
-       {
-           for ( i in x )
-	   {
-	       x[count] = i*2;
-	       count = count + 1;
-	   }
-        } 
-        return = null;        
-    }
-}
-a = A.A();
-t1 = a.x;
-t2 = a.count;
-dummy = a.foo();
-t3 = t1;";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-
-            //Assert.Fail("1467187 - Sprint24: REGRESSION : rev 3177: When a class collection property is updated, the value if not reflected");
-
-            thisTest.Verify("t1", v1);
-            thisTest.Verify("t2", 3);
-        }
-
-        [Test]
         [Category("Update")]
         public void T37_Modify_Collections_Referencing_Each_Other()
         {
@@ -1907,7 +1485,6 @@ testArrayMember2 = c2;";
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
         [Category("Update")]
         public void T41_Defect_1467072_Class_Update()
         {
@@ -1938,34 +1515,6 @@ gf = 2;
             thisTest.SetErrorMessage("1467259 - Sprint25:rev 3541 : Issue with class property update inside constructor for undefined variables");
             thisTest.Verify("e1", 5);
 
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_UpdateWithinDSClass")]
-        [Category("Update")]
-        public void T41_Defect_1467072_Class_Update_2()
-        {
-            string code = @"
-class A 
-{
-    a : int;
-    constructor A ( a1:int)
-    {
-        b1 = foo(a1) + 1;
-        a = b1+1;
-	b1 = foo(a1);
-    }
-}
-def foo ( a1 : int)
-{
-    a = b + 1;
-    b = a1;
-    return  = a ;
-}
-x = A.A(2);
-y = x.a;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("y", 4);
         }
 
         [Test]
@@ -2172,38 +1721,6 @@ t[1] = a[1];
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("Update")]
-        public void T46_Defect_1467275_3()
-        {
-            String code =
- @"
-class A
-{
-    a : int[];
-    t : int[];
-    constructor A()
-    {
-        a = {0,1,2};
-        t = {10,11,12};        
-    }
-    def foo ()
-    {
-        a[0] = t[0];
-        t[1] = a[1]; 
-        return = null;
-    }
-}
-a1 = A.A();
-dummy = a1.foo();
-a = a1.a;
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("a", new Object[] { 10, 1, 2 });
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T47_Defect_1467092()
         {
@@ -2362,7 +1879,6 @@ b = 0;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
         [Category("SmokeTest")]
         public void T50_Defect_1466076()
         {
@@ -2391,9 +1907,9 @@ z2 = z;
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("z2", 1);
         }
-        [Test, Ignore]
+
+        [Test]
         [Category("SmokeTest")]
-        [Category("Failure")]
         public void T51_Defect_1461388()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4094
@@ -2544,7 +2060,6 @@ x = a > 1 ? a : null; ";
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_InvalidTest_NoInline")]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void T57_Defect_1467399()
@@ -2573,7 +2088,6 @@ a1 = foo ( a1);
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_InvalidTest_NoInline")]
         [Category("SmokeTest")]
         public void T57_Defect_1467399_2()
         {
@@ -2600,7 +2114,6 @@ a1.a = -1;
         }
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_InvalidTest_NoInline")]
         [Category("SmokeTest")]
         public void T57_Defect_1467399_4()
         {
@@ -2776,91 +2289,6 @@ y2 = { y1[0].IntVal, y1[1].IntVal };
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("y2", new Object[] { 1, 2 });
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_UpdateWithinDSClass")]
-        [Category("SmokeTest")]
-        public void T61_Defect_1467410_Update_In_Class_Properties()
-        {
-            String code = @"
-class Point
-{
-    X : double;
-    Y : double;
-    Z : double;    
-    constructor ByCartesianCoordinates( x : double, y : double, z : double )
-    {
-        X = x;
-		Y = y;
-		Z = z;
-    }     
-    def Translate( x1 : double, y1 : double, z1 : double )
-    {
-    	return = Point.ByCartesianCoordinates( X + x1, Y + y1, Z + z1 );
-    }
-}
-a = Point.ByCartesianCoordinates(3, 4, 0);
-x1 = a.X;
-y1 = a.Y;
-z1 = a.Z;
-a = a.Translate(0, 0, 5);
-x2 = a.X;
-y2 = a.Y;
-z2 = a.Z;
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("x1", 3.0);
-            thisTest.Verify("y1", 4.0);
-            thisTest.Verify("z1", 5.0);
-            thisTest.Verify("x2", 3.0);
-            thisTest.Verify("y2", 4.0);
-            thisTest.Verify("z2", 5.0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_UpdateWithinDSClass")]
-        [Category("SmokeTest")]
-        public void T61_Defect_1467410_Update_In_Class_Properties_2()
-        {
-            String code = @"
-class Point
-{
-    X : double;
-    Y : double;
-    Z : double;    
-    constructor ByCartesianCoordinates( x : double, y : double, z : double )
-    {
-        X = x;
-		Y = y;
-		Z = z;
-    }     
-    def Translate( x1 : double, y1 : double, z1 : double )
-    {
-    	X = X + x1;
-        Y = Y + y1;
-        Z = Z + z1;
-        return = null;
-    }
-}
-a = Point.ByCartesianCoordinates(3, 4, 0);
-x1 = a.X;
-y1 = a.Y;
-z1 = a.Z;
-dummy = a.Translate(0, 0, 5);
-x2 = a.X;
-y2 = a.Y;
-z2 = a.Z;
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("x1", 3.0);
-            thisTest.Verify("y1", 4.0);
-            thisTest.Verify("z1", 5.0);
-            thisTest.Verify("x2", 3.0);
-            thisTest.Verify("y2", 4.0);
-            thisTest.Verify("z2", 5.0);
         }
 
         [Test]
@@ -3234,76 +2662,6 @@ b;
 
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("SmokeTest")]
-        public void T64_1467161_Update_ssie_with_class_member_call_1()
-        {
-            String code = @"
-class A
-{
-        fx:int;
-        def foo(x:var)
-        {
-                fx = x +10;
-                return = fx;
-        }
-}
-class B extends A
-{
-        fy:var;
-        constructor B(): base.A()
-        {
-                fx = 10;
-                fy = 20;
-        }
-}
-b = B.B();
-r1 = b.fx;
-r2 = b.fy; 
-r3 = b.foo(1);//after boo is called, r2 is updated, which is not expected
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("r1", 11);
-            thisTest.Verify("r3", 11);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassInheritance")]
-        [Category("SmokeTest")]
-        public void T64_1467161_Update_issue_with_class_member_call_2()
-        {
-            String code = @"
-class A
-{
-        fx:int;
-        def foo(x:var)
-        {
-                fx = x + 10;
-                return = fx;
-        }
-}
-class B extends A
-{
-        fy:var;
-        constructor B(): base.A()
-        {
-                fx = 10;
-                fy = 20;
-        }
-}
-b = B.B();
-r1 = b.fx;
-r2 = b.fy; 
-r3 = b.foo(1);//after boo is called, r2 is updated, which is not expected
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("r1", 11);
-            thisTest.Verify("r3", 11);
-        }
-
-        [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("SmokeTest")]
         public void T65_1467495_FalseCyclicDependancy()
@@ -3350,75 +2708,6 @@ pt2;
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("pt2", 0.0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("SmokeTest")]
-        public void T65_1467495_FalseCyclicDependancy_3()
-        {
-            String code = @"
-class Point
-{
-    X : double;
-    Y : double;
-    NextPoint: Point;
-        
-  
-    
-    def XPlusY(p:Point)
-    {
-        NextPoint = p;
-        x = NextPoint.X;
-        y = NextPoint.Y;
-        temp = x + y;
-        return = temp;
-    }
-}
-pt1;
-pt3;
-[Imperative]
-{
-pt1 = Point.Point();
-pt3 = pt1.XPlusY(pt1);
-}
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("pt3", 0.0);
-        }
-
-        [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_Redundant")]
-        [Category("SmokeTest")]
-        public void T65_1467495_FalseCyclicDependancy_4()
-        {
-            String code = @"
-class Point
-{
-    X : double;
-    Y : double;
-    NextPoint: Point;
-        
-   
-    
-    def XPlusY(p:Point)
-    {
-        NextPoint = p;
-        x = NextPoint.X;
-        y = NextPoint.Y;
-        temp = x + y;
-        return = temp;
-    }
-}
-pt1;
-pt3;
-pt1 = Point.Point();
-pt3 = pt1.XPlusY(pt1);
-";
-            string errmsg = "";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("pt3", 0.0);
         }
 
         [Test]
@@ -4074,27 +3363,6 @@ a = 2;
             string errmsg = "1467532 - a variable used inside an inner associative within an imperative does not trigger update";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", 2);
-        }
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        [Category("SmokeTest")]
-        [Category("Failure")]
-        public void T74_TestUpdate_1467533()
-        {
-            String code = @"
-import(""FFITarget.dll"");
-a = ClassFunctionality.ClassFunctionality(17);
-t = a.IntVal;
-[Imperative]
-{
-    r = a.Set(41);
-}
-";
-            //Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4085
-            string errmsg = "MAGN-4085: when Property of class is modified using a method in Imperative, does not trigger update of the variable where it is used";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t", 41);
         }
 
         [Test]
@@ -4756,50 +4024,6 @@ x1 = 4;
 
 
         [Test]
-        [Ignore][Category("DSDefinedClass_Ignored_DSDefinedClassSemantics")]
-        [Category("SmokeTest")]
-        public void T88_1461985_Update_In_Nested_Blocks_2()
-        {
-            string code = @"
-class B
-{
-    y;
-    constructor B ( y1)
-    {
-        y = y1;
-    }
-}
-class A
-{
-    x;
-    def foo ( y:double )
-    {
-        return = B.B(y);
-    }
-}
-a1  = null; // this kind of declaration is causing b1 = null. However, if I keep it as 'a1;', and 'b1;', I am getting expected output for 'b1'
-b1 : B[] = null; // 
-i = 0;
-[Imperative]
-{
-    while ( i <= 2 )
-    {
-        [Associative] // within that loop build an associative model
-        {
-            a1 = A.A();
-            b1 = a1.foo(0..i); // received : null
-        }
-        i = i + 1;
-    }
-}
-test = b1.y;
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            object[] b = new Object[] { 0.0, 1.0, 2.0 };
-            thisTest.Verify("test", b);
-        }
-
-        [Test]
         [Category("SmokeTest")]
         public void T89_1467414_cyclic()
         {
@@ -4832,7 +4056,6 @@ test = b1.y;
         }
 
         [Test]
-        [Category("DSDefinedClass_InvalidTest")]
         [Category("SmokeTest")]
         public void T90_1467510_cyclic()
         {
@@ -4885,65 +4108,6 @@ x = n.X;
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.VerifyRuntimeWarningCount(0);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        [Category("Failure")]
-        public void T91_1467547()
-        {
-            String code = @"
- 
-        def foo()
-        {
-            return = a + 7;
-        }
-        def bar()
-        {
-            return = 3;
-        }
-        def ding()
-        {
-            return = a < 100? foo(): bar();
-        }
-        a = 10;
-        t = ding();
-        a = 50;
-";
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1502
-            string errmsg = "MAGN-1502: Function pointer doesn't get update";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t", 57);
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        [Category("Failure")]
-        public void T91_1467547_2()
-        {
-            String code = @"
- 
-        def foo()
-        {
-            return = a + 7;
-        }
-        def bar()
-        {
-            return = 3;
-        }
-        def ding()
-        {
-            return = a < 100? foo: bar;
-        }
-        a = 10;
-        t = ding();
-        z=t()
-        a = 50;
-";
-            // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1502
-            string errmsg = "MAGN-1502: Function pointer doesn't get update";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t", 57);
         }
 
         [Test]

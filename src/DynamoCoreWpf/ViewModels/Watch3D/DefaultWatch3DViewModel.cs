@@ -482,6 +482,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in inherited classes.
         }
 
+        /// <summary>
+        /// Remove the labels (in Watch3D View) for geometry once the Watch node is disconnected
+        /// </summary>
+        /// <param name="path"></param>
+        public virtual void ClearPathLabel(string path)
+        {
+            // Override in inherited classes.
+        }
+
         public void Invoke(Action action)
         {
             var dynamoViewModel = viewModel as DynamoViewModel;
@@ -559,7 +568,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void OnRenderPackagesUpdated(NodeModel node, IEnumerable<IRenderPackage> packages)
         {
-            AddGeometryForRenderPackages(packages);
+            RemoveGeometryForNode(node);
+            if(packages.Any())
+            {
+                AddGeometryForRenderPackages(packages);
+            }
         }
 
         /// <summary>

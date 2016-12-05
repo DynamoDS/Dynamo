@@ -4,6 +4,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
 {
@@ -14,6 +15,8 @@ namespace Dynamo.ViewModels
 
         private readonly PortModel _port;
         private readonly NodeViewModel _node;
+        private DelegateCommand _useLevelsCommand;
+        private DelegateCommand _keepListStructureCommand;
 
         /// <summary>
         /// Port model.
@@ -28,7 +31,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string ToolTipContent
         {
-            get { return _port.ToolTipContent; }
+            get { return _port.ToolTip; }
         }
 
         /// <summary>
@@ -60,7 +63,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsConnected
         {
-            get { return _port.IsConnected; }
+            get { return _port.Owner.InPorts[_port.Index].IsConnected; }
         }
 
         /// <summary>
@@ -100,7 +103,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool DefaultValueEnabled
         {
-            get { return _port.DefaultValueEnabled; }
+            get { return _port.DefaultValue != null; }
         }
 
         /// <summary>
@@ -158,14 +161,6 @@ namespace Dynamo.ViewModels
         public bool UseLevels
         {
             get { return _port.UseLevels; }
-            set
-            {
-               _port.UseLevels = value;
-               if (!_port.UseLevels)
-               {
-                   ShouldKeepListStructure = false;
-               }
-            }
         }
 
         /// <summary>
@@ -174,7 +169,6 @@ namespace Dynamo.ViewModels
         public bool ShouldKeepListStructure
         {
             get { return _port.ShouldKeepListStructure; }
-            set { _port.ShouldKeepListStructure = value; }
         }
 
         /// <summary>
@@ -183,7 +177,10 @@ namespace Dynamo.ViewModels
         public int Level
         {
             get { return _port.Level; }
-            set { _port.Level = value; } 
+            set
+            {
+                ChangeLevel(value);
+            }
         }
 
         /// <summary>
@@ -253,7 +250,7 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case "ToolTipContent":
+                case "ToolTip":
                     RaisePropertyChanged("ToolTipContent");
                     break;
                 case "PortType":
@@ -271,8 +268,8 @@ namespace Dynamo.ViewModels
                 case "Center":
                     RaisePropertyChanged("Center");
                     break;
-                case "DefaultValueEnabled":
-                    RaisePropertyChanged("DefaultValueEnabled");
+                case "DefaultValue":
+                    RaisePropertyChanged("DefaultValue");
                     break;
                 case "UsingDefaultValue":
                     RaisePropertyChanged("UsingDefaultValue");
@@ -291,6 +288,62 @@ namespace Dynamo.ViewModels
                     break;
             }
             
+        }
+
+        /// <summary>
+        /// UseLevels command
+        /// </summary>
+        public DelegateCommand UseLevelsCommand 
+        {
+            get
+            {
+                if (_useLevelsCommand == null)
+                {
+                    _useLevelsCommand = new DelegateCommand(UseLevel, p => true);
+                }
+                return _useLevelsCommand;
+            }
+        }
+
+        private void UseLevel(object parameter)
+        {
+            var useLevel = (bool)parameter;
+            var command = new DynamoModel.UpdateModelValueCommand(
+                Guid.Empty, _node.NodeLogic.GUID, "UseLevels", string.Format("{0}:{1}", _port.Index, useLevel));
+
+            _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
+        }
+
+        /// <summary>
+        /// ShouldKeepListStructure command
+        /// </summary>
+        public DelegateCommand KeepListStructureCommand
+        {
+            get
+            {
+                if (_keepListStructureCommand == null)
+                {
+                    _keepListStructureCommand = new DelegateCommand(KeepListStructure, p => true);
+                }
+                return _keepListStructureCommand;
+            }
+        }
+
+        private void KeepListStructure(object parameter)
+        {
+            bool keepListStructure = (bool)parameter;
+            var command = new DynamoModel.UpdateModelValueCommand(
+                Guid.Empty, _node.NodeLogic.GUID, "KeepListStructure", string.Format("{0}:{1}", _port.Index, keepListStructure));
+
+            _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
+        }
+
+        private void ChangeLevel(int level)
+        {
+            var command = new DynamoModel.UpdateModelValueCommand(
+                            Guid.Empty, _node.NodeLogic.GUID, "ChangeLevel", string.Format("{0}:{1}", _port.Index, level));
+
+            _node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
         }
 
         private void Connect(object parameter)

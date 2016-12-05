@@ -765,25 +765,6 @@ namespace Dynamo.ViewModels
             return nodeLogic.IsCustomFunction;
         }
 
-        //private void SetLayout(object parameters)
-        //{
-        //    var dict = parameters as Dictionary<string,
-        //    double>;
-        //    nodeLogic.X = dict["X"];
-        //    nodeLogic.Y = dict["Y"];
-        //    nodeLogic.Height = dict["Height"];
-        //    nodeLogic.Width = dict["Width"];
-        //}
-
-        //private bool CanSetLayout(object parameters)
-        //{
-        //    var dict = parameters as Dictionary<string,
-        //    double>;
-        //    if (dict == null)
-        //        return false;
-        //    return true;
-        //}
-
         private void inports_collectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             //The visual height of the node is bound to preferred height.
@@ -807,6 +788,14 @@ namespace Dynamo.ViewModels
                     PortViewModel portToRemove = UnSubscribePortEvents(InPorts.ToList().First(x => x.PortModel == item)); ;                   
                     InPorts.Remove(portToRemove);
                 }
+            }
+            else if(e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                foreach(var p in InPorts)
+                {
+                    UnSubscribePortEvents(p);
+                }
+                InPorts.Clear();
             }
         }
 
@@ -833,6 +822,14 @@ namespace Dynamo.ViewModels
                     PortViewModel portToRemove = UnSubscribePortEvents(OutPorts.ToList().First(x => x.PortModel == item));
                     OutPorts.Remove(portToRemove);
                 }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                foreach (var p in OutPorts)
+                {
+                    UnSubscribePortEvents(p);
+                }
+                OutPorts.Clear();
             }
         }
 
@@ -934,16 +931,6 @@ namespace Dynamo.ViewModels
         }
 
         private bool CanUpstreamVisibilityBeToggled(object parameter)
-        {
-            return true;
-        }
-
-        private void ValidateConnections(object parameter)
-        {
-            DynamoModel.OnRequestDispatcherBeginInvoke(nodeLogic.ValidateConnections);
-        }
-
-        private bool CanValidateConnections(object parameter)
         {
             return true;
         }

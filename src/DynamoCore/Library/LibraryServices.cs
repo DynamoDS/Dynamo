@@ -377,7 +377,7 @@ namespace Dynamo.Engine
         /// <param name="library">Library path</param>
         /// <param name="mangledName">Mangled function name</param>
         /// <returns></returns>
-        internal FunctionDescriptor GetFunctionDescriptor(string library, string mangledName)
+        public FunctionDescriptor GetFunctionDescriptor(string library, string mangledName)
         {
             if (null == library || null == mangledName)
                 throw new ArgumentNullException();
@@ -399,7 +399,7 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="managledName"></param>
         /// <returns></returns>
-        internal FunctionDescriptor GetFunctionDescriptor(string managledName)
+        public FunctionDescriptor GetFunctionDescriptor(string managledName)
         {
             if (string.IsNullOrEmpty(managledName))
                 throw new ArgumentException("Invalid arguments");
@@ -960,6 +960,7 @@ namespace Dynamo.Engine
                     return new TypedParameter(arg.Name, argType, defaultArgumentNode, shortName);
                 }).ToList();
 
+            bool isLacingDisabled = false;
             IEnumerable<string> returnKeys = null;
             if (proc.MethodAttribute != null)
             {
@@ -967,6 +968,7 @@ namespace Dynamo.Engine
                     returnKeys = proc.MethodAttribute.ReturnKeys;
                 if (proc.MethodAttribute.IsObsolete)
                     obsoleteMessage = proc.MethodAttribute.ObsoleteMessage;
+                isLacingDisabled = proc.MethodAttribute.IsLacingDisabled;
             }
 
             var function = new FunctionDescriptor(new FunctionDescriptorParams
@@ -984,7 +986,8 @@ namespace Dynamo.Engine
                 ObsoleteMsg = obsoleteMessage,
                 CanUpdatePeriodically = canUpdatePeriodically,
                 IsBuiltIn = pathManager.PreloadedLibraries.Contains(library),
-                IsPackageMember = packagedLibraries.Contains(library)
+                IsPackageMember = packagedLibraries.Contains(library),
+                IsLacingDisabled = isLacingDisabled
             });
 
             AddImportedFunctions(library, new[] { function });

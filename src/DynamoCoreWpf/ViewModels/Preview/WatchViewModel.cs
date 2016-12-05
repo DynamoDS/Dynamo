@@ -4,6 +4,7 @@ using System.Linq;
 using Dynamo.UI.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 using System.Collections.Generic;
+using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
 {
@@ -96,7 +97,7 @@ namespace Dynamo.ViewModels
                 var splits = _path.Split(':');
                 if (splits.Count() == 1)
                     return string.Empty;
-                return splits.Any() ? string.Format("[{0}]", splits.Last()) : string.Empty;
+                return splits.Any() ? string.Format(NodeLabel == LIST ? "{0}" : " {0} ", splits.Last()) : string.Empty;
                 //return _path;
             }
         }
@@ -105,7 +106,7 @@ namespace Dynamo.ViewModels
         /// A path describing the location of the data.
         /// Path takes the form var_xxxx...:0:1:2, where
         /// var_xxx is the AST identifier for the node, followed
-        /// by : delimited indices represnting the array index
+        /// by : delimited indices representing the array index
         /// of the data.
         /// </summary>
         public string Path
@@ -156,7 +157,7 @@ namespace Dynamo.ViewModels
         /// Number of items in the overall list if node output is a list
         /// </summary>
         public int NumberOfItems
-        { 
+        {
             get { return numberOfItems; }
             set
             {
@@ -172,7 +173,8 @@ namespace Dynamo.ViewModels
         public bool IsCollection
         {
             get { return isCollection; }
-            set {
+            set
+            {
                 isCollection = value;
                 RaisePropertyChanged("IsCollection");
             }
@@ -183,13 +185,18 @@ namespace Dynamo.ViewModels
         /// </summary>
         public IEnumerable<int> Levels
         {
-            get { return levels;  }
+            get { return levels; }
             set
             {
                 levels = value;
                 RaisePropertyChanged("Levels");
             }
         }
+
+        /// <summary>
+        /// Indicates if the item is the top level item
+        /// </summary>
+        public bool IsTopLevel { get; set; }
 
         #endregion
 
@@ -204,6 +211,7 @@ namespace Dynamo.ViewModels
             this.tagGeometry = tagGeometry;
             numberOfItems = 0;
             maxListLevel = 0;
+            isCollection = label == WatchViewModel.LIST;
         }
 
         private bool CanFindNodeForPath(object obj)
@@ -229,7 +237,7 @@ namespace Dynamo.ViewModels
             var listLevelAndItemCount = GetMaximumDepthAndItemNumber(this);
             maxListLevel = listLevelAndItemCount.Item1;
             NumberOfItems = listLevelAndItemCount.Item2;
-            IsCollection = maxListLevel > 0; 
+            IsCollection = maxListLevel > 1;
         }
 
         private Tuple<int, int> GetMaximumDepthAndItemNumber(WatchViewModel wvm)
@@ -242,7 +250,8 @@ namespace Dynamo.ViewModels
                     return new Tuple<int, int>(1, 1);
             }
 
-            if (wvm.Path == null)
+            // If its a top level WatchViewModel, call function on child
+            if (wvm.Path == null) 
             {
                 return GetMaximumDepthAndItemNumber(wvm.Children[0]);
             }
@@ -256,7 +265,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Count the list levels of each list 
+        /// Set the list levels of each list 
         /// </summary>
         public void CountLevels()
         {

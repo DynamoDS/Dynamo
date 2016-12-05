@@ -97,7 +97,7 @@ namespace ProtoFFI
                 return null;
             try
             {
-                //First check if it's one of the alreadt loaded assemblies.
+                //First check if it's one of the already loaded assemblies.
                 string shortname = (args.Name.Split(','))[0];
                 if (mAssemblies.Contains(shortname))
                     return mAssemblies[shortname] as Assembly;

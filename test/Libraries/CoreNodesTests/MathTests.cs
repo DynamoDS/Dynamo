@@ -75,6 +75,15 @@ namespace DSCoreNodesTests
             Assert.IsTrue(System.Double.IsNaN(DSCore.Math.Tan(90)));
         }
 
+        [Test]
+        [Category ("UnitTests")]
+        public static void Factorial()
+        {
+            Assert.AreEqual(2432902008176640000, DSCore.Math.Factorial(20));
+            Assert.Throws<ArgumentException>(() => DSCore.Math.Factorial(-1));
+            Assert.Throws<System.OverflowException>(() => DSCore.Math.Factorial(25));
+            Assert.Throws<System.OverflowException>(() => DSCore.Math.Factorial(100));
 
+        }
     }
 }

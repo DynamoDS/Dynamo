@@ -45,8 +45,8 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Greg, Version=1.0.5959.26179, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Greg.1.0.5959.26179\lib\net45\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=1.0.6176.18754, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\src\packages\Greg.1.0.6176.18754\lib\net45\Greg.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="HelixToolkit, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
@@ -137,6 +137,7 @@
     <Compile Include="..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="ListAtLevelTest.cs" />
     <Compile Include="NoteViewTests.cs" />
     <Compile Include="NodeViewTests.cs" />
     <Compile Include="NodeExecutionUITest.cs" />

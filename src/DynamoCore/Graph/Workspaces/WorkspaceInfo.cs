@@ -13,6 +13,19 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public class WorkspaceInfo
     {
+        public WorkspaceInfo(string id, string name, string description, RunType runType)
+        {
+            ID = id;
+            Name = name;
+            Description = description;
+            Zoom = 1.0;
+            X = 0;
+            Y = 0;
+            RunType = runType;
+            RunPeriod = RunSettings.DefaultRunPeriod;
+            HasRunWithoutCrash = true;
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkspaceInfo"/> class
         /// with default workspace data.

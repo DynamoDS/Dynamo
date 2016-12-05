@@ -167,6 +167,14 @@ namespace CoreNodeModelsWpf.Nodes
             // Without doing this, the preview would say "null"
             if (watch.IsPartiallyApplied)
             {
+                // There should be only one node in rootWatchViewModel.Children
+                // as it is the parent node. Therefore, the iteration should only occur once.
+                foreach (var node in rootWatchViewModel.Children)
+                {
+                    // remove all labels (in Watch 3D View) upon disconnect of Watch Node
+                    dynamoViewModel.BackgroundPreviewViewModel.ClearPathLabel(node.Path);
+                }
+
                 rootWatchViewModel.Children.Clear();
                 rootWatchViewModel.IsCollection = false;
                 return;
@@ -191,6 +199,9 @@ namespace CoreNodeModelsWpf.Nodes
             // then update on the ui thread
             t.ThenPost((_) =>
             {
+                //If wvm is not computed successfully then don't post.
+                if (wvm == null) return;
+
                 // store in temp variable to silence binding
                 var temp = rootWatchViewModel.Children;
 
@@ -203,6 +214,7 @@ namespace CoreNodeModelsWpf.Nodes
                 rootWatchViewModel.Children = temp;
                 rootWatchViewModel.CountNumberOfItems();
                 rootWatchViewModel.CountLevels();
+                rootWatchViewModel.Children[0].IsTopLevel = true;
                 
             }, syncContext);
 

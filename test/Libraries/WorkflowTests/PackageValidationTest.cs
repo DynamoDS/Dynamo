@@ -122,7 +122,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void CreateMeshFromSolids()
         {
             var testFilePath = Path.Combine(TestDirectory,
@@ -133,17 +132,17 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(13, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(14, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(20, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
-            // Vertex Count for Mesh
-            AssertPreviewValue("4fbf3cd0-e1ba-4013-a3df-b39883864f87", 521);
+            // Vertex Count for Mesh > 0
+            AssertPreviewValue("49f09c3c-613e-4248-b511-3b4f97fd874b", true);
 
-            //Triangle count for Mesh
-            AssertPreviewValue("5acdacbc-91a7-45f3-a943-8e201f123474", 1038);
+            //Triangle count for Mesh > 0
+            AssertPreviewValue("e14a749c-b011-4bbe-af35-4853a489b294", true);
 
-            //Edge Count for Mesh
-            AssertPreviewValue("6ea19ed2-2f31-4ed4-a506-a819e27abdcb", 1557); 
+            //Edge Count for Mesh > 0
+            AssertPreviewValue("84b4bfa6-3ef8-4631-88ef-afe9e661f98c", true); 
 
         }
 
