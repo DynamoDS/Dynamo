@@ -16,3 +16,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("LibG.ProtoInterface")]
 [assembly: InternalsVisibleTo("TestServices")]
 [assembly: InternalsVisibleTo("ProtoTestFx")]
+[assembly: InternalsVisibleTo("DynamoCoreTests")]

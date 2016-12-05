@@ -13,22 +13,21 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    class TestAnalytics : Analytics
+    class TestAnalytics
     {
         public static void Init(IAnalyticsClient client, DynamoModel model)
         {
-            Analytics.client = client;
-            client.Start(model);
+            Analytics.Start(client);
         }
 
         public static bool IsEnabled 
         { 
-            get { return client != null; }
+            get { return Analytics.IsEnabled; }
         }
 
         public static void Disable()
         {
-            client = null;
+            Analytics.ShutDown();
         }
 
         public static void Throw<T>() where T : Exception, new()
@@ -55,9 +54,9 @@ namespace Dynamo.Tests
 
         public override void Setup()
         {
-            clientMoq = MockClient();
             base.Setup();
 
+            clientMoq = MockClient();
             //Setup mock client and start analytics tracking.
             TestAnalytics.Init(clientMoq.Object, CurrentDynamoModel);
         }
@@ -69,7 +68,7 @@ namespace Dynamo.Tests
 
         public override void Cleanup()
         {
-            clientMoq.Verify(c => c.Start(CurrentDynamoModel), Times.Exactly(1));
+            clientMoq.Verify(c => c.Start(), Times.Exactly(1));
             base.Cleanup();
 
             if (TestAnalytics.IsEnabled)
@@ -139,7 +138,7 @@ namespace Dynamo.Tests
 
         protected override Mock<IAnalyticsClient> MockClient()
         {
-            var client = new Mock<DynamoAnalyticsClient>() { CallBase = true };
+            var client = new Mock<DynamoAnalyticsClient>(CurrentDynamoModel) { CallBase = true };
             var session = MockAnalyticsSession();
             client.Setup(c => c.Session).Returns(session);
             return Mock.Get<IAnalyticsClient>(client.Object);
@@ -197,7 +196,7 @@ namespace Dynamo.Tests
             dynamoSettings.IsUsageReportingApproved = true;
 
             //1 startup + 3 exception related events are tracked
-            trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.Exactly(4));
+            trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.Exactly(6));
             loggerMoq.Verify(l=>l.Log(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
         }
 
