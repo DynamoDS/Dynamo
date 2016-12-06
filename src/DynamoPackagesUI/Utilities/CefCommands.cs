@@ -1,7 +1,9 @@
 ﻿using CefSharp.Wpf;
 using Dynamo.DynamoPackagesUI.ViewModels;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Interfaces;
 using DynamoPackagesUI.Utilities;
 using Newtonsoft.Json;
 using System;
@@ -20,8 +22,12 @@ namespace Dynamo.DynamoPackagesUI.Utilities
     {
         internal DynamoPackagesUIClient Client { get; set; }
 
-        internal readonly DynamoViewModel dynamoViewModel;
-        internal PackageLoader Model { get; private set; }
+        //internal readonly DynamoViewModel dynamoViewModel;
+        internal IBrandingResourceProvider ResourceProvider { get; set; }
+
+        internal DynamoModel Model { get; set; }
+
+        internal PackageLoader Loader { get; private set; }
 
         //CEF Browser instance for rendering PM web UI
         public ChromiumWebBrowser Browser { get; set; }
@@ -30,32 +36,32 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         {
             get
             {
-                //return JsonConvert.SerializeObject(dynamoViewModel.Model.GetPackageManagerExtension().PackageManagerClient.GetSession());
+                //return JsonConvert.SerializeObject(dynamoViewModel.PackageLoader.GetPackageManagerExtension().PackageManagerClient.GetSession());
                 return JsonConvert.SerializeObject(new Dictionary<string, string>());
             }
         }
 
         public Window ParentWindow { get; set; }
 
-        public PackageManagerViewModel ViewMdodel { get; set; }
 
-        public CefCommands(DynamoViewModel dynamoViewModel, PackageLoader model, PackageManagerViewModel viewModel)
+        public CefCommands(IBrandingResourceProvider resourceProvider, PackageLoader loader, DynamoModel model)
         {
-            this.dynamoViewModel = dynamoViewModel;
+            this.ResourceProvider = resourceProvider;
+            this.Loader = loader;
             this.Model = model;
-            this.ViewMdodel = viewModel;
+
             this.Client = new DynamoPackagesUIClient();
         }
 
         public string InstalledPackages
         {
-            get { return JsonConvert.SerializeObject(Model.LocalPackages.ToList()); }
+            get { return JsonConvert.SerializeObject(Loader.LocalPackages.ToList()); }
         }
 
         public bool Login()
         {
             return false;
-            //return dynamoViewModel.Model.AuthenticationManager.AuthProvider.Login();
+            //return dynamoViewModel.Loader.AuthenticationManager.AuthProvider.Login();
         }
     }
     

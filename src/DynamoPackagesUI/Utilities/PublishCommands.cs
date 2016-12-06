@@ -1,7 +1,9 @@
 ﻿using Dynamo.DynamoPackagesUI.ViewModels;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.Interfaces;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +25,8 @@ namespace Dynamo.DynamoPackagesUI.Utilities
 
         private PackageManagerViewModel packageMgrViewModel { get; set; }
 
-        public PublishCommands(DynamoViewModel dynamoViewModel, PackageLoader model, PackageManagerViewModel pkgManagerViewModel) : base(dynamoViewModel, model, pkgManagerViewModel)
+        public PublishCommands(IBrandingResourceProvider resourceProvider, PackageLoader loader, DynamoModel model) :
+            base(resourceProvider, loader, model)
         {
             fileCompressor = new MutatingFileCompressor();
             //customNodeDefinitions = new List<CustomNodeDefinition>();

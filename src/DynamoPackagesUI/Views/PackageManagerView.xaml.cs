@@ -44,10 +44,10 @@ namespace DynamoPackagesUI.Views
             this.cefBrowser.RegisterJsObject("cefHelper", viewModel.PkgMgrCommands);
             
             //publishCefHelper for Publish Package Tab 
-            this.cefBrowser.RegisterJsObject("publishCefHelper", viewModel.PublishPkgCommands);
+            //this.cefBrowser.RegisterJsObject("publishCefHelper", viewModel.PublishPkgCommands);
 
             viewModel.PkgMgrCommands.Browser = this.cefBrowser;
-            viewModel.PublishPkgCommands.Browser = this.cefBrowser;
+            //viewModel.PublishPkgCommands.Browser = this.cefBrowser;
 
             this.Height = (System.Windows.SystemParameters.PrimaryScreenHeight * 0.95);
             this.Width = (System.Windows.SystemParameters.PrimaryScreenWidth * 0.75);

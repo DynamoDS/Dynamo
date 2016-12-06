@@ -1,4 +1,5 @@
 ﻿using Dynamo.DynamoPackagesUI.ViewModels;
+using Dynamo.PackageManager;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using DynamoPackagesUI.Views;
@@ -14,8 +15,8 @@ namespace Dynamo.DynamoPackagesUI
 {
     public class PackageManagerExtension : IViewExtension
     {
-        private PackageManagerView _pkgMgrView;
-        private PackageManagerViewModel _pkgMgrViewModel;
+        private PackageManagerView view;
+        private PackageManagerViewModel viewModel;
 
         private ViewLoadedParams viewLoadedParams;
         private ViewStartupParams viewStartupParams;
@@ -59,22 +60,23 @@ namespace Dynamo.DynamoPackagesUI
         {
             
 
-            if (_pkgMgrView == null)
+            if (view == null)
             {
-                var vm = new PackageManagerViewModel((DynamoViewModel)viewLoadedParams.DynamoWindow.DataContext, "assets");
-                _pkgMgrView = new PackageManagerView(vm)
+                var vm = new PackageManagerViewModel(((DynamoViewModel)viewLoadedParams.DynamoWindow.DataContext).BrandingResourceProvider, 
+                    ((DynamoViewModel)viewLoadedParams.DynamoWindow.DataContext).Model.GetPackageManagerExtension().PackageLoader, ((DynamoViewModel)viewLoadedParams.DynamoWindow.DataContext).Model,  "assets");
+                view = new PackageManagerView(vm)
                 {
                     Owner = viewLoadedParams.DynamoWindow,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
                 //var vm = new PackageManagerViewModel("assets");
-                _pkgMgrView.DataContext = vm;
+                view.DataContext = vm;
 
-                _pkgMgrView.Closed += (sender, args) => _pkgMgrView = null;
-                _pkgMgrView.Show();
+                view.Closed += (sender, args) => view = null;
+                view.Show();
             }
-            _pkgMgrView.Focus();
+            view.Focus();
             //if (_packageManagerView.IsLoaded && IsLoaded) _packageManagerView.Owner = this;
         }
 

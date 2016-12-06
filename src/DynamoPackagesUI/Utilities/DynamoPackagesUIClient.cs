@@ -16,7 +16,6 @@ namespace DynamoPackagesUI.Utilities
     internal class DynamoPackagesUIClient
     {
         private readonly PackageManagerClient restClient;
-        private readonly PackageManagerClient restFileClient;
 
         private const string ACG_API_URL = "https://api.acg.autodesk.com/api/v2";
         private const string ACG_STORAGE_URL = "https://storage.123dapp.com/api/v2";

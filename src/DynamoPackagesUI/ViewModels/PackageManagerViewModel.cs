@@ -1,6 +1,8 @@
 ﻿using Dynamo.DynamoPackagesUI.Utilities;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -11,7 +13,7 @@ using System.Threading.Tasks;
 namespace Dynamo.DynamoPackagesUI.ViewModels
 {
     /// <summary>
-    /// Package Manager View Model
+    /// Package Manager View Loader
     /// </summary>
     public class PackageManagerViewModel
     {
@@ -21,7 +23,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
 
         internal PackageManagerCommands PkgMgrCommands { get; set; }
 
-        internal PublishCommands PublishPkgCommands { get; set; }
+        
 
 
         /// <summary>
@@ -30,10 +32,9 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         /// <param name="dynamoViewModel"></param>
         /// <param name="model"></param>
         /// <param name="address"></param>
-        public PackageManagerViewModel(DynamoViewModel dynamoViewModel, string address)
+        public PackageManagerViewModel(IBrandingResourceProvider resourceProvider, PackageLoader loader, DynamoModel model, string address)
         {
-            PkgMgrCommands = new PackageManagerCommands(dynamoViewModel, dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader, this);
-            PublishPkgCommands = new PublishCommands(dynamoViewModel, dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader, this);
+            PkgMgrCommands = new PackageManagerCommands(resourceProvider, loader, model);
 
             var path = this.GetType().Assembly.Location;
             var config = ConfigurationManager.OpenExeConfiguration(path);

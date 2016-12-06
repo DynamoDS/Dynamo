@@ -5,6 +5,7 @@ using Dynamo.PackageManager;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
 using Greg.Requests;
 using Greg.Responses;
@@ -27,8 +28,8 @@ namespace Dynamo.DynamoPackagesUI.Utilities
     /// </summary>
     internal class PackageManagerCommands : CefCommands
     {
-        public PackageManagerCommands(DynamoViewModel dynamoViewModel, PackageLoader model, PackageManagerViewModel pkgManagerViewModel) : 
-            base(dynamoViewModel, model, pkgManagerViewModel)
+        public PackageManagerCommands(IBrandingResourceProvider resourceProvider, PackageLoader loader, DynamoModel model) : 
+            base(resourceProvider, loader, model)
         {
         }
 
@@ -44,7 +45,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                 if (value is Newtonsoft.Json.Linq.JObject)
                     _downloadRequest = value;
                 else
-                    _downloadRequest = JsonConvert.DeserializeObject<dynamic>(value);
+                    _downloadRequest = JsonConvert.DeserializeObject<dynamic>(value.ToString());
             }
         }
 
@@ -69,38 +70,38 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         /// <param name="downloadPath"></param>
         private void InstallPackage(string downloadPath)
         {
-            var firstOrDefault = Model.LocalPackages.FirstOrDefault(pkg => pkg.ID == DownloadRequest.asset_id.ToString());
+            var firstOrDefault = Loader.LocalPackages.FirstOrDefault(pkg => pkg.ID == DownloadRequest.asset_id.ToString());
             if (firstOrDefault != null)
             {
-                var dynModel = dynamoViewModel.Model;
+                var dynModel = Model;
                 try
                 {
-                    firstOrDefault.UninstallCore(dynModel.CustomNodeManager, Model, dynModel.PreferenceSettings);
+                    firstOrDefault.UninstallCore(dynModel.CustomNodeManager, Loader, dynModel.PreferenceSettings);
                 }
                 catch
                 {
                     MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage,
-                        dynamoViewModel.BrandingResourceProvider.ProductName,
+                        ResourceProvider.ProductName,
                         DownloadRequest.asset_name.ToString()),
                         Resources.UninstallFailureMessageBoxTitle,
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
 
-            var settings = dynamoViewModel.Model.PreferenceSettings;
+            var settings = Model.PreferenceSettings;
             PackageDownloadHandle packageDownloadHandle = new PackageDownloadHandle();
             packageDownloadHandle.Name = DownloadRequest.asset_name;
             packageDownloadHandle.Done(downloadPath);
 
             //string installedPkgPath = string.Empty;
             Package dynPkg = null;
-            if (packageDownloadHandle.Extract(dynamoViewModel.Model, this.PackageInstallPath, out dynPkg))
+            if (packageDownloadHandle.Extract(Model, this.PackageInstallPath, out dynPkg))
             {
-                var p = Package.FromDirectory(dynPkg.RootDirectory, dynamoViewModel.Model.Logger);
+                var p = Package.FromDirectory(dynPkg.RootDirectory, Model.Logger);
                 p.ID = DownloadRequest.asset_id;
                 Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
-                    Model.Load(p);
+                    Loader.Load(p);
                 }));
                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                 this.PackageInstallPath = string.Empty;
@@ -152,7 +153,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
 
         private void ShowFileDialog(PackagePathEventArgs e)
         {
-            string initialPath = dynamoViewModel.Model.PathManager.DefaultPackagesDirectory;
+            string initialPath = Model.PathManager.DefaultPackagesDirectory;
 
             e.Cancel = true;
 
@@ -262,7 +263,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
 
                 // Determine if there are any dependencies that are made with a newer version
                 // of Dynamo (this includes the root package)
-                var dynamoVersion = dynamoViewModel.Model.Version;
+                var dynamoVersion = Model.Version;
                 var dynamoVersionParsed = VersionUtilities.PartialParse(dynamoVersion, 3);
                 var futureDeps = FilterFuturePackages(packageVersionData, dynamoVersionParsed);
 
@@ -273,11 +274,11 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                     var versionList = FormatPackageVersionList(futureDeps.ToList());
 
                     if (MessageBox.Show(String.Format(Resources.MessagePackageNewerDynamo,
-                        dynamoViewModel.BrandingResourceProvider.ProductName,
+                        ResourceProvider.ProductName,
                         versionList),
 
                         string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle,
-                        dynamoViewModel.BrandingResourceProvider.ProductName),
+                        ResourceProvider.ProductName),
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Warning) == MessageBoxResult.Cancel)
                     {
@@ -285,7 +286,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                     }
                 }
 
-                var localPkgs = Model.LocalPackages;
+                var localPkgs = Loader.LocalPackages;
 
                 var uninstallsRequiringRestart = new List<Package>();
                 var uninstallRequiringUserModifications = new List<Package>();
@@ -303,7 +304,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                         continue;
                     }
 
-                    if (localPkg.InUse(dynamoViewModel.Model))
+                    if (localPkg.InUse(Model))
                     {
                         uninstallRequiringUserModifications.Add(localPkg);
                         continue;
@@ -315,14 +316,14 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                 if (uninstallRequiringUserModifications.Any())
                 {
                     MessageBox.Show(String.Format(Resources.MessageUninstallToContinue,
-                        dynamoViewModel.BrandingResourceProvider.ProductName,
+                        ResourceProvider.ProductName,
                         JoinPackageNames(uninstallRequiringUserModifications)),
                         Resources.CannotDownloadPackageMessageBoxTitle,
                         MessageBoxButton.OK, MessageBoxImage.Error);
                     return "cancel";
                 }
 
-                var settings = dynamoViewModel.Model.PreferenceSettings;
+                var settings = Model.PreferenceSettings;
 
                 if (uninstallsRequiringRestart.Any())
                 {
@@ -331,7 +332,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                         x => x.MarkForUninstall(settings));
 
                     MessageBox.Show(String.Format(Resources.MessageUninstallToContinue2,
-                        dynamoViewModel.BrandingResourceProvider.ProductName,
+                        ResourceProvider.ProductName,
                         JoinPackageNames(uninstallsRequiringRestart)),
                         Resources.CannotDownloadPackageMessageBoxTitle,
                         MessageBoxButton.OK, MessageBoxImage.Error);
@@ -342,7 +343,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                 {
                     // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
                     if (MessageBox.Show(String.Format(Resources.MessageAlreadyInstallDynamo,
-                        dynamoViewModel.BrandingResourceProvider.ProductName,
+                        ResourceProvider.ProductName,
                         JoinPackageNames(immediateUninstalls)),
                         Resources.DownloadWarningMessageBoxTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
@@ -393,13 +394,13 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         /// <returns></returns>
         public bool Uninstall()
         {
-            Package localPkg = Model.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
+            Package localPkg = Loader.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
 
             if (localPkg.LoadedAssemblies.Any())
             {
                 var resAssem =
                     MessageBox.Show(string.Format(Resources.MessageNeedToRestart,
-                        dynamoViewModel.BrandingResourceProvider.ProductName),
+                        ResourceProvider.ProductName),
                         Resources.UninstallingPackageMessageBoxTitle,
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Exclamation);
@@ -417,10 +418,10 @@ namespace Dynamo.DynamoPackagesUI.Utilities
 
             try
             {
-                var dynModel = dynamoViewModel.Model;
+                var dynModel = Model;
                 Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
-                    localPkg.UninstallCore(dynModel.CustomNodeManager, Model, dynModel.PreferenceSettings);
+                    localPkg.UninstallCore(dynModel.CustomNodeManager, Loader, dynModel.PreferenceSettings);
                 }));
 
                 return true;
@@ -428,7 +429,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             catch (Exception)
             {
                 MessageBox.Show(string.Format(Resources.MessageFailedToUninstall,
-                    dynamoViewModel.BrandingResourceProvider.ProductName),
+                    ResourceProvider.ProductName),
                     Resources.UninstallFailureMessageBoxTitle,
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
@@ -438,23 +439,23 @@ namespace Dynamo.DynamoPackagesUI.Utilities
 
         public void GoToRootDirectory()
         {
-            Package localPkg = Model.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
+            Package localPkg = Loader.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
             Process.Start(localPkg.RootDirectory);
         }
 
         public void UnmarkForUninstallation()
         {
-            Package pkg = Model.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
+            Package pkg = Loader.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
             if (pkg != null)
             {
-                pkg.UnmarkForUninstall(dynamoViewModel.Model.PreferenceSettings);
+                pkg.UnmarkForUninstall(Model.PreferenceSettings);
             }
         }
 
         public void PublishNewPackageVersion()
         {
-            Package pkg = Model.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
-            pkg.RefreshCustomNodesFromDirectory(dynamoViewModel.Model.CustomNodeManager, DynamoModel.IsTestMode);
+            Package pkg = Loader.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
+            pkg.RefreshCustomNodesFromDirectory(Model.CustomNodeManager, DynamoModel.IsTestMode);
             //var vm = PublishCommands.FromLocalPackage(dynamoViewModel, pkg, ViewMdodel);
             //vm.PublishPkgCommands.IsNewVersion = true;
             //ViewMdodel.PublishPkgCommands = vm.PublishPkgCommands;
@@ -464,8 +465,8 @@ namespace Dynamo.DynamoPackagesUI.Utilities
 
         public void PublishLocalPackage()
         {
-            Package pkg = Model.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
-            pkg.RefreshCustomNodesFromDirectory(dynamoViewModel.Model.CustomNodeManager, DynamoModel.IsTestMode);
+            Package pkg = Loader.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
+            pkg.RefreshCustomNodesFromDirectory(Model.CustomNodeManager, DynamoModel.IsTestMode);
             //var vm = PublishCommands.FromLocalPackage(dynamoViewModel, pkg, ViewMdodel);
             //vm.PublishPkgCommands.IsNewVersion = false;
             //vm.PublishPkgCommands.PublishLocal = true;
