@@ -21,7 +21,7 @@ set version=%Major%.%Minor%.%Build%-beta%Revision%
 
 :: Copy .nuspec files from "template" folder to "nuspec" folder
 :: and replace the string "@VERSION@" with the correct value
-rmdir /s /q nuspec
+if exist nuspec ( rmdir /s /q nuspec )
 mkdir nuspec
 for %%f in (template\*.nuspec) do (
   for /f "tokens=* delims=¶" %%i in ( '"type %%f"') do (
