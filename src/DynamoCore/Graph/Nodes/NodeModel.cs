@@ -32,7 +32,7 @@ namespace Dynamo.Graph.Nodes
         #region private members
 
         private bool overrideNameWithNickName;
-        private LacingStrategy argumentLacing = LacingStrategy.Shortest;
+        private LacingStrategy argumentLacing = LacingStrategy.Auto;
         private bool displayLabels;
         private bool isUpstreamVisible;
         private bool isVisible;
@@ -1144,12 +1144,10 @@ namespace Dynamo.Graph.Nodes
                 case LacingStrategy.Shortest:
                     for (int i = 0; i < inputs.Count(); ++i)
                     {
-                        if (InPorts[i].UseLevels)
-                        {
-                            inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, false);
-                        }
+                        inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, false);
                     }
                     break;
+
 
                 case LacingStrategy.Longest:
 
