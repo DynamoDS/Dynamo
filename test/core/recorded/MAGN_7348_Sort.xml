@@ -11,7 +11,7 @@
     <ModelGuid>eb2264af-3a35-4dee-9034-814c0c6400e7</ModelGuid>
   </UpdateModelValueCommand>
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.DSFunction guid="d3682b84-d365-437e-a1e5-e570123e7b2c" type="Dynamo.Nodes.DSFunction" nickname="List.Sort" x="373.5" y="77" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.Sort@var[]" />
+    <Dynamo.Nodes.DSFunction guid="d3682b84-d365-437e-a1e5-e570123e7b2c" type="Dynamo.Nodes.DSFunction" nickname="List.Sort" x="373.5" y="77" isVisible="true" isUpstreamVisible="true" lacing="Auto" assembly="DSCoreNodes.dll" function="DSCore.List.Sort@var[]" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="d3682b84-d365-437e-a1e5-e570123e7b2c" Modifiers="0" />
   <DragSelectionCommand X="354" Y="115" DragOperation="0" />
