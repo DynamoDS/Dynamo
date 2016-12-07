@@ -2266,10 +2266,6 @@ namespace Dynamo.Graph.Nodes
             return migrationData;
         }
 
-        // Migrate NodeModel's LacingStrategy.Shortest to LacingStrategy.Auto
-        // Temporarily disabled in 1.2 to keep semantic versioning and will 
-        // enable in 2.0.
-        /*
         [NodeMigration(@from: "1.2.0.0")]
         public static NodeMigrationData MigrateShortestLacingToAutoLacing(NodeMigrationData data)
         {
@@ -2279,7 +2275,6 @@ namespace Dynamo.Graph.Nodes
             migrationData.AppendNode(node);
             return migrationData;
         }
-        */
 
         #endregion
 
