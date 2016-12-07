@@ -708,8 +708,7 @@ namespace Dynamo.Graph.Nodes
         /// 
         private void CreateInputOutputPorts()
         {
-            InPorts.Clear();
-            OutPorts.Clear();
+            
             if ((codeStatements == null || (codeStatements.Count == 0))
                 && (inputIdentifiers == null || (inputIdentifiers.Count == 0)))
             {
@@ -725,6 +724,9 @@ namespace Dynamo.Graph.Nodes
 
         private void SetInputPorts()
         {
+            //Clear out all the input port models
+            InPorts.Clear();
+
             // Generate input port data list from the unbound identifiers.
             var inportData = CodeBlockUtils.GenerateInputPortData(inputPortNames);
             foreach (var portData in inportData)
@@ -737,6 +739,9 @@ namespace Dynamo.Graph.Nodes
 
             if (allDefs.Any() == false)
                 return;
+            
+            //Clear out all the output port models
+            OutPorts.Clear();
 
             foreach (var def in allDefs)
             {
@@ -779,12 +784,7 @@ namespace Dynamo.Graph.Nodes
             //Delete the connectors
             foreach (PortModel inport in InPorts)
                 inport.DestroyConnectors();
-
-            //Clear out all the port models
-            for (int i = InPorts.Count - 1; i >= 0; i--)
-                InPorts.RemoveAt(i);
-
-
+            
             //----------------------------Outputs---------------------------------
             for (int i = 0; i < OutPorts.Count; i++)
             {
@@ -807,10 +807,7 @@ namespace Dynamo.Graph.Nodes
             //Delete the connectors
             foreach (PortModel outport in OutPorts)
                 outport.DestroyConnectors();
-
-            //Clear out all the port models
-            for (int i = OutPorts.Count - 1; i >= 0; i--)
-                OutPorts.RemoveAt(i);
+            
         }
 
         /// <summary>
