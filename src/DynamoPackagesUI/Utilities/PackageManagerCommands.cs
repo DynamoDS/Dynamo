@@ -7,6 +7,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
+using DynamoUtilities;
 using Greg.Requests;
 using Greg.Responses;
 using Greg.Utility;
@@ -110,26 +111,34 @@ namespace Dynamo.DynamoPackagesUI.Utilities
 
         /// <summary>
         /// Download and Install Dynamo Package
+        /// pkg input parameter contains comma delimitted value as "assetId,fileID"
         /// </summary>
         /// <param name="pkg"></param>
-        public void DownloadAndInstall(string pkg)
+        public void DownloadAndInstall(string package)
         {
-            string[] temp = pkg.Split(',');
-            PackageManagerRequest req = new PackageManagerRequest(string.Format("assets/{0}", temp[0]), Method.GET);
+            //Get Asset Details
+            string[] packageToInstall = package.Split(',');
+            PackageManagerRequest req = new PackageManagerRequest(string.Format("assets/{0}", packageToInstall[0]), Method.GET);
             ResponseWithContentBody<dynamic> response = Client.ExecuteAndDeserializeDynamoRequest(req);
             DownloadRequest = response.content;
 
-            PackageManagerRequest fileReq = new PackageManagerRequest(string.Format("files/download?file_ids={0}&asset_id={1}", temp[1], temp[0]), Method.GET, true);
+            //Donwload the file
+            PackageManagerRequest fileReq = new PackageManagerRequest(string.Format("files/download?file_ids={0}&asset_id={1}", packageToInstall[1], packageToInstall[0]), Method.GET, true);
             Response res = Client.ExecuteDynamoRequest(fileReq);
             var pathToPackage = Client.GetFileFromResponse(res);
             InstallPackage(pathToPackage);
         }
 
+        /// <summary>
+        /// Get the folder path to install the package
+        /// </summary>
+        /// <returns></returns>
+        /// TODO: Change the method name
         public string GetCustomPathForInstall()
         {
             string downloadPath = string.Empty;
 
-            downloadPath = GetDownloadPath();
+            downloadPath = RequestGetDownloadPath();
 
             if (String.IsNullOrEmpty(downloadPath))
                 return string.Empty;
@@ -139,11 +148,11 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             return downloadPath;
         }
 
-        private string GetDownloadPath()
+        private string RequestGetDownloadPath()
         {
             var args = new PackagePathEventArgs();
 
-            ShowFileDialog(args);
+            PromptFileSelectionDialog(args);
 
             if (args.Cancel)
                 return string.Empty;
@@ -151,27 +160,35 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             return args.Path;
         }
 
-        private void ShowFileDialog(PackagePathEventArgs e)
+        private void PromptFileSelectionDialog(PackagePathEventArgs e)
         {
             string initialPath = Model.PathManager.DefaultPackagesDirectory;
 
             e.Cancel = true;
 
-            var dialog = new DynamoFolderBrowserDialog
+            var errorCannotCreateFolder = PathHelper.CreateFolderIfNotExist(initialPath);
+            if (errorCannotCreateFolder == null)
             {
-                // Navigate to initial folder.
-                SelectedPath = initialPath,
-                Title = "Install Path",
-                Owner = this.ParentWindow
-            };
-            Application.Current.Dispatcher.Invoke((Action)(() =>
-            {
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                var dialog = new DynamoFolderBrowserDialog
                 {
-                    e.Cancel = false;
-                    e.Path = dialog.SelectedPath;
-                }
-            }));
+                    // Navigate to initial folder.
+                    SelectedPath = initialPath,
+                    Owner = this.ParentWindow
+                };
+                Application.Current.Dispatcher.Invoke((Action)(() =>
+                {
+                    if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        e.Cancel = false;
+                        e.Path = dialog.SelectedPath;
+                    }
+                }));
+            }
+            else
+            {
+                string errorMessage = string.Format(Wpf.Properties.Resources.PackageFolderNotAccessible, initialPath);
+                System.Windows.Forms.MessageBox.Show(errorMessage, Wpf.Properties.Resources.UnableToAccessPackageDirectory, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
@@ -179,7 +196,8 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         /// </summary>
         /// <param name="asset"></param>
         /// <param name="version"></param>
-        /// <returns></returns>
+        /// <returns>If "cencel" returned to webclient halt the installation. If not cancel then this method returns the | delimitted list of package and its version to be installed</returns>
+        /// TODO: Rename this method to OnInstallPackage
         public string PackageOnExecuted(dynamic asset, dynamic version)
         {
             string downloadPath = this.PackageInstallPath;
@@ -203,88 +221,21 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             {
                 if (!string.IsNullOrEmpty(version["dependencies"]))
                 {
-                    // get all of the headers
-                    PackageManagerRequest req;
-                    string[] depends = version["dependencies"].Split(',');
-                    foreach (string depend in depends)
-                    {
-                        string[] temp = depend.Split('|');
-                        req = new PackageManagerRequest((string.Format("assets/{0}/customdata", temp[0])).Trim(), Method.GET);
-                        ResponseWithContentBody<dynamic> response = Client.ExecuteAndDeserializeDynamoRequest(req);
-                        var customData = response.content;
-
-                        req = new PackageManagerRequest(("assets/" + temp[0]).Trim(), Method.GET);
-                        response = Client.ExecuteAndDeserializeDynamoRequest(req);
-                        var depAsset = response.content;
-
-                        if (customData.custom_data.Count > 0)
-                        {
-                            dynamic versionData;
-                            string json;
-                            for (int i = 0; i < customData.custom_data.Count; i++)
-                            {
-                                if (customData.custom_data[i].key == string.Format("version:{0}", temp[1]))
-                                {
-                                    json = System.Uri.UnescapeDataString(customData.custom_data[i].data.ToString());
-                                    versionData = JsonConvert.DeserializeObject<dynamic>(json);
-
-                                    packageVersionData.Add(new Tuple<dynamic, dynamic>(depAsset, versionData));
-                                    PackagesToInstall.Add(string.Format("{0},{1},{2}", temp[0], versionData.file_id.Value, depAsset.asset_name));
-                                }
-                            }
-                        }
-                    }
+                    GetDependencies(version, out packageVersionData);
                 }
 
+                //Add selected package to the list of packges to install
                 PackagesToInstall.Add(string.Format("{0},{1},{2}", asset["asset_id"], version["file_id"], asset["asset_name"]));
 
-                //    // determine if any of the packages contain binaries or python scripts.  
-                var containsBinaries =
-                    packageVersionData.Any(
-                        x => x.Item2.contents.ToString().Contains(Dynamo.PackageManager.PackageManagerClient.PackageContainsBinariesConstant) || (bool)x.Item2.contains_binaries);
+                // determine if any of the packages contain binaries or python scripts.  
+                result = CheckForBinariesPythonScripts(version, packageVersionData);
+                if (result == MessageBoxResult.Cancel)
+                    return "cancel";
 
-                containsBinaries = containsBinaries || (version["contents"].ToString().Contains(Dynamo.PackageManager.PackageManagerClient.PackageContainsBinariesConstant) || (bool)version["contains_binaries"]);
+                result = CheckForNewerDynamoVersion(packageVersionData);
+                if (result == MessageBoxResult.Cancel)
+                    return "cancel";
 
-                var containsPythonScripts =
-                    packageVersionData.Any(
-                        x => x.Item2.contents.ToString().Contains(Dynamo.PackageManager.PackageManagerClient.PackageContainsPythonScriptsConstant));
-
-                containsPythonScripts = containsPythonScripts || (version["contents"].ToString().Contains(Dynamo.PackageManager.PackageManagerClient.PackageContainsPythonScriptsConstant));
-
-                // if any do, notify user and allow cancellation
-                if (containsBinaries || containsPythonScripts)
-                {
-                    var res = MessageBox.Show(Resources.MessagePackageContainPythonScript,
-                        Resources.PackageDownloadMessageBoxTitle,
-                        MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
-
-                    if (res == MessageBoxResult.Cancel) return "cancel";
-                }
-
-                // Determine if there are any dependencies that are made with a newer version
-                // of Dynamo (this includes the root package)
-                var dynamoVersion = Model.Version;
-                var dynamoVersionParsed = VersionUtilities.PartialParse(dynamoVersion, 3);
-                var futureDeps = FilterFuturePackages(packageVersionData, dynamoVersionParsed);
-
-                // If any of the required packages use a newer version of Dynamo, show a dialog to the user
-                // allowing them to cancel the package download
-                if (futureDeps.Any())
-                {
-                    var versionList = FormatPackageVersionList(futureDeps.ToList());
-
-                    if (MessageBox.Show(String.Format(Resources.MessagePackageNewerDynamo,
-                        ResourceProvider.ProductName,
-                        versionList),
-
-                        string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle,
-                        ResourceProvider.ProductName),
-                        MessageBoxButton.OKCancel,
-                        MessageBoxImage.Warning) == MessageBoxResult.Cancel)
-                    {
-                        return "cancel";
-                    }
-                }
 
                 var localPkgs = Loader.LocalPackages;
 
@@ -363,6 +314,98 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             }
             return String.Join("|", PackagesToInstall);
         }
+        
+        private void GetDependencies(dynamic version, out List<Tuple<dynamic, dynamic>> packageVersionData)
+        {
+            packageVersionData = new List<Tuple<dynamic, dynamic>>();
+            // get all of the headers
+            PackageManagerRequest req;
+            string[] depends = version["dependencies"].Split(',');
+            foreach (string depend in depends)
+            {
+                string[] temp = depend.Split('|');
+                req = new PackageManagerRequest((string.Format("assets/{0}/customdata", temp[0])).Trim(), Method.GET);
+                ResponseWithContentBody<dynamic> response = Client.ExecuteAndDeserializeDynamoRequest(req);
+                var customData = response.content;
+
+                req = new PackageManagerRequest(("assets/" + temp[0]).Trim(), Method.GET);
+                response = Client.ExecuteAndDeserializeDynamoRequest(req);
+                var depAsset = response.content;
+
+                if (customData.custom_data.Count > 0)
+                {
+                    dynamic versionData;
+                    string json;
+                    for (int i = 0; i < customData.custom_data.Count; i++)
+                    {
+                        if (customData.custom_data[i].key == string.Format("version:{0}", temp[1]))
+                        {
+                            json = System.Uri.UnescapeDataString(customData.custom_data[i].data.ToString());
+                            versionData = JsonConvert.DeserializeObject<dynamic>(json);
+
+                            packageVersionData.Add(new Tuple<dynamic, dynamic>(depAsset, versionData));
+                            PackagesToInstall.Add(string.Format("{0},{1},{2}", temp[0], versionData.file_id.Value, depAsset.asset_name));
+                        }
+                    }
+                }
+            }
+        } 
+
+        private MessageBoxResult CheckForBinariesPythonScripts(dynamic version, List<Tuple<dynamic,dynamic>> packageVersionData)
+        {
+            var containsBinaries =
+                    packageVersionData.Any(
+                        x => x.Item2.contents.ToString().Contains(Dynamo.PackageManager.PackageManagerClient.PackageContainsBinariesConstant) || (bool)x.Item2.contains_binaries);
+
+            containsBinaries = containsBinaries || (version["contents"].ToString().Contains(Dynamo.PackageManager.PackageManagerClient.PackageContainsBinariesConstant) || (bool)version["contains_binaries"]);
+
+            var containsPythonScripts =
+                packageVersionData.Any(
+                    x => x.Item2.contents.ToString().Contains(Dynamo.PackageManager.PackageManagerClient.PackageContainsPythonScriptsConstant));
+
+            containsPythonScripts = containsPythonScripts || (version["contents"].ToString().Contains(Dynamo.PackageManager.PackageManagerClient.PackageContainsPythonScriptsConstant));
+
+            // if any do, notify user and allow cancellation
+            if (containsBinaries || containsPythonScripts)
+            {
+                var res = MessageBox.Show(Resources.MessagePackageContainPythonScript,
+                    Resources.PackageDownloadMessageBoxTitle,
+                    MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
+
+                return res;
+            }
+
+            return MessageBoxResult.OK;
+        }
+
+        private MessageBoxResult CheckForNewerDynamoVersion(List<Tuple<dynamic, dynamic>> packageVersionData)
+        {
+            // Determine if there are any dependencies that are made with a newer version
+            // of Dynamo (this includes the root package)
+            var dynamoVersion = Model.Version;
+            var dynamoVersionParsed = VersionUtilities.PartialParse(dynamoVersion, 3);
+            var futureDeps = FilterFuturePackages(packageVersionData, dynamoVersionParsed);
+
+            // If any of the required packages use a newer version of Dynamo, show a dialog to the user
+            // allowing them to cancel the package download
+            if (futureDeps.Any())
+            {
+                var versionList = FormatPackageVersionList(futureDeps.ToList());
+
+                if (MessageBox.Show(String.Format(Resources.MessagePackageNewerDynamo,
+                    ResourceProvider.ProductName,
+                    versionList),
+
+                    string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle,
+                    ResourceProvider.ProductName),
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                {
+                    return MessageBoxResult.Cancel;
+                }
+            }
+            return MessageBoxResult.OK;
+        }
 
         private string JoinPackageNames(IEnumerable<Package> pkgs)
         {
@@ -370,12 +413,12 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             return String.Join(", ", pkgs.Select(x => x.Name));
         }
 
-        public static string FormatPackageVersionList(List<Tuple<dynamic, dynamic>> packages)
+        private string FormatPackageVersionList(List<Tuple<dynamic, dynamic>> packages)
         {
             return String.Join("\r\n", packages.Select(x => string.Format("{0} {1}", x.Item1.name.ToString(), x.Item2.version.ToString())));
         }
 
-        public IEnumerable<Tuple<dynamic, dynamic>> FilterFuturePackages(List<Tuple<dynamic, dynamic>> pkgVersions, Version currentAppVersion, int numberOfFieldsToCompare = 3)
+        private IEnumerable<Tuple<dynamic, dynamic>> FilterFuturePackages(List<Tuple<dynamic, dynamic>> pkgVersions, Version currentAppVersion, int numberOfFieldsToCompare = 3)
         {
             foreach (Tuple<dynamic, dynamic> version in pkgVersions)
             {
@@ -436,13 +479,18 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             }
         }
 
-
+        /// <summary>
+        /// Open the root directory for PkgRequest
+        /// </summary>
         public void GoToRootDirectory()
         {
             Package localPkg = Loader.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
             Process.Start(localPkg.RootDirectory);
         }
 
+        /// <summary>
+        /// Unmark Uninstall for PkgRequest 
+        /// </summary>
         public void UnmarkForUninstallation()
         {
             Package pkg = Loader.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
@@ -451,29 +499,5 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                 pkg.UnmarkForUninstall(Model.PreferenceSettings);
             }
         }
-
-        public void PublishNewPackageVersion()
-        {
-            Package pkg = Loader.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
-            pkg.RefreshCustomNodesFromDirectory(Model.CustomNodeManager, DynamoModel.IsTestMode);
-            //var vm = PublishCommands.FromLocalPackage(dynamoViewModel, pkg, ViewMdodel);
-            //vm.PublishPkgCommands.IsNewVersion = true;
-            //ViewMdodel.PublishPkgCommands = vm.PublishPkgCommands;
-            //dynamoViewModel.OnRequestPackagePublishDialog(vm);
-
-        }
-
-        public void PublishLocalPackage()
-        {
-            Package pkg = Loader.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
-            pkg.RefreshCustomNodesFromDirectory(Model.CustomNodeManager, DynamoModel.IsTestMode);
-            //var vm = PublishCommands.FromLocalPackage(dynamoViewModel, pkg, ViewMdodel);
-            //vm.PublishPkgCommands.IsNewVersion = false;
-            //vm.PublishPkgCommands.PublishLocal = true;
-            //ViewMdodel.PublishPkgCommands = vm.PublishPkgCommands;
-            //dynamoViewModel.OnRequestPackagePublishDialog(vm);
-
-        }
-
     }
 }

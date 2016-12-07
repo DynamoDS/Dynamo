@@ -16,7 +16,6 @@ namespace Dynamo.DynamoPackagesUI
     public class PackageManagerExtension : IViewExtension
     {
         private PackageManagerView view;
-        private PackageManagerViewModel viewModel;
 
         private ViewLoadedParams viewLoadedParams;
         private ViewStartupParams viewStartupParams;
@@ -57,13 +56,13 @@ namespace Dynamo.DynamoPackagesUI
         }
 
         private void OnPackageManagerClick()
-        {
-            
-
+        {            
             if (view == null)
             {
-                var vm = new PackageManagerViewModel(((DynamoViewModel)viewLoadedParams.DynamoWindow.DataContext).BrandingResourceProvider, 
-                    ((DynamoViewModel)viewLoadedParams.DynamoWindow.DataContext).Model.GetPackageManagerExtension().PackageLoader, ((DynamoViewModel)viewLoadedParams.DynamoWindow.DataContext).Model,  "assets");
+                var dynamoViewModel = viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel;
+                if (dynamoViewModel == null) throw new Exception("Couldn't get DynamoViewModel");
+                var dynamoModel = dynamoViewModel.Model;
+                var vm = new PackageManagerViewModel(dynamoViewModel.BrandingResourceProvider, dynamoModel.GetPackageManagerExtension().PackageLoader, dynamoModel,  "assets");
                 view = new PackageManagerView(vm)
                 {
                     Owner = viewLoadedParams.DynamoWindow,
