@@ -39,6 +39,8 @@ namespace Dynamo.PackageManager
 
         public string Name { get; set; }
 
+        public string ID { get; set; }
+
         public string CustomNodeDirectory
         {
             get { return Path.Combine(RootDirectory, "dyf"); }
@@ -338,7 +340,7 @@ namespace Dynamo.PackageManager
             return Directory.EnumerateFiles(RootDirectory, "*", SearchOption.AllDirectories).Any(s => s == path);
         }
 
-        internal bool InUse(DynamoModel dynamoModel)
+        public bool InUse(DynamoModel dynamoModel)
         {
             return (LoadedAssemblies.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || IsCustomNodeFromPackageInUse(dynamoModel)) && Loaded;
         }
@@ -366,7 +368,7 @@ namespace Dynamo.PackageManager
                     .Any(guids.Contains);
         }
 
-        internal void MarkForUninstall(IPreferences prefs)
+        public void MarkForUninstall(IPreferences prefs)
         {
             MarkedForUninstall = true;
 
@@ -376,13 +378,13 @@ namespace Dynamo.PackageManager
             }
         }
 
-        internal void UnmarkForUninstall(IPreferences prefs)
+        public void UnmarkForUninstall(IPreferences prefs)
         {
             MarkedForUninstall = false;
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
         }
 
-        internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
+        public void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
         {
             if (LoadedAssemblies.Any())
             {
@@ -404,7 +406,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        internal void RefreshCustomNodesFromDirectory(CustomNodeManager customNodeManager, bool isTestMode)
+        public void RefreshCustomNodesFromDirectory(CustomNodeManager customNodeManager, bool isTestMode)
         {
             LoadedCustomNodes.Clear();
 

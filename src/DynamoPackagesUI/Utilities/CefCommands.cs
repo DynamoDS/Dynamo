@@ -2,6 +2,7 @@
 using Dynamo.DynamoPackagesUI.ViewModels;
 using Dynamo.PackageManager;
 using Dynamo.ViewModels;
+using DynamoPackagesUI.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,14 @@ namespace Dynamo.DynamoPackagesUI.Utilities
     /// <summary>
     /// Base class for CEF which assits in all Package Manager functionalities
     /// </summary>
-    internal class CefHelper
+    internal class CefCommands
     {
+        internal DynamoPackagesUIClient DPClient { get; set; }
+
         internal readonly DynamoViewModel dynamoViewModel;
         internal PackageLoader Model { get; private set; }
 
-        //CEF Browser instance in which PM UI will be displayed
+        //CEF Browser instance for rendering PM web UI
         public ChromiumWebBrowser CefBrowser { get; set; }
 
         public string SessionData
@@ -36,11 +39,12 @@ namespace Dynamo.DynamoPackagesUI.Utilities
 
         public PackageManagerViewModel PackageMgrViewMdodel { get; set; }
 
-        public CefHelper(DynamoViewModel dynamoViewModel, PackageLoader model, PackageManagerViewModel packageMgrViewModel)
+        public CefCommands(DynamoViewModel dynamoViewModel, PackageLoader model, PackageManagerViewModel packageMgrViewModel)
         {
             this.dynamoViewModel = dynamoViewModel;
             this.Model = model;
             this.PackageMgrViewMdodel = packageMgrViewModel;
+            this.DPClient = new DynamoPackagesUIClient();
         }
 
         public string InstalledPackages

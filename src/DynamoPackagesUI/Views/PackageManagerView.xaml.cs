@@ -1,4 +1,7 @@
-﻿using System;
+using CefSharp;
+using Dynamo.DynamoPackagesUI.Utilities;
+using Dynamo.DynamoPackagesUI.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,12 +23,39 @@ namespace DynamoPackagesUI.Views
     /// </summary>
     public partial class PackageManagerView : Window
     {
-        public PackageManagerView()
+        public PackageManagerView(PackageManagerViewModel viewModel)
         {
+            this.DataContext = viewModel;
+
+            if (!Cef.IsInitialized)
+            {
+                var settings = new CefSettings { RemoteDebuggingPort = 8088 };
+                //to fix Fickering set disable-gpu to true
+                settings.CefCommandLineArgs.Add("disable-gpu", "1");
+                Cef.Initialize(settings);
+            }
+
+            //viewModel.PublishCompCefHelper.PublishSuccess += PackageViewModelOnPublishSuccess;
+
             InitializeComponent();
+
+            viewModel.CefHelper.ParentWindow = this;
+            //cefHelper object for Explore Packages, Explore Authors and My Packages Tab
+            this.cefBrowser.RegisterJsObject("cefHelper", viewModel.CefHelper);
+            
+            //publishCefHelper for Publish Package Tab 
+            this.cefBrowser.RegisterJsObject("publishCefHelper", viewModel.PublishCompCefHelper);
+
+            viewModel.CefHelper.CefBrowser = this.cefBrowser;
+            viewModel.PublishCompCefHelper.CefBrowser = this.cefBrowser;
 
             this.Height = (System.Windows.SystemParameters.PrimaryScreenHeight * 0.95);
             this.Width = (System.Windows.SystemParameters.PrimaryScreenWidth * 0.75);
+        }
+
+        private void PackageViewModelOnPublishSuccess(PublishCommands sender)
+        {
+            this.Dispatcher.BeginInvoke((Action)(Close));
         }
     }
 }
