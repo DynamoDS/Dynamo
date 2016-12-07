@@ -1,6 +1,6 @@
 call .\BuildPackages.bat
 
-SET Artifactory=http://art-bobcat.autodesk.com/artifactory/api/nuget/team-dynamo-nuget
+SET Artifactory=https://art-bobcat.autodesk.com/artifactory/api/nuget/team-dynamo-nuget
 
 :: Push these packages to www.nuget.org
 nuget push DynamoVisualProgramming.Core.*.nupkg -apikey %1
