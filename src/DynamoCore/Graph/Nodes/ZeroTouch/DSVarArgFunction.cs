@@ -42,9 +42,22 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         }
 
         /// <summary>
-        /// Returns the default number of inputs for the node
-        /// </summary>
-        private readonly int defaultNumInputs;
+         /// The NodeType property provides a name which maps to the 
+         /// server type for the node. This property should only be
+        /// used for serialization. 
+         /// </summary>
+         public override string NodeType
+         {
+             get
+             {
+                 return "FunctionNode";
+             }
+        }
+
+    /// <summary>
+    /// Returns the default number of inputs for the node
+    /// </summary>
+    private readonly int defaultNumInputs;
         [JsonIgnore]
         internal int DefaultNumInputs { get { return defaultNumInputs; } }
 

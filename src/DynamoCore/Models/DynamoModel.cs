@@ -388,7 +388,7 @@ namespace Dynamo.Models
             ShutDownCore(shutdownHost);
             PostShutdownCore(shutdownHost);
 
-            Dynamo.Logging.Analytics.ShutDown();
+            AnalyticsService.ShutDown();
 
             OnShutdownCompleted(); // Notify possible event handlers.
         }
@@ -1082,7 +1082,7 @@ namespace Dynamo.Models
         {
             if (!IsTestMode && !IsHeadless)
             {
-                Dynamo.Logging.Analytics.Start(this);
+                AnalyticsService.Start(this);
             }
         }
 
