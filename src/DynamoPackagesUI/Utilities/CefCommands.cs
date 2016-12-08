@@ -23,14 +23,14 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         internal DynamoPackagesUIClient Client { get; set; }
 
         //internal readonly DynamoViewModel dynamoViewModel;
-        internal IBrandingResourceProvider ResourceProvider { get; set; }
-
         internal DynamoModel Model { get; set; }
 
         internal PackageLoader Loader { get; private set; }
 
         //CEF Browser instance for rendering PM web UI
         public ChromiumWebBrowser Browser { get; set; }
+
+        public string ProductName { get; set; }
 
         public string SessionData
         {
@@ -44,12 +44,11 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         public Window ParentWindow { get; set; }
 
 
-        public CefCommands(IBrandingResourceProvider resourceProvider, PackageLoader loader, DynamoModel model)
+        public CefCommands(PackageLoader loader, DynamoModel model)
         {
-            this.ResourceProvider = resourceProvider;
+            this.ProductName = !string.IsNullOrEmpty(model.HostName) ? model.HostName : "Dynamo"; 
             this.Loader = loader;
             this.Model = model;
-
             this.Client = new DynamoPackagesUIClient();
         }
 

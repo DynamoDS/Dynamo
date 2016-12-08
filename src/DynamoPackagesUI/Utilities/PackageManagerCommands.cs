@@ -29,8 +29,8 @@ namespace Dynamo.DynamoPackagesUI.Utilities
     /// </summary>
     internal class PackageManagerCommands : CefCommands
     {
-        public PackageManagerCommands(IBrandingResourceProvider resourceProvider, PackageLoader loader, DynamoModel model) : 
-            base(resourceProvider, loader, model)
+        public PackageManagerCommands(PackageLoader loader, DynamoModel model) : 
+            base(loader, model)
         {
         }
 
@@ -82,7 +82,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                 catch
                 {
                     MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage,
-                        ResourceProvider.ProductName,
+                        ProductName,
                         DownloadRequest.asset_name.ToString()),
                         Resources.UninstallFailureMessageBoxTitle,
                         MessageBoxButton.OK, MessageBoxImage.Error);
@@ -267,7 +267,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                 if (uninstallRequiringUserModifications.Any())
                 {
                     MessageBox.Show(String.Format(Resources.MessageUninstallToContinue,
-                        ResourceProvider.ProductName,
+                        ProductName,
                         JoinPackageNames(uninstallRequiringUserModifications)),
                         Resources.CannotDownloadPackageMessageBoxTitle,
                         MessageBoxButton.OK, MessageBoxImage.Error);
@@ -283,7 +283,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                         x => x.MarkForUninstall(settings));
 
                     MessageBox.Show(String.Format(Resources.MessageUninstallToContinue2,
-                        ResourceProvider.ProductName,
+                        ProductName,
                         JoinPackageNames(uninstallsRequiringRestart)),
                         Resources.CannotDownloadPackageMessageBoxTitle,
                         MessageBoxButton.OK, MessageBoxImage.Error);
@@ -294,7 +294,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                 {
                     // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
                     if (MessageBox.Show(String.Format(Resources.MessageAlreadyInstallDynamo,
-                        ResourceProvider.ProductName,
+                        ProductName,
                         JoinPackageNames(immediateUninstalls)),
                         Resources.DownloadWarningMessageBoxTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
@@ -393,11 +393,11 @@ namespace Dynamo.DynamoPackagesUI.Utilities
                 var versionList = FormatPackageVersionList(futureDeps.ToList());
 
                 if (MessageBox.Show(String.Format(Resources.MessagePackageNewerDynamo,
-                    ResourceProvider.ProductName,
+                    ProductName,
                     versionList),
 
                     string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle,
-                    ResourceProvider.ProductName),
+                    ProductName),
                     MessageBoxButton.OKCancel,
                     MessageBoxImage.Warning) == MessageBoxResult.Cancel)
                 {
@@ -443,7 +443,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             {
                 var resAssem =
                     MessageBox.Show(string.Format(Resources.MessageNeedToRestart,
-                        ResourceProvider.ProductName),
+                        ProductName),
                         Resources.UninstallingPackageMessageBoxTitle,
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Exclamation);
@@ -472,7 +472,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             catch (Exception)
             {
                 MessageBox.Show(string.Format(Resources.MessageFailedToUninstall,
-                    ResourceProvider.ProductName),
+                    ProductName),
                     Resources.UninstallFailureMessageBoxTitle,
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;

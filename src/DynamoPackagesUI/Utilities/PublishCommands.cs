@@ -25,8 +25,8 @@ namespace Dynamo.DynamoPackagesUI.Utilities
 
         private PackageManagerViewModel packageMgrViewModel { get; set; }
 
-        public PublishCommands(IBrandingResourceProvider resourceProvider, PackageLoader loader, DynamoModel model) :
-            base(resourceProvider, loader, model)
+        public PublishCommands(PackageLoader loader, DynamoModel model) :
+            base(loader, model)
         {
             fileCompressor = new MutatingFileCompressor();
             //customNodeDefinitions = new List<CustomNodeDefinition>();

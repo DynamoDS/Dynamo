@@ -32,9 +32,9 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         /// <param name="dynamoViewModel"></param>
         /// <param name="model"></param>
         /// <param name="address"></param>
-        public PackageManagerViewModel(IBrandingResourceProvider resourceProvider, PackageLoader loader, DynamoModel model, string address)
+        public PackageManagerViewModel(PackageLoader loader, DynamoModel model, string address)
         {
-            PkgMgrCommands = new PackageManagerCommands(resourceProvider, loader, model);
+            PkgMgrCommands = new PackageManagerCommands(loader, model);
 
             var path = this.GetType().Assembly.Location;
             var config = ConfigurationManager.OpenExeConfiguration(path);
