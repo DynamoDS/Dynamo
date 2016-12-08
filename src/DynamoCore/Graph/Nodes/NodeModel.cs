@@ -2266,7 +2266,7 @@ namespace Dynamo.Graph.Nodes
             return migrationData;
         }
 
-        [NodeMigration(@from: "1.2.0.0")]
+        [NodeMigration(@from: "1.3.0.0")]
         public static NodeMigrationData MigrateShortestLacingToAutoLacing(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);
