@@ -512,7 +512,7 @@ namespace Dynamo.ViewModels
                 x.DownloadState == PackageDownloadHandle.State.Error).ToList().ForEach(x => Downloads.Remove(x));
         }
 
-        internal void GoToWebsite()
+        public void GoToWebsite()
         {
             if (Uri.IsWellFormedUriString(Model.BaseUrl, UriKind.Absolute))
             {
