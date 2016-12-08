@@ -340,7 +340,7 @@ namespace Dynamo.PackageManager
             return Directory.EnumerateFiles(RootDirectory, "*", SearchOption.AllDirectories).Any(s => s == path);
         }
 
-        public bool InUse(DynamoModel dynamoModel)
+        internal bool InUse(DynamoModel dynamoModel)
         {
             return (LoadedAssemblies.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || IsCustomNodeFromPackageInUse(dynamoModel)) && Loaded;
         }
@@ -368,7 +368,7 @@ namespace Dynamo.PackageManager
                     .Any(guids.Contains);
         }
 
-        public void MarkForUninstall(IPreferences prefs)
+        internal void MarkForUninstall(IPreferences prefs)
         {
             MarkedForUninstall = true;
 
@@ -378,13 +378,13 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public void UnmarkForUninstall(IPreferences prefs)
+        internal void UnmarkForUninstall(IPreferences prefs)
         {
             MarkedForUninstall = false;
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
         }
 
-        public void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
+        internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
         {
             if (LoadedAssemblies.Any())
             {
@@ -406,7 +406,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public void RefreshCustomNodesFromDirectory(CustomNodeManager customNodeManager, bool isTestMode)
+        internal void RefreshCustomNodesFromDirectory(CustomNodeManager customNodeManager, bool isTestMode)
         {
             LoadedCustomNodes.Clear();
 
