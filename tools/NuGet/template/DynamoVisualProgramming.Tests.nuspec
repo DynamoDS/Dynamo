@@ -19,8 +19,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\..\bin\AnyCPU\Release\TestServices.dll" target="lib\net45" />
+    <!--These assemblies are referenced from the bin directory since they are not harvested for the installer-->
     <file src="..\..\..\bin\AnyCPU\Release\DynamoCoreTests.dll" target="lib\net45" />
-    <!--file src="..\..\..\bin\AnyCPU\Release\SystemTestServices.xml" target="lib\net45" /-->
+    <file src="..\..\..\bin\AnyCPU\Release\TestServices.dll" target="lib\net45" />
   </files>
 </package>
