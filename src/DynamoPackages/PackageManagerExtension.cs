@@ -32,7 +32,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Manages loading of packages (property meant solely for tests)
         /// </summary>
-        internal PackageLoader PackageLoader { get; private set; }
+        public PackageLoader PackageLoader { get; private set; }
 
         /// <summary>
         ///     Dynamo Package Manager Instance.
