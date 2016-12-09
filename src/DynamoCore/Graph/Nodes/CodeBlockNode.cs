@@ -335,6 +335,21 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("CodeText", code);
             helper.SetAttribute("ShouldFocus", shouldFocus);
 
+            // add input port names to port info
+            var childNodes = element.ChildNodes.Cast<XmlElement>().ToList();
+            var inPorts = childNodes.Where(node => node.Name.Equals("PortInfo"));
+            foreach (var tuple in inPorts.Zip(InPorts, Tuple.Create))
+            {
+                tuple.Item1.SetAttribute("name", tuple.Item2.PortName);
+            }
+
+            //write output port line number info
+            foreach (var t in OutPorts)
+            {
+                XmlElement outportInfo = element.OwnerDocument.CreateElement("OutPortInfo");
+                outportInfo.SetAttribute("LineIndex", t.LineIndex.ToString(CultureInfo.InvariantCulture));
+                element.AppendChild(outportInfo);
+            }
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -343,6 +358,26 @@ namespace Dynamo.Graph.Nodes
             var helper = new XmlElementHelper(nodeElement);
             shouldFocus = helper.ReadBoolean("ShouldFocus");
             code = helper.ReadString("CodeText");
+
+            var childNodes = nodeElement.ChildNodes.Cast<XmlElement>().ToList();
+            var inputPortHelpers =
+                childNodes.Where(node => node.Name.Equals("PortInfo")).Select(x => new XmlElementHelper(x));
+
+            inputPortNames = inputPortHelpers.Select(x => x.ReadString("name")).ToList();
+            SetInputPorts();
+
+            var outputPortHelpers =
+                childNodes.Where(node => node.Name.Equals("OutPortInfo")).Select(x => new XmlElementHelper(x));
+            var lineNumbers = outputPortHelpers.Select(x => x.ReadInteger("LineIndex")).ToList();
+            foreach (var line in lineNumbers)
+            {
+                var tooltip = Formatting.TOOL_TIP_FOR_TEMP_VARIABLE;
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
+                {
+                    LineIndex = line, // Logical line index.
+                    Height = Configurations.CodeBlockPortHeightInPixels
+                }));
+            }
 
             ProcessCodeDirect();
         }
