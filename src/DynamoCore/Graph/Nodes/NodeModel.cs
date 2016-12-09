@@ -32,7 +32,7 @@ namespace Dynamo.Graph.Nodes
         #region private members
 
         private bool overrideNameWithNickName;
-        private LacingStrategy argumentLacing = LacingStrategy.Shortest;
+        private LacingStrategy argumentLacing = LacingStrategy.Auto;
         private bool displayLabels;
         private bool isUpstreamVisible;
         private bool isVisible;
@@ -1141,15 +1141,21 @@ namespace Dynamo.Graph.Nodes
 
             switch (ArgumentLacing)
             {
-                case LacingStrategy.Shortest:
+                case LacingStrategy.Auto:
                     for (int i = 0; i < inputs.Count(); ++i)
                     {
                         if (InPorts[i].UseLevels)
-                        {
                             inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, false);
-                        }
                     }
                     break;
+
+                case LacingStrategy.Shortest:
+                    for (int i = 0; i < inputs.Count(); ++i)
+                    {
+                        inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, false);
+                    }
+                    break;
+
 
                 case LacingStrategy.Longest:
 
@@ -2268,11 +2274,7 @@ namespace Dynamo.Graph.Nodes
             return migrationData;
         }
 
-        // Migrate NodeModel's LacingStrategy.Shortest to LacingStrategy.Auto
-        // Temporarily disabled in 1.2 to keep semantic versioning and will 
-        // enable in 2.0.
-        /*
-        [NodeMigration(@from: "1.2.0.0")]
+        [NodeMigration(@from: "1.3.0.0")]
         public static NodeMigrationData MigrateShortestLacingToAutoLacing(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);
@@ -2281,7 +2283,6 @@ namespace Dynamo.Graph.Nodes
             migrationData.AppendNode(node);
             return migrationData;
         }
-        */
 
         #endregion
 
