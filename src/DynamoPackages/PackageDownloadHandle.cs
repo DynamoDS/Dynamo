@@ -31,7 +31,8 @@ namespace Dynamo.PackageManager
         }
 
         public Greg.Responses.PackageHeader Header { get; private set; }
-        public string Name { get { return Header.name; } }
+        private string _name;
+        public string Name { get { return Header != null ? Header.name : _name; } set { _name = value; } }
 
         private string _downloadPath;
         public string DownloadPath { get { return _downloadPath; } set { _downloadPath = value; RaisePropertyChanged("DownloadPath"); } }
@@ -44,6 +45,11 @@ namespace Dynamo.PackageManager
             this.Header = header;
             this.DownloadPath = "";
             this.VersionName = version.version;
+        }
+
+        public PackageDownloadHandle()
+        {
+            this.DownloadPath = string.Empty;
         }
 
         public void Error(string errorString)
@@ -90,7 +96,10 @@ namespace Dynamo.PackageManager
                 File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
 
             // provide handle to installed package 
-            pkg = new Package(installedPath, Header.name, VersionName, Header.license);
+            if(Header != null)
+                pkg = new Package(installedPath, Header.name, VersionName, Header.license);
+            else
+                pkg = Package.FromDirectory(installedPath, dynamoModel.Logger);
 
             return true;
         }

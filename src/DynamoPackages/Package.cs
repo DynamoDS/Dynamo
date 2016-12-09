@@ -39,6 +39,8 @@ namespace Dynamo.PackageManager
 
         public string Name { get; set; }
 
+        public string ID { get; set; }
+
         public string CustomNodeDirectory
         {
             get { return Path.Combine(RootDirectory, "dyf"); }

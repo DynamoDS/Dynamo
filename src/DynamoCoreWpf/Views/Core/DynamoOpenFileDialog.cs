@@ -105,7 +105,7 @@ namespace Dynamo.UI
         public static extern IntPtr GetActiveWindow();
     }
 
-    class DynamoFolderBrowserDialog
+    public class DynamoFolderBrowserDialog
     {
         public string Title { get; set; }
         public Window Owner { get; set; }
