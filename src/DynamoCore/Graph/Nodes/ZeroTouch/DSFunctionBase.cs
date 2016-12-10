@@ -28,7 +28,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             }
             else
             {
-                ArgumentLacing = LacingStrategy.Shortest;
+                ArgumentLacing = LacingStrategy.Auto;
             }
             Category = Controller.Category;
 
