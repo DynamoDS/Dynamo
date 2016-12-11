@@ -311,6 +311,12 @@ namespace Dynamo.Graph.Nodes
 
         #region Protected Methods
 
+        protected override void SetNodeStateBasedOnConnectionAndDefaults()
+        {
+            if(!CodeStatements.Any()) State = ElementState.Error;
+            else base.SetNodeStateBasedOnConnectionAndDefaults();
+        }
+
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
             string name = updateValueParams.PropertyName;
