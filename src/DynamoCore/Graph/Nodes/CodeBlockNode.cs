@@ -313,8 +313,10 @@ namespace Dynamo.Graph.Nodes
 
         protected override void SetNodeStateBasedOnConnectionAndDefaults()
         {
-            if(!CodeStatements.Any()) State = ElementState.Error;
-            else base.SetNodeStateBasedOnConnectionAndDefaults();
+            if(!CodeStatements.Any() && OutPorts.Any())
+                State = ElementState.Error;
+            else
+                base.SetNodeStateBasedOnConnectionAndDefaults();
         }
 
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
