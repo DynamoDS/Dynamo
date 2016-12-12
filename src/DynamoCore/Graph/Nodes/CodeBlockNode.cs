@@ -371,7 +371,10 @@ namespace Dynamo.Graph.Nodes
             var inputPortHelpers =
                 childNodes.Where(node => node.Name.Equals("PortInfo")).Select(x => new XmlElementHelper(x));
 
-            inputPortNames = inputPortHelpers.Select(x => x.ReadString("name")).ToList();
+            inputPortNames =
+                inputPortHelpers.Select(x => x.ReadString("name", String.Empty))
+                    .Where(y => !string.IsNullOrEmpty(y))
+                    .ToList();
             SetInputPorts();
 
             var outputPortHelpers =
