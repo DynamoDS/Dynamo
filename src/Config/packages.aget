@@ -4,6 +4,7 @@
       "team-dynamo-nuget"
     ],
     "references": {
+      "AvalonEdit" : "4.3.1.9430",
       "cef.redist.x64" : "3.2623.1401",
       "cef.redist.x86" : "3.2623.1401",
       "CefSharp.Wpf" : "49.0.1",

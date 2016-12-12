@@ -31,7 +31,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\FontAwesome\FontAwesome.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.Practices.Prism">
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
