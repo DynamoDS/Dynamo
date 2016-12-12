@@ -12,12 +12,12 @@
     </ProjectToBuild>
 </ItemGroup>
 
-<Target Name="Build" DependsOnTargets="RestorePackages">
+<Target Name="Build"><!-- DependsOnTargets="RestorePackages"-->
     <MSBuild Projects="@(ProjectToBuild)" Targets="Rebuild"/>
 </Target>
 
-<Target Name="RestorePackages">
+<!--Target Name="RestorePackages">
     <Exec Command="$(MSBuildProjectDirectory)\..\tools\Nuget\NuGet.exe restore $(Solution)"/>
-  </Target>
+  </Target-->
 
 </Project>

@@ -47,7 +47,7 @@ REM 5 download 3rdParty packages by Aget.py
     set AgetFile=%CurrentDir%\Tools\Aget\aget.exe
     echo !AgetFile!
 
-    set nugetConfig = %CurrentDir%\Config\dynamo-nuget.config
+    set nugetConfig = %CurrentDir%\..\dynamo-nuget.config
     set PythonAget="!AgetFile!" -os win -config release -iset intel64 -toolchain v140 -linkage shared -packagesDir "!DynamoPackages!" -nuget "!NugetExe!" -framework net45 -nugetConfig "!nugetConfig!"
 
     call :TrackTime "[Aget] Downloading 3rdParty packages from Artifactory server: !AF_MIRROR!, might take a while if running for the first time."
