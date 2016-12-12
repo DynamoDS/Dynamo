@@ -19,10 +19,13 @@ for /f %%f in ('cscript //Nologo ..\install\GetFileVersion.vbs %base%\DynamoCore
 setlocal DisableDelayedExpansion
 set version=%Major%.%Minor%.%Build%-beta%Revision%
 
-:: Copy .nuspec files from "template" folder to "nuspec" folder
-:: and replace the string "@VERSION@" with the correct value
+:: Clean files generated from the previous run
+del *.nupkg
 if exist nuspec ( rmdir /s /q nuspec )
 mkdir nuspec
+
+:: Copy .nuspec files from "template" folder to "nuspec" folder
+:: and replace the string "@VERSION@" with the correct value
 for %%f in (template\*.nuspec) do (
   for /f "tokens=* delims=¶" %%i in ( '"type %%f"') do (
     set line=%%i

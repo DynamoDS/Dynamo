@@ -24,7 +24,7 @@ namespace CoreNodeModels
         [JsonConstructor]
         private Range(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            ArgumentLacing = LacingStrategy.Shortest;
+            ArgumentLacing = LacingStrategy.Auto;
         }
 
         public Range()
@@ -36,7 +36,7 @@ namespace CoreNodeModels
 
             RegisterAllPorts();
 
-            ArgumentLacing = LacingStrategy.Shortest;
+            ArgumentLacing = LacingStrategy.Auto;
         }
 
         public override bool IsConvertible
@@ -103,7 +103,7 @@ namespace CoreNodeModels
         [JsonConstructor]
         private Sequence(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            ArgumentLacing = LacingStrategy.Shortest;
+            ArgumentLacing = LacingStrategy.Auto;
         }
 
         public Sequence()
@@ -115,7 +115,7 @@ namespace CoreNodeModels
 
             RegisterAllPorts();
 
-            ArgumentLacing = LacingStrategy.Shortest;
+            ArgumentLacing = LacingStrategy.Auto;
         }
 
         public override bool IsConvertible

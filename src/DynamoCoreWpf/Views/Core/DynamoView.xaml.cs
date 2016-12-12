@@ -605,7 +605,8 @@ namespace Dynamo.Controls
         private void HidePopupWhenWindowDeactivated()
         {
             var workspace = this.ChildOfType<WorkspaceView>();
-            workspace.HidePopUp();
+            if(workspace != null)
+                workspace.HidePopUp();
          }
 
         private void TrackStartupAnalytics()

@@ -1,7 +1,9 @@
 ﻿using Dynamo.DynamoPackagesUI.ViewModels;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.Interfaces;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +15,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
     /// <summary>
     /// CEF Class to assist Publishing the Dynamo Packages
     /// </summary>
-    internal class PublishCefHelper : CefHelper
+    internal class PublishCommands : CefCommands
     {
         //private readonly DynamoViewModel dynamoViewModel;
         private MutatingFileCompressor fileCompressor;
@@ -23,7 +25,8 @@ namespace Dynamo.DynamoPackagesUI.Utilities
 
         private PackageManagerViewModel packageMgrViewModel { get; set; }
 
-        public PublishCefHelper(DynamoViewModel dynamoViewModel, PackageLoader model, PackageManagerViewModel pkgManagerViewModel) : base(dynamoViewModel, model, pkgManagerViewModel)
+        public PublishCommands(PackageLoader loader, DynamoModel model) :
+            base(loader, model)
         {
             fileCompressor = new MutatingFileCompressor();
             //customNodeDefinitions = new List<CustomNodeDefinition>();
