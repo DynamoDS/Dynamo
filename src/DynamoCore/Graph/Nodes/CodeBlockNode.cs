@@ -311,6 +311,11 @@ namespace Dynamo.Graph.Nodes
 
         #region Protected Methods
 
+        /// <summary>
+        /// If a CBN is in Error state, it will have no code but will have output ports
+        /// from the last successful compilation if any. 
+        /// In this case it should continue to be in Error state.
+        /// </summary>
         protected override void SetNodeStateBasedOnConnectionAndDefaults()
         {
             if(!CodeStatements.Any() && OutPorts.Any())
@@ -371,12 +376,14 @@ namespace Dynamo.Graph.Nodes
             var inputPortHelpers =
                 childNodes.Where(node => node.Name.Equals("PortInfo")).Select(x => new XmlElementHelper(x));
 
+            // read and set input port info
             inputPortNames =
                 inputPortHelpers.Select(x => x.ReadString("name", String.Empty))
                     .Where(y => !string.IsNullOrEmpty(y))
                     .ToList();
             SetInputPorts();
 
+            // read and set ouput port info
             var outputPortHelpers =
                 childNodes.Where(node => node.Name.Equals("OutPortInfo")).Select(x => new XmlElementHelper(x));
             var lineNumbers = outputPortHelpers.Select(x => x.ReadInteger("LineIndex")).ToList();
