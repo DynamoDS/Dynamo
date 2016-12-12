@@ -24,7 +24,6 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
@@ -58,13 +57,15 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent Condition=" '$(OS)' != 'Unix' ">"$(SolutionDir)transform_all.bat" "$(ProjectDir)"</PreBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
+  -->
   <Target Name="BeforeBuild">
+    <Exec Condition="'$(OS)'!='Unix'" Command="$(SolutionDir)transform_all.bat $(ProjectDir)" />
+    <Exec Condition="'$(OS)'!='Unix'" Command="$(SolutionDir)restorepackages.bat" ContinueOnError="true" />
+    <Exec Condition="'$(OS)'=='Unix'" Command="$(SolutionDir)restorepackages.sh" ContinueOnError="true" />
   </Target>
+  <!--
   <Target Name="AfterBuild">
   </Target>
   -->
