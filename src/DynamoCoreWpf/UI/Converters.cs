@@ -1424,7 +1424,7 @@ namespace Dynamo.Controls
                 case LacingStrategy.Disabled:
                     return "";
                 case LacingStrategy.Auto:
-                    return "Auto";
+                    return "AUTO";
                 case LacingStrategy.CrossProduct:
                     return "XXX";
                 case LacingStrategy.First:
