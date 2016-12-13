@@ -326,11 +326,11 @@ namespace DynamoInstallDetective
             var additionalPath = debugPath;
             var configPath = Path.Combine(Path.GetDirectoryName(
                     Assembly.GetExecutingAssembly().Location), "Dynamo.config");
-            if (string.IsNullOrEmpty(additionalPath) && File.Exists(configPath))
+            if (File.Exists(configPath))
             {
-                // Get DynamoCore path from the generated Dynamo.config file
-                var map = new ExeConfigurationFileMap();
-                map.ExeConfigFilename = configPath;
+                // Get DynamoCore path from the Dynamo.config file, if it exists
+                var map = new ExeConfigurationFileMap() { ExeConfigFilename = configPath };
+                
                 var config = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
                 var runtime = config.AppSettings.Settings["DynamoRuntime"];
                 if (runtime != null)
