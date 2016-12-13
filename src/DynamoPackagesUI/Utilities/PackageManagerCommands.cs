@@ -71,27 +71,36 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         /// <param name="downloadPath"></param>
         private void InstallPackage(string downloadPath)
         {
-            var firstOrDefault = Loader.LocalPackages.FirstOrDefault(pkg => pkg.ID == DownloadRequest.asset_id.ToString());
-            if (firstOrDefault != null)
+            if (!DynamoModel.IsTestMode)
             {
-                var dynModel = Model;
-                try
+                var firstOrDefault = Loader.LocalPackages.FirstOrDefault(pkg => pkg.ID == DownloadRequest.asset_id.ToString());
+                if (firstOrDefault != null)
                 {
-                    firstOrDefault.UninstallCore(dynModel.CustomNodeManager, Loader, dynModel.PreferenceSettings);
-                }
-                catch
-                {
-                    MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage,
-                        ProductName,
-                        DownloadRequest.asset_name.ToString()),
-                        Resources.UninstallFailureMessageBoxTitle,
-                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    var dynModel = Model;
+                    try
+                    {
+                        firstOrDefault.UninstallCore(dynModel.CustomNodeManager, Loader, dynModel.PreferenceSettings);
+                    }
+                    catch
+                    {
+                        MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage,
+                            ProductName,
+                            DownloadRequest.asset_name.ToString()),
+                            Resources.UninstallFailureMessageBoxTitle,
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
-
             var settings = Model.PreferenceSettings;
             PackageDownloadHandle packageDownloadHandle = new PackageDownloadHandle();
-            packageDownloadHandle.Name = DownloadRequest.asset_name;
+            if (!DynamoModel.IsTestMode)
+            {
+                packageDownloadHandle.Name = DownloadRequest.asset_name;
+            }
+            else
+            {
+                packageDownloadHandle.Name = "TestPackage";
+            }
             packageDownloadHandle.Done(downloadPath);
 
             //string installedPkgPath = string.Empty;
@@ -99,7 +108,14 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             if (packageDownloadHandle.Extract(Model, this.PackageInstallPath, out dynPkg))
             {
                 var p = Package.FromDirectory(dynPkg.RootDirectory, Model.Logger);
-                p.ID = DownloadRequest.asset_id;
+                if (!DynamoModel.IsTestMode)
+                {
+                    p.ID = DownloadRequest.asset_id;
+                }
+                else
+                {
+                    p.ID = "1234A";
+                }
                 Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
                     Loader.Load(p);

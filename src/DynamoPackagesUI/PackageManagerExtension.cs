@@ -55,7 +55,7 @@ namespace Dynamo.DynamoPackagesUI
 #endif
         }
 
-        private void OnPackageManagerClick()
+        public void OnPackageManagerClick()
         {            
             if (view == null)
             {
@@ -69,7 +69,6 @@ namespace Dynamo.DynamoPackagesUI
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                //var vm = new PackageManagerViewModel("assets");
                 view.DataContext = vm;
 
                 view.Closed += (sender, args) => view = null;
