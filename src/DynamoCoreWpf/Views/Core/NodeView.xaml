@@ -357,7 +357,7 @@
                 <TextBlock Name="lacingOptionTextBlock"
                        Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
                        ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
-                       Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource NonAutoLacingToVisibilityConverter}}"
+                       Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
                        FontFamily="Tahoma"
                        FontSize="8"
                        Margin="5"
