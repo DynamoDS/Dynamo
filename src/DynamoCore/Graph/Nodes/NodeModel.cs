@@ -1303,7 +1303,7 @@ namespace Dynamo.Graph.Nodes
         /// Sets the <seealso cref="ElementState"/> for the node based on
         /// the port's default value status and connectivity.
         /// </summary>
-        private void SetNodeStateBasedOnConnectionAndDefaults()
+        protected virtual void SetNodeStateBasedOnConnectionAndDefaults()
         {
             //Debug.WriteLine(string.Format("Validating Connections: Node type: {0}, {1} inputs, {2} outputs", this.GetType(), this.InPorts.Count(), this.OutPorts.Count()));
 
