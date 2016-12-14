@@ -3301,7 +3301,7 @@ namespace DynamoCoreWpfTests
 
                     //Check the CBN for input/output ports
                     Assert.AreNotEqual(ElementState.Error, cbn.State);
-                    Assert.AreEqual(0, cbn.OutPorts.Count);
+                    Assert.AreEqual(1, cbn.OutPorts.Count);
                     Assert.AreEqual(0, cbn.InPorts.Count);
 
                 }
