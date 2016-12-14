@@ -1274,6 +1274,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public virtual void ClearRuntimeError()
         {
+            State = ElementState.Dead;
             SetNodeStateBasedOnConnectionAndDefaults();
             if (!string.IsNullOrEmpty(persistentWarning))
             {
@@ -1318,13 +1319,13 @@ namespace Dynamo.Graph.Nodes
             // if there are inputs without connections
             // mark as dead; otherwise, if the original state is dead,
             // update it as active.
-            if (inPorts.Any(x => !x.IsConnected))
+            if (inPorts.Any(x => !x.IsConnected && !(x.UsingDefaultValue && x.DefaultValue != null)))
             {
-                State = ElementState.Dead;
+                if (State == ElementState.Active) State = ElementState.Dead;
             }
             else
             {
-                State = ElementState.Active;
+                if (State == ElementState.Dead) State = ElementState.Active;
             }
         }
 
