@@ -233,6 +233,12 @@ namespace Dynamo.Tests
                 Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.NickName).ToArray()));
             }
 
+            var cbnErrorNodes = ws1.Nodes.Where(n => n is CodeBlockNodeModel && n.State == ElementState.Error);
+            if (cbnErrorNodes.Any())
+            {
+                Assert.Inconclusive("The Workspace contains code block nodes in error state for: ");
+            }
+
             if (((HomeWorkspaceModel)ws1).RunSettings.RunType== Models.RunType.Manual)
             {
                 RunCurrentModel();
