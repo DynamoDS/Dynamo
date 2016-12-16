@@ -303,6 +303,23 @@ namespace DSCore
                     : StringComparison.InvariantCulture);
         }
 
+        public static int[] AllIndicesOf(string str, string searchFor, bool ignoreCase = false)
+        {
+            var indices = new List<int>();
+            if (searchFor == System.String.Empty) return indices.ToArray();
+
+            for (int index = 0; ; index += searchFor.Length)
+            {
+                index = str.IndexOf(searchFor, index, ignoreCase
+                    ? StringComparison.InvariantCultureIgnoreCase
+                    : StringComparison.InvariantCulture);
+                if (index == -1)
+                    break;
+                indices.Add(index);
+            }
+            return indices.ToArray();
+        }
+
         /// <summary>
         ///     Finds the zero-based index of the last occurrence of a sub-string inside a string.
         ///     Returns -1 if no index could be found.
