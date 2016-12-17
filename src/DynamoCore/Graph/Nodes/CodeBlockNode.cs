@@ -311,6 +311,19 @@ namespace Dynamo.Graph.Nodes
 
         #region Protected Methods
 
+        /// <summary>
+        /// If a CBN is in Error state, it will have no code but will have output ports
+        /// from the last successful compilation if any. 
+        /// In this case it should continue to be in Error state.
+        /// </summary>
+        protected override void SetNodeStateBasedOnConnectionAndDefaults()
+        {
+            if(!CodeStatements.Any() && OutPorts.Any())
+                State = ElementState.Error;
+            else
+                base.SetNodeStateBasedOnConnectionAndDefaults();
+        }
+
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
             string name = updateValueParams.PropertyName;
@@ -335,6 +348,21 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("CodeText", code);
             helper.SetAttribute("ShouldFocus", shouldFocus);
 
+            // add input port names to port info
+            var childNodes = element.ChildNodes.Cast<XmlElement>().ToList();
+            var inPorts = childNodes.Where(node => node.Name.Equals("PortInfo"));
+            foreach (var tuple in inPorts.Zip(InPorts, Tuple.Create))
+            {
+                tuple.Item1.SetAttribute("name", tuple.Item2.PortName);
+            }
+
+            //write output port line number info
+            foreach (var t in OutPorts)
+            {
+                XmlElement outportInfo = element.OwnerDocument.CreateElement("OutPortInfo");
+                outportInfo.SetAttribute("LineIndex", t.LineIndex.ToString(CultureInfo.InvariantCulture));
+                element.AppendChild(outportInfo);
+            }
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -343,6 +371,31 @@ namespace Dynamo.Graph.Nodes
             var helper = new XmlElementHelper(nodeElement);
             shouldFocus = helper.ReadBoolean("ShouldFocus");
             code = helper.ReadString("CodeText");
+
+            var childNodes = nodeElement.ChildNodes.Cast<XmlElement>().ToList();
+            var inputPortHelpers =
+                childNodes.Where(node => node.Name.Equals("PortInfo")).Select(x => new XmlElementHelper(x));
+
+            // read and set input port info
+            inputPortNames =
+                inputPortHelpers.Select(x => x.ReadString("name", String.Empty))
+                    .Where(y => !string.IsNullOrEmpty(y))
+                    .ToList();
+            SetInputPorts();
+
+            // read and set ouput port info
+            var outputPortHelpers =
+                childNodes.Where(node => node.Name.Equals("OutPortInfo")).Select(x => new XmlElementHelper(x));
+            var lineNumbers = outputPortHelpers.Select(x => x.ReadInteger("LineIndex")).ToList();
+            foreach (var line in lineNumbers)
+            {
+                var tooltip = Formatting.TOOL_TIP_FOR_TEMP_VARIABLE;
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
+                {
+                    LineIndex = line, // Logical line index.
+                    Height = Configurations.CodeBlockPortHeightInPixels
+                }));
+            }
 
             ProcessCodeDirect();
         }
@@ -708,8 +761,7 @@ namespace Dynamo.Graph.Nodes
         /// 
         private void CreateInputOutputPorts()
         {
-            InPorts.Clear();
-            OutPorts.Clear();
+            
             if ((codeStatements == null || (codeStatements.Count == 0))
                 && (inputIdentifiers == null || (inputIdentifiers.Count == 0)))
             {
@@ -725,6 +777,9 @@ namespace Dynamo.Graph.Nodes
 
         private void SetInputPorts()
         {
+            //Clear out all the input port models
+            InPorts.Clear();
+
             // Generate input port data list from the unbound identifiers.
             var inportData = CodeBlockUtils.GenerateInputPortData(inputPortNames);
             foreach (var portData in inportData)
@@ -737,6 +792,9 @@ namespace Dynamo.Graph.Nodes
 
             if (allDefs.Any() == false)
                 return;
+            
+            //Clear out all the output port models
+            OutPorts.Clear();
 
             foreach (var def in allDefs)
             {
@@ -779,12 +837,7 @@ namespace Dynamo.Graph.Nodes
             //Delete the connectors
             foreach (PortModel inport in InPorts)
                 inport.DestroyConnectors();
-
-            //Clear out all the port models
-            for (int i = InPorts.Count - 1; i >= 0; i--)
-                InPorts.RemoveAt(i);
-
-
+            
             //----------------------------Outputs---------------------------------
             for (int i = 0; i < OutPorts.Count; i++)
             {
@@ -807,10 +860,7 @@ namespace Dynamo.Graph.Nodes
             //Delete the connectors
             foreach (PortModel outport in OutPorts)
                 outport.DestroyConnectors();
-
-            //Clear out all the port models
-            for (int i = OutPorts.Count - 1; i >= 0; i--)
-                OutPorts.RemoveAt(i);
+            
         }
 
         /// <summary>

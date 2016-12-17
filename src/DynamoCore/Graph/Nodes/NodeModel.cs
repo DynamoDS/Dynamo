@@ -32,7 +32,7 @@ namespace Dynamo.Graph.Nodes
         #region private members
 
         private bool overrideNameWithNickName;
-        private LacingStrategy argumentLacing = LacingStrategy.Shortest;
+        private LacingStrategy argumentLacing = LacingStrategy.Auto;
         private bool displayLabels;
         private bool isUpstreamVisible;
         private bool isVisible;
@@ -1141,15 +1141,21 @@ namespace Dynamo.Graph.Nodes
 
             switch (ArgumentLacing)
             {
-                case LacingStrategy.Shortest:
+                case LacingStrategy.Auto:
                     for (int i = 0; i < inputs.Count(); ++i)
                     {
                         if (InPorts[i].UseLevels)
-                        {
                             inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, false);
-                        }
                     }
                     break;
+
+                case LacingStrategy.Shortest:
+                    for (int i = 0; i < inputs.Count(); ++i)
+                    {
+                        inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, false);
+                    }
+                    break;
+
 
                 case LacingStrategy.Longest:
 
@@ -1268,6 +1274,8 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public virtual void ClearRuntimeError()
         {
+            State = ElementState.Dead;
+            SetNodeStateBasedOnConnectionAndDefaults();
             if (!string.IsNullOrEmpty(persistentWarning))
             {
                 ToolTipText = persistentWarning;
@@ -1276,7 +1284,6 @@ namespace Dynamo.Graph.Nodes
             {
                 ClearTooltipText();
             }
-            SetNodeStateBasedOnConnectionAndDefaults();
         }
 
         public void SelectNeighbors()
@@ -1297,7 +1304,7 @@ namespace Dynamo.Graph.Nodes
         /// Sets the <seealso cref="ElementState"/> for the node based on
         /// the port's default value status and connectivity.
         /// </summary>
-        private void SetNodeStateBasedOnConnectionAndDefaults()
+        protected virtual void SetNodeStateBasedOnConnectionAndDefaults()
         {
             //Debug.WriteLine(string.Format("Validating Connections: Node type: {0}, {1} inputs, {2} outputs", this.GetType(), this.InPorts.Count(), this.OutPorts.Count()));
 
@@ -1312,13 +1319,13 @@ namespace Dynamo.Graph.Nodes
             // if there are inputs without connections
             // mark as dead; otherwise, if the original state is dead,
             // update it as active.
-            if (inPorts.Any(x => !x.IsConnected))
+            if (inPorts.Any(x => !x.IsConnected && !(x.UsingDefaultValue && x.DefaultValue != null)))
             {
-                State = ElementState.Dead;
+                if (State == ElementState.Active) State = ElementState.Dead;
             }
             else
             {
-                State = ElementState.Active;
+                if (State == ElementState.Dead) State = ElementState.Active;
             }
         }
 
@@ -2268,11 +2275,7 @@ namespace Dynamo.Graph.Nodes
             return migrationData;
         }
 
-        // Migrate NodeModel's LacingStrategy.Shortest to LacingStrategy.Auto
-        // Temporarily disabled in 1.2 to keep semantic versioning and will 
-        // enable in 2.0.
-        /*
-        [NodeMigration(@from: "1.2.0.0")]
+        [NodeMigration(@from: "1.3.0.0")]
         public static NodeMigrationData MigrateShortestLacingToAutoLacing(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);
@@ -2281,7 +2284,6 @@ namespace Dynamo.Graph.Nodes
             migrationData.AppendNode(node);
             return migrationData;
         }
-        */
 
         #endregion
 
