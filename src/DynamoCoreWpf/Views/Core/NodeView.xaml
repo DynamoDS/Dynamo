@@ -54,13 +54,11 @@
                           Command="{Binding Path=AddToGroupCommand}" />               
                 <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
                           Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter},Mode=OneWay}">
-                    <!-- Hide Auto lacing menu item temporarily.
                     <MenuItem IsCheckable="True"
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Auto,Mode=OneWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
                               CommandParameter="Auto"
                               Header="{x:Static p:Resources.ContextMenuLacingAuto}" />
-                    -->
                     <MenuItem IsCheckable="True"
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Shortest,Mode=OneWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
@@ -347,19 +345,10 @@
                     Visibility="{Binding ShouldShowGlyphBar, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
             <Grid>
-                <fa:FontAwesome 
-                       ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
-                       Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource AutoLacingToVisibilityConverter}}"
-                       Icon="Ban"
-                       FontSize="8"
-                       Margin="5"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Center"
-                       Foreground="#99000000"/>
                 <TextBlock Name="lacingOptionTextBlock"
                        Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
                        ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
-                       Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource NonAutoLacingToVisibilityConverter}}"
+                       Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
                        FontFamily="Tahoma"
                        FontSize="8"
                        Margin="5"

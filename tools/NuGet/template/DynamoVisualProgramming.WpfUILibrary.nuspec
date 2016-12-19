@@ -27,10 +27,7 @@
   </metadata>
   <files>
     <file src="DynamoCoreWpf.dll" target="lib\net45" />
-    <!--file src="DynamoCoreWpf.xml" target="build\net45" /-->
     <file src="nodes\CoreNodeModels.dll" target="lib\net45" />
-    <!--file src="nodes\CoreNodeModels.xml" target="build\net45" /-->
     <file src="nodes\CoreNodeModelsWpf.dll" target="lib\net45" />
-    <!--file src="nodes\CoreNodeModelsWpf.xml" target="build\net45" /-->
   </files>
 </package>

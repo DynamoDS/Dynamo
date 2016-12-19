@@ -260,6 +260,19 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
+        public static void AllIndicesOf()
+        {
+            Assert.AreEqual(new int[] {}, String.AllIndicesOf("", ""));
+            Assert.AreEqual(new int[] { }, String.AllIndicesOf("a", ""));
+            Assert.AreEqual(new int[] { }, String.AllIndicesOf("abcdef", "g"));
+            Assert.AreEqual(new int[] { }, String.AllIndicesOf("abcdef", "F"));
+            Assert.AreEqual(new[] {5}, String.AllIndicesOf("abcdef", "F", true));
+            Assert.AreEqual(new[] {1, 4, 7, 10}, String.AllIndicesOf("mississippi", "i"));
+            Assert.AreEqual(new[] {1, 4}, String.AllIndicesOf("mississippi", "is"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public static void LastIndexOf()
         {
             Assert.AreEqual(0, String.LastIndexOf("", ""));

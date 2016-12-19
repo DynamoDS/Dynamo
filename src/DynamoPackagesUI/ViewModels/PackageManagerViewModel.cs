@@ -1,6 +1,8 @@
 ﻿using Dynamo.DynamoPackagesUI.Utilities;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -11,16 +13,18 @@ using System.Threading.Tasks;
 namespace Dynamo.DynamoPackagesUI.ViewModels
 {
     /// <summary>
-    /// Package Manager View Model
+    /// Package Manager View Loader
     /// </summary>
     public class PackageManagerViewModel
     {
         public const string PACKAGE_MANAGER_URL = "http://dynamopackagemanager.com.s3-website-us-east-1.amazonaws.com";
+        
         public string Address { get; set; }
 
-        internal PackageManagerCefHelper CefHelper { get; set; }
+        internal PackageManagerCommands PkgMgrCommands { get; set; }
 
-        internal PublishCefHelper PublishCompCefHelper { get; set; }
+        
+
 
         /// <summary>
         /// Constructor
@@ -28,24 +32,14 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         /// <param name="dynamoViewModel"></param>
         /// <param name="model"></param>
         /// <param name="address"></param>
-        public PackageManagerViewModel(DynamoViewModel dynamoViewModel, PackageLoader model, string address)
+        public PackageManagerViewModel(PackageLoader loader, DynamoModel model, string address)
         {
-            CefHelper = new PackageManagerCefHelper(dynamoViewModel, model, this);
-            PublishCompCefHelper = new PublishCefHelper(dynamoViewModel, model, this);
+            PkgMgrCommands = new PackageManagerCommands(loader, model);
 
             var path = this.GetType().Assembly.Location;
             var config = ConfigurationManager.OpenExeConfiguration(path);
             this.Address = PACKAGE_MANAGER_URL + "/#/" + address;
         }
 
-        public PackageManagerViewModel(string address)
-        {
-            //CefHelper = new PackageManagerCefHelper(dynamoViewModel, model, this);
-            //PublishCompCefHelper = new PublishCefHelper(dynamoViewModel, model, this);
-
-            var path = this.GetType().Assembly.Location;
-            var config = ConfigurationManager.OpenExeConfiguration(path);
-            this.Address = PACKAGE_MANAGER_URL + "/#/" + address;
-        }
     }
 }

@@ -213,8 +213,8 @@ namespace Dynamo.Engine.CodeCompletion
                     }
                 }
                 completions.AddRange(classMirrorGroup.
-                        Select(
-                            x =>
+                    Where(x => !x.IsEmpty).
+                        Select(x =>
                                 CompletionData.ConvertMirrorToCompletionData(x, useShorterName,
                                     resolver: resolver)));
             }

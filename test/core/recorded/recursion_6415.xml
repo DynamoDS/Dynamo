@@ -4,7 +4,7 @@
   <MakeConnectionCommand NodeId="c4c48a6d-2b8b-47a2-ac0a-15e21c156edc" PortIndex="0" Type="0" ConnectionMode="1" />
   <SwitchTabCommand TabIndex="0" />
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.Function guid="b27da218-ac51-4216-9238-229dcaec524e" type="Dynamo.Nodes.Function" nickname="recursivesum" x="251.2" y="202" isVisible="true" isUpstreamVisible="true" lacing="Shortest">
+    <Dynamo.Nodes.Function guid="b27da218-ac51-4216-9238-229dcaec524e" type="Dynamo.Nodes.Function" nickname="recursivesum" x="251.2" y="202" isVisible="true" isUpstreamVisible="true" lacing="Auto">
       <ID value="b23e60a6-dd4c-4100-b13a-9bb59f3779ac" />
       <Name value="recursivesum" />
       <Description value="testrec" />
