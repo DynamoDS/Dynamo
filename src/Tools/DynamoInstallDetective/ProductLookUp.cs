@@ -333,7 +333,7 @@ namespace DynamoInstallDetective
                 
                 var config = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
                 var runtime = config.AppSettings.Settings["DynamoRuntime"];
-                if (runtime != null)
+                if (runtime != null && !string.IsNullOrEmpty(runtime.Value) && Directory.Exists(runtime.Value))
                 {
                     additionalPath = runtime.Value;
                 }
