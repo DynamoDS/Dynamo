@@ -518,6 +518,7 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestManagePackagesDialog += DynamoViewModelRequestShowInstalledPackages;
             dynamoViewModel.RequestPackageManagerSearchDialog += DynamoViewModelRequestShowPackageManagerSearch;
             dynamoViewModel.RequestPackagePathsDialog += DynamoViewModelRequestPackagePaths;
+            dynamoViewModel.RequestScaleFactorDialog += DynamoViewModelChangeScaleFactor;
 
             #endregion
 
@@ -760,6 +761,19 @@ namespace Dynamo.Controls
             var viewModel = new PackagePathViewModel(packageLoader,loadPackagesParams,customNodeManager);
             var view = new PackagePathView(viewModel) { Owner = this };
             view.ShowDialog();
+        }
+
+        private void DynamoViewModelChangeScaleFactor(object sender, EventArgs e)
+        {
+            var view = new Prompts.ChangeScaleFactorPrompt(dynamoViewModel.ScaleFactorLog) { Owner = this };
+            if (view.ShowDialog() == true)
+            {
+                if (dynamoViewModel.ScaleFactorLog != view.SliderValue)
+                {
+                    dynamoViewModel.ScaleFactorLog = view.SliderValue;
+                    dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+                }
+            }
         }
 
         private InstalledPackagesView _installedPkgsView;
