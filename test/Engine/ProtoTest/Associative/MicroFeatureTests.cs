@@ -1356,6 +1356,24 @@ r8 = a[z];
         }
 
         [Test]
+        public void TestDictionaryGetValueForKey()
+        {
+            // Test builtin functions GetValues() for array
+            String code = @"
+a = {{1, 23, 32}, {32, 324, 23}};
+a[0][""in""] = ""tom"";
+a[0][""out""] = ""sawyer"";
+a[1][""in""] = ""huck"";
+a[1][""out""] = ""finn"";
+t1 = GetValueForKey(a< 1 >, ""in"");
+t2 = GetValueForKey(a< 1 >, ""out"");
+            ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("t1", new[] { "tom", "huck" });
+            thisTest.Verify("t2", new[] { "sawyer", "finn" });
+        }
+
+        [Test]
         public void TestArrayCopyAssignment01()
         {
             String code = @"

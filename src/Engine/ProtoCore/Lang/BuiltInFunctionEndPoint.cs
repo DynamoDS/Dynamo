@@ -477,6 +477,29 @@ namespace ProtoCore.Lang
                         }
                         break;
                     }
+                case BuiltInMethods.MethodID.GetValueForKey:
+                    {
+                        StackValue array = formalParameters[0];
+                        StackValue key = formalParameters[1];
+                        if (!array.IsArray)
+                        {
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.kArrayOverIndexed);
+                            ret = StackValue.Null;
+                        }
+                        else
+                        {
+                            try
+                            {
+                                ret = runtimeCore.Heap.ToHeapObject<DSArray>(array).GetValueFromIndex(key, runtimeCore);
+                            }
+                            catch (RunOutOfMemoryException)
+                            {
+                                runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
+                                ret = StackValue.Null;
+                            }
+                        }
+                        break;
+                    }
                 case BuiltInMethods.MethodID.ContainsKey:
                     {
                         StackValue array = formalParameters[0];
@@ -488,6 +511,7 @@ namespace ProtoCore.Lang
                         }
                         else
                         {
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.OverIndexing, Resources.kArrayOverIndexed);
                             ret = StackValue.BuildBoolean(false);
                         }
                         break;

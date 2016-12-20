@@ -476,6 +476,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Returns the value corresponding to the supplied key from a key-value pair list.
+        /// </summary>
+        public static string GetValueForKey {
+            get {
+                return ResourceManager.GetString("GetValueForKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Gets all values stored in the specified key-value pair list and for a simple list it returns all elements in the list.
         /// </summary>
         public static string GetValues {
