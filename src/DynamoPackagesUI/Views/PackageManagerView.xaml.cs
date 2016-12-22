@@ -53,9 +53,9 @@ namespace DynamoPackagesUI.Views
             this.Width = (System.Windows.SystemParameters.PrimaryScreenWidth * 0.75);
         }
 
-        private void PackageViewModelOnPublishSuccess(PublishCommands sender)
+        /*private void PackageViewModelOnPublishSuccess(PublishCommands sender)
         {
             this.Dispatcher.BeginInvoke((Action)(Close));
-        }
+        }*/
     }
 }

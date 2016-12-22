@@ -21,7 +21,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         
         public string Address { get; set; }
 
-        internal PackageManagerCommands PkgMgrCommands { get; set; }
+        internal IPackageManagerCommands PkgMgrCommands { get; set; }
 
         
 

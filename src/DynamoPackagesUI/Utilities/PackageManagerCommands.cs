@@ -1,4 +1,5 @@
 ﻿using CefSharp;
+using CefSharp.Wpf;
 using Dynamo.DynamoPackagesUI.ViewModels;
 using Dynamo.Models;
 using Dynamo.PackageManager;
@@ -21,17 +22,48 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Dynamo.DynamoPackagesUI.Utilities
 {
     /// <summary>
     /// CEF calss to assist exploring packages, authors and logged in user packages.
     /// </summary>
-    internal class PackageManagerCommands : CefCommands
+    internal class PackageManagerCommands : IPackageManagerCommands
     {
-        public PackageManagerCommands(PackageLoader loader, DynamoModel model) : 
-            base(loader, model)
+        public DynamoPackagesUIClient Client { get; set; }
+
+        //internal readonly DynamoViewModel dynamoViewModel;
+        public DynamoModel Model { get; set; }
+
+        public PackageLoader Loader { get; set; }
+
+        //CEF Browser instance for rendering PM web UI
+        public ChromiumWebBrowser Browser { get; set; }
+
+        public string ProductName
         {
+            get
+            {
+                return !string.IsNullOrEmpty(Model.HostName) ? Model.HostName : "Dynamo";
+            }
+        }
+
+        public string SessionData
+        {
+            get
+            {
+                //return JsonConvert.SerializeObject(dynamoViewModel.PackageLoader.GetPackageManagerExtension().PackageManagerClient.GetSession());
+                return JsonConvert.SerializeObject(new Dictionary<string, string>());
+            }
+        }
+
+        public Window ParentWindow { get; set; }
+        public PackageManagerCommands(PackageLoader loader, DynamoModel model) 
+        {
+            this.Loader = loader;
+            this.Model = model;
+            this.Client = new DynamoPackagesUIClient();
         }
 
         public List<string> PackagesToInstall { get; set; }
@@ -51,7 +83,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         }
 
         private dynamic _pkgRequest;
-        public dynamic PkgRequest
+        public dynamic PackageRequest
         {
             get { return _pkgRequest; }
             set
@@ -69,7 +101,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         /// Install Dynamo Package
         /// </summary>
         /// <param name="downloadPath"></param>
-        private void InstallPackage(string downloadPath)
+        public void InstallPackage(string downloadPath)
         {
             if (!DynamoModel.IsTestMode)
             {
@@ -93,14 +125,9 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             }
             var settings = Model.PreferenceSettings;
             PackageDownloadHandle packageDownloadHandle = new PackageDownloadHandle();
-            if (!DynamoModel.IsTestMode)
-            {
-                packageDownloadHandle.Name = DownloadRequest.asset_name;
-            }
-            else
-            {
-                packageDownloadHandle.Name = "TestPackage";
-            }
+            
+            packageDownloadHandle.Name = DownloadRequest.asset_name;
+            
             packageDownloadHandle.Done(downloadPath);
 
             //string installedPkgPath = string.Empty;
@@ -108,14 +135,8 @@ namespace Dynamo.DynamoPackagesUI.Utilities
             if (packageDownloadHandle.Extract(Model, this.PackageInstallPath, out dynPkg))
             {
                 var p = Package.FromDirectory(dynPkg.RootDirectory, Model.Logger);
-                if (!DynamoModel.IsTestMode)
-                {
-                    p.ID = DownloadRequest.asset_id;
-                }
-                else
-                {
-                    p.ID = "1234A";
-                }
+                p.ID = DownloadRequest.asset_id;
+
                 Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
                     Loader.Load(p);
@@ -453,7 +474,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         /// <returns></returns>
         public bool Uninstall()
         {
-            Package localPkg = Loader.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
+            Package localPkg = Loader.LocalPackages.Where(a => a.Name == this.PackageRequest.asset_name.ToString()).First();
 
             if (localPkg.LoadedAssemblies.Any())
             {
@@ -496,20 +517,20 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         }
 
         /// <summary>
-        /// Open the root directory for PkgRequest
+        /// Open the root directory for PackageRequest
         /// </summary>
         public void GoToRootDirectory()
         {
-            Package localPkg = Loader.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
+            Package localPkg = Loader.LocalPackages.Where(a => a.Name == this.PackageRequest.asset_name.ToString()).First();
             Process.Start(localPkg.RootDirectory);
         }
 
         /// <summary>
-        /// Unmark Uninstall for PkgRequest 
+        /// Unmark Uninstall for PackageRequest 
         /// </summary>
         public void UnmarkForUninstallation()
         {
-            Package pkg = Loader.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
+            Package pkg = Loader.LocalPackages.Where(a => a.Name == this.PackageRequest.asset_name.ToString()).First();
             if (pkg != null)
             {
                 pkg.UnmarkForUninstall(Model.PreferenceSettings);

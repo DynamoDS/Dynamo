@@ -86,6 +86,7 @@
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Include="Utilities\DynamoPackagesUIClient.cs" />
+    <Compile Include="Utilities\IPackageManagerCommands.cs" />
     <Compile Include="Views\PackageManagerView.xaml.cs">
       <DependentUpon>PackageManagerView.xaml</DependentUpon>
     </Compile>
@@ -95,7 +96,6 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="Utilities\PublishCommands.cs" />
-    <Compile Include="Utilities\CefCommands.cs" />
     <Compile Include="Utilities\PackageManagerCommands.cs" />
   </ItemGroup>
   <ItemGroup>
