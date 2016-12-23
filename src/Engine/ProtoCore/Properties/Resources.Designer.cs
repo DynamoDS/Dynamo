@@ -1286,6 +1286,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; cannot be used as list level name, consider using L1 for level 1..
+        /// </summary>
+        public static string kInvalidListLevelName {
+            get {
+                return ResourceManager.GetString("kInvalidListLevelName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A cyclic dependency exists between two variables.
         /// </summary>
         public static string kInvalidStaticCyclicDependency {

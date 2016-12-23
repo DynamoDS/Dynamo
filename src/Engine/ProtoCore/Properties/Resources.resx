@@ -914,4 +914,7 @@ Parameter name: {0}</value>
   <data name="RemoveKeys1" xml:space="preserve">
     <value>Removes a copy of array with specified key removed</value>
   </data>
+  <data name="kInvalidListLevelName" xml:space="preserve">
+    <value>'{0}' cannot be used as list level name, consider using L1 for level 1.</value>
+  </data>
 </root>

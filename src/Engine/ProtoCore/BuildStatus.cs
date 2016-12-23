@@ -556,7 +556,7 @@ namespace ProtoCore
                 case   "invalid Imperative_PostFixOp":
                     return Properties.Resources.invalid_Imperative_PostFixOp;
                 default :
-                    return Properties.Resources.error;
+                    return errorMessage;
             }
         }
 
