@@ -14,6 +14,8 @@ using Dynamo.DynamoPackagesUI.Utilities;
 using Dynamo.PackageManager;
 using System.Reflection;
 using Moq;
+using Dynamo.DynamoPackagesUI.ViewModels;
+using Newtonsoft.Json;
 
 namespace DynamoPackagesUITests
 {
@@ -21,7 +23,7 @@ namespace DynamoPackagesUITests
     public class DynamoPackagesUITests : SystemTestBase
     {
         string extensionsPath;
-
+        
         private void AssertWindowOwnedByDynamoView<T>()
         {
             var windows = GetWindowEnumerable(View.OwnedWindows);
@@ -74,13 +76,18 @@ namespace DynamoPackagesUITests
         [Test]
         public void InstallDynamoPackage()
         {
-            var client = new Mock<IPackageManagerCommands>();
-            client.Verify(t => t.InstallPackage("test"));
-            //string testDirectoryPath =  Path.Combine(new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)).Parent.Parent.Parent.FullName, "test");
-            //PackageManagerCommands packageManagerCommand = new PackageManagerCommands(Model.GetPackageManagerExtension().PackageLoader, Model);
-            //packageManagerCommand.DownloadRequest = " {"asset_name":"test", "asset_id" = "1234" }";
-            //packageManagerCommand.InstallPackage(Path.Combine(testDirectoryPath, "pkgs", "TestPackage.zip"));
-            //Assert.Pass();
+            var packageManagerCommands = new Mock<IPackageManagerCommands>();
+            packageManagerCommands.Setup(t => t.Model).Returns(this.Model);
+            packageManagerCommands.Setup(t => t.Loader).Returns(this.Model.GetPackageManagerExtension().PackageLoader);
+
+            string testDirectoryPath = Path.Combine(new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)).Parent.Parent.Parent.FullName, "test");
+            PackageManagerViewModel viewModel = new PackageManagerViewModel(packageManagerCommands.Object, "assets");
+            viewModel.DownloadRequest = JsonConvert.DeserializeObject(JsonConvert.SerializeObject((dynamic) new { asset_name = "test", asset_id = "12343" }));
+            viewModel.InstallPackage(Path.Combine(testDirectoryPath, "pkgs", "TestPackage.zip"));
+
+
+            packageManagerCommands.Verify(t => t.LoadPackage(It.IsAny<Package>()), Times.Once);
+            Assert.Pass();
         }
 
     }

@@ -85,6 +85,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\CefCommands.cs" />
     <Compile Include="Utilities\DynamoPackagesUIClient.cs" />
     <Compile Include="Utilities\IPackageManagerCommands.cs" />
     <Compile Include="Views\PackageManagerView.xaml.cs">
