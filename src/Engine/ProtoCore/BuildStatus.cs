@@ -518,6 +518,7 @@ namespace ProtoCore
                 case   "invalid Associative_Number":
                     return Properties.Resources.invalid_Associative_Number;
                 case "invalid Associative_Level":
+                    return Properties.Resources.invalid_Associative_Level;
                 case "invalid Associative_NameReference":
                     return Properties.Resources.invalid_Associative_NameReference;                        
                 case  "invalid Imperative_stmt":
