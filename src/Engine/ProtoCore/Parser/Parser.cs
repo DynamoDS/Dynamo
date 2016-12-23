@@ -2077,6 +2077,8 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 
 	void Associative_Level(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
 		node = null; 
+		int sign = 1;
+		
 		if (la.kind == 1) {
 			Get();
 			if(t.val[0] != 'L')
@@ -2087,7 +2089,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Int64 value;
 			if (Int64.TryParse(level, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
 			{
-			   node = new ProtoCore.AST.AssociativeAST.IntNode(value);
+			   node = new ProtoCore.AST.AssociativeAST.IntNode(-1*value);
 			}
 			else
 			{
@@ -2099,12 +2101,14 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 2 || la.kind == 15) {
 			if (la.kind == 15) {
 				Get();
+				sign = -1; 
+				
 			}
 			Expect(2);
 			Int64 value;
 			if (Int64.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
 			{
-			   node = new ProtoCore.AST.AssociativeAST.IntNode(value);
+			   node = new ProtoCore.AST.AssociativeAST.IntNode(sign*value);
 			}
 			else
 			{

@@ -674,6 +674,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid list@level syntax, consider using @L1 for level 1..
+        /// </summary>
+        public static string invalid_Associative_Level {
+            get {
+                return ResourceManager.GetString("invalid_Associative_Level", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to invalid Associative_LogicalOp.
         /// </summary>
         public static string invalid_Associative_LogicalOp {
