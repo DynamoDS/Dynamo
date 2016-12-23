@@ -127,26 +127,24 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         /// <param name="downloadPath"></param>
         public void InstallPackage(string downloadPath)
         {
-            if (!DynamoModel.IsTestMode)
+            var firstOrDefault = Loader.LocalPackages.FirstOrDefault(pkg => pkg.ID == DownloadRequest.asset_id.ToString());
+            if (firstOrDefault != null)
             {
-                var firstOrDefault = Loader.LocalPackages.FirstOrDefault(pkg => pkg.ID == DownloadRequest.asset_id.ToString());
-                if (firstOrDefault != null)
+                var dynModel = Model;
+                try
                 {
-                    var dynModel = Model;
-                    try
-                    {
-                        firstOrDefault.UninstallCore(dynModel.CustomNodeManager, Loader, dynModel.PreferenceSettings);
-                    }
-                    catch
-                    {
-                        MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage,
-                            ProductName,
-                            DownloadRequest.asset_name.ToString()),
-                            Resources.UninstallFailureMessageBoxTitle,
-                            MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+                    firstOrDefault.UninstallCore(dynModel.CustomNodeManager, Loader, dynModel.PreferenceSettings);
+                }
+                catch
+                {
+                    MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage,
+                        ProductName,
+                        DownloadRequest.asset_name.ToString()),
+                        Resources.UninstallFailureMessageBoxTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+
             var settings = Model.PreferenceSettings;
             PackageDownloadHandle packageDownloadHandle = new PackageDownloadHandle();
 

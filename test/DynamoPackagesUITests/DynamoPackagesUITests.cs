@@ -79,15 +79,16 @@ namespace DynamoPackagesUITests
             var packageManagerCommands = new Mock<IPackageManagerCommands>();
             packageManagerCommands.Setup(t => t.Model).Returns(this.Model);
             packageManagerCommands.Setup(t => t.Loader).Returns(this.Model.GetPackageManagerExtension().PackageLoader);
-
-            string testDirectoryPath = Path.Combine(new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)).Parent.Parent.Parent.FullName, "test");
+            packageManagerCommands.Setup(t => t.LoadPackage(It.IsAny<Package>())).Callback<Package>((t) => {
+                Assert.AreEqual(t.ID, "12343");
+                Directory.Delete(t.RootDirectory, true);
+            });
+;            string testDirectoryPath = Path.Combine(new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)).Parent.Parent.Parent.FullName, "test");
             PackageManagerViewModel viewModel = new PackageManagerViewModel(packageManagerCommands.Object, "assets");
             viewModel.DownloadRequest = JsonConvert.DeserializeObject(JsonConvert.SerializeObject((dynamic) new { asset_name = "test", asset_id = "12343" }));
             viewModel.InstallPackage(Path.Combine(testDirectoryPath, "pkgs", "TestPackage.zip"));
 
-
             packageManagerCommands.Verify(t => t.LoadPackage(It.IsAny<Package>()), Times.Once);
-            Assert.Pass();
         }
 
     }
