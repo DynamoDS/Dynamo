@@ -772,6 +772,8 @@ namespace Dynamo.Controls
                 {
                     dynamoViewModel.ScaleFactorLog = view.SliderValue;
                     dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+
+                    dynamoViewModel.ExecuteCommand(new DynamoModel.ForceRunCancelCommand(false, false));
                 }
             }
         }

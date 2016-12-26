@@ -1430,13 +1430,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void ChangeScaleFactor(object parameters)
-        {
-            OnRequestScaleFactorDialog(this, EventArgs.Empty);
-
-            ExecuteCommand(new DynamoModel.ForceRunCancelCommand(false, false));
-        }
-
         internal bool ChangeScaleFactorEnabled
         {
             get { return !ShowStartPage; }
