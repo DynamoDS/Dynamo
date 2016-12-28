@@ -6,7 +6,6 @@ using Dynamo.PackageManager;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Properties;
 using DynamoUtilities;
 using Greg.Requests;
 using Greg.Responses;
@@ -18,6 +17,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using Dynamo.DynamoPackagesUI.Properties;
 
 namespace Dynamo.DynamoPackagesUI.ViewModels
 {
@@ -66,12 +66,13 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         internal Window ParentWindow { get; set; }
 
         private IPackageManagerCommands PkgMgrCommands { get; set; }
+        private IPackageManagerMessageBox PkgMgrMessageBox { get; set; }
 
         public List<string> PackagesToInstall { get; set; }
 
         public string InstalledPackages
         {
-            get { return JsonConvert.SerializeObject(Loader.LocalPackages.ToList()); }
+            get { return JsonConvert.SerializeObject(PkgMgrCommands.LocalPackages.ToList()); }
         }
 
         private dynamic _downloadRequest;
@@ -107,9 +108,10 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         /// <param name="dynamoViewModel"></param>
         /// <param name="model"></param>
         /// <param name="address"></param>
-        public PackageManagerViewModel(IPackageManagerCommands packageCommands, string address)
+        public PackageManagerViewModel(IPackageManagerCommands packageCommands, IPackageManagerMessageBox messageBox, string address)
         {
             PkgMgrCommands = packageCommands;
+            PkgMgrMessageBox = messageBox;
 
             this.Loader = PkgMgrCommands.Loader;
             this.Model = PkgMgrCommands.Model;
@@ -127,7 +129,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         /// <param name="downloadPath"></param>
         public void InstallPackage(string downloadPath)
         {
-            var firstOrDefault = Loader.LocalPackages.FirstOrDefault(pkg => pkg.ID == DownloadRequest.asset_id.ToString());
+            var firstOrDefault = PkgMgrCommands.LocalPackages.FirstOrDefault(pkg => pkg.ID == DownloadRequest.asset_id.ToString());
             if (firstOrDefault != null)
             {
                 var dynModel = Model;
@@ -137,7 +139,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
                 }
                 catch
                 {
-                    MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage,
+                    PkgMgrMessageBox.ShowError(String.Format(Resources.MessageFailToUninstallPackage,
                         ProductName,
                         DownloadRequest.asset_name.ToString()),
                         Resources.UninstallFailureMessageBoxTitle,
@@ -267,7 +269,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
                 String.Format(Resources.MessageConfirmToInstallPackage, asset["asset_name"], version["version"]) :
                 String.Format(Resources.MessageConfirmToInstallPackageToFolder, asset["asset_name"], version["version"], downloadPath);
 
-            var result = MessageBox.Show(msg,
+            var result = PkgMgrMessageBox.ShowConfirmToInstallPackage(msg,
                 Resources.PackageDownloadConfirmMessageBoxTitle,
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
@@ -296,7 +298,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
                     return "cancel";
 
 
-                var localPkgs = Loader.LocalPackages;
+                var localPkgs = PkgMgrCommands.LocalPackages;
 
                 var uninstallsRequiringRestart = new List<Package>();
                 var uninstallRequiringUserModifications = new List<Package>();
@@ -325,7 +327,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
 
                 if (uninstallRequiringUserModifications.Any())
                 {
-                    MessageBox.Show(String.Format(Resources.MessageUninstallToContinue,
+                    PkgMgrMessageBox.ShowUninstallToContinue(String.Format(Resources.MessageUninstallToContinue,
                         ProductName,
                         JoinPackageNames(uninstallRequiringUserModifications)),
                         Resources.CannotDownloadPackageMessageBoxTitle,
@@ -341,7 +343,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
                     uninstallsRequiringRestart.ForEach(
                         x => x.MarkForUninstall(settings));
 
-                    MessageBox.Show(String.Format(Resources.MessageUninstallToContinue2,
+                    PkgMgrMessageBox.ShowUninstallToContinue2(String.Format(Resources.MessageUninstallToContinue2,
                         ProductName,
                         JoinPackageNames(uninstallsRequiringRestart)),
                         Resources.CannotDownloadPackageMessageBoxTitle,
@@ -352,7 +354,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
                 if (immediateUninstalls.Any())
                 {
                     // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
-                    if (MessageBox.Show(String.Format(Resources.MessageAlreadyInstallDynamo,
+                    if (PkgMgrMessageBox.ShowAlreadyInstallDynamo(String.Format(Resources.MessageAlreadyInstallDynamo,
                         ProductName,
                         JoinPackageNames(immediateUninstalls)),
                         Resources.DownloadWarningMessageBoxTitle,
@@ -427,7 +429,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
             // if any do, notify user and allow cancellation
             if (containsBinaries || containsPythonScripts)
             {
-                var res = MessageBox.Show(Resources.MessagePackageContainPythonScript,
+                var res = PkgMgrMessageBox.ShowPackageContainPythonScript(Resources.MessagePackageContainPythonScript,
                     Resources.PackageDownloadMessageBoxTitle,
                     MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
@@ -451,7 +453,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
             {
                 var versionList = FormatPackageVersionList(futureDeps.ToList());
 
-                if (MessageBox.Show(String.Format(Resources.MessagePackageNewerDynamo,
+                if (PkgMgrMessageBox.ShowPackageUseNewerDynamo(String.Format(Resources.MessagePackageNewerDynamo,
                     ProductName,
                     versionList),
 
@@ -496,12 +498,12 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         /// <returns></returns>
         public bool Uninstall()
         {
-            Package localPkg = Loader.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
+            Package localPkg = PkgMgrCommands.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
 
             if (localPkg.LoadedAssemblies.Any())
             {
                 var resAssem =
-                    MessageBox.Show(string.Format(Resources.MessageNeedToRestart,
+                    PkgMgrMessageBox.ShowNeedToRestart(string.Format(Resources.MessageNeedToRestart,
                         ProductName),
                         Resources.UninstallingPackageMessageBoxTitle,
                         MessageBoxButton.OKCancel,
@@ -509,7 +511,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
                 if (resAssem == MessageBoxResult.Cancel) return false;
             }
 
-            var res = MessageBox.Show(String.Format(Resources.MessageConfirmToUninstallPackage, localPkg.Name),
+            var res = PkgMgrMessageBox.ShowConfirmToUninstallPackage(String.Format(Resources.MessageConfirmToUninstallPackage, localPkg.Name),
                                       Resources.UninstallingPackageMessageBoxTitle,
                                       MessageBoxButton.YesNo, MessageBoxImage.Question);
 
@@ -526,7 +528,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
             }
             catch (Exception)
             {
-                MessageBox.Show(string.Format(Resources.MessageFailedToUninstall,
+                PkgMgrMessageBox.ShowError(string.Format(Resources.MessageFailedToUninstall,
                     ProductName),
                     Resources.UninstallFailureMessageBoxTitle,
                     MessageBoxButton.OK, MessageBoxImage.Error);
@@ -539,7 +541,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         /// </summary>
         public void GoToRootDirectory()
         {
-            Package localPkg = Loader.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
+            Package localPkg = PkgMgrCommands.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
             Process.Start(localPkg.RootDirectory);
         }
 
@@ -548,7 +550,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         /// </summary>
         public void UnmarkForUninstallation()
         {
-            Package pkg = Loader.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
+            Package pkg = PkgMgrCommands.LocalPackages.Where(a => a.Name == this.PkgRequest.asset_name.ToString()).First();
             if (pkg != null)
             {
                 pkg.UnmarkForUninstall(Model.PreferenceSettings);

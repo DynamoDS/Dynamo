@@ -1,5 +1,6 @@
 ﻿using Dynamo.Models;
 using Dynamo.PackageManager;
+using System.Collections.Generic;
 
 namespace Dynamo.DynamoPackagesUI.Utilities
 {
@@ -8,6 +9,8 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         DynamoModel Model { get; set; }
 
         PackageLoader Loader { get; set; }
+
+        IEnumerable<Package> LocalPackages { get; }
 
         /// <summary>
         /// Install Dynamo Package

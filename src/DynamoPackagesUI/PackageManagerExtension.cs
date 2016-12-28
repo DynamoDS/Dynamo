@@ -63,8 +63,11 @@ namespace Dynamo.DynamoPackagesUI
                 var dynamoViewModel = viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel;
                 if (dynamoViewModel == null) throw new Exception("Couldn't get DynamoViewModel");
                 var dynamoModel = dynamoViewModel.Model;
+
                 IPackageManagerCommands packageCommands = new PackageManagerCommands(dynamoModel.GetPackageManagerExtension().PackageLoader, dynamoModel);
-                var vm = new PackageManagerViewModel(packageCommands, "assets");
+                IPackageManagerMessageBox messageBox = new PackageManagerMessageBox();
+                var vm = new PackageManagerViewModel(packageCommands, messageBox, "assets");
+
                 view = new PackageManagerView(vm)
                 {
                     Owner = viewLoadedParams.DynamoWindow,

@@ -1,6 +1,7 @@
 ﻿using Dynamo.Models;
 using Dynamo.PackageManager;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 
 namespace Dynamo.DynamoPackagesUI.Utilities
@@ -14,6 +15,8 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         public DynamoModel Model { get; set; }
 
         public PackageLoader Loader { get; set; }
+
+        public IEnumerable<Package> LocalPackages { get { return Loader.LocalPackages; } }
 
         
         public PackageManagerCommands(PackageLoader loader, DynamoModel model) 
