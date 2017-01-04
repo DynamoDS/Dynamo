@@ -87,8 +87,6 @@
     </Compile>
     <Compile Include="Utilities\DynamoPackagesUIClient.cs" />
     <Compile Include="Utilities\IPackageManagerCommands.cs" />
-    <Compile Include="Utilities\IPackageManagerMessageBox.cs" />
-    <Compile Include="Utilities\PackageManagerMessageBox.cs" />
     <Compile Include="Views\PackageManagerView.xaml.cs">
       <DependentUpon>PackageManagerView.xaml</DependentUpon>
     </Compile>

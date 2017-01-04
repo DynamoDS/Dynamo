@@ -65,8 +65,7 @@ namespace Dynamo.DynamoPackagesUI
                 var dynamoModel = dynamoViewModel.Model;
 
                 IPackageManagerCommands packageCommands = new PackageManagerCommands(dynamoModel.GetPackageManagerExtension().PackageLoader, dynamoModel);
-                IPackageManagerMessageBox messageBox = new PackageManagerMessageBox();
-                var vm = new PackageManagerViewModel(packageCommands, messageBox, "assets");
+                var vm = new PackageManagerViewModel(packageCommands, "packages");
 
                 view = new PackageManagerView(vm)
                 {

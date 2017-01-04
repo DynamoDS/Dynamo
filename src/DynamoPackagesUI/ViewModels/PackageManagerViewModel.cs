@@ -27,7 +27,8 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
     public class PackageManagerViewModel
     {
         public const string PACKAGE_MANAGER_URL = "http://dynamopackagemanager.com.s3-website-us-east-1.amazonaws.com";
-        
+        //public const string PACKAGE_MANAGER_URL = "http://localhost:5555";
+
         public string Address { get; set; }
 
         [JavascriptIgnore]
@@ -65,8 +66,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         [JavascriptIgnore]
         internal Window ParentWindow { get; set; }
 
-        private IPackageManagerCommands PkgMgrCommands { get; set; }
-        private IPackageManagerMessageBox PkgMgrMessageBox { get; set; }
+        internal IPackageManagerCommands PkgMgrCommands { get; set; }
 
         public List<string> PackagesToInstall { get; set; }
 
@@ -108,10 +108,9 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
         /// <param name="dynamoViewModel"></param>
         /// <param name="model"></param>
         /// <param name="address"></param>
-        public PackageManagerViewModel(IPackageManagerCommands packageCommands, IPackageManagerMessageBox messageBox, string address)
+        public PackageManagerViewModel(IPackageManagerCommands packageCommands, string address)
         {
             PkgMgrCommands = packageCommands;
-            PkgMgrMessageBox = messageBox;
 
             this.Loader = PkgMgrCommands.Loader;
             this.Model = PkgMgrCommands.Model;
@@ -139,11 +138,8 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
                 }
                 catch
                 {
-                    PkgMgrMessageBox.ShowError(String.Format(Resources.MessageFailToUninstallPackage,
-                        ProductName,
-                        DownloadRequest.asset_name.ToString()),
-                        Resources.UninstallFailureMessageBoxTitle,
-                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    PkgMgrCommands.Show(PackageManagerMessages.FAIL_TO_UNINSTALL_PACKAGE, Resources.UninstallFailureMessageBoxTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Error, ProductName, DownloadRequest.asset_name.ToString());
                 }
             }
 
@@ -264,14 +260,18 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
             string downloadPath = this.PackageInstallPath;
 
             List<Tuple<dynamic, dynamic>> packageVersionData = new List<Tuple<dynamic, dynamic>>();
-
+            /*
             string msg = String.IsNullOrEmpty(downloadPath) ?
                 String.Format(Resources.MessageConfirmToInstallPackage, asset["asset_name"], version["version"]) :
-                String.Format(Resources.MessageConfirmToInstallPackageToFolder, asset["asset_name"], version["version"], downloadPath);
+                String.Format(Resources.MessageConfirmToInstallPackageToFolder, asset["asset_name"], version["version"], downloadPath);*/
+                
 
-            var result = PkgMgrMessageBox.ShowConfirmToInstallPackage(msg,
+            var result = String.IsNullOrEmpty(downloadPath) ? PkgMgrCommands.Show( PackageManagerMessages.CONFIRM_TO_INSTALL_PACKAGE,
                 Resources.PackageDownloadConfirmMessageBoxTitle,
-                MessageBoxButton.OKCancel, MessageBoxImage.Question);
+                MessageBoxButton.OKCancel, MessageBoxImage.Question, asset["asset_name"], version["version"]) :
+                PkgMgrCommands.Show(PackageManagerMessages.CONFIRM_TO_INSTALL_PACKAGE_FOLDER,
+                Resources.PackageDownloadConfirmMessageBoxTitle,
+                MessageBoxButton.OKCancel, MessageBoxImage.Question, asset["asset_name"], version["version"], downloadPath);
 
             if (PackagesToInstall == null)
                 PackagesToInstall = new List<string>();
@@ -327,11 +327,9 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
 
                 if (uninstallRequiringUserModifications.Any())
                 {
-                    PkgMgrMessageBox.ShowUninstallToContinue(String.Format(Resources.MessageUninstallToContinue,
-                        ProductName,
-                        JoinPackageNames(uninstallRequiringUserModifications)),
-                        Resources.CannotDownloadPackageMessageBoxTitle,
-                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    PkgMgrCommands.Show(PackageManagerMessages.UNINSTALL_TO_CONTINUE, Resources.CannotDownloadPackageMessageBoxTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Error, ProductName,
+                        JoinPackageNames(uninstallRequiringUserModifications));
                     return "cancel";
                 }
 
@@ -343,22 +341,20 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
                     uninstallsRequiringRestart.ForEach(
                         x => x.MarkForUninstall(settings));
 
-                    PkgMgrMessageBox.ShowUninstallToContinue2(String.Format(Resources.MessageUninstallToContinue2,
-                        ProductName,
-                        JoinPackageNames(uninstallsRequiringRestart)),
+                    PkgMgrCommands.Show(PackageManagerMessages.UNINSTALL_TO_CONTINUE2,
                         Resources.CannotDownloadPackageMessageBoxTitle,
-                        MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBoxButton.OK, MessageBoxImage.Error, ProductName,
+                        JoinPackageNames(uninstallsRequiringRestart));
                     return "cancel";
                 }
 
                 if (immediateUninstalls.Any())
                 {
                     // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
-                    if (PkgMgrMessageBox.ShowAlreadyInstallDynamo(String.Format(Resources.MessageAlreadyInstallDynamo,
-                        ProductName,
-                        JoinPackageNames(immediateUninstalls)),
+                    if (PkgMgrCommands.Show(PackageManagerMessages.ALREADY_INSTALLED_DYNAMO, 
                         Resources.DownloadWarningMessageBoxTitle,
-                        MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                        MessageBoxButton.OKCancel, MessageBoxImage.Warning, ProductName,
+                        JoinPackageNames(immediateUninstalls)) == MessageBoxResult.Cancel)
                         return "cancel";
                 }
 
@@ -407,6 +403,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
                             packageVersionData.Add(new Tuple<dynamic, dynamic>(depAsset, versionData));
                             PackagesToInstall.Add(string.Format("{0},{1},{2}", temp[0], versionData.file_id.Value, depAsset.asset_name));
                         }
+
                     }
                 }
             }
@@ -429,7 +426,7 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
             // if any do, notify user and allow cancellation
             if (containsBinaries || containsPythonScripts)
             {
-                var res = PkgMgrMessageBox.ShowPackageContainPythonScript(Resources.MessagePackageContainPythonScript,
+                var res = PkgMgrCommands.Show(PackageManagerMessages.PACKAGE_CONTAIN_PYTHON_SCRIPT,
                     Resources.PackageDownloadMessageBoxTitle,
                     MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
@@ -453,14 +450,12 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
             {
                 var versionList = FormatPackageVersionList(futureDeps.ToList());
 
-                if (PkgMgrMessageBox.ShowPackageUseNewerDynamo(String.Format(Resources.MessagePackageNewerDynamo,
-                    ProductName,
-                    versionList),
-
+                if (PkgMgrCommands.Show(PackageManagerMessages.PACKAGE_NEWER_DYNAMO, 
                     string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle,
                     ProductName),
                     MessageBoxButton.OKCancel,
-                    MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                    MessageBoxImage.Warning, ProductName,
+                    versionList) == MessageBoxResult.Cancel)
                 {
                     return MessageBoxResult.Cancel;
                 }
@@ -503,17 +498,16 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
             if (localPkg.LoadedAssemblies.Any())
             {
                 var resAssem =
-                    PkgMgrMessageBox.ShowNeedToRestart(string.Format(Resources.MessageNeedToRestart,
-                        ProductName),
+                    PkgMgrCommands.Show(PackageManagerMessages.NEED_TO_RESTART, 
                         Resources.UninstallingPackageMessageBoxTitle,
                         MessageBoxButton.OKCancel,
-                        MessageBoxImage.Exclamation);
+                        MessageBoxImage.Exclamation, ProductName);
                 if (resAssem == MessageBoxResult.Cancel) return false;
             }
 
-            var res = PkgMgrMessageBox.ShowConfirmToUninstallPackage(String.Format(Resources.MessageConfirmToUninstallPackage, localPkg.Name),
+            var res = PkgMgrCommands.Show(PackageManagerMessages.CONFIRM_TO_UNINSTALL,
                                       Resources.UninstallingPackageMessageBoxTitle,
-                                      MessageBoxButton.YesNo, MessageBoxImage.Question);
+                                      MessageBoxButton.YesNo, MessageBoxImage.Question, localPkg.Name);
 
             if (res == MessageBoxResult.No)
             {
@@ -528,10 +522,9 @@ namespace Dynamo.DynamoPackagesUI.ViewModels
             }
             catch (Exception)
             {
-                PkgMgrMessageBox.ShowError(string.Format(Resources.MessageFailedToUninstall,
-                    ProductName),
+                PkgMgrCommands.Show(PackageManagerMessages.FAILED_TO_UNINSTALL, 
                     Resources.UninstallFailureMessageBoxTitle,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBoxButton.OK, MessageBoxImage.Error, ProductName);
                 return false;
             }
         }

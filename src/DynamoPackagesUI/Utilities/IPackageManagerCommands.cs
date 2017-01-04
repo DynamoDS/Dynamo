@@ -1,6 +1,7 @@
 ﻿using Dynamo.Models;
 using Dynamo.PackageManager;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace Dynamo.DynamoPackagesUI.Utilities
 {
@@ -23,6 +24,8 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         /// </summary>
         /// <returns></returns>
         bool UnloadPackage(Package localPackage);
+
+        MessageBoxResult Show(PackageManagerMessages msgID, string caption, MessageBoxButton options, MessageBoxImage boxImage, params object[] args);
 
     }
 }

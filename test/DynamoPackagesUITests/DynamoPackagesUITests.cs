@@ -23,7 +23,13 @@ namespace DynamoPackagesUITests
     [TestFixture]
     public class DynamoPackagesUITests : SystemTestBase
     {
-        string extensionsPath;
+        private string extensionsPath;
+        private Mock<IPackageManagerCommands> packageManagerCommands;
+        private PackageManagerViewModel viewModel;
+        private Dictionary<string, object> dictPackage;
+        private Dictionary<string, object> dictVersion;
+        private Dictionary<PackageManagerMessages, MessageBoxResult> PkgManagerMessages;
+        private PackageManagerMessages msgID;
 
         private void AssertWindowOwnedByDynamoView<T>()
         {
@@ -49,7 +55,41 @@ namespace DynamoPackagesUITests
         [SetUp]
         public void Init()
         {
+            InitializePackageManagerMessageReturnValues();
             extensionsPath = Path.Combine(Directory.GetCurrentDirectory(), "viewExtensions");
+
+            packageManagerCommands = new Mock<IPackageManagerCommands>();
+            packageManagerCommands.Setup(t => t.Model).Returns(this.Model);
+            packageManagerCommands.Setup(t => t.Loader).Returns(this.Model.GetPackageManagerExtension().PackageLoader);
+            packageManagerCommands.Setup(t => t.Show(It.IsAny<PackageManagerMessages>(), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>(), It.IsAny<object[]>()))
+                .Callback<PackageManagerMessages, string, MessageBoxButton, MessageBoxImage, object[]>((messageID, caption, options, boxImage, args) => msgID = messageID)
+                .Returns(() => PkgManagerMessages[msgID]);
+
+            var package = new { asset_id = "12343", asset_name = "test" };
+            var version = new
+            {
+                contents = string.Empty,
+                contains_binaries = false,
+                node_libraries = new List<dynamic>(),
+                dependencies = string.Empty,
+                engine_version = "1.0.0.0",
+                url = @"https://package.com/package.zip",
+                version = "2013.11.10",
+                file_id = "12133"
+            };
+            dictPackage = package.GetType().GetProperties().ToDictionary(x => x.Name, x => x.GetValue(package, null));
+            dictVersion = version.GetType().GetProperties().ToDictionary(x => x.Name, x => x.GetValue(version, null));
+
+            
+            viewModel = new PackageManagerViewModel(packageManagerCommands.Object, "packages");
+        }
+
+        private void InitializePackageManagerMessageReturnValues()
+        {
+            PkgManagerMessages = new Dictionary<PackageManagerMessages, MessageBoxResult>();
+            PkgManagerMessages.Add(PackageManagerMessages.CONFIRM_TO_INSTALL_PACKAGE, MessageBoxResult.Cancel);
+            PkgManagerMessages.Add(PackageManagerMessages.PACKAGE_CONTAIN_PYTHON_SCRIPT, MessageBoxResult.Cancel);
+            PkgManagerMessages.Add(PackageManagerMessages.CONFIRM_TO_UNINSTALL, MessageBoxResult.No);
         }
 
         [Test]
@@ -91,8 +131,7 @@ namespace DynamoPackagesUITests
             });
 
             string testDirectoryPath = Path.Combine(new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)).Parent.Parent.Parent.FullName, "test");
-            IPackageManagerMessageBox messageBox = new PackageManagerMessageBox();
-            PackageManagerViewModel viewModel = new PackageManagerViewModel(packageManagerCommands.Object, messageBox, "assets");
+            PackageManagerViewModel viewModel = new PackageManagerViewModel(packageManagerCommands.Object, "packages");
             viewModel.DownloadRequest = JsonConvert.DeserializeObject(JsonConvert.SerializeObject((dynamic)new { asset_name = "test", asset_id = "12343" }));
             viewModel.InstallPackage(Path.Combine(testDirectoryPath, "pkgs", "TestPackage.zip"));
 
@@ -100,70 +139,46 @@ namespace DynamoPackagesUITests
         }
 
         [Test]
-        public void InstallPackageClick()
+        public void InstallPackageCancel()
         {
-            var packageManagerCommands = new Mock<IPackageManagerCommands>();
-            packageManagerCommands.Setup(t => t.Model).Returns(this.Model);
-            packageManagerCommands.Setup(t => t.Loader).Returns(this.Model.GetPackageManagerExtension().PackageLoader);
-
-            var package = new { asset_id = "12343", asset_name = "test" };
-            var version = new
-            {
-                contents = string.Empty,
-                contains_binaries = false,
-                node_libraries = new List<dynamic>(),
-                dependencies = string.Empty,
-                engine_version = "0.6.2.19362",
-                url = @"https://s3.amazonaws.com/greg-pkgs-dev/a5710c62-80bf-4d8a-92b5-28e242df9f4fgregPkg261.zip",
-                version = "2013.11.10",
-                file_id = "12133"
-            };
-            var dictPackage = package.GetType().GetProperties().ToDictionary(x => x.Name, x => x.GetValue(package, null));
-            var dictVersion = version.GetType().GetProperties().ToDictionary(x => x.Name, x => x.GetValue(version, null));
-            
-            
             //1. Confirm Install Package Message Box
-            var packageManagerMessageBox = new Mock<IPackageManagerMessageBox>();
-            packageManagerMessageBox.Setup(t => t.ShowConfirmToInstallPackage(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>())).Returns(MessageBoxResult.Cancel);
-
-            PackageManagerViewModel viewModel = new PackageManagerViewModel(packageManagerCommands.Object, packageManagerMessageBox.Object, "assets");
             string returnValue = viewModel.PackageOnExecuted(dictPackage, dictVersion);
             StringAssert.AreEqualIgnoringCase(returnValue, "cancel");
+        }
 
+        [Test]
+        public void InstallPythonScriptCheckCancel()
+        {
             //2. Python Script Chaeck
-            packageManagerMessageBox.Setup(t => t.ShowConfirmToInstallPackage(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>())).Returns(MessageBoxResult.OK);
-            packageManagerMessageBox.Setup(t => t.ShowPackageContainPythonScript(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>())).Returns(MessageBoxResult.Cancel);
+            PkgManagerMessages[PackageManagerMessages.CONFIRM_TO_INSTALL_PACKAGE] = MessageBoxResult.OK;
             dictVersion["contains_binaries"] = true;
-            returnValue = viewModel.PackageOnExecuted(dictPackage, dictVersion);
+            string returnValue = viewModel.PackageOnExecuted(dictPackage, dictVersion);
             StringAssert.AreEqualIgnoringCase(returnValue, "cancel");
+        }
 
+        [Test]
+        public void InstallCheckDynamoVersion()
+        {
             //3. Check Dynamo Version
-            packageManagerMessageBox.Setup(t => t.ShowConfirmToInstallPackage(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>())).Returns(MessageBoxResult.OK);
-            packageManagerMessageBox.Setup(t => t.ShowPackageContainPythonScript(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>())).Returns(MessageBoxResult.OK);
+            PkgManagerMessages[PackageManagerMessages.PACKAGE_CONTAIN_PYTHON_SCRIPT] = MessageBoxResult.OK;
             dictVersion["contains_binaries"] = true;
-            returnValue = viewModel.PackageOnExecuted(dictPackage, dictVersion);
+            //TODO: Return some concrete type.
+            string returnValue = viewModel.PackageOnExecuted(dictPackage, dictVersion);
             StringAssert.AreEqualIgnoringCase(returnValue, "12343,12133,test");
         }
 
         [Test]
         public void UnInstallPackage()
         {
-            var packageManagerCommands = new Mock<IPackageManagerCommands>();
-            packageManagerCommands.Setup(t => t.Model).Returns(this.Model);
-            packageManagerCommands.Setup(t => t.Loader).Returns(this.Model.GetPackageManagerExtension().PackageLoader);
             packageManagerCommands.Setup(t => t.LocalPackages).Returns(new List<Package> { { new Package("test", "test", "1.0.0", "MIT") } });
 
-            var packageManagerMessageBox = new Mock<IPackageManagerMessageBox>();
-            packageManagerMessageBox.Setup(t => t.ShowConfirmToUninstallPackage(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>())).Returns(MessageBoxResult.No);
-
             //Confirm UnInstall
-            PackageManagerViewModel viewModel = new PackageManagerViewModel(packageManagerCommands.Object, packageManagerMessageBox.Object, "assets");
             viewModel.PkgRequest = JsonConvert.DeserializeObject(JsonConvert.SerializeObject((dynamic)new { asset_name = "test" }));
             bool returnValue = viewModel.Uninstall();
             Assert.AreEqual(false, returnValue, string.Empty);
 
             //UnInstall
-            packageManagerMessageBox.Setup(t => t.ShowConfirmToUninstallPackage(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>())).Returns(MessageBoxResult.Yes);
+            PkgManagerMessages[PackageManagerMessages.CONFIRM_TO_UNINSTALL] = MessageBoxResult.OK;
             returnValue = viewModel.Uninstall();
             packageManagerCommands.Verify(t => t.UnloadPackage(It.IsAny<Package>()), Times.Once);
         }
