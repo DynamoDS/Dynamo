@@ -429,7 +429,7 @@ import (AtLevelTestClass from ""FFITarget.dll"");
 t = AtLevelTestClass();
 xs = {{{1,2}, {3, 4}}, {{5, 6}, {7, 8}}};
 ys = {""a"", ""b"", ""c""};
-r1 = t.sumAndConcat(xs@@-2<1L>, ys@-1<1L>);
+r1 = t.sumAndConcat(xs@@L2<1L>, ys@L1<1L>);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", new object[] { new object[] { "3a", "7b" }, new object[] { "11c", "15c" } });
@@ -446,7 +446,7 @@ def foo(x, y)
 
 xs = {{1,2,3}};
 ys = {{4,5,6}};
-r = foo(xs@@-1, ys@@-1);
+r = foo(xs@@L1, ys@@L1);
 ";
             thisTest.RunAndVerifyRuntimeWarning(code, ProtoCore.Runtime.WarningID.MoreThanOneDominantList);
             thisTest.Verify("r", new object[] { 5, 7, 9 });

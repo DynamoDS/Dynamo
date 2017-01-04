@@ -911,4 +911,10 @@ Parameter name: {0}</value>
   <data name="InvalidFunction" xml:space="preserve">
     <value>Not an valid function.</value>
   </data>
+  <data name="kInvalidListLevelName" xml:space="preserve">
+    <value>'{0}' cannot be used as list level name, consider using L1 for level 1.</value>
+  </data>
+  <data name="invalid_Associative_Level" xml:space="preserve">
+    <value>Invalid list@level syntax, consider using @L1 for level 1.</value>
+  </data>
 </root>
