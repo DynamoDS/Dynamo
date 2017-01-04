@@ -268,7 +268,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Indicates if node preview is pinned
         /// </summary>
-        [JsonProperty("isPinned")]
+        [JsonProperty("IsPinned")]
         public bool PreviewPinned { get; internal set; }
 
         /// <summary>
@@ -665,7 +665,7 @@ namespace Dynamo.Graph.Nodes
         /// <value>
         ///   <c>true</c> if this node is frozen; otherwise, <c>false</c>.
         /// </value>
-        [JsonProperty("isFrozen")]
+        [JsonProperty("IsFrozen")]
         public bool IsFrozen
         {
             get
