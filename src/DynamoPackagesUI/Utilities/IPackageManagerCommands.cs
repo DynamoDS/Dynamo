@@ -25,7 +25,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
         /// <returns></returns>
         bool UnloadPackage(Package localPackage);
 
-        MessageBoxResult Show(PackageManagerMessages msgID, string caption, MessageBoxButton options, MessageBoxImage boxImage, params object[] args);
+        MessageBoxResult ShowMessageBox(MessageTypes msgID, string msg, string caption, MessageBoxButton options, MessageBoxImage boxImage);
 
     }
 }

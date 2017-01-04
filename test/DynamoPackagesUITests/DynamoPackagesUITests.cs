@@ -28,8 +28,8 @@ namespace DynamoPackagesUITests
         private PackageManagerViewModel viewModel;
         private Dictionary<string, object> dictPackage;
         private Dictionary<string, object> dictVersion;
-        private Dictionary<PackageManagerMessages, MessageBoxResult> PkgManagerMessages;
-        private PackageManagerMessages msgID;
+        private Dictionary<MessageTypes, MessageBoxResult> PkgManagerMessages;
+        private MessageTypes msgID;
 
         private void AssertWindowOwnedByDynamoView<T>()
         {
@@ -61,8 +61,8 @@ namespace DynamoPackagesUITests
             packageManagerCommands = new Mock<IPackageManagerCommands>();
             packageManagerCommands.Setup(t => t.Model).Returns(this.Model);
             packageManagerCommands.Setup(t => t.Loader).Returns(this.Model.GetPackageManagerExtension().PackageLoader);
-            packageManagerCommands.Setup(t => t.Show(It.IsAny<PackageManagerMessages>(), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>(), It.IsAny<object[]>()))
-                .Callback<PackageManagerMessages, string, MessageBoxButton, MessageBoxImage, object[]>((messageID, caption, options, boxImage, args) => msgID = messageID)
+            packageManagerCommands.Setup(t => t.ShowMessageBox(It.IsAny<MessageTypes>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()))
+                .Callback<MessageTypes, string, string, MessageBoxButton, MessageBoxImage>((messageID, msg, caption, options, boxImage) => msgID = messageID)
                 .Returns(() => PkgManagerMessages[msgID]);
 
             var package = new { asset_id = "12343", asset_name = "test" };
@@ -86,10 +86,10 @@ namespace DynamoPackagesUITests
 
         private void InitializePackageManagerMessageReturnValues()
         {
-            PkgManagerMessages = new Dictionary<PackageManagerMessages, MessageBoxResult>();
-            PkgManagerMessages.Add(PackageManagerMessages.CONFIRM_TO_INSTALL_PACKAGE, MessageBoxResult.Cancel);
-            PkgManagerMessages.Add(PackageManagerMessages.PACKAGE_CONTAIN_PYTHON_SCRIPT, MessageBoxResult.Cancel);
-            PkgManagerMessages.Add(PackageManagerMessages.CONFIRM_TO_UNINSTALL, MessageBoxResult.No);
+            PkgManagerMessages = new Dictionary<MessageTypes, MessageBoxResult>();
+            PkgManagerMessages.Add(MessageTypes.ConfirmToInstallPackage, MessageBoxResult.Cancel);
+            PkgManagerMessages.Add(MessageTypes.PackageContainPythinScript, MessageBoxResult.Cancel);
+            PkgManagerMessages.Add(MessageTypes.ConfirmToUninstall, MessageBoxResult.No);
         }
 
         [Test]
@@ -115,6 +115,7 @@ namespace DynamoPackagesUITests
             uiExtension.Loaded(loadedParams);
             uiExtension.Startup(startupParams);
 
+            //TODO: Add the assert
             //uiExtension.OnPackageManagerClick();
             //AssertWindowOwnedByDynamoView<PackageManagerView>();
         }
@@ -150,7 +151,7 @@ namespace DynamoPackagesUITests
         public void InstallPythonScriptCheckCancel()
         {
             //2. Python Script Chaeck
-            PkgManagerMessages[PackageManagerMessages.CONFIRM_TO_INSTALL_PACKAGE] = MessageBoxResult.OK;
+            PkgManagerMessages[MessageTypes.ConfirmToInstallPackage] = MessageBoxResult.OK;
             dictVersion["contains_binaries"] = true;
             string returnValue = viewModel.PackageOnExecuted(dictPackage, dictVersion);
             StringAssert.AreEqualIgnoringCase(returnValue, "cancel");
@@ -160,7 +161,7 @@ namespace DynamoPackagesUITests
         public void InstallCheckDynamoVersion()
         {
             //3. Check Dynamo Version
-            PkgManagerMessages[PackageManagerMessages.PACKAGE_CONTAIN_PYTHON_SCRIPT] = MessageBoxResult.OK;
+            PkgManagerMessages[MessageTypes.PackageContainPythinScript] = MessageBoxResult.OK;
             dictVersion["contains_binaries"] = true;
             //TODO: Return some concrete type.
             string returnValue = viewModel.PackageOnExecuted(dictPackage, dictVersion);
@@ -178,7 +179,7 @@ namespace DynamoPackagesUITests
             Assert.AreEqual(false, returnValue, string.Empty);
 
             //UnInstall
-            PkgManagerMessages[PackageManagerMessages.CONFIRM_TO_UNINSTALL] = MessageBoxResult.OK;
+            PkgManagerMessages[MessageTypes.ConfirmToUninstall] = MessageBoxResult.OK;
             returnValue = viewModel.Uninstall();
             packageManagerCommands.Verify(t => t.UnloadPackage(It.IsAny<Package>()), Times.Once);
         }
