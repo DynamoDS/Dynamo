@@ -15,7 +15,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
     /// <summary>
     /// CEF Class to assist Publishing the Dynamo Packages
     /// </summary>
-    internal class PublishCommands : CefCommands
+    internal class PublishCommands
     {
         //private readonly DynamoViewModel dynamoViewModel;
         private MutatingFileCompressor fileCompressor;
@@ -25,8 +25,7 @@ namespace Dynamo.DynamoPackagesUI.Utilities
 
         private PackageManagerViewModel packageMgrViewModel { get; set; }
 
-        public PublishCommands(PackageLoader loader, DynamoModel model) :
-            base(loader, model)
+        public PublishCommands(PackageLoader loader, DynamoModel model) 
         {
             fileCompressor = new MutatingFileCompressor();
             //customNodeDefinitions = new List<CustomNodeDefinition>();
