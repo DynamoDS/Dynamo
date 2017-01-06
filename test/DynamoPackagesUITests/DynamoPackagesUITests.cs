@@ -161,6 +161,7 @@ namespace DynamoPackagesUITests
         public void InstallCheckDynamoVersion()
         {
             //3. Check Dynamo Version
+            PkgManagerMessages[MessageTypes.ConfirmToInstallPackage] = MessageBoxResult.OK;
             PkgManagerMessages[MessageTypes.PackageContainPythinScript] = MessageBoxResult.OK;
             dictVersion["contains_binaries"] = true;
             //TODO: Return some concrete type.
