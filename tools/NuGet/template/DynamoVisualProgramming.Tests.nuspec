@@ -21,6 +21,7 @@
   <files>
     <!--These assemblies are referenced from the bin directory since they are not harvested for the installer-->
     <file src="..\..\..\bin\AnyCPU\Release\DynamoCoreTests.dll" target="lib\net45" />
+    <file src="..\..\..\bin\AnyCPU\Release\SystemTestServices.dll" target="lib\net45" />
     <file src="..\..\..\bin\AnyCPU\Release\TestServices.dll" target="lib\net45" />
   </files>
 </package>

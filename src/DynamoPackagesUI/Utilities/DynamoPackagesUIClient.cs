@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace DynamoPackagesUI.Utilities
+namespace Dynamo.DynamoPackagesUI.Utilities
 {
     /// <summary>
     /// ACG API Client, initialize rest and file client using PackageManagerClient type from Greg

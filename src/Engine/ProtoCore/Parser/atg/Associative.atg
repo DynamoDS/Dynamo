@@ -1279,6 +1279,54 @@ Associative_Factor<out node>
 }
 .
 
+Associative_Level<out ProtoCore.AST.AssociativeAST.AssociativeNode node>               
+=   (.  
+        node = null; 
+        int sign = 1;
+    .)  
+    (
+        ident
+        (.
+            if(t.val[0] != 'L')
+            {
+                errors.SemErr(t.line, t.col, String.Format(Resources.kInvalidListLevelName, t.val));
+            }
+            var level = t.val.Remove(0, 1);
+            Int64 value;
+            if (Int64.TryParse(level, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
+            {
+                node = new ProtoCore.AST.AssociativeAST.IntNode(-1*value);
+            }
+            else
+            {
+                errors.SemErr(t.line, t.col, String.Format(Resources.kInvalidListLevelName, t.val));
+            }
+
+            NodeUtils.SetNodeLocation(node, t);
+        .)
+        |
+        [
+            '-' 
+            (. 
+                sign = -1; 
+            .)
+        ] number
+        (.
+            Int64 value;
+            if (Int64.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
+            {
+                node = new ProtoCore.AST.AssociativeAST.IntNode(sign*value);
+            }
+            else
+            {
+                errors.SemErr(t.line, t.col, String.Format(Resources.kInvalidListLevelName, t.val));
+            }
+
+            NodeUtils.SetNodeLocation(node, t);
+        .)
+    )
+.
+
 Associative_Number<out ProtoCore.AST.AssociativeAST.AssociativeNode node>               
 =           
     (. 
@@ -1637,9 +1685,9 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                            bool isDominant = false;
                                         .)
         (
-            list_at Associative_Number<out levelNode> 
+            list_at Associative_Level<out levelNode> 
             |
-            dominant_list_at Associative_Number<out levelNode> (. isDominant = true; .)
+            dominant_list_at Associative_Level<out levelNode> (. isDominant = true; .)
         )
                                         (. 
                                             IntNode listAtLevel = levelNode as IntNode;
