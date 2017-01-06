@@ -43,6 +43,10 @@
       <HintPath>..\..\src\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\..\extern\NUnit\nunit.framework.dll</HintPath>
     </Reference>
