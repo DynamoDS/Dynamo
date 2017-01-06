@@ -75,17 +75,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PackageManagerExtension.cs" />
-    <Compile Include="Properties\Resource.en-US.Designer.cs">
+    <Compile Include="Properties\Resources.en-US.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resource.en-US.resx</DependentUpon>
+      <DependentUpon>Resources.en-US.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Resource.Designer.cs">
+    <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resource.resx</DependentUpon>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Utilities\DynamoPackagesUIClient.cs" />
+    <Compile Include="Utilities\IPackageManagerCommands.cs" />
     <Compile Include="Views\PackageManagerView.xaml.cs">
       <DependentUpon>PackageManagerView.xaml</DependentUpon>
     </Compile>
@@ -95,7 +96,6 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="Utilities\PublishCommands.cs" />
-    <Compile Include="Utilities\CefCommands.cs" />
     <Compile Include="Utilities\PackageManagerCommands.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -134,13 +134,13 @@
     <Content Include="Ionic.Zip.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resource.en-US.resx">
+    <EmbeddedResource Include="Properties\Resources.en-US.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.en-US.Designer.cs</LastGenOutput>
+      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resource.resx">
+    <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
