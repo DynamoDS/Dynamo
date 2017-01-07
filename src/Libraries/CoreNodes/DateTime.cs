@@ -48,7 +48,21 @@ namespace DSCore
         {
             get { return System.DateTime.Today; }
         }
-
+        
+        /// <summary>
+        ///     The current system date and time as a string, in the specified format.
+        /// </summary>
+        /// <param name="format">
+        /// String representation of the date format, see https://msdn.microsoft.com/en-us/library/8kb3ddd4(v=vs.110).aspx
+        /// Defaults to : dd/MM/yyyy
+        ///</param>
+        /// <returns name="dateTime">DateTime</returns>
+        [CanUpdatePeriodicallyAttribute(true)]
+        public static string NowByFormat(string format="dd/MM/yyyy")
+        {
+            return System.DateTime.Now.ToString(format, CultureInfo.InvariantCulture);
+        }
+        
         /// <summary>
         ///     Creates a new DateTime at an exact date.
         /// </summary>
