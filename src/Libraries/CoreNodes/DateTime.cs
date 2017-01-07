@@ -52,11 +52,9 @@ namespace DSCore
         /// <summary>
         ///     The current system date and time as a string, in the specified format.
         /// </summary>
-        /// <param name="format">
-        /// String representation of the date format, see https://msdn.microsoft.com/en-us/library/8kb3ddd4(v=vs.110).aspx
-        /// Defaults to : dd/MM/yyyy
+        /// <param name="format">String representation of the date format, search "MSDN Custom Date and Time Format Strings". Defaults to : dd/MM/yyyy
         ///</param>
-        /// <returns name="dateTime">The current system date and time as a string, in the specified format.</returns>
+        /// <returns name="string">The current system date and time as a string, in the specified format.</returns>
         [CanUpdatePeriodicallyAttribute(true)]
         public static string NowByFormat(string format="dd/MM/yyyy")
         {
