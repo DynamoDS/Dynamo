@@ -369,10 +369,10 @@ namespace ProtoCore.AST.AssociativeAST
         {
             var buf = new StringBuilder();
             if (IsDominant)
-                buf.Append("@@");
+                buf.Append("@@L");
             else
-                buf.Append("@");
-            buf.Append(Level);
+                buf.Append("@L");
+            buf.Append(Math.Abs(Level));
             return buf.ToString();
         }
     }
