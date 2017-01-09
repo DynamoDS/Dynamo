@@ -656,6 +656,7 @@
                                   IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReportingTooltip}"
                                   Focusable="False" />
+                        <Separator />
                         <MenuItem Focusable="False" 
                                   Name="ShowNodeExecution" 
                                   IsCheckable="True" 
@@ -713,6 +714,11 @@
                                            Margin="10,0,0,0"></TextBlock>
                             </StackPanel>
                         </MenuItem>
+                        <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.DynamoViewSettingsMenuChangeScaleFactor}"
+                                  IsEnabled="{Binding ChangeScaleFactorEnabled}"
+                                  Command="{Binding ChangeScaleFactorCommand}" />
+                        <Separator />
                         <MenuItem Focusable="False"
                                   IsCheckable="True"
                                   IsChecked="{Binding Path=RenderPackageFactoryViewModel.ShowEdges, Mode=TwoWay}"
