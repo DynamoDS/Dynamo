@@ -47,6 +47,19 @@ namespace Dynamo.ViewModels
 
     public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel
     {
+        public int ScaleFactorLog
+        {
+            get
+            {
+                return (CurrentSpace == null) ? 0 :
+                    Convert.ToInt32(Math.Log10(CurrentSpace.ScaleFactor));
+            }
+            set
+            {
+                CurrentSpace.ScaleFactor = Math.Pow(10, value);
+            }
+        }
+
         #region properties
 
         private readonly DynamoModel model;
@@ -867,6 +880,10 @@ namespace Dynamo.ViewModels
                         this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
+                    if (ChangeScaleFactorCommand != null)
+                    {
+                        ChangeScaleFactorCommand.RaiseCanExecuteChanged();
+                    }
                     //RaisePropertyChanged("RunEnabled");
                     break;
 
@@ -1399,6 +1416,11 @@ namespace Dynamo.ViewModels
         internal bool CanUpstreamVisibilityBeToggled(object parameters)
         {
             return true;
+        }
+
+        internal bool ChangeScaleFactorEnabled
+        {
+            get { return !ShowStartPage; }
         }
 
         internal void ShowPackageManagerSearch(object parameters)
