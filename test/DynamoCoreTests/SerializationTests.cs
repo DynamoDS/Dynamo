@@ -14,11 +14,11 @@ using Dynamo.Events;
 
 namespace Dynamo.Tests
 {
-    /* The Serialization tests compare the results of a workspace opened and executed from its 
+    /* The Serialization tests compare the results of a workspace opened and executed from its
      * original .dyn format, to one converted to json, deserialized and executed. In the process,
      * the tests save the following files:
-     *  - xxx.json file representing the serialized version of the workspace to json, where xxx is the 
-     *  original .dyn file name. 
+     *  - xxx.json file representing the serialized version of the workspace to json, where xxx is the
+     *  original .dyn file name.
      *  - xxx_data.json file containing the cached values of each of the workspaces
      *  - xxx.ds file containing the Design Script code for the workspace.
      */
@@ -84,20 +84,9 @@ namespace Dynamo.Tests
                 {
                     NodeTypeMap.Add(n.GUID, n.GetType());
 
-                    var portvalues = new List<object>();
-                    foreach (var p in n.OutPorts)
-                    {
-                        var value = n.GetValue(p.Index, controller);
-                        if (value.IsCollection)
-                        {
-                            portvalues.Add(GetStringRepOfCollection(value));
-                        }
-                        else
-                        {
-                            portvalues.Add(value.StringData);
-                        }
-                    }
-                    
+                    var portvalues = n.OutPorts.Select(p =>
+                        GetDataOfValue(n.GetValue(p.Index, controller))).ToList<object>();
+
                     NodeDataMap.Add(n.GUID, portvalues);
                     InportCountMap.Add(n.GUID, n.InPorts.Count);
                     OutportCountMap.Add(n.GUID, n.OutPorts.Count);
@@ -105,10 +94,24 @@ namespace Dynamo.Tests
             }
         }
 
-        private static string GetStringRepOfCollection(ProtoCore.Mirror.MirrorData collection)
+        private static object GetDataOfValue(ProtoCore.Mirror.MirrorData value)
         {
-            var items = string.Join(",", collection.GetElements().Select(x => x.IsCollection ? GetStringRepOfCollection(x) : x.StringData));
-            return "{" + items + "}";
+            if (value.IsCollection)
+            {
+                return value.GetElements().Select(x => GetDataOfValue(x)).ToList<object>();
+            }
+
+            if (!value.IsPointer)
+            {
+                var data = value.Data;
+
+                if (data != null)
+                {
+                    return data;
+                }
+            }
+
+            return value.StringData;
         }
 
         private void CompareWorkspaces(WorkspaceComparisonData a, WorkspaceComparisonData b)
@@ -146,7 +149,7 @@ namespace Dynamo.Tests
                 {
                     // When values are geometry, sometimes the creation
                     // of the string representation for forming this message
-                    // fails. 
+                    // fails.
                     Assert.AreEqual(valueA, valueB,
                     string.Format("Node Type:{0} value, {1} is not equal to {2}",
                     a.NodeTypeMap[kvp.Key], valueA, valueB));
@@ -274,7 +277,7 @@ namespace Dynamo.Tests
             }
 
             // The following logic is taken from the DynamoModel.Open method.
-            // It assumes a single home workspace model. So, we remove all 
+            // It assumes a single home workspace model. So, we remove all
             // others, before adding a new one.
             if (ws2 is HomeWorkspaceModel)
             {
@@ -346,7 +349,7 @@ namespace Dynamo.Tests
 
             var workspaceDataDict = new Dictionary<string, object>();
             workspaceDataDict.Add("nodeData", nodeData);
-            workspaceDataDict.Add("executionDuration", executionDuration);
+            workspaceDataDict.Add("executionDuration", executionDuration.TotalSeconds);
 
             var dataMapStr = JsonConvert.SerializeObject(workspaceDataDict,
                             new JsonSerializerSettings()
