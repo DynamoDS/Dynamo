@@ -133,6 +133,45 @@
     <value>(Up-to-date)</value>
     <comment>To indicate Dynamo is up to date</comment>
   </data>
+  <data name="ChangeScaleFactorPromptCaptionText" xml:space="preserve">
+    <value>What is the range of geometry sizes that you will be working on?</value>
+  </data>
+  <data name="ChangeScaleFactorPromptDescriptionBox" xml:space="preserve">
+    <value>Numerical range shown here denote numbers in the following unit:</value>
+  </data>
+  <data name="ChangeScaleFactorPromptDescriptionContent0" xml:space="preserve">
+    <value>Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter.</value>
+  </data>
+  <data name="ChangeScaleFactorPromptDescriptionContent1" xml:space="preserve">
+    <value>Use this working range to model objects no larger than a truck and that can be built to manufacturing tolerances.</value>
+  </data>
+  <data name="ChangeScaleFactorPromptDescriptionContent2" xml:space="preserve">
+    <value>Use this working range to model precision parts no smaller than a few microns but no larger than a millimeter.</value>
+  </data>
+  <data name="ChangeScaleFactorPromptDescriptionDefaultSetting" xml:space="preserve">
+    <value>Default Setting:</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitCm" xml:space="preserve">
+    <value>Centimeters (cm)</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitM" xml:space="preserve">
+    <value>Meters (m)</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitMm" xml:space="preserve">
+    <value>Millimeters (mm)</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitsNumberFormatCm" xml:space="preserve">
+    <value>{0} cm</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitsNumberFormatM" xml:space="preserve">
+    <value>{0} m</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitsNumberFormatMm" xml:space="preserve">
+    <value>{0} mm</value>
+  </data>
+  <data name="ChangeScaleFactorPromptWindowTitle" xml:space="preserve">
+    <value>Change Geometry Scaling Factor</value>
+  </data>
   <data name="ContextMenuEditCustomNode" xml:space="preserve">
     <value>Edit Custom Node...</value>
     <comment>Context menu item</comment>
@@ -2043,6 +2082,10 @@ Next assemblies were loaded several times:
   <data name="MessageErrorOpeningFileGeneral" xml:space="preserve">
     <value>Error Opening File</value>
     <comment>Notification Center Title</comment>
+  </data>
+  <data name="DynamoViewSettingsMenuChangeScaleFactor" xml:space="preserve">
+    <value>Geometry Scaling...</value>
+    <comment>Settings menu | Geometry Scaling</comment>
   </data>
   <data name="ContextMenuLacingAuto" xml:space="preserve">
     <value>Auto</value>

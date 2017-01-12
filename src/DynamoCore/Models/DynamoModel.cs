@@ -1345,6 +1345,7 @@ namespace Dynamo.Models
                 this,
                 new PointEventArgs(new Point2D(workspaceInfo.X, workspaceInfo.Y)));
 
+            workspace.ScaleFactor = workspaceInfo.ScaleFactor;
             return result;
         }
 

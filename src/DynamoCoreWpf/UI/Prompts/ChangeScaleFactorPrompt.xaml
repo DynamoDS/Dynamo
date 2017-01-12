@@ -1,0 +1,148 @@
+﻿<Window x:Class="Dynamo.Prompts.ChangeScaleFactorPrompt"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+        Title="{x:Static p:Resources.ChangeScaleFactorPromptWindowTitle}" Height="540" Width="400"
+        WindowStartupLocation="CenterOwner"
+        Style="{DynamicResource DynamoWindowStyle}">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="UnitsSliderThumb" TargetType="{x:Type Thumb}">
+                <Setter Property="OverridesDefaultStyle" Value="True" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Background="#888" Height="180" Width="160" Cursor="SizeNS" />
+                                <Border Background="#888" Margin="5,0,0,0" Height="180" Width="5" CornerRadius="3" />
+                            </StackPanel>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="UnitsSliderStyle" TargetType="{x:Type Slider}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Slider}">
+                            <Border Background="Transparent">
+                                <Grid>
+                                    <Border x:Name="TrackBackground"
+                                            BorderThickness="2" CornerRadius="1"
+                                            HorizontalAlignment="Center" Width="3"
+                                            Background="#888" />
+                                    <Track x:Name="PART_Track">
+                                        <Track.Thumb>
+                                            <Thumb x:Name="Thumb" Style="{StaticResource UnitsSliderThumb}" />
+                                        </Track.Thumb>
+                                    </Track>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="UnitsPanelStyle" TargetType="{x:Type StackPanel}">
+                <Style.Resources>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Width" Value="160" />
+                        <Setter Property="Height" Value="20" />
+                        <Setter Property="Padding" Value="5,0" />
+                        <Setter Property="TextAlignment" Value="Right" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="Foreground" Value="#fff" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="#333">
+        <StackPanel Margin="15">
+            <TextBlock Name="PromptText"
+                       Foreground="WhiteSmoke"
+                       Padding="0,0,0,15"
+                       FontSize="15"
+                       TextWrapping="Wrap"
+                       Text="{x:Static p:Resources.ChangeScaleFactorPromptCaptionText}" />
+            <StackPanel Orientation="Horizontal" Background="#555">
+                <Grid Margin="5" Width="170">
+                    <StackPanel x:Name="UnitsList"
+                                Style="{StaticResource UnitsPanelStyle}"
+                                Margin="0,0,10,0"
+                                Orientation="Vertical"
+                                Panel.ZIndex="10"
+                                IsHitTestVisible="False">
+                    </StackPanel>
+                    <Slider Name="UnitsSlider"
+                            Orientation="Vertical"
+                            Style="{StaticResource UnitsSliderStyle}"
+                            IsSnapToTickEnabled="True"
+                            TickFrequency="1"
+                            Value="0"
+                            ValueChanged="Slider_Changed" />
+                </Grid>
+                <Border Margin="0,5" Width="170" Background="#fff">
+                    <DockPanel>
+                        <TextBlock Name="DescriptionBox"
+                                   Margin="7"
+                                   Width="160"
+                                   FontSize="12"
+                                   TextWrapping="Wrap"
+                                   Text="{x:Static p:Resources.ChangeScaleFactorPromptDescriptionBox}"
+                                   DockPanel.Dock="Top"/>
+                        <ComboBox Name="UnitComboBox"
+                                  Margin="7,0"
+                                  SelectionChanged="UnitComboBox_Changed"
+                                  DockPanel.Dock="Top">
+                        </ComboBox>
+                        <TextBlock Name="DescriptionScaleRange"
+                                   Margin="7,0,7,7"
+                                   Width="160"
+                                   FontSize="12"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Bottom"
+                                   DockPanel.Dock="Bottom"/>
+                        <TextBlock Name="DescriptionDefaultSetting"
+                                   Margin="7,0"
+                                   Width="160"
+                                   FontSize="12"
+                                   FontWeight="Bold"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Bottom"
+                                   DockPanel.Dock="Bottom" />
+                    </DockPanel>
+                </Border>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15">
+                <Button Content="{x:Static p:Resources.OKButton}"
+                        Style="{DynamicResource ResourceKey=STextButton}"
+                        Margin="5"
+                        HorizontalAlignment="Right"
+                        Name="okButton"
+                        VerticalAlignment="Top"
+                        Width="auto"
+                        MinWidth="75"
+                        Click="OK_Click"
+                        IsDefault="True"
+                        TabIndex="2" />
+                <Button Content="{x:Static p:Resources.CancelButton}"
+                        Style="{DynamicResource ResourceKey=STextButton}"
+                        Margin="5" HorizontalAlignment="Right"
+                        Name="cancelButton"
+                        VerticalAlignment="Top"
+                        Width="auto"
+                        MinWidth="75"
+                        Click="Cancel_Click"
+                        IsCancel="True"
+                        TabIndex="3" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

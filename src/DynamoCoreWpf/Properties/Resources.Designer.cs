@@ -296,6 +296,123 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to What is the range of geometry sizes that you will be working on?.
+        /// </summary>
+        public static string ChangeScaleFactorPromptCaptionText {
+            get {
+                return ResourceManager.GetString("ChangeScaleFactorPromptCaptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Numerical range shown here denote numbers in the following unit:.
+        /// </summary>
+        public static string ChangeScaleFactorPromptDescriptionBox {
+            get {
+                return ResourceManager.GetString("ChangeScaleFactorPromptDescriptionBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter..
+        /// </summary>
+        public static string ChangeScaleFactorPromptDescriptionContent0 {
+            get {
+                return ResourceManager.GetString("ChangeScaleFactorPromptDescriptionContent0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use this working range to model objects no larger than a truck and that can be built to manufacturing tolerances..
+        /// </summary>
+        public static string ChangeScaleFactorPromptDescriptionContent1 {
+            get {
+                return ResourceManager.GetString("ChangeScaleFactorPromptDescriptionContent1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use this working range to model precision parts no smaller than a few microns but no larger than a millimeter..
+        /// </summary>
+        public static string ChangeScaleFactorPromptDescriptionContent2 {
+            get {
+                return ResourceManager.GetString("ChangeScaleFactorPromptDescriptionContent2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default Setting:.
+        /// </summary>
+        public static string ChangeScaleFactorPromptDescriptionDefaultSetting {
+            get {
+                return ResourceManager.GetString("ChangeScaleFactorPromptDescriptionDefaultSetting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Centimeters (cm).
+        /// </summary>
+        public static string ChangeScaleFactorPromptUnitCm {
+            get {
+                return ResourceManager.GetString("ChangeScaleFactorPromptUnitCm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Meters (m).
+        /// </summary>
+        public static string ChangeScaleFactorPromptUnitM {
+            get {
+                return ResourceManager.GetString("ChangeScaleFactorPromptUnitM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Millimeters (mm).
+        /// </summary>
+        public static string ChangeScaleFactorPromptUnitMm {
+            get {
+                return ResourceManager.GetString("ChangeScaleFactorPromptUnitMm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} cm.
+        /// </summary>
+        public static string ChangeScaleFactorPromptUnitsNumberFormatCm {
+            get {
+                return ResourceManager.GetString("ChangeScaleFactorPromptUnitsNumberFormatCm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} m.
+        /// </summary>
+        public static string ChangeScaleFactorPromptUnitsNumberFormatM {
+            get {
+                return ResourceManager.GetString("ChangeScaleFactorPromptUnitsNumberFormatM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} mm.
+        /// </summary>
+        public static string ChangeScaleFactorPromptUnitsNumberFormatMm {
+            get {
+                return ResourceManager.GetString("ChangeScaleFactorPromptUnitsNumberFormatMm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change Geometry Scaling Factor.
+        /// </summary>
+        public static string ChangeScaleFactorPromptWindowTitle {
+            get {
+                return ResourceManager.GetString("ChangeScaleFactorPromptWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compact.
         /// </summary>
         public static string CompactLayoutTitle {
@@ -1765,6 +1882,24 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewSettingShowRunPreview {
             get {
                 return ResourceManager.GetString("DynamoViewSettingShowRunPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Geometry Scaling....
+        /// </summary>
+        public static string DynamoViewSettingsMenuChangeScaleFactor {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsMenuChangeScaleFactor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide Preview Bubbles.
+        /// </summary>
+        public static string DynamoViewSettingsMenuHidePreviewBubbles {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsMenuHidePreviewBubbles", resourceCulture);
             }
         }
         

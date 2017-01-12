@@ -59,6 +59,14 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event EventHandler RequestScaleFactorDialog;
+        public virtual void OnRequestScaleFactorDialog(object sender, EventArgs e)
+        {
+            var handler = RequestScaleFactorDialog;
+            if (handler != null)
+                handler(sender, e);
+        }
+
         public event EventHandler RequestClose;
         public virtual void OnRequestClose(Object sender, EventArgs e)
         {
