@@ -453,11 +453,12 @@ namespace Dynamo.Tests
             ViewModel.RequestUserSaveWorkflow += handler;
             //send the command
             ViewModel.OpenIfSavedCommand.Execute(new Dynamo.Models.DynamoModel.OpenFileCommand(openPath));
-            //assert the request was made
-            Assert.AreEqual(1,eventCount);
+
             //dispose handler
             ViewModel.RequestUserSaveWorkflow -= handler;
 
+            //assert the request was made
+            Assert.AreEqual(1,eventCount);
         }
 
         [Test]
@@ -480,11 +481,11 @@ namespace Dynamo.Tests
             //send the command
             ViewModel.OpenRecentCommand.Execute(openPath);
 
-            //assert the request was made
-            Assert.AreEqual(1, eventCount);
             //dispose handler
             ViewModel.RequestUserSaveWorkflow -= handler;
 
+            //assert the request was made
+            Assert.AreEqual(1, eventCount);
         }
 
         [Test]
