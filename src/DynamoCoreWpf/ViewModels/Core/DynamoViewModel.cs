@@ -1310,6 +1310,12 @@ namespace Dynamo.ViewModels
 
         private void OpenRecent(object path)
         {
+            // Make sure user get chance to save unsaved changes first
+            if (CurrentSpaceViewModel.HasUnsavedChanges)
+            {
+                if (!AskUserToSaveWorkspaceOrCancel(HomeSpace))
+                    return;
+            }
             this.Open(path as string);
         }
 
