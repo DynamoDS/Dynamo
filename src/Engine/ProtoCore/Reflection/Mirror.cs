@@ -134,21 +134,38 @@ namespace ProtoCore
                 return GetBuiltInMethods(core).Where(x => x.MethodName == methodName);
             }
 
+            /// <summary>
+            /// Get all reference type classes imported in the VM 
+            /// except for internal and placeholder types
+            /// </summary>
+            /// <param name="core"></param>
+            /// <returns></returns>
             public static IEnumerable<ClassMirror> GetClasses(Core core)
             {
-                return GetAllTypes(core).Skip((int) PrimitiveType.MaxPrimitive);
+                return GetAllTypes(core).Where(x => !x.IsEmpty).
+                    Skip((int)PrimitiveType.MaxPrimitive);
             }
 
+            /// <summary>
+            /// Get all types except for internal VM types
+            /// </summary>
+            /// <param name="core"></param>
+            /// <returns></returns>
             public static IEnumerable<ClassMirror> GetAllTypes(Core core)
             {
                 // TODO: Get rid of keyword "PointerReserved" and PrimitiveType.kTypePointer
                 // if not used in the language: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6752
                 return core.ClassTable.ClassNodes.
                     Where(x => !CoreUtils.StartsWithSingleUnderscore(x.Name)
-                    && !x.IsEmpty && x.Name != DSDefinitions.Keyword.PointerReserved).
+                    && x.Name != DSDefinitions.Keyword.PointerReserved).
                     Select(x => new ClassMirror(core, x));
             }
 
+            /// <summary>
+            /// Get all methods and properties for all classes
+            /// </summary>
+            /// <param name="core"></param>
+            /// <returns></returns>
             public static IEnumerable<StaticMirror> GetGlobals(Core core)
             {
                 List<StaticMirror> members = new List<StaticMirror>();
@@ -247,6 +264,14 @@ namespace ProtoCore
                 {
                     return ClassNode.ClassAttributes == null ? false : ClassNode.ClassAttributes.HiddenInLibrary;
                 }
+            }
+
+            /// <summary>
+            /// True if the class is a dummy, placeholder class
+            /// </summary>
+            public bool IsEmpty
+            {
+                get { return ClassNode.IsEmpty; }
             }
 
             public ClassMirror(string className, ProtoCore.Core core)
