@@ -292,10 +292,10 @@ namespace Autodesk.DesignScript.Interfaces
 
         /// <summary>
         /// The scale factor set in the workspace that must be applied to 
-        /// distance and coordinate values used in rendering geometry.
-        /// This scale factor can be consumed by clients implementing Tessellate method of IGraphicItem.
+        /// distance and coordinate values used in rendering only ASM geometry.
+        /// This scale factor is consumed only by LibG in its Tessellate method implementation.
         /// </summary>
-        public double ScaleFactor { get; private set; }
+        internal double ScaleFactor { get; set; }
 
         public TessellationParameters()
         {
@@ -303,13 +303,6 @@ namespace Autodesk.DesignScript.Interfaces
             MaxTessellationDivisions = 512;
             ShowEdges = false;
             ScaleFactor = 1.0;
-
-            WorkspaceEvents.WorkspaceSettingsChanged += WorkspaceSettingsChanged;
-        }
-
-        private void WorkspaceSettingsChanged(WorkspacesSettingsChangedEventArgs args)
-        {
-            ScaleFactor = args.ScaleFactor;
         }
     }
 
