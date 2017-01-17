@@ -156,6 +156,7 @@ namespace Dynamo.Applications
 
             var versions = new[]
             {
+                LibraryVersion.Version223, 
                 LibraryVersion.Version222,
                 LibraryVersion.Version221,
                 LibraryVersion.Version220, 
