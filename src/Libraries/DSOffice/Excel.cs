@@ -295,9 +295,9 @@ namespace DSOffice
         /// </summary>
         /// <param name="filePath">File path to the Microsoft Excel spreadsheet.</param>
         /// <param name="sheetName">Name of the workseet to write data to.</param>
-        /// <param name="startRow">Start row for writing data. Enter 0 for A, 1 for B, etc.</param>
+        /// <param name="startRow">Start row for writing data. Enter 0 for Row 1, 1 for Row 2, etc.</param>
         /// <param name="startCol">
-        ///     Start column for writing data. Enter 0 for col 1, 1 for column 2, ect.
+        ///     Start column for writing data. Enter 0 for Column A, 1 for Column B, etc.
         /// </param>
         /// <param name="data">Data to write to the spreadsheet.</param>
         /// <param name="overWrite"></param>
