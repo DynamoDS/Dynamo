@@ -29,6 +29,7 @@ namespace Dynamo.PackageManager.UI
         {
             (this.DataContext as PackageManagerSearchViewModel).RequestShowFileDialog -= OnRequestShowFileDialog;
             base.OnClosing(e);
+            this.Owner.Focus();
         }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
