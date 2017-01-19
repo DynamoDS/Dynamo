@@ -72,7 +72,7 @@ namespace Dynamo.ViewModels
             get { return annotationModel.AnnotationText; }
             set
             {
-                annotationModel.AnnotationText = value;                
+                annotationModel.AnnotationText = value;
             }
         }
        
