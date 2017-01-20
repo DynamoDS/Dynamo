@@ -426,7 +426,7 @@ namespace ProtoCore.SyntaxAnalysis
         }
     }
 
-    public class AstReplacer : AssociativeAstVisitor<AssociativeNode>
+    public class AssociativeAstReplacer : AssociativeAstVisitor<AssociativeNode>
     {
         public override AssociativeNode DefaultVisit(AssociativeNode node)
         {

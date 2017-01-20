@@ -5,8 +5,6 @@ namespace ProtoCore.SyntaxAnalysis.Associative
 {
     public interface IAstVisitor<TResult>
     {
-        TResult Visit(Node node);
-
         TResult VisitCommentNode(CommentNode node);
 
         TResult VisitLanguageBlockNode(LanguageBlockNode node);

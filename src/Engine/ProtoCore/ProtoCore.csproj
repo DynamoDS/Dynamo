@@ -114,6 +114,7 @@
     <Compile Include="Compiler.cs" />
     <Compile Include="CompilerOptions.cs" />
     <Compile Include="SyntaxAnalysis\AssociativeAstVisitor.cs" />
+    <Compile Include="SyntaxAnalysis\AstVisitor.cs" />
     <Compile Include="SyntaxAnalysis\Interface\Associative.cs" />
     <Compile Include="SyntaxAnalysis\Interface\Imperative.cs" />
     <Compile Include="SyntaxAnalysis\ImperativeAstVisitor.cs" />

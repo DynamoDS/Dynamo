@@ -5,8 +5,6 @@ namespace ProtoCore.SyntaxAnalysis.Imperative
 {
     public interface IAstVisitor<TResult>
     {
-        TResult Visit(Node node);
-
         TResult VisitLanguageBlockNode(LanguageBlockNode node);
 
         TResult VisitArrayNameNode(ArrayNameNode node);
