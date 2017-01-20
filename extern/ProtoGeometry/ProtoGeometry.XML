@@ -5709,9 +5709,6 @@
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tags">
             <notranslation>true</notranslation>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage,Autodesk.DesignScript.Interfaces.TessellationParameters)">
-            <notranslation>true</notranslation>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Dispose">
             <notranslation>true</notranslation>
         </member>
@@ -5729,6 +5726,9 @@
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Equals(System.Object)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage,Autodesk.DesignScript.Interfaces.TessellationParameters)">
             <notranslation>true</notranslation>
         </member>
         <member name="F:Autodesk.DesignScript.Geometry.Geometry.mGeometryContructors">
@@ -6131,6 +6131,16 @@
               Looks up a localized string similar to the {0} is less than zero.
             </summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.LowerModelerExtentExceeded">
+            <summary>
+              Looks up a localized string similar to Lower modeling extent exceeded, consider  choosing a modeling range between {0} and {1}.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
+            <summary>
+              Looks up a localized string similar to Modeling extents are exceeded, consider choosing smaller values.
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
             <summary>
               Looks up a localized string similar to No implementation of IGeometryFactory found.  Make sure ProtoGeometry.config is properly configured..
@@ -6204,6 +6214,11 @@
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.Sheared">
             <summary>
               Looks up a localized string similar to {0} is sheared.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.UpperModelerExtentExceeded">
+            <summary>
+              Looks up a localized string similar to Upper modeling extent exceeded, consider choosing a modeling range between {0} and {1}.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.VertexColorNotSupported">
