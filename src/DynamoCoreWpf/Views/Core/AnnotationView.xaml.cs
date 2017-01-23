@@ -43,14 +43,14 @@ namespace Dynamo.Nodes
                 //Set the height and width of Textblock based on the content.
                 if (!ViewModel.AnnotationModel.loadFromXML)
                 {
-                    setTextMaxWidth();
+                    SetTextMaxWidth();
                     ViewModel.AnnotationModel.TextBlockHeight = this.GroupTextBlock.ActualHeight;
                 }
             }
         }
 
         //Set the max width of text area based on the width of the longest word in the text
-        private void setTextMaxWidth()
+        private void SetTextMaxWidth()
         {
             var words = this.ViewModel.AnnotationText.Split(' ');
             var maxLength = 0;
@@ -181,7 +181,7 @@ namespace Dynamo.Nodes
         {
             if (ViewModel != null)
             {
-                setTextMaxWidth();
+                SetTextMaxWidth();
                 ViewModel.AnnotationModel.TextBlockHeight = GroupTextBox.ActualHeight;
                 ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }
@@ -198,7 +198,7 @@ namespace Dynamo.Nodes
         {
             if (ViewModel != null && (e.HeightChanged || e.WidthChanged))
             {
-                setTextMaxWidth();
+                SetTextMaxWidth();
                 //Use the DesiredSize and not the Actual height. Because when Textblock is collapsed,
                 //Actual height is same as previous size. used when the Font size changed during zoom
                 ViewModel.AnnotationModel.TextBlockHeight = GroupTextBlock.DesiredSize.Height;
