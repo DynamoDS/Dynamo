@@ -27,6 +27,8 @@ namespace Dynamo.ViewModels
 
         private StateMachine stateMachine = null;
         private ConnectorViewModel activeConnector = null;
+        private ConnectorViewModel[] activeConnectors = null;
+        private static bool multipleConnections = false;
         private List<DraggedNode> draggedNodes = new List<DraggedNode>();
 
         // These properties need to be public for data-binding to work.
@@ -168,9 +170,36 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal void BeginMultipleConnections(Guid nodeId, int portIndex, PortType portType)
+        {
+            bool isInPort = portType == PortType.Input;
+
+            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
+            if (node == null) return;
+
+            PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
+            if (portModel.Connectors.Count <= 0 || isInPort) return;
+            
+            var n = new ConnectorViewModel[portModel.Connectors.Count];
+            var c = new ConnectorViewModel(this, portModel.Connectors[0].End);
+            this.SetActiveConnector(c);
+            for (int i = 0; i < portModel.Connectors.Count; i++)
+            {
+                c = new ConnectorViewModel(this, portModel.Connectors[i].End);
+                n[i] = c;
+             }
+            this.SetActiveConnectors(n);
+            return;
+        }
+
         internal void EndConnection(Guid nodeId, int portIndex, PortType portType)
         {
             this.SetActiveConnector(null);
+        }
+
+        internal void EndMultipleConnections(Guid nodeId, int portIndex, PortType portType)
+        {
+            this.SetActiveConnectors(null);
         }
 
         internal bool CheckActiveConnectorCompatibility(PortViewModel portVM,bool isSnapping = true)
@@ -207,14 +236,22 @@ namespace Dynamo.ViewModels
 
         internal void CancelConnection()
         {
+            multipleConnections = false;
             this.SetActiveConnector(null);
+            this.SetActiveConnectors(null);
         }
 
         internal void UpdateActiveConnector(System.Windows.Point mouseCursor)
         {
             if (null != this.activeConnector)
                 this.activeConnector.Redraw(mouseCursor.AsDynamoType());
-
+            if (null != this.activeConnectors)
+            {
+                for (int i = 0; i < this.activeConnectors.Count(); i++)
+                {
+                    this.activeConnectors[i].Redraw(mouseCursor.AsDynamoType());
+                }
+            }
         }
 
         private void SetActiveConnector(ConnectorViewModel connector)
@@ -230,6 +267,34 @@ namespace Dynamo.ViewModels
                 System.Diagnostics.Debug.Assert(null != activeConnector);
                 this.WorkspaceElements.Remove(activeConnector);
                 this.activeConnector = null;
+            }
+
+            this.RaisePropertyChanged("ActiveConnector");
+        }
+
+        private void SetActiveConnectors (ConnectorViewModel[] connectors) // for handling multiple connectors
+        {
+            if (null != connectors && connectors.Count() > 0)
+            {
+                this.activeConnectors = new ConnectorViewModel[connectors.Count()];
+                for (int i = 0; i < connectors.Count(); i++)
+                {
+                    this.WorkspaceElements.Add(connectors[i]);
+                    this.activeConnectors[i] = connectors[i];
+                }
+            }
+            else
+            {
+                this.WorkspaceElements.Remove(activeConnector);
+                if (null != activeConnectors)
+                {
+                    foreach (ConnectorViewModel a in activeConnectors)
+                    {
+                        this.WorkspaceElements.Remove(a);
+                    }
+                }
+                this.activeConnector = null;
+                this.activeConnectors = null;
             }
 
             this.RaisePropertyChanged("ActiveConnector");
@@ -697,6 +762,12 @@ namespace Dynamo.ViewModels
                     int portIndex = portModel.Index;
 
                     var mode = DynamoModel.MakeConnectionCommand.Mode.Begin;
+                    if (Keyboard.Modifiers == ModifierKeys.Control) //if control key is down, handle multiple wire connections
+                    {
+                        multipleConnections = true;
+                        mode = DynamoModel.MakeConnectionCommand.Mode.BeginMultiple;
+                    }
+
                     var command = new DynamoModel.MakeConnectionCommand(nodeId, portIndex, portModel.PortType, mode);
                     owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
@@ -716,10 +787,15 @@ namespace Dynamo.ViewModels
                         int portIndex = portModel.Index;
 
                         var mode = DynamoModel.MakeConnectionCommand.Mode.End;
-                        var command = new DynamoModel.MakeConnectionCommand(nodeId, 
+                        if (multipleConnections)
+                        {
+                            mode = DynamoModel.MakeConnectionCommand.Mode.EndMultiple;
+                        }
+                        var command = new DynamoModel.MakeConnectionCommand(nodeId,
                             portIndex, portModel.PortType, mode);
                         owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
+                        multipleConnections = false;
                         owningWorkspace.CurrentCursor = null;
                         owningWorkspace.IsCursorForced = false;
                         this.currentState = State.None;

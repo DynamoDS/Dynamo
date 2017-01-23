@@ -40,6 +40,7 @@ namespace Dynamo.Models
         }
         
         private PortModel activeStartPort;
+        private PortModel[] activeStartPorts;
 
         protected virtual void OpenFileImpl(OpenFileCommand command)
         {
@@ -262,8 +263,17 @@ namespace Dynamo.Models
                     EndConnection(nodeId, command.PortIndex, command.Type);
                     break;
 
+                case MakeConnectionCommand.Mode.BeginMultiple:
+                    BeginMultipleConnections(nodeId, command.PortIndex, command.Type);
+                    break;
+
+                case MakeConnectionCommand.Mode.EndMultiple:
+                    EndMultipleConnections(nodeId, command.PortIndex, command.Type);
+                    break;
+
                 case MakeConnectionCommand.Mode.Cancel:
                     activeStartPort = null;
+                    activeStartPorts = null;
                     break;
             }
         }
@@ -272,7 +282,7 @@ namespace Dynamo.Models
         {
             bool isInPort = portType == PortType.Input;
             activeStartPort = null;
-
+            
             var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
             if (node == null)
                 return;
@@ -300,6 +310,36 @@ namespace Dynamo.Models
             }
         }
 
+        void BeginMultipleConnections(Guid nodeId, int portIndex, PortType portType)
+        {
+            if (portType == PortType.Input) return; //only handle multiple connections when the port selected is an output port
+            activeStartPort = null;
+            var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
+            if (node == null) return;
+
+            PortModel portModel = node.OutPorts[portIndex];
+
+            var models = new List<ModelBase>();
+            int numOfConnectors = portModel.Connectors.Count;
+            if (numOfConnectors == 0) return;
+
+            activeStartPort = portModel.Connectors[0].End;
+            activeStartPorts = new PortModel[numOfConnectors];
+
+            for (int i = 0; i < numOfConnectors; i++)
+            {
+                ConnectorModel connector = portModel.Connectors[i];
+                models.Add(connector);
+                activeStartPorts[i] = connector.End;
+            }
+            CurrentWorkspace.RecordAndDeleteModels(models);
+            for (int i = 0; i < numOfConnectors; i++) //delete the connectors
+            {
+                portModel.Connectors[0].Delete();
+            }
+            return;
+        }
+
         void EndConnection(Guid nodeId, int portIndex, PortType portType)
         {
             // Check if the node from which the connector starts is valid and has not been deleted
@@ -319,6 +359,30 @@ namespace Dynamo.Models
 
             WorkspaceModel.RecordModelsForUndo(models, CurrentWorkspace.UndoRecorder);
             activeStartPort = null;
+        }
+
+        void EndMultipleConnections(Guid nodeId, int portIndex, PortType portType)
+        {
+            if (portType == PortType.Input) return; //only handle multiple connections when the port selected is an output port
+            var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
+            if (node == null) return;
+            PortModel portModel = node.OutPorts[portIndex];
+
+            if (activeStartPorts == null || activeStartPorts.Count() <= 0) return;
+
+            var firstModel = GetConnectorsToAddAndDelete(portModel, activeStartPorts[0]);
+            for (int i = 1; i < activeStartPorts.Count(); i++)
+            {
+                var models = GetConnectorsToAddAndDelete(portModel, activeStartPorts[i]);
+                foreach (var m in models)
+                {
+                    firstModel.Add(m.Key, m.Value);
+                }
+            }
+            WorkspaceModel.RecordModelsForUndo(firstModel, CurrentWorkspace.UndoRecorder);
+            activeStartPort = null;
+            activeStartPorts = null;
+            return;
         }
 
         static Dictionary<ModelBase, UndoRedoRecorder.UserAction> GetConnectorsToAddAndDelete(
