@@ -212,6 +212,16 @@ namespace Dynamo.ViewModels
                         nodeId, command.PortIndex, command.Type);
                     break;
 
+                case DynamoModel.MakeConnectionCommand.Mode.BeginMultiple:
+                    CurrentSpaceViewModel.BeginMultipleConnections(
+                        nodeId, command.PortIndex, command.Type);
+                    break;
+
+                case DynamoModel.MakeConnectionCommand.Mode.EndMultiple:
+                    CurrentSpaceViewModel.EndMultipleConnections(
+                        nodeId, command.PortIndex, command.Type);
+                    break;
+
                 case DynamoModel.MakeConnectionCommand.Mode.Cancel:
                     CurrentSpaceViewModel.CancelConnection();
                     break;

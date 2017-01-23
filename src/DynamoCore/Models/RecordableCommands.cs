@@ -1348,6 +1348,14 @@ namespace Dynamo.Models
                 /// </summary>
                 End,
                 /// <summary>
+                /// Begin connection.
+                /// </summary>
+                BeginMultiple,
+                /// <summary>
+                /// End connection.
+                /// </summary>
+                EndMultiple,
+                /// <summary>
                 /// Cancel connection.
                 /// </summary>
                 Cancel
