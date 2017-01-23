@@ -81,6 +81,8 @@ namespace ProtoCore.AST.ImperativeAST
         public ProtoCore.LanguageCodeBlock codeblock { get; set; }
         public Node CodeBlockNode { get; set; }
 
+        public AssociativeNode CaptureListNode { get; set; }
+
         public override bool Equals(object other)
         {
             var otherNode = other as LanguageBlockNode;

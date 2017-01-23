@@ -24,6 +24,22 @@ Imperative<out Node codeBlockNode>
                             .)
 .
 
+Imperative_capturelist<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
+=
+							(. ProtoCore.AST.AssociativeAST.ArgumentSignatureNode argumentSignature = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode(); .)
+		openparen				(. NodeUtils.SetNodeLocation(argumentSignature, t); .)
+								(. ProtoCore.AST.AssociativeAST.AssociativeNode arg;.)
+		[
+			Associative_ArgDecl<out arg>            (. argumentSignature.AddArgument(arg as ProtoCore.AST.AssociativeAST.VarDeclNode); .)
+			{
+				WEAK ','            
+                Associative_ArgDecl<out arg>    (. argumentSignature.AddArgument(arg as ProtoCore.AST.AssociativeAST.VarDeclNode); .)
+			}
+		]
+		closeparen
+							(. node = argumentSignature; .)
+.
+
 Imperative_languageblock<out ProtoCore.AST.ImperativeAST.ImperativeNode node>           
 =                                       
                                         (. 
@@ -44,14 +60,20 @@ Imperative_languageblock<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                                 errors.SemErr(t.line, t.col, String.Format(Resources.InvalidLanguageBlockIdentifier, t.val));
                                             }
                                         .)
-    closebracket                        
-    '{'                      (. Node codeBlockNode = null; .)
+    closebracket              
+                          (. Node codeBlockNode = null; .)
     (
     IF( langblock.codeblock.Language == ProtoCore.Language.Associative ||
         langblock.codeblock.Language == ProtoCore.Language.NotSpecified)
+	'{'
     Hydrogen<out codeBlockNode>              
     |    
     IF( langblock.codeblock.Language == ProtoCore.Language.Imperative )
+	[
+							(. ProtoCore.AST.AssociativeAST.AssociativeNode captureListNode = null; .)
+		Imperative_capturelist<out captureListNode> 	(. langblock.CaptureListNode = captureListNode; .)
+	]          
+	'{'
     Imperative<out codeBlockNode>              
     )
     (

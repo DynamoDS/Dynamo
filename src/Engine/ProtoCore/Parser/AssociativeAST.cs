@@ -156,6 +156,9 @@ namespace ProtoCore.AST.AssociativeAST
         }
 
         public Node CodeBlockNode { get; set; }
+
+        public AssociativeNode CaptureListNode { get; set; }
+
         public LanguageCodeBlock codeblock { get; set; }
         public List<AssociativeNode> Attributes { get; set; }
 
