@@ -40,7 +40,7 @@ namespace Dynamo.Nodes
             ViewModel = this.DataContext as AnnotationViewModel;
             if (ViewModel != null)
             {
-                //Set the height of Textblock based on the content.
+                //Set the height and width of Textblock based on the content.
                 if (!ViewModel.AnnotationModel.loadFromXML)
                 {
                     setTextMaxWidth();
@@ -73,6 +73,7 @@ namespace Dynamo.Nodes
                 this.GroupTextBlock.FontSize,
                 Brushes.Black);
 
+            this.ViewModel.AnnotationModel.Width = formattedText.Width;
             this.ViewModel.AnnotationModel.TextMaxWidth = formattedText.Width;
         }
 
@@ -197,9 +198,9 @@ namespace Dynamo.Nodes
         {
             if (ViewModel != null && (e.HeightChanged || e.WidthChanged))
             {
+                setTextMaxWidth();
                 //Use the DesiredSize and not the Actual height. Because when Textblock is collapsed,
                 //Actual height is same as previous size. used when the Font size changed during zoom
-                setTextMaxWidth();
                 ViewModel.AnnotationModel.TextBlockHeight = GroupTextBlock.DesiredSize.Height;
             }
         }
