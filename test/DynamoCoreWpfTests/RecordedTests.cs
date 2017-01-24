@@ -1011,6 +1011,65 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(false, workspace.Connectors.Any());
         }
 
+        /// <summary>
+        /// The following tests exercise the following steps:
+        /// 
+        /// 1. Create two number nodes and one add node
+        /// 2. Connect the first number node to the two input ports of the add node (2 connectors)
+        /// 3. Reconnect the 2 wires to the second number node using ctrl + click
+        /// 
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestMultipleReconnections()
+        {
+            RunCommandsFromFile("TestMultipleReconnections.xml");
+
+            Assert.AreEqual(3, workspace.Nodes.Count()); // 2 number nodes + 1 add node
+            Assert.AreEqual(2, workspace.Connectors.Count()); // 2 connections from output port of one number node to 2 input ports of the add node
+            AssertPreviewValue("d490ee02-4c1e-4786-a2ac-3308228fac9b", 5.0);
+            // + canceling multiple connections + canceling one connections w ctrl + reconnecting one connection w ctrl
+            // + undo / redo scenarios
+        }
+
+        [Test, RequiresSTA]
+        public void TestMultipleReconnectionsUndo()
+        {
+            RunCommandsFromFile("TestMultipleReconnectionsUndo.xml");
+
+            //do undo twice to obtain previous connections
+            Assert.AreEqual(3, workspace.Nodes.Count());
+            Assert.AreEqual(2, workspace.Connectors.Count());
+            AssertPreviewValue("800100d3-261c-4102-bd5c-904380de556b", 2.0);
+        }
+
+        [Test, RequiresSTA]
+        public void TestMultipleReconnectionsUndoRedo()
+        {
+            RunCommandsFromFile("TestMultipleReconnectionsUndoRedo.xml");
+
+            //do undo and redo twice each
+            Assert.AreEqual(3, workspace.Nodes.Count());
+            Assert.AreEqual(2, workspace.Connectors.Count());
+            AssertPreviewValue("c8c723fc-6ac4-47a1-8959-7ecf8696b877", 5.0);
+        }
+
+        /// <summary>
+        /// The following tests exercise the following steps:
+        /// 
+        /// 1. Create one number node and one add node
+        /// 2. Connect the number node to the two input ports of the add node (2 connectors)
+        /// 3. Ctrl + click on the output port of number node, then click anywhere on the canvas to remove the two connectors
+        /// 
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestMultipleReconnectionsCancel()
+        {
+            RunCommandsFromFile("TestMultipleReconnectionsCancel.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count());
+            Assert.AreEqual(0, workspace.Connectors.Count()); //reconnections are cancelled; connectors are removed from workspace
+        }
+
 
         #endregion
 
