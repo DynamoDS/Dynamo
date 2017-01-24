@@ -1,24 +1,39 @@
-﻿using System.Linq;
-using ProtoCore.AST.ImperativeAST;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.AST;
-using System.Collections.Generic;
 
 namespace ProtoCore.SyntaxAnalysis
 {
-    public abstract class ImperativeAstVisitor : Imperative.IAstVisitor<bool>
+    public abstract class AssociativeAstVisitor : Associative.IAstVisitor<bool>
     {
-        public virtual bool DefaultVisit(ImperativeNode node)
+        public virtual bool DefaultVisit(AssociativeNode node)
         {
             return false;
         }
 
         public virtual bool Visit(Node node)
         {
-            ImperativeNode impNode = node as ImperativeNode;
-            return (impNode != null) ? impNode.Accept(this) : false;
+            AssociativeNode assocNode = node as AssociativeNode;
+            return (assocNode != null) ? assocNode.Accept(this) : false;
+        }
+
+        public virtual bool VisitCommentNode(CommentNode node)
+        {
+            return DefaultVisit(node);
         }
 
         public virtual bool VisitLanguageBlockNode(LanguageBlockNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        public virtual bool VisitReplicationGuideNode(ReplicationGuideNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        public virtual bool VisitAtLevelNode(AtLevelNode node)
         {
             return DefaultVisit(node);
         }
@@ -93,17 +108,42 @@ namespace ProtoCore.SyntaxAnalysis
             return true;
         }
 
+        public virtual bool VisitFunctionDotCallNode(FunctionDotCallNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        public virtual bool VisitVarDeclNode(VarDeclNode node)
+        {
+            return DefaultVisit(node);
+        }
+        
+        public virtual bool VisitArgumentSignatureNode(ArgumentSignatureNode node)
+        {
+            return DefaultVisit(node);
+        }
+
         public virtual bool VisitCodeBlockNode(CodeBlockNode node)
         {
             return DefaultVisit(node);
         }
 
-        public virtual bool VisitIfStatementNode(IfStmtNode node)
+        public virtual bool VisitClassDeclNode(ClassDeclNode node)
         {
             return DefaultVisit(node);
         }
 
-        public virtual bool VisitElseIfNode(ElseIfBlock node)
+        public virtual bool VisitConstructorDefinitionNode(ConstructorDefinitionNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        public virtual bool VisitFunctionDefinitionNode(FunctionDefinitionNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        public virtual bool VisitIfStatementNode(IfStatementNode node)
         {
             return DefaultVisit(node);
         }
@@ -168,49 +208,64 @@ namespace ProtoCore.SyntaxAnalysis
             return true;
         }
 
-        public virtual bool VisitWhileStatementNode(WhileStmtNode node)
+        public virtual bool VisitImportNode(ImportNode node)
         {
             return DefaultVisit(node);
         }
 
-        public virtual bool VisitForLoopNode(ForLoopNode node)
+        public virtual bool VisitDynamicNode(DynamicNode node)
         {
             return DefaultVisit(node);
         }
 
-        public virtual bool VisitBreakNode(BreakNode node)
+        public virtual bool VisitDynamicBlockNode(DynamicBlockNode node)
         {
             return DefaultVisit(node);
         }
 
-        public virtual bool VisitContinueNode(ContinueNode node)
+        public virtual bool VisitThisPointerNode(ThisPointerNode node)
         {
             return DefaultVisit(node);
         }
 
-        public virtual bool VisitIfStmtPositionNode(IfStmtPositionNode node)
+        public virtual bool VisitDefaultArgNode(DefaultArgNode node)
         {
             return DefaultVisit(node);
         }
     }
 
-    public abstract class ImperativeAstVisitor<TResult> : Imperative.IAstVisitor<TResult>
+    public abstract class AssociativeAstVisitor<TResult> : Associative.IAstVisitor<TResult>
     {
-        public virtual TResult DefaultVisit(ImperativeNode node)
+        public virtual TResult DefaultVisit(AssociativeNode node)
         {
             return default(TResult);
         }
 
         public virtual TResult Visit(Node node)
         {
-            ImperativeNode impNode = node as ImperativeNode;
-            if (impNode != null)
-                return impNode.Accept(this);
+            AssociativeNode assocNode = node as AssociativeNode;
+            if (assocNode != null)
+                return assocNode.Accept(this);
 
             return default(TResult);
         }
 
+        public virtual TResult VisitCommentNode(CommentNode node)
+        {
+            return DefaultVisit(node);
+        }
+
         public virtual TResult VisitLanguageBlockNode(LanguageBlockNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        public virtual TResult VisitReplicationGuideNode(ReplicationGuideNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        public virtual TResult VisitAtLevelNode(AtLevelNode node)
         {
             return DefaultVisit(node);
         }
@@ -227,7 +282,7 @@ namespace ProtoCore.SyntaxAnalysis
 
         public virtual TResult VisitIdentifierNode(IdentifierNode node)
         {
-            return DefaultVisit(node);
+            return DefaultVisit(node); 
         }
 
         public virtual TResult VisitTypedIdentifierNode(TypedIdentifierNode node)
@@ -272,6 +327,21 @@ namespace ProtoCore.SyntaxAnalysis
 
         public virtual TResult VisitFunctionCallNode(FunctionCallNode node)
         {
+            return DefaultVisit(node);    
+        }
+
+        public virtual TResult VisitFunctionDotCallNode(FunctionDotCallNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        public virtual TResult VisitVarDeclNode(VarDeclNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        public virtual TResult VisitArgumentSignatureNode(ArgumentSignatureNode node)
+        {
             return DefaultVisit(node);
         }
 
@@ -280,12 +350,22 @@ namespace ProtoCore.SyntaxAnalysis
             return DefaultVisit(node);
         }
 
-        public virtual TResult VisitIfStatementNode(IfStmtNode node)
+        public virtual TResult VisitClassDeclNode(ClassDeclNode node)
         {
             return DefaultVisit(node);
         }
 
-        public virtual TResult VisitElseIfNode(ElseIfBlock node)
+        public virtual TResult VisitConstructorDefinitionNode(ConstructorDefinitionNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        public virtual TResult VisitFunctionDefinitionNode(FunctionDefinitionNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        public virtual TResult VisitIfStatementNode(IfStatementNode node)
         {
             return DefaultVisit(node);
         }
@@ -320,52 +400,40 @@ namespace ProtoCore.SyntaxAnalysis
             return DefaultVisit(node);
         }
 
-        public virtual TResult VisitWhileStatementNode(WhileStmtNode node)
+        public virtual TResult VisitImportNode(ImportNode node)
         {
             return DefaultVisit(node);
         }
 
-        public virtual TResult VisitForLoopNode(ForLoopNode node)
-        {
-            return DefaultVisit(node);
-        }
-        public virtual TResult VisitBreakNode(BreakNode node)
+        public virtual TResult VisitDynamicNode(DynamicNode node)
         {
             return DefaultVisit(node);
         }
 
-        public virtual TResult VisitContinueNode(ContinueNode node)
+        public virtual TResult VisitDynamicBlockNode(DynamicBlockNode node)
         {
             return DefaultVisit(node);
         }
 
-        public virtual TResult VisitIfStmtPositionNode(IfStmtPositionNode node)
+        public virtual TResult VisitThisPointerNode(ThisPointerNode node)
+        {
+            return DefaultVisit(node);
+        }
+
+        public virtual TResult VisitDefaultArgNode(DefaultArgNode node)
         {
             return DefaultVisit(node);
         }
     }
 
-    public class ImperativeAstReplacer : ImperativeAstVisitor<ImperativeNode>
+    public class AssociativeAstReplacer : AssociativeAstVisitor<AssociativeNode>
     {
-        public override ImperativeNode DefaultVisit(ImperativeNode node)
+        public override AssociativeNode DefaultVisit(AssociativeNode node)
         {
             return node;
         }
 
-        public override ImperativeNode VisitLanguageBlockNode(LanguageBlockNode node)
-        {
-            var cbn = node.CodeBlockNode as CodeBlockNode;
-            if (cbn == null)
-            {
-                return base.VisitLanguageBlockNode(node);
-            }
-
-            var nodeList = cbn.Body.Select(astNode => astNode.Accept(this)).ToList();
-            cbn.Body = nodeList;
-            return node;
-        }
-
-        public List<ImperativeNode> VisitNodeList(List<ImperativeNode> nodes)
+        public List<AssociativeNode> VisitNodeList(List<AssociativeNode> nodes)
         {
             for (int i = 0; i < nodes.Count; ++i)
             {
@@ -377,13 +445,7 @@ namespace ProtoCore.SyntaxAnalysis
             return nodes;
         }
 
-        public override ImperativeNode VisitCodeBlockNode(CodeBlockNode node)
-        {
-            node.Body = VisitNodeList(node.Body); 
-            return node;
-        }
-
-        public override ImperativeNode VisitGroupExpressionNode(GroupExpressionNode node)
+        public override AssociativeNode VisitGroupExpressionNode(GroupExpressionNode node)
         {
             var newExpression = node.Expression.Accept(this);
 
@@ -393,7 +455,7 @@ namespace ProtoCore.SyntaxAnalysis
             return node;
         }
 
-        public override ImperativeNode VisitIdentifierNode(IdentifierNode node)
+        public override AssociativeNode VisitIdentifierNode(IdentifierNode node)
         {
             if (node.ArrayDimensions != null)
             {
@@ -405,12 +467,12 @@ namespace ProtoCore.SyntaxAnalysis
             return node;
         }
 
-        public override ImperativeNode VisitTypedIdentifierNode(TypedIdentifierNode node)
+        public override AssociativeNode VisitTypedIdentifierNode(TypedIdentifierNode node)
         {
             return VisitIdentifierNode(node);
         }
 
-        public override ImperativeNode VisitIdentifierListNode(IdentifierListNode node)
+        public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
             var newLeftNode = node.LeftNode.Accept(this);
             if (newLeftNode != node.LeftNode)
@@ -423,13 +485,13 @@ namespace ProtoCore.SyntaxAnalysis
             return node;
         }
 
-        public override ImperativeNode VisitFunctionCallNode(FunctionCallNode node)
+        public override AssociativeNode VisitFunctionCallNode(FunctionCallNode node)
         {
             var func = node.Function.Accept(this);
             if (node.Function != func)
                 node.Function = func;
 
-            node.FormalArguments = VisitNodeList(node.FormalArguments); 
+            node.FormalArguments = VisitNodeList(node.FormalArguments);
 
             if (node.ArrayDimensions != null)
             {
@@ -441,7 +503,44 @@ namespace ProtoCore.SyntaxAnalysis
             return node;
         }
 
-        public override ImperativeNode VisitBinaryExpressionNode(BinaryExpressionNode node)
+        public override AssociativeNode VisitLanguageBlockNode(LanguageBlockNode node)
+        {
+            var cbn = node.CodeBlockNode as CodeBlockNode;
+            if (cbn == null)
+            {
+                return base.VisitLanguageBlockNode(node);
+            }
+
+            var nodeList = cbn.Body.Select(astNode => astNode.Accept(this)).ToList();
+            cbn.Body = nodeList;
+            return node;
+        }
+
+        public override AssociativeNode VisitFunctionDefinitionNode(FunctionDefinitionNode node)
+        {
+            var nodeList = node.FunctionBody.Body.Select(astNode => astNode.Accept(this)).ToList();
+            node.FunctionBody.Body = nodeList;
+            return node;
+        }
+
+        public override AssociativeNode VisitInlineConditionalNode(InlineConditionalNode node)
+        {
+            var newCondition = node.ConditionExpression.Accept(this);
+            if (node.ConditionExpression != newCondition)
+                node.ConditionExpression = newCondition;
+
+            var newTrueExpr = node.TrueExpression.Accept(this);
+            if (node.TrueExpression != newTrueExpr)
+                node.TrueExpression = newTrueExpr;
+
+            var newFalseExpr = node.FalseExpression.Accept(this);
+            if (node.FalseExpression != newFalseExpr)
+                node.FalseExpression = newFalseExpr;
+
+            return node;
+       }
+
+        public override AssociativeNode VisitBinaryExpressionNode(BinaryExpressionNode node)
         {
             var newLeftNode = node.LeftNode.Accept(this);
             if (node.LeftNode != newLeftNode)
@@ -454,7 +553,7 @@ namespace ProtoCore.SyntaxAnalysis
             return node;
         }
 
-        public override ImperativeNode VisitUnaryExpressionNode(UnaryExpressionNode node)
+        public override AssociativeNode VisitUnaryExpressionNode(UnaryExpressionNode node)
         {
             var newExpression = node.Expression.Accept(this);
             if (node.Expression != newExpression)
@@ -463,7 +562,7 @@ namespace ProtoCore.SyntaxAnalysis
             return node;
         }
 
-        public override ImperativeNode VisitRangeExprNode(RangeExprNode node)
+        public override AssociativeNode VisitRangeExprNode(RangeExprNode node)
         {
             var newFromNode = node.From.Accept(this);
             if (node.From != newFromNode)
@@ -483,7 +582,7 @@ namespace ProtoCore.SyntaxAnalysis
             return node;
         }
 
-        public override ImperativeNode VisitExprListNode(ExprListNode node)
+        public override AssociativeNode VisitExprListNode(ExprListNode node)
         {
             node.Exprs = VisitNodeList(node.Exprs);
 
@@ -497,7 +596,7 @@ namespace ProtoCore.SyntaxAnalysis
             return node;
         }
 
-        public override ImperativeNode VisitArrayNode(ArrayNode node)
+        public override AssociativeNode VisitArrayNode(ArrayNode node)
         {
             var newExpr = node.Expr.Accept(this);
             if (node.Expr != newExpr)
@@ -511,70 +610,6 @@ namespace ProtoCore.SyntaxAnalysis
             }
 
             return node;
-        }
-
-        public override ImperativeNode VisitInlineConditionalNode(InlineConditionalNode node)
-        {
-            var newCondition = node.ConditionExpression.Accept(this);
-            if (node.ConditionExpression != newCondition)
-                node.ConditionExpression = newCondition;
-
-            var newTrueExpr = node.TrueExpression.Accept(this);
-            if (node.TrueExpression != newTrueExpr)
-                node.TrueExpression = newTrueExpr;
-
-            var newFalseExpr = node.FalseExpression.Accept(this);
-            if (node.FalseExpression != newFalseExpr)
-                node.FalseExpression = newFalseExpr;
-
-            return node;
-        }
-
-        public override ImperativeNode VisitIfStatementNode(IfStmtNode node)
-        {
-            var newIfExpr = node.IfExprNode.Accept(this);
-            if (node.IfExprNode != newIfExpr)
-                node.IfExprNode = newIfExpr;
-
-            node.IfBody = VisitNodeList(node.IfBody);
-            node.ElseIfList = VisitNodeList(node.ElseIfList.Cast<ImperativeNode>().ToList()).Cast<ElseIfBlock>().ToList();
-            node.ElseBody = VisitNodeList(node.ElseBody);
-
-            return node;
-        }
-
-        public override ImperativeNode VisitElseIfNode(ElseIfBlock node)
-        {
-            var newExpr = node.Expr.Accept(this);
-            if (node.Expr != newExpr)
-                node.Expr = newExpr;
-
-            node.Body = VisitNodeList(node.Body);
-            return node;
-        }
-
-        public override ImperativeNode VisitWhileStatementNode(WhileStmtNode node)
-        {
-            var newExpr = node.Expr.Accept(this);
-            if (node.Expr != newExpr)
-                node.Expr = newExpr;
-
-            node.Body = VisitNodeList(node.Body);
-            return node;
-        }
-
-        public override ImperativeNode VisitForLoopNode(ForLoopNode node)
-        {
-            var newLoopVar = node.LoopVariable.Accept(this);
-            if (node.LoopVariable != newLoopVar)
-                node.LoopVariable = newLoopVar;
-
-            var newExpr = node.Expression.Accept(this);
-            if (node.Expression != newExpr)
-                node.Expression = newExpr;
-
-            node.Body = VisitNodeList(node.Body);
-            return node;
-        }
+       }
     }
 }
