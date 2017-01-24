@@ -371,7 +371,7 @@ namespace ProtoCore.Utils
                 }
                 catch
                 {
-                    // For modifier blocks, language blocks, etc. that are currently ignored
+                    // For class declarations, import statements etc. that are currently ignored
                 }
             }
 
@@ -401,11 +401,15 @@ namespace ProtoCore.Utils
                 Validity.Assert(n != null);
 
                 // Append the temporaries only if it is not a function def or class decl
-                bool isFunctionOrClassDef = n is FunctionDefinitionNode || n is ClassDeclNode;
+                bool isFunctionOrClassDef = n is FunctionDefinitionNode;
 
                 if (n is ImportNode)
                 {
                     core.BuildStatus.LogSemanticError(Resources.ImportStatementNotSupported);
+                }
+                else if (n is ClassDeclNode)
+                {
+                    core.BuildStatus.LogSemanticError(Resources.ClassDeclarationNotSupported);
                 }
                 else if (isFunctionOrClassDef)
                 {

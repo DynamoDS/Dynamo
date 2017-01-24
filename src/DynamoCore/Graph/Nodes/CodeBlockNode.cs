@@ -1392,12 +1392,6 @@ namespace Dynamo.Graph.Nodes
                 GetReferencedVariables(parsedNode, refVariableList);
                 referencedVariables = refVariableList;
             }
-            else if (parsedNode is FunctionDefinitionNode)
-            {
-                // Handle function definitions in CBN
-            }
-            else
-                throw new ArgumentException("Must be func def or assignment");
 
             Variable.SetCorrectColumn(referencedVariables, CurrentType, StartLine);
         }
