@@ -234,14 +234,15 @@ namespace Dynamo.Engine.NodeToCode
             this.core = core;
         }
 
-        public override void VisitIdentifierNode(IdentifierNode node)
+        public override bool VisitIdentifierNode(IdentifierNode node)
         {
             identFunc(node);
             if (node.ArrayDimensions != null)
                 node.ArrayDimensions.Accept(this);
+            return true;
         }
 
-        public override void VisitIdentifierListNode(IdentifierListNode node)
+        public override bool VisitIdentifierListNode(IdentifierListNode node)
         {
             if (node.LeftNode is IdentifierNode || node.LeftNode is IdentifierListNode)
             {
@@ -256,10 +257,10 @@ namespace Dynamo.Engine.NodeToCode
                     if (!(node.RightNode is IdentifierNode))
                         node.RightNode.Accept(this);
 
-                    return;
+                    return true;
                 }
             }
-            base.VisitIdentifierListNode(node);
+            return base.VisitIdentifierListNode(node);
         }
     }
 
