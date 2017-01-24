@@ -73,7 +73,7 @@ namespace TestServices
 
             LibraryVersion version;
             RequestedLibraryVersion = LibraryVersion.TryParse(versionStr, out version) ? 
-                version : LibraryVersion.Version220;
+                version : LibraryVersion.Version221;
             
         }
 
