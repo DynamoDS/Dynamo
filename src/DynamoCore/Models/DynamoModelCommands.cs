@@ -317,25 +317,25 @@ namespace Dynamo.Models
             var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
             if (node == null) return;
 
-            PortModel portModel = node.OutPorts[portIndex];
+            PortModel selectedPort = node.OutPorts[portIndex];
 
-            var models = new List<ModelBase>();
-            int numOfConnectors = portModel.Connectors.Count;
+            var connectorsForDeletion = new List<ModelBase>();
+            int numOfConnectors = selectedPort.Connectors.Count;
             if (numOfConnectors == 0) return;
 
-            activeStartPort = portModel.Connectors[0].End;
+            activeStartPort = selectedPort.Connectors[0].End;
             activeStartPorts = new PortModel[numOfConnectors];
 
             for (int i = 0; i < numOfConnectors; i++)
             {
-                ConnectorModel connector = portModel.Connectors[i];
-                models.Add(connector);
+                ConnectorModel connector = selectedPort.Connectors[i];
+                connectorsForDeletion.Add(connector);
                 activeStartPorts[i] = connector.End;
             }
-            CurrentWorkspace.RecordAndDeleteModels(models);
+            CurrentWorkspace.RecordAndDeleteModels(connectorsForDeletion);
             for (int i = 0; i < numOfConnectors; i++) //delete the connectors
             {
-                portModel.Connectors[0].Delete();
+                selectedPort.Connectors[0].Delete();
             }
             return;
         }
@@ -366,14 +366,14 @@ namespace Dynamo.Models
             if (portType == PortType.Input) return; //only handle multiple connections when the port selected is an output port
             var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
             if (node == null) return;
-            PortModel portModel = node.OutPorts[portIndex];
+            PortModel selectedPort = node.OutPorts[portIndex];
 
             if (activeStartPorts == null || activeStartPorts.Count() <= 0) return;
 
-            var firstModel = GetConnectorsToAddAndDelete(portModel, activeStartPorts[0]);
+            var firstModel = GetConnectorsToAddAndDelete(selectedPort, activeStartPorts[0]);
             for (int i = 1; i < activeStartPorts.Count(); i++)
             {
-                var models = GetConnectorsToAddAndDelete(portModel, activeStartPorts[i]);
+                var models = GetConnectorsToAddAndDelete(selectedPort, activeStartPorts[i]);
                 foreach (var m in models)
                 {
                     firstModel.Add(m.Key, m.Value);

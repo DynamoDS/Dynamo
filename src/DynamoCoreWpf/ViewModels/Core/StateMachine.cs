@@ -172,23 +172,23 @@ namespace Dynamo.ViewModels
 
         internal void BeginMultipleConnections(Guid nodeId, int portIndex, PortType portType)
         {
-            bool isInPort = portType == PortType.Input;
+            if (portType == PortType.Input) return;
 
             NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
             if (node == null) return;
 
-            PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
-            if (portModel.Connectors.Count <= 0 || isInPort) return;
+            PortModel portModel = node.OutPorts[portIndex];
+            if (portModel.Connectors.Count <= 0) return;
             
-            var n = new ConnectorViewModel[portModel.Connectors.Count];
+            var activeConnectors = new ConnectorViewModel[portModel.Connectors.Count];
             var c = new ConnectorViewModel(this, portModel.Connectors[0].End);
             this.SetActiveConnector(c);
             for (int i = 0; i < portModel.Connectors.Count; i++)
             {
                 c = new ConnectorViewModel(this, portModel.Connectors[i].End);
-                n[i] = c;
+                activeConnectors[i] = c;
              }
-            this.SetActiveConnectors(n);
+            this.SetActiveConnectors(activeConnectors);
             return;
         }
 
