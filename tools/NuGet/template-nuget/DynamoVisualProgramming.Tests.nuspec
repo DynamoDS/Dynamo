@@ -10,10 +10,11 @@
     <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Unit and system test infrastructure for Dynamo. It contains the following files:
-1) TestServices.dll 
-2) SystemTestServices.dll</description>
+1) DynamoCoreTests.dll
+2) SystemTestServices.dll
+3) TestServices.dll</description>
     <summary>This package contains all that is required to get up and running creating tests for Dynamo libraries.</summary>
-    <copyright>Copyright Autodesk 2016</copyright>
+    <copyright>Copyright Autodesk 2017</copyright>
     <dependencies>
       <dependency id="DynamoVisualProgramming.Core" version="@VERSION@"/>
     </dependencies>

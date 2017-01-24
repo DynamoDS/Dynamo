@@ -14,7 +14,7 @@
 2) CoreNodeModels.dll
 3) CoreNodeModelsWpf.dll</description>
     <summary>This package contains all that is required to get up and running building nodes for the Dynamo Visual Programming language with custom UI in WPF.</summary>
-    <copyright>Copyright Autodesk 2016</copyright>
+    <copyright>Copyright Autodesk 2017</copyright>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Xaml"/>
       <frameworkAssembly assemblyName="WindowsBase"/>
