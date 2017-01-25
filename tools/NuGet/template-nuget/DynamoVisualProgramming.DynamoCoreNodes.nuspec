@@ -10,9 +10,10 @@
     <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Build core nodes for Dynamo. It contains the following files:
-1) DSCoreNodes.dll
-2) Display.dll</description>
-    <copyright>Copyright Autodesk 2016</copyright>
+1) Analysis.dll
+2) Display.dll
+3) DSCoreNodes.dll</description>
+    <copyright>Copyright Autodesk 2017</copyright>
     <dependencies>
       <group targetFramework=".NETFramework4.5">
         <dependency id="DynamoVisualProgramming.DynamoServices" version="@VERSION@" />

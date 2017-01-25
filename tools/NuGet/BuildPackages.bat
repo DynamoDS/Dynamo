@@ -1,6 +1,9 @@
+:: Argument %1: path to template folder
+::
+
 @echo off
-SET base=..\..\src\DynamoInstall\harvest
-if not exist %base% (
+set harvestPath=..\..\src\DynamoInstall\harvest
+if not exist %harvestPath% (
   echo Dynamo\src\DynamoInstall\harvest folder not found.
   echo Please build Dynamo\src\Install.sln before running this script!
   exit /b 1
@@ -8,7 +11,7 @@ if not exist %base% (
 
 :: Get version string from "DynamoCore.dll"
 set count=1
-for /f %%f in ('cscript //Nologo ..\install\GetFileVersion.vbs %base%\DynamoCore.dll') do (
+for /f %%f in ('cscript //Nologo ..\install\GetFileVersion.vbs %harvestPath%\DynamoCore.dll') do (
   setlocal EnableDelayedExpansion
   if !count!==1 set Major=%%f
   if !count!==2 set Minor=%%f
@@ -24,9 +27,9 @@ del *.nupkg
 if exist nuspec ( rmdir /s /q nuspec )
 mkdir nuspec
 
-:: Copy .nuspec files from "template" folder to "nuspec" folder
+:: Copy .nuspec files from template folder to "nuspec" folder
 :: and replace the string "@VERSION@" with the correct value
-for %%f in (template\*.nuspec) do (
+for %%f in (%1\*.nuspec) do (
   for /f "tokens=* delims=¶" %%i in ( '"type %%f"') do (
     set line=%%i
     setlocal EnableDelayedExpansion
@@ -39,5 +42,5 @@ for %%f in (template\*.nuspec) do (
 :: Pack .nupkg files based on each .nuspec in the "nuspec" folder
 @echo on
 for %%f in (nuspec\*.nuspec) do (
-  nuget pack %%f -basepath %base%
+  nuget pack %%f -basepath %harvestPath%
 )
