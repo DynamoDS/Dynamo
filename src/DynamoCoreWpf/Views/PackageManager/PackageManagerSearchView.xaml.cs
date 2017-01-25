@@ -28,8 +28,8 @@ namespace Dynamo.PackageManager.UI
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             (this.DataContext as PackageManagerSearchViewModel).RequestShowFileDialog -= OnRequestShowFileDialog;
-            base.OnClosing(e);
             this.Owner.Focus();
+            base.OnClosing(e);
         }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
