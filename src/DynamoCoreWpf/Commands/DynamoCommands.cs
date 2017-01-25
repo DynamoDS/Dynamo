@@ -212,13 +212,13 @@ namespace Dynamo.ViewModels
                         nodeId, command.PortIndex, command.Type);
                     break;
 
-                case DynamoModel.MakeConnectionCommand.Mode.BeginMultiple:
-                    CurrentSpaceViewModel.BeginMultipleConnections(
+                case DynamoModel.MakeConnectionCommand.Mode.BeginShiftReconnections:
+                    CurrentSpaceViewModel.BeginShiftReconnections(
                         nodeId, command.PortIndex, command.Type);
                     break;
 
-                case DynamoModel.MakeConnectionCommand.Mode.EndMultiple:
-                    CurrentSpaceViewModel.EndMultipleConnections(
+                case DynamoModel.MakeConnectionCommand.Mode.EndShiftReconnections:
+                    CurrentSpaceViewModel.EndConnection(
                         nodeId, command.PortIndex, command.Type);
                     break;
 

@@ -26,7 +26,6 @@ namespace Dynamo.ViewModels
         #region State Machine Related Methods/Data Members
 
         private StateMachine stateMachine = null;
-        private ConnectorViewModel activeConnector = null;
         private ConnectorViewModel[] activeConnectors = null;
         private static bool multipleConnections = false;
         private List<DraggedNode> draggedNodes = new List<DraggedNode>();
@@ -41,7 +40,13 @@ namespace Dynamo.ViewModels
 
         internal ConnectorViewModel ActiveConnector
         {
-            get { return activeConnector; }
+            get {
+                if (null != activeConnectors && activeConnectors.Count() > 0)
+                {
+                    return activeConnectors[0];
+                }
+                return null;
+            }
         }
 
         internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -152,16 +157,17 @@ namespace Dynamo.ViewModels
             if (portModel.Connectors.Count > 0 && portModel.Connectors[0].Start != portModel)
             {
                 // Define the new active connector
-                var c = new ConnectorViewModel(this, portModel.Connectors[0].Start);
-                this.SetActiveConnector(c);
+                var c = new ConnectorViewModel[] { new ConnectorViewModel(this, portModel.Connectors[0].Start) };
+                
+                this.SetActiveConnectors(c);
             }
             else
             {
                 try
                 {
                     // Create a connector view model to begin drawing
-                    var connector = new ConnectorViewModel(this, portModel);
-                    this.SetActiveConnector(connector);
+                    var connector = new ConnectorViewModel[] { new ConnectorViewModel(this, portModel) };
+                    this.SetActiveConnectors(connector);
                 }
                 catch (Exception ex)
                 {
@@ -170,7 +176,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal void BeginMultipleConnections(Guid nodeId, int portIndex, PortType portType)
+        internal void BeginShiftReconnections(Guid nodeId, int portIndex, PortType portType)
         {
             if (portType == PortType.Input) return;
 
@@ -180,24 +186,18 @@ namespace Dynamo.ViewModels
             PortModel portModel = node.OutPorts[portIndex];
             if (portModel.Connectors.Count <= 0) return;
             
-            var activeConnectors = new ConnectorViewModel[portModel.Connectors.Count];
+            var connectorsAr = new ConnectorViewModel[portModel.Connectors.Count];
             var c = new ConnectorViewModel(this, portModel.Connectors[0].End);
-            this.SetActiveConnector(c);
             for (int i = 0; i < portModel.Connectors.Count; i++)
             {
                 c = new ConnectorViewModel(this, portModel.Connectors[i].End);
-                activeConnectors[i] = c;
+                connectorsAr[i] = c;
              }
-            this.SetActiveConnectors(activeConnectors);
+            this.SetActiveConnectors(connectorsAr);
             return;
         }
 
         internal void EndConnection(Guid nodeId, int portIndex, PortType portType)
-        {
-            this.SetActiveConnector(null);
-        }
-
-        internal void EndMultipleConnections(Guid nodeId, int portIndex, PortType portType)
         {
             this.SetActiveConnectors(null);
         }
@@ -205,7 +205,7 @@ namespace Dynamo.ViewModels
         internal bool CheckActiveConnectorCompatibility(PortViewModel portVM,bool isSnapping = true)
         {
             // Check if required ports exist
-            if (this.activeConnector == null || portVM == null)
+            if (ActiveConnector == null || portVM == null)
                 return false;
             //By default the ports will be in snapping mode. But if the connection is not completed,
             //then on mouse leave, the cursor should be pointed as arcselect instead of arcadd.             
@@ -215,7 +215,7 @@ namespace Dynamo.ViewModels
                 return false;
             }
 
-            PortModel srcPortM = this.activeConnector.ActiveStartPort;
+            PortModel srcPortM = ActiveConnector.ActiveStartPort;
             PortModel desPortM = portVM.PortModel;
 
             // No self connection
@@ -237,14 +237,11 @@ namespace Dynamo.ViewModels
         internal void CancelConnection()
         {
             multipleConnections = false;
-            this.SetActiveConnector(null);
             this.SetActiveConnectors(null);
         }
 
         internal void UpdateActiveConnector(System.Windows.Point mouseCursor)
         {
-            if (null != this.activeConnector)
-                this.activeConnector.Redraw(mouseCursor.AsDynamoType());
             if (null != this.activeConnectors)
             {
                 for (int i = 0; i < this.activeConnectors.Count(); i++)
@@ -254,25 +251,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void SetActiveConnector(ConnectorViewModel connector)
-        {
-            if (null != connector)
-            {
-                System.Diagnostics.Debug.Assert(null == activeConnector);
-                this.WorkspaceElements.Add(connector);
-                this.activeConnector = connector;
-            }
-            else
-            {
-                System.Diagnostics.Debug.Assert(null != activeConnector);
-                this.WorkspaceElements.Remove(activeConnector);
-                this.activeConnector = null;
-            }
-
-            this.RaisePropertyChanged("ActiveConnector");
-        }
-
-        private void SetActiveConnectors (ConnectorViewModel[] connectors) // for handling multiple connectors
+        private void SetActiveConnectors (ConnectorViewModel[] connectors) // A replacement for SetActiveConnector(), for handling both single and multiple connectors
         {
             if (null != connectors && connectors.Count() > 0)
             {
@@ -285,7 +264,6 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                this.WorkspaceElements.Remove(activeConnector);
                 if (null != activeConnectors)
                 {
                     foreach (ConnectorViewModel a in activeConnectors)
@@ -293,7 +271,6 @@ namespace Dynamo.ViewModels
                         this.WorkspaceElements.Remove(a);
                     }
                 }
-                this.activeConnector = null;
                 this.activeConnectors = null;
             }
 
@@ -762,16 +739,16 @@ namespace Dynamo.ViewModels
                     int portIndex = portModel.Index;
 
                     var mode = DynamoModel.MakeConnectionCommand.Mode.Begin;
-                    if (Keyboard.Modifiers == ModifierKeys.Control) //if control key is down, handle multiple wire connections
+                    if (Keyboard.Modifiers == ModifierKeys.Shift) //if shift key is down, handle multiple wire reconnections
                     {
                         multipleConnections = true;
-                        mode = DynamoModel.MakeConnectionCommand.Mode.BeginMultiple;
+                        mode = DynamoModel.MakeConnectionCommand.Mode.BeginShiftReconnections;
                     }
 
                     var command = new DynamoModel.MakeConnectionCommand(nodeId, portIndex, portModel.PortType, mode);
                     owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
-                    if (null != owningWorkspace.activeConnector)
+                    if (null != owningWorkspace.ActiveConnector)
                     {
                         this.currentState = State.Connection;
                         owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
@@ -789,7 +766,7 @@ namespace Dynamo.ViewModels
                         var mode = DynamoModel.MakeConnectionCommand.Mode.End;
                         if (multipleConnections)
                         {
-                            mode = DynamoModel.MakeConnectionCommand.Mode.EndMultiple;
+                            mode = DynamoModel.MakeConnectionCommand.Mode.EndShiftReconnections;
                         }
                         var command = new DynamoModel.MakeConnectionCommand(nodeId,
                             portIndex, portModel.PortType, mode);
