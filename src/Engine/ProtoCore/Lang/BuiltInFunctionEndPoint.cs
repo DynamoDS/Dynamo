@@ -211,20 +211,28 @@ namespace ProtoCore.Lang
                             ret = ProtoCore.DSASM.StackValue.BuildInt(ArrayUtilsForBuiltIns.IndexOf(formalParameters[0], formalParameters[1], interpreter));
                         break;
                     }
-                case ProtoCore.Lang.BuiltInMethods.MethodID.Sort:
-                    ret = ArrayUtilsForBuiltIns.Sort(formalParameters[0], interpreter);
-                    break;
                 case BuiltInMethods.MethodID.SortPointer:
                     ret = ArrayUtilsForBuiltIns.SortPointers(formalParameters[0], formalParameters[1], interpreter, stackFrame);
                     break;
-                case ProtoCore.Lang.BuiltInMethods.MethodID.SortWithMode:
-                    ret = ArrayUtilsForBuiltIns.SortWithMode(formalParameters[0], formalParameters[1], interpreter);
+                case ProtoCore.Lang.BuiltInMethods.MethodID.Sort:
+                    if (FormalParams.Count() == 1)
+                    {
+                        ret = ArrayUtilsForBuiltIns.Sort(formalParameters[0], interpreter);
+                    }
+                    else
+                    {
+                        ret = ArrayUtilsForBuiltIns.SortWithMode(formalParameters[0], formalParameters[1], interpreter);
+                    }
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.SortIndexByValue:
-                    ret = ArrayUtilsForBuiltIns.SortIndexByValue(formalParameters[0], interpreter);
-                    break;
-                case ProtoCore.Lang.BuiltInMethods.MethodID.SortIndexByValueWithMode:
-                    ret = ArrayUtilsForBuiltIns.SortIndexByValueWithMode(formalParameters[0], formalParameters[1], interpreter);
+                    if (FormalParams.Count() == 1)
+                    {
+                        ret = ArrayUtilsForBuiltIns.SortIndexByValue(formalParameters[0], interpreter);
+                    }
+                    else
+                    {
+                        ret = ArrayUtilsForBuiltIns.SortIndexByValueWithMode(formalParameters[0], formalParameters[1], interpreter);
+                    }
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.Reorder:
                     ret = ArrayUtilsForBuiltIns.Reorder(formalParameters[0], formalParameters[1], interpreter);
@@ -269,20 +277,28 @@ namespace ProtoCore.Lang
                     else
                         ret = ProtoCore.DSASM.StackValue.Null;
                     break;
-                case ProtoCore.Lang.BuiltInMethods.MethodID.NormalizeDepthWithRank:
-                    ret = ArrayUtilsForBuiltIns.NormalizeDepthWithRank(formalParameters[0], formalParameters[1], interpreter);
-                    break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.NormalizeDepth:
-                    ret = ArrayUtilsForBuiltIns.NormalizeDepth(formalParameters[0], interpreter);
+                    if (formalParameters.Count() == 1)
+                    {
+                        ret = ArrayUtilsForBuiltIns.NormalizeDepth(formalParameters[0], interpreter);
+                    }
+                    else
+                    {
+                        ret = ArrayUtilsForBuiltIns.NormalizeDepthWithRank(formalParameters[0], formalParameters[1], interpreter);
+                    }
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.Transpose:
                     ret = ArrayUtilsForBuiltIns.Transpose(formalParameters[0], interpreter);
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.LoadCSV:
-                    ret = FileIOBuiltIns.LoadCSV(formalParameters[0], interpreter);
-                    break;
-                case ProtoCore.Lang.BuiltInMethods.MethodID.LoadCSVWithMode:
-                    ret = FileIOBuiltIns.LoadCSVWithMode(formalParameters[0], formalParameters[1], interpreter);
+                    if (FormalParams.Count() == 1)
+                    {
+                        ret = FileIOBuiltIns.LoadCSV(formalParameters[0], interpreter);
+                    }
+                    else
+                    {
+                        ret = FileIOBuiltIns.LoadCSVWithMode(formalParameters[0], formalParameters[1], interpreter);
+                    }
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.Print:
                     ret = FileIOBuiltIns.Print(formalParameters[0], interpreter);
