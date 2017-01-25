@@ -799,6 +799,9 @@ It does not contain your graph or any personal data</value>
   <data name="StartPageDiscussionForum" xml:space="preserve">
     <value>Discussion forum</value>
   </data>
+  <data name="StartPageDynamoDictionary" xml:space="preserve">
+    <value>Dynamo Dictionary</value>
+  </data>
   <data name="StartPageFiles" xml:space="preserve">
     <value>FILES</value>
   </data>

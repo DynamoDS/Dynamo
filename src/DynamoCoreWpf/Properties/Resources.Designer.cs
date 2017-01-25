@@ -1895,15 +1895,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide Preview Bubbles.
-        /// </summary>
-        public static string DynamoViewSettingsMenuHidePreviewBubbles {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuHidePreviewBubbles", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show Edges.
         /// </summary>
         public static string DynamoViewSettingsMenuShowEdges {
@@ -4728,6 +4719,15 @@ namespace Dynamo.Wpf.Properties {
         public static string StartPageDiscussionForum {
             get {
                 return ResourceManager.GetString("StartPageDiscussionForum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo Dictionary.
+        /// </summary>
+        public static string StartPageDynamoDictionary {
+            get {
+                return ResourceManager.GetString("StartPageDynamoDictionary", resourceCulture);
             }
         }
         

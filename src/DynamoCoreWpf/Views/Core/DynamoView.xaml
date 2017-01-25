@@ -761,6 +761,9 @@
                                        Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
+                        <MenuItem Header="{x:Static p:Resources.StartPageDynamoDictionary}"
+                                  Command="{Binding GoToSourceCodeCommand}"
+                                  Focusable="False" />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenuReportBug}"
                                   Command="{Binding ReportABugCommand}"
                                   Focusable="False" />
