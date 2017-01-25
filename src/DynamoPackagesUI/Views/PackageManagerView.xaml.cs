@@ -57,5 +57,9 @@ namespace DynamoPackagesUI.Views
         {
             this.Dispatcher.BeginInvoke((Action)(Close));
         }*/
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            this.Owner.Focus();
+        }
     }
 }
