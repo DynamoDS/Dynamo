@@ -26,9 +26,14 @@ namespace Dynamo.ViewModels
         #region State Machine Related Methods/Data Members
 
         private StateMachine stateMachine = null;
+        private List<DraggedNode> draggedNodes = new List<DraggedNode>();
+
+        // When a new connector is created or a single connector is selected,
+        // activeConnectors has array size of 1.
+        // In the case of shift + click to reconnect multiple connectors, 
+        // all selected connectors are saved in activeConnectors.
         private ConnectorViewModel[] activeConnectors = null;
         private static bool multipleConnections = false;
-        private List<DraggedNode> draggedNodes = new List<DraggedNode>();
 
         // These properties need to be public for data-binding to work.
         public bool IsInIdleState { get { return stateMachine.IsInIdleState; } }
@@ -38,7 +43,7 @@ namespace Dynamo.ViewModels
         public bool IsPanning { get { return stateMachine.IsPanning; } }
         public bool IsOrbiting { get { return stateMachine.IsOrbiting; } }
 
-        internal ConnectorViewModel ActiveConnector
+        internal ConnectorViewModel FirstActiveConnector
         {
             get {
                 if (null != activeConnectors && activeConnectors.Count() > 0)
@@ -158,16 +163,15 @@ namespace Dynamo.ViewModels
             {
                 // Define the new active connector
                 var c = new ConnectorViewModel[] { new ConnectorViewModel(this, portModel.Connectors[0].Start) };
-                
                 this.SetActiveConnectors(c);
             }
             else
             {
                 try
                 {
-                    // Create a connector view model to begin drawing
-                    var connector = new ConnectorViewModel[] { new ConnectorViewModel(this, portModel) };
-                    this.SetActiveConnectors(connector);
+                    // Create an array containing a connector view model to begin drawing
+                    var connectors = new ConnectorViewModel[] { new ConnectorViewModel(this, portModel) };
+                    this.SetActiveConnectors(connectors);
                 }
                 catch (Exception ex)
                 {
@@ -187,10 +191,9 @@ namespace Dynamo.ViewModels
             if (portModel.Connectors.Count <= 0) return;
             
             var connectorsAr = new ConnectorViewModel[portModel.Connectors.Count];
-            var c = new ConnectorViewModel(this, portModel.Connectors[0].End);
             for (int i = 0; i < portModel.Connectors.Count; i++)
             {
-                c = new ConnectorViewModel(this, portModel.Connectors[i].End);
+                var c = new ConnectorViewModel(this, portModel.Connectors[i].End);
                 connectorsAr[i] = c;
              }
             this.SetActiveConnectors(connectorsAr);
@@ -205,7 +208,7 @@ namespace Dynamo.ViewModels
         internal bool CheckActiveConnectorCompatibility(PortViewModel portVM,bool isSnapping = true)
         {
             // Check if required ports exist
-            if (ActiveConnector == null || portVM == null)
+            if (FirstActiveConnector == null || portVM == null)
                 return false;
             //By default the ports will be in snapping mode. But if the connection is not completed,
             //then on mouse leave, the cursor should be pointed as arcselect instead of arcadd.             
@@ -215,7 +218,7 @@ namespace Dynamo.ViewModels
                 return false;
             }
 
-            PortModel srcPortM = ActiveConnector.ActiveStartPort;
+            PortModel srcPortM = FirstActiveConnector.ActiveStartPort;
             PortModel desPortM = portVM.PortModel;
 
             // No self connection
@@ -748,7 +751,7 @@ namespace Dynamo.ViewModels
                     var command = new DynamoModel.MakeConnectionCommand(nodeId, portIndex, portModel.PortType, mode);
                     owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
-                    if (null != owningWorkspace.ActiveConnector)
+                    if (null != owningWorkspace.FirstActiveConnector)
                     {
                         this.currentState = State.Connection;
                         owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
