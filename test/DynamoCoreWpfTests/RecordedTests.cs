@@ -1027,8 +1027,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(3, workspace.Nodes.Count()); // 2 number nodes + 1 add node
             Assert.AreEqual(2, workspace.Connectors.Count()); // 2 connections from output port of one number node to 2 input ports of the add node
             AssertPreviewValue("d490ee02-4c1e-4786-a2ac-3308228fac9b", 5.0);
-            // + canceling multiple connections + canceling one connections w ctrl + reconnecting one connection w ctrl
-            // + undo / redo scenarios
         }
 
         [Test, RequiresSTA]
