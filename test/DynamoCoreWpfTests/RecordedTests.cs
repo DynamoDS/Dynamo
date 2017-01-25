@@ -1020,35 +1020,35 @@ namespace DynamoCoreWpfTests
         /// 
         /// </summary>
         [Test, RequiresSTA]
-        public void TestMultipleReconnections()
+        public void TestShiftReconnections()
         {
-            RunCommandsFromFile("TestMultipleReconnections.xml");
+            RunCommandsFromFile("TestShiftReconnections.xml");
 
             Assert.AreEqual(3, workspace.Nodes.Count()); // 2 number nodes + 1 add node
             Assert.AreEqual(2, workspace.Connectors.Count()); // 2 connections from output port of one number node to 2 input ports of the add node
-            AssertPreviewValue("d490ee02-4c1e-4786-a2ac-3308228fac9b", 5.0);
+            AssertPreviewValue("b4df09e1-0041-4e4c-b417-325f27224e6c", 5.0);
         }
 
         [Test, RequiresSTA]
-        public void TestMultipleReconnectionsUndo()
+        public void TestShiftReconnectionsUndo()
         {
-            RunCommandsFromFile("TestMultipleReconnectionsUndo.xml");
+            RunCommandsFromFile("TestShiftReconnectionsUndo.xml");
 
-            //do undo twice to obtain previous connections
+            //do undo to obtain previous connections
             Assert.AreEqual(3, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
-            AssertPreviewValue("800100d3-261c-4102-bd5c-904380de556b", 2.0);
+            AssertPreviewValue("7552b4cd-13b2-4921-aff8-682ec0dfd6fb", 2.0);
         }
 
         [Test, RequiresSTA]
-        public void TestMultipleReconnectionsUndoRedo()
+        public void TestShiftReconnectionsUndoRedo()
         {
-            RunCommandsFromFile("TestMultipleReconnectionsUndoRedo.xml");
+            RunCommandsFromFile("TestShiftReconnectionsUndoRedo.xml");
 
-            //do undo and redo twice each
+            //do undo and redo once each
             Assert.AreEqual(3, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
-            AssertPreviewValue("c8c723fc-6ac4-47a1-8959-7ecf8696b877", 5.0);
+            AssertPreviewValue("837d3ed0-b8f5-408d-a16d-ed7094a14217", 5.0);
         }
 
         /// <summary>
@@ -1056,13 +1056,13 @@ namespace DynamoCoreWpfTests
         /// 
         /// 1. Create one number node and one add node
         /// 2. Connect the number node to the two input ports of the add node (2 connectors)
-        /// 3. Ctrl + click on the output port of number node, then click anywhere on the canvas to remove the two connectors
+        /// 3. Shift + click on the output port of number node, then click anywhere on the canvas to remove the two connectors
         /// 
         /// </summary>
         [Test, RequiresSTA]
-        public void TestMultipleReconnectionsCancel()
+        public void TestShiftReconnectionsCancel()
         {
-            RunCommandsFromFile("TestMultipleReconnectionsCancel.xml");
+            RunCommandsFromFile("TestShiftReconnectionsCancel.xml");
 
             Assert.AreEqual(2, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count()); //reconnections are cancelled; connectors are removed from workspace
