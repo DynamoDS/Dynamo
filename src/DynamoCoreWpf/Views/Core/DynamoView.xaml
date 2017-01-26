@@ -756,7 +756,7 @@
                                            Width="13" Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
-                    <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenuReportBug}"
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenuReportBug}"
                                   Command="{Binding ReportABugCommand}"
                                   Focusable="False" />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenuGotoWebsite}"
