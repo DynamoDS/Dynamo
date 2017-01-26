@@ -184,7 +184,7 @@ namespace Dynamo.UI.Controls
                 ContextData = Configurations.DynamoVideoTutorials,
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
-            
+
             references.Add(new StartPageListItem(Resources.StartPageDynamoDictionary, "icon-dictionary.png")
             {
                 ContextData = Configurations.DynamoDictionary,
