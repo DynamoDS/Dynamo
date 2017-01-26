@@ -2138,4 +2138,7 @@ Want to publish a different package?</value>
   <data name="SolutionToFolderNotWritatbleError" xml:space="preserve">
     <value>Please update the permissions or go to 'Settings &gt; Manage Node and Package Paths...' to change your default directory.</value>
   </data>
+  <data name="DynamoViewHelpDictionary" xml:space="preserve">
+    <value>Open Dynamo Dictionary</value>
+  </data>
 </root>
