@@ -1011,6 +1011,63 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(false, workspace.Connectors.Any());
         }
 
+        /// <summary>
+        /// The following tests exercise the following steps:
+        /// 
+        /// 1. Create two number nodes and one add node
+        /// 2. Connect the first number node to the two input ports of the add node (2 connectors)
+        /// 3. Reconnect the 2 wires to the second number node using shift + click
+        /// 
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestShiftReconnections()
+        {
+            RunCommandsFromFile("TestShiftReconnections.xml");
+
+            Assert.AreEqual(3, workspace.Nodes.Count()); // 2 number nodes + 1 add node
+            Assert.AreEqual(2, workspace.Connectors.Count()); // 2 connections from output port of one number node to 2 input ports of the add node
+            AssertPreviewValue("b4df09e1-0041-4e4c-b417-325f27224e6c", 5.0);
+        }
+
+        [Test, RequiresSTA]
+        public void TestShiftReconnectionsUndo()
+        {
+            RunCommandsFromFile("TestShiftReconnectionsUndo.xml");
+
+            //do undo to obtain previous connections
+            Assert.AreEqual(3, workspace.Nodes.Count());
+            Assert.AreEqual(2, workspace.Connectors.Count());
+            AssertPreviewValue("7552b4cd-13b2-4921-aff8-682ec0dfd6fb", 2.0);
+        }
+
+        [Test, RequiresSTA]
+        public void TestShiftReconnectionsUndoRedo()
+        {
+            RunCommandsFromFile("TestShiftReconnectionsUndoRedo.xml");
+
+            //do undo and redo once each
+            Assert.AreEqual(3, workspace.Nodes.Count());
+            Assert.AreEqual(2, workspace.Connectors.Count());
+            AssertPreviewValue("837d3ed0-b8f5-408d-a16d-ed7094a14217", 5.0);
+        }
+
+        /// <summary>
+        /// The following tests exercise the following steps:
+        /// 
+        /// 1. Create one number node and one add node
+        /// 2. Connect the number node to the two input ports of the add node (2 connectors)
+        /// 3. Shift + click on the output port of number node, then click anywhere on the canvas to remove the two connectors
+        /// 
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestShiftReconnectionsCancel()
+        {
+            RunCommandsFromFile("TestShiftReconnectionsCancel.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count());
+            Assert.AreEqual(0, workspace.Connectors.Count()); //reconnections are cancelled; connectors are removed from workspace
+        }
+
 
         #endregion
 
