@@ -1369,6 +1369,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open Dynamo Dictionary.
+        /// </summary>
+        public static string DynamoViewHelpDictionary {
+            get {
+                return ResourceManager.GetString("DynamoViewHelpDictionary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Help.
         /// </summary>
         public static string DynamoViewHelpMenu {
