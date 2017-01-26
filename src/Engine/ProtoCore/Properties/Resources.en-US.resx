@@ -177,6 +177,9 @@
   <data name="ImportStatementNotSupported" xml:space="preserve">
     <value>Imports statements are not supported in CodeBlock Nodes, please use the Library UI instead</value>
   </data>
+  <data name="ClassDeclarationNotSupported" xml:space="preserve">
+    <value>Class declarations are not supported in CodeBlock Nodes, only function definitions and assignment statements</value>
+  </data>
   <data name="InsertsAnElementIntoList" xml:space="preserve">
     <value>Inserts an element into a list at specified index</value>
   </data>
