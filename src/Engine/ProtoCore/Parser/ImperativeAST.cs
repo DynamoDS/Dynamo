@@ -126,6 +126,14 @@ namespace ProtoCore.AST.ImperativeAST
             buf.Append(strLang);
             buf.Append("]");
 
+            var argSignNode = CaptureListNode as ArgumentSignatureNode;
+            if (argSignNode != null)
+            {
+                buf.Append("(");
+                buf.Append(argSignNode);
+                buf.Append(")");
+            }
+
             buf.Append("\n");
             buf.Append("{");
             buf.Append("\n");
