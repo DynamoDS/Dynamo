@@ -547,7 +547,7 @@ CHARACTERS
     cr  = '\r'. 
     lf  = '\n'.
     tab = '\t'.
-    anyButDoubleQuote = ANY - '\"'.
+    anyButDoubleQuote = ANY - '\"' - '\\'.
     anyButQuote = ANY - '\''.
     anychar = ANY.
     other = ANY - '/' - '*'.
@@ -557,8 +557,8 @@ TOKENS
     ident = unicodeIdentifierStart {unicodeIdentifierPart}.
     number = digit {digit} .
     float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
-    textstring = '"' {anyButDoubleQuote | "\\\""} '"'.
-    char = '\'' (anyButQuote | "\\\'" | "\\\"" | "\\\\" | "\\0" | "\\a" | "\\b" | "\\f" | "\\n" | "\\r" | "\\t" | "\\v" | "\\u") '\''.
+    textstring = '"' {anyButDoubleQuote | "\\\'" | "\\\"" | "\\\\" | "\\0" | "\\a" | "\\b" | "\\f" | "\\n" | "\\r" | "\\t" | "\\v" | "\\u"} '"'.
+    char = "'" (anyButQuote | "\\\'" | "\\\"" | "\\\\" | "\\0" | "\\a" | "\\b" | "\\f" | "\\n" | "\\r" | "\\t" | "\\v" | "\\u") "'".
     period = '.'.
     postfixed_replicationguide = digit {digit} 'L'.
 
