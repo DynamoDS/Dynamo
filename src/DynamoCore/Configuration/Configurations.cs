@@ -75,6 +75,11 @@ namespace Dynamo.Configuration
         public static string DynamoVideoTutorials = "http://dynamobim.org/learn/#161";
 
         /// <summary>
+        /// Link to Dynamo dictionary
+        /// </summary>
+        public static string DynamoDictionary = "http://dictionary.dynamobim.com/";
+
+        /// <summary>
         /// Link to Dynamo primer
         /// </summary>
         public static string DynamoPrimer = "http://dynamoprimer.com/";
