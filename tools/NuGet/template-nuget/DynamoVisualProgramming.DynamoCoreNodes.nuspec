@@ -1,0 +1,32 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>DynamoVisualProgramming.DynamoCoreNodes</id>
+    <version>@VERSION@</version>
+    <authors>Autodesk</authors>
+    <owners>Autodesk</owners>
+    <licenseUrl>https://opensource.org/licenses/Apache-2.0</licenseUrl>
+    <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Build core nodes for Dynamo. It contains the following files:
+1) Analysis.dll
+2) Display.dll
+3) DSCoreNodes.dll</description>
+    <copyright>Copyright Autodesk 2017</copyright>
+    <dependencies>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="DynamoVisualProgramming.DynamoServices" version="@VERSION@" />
+        <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="@VERSION@" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="Analysis.dll" target="lib\net45" />
+    <file src="Analysis.xml" target="build\net45" />
+    <file src="Display.dll" target="lib\net45" />
+    <file src="Display.xml" target="build\net45" />
+    <file src="DSCoreNodes.dll" target="lib\net45" />
+    <file src="DSCoreNodes.xml" target="build\net45" />
+  </files>
+</package>
