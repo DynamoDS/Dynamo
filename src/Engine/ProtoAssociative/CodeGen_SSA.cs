@@ -370,6 +370,51 @@ namespace ProtoAssociative
                         }
                         newAstList.Add(node);
                     }
+                    else if(node is LanguageBlockNode)
+                    {
+                        var lbNode = node as LanguageBlockNode;
+                        int generatedUID = ProtoCore.DSASM.Constants.kInvalidIndex;
+
+                        if (context.applySSATransform && core.Options.GenerateSSA)
+                        {
+                            int ssaID = ProtoCore.DSASM.Constants.kInvalidIndex;
+                            ssaID = core.ExpressionUID++;
+                            //ssaUIDList.Add(name, ssaID);
+                            generatedUID = ssaID;
+
+                            var args = lbNode.FormalArguments;
+                            if (args != null)
+                            {
+                                for (int i = 0; i < args.Count; i++)
+                                {
+                                    Stack<AssociativeNode> ssaStack = new Stack<AssociativeNode>();
+                                    DFSEmitSSA_AST(args[i], ssaStack, ref newASTList);
+                                    var bNode = newASTList[i] as BinaryExpressionNode;
+                                    if (bNode != null)
+                                    {
+                                        args[i] = bNode.LeftNode;
+                                    }
+                                }
+                                // Set the unique expression id for this range of SSA nodes
+                                foreach (AssociativeNode aNode in newASTList)
+                                {
+                                    Validity.Assert(aNode is BinaryExpressionNode);
+
+                                    // Set the exprID of the SSA's node
+                                    BinaryExpressionNode ssaNode = aNode as BinaryExpressionNode;
+                                    ssaNode.ExpressionUID = ssaID;
+                                    ssaNode.SSASubExpressionID = ssaExprID;
+                                    ssaNode.SSAExpressionUID = core.SSAExpressionUID;
+                                    //ssaNode.guid = lbNode.guid;
+                                    //ssaNode.OriginalAstID = lbNode.OriginalAstID;
+                                    ssaNode.IsModifier = node.IsModifier;
+                                    NodeUtils.SetNodeLocation(ssaNode, node, node);
+                                }
+                                newAstList.AddRange(newASTList);
+                            }
+                        }
+                        newAstList.Add(node);
+                    }
                     else
                     {
                         newAstList.Add(node);

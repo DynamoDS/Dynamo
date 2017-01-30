@@ -305,8 +305,8 @@ Associative_LanguageBlock<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
     |    
     IF( langblock.codeblock.Language == ProtoCore.Language.Imperative )
 	[
-						(. ProtoCore.AST.AssociativeAST.AssociativeNode captureListNode = null; .)
-		Imperative_capturelist<out captureListNode> 	(. langblock.CaptureListNode = captureListNode; .)
+						(. List<ProtoCore.AST.AssociativeAST.AssociativeNode> args = null; .)
+		Associative_Arguments<out args> 	(. langblock.FormalArguments = args; .)
 	]
 	'{'
     Imperative<out codeBlockNode>              
