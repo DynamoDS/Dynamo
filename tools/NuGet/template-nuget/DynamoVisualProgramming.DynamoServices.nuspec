@@ -12,7 +12,7 @@
     <description>DynamoServices library for Dynamo. It contains the following files: 
 1) DynamoServices.dll</description>
     <summary>This package contains DynamoServices assembly that defines interfaces and attribute for Dynamo Zero Touch libraries.</summary>
-    <copyright>Copyright Autodesk 2016</copyright>
+    <copyright>Copyright Autodesk 2017</copyright>
     <dependencies>
     </dependencies>
   </metadata>

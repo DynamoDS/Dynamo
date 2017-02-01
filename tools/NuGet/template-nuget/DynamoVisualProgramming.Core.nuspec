@@ -10,12 +10,16 @@
     <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Unit and system test infrastructure for Dynamo. It contains the following files:
-1) DynamoCore.dll
-2) ProtoCore.dll
-3) DynamoShapeManager.dll 
-4) DynamoUtilities.dll</description>
+1) DSIronPython.dll
+2) DynamoApplications.dll
+3) DynamoCore.dll
+4) DynamoInstallDetective.dll
+5) DynamoShapeManager.dll 
+6) DynamoUtilities.dll
+7) ProtoCore.dll
+8) VMDataBridge.dll</description>
     <summary>This package contains the core assemblies for Dynamo.</summary>
-    <copyright>Copyright Autodesk 2016</copyright>
+    <copyright>Copyright Autodesk 2017</copyright>
     <dependencies>
       <dependency id="Prism" version="4.1"/>
       <dependency id="NUnit" version="2.6.3"/>

@@ -2029,6 +2029,16 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        public void GoToDictionary(object parameter)
+        {
+            Process.Start(Configurations.DynamoDictionary);
+        }
+
+        internal bool CanGoToDictionary(object parameter)
+        {
+            return true;
+        }
+
         private void DisplayStartPage(object parameter)
         {
             this.ShowStartPage = true;
