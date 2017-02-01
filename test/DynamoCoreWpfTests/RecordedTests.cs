@@ -1016,7 +1016,7 @@ namespace DynamoCoreWpfTests
         /// 
         /// 1. Create two number nodes and one add node
         /// 2. Connect the first number node to the two input ports of the add node (2 connectors)
-        /// 3. Reconnect the 2 wires to the second number node using ctrl + click
+        /// 3. Reconnect the 2 wires to the second number node using shift + click
         /// 
         /// </summary>
         [Test, RequiresSTA]
