@@ -757,8 +757,15 @@
                                   IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunEnabled}">
                             <MenuItem.Icon>
                                 <Image Source="/DynamoCoreWpf;component/UI/Images/OpenSelectedItemHS.png"
-                                       Width="14"
-                                       Height="14" />
+                                       Width="14" Height="14" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.DynamoViewHelpDictionary}"
+                                  Command="{Binding GoToDictionaryCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/DynamoCoreWpf;component/UI/Images/icon-dictionary-small.png"
+                                           Width="13" Height="14" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenuReportBug}"

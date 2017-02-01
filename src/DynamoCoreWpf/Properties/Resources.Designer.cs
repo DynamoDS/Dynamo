@@ -1369,6 +1369,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open Dynamo Dictionary.
+        /// </summary>
+        public static string DynamoViewHelpDictionary {
+            get {
+                return ResourceManager.GetString("DynamoViewHelpDictionary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Help.
         /// </summary>
         public static string DynamoViewHelpMenu {
@@ -1891,15 +1900,6 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewSettingsMenuChangeScaleFactor {
             get {
                 return ResourceManager.GetString("DynamoViewSettingsMenuChangeScaleFactor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hide Preview Bubbles.
-        /// </summary>
-        public static string DynamoViewSettingsMenuHidePreviewBubbles {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuHidePreviewBubbles", resourceCulture);
             }
         }
         
@@ -4728,6 +4728,15 @@ namespace Dynamo.Wpf.Properties {
         public static string StartPageDiscussionForum {
             get {
                 return ResourceManager.GetString("StartPageDiscussionForum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo Dictionary.
+        /// </summary>
+        public static string StartPageDynamoDictionary {
+            get {
+                return ResourceManager.GetString("StartPageDynamoDictionary", resourceCulture);
             }
         }
         

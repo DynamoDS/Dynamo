@@ -39,7 +39,7 @@ namespace Dynamo.Models
                 CommandCompleted(command);
         }
         
-        private PortModel activeStartPort;
+        private PortModel[] activeStartPorts;
 
         protected virtual void OpenFileImpl(OpenFileCommand command)
         {
@@ -262,8 +262,16 @@ namespace Dynamo.Models
                     EndConnection(nodeId, command.PortIndex, command.Type);
                     break;
 
+                case MakeConnectionCommand.Mode.BeginShiftReconnections:
+                    BeginShiftReconnections(nodeId, command.PortIndex, command.Type);
+                    break;
+
+                case MakeConnectionCommand.Mode.EndShiftReconnections:
+                    EndShiftReconnections(nodeId, command.PortIndex, command.Type);
+                    break;
+
                 case MakeConnectionCommand.Mode.Cancel:
-                    activeStartPort = null;
+                    CancelConnections();
                     break;
             }
         }
@@ -271,8 +279,8 @@ namespace Dynamo.Models
         void BeginConnection(Guid nodeId, int portIndex, PortType portType)
         {
             bool isInPort = portType == PortType.Input;
-            activeStartPort = null;
-
+            activeStartPorts = null;
+            
             var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
             if (node == null)
                 return;
@@ -282,7 +290,7 @@ namespace Dynamo.Models
             // to somewhere else (we don't allow the grabbing of the start connector).
             if (portModel.Connectors.Count > 0 && portModel.Connectors[0].Start != portModel)
             {
-                activeStartPort = portModel.Connectors[0].Start;
+                activeStartPorts = new PortModel[] { portModel.Connectors[0].Start };
                 // Disconnect the connector model from its start and end ports
                 // and remove it from the connectors collection. This will also
                 // remove the view model.
@@ -290,22 +298,50 @@ namespace Dynamo.Models
                 if (CurrentWorkspace.Connectors.Contains(connector))
                 {
                     var models = new List<ModelBase> { connector };
-                    CurrentWorkspace.RecordAndDeleteModels(models);
+                    CurrentWorkspace.SaveModelsForUndo(models);
                     connector.Delete();
                 }
             }
             else
             {
-                activeStartPort = portModel;
+                activeStartPorts = new PortModel[] { portModel };
             }
+        }
+
+        void BeginShiftReconnections(Guid nodeId, int portIndex, PortType portType)
+        {
+            if (portType == PortType.Input) return; //only handle multiple connections when the port selected is an output port
+            var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
+            if (node == null) return;
+
+            PortModel selectedPort = node.OutPorts[portIndex];
+
+            var connectorsForDeletion = new List<ModelBase>();
+            int numOfConnectors = selectedPort.Connectors.Count;
+            if (numOfConnectors == 0) return;
+            
+            activeStartPorts = new PortModel[numOfConnectors];
+
+            for (int i = 0; i < numOfConnectors; i++)
+            {
+                ConnectorModel connector = selectedPort.Connectors[i];
+                connectorsForDeletion.Add(connector);
+                activeStartPorts[i] = connector.End;
+            }
+            CurrentWorkspace.SaveModelsForUndo(connectorsForDeletion);
+            for (int i = 0; i < numOfConnectors; i++) //delete the connectors
+            {
+                selectedPort.Connectors[0].Delete();
+            }
+            return;
         }
 
         void EndConnection(Guid nodeId, int portIndex, PortType portType)
         {
             // Check if the node from which the connector starts is valid and has not been deleted
-            if (activeStartPort.Owner == null) return;
+            if (activeStartPorts == null || activeStartPorts.Count() <= 0 || activeStartPorts[0].Owner == null) return;
 
-            var startNode = CurrentWorkspace.GetModelInternal(activeStartPort.Owner.GUID);
+            var startNode = CurrentWorkspace.GetModelInternal(activeStartPorts[0].Owner.GUID);
             if (startNode == null) return;
 
             var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
@@ -315,10 +351,40 @@ namespace Dynamo.Models
             
             PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
 
-            var models = GetConnectorsToAddAndDelete(portModel, activeStartPort);
+            var models = GetConnectorsToAddAndDelete(portModel, activeStartPorts[0]);
 
             WorkspaceModel.RecordModelsForUndo(models, CurrentWorkspace.UndoRecorder);
-            activeStartPort = null;
+            activeStartPorts = null;
+        }
+
+        void EndShiftReconnections(Guid nodeId, int portIndex, PortType portType)
+        {
+            if (portType == PortType.Input) return; //only handle multiple connections when the port selected is an output port
+            if (activeStartPorts == null || activeStartPorts.Count() <= 0) return;
+
+            var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
+            if (node == null) return;
+            PortModel selectedPort = node.OutPorts[portIndex];
+            
+            var firstModel = GetConnectorsToAddAndDelete(selectedPort, activeStartPorts[0]);
+            for (int i = 1; i < activeStartPorts.Count(); i++)
+            {
+                var models = GetConnectorsToAddAndDelete(selectedPort, activeStartPorts[i]);
+                foreach (var m in models)
+                {
+                    firstModel.Add(m.Key, m.Value);
+                }
+            }
+            WorkspaceModel.RecordModelsForUndo(firstModel, CurrentWorkspace.UndoRecorder);
+            activeStartPorts = null;
+            return;
+        }
+
+        void CancelConnections()
+        {
+            CurrentWorkspace.DeleteSavedModels();
+            activeStartPorts = null;
+            return;
         }
 
         static Dictionary<ModelBase, UndoRedoRecorder.UserAction> GetConnectorsToAddAndDelete(

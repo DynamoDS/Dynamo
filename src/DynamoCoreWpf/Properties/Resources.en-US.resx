@@ -799,6 +799,9 @@ It does not contain your graph or any personal data</value>
   <data name="StartPageDiscussionForum" xml:space="preserve">
     <value>Discussion forum</value>
   </data>
+  <data name="StartPageDynamoDictionary" xml:space="preserve">
+    <value>Dynamo Dictionary</value>
+  </data>
   <data name="StartPageFiles" xml:space="preserve">
     <value>FILES</value>
   </data>
@@ -2148,5 +2151,8 @@ Want to publish a different package?</value>
   </data>
   <data name="SolutionToFolderNotWritatbleError" xml:space="preserve">
     <value>Please update the permissions or go to 'Settings &gt; Manage Node and Package Paths...' to change your default directory.</value>
+  </data>
+  <data name="DynamoViewHelpDictionary" xml:space="preserve">
+    <value>Open Dynamo Dictionary</value>
   </data>
 </root>
