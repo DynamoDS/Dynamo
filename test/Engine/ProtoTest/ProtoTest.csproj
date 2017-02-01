@@ -156,6 +156,7 @@
     </Compile>
     <Compile Include="MultiLangTests\UnicodeTest.cs" />
     <Compile Include="NameSpaceTests.cs" />
+    <Compile Include="ParserTest\ParserTest.cs" />
     <Compile Include="ProtoAST\AstFactoryTest.cs" />
     <Compile Include="ProtoAST\ProtoASTExecutionTests.cs" />
     <Compile Include="ProtoAST\RoundTripTests.cs" />
@@ -257,7 +258,7 @@
     <PreBuildEvent>C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe ..\..\..\tools\factorial\factorial.sln /property:Configuration=$(Configuration);Platform=Win32 /t:rebuild</PreBuildEvent>
   </PropertyGroup>
   -->
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
