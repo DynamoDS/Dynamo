@@ -73,7 +73,8 @@
                                     <!-- Node class, group icon, node category -->
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding Class}"
-                                                   PreviewMouseDown="OnClassNamePreviewMouseDown">
+                                                   PreviewMouseDown="OnClassNamePreviewMouseDown"
+                                                   TextDecorations="Underline">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Foreground"
@@ -82,7 +83,7 @@
                                                         <Trigger Property="IsMouseOver"
                                                                  Value="True">
                                                             <Setter Property="Foreground"
-                                                                    Value="White" />
+                                                                    Value="#42adff" />
                                                             <Setter Property="Cursor"
                                                                     Value="Hand" />
                                                             <Setter Property="TextBlock.TextDecorations"
