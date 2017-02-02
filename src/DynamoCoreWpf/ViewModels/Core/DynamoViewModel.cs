@@ -1505,7 +1505,7 @@ namespace Dynamo.ViewModels
         {
             WorkspaceViewModel wvm = this.CurrentSpaceViewModel;
 
-            if (wvm.IsConnecting && (node == wvm.ActiveConnector.ActiveStartPort.Owner))
+            if (wvm.IsConnecting && (node == wvm.FirstActiveConnector.ActiveStartPort.Owner))
                 wvm.CancelActiveState();
         }
 

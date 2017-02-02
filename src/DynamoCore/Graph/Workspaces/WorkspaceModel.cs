@@ -85,6 +85,7 @@ namespace Dynamo.Graph.Workspaces
         private readonly List<AnnotationModel> annotations;
         private readonly List<PresetModel> presets;
         private readonly UndoRedoRecorder undoRecorder;
+        private static List<ModelBase> savedModels = null;
         private double scaleFactor = 1.0;
         private bool hasNodeInSyncWithDefinition;
         private Guid guid;
@@ -2184,6 +2185,14 @@ namespace Dynamo.Graph.Workspaces
 
             using (recorder.BeginActionGroup())
             {
+                if (null != savedModels)
+                {
+                    foreach (var modelPair in savedModels)
+                    {
+                        recorder.RecordDeletionForUndo(modelPair);
+                    }
+                    savedModels = null;
+                }
                 foreach (var modelPair in models)
                 {
                     switch (modelPair.Value)
@@ -2295,6 +2304,21 @@ namespace Dynamo.Graph.Workspaces
                 RequestRun();
 
             } // Conclude the deletion.
+        }
+
+        internal void DeleteSavedModels()
+        {
+            if (null != savedModels)
+            {
+                RecordAndDeleteModels(savedModels);
+                savedModels = null;
+            }
+        }
+
+        internal void SaveModelsForUndo(List<ModelBase> models)
+        {
+            // save the models for deletion later in one action group
+            savedModels = models;
         }
 
         internal void RecordGroupModelBeforeUngroup(AnnotationModel annotation)
