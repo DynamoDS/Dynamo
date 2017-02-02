@@ -32,7 +32,7 @@ namespace Dynamo.Nodes
 
             InitializeComponent();
             Loaded += AnnotationView_Loaded;                      
-            this.GroupTextBlock.SizeChanged +=GroupTextBlock_SizeChanged;            
+            this.GroupTextBlock.SizeChanged += GroupTextBlock_SizeChanged;            
         }
      
         private void AnnotationView_Loaded(object sender, RoutedEventArgs e)
@@ -40,12 +40,40 @@ namespace Dynamo.Nodes
             ViewModel = this.DataContext as AnnotationViewModel;
             if (ViewModel != null)
             {               
-                //Set the height of Textblock based on the content.
+                //Set the height and width of Textblock based on the content.
                 if (!ViewModel.AnnotationModel.loadFromXML)
                 {
+                    SetTextMaxWidth();
                     ViewModel.AnnotationModel.TextBlockHeight = this.GroupTextBlock.ActualHeight;
                 }
             }
+        }
+
+        //Set the max width of text area based on the width of the longest word in the text
+        private void SetTextMaxWidth()
+        {
+            var words = this.ViewModel.AnnotationText.Split(' ');
+            var maxLength = 0;
+            string longestWord = words[0];
+
+            foreach (var w in words)
+            {
+                if (w.Length > maxLength)
+                {
+                    longestWord = w;
+                    maxLength = w.Length;
+                }
+            }
+
+            var formattedText = new FormattedText(longestWord,
+                System.Globalization.CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                new Typeface(this.GroupTextBlock.FontFamily, this.GroupTextBlock.FontStyle, this.GroupTextBlock.FontWeight, this.GroupTextBlock.FontStretch),
+                this.GroupTextBlock.FontSize,
+                Brushes.Black);
+
+            this.ViewModel.AnnotationModel.Width = formattedText.Width;
+            this.ViewModel.AnnotationModel.TextMaxWidth = formattedText.Width;
         }
 
         private void OnNodeColorSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -151,12 +179,12 @@ namespace Dynamo.Nodes
         private void GroupTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {             
             if (ViewModel != null)
-            {               
+            {
+                SetTextMaxWidth();
                 ViewModel.AnnotationModel.TextBlockHeight = GroupTextBox.ActualHeight;
                 ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }           
         }
-
 
         /// <summary>
         /// Handles the SizeChanged event of the GroupTextBlock control.
@@ -168,6 +196,7 @@ namespace Dynamo.Nodes
         {
             if (ViewModel != null && (e.HeightChanged || e.WidthChanged))
             {
+                SetTextMaxWidth();
                 //Use the DesiredSize and not the Actual height. Because when Textblock is collapsed,
                 //Actual height is same as previous size. used when the Font size changed during zoom
                 ViewModel.AnnotationModel.TextBlockHeight = GroupTextBlock.DesiredSize.Height;                
