@@ -1,15 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using ProtoCore.AST.ImperativeAST;
-using ProtoCore.DesignScriptParser;
 using ProtoCore.DSASM;
 using ProtoCore.DSDefinitions;
 using ProtoCore.Lang;
+using ProtoCore.SyntaxAnalysis.Associative;
 using ProtoCore.Utils;
-using ProtoCore.SyntaxAnalysis;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text;
 
 namespace ProtoCore.AST.AssociativeAST
 {
@@ -70,8 +69,7 @@ namespace ProtoCore.AST.AssociativeAST
         }
 
         public abstract AstKind Kind { get; }
-        public abstract void Accept(AssociativeAstVisitor visitor);
-        public abstract TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor);
+        public abstract TResult Accept<TResult>(IAstVisitor<TResult> visitor);
     }
 
     public class CommentNode : AssociativeNode
@@ -129,12 +127,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitCommentNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitCommentNode(this);
         }
@@ -240,12 +233,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitLanguageBlockNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitLanguageBlockNode(this);
         }
@@ -314,12 +302,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitReplicationGuideNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitReplicationGuideNode(this);
         }
@@ -359,12 +342,7 @@ namespace ProtoCore.AST.AssociativeAST
                 return AstKind.AtLevel;
             }
         }
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitAtLevelNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitAtLevelNode(this);
         }
@@ -503,12 +481,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitArrayNameNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitArrayNameNode(this);
         }
@@ -562,12 +535,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitGroupExpressionNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitGroupExpressionNode(this);
         }
@@ -641,12 +609,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitIdentifierNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitIdentifierNode(this);
         }
@@ -674,12 +637,7 @@ namespace ProtoCore.AST.AssociativeAST
                 return AstKind.TypedIdentifier;
             }
         }
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitTypedIdentifierNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitTypedIdentifierNode(this);
         }
@@ -755,12 +713,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitIdentifierListNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitIdentifierListNode(this);
         }
@@ -808,12 +761,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitIntNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitIntNode(this);
         }
@@ -864,12 +812,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitDoubleNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitDoubleNode(this);
         }
@@ -923,12 +866,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitBooleanNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitBooleanNode(this);
         }
@@ -978,12 +916,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitCharNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitCharNode(this);
         }
@@ -1034,12 +967,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitStringNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitStringNode(this);
         }
@@ -1075,12 +1003,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitNullNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitNullNode(this);
         }
@@ -1215,12 +1138,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitFunctionCallNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitFunctionCallNode(this);
         }
@@ -1292,12 +1210,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitFunctionDotCallNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitFunctionDotCallNode(this);
         }
@@ -1383,12 +1296,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitVarDeclNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitVarDeclNode(this);
         }
@@ -1450,12 +1358,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitArgumentSignatureNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitArgumentSignatureNode(this);
         }
@@ -1516,12 +1419,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitCodeBlockNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitCodeBlockNode(this);
         }
@@ -1638,12 +1536,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitClassDeclNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitClassDeclNode(this);
         }
@@ -1807,12 +1700,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitConstructorDefinitionNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitConstructorDefinitionNode(this);
         }
@@ -1934,12 +1822,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitFunctionDefinitionNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitFunctionDefinitionNode(this);
         }
@@ -1988,12 +1871,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitIfStatementNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitIfStatementNode(this);
         }
@@ -2067,12 +1945,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitInlineConditionalNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitInlineConditionalNode(this);
         }
@@ -2211,12 +2084,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitBinaryExpressionNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitBinaryExpressionNode(this);
         }
@@ -2257,12 +2125,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitUnaryExpressionNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitUnaryExpressionNode(this);
         }
@@ -2367,12 +2230,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitRangeExprNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitRangeExprNode(this);
         }
@@ -2433,12 +2291,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitExprListNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitExprListNode(this);
         }
@@ -2520,12 +2373,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitArrayNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitArrayNode(this);
         }
@@ -2608,12 +2456,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitImportNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitImportNode(this);
         }
@@ -2629,12 +2472,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitDefaultArgNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitDefaultArgNode(this);
         }
@@ -2658,12 +2496,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitDynamicNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitDynamicNode(this);
         }
@@ -2701,12 +2534,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitDynamicBlockNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitDynamicBlockNode(this);
         }
@@ -2745,12 +2573,7 @@ namespace ProtoCore.AST.AssociativeAST
             }
         }
 
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitThisPointerNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
         {
             return visitor.VisitThisPointerNode(this);
         }

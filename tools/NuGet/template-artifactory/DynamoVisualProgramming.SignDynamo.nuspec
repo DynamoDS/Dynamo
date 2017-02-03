@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>DynamoVisualProgramming.SignDynamo</id>
+    <version>@VERSION@</version>
+    <authors>Autodesk</authors>
+    <owners>Autodesk</owners>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This package bundles executables to generate sig file for Dynamo installers.</description>
+    <copyright>Copyright Autodesk 2017</copyright>
+  </metadata>
+  <files>
+    <!--These assemblies are referenced from the bin directory since they are not harvested for the installer-->
+    <file src="..\..\..\src\Tools\SignDynamo\bin\Release\Dynamo.cer" target="lib\net45" />
+    <file src="..\..\..\src\Tools\SignDynamo\bin\Release\DynamoCrypto.dll" target="lib\net45" />
+    <file src="..\..\..\src\Tools\SignDynamo\bin\Release\NDesk.Options.dll" target="lib\net45" />
+    <file src="..\..\..\src\Tools\SignDynamo\bin\Release\SignDynamo.exe" target="lib\net45" />
+  </files>
+</package>

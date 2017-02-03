@@ -933,6 +933,9 @@
     <Resource Include="UI\Images\StartPage\icon-video.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icon-dictionary.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="UI\Images\tabs_button_hover.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1294,6 +1297,7 @@
     </Content>
     <Resource Include="UI\Images\bubble-arrow.png" />
     <Resource Include="UI\Images\icon-whats-new-small.png" />
+    <Resource Include="UI\Images\icon-dictionary-small.png" />
     <Content Include="ViewModels\Watch3D\Shaders\BillboardText.fx" />
     <Content Include="ViewModels\Watch3D\Shaders\Common.fx" />
     <Content Include="ViewModels\Watch3D\Shaders\Custom.fx" />

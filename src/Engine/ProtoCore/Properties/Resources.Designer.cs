@@ -224,6 +224,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Class declarations are not supported in CodeBlock Nodes, only function definitions and assignment statements.
+        /// </summary>
+        public static string ClassDeclarationNotSupported {
+            get {
+                return ResourceManager.GetString("ClassDeclarationNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &quot;}&quot; expected.
         /// </summary>
         public static string closebrace_expected {
