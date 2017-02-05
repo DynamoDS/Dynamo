@@ -584,4 +584,10 @@
   <data name="NumberNodeInputMustBeNumeric" xml:space="preserve">
     <value>The input must be numeric.</value>
   </data>
+  <data name="ColorPaletteDescription" xml:space="preserve">
+    <value>Select a Color from the palette</value>
+  </data>
+  <data name="ColorPaletteSearchTags" xml:space="preserve">
+    <value>color;palette</value>
+  </data>
 </root>

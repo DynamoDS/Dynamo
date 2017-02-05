@@ -106,6 +106,24 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select a Color from the palette.
+        /// </summary>
+        public static string ColorPaletteDescription {
+            get {
+                return ResourceManager.GetString("ColorPaletteDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to color;palette.
+        /// </summary>
+        public static string ColorPaletteSearchTags {
+            get {
+                return ResourceManager.GetString("ColorPaletteSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Get a color given a color range..
         /// </summary>
         public static string ColorRangeDescription {
