@@ -744,8 +744,8 @@ namespace CoreNodeModels.Input
         {
             var migrationData = new NodeMigrationData(data.Document);
             var oldNode = data.MigratedNodes.ElementAt(0);
-            var valEl = oldNode.ChildNodes[0]; // The Value node
-            var val = valEl.Attributes["value"].Value;
+            var valEls = oldNode.GetElementsByTagName("System.Double"); // The Value node
+            var val = valEls[0].Attributes["value"].Value;
 
             if (!val.Contains(".."))
             {
