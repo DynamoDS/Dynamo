@@ -31,21 +31,50 @@ namespace Dynamo.Nodes
             Resources.MergedDictionaries.Add(SharedDictionaryManager.PortsDictionary);
 
             InitializeComponent();
-            Loaded += AnnotationView_Loaded;                      
-            this.GroupTextBlock.SizeChanged +=GroupTextBlock_SizeChanged;            
+            Loaded += AnnotationView_Loaded;
+            this.GroupTextBlock.SizeChanged += GroupTextBlock_SizeChanged;
         }
-     
+
         private void AnnotationView_Loaded(object sender, RoutedEventArgs e)
         {
             ViewModel = this.DataContext as AnnotationViewModel;
             if (ViewModel != null)
-            {               
-                //Set the height of Textblock based on the content.
+            {
+                //Set the height and width of Textblock based on the content.
                 if (!ViewModel.AnnotationModel.loadFromXML)
                 {
+                    SetTextMaxWidth();
                     ViewModel.AnnotationModel.TextBlockHeight = this.GroupTextBlock.ActualHeight;
                 }
             }
+        }
+
+        //Set the max width of text area based on the width of the longest word in the text
+        private void SetTextMaxWidth()
+        {
+            var words = this.ViewModel.AnnotationText.Split(' ');
+            var maxLength = 0;
+            string longestWord = words[0];
+
+            foreach (var w in words)
+            {
+                if (w.Length > maxLength)
+                {
+                    longestWord = w;
+                    maxLength = w.Length;
+                }
+            }
+
+            var formattedText = new FormattedText(
+                longestWord,
+                System.Globalization.CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                new Typeface(this.GroupTextBlock.FontFamily, this.GroupTextBlock.FontStyle, this.GroupTextBlock.FontWeight, this.GroupTextBlock.FontStretch),
+                this.GroupTextBlock.FontSize,
+                Brushes.Black);
+
+            this.ViewModel.AnnotationModel.Width = formattedText.Width;
+            this.ViewModel.AnnotationModel.TextMaxWidth = formattedText.Width;
         }
 
         private void OnNodeColorSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -66,8 +95,8 @@ namespace Dynamo.Nodes
                          new DynCmd.UpdateModelValueCommand(
                          System.Guid.Empty, ViewModel.AnnotationModel.GUID, "Background", brush.Color.ToString()));
                     }
-                        
-                }               
+
+                }
             }
 
             var rectangle = e.AddedItems[0] as Rectangle;
@@ -76,14 +105,14 @@ namespace Dynamo.Nodes
                 var brush = rectangle.Fill as SolidColorBrush;
                 if (brush != null)
                     ViewModel.Background = brush.Color;
-            }                                
+            }
         }
 
         private void OnUngroupAnnotation(object sender, RoutedEventArgs e)
         {
             if (ViewModel != null)
             {
-                ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);               
+                ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
             }
         }
 
@@ -94,7 +123,7 @@ namespace Dynamo.Nodes
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
         private void AnnotationView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {         
+        {
             if (GroupTextBlock.IsVisible ||
                 (!GroupTextBlock.IsVisible && !GroupTextBox.IsVisible))
             {
@@ -133,7 +162,7 @@ namespace Dynamo.Nodes
                 e.Handled = true;
             }
         }
-     
+
         private void AnnotationView_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             DynamoSelection.Instance.ClearSelection();
@@ -141,7 +170,7 @@ namespace Dynamo.Nodes
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
         }
-       
+
         /// <summary>
         /// Handles the OnTextChanged event of the GroupTextBox control.
         /// Calculates the height of a Group based on the height of textblock
@@ -149,12 +178,13 @@ namespace Dynamo.Nodes
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="TextChangedEventArgs"/> instance containing the event data.</param>
         private void GroupTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
-        {             
+        {
             if (ViewModel != null)
-            {               
+            {
+                SetTextMaxWidth();
                 ViewModel.AnnotationModel.TextBlockHeight = GroupTextBox.ActualHeight;
                 ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
-            }           
+            }
         }
 
 
@@ -168,10 +198,11 @@ namespace Dynamo.Nodes
         {
             if (ViewModel != null && (e.HeightChanged || e.WidthChanged))
             {
+                SetTextMaxWidth();
                 //Use the DesiredSize and not the Actual height. Because when Textblock is collapsed,
                 //Actual height is same as previous size. used when the Font size changed during zoom
-                ViewModel.AnnotationModel.TextBlockHeight = GroupTextBlock.DesiredSize.Height;                
-            }  
+                ViewModel.AnnotationModel.TextBlockHeight = GroupTextBlock.DesiredSize.Height;
+            }
         }
 
 
@@ -196,7 +227,7 @@ namespace Dynamo.Nodes
             textbox.Focus();
             if (textbox.Text.Equals(Properties.Resources.GroupDefaultText))
             {
-                textbox.SelectAll();  
+                textbox.SelectAll();
             }
         }
 
