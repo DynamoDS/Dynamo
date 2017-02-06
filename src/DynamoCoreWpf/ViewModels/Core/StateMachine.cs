@@ -230,7 +230,6 @@ namespace Dynamo.ViewModels
                     CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
                     return false;
                 }
-                Console.WriteLine("CheckActiveConnectorCompatibility: ");
             }
             // If all connections are compatible, change cursor to show compatible port connection
             CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcAdding);
