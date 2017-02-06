@@ -70,7 +70,7 @@
                 </StackPanel>
                 <StackPanel Grid.Row="1"  Margin="10" Background="Transparent">
                     <TextBlock Name="DynamoDictionary" FontSize="12" Foreground="#2380C0" Text="{x:Static p:Resources.NodeHelpWindowDynamoDictionary}" 
-                               Cursor="Hand" MouseLeftButtonUp="OpenDynamoDictionary" />
+                               Cursor="Hand" Tag="{Binding DictionaryLink}"  MouseLeftButtonUp="OpenDynamoDictionary" />
                 </StackPanel>
             </Grid>
         </StackPanel>
