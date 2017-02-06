@@ -284,8 +284,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
             AssertPreviewCount("2ea813c4-7729-45b5-b23b-d7a3377f0b31", 4);
             var doubleInput = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
-                ("7eba96c0-4715-47f0-a874-01f1887ac465") as DoubleInput;
-            doubleInput.Value = "6..8";
+                ("7eba96c0-4715-47f0-a874-01f1887ac465") as CodeBlockNodeModel;
+            doubleInput.SetCodeContent("6..8;", new ProtoCore.Namespace.ElementResolver());
             BeginRun();
             AssertPreviewCount("2ea813c4-7729-45b5-b23b-d7a3377f0b31", 3);
         }
