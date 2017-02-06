@@ -321,14 +321,9 @@ namespace Dynamo.Migration
             var migrationData = new NodeMigrationData(elNode.OwnerDocument);
             migrationData.AppendNode(elNode as XmlElement);
 
-            while (workspaceVersion != null && workspaceVersion < currentVersion)
+            foreach(var migration in migrations.Where(m=>m.From >= workspaceVersion))
             {
-                var nextMigration = migrations.FirstOrDefault(x => x.From >= workspaceVersion);
-
-                if (nextMigration == null)
-                    break;
-
-                object ret = nextMigration.method.Invoke(this, new object[] { migrationData });
+                object ret = migration.method.Invoke(this, new object[] { migrationData });
                 migrationData = ret as NodeMigrationData;
 
                 if (DynamoModel.EnableMigrationLogging)
@@ -336,7 +331,6 @@ namespace Dynamo.Migration
                     // record migration data for successful migrations
                     migrationReport.AddMigrationDataToNodeMap(nodeToMigrate.Name, migrationData.MigratedNodes);
                 }
-                workspaceVersion = nextMigration.To;
             }
 
             return migrationData;
@@ -1360,6 +1354,7 @@ namespace Dynamo.Migration
         /// <summary>
         /// Version this migrates to.
         /// </summary>
+        [Obsolete("All migrations are now processed, beginning with the first migration whose version is >= the workspace version. The To property will be ignored.", false)]
         public Version To { get; private set; }
 
         public NodeMigrationAttribute(string from, string to = "")
