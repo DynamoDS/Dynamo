@@ -5,6 +5,7 @@ using Dynamo.Models;
 using System.Diagnostics;
 using Dynamo.Configuration;
 using System.Windows.Input;
+using System.Windows.Controls;
 
 namespace Dynamo.Prompts
 {
@@ -22,7 +23,14 @@ namespace Dynamo.Prompts
 
         private void OpenDynamoDictionary(object sender, MouseButtonEventArgs e)
         {
-            Process.Start(Configurations.DynamoDictionary);
+            try
+            {
+                Process.Start(((TextBlock)sender).Tag.ToString());
+            }
+            catch
+            {
+                Process.Start(Configurations.DynamoDictionary);
+            }
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)

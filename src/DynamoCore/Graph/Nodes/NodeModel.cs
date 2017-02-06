@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Connectors;
@@ -449,6 +450,82 @@ namespace Dynamo.Graph.Nodes
 
             var elCatAttrib = attribs[0] as NodeCategoryAttribute;
             return elCatAttrib.ElementCategory;
+        }
+
+        /// <summary>
+        ///     Dictionary Link property
+        /// </summary>
+        /// <value>
+        ///     If the node has a name and a category, convert them into a link going to the node's help page on
+        ///     Dynamo Dictionary, and return the link.
+        ///     Otherwise, return the Dynamo Dictionary home page.
+        /// </value>
+        [JsonIgnore]
+        public string DictionaryLink
+        {
+            get
+            {
+                string finalLink = Configurations.DynamoDictionary + "#/";
+                if (category == null || category == "")
+                {
+                    return finalLink; // if there is no category, return the link to home page
+                }
+
+                int i = category.LastIndexOf(Configurations.CategoryDelimiterString);
+                switch (category.Substring(i + 1))
+                {
+                    case Configurations.CategoryGroupAction:
+                        finalLink += ObtainURL(category.Substring(0, i));
+                        finalLink += "Action/";
+                        break;
+                    case Configurations.CategoryGroupCreate:
+                        finalLink += ObtainURL(category.Substring(0, i));
+                        finalLink += "Create/";
+                        break;
+                    case Configurations.CategoryGroupQuery:
+                        finalLink += ObtainURL(category.Substring(0, i));
+                        finalLink += "Query/";
+                        break;
+                    default:
+                        finalLink += ObtainURL(category);
+                        finalLink += "Action/";
+                        break;
+                }
+
+                // Obtain the node's default name from its creation name.
+                // e.g. For creation name DSCore.Math.Max@double,double - the name "Max" is obtained and appended to the final link.
+                int indexAfter = (CreationName.LastIndexOf('@') == -1) ? CreationName.Length : CreationName.LastIndexOf('@');
+                string s = CreationName.Substring(0, indexAfter);
+
+                int indexBefore = s.LastIndexOf(Configurations.CategoryDelimiterString);
+                int firstChar = (indexBefore == -1) ? 0 : indexBefore + 1;
+                finalLink += s.Substring(firstChar, s.Length - CreationName.Substring(0, firstChar).Length);
+
+                return finalLink;
+            }
+        }
+
+        /// <summary>
+        /// This method converts the character '.' in the node's category to '/', and append
+        /// another '/' at the end, to be used as a URL.
+        /// e.g. Core.Input.Action is converted to Core/Input/Action/
+        /// </summary>
+        private string ObtainURL(string category)
+        {
+            string result = "";
+            for (int i = 0; i < category.Length; i++)
+            {
+                if (category[i] == '.')
+                {
+                    result += '/';
+                }
+                else
+                {
+                    result += category[i];
+                }
+            }
+            result += '/';
+            return result;
         }
 
         /// <summary>
