@@ -224,6 +224,11 @@ namespace CoreNodeModels
                     .Select(subNode => subNode.Attributes[0].Value)
                     .ToList();
 
+            ResetSelectionFromIds(savedUuids);
+        }
+
+        private void ResetSelectionFromIds(List<string> savedUuids)
+        {
             var loadedSelection =
                     savedUuids.Select(GetModelObjectFromIdentifer)
                         // ReSharper disable once CompareNonConstrainedGenericWithNull
@@ -233,6 +238,21 @@ namespace CoreNodeModels
 
             OnNodeModified();
             RaisePropertyChanged("SelectionResults");
+        }
+
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
+        {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
+            if (name == "Value" && value != null)
+            {
+                List<string> savedUuids = value.Split(',').ToList();
+                ResetSelectionFromIds(savedUuids);
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(updateValueParams);
         }
 
         /// <summary>
