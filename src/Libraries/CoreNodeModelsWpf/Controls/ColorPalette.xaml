@@ -3,12 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Dynamo.Wpf.Controls"
+             xmlns:c="clr-namespace:CoreNodeModelsWpf.Controls"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="90">
     <Grid>
-        <xctk:ColorPicker x:Name="_colorpicker" HorizontalAlignment="Center"  Margin="0,0,0,0" VerticalAlignment="Center"  Width="80" SelectedColor="{Binding sColor, Mode=TwoWay}"/>
-        
+        <xctk:ColorPicker x:Name="_colorpicker" HorizontalAlignment="Center"  Margin="0,0,0,0" VerticalAlignment="Center"  Width="80" AvailableColors="{Binding c:ColorPaletteUI.ColorList, Mode=OneTime}" SelectedColor="{Binding sColor, Mode=TwoWay}" AvailableColorsHeader="Standard Colors" ShowStandardColors="False" ShowRecentColors="True" RecentColorsHeader="Recent Colors"/>
     </Grid>
 </UserControl>

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using Dynamo.Controls;
+﻿using Dynamo.Controls;
 using Dynamo.Wpf;
 
 using CoreNodeModelsWpf.Controls;
 using CoreNodeModels.Input;
-
-
-
 
 namespace CoreNodeModelsWpf.Nodes
 {
@@ -17,7 +11,7 @@ namespace CoreNodeModelsWpf.Nodes
         /// <summary>
         ///     WPF Control.
         /// </summary>
-        public ColorPaletteUI ColorpickuiC;
+        public ColorPaletteUI Colorpickui;
 
         /// <summary>
         ///     Customize View.
@@ -26,9 +20,9 @@ namespace CoreNodeModelsWpf.Nodes
         /// <param name="nodeView"></param>
         public void CustomizeView(ColorPalette model, NodeView nodeView)
         {
-            ColorpickuiC = new ColorPaletteUI();
-            nodeView.inputGrid.Children.Add(ColorpickuiC);
-            ColorpickuiC.DataContext = model;
+            Colorpickui = new ColorPaletteUI();
+            nodeView.inputGrid.Children.Add(Colorpickui);
+            Colorpickui.DataContext = model;
         }
         /// <summary>
         ///     Dispose.

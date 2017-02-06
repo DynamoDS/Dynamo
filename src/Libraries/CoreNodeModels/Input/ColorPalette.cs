@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Windows.Media;
+using System.Xml;
+
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+
 using ProtoCore.AST.AssociativeAST;
 using CoreNodeModels.Properties;
-using Newtonsoft.Json;
-using System.Windows.Media;
-using DSColor = DSCore.Color;
 
-using System;
-using System.Globalization;
-using System.Xml;
-using System.Linq;
+using DSColor = DSCore.Color;
 
 using Autodesk.DesignScript.Runtime;
 
@@ -28,43 +28,7 @@ namespace CoreNodeModels.Input
     [OutPortDescriptions("Selected Color.")]
     public class ColorPalette : NodeModel
     {
-        private Color scolor = Color.FromArgb(255, 0, 0, 0);
-        private ObservableCollection<Xceed.Wpf.Toolkit.ColorItem> cList = new ObservableCollection<Xceed.Wpf.Toolkit.ColorItem>()
-        {
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,48,130,189), "Blue 1"),
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,106,173,213), "Blue 2"),
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,158,202,225), "Blue 3"),
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,199,219,238), "Blue 4"),
-
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,229,87,37), "Orange 1"),
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,246,140,63), "Orange 2"),
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,229,87,37), "Orange 3"),
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,252,208,162), "Orange 4"),
-
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,49,163,83), "Green 1"),
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,117,195,118), "Green 2"),
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,162,211,154), "Green 3"),
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,200,228,191), "Green 4"),
-
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,117,107,177), "Purple 1"),
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,158,154,199), "Purple 2"),
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,189,189,219), "Purple 3"),
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,218,218,234), "Purple 4"),
-
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,99,99,99), "Grey 1"),
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,150,150,150), "Grey 2"),
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,189,189,189), "Grey 3"),
-            new Xceed.Wpf.Toolkit.ColorItem(Color.FromArgb(255,217,217,217), "Grey 4"),
-        };
-
-        /// <summary>
-        ///     List of standard colors.
-        /// </summary>
-        public ObservableCollection<Xceed.Wpf.Toolkit.ColorItem> ColorList
-        {
-            get { return cList; }
-        }
-
+        private Color scolor = Color.FromArgb(255, 0, 0, 0);                     
         /// <summary>
         ///     Color value.
         /// </summary>
@@ -77,8 +41,7 @@ namespace CoreNodeModels.Input
                 RaisePropertyChanged("sColor");
                 OnNodeModified();
             }
-        }
-
+        }                
         /// <summary>
         ///     Node constructor.
         /// </summary>
