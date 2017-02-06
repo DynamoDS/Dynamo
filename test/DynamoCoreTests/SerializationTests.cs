@@ -41,7 +41,7 @@ namespace Dynamo.Tests
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
         }
 
-        [TearDown]
+        [TestFixtureTearDown]
         public void TearDown()
         {
             ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;
