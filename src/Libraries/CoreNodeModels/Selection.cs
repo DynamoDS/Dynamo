@@ -224,6 +224,11 @@ namespace CoreNodeModels
                     .Select(subNode => subNode.Attributes[0].Value)
                     .ToList();
 
+            ResetSelectionFromIds(savedUuids);
+        }
+
+        private void ResetSelectionFromIds(List<string> savedUuids)
+        {
             var loadedSelection =
                     savedUuids.Select(GetModelObjectFromIdentifer)
                         // ReSharper disable once CompareNonConstrainedGenericWithNull
@@ -243,19 +248,7 @@ namespace CoreNodeModels
             if (name == "Value" && value != null)
             {
                 List<string> savedUuids = value.Split(',').ToList();
-
-                // Do whatever DeserializeCore() does:
-                var loadedSelection =
-                        savedUuids.Select(GetModelObjectFromIdentifer)
-                            // ReSharper disable once CompareNonConstrainedGenericWithNull
-                            .Where(el => el != null);
-
-                UpdateSelection(loadedSelection);
-
-                // But Select() does NOT do these things - do we need to?
-                OnNodeModified();
-                // RaisePropertyChanged("SelectionResults"); -- Only needed when Dynamo UI is up
-
+                ResetSelectionFromIds(savedUuids);
                 return true; // UpdateValueCore handled.
             }
 
