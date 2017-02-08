@@ -10,6 +10,7 @@ namespace DSCoreNodesTests
     class ThreadTests : GeometricTestBase
     {
         [Test]
+        [Category("Failure")]
         public void Thread_Pause()
         {
             var sw = new Stopwatch();
