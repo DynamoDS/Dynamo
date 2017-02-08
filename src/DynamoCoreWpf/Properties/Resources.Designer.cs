@@ -2546,6 +2546,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Selective geometry preview.
+        /// </summary>
+        public static string InCanvasSelectiveButtonToolTip {
+            get {
+                return ResourceManager.GetString("InCanvasSelectiveButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Zoom In.
         /// </summary>
         public static string InCanvasZoomInButtonToolTip {

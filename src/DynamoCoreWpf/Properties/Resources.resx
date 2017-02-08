@@ -1503,6 +1503,10 @@ Do you want to install the latest Dynamo update?</value>
   <data name="InstallMessageCaption" xml:space="preserve">
     <value>Install Dynamo</value>
   </data>
+  <data name="InCanvasSelectiveButtonToolTip" xml:space="preserve">
+    <value>Selective geometry preview</value>
+    <comment>Enable selective geometry preview mode</comment>
+  </data>
   <data name="InCanvasGeomButtonToolTip" xml:space="preserve">
     <value>Enable background 3D preview navigation (Ctrl + B)</value>
     <comment>Enable background 3D preview navigation</comment>

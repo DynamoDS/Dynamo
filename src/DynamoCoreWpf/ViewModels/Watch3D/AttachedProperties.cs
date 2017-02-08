@@ -128,6 +128,40 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
+        /// A flag indicating whether the geometry is currently under selective preview mode.
+        /// </summary>
+        public static readonly DependencyProperty SelectivePreviewProperty = DependencyProperty.RegisterAttached(
+            "SelectivePreview",
+            typeof(bool),
+            typeof(GeometryModel3D),
+            new PropertyMetadata(false, SelectivePreviewPropertyChanged));
+
+        public static void SetSelectivePreview(UIElement element, bool value)
+        {
+            element.SetValue(SelectivePreviewProperty, value);
+        }
+
+        public static bool GetSelectivePreview(UIElement element)
+        {
+            return (bool)element.GetValue(SelectivePreviewProperty);
+        }
+        
+        private static void SelectivePreviewPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            if (obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D))
+            {
+                var geom = (GeometryModel3D)obj;
+
+                if (geom.IsAttached)
+                {
+                    var host = geom.RenderHost;
+                    geom.Detach();
+                    geom.Attach(host);
+                }
+            }
+        }
+
+        /// <summary>
         /// A flag indicating whether the geometry is special render package, such as used to draw manipulators.
         /// </summary>
         public static readonly DependencyProperty IsSpecialRenderPackageProperty = DependencyProperty.RegisterAttached(

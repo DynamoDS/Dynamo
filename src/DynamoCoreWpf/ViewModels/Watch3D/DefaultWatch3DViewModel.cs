@@ -151,6 +151,23 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
+        /// A flag which indicates whether selective geometry preview mode is activated.
+        /// </summary>
+        private bool selectivePreviewMode;
+        public bool SelectivePreviewMode
+        {
+            get
+            {
+                return selectivePreviewMode;
+            }
+            set
+            {
+                selectivePreviewMode = value;
+                RaisePropertyChanged("SelectivePreviewMode");
+            }
+        }
+
+        /// <summary>
         /// A flag which indicates whether the user is holding the
         /// navigation override key (ESC).
         /// </summary>
@@ -298,7 +315,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         handler(CanNavigateBackground);
                     }
                     break;
+                case "SelectivePreviewMode":
+                    OnSelectivePreviewUpdated();
+                    break;
             }
+        }
+
+        protected virtual void OnSelectivePreviewUpdated()
+        {
+            // Override in inherited classes.
         }
 
         private void UnregisterEventHandlers()

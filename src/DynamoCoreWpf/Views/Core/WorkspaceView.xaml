@@ -228,9 +228,20 @@
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
                              Converter="{StaticResource BooleanToVisibilityConverter}"/>
                 </StackPanel.Visibility>
-                <ui:ImageCheckBox Width="56"
+                <ui:ImageCheckBox Width="55"
                               Height="30"
                               Margin="4,4,0,4"
+                              StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-states.png"
+                              CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-selective-check.png"
+                              ToolTip="{x:Static p:Resources.InCanvasSelectiveButtonToolTip}">
+                    <ui:ImageCheckBox.IsChecked>
+                        <Binding Path="DataContext.BackgroundPreviewViewModel.SelectivePreviewMode"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                    </ui:ImageCheckBox.IsChecked>
+                </ui:ImageCheckBox>
+                <ui:ImageCheckBox Width="56"
+                              Height="30"
+                              Margin="0,4,0,4"
                               StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-states.png"
                               CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-check.png"
                               ToolTip="{x:Static p:Resources.InCanvasGeomButtonToolTip}">

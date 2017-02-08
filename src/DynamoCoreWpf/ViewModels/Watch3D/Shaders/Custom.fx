@@ -59,7 +59,8 @@ float4 PShaderCustom(PSInputCustom input) : SV_Target
 	}
 
 	bool isSelected = input.customParams.x;
-	bool requiresPerVertexColoration = input.customParams.y;
+	bool isSelectivePreviewMode = input.customParams.y;
+	bool requiresPerVertexColoration = input.customParams.z;
 
 	if (bHasDiffuseMap)
 	{
@@ -102,7 +103,14 @@ float4 PShaderCustom(PSInputCustom input) : SV_Target
 	}
 
 	/// set diffuse alpha
-	I.a = vMaterialDiffuse.a;
+	if (!isSelectivePreviewMode || isSelected)
+	{
+		I.a = vMaterialDiffuse.a;
+	}
+	else
+	{
+		I.a = vTransparentMaterial.a;
+	}
 
 	/// get reflection-color
 	if (bHasCubeMap)
@@ -115,7 +123,7 @@ float4 PShaderCustom(PSInputCustom input) : SV_Target
 		I = I * input.c;
 	}
 
-	if (isSelected)
+	if (isSelected && !isSelectivePreviewMode)
 	{
 		I = lerp(vSelectionColor,I,0.3);
 	}
