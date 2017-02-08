@@ -218,10 +218,10 @@ namespace Dynamo.ViewModels
                 return false;
             }
 
-            for (int i = 0; i < activeConnectors.Count(); i++)
+            foreach (ConnectorViewModel activeConnector in activeConnectors)
             {
-                PortModel srcPortM = activeConnectors[i].ActiveStartPort;
-                PortModel desPortM = portVM.PortModel;
+                var srcPortM = activeConnector.ActiveStartPort;
+                var desPortM = portVM.PortModel;
                 // No self connection
                 // No start to start or end or end connection
                 if (srcPortM.Owner == desPortM.Owner || srcPortM.PortType == desPortM.PortType)
