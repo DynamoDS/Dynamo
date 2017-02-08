@@ -164,7 +164,7 @@ namespace Dynamo.Nodes
 {
     public class DoubleSlider
     {
-        [NodeMigration(@from: "0.7.5.0")]
+        [NodeMigration(version: "0.7.5.0")]
         public static NodeMigrationData Migrate_0750(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);

@@ -739,7 +739,7 @@ namespace CoreNodeModels.Input
             }
         }
 
-        [NodeMigration(from: "2.0.0.0")]
+        [NodeMigration(version: "2.0.0.0")]
         public static NodeMigrationData Migrate_Range(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);

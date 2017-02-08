@@ -313,15 +313,15 @@ namespace Dynamo.Migration
                               let attribute =
                                   method.GetCustomAttributes(false).OfType<NodeMigrationAttribute>().FirstOrDefault()
                               where attribute != null
-                              let result = new { method, attribute.From, attribute.To }
-                              orderby result.From
+                              let result = new { method, attribute.Version}
+                              orderby result.Version
                               select result).ToList();
 
             var nodeToMigrate = elNode as XmlElement;
             var migrationData = new NodeMigrationData(elNode.OwnerDocument);
             migrationData.AppendNode(elNode as XmlElement);
 
-            foreach(var migration in migrations.Where(m=>m.From >= workspaceVersion))
+            foreach(var migration in migrations.Where(m=>m.Version >= workspaceVersion))
             {
                 object ret = migration.method.Invoke(this, new object[] { migrationData });
                 migrationData = ret as NodeMigrationData;
@@ -1347,20 +1347,13 @@ namespace Dynamo.Migration
     public class NodeMigrationAttribute : Attribute
     {
         /// <summary>
-        /// Latest Version this migration applies to.
+        /// Version specifies the latest workspace version to which this migration will be applied.
         /// </summary>
-        public Version From { get; private set; }
+        public Version Version { get; private set; }
 
-        /// <summary>
-        /// Version this migrates to.
-        /// </summary>
-        [Obsolete("All migrations are now processed, beginning with the first migration whose version is >= the workspace version. The To property will be ignored.", false)]
-        public Version To { get; private set; }
-
-        public NodeMigrationAttribute(string from, string to = "")
+        public NodeMigrationAttribute(string version)
         {
-            From = new Version(from);
-            To = String.IsNullOrEmpty(to) ? null : new Version(to);
+            Version = new Version(version);
         }
     }
 

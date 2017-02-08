@@ -226,7 +226,7 @@ namespace UnitsUI
             RegisterAllPorts();
         }
 
-        [NodeMigration(from: "0.6.2")]
+        [NodeMigration(version: "0.6.2")]
         public void MigrateLengthFromFeetToMeters(XmlNode node)
         {
             //length values were previously stored as decimal feet
@@ -244,7 +244,7 @@ namespace UnitsUI
             }
         }
 
-        [NodeMigration(@from: "0.7.5.0")]
+        [NodeMigration(version: "0.7.5.0")]
         public static NodeMigrationData Migrate_0750(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);
