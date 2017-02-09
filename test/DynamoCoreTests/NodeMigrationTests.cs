@@ -1788,15 +1788,15 @@ namespace Dynamo.Tests
                 "27d6c83d-602c-4d44-a9b6-ab229cb2143d");
             var number50 = workspace.NodeFromWorkspace<DoubleInput>(
                 "ffd50d99-b51d-4104-9e19-041219ca5740");
-            var numberRange = workspace.NodeFromWorkspace<DoubleInput>(
+            var numberRange = workspace.NodeFromWorkspace<CodeBlockNodeModel>(
                 "eb6aa95d-8be4-4ca7-95a6-e696904a71fa");
-            var numberStep = workspace.NodeFromWorkspace<DoubleInput>(
+            var numberStep = workspace.NodeFromWorkspace<CodeBlockNodeModel>(
                 "5fde015f-8a95-4b46-ba64-29de06850938");
-            var numberCount = workspace.NodeFromWorkspace<DoubleInput>(
+            var numberCount = workspace.NodeFromWorkspace<CodeBlockNodeModel>(
                 "ace69b4e-5092-42cf-9fba-9aee6729509d");
-            var numberApprox = workspace.NodeFromWorkspace<DoubleInput>(
+            var numberApprox = workspace.NodeFromWorkspace<CodeBlockNodeModel>(
                 "30e9b7fd-fc09-4243-a34a-146ad841868a");
-            var numberIncr = workspace.NodeFromWorkspace<DoubleInput>(
+            var numberIncr = workspace.NodeFromWorkspace<CodeBlockNodeModel>(
                 "bede0d80-6382-4430-9403-a14c3916e041");
 
             Assert.NotNull(number5);
