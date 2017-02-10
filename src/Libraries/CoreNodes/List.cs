@@ -162,7 +162,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Filters a sequence by lookng up corresponding indices in a separate list of
+        ///     Filters a sequence by looking up corresponding indices in a separate list of
         ///     booleans.
         /// </summary>
         /// <param name="list">List to filter.</param>
