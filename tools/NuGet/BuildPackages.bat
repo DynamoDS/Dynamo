@@ -4,6 +4,7 @@
 
 if not "%2"=="" goto :harvestpathdefined
 
+echo The path to the Dynamo dlls was not specified. Using the dlls in the install directory...
 set harvestPath=..\..\src\DynamoInstall\harvest
 if not exist %harvestPath% (
   echo Dynamo\src\DynamoInstall\harvest folder not found.
