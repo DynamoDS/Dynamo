@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Windows.Media;
 using System.Xml;
 
 using Dynamo.Graph;
@@ -28,20 +26,16 @@ namespace CoreNodeModels.Input
     [OutPortDescriptions("Selected Color.")]
     public class ColorPalette : NodeModel
     {
-        private Color scolor = Color.FromArgb(255, 0, 0, 0);                     
-        /// <summary>
-        ///     Color value.
-        /// </summary>
-        public Color sColor
+        private DSColor dscolor = DSColor.ByARGB(255,0,0,0);
+        public DSColor dsColor
         {
-            get { return scolor; }
+            get { return dscolor; }
             set
-            {
-                scolor = value;
-                RaisePropertyChanged("sColor");
+            {                              
+                dscolor = value;                
                 OnNodeModified();
             }
-        }                
+        }
         /// <summary>
         ///     Node constructor.
         /// </summary>
@@ -49,24 +43,22 @@ namespace CoreNodeModels.Input
         {
             RegisterAllPorts();
         }
-
-        private Color DeserializeValue(string val)
-        {
+        private DSColor DeserializeValue(string val)
+         {
             try
             {
-                return sColor = (Color)ColorConverter.ConvertFromString(val);
+                var t = val;
+                return dsColor; //= (DSColor)ColorConverter.ConvertFromString(val);
             }
             catch
             {
-                return sColor = Color.FromArgb(255, 0, 0, 0);
+                return dsColor = DSColor.ByARGB(255, 0, 0, 0);
             }
         }
-
         private string SerializeValue()
         {
-            return scolor.ToString(CultureInfo.InvariantCulture);
+            return dsColor.ToString();
         }
-
         /// <summary>
         ///     Store color value when graph is saved.
         /// </summary>
@@ -76,11 +68,10 @@ namespace CoreNodeModels.Input
         {
             base.SerializeCore(element, context);
 
-            XmlElement color = element.OwnerDocument.CreateElement("sColor");
+            XmlElement color = element.OwnerDocument.CreateElement("dsColor");
             color.InnerText = SerializeValue();
             element.AppendChild(color);
         }
-
         /// <summary>
         ///     Restore stored value and set "scolor" to it.
         /// </summary>
@@ -90,15 +81,14 @@ namespace CoreNodeModels.Input
         {
             base.DeserializeCore(element, context);
 
-            var colorNode = element.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == "sColor");
+            var colorNode = element.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == "dsColor");
 
             if (colorNode != null)
             {
-                scolor = DeserializeValue(colorNode.InnerText);
+                dsColor = DeserializeValue(colorNode.InnerText);
             }
 
         }
-
         /// <summary>
         ///     AST Output.
         /// </summary>
@@ -107,10 +97,10 @@ namespace CoreNodeModels.Input
         [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var av = AstFactory.BuildIntNode(Convert.ToInt32(sColor.A));
-            var ar = AstFactory.BuildIntNode(Convert.ToInt32(sColor.R));
-            var ag = AstFactory.BuildIntNode(Convert.ToInt32(sColor.G));
-            var ab = AstFactory.BuildIntNode(Convert.ToInt32(sColor.B));
+            var av = AstFactory.BuildIntNode(Convert.ToInt32(dsColor.Alpha));
+            var ar = AstFactory.BuildIntNode(Convert.ToInt32(dsColor.Red));
+            var ag = AstFactory.BuildIntNode(Convert.ToInt32(dsColor.Green));
+            var ab = AstFactory.BuildIntNode(Convert.ToInt32(dsColor.Blue));
 
             var colorNode = AstFactory.BuildFunctionCall(
                     new Func<int, int, int, int, DSColor>(DSColor.ByARGB), new List<AssociativeNode> { av, ar, ag, ab });
@@ -124,7 +114,7 @@ namespace CoreNodeModels.Input
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format("Color(Red = {0}, Green = {1}, Blue = {2}, Alpha = {3})", scolor.R, scolor.G, scolor.B, scolor.A);
+            return string.Format("Color(Red = {0}, Green = {1}, Blue = {2}, Alpha = {3})", dsColor.Red, dsColor.Green, dsColor.Blue, dsColor.Alpha);
         }
     }
 }
