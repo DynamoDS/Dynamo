@@ -224,6 +224,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Class declarations are not supported in CodeBlock Nodes, only function definitions and assignment statements.
+        /// </summary>
+        public static string ClassDeclarationNotSupported {
+            get {
+                return ResourceManager.GetString("ClassDeclarationNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &quot;}&quot; expected.
         /// </summary>
         public static string closebrace_expected {
@@ -670,6 +679,15 @@ namespace ProtoCore.Properties {
         public static string invalid_Associative_LanguageBlock {
             get {
                 return ResourceManager.GetString("invalid_Associative_LanguageBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid list@level syntax, consider using @L1 for level 1..
+        /// </summary>
+        public static string invalid_Associative_Level {
+            get {
+                return ResourceManager.GetString("invalid_Associative_Level", resourceCulture);
             }
         }
         
@@ -1282,6 +1300,15 @@ namespace ProtoCore.Properties {
         public static string kInvalidContinueForFunction {
             get {
                 return ResourceManager.GetString("kInvalidContinueForFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; cannot be used as list level name, consider using L1 for level 1..
+        /// </summary>
+        public static string kInvalidListLevelName {
+            get {
+                return ResourceManager.GetString("kInvalidListLevelName", resourceCulture);
             }
         }
         

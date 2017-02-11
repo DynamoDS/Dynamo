@@ -104,7 +104,6 @@
     <Compile Include="DSASM\HeapObjects.cs" />
     <Compile Include="Lang\InternalAttributes.cs" />
     <Compile Include="Lang\Replication\ArgumentAtLevel.cs" />
-    <Compile Include="SyntaxAnalysis\AstVisitor.cs" />
     <Compile Include="AttributeEntry.cs" />
     <Compile Include="BuildStatus.cs" />
     <Compile Include="CodeBlock.cs" />
@@ -114,6 +113,10 @@
     <Compile Include="CodePoint.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="CompilerOptions.cs" />
+    <Compile Include="SyntaxAnalysis\AssociativeAstVisitor.cs" />
+    <Compile Include="SyntaxAnalysis\AstVisitor.cs" />
+    <Compile Include="SyntaxAnalysis\Interface\Associative.cs" />
+    <Compile Include="SyntaxAnalysis\Interface\Imperative.cs" />
     <Compile Include="SyntaxAnalysis\ImperativeAstVisitor.cs" />
     <Compile Include="Utils\CompilerUtils.cs" />
     <Compile Include="Core.cs" />

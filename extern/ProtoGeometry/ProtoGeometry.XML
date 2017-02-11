@@ -493,6 +493,11 @@
             The sense of the CoEdge with respect to its Edge
             </summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.CoEdge.ParameterCurve">
+            <summary>
+            Curve in parametric space of the owner surface. The curve is in 2D form, thus Z coordinates of this curve are 0.
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ToString">
             <summary>
             Get a string representation of the Cone
@@ -1889,6 +1894,11 @@
         <member name="P:Autodesk.DesignScript.Geometry.Loop.CoEdges">
             <summary>
             The CoEdges contained in the Loop
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Loop.IsExternal">
+            <summary>
+            Whether the loop is border or inner
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ToString">
@@ -5037,6 +5047,18 @@
             <returns>File path where T-Spline Surface is being saved</returns>
             <search>tspline,export,save,tsm,path</search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.SerializeAsTSM(Autodesk.DesignScript.Geometry.TSpline.TSplineSurface)">
+            <summary>
+            Write T-Spline Surface into a string in T-Spline Mesh format.
+            </summary>
+            <param name="tSplineSurface">T-Spline surface to serialize</param>
+            <returns>String where T-Spline Surface is being serialized</returns>
+            <search>tspline,import,serialize</search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DeserializeFromTSM(System.String,System.Boolean)">
+            Newly loaded T-Spline surface in list
+            <search>tspline,import,serialize</search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ImportFromTSM(System.String,System.Boolean)">
             <summary>
             Load a T-Spline Surface from given T-Spline Mesh file
@@ -5687,9 +5709,6 @@
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tags">
             <notranslation>true</notranslation>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage,Autodesk.DesignScript.Interfaces.TessellationParameters)">
-            <notranslation>true</notranslation>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Dispose">
             <notranslation>true</notranslation>
         </member>
@@ -5707,6 +5726,9 @@
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Equals(System.Object)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage,Autodesk.DesignScript.Interfaces.TessellationParameters)">
             <notranslation>true</notranslation>
         </member>
         <member name="F:Autodesk.DesignScript.Geometry.Geometry.mGeometryContructors">
@@ -6109,6 +6131,16 @@
               Looks up a localized string similar to the {0} is less than zero.
             </summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.LowerModelerExtentExceeded">
+            <summary>
+              Looks up a localized string similar to Lower modeling extent exceeded, consider  choosing a modeling range between {0} and {1}.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
+            <summary>
+              Looks up a localized string similar to Modeling extents are exceeded, consider choosing smaller values.
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
             <summary>
               Looks up a localized string similar to No implementation of IGeometryFactory found.  Make sure ProtoGeometry.config is properly configured..
@@ -6182,6 +6214,11 @@
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.Sheared">
             <summary>
               Looks up a localized string similar to {0} is sheared.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.UpperModelerExtentExceeded">
+            <summary>
+              Looks up a localized string similar to Upper modeling extent exceeded, consider choosing a modeling range between {0} and {1}.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.VertexColorNotSupported">

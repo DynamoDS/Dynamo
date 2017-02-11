@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Search.SearchElements;
 using Dynamo.Wpf.ViewModels;
 
@@ -455,11 +453,39 @@ namespace Dynamo.Tests
             ViewModel.RequestUserSaveWorkflow += handler;
             //send the command
             ViewModel.OpenIfSavedCommand.Execute(new Dynamo.Models.DynamoModel.OpenFileCommand(openPath));
-            //assert the request was made
-            Assert.AreEqual(1,eventCount);
+
             //dispose handler
             ViewModel.RequestUserSaveWorkflow -= handler;
 
+            //assert the request was made
+            Assert.AreEqual(1,eventCount);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EnsureAskUserToSaveDialogIsShownOnOpenRecent()
+        {
+            //openPath
+            string openPath = Path.Combine(TestDirectory, (@"UI\GroupTest.dyn"));
+
+            //workspace has unsaved changes
+            this.GetModel().CurrentWorkspace.HasUnsavedChanges = true;
+
+            var eventCount = 0;
+
+            var handler = new WorkspaceSaveEventHandler((o, e) => { eventCount = eventCount + 1; });
+
+            //attach handler to the save request
+            ViewModel.RequestUserSaveWorkflow += handler;
+
+            //send the command
+            ViewModel.OpenRecentCommand.Execute(openPath);
+
+            //dispose handler
+            ViewModel.RequestUserSaveWorkflow -= handler;
+
+            //assert the request was made
+            Assert.AreEqual(1, eventCount);
         }
 
         [Test]

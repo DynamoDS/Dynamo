@@ -185,6 +185,12 @@ namespace Dynamo.UI.Controls
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 
+            references.Add(new StartPageListItem(Resources.StartPageDynamoDictionary, "icon-dictionary.png")
+            {
+                ContextData = Configurations.DynamoDictionary,
+                ClickAction = StartPageListItem.Action.ExternalUrl
+            });
+            
             #endregion
 
             #region Contribution Links

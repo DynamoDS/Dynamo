@@ -13,7 +13,7 @@
     <ModelGuid>644ebb42-2c8a-426e-bfc4-642f94508b0f</ModelGuid>
   </UpdateModelValueCommand>
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.DSFunction guid="8d8be654-f5ba-4cac-87a8-0f795a22a483" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="301" y="43" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+    <Dynamo.Nodes.DSFunction guid="8d8be654-f5ba-4cac-87a8-0f795a22a483" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="301" y="43" isVisible="true" isUpstreamVisible="true" lacing="Auto" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
       <PortInfo index="0" default="True" />
       <PortInfo index="1" default="True" />
       <PortInfo index="2" default="True" />
@@ -27,13 +27,13 @@
   <MakeConnectionCommand NodeId="644ebb42-2c8a-426e-bfc4-642f94508b0f" PortIndex="0" Type="1" ConnectionMode="0" />
   <MakeConnectionCommand NodeId="8d8be654-f5ba-4cac-87a8-0f795a22a483" PortIndex="1" Type="0" ConnectionMode="1" />
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.DSFunction guid="6e6ef08e-e743-493d-9941-293e3eee00e9" type="Dynamo.Nodes.DSFunction" nickname="List.Transpose" x="513" y="245" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.Transpose@var[]..[]" />
+    <Dynamo.Nodes.DSFunction guid="6e6ef08e-e743-493d-9941-293e3eee00e9" type="Dynamo.Nodes.DSFunction" nickname="List.Transpose" x="513" y="245" isVisible="true" isUpstreamVisible="true" lacing="Auto" assembly="DSCoreNodes.dll" function="DSCore.List.Transpose@var[]..[]" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="6e6ef08e-e743-493d-9941-293e3eee00e9" Modifiers="0" />
   <DragSelectionCommand X="675" Y="328" DragOperation="0" />
   <DragSelectionCommand X="624" Y="83" DragOperation="1" />
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.DSFunction guid="f4d5ef15-fb8f-49c4-a606-702286cc3d0c" type="Dynamo.Nodes.DSFunction" nickname="NurbsCurve.ByPoints" x="494" y="37" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[]" />
+    <Dynamo.Nodes.DSFunction guid="f4d5ef15-fb8f-49c4-a606-702286cc3d0c" type="Dynamo.Nodes.DSFunction" nickname="NurbsCurve.ByPoints" x="494" y="37" isVisible="true" isUpstreamVisible="true" lacing="Auto" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[]" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="f4d5ef15-fb8f-49c4-a606-702286cc3d0c" Modifiers="0" />
   <DragSelectionCommand X="725" Y="353" DragOperation="0" />

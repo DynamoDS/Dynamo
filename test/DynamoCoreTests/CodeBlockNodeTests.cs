@@ -332,6 +332,60 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        public void Test_InportOutportConnections_RetainedForCodeBlockErrors()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\Test_InportOutportConnections_RetainedForCodeBlockErrors.dyn");
+            OpenModel(openPath);
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse("50edf3c7-7e0d-4e2d-8344-f7380eddd827"));
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.Active, cbn.State);
+            Assert.IsTrue(cbn.CodeStatements.Any());
+
+            Assert.AreEqual(5, cbn.InPorts.Count);
+            Assert.AreEqual(3, cbn.OutPorts.Count);
+            Assert.AreEqual(8, cbn.AllConnectors.Count());
+
+            // add syntax error in cbn code and update
+            string codeInCBN = @"x = {a$,b,c,d,e};x[1];x[3];";
+            UpdateCodeBlockNodeContent(cbn, codeInCBN);
+
+            // Verify that cbn is in error state and number of input, output ports remains the same
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.Error, cbn.State);
+            Assert.IsTrue(!cbn.CodeStatements.Any());
+            
+            Assert.AreEqual(5, cbn.InPorts.Count);
+            Assert.AreEqual(3, cbn.OutPorts.Count);
+            Assert.AreEqual(8, cbn.AllConnectors.Count());
+        }
+
+        [Test]
+        public void Test_InportOutportConnections_RetainedForCodeBlockErrorsInFile()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\Test_InportOutportConnections_RetainedForCodeBlockErrorsInFile.dyn");
+            OpenModel(openPath);
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse("50edf3c7-7e0d-4e2d-8344-f7380eddd827"));
+
+            // Verify that cbn is in error state and input, output ports exist
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.Error, cbn.State);
+            Assert.IsTrue(!cbn.CodeStatements.Any());
+
+            Assert.AreEqual(5, cbn.InPorts.Count);
+            Assert.AreEqual(3, cbn.OutPorts.Count);
+            Assert.AreEqual(8, cbn.AllConnectors.Count());
+        }
+
+        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_4946()
         {

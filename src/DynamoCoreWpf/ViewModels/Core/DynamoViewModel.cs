@@ -46,6 +46,19 @@ namespace Dynamo.ViewModels
 
     public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel
     {
+        public int ScaleFactorLog
+        {
+            get
+            {
+                return (CurrentSpace == null) ? 0 :
+                    Convert.ToInt32(Math.Log10(CurrentSpace.ScaleFactor));
+            }
+            set
+            {
+                CurrentSpace.ScaleFactor = Math.Pow(10, value);
+            }
+        }
+
         #region properties
 
         private readonly DynamoModel model;
@@ -890,6 +903,13 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
                     RaisePropertyChanged("RunButtonEnabled");
+
+                    if (ChangeScaleFactorCommand != null)
+                    {
+                        ChangeScaleFactorCommand.RaiseCanExecuteChanged();
+                    }
+                    //RaisePropertyChanged("RunEnabled");
+
                     break;
 
                 case "EnablePresetOptions":
@@ -1272,8 +1292,16 @@ namespace Dynamo.ViewModels
             // if you've got the current space path, use it as the inital dir
             if (!string.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
             {
-                var fi = new FileInfo(Model.CurrentWorkspace.FileName);
-                _fileDialog.InitialDirectory = fi.DirectoryName;
+                string path = Model.CurrentWorkspace.FileName;
+                if (File.Exists(path))
+                {
+                    var fi = new FileInfo(Model.CurrentWorkspace.FileName);
+                    _fileDialog.InitialDirectory = fi.DirectoryName;
+                }
+                else
+                {
+                    _fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
+                }
             }
             else // use the samples directory, if it exists
             {
@@ -1302,6 +1330,12 @@ namespace Dynamo.ViewModels
 
         private void OpenRecent(object path)
         {
+            // Make sure user get chance to save unsaved changes first
+            if (CurrentSpaceViewModel.HasUnsavedChanges)
+            {
+                if (!AskUserToSaveWorkspaceOrCancel(HomeSpace))
+                    return;
+            }
             this.Open(path as string);
         }
 
@@ -1390,6 +1424,9 @@ namespace Dynamo.ViewModels
                 // sadly it's not usually possible to cancel a crash
 
                 var fd = this.GetSaveDialog(workspace);
+                // since the workspace file directory is null, we set the initial directory
+                // for the file to be MyDocument folder in the local computer. 
+                fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
                     workspace.SaveAs(fd.FileName);
@@ -1408,6 +1445,11 @@ namespace Dynamo.ViewModels
         internal bool CanUpstreamVisibilityBeToggled(object parameters)
         {
             return true;
+        }
+
+        internal bool ChangeScaleFactorEnabled
+        {
+            get { return !ShowStartPage; }
         }
 
         internal void ShowPackageManagerSearch(object parameters)
@@ -1486,7 +1528,7 @@ namespace Dynamo.ViewModels
         {
             WorkspaceViewModel wvm = this.CurrentSpaceViewModel;
 
-            if (wvm.IsConnecting && (node == wvm.ActiveConnector.ActiveStartPort.Owner))
+            if (wvm.IsConnecting && (node == wvm.FirstActiveConnector.ActiveStartPort.Owner))
                 wvm.CancelActiveState();
         }
 
@@ -2016,6 +2058,16 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanGoToSourceCode(object parameter)
+        {
+            return true;
+        }
+
+        public void GoToDictionary(object parameter)
+        {
+            Process.Start(Configurations.DynamoDictionary);
+        }
+
+        internal bool CanGoToDictionary(object parameter)
         {
             return true;
         }

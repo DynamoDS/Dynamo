@@ -473,7 +473,7 @@ namespace Dynamo.Tests
             Assert.AreNotEqual(0, annotation.Width);
 
             //Check the default font size
-            Assert.AreEqual(annotation.FontSize, 14.0);
+            Assert.AreEqual(annotation.FontSize, 36.0);
         }
 
         [Test]
@@ -502,7 +502,7 @@ namespace Dynamo.Tests
             Assert.AreNotEqual(0, annotation.Width);
 
             //Check the default font size
-            Assert.AreEqual(annotation.FontSize, 14.0);
+            Assert.AreEqual(annotation.FontSize, 36.0);
 
             //Change the font size
             annotation.FontSize = 30;

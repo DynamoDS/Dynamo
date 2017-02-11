@@ -32,5 +32,9 @@ namespace Dynamo.PackageManager.UI
             button.ContextMenu.IsOpen = true;
         }
 
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            this.Owner.Focus();
+        }
     }
 }

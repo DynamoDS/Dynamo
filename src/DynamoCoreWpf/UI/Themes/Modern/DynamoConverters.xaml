@@ -107,7 +107,6 @@
     <controls:BoolToCanvasCursorConverter x:Key="BoolToCanvasCursorConverter" />
     <controls:LacingToVisibilityConverter x:Key="LacingToVisibilityConverter" />
     <controls:AutoLacingToVisibilityConverter x:Key="AutoLacingToVisibilityConverter" />
-    <controls:NonAutoLacingToVisibilityConverter x:Key="NonAutoLacingToVisibilityConverter" />
     <controls:LacingToAbbreviationConverter x:Key="LacingToAbbreviationConverter" />
     <controls:LacingToTooltipConverter x:Key="LacingToTooltipConverter" />
     <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />

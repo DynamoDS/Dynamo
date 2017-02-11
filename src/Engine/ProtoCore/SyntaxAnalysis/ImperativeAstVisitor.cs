@@ -5,81 +5,82 @@ using System.Collections.Generic;
 
 namespace ProtoCore.SyntaxAnalysis
 {
-    public abstract class ImperativeAstVisitor
+    public abstract class ImperativeAstVisitor : Imperative.IAstVisitor<bool>
     {
-        public virtual void DefaultVisit(ImperativeNode node)
+        public virtual bool DefaultVisit(ImperativeNode node)
         {
+            return false;
         }
 
-        public virtual void Visit(Node node)
+        public virtual bool Visit(Node node)
         {
             ImperativeNode impNode = node as ImperativeNode;
-            if (impNode != null)
-                impNode.Accept(this);
+            return (impNode != null) ? impNode.Accept(this) : false;
         }
 
-        public virtual void VisitLanguageBlockNode(LanguageBlockNode node)
+        public virtual bool VisitLanguageBlockNode(LanguageBlockNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitArrayNameNode(ArrayNameNode node)
+        public virtual bool VisitArrayNameNode(ArrayNameNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitGroupExpressionNode(GroupExpressionNode node)
+        public virtual bool VisitGroupExpressionNode(GroupExpressionNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitIdentifierNode(IdentifierNode node)
+        public virtual bool VisitIdentifierNode(IdentifierNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitTypedIdentifierNode(TypedIdentifierNode node)
+        public virtual bool VisitTypedIdentifierNode(TypedIdentifierNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitIdentifierListNode(IdentifierListNode node)
+        public virtual bool VisitIdentifierListNode(IdentifierListNode node)
         {
             node.LeftNode.Accept(this);
             node.RightNode.Accept(this);
+            return true;
         }
 
-        public virtual void VisitIntNode(IntNode node)
+        public virtual bool VisitIntNode(IntNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitDoubleNode(DoubleNode node)
+        public virtual bool VisitDoubleNode(DoubleNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitBooleanNode(BooleanNode node)
+        public virtual bool VisitBooleanNode(BooleanNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitCharNode(CharNode node)
+        public virtual bool VisitCharNode(CharNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitStringNode(StringNode node)
+        public virtual bool VisitStringNode(StringNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitNullNode(NullNode node)
+        public virtual bool VisitNullNode(NullNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitFunctionCallNode(FunctionCallNode node)
+        public virtual bool VisitFunctionCallNode(FunctionCallNode node)
         {
             for (int i = 0; i < node.FormalArguments.Count; ++i)
             {
@@ -88,42 +89,48 @@ namespace ProtoCore.SyntaxAnalysis
 
             if (node.ArrayDimensions != null)
                 node.ArrayDimensions.Accept(this);
+
+            return true;
         }
 
-        public virtual void VisitCodeBlockNode(CodeBlockNode node)
+        public virtual bool VisitCodeBlockNode(CodeBlockNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitIfStatementNode(IfStmtNode node)
+        public virtual bool VisitIfStatementNode(IfStmtNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitElseIfNode(ElseIfBlock node)
+        public virtual bool VisitElseIfNode(ElseIfBlock node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitInlineConditionalNode(InlineConditionalNode node)
+        public virtual bool VisitInlineConditionalNode(InlineConditionalNode node)
         {
             node.ConditionExpression.Accept(this);
             node.TrueExpression.Accept(this);
             node.FalseExpression.Accept(this);
+
+            return true;
         }
 
-        public virtual void VisitBinaryExpressionNode(BinaryExpressionNode node)
+        public virtual bool VisitBinaryExpressionNode(BinaryExpressionNode node)
         {
             node.LeftNode.Accept(this);
             node.RightNode.Accept(this);
+
+            return true;
         }
 
-        public virtual void VisitUnaryExpressionNode(UnaryExpressionNode node)
+        public virtual bool VisitUnaryExpressionNode(UnaryExpressionNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitRangeExprNode(RangeExprNode node)
+        public virtual bool VisitRangeExprNode(RangeExprNode node)
         {
             node.From.Accept(this);
             node.To.Accept(this);
@@ -133,9 +140,11 @@ namespace ProtoCore.SyntaxAnalysis
 
             if (node.ArrayDimensions != null)
                 node.ArrayDimensions.Accept(this);
+
+            return true;
         }
 
-        public virtual void VisitExprListNode(ExprListNode node)
+        public virtual bool VisitExprListNode(ExprListNode node)
         {
             for (int i = 0; i < node.Exprs.Count; ++i)
             {
@@ -144,44 +153,48 @@ namespace ProtoCore.SyntaxAnalysis
 
             if (node.ArrayDimensions != null)
                 node.ArrayDimensions.Accept(this);
+
+            return true;
         }
 
-        public virtual void VisitArrayNode(ArrayNode node)
+        public virtual bool VisitArrayNode(ArrayNode node)
         {
             if (node.Expr != null)
                 node.Expr.Accept(this);
 
             if (node.Type != null)
                 node.Type.Accept(this);
+
+            return true;
         }
 
-        public virtual void VisitWhileStatementNode(WhileStmtNode node)
+        public virtual bool VisitWhileStatementNode(WhileStmtNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitForLoopNode(ForLoopNode node)
+        public virtual bool VisitForLoopNode(ForLoopNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitBreakNode(BreakNode node)
+        public virtual bool VisitBreakNode(BreakNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitContinueNode(ContinueNode node)
+        public virtual bool VisitContinueNode(ContinueNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
 
-        public virtual void VisitIfStmtPositionNode(IfStmtPositionNode node)
+        public virtual bool VisitIfStmtPositionNode(IfStmtPositionNode node)
         {
-            DefaultVisit(node);
+            return DefaultVisit(node);
         }
     }
 
-    public abstract class ImperativeAstVisitor<TResult>
+    public abstract class ImperativeAstVisitor<TResult> : Imperative.IAstVisitor<TResult>
     {
         public virtual TResult DefaultVisit(ImperativeNode node)
         {

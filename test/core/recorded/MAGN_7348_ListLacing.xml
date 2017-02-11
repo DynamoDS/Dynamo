@@ -19,7 +19,7 @@
     <ModelGuid>7f14569e-7449-4aec-942d-86e2b13a34ed</ModelGuid>
   </UpdateModelValueCommand>
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.DSFunction guid="b05edee8-5a5a-4841-9433-b5693b96af69" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="269.5" y="32.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+    <Dynamo.Nodes.DSFunction guid="b05edee8-5a5a-4841-9433-b5693b96af69" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="269.5" y="32.5" isVisible="true" isUpstreamVisible="true" lacing="Auto" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
       <PortInfo index="0" default="True" />
       <PortInfo index="1" default="True" />
       <PortInfo index="2" default="True" />
@@ -35,7 +35,7 @@
   <MakeConnectionCommand NodeId="7eb9f3f4-47ad-48e2-9435-da1bbc0dbc2f" PortIndex="2" Type="1" ConnectionMode="0" />
   <MakeConnectionCommand NodeId="b05edee8-5a5a-4841-9433-b5693b96af69" PortIndex="2" Type="0" ConnectionMode="1" />
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.DSFunction guid="a120391b-4eff-45eb-8112-049e8111d7cd" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="288.5" y="174.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+    <Dynamo.Nodes.DSFunction guid="a120391b-4eff-45eb-8112-049e8111d7cd" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="288.5" y="174.5" isVisible="true" isUpstreamVisible="true" lacing="Auto" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
       <PortInfo index="0" default="True" />
       <PortInfo index="1" default="True" />
       <PortInfo index="2" default="True" />
@@ -46,7 +46,7 @@
   <MakeConnectionCommand NodeId="7eb9f3f4-47ad-48e2-9435-da1bbc0dbc2f" PortIndex="1" Type="1" ConnectionMode="0" />
   <MakeConnectionCommand NodeId="a120391b-4eff-45eb-8112-049e8111d7cd" PortIndex="1" Type="0" ConnectionMode="1" />
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.DSFunction guid="8eef399d-655d-4ca9-a8d8-d81d6c29e4f1" type="Dynamo.Nodes.DSFunction" nickname="Line.ByStartPointEndPoint" x="471.5" y="75.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point" />
+    <Dynamo.Nodes.DSFunction guid="8eef399d-655d-4ca9-a8d8-d81d6c29e4f1" type="Dynamo.Nodes.DSFunction" nickname="Line.ByStartPointEndPoint" x="471.5" y="75.5" isVisible="true" isUpstreamVisible="true" lacing="Auto" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="8eef399d-655d-4ca9-a8d8-d81d6c29e4f1" Modifiers="0" />
   <DragSelectionCommand X="420" Y="213" DragOperation="0" />

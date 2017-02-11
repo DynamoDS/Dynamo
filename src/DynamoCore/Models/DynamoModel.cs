@@ -376,7 +376,7 @@ namespace Dynamo.Models
             ShutDownCore(shutdownHost);
             PostShutdownCore(shutdownHost);
 
-            Dynamo.Logging.Analytics.ShutDown();
+            AnalyticsService.ShutDown();
 
             OnShutdownCompleted(); // Notify possible event handlers.
         }
@@ -932,7 +932,7 @@ namespace Dynamo.Models
         {
             if (!IsTestMode && !IsHeadless)
             {
-                Dynamo.Logging.Analytics.Start(this);
+                AnalyticsService.Start(this);
             }
         }
 
@@ -1153,6 +1153,7 @@ namespace Dynamo.Models
                 this,
                 new PointEventArgs(new Point2D(workspaceInfo.X, workspaceInfo.Y)));
 
+            workspace.ScaleFactor = workspaceInfo.ScaleFactor;
             return result;
         }
 

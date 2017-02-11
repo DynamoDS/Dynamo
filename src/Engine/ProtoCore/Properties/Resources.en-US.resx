@@ -177,6 +177,9 @@
   <data name="ImportStatementNotSupported" xml:space="preserve">
     <value>Imports statements are not supported in CodeBlock Nodes, please use the Library UI instead</value>
   </data>
+  <data name="ClassDeclarationNotSupported" xml:space="preserve">
+    <value>Class declarations are not supported in CodeBlock Nodes, only function definitions and assignment statements</value>
+  </data>
   <data name="InsertsAnElementIntoList" xml:space="preserve">
     <value>Inserts an element into a list at specified index</value>
   </data>
@@ -910,5 +913,11 @@ Parameter name: {0}</value>
   </data>
   <data name="InvalidFunction" xml:space="preserve">
     <value>Not an valid function.</value>
+  </data>
+  <data name="kInvalidListLevelName" xml:space="preserve">
+    <value>'{0}' cannot be used as list level name, consider using L1 for level 1.</value>
+  </data>
+  <data name="invalid_Associative_Level" xml:space="preserve">
+    <value>Invalid list@level syntax, consider using @L1 for level 1.</value>
   </data>
 </root>

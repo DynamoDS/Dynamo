@@ -179,7 +179,21 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
-        private double fontSize = 14;
+
+        private double textMaxWidth;
+        /// <summary>
+        /// Returns the maxWidth of text area of the group
+        /// </summary>
+        public double TextMaxWidth
+        {
+            get { return textMaxWidth; }
+            set
+            {
+                textMaxWidth = value;
+            }
+        }
+
+        private double fontSize = 36;
         /// <summary>
         /// Returns font size of the text of the group
         /// </summary>
@@ -278,7 +292,7 @@ namespace Dynamo.Graph.Annotations
              
                 this.X = region.X;              
                 this.Y = region.Y;
-                this.Width = region.Width;
+                this.Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
                 this.Height = region.Height;
 
                 //Calculate the boundary if there is any overlap

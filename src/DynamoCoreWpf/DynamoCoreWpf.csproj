@@ -50,8 +50,8 @@
     <Reference Include="FontAwesome.WPF">
       <HintPath>..\..\extern\FontAwesome\FontAwesome.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=1.0.5959.26179, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.1.0.5959.26179\lib\net45\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=1.0.6176.18754, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.1.0.6176.18754\lib\net45\Greg.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="HelixToolkit, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
@@ -285,6 +285,9 @@
     </Compile>
     <Compile Include="UI\Prompts\UsageReportingAgreementPrompt.xaml.cs">
       <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Prompts\ChangeScaleFactorPrompt.xaml.cs">
+      <DependentUpon>ChangeScaleFactorPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="ViewModels\Core\AnnotationExtension.cs" />
@@ -930,6 +933,9 @@
     <Resource Include="UI\Images\StartPage\icon-video.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icon-dictionary.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="UI\Images\tabs_button_hover.png" />
   </ItemGroup>
   <ItemGroup>
@@ -987,6 +993,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Prompts\ChangeScaleFactorPrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Prompts\FunctionNamePrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1287,6 +1297,7 @@
     </Content>
     <Resource Include="UI\Images\bubble-arrow.png" />
     <Resource Include="UI\Images\icon-whats-new-small.png" />
+    <Resource Include="UI\Images\icon-dictionary-small.png" />
     <Content Include="ViewModels\Watch3D\Shaders\BillboardText.fx" />
     <Content Include="ViewModels\Watch3D\Shaders\Common.fx" />
     <Content Include="ViewModels\Watch3D\Shaders\Custom.fx" />

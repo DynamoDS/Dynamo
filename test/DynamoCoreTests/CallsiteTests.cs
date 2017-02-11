@@ -9,7 +9,7 @@ using Dynamo.Engine;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using NUnit.Framework;
-
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Tests
 {
@@ -98,10 +98,10 @@ namespace Dynamo.Tests
 
             ws.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(expectedOrphanCount);
 
-            var numNode = ws.FirstNodeFromWorkspace<DoubleInput>();
+            var numNode = ws.FirstNodeFromWorkspace<CodeBlockNodeModel>();
 
             // Increase the number values.
-            numNode.Value = numNodeValue;
+            numNode.SetCodeContent(numNodeValue + ";", new ProtoCore.Namespace.ElementResolver());
 
             BeginRun();
         }

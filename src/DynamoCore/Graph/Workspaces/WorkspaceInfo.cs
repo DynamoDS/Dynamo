@@ -49,6 +49,7 @@ namespace Dynamo.Graph.Workspaces
                 double cx = 0;
                 double cy = 0;
                 double zoom = 1.0;
+                double scaleFactor = 1.0;
                 string id = "";
                 string category = "";
                 string description = "";
@@ -77,6 +78,8 @@ namespace Dynamo.Graph.Workspaces
                             cy = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         else if (att.Name.Equals("zoom"))
                             zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
+                        else if (att.Name.Equals("ScaleFactor"))
+                            scaleFactor = double.Parse(att.Value, CultureInfo.InvariantCulture);
                         else if (att.Name.Equals("Name"))
                             funName = att.Value;
                         else if (att.Name.Equals("ID"))
@@ -118,6 +121,7 @@ namespace Dynamo.Graph.Workspaces
                     X = cx,
                     Y = cy,
                     Zoom = zoom,
+                    ScaleFactor = scaleFactor,
                     FileName = path,
                     Category = category,
                     Description = description,
@@ -173,6 +177,11 @@ namespace Dynamo.Graph.Workspaces
         /// Returns zoom value of the workspace
         /// </summary>
         public double Zoom { get; internal set; }
+
+        /// <summary>
+        /// Returns the scale factor for ProtoGeometry geometries
+        /// </summary>
+        public double ScaleFactor { get; internal set; }
 
         /// <summary>
         /// Returns name of the workspace
