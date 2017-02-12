@@ -112,6 +112,22 @@ namespace CoreNodeModels
             }
         }
 
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
+        {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
+            if (name == "Value" && value != null)
+            {
+                selectedIndex = ParseSelectedIndex(value, Items);
+                if (selectedIndex < 0)
+                    Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(updateValueParams);
+        }
+
         protected virtual int ParseSelectedIndex(string index, IList<DynamoDropDownItem> items)
         {
             return ParseSelectedIndexImpl(index, items);
