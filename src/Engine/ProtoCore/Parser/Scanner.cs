@@ -625,8 +625,8 @@ public class Scanner {
 		start[42] = 44; 
 		start[37] = 45; 
 		start[38] = 54; 
-		start[126] = 48; 
-		start[35] = 49; 
+		start[35] = 48; 
+		start[126] = 49; 
 		start[94] = 50; 
 		start[Buffer.EOF] = -1;
 

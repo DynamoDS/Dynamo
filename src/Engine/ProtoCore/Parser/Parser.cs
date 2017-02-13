@@ -1865,7 +1865,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		node = null; 
 		if (StartOf(14)) {
 			Associative_NegExpression(out node);
-		} else if (la.kind == 14 || la.kind == 60) {
+		} else if (la.kind == 14) {
 			Associative_BitUnaryExpression(out node);
 		} else SynErr(83);
 	}
@@ -1892,15 +1892,8 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 
 	void Associative_unaryop(out UnaryOperator op) {
 		op = UnaryOperator.None; 
-		if (la.kind == 14) {
-			Get();
-			op = UnaryOperator.Not;    
-			#if ENABLE_BIT_OP          
-		} else if (la.kind == 60) {
-			Get();
-			op = UnaryOperator.Negate; 
-			#endif                     
-		} else SynErr(84);
+		Expect(14);
+		op = UnaryOperator.Not;    
 	}
 
 	void Associative_Factor(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
@@ -1930,7 +1923,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Associative_IdentifierList(out node);
 		} else if (StartOf(15)) {
 			Associative_UnaryExpression(out node);
-		} else SynErr(85);
+		} else SynErr(84);
 	}
 
 	void Associative_negop(out UnaryOperator op) {
@@ -1939,7 +1932,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 15) {
 			Get();
 			op = UnaryOperator.Neg; 
-		} else SynErr(86);
+		} else SynErr(85);
 	}
 
 	void Associative_ComparisonExpression(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
@@ -1961,7 +1954,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 59) {
 			Get();
 			op = Operator.or; 
-		} else SynErr(87);
+		} else SynErr(86);
 	}
 
 	void Associative_ComparisonOp(out Operator op) {
@@ -1997,7 +1990,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			op = Operator.nq; 
 			break;
 		}
-		default: SynErr(88); break;
+		default: SynErr(87); break;
 		}
 	}
 
@@ -2009,7 +2002,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			bool hasRangeAmountOperator = false;
 			
 			Get();
-			if (la.kind == 61) {
+			if (la.kind == 60) {
 				Associative_rangeAmountOperator(out hasRangeAmountOperator);
 			}
 			rnode.HasRangeAmountOperator = hasRangeAmountOperator; 
@@ -2045,14 +2038,14 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 
 	void Associative_rangeAmountOperator(out bool hasRangeAmountOperator) {
 		hasRangeAmountOperator = false; 
-		Expect(61);
+		Expect(60);
 		hasRangeAmountOperator = true; 
 	}
 
 	void Associative_rangeStepOperator(out RangeStepOperator op) {
 		op = RangeStepOperator.StepSize; 
 		if (la.kind == 60 || la.kind == 61) {
-			if (la.kind == 61) {
+			if (la.kind == 60) {
 				Get();
 				op = RangeStepOperator.Number; 
 			} else {
@@ -2069,7 +2062,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 15) {
 			Get();
 			op = Operator.sub; 
-		} else SynErr(89);
+		} else SynErr(88);
 	}
 
 	void Associative_MulOp(out Operator op) {
@@ -2082,7 +2075,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 57) {
 			Get();
 			op = Operator.mod; 
-		} else SynErr(90);
+		} else SynErr(89);
 	}
 
 	void Associative_Term(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
@@ -2155,7 +2148,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			   node.line = line; node.col = col;
 			}
 			
-		} else SynErr(91);
+		} else SynErr(90);
 	}
 
 	void Associative_Char(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
@@ -2239,7 +2232,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Associative_ArrayExprList(out node);
 			nameNode = node as ProtoCore.AST.AssociativeAST.ArrayNameNode;
 			
-		} else SynErr(92);
+		} else SynErr(91);
 		if (la.kind == 10) {
 			ProtoCore.AST.AssociativeAST.ArrayNode array = new ProtoCore.AST.AssociativeAST.ArrayNode(); 
 			
@@ -2381,7 +2374,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			} else if (la.kind == 2) {
 				Get();
 				isLongest = false; 
-			} else SynErr(93);
+			} else SynErr(92);
 			repguide = t.val;
 			if (isLongest)
 			{
@@ -2403,7 +2396,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				} else if (la.kind == 2) {
 					Get();
 					isLongest = false; 
-				} else SynErr(94);
+				} else SynErr(93);
 				repguide = t.val;
 				if (isLongest)
 				{
@@ -2506,7 +2499,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			node = new ProtoCore.AST.ImperativeAST.ContinueNode(); NodeUtils.SetNodeLocation(node, t); 
 		} else if (IsAssignmentStatement() || IsVariableDeclaration()) {
 			Imperative_assignstmt(out node);
-		} else if (StartOf(4)) {
+		} else if (StartOf(17)) {
 			Imperative_expr(out node);
 			if (la.kind != _endline)
 			  SynErr(Resources.SemiColonExpected);
@@ -2517,7 +2510,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			  SynErr(Resources.SemiColonExpected);
 			
 			Get();
-		} else SynErr(95);
+		} else SynErr(94);
 	}
 
 	void Imperative_languageblock(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -2546,7 +2539,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Hydrogen(out codeBlockNode);
 		} else if (langblock.codeblock.Language == ProtoCore.Language.Imperative ) {
 			Imperative(out codeBlockNode);
-		} else SynErr(96);
+		} else SynErr(95);
 		if (langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			int openCurlyBraceCount = 0, closeCurlyBraceCount = 0; 
 			ProtoCore.AST.ImperativeAST.CodeBlockNode codeBlockInvalid = new ProtoCore.AST.ImperativeAST.CodeBlockNode(); 
@@ -2567,12 +2560,12 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 					break; 
 				} else if (StartOf(9)) {
 					Get(); 
-				} else SynErr(97);
+				} else SynErr(96);
 			}
 			codeBlockNode = codeBlockInvalid; 
 		} else if (la.kind == 46) {
 			Get();
-		} else SynErr(98);
+		} else SynErr(97);
 		langblock.CodeBlockNode = codeBlockNode; 
 		node = langblock; 
 	}
@@ -2599,7 +2592,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			ProtoCore.AST.ImperativeAST.ImperativeNode singleStmt; 
 			Imperative_stmt(out singleStmt);
 			ifStmtNode.IfBody.Add(singleStmt); 
-		} else SynErr(99);
+		} else SynErr(98);
 		NodeUtils.SetNodeEndLocation(ifStmtNode.IfBodyPosition, t); 
 		while (la.kind == 30) {
 			ProtoCore.AST.ImperativeAST.ElseIfBlock elseifBlock = new ProtoCore.AST.ImperativeAST.ElseIfBlock(); 
@@ -2623,7 +2616,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				ProtoCore.AST.ImperativeAST.ImperativeNode singleStmt = null; 
 				Imperative_stmt(out singleStmt);
 				elseifBlock.Body.Add(singleStmt); 
-			} else SynErr(100);
+			} else SynErr(99);
 			NodeUtils.SetNodeEndLocation(elseifBlock.ElseIfBodyPosition, t); 
 			ifStmtNode.ElseIfList.Add(elseifBlock); 
 		}
@@ -2639,7 +2632,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				ProtoCore.AST.ImperativeAST.ImperativeNode singleStmt = null; 
 				Imperative_stmt(out singleStmt);
 				ifStmtNode.ElseBody.Add(singleStmt); 
-			} else SynErr(101);
+			} else SynErr(100);
 			NodeUtils.SetNodeEndLocation(ifStmtNode.ElseBodyPosition, t); 
 		}
 		node = ifStmtNode; 
@@ -2692,7 +2685,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			ProtoCore.AST.ImperativeAST.ImperativeNode singleStmt = null; 
 			Imperative_stmt(out singleStmt);
 			loopNode.Body.Add(singleStmt); 
-		} else SynErr(102);
+		} else SynErr(101);
 		forloop = loopNode;
 		
 	}
@@ -2718,7 +2711,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			ProtoCore.AST.ImperativeAST.ImperativeNode rhsNode = null; 
 			if (HasMoreAssignmentStatements()) {
 				Imperative_assignstmt(out rhsNode);
-			} else if (StartOf(4)) {
+			} else if (StartOf(17)) {
 				Imperative_expr(out rhsNode);
 				if (la.kind != _endline)
 				  SynErr(Resources.SemiColonExpected);
@@ -2726,7 +2719,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 				Expect(23);
 			} else if (la.kind == 10) {
 				Imperative_languageblock(out rhsNode);
-			} else SynErr(103);
+			} else SynErr(102);
 			bNode.LeftNode = lhsNode;
 			bNode.RightNode = rhsNode;
 			bNode.Optr = Operator.assign;
@@ -2735,7 +2728,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			
 		} else if (StartOf(9)) {
 			SynErr("';' is expected"); 
-		} else SynErr(104);
+		} else SynErr(103);
 	}
 
 	void Imperative_expr(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -2871,7 +2864,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			node = typedVar; 
 		} else if (la.kind == 1 || la.kind == 12 || la.kind == 45) {
 			Imperative_IdentifierList(out node);
-		} else SynErr(105);
+		} else SynErr(104);
 	}
 
 	void Imperative_IdentifierList(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -2981,12 +2974,12 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Imperative_ExprList(out node);
 			nameNode = node as ProtoCore.AST.ImperativeAST.ArrayNameNode;
 			
-		} else SynErr(106);
+		} else SynErr(105);
 		if (la.kind == 10) {
 			ProtoCore.AST.ImperativeAST.ArrayNode array = new ProtoCore.AST.ImperativeAST.ArrayNode();
 			
 			Get();
-			if (StartOf(4)) {
+			if (StartOf(17)) {
 				Imperative_expr(out node);
 				array.Expr = node; 
 				array.Type = nameNode.ArrayDimensions;
@@ -2997,7 +2990,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Expect(11);
 			while (la.kind == 10) {
 				Get();
-				if (StartOf(4)) {
+				if (StartOf(17)) {
 					Imperative_expr(out node);
 					ProtoCore.AST.ImperativeAST.ArrayNode array2 = new ProtoCore.AST.ImperativeAST.ArrayNode();
 					array2.Expr = node; 
@@ -3056,9 +3049,9 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		node = null; 
 		if (la.kind == 15) {
 			Imperative_negexpr(out node);
-		} else if (la.kind == 14 || la.kind == 60) {
+		} else if (la.kind == 14 || la.kind == 61) {
 			Imperative_bitunaryexpr(out node);
-		} else SynErr(107);
+		} else SynErr(106);
 	}
 
 	void Imperative_negexpr(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -3096,11 +3089,11 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Get();
 			op = UnaryOperator.Not; 
 			#if ENABLE_BIT_OP       
-		} else if (la.kind == 60) {
+		} else if (la.kind == 61) {
 			Get();
 			op = UnaryOperator.Negate; 
 			#endif                     
-		} else SynErr(108);
+		} else SynErr(107);
 	}
 
 	void Imperative_factor(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -3128,9 +3121,9 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			
 		} else if (la.kind == 1 || la.kind == 12 || la.kind == 45) {
 			Imperative_IdentifierList(out node);
-		} else if (la.kind == 14 || la.kind == 15 || la.kind == 60) {
+		} else if (la.kind == 14 || la.kind == 15 || la.kind == 61) {
 			Imperative_unaryexpr(out node);
-		} else SynErr(109);
+		} else SynErr(108);
 	}
 
 	void Imperative_negop(out UnaryOperator op) {
@@ -3164,7 +3157,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 59) {
 			Get();
 			op = Operator.or; 
-		} else SynErr(110);
+		} else SynErr(109);
 	}
 
 	void Imperative_RangeExpr(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -3176,7 +3169,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			bool hasAmountOperator = false;
 			
 			Get();
-			if (la.kind == 61) {
+			if (la.kind == 60) {
 				Imperative_rangeAmountOperator(out hasAmountOperator);
 			}
 			rnode.HasRangeAmountOperator = hasAmountOperator; 
@@ -3231,7 +3224,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			op = Operator.nq; 
 			break;
 		}
-		default: SynErr(111); break;
+		default: SynErr(110); break;
 		}
 	}
 
@@ -3255,14 +3248,14 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 
 	void Imperative_rangeAmountOperator(out bool hasAmountOperator) {
 		hasAmountOperator = false; 
-		Expect(61);
+		Expect(60);
 		hasAmountOperator = true; 
 	}
 
 	void Imperative_rangeStepOperator(out RangeStepOperator op) {
 		op = RangeStepOperator.StepSize; 
 		if (la.kind == 60 || la.kind == 61) {
-			if (la.kind == 61) {
+			if (la.kind == 60) {
 				Get();
 				op = RangeStepOperator.Number; 
 			} else {
@@ -3306,7 +3299,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 15) {
 			Get();
 			op = Operator.sub; 
-		} else SynErr(112);
+		} else SynErr(111);
 	}
 
 	void Imperative_interimfactor(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -3338,7 +3331,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 57) {
 			Get();
 			op = Operator.mod; 
-		} else SynErr(113);
+		} else SynErr(112);
 	}
 
 	void Imperative_bitop(out Operator op) {
@@ -3352,7 +3345,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		} else if (la.kind == 64) {
 			Get();
 			op = Operator.bitwisexor; 
-		} else SynErr(114);
+		} else SynErr(113);
 	}
 
 	void Imperative_Char(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -3433,7 +3426,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			else{
 			   NodeUtils.SetNodeLocation(node, t); }
 			
-		} else SynErr(115);
+		} else SynErr(114);
 	}
 
 	void Imperative_functioncall(out ProtoCore.AST.ImperativeAST.ImperativeNode node) {
@@ -3442,7 +3435,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		NodeUtils.SetNodeLocation(function, t); 
 		List<ProtoCore.AST.ImperativeAST.ImperativeNode> arglist = new List<ProtoCore.AST.ImperativeAST.ImperativeNode>(); 
 		Expect(12);
-		if (StartOf(4)) {
+		if (StartOf(17)) {
 			ProtoCore.AST.ImperativeAST.ImperativeNode argNode; 
 			Imperative_expr(out argNode);
 			arglist.Add(argNode); 
@@ -3467,7 +3460,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		ProtoCore.AST.ImperativeAST.ExprListNode exprlist = new ProtoCore.AST.ImperativeAST.ExprListNode();
 		NodeUtils.SetNodeStartLocation(exprlist, t);
 		
-		if (StartOf(4)) {
+		if (StartOf(17)) {
 			Imperative_expr(out node);
 			exprlist.Exprs.Add(node); 
 			while (la.kind == 51) {
@@ -3492,27 +3485,29 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		Expect(0);
 
 	}
+	
+	static readonly bool[,] set = {
+		{T,T,T,T, T,T,x,x, x,x,T,x, T,x,T,T, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,T,T, T,T,x,x, x,x,T,x, T,x,T,T, x,x,x,x, x,x,x,T, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{T,T,T,T, T,T,x,x, x,x,T,x, T,x,T,T, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,T,T, T,T,x,x, x,x,x,x, T,x,T,T, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,T,T, T,T,x,x, x,x,x,x, T,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{T,T,T,T, T,T,x,x, x,x,x,x, T,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{T,T,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{T,T,T,T, T,T,x,x, x,x,T,x, T,x,T,T, x,x,x,x, x,x,x,T, x,T,x,T, x,T,T,T, T,T,x,x, x,T,T,x, x,T,T,T, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x},
+		{x,T,T,T, T,T,x,x, x,x,T,x, T,x,T,T, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,T,T, T,T,x,x, x,x,T,x, T,x,T,T, x,x,x,x, x,x,x,T, x,x,x,x, x,T,x,x, T,T,x,x, x,T,T,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{T,T,T,T, T,T,x,x, x,x,T,x, T,x,T,T, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,x,x, x,x,x,x, x,x,x,x, T,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,x,x, x,x,x,x, x,x,x,x, T,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,T,T, T,T,x,x, x,x,x,x, T,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x}
 
-    static readonly bool[,] set = {
-        {T,T,T,T, T,T,x,x, x,x,T,x, T,x,T,T, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x},
-        {x,T,T,T, T,T,x,x, x,x,T,x, T,x,T,T, x,x,x,x, x,x,x,T, x,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x},
-        {T,T,T,T, T,T,x,x, x,x,T,x, T,x,T,T, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x},
-        {x,T,T,T, T,T,x,x, x,x,x,x, T,x,T,T, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x},
-        {x,T,T,T, T,T,x,x, x,x,x,x, T,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x},
-        {x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,T,T, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-        {x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-        {T,T,T,T, T,T,x,x, x,x,x,x, T,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x},
-        {T,T,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-        {T,T,T,T, T,T,x,x, x,x,T,x, T,x,T,T, x,x,x,x, x,x,x,T, x,T,x,T, x,T,T,T, T,T,x,x, x,T,T,x, x,T,T,T, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x},
-        {x,T,T,T, T,T,x,x, x,x,T,x, T,x,T,T, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x},
-        {x,T,T,T, T,T,x,x, x,x,T,x, T,x,T,T, x,x,x,x, x,x,x,T, x,x,x,x, x,T,x,x, T,T,x,x, x,T,T,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x},
-        {x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-        {T,T,T,T, T,T,x,x, x,x,T,x, T,x,T,T, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,T,T,T, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x},
-        {x,T,x,x, x,x,x,x, x,x,x,x, T,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-        {x,T,x,x, x,x,x,x, x,x,x,x, T,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x},
-        {x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x}
-    };
-    } // end Parser
+	};
+} // end Parser
 
 
 public class Errors {
@@ -3585,8 +3580,8 @@ public class Errors {
 			case 57: s = "\"%\" expected"; break;
 			case 58: s = "\"&&\" expected"; break;
 			case 59: s = "\"||\" expected"; break;
-			case 60: s = "\"~\" expected"; break;
-			case 61: s = "\"#\" expected"; break;
+			case 60: s = "\"#\" expected"; break;
+			case 61: s = "\"~\" expected"; break;
 			case 62: s = "\"in\" expected"; break;
 			case 63: s = "\"&\" expected"; break;
 			case 64: s = "\"^\" expected"; break;
@@ -3609,38 +3604,37 @@ public class Errors {
 			case 81: s = "invalid Associative_DecoratedIdentifier"; break;
 			case 82: s = "invalid Associative_DecoratedIdentifier"; break;
 			case 83: s = "invalid Associative_UnaryExpression"; break;
-			case 84: s = "invalid Associative_unaryop"; break;
-			case 85: s = "invalid Associative_Factor"; break;
-			case 86: s = "invalid Associative_negop"; break;
-			case 87: s = "invalid Associative_LogicalOp"; break;
-			case 88: s = "invalid Associative_ComparisonOp"; break;
-			case 89: s = "invalid Associative_AddOp"; break;
-			case 90: s = "invalid Associative_MulOp"; break;
-			case 91: s = "invalid Associative_Number"; break;
+			case 84: s = "invalid Associative_Factor"; break;
+			case 85: s = "invalid Associative_negop"; break;
+			case 86: s = "invalid Associative_LogicalOp"; break;
+			case 87: s = "invalid Associative_ComparisonOp"; break;
+			case 88: s = "invalid Associative_AddOp"; break;
+			case 89: s = "invalid Associative_MulOp"; break;
+			case 90: s = "invalid Associative_Number"; break;
+			case 91: s = "invalid Associative_NameReference"; break;
 			case 92: s = "invalid Associative_NameReference"; break;
 			case 93: s = "invalid Associative_NameReference"; break;
-			case 94: s = "invalid Associative_NameReference"; break;
-			case 95: s = "invalid Imperative_stmt"; break;
+			case 94: s = "invalid Imperative_stmt"; break;
+			case 95: s = "invalid Imperative_languageblock"; break;
 			case 96: s = "invalid Imperative_languageblock"; break;
 			case 97: s = "invalid Imperative_languageblock"; break;
-			case 98: s = "invalid Imperative_languageblock"; break;
+			case 98: s = "invalid Imperative_ifstmt"; break;
 			case 99: s = "invalid Imperative_ifstmt"; break;
 			case 100: s = "invalid Imperative_ifstmt"; break;
-			case 101: s = "invalid Imperative_ifstmt"; break;
-			case 102: s = "invalid Imperative_forloop"; break;
+			case 101: s = "invalid Imperative_forloop"; break;
+			case 102: s = "invalid Imperative_assignstmt"; break;
 			case 103: s = "invalid Imperative_assignstmt"; break;
-			case 104: s = "invalid Imperative_assignstmt"; break;
-			case 105: s = "invalid Imperative_decoratedIdentifier"; break;
-			case 106: s = "invalid Imperative_NameReference"; break;
-			case 107: s = "invalid Imperative_unaryexpr"; break;
-			case 108: s = "invalid Imperative_unaryop"; break;
-			case 109: s = "invalid Imperative_factor"; break;
-			case 110: s = "invalid Imperative_logicalop"; break;
-			case 111: s = "invalid Imperative_relop"; break;
-			case 112: s = "invalid Imperative_addop"; break;
-			case 113: s = "invalid Imperative_mulop"; break;
-			case 114: s = "invalid Imperative_bitop"; break;
-			case 115: s = "invalid Imperative_num"; break;
+			case 104: s = "invalid Imperative_decoratedIdentifier"; break;
+			case 105: s = "invalid Imperative_NameReference"; break;
+			case 106: s = "invalid Imperative_unaryexpr"; break;
+			case 107: s = "invalid Imperative_unaryop"; break;
+			case 108: s = "invalid Imperative_factor"; break;
+			case 109: s = "invalid Imperative_logicalop"; break;
+			case 110: s = "invalid Imperative_relop"; break;
+			case 111: s = "invalid Imperative_addop"; break;
+			case 112: s = "invalid Imperative_mulop"; break;
+			case 113: s = "invalid Imperative_bitop"; break;
+			case 114: s = "invalid Imperative_num"; break;
 
 			default: s = "error " + n; break;
 		}

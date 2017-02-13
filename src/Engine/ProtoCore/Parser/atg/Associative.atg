@@ -1242,12 +1242,6 @@ Associative_unaryop<out UnaryOperator op>
 (	
      '!'       
         (. op = UnaryOperator.Not;    .)
-
-        (. #if ENABLE_BIT_OP          .)
-    | 
-    '~'       
-        (. op = UnaryOperator.Negate; .)
-        (. #endif                     .)
 )
 .
 
