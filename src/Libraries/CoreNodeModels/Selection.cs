@@ -112,7 +112,7 @@ namespace CoreNodeModels
 
             State = ElementState.Warning; 
             
-            ShouldDisplayPreviewCore = false;
+            ShouldDisplayPreviewCore = true;
         }
 
         #endregion
