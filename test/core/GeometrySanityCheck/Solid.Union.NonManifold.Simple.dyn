@@ -1,14 +1,30 @@
-<Workspace Version="1.0.1.1743" X="-450.454152133446" Y="-372.005739693096" zoom="1.01204214144457" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+<Workspace Version="2.0.0.4093" X="-12.1845411873608" Y="-27.0819729330225" zoom="1.11798788304238" ScaleFactor="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="True">
   <NamespaceResolutionMap>
     <ClassMap partialName="CoordinateSystem" resolvedName="Autodesk.DesignScript.Geometry.CoordinateSystem" assemblyName="ProtoGeometry.dll" />
     <ClassMap partialName="Cylinder" resolvedName="Autodesk.DesignScript.Geometry.Cylinder" assemblyName="ProtoGeometry.dll" />
     <ClassMap partialName="Cuboid" resolvedName="Autodesk.DesignScript.Geometry.Cuboid" assemblyName="ProtoGeometry.dll" />
+    <ClassMap partialName="Solid" resolvedName="Autodesk.DesignScript.Geometry.Solid" assemblyName="ProtoGeometry.dll" />
   </NamespaceResolutionMap>
   <Elements>
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="66097d3d-9132-4d1b-9c88-d34c43d36549" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="452" y="392" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="WCS = CoordinateSystem.Identity();&#xA;firstSolid = Cylinder.ByRadiusHeight(WCS.Translate(15, 15, 0), 2.5, 50);&#xA;ArrayOfSolids   =&#xA;{&#xA;    firstSolid,&#xA;    firstSolid.Translate(-30, 0, 0),&#xA;    firstSolid.Translate(-30, -30, 0),&#xA;    firstSolid.Translate(0, -30, 0)&#xA;};&#xA;secondSolid     = Cuboid.ByLengths(WCS, 30, 30, 30);&#xA;myUnionSolid = secondSolid.Union(ArrayOfSolids, false);&#xA;false;" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="a286bf12-7f0d-4b0a-b6d3-5026175138e8" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Solid.Union" x="1033.92875418667" y="515.414855017205" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Solid.Union@Autodesk.DesignScript.Geometry.Solid" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="46db7d8c-c9e0-4793-b102-12ae3dd6eebc" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Geometry.Translate" x="1256.54805814837" y="560.19359122186" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double" />
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="fb1512e8-8950-4034-9703-9fb5f1478918" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="1090.2169845691" y="668.347175310561" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="50;" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="66097d3d-9132-4d1b-9c88-d34c43d36549" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="122.261159922597" y="309.717544493684" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="WCS = CoordinateSystem.Identity();&#xA;firstSolid = Cylinder.ByRadiusHeight(CoordinateSystem.Translate(WCS, 15, 15, 0), 2.5, 50);&#xA;ArrayOfSolids   =&#xA;{&#xA;    firstSolid,&#xA;    Solid.Translate(firstSolid,-30, 0, 0),&#xA;    Solid.Translate(firstSolid,-30, -30, 0),&#xA;    Solid.Translate(firstSolid,0, -30, 0)&#xA;};&#xA;secondSolid     = Cuboid.ByLengths(WCS, 30, 30, 30);" ShouldFocus="false">
+      <OutPortInfo LineIndex="0" />
+      <OutPortInfo LineIndex="1" />
+      <OutPortInfo LineIndex="2" />
+      <OutPortInfo LineIndex="9" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="a286bf12-7f0d-4b0a-b6d3-5026175138e8" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Solid.Union" x="1064.34053280763" y="394.662204610454" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Solid.Union@Autodesk.DesignScript.Geometry.Solid">
+      <PortInfo index="0" default="False" />
+      <PortInfo index="1" default="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="46db7d8c-c9e0-4793-b102-12ae3dd6eebc" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Geometry.Translate" x="1250.28680960876" y="456.435758279763" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double">
+      <PortInfo index="0" default="False" />
+      <PortInfo index="1" default="False" />
+      <PortInfo index="2" default="False" />
+      <PortInfo index="3" default="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="fb1512e8-8950-4034-9703-9fb5f1478918" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="1075.90555933571" y="547.59452490381" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="50;" ShouldFocus="false">
+      <OutPortInfo LineIndex="0" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
   </Elements>
   <Connectors>
     <Dynamo.Graph.Connectors.ConnectorModel start="66097d3d-9132-4d1b-9c88-d34c43d36549" start_index="2" end="a286bf12-7f0d-4b0a-b6d3-5026175138e8" end_index="1" portType="0" />
@@ -21,4 +37,7 @@
   <Notes />
   <Annotations />
   <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-31.223644246016" eyeY="39.408947933184" eyeZ="118.747613855744" lookX="26.223644246016" lookY="-28.408947933184" lookZ="-126.747613855744" upX="0" upY="1" upZ="0" />
+  </Cameras>
 </Workspace>
