@@ -37782,7 +37782,7 @@ c = Scale(a,b);";
         public void DebugWatch1380_T005_BasicImport_RelativePath()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import ("".\ExtraFolderToTestRelativePath\basicImport.ds"");
+            string src = @"import ("".\\ExtraFolderToTestRelativePath\\basicImport.ds"");
 a = {1.1,2.2};
 b = 2;
 c = Scale(a,b);";
@@ -37993,7 +37993,7 @@ b = a * 2;";
         public void DebugWatch1395_T021_Defect_1457354()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-            string src = @"import (""c:\wrongPath\test.ds"");
+            string src = @"import (""c:\\wrongPath\\test.ds"");
 a = 1;
 b = a * 2;";
             WatchTestFx.GeneratePrintStatements(src, ref map);
