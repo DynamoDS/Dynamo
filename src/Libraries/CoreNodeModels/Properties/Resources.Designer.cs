@@ -115,7 +115,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to color;palette.
+        ///   Looks up a localized string similar to color.
         /// </summary>
         public static string ColorPaletteSearchTags {
             get {

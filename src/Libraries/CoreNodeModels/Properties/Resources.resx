@@ -588,6 +588,6 @@
     <value>Select a Color from the palette</value>
   </data>
   <data name="ColorPaletteSearchTags" xml:space="preserve">
-    <value>color;palette</value>
+    <value>color</value>
   </data>
 </root>

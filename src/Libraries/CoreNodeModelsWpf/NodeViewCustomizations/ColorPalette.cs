@@ -1,5 +1,4 @@
 ﻿using System.Windows.Media;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Dynamo.Controls;
 using Dynamo.Core;
@@ -14,14 +13,14 @@ using Xceed.Wpf.Toolkit;
 
 namespace CoreNodeModelsWpf.Nodes
 {
-    public class ColorPaletteNodeViewCustomization : NotificationObject, INodeViewCustomization<ColorPalette> 
+    public class ColorPaletteNodeViewCustomization : NotificationObject, INodeViewCustomization<ColorPalette>
     {
         /// <summary>
         ///     List of standard colors.
         /// </summary>
-        private ObservableCollection<ColorItem> cList = new ObservableCollection<ColorItem>()
+        public ObservableCollection<ColorItem> colorList = new ObservableCollection<ColorItem>()
         {
-            new ColorItem(Color.FromArgb(255,48,130,189), "Blue 1"),
+            new  ColorItem(Color.FromArgb(255,48,130,189), "Blue 1"),
             new  ColorItem(Color.FromArgb(255,106,173,213), "Blue 2"),
             new  ColorItem(Color.FromArgb(255,158,202,225), "Blue 3"),
             new  ColorItem(Color.FromArgb(255,199,219,238), "Blue 4"),
@@ -51,15 +50,18 @@ namespace CoreNodeModelsWpf.Nodes
         /// </summary>
         private ColorPaletteUI ColorPaletteUINode;
         private ColorPalette colorPaletteNode;
-        private Color mcolor = Color.FromArgb(255, 0, 0, 0);
+        private Color mcolor;
 
         /// <summary>
         ///     List of standard colors.
-        /// </summary>
-        public ObservableCollection<Xceed.Wpf.Toolkit.ColorItem> ColorList
+        /// </summary>     
+        public ObservableCollection<ColorItem> ColorList
         {
-            get { return cList; }
+            get { return colorList; }
         }
+        /// <summary>
+        /// Selected Color
+        /// </summary>
         public Color MColor
         {
             get { return mcolor; }
@@ -78,6 +80,7 @@ namespace CoreNodeModelsWpf.Nodes
         public void CustomizeView(ColorPalette model, NodeView nodeView)
         {
             colorPaletteNode = model;
+            mcolor = Color.FromArgb(model.dsColor.Alpha, model.dsColor.Red, model.dsColor.Green, model.dsColor.Blue);
             ColorPaletteUINode = new ColorPaletteUI();
             nodeView.inputGrid.Children.Add(ColorPaletteUINode);
             ColorPaletteUINode.DataContext = this;

@@ -17,7 +17,7 @@ using Autodesk.DesignScript.Runtime;
 namespace CoreNodeModels.Input
 {
     [NodeName("Color Palette")]
-    [NodeDescription("CustomNodeModelDescription", typeof(Resources))]
+    [NodeDescription("ColorPaletteDescription", typeof(Resources))]
     [NodeCategory("Core.Color.Create")]
     [NodeSearchTags("ColorUISearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
@@ -32,7 +32,7 @@ namespace CoreNodeModels.Input
             get { return dscolor; }
             set
             {                              
-                dscolor = value;                
+                dscolor = value;
                 OnNodeModified();
             }
         }
@@ -47,12 +47,28 @@ namespace CoreNodeModels.Input
          {
             try
             {
-                var t = val;
-                return dsColor; //= (DSColor)ColorConverter.ConvertFromString(val);
+                var nums = new List<int>();
+                var start = -1;
+                for (int i = 0; i < val.Length; i++)
+                {
+                    if (start < 0 && Char.IsDigit(val[i]))
+                    {
+                        start = i;
+                    }
+                    else if (start >= 0 && !Char.IsDigit(val[i]))
+                    {
+                        nums.Add(int.Parse(val.Substring(start, i - start)));
+                        start = -1;
+                    }
+                }
+                if (start >= 0)
+                    nums.Add(int.Parse(val.Substring(start, val.Length - start)));
+
+                return DSColor.ByARGB(nums[3], nums[0], nums[1], nums[2]);
             }
             catch
             {
-                return dsColor = DSColor.ByARGB(255, 0, 0, 0);
+                return DSColor.ByARGB(255, 0, 0, 0);
             }
         }
         private string SerializeValue()
@@ -114,7 +130,7 @@ namespace CoreNodeModels.Input
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format("Color(Red = {0}, Green = {1}, Blue = {2}, Alpha = {3})", dsColor.Red, dsColor.Green, dsColor.Blue, dsColor.Alpha);
+            return string.Format("Color(Alpha = {3}, Red = {0}, Green = {1}, Blue = {2})", dsColor.Alpha, dsColor.Red, dsColor.Green, dsColor.Blue);
         }
     }
 }
