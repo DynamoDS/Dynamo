@@ -1053,7 +1053,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(surface2.ToString(), "Surface");
           
             //check CBN, which includes a list of Vector
-            var cbnId = "e14439c9-b377-4653-bb63-4edd9a4f90a0";
+            var cbnId = "be2abed2-282f-44d5-8981-3cfb3e231d1b";
             AssertPreviewCount(cbnId, 18);
             for (int i = 0; i < 18; i++)
             {

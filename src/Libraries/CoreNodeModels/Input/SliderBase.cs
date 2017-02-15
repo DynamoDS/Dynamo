@@ -1,4 +1,5 @@
 ﻿using Dynamo.Graph.Nodes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,6 +12,7 @@ namespace CoreNodeModels.Input
         private T min;
         private T step;
 
+        [JsonProperty("RangeMax")]
         public T Max
         {
             get { return max; }
@@ -32,6 +34,7 @@ namespace CoreNodeModels.Input
             }
         }
 
+        [JsonProperty("RangeMin")]
         public T Min
         {
             get { return min; }
@@ -53,6 +56,7 @@ namespace CoreNodeModels.Input
             }
         }
 
+        [JsonProperty("RangeStep")]
         public T Step
         {
             get { return step; }
@@ -93,7 +97,7 @@ namespace CoreNodeModels.Input
             if (Value.CompareTo(Min) < 0) Min = Value;
             if (Value.CompareTo(Max) > 0) Max = Value;
         }
-        
+
         public static string ConvertNumberToString(T value)
         {
             return Convert.ToString(value, CultureInfo.InvariantCulture);
@@ -121,7 +125,7 @@ namespace CoreNodeModels.Input
                     {
                         return 0;
                     }
-                    
+
                 }
                 result = start == 0 ? int.MaxValue : int.MinValue;
             }

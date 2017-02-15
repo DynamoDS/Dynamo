@@ -18,6 +18,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Visualization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
@@ -51,10 +52,10 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// The cached value of this node. The cachedValue object is protected by the cachedValueMutex
-        /// as it may be accessed from multiple threads concurrently. 
-        /// 
+        /// as it may be accessed from multiple threads concurrently.
+        ///
         /// However, generally access to the cachedValue property should be protected by usage
-        /// of the Scheduler. 
+        /// of the Scheduler.
         /// </summary>
         private MirrorData cachedValue;
         private readonly object cachedValueMutex = new object();
@@ -77,15 +78,15 @@ namespace Dynamo.Graph.Nodes
         public virtual string CreationName { get { return this.Name; } }
 
         /// <summary>
-        /// This property queries all the Upstream Nodes  for a given node, ONLY after the graph is loaded. 
+        /// This property queries all the Upstream Nodes  for a given node, ONLY after the graph is loaded.
         /// This property is computed in ComputeUpstreamOnDownstreamNodes function
         /// </summary>
         internal HashSet<NodeModel> UpstreamCache = new HashSet<NodeModel>();
 
         /// <summary>
-        /// The NodeType property provides a name which maps to the 
+        /// The NodeType property provides a name which maps to the
         /// server type for the node. This property should only be
-        /// used for serialization. 
+        /// used for serialization.
         /// </summary>
         public virtual string NodeType
         {
@@ -199,7 +200,7 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Input nodes are used in Customizer and Presets. Input nodes can be numbers, number sliders,
-        /// strings, bool, code blocks and custom nodes, which don't specify path. This property 
+        /// strings, bool, code blocks and custom nodes, which don't specify path. This property
         /// is true for nodes that are potential inputs for Customizers and Presets.
         /// </summary>
         [JsonIgnore]
@@ -245,7 +246,7 @@ namespace Dynamo.Graph.Nodes
                 if (value != ElementState.Error && value != ElementState.AstBuildBroken)
                     ClearTooltipText();
 
-                // Check before settings and raising 
+                // Check before settings and raising
                 // a notification.
                 if (state == value) return;
 
@@ -357,7 +358,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Control how arguments lists of various sizes are laced.
         /// </summary>
-        [JsonProperty("Replication"), JsonConverter(typeof(LacingStrategyConverter))]
+        [JsonProperty("Replication"), JsonConverter(typeof(StringEnumConverter))]
         public LacingStrategy ArgumentLacing
         {
             get
@@ -365,21 +366,21 @@ namespace Dynamo.Graph.Nodes
                 return argumentLacing;
             }
 
-            // The property setter is marked as private/protected because it 
+            // The property setter is marked as private/protected because it
             // should not be set from an external component directly. The ability
-            // to directly set the property value causes a NodeModel to be altered 
-            // without careful consideration of undo/redo recording. If changing 
-            // this property value should be undo-able, then the caller should use 
-            // "DynamoModel.UpdateModelValueCommand" to set the property value. 
+            // to directly set the property value causes a NodeModel to be altered
+            // without careful consideration of undo/redo recording. If changing
+            // this property value should be undo-able, then the caller should use
+            // "DynamoModel.UpdateModelValueCommand" to set the property value.
             // The command ensures changes to the NodeModel is recorded for undo.
-            // 
-            // In some cases being able to set the property value directly is 
-            // desirable, for example, some unit test scenarios require the given 
-            // NodeModel property to be of certain value. In such cases the 
+            //
+            // In some cases being able to set the property value directly is
+            // desirable, for example, some unit test scenarios require the given
+            // NodeModel property to be of certain value. In such cases the
             // easiest workaround is to use "NodeModel.UpdateValue" method:
-            // 
+            //
             //      someNode.UpdateValue("ArgumentLacing", "CrossProduct");
-            // 
+            //
             protected set
             {
                 if (argumentLacing != value)
@@ -530,9 +531,9 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// The value of this node after the most recent computation
-        /// 
-        /// As this property could be modified by the virtual machine, it's dangerous 
-        /// to access this value without using the active Scheduler. Use the Scheduler to 
+        ///
+        /// As this property could be modified by the virtual machine, it's dangerous
+        /// to access this value without using the active Scheduler. Use the Scheduler to
         /// remove the possibility of race conditions.
         /// </summary>
         [JsonIgnore]
@@ -558,16 +559,16 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// This flag is used to determine if a node was involved in a recent execution.
-        /// The primary purpose of this flag is to determine if the node's render packages 
-        /// should be returned to client browser when it requests for them. This is mainly 
+        /// The primary purpose of this flag is to determine if the node's render packages
+        /// should be returned to client browser when it requests for them. This is mainly
         /// to avoid returning redundant data that has not changed during an execution.
         /// </summary>
         internal bool WasInvolvedInExecution { get; set; }
 
         /// <summary>
-        /// This flag indicates if render packages of a NodeModel has been updated 
-        /// since the last execution. UpdateRenderPackageAsyncTask will always be 
-        /// generated for a NodeModel that took part in the evaluation, if this flag 
+        /// This flag indicates if render packages of a NodeModel has been updated
+        /// since the last execution. UpdateRenderPackageAsyncTask will always be
+        /// generated for a NodeModel that took part in the evaluation, if this flag
         /// is false.
         /// </summary>
         internal bool WasRenderPackageUpdatedAfterExecution { get; set; }
@@ -725,7 +726,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        ///      The possible type of output at specified port. This 
+        ///      The possible type of output at specified port. This
         ///      type information is not necessary to be accurate.
         /// </summary>
         /// <returns></returns>
@@ -733,11 +734,11 @@ namespace Dynamo.Graph.Nodes
         {
             return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.Var);
         }
-    
+
         /// <summary>
         /// A flag indicating whether the node is frozen.
         /// When a node is frozen, the node, and all nodes downstream will not participate in execution.
-        /// This will return true if any upstream node is frozen or if the node was explicitly frozen.        
+        /// This will return true if any upstream node is frozen or if the node was explicitly frozen.
         /// </summary>
         /// <value>
         ///   <c>true</c> if this node is frozen; otherwise, <c>false</c>.
@@ -755,9 +756,9 @@ namespace Dynamo.Graph.Nodes
                 //If the node is Unfreezed then Mark all the downstream nodes as
                 // modified. This is essential recompiling the AST.
                 if (!value)
-                { 
+                {
                     MarkDownStreamNodesAsModified(this);
-                    OnNodeModified();  
+                    OnNodeModified();
                     RaisePropertyChanged("IsFrozen");
                 }
                 //If the node is frozen, then do not execute the graph immediately.
@@ -765,7 +766,7 @@ namespace Dynamo.Graph.Nodes
                 else
                 {
                     ComputeUpstreamOnDownstreamNodes();
-                    OnUpdateASTCollection();                  
+                    OnUpdateASTCollection();
                 }
             }
         }
@@ -800,7 +801,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <returns></returns>
         internal bool IsAnyUpstreamFrozen()
-        {            
+        {
             return UpstreamCache.Any(x => x.isFrozenExplicitly);
         }
 
@@ -828,8 +829,8 @@ namespace Dynamo.Graph.Nodes
         /// by gathering the cached upstream nodes on this node's immediate parents.
         /// If a node has any downstream nodes, then for all those downstream nodes, upstream
         /// nodes will be computed. Essentially this method propogates the UpstreamCache down.
-        /// Also this function gets called only after the workspace is added.    
-        /// </summary>      
+        /// Also this function gets called only after the workspace is added.
+        /// </summary>
         internal void ComputeUpstreamOnDownstreamNodes()
         {
             //first compute upstream nodes for this node
@@ -843,7 +844,7 @@ namespace Dynamo.Graph.Nodes
             foreach (var downstreamNode in AstBuilder.TopologicalSort(downStreamNodes))
             {
                 downstreamNode.UpstreamCache = new HashSet<NodeModel>();
-                var currentinpNodes = downstreamNode.InputNodes.Values;                
+                var currentinpNodes = downstreamNode.InputNodes.Values;
                 foreach (var inputnode in currentinpNodes.Where(x => x != null))
                 {
                     downstreamNode.UpstreamCache.Add(inputnode.Item2);
@@ -853,10 +854,10 @@ namespace Dynamo.Graph.Nodes
                     }
                 }
             }
-                    
-            RaisePropertyChanged("IsFrozen");           
+
+            RaisePropertyChanged("IsFrozen");
         }
-       
+
         private void MarkDownStreamNodesAsModified(NodeModel node)
         {
             HashSet<NodeModel> gathered = new HashSet<NodeModel>();
@@ -978,7 +979,7 @@ namespace Dynamo.Graph.Nodes
                             // the 'sender' with the port, which is required
                             // for the disconnect operations.
                             ConnectorsCollectionChanged(p, args);
-                        };                        
+                        };
                         p.PropertyChanged += OnPortPropertyChanged;
                         SetNodeStateBasedOnConnectionAndDefaults();
                     }
@@ -999,7 +1000,7 @@ namespace Dynamo.Graph.Nodes
         private void ConnectorsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             var p = (PortModel)sender;
-            
+
             switch (e.Action)
             {
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
@@ -1050,8 +1051,8 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         ///     Indicate if the node should respond to NodeModified event. It
-        ///     always should be true, unless is temporarily set to false to 
-        ///     avoid flood of Modified event. 
+        ///     always should be true, unless is temporarily set to false to
+        ///     avoid flood of Modified event.
         /// </summary>
         [JsonIgnore]
         public bool RaisesModificationEvents { get; set; }
@@ -1064,7 +1065,7 @@ namespace Dynamo.Graph.Nodes
         {
             if (!RaisesModificationEvents || IsFrozen)
                 return;
-           
+
             MarkNodeAsModified(forceExecute);
             var handler = Modified;
             if (handler != null) handler(this);
@@ -1083,9 +1084,9 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Called when a node is requesting that the workspace's node modified events be
-        /// silenced. This is particularly critical for code block nodes, whose modification can 
+        /// silenced. This is particularly critical for code block nodes, whose modification can
         /// mutate the workspace.
-        /// 
+        ///
         /// As opposed to RaisesModificationEvents, this modifies the entire parent workspace
         /// </summary>
         internal event Action<NodeModel, bool> RequestSilenceNodeModifiedEvents;
@@ -1137,9 +1138,9 @@ namespace Dynamo.Graph.Nodes
                 // If any exception from BuildOutputAst(), we emit
                 // a function call "var_guid = %nodeAstFailed(full.node.name)"
                 // for this node, set the state of node to AstBuildBroken and
-                // disply the corresponding error message. 
-                // 
-                // The return value of function %nodeAstFailed() is always 
+                // disply the corresponding error message.
+                //
+                // The return value of function %nodeAstFailed() is always
                 // null.
                 var errorMsg = Properties.Resources.NodeProblemEncountered;
                 var fullMsg = errorMsg + "\n\n" + e.Message;
@@ -1346,7 +1347,7 @@ namespace Dynamo.Graph.Nodes
         /// Clears the errors/warnings that are generated when running the graph.
         /// If the node has a value supplied for the persistentWarning, then the
         /// node's State will be set to ElementState.Persistent and the ToolTipText will
-        /// be set to the persistent warning. Otherwise, the State will be 
+        /// be set to the persistent warning. Otherwise, the State will be
         /// set to ElementState.Dead
         /// </summary>
         public virtual void ClearRuntimeError()
@@ -1413,7 +1414,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Set a warning on a node. 
+        /// Set a warning on a node.
         /// </summary>
         /// <param name="p">The warning text.</param>
         /// <param name="isPersistent">Is the warning persistent? If true, the warning will not be
@@ -1435,7 +1436,7 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Change the state of node to ElementState.AstBuildBroken and display
-        /// "p" in tooltip window. 
+        /// "p" in tooltip window.
         /// </summary>
         /// <param name="p"></param>
         public void NotifyAstBuildBroken(string p)
@@ -1458,12 +1459,12 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// If a "PortModel.LineIndex" property isn't "-1", then it is a PortModel
-        /// meant to match up with a line in code block node. A code block node may 
-        /// contain empty lines in it, resulting in one PortModel being spaced out 
-        /// from another one. In such cases, the vertical position of PortModel is 
+        /// meant to match up with a line in code block node. A code block node may
+        /// contain empty lines in it, resulting in one PortModel being spaced out
+        /// from another one. In such cases, the vertical position of PortModel is
         /// dependent of its "LineIndex".
-        /// 
-        /// If a "PortModel.LineIndex" property is "-1", then it is a regular 
+        ///
+        /// If a "PortModel.LineIndex" property is "-1", then it is a regular
         /// PortModel. Regular PortModel stacks up on one another with equal spacing,
         /// so their positions are based solely on "PortModel.Index".
         /// </summary>
@@ -1644,7 +1645,7 @@ namespace Dynamo.Graph.Nodes
             {
                 RegisterOutputPorts(outPortDatas);
             }
-                
+
             RaisesModificationEvents = true;
             areInputPortsRegistered = true;
         }
@@ -2108,21 +2109,21 @@ namespace Dynamo.Graph.Nodes
 
                 // We only notify property changes in an undo/redo operation. Normal
                 // operations like file loading or copy-paste have the models created
-                // in different ways and their views will always be up-to-date with 
+                // in different ways and their views will always be up-to-date with
                 // respect to their models.
                 RaisePropertyChanged("InteractionEnabled");
                 RaisePropertyChanged("State");
                 RaisePropertyChanged("NickName");
                 RaisePropertyChanged("ArgumentLacing");
                 RaisePropertyChanged("IsVisible");
-                RaisePropertyChanged("IsUpstreamVisible");    
-            
-                //we need to modify the downstream nodes manually in case the 
+                RaisePropertyChanged("IsUpstreamVisible");
+
+                //we need to modify the downstream nodes manually in case the
                 //undo is for toggling freeze. This is ONLY modifying the execution hint.
                 // this does not run the graph.
                 RaisePropertyChanged("IsFrozen");
                 MarkDownStreamNodesAsModified(this);
-               
+
                 // Notify listeners that the position of the node has changed,
                 // then all connected connectors will also redraw themselves.
                 ReportPosition();
@@ -2184,15 +2185,15 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Call this method to update the cached MirrorData for this NodeModel.
-        /// Note this method should be called from scheduler thread. 
+        /// Note this method should be called from scheduler thread.
         /// </summary>
-        /// 
+        ///
         internal void RequestValueUpdate(EngineController engine)
         {
-            // A NodeModel should have its cachedMirrorData reset when it is 
-            // requested to update its value. When the QueryMirrorDataAsyncTask 
+            // A NodeModel should have its cachedMirrorData reset when it is
+            // requested to update its value. When the QueryMirrorDataAsyncTask
             // returns, it will update cachedMirrorData with the latest value.
-            // 
+            //
             lock (cachedValueMutex)
             {
                 cachedValue = null;
@@ -2212,8 +2213,8 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Call this method to asynchronously regenerate render package for 
-        /// this node. This method accesses core properties of a NodeModel and 
+        /// Call this method to asynchronously regenerate render package for
+        /// this node. This method accesses core properties of a NodeModel and
         /// therefore is typically called on the main/UI thread.
         /// </summary>
         /// <param name="scheduler">An IScheduler on which the task will be scheduled.</param>
@@ -2244,13 +2245,13 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// This event handler is invoked when UpdateRenderPackageAsyncTask is 
-        /// completed, at which point the render packages (specific to this node) 
-        /// become available. 
+        /// This event handler is invoked when UpdateRenderPackageAsyncTask is
+        /// completed, at which point the render packages (specific to this node)
+        /// become available.
         /// </summary>
         /// <param name="asyncTask">The instance of UpdateRenderPackageAsyncTask
         /// that was responsible of generating the render packages.</param>
-        /// 
+        ///
         private void OnRenderPackageUpdateCompleted(AsyncTask asyncTask)
         {
             var task = asyncTask as UpdateRenderPackageAsyncTask;
@@ -2266,13 +2267,13 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public event Func<IEnumerable<IRenderPackage>> RequestRenderPackages;
 
         /// <summary>
-        /// This event handler is invoked when the render packages (specific to this node)  
-        /// become available and in addition the node requests for associated render packages 
+        /// This event handler is invoked when the render packages (specific to this node)
+        /// become available and in addition the node requests for associated render packages
         /// if any for example, packages used for associated node manipulators
         /// </summary>
         private IEnumerable<IRenderPackage> OnRequestRenderPackages()
@@ -2285,7 +2286,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Returns list of drawable Ids as registered with visualization manager 
+        /// Returns list of drawable Ids as registered with visualization manager
         /// for all the output port of the given node.
         /// </summary>
         /// <returns>List of Drawable Ids</returns>
@@ -2352,7 +2353,7 @@ namespace Dynamo.Graph.Nodes
             return migrationData;
         }
 
-        [NodeMigration(@from: "1.3.0.0")]
+        [NodeMigration(version: "1.3.0.0")]
         public static NodeMigrationData MigrateShortestLacingToAutoLacing(NodeMigrationData data)
         {
             var migrationData = new NodeMigrationData(data.Document);
@@ -2455,68 +2456,5 @@ namespace Dynamo.Graph.Nodes
         /// Action to call on UI thread.
         /// </summary>
         public Action ActionToDispatch { get; set; }
-    }
-
-    /// <summary>
-    /// The LacingStrategyConverter is used to serialize and deserialize LacingStrategy enum values.
-    /// The mapping to string like 'applyDisabled' is to support the historical representation
-    /// of 'lacing' on Flood.
-    /// </summary>
-    class LacingStrategyConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(LacingStrategy);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            var s = reader.Value.ToString();
-            switch (s)
-            {
-                case "Auto":
-                    return LacingStrategy.Auto;
-                case "Cartesian":
-                    return LacingStrategy.CrossProduct;
-                case "Disabled":
-                    return LacingStrategy.Disabled;
-                case "First":
-                    return LacingStrategy.First;
-                case "Longest":
-                    return LacingStrategy.Longest;
-                case "Shortest":
-                    return LacingStrategy.Shortest;
-                default:
-                    return LacingStrategy.Disabled;
-            }
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var s = (LacingStrategy)value;
-
-            switch (s)
-            {
-
-                case LacingStrategy.Auto:
-                    writer.WriteValue("Auto");
-                    break;
-                case LacingStrategy.CrossProduct:
-                    writer.WriteValue("Cartesian");
-                    break;
-                case LacingStrategy.Disabled:
-                    writer.WriteValue("Disabled");
-                    break;
-                case LacingStrategy.First:
-                    writer.WriteValue("First");
-                    break;
-                case LacingStrategy.Longest:
-                    writer.WriteValue("Longest");
-                    break;
-                case LacingStrategy.Shortest:
-                    writer.WriteValue("Shortest");
-                    break;
-            }
-        }
     }
 }
