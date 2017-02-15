@@ -23,14 +23,7 @@ namespace Dynamo.Prompts
 
         private void OpenDynamoDictionary(object sender, MouseButtonEventArgs e)
         {
-            try
-            {
-                Process.Start(((TextBlock)sender).Tag.ToString());
-            }
-            catch
-            {
-                Process.Start(Configurations.DynamoDictionary);
-            }
+            Process.Start(((TextBlock)sender).Tag.ToString());
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
