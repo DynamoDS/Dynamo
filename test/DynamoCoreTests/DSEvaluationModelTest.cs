@@ -401,7 +401,7 @@ namespace Dynamo.Tests
         {
             // MAGN-7463
             RunModel(@"core\dsevaluation\CBN_TypedIdentifier01.dyn");
-            AssertPreviewValue("9c422c81-821f-456e-9965-4aea6afe81f9", 1);
+            AssertPreviewValue("1472b79b-59b0-40ab-ab0e-3504fbc7be83", 1);
         }
 
         [Test]
@@ -619,7 +619,7 @@ namespace Dynamo.Tests
         public void CBN_Geometry()
         {
             RunModel(@"core\dsevaluation\CBN_Geometry.dyn");
-            AssertPreviewValue("9c51f2d5-a9f2-4825-bda6-f062e69efc46", 5.00000);
+            AssertPreviewValue("a23b89fc-f219-46ca-ab7a-5a3f0ee93ba4", 5.00000);
         }
         [Test]
         [Category("RegressionTests")]
@@ -807,7 +807,7 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5236
 
             RunModel(@"core\dsevaluation\createCube_codeBlockNode.dyn");
-            AssertPreviewValue("3669d05c-c741-44f9-87ab-8961e7f5f112", 150);
+            AssertPreviewValue("8187805a-cc0d-4220-8595-4ee38bbee079", 150);
             var guid = Guid.Parse("3669d05c-c741-44f9-87ab-8961e7f5f112");
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID == guid);
             Assert.IsTrue(node.State != ElementState.Warning);

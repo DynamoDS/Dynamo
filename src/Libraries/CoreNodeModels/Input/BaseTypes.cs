@@ -13,6 +13,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using CoreNodeModels.Properties;
 using Newtonsoft.Json;
+using Dynamo.Migration;
 
 namespace CoreNodeModels.Input
 {
@@ -736,6 +737,26 @@ namespace CoreNodeModels.Input
                 double.TryParse((string)value, out d);
                 writer.WriteValue(d);
             }
+        }
+
+        [NodeMigration(version: "2.0.0.0")]
+        public static NodeMigrationData Migrate_Range(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            var oldNode = data.MigratedNodes.ElementAt(0);
+            var valEls = oldNode.GetElementsByTagName("System.Double"); // The Value node
+            var val = valEls[0].Attributes["value"].Value;
+
+            double result = 0.0;
+            if (double.TryParse(val, out result))
+            {
+                return data;
+            }
+
+            var newNode = MigrationManager.CreateCodeBlockNodeFrom(oldNode);
+            newNode.Attributes["CodeText"].Value = val + ";";
+            migrationData.AppendNode(newNode);
+            return migrationData;
         }
     }
 }

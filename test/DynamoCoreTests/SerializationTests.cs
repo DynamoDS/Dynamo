@@ -41,7 +41,7 @@ namespace Dynamo.Tests
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
         }
 
-        [TearDown]
+        [TestFixtureTearDown]
         public void TearDown()
         {
             ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;
@@ -250,8 +250,13 @@ namespace Dynamo.Tests
 
             var wcd1 = new WorkspaceComparisonData(ws1, CurrentDynamoModel.EngineController);
 
+            var dirPath = Path.Combine(Path.GetTempPath(), "json");
+            if (!Directory.Exists(dirPath))
+            {
+                Directory.CreateDirectory(dirPath);
+            }
             var fi = new FileInfo(filePath);
-            var filePathBase = Path.Combine(Path.GetTempPath() + @"\json\" + Path.GetFileNameWithoutExtension(fi.Name));
+            var filePathBase = dirPath + @"\" +  Path.GetFileNameWithoutExtension(fi.Name);
 
             ConvertCurrentWorkspaceToDesignScriptAndSave(filePathBase);
 
@@ -396,8 +401,6 @@ namespace Dynamo.Tests
         {
             try
             {
-
-
                 var workspace = CurrentDynamoModel.CurrentWorkspace;
 
                 var libCore = CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
