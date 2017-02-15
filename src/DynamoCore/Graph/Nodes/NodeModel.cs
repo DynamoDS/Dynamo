@@ -468,7 +468,7 @@ namespace Dynamo.Graph.Nodes
                 string finalLink = Configurations.DynamoDictionary + "#/";
                 if (category == null || category == "")
                 {
-                    return finalLink; // if there is no category, return the link to home page
+                    return Configurations.DynamoDictionary; // if there is no category, return the link to home page
                 }
 
                 int i = category.LastIndexOf(Configurations.CategoryDelimiterString);
