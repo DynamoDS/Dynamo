@@ -4,7 +4,7 @@
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         Title="{Binding NickName}" Height="480" Width="300">
-    
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -13,69 +13,64 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    
+
     <ScrollViewer>
         <StackPanel>
-            
+
             <StackPanel.Background>
                 <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
                     <GradientStop Color="#FFF" Offset="0.0" />
                     <GradientStop Color="#EEE" Offset="1.0" />
                 </LinearGradientBrush>
             </StackPanel.Background>
-            <Grid MinHeight="440"> <!-- (the window's height - total margin) -->
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0"  Margin="10" Background="Transparent">
 
-                    <TextBlock Name="TitleLabel" FontSize="10" Foreground="#AAA" Margin="0,10,0,10" Text="{x:Static p:Resources.NodeHelpWindowNodeType}"></TextBlock>
-                    <TextBlock Name="titleText" FontSize="16" Text="{Binding NickName}" Foreground="#555" TextWrapping="Wrap"></TextBlock>
+            <StackPanel Margin="10" Background="Transparent">
 
-                    <TextBlock Name="DescriptionLabel" FontSize="10" Foreground="#AAA" Margin="0,20,0,10" Text="{x:Static p:Resources.NodeHelpWindowNodeDescription}"></TextBlock>
-                    <TextBlock Name="Description" Text="{Binding Description}" Foreground="#555" TextWrapping="Wrap"></TextBlock>
+                <TextBlock Name="TitleLabel" FontSize="10" Foreground="#AAA" Margin="0,10,0,10" Text="{x:Static p:Resources.NodeHelpWindowNodeType}"></TextBlock>
+                <TextBlock Name="titleText" FontSize="16" Text="{Binding NickName}" Foreground="#555" TextWrapping="Wrap"></TextBlock>
 
-                    <TextBlock Name="CategoryLabel" FontSize="10" Foreground="#AAA" Margin="0,20,0,10" Text="{x:Static p:Resources.NodeHelpWindowNodeCategory}"></TextBlock>
-                    <TextBlock Name="Category" Text="{Binding Category}" Foreground="#555" TextWrapping="Wrap"></TextBlock>
+                <TextBlock Name="DescriptionLabel" FontSize="10" Foreground="#AAA" Margin="0,20,0,10" Text="{x:Static p:Resources.NodeHelpWindowNodeDescription}"></TextBlock>
+                <TextBlock Name="Description" Text="{Binding Description}" Foreground="#555" TextWrapping="Wrap"></TextBlock>
 
-                    <TextBlock Name="InputsLabel" FontSize="10" Foreground="#AAA" Margin="0,20,0,0" Text="{x:Static p:Resources.NodeHelpWindowNodeInput}"></TextBlock>
-                    <ListBox Name="Inputs" ItemsSource="{Binding InPortData}" BorderThickness="0" Padding="0" Margin="3" Background="Transparent">
+                <TextBlock Name="CategoryLabel" FontSize="10" Foreground="#AAA" Margin="0,20,0,10" Text="{x:Static p:Resources.NodeHelpWindowNodeCategory}"></TextBlock>
+                <TextBlock Name="Category" Text="{Binding Category}" Foreground="#555" TextWrapping="Wrap"></TextBlock>
 
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
+                <TextBlock Name="InputsLabel" FontSize="10" Foreground="#AAA" Margin="0,20,0,0" Text="{x:Static p:Resources.NodeHelpWindowNodeInput}"></TextBlock>
+                <ListBox Name="Inputs" ItemsSource="{Binding InPorts}" BorderThickness="0" Padding="0" Margin="3" Background="Transparent">
 
-                                <StackPanel Width="230" >
-                                    <TextBlock FontSize="12" Text="{Binding Path=NickName, Converter={StaticResource PortNameConverter}}" FontWeight="Bold" Foreground="#555" Padding="0,10,0,5"/>
-                                    <TextBlock FontSize="11" Text="{Binding Path=ToolTipString}" Foreground="#555" TextWrapping="Wrap"/>
-                                </StackPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
 
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                     </ListBox>
+                            <StackPanel Width="230" >
+                                <TextBlock FontSize="12" Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter}}" FontWeight="Bold" Foreground="#555" Padding="0,10,0,5"/>
+                                <TextBlock FontSize="11" Text="{Binding Path=ToolTipContent}" Foreground="#555" TextWrapping="Wrap"/>
 
-                    <TextBlock Name="OutputsLabel" FontSize="10" Foreground="#AAA" Margin="0,10,0,0" Text="{x:Static p:Resources.NodeHelpWindowNodeOutput}"></TextBlock>
-                    <ListBox Name="Outputs" ItemsSource="{Binding OutPortData}" BorderThickness="0" Padding="0" Margin="3" Background="Transparent" >
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
+                            </StackPanel>
 
-                                <StackPanel Width="230" >
-                                    <TextBlock FontSize="12" Text="{Binding Path=NickName, Converter={StaticResource PortNameConverter}}" FontWeight="Bold" Foreground="#555" Padding="0,10,0,5"/>
-                                    <TextBlock FontSize="11" Text="{Binding Path=ToolTipString}" Foreground="#555" TextWrapping="Wrap" />
-                                </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
 
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </StackPanel>
-                <StackPanel Grid.Row="1"  Margin="10" Background="Transparent">
-                    <TextBlock Name="DynamoDictionary" FontSize="12" Foreground="#2380C0" Text="{x:Static p:Resources.NodeHelpWindowDynamoDictionary}" 
-                               Cursor="Hand" Tag="{Binding DictionaryLink}"  MouseLeftButtonUp="OpenDynamoDictionary" />
-                </StackPanel>
-            </Grid>
+                </ListBox>
+
+                <TextBlock Name="OutputsLabel" FontSize="10" Foreground="#AAA" Margin="0,10,0,0" Text="{x:Static p:Resources.NodeHelpWindowNodeOutput}"></TextBlock>
+                <ListBox Name="Outputs" ItemsSource="{Binding OutPortData}" BorderThickness="0" Padding="0" Margin="3" Background="Transparent" >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+
+                            <StackPanel Width="230" >
+                                <TextBlock FontSize="12" Text="{Binding Path=NickName, Converter={StaticResource PortNameConverter}}" FontWeight="Bold" Foreground="#555" Padding="0,10,0,5"/>
+                                <TextBlock FontSize="11" Text="{Binding Path=ToolTipString}" Foreground="#555" TextWrapping="Wrap" />
+                            </StackPanel>
+
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                </ListBox>
+
+            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 
-    
+
 
 </Window>
