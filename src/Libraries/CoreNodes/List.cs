@@ -52,6 +52,362 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Determines if the given list contains the given item. This function searches through the sublists contained in it.
+        /// </summary>
+        /// <param name="list">List to search in.</param>
+        /// <param name="item">Item to look for.</param>
+        /// <returns name="bool">Whether list contains the given item.</returns>
+        /// <search>item,search,in,listcontains</search>
+        public static bool Contains(IList list, [ArbitraryDimensionArrayImport] object item)
+        {
+            bool result = false;
+            foreach (var obj in list)
+            {
+                if (obj is IList) result = result || Contains((IList)obj, item);
+            }
+
+            // After checking all sublists, check if the current list contains the item
+            return result || list.Contains(item);
+        }
+
+        /// <summary>
+        ///     Check if the items in the list are of the same type.
+        /// </summary>
+        /// <param name="list">List to be checked if it's homogeneous.</param>
+        /// <returns name="bool">Whether the list is homogeneous.</returns>
+        /// <search>homogeneous,ishomogeneous,same,type</search>
+        public static bool IsHomogeneous(IList list)
+        {
+            if (list.Count > 0)
+            {
+                var firstItem = list[0];
+                foreach (var obj in list)
+                {
+                    if (obj.GetType() != firstItem.GetType())
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        ///     Check if the number of items in all rows of the list are the same.
+        /// </summary>
+        /// <param name="list">List to be checked if the rows have the same number of items.</param>
+        /// <returns name="bool">Whether the list has the same number of items in all rows.</returns>
+        /// <search>rectangular,isrectangular,same,sublist,row</search>
+        public static bool IsRectangular(IList list)
+        {
+            int count = -1;
+            if (list.Count <= 0) return false;
+
+            foreach (var obj in list)
+            {
+                if (!(obj is IList)) return false; //all items be a list in order to do a comparison
+                if (count == -1) count = ((IList)obj).Count; //if the count has not yet been initialized, assign the value
+                else if (count != ((IList)obj).Count) return false; //otherwise, check if they have the same count. If not, return false
+            }
+            return true; //if all items have the same count
+        }
+
+        /// <summary>
+        ///     Check if the items in the list have the same depth.
+        /// </summary>
+        /// <param name="list">List to be checked if the items have the same depth.</param>
+        /// <returns name="bool">Whether the depth of the list is uniform.</returns>
+        /// <search>depth,uniform,isuniformdepth,sublist</search>
+        public static bool IsUniformDepth(IList list)
+        {
+            int depth = -1;
+            if (list.Count > 0) depth = GetDepth(list[0]);
+            foreach (var obj in list)
+            {
+                if (GetDepth(obj) != depth) return false;
+            }
+            return true;
+        }
+
+        private static int GetDepth(object list)
+        {
+            if (!(list is IList)) return 0;
+
+            int depth = 1;
+            foreach (var obj in (IList)list) //if it is a list, check if it contains a sublist
+            {
+                if (obj is IList) //if it contains a sublist
+                {
+                    int d = 1 + GetDepth((IList)obj);
+                    depth = (depth > d) ? depth : d; //get the maximum depth among all items
+                }
+            }
+            return depth;
+        }
+
+        /// <summary>
+        ///     Returns a new list that includes objects in List1 but excludes objects in List2.
+        /// </summary>
+        /// <param name="list1">List of objects to be included in the new list.</param>
+        /// <param name="list2">List of objects to be excluded in the new list.</param>
+        /// <returns name="list1">The new list that contains objects in List1 but not in List2.</returns>
+        /// <search>difference,setdifference,set</search>
+        public static IList SetDifference(IList list1, IList list2)
+        {
+            foreach (var obj in list2)
+            {
+                if (list1.Contains(obj))
+                {
+                    list1.Remove(obj);
+                }
+            }
+            return list1;
+        }
+
+        /// <summary>
+        ///     Returns a new list that includes objects that are present in both List1 and List2.
+        /// </summary>
+        /// <param name="list1">List of objects to be compared with list2.</param>
+        /// <param name="list2">List of objects to be compared with list1.</param>
+        /// <returns name="newList">The new list that contains objects that are in both List1 and List2.</returns>
+        /// <search>intersection,setintersection,set</search>
+        public static IList SetIntersection(IList list1, IList list2)
+        {
+            List<object> newList = new List<object>();
+            foreach (var obj in list1)
+            {
+                if (list2.Contains(obj)) newList.Add(obj);
+            }
+            return newList;
+        }
+
+        /// <summary>
+        ///     Returns a new list that includes objects that are present in either List1 or List2.
+        /// </summary>
+        /// <param name="list1">List of objects to be included.</param>
+        /// <param name="list2">List of objects to be included to List1.</param>
+        /// <returns name="newList">The new list that contains objects that are either in List1 or List2.</returns>
+        /// <search>union,setunion,set</search>
+        public static IList SetUnion(IList list1, IList list2)
+        {
+            foreach (var obj in list2)
+            {
+                if (!list1.Contains(obj))
+                {
+                    list1.Add(obj);
+                }
+            }
+            return list1;
+        }
+
+        /// <summary>
+        ///     Returns the index of the element in the given list.
+        /// </summary>
+        /// <param name="list">The list to find the element in.</param>
+        /// <param name="element">The element whose index is to be returned.</param>
+        /// <returns name="int">The index of the element in the list.</returns>
+        /// <search>index,indexof</search>
+        public static int IndexOf(IList list, object element)
+        {
+            return list.IndexOf(element);
+        }
+
+        /// <summary>
+        ///     Returns the number of false boolean values in the given list.
+        /// </summary>
+        /// <param name="list">The list find the false boolean values.</param>
+        /// <returns name="int">The number of false boolean values in the list.</returns>
+        /// <search>false,countfalse</search>
+        public static int CountFalse(IList list)
+        {
+            return CountBool(list, false);
+        }
+
+        /// <summary>
+        ///     Returns the number of true boolean values in the given list.
+        /// </summary>
+        /// <param name="list">The list find the true boolean values.</param>
+        /// <returns name="int">The number of true boolean values in the list.</returns>
+        /// <search>true,counttrue</search>
+        public static int CountTrue(IList list)
+        {
+            return CountBool(list, true);
+        }
+
+        /// <summary>
+        ///     Returns the number of the specified boolean values in the given list.
+        /// </summary>
+        /// <param name="list">The list find the true boolean values.</param>
+        /// <returns name="int">The number of the specified boolean value in the list.</returns>
+        private static int CountBool(IList list, bool b)
+        {
+            int count = 0;
+            foreach (var obj in list)
+            {
+                if ((obj is bool) && ((bool)obj == b)) count++;
+                else if ((obj is IList))
+                {
+                    count += CountBool((IList)obj, b);
+                }
+            }
+            return count;
+        }
+
+        /// <summary>
+        ///     Returns the flattened 1D list of the multi-dimensional input list.
+        /// </summary>
+        /// <param name="list">The list to be flattened.</param>
+        /// <returns name="list">The flattened 1D list.</returns>
+        /// <search>flatten,1D</search>
+        public static IList Flatten(IList list)
+        {
+            return Flatten(list, GetDepth(list), new List<object>());
+        }
+
+        /// <summary>
+        ///     Inserts an element into a list at specified index
+        /// </summary>
+        /// <param name="list">The list the element will be inserted to.</param>
+        /// <param name="element">The element to be inserted.</param>
+        /// <param name="index">Specifies the location in the list of the element to be inserted.</param>
+        /// <returns name="list">The list with the element inserted.</returns>
+        /// <search>insert,add</search>
+        public static IList Insert(IList list, [ArbitraryDimensionArrayImport] object element, int index)
+        {
+            list.Insert(index, element);
+            return list;
+        }
+
+        /// <summary>
+        ///     Reorders the input list based on the given list of indices.
+        /// </summary>
+        /// <param name="list">The list to be reordered.</param>
+        /// <param name="indice">The indices used to reorder the items in the list.</param>
+        /// <returns name="list">The reordered list.</returns>
+        /// <search>reorder,index,indices</search>
+        public static IList Reorder(IList list, IList indice)
+        {
+            // Note: slightly different behaviour from Builtin - invalid input indices will be ignored, 
+            // and will return a list instead of null if the indices are invalid
+            List<object> newList = new List<object>();
+            for (int i = 0; i < indice.Count; i++)
+            {
+                int index;
+                if ((int.TryParse(indice[i].ToString(), out index) && (index < list.Count)))
+                {
+                    newList.Add(list[index]);
+                }
+            }
+            return newList;
+        }
+
+        /// <summary>
+        ///     Checks if the specified key is present in the specified key-value pair list.
+        /// </summary>
+        /// <param name="list">The list to check if the specified key is present.</param>
+        /// <param name="key">The key to find in the given list.</param>
+        /// <returns name="bool">Whether the key can be found in the given list.</returns>
+        /// <search>key,contains,containskey</search>
+        public static bool ContainsKey(IList list, object key)
+        {
+            // Note: Is this method just to check against the index of each item in the list or
+            // a key-value pair in Dynamo?
+            int index;
+            if (int.TryParse(key.ToString(), out index) && (index < list.Count)) return true;
+            return false; // If it is not a valid index or if the index doesn't exist in the list
+        }
+
+        /// <summary>
+        ///     Returns a new list with the specified key removed.
+        /// </summary>
+        /// <param name="list">The list whose specified items are to be removed.</param>
+        /// <param name="key">The key be removed from the given list.</param>
+        /// <returns name="list">The list with the key removed.</returns>
+        /// <search>key,remove,removekey</search>
+        public static IList RemoveKey(IList list, [ArbitraryDimensionArrayImport] object key)
+        {
+            // Note: The method follows the behaviour of the BuiltIn method and is different 
+            // from the descriptions in Dynamo Dictionary
+            int index;
+            if (int.TryParse(key.ToString(), out index) && (index < list.Count))
+            {
+                list[index] = null;
+                return list;
+            }
+            return list;
+        }
+
+        /// <summary>
+        ///     Sorts a list by the items and return their indices.
+        /// </summary>
+        /// <param name="list">The list of items to be sorted.</param>
+        /// <returns name="newList">The indices of the items in the sorted list.</returns>
+        public static IList SortIndexByValue(List<double> list)
+        {
+            List<Tuple<int, double>> tupleList = new List<Tuple<int, double>>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                tupleList.Add(new Tuple<int, double>(i, list[i]));
+            }
+            tupleList = tupleList.OrderBy(x => x.Item2).ToList();
+            List<int> newList = new List<int>();
+            foreach (Tuple<int, double> x in tupleList)
+            {
+                newList.Add(x.Item1);
+            }
+            return newList;
+        }
+
+        /// <summary>
+        ///     Returns multidimentional list according the rank given.
+        /// </summary>
+        /// <param name="list">The list whose depth is to be normalized according to the rank.</param>
+        /// <param name="rank">The rank the list is to be normalized to.</param>
+        /// <returns name="list">The list with the normalized rank.</returns>
+        public static IList NormalizeDepth(IList list, int rank)
+        {
+            if (rank == 1)
+            {
+                return Flatten(list);
+            }
+            else
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list[i] is IList)
+                    {
+                        list[i] = NormalizeDepth((IList)list[i], rank - 1);
+                    }
+                    else
+                    {
+                        list[i] = IncreaseDepth(new List<object>() { list[i] }, rank - 1);
+                    }
+                }
+            }
+            return list;
+        }
+
+        private static IList IncreaseDepth(IList list, int amt)
+        {
+            if (amt == 1)
+            {
+                return list;
+            }
+            else
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (!(list[i] is IList))
+                    {
+                        list[i] = new List<object>() { list[i] };
+                    }
+                    list[i] = IncreaseDepth((IList)list[i], amt - 1);
+                }
+            }
+            return list;
+        }
+
+        /// <summary>
         ///     Creates a new list containing the items of the given list but in reverse order.
         /// </summary>
         /// <param name="list">List to be reversed.</param>
@@ -548,6 +904,54 @@ namespace DSCore
         public static bool IsEmpty(IList list)
         {
             return list.Count == 0;
+        }
+        
+        /// <summary>
+        ///     Determines if all items in the given list is a boolean and has a true value.
+        /// </summary>
+        /// <param name="list">List to be checked on whether all items are true.</param>
+        /// <returns name="bool">Whether all items are true.</returns>
+        /// <search>test,all,true</search>
+        public static bool AllTrue(IList list)
+        {
+            bool result = true;
+            foreach (var obj in list)
+            {
+                if (obj is IList)
+                {
+                    result = result && AllTrue((IList)obj);
+                }
+                else
+                {
+                    if ((obj is bool) && (bool)obj) continue;
+                    else return false;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        ///     Determines if all items in the given list is a boolean and has a false value.
+        /// </summary>
+        /// <param name="list">List to be checked on whether all items are false.</param>
+        /// <returns name="bool">Whether all items are false.</returns>
+        /// <search>test,all,false</search>
+        public static bool AllFalse(IList list)
+        {
+            bool result = true;
+            foreach (var obj in list)
+            {
+                if (obj is IList)
+                {
+                    result = result && AllFalse((IList)obj);
+                }
+                else
+                {
+                    if ((obj is bool) && !(bool)obj) continue;
+                    else return false;
+                }
+            }
+            return result;
         }
 
         /// <summary>
