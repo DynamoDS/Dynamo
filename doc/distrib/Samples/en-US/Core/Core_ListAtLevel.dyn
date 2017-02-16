@@ -1,4 +1,4 @@
-<Workspace Version="1.2.1.3083" X="120.098389478405" Y="457.3011057437" zoom="0.134158690635485" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+<Workspace Version="1.2.1.3083" X="265.347793473129" Y="714.666464819873" zoom="0.215620595860077" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
   <NamespaceResolutionMap>
     <ClassMap partialName="Math.PI" resolvedName="DSCore.Math" assemblyName="DSCoreNodes.dll" />
     <ClassMap partialName="Math" resolvedName="DSCore.Math" assemblyName="DSCoreNodes.dll" />
@@ -141,11 +141,11 @@
     <Dynamo.Graph.Notes.NoteModel guid="07e41d84-2d58-4df6-bf10-93c4936927ad" text="Translate the selected points upwards, each having a different height." x="1164.85649412087" y="-125.660223496632" />
     <Dynamo.Graph.Notes.NoteModel guid="8622ee44-b1d2-4e03-873b-9850b25b3604" text="This node produces a list containing 10 lists, each having 12 points, resulting in a total of 120 points." x="-2.06327351624759" y="254.002294004066" />
     <Dynamo.Graph.Notes.NoteModel guid="55332104-d217-4da4-a650-36f57f7868e1" text="To change the list level you're working with, click the arrow beside the list input port and enable the &quot;Use levels&quot; option.&#xD;&#xA;&#xD;&#xA;By default, the list at the highest level is selected to be worked with. " x="160.80027400713" y="-3171.3754149517" />
-    <Dynamo.Graph.Notes.NoteModel guid="0a361063-945e-455b-8e32-57cff2642be2" text="In this example, we create a 3D list containing a series of points. There are 8 lists at L3, and each list contains another 4 lists (L2). Each of the 4 lists contains 4 points (L1), resulting in a total of 128 points." x="-22.9223935092739" y="-1470.2991497107" />
+    <Dynamo.Graph.Notes.NoteModel guid="0a361063-945e-455b-8e32-57cff2642be2" text="In this example, we create a 3D list containing a series of points. There are 8 lists at L3, and each list contains another 4 lists (L2). Each of the 4 lists contains 4 points (L1), resulting in a total of 128 points." x="-33.5161995746092" y="-1476.18459752478" />
     <Dynamo.Graph.Notes.NoteModel guid="f680137a-312c-4de9-881b-54f7b9cf8aa2" text="In the previous version of Dynamo, List.Map is used to obtain the inner levels of lists. Even though the same result can be achieved using this method, it introduces more nodes into the workspace." x="1064.01500199936" y="-935.352981491042" />
     <Dynamo.Graph.Notes.NoteModel guid="a3d20342-4603-4729-af25-08d9c4e3451e" text="Here, we have a list containing three lists, each having five lists of numbers. The five lists contain multiples of 1 to 5 (first list has multiples of 1, second list has multiples of 2, and so on).&#xD;&#xA;&#xD;&#xA;Going up one level (to L3, where we have three lists), the range limit is set as 5 for the first list, 10 for the second list and 15 for the third list." x="162.882650068351" y="-3048.78485615758" />
     <Dynamo.Graph.Notes.NoteModel guid="f1e10954-88ec-4039-b96a-fd4fb7c9fff9" text="This node returns the number of elements that are present in each list in L2. By default, the results are flattened into a 1D list." x="588.151879201766" y="-2683.11853037647" />
-    <Dynamo.Graph.Notes.NoteModel guid="aa5643f6-37a6-495d-8998-42d10d871bc4" text="To preserve the nested structure of the lists, select the option &quot;Keep list structure&quot;. &quot;@@&quot; indicates how to keep the list structure in Designscript." x="896.327052893217" y="-2683.36472096958" />
+    <Dynamo.Graph.Notes.NoteModel guid="aa5643f6-37a6-495d-8998-42d10d871bc4" text="To preserve the nested structure of the input lists, select the option &quot;Keep list structure&quot;. &quot;@@&quot; indicates how to keep the list structure in DesignScript." x="891.618694641957" y="-2697.48979572336" />
     <Dynamo.Graph.Notes.NoteModel guid="3e81ddd3-bb9c-43a4-b525-89c59bec370b" text="The List.Count node returns the number of elements that are present in each list. Depending on the selected level, different values are returned. Try changing the value of L3 by clicking on the arrows beside it." x="635.5593242501" y="-3167.16842551931" />
     <Dynamo.Graph.Notes.NoteModel guid="a9cd8e77-dfc5-4359-b6a1-45218b7ca761" text="We want to obtain the points at indexes 1 and 2 of each list in the innermost level. This can easily be done by using the List@Level feature. The grouping of the lists are kept by enabling the option &quot;Keep list structure&quot;." x="363.655808187852" y="-1495.12833915533" />
     <Dynamo.Graph.Notes.NoteModel guid="2aa3a26a-93aa-4438-aea6-288c5d44cd52" text="There are three lists at L3, each containing five lists. Hence, selecting L3 implements the List.Count function on the three lists, giving three '5' values." x="941.718433412102" y="-3054.22549025616" />
@@ -153,19 +153,19 @@
     <Dynamo.Graph.Notes.NoteModel guid="3b2a9b7f-3adf-4f6d-b2f9-bab78c7f7759" text="Selecting L3 converts the three lists at that level into a 1D array. As each of the three lists contains five items (which are also lists), this will turn L3 into a list containing 15 items (or lists) with indexes 0 to 14." x="899.98226424198" y="-1982.20217357215" />
   </Notes>
   <Annotations>
-    <Dynamo.Graph.Annotations.AnnotationModel guid="0857f046-0a2d-4ae8-962a-5703bbe46273" annotationText="Using &quot;Keep list structure&quot;" left="578.151879201766" top="-2713.36472096958" width="624.841840358118" height="192.36884178416" fontSize="14" InitialTop="-2683.36472096958" InitialHeight="230.439562615492" TextblockHeight="0" backgrouund="#FFC1D676">
+    <Dynamo.Graph.Annotations.AnnotationModel guid="0857f046-0a2d-4ae8-962a-5703bbe46273" annotationText="Using &quot;Keep list structure&quot;" left="578.151879201766" top="-2727.48979572336" width="606.466815440191" height="206.493916537941" fontSize="14" InitialTop="-2697.48979572336" InitialHeight="230.439562615492" TextblockHeight="20" backgrouund="#FFC1D676">
       <Models ModelGuid="b378d87e-1e32-4b84-8dda-40d630f35ffd" />
       <Models ModelGuid="ae2fac73-7ed1-4c61-9bc2-e51593111b5d" />
       <Models ModelGuid="f1e10954-88ec-4039-b96a-fd4fb7c9fff9" />
       <Models ModelGuid="aa5643f6-37a6-495d-8998-42d10d871bc4" />
     </Dynamo.Graph.Annotations.AnnotationModel>
-    <Dynamo.Graph.Annotations.AnnotationModel guid="06d3e4e7-aa39-470f-966f-4884ee198aae" annotationText="Comparing List@Level with List.Map" left="313.815270048605" top="-934.150260290776" width="728.333045090948" height="172.42230298325" fontSize="14" InitialTop="-904.150260290776" InitialHeight="172.42230298325" TextblockHeight="0" backgrouund="#FFFFB8D8">
+    <Dynamo.Graph.Annotations.AnnotationModel guid="06d3e4e7-aa39-470f-966f-4884ee198aae" annotationText="Comparing List@Level with List.Map" left="313.815270048605" top="-934.150260290776" width="728.999711757615" height="172.42230298325" fontSize="14" InitialTop="-904.150260290776" InitialHeight="172.42230298325" TextblockHeight="20" backgrouund="#FFFFB8D8">
       <Models ModelGuid="8f9f6b94-ee3e-4a3e-8d6a-b211162899a9" />
       <Models ModelGuid="0e177600-e91b-4d8b-94c0-1eb5dfd3ad1e" />
       <Models ModelGuid="fa13a54e-e7ba-4afb-970c-d9bf671a6050" />
       <Models ModelGuid="3dbb73be-1e43-4b38-b336-e35a08157589" />
     </Dynamo.Graph.Annotations.AnnotationModel>
-    <Dynamo.Graph.Annotations.AnnotationModel guid="1bed1efe-74bb-4a1c-a06f-f814226a8034" annotationText="" left="331.899694409034" top="-1392.98370122797" width="357.450601745004" height="160.10021839295" fontSize="14" InitialTop="-1362.98370122797" InitialHeight="169.026666539488" TextblockHeight="0" backgrouund="#FFFFB8D8">
+    <Dynamo.Graph.Annotations.AnnotationModel guid="1bed1efe-74bb-4a1c-a06f-f814226a8034" annotationText="" left="331.899694409034" top="-1392.98370122797" width="358.117268411671" height="160.10021839295" fontSize="14" InitialTop="-1362.98370122797" InitialHeight="169.026666539488" TextblockHeight="20" backgrouund="#FFFFB8D8">
       <Models ModelGuid="bec89968-68a4-4e49-b338-2bf3894ffc8f" />
       <Models ModelGuid="57e785b8-2788-4ee2-9692-7831eba1362b" />
     </Dynamo.Graph.Annotations.AnnotationModel>
