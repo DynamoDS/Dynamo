@@ -1783,6 +1783,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="DynamoViewEditMenuPresetsMenu" xml:space="preserve">
     <value>Presets</value>
   </data>
+  <data name="DynamoViewSettingsMenuIsolationMode" xml:space="preserve">
+    <value>Isolate Selected Geometries</value>
+  </data>
   <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
     <value>Show Edges</value>
   </data>

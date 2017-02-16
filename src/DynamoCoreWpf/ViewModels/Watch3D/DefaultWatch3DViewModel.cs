@@ -151,6 +151,23 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
+        /// A flag which indicates whether Isolate Selected Geometries mode is activated.
+        /// </summary>
+        private bool isolationMode;
+        public bool IsolationMode
+        {
+            get
+            {
+                return isolationMode;
+            }
+            set
+            {
+                isolationMode = value;
+                RaisePropertyChanged("IsolationMode");
+            }
+        }
+
+        /// <summary>
         /// A flag which indicates whether the user is holding the
         /// navigation override key (ESC).
         /// </summary>
@@ -298,7 +315,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         handler(CanNavigateBackground);
                     }
                     break;
+                case "IsolationMode":
+                    OnIsolationModeRequestUpdate();
+                    break;
             }
+        }
+
+        protected virtual void OnIsolationModeRequestUpdate()
+        {
+            // Override in inherited classes.
         }
 
         private void UnregisterEventHandlers()
