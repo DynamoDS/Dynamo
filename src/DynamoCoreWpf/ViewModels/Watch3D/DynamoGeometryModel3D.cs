@@ -289,6 +289,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var vertexCount = geometry.Positions.Count;
             var result = new DynamoMeshVertex[vertexCount];
 
+            var isSelected = (bool)GetValue(AttachedProperties.ShowSelectedProperty);
+            var isIsolationMode = (bool)GetValue(AttachedProperties.IsolationModeProperty);
+            var isSpecialPackage = (bool)GetValue(AttachedProperties.IsSpecialRenderPackageProperty);
+
             for (var i = 0; i < vertexCount; i++)
             {
                 result[i] = new DynamoMeshVertex
@@ -299,7 +303,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Normal = normals != null ? normals[i] : Vector3.Zero,
                     Tangent = tangents != null ? tangents[i] : Vector3.Zero,
                     BiTangent = bitangents != null ? bitangents[i] : Vector3.Zero,
-                    Parameters = new Vector4((bool)GetValue(AttachedProperties.ShowSelectedProperty) ? 1 : 0, RequiresPerVertexColoration ? 1 : 0,0,0)
+                    Parameters = new Vector4(isSelected ? 1 : 0,
+                                            (isIsolationMode && !isSpecialPackage) ? 1 : 0,
+                                             RequiresPerVertexColoration ? 1 : 0, 0)
                 };
             }
 

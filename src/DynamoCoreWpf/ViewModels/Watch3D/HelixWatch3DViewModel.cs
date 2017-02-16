@@ -612,11 +612,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Model3DDictionary.Values.
                         Where(v => v is GeometryModel3D).
                         Cast<GeometryModel3D>().ToList().ForEach(g => g.SetValue(AttachedProperties.ShowSelectedProperty, false));
-                    return;
+                    break;
 
                 case NotifyCollectionChangedAction.Remove:
                     SetSelection(e.OldItems, false);
-                    return;
+                    break;
 
                 case NotifyCollectionChangedAction.Add:
 
@@ -631,11 +631,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         && recentlyAddedNodes.TrueForAll(n => e.NewItems.Contains((object)n)))
                     {
                         recentlyAddedNodes.Clear();
-                        return;
+                        break;
                     }
 
                     SetSelection(e.NewItems, true);
-                    return;
+                    break;
+            }
+
+            if (IsolationMode)
+            {
+                OnIsolationModeRequestUpdate();
             }
         }
 
@@ -804,6 +809,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     break;
             }
+        }
+
+        /// <summary>
+        /// Update the attached properties and recalculate transparency sorting
+        /// after any update under Isolate Selected Geometries mode.
+        /// </summary>
+        protected override void OnIsolationModeRequestUpdate()
+        {
+            Model3DDictionary.Values.OfType<GeometryModel3D>().ToList().
+                ForEach(g => AttachedProperties.SetIsolationMode(g, IsolationMode));
+            OnSceneItemsChanged();
         }
 
         protected override void ZoomToFit(object parameter)
@@ -1085,6 +1101,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             if (!Model3DDictionary.ContainsKey(DefaultLightName))
             {
+                AttachedProperties.SetIsSpecialRenderPackage(directionalLight, true);
                 Model3DDictionary.Add(DefaultLightName, directionalLight);
             }
 
@@ -1102,6 +1119,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             if (!model3DDictionary.ContainsKey(DefaultGridName))
             {
+                AttachedProperties.SetIsSpecialRenderPackage(gridModel3D, true);
                 Model3DDictionary.Add(DefaultGridName, gridModel3D);
             }
 
@@ -1117,6 +1135,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             if (!Model3DDictionary.ContainsKey(DefaultAxesName))
             {
+                AttachedProperties.SetIsSpecialRenderPackage(axesModel3D, true);
                 Model3DDictionary.Add(DefaultAxesName, axesModel3D);
             }
 
@@ -2086,11 +2105,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 return result;
             }
 
-            var transA = (bool) a.GetValue(AttachedProperties.HasTransparencyProperty);
-            var transB = (bool) b.GetValue(AttachedProperties.HasTransparencyProperty);
-            result = transA.CompareTo(transB);
+            // under Isolate Selected Geometries mode, selected geometries will have higher precedence
+            // and rendered as closer to the camera compared to unselected geometries
+            var selectedA = AttachedProperties.GetIsolationMode(a) &&
+                !AttachedProperties.GetShowSelected(a) && !AttachedProperties.IsSpecialRenderPackage(a);
+            var selectedB = AttachedProperties.GetIsolationMode(b) &&
+                !AttachedProperties.GetShowSelected(b) && !AttachedProperties.IsSpecialRenderPackage(b);
+            result = selectedA.CompareTo(selectedB);
+            if (result != 0) return result;
 
             // if only one of transA and transB has transparency, sort by having this property
+            var transA = AttachedProperties.GetHasTransparencyProperty(a);
+            var transB = AttachedProperties.GetHasTransparencyProperty(b);
+            result = transA.CompareTo(transB);
             if (result != 0) return result;
 
             // if both items has transparency, sort by distance
