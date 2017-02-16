@@ -59,7 +59,7 @@ float4 PShaderCustom(PSInputCustom input) : SV_Target
 	}
 
 	bool isSelected = input.customParams.x;
-	bool isSelectivePreviewMode = input.customParams.y;
+	bool isIsolationMode = input.customParams.y;
 	bool requiresPerVertexColoration = input.customParams.z;
 
 	if (bHasDiffuseMap)
@@ -103,7 +103,7 @@ float4 PShaderCustom(PSInputCustom input) : SV_Target
 	}
 
 	/// set diffuse alpha
-	if (!isSelectivePreviewMode || isSelected)
+	if (!isIsolationMode || isSelected)
 	{
 		I.a = vMaterialDiffuse.a;
 	}
@@ -123,7 +123,7 @@ float4 PShaderCustom(PSInputCustom input) : SV_Target
 		I = I * input.c;
 	}
 
-	if (isSelected && !isSelectivePreviewMode)
+	if (isSelected && !isIsolationMode)
 	{
 		I = lerp(vSelectionColor,I,0.3);
 	}

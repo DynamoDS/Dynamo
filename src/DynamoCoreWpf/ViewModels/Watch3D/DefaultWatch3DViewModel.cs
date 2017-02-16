@@ -151,19 +151,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
-        /// A flag which indicates whether selective geometry preview mode is activated.
+        /// A flag which indicates whether Isolate Selected Geometries mode is activated.
         /// </summary>
-        private bool selectivePreviewMode;
-        public bool SelectivePreviewMode
+        private bool isolationMode;
+        public bool IsolationMode
         {
             get
             {
-                return selectivePreviewMode;
+                return isolationMode;
             }
             set
             {
-                selectivePreviewMode = value;
-                RaisePropertyChanged("SelectivePreviewMode");
+                isolationMode = value;
+                RaisePropertyChanged("IsolationMode");
             }
         }
 
@@ -315,13 +315,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         handler(CanNavigateBackground);
                     }
                     break;
-                case "SelectivePreviewMode":
-                    OnSelectivePreviewUpdated();
+                case "IsolationMode":
+                    OnIsolationModeRequestUpdate();
                     break;
             }
         }
 
-        protected virtual void OnSelectivePreviewUpdated()
+        protected virtual void OnIsolationModeRequestUpdate()
         {
             // Override in inherited classes.
         }

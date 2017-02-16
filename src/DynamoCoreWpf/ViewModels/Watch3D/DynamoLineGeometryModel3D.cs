@@ -103,7 +103,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 var isSelected = (bool)GetValue(AttachedProperties.ShowSelectedProperty);
-                var selectiveMode = (bool)GetValue(AttachedProperties.SelectivePreviewProperty);
+                var isIsolationMode = (bool)GetValue(AttachedProperties.IsolationModeProperty);
                 var isSpecialPackage = (bool)GetValue(AttachedProperties.IsSpecialRenderPackageProperty);
 
                 result[i] = new DynamoLineVertex
@@ -111,7 +111,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Position = new Vector4(positions[i], 1f),
                     Color = finalColor,
                     Parameters = new Vector4(isSelected ? 1 : 0,
-                                             (selectiveMode && !isSpecialPackage) ? 1 : 0, 0, 0)
+                                            (isIsolationMode && !isSpecialPackage) ? 1 : 0, 0, 0)
                 };
             }
 

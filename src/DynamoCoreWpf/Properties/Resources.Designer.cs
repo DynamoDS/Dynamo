@@ -1904,6 +1904,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Isolate Selected Geometries.
+        /// </summary>
+        public static string DynamoViewSettingsMenuIsolationMode {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsMenuIsolationMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Edges.
         /// </summary>
         public static string DynamoViewSettingsMenuShowEdges {
@@ -2542,15 +2551,6 @@ namespace Dynamo.Wpf.Properties {
         public static string InCanvasPanButtonToolTip {
             get {
                 return ResourceManager.GetString("InCanvasPanButtonToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Selective geometry preview.
-        /// </summary>
-        public static string InCanvasSelectiveButtonToolTip {
-            get {
-                return ResourceManager.GetString("InCanvasSelectiveButtonToolTip", resourceCulture);
             }
         }
         

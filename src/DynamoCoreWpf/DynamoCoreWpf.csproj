@@ -636,12 +636,6 @@
     <Resource Include="UI\Images\Canvas\canvas-button-pan-states.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\Canvas\canvas-button-selective-check.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\Canvas\canvas-button-states.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="UI\Images\Canvas\canvas-button-zoom-in-states.png" />
   </ItemGroup>
   <ItemGroup>

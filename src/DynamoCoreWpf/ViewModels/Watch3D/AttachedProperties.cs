@@ -128,25 +128,25 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
-        /// A flag indicating whether the geometry is currently under selective preview mode.
+        /// A flag indicating whether the geometry is currently under Isolate Selected Geometries mode.
         /// </summary>
-        public static readonly DependencyProperty SelectivePreviewProperty = DependencyProperty.RegisterAttached(
-            "SelectivePreview",
+        public static readonly DependencyProperty IsolationModeProperty = DependencyProperty.RegisterAttached(
+            "IsolationMode",
             typeof(bool),
             typeof(GeometryModel3D),
-            new PropertyMetadata(false, SelectivePreviewPropertyChanged));
+            new PropertyMetadata(false, IsolationModePropertyChanged));
 
-        public static void SetSelectivePreview(UIElement element, bool value)
+        public static void SetIsolationMode(UIElement element, bool value)
         {
-            element.SetValue(SelectivePreviewProperty, value);
+            element.SetValue(IsolationModeProperty, value);
         }
 
-        public static bool GetSelectivePreview(UIElement element)
+        public static bool GetIsolationMode(UIElement element)
         {
-            return (bool)element.GetValue(SelectivePreviewProperty);
+            return (bool)element.GetValue(IsolationModeProperty);
         }
         
-        private static void SelectivePreviewPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        private static void IsolationModePropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             if (obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D))
             {

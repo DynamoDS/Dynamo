@@ -55,22 +55,22 @@ GSInputPS VShaderPoints(GSInputPS input)
 	output.parameters = input.parameters;
 
 	bool isSelected = input.parameters.x;
-	bool isSelectivePreviewMode = input.parameters.y;
+	bool isIsolationMode = input.parameters.y;
 
 	//set position into clip space	
 	output.p = mul(output.p, mWorld);
 	output.p = mul(output.p, mView);
 	output.p = mul(output.p, mProjection);
 
-	if (isSelected && !isSelectivePreviewMode) {
+	if (isSelected && !isIsolationMode) {
 		output.c = lerp(vSelectionColor, input.c, 0.3);
 	}
 	else {
 		output.c = input.c;
 	}
 
-	// transparent if unselected under selective mode
-	if (isSelectivePreviewMode && !isSelected) {
+	// unselected geometry is transparent under Isolate Selected Geometries mode
+	if (isIsolationMode && !isSelected) {
 		output.c.a = vTransparentLinePoint.a;
 	}
 

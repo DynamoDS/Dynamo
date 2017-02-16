@@ -655,9 +655,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     break;
             }
 
-            if (SelectivePreviewMode)
+            if (IsolationMode)
             {
-                OnSelectivePreviewUpdated();
+                OnIsolationModeRequestUpdate();
             }
         }
 
@@ -823,12 +823,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         /// <summary>
         /// Update the attached properties and recalculate transparency sorting
-        /// after any update under selective geometry preview mode.
+        /// after any update under Isolate Selected Geometries mode.
         /// </summary>
-        protected override void OnSelectivePreviewUpdated()
+        protected override void OnIsolationModeRequestUpdate()
         {
             Model3DDictionary.Values.OfType<GeometryModel3D>().ToList().
-                ForEach(g => AttachedProperties.SetSelectivePreview(g, SelectivePreviewMode));
+                ForEach(g => AttachedProperties.SetIsolationMode(g, IsolationMode));
             OnSceneItemsChanged();
         }
 
@@ -2160,10 +2160,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 return result;
             }
 
-            // selected items under selective geometry preview mode will have higher precedence
-            var selectedA = AttachedProperties.GetSelectivePreview(a) &&
+            // under Isolate Selected Geometries mode, selected geometries will have higher precedence
+            // and rendered as closer to the camera compared to unselected geometries
+            var selectedA = AttachedProperties.GetIsolationMode(a) &&
                 !AttachedProperties.GetShowSelected(a) && !AttachedProperties.IsSpecialRenderPackage(a);
-            var selectedB = AttachedProperties.GetSelectivePreview(b) &&
+            var selectedB = AttachedProperties.GetIsolationMode(b) &&
                 !AttachedProperties.GetShowSelected(b) && !AttachedProperties.IsSpecialRenderPackage(b);
             result = selectedA.CompareTo(selectedB);
             if (result != 0) return result;

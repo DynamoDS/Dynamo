@@ -126,18 +126,18 @@ GSInputLS VShaderLines(VSInputLS input)
 	}
 
 	bool isSelected = input.parameters.x;
-	bool isSelectivePreviewMode = input.parameters.y;
+	bool isIsolationMode = input.parameters.y;
 	float4 finalColor;
 
-	if (isSelected && !isSelectivePreviewMode) {
+	if (isSelected && !isIsolationMode) {
 		finalColor = lerp(vSelectionColor, input.c, 0.3);
 	}
 	else {
 		finalColor = input.c;
 	}
 
-	// transparent if unselected under selective mode
-	if (isSelectivePreviewMode && !isSelected) {
+	// unselected geometry is transparent under Isolate Selected Geometries mode
+	if (isIsolationMode && !isSelected) {
 		finalColor.a = vTransparentLinePoint.a;
 	}
 
