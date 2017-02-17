@@ -425,7 +425,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Bool_Case_3420.dyn");
             RunModel(openPath);
             AssertPreviewValue("ebd1f642-ee18-46d7-ad76-490d6adcf3f0", true);
-            AssertPreviewValue("b8f4c8fb-fa8b-4c10-96b7-70c5763917cd", 6.9115038378975449);
+            AssertPreviewValue("457dfbe9-0c65-4c43-aa83-667069ef562a", 6.9115038378975449);
 
             AssertPreviewValue("bf766c0b-15b1-49f7-90e3-bc3db3dd1987", true);
         }
