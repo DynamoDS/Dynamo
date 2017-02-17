@@ -37,6 +37,7 @@ using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
+using Dynamo.Models;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -674,11 +675,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 case "CachedValue":
                     Debug.WriteLine(string.Format("Requesting render packages for {0}", node.GUID));
-                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
+                    node.RequestVisualUpdateAsync(Scheduler, EngineController, renderPackageFactory);
                     break;
 
                 case "DisplayLabels":
-                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true);
+                    node.RequestVisualUpdateAsync(Scheduler, EngineController, renderPackageFactory, true);
                     break;
 
                 case "IsVisible":
@@ -686,10 +687,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     foreach(var g in geoms)
                     {
                         g.Value.Visibility = node.IsVisible ? Visibility.Visible : Visibility.Hidden;
-                        //RaisePropertyChanged("SceneItems");
                     }
 
-                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true);
+                    node.RequestVisualUpdateAsync(Scheduler, EngineController, renderPackageFactory, true);
                     break;
 
                 case "IsFrozen":
@@ -814,7 +814,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     foreach (var node in nodesToRender)
                     {
-                        node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true);
+                        node.RequestVisualUpdateAsync(Scheduler, EngineController, renderPackageFactory, true);
                     }
 
                     break;
@@ -2069,12 +2069,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 tw.WriteLine("solid {0}", model.CurrentWorkspace.Name);
                 foreach (var g in geoms)
                 {
-                    var n = ((MeshGeometry3D) g.Geometry).Normals.ToList();
+                    var n = ((MeshGeometry3D)g.Geometry).Normals.ToList();
                     var t = ((MeshGeometry3D)g.Geometry).Triangles.ToList();
 
-                    for (var i = 0; i < t.Count(); i ++)
+                    for (var i = 0; i < t.Count(); i++)
                     {
-                        var nCount = i*3;
+                        var nCount = i * 3;
                         tw.WriteLine("\tfacet normal {0} {1} {2}", n[nCount].X, n[nCount].Y, n[nCount].Z);
                         tw.WriteLine("\t\touter loop");
                         tw.WriteLine("\t\t\tvertex {0} {1} {2}", t[i].P0.X, t[i].P0.Y, t[i].P0.Z);

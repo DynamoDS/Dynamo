@@ -361,6 +361,7 @@ namespace Dynamo.Tests
         {
             var examplePath = Path.Combine(TestDirectory, @"core\filter\");
 
+
             CustomNodeInfo info;
             Assert.IsTrue(CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNode(Path.Combine(examplePath, "IsOdd.dyf"), true, out info));
 

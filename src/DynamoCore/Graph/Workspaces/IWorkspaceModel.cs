@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using System.Xml;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -80,5 +81,10 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="models">Collection of <see cref="ModelBase"/> objects to record.</param>
         void RecordModelsForModification(IEnumerable<ModelBase> models);
+
+        /// <summary>
+        /// Triggers when the workspace is saving.
+        /// </summary>
+        event Action<XmlDocument> Saving;
     }
 }

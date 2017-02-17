@@ -10,7 +10,6 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
-using Dynamo.Interfaces;
 using ProtoCore.Namespace;
 using System.Diagnostics;
 
@@ -291,15 +290,14 @@ namespace Dynamo.Graph.Workspaces
         /// Saves custom node workspace to a file
         /// </summary>
         /// <param name="newPath">New location to save the workspace.</param>
-        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object 
         /// to obtain serialized trace data for node list to save.</param>
         /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
         /// we should add it to recent files. Otherwise leave it.</param>
         /// <returns></returns>
-        public override bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackUp = false)
+        public override bool SaveAs(string newPath, bool isBackUp = false)
         {
             if (isBackUp)
-                return base.SaveAs(newPath, runtimeCore, isBackUp);
+                return base.SaveAs(newPath, isBackUp);
 
             var originalPath = FileName;
 
@@ -317,7 +315,7 @@ namespace Dynamo.Graph.Workspaces
                 SetInfo(Path.GetFileNameWithoutExtension(newPath));
             }
 
-            return base.SaveAs(newPath, runtimeCore, isBackUp);
+            return base.SaveAs(newPath, isBackUp);
         }
 
         protected override bool PopulateXmlDocument(XmlDocument document)
@@ -335,12 +333,6 @@ namespace Dynamo.Graph.Workspaces
             root.SetAttribute("Category", Category);
             
             return true;
-        }
-
-        protected override void SerializeSessionData(XmlDocument document, ProtoCore.RuntimeCore runtimeCore)
-        {
-            // Since custom workspace does not have any runtime data to persist,
-            // do not allow base class to serialize any session data.
         }
     }
 }

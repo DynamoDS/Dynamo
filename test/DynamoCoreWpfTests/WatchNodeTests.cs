@@ -53,7 +53,7 @@ namespace DynamoCoreWpfTests
         {
             string var = sourceNode.GetAstIdentifierForOutputIndex(0).Name;
             RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror = ViewModel.Model.EngineController.GetMirror(var));
+            Assert.DoesNotThrow(() => mirror = ViewModel.Model.GetCurrentEngineController().GetMirror(var));
             Assert.IsNotNull(mirror);
             AssertWatchContent(watch, mirror.GetData());
         }
@@ -103,7 +103,7 @@ namespace DynamoCoreWpfTests
                 ? watch.AstIdentifierForPreview.Name
                 : watch.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
 
-            var core = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
+            var core = ViewModel.Model.GetCurrentEngineController().LiveRunnerRuntimeCore;
             var watchHandler = ViewModel.WatchHandler;
 
             return watchHandler.GenerateWatchViewModelForData(
@@ -189,7 +189,7 @@ namespace DynamoCoreWpfTests
             var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
                 watchNode.CachedValue,
-                ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                ViewModel.Model.GetCurrentEngineController().LiveRunnerRuntimeCore,
                 watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
 
             Assert.AreEqual("Function", watchVM.NodeLabel);
@@ -207,7 +207,7 @@ namespace DynamoCoreWpfTests
             {
                 var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
                     watchNode.CachedValue,
-                    ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+                    ViewModel.Model.GetCurrentEngineController().LiveRunnerRuntimeCore,
                     watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
                 Assert.IsTrue(watchVM.NodeLabel.StartsWith("function"));
             }
@@ -225,7 +225,7 @@ namespace DynamoCoreWpfTests
             var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
                 watchNode.CachedValue,
-               ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
+               ViewModel.Model.GetCurrentEngineController().LiveRunnerRuntimeCore,
                 watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
 
             Assert.AreEqual("Function", watchVM.NodeLabel);

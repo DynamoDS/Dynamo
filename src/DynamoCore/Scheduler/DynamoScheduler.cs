@@ -82,6 +82,17 @@ namespace Dynamo.Scheduler
         TimeStamp NextTimeStamp { get; }
 
         /// <summary>
+        /// A flag indicating whether the scheduler have any tasks in its queue.
+        /// </summary>
+        bool HasPendingTasks { get; }
+
+        /// <summary>
+        /// The <see cref="TaskProcessMode"/> that will be
+        /// used for processing the tasks.
+        /// </summary>
+        TaskProcessMode ProcessMode { get; set; }
+
+        /// <summary>
         /// An ISchedulerThread implementation calls this method so scheduler 
         /// starts to process the next task in the queue, if there is any. Note 
         /// that this method is meant to process only one task in queue. The 

@@ -397,7 +397,10 @@ namespace Dynamo.UI.Controls
             switch (item.ContextData)
             {
                 case ButtonNames.NewWorkspace:
-                    dvm.NewHomeWorkspaceCommand.Execute(null);
+                    dvm.NewHomeWorkspaceCommand.Execute(new MakeNewHomeWorkspaceCommandOptions()
+                    {
+                        ForceNewHomeWorkspace = false
+                    });
                     break;
 
                 case ButtonNames.OpenWorkspace:
@@ -551,14 +554,6 @@ namespace Dynamo.UI.Controls
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                // Note that you can have more than one file.
-                var homespace = dynamoViewModel.HomeSpace;
-                if (homespace.HasUnsavedChanges && 
-                    !dynamoViewModel.AskUserToSaveWorkspaceOrCancel(homespace))
-                {
-                    return;
-                }
-
                 var files = e.Data.GetData(DataFormats.FileDrop) as string[];
                 if (files != null && (files.Length > 0))
                 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Utilities;
-
+using Autodesk.DesignScript.Interfaces;
 
 namespace Dynamo.Models
 {
@@ -124,6 +124,16 @@ namespace Dynamo.Models
         #endregion
     }
 
+    public class EvaluationStartedEventArgs : EventArgs
+    {
+        public IHomeWorkspaceModel HomeWorkspaceModel { get; private set; }
+
+        public EvaluationStartedEventArgs(IHomeWorkspaceModel model)
+        {
+            this.HomeWorkspaceModel = model;
+        }
+    }
+
     /// <summary>
     /// This class represents the arguments when a graph evaluation is completed.
     /// </summary>
@@ -135,6 +145,10 @@ namespace Dynamo.Models
         /// Returns true if there was any evaluation.
         /// </summary>
         public bool EvaluationTookPlace { get; private set; }
+
+        public long EvaluationTimeElapsed { get; private set; }
+
+        public IHomeWorkspaceModel HomeWorkspaceModel { get; private set; }
 
         /// <summary>
         /// Returns true if Evaluation is succeeded.
@@ -166,8 +180,12 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="evaluationTookPlace">Bool value indicates if evaluation took place</param>
         /// <param name="errorMsg">Exception thrown during evaluation</param>
-        public EvaluationCompletedEventArgs(bool evaluationTookPlace, Exception errorMsg = null)
+        /// <param name="evaluationTimeElapsed"></param>
+        public EvaluationCompletedEventArgs(IHomeWorkspaceModel model, bool evaluationTookPlace, long evaluationTimeElapsed, Exception errorMsg = null)
         {
+            this.HomeWorkspaceModel = model;
+            this.EvaluationTimeElapsed = evaluationTimeElapsed;
+
             EvaluationTookPlace = evaluationTookPlace;
 
             error = errorMsg != null ? Option.Some(errorMsg) : Option.None<Exception>();

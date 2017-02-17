@@ -7,18 +7,16 @@ using Dynamo.Utilities;
 using Dynamo.Scheduler;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
-using ProtoCore.Mirror;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media.Animation;
 using Dynamo.Configuration;
-using Dynamo.Extensions;
 using Dynamo.Models;
 using System.Threading.Tasks;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.UI.Controls
 {
@@ -77,7 +75,11 @@ namespace Dynamo.UI.Controls
 
         public PreviewControl(NodeViewModel nodeViewModel)
         {
-            this.scheduler = nodeViewModel.DynamoViewModel.Model.Scheduler;
+            var ws = nodeViewModel.DynamoViewModel.Model.GetFirstWorkspaceOfType<HomeWorkspaceModel>();
+            if (ws == null) throw new InvalidOperationException("Cannot create a PreviewControl outside of a HomeWorkspaceModel");
+
+            this.scheduler = ws.Scheduler;
+            
             this.nodeViewModel = nodeViewModel;
             InitializeComponent();
             Loaded += PreviewControl_Loaded;

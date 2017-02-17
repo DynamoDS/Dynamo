@@ -22,16 +22,15 @@ using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
 using Dynamo.Wpf.Properties;
+using Dynamo.Engine;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     public class Watch3DViewModelStartupParams
     {
         public IDynamoModel Model { get; set; }
-        public IScheduler Scheduler { get; set; }
         public ILogger Logger { get; set; }
         public IPreferences Preferences { get; set; }
-        public IEngineControllerManager EngineControllerManager { get; set; }
 
         public Watch3DViewModelStartupParams()
         {
@@ -41,10 +40,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public Watch3DViewModelStartupParams(DynamoModel model)
         {
             Model = model;
-            Scheduler = model.Scheduler;
             Logger = model.Logger;
             Preferences = model.PreferenceSettings;
-            EngineControllerManager = model;
         }
     }
 
@@ -57,10 +54,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     public class DefaultWatch3DViewModel : NotificationObject, IWatch3DViewModel, IDisposable, IWatchPreferenceProperties
     {
         protected readonly IDynamoModel model;
-        protected readonly IScheduler scheduler;
         protected readonly IPreferences preferences;
         protected readonly ILogger logger;
-        protected readonly IEngineControllerManager engineManager;
         protected IRenderPackageFactory renderPackageFactory;
         protected IDynamoViewModel viewModel;
 
@@ -227,6 +222,24 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public bool CanBeActivated { get; internal set; }
 
+        protected EngineController EngineController
+        {
+            get
+            {
+                var ws = this.CurrentSpaceViewModel.Model as IHomeWorkspaceModel;
+                return ws != null ? ws.EngineController : null;
+            }
+        }
+
+        protected IScheduler Scheduler
+        {
+            get
+            {
+                var ws = this.CurrentSpaceViewModel.Model as IHomeWorkspaceModel;
+                return ws != null ? ws.Scheduler : null;
+            }
+        }
+
         /// <summary>
         /// The DefaultWatch3DViewModel is used in contexts where a complete rendering environment
         /// cannot be established. Typically, this is machines that do not have GPUs, or do not
@@ -236,10 +249,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public DefaultWatch3DViewModel(Watch3DViewModelStartupParams parameters)
         {
             model = parameters.Model;
-            scheduler = parameters.Scheduler;
             preferences = parameters.Preferences;
             logger = parameters.Logger;
-            engineManager = parameters.EngineControllerManager;
 
             Name = Resources.BackgroundPreviewDefaultName;
             isGridVisible = parameters.Preferences.IsBackgroundGridVisible;
@@ -420,7 +431,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             foreach (var node in
                 model.CurrentWorkspace.Nodes)
             {
-                node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController,
+                node.RequestVisualUpdateAsync(Scheduler, EngineController,
                         renderPackageFactory, true);
             }
         }

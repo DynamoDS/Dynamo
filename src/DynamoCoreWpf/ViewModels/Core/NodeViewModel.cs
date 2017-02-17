@@ -484,7 +484,9 @@ namespace Dynamo.ViewModels
 
             if (IsDebugBuild)
             {
-                DynamoViewModel.EngineController.AstBuilt += EngineController_AstBuilt;
+                var hws = WorkspaceViewModel.Model as IHomeWorkspaceModel;
+                if (hws == null) return;
+                hws.EngineController.AstBuilt += EngineController_AstBuilt;
             }
 
             ShowExecutionPreview = workspaceViewModel.DynamoViewModel.ShowRunPreview;

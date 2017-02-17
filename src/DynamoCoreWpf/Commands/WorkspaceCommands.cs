@@ -14,7 +14,7 @@ namespace Dynamo.ViewModels
     {
         #region Private Delegate Command Data Members
 
-        private DelegateCommand _hideCommand;
+        private DelegateCommand _closeCommand;
         private DelegateCommand _setCurrentOffsetCommand;
         private DelegateCommand _nodeFromSelectionCommand;
         private DelegateCommand _setZoomCommand;
@@ -25,8 +25,6 @@ namespace Dynamo.ViewModels
         private DelegateCommand _findNodesFromSelectionCommand;
         private DelegateCommand _selectAllCommand;
         private DelegateCommand _graphAutoLayoutCommand;
-        private DelegateCommand _pauseVisualizationManagerUpdateCommand;
-        private DelegateCommand _unpauseVisualizationManagerUpdateCommand;
         private DelegateCommand _showHideAllGeometryPreviewCommand;
         private DelegateCommand _showHideAllUpstreamPreviewCommand;
         private DelegateCommand _showInCanvasSearchCommand;
@@ -79,14 +77,14 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public DelegateCommand HideCommand
+        public DelegateCommand CloseCommand
         {
             get
             {
-                if(_hideCommand == null)
-                    _hideCommand = new DelegateCommand(Hide, CanHide);
+                if(_closeCommand == null)
+                    _closeCommand = new DelegateCommand(Close, CanClose);
 
-                return _hideCommand;
+                return _closeCommand;
             }
         }
 

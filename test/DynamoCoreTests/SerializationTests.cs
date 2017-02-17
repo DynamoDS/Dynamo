@@ -248,7 +248,7 @@ namespace Dynamo.Tests
                 RunCurrentModel();
             }
 
-            var wcd1 = new WorkspaceComparisonData(ws1, CurrentDynamoModel.EngineController);
+            var wcd1 = new WorkspaceComparisonData(ws1, CurrentDynamoModel.GetCurrentEngineController());
 
             var dirPath = Path.Combine(Path.GetTempPath(), "json");
             if (!Directory.Exists(dirPath))
@@ -267,7 +267,7 @@ namespace Dynamo.Tests
             lastExecutionDuration = new TimeSpan();
 
             var ws2 = Autodesk.Workspaces.Utilities.LoadWorkspaceFromJson(json, model.LibraryServices,
-                model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false,
+                model.GetCurrentEngineController(), model.GetCurrentScheduler(), model.NodeFactory, DynamoModel.IsTestMode, false,
                 model.CustomNodeManager);
 
             if (ws2 is CustomNodeWorkspaceModel)
@@ -321,7 +321,7 @@ namespace Dynamo.Tests
                 Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.NickName).ToArray()));
             }
 
-            var wcd2 = new WorkspaceComparisonData(ws2, CurrentDynamoModel.EngineController);
+            var wcd2 = new WorkspaceComparisonData(ws2, CurrentDynamoModel.GetCurrentEngineController());
 
             CompareWorkspaces(wcd1, wcd2);
 
@@ -374,7 +374,7 @@ namespace Dynamo.Tests
         private static string ConvertCurrentWorkspaceToJsonAndSave(DynamoModel model, string filePathBase)
         {
             var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(model.CurrentWorkspace, model.LibraryServices,
-                model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false,
+                model.GetCurrentEngineController(), model.GetCurrentScheduler(), model.NodeFactory, DynamoModel.IsTestMode, false,
                 model.CustomNodeManager);
 
             Assert.IsNotNullOrEmpty(json);
@@ -403,10 +403,10 @@ namespace Dynamo.Tests
             {
                 var workspace = CurrentDynamoModel.CurrentWorkspace;
 
-                var libCore = CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
+                var libCore = CurrentDynamoModel.GetCurrentEngineController().LibraryServices.LibraryManagementCore;
                 var libraryServices = new LibraryCustomizationServices(CurrentDynamoModel.PathManager);
                 var nameProvider = new NamingProvider(libCore, libraryServices);
-                var controller = CurrentDynamoModel.EngineController;
+                var controller = CurrentDynamoModel.GetCurrentEngineController();
                 var resolver = CurrentDynamoModel.CurrentWorkspace.ElementResolver;
                 var namingProvider = new NamingProvider(controller.LibraryServices.LibraryManagementCore, libraryServices);
 

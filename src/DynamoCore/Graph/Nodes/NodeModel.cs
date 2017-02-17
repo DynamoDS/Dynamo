@@ -6,7 +6,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
-using Autodesk.DesignScript.Interfaces;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Connectors;
@@ -14,7 +13,6 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Migration;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
-using Dynamo.Utilities;
 using Dynamo.Visualization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -24,7 +22,8 @@ using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using System.Runtime.Serialization;
-using System.Diagnostics;
+using Autodesk.DesignScript.Interfaces;
+using Dynamo.Utilities;
 
 namespace Dynamo.Graph.Nodes
 {

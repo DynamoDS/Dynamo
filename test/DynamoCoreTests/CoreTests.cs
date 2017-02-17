@@ -474,9 +474,7 @@ namespace Dynamo.Tests
             string fn = "ruthlessTurtles.dyn";
             string path = Path.Combine(TempFolder, fn);
 
-            CurrentDynamoModel.CurrentWorkspace.SaveAs(
-                path,
-                CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore);
+            CurrentDynamoModel.CurrentWorkspace.SaveAs(path);
 
             var tempFldrInfo = new DirectoryInfo(TempFolder);
             Assert.AreEqual(1, tempFldrInfo.GetFiles().Length);
@@ -497,9 +495,7 @@ namespace Dynamo.Tests
 
             string fn = "ruthlessTurtles.dyn";
             string path = Path.Combine(TempFolder, fn);
-            CurrentDynamoModel.CurrentWorkspace.SaveAs(
-                path,
-                CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore);
+            CurrentDynamoModel.CurrentWorkspace.SaveAs(path);
 
             var tempFldrInfo = new DirectoryInfo(TempFolder);
             Assert.AreEqual(1, tempFldrInfo.GetFiles().Length);
@@ -512,7 +508,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CannotSaveEmptyWorkspaceIfSaveIsCalledWithoutSettingPath()
         {
-            CurrentDynamoModel.CurrentWorkspace.Save(CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore);
+            CurrentDynamoModel.CurrentWorkspace.Save();
 
             Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.FileName, string.Empty);
         }
@@ -530,7 +526,7 @@ namespace Dynamo.Tests
                 Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             }
 
-            CurrentDynamoModel.CurrentWorkspace.Save(CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore);
+            CurrentDynamoModel.CurrentWorkspace.Save();
 
             Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.FileName, string.Empty);
         }

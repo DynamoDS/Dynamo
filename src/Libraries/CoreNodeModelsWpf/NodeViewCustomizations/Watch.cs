@@ -10,11 +10,14 @@ using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.Engine;
 using Dynamo.Interfaces;
 using Dynamo.Scheduler;
 using Dynamo.ViewModels;
 using ProtoCore.AST.AssociativeAST;
 using Dynamo.Wpf;
+using Dynamo.Models;
+using Dynamo.Graph.Workspaces;
 
 namespace CoreNodeModelsWpf.Nodes
 {
@@ -23,9 +26,10 @@ namespace CoreNodeModelsWpf.Nodes
         #region Private fields
 
         private IdentifierNode astBeingComputed;
-
+        private IdentifierNode astBeingWatched;
+        private IScheduler scheduler;
+        private EngineController engineController;
         private DynamoViewModel dynamoViewModel;
-
         private Watch watch;
         private SynchronizationContext syncContext;
         private WatchViewModel rootWatchViewModel;
@@ -34,6 +38,14 @@ namespace CoreNodeModelsWpf.Nodes
         public void CustomizeView(Watch nodeModel, NodeView nodeView)
         {
             this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
+
+            var ws = dynamoViewModel.Model.CurrentWorkspace as IHomeWorkspaceModel;
+            if (ws != null)
+            {
+                this.scheduler = ws.Scheduler;
+                this.engineController = ws.EngineController;
+            }
+
             this.watch = nodeModel;
             this.syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
 
@@ -151,7 +163,9 @@ namespace CoreNodeModelsWpf.Nodes
                     ? watch.AstIdentifierForPreview.Name
                     : watch.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
 
-            var core = this.dynamoViewModel.Model.EngineController.LiveRunnerRuntimeCore;
+            if (engineController == null) return null;
+
+            var core = engineController.LiveRunnerRuntimeCore;
             var watchHandler = this.dynamoViewModel.WatchHandler;
 
             return watchHandler.GenerateWatchViewModelForData(
@@ -186,7 +200,8 @@ namespace CoreNodeModelsWpf.Nodes
                 return;
             }
 
-            var s = dynamoViewModel.Model.Scheduler;
+            var s = this.scheduler;
+            if (s == null) return;
 
             WatchViewModel wvm = null;
 

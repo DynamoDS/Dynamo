@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -11,31 +6,36 @@ using System.Windows.Threading;
 using DSCore;
 using Dynamo.Controls;
 using Dynamo.Scheduler;
-using Dynamo.UI;
 
 using CoreNodeModels;
 using Dynamo.Configuration;
-using Dynamo.Models;
-using Dynamo.ViewModels;
-using ProtoCore.Mirror;
-using Color = DSCore.Color;
+using Dynamo.Engine;
 using Dynamo.Wpf;
+using Dynamo.Graph.Workspaces;
 
 namespace CoreNodeModelsWpf.Nodes
 {
     public class ColorRangeNodeViewCustomization : INodeViewCustomization<ColorRange>
     {
-        private DynamoViewModel dynamoViewModel;
+        private IScheduler scheduler;
+        private EngineController engineController;
         private DispatcherSynchronizationContext syncContext;
         private ColorRange colorRangeNode;
-        private DynamoModel dynamoModel;
         private System.Windows.Controls.Image gradientImage;
         private ColorRange1D colorRange;
 
         public void CustomizeView(ColorRange model, NodeView nodeView)
         {
-            dynamoModel = nodeView.ViewModel.DynamoViewModel.Model;
-            dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
+            var dynamoModel = nodeView.ViewModel.DynamoViewModel.Model;
+            var currentWorkspace = dynamoModel.CurrentWorkspace as IHomeWorkspaceModel;
+
+            // if not a home workspace, we will not use the scheduler or enginecontroller
+            if (currentWorkspace != null)
+            {
+                this.scheduler = currentWorkspace.Scheduler;
+                this.engineController = currentWorkspace.EngineController;
+            }
+
             syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
             colorRangeNode = model;
 
@@ -55,12 +55,12 @@ namespace CoreNodeModelsWpf.Nodes
 
         private void UpdateColorRange()
         {
-            var s = dynamoViewModel.Model.Scheduler;
+            if (this.scheduler == null) return;
 
             // prevent data race by running on scheduler
-            var t = new DelegateBasedAsyncTask(s, () =>
+            var t = new DelegateBasedAsyncTask(this.scheduler, () =>
             {
-                colorRange = colorRangeNode.ComputeColorRange(dynamoModel.EngineController);
+                colorRange = colorRangeNode.ComputeColorRange(this.engineController);
             });
 
             // then update on the ui thread
@@ -70,7 +70,7 @@ namespace CoreNodeModelsWpf.Nodes
                 gradientImage.Source = bmp;
             }, syncContext);
 
-            s.ScheduleForExecution(t);
+            this.scheduler.ScheduleForExecution(t);
         }
 
         public void Dispose() {}

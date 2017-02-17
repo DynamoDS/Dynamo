@@ -9,6 +9,7 @@ using DynamoUtilities;
 using Dynamo.Applications;
 using Dynamo.Graph;
 using Autodesk.Workspaces;
+using Dynamo.Graph.Workspaces;
 
 namespace DynamoCLI
 {
@@ -107,12 +108,15 @@ namespace DynamoCLI
                 {
                     doc = new XmlDocument();
                     var resultsdict = new Dictionary<Guid, List<object>>();
+
+                    var ws = model.GetFirstWorkspaceOfType<IHomeWorkspaceModel>();
+
                     foreach (var node in model.CurrentWorkspace.Nodes)
                     {
                         var portvalues = new List<object>();
                         foreach (var port in node.OutPorts)
                         {
-                            var value = node.GetValue(port.Index, model.EngineController);
+                            var value = node.GetValue(port.Index, ws.EngineController);
                             if (value.IsCollection)
                             {
                                 portvalues.Add(GetStringRepOfCollection(value));
@@ -178,8 +182,8 @@ namespace DynamoCLI
             model.OpenFileFromPath(dynPath);
 
             var ws = model.CurrentWorkspace;
-            var json = Utilities.SaveWorkspaceToJson(ws, model.LibraryServices, model.EngineController,
-                model.Scheduler, model.NodeFactory, false, false, model.CustomNodeManager);
+            var json = Utilities.SaveWorkspaceToJson(ws, model.LibraryServices, model.GetCurrentEngineController(),
+                model.GetCurrentScheduler(), model.NodeFactory, false, false, model.CustomNodeManager);
 
             var newFilePath = Path.Combine(Path.GetDirectoryName(dynPath), Path.GetFileNameWithoutExtension(dynPath) + ".json");
             File.WriteAllText(newFilePath, json);

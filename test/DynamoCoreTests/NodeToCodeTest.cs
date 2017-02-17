@@ -144,8 +144,8 @@ namespace Dynamo.Tests
             //
             //    a = 3;
             OpenModel(@"core\node2code\sameNames1.dyn");
+            var engine = CurrentEngineController();
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             // We should get 3 ast nodes, but their order is not important. 
@@ -177,7 +177,7 @@ namespace Dynamo.Tests
             //    a = 3;
             OpenModel(@"core\node2code\sameNames2.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             // We should get 3 ast nodes, but their order is not important. 
@@ -207,7 +207,7 @@ namespace Dynamo.Tests
             //    a = 2;
             OpenModel(@"core\node2code\sameNames3.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.IsNotNull(result);
@@ -239,7 +239,7 @@ namespace Dynamo.Tests
             //    a2 = a + a1;
             OpenModel(@"core\node2code\sameNames4.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.IsNotNull(result);
@@ -271,7 +271,7 @@ namespace Dynamo.Tests
             //   x = 1; --> a[x][x] = 2;
             OpenModel(@"core\node2code\sameName5.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.IsNotNull(result);
@@ -297,7 +297,7 @@ namespace Dynamo.Tests
             //          --> Point.ByCoordinate()
             OpenModel(@"core\node2code\sameNames5.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
@@ -329,7 +329,7 @@ namespace Dynamo.Tests
             //    t2 = 4;
             OpenModel(@"core\node2code\tempVariable1.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.IsNotNull(result);
@@ -361,7 +361,7 @@ namespace Dynamo.Tests
             //    4;
             OpenModel(@"core\node2code\tempVariable2.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.IsNotNull(result);
@@ -387,7 +387,7 @@ namespace Dynamo.Tests
             // 2 y
             OpenModel(@"core\node2code\tempVariable3.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -402,7 +402,7 @@ namespace Dynamo.Tests
         {
             OpenModel(@"core\node2code\tempVariable4.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -422,9 +422,9 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer1()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().ImportLibrary(libraryPath);
             }
 
             var functionCall = AstFactory.BuildFunctionCall(
@@ -435,7 +435,7 @@ namespace Dynamo.Tests
             var ast = AstFactory.BuildBinaryExpression(lhs, functionCall, ProtoCore.DSASM.Operator.assign);
 
             NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
-                CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore.ClassTable, 
+                CurrentDynamoModel.LibraryServices.LibraryManagementCore.ClassTable, 
                 new [] { ast });
 
             // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
@@ -448,15 +448,15 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer2()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             // Point.ByCoordinates(1,2); 
             OpenModel(@"core\node2code\unqualifiedName1.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -477,15 +477,15 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer3()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             // 1 -> Point.ByCoordinates(x, y); 
             OpenModel(@"core\node2code\unqualifiedName2.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -506,15 +506,15 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer4()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             // 1 -> Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, x); 
             OpenModel(@"core\node2code\unqualifiedName3.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -535,15 +535,15 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer5()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             // 1 -> Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, x); 
             OpenModel(@"core\node2code\unqualifiedName4.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -569,7 +569,7 @@ namespace Dynamo.Tests
         {
             OpenModel(@"core\node2code\unqualifiedName5.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -586,16 +586,16 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacer7()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             // Point.ByCoordinates(1,2,3);
             // Point.ByCoordinates(1,2,3);
             OpenModel(@"core\node2code\unqualifiedName6.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -620,14 +620,14 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacerWithDefaultArgument()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             OpenModel(@"core\node2code\SphereDefaultArg.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -649,14 +649,14 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacerWithDefaultArgument2()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             OpenModel(@"core\node2code\ShortenNodeNameWithDefaultArg.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -678,14 +678,14 @@ namespace Dynamo.Tests
         public void TestShortestQualifiedNameReplacerWithStaticProperty()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             OpenModel(@"core\node2code\ShortenNodeNameWithStaticProperty.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -709,7 +709,7 @@ namespace Dynamo.Tests
             // 1 -> a -> x
             OpenModel(@"core\node2code\workflow1.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -802,14 +802,14 @@ namespace Dynamo.Tests
         public void TestShortName1()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             OpenModel(@"core\node2code\shortName1.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -832,7 +832,7 @@ namespace Dynamo.Tests
             // Point.X; Point.X;
             OpenModel(@"core\node2code\property.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -847,14 +847,14 @@ namespace Dynamo.Tests
         public void TestPropertyWontBeReplaced2()
         {
             string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            if (!CurrentDynamoModel.GetCurrentEngineController().LibraryServices.IsLibraryLoaded(libraryPath))
             {
-                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+                CurrentDynamoModel.GetCurrentEngineController().LibraryServices.ImportLibrary(libraryPath);
             }
 
             OpenModel(@"core\node2code\staticproperty.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -928,7 +928,7 @@ namespace Dynamo.Tests
         {
             OpenModel(@"core\node2code\stringNode.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.IsNotNull(result.AstNodes);
 
@@ -946,7 +946,7 @@ namespace Dynamo.Tests
         {
             OpenModel(@"core\node2code\integerSlider.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.IsNotNull(result.AstNodes);
 
@@ -964,7 +964,7 @@ namespace Dynamo.Tests
         {
             OpenModel(@"core\node2code\numberSlider.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.IsNotNull(result.AstNodes);
 
@@ -982,7 +982,7 @@ namespace Dynamo.Tests
         {
             OpenModel(@"core\node2code\boolSelector.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.IsNotNull(result.AstNodes);
 
@@ -1000,7 +1000,7 @@ namespace Dynamo.Tests
         {
             OpenModel(@"core\node2code\CreateList.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.IsNotNull(result.AstNodes);
 
@@ -1019,7 +1019,7 @@ namespace Dynamo.Tests
         {
             OpenModel(@"core\node2code\numberSequence.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.IsNotNull(result.AstNodes);
 
@@ -1037,7 +1037,7 @@ namespace Dynamo.Tests
         {
             OpenModel(@"core\node2code\numberRange.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
-            var engine = CurrentDynamoModel.EngineController;
+            var engine = CurrentEngineController();
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.IsNotNull(result.AstNodes);
 
@@ -1125,7 +1125,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestNameProvider()
         {
-            var core = CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
+            var core = CurrentDynamoModel.GetCurrentEngineController().LibraryServices.LibraryManagementCore;
             var libraryServices = new LibraryCustomizationServices(CurrentDynamoModel.PathManager);
             var nameProvider = new NamingProvider(core, libraryServices);
 
@@ -1292,11 +1292,11 @@ namespace Dynamo.Tests
         /// <param name="dynFilePath"></param>
         protected void MutationTest(string dynFilePath)
         {
-            CurrentDynamoModel.Scheduler.ProcessMode = TaskProcessMode.Asynchronous;
+            CurrentDynamoModel.GetCurrentScheduler().ProcessMode = TaskProcessMode.Asynchronous;
 
             RunModel(dynFilePath);
             // Block until all tasks are executed
-            while (CurrentDynamoModel.Scheduler.HasPendingTasks);
+            while (CurrentDynamoModel.GetCurrentScheduler().HasPendingTasks);
 
             var allNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Select(n => n.GUID).ToList();
             int nodeCount = allNodes.Count();
@@ -1317,7 +1317,7 @@ namespace Dynamo.Tests
                 var command = new DynamoModel.ConvertNodesToCodeCommand();
                 CurrentDynamoModel.ExecuteCommand(command);
                 // Block until all tasks are executed
-                while (CurrentDynamoModel.Scheduler.HasPendingTasks);
+                while (CurrentDynamoModel.GetCurrentScheduler().HasPendingTasks);
 
                 foreach (var node in otherNodes)
                 {
@@ -1331,7 +1331,7 @@ namespace Dynamo.Tests
                 var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
                 CurrentDynamoModel.ExecuteCommand(undo);
                 // Block until all tasks are executed
-                while (CurrentDynamoModel.Scheduler.HasPendingTasks) ;
+                while (CurrentDynamoModel.GetCurrentScheduler().HasPendingTasks) ;
 
                 // Verify after undo everything is OK
                 Assert.AreEqual(nodeCount, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());

@@ -1379,15 +1379,6 @@ namespace Dynamo.Controls
         private void OpenSample_Click(object sender, RoutedEventArgs e)
         {
             var path = (string)((MenuItem)sender).Tag;
-
-            var workspace = dynamoViewModel.HomeSpace;
-            if (workspace.HasUnsavedChanges)
-            {
-                if (!dynamoViewModel.AskUserToSaveWorkspaceOrCancel(workspace))
-                    return; // User has not saved his/her work.
-            }
-
-            dynamoViewModel.Model.CurrentWorkspace = dynamoViewModel.HomeSpace;
             dynamoViewModel.OpenCommand.Execute(path);
         }
 
@@ -1693,11 +1684,6 @@ namespace Dynamo.Controls
                 Activate();
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-                if (dynamoViewModel.HomeSpace.HasUnsavedChanges && !dynamoViewModel.AskUserToSaveWorkspaceOrCancel(dynamoViewModel.HomeSpace))
-                {
-                    return;
-                }
 
                 if (dynamoViewModel.OpenCommand.CanExecute(files[0]))
                 {

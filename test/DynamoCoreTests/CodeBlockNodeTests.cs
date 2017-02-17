@@ -403,7 +403,7 @@ b = c[w][x][y][z];";
             BeginRun();
 
             // Get preview data given AstIdentifierBase
-            var core = CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore;
+            var core = CurrentDynamoModel.GetCurrentEngineController().LiveRunnerRuntimeCore;
             var runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core);
             MirrorData mirrorData = runtimeMirror.GetData();
             Assert.AreEqual(mirrorData.Data, value);
@@ -1003,7 +1003,7 @@ var06 = g;
             BeginRun();
 
             // Get preview data given AstIdentifierBase
-            var core = CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore;
+            var core = CurrentDynamoModel.GetCurrentEngineController().LiveRunnerRuntimeCore;
             var runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core);
             MirrorData mirrorData = runtimeMirror.GetData();
             Assert.AreEqual(mirrorData.Data, null);

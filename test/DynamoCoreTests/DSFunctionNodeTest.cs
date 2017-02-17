@@ -41,7 +41,7 @@ namespace Dynamo.Tests
             var addNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("c969ebda-d77e-4cd3-985e-187dd1dccb03");
             string var = addNode.GetAstIdentifierForOutputIndex(0).Name;
             RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror = CurrentDynamoModel.EngineController.GetMirror(var));
+            Assert.DoesNotThrow(() => mirror = CurrentDynamoModel.GetCurrentEngineController().GetMirror(var));
             Assert.IsNotNull(mirror);
 
             Assert.AreEqual(mirror.GetData().Data, 5.0);
@@ -57,7 +57,7 @@ namespace Dynamo.Tests
             var absNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("2c26388d-3d14-443a-ac41-c2bb0987a58e");
             string var = absNode.GetAstIdentifierForOutputIndex(0).Name;
             RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror = CurrentDynamoModel.EngineController.GetMirror(var));
+            Assert.DoesNotThrow(() => mirror = CurrentDynamoModel.GetCurrentEngineController().GetMirror(var));
             Assert.IsNotNull(mirror);
 
             Assert.AreEqual(mirror.GetData().Data, 10.0);
@@ -65,7 +65,7 @@ namespace Dynamo.Tests
             var mulNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("0c85072f-f9c5-45f3-8099-832161dfcacb");
             var = mulNode.GetAstIdentifierForOutputIndex(0).Name;
             mirror = null;
-            Assert.DoesNotThrow(() => mirror = CurrentDynamoModel.EngineController.GetMirror(var));
+            Assert.DoesNotThrow(() => mirror = CurrentDynamoModel.GetCurrentEngineController().GetMirror(var));
             Assert.IsNotNull(mirror);
 
             Assert.AreEqual(mirror.GetData().Data, 100.0);
@@ -81,7 +81,7 @@ namespace Dynamo.Tests
             var count = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("007b5942-12b0-4cea-aa05-b43531b6ccb8");
             string var = count.GetAstIdentifierForOutputIndex(0).Name;
             RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror = CurrentDynamoModel.EngineController.GetMirror(var));
+            Assert.DoesNotThrow(() => mirror = CurrentDynamoModel.GetCurrentEngineController().GetMirror(var));
             Assert.IsNotNull(mirror);
 
             var value = (Int64)mirror.GetData().Data;

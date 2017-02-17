@@ -1,11 +1,22 @@
-﻿using System;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.Wpf.ViewModels.Core;
 using Microsoft.Practices.Prism.Commands;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 
 namespace Dynamo.ViewModels
 {
+    public class MakeNewHomeWorkspaceCommandOptions
+    {
+        /// <summary>
+        /// Identifies whether a new home workspace should be created
+        /// if there already is an fresh home workspace open
+        /// </summary>
+        public bool ForceNewHomeWorkspace { get; set; }
+    }
+
     partial class DynamoViewModel
     {
         private void InitializeDelegateCommands()
@@ -36,7 +47,6 @@ namespace Dynamo.ViewModels
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
             HomeCommand = new DelegateCommand(GoHome, CanGoHome);
             NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
-            CloseHomeWorkspaceCommand = new DelegateCommand(CloseHomeWorkspace, CanCloseHomeWorkspace);
             GoToWorkspaceCommand = new DelegateCommand(GoToWorkspace, CanGoToWorkspace);
             DeleteCommand = new DelegateCommand(Delete, CanDelete);
             ExitCommand = new DelegateCommand(Exit, CanExit);
@@ -50,6 +60,8 @@ namespace Dynamo.ViewModels
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
             ForceRunExpressionCommand = new DelegateCommand(ForceRunExprCmd, RunSettingsViewModel.CanRunExpression);
             MutateTestDelegateCommand = new DelegateCommand(MutateTestCmd, RunSettingsViewModel.CanRunExpression);
+            RunCommand = new DelegateCommand((o) => this.RunSettingsViewModel.RunExpressionCommand.Execute(this.RunSettingsViewModel.RunInDebug), (_) => this.Model.CurrentWorkspace is HomeWorkspaceModel);
+            CancelRunCommand = new DelegateCommand((o) => this.RunSettingsViewModel.CancelRunCommand.Execute(o), (_) => this.CurrentSpaceViewModel is HomeWorkspaceViewModel);
             DisplayFunctionCommand = new DelegateCommand(DisplayFunction, CanDisplayFunction);
             SetConnectorTypeCommand = new DelegateCommand(SetConnectorType, CanSetConnectorType);
             ReportABugCommand = new DelegateCommand(ReportABug, CanReportABug);
@@ -57,7 +69,7 @@ namespace Dynamo.ViewModels
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode, CanGoToSourceCode);
             GoToDictionaryCommand = new DelegateCommand(GoToDictionary, CanGoToDictionary);
             DisplayStartPageCommand = new DelegateCommand(DisplayStartPage, CanDisplayStartPage);
-            ChangeScaleFactorCommand = new DelegateCommand(p => OnRequestScaleFactorDialog(this, EventArgs.Empty), o => ChangeScaleFactorEnabled);
+            ChangeScaleFactorCommand = new DelegateCommand(p => OnRequestScaleFactorDialog(this, System.EventArgs.Empty), o => ChangeScaleFactorEnabled);
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
             PublishNewPackageCommand = new DelegateCommand(PackageManagerClientViewModel.PublishNewPackage, PackageManagerClientViewModel.CanPublishNewPackage);
             ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
@@ -115,7 +127,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand SaveCommand { get; set; }
         public DelegateCommand SaveAsCommand { get; set; }
         public DelegateCommand NewHomeWorkspaceCommand { get; set; }
-        public DelegateCommand CloseHomeWorkspaceCommand { get; set; }
         public DelegateCommand GoToWorkspaceCommand { get; set; }
         public DelegateCommand DeleteCommand { get; set; }
         public DelegateCommand AlignSelectedCommand { get; set; }
@@ -148,6 +159,8 @@ namespace Dynamo.ViewModels
         public DelegateCommand PublishCurrentWorkspaceCommand { get; set; }
         public DelegateCommand PublishSelectedNodesCommand { get; set; }
         public DelegateCommand<Function> PublishCustomNodeCommand { get; set; }
+        public DelegateCommand RunCommand { get; set; }
+        public DelegateCommand CancelRunCommand { get; set; }
         public DelegateCommand PanCommand { get; set; }
         public DelegateCommand ZoomInCommand { get; set; }
         public DelegateCommand ZoomOutCommand { get; set; }

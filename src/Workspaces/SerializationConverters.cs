@@ -20,7 +20,6 @@ using Dynamo.Utilities;
 using Dynamo.Graph.Nodes.CustomNodes;
 using ProtoCore.Namespace;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using System.Globalization;
 using CoreNodeModels;
 
 namespace Autodesk.Workspaces
@@ -181,14 +180,14 @@ namespace Autodesk.Workspaces
     /// </summary>
     public class WorkspaceConverter : JsonConverter
     {
-        DynamoScheduler scheduler;
+        IScheduler scheduler;
         EngineController engine;
         NodeFactory factory;
         bool isTestMode;
         bool verboseLogging;
 
         public WorkspaceConverter(EngineController engine, 
-            DynamoScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging)
+            IScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging)
         {
             this.scheduler = scheduler;
             this.engine = engine;
@@ -251,7 +250,7 @@ namespace Autodesk.Workspaces
             }
             else
             {
-                ws = new HomeWorkspaceModel(guid, engine, scheduler, factory, 
+                ws = new HomeWorkspaceModel(guid, engine, (DynamoScheduler)scheduler, factory, 
                     Enumerable.Empty<KeyValuePair<Guid, List<CallSite.RawTraceData>>>(), nodes, notes, annotations, 
                     Enumerable.Empty<PresetModel>(), elementResolver, 
                     info, verboseLogging, isTestMode);
