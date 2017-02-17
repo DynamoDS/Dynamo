@@ -721,6 +721,10 @@
                         <Separator />
                         <MenuItem Focusable="False"
                                   IsCheckable="True"
+                                  IsChecked="{Binding Path=BackgroundPreviewViewModel.IsolationMode, Mode=TwoWay}"
+                                  Header="{x:Static p:Resources.DynamoViewSettingsMenuIsolationMode}"></MenuItem>
+                        <MenuItem Focusable="False"
+                                  IsCheckable="True"
                                   IsChecked="{Binding Path=RenderPackageFactoryViewModel.ShowEdges, Mode=TwoWay}"
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuShowEdges}"></MenuItem>
                         <MenuItem Focusable="False"
