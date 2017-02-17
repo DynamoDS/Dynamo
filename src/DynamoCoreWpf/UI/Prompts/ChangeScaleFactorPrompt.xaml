@@ -60,15 +60,30 @@
                     </Style>
                 </Style.Resources>
             </Style>
-            <Style x:Key="ScalesBorderStyle" TargetType="{x:Type Border}">
-                <Setter Property="Border.Background" Value="Transparent"/>
-                <Setter Property="Border.BorderBrush" Value="Transparent" />
-                <Setter Property="Border.BorderThickness" Value="1" />
+            <Style x:Key="ScalesToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+                <Setter Property="Margin" Value="5 0 5 0"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border Background ="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
                 <Style.Triggers>
-                    <Trigger Property="Border.IsMouseOver" Value="True">
-                        <Setter Property="Border.Background" Value="#373737" />
-                        <Setter Property="Border.BorderBrush" Value="#656565" />
-                        <Setter Property="Border.BorderThickness" Value="1" />
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#46484c"/>
+                        <Setter Property="BorderBrush" Value="WhiteSmoke"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                    </Trigger>
+                    <Trigger Property="IsChecked" Value="true">
+                        <Setter Property="Background" Value="#46484c"/>
+                        <Setter Property="BorderBrush" Value="White"/>
+                        <Setter Property="BorderThickness" Value="1"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -149,18 +164,19 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Border Grid.Column="0"
-                        Style="{StaticResource ScalesBorderStyle}">
+                <ToggleButton Grid.Column="0"
+                        Style="{StaticResource ScalesToggleButtonStyle}"
+                        Name="SmallButton"
+                        Click="ScaleButton_click">
                     <DockPanel>
                         <Button Content="{x:Static p:Resources.ScalingSmallButton}"
-                            Style="{DynamicResource ResourceKey=STextButton}"
-                            Margin="10"
-                            HorizontalAlignment="Stretch"
-                            Name="smallButton"
-                            VerticalAlignment="Top"
-                            IsDefault="True"
-                            TabIndex="2" 
-                            DockPanel.Dock="Top"/>
+                                Style="{DynamicResource ResourceKey=STextButton}"
+                                Margin="10"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                IsDefault="True"
+                                TabIndex="2"
+                                DockPanel.Dock="Top"/>
                         <TextBlock Style="{StaticResource DescriptionTextBlockStyle}"
                                    Text="Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter."
                                    DockPanel.Dock="Bottom"/>
@@ -174,15 +190,16 @@
                                    VerticalAlignment="Bottom"
                                    DockPanel.Dock="Bottom" />
                     </DockPanel>
-                </Border>
-                <Border Grid.Column="1"
-                        Style="{StaticResource ScalesBorderStyle}">
+                </ToggleButton>
+                <ToggleButton Grid.Column="1"
+                              Style="{StaticResource ScalesToggleButtonStyle}"
+                              Name="mediumButton"
+                              Click="ScaleButton_click">
                     <DockPanel>
                         <Button Content="{x:Static p:Resources.ScalingMediumButton}"
                                 Style="{DynamicResource ResourceKey=STextButton}"
                                 Margin="10"
                                 HorizontalAlignment="Stretch"
-                                Name="mediumButton"
                                 VerticalAlignment="Top"
                                 IsDefault="True"
                                 TabIndex="2"
@@ -199,57 +216,59 @@
                                    VerticalAlignment="Bottom"
                                    DockPanel.Dock="Bottom" />
                     </DockPanel>
-                </Border>
-                <Border Grid.Column="2"
-                        Style="{StaticResource ScalesBorderStyle}">
+                </ToggleButton>
+                <ToggleButton Grid.Column="2"
+                              Style="{StaticResource ScalesToggleButtonStyle}"
+                              Name="largeButton"
+                              Click="ScaleButton_click">
                     <DockPanel>
                         <Button Content="{x:Static p:Resources.ScalingLargeButton}"
-                                Style="{DynamicResource ResourceKey=STextButton}"
-                                Margin="10"
-                                HorizontalAlignment="Stretch"
-                                Name="largeButton"
-                                VerticalAlignment="Top"
-                                IsDefault="True"
-                                TabIndex="2"
-                                DockPanel.Dock="Top" />
+                            Style="{DynamicResource ResourceKey=STextButton}"
+                            Margin="10"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Top"
+                            IsDefault="True"
+                            TabIndex="2"
+                            DockPanel.Dock="Top" />
                         <TextBlock Style="{StaticResource DescriptionTextBlockStyle}"
-                                   Text="Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter."
-                                   DockPanel.Dock="Bottom"/>
+                               Text="Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter."
+                               DockPanel.Dock="Bottom"/>
                         <TextBlock Margin="10,0,10,0"
-                                   Width="auto"
-                                   FontSize="12"
-                                   Foreground="WhiteSmoke"
-                                   FontWeight="Bold"
-                                   TextWrapping="Wrap"
-                                   VerticalAlignment="Bottom"
-                                   DockPanel.Dock="Bottom" />
+                               Width="auto"
+                               FontSize="12"
+                               Foreground="WhiteSmoke"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Bottom"
+                               DockPanel.Dock="Bottom" />
                     </DockPanel>
-                </Border>
-                <Border Grid.Column="3"
-                        Style="{StaticResource ScalesBorderStyle}">
+                </ToggleButton>
+                <ToggleButton Grid.Column="3"
+                              Style="{StaticResource ScalesToggleButtonStyle}"
+                              Name="extraLargeButton"
+                              Click="ScaleButton_click">
                     <DockPanel>
                         <Button Content="{x:Static p:Resources.ScalingExtraLargeButton}"
-                                Style="{DynamicResource ResourceKey=STextButton}"
-                                Margin="10"
-                                HorizontalAlignment="Stretch"
-                                Name="extraLargeButton"
-                                VerticalAlignment="Top"
-                                IsDefault="True"
-                                TabIndex="2"
-                                DockPanel.Dock="Top"/>
+                            Style="{DynamicResource ResourceKey=STextButton}"
+                            Margin="10"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Top"
+                            IsDefault="True"
+                            TabIndex="2"
+                            DockPanel.Dock="Top"/>
                         <TextBlock Style="{StaticResource DescriptionTextBlockStyle}"
-                                   Text="Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter."
-                                   DockPanel.Dock="Bottom"/>
+                                Text="Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter."
+                                DockPanel.Dock="Bottom"/>
                         <TextBlock Margin="10,0,10,0"
-                                   Width="auto"
-                                   FontSize="12"
-                                   Foreground="WhiteSmoke"
-                                   FontWeight="Bold"
-                                   TextWrapping="Wrap"
-                                   VerticalAlignment="Bottom"
-                                   DockPanel.Dock="Bottom" />
+                                Width="auto"
+                                FontSize="12"
+                                Foreground="WhiteSmoke"
+                                FontWeight="Bold"
+                                TextWrapping="Wrap"
+                                VerticalAlignment="Bottom"
+                                DockPanel.Dock="Bottom" />
                     </DockPanel>
-                </Border>
+                </ToggleButton>
             </Grid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,5,0">
                 <Button Content="{x:Static p:Resources.ApplyAndRecomputeGraphButton}"
@@ -260,7 +279,7 @@
                             VerticalAlignment="Top"
                             Width="auto"
                             MinWidth="75"
-                            Click="APPLY_Click"
+                            Click="Apply_Click"
                             IsDefault="True"
                             TabIndex="2" />
                 <Button Content="{x:Static p:Resources.CancelButton}"

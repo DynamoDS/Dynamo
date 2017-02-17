@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Prompts
@@ -33,7 +34,17 @@ namespace Dynamo.Prompts
             RefreshHighlight();
         }
 
-        void APPLY_Click(object sender, RoutedEventArgs e)
+        void ScaleButton_click(object sender, RoutedEventArgs e)
+        {
+            this.SmallButton.IsChecked = false;
+            this.mediumButton.IsChecked = false;
+            this.largeButton.IsChecked = false;
+            this.extraLargeButton.IsChecked = false;
+            var toggleButton = sender as ToggleButton;
+            toggleButton.IsChecked = true;
+        }
+
+        void Apply_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
         }
