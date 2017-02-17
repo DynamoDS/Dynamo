@@ -95,6 +95,30 @@
                 <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
                 <Setter Property="TextBlock.VerticalAlignment" Value="Bottom"/>
             </Style>
+            <Style x:Key="ScaleButtonStyle" TargetType="{x:Type Button}">
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+                <Setter Property="IsDefault" Value="True"/>
+                <Setter Property="TabIndex" Value="2"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Grid x:Name="inner"
+                                  Background="#373737">
+                                <TextBlock x:Name="text"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Margin="10, 10, 10, 10"
+                                           Foreground="#bbbbbb"
+                                           FontSize="14px"
+                                           Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}">
+                                </TextBlock>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -170,12 +194,7 @@
                         Click="ScaleButton_click">
                     <DockPanel>
                         <Button Content="{x:Static p:Resources.ScalingSmallButton}"
-                                Style="{DynamicResource ResourceKey=STextButton}"
-                                Margin="10"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Top"
-                                IsDefault="True"
-                                TabIndex="2"
+                                Style="{StaticResource ScaleButtonStyle}"
                                 DockPanel.Dock="Top"/>
                         <TextBlock Style="{StaticResource DescriptionTextBlockStyle}"
                                    Text="Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter."
@@ -197,12 +216,7 @@
                               Click="ScaleButton_click">
                     <DockPanel>
                         <Button Content="{x:Static p:Resources.ScalingMediumButton}"
-                                Style="{DynamicResource ResourceKey=STextButton}"
-                                Margin="10"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Top"
-                                IsDefault="True"
-                                TabIndex="2"
+                                Style="{StaticResource ScaleButtonStyle}"
                                 DockPanel.Dock="Top" />
                         <TextBlock Style="{StaticResource DescriptionTextBlockStyle}"
                                    Text="Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter."
@@ -223,13 +237,8 @@
                               Click="ScaleButton_click">
                     <DockPanel>
                         <Button Content="{x:Static p:Resources.ScalingLargeButton}"
-                            Style="{DynamicResource ResourceKey=STextButton}"
-                            Margin="10"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Top"
-                            IsDefault="True"
-                            TabIndex="2"
-                            DockPanel.Dock="Top" />
+                                Style="{StaticResource ScaleButtonStyle}"
+                                DockPanel.Dock="Top" />
                         <TextBlock Style="{StaticResource DescriptionTextBlockStyle}"
                                Text="Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter."
                                DockPanel.Dock="Bottom"/>
@@ -249,13 +258,8 @@
                               Click="ScaleButton_click">
                     <DockPanel>
                         <Button Content="{x:Static p:Resources.ScalingExtraLargeButton}"
-                            Style="{DynamicResource ResourceKey=STextButton}"
-                            Margin="10"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Top"
-                            IsDefault="True"
-                            TabIndex="2"
-                            DockPanel.Dock="Top"/>
+                                Style="{StaticResource ScaleButtonStyle}"
+                                DockPanel.Dock="Top"/>
                         <TextBlock Style="{StaticResource DescriptionTextBlockStyle}"
                                 Text="Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter."
                                 DockPanel.Dock="Bottom"/>
