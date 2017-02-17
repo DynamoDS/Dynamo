@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-        Title="{x:Static p:Resources.ChangeScaleFactorPromptWindowTitle}" Height="540" Width="400"
+        Title="{x:Static p:Resources.ChangeScaleFactorPromptWindowTitle}" Height="400" Width="640"
         WindowStartupLocation="CenterOwner"
         Style="{DynamicResource DynamoWindowStyle}">
 
@@ -60,6 +60,26 @@
                     </Style>
                 </Style.Resources>
             </Style>
+            <Style x:Key="ScalesBorderStyle" TargetType="{x:Type Border}">
+                <Setter Property="Border.Background" Value="Transparent"/>
+                <Setter Property="Border.BorderBrush" Value="Transparent" />
+                <Setter Property="Border.BorderThickness" Value="1" />
+                <Style.Triggers>
+                    <Trigger Property="Border.IsMouseOver" Value="True">
+                        <Setter Property="Border.Background" Value="#373737" />
+                        <Setter Property="Border.BorderBrush" Value="#656565" />
+                        <Setter Property="Border.BorderThickness" Value="1" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="DescriptionTextBlockStyle" TargetType="{x:Type TextBlock}">
+                <Setter Property="TextBlock.Margin" Value="10,5,10,10"/>
+                <Setter Property="TextBlock.Width" Value="auto"/>
+                <Setter Property="TextBlock.FontSize" Value="12"/>
+                <Setter Property="TextBlock.Foreground" Value="WhiteSmoke"/>
+                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+                <Setter Property="TextBlock.VerticalAlignment" Value="Bottom"/>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -67,11 +87,12 @@
         <StackPanel Margin="15">
             <TextBlock Name="PromptText"
                        Foreground="WhiteSmoke"
+                       Margin="10 0 10 0"
                        Padding="0,0,0,15"
                        FontSize="15"
                        TextWrapping="Wrap"
                        Text="{x:Static p:Resources.ChangeScaleFactorPromptCaptionText}" />
-            <StackPanel Orientation="Horizontal" Background="#555">
+            <StackPanel Orientation="Horizontal" Background="#555" Visibility="Collapsed">
                 <Grid Margin="5" Width="170">
                     <StackPanel x:Name="UnitsList"
                                 Style="{StaticResource UnitsPanelStyle}"
@@ -120,18 +141,128 @@
                     </DockPanel>
                 </Border>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15">
-                <Button Content="{x:Static p:Resources.OKButton}"
-                        Style="{DynamicResource ResourceKey=STextButton}"
-                        Margin="5"
-                        HorizontalAlignment="Right"
-                        Name="okButton"
-                        VerticalAlignment="Top"
-                        Width="auto"
-                        MinWidth="75"
-                        Click="OK_Click"
-                        IsDefault="True"
-                        TabIndex="2" />
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0"
+                        Style="{StaticResource ScalesBorderStyle}">
+                    <DockPanel>
+                        <Button Content="{x:Static p:Resources.ScalingSmallButton}"
+                            Style="{DynamicResource ResourceKey=STextButton}"
+                            Margin="10"
+                            HorizontalAlignment="Stretch"
+                            Name="smallButton"
+                            VerticalAlignment="Top"
+                            IsDefault="True"
+                            TabIndex="2" 
+                            DockPanel.Dock="Top"/>
+                        <TextBlock Style="{StaticResource DescriptionTextBlockStyle}"
+                                   Text="Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter."
+                                   DockPanel.Dock="Bottom"/>
+                        <TextBlock Margin="10,0,10,0"
+                                   Width="auto"
+                                   Text="Default setting"
+                                   FontSize="12"
+                                   Foreground="WhiteSmoke"
+                                   FontWeight="Bold"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Bottom"
+                                   DockPanel.Dock="Bottom" />
+                    </DockPanel>
+                </Border>
+                <Border Grid.Column="1"
+                        Style="{StaticResource ScalesBorderStyle}">
+                    <DockPanel>
+                        <Button Content="{x:Static p:Resources.ScalingMediumButton}"
+                                Style="{DynamicResource ResourceKey=STextButton}"
+                                Margin="10"
+                                HorizontalAlignment="Stretch"
+                                Name="mediumButton"
+                                VerticalAlignment="Top"
+                                IsDefault="True"
+                                TabIndex="2"
+                                DockPanel.Dock="Top" />
+                        <TextBlock Style="{StaticResource DescriptionTextBlockStyle}"
+                                   Text="Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter."
+                                   DockPanel.Dock="Bottom"/>
+                        <TextBlock Margin="10,0,10,0"
+                                   Width="auto"
+                                   FontSize="12"
+                                   Foreground="WhiteSmoke"
+                                   FontWeight="Bold"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Bottom"
+                                   DockPanel.Dock="Bottom" />
+                    </DockPanel>
+                </Border>
+                <Border Grid.Column="2"
+                        Style="{StaticResource ScalesBorderStyle}">
+                    <DockPanel>
+                        <Button Content="{x:Static p:Resources.ScalingLargeButton}"
+                                Style="{DynamicResource ResourceKey=STextButton}"
+                                Margin="10"
+                                HorizontalAlignment="Stretch"
+                                Name="largeButton"
+                                VerticalAlignment="Top"
+                                IsDefault="True"
+                                TabIndex="2"
+                                DockPanel.Dock="Top" />
+                        <TextBlock Style="{StaticResource DescriptionTextBlockStyle}"
+                                   Text="Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter."
+                                   DockPanel.Dock="Bottom"/>
+                        <TextBlock Margin="10,0,10,0"
+                                   Width="auto"
+                                   FontSize="12"
+                                   Foreground="WhiteSmoke"
+                                   FontWeight="Bold"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Bottom"
+                                   DockPanel.Dock="Bottom" />
+                    </DockPanel>
+                </Border>
+                <Border Grid.Column="3"
+                        Style="{StaticResource ScalesBorderStyle}">
+                    <DockPanel>
+                        <Button Content="{x:Static p:Resources.ScalingExtraLargeButton}"
+                                Style="{DynamicResource ResourceKey=STextButton}"
+                                Margin="10"
+                                HorizontalAlignment="Stretch"
+                                Name="extraLargeButton"
+                                VerticalAlignment="Top"
+                                IsDefault="True"
+                                TabIndex="2"
+                                DockPanel.Dock="Top"/>
+                        <TextBlock Style="{StaticResource DescriptionTextBlockStyle}"
+                                   Text="Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter."
+                                   DockPanel.Dock="Bottom"/>
+                        <TextBlock Margin="10,0,10,0"
+                                   Width="auto"
+                                   FontSize="12"
+                                   Foreground="WhiteSmoke"
+                                   FontWeight="Bold"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Bottom"
+                                   DockPanel.Dock="Bottom" />
+                    </DockPanel>
+                </Border>
+            </Grid>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,5,0">
+                <Button Content="{x:Static p:Resources.ApplyAndRecomputeGraphButton}"
+                            Style="{DynamicResource ResourceKey=STextButton}"
+                            Margin="5"
+                            HorizontalAlignment="Right"
+                            Name="applyButton"
+                            VerticalAlignment="Top"
+                            Width="auto"
+                            MinWidth="75"
+                            Click="APPLY_Click"
+                            IsDefault="True"
+                            TabIndex="2" />
                 <Button Content="{x:Static p:Resources.CancelButton}"
                         Style="{DynamicResource ResourceKey=STextButton}"
                         Margin="5" HorizontalAlignment="Right"

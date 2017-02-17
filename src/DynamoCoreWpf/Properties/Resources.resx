@@ -170,7 +170,7 @@
     <value>{0} mm</value>
   </data>
   <data name="ChangeScaleFactorPromptWindowTitle" xml:space="preserve">
-    <value>Change Geometry Scaling Factor</value>
+    <value>Geometry View Range</value>
   </data>
   <data name="ContextMenuEditCustomNode" xml:space="preserve">
     <value>Edit Custom Node...</value>
@@ -2154,5 +2154,20 @@ Want to publish a different package?</value>
   </data>
   <data name="DynamoViewHelpDictionary" xml:space="preserve">
     <value>Open Dynamo Dictionary</value>
+  </data>
+  <data name="ApplyAndRecomputeGraphButton" xml:space="preserve">
+    <value>Apply and re-compute the graph</value>
+  </data>
+  <data name="ScalingLargeButton" xml:space="preserve">
+    <value>Large</value>
+  </data>
+  <data name="ScalingMediumButton" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="ScalingExtraLargeButton" xml:space="preserve">
+    <value>Extra-large</value>
+  </data>
+  <data name="ScalingSmallButton" xml:space="preserve">
+    <value>Small</value>
   </data>
 </root>

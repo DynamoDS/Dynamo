@@ -33,7 +33,7 @@ namespace Dynamo.Prompts
             RefreshHighlight();
         }
 
-        void OK_Click(object sender, RoutedEventArgs e)
+        void APPLY_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
         }

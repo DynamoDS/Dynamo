@@ -152,6 +152,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apply and re-compute the graph.
+        /// </summary>
+        public static string ApplyAndRecomputeGraphButton {
+            get {
+                return ResourceManager.GetString("ApplyAndRecomputeGraphButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sign in to Autodesk A360 to access online services that integrate with your desktop software..
         /// </summary>
         public static string Autodesk360SignInButtonContentToolTip {
@@ -404,7 +413,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change Geometry Scaling Factor.
+        ///   Looks up a localized string similar to Geometry View Range.
         /// </summary>
         public static string ChangeScaleFactorPromptWindowTitle {
             get {
@@ -4557,6 +4566,42 @@ namespace Dynamo.Wpf.Properties {
         public static string SaveWorkbenToImageDialogTitle {
             get {
                 return ResourceManager.GetString("SaveWorkbenToImageDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extra-large.
+        /// </summary>
+        public static string ScalingExtraLargeButton {
+            get {
+                return ResourceManager.GetString("ScalingExtraLargeButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Large.
+        /// </summary>
+        public static string ScalingLargeButton {
+            get {
+                return ResourceManager.GetString("ScalingLargeButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Medium.
+        /// </summary>
+        public static string ScalingMediumButton {
+            get {
+                return ResourceManager.GetString("ScalingMediumButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Small.
+        /// </summary>
+        public static string ScalingSmallButton {
+            get {
+                return ResourceManager.GetString("ScalingSmallButton", resourceCulture);
             }
         }
         
