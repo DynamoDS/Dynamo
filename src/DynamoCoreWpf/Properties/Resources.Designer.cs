@@ -350,6 +350,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter..
+        /// </summary>
+        public static string ChangeScaleFactorPromptDescriptionContent3 {
+            get {
+                return ResourceManager.GetString("ChangeScaleFactorPromptDescriptionContent3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default Setting:.
         /// </summary>
         public static string ChangeScaleFactorPromptDescriptionDefaultSetting {

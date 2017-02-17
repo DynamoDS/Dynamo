@@ -2170,4 +2170,7 @@ Want to publish a different package?</value>
   <data name="ScalingSmallButton" xml:space="preserve">
     <value>Small</value>
   </data>
+  <data name="ChangeScaleFactorPromptDescriptionContent3" xml:space="preserve">
+    <value>Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter.</value>
+  </data>
 </root>

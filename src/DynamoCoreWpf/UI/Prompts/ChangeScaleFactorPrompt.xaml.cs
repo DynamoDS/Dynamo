@@ -37,11 +37,13 @@ namespace Dynamo.Prompts
         void ScaleButton_click(object sender, RoutedEventArgs e)
         {
             this.SmallButton.IsChecked = false;
-            this.mediumButton.IsChecked = false;
-            this.largeButton.IsChecked = false;
-            this.extraLargeButton.IsChecked = false;
+            this.MediumButton.IsChecked = false;
+            this.LargeButton.IsChecked = false;
+            this.ExtraLargeButton.IsChecked = false;
             var toggleButton = sender as ToggleButton;
             toggleButton.IsChecked = true;
+            int col = (int)toggleButton.GetValue(Grid.ColumnProperty);
+            RefreshDescription(col);
         }
 
         void Apply_Click(object sender, RoutedEventArgs e)
@@ -92,6 +94,15 @@ namespace Dynamo.Prompts
                     Text = string.Format(fmt, num)
                 });
             }
+        }
+
+        private void RefreshDescription(int val)
+        {
+            this.DescriptionScaleRange.Text =
+                (val == 0) ? Res.ChangeScaleFactorPromptDescriptionContent0 :
+                (val == 1) ? Res.ChangeScaleFactorPromptDescriptionContent1 :
+                (val == 2) ? Res.ChangeScaleFactorPromptDescriptionContent2 :
+                Res.ChangeScaleFactorPromptDescriptionContent3;
         }
 
         private void RefreshHighlight()
