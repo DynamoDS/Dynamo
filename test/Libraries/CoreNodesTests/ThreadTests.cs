@@ -10,6 +10,7 @@ namespace DSCoreNodesTests
     class ThreadTests : GeometricTestBase
     {
         [Test]
+        [Category("Failure")]
         public void Thread_Pause()
         {
             var sw = new Stopwatch();
@@ -17,7 +18,7 @@ namespace DSCoreNodesTests
 
             Circle cir =(Circle) DSCore.Thread.Pause(Circle.ByCenterPointRadius(Point.ByCoordinates(0, 0), 10), 1000);
             sw.Stop();
-            Assert.IsTrue(Math.Abs(sw.Elapsed.TotalMilliseconds - 1000) <= 1.0);
+            Assert.IsTrue(Math.Abs(sw.ElapsedMilliseconds - 1000) <= 1.0);
             Assert.NotNull(cir);
         }
     }

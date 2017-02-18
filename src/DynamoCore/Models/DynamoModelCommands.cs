@@ -426,7 +426,10 @@ namespace Dynamo.Models
             {
                 models.Add(connectorToRemove, UndoRedoRecorder.UserAction.Deletion);
             }
-            models.Add(newConnectorModel, UndoRedoRecorder.UserAction.Creation);
+            if (newConnectorModel != null)
+            {
+                models.Add(newConnectorModel, UndoRedoRecorder.UserAction.Creation);
+            }
             return models;
         }
 

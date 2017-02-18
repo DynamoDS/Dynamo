@@ -1895,6 +1895,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Isolate Selected Geometries.
+        /// </summary>
+        public static string DynamoViewSettingsMenuIsolationMode {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsMenuIsolationMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Edges.
         /// </summary>
         public static string DynamoViewSettingsMenuShowEdges {
