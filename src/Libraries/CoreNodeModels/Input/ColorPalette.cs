@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml;
 
 using Dynamo.Graph;
@@ -47,24 +48,8 @@ namespace CoreNodeModels.Input
          {
             try
             {
-                var nums = new List<int>();
-                var start = -1;
-                for (int i = 0; i < val.Length; i++)
-                {
-                    if (start < 0 && Char.IsDigit(val[i]))
-                    {
-                        start = i;
-                    }
-                    else if (start >= 0 && !Char.IsDigit(val[i]))
-                    {
-                        nums.Add(int.Parse(val.Substring(start, i - start)));
-                        start = -1;
-                    }
-                }
-                if (start >= 0)
-                    nums.Add(int.Parse(val.Substring(start, val.Length - start)));
-
-                return DSColor.ByARGB(nums[3], nums[0], nums[1], nums[2]);
+                string[] argb = Regex.Split(val, @"\D+").Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+                return DSColor.ByARGB(int.Parse(argb[3]), int.Parse(argb[0]), int.Parse(argb[1]), int.Parse(argb[2]));
             }
             catch
             {
