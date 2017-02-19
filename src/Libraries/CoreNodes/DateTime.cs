@@ -48,17 +48,19 @@ namespace DSCore
         {
             get { return System.DateTime.Today; }
         }
-        
+
         /// <summary>
-        ///     The current system date and time as a string, in the specified format.
+        ///     Return a specified date and time as a string, in the specified format.
         /// </summary>
-        /// <param name="format">String representation of the date format, search "MSDN Custom Date and Time Format Strings". Defaults to : dd/MM/yyyy
+        /// <param name="dateTime">The DateTime to format.</param>
+        /// <param name="format">String representation of the date format, defaults to : dddd dd MMMM yyyy (Sunday 01 January 2017)
+        /// Search "MSDN Custom Date and Time Format Strings" for a comprehensive list of format specifiers.
         ///</param>
-        /// <returns name="string">The current system date and time as a string, in the specified format.</returns>
-        [CanUpdatePeriodicallyAttribute(true)]
-        public static string NowByFormat(string format="dd/MM/yyyy")
+        /// <returns name="string">The specified date and time as a string, in the specified format.</returns>
+        public static string Format(System.DateTime dateTime, string format="dd MMM yyyy")
         {
-            return System.DateTime.Now.ToString(format, CultureInfo.InvariantCulture);
+            if (System.String.IsNullOrEmpty(format)) format = "dd MMM yyyy";
+            return dateTime.ToString(format, CultureInfo.InvariantCulture);
         }
         
         /// <summary>
