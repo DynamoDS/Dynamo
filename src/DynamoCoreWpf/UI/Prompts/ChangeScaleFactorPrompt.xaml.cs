@@ -103,6 +103,8 @@ namespace Dynamo.Prompts
                 (val == 1) ? Res.ChangeScaleFactorPromptDescriptionContent1 :
                 (val == 2) ? Res.ChangeScaleFactorPromptDescriptionContent2 :
                 Res.ChangeScaleFactorPromptDescriptionContent3;
+            this.DescriptionDefaultSetting.Text =
+               (val != 1) ? string.Empty : Res.ChangeScaleFactorPromptDescriptionDefaultSetting;
         }
 
         private void RefreshHighlight()
@@ -114,10 +116,7 @@ namespace Dynamo.Prompts
                 (val < 0) ? Res.ChangeScaleFactorPromptDescriptionContent2 :
                 Res.ChangeScaleFactorPromptDescriptionContent1;
 
-            this.DescriptionDefaultSetting.Text =
-                (val > 0) ? string.Empty :
-                (val < 0) ? string.Empty :
-                Res.ChangeScaleFactorPromptDescriptionDefaultSetting;
+           
         }
 
         public int SliderValue
