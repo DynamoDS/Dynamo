@@ -8,8 +8,6 @@ using CoreNodeModels.Input;
 
 using DSColor = DSCore.Color;
 
-
-
 namespace CoreNodeModelsWpf.Nodes
 {
     public class ColorPaletteNodeViewCustomization : NotificationObject, INodeViewCustomization<ColorPalette>
