@@ -3405,6 +3405,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to See more on the Dynamo Dictionary....
+        /// </summary>
+        public static string NodeHelpWindowDynamoDictionary {
+            get {
+                return ResourceManager.GetString("NodeHelpWindowDynamoDictionary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CATEGORY.
         /// </summary>
         public static string NodeHelpWindowNodeCategory {
