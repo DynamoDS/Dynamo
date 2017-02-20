@@ -438,7 +438,6 @@ namespace Dynamo.Graph.Nodes
         ///     Dynamo Dictionary, and return the link.
         ///     Otherwise, return the Dynamo Dictionary home page.
         /// </value>
-        [JsonIgnore]
         public string DictionaryLink
         {
             get
