@@ -40,6 +40,7 @@ namespace Dynamo.Prompts
             this.MediumButton.IsChecked = false;
             this.LargeButton.IsChecked = false;
             this.ExtraLargeButton.IsChecked = false;
+
             var toggleButton = sender as ToggleButton;
             toggleButton.IsChecked = true;
             int col = (int)toggleButton.GetValue(Grid.ColumnProperty);
@@ -115,8 +116,6 @@ namespace Dynamo.Prompts
                 (val > 0) ? Res.ChangeScaleFactorPromptDescriptionContent0 :
                 (val < 0) ? Res.ChangeScaleFactorPromptDescriptionContent2 :
                 Res.ChangeScaleFactorPromptDescriptionContent1;
-
-           
         }
 
         public int SliderValue
