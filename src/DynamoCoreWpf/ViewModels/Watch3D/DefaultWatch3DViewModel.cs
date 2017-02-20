@@ -191,6 +191,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
 
+        public DelegateCommand ToggleIsolationModeCommand { get; set; }
+
         public DelegateCommand ZoomToFitCommand { get; set; }
 
         internal WorkspaceViewModel CurrentSpaceViewModel
@@ -251,6 +253,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
             ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
+            ToggleIsolationModeCommand = new DelegateCommand(ToggleIsolationMode, CanToggleIsolationMode);
             ZoomToFitCommand = new DelegateCommand(ZoomToFit, CanZoomToFit);
             CanBeActivated = true;
         }
@@ -734,6 +737,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected virtual bool CanToggleCanNavigateBackground(object parameter)
         {
             return false;
+        }
+
+        private void ToggleIsolationMode(object parameter)
+        {
+            IsolationMode = !IsolationMode;
+        }
+
+        private bool CanToggleIsolationMode(object parameter)
+        {
+            return true;
         }
 
         private static bool CanZoomToFit(object parameter)
