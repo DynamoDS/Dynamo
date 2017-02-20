@@ -152,11 +152,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apply and re-compute the graph.
+        ///   Looks up a localized string similar to Apply and re-run.
         /// </summary>
-        public static string ApplyAndRecomputeGraphButton {
+        public static string ApplyAndRerunButton {
             get {
-                return ResourceManager.GetString("ApplyAndRecomputeGraphButton", resourceCulture);
+                return ResourceManager.GetString("ApplyAndRerunButton", resourceCulture);
             }
         }
         

@@ -2155,8 +2155,8 @@ Want to publish a different package?</value>
   <data name="DynamoViewHelpDictionary" xml:space="preserve">
     <value>Open Dynamo Dictionary</value>
   </data>
-  <data name="ApplyAndRecomputeGraphButton" xml:space="preserve">
-    <value>Apply and re-compute the graph</value>
+  <data name="ApplyAndRerunButton" xml:space="preserve">
+    <value>Apply and re-run</value>
   </data>
   <data name="ScalingLargeButton" xml:space="preserve">
     <value>Large</value>
