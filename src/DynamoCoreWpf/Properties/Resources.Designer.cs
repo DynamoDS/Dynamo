@@ -152,15 +152,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apply and re-run.
-        /// </summary>
-        public static string ApplyAndRerunButton {
-            get {
-                return ResourceManager.GetString("ApplyAndRerunButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Sign in to Autodesk A360 to access online services that integrate with your desktop software..
         /// </summary>
         public static string Autodesk360SignInButtonContentToolTip {
@@ -4485,6 +4476,15 @@ namespace Dynamo.Wpf.Properties {
         public static string QueryMember {
             get {
                 return ResourceManager.GetString("QueryMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Re-run.
+        /// </summary>
+        public static string RerunButton {
+            get {
+                return ResourceManager.GetString("RerunButton", resourceCulture);
             }
         }
         

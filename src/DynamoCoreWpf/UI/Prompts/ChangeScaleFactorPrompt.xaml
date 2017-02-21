@@ -3,7 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-        Title="{x:Static p:Resources.ChangeScaleFactorPromptWindowTitle}" Height="300" Width="640"
+        Title="{x:Static p:Resources.ChangeScaleFactorPromptWindowTitle}" 
+        Height="300" 
+        Width="640"
+        MinHeight="300"
+        MinWidth="500"
         WindowStartupLocation="CenterOwner"
         Style="{DynamicResource DynamoWindowStyle}">
 
@@ -245,7 +249,7 @@
                             Orientation="Horizontal" 
                             HorizontalAlignment="Right"
                             VerticalAlignment="Bottom">
-                    <Button Content="{x:Static p:Resources.ApplyAndRerunButton}"
+                    <Button Content="{x:Static p:Resources.RerunButton}"
                             Style="{DynamicResource ResourceKey=STextButton}"
                             Margin="5"
                             HorizontalAlignment="Right"

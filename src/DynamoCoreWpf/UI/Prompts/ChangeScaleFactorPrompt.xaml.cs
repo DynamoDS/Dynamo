@@ -34,12 +34,15 @@ namespace Dynamo.Prompts
             this.UnitsSlider.Height = (MaxLogValue - MinLogValue + 1) * 20;
             this.UnitsSlider.Value = scaleValue;
 
+            RefreshHighlight();
+
+
+            var col = (scaleValue / 2) + 1;
             var tb = (ToggleButton)this.ScaleButtonsGrid.Children
                 .Cast<UIElement>()
-                .First(e => Grid.GetColumn(e) == (scaleValue / 2) + 1);
+                .First(e => Grid.GetColumn(e) == col);
             tb.IsChecked = true;
-
-            RefreshHighlight();
+            RefreshDescription(col);
         }
 
         void ScaleButton_click(object sender, RoutedEventArgs e)
