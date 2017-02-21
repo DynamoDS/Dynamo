@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -18,7 +19,7 @@ namespace Dynamo.Prompts
         // The number of rows to be highlighted
         private readonly int SpanLogValue = 9;
 
-        public ChangeScaleFactorPrompt(int sliderValue = 0)
+        public ChangeScaleFactorPrompt(int scaleValue = 0)
         {
             InitializeComponent();
 
@@ -31,7 +32,13 @@ namespace Dynamo.Prompts
             this.UnitsSlider.Minimum = MinLogValue + SpanLogValue / 2;
             this.UnitsSlider.Maximum = MaxLogValue - SpanLogValue / 2;
             this.UnitsSlider.Height = (MaxLogValue - MinLogValue + 1) * 20;
-            this.UnitsSlider.Value = sliderValue;
+            this.UnitsSlider.Value = scaleValue;
+
+            var tb = (ToggleButton)this.ScaleButtonsGrid.Children
+                .Cast<UIElement>()
+                .First(e => Grid.GetColumn(e) == (scaleValue / 2) + 1);
+            tb.IsChecked = true;
+
             RefreshHighlight();
         }
 
