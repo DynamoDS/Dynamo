@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Res = Dynamo.Wpf.Properties.Resources;
@@ -36,10 +37,14 @@ namespace Dynamo.Prompts
 
         void ScaleButton_click(object sender, RoutedEventArgs e)
         {
-            this.SmallButton.IsChecked = false;
-            this.MediumButton.IsChecked = false;
-            this.LargeButton.IsChecked = false;
-            this.ExtraLargeButton.IsChecked = false;
+            foreach(Control c in this.ScaleButtonsGrid.Children)
+            {
+                if(c.GetType() == typeof(ToggleButton))
+                {
+                    ToggleButton tb = (ToggleButton)c;
+                    tb.IsChecked = false;
+                }
+            }
 
             var toggleButton = sender as ToggleButton;
             toggleButton.IsChecked = true;
@@ -118,9 +123,27 @@ namespace Dynamo.Prompts
                 Res.ChangeScaleFactorPromptDescriptionContent1;
         }
 
-        public int SliderValue
+        private int getScaleValue()
         {
-            get { return (int)this.UnitsSlider.Value; }
+            foreach (Control c in this.ScaleButtonsGrid.Children)
+            {
+                if (c.GetType() == typeof(ToggleButton))
+                {
+                    ToggleButton tb = (ToggleButton)c;
+                    if((bool)tb.IsChecked)
+                    {
+                        Console.WriteLine(((int)tb.GetValue(Grid.ColumnProperty) - 1) * 2);
+                        return ((int)tb.GetValue(Grid.ColumnProperty) -1) * 2;
+                    }
+                }
+            }
+            Console.WriteLine(0);
+            return 0;
+        }
+
+        public int ScaleValue
+        {
+            get { return getScaleValue(); }
         }
     }
 }

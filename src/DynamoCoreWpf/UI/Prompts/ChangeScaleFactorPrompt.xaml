@@ -158,7 +158,8 @@
                 </Border>
             </StackPanel>
 
-            <Grid Margin="0 20 0 0">
+            <Grid Margin="0 20 0 0"
+                  Name ="ScaleButtonsGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>

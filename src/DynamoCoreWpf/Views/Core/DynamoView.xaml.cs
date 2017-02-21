@@ -768,9 +768,9 @@ namespace Dynamo.Controls
             var view = new Prompts.ChangeScaleFactorPrompt(dynamoViewModel.ScaleFactorLog) { Owner = this };
             if (view.ShowDialog() == true)
             {
-                if (dynamoViewModel.ScaleFactorLog != view.SliderValue)
+                if (dynamoViewModel.ScaleFactorLog != view.ScaleValue)
                 {
-                    dynamoViewModel.ScaleFactorLog = view.SliderValue;
+                    dynamoViewModel.ScaleFactorLog = view.ScaleValue;
                     dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
 
                     dynamoViewModel.ExecuteCommand(new DynamoModel.ForceRunCancelCommand(false, false));
