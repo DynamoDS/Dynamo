@@ -67,31 +67,32 @@ namespace DSCore
             }
 
             // After checking all sublists, check if the current list contains the item
-            return result || ContainsInList(list, item);
+            return result || (IndexInList(list, item) >= 0);
         }
 
         /// <summary>
         ///     An alternative to using IList.Contains which uses Enumerable.SequenceEqual to check if
-        ///     the item is contained in the list if the item is an array.
+        ///     the item is contained in the list if the item is an array. Returns the index if found, 
+        ///     -1 if not found.
         /// </summary>
         /// <param name="list">The list to check if it contains the item.</param>
         /// <param name="item">The item that needs to be found.</param>
-        /// <returns name="bool">Whether the list contains the input item.</returns>
-        private static bool ContainsInList(IList list, object item)
+        /// <returns name="index">Index of the item in the list.</returns>
+        private static int IndexInList(IList list, object item)
         {
-            foreach (var obj in list)
+            for (int index = 0; index < list.Count; index++)
             {
-                if (obj is ArrayList && item is ArrayList)
+                if (list[index] is ArrayList && item is ArrayList)
                 {
-                    if (((ArrayList)obj).Cast<object>().SequenceEqual<object>(((ArrayList)item).Cast<object>())) return true;
+                    if (((ArrayList)list[index]).Cast<object>().SequenceEqual<object>(((ArrayList)item).Cast<object>())) return index;
                 }
                 else
                 {
                     // This method of comparing is used in IList.Contains
-                    if (obj.Equals(item)) return true;
+                    if (list[index].Equals(item)) return index;
                 }
             }
-            return false;
+            return -1;
         }
 
         /// <summary>
@@ -178,14 +179,13 @@ namespace DSCore
         /// <search>difference,setdifference,set</search>
         public static IList SetDifference(IList list1, IList list2)
         {
-            foreach (var obj in list2)
+            List<object> newList = new List<object>();
+            for (int i = 0; i < list1.Count; i++)
             {
-                if (list1.Contains(obj))
-                {
-                    list1.Remove(obj);
-                }
+                int index = IndexInList(list2, list1[i]); //check if list2 contains the item
+                if (index == -1) newList.Add(list1[i]);
             }
-            return list1;
+            return newList.Distinct().ToList();
         }
 
         /// <summary>
@@ -200,9 +200,9 @@ namespace DSCore
             List<object> newList = new List<object>();
             foreach (var obj in list1)
             {
-                if (ContainsInList(list2, obj)) newList.Add(obj);
+                if (IndexInList(list2, obj) >= 0) newList.Add(obj);
             }
-            return newList;
+            return newList.Distinct().ToList();
         }
 
         /// <summary>
@@ -214,14 +214,10 @@ namespace DSCore
         /// <search>union,setunion,set</search>
         public static IList SetUnion(IList list1, IList list2)
         {
-            foreach (var obj in list2)
-            {
-                if (ContainsInList(list1, obj))
-                {
-                    list1.Add(obj);
-                }
-            }
-            return list1;
+            List<object> newList = new List<object>();
+            foreach (var obj in list1) newList.Add(obj);
+            foreach (var obj in list2) newList.Add(obj);
+            return newList.Distinct().ToList();
         }
 
         /// <summary>
