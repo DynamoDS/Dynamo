@@ -48,6 +48,7 @@ namespace CoreNodeModels.Input
          {
             try
             {
+                //Splits the xml string and returns each of the ARGB values as a string array.
                 string[] argb = Regex.Split(val, @"\D+").Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
                 return DSColor.ByARGB(int.Parse(argb[3]), int.Parse(argb[0]), int.Parse(argb[1]), int.Parse(argb[2]));
             }
@@ -74,7 +75,7 @@ namespace CoreNodeModels.Input
             element.AppendChild(color);
         }
         /// <summary>
-        ///     Restore stored value and set "scolor" to it.
+        ///     Restore stored value and set "dscolor" to it.
         /// </summary>
         /// <param name="element"></param>
         /// <param name="context"></param>
