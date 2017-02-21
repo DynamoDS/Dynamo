@@ -90,6 +90,13 @@
                 <Setter Property="HorizontalAlignment" Value="Center"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
+            <Style x:Key="ScaleRangeTextblockStyle" TargetType="{x:Type TextBlock}">
+                <Setter Property="Margin" Value="0 0 0 10"/>
+                <Setter Property="FontSize" Value="12px"/>
+                <Setter Property="Foreground" Value="#bbbbbb"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -159,17 +166,15 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <ToggleButton Grid.Column="0"
-                        Style="{StaticResource ScalesToggleButtonStyle}"
-                        Name="SmallButton"
-                        Click="ScaleButton_click">
+                              Style="{StaticResource ScalesToggleButtonStyle}"
+                              Name="SmallButton"
+                              Click="ScaleButton_click">
                     <DockPanel>
                         <TextBlock Text="{x:Static p:Resources.ScalingSmallButton}"
-                               Style="{StaticResource ScaleTextblockStyle}"
-                               DockPanel.Dock="Top"/>
-                        <TextBlock Text="1E-06 to 100"
-                                   Margin="0 0 0 10"
-                                   Foreground="#bbbbbb" 
-                                   HorizontalAlignment="Center"/>
+                                   Style="{StaticResource ScaleTextblockStyle}"
+                                   DockPanel.Dock="Top"/>
+                        <TextBlock Text="{x:Static p:Resources.ScaleRangeTextSmall}"
+                                   Style="{StaticResource ScaleRangeTextblockStyle}"/>
                     </DockPanel>
                 </ToggleButton>
                 <ToggleButton Grid.Column="1"
@@ -178,12 +183,10 @@
                               Click="ScaleButton_click">
                     <DockPanel>
                         <TextBlock Text="{x:Static p:Resources.ScalingMediumButton}"
-                               Style="{StaticResource ScaleTextblockStyle}"
-                               DockPanel.Dock="Top"/>
-                        <TextBlock Text="1E-04 to 10,000"
-                                   Margin="0 0 0 10"
-                                   Foreground="#bbbbbb"
-                                   HorizontalAlignment="Center"/>
+                                   Style="{StaticResource ScaleTextblockStyle}"
+                                   DockPanel.Dock="Top"/>
+                        <TextBlock Text="{x:Static p:Resources.ScaleRangeTextMedium}"
+                                   Style="{StaticResource ScaleRangeTextblockStyle}"/>
                     </DockPanel>
                 </ToggleButton>
                 <ToggleButton Grid.Column="2"
@@ -192,12 +195,10 @@
                               Click="ScaleButton_click">
                     <DockPanel>
                         <TextBlock Text="{x:Static p:Resources.ScalingLargeButton}"
-                               Style="{StaticResource ScaleTextblockStyle}"
-                                      DockPanel.Dock="Top"/>
-                        <TextBlock Text="0.01 to 1000,000"
-                                   Margin="0 0 0 10"
-                                   Foreground="#bbbbbb"
-                                   HorizontalAlignment="Center"/>
+                                   Style="{StaticResource ScaleTextblockStyle}"
+                                   DockPanel.Dock="Top"/>
+                        <TextBlock Text="{x:Static p:Resources.ScaleRangeTextLarge}"
+                                   Style="{StaticResource ScaleRangeTextblockStyle}"/>
                     </DockPanel>
                 </ToggleButton>
                 <ToggleButton Grid.Column="3"
@@ -206,12 +207,10 @@
                               Click="ScaleButton_click">
                     <DockPanel>
                         <TextBlock Text="{x:Static p:Resources.ScalingExtraLargeButton}"
-                               Style="{StaticResource ScaleTextblockStyle}"
-                               DockPanel.Dock="Top"/>
-                        <TextBlock Text="1 to 100,000,000"
-                                   Margin="0 0 0 10"
-                                   Foreground="#bbbbbb"
-                                   HorizontalAlignment="Center"/>
+                                   Style="{StaticResource ScaleTextblockStyle}"
+                                   DockPanel.Dock="Top"/>
+                        <TextBlock Text="{x:Static p:Resources.ScaleRangeTextExtraLarge}"
+                                   Style="{StaticResource ScaleRangeTextblockStyle}"/>
                     </DockPanel>
                 </ToggleButton>
             </Grid>

@@ -4579,6 +4579,42 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1 to 100,000,000.
+        /// </summary>
+        public static string ScaleRangeTextExtraLarge {
+            get {
+                return ResourceManager.GetString("ScaleRangeTextExtraLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0.01 to 1000,000.
+        /// </summary>
+        public static string ScaleRangeTextLarge {
+            get {
+                return ResourceManager.GetString("ScaleRangeTextLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1E-04 to 10,000.
+        /// </summary>
+        public static string ScaleRangeTextMedium {
+            get {
+                return ResourceManager.GetString("ScaleRangeTextMedium", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1E-06 to 100.
+        /// </summary>
+        public static string ScaleRangeTextSmall {
+            get {
+                return ResourceManager.GetString("ScaleRangeTextSmall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extra-large.
         /// </summary>
         public static string ScalingExtraLargeButton {

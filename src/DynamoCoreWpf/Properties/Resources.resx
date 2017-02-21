@@ -2173,4 +2173,16 @@ Want to publish a different package?</value>
   <data name="ChangeScaleFactorPromptDescriptionContent3" xml:space="preserve">
     <value>Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter.</value>
   </data>
+  <data name="ScaleRangeTextExtraLarge" xml:space="preserve">
+    <value>1 to 100,000,000</value>
+  </data>
+  <data name="ScaleRangeTextLarge" xml:space="preserve">
+    <value>0.01 to 1000,000</value>
+  </data>
+  <data name="ScaleRangeTextMedium" xml:space="preserve">
+    <value>1E-04 to 10,000</value>
+  </data>
+  <data name="ScaleRangeTextSmall" xml:space="preserve">
+    <value>1E-06 to 100</value>
+  </data>
 </root>
