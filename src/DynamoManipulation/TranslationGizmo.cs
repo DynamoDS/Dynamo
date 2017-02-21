@@ -119,7 +119,7 @@ namespace Dynamo.Manipulation
         /// <param name="size">Visual size of the Gizmo</param>
         internal void UpdateGeometry(Vector axis1, Vector axis2, Vector axis3, double size)
         {
-            if (axis1 == null) throw new ArgumentNullException(nameof(axis1));
+            if (axis1 == null) throw new ArgumentNullException(axis1);
 
             //Reset the dataset, but don't reset the cached hitAxis or hitPlane.
             //hitAxis and hitPlane are used to compute the offset for a move.
