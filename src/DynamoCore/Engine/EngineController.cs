@@ -127,10 +127,7 @@ namespace Dynamo.Engine
 
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
 
-            liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
-            libraryServices.SetLiveCore(LiveRunnerCore);
-
-            codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
+            OnLibraryLoaded();
 
             astBuilder = new AstBuilder(this);
             syncDataManager = new SyncDataManager();
@@ -458,10 +455,7 @@ namespace Dynamo.Engine
             OnTraceReconciliationComplete(new TraceReconciliationEventArgs(callsiteToOrphanMap));
         }
 
-        /// <summary>
-        ///     LibraryLoaded event handler.
-        /// </summary>
-        private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
+        private void OnLibraryLoaded()
         {
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
 
@@ -469,6 +463,14 @@ namespace Dynamo.Engine
             // due to which a new instance of CodeCompletionServices needs to be created with the new Core
             codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
             libraryServices.SetLiveCore(LiveRunnerCore);
+        }
+
+        /// <summary>
+        ///     LibraryLoaded event handler.
+        /// </summary>
+        private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
+        {
+            OnLibraryLoaded();
         }
 
         #region Implement IAstNodeContainer interface

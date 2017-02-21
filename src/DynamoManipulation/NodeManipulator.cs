@@ -20,6 +20,7 @@ using Dynamo.Wpf.ViewModels.Watch3D;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using Point = Autodesk.DesignScript.Geometry.Point;
+using String = System.String;
 using Vector = Autodesk.DesignScript.Geometry.Vector;
 
 namespace Dynamo.Manipulation
@@ -525,6 +526,7 @@ namespace Dynamo.Manipulation
         {
             Dispose(true);
 
+            Node.ClearRuntimeError();
             DeleteGizmos();
             DetachHandlers();
         }
@@ -538,12 +540,18 @@ namespace Dynamo.Manipulation
             Debug.Assert(IsMainThread());
 
             var packages = new List<IRenderPackage>();
-            var gizmos = GetGizmos(true);
-            foreach (var item in gizmos)
+            try
             {
-                packages.AddRange(item.GetDrawables());
+                var gizmos = GetGizmos(true);
+                foreach (var item in gizmos)
+                {
+                    packages.AddRange(item.GetDrawables());
+                }
             }
-
+            catch (Exception e)
+            {
+                Node.Warning(Properties.Resources.DirectManipulationError +": " + e.Message);
+            }
             return packages;
         }
 
