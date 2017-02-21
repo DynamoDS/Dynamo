@@ -67,7 +67,31 @@ namespace DSCore
             }
 
             // After checking all sublists, check if the current list contains the item
-            return result || list.Contains(item);
+            return result || ContainsInList(list, item);
+        }
+
+        /// <summary>
+        ///     An alternative to using IList.Contains which uses Enumerable.SequenceEqual to check if
+        ///     the item is contained in the list if the item is an array.
+        /// </summary>
+        /// <param name="list">The list to check if it contains the item.</param>
+        /// <param name="item">The item that needs to be found.</param>
+        /// <returns name="bool">Whether the list contains the input item.</returns>
+        private static bool ContainsInList(IList list, object item)
+        {
+            foreach (var obj in list)
+            {
+                if (obj is ArrayList && item is ArrayList)
+                {
+                    if (((ArrayList)obj).Cast<object>().SequenceEqual<object>(((ArrayList)item).Cast<object>())) return true;
+                }
+                else
+                {
+                    // This method of comparing is used in IList.Contains
+                    if (obj.Equals(item)) return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -176,7 +200,7 @@ namespace DSCore
             List<object> newList = new List<object>();
             foreach (var obj in list1)
             {
-                if (list2.Contains(obj)) newList.Add(obj);
+                if (ContainsInList(list2, obj)) newList.Add(obj);
             }
             return newList;
         }
@@ -192,7 +216,7 @@ namespace DSCore
         {
             foreach (var obj in list2)
             {
-                if (!list1.Contains(obj))
+                if (ContainsInList(list1, obj))
                 {
                     list1.Add(obj);
                 }
@@ -405,6 +429,21 @@ namespace DSCore
                 }
             }
             return list;
+        }
+
+        /// <summary>
+        ///     Returns the values of a list of key-value pair in a new list.
+        /// </summary>
+        /// <param name="list">The list to obtain the values from.</param>
+        /// <returns name="newlist">The new list which contains the values.</returns>
+        public static IList GetValues(IList list)
+        {
+            List<object> newList = new List<object>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                newList.Add(list[i]);
+            }
+            return newList;
         }
 
         /// <summary>

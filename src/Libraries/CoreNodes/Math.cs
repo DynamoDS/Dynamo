@@ -81,6 +81,49 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Maps the input value to a number between 0 and 1 based on the input range.
+        /// </summary>
+        /// <param name="rangeMin">The minimum value of the input range.</param>
+        /// <param name="rangeMax">The maximum value of the input range.</param>
+        /// <param name="inputValue">The number to be mapped.</param>
+        /// <returns name="double">The mapped value.</returns>
+        /// <search>map,range,minimum,maximum,normalize</search>
+        public static double Map(double rangeMin, double rangeMax, double inputValue)
+        {
+            return MapTo(rangeMin, rangeMax, inputValue, 0, 1);
+        }
+
+        /// <summary>
+        ///     Maps the input value to a number between targetRangeMin and targetRangeMax.
+        /// </summary>
+        /// <param name="rangeMin">The minimum value of the input range.</param>
+        /// <param name="rangeMax">The maximum value of the input range.</param>
+        /// <param name="inputValue">The number to be mapped.</param>
+        /// <param name="targetRangeMin">The minimum value of the new range.</param>
+        /// <param name="targetRangeMax">The maximum value of the new range.</param>
+        /// <returns name="double">The mapped value.</returns>
+        /// <search>map,range,mapto,minimum,maximum,normalize</search>
+        public static double MapTo(double rangeMin, double rangeMax, double inputValue, double targetRangeMin, double targetRangeMax)
+        {
+            if (rangeMin == rangeMax)
+            {
+                if (inputValue > rangeMax) return targetRangeMax;
+                return targetRangeMin;
+            }
+            else if (rangeMax < rangeMin)
+            {
+                double x = rangeMax;
+                rangeMax = rangeMin;
+                rangeMin = x;
+                if (inputValue >= rangeMax) return targetRangeMin;
+                else if (inputValue <= rangeMin) return targetRangeMax;
+            }
+            if (inputValue >= rangeMax) return 1;
+            else if (inputValue <= rangeMin) return 0;
+            return ((inputValue - rangeMin) / (rangeMax - rangeMin)) * (targetRangeMax - targetRangeMin) + targetRangeMin;
+        }
+
+        /// <summary>
         ///     Adjusts the range of a list of numbers while preserving the
         ///     distribution ratio.
         /// </summary>
