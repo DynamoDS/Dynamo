@@ -105,6 +105,7 @@ namespace DSCore
         /// <search>map,range,mapto,minimum,maximum,normalize</search>
         public static double MapTo(double rangeMin, double rangeMax, double inputValue, double targetRangeMin, double targetRangeMax)
         {
+            //Note: this behaviour is inconsistent with BuiltIn.MapTo if rangeMax < rangeMin
             if (rangeMin == rangeMax)
             {
                 if (inputValue > rangeMax) return targetRangeMax;
@@ -118,8 +119,8 @@ namespace DSCore
                 if (inputValue >= rangeMax) return targetRangeMin;
                 else if (inputValue <= rangeMin) return targetRangeMax;
             }
-            if (inputValue >= rangeMax) return 1;
-            else if (inputValue <= rangeMin) return 0;
+            if (inputValue >= rangeMax) return targetRangeMax;
+            else if (inputValue <= rangeMin) return targetRangeMin;
             return ((inputValue - rangeMin) / (rangeMax - rangeMin)) * (targetRangeMax - targetRangeMin) + targetRangeMin;
         }
 
