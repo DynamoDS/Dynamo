@@ -2,6 +2,10 @@
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using System.Diagnostics;
+using Dynamo.Configuration;
+using System.Windows.Input;
+using System.Windows.Controls;
 
 namespace Dynamo.Prompts
 {
@@ -15,6 +19,16 @@ namespace Dynamo.Prompts
             this.DataContext = node;
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             InitializeComponent();
+        }
+
+        private void OpenDynamoDictionary(object sender, MouseButtonEventArgs e)
+        {
+            Process.Start(((TextBlock)sender).Tag.ToString());
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            this.Owner.Focus(); //apply focus on the Dynamo window when the Help window is closed
         }
     }
 }
