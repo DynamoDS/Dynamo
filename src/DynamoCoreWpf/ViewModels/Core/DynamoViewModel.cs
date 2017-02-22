@@ -58,6 +58,7 @@ namespace Dynamo.ViewModels
             set
             {
                 CurrentSpace.ScaleFactor = Math.Pow(10, value);
+                CurrentSpace.ScaleFactorChanged = true;
             }
         }
 

@@ -4489,6 +4489,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run completed with warnings on setting new working range..
+        /// </summary>
+        public static string RunCompletedWithScaleChangeAndWarningsMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithScaleChangeAndWarningsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run completed with new working range..
+        /// </summary>
+        public static string RunCompletedWithScaleChangeMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithScaleChangeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run completed with warnings..
         /// </summary>
         public static string RunCompletedWithWarningsMessage {
@@ -4503,6 +4521,15 @@ namespace Dynamo.Wpf.Properties {
         public static string RunStartedMessage {
             get {
                 return ResourceManager.GetString("RunStartedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run started with new working range....
+        /// </summary>
+        public static string RunStartedWithScaleChangeMessage {
+            get {
+                return ResourceManager.GetString("RunStartedWithScaleChangeMessage", resourceCulture);
             }
         }
         

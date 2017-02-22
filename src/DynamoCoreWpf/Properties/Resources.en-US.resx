@@ -1648,11 +1648,20 @@ Do you want to install the latest Dynamo update?</value>
   <data name="RunCompletedMessage" xml:space="preserve">
     <value>Run completed.</value>
   </data>
+  <data name="RunCompletedWithScaleChangeMessage" xml:space="preserve">
+    <value>Run completed with new working range.</value>
+  </data>
   <data name="RunCompletedWithWarningsMessage" xml:space="preserve">
     <value>Run completed with warnings.</value>
   </data>
+  <data name="RunCompletedWithScaleChangeAndWarningsMessage" xml:space="preserve">
+    <value>Run completed with warnings on setting new working range.</value>
+  </data>
   <data name="RunStartedMessage" xml:space="preserve">
     <value>Run started...</value>
+  </data>
+  <data name="RunStartedWithScaleChangeMessage" xml:space="preserve">
+    <value>Run started with new working range...</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
     <value>&lt;Click here to edit the group title&gt;</value>
