@@ -1913,6 +1913,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Isolate Selected Geometries.
+        /// </summary>
+        public static string DynamoViewSettingsMenuIsolationMode {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsMenuIsolationMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Edges.
         /// </summary>
         public static string DynamoViewSettingsMenuShowEdges {
@@ -3419,6 +3428,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeContextMenuShowLabels {
             get {
                 return ResourceManager.GetString("NodeContextMenuShowLabels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to See more on the Dynamo Dictionary....
+        /// </summary>
+        public static string NodeHelpWindowDynamoDictionary {
+            get {
+                return ResourceManager.GetString("NodeHelpWindowDynamoDictionary", resourceCulture);
             }
         }
         
