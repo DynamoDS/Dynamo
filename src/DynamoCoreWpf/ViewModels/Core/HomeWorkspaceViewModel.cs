@@ -138,17 +138,38 @@ namespace Dynamo.Wpf.ViewModels.Core
 
             if (!hasWarnings)
             {
-                SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunCompletedMessage);
+                if (Model.ScaleFactorChanged)
+                {
+                    SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunCompletedWithScaleChangeMessage);
+                }
+                else
+                {
+                    SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunCompletedMessage);
+                }
             }
             else
             {
-                SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsMessage); 
+                if (Model.ScaleFactorChanged)
+                {
+                    SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithScaleChangeAndWarningsMessage);
+                }
+                else
+                {
+                    SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsMessage);
+                }
             }
         }
 
         void hwm_EvaluationStarted(object sender, EventArgs e)
         {
-            SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunStartedMessage);
+            if (Model.ScaleFactorChanged)
+            {
+                SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunStartedWithScaleChangeMessage);
+            }
+            else
+            {
+                SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunStartedMessage);
+            }
         }
 
         private void SetCurrentWarning(NotificationLevel level, string message)

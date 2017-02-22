@@ -58,6 +58,8 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        internal bool ScaleFactorChanged = false;
+
         /// <summary>
         ///     The step to offset elements between subsequent paste operations
         /// </summary>
