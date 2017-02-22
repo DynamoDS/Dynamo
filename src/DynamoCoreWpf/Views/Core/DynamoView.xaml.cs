@@ -773,6 +773,7 @@ namespace Dynamo.Controls
                     dynamoViewModel.ScaleFactorLog = view.ScaleValue;
                     dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
 
+                    //log to dynamo console
                     var allNodes = dynamoViewModel.HomeSpace.Nodes;
                     dynamoViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
                 }
@@ -1640,6 +1641,11 @@ namespace Dynamo.Controls
 
             sidebarGrid.Visibility = Visibility.Collapsed;
             collapsedSidebar.Visibility = Visibility.Visible;
+        }
+
+        private void onSettingsSubMenuOpened(object sender, RoutedEventArgs e)
+        {
+            this.ChangeScaleFactorMenu.IsEnabled = !dynamoViewModel.ShowStartPage;
         }
 
         private void Workspace_SizeChanged(object sender, SizeChangedEventArgs e)

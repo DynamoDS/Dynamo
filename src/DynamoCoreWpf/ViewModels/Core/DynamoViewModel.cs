@@ -1436,11 +1436,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        internal bool ChangeScaleFactorEnabled
-        {
-            get { return !ShowStartPage; }
-        }
-
         internal void ShowPackageManagerSearch(object parameters)
         {
             OnRequestPackageManagerSearchDialog(this, EventArgs.Empty);
