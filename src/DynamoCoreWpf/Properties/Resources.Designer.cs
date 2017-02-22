@@ -296,7 +296,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to What is the range of geometry sizes that you will be working on?.
+        ///   Looks up a localized string similar to To ensure accurate geometry rendering and calculation, select the range of geometry sizes that you will be working on:.
         /// </summary>
         public static string ChangeScaleFactorPromptCaptionText {
             get {
@@ -314,7 +314,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter..
+        ///   Looks up a localized string similar to Use this working range to model in values that fall between 0.000001 to 100 units.
         /// </summary>
         public static string ChangeScaleFactorPromptDescriptionContent0 {
             get {
@@ -323,7 +323,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use this working range to model objects no larger than a truck and that can be built to manufacturing tolerances..
+        ///   Looks up a localized string similar to Use this working range to model in values that fall between 0.0001 to 10,000 units.
         /// </summary>
         public static string ChangeScaleFactorPromptDescriptionContent1 {
             get {
@@ -332,7 +332,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use this working range to model precision parts no smaller than a few microns but no larger than a millimeter..
+        ///   Looks up a localized string similar to Use this working range to model in values that fall between 0.01 to 1,000,000 units.
         /// </summary>
         public static string ChangeScaleFactorPromptDescriptionContent2 {
             get {
@@ -341,7 +341,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter..
+        ///   Looks up a localized string similar to Use this working range to model in values that fall between 1 to 100,000,000 units.
         /// </summary>
         public static string ChangeScaleFactorPromptDescriptionContent3 {
             get {
@@ -4575,42 +4575,6 @@ namespace Dynamo.Wpf.Properties {
         public static string SaveWorkbenToImageDialogTitle {
             get {
                 return ResourceManager.GetString("SaveWorkbenToImageDialogTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 1 to 100,000,000.
-        /// </summary>
-        public static string ScaleRangeTextExtraLarge {
-            get {
-                return ResourceManager.GetString("ScaleRangeTextExtraLarge", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 0.01 to 1000,000.
-        /// </summary>
-        public static string ScaleRangeTextLarge {
-            get {
-                return ResourceManager.GetString("ScaleRangeTextLarge", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 1E-04 to 10,000.
-        /// </summary>
-        public static string ScaleRangeTextMedium {
-            get {
-                return ResourceManager.GetString("ScaleRangeTextMedium", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 1E-06 to 100.
-        /// </summary>
-        public static string ScaleRangeTextSmall {
-            get {
-                return ResourceManager.GetString("ScaleRangeTextSmall", resourceCulture);
             }
         }
         
