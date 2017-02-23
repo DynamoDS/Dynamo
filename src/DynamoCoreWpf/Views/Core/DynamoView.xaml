@@ -65,8 +65,8 @@
         <KeyBinding Key="L"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.GraphAutoLayoutCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
-        <KeyBinding Key="S"
-                    Modifiers="Shift"
+        <KeyBinding Key="I"
+                    Modifiers="Control"
                     Command="{Binding Path=DataContext.BackgroundPreviewViewModel.ToggleIsolationModeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Tab"
                     Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
@@ -714,7 +714,7 @@
                                   IsCheckable="True"
                                   IsChecked="{Binding Path=BackgroundPreviewViewModel.IsolationMode, Mode=TwoWay}"
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuIsolationMode}"
-                                  InputGestureText="Shift + S"/>
+                                  InputGestureText="Ctrl + I"/>
                         <MenuItem Focusable="False"
                                   IsCheckable="True"
                                   IsChecked="{Binding Path=RenderPackageFactoryViewModel.ShowEdges, Mode=TwoWay}"
