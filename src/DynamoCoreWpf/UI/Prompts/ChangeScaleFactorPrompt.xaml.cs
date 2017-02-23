@@ -12,30 +12,9 @@ namespace Dynamo.Prompts
     /// </summary>
     public partial class ChangeScaleFactorPrompt : Window
     {
-        // Maximum and minimum scale factor values, log 10
-        private readonly int MaxLogValue = 8;
-        private readonly int MinLogValue = -8;
-
-        // The number of rows to be highlighted
-        private readonly int SpanLogValue = 9;
-
         public ChangeScaleFactorPrompt(int scaleValue = 0)
         {
             InitializeComponent();
-
-            this.UnitComboBox.Items.Add(Res.ChangeScaleFactorPromptUnitMm);
-            this.UnitComboBox.Items.Add(Res.ChangeScaleFactorPromptUnitCm);
-            this.UnitComboBox.Items.Add(Res.ChangeScaleFactorPromptUnitM);
-            this.UnitComboBox.SelectedIndex = 0; // default to mm
-            RefreshUnits();
-
-            this.UnitsSlider.Minimum = MinLogValue + SpanLogValue / 2;
-            this.UnitsSlider.Maximum = MaxLogValue - SpanLogValue / 2;
-            this.UnitsSlider.Height = (MaxLogValue - MinLogValue + 1) * 20;
-            this.UnitsSlider.Value = scaleValue;
-
-            RefreshHighlight();
-
 
             var col = (scaleValue / 2) + 1;
             var tb = (ToggleButton)this.ScaleButtonsGrid.Children
@@ -72,46 +51,6 @@ namespace Dynamo.Prompts
             DialogResult = false;
         }
 
-        void Slider_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            RefreshHighlight();
-        }
-
-        void UnitComboBox_Changed(object sender, SelectionChangedEventArgs e)
-        {
-            RefreshUnits();
-            RefreshHighlight();
-        }
-
-        private void RefreshUnits()
-        {
-            var conversionPow = 0;
-            var fmt = "";
-            switch (UnitComboBox.SelectedIndex)
-            {
-                case 0:
-                    conversionPow = 0;
-                    fmt = Res.ChangeScaleFactorPromptUnitsNumberFormatMm;
-                    break;
-                case 1:
-                    conversionPow = -1;
-                    fmt = Res.ChangeScaleFactorPromptUnitsNumberFormatCm;
-                    break;
-                case 2:
-                    conversionPow = -3; fmt = Res.ChangeScaleFactorPromptUnitsNumberFormatM; break;
-            }
-
-            this.UnitsList.Children.Clear();
-            for (int pow = MaxLogValue; pow >= MinLogValue; --pow)
-            {
-                var num = System.Math.Pow(10, pow + conversionPow);
-                this.UnitsList.Children.Add(new TextBlock()
-                {
-                    Text = string.Format(fmt, num)
-                });
-            }
-        }
-
         private void RefreshDescription(int val)
         {
             this.DescriptionScaleRange.Text =
@@ -123,16 +62,6 @@ namespace Dynamo.Prompts
                (val != 1) ? string.Empty : Res.ChangeScaleFactorPromptDescriptionDefaultSetting;
         }
 
-        private void RefreshHighlight()
-        {
-            var val = this.UnitsSlider.Value;
-
-            this.DescriptionScaleRange.Text = 
-                (val > 0) ? Res.ChangeScaleFactorPromptDescriptionContent0 :
-                (val < 0) ? Res.ChangeScaleFactorPromptDescriptionContent2 :
-                Res.ChangeScaleFactorPromptDescriptionContent1;
-        }
-
         private int getScaleValue()
         {
             foreach (Control c in this.ScaleButtonsGrid.Children)
@@ -142,12 +71,10 @@ namespace Dynamo.Prompts
                     ToggleButton tb = (ToggleButton)c;
                     if((bool)tb.IsChecked)
                     {
-                        Console.WriteLine(((int)tb.GetValue(Grid.ColumnProperty) - 1) * 2);
                         return ((int)tb.GetValue(Grid.ColumnProperty) -1) * 2;
                     }
                 }
             }
-            Console.WriteLine(0);
             return 0;
         }
 

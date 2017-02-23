@@ -105,55 +105,6 @@
                        FontSize="15"
                        TextWrapping="Wrap"
                        Text="{x:Static p:Resources.ChangeScaleFactorPromptCaptionText}"/>
-            <StackPanel Orientation="Horizontal" Background="#555" Visibility="Collapsed">
-                <Grid Margin="5" Width="170">
-                    <StackPanel x:Name="UnitsList"
-                                Style="{StaticResource UnitsPanelStyle}"
-                                Margin="0,0,10,0"
-                                Orientation="Vertical"
-                                Panel.ZIndex="10"
-                                IsHitTestVisible="False">
-                    </StackPanel>
-                    <Slider Name="UnitsSlider"
-                            Orientation="Vertical"
-                            Style="{StaticResource UnitsSliderStyle}"
-                            IsSnapToTickEnabled="True"
-                            TickFrequency="1"
-                            Value="0"
-                            ValueChanged="Slider_Changed" />
-                </Grid>
-                <Border Margin="0,5" Width="170" Background="#fff">
-                    <DockPanel>
-                        <TextBlock Name="DescriptionBox"
-                                   Margin="7"
-                                   Width="160"
-                                   FontSize="12"
-                                   TextWrapping="Wrap"
-                                   Text="{x:Static p:Resources.ChangeScaleFactorPromptDescriptionBox}"
-                                   DockPanel.Dock="Top"/>
-                        <ComboBox Name="UnitComboBox"
-                                  Margin="7,0"
-                                  SelectionChanged="UnitComboBox_Changed"
-                                  DockPanel.Dock="Top">
-                        </ComboBox>
-                        <TextBlock Name="_DescriptionScaleRange"
-                                   Margin="7,0,7,7"
-                                   Width="160"
-                                   FontSize="12"
-                                   TextWrapping="Wrap"
-                                   VerticalAlignment="Bottom"
-                                   DockPanel.Dock="Bottom"/>
-                        <TextBlock Name="_DescriptionDefaultSetting"
-                                   Margin="7,0"
-                                   Width="160"
-                                   FontSize="12"
-                                   FontWeight="Bold"
-                                   TextWrapping="Wrap"
-                                   VerticalAlignment="Bottom"
-                                   DockPanel.Dock="Bottom" />
-                    </DockPanel>
-                </Border>
-            </StackPanel>
 
             <Grid Margin="0 20 0 0"
                   Name ="ScaleButtonsGrid">
