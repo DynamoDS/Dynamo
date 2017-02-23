@@ -314,38 +314,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use this working range to model in values that fall between 0.000001 to 100 units.
+        ///   Looks up a localized string similar to Use this working range to model in values that fall between {0} to {1} units.
         /// </summary>
-        public static string ChangeScaleFactorPromptDescriptionContent0 {
+        public static string ChangeScaleFactorPromptDescriptionContent {
             get {
-                return ResourceManager.GetString("ChangeScaleFactorPromptDescriptionContent0", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use this working range to model in values that fall between 0.0001 to 10,000 units.
-        /// </summary>
-        public static string ChangeScaleFactorPromptDescriptionContent1 {
-            get {
-                return ResourceManager.GetString("ChangeScaleFactorPromptDescriptionContent1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use this working range to model in values that fall between 0.01 to 1,000,000 units.
-        /// </summary>
-        public static string ChangeScaleFactorPromptDescriptionContent2 {
-            get {
-                return ResourceManager.GetString("ChangeScaleFactorPromptDescriptionContent2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use this working range to model in values that fall between 1 to 100,000,000 units.
-        /// </summary>
-        public static string ChangeScaleFactorPromptDescriptionContent3 {
-            get {
-                return ResourceManager.GetString("ChangeScaleFactorPromptDescriptionContent3", resourceCulture);
+                return ResourceManager.GetString("ChangeScaleFactorPromptDescriptionContent", resourceCulture);
             }
         }
         
@@ -413,7 +386,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Geometry View Range.
+        ///   Looks up a localized string similar to Geometry Working Range.
         /// </summary>
         public static string ChangeScaleFactorPromptWindowTitle {
             get {
@@ -4498,7 +4471,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Re-run.
+        ///   Looks up a localized string similar to Re run.
         /// </summary>
         public static string RerunButton {
             get {
@@ -4597,7 +4570,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extra-large.
+        ///   Looks up a localized string similar to Extra large.
         /// </summary>
         public static string ScalingExtraLargeButton {
             get {

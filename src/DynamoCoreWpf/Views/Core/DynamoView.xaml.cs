@@ -772,8 +772,8 @@ namespace Dynamo.Controls
                 {
                     dynamoViewModel.ScaleFactorLog = view.ScaleValue;
                     dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
-
-                    Log("Scale factor log changed to " + view.ScaleValue);
+                    
+                    Log(String.Format("Geometry working range changed to ({0}, {1})", view.ScaleRange.Item1, view.ScaleRange.Item2));
 
                     var allNodes = dynamoViewModel.HomeSpace.Nodes;
                     dynamoViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
@@ -1644,7 +1644,7 @@ namespace Dynamo.Controls
             collapsedSidebar.Visibility = Visibility.Visible;
         }
 
-        private void onSettingsSubMenuOpened(object sender, RoutedEventArgs e)
+        private void OnSettingsSubMenuOpened(object sender, RoutedEventArgs e)
         {
             this.ChangeScaleFactorMenu.IsEnabled = !dynamoViewModel.ShowStartPage;
         }
