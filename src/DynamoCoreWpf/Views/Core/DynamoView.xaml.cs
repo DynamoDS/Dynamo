@@ -746,10 +746,12 @@ namespace Dynamo.Controls
             var view = new Prompts.ChangeScaleFactorPrompt(dynamoViewModel.ScaleFactorLog) { Owner = this };
             if (view.ShowDialog() == true)
             {
-                if (dynamoViewModel.ScaleFactorLog != view.SliderValue)
+                if (dynamoViewModel.ScaleFactorLog != view.ScaleValue)
                 {
-                    dynamoViewModel.ScaleFactorLog = view.SliderValue;
+                    dynamoViewModel.ScaleFactorLog = view.ScaleValue;
                     dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+
+                    Log("Scale factor log changed to " + view.ScaleValue);
 
                     var allNodes = dynamoViewModel.HomeSpace.Nodes;
                     dynamoViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
@@ -1640,6 +1642,11 @@ namespace Dynamo.Controls
         private void WorkspaceTabs_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+        }
+
+        private void onSettingsSubMenuOpened(object sender, RoutedEventArgs e)
+        {
+            this.ChangeScaleFactorMenu.IsEnabled = !dynamoViewModel.ShowStartPage;
         }
 
         private void DynamoView_OnDrop(object sender, DragEventArgs e)

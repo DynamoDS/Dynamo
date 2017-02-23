@@ -1,5 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Prompts
@@ -9,31 +12,36 @@ namespace Dynamo.Prompts
     /// </summary>
     public partial class ChangeScaleFactorPrompt : Window
     {
-        // Maximum and minimum scale factor values, log 10
-        private readonly int MaxLogValue = 8;
-        private readonly int MinLogValue = -8;
-
-        // The number of rows to be highlighted
-        private readonly int SpanLogValue = 9;
-
-        public ChangeScaleFactorPrompt(int sliderValue = 0)
+        public ChangeScaleFactorPrompt(int scaleValue = 0)
         {
             InitializeComponent();
 
-            this.UnitComboBox.Items.Add(Res.ChangeScaleFactorPromptUnitMm);
-            this.UnitComboBox.Items.Add(Res.ChangeScaleFactorPromptUnitCm);
-            this.UnitComboBox.Items.Add(Res.ChangeScaleFactorPromptUnitM);
-            this.UnitComboBox.SelectedIndex = 0; // default to mm
-            RefreshUnits();
-
-            this.UnitsSlider.Minimum = MinLogValue + SpanLogValue / 2;
-            this.UnitsSlider.Maximum = MaxLogValue - SpanLogValue / 2;
-            this.UnitsSlider.Height = (MaxLogValue - MinLogValue + 1) * 20;
-            this.UnitsSlider.Value = sliderValue;
-            RefreshHighlight();
+            var col = (scaleValue / 2) + 1;
+            var tb = (ToggleButton)this.ScaleButtonsGrid.Children
+                .Cast<UIElement>()
+                .First(e => Grid.GetColumn(e) == col);
+            tb.IsChecked = true;
+            RefreshDescription(col);
         }
 
-        void OK_Click(object sender, RoutedEventArgs e)
+        void ScaleButton_click(object sender, RoutedEventArgs e)
+        {
+            foreach (Control c in this.ScaleButtonsGrid.Children)
+            {
+                if (c.GetType() == typeof(ToggleButton))
+                {
+                    ToggleButton tb = (ToggleButton)c;
+                    tb.IsChecked = false;
+                }
+            }
+
+            var toggleButton = sender as ToggleButton;
+            toggleButton.IsChecked = true;
+            int col = (int)toggleButton.GetValue(Grid.ColumnProperty);
+            RefreshDescription(col);
+        }
+
+        void Apply_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
         }
@@ -43,64 +51,36 @@ namespace Dynamo.Prompts
             DialogResult = false;
         }
 
-        void Slider_Changed(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void RefreshDescription(int val)
         {
-            RefreshHighlight();
-        }
-
-        void UnitComboBox_Changed(object sender, SelectionChangedEventArgs e)
-        {
-            RefreshUnits();
-            RefreshHighlight();
-        }
-
-        private void RefreshUnits()
-        {
-            var conversionPow = 0;
-            var fmt = "";
-            switch (UnitComboBox.SelectedIndex)
-            {
-                case 0:
-                    conversionPow = 0;
-                    fmt = Res.ChangeScaleFactorPromptUnitsNumberFormatMm;
-                    break;
-                case 1:
-                    conversionPow = -1;
-                    fmt = Res.ChangeScaleFactorPromptUnitsNumberFormatCm;
-                    break;
-                case 2:
-                    conversionPow = -3; fmt = Res.ChangeScaleFactorPromptUnitsNumberFormatM; break;
-            }
-
-            this.UnitsList.Children.Clear();
-            for (int pow = MaxLogValue; pow >= MinLogValue; --pow)
-            {
-                var num = System.Math.Pow(10, pow + conversionPow);
-                this.UnitsList.Children.Add(new TextBlock()
-                {
-                    Text = string.Format(fmt, num)
-                });
-            }
-        }
-
-        private void RefreshHighlight()
-        {
-            var val = this.UnitsSlider.Value;
-
-            this.DescriptionScaleRange.Text = 
-                (val > 0) ? Res.ChangeScaleFactorPromptDescriptionContent0 :
-                (val < 0) ? Res.ChangeScaleFactorPromptDescriptionContent2 :
-                Res.ChangeScaleFactorPromptDescriptionContent1;
-
+            this.DescriptionScaleRange.Text =
+                (val == 0) ? Res.ChangeScaleFactorPromptDescriptionContent0 :
+                (val == 1) ? Res.ChangeScaleFactorPromptDescriptionContent1 :
+                (val == 2) ? Res.ChangeScaleFactorPromptDescriptionContent2 :
+                Res.ChangeScaleFactorPromptDescriptionContent3;
             this.DescriptionDefaultSetting.Text =
-                (val > 0) ? string.Empty :
-                (val < 0) ? string.Empty :
-                Res.ChangeScaleFactorPromptDescriptionDefaultSetting;
+               (val != 1) ? string.Empty : Res.ChangeScaleFactorPromptDescriptionDefaultSetting;
         }
 
-        public int SliderValue
+        private int getScaleValue()
         {
-            get { return (int)this.UnitsSlider.Value; }
+            foreach (Control c in this.ScaleButtonsGrid.Children)
+            {
+                if (c.GetType() == typeof(ToggleButton))
+                {
+                    ToggleButton tb = (ToggleButton)c;
+                    if ((bool)tb.IsChecked)
+                    {
+                        return ((int)tb.GetValue(Grid.ColumnProperty) - 1) * 2;
+                    }
+                }
+            }
+            return 0;
+        }
+
+        public int ScaleValue
+        {
+            get { return getScaleValue(); }
         }
     }
 }

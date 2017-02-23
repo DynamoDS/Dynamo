@@ -3,7 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-        Title="{x:Static p:Resources.ChangeScaleFactorPromptWindowTitle}" Height="540" Width="400"
+        Title="{x:Static p:Resources.ChangeScaleFactorPromptWindowTitle}" 
+        Height="250" 
+        Width="540"
+        MinHeight="250"
+        MinWidth="540"
         WindowStartupLocation="CenterOwner"
         Style="{DynamicResource DynamoWindowStyle}">
 
@@ -60,6 +64,36 @@
                     </Style>
                 </Style.Resources>
             </Style>
+            <Style x:Key="ScalesToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+                <Setter Property="Margin" Value="5 0 5 0"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border Background ="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#46484c"/>
+                    </Trigger>
+                    <Trigger Property="IsChecked" Value="true">
+                        <Setter Property="Background" Value="#46484c"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="ScaleTextblockStyle" TargetType="{x:Type TextBlock}">
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="FontSize" Value="16px"/>
+                <Setter Property="Foreground" Value="#bbbbbb"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -67,82 +101,112 @@
         <StackPanel Margin="15">
             <TextBlock Name="PromptText"
                        Foreground="WhiteSmoke"
-                       Padding="0,0,0,15"
+                       Margin="10 0 10 0"
                        FontSize="15"
                        TextWrapping="Wrap"
-                       Text="{x:Static p:Resources.ChangeScaleFactorPromptCaptionText}" />
-            <StackPanel Orientation="Horizontal" Background="#555">
-                <Grid Margin="5" Width="170">
-                    <StackPanel x:Name="UnitsList"
-                                Style="{StaticResource UnitsPanelStyle}"
-                                Margin="0,0,10,0"
-                                Orientation="Vertical"
-                                Panel.ZIndex="10"
-                                IsHitTestVisible="False">
-                    </StackPanel>
-                    <Slider Name="UnitsSlider"
-                            Orientation="Vertical"
-                            Style="{StaticResource UnitsSliderStyle}"
-                            IsSnapToTickEnabled="True"
-                            TickFrequency="1"
-                            Value="0"
-                            ValueChanged="Slider_Changed" />
-                </Grid>
-                <Border Margin="0,5" Width="170" Background="#fff">
+                       Text="{x:Static p:Resources.ChangeScaleFactorPromptCaptionText}"/>
+
+            <Grid Margin="0 20 0 0"
+                  Name ="ScaleButtonsGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <ToggleButton Grid.Column="0"
+                              Style="{StaticResource ScalesToggleButtonStyle}"
+                              Name="SmallButton"
+                              Click="ScaleButton_click">
                     <DockPanel>
-                        <TextBlock Name="DescriptionBox"
-                                   Margin="7"
-                                   Width="160"
-                                   FontSize="12"
-                                   TextWrapping="Wrap"
-                                   Text="{x:Static p:Resources.ChangeScaleFactorPromptDescriptionBox}"
+                        <TextBlock Text="{x:Static p:Resources.ScalingSmallButton}"
+                                   Style="{StaticResource ScaleTextblockStyle}"
                                    DockPanel.Dock="Top"/>
-                        <ComboBox Name="UnitComboBox"
-                                  Margin="7,0"
-                                  SelectionChanged="UnitComboBox_Changed"
-                                  DockPanel.Dock="Top">
-                        </ComboBox>
-                        <TextBlock Name="DescriptionScaleRange"
-                                   Margin="7,0,7,7"
-                                   Width="160"
-                                   FontSize="12"
-                                   TextWrapping="Wrap"
-                                   VerticalAlignment="Bottom"
-                                   DockPanel.Dock="Bottom"/>
-                        <TextBlock Name="DescriptionDefaultSetting"
-                                   Margin="7,0"
-                                   Width="160"
-                                   FontSize="12"
-                                   FontWeight="Bold"
-                                   TextWrapping="Wrap"
-                                   VerticalAlignment="Bottom"
-                                   DockPanel.Dock="Bottom" />
                     </DockPanel>
-                </Border>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15">
-                <Button Content="{x:Static p:Resources.OKButton}"
-                        Style="{DynamicResource ResourceKey=STextButton}"
-                        Margin="5"
-                        HorizontalAlignment="Right"
-                        Name="okButton"
-                        VerticalAlignment="Top"
-                        Width="auto"
-                        MinWidth="75"
-                        Click="OK_Click"
-                        IsDefault="True"
-                        TabIndex="2" />
-                <Button Content="{x:Static p:Resources.CancelButton}"
-                        Style="{DynamicResource ResourceKey=STextButton}"
-                        Margin="5" HorizontalAlignment="Right"
-                        Name="cancelButton"
-                        VerticalAlignment="Top"
-                        Width="auto"
-                        MinWidth="75"
-                        Click="Cancel_Click"
-                        IsCancel="True"
-                        TabIndex="3" />
-            </StackPanel>
+                </ToggleButton>
+                <ToggleButton Grid.Column="1"
+                              Style="{StaticResource ScalesToggleButtonStyle}"
+                              Name="MediumButton"
+                              Click="ScaleButton_click">
+                    <DockPanel>
+                        <TextBlock Text="{x:Static p:Resources.ScalingMediumButton}"
+                                   Style="{StaticResource ScaleTextblockStyle}"
+                                   DockPanel.Dock="Top"/>
+                    </DockPanel>
+                </ToggleButton>
+                <ToggleButton Grid.Column="2"
+                              Style="{StaticResource ScalesToggleButtonStyle}"
+                              Name="LargeButton"
+                              Click="ScaleButton_click">
+                    <DockPanel>
+                        <TextBlock Text="{x:Static p:Resources.ScalingLargeButton}"
+                                   Style="{StaticResource ScaleTextblockStyle}"
+                                   DockPanel.Dock="Top"/>
+                    </DockPanel>
+                </ToggleButton>
+                <ToggleButton Grid.Column="3"
+                              Style="{StaticResource ScalesToggleButtonStyle}"
+                              Name="ExtraLargeButton"
+                              Click="ScaleButton_click">
+                    <DockPanel>
+                        <TextBlock Text="{x:Static p:Resources.ScalingExtraLargeButton}"
+                                   Style="{StaticResource ScaleTextblockStyle}"
+                                   DockPanel.Dock="Top"/>
+                    </DockPanel>
+                </ToggleButton>
+            </Grid>
+            <Grid Margin="0 20 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <DockPanel Grid.Column="0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center">
+                    <TextBlock Name="DescriptionDefaultSetting"
+                               FontSize="12"
+                               Margin="10 0 0 0"
+                               Foreground="White"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               HorizontalAlignment="Left"
+                               DockPanel.Dock="Top"/>
+                    <TextBlock Name="DescriptionScaleRange"
+                               Width="240"
+                               Margin="10 0 0 0"
+                               FontSize="12px"
+                               Foreground="WhiteSmoke"
+                               TextWrapping="Wrap"
+                               HorizontalAlignment="Left"
+                               DockPanel.Dock="Bottom"/>
+                </DockPanel>
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal" 
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom">
+                    <Button Content="{x:Static p:Resources.RerunButton}"
+                            Style="{DynamicResource ResourceKey=STextButton}"
+                            Margin="5"
+                            HorizontalAlignment="Right"
+                            Name="applyButton"
+                            VerticalAlignment="Top"
+                            Width="auto"
+                            MinWidth="75"
+                            Click="Apply_Click"
+                            IsDefault="True"
+                            TabIndex="2" />
+                    <Button Content="{x:Static p:Resources.CancelButton}"
+                            Style="{DynamicResource ResourceKey=STextButton}"
+                            Margin="5" HorizontalAlignment="Right"
+                            Name="cancelButton"
+                            VerticalAlignment="Top"
+                            Width="auto"
+                            MinWidth="75"
+                            Click="Cancel_Click"
+                            IsCancel="True"
+                            TabIndex="3" />
+                </StackPanel>
+            </Grid>
         </StackPanel>
     </Grid>
 </Window>

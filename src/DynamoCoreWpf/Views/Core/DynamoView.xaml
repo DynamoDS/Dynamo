@@ -629,7 +629,8 @@
                     <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenu}"
                               Name="SettingsMenu"
                               Focusable="False"
-                              IsEnabled="True">
+                              IsEnabled="True"
+                              SubmenuOpened="onSettingsSubMenuOpened">
                         <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReporting}"
                                   Name="ToggleIsAnalyticsReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
@@ -703,8 +704,8 @@
                             </StackPanel>
                         </MenuItem>
                         <MenuItem Focusable="False"
+                                  Name="ChangeScaleFactorMenu"
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuChangeScaleFactor}"
-                                  IsEnabled="{Binding ChangeScaleFactorEnabled}"
                                   Command="{Binding ChangeScaleFactorCommand}" />
                         <Separator />
                         <MenuItem Focusable="False"

@@ -134,19 +134,19 @@
     <comment>To indicate Dynamo is up to date</comment>
   </data>
   <data name="ChangeScaleFactorPromptCaptionText" xml:space="preserve">
-    <value>What is the range of geometry sizes that you will be working on?</value>
+    <value>To ensure accurate geometry rendering and calculation, select the range of geometry sizes that you will be working on:</value>
   </data>
   <data name="ChangeScaleFactorPromptDescriptionBox" xml:space="preserve">
     <value>Numerical range shown here denote numbers in the following unit:</value>
   </data>
   <data name="ChangeScaleFactorPromptDescriptionContent0" xml:space="preserve">
-    <value>Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter.</value>
+    <value>Use this working range to model in values that fall between 0.000001 to 100 units</value>
   </data>
   <data name="ChangeScaleFactorPromptDescriptionContent1" xml:space="preserve">
-    <value>Use this working range to model objects no larger than a truck and that can be built to manufacturing tolerances.</value>
+    <value>Use this working range to model in values that fall between 0.0001 to 10,000 units</value>
   </data>
   <data name="ChangeScaleFactorPromptDescriptionContent2" xml:space="preserve">
-    <value>Use this working range to model precision parts no smaller than a few microns but no larger than a millimeter.</value>
+    <value>Use this working range to model in values that fall between 0.01 to 1,000,000 units</value>
   </data>
   <data name="ChangeScaleFactorPromptDescriptionDefaultSetting" xml:space="preserve">
     <value>Default Setting:</value>
@@ -2156,5 +2156,23 @@ Want to publish a different package?</value>
   </data>
   <data name="DynamoViewHelpDictionary" xml:space="preserve">
     <value>Open Dynamo Dictionary</value>
+  </data>
+  <data name="ChangeScaleFactorPromptDescriptionContent3" xml:space="preserve">
+    <value>Use this working range to model in values that fall between 1 to 100,000,000 units</value>
+  </data>
+  <data name="RerunButton" xml:space="preserve">
+    <value>Re-run</value>
+  </data>
+  <data name="ScalingExtraLargeButton" xml:space="preserve">
+    <value>Extra-Large</value>
+  </data>
+  <data name="ScalingLargeButton" xml:space="preserve">
+    <value>Large</value>
+  </data>
+  <data name="ScalingMediumButton" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="ScalingSmallButton" xml:space="preserve">
+    <value>Small</value>
   </data>
 </root>

@@ -887,6 +887,7 @@ namespace Dynamo.Graph.Workspaces
             X = 0.0;
             Y = 0.0;
             Zoom = 1.0;
+            ScaleFactor = 1.0;
             workspaceLoaded = true;
         }
 
