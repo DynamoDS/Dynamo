@@ -750,8 +750,8 @@ namespace Dynamo.Controls
                 {
                     dynamoViewModel.ScaleFactorLog = view.ScaleValue;
                     dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
-
-                    Log("Scale factor log changed to " + view.ScaleValue);
+                    
+                    Log(String.Format("Geometry working range changed to ({0}, {1})", view.ScaleRange.Item1, view.ScaleRange.Item2));
 
                     var allNodes = dynamoViewModel.HomeSpace.Nodes;
                     dynamoViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
@@ -1599,6 +1599,11 @@ namespace Dynamo.Controls
             collapsedSidebar.Visibility = Visibility.Visible;
         }
 
+        private void OnSettingsSubMenuOpened(object sender, RoutedEventArgs e)
+        {
+            this.ChangeScaleFactorMenu.IsEnabled = !dynamoViewModel.ShowStartPage;
+        }
+
         private void Workspace_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             //http://stackoverflow.com/questions/4474670/how-to-catch-the-ending-resize-window
@@ -1642,11 +1647,6 @@ namespace Dynamo.Controls
         private void WorkspaceTabs_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
-        }
-
-        private void onSettingsSubMenuOpened(object sender, RoutedEventArgs e)
-        {
-            this.ChangeScaleFactorMenu.IsEnabled = !dynamoViewModel.ShowStartPage;
         }
 
         private void DynamoView_OnDrop(object sender, DragEventArgs e)

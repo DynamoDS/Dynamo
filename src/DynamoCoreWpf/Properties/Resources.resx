@@ -139,14 +139,8 @@
   <data name="ChangeScaleFactorPromptDescriptionBox" xml:space="preserve">
     <value>Numerical range shown here denote numbers in the following unit:</value>
   </data>
-  <data name="ChangeScaleFactorPromptDescriptionContent0" xml:space="preserve">
-    <value>Use this working range to model in values that fall between 0.000001 to 100 units</value>
-  </data>
-  <data name="ChangeScaleFactorPromptDescriptionContent1" xml:space="preserve">
-    <value>Use this working range to model in values that fall between 0.0001 to 10,000 units</value>
-  </data>
-  <data name="ChangeScaleFactorPromptDescriptionContent2" xml:space="preserve">
-    <value>Use this working range to model in values that fall between 0.01 to 1,000,000 units</value>
+  <data name="ChangeScaleFactorPromptDescriptionContent" xml:space="preserve">
+    <value>Use this working range to model in values that fall between {0} to {1} units</value>
   </data>
   <data name="ChangeScaleFactorPromptDescriptionDefaultSetting" xml:space="preserve">
     <value>Default Setting:</value>
@@ -170,7 +164,7 @@
     <value>{0} mm</value>
   </data>
   <data name="ChangeScaleFactorPromptWindowTitle" xml:space="preserve">
-    <value>Change Geometry Scaling Factor</value>
+    <value>Geometry Working Range</value>
   </data>
   <data name="ContextMenuEditCustomNode" xml:space="preserve">
     <value>Edit Custom Node...</value>
@@ -2161,16 +2155,16 @@ Want to publish a different package?</value>
     <value>Use this working range to model in values that fall between 1 to 100,000,000 units</value>
   </data>
   <data name="RerunButton" xml:space="preserve">
-    <value>Re-run</value>
-  </data>
-  <data name="ScalingExtraLargeButton" xml:space="preserve">
-    <value>Extra-Large</value>
+    <value>Re run</value>
   </data>
   <data name="ScalingLargeButton" xml:space="preserve">
     <value>Large</value>
   </data>
   <data name="ScalingMediumButton" xml:space="preserve">
     <value>Medium</value>
+  </data>
+  <data name="ScalingExtraLargeButton" xml:space="preserve">
+    <value>Extra large</value>
   </data>
   <data name="ScalingSmallButton" xml:space="preserve">
     <value>Small</value>

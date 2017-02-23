@@ -630,7 +630,7 @@
                               Name="SettingsMenu"
                               Focusable="False"
                               IsEnabled="True"
-                              SubmenuOpened="onSettingsSubMenuOpened">
+                              SubmenuOpened="OnSettingsSubMenuOpened">
                         <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReporting}"
                                   Name="ToggleIsAnalyticsReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
