@@ -773,7 +773,8 @@ namespace Dynamo.Controls
                     dynamoViewModel.ScaleFactorLog = view.ScaleValue;
                     dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
 
-                    //log to dynamo console
+                    Log("Scale factor log changed to " + view.ScaleValue);
+
                     var allNodes = dynamoViewModel.HomeSpace.Nodes;
                     dynamoViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
                 }
