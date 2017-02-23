@@ -1,0 +1,66 @@
+<Workspace Version="1.2.3.466" X="205.428484241448" Y="1286.34130601987" zoom="0.395656973032702" ScaleFactor="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Math.PI" resolvedName="DSCore.Math" assemblyName="DSCoreNodes.dll" />
+    <ClassMap partialName="Math" resolvedName="DSCore.Math" assemblyName="DSCoreNodes.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="b378d87e-1e32-4b84-8dda-40d630f35ffd" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.Count" x="646.853758248927" y="-2614.62703740125" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="DSCoreNodes.dll" function="DSCore.List.Count@var[]..[]">
+      <PortInfo index="0" default="False" useLevels="True" level="2" shouldKeepListStructure="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <CoreNodeModels.Range guid="975cb8b7-7c67-424b-8b5a-5f1c5fe9aeea" type="CoreNodeModels.Range" nickname="Range" x="229.694434607207" y="-2908.90856048666" isVisible="true" isUpstreamVisible="true" lacing="CrossProduct" isSelectedInput="False" IsFrozen="false" isPinned="true">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </CoreNodeModels.Range>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="8aeaf709-54c9-492f-aad0-cbe37c4b499b" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-122.562775651303" y="-2914.10572875405" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="x = {1..5, 1..5, 1..5};" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="c93a7eea-3cb3-4a69-8333-0d90ca0887d0" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="*" x="-89.0118854950438" y="-2792.5209282309" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="Operators" function="*@var[]..[],var[]..[]">
+      <PortInfo index="0" default="False" />
+      <PortInfo index="1" default="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="44d47420-cbad-4623-86ee-785b269269ee" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-242.108863619297" y="-2790.13442758709" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="1..3;&#xA;5;" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="ae2fac73-7ed1-4c61-9bc2-e51593111b5d" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.Count" x="953.627246338429" y="-2613.99587918542" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="DSCoreNodes.dll" function="DSCore.List.Count@var[]..[]">
+      <PortInfo index="0" default="False" useLevels="True" level="2" shouldKeepListStructure="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="bdbc3a6b-59fd-4257-a07e-07c16588c7a9" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.Count" x="696.813335713568" y="-3066.38191970315" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="DSCoreNodes.dll" function="DSCore.List.Count@var[]..[]">
+      <PortInfo index="0" default="False" useLevels="True" level="3" shouldKeepListStructure="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="e7172ac0-7e26-42d6-83dc-414ffb57a3d0" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Flatten" x="649.481846217095" y="-2096.76192630006" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="BuiltIn" function="Flatten@var[]..[]">
+      <PortInfo index="0" default="False" useLevels="True" level="3" shouldKeepListStructure="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="975cb8b7-7c67-424b-8b5a-5f1c5fe9aeea" start_index="0" end="b378d87e-1e32-4b84-8dda-40d630f35ffd" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="975cb8b7-7c67-424b-8b5a-5f1c5fe9aeea" start_index="0" end="ae2fac73-7ed1-4c61-9bc2-e51593111b5d" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="975cb8b7-7c67-424b-8b5a-5f1c5fe9aeea" start_index="0" end="bdbc3a6b-59fd-4257-a07e-07c16588c7a9" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="975cb8b7-7c67-424b-8b5a-5f1c5fe9aeea" start_index="0" end="e7172ac0-7e26-42d6-83dc-414ffb57a3d0" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="8aeaf709-54c9-492f-aad0-cbe37c4b499b" start_index="0" end="975cb8b7-7c67-424b-8b5a-5f1c5fe9aeea" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="8aeaf709-54c9-492f-aad0-cbe37c4b499b" start_index="0" end="975cb8b7-7c67-424b-8b5a-5f1c5fe9aeea" end_index="2" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="c93a7eea-3cb3-4a69-8333-0d90ca0887d0" start_index="0" end="975cb8b7-7c67-424b-8b5a-5f1c5fe9aeea" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="44d47420-cbad-4623-86ee-785b269269ee" start_index="0" end="c93a7eea-3cb3-4a69-8333-0d90ca0887d0" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="44d47420-cbad-4623-86ee-785b269269ee" start_index="1" end="c93a7eea-3cb3-4a69-8333-0d90ca0887d0" end_index="1" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Graph.Notes.NoteModel guid="dde3ae7a-465f-4158-ab73-234236f1009a" text="LIST@LEVEL&#xD;&#xA;&#xD;&#xA;The List@Level resolves the functionality of List.Map, by allowing you to directly select the level of list you want to work with." x="-237.429490325466" y="-3175.32962047918" />
+    <Dynamo.Graph.Notes.NoteModel guid="5c3a7719-de77-4ea4-904d-671f0abb0dca" text="The lists exist at different levels, with L1 being the lowest level. The total number of elements produced by this node is 65, as shown at the bottom right." x="165.369027078043" y="-2468.18540819478" />
+    <Dynamo.Graph.Notes.NoteModel guid="55332104-d217-4da4-a650-36f57f7868e1" text="To change the list level you're working with, click the arrow beside the list input port and enable the &quot;Use levels&quot; option.&#xD;&#xA;&#xD;&#xA;By default, the list at the highest level is selected to be worked with. " x="160.80027400713" y="-3171.3754149517" />
+    <Dynamo.Graph.Notes.NoteModel guid="a3d20342-4603-4729-af25-08d9c4e3451e" text="Here, we have a list containing three lists, each having five lists of numbers. The five lists contain multiples of 1 to 5 (first list has multiples of 1, second list has multiples of 2, and so on).&#xD;&#xA;&#xD;&#xA;Going up one level (to L3, where we have three lists), the range limit is set as 5 for the first list, 10 for the second list and 15 for the third list." x="162.882650068351" y="-3048.78485615758" />
+    <Dynamo.Graph.Notes.NoteModel guid="f1e10954-88ec-4039-b96a-fd4fb7c9fff9" text="This node returns the number of elements that are present in each list in L2. By default, the results are flattened into a 1D list." x="588.151879201766" y="-2683.11853037647" />
+    <Dynamo.Graph.Notes.NoteModel guid="aa5643f6-37a6-495d-8998-42d10d871bc4" text="To preserve the nested structure of the lists, select the option &quot;Keep list structure&quot;. &quot;@@&quot; indicates how to keep the list structure in Designscript." x="896.327052893217" y="-2683.36472096958" />
+    <Dynamo.Graph.Notes.NoteModel guid="3e81ddd3-bb9c-43a4-b525-89c59bec370b" text="The List.Count node returns the number of elements that are present in each list. Depending on the selected level, different values are returned. Try changing the value of L3 by clicking on the arrows beside it." x="635.5593242501" y="-3167.16842551931" />
+    <Dynamo.Graph.Notes.NoteModel guid="2aa3a26a-93aa-4438-aea6-288c5d44cd52" text="There are three lists at L3, each containing five lists. Hence, selecting L3 implements the List.Count function on the three lists, giving three '5' values." x="941.718433412102" y="-3054.22549025616" />
+    <Dynamo.Graph.Notes.NoteModel guid="149839b0-f85e-4b22-a1b8-fee5082f0646" text="As an additional example, you can easily flatten the nested structure at inner levels of the lists by making use of the List@Level feature, together with the Flatten node. Try changing the value of L3 by clicking on the arrows beside it." x="899.98226424198" y="-2087.1388274856" />
+    <Dynamo.Graph.Notes.NoteModel guid="3b2a9b7f-3adf-4f6d-b2f9-bab78c7f7759" text="Selecting L3 converts the three lists at that level into a 1D array. As each of the three lists contains five items (which are also lists), this will turn L3 into a list containing 15 items (or lists) with indexes 0 to 14." x="899.98226424198" y="-1982.20217357215" />
+  </Notes>
+  <Annotations>
+    <Dynamo.Graph.Annotations.AnnotationModel guid="0857f046-0a2d-4ae8-962a-5703bbe46273" annotationText="Using &quot;Keep list structure&quot;" left="578.151879201766" top="-2713.36472096958" width="624.841840358118" height="192.36884178416" fontSize="14" InitialTop="-2683.36472096958" InitialHeight="230.439562615492" TextblockHeight="0" backgrouund="#FFC1D676">
+      <Models ModelGuid="b378d87e-1e32-4b84-8dda-40d630f35ffd" />
+      <Models ModelGuid="ae2fac73-7ed1-4c61-9bc2-e51593111b5d" />
+      <Models ModelGuid="f1e10954-88ec-4039-b96a-fd4fb7c9fff9" />
+      <Models ModelGuid="aa5643f6-37a6-495d-8998-42d10d871bc4" />
+    </Dynamo.Graph.Annotations.AnnotationModel>
+  </Annotations>
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-24.5932483673096" eyeY="18.5206336975098" eyeZ="8.02155494689941" lookX="35.8359184265137" lookY="-15.4957714080811" lookZ="-6.51935863494873" upX="0.182105973362923" upY="0.982720613479614" upZ="-0.0331291668117046" />
+  </Cameras>
+</Workspace>
