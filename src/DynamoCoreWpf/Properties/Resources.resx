@@ -2152,7 +2152,7 @@ Want to publish a different package?</value>
     <value>Open Dynamo Dictionary</value>
   </data>
   <data name="RerunButton" xml:space="preserve">
-    <value>Rerun</value>
+    <value>Apply Changes</value>
   </data>
   <data name="ScalingLargeButton" xml:space="preserve">
     <value>Large</value>
