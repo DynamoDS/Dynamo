@@ -445,7 +445,6 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-
         /// <summary>
         ///     Category property
         /// </summary>
