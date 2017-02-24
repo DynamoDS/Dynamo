@@ -2151,9 +2151,6 @@ Want to publish a different package?</value>
   <data name="DynamoViewHelpDictionary" xml:space="preserve">
     <value>Open Dynamo Dictionary</value>
   </data>
-  <data name="ChangeScaleFactorPromptDescriptionContent3" xml:space="preserve">
-    <value>Use this working range to model in values that fall between 1 to 100,000,000 units</value>
-  </data>
   <data name="RerunButton" xml:space="preserve">
     <value>Rerun</value>
   </data>
