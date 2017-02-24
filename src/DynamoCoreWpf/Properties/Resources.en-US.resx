@@ -1862,7 +1862,7 @@ Want to publish a different package?</value>
     <value>Query</value>
   </data>
   <data name="RerunButton" xml:space="preserve">
-    <value>Rerun</value>
+    <value>Apply Changes</value>
   </data>
   <data name="RunCompletedMessage" xml:space="preserve">
     <value>Run completed.</value>

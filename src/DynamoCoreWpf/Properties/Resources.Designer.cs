@@ -4471,7 +4471,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rerun.
+        ///   Looks up a localized string similar to Apply Changes.
         /// </summary>
         public static string RerunButton {
             get {
