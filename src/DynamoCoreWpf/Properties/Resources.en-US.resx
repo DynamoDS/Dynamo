@@ -2155,7 +2155,7 @@ Want to publish a different package?</value>
     <value>Use this working range to model in values that fall between 1 to 100,000,000 units</value>
   </data>
   <data name="RerunButton" xml:space="preserve">
-    <value>Re run</value>
+    <value>Rerun</value>
   </data>
   <data name="ScalingLargeButton" xml:space="preserve">
     <value>Large</value>

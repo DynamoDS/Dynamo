@@ -751,7 +751,8 @@ namespace Dynamo.Controls
                     dynamoViewModel.ScaleFactorLog = view.ScaleValue;
                     dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
                     
-                    Log(String.Format("Geometry working range changed to ({0}, {1})", view.ScaleRange.Item1, view.ScaleRange.Item2));
+                    Log(String.Format("Geometry working range changed to {0} ({1}, {2})", 
+                        view.ScaleRange.Item1, view.ScaleRange.Item2, view.ScaleRange.Item3));
 
                     var allNodes = dynamoViewModel.HomeSpace.Nodes;
                     dynamoViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
