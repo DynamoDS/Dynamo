@@ -23,7 +23,7 @@ namespace Dynamo.Prompts
 
         private void OpenDynamoDictionary(object sender, MouseButtonEventArgs e)
         {
-            Process.Start(((TextBlock)sender).Tag.ToString());
+            Process.Start(new ProcessStartInfo("explorer.exe", ((TextBlock)sender).Tag.ToString()));
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
