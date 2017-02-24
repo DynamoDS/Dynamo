@@ -22,21 +22,21 @@ namespace Dynamo.Prompts
             ExtraLarge = 3
         }
 
-        public Size size { get; set; }
+        public Size ScaleSize { get; set; }
 
-        public Tuple<string, string> ScaleRange {
+        public Tuple<string, string, string> ScaleRange {
             get
             {
-                return scaleRanges[size];
+                return scaleRanges[ScaleSize];
             }
         }
 
-        private Dictionary<Size, Tuple<string, string>> scaleRanges = new Dictionary<Size, Tuple<string, string>>
+        private Dictionary<Size, Tuple<string, string, string>> scaleRanges = new Dictionary<Size, Tuple<string, string, string>>
         {
-            {Size.Small, new Tuple<string, string>("0.000,001", "100")},
-            {Size.Medium, new Tuple<string, string>("0.0001", "10,000")},
-            {Size.Large, new Tuple<string, string>("0.01", "1000,000")},
-            {Size.ExtraLarge, new Tuple<string, string>("1", "100,000,000")}
+            {Size.Small, new Tuple<string, string, string>("small", "0.000,001", "100")},
+            {Size.Medium, new Tuple<string, string, string>("medium", "0.0001", "10,000")},
+            {Size.Large, new Tuple<string, string, string>("large", "0.01", "1,000,000")},
+            {Size.ExtraLarge, new Tuple<string, string, string>("extra large", "1", "100,000,000")}
         };
 
         public ChangeScaleFactorPrompt(int scaleValue = 0)
@@ -84,10 +84,10 @@ namespace Dynamo.Prompts
         private void Update(Size highlightedSize)
         {
             this.DescriptionScaleRange.Text = String.Format(Res.ChangeScaleFactorPromptDescriptionContent, 
-                scaleRanges[highlightedSize].Item1, scaleRanges[highlightedSize].Item2);
+                scaleRanges[highlightedSize].Item2, scaleRanges[highlightedSize].Item3);
             this.DescriptionDefaultSetting.Text =
                (highlightedSize == Size.Medium) ? Res.ChangeScaleFactorPromptDescriptionDefaultSetting : String.Empty;
-            size = highlightedSize;
+            ScaleSize = highlightedSize;
         }
 
         private int GetScaleValue()
