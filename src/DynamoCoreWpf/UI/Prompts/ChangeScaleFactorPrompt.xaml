@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+        xmlns:local="clr-namespace:Dynamo.Prompts"
         Title="{x:Static p:Resources.ChangeScaleFactorPromptWindowTitle}" 
         Height="250" 
         Width="540"
@@ -70,6 +71,7 @@
                 <ToggleButton Grid.Column="0"
                               Style="{StaticResource ScalesToggleButtonStyle}"
                               Name="SmallButton"
+                              Tag="{x:Static local:ChangeScaleFactorPrompt+Size.Small}"
                               Click="ScaleButton_click">
                     <DockPanel>
                         <TextBlock Text="{x:Static p:Resources.ScalingSmallButton}"
@@ -80,6 +82,7 @@
                 <ToggleButton Grid.Column="1"
                               Style="{StaticResource ScalesToggleButtonStyle}"
                               Name="MediumButton"
+                              Tag="{x:Static local:ChangeScaleFactorPrompt+Size.Medium}"
                               Click="ScaleButton_click">
                     <DockPanel>
                         <TextBlock Text="{x:Static p:Resources.ScalingMediumButton}"
@@ -90,6 +93,7 @@
                 <ToggleButton Grid.Column="2"
                               Style="{StaticResource ScalesToggleButtonStyle}"
                               Name="LargeButton"
+                              Tag="{x:Static local:ChangeScaleFactorPrompt+Size.Large}"
                               Click="ScaleButton_click">
                     <DockPanel>
                         <TextBlock Text="{x:Static p:Resources.ScalingLargeButton}"
@@ -100,6 +104,7 @@
                 <ToggleButton Grid.Column="3"
                               Style="{StaticResource ScalesToggleButtonStyle}"
                               Name="ExtraLargeButton"
+                              Tag="{x:Static local:ChangeScaleFactorPrompt+Size.ExtraLarge}"
                               Click="ScaleButton_click">
                     <DockPanel>
                         <TextBlock Text="{x:Static p:Resources.ScalingExtraLargeButton}"

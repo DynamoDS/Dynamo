@@ -16,10 +16,10 @@ namespace Dynamo.Prompts
     {
         public enum Size
         {
-            Medium = 1,
-            Small = 0,
-            Large = 2,
-            ExtraLarge = 3
+            Medium,
+            Small,
+            Large,
+            ExtraLarge
         }
 
         public Size ScaleSize { get; set; }
@@ -45,12 +45,12 @@ namespace Dynamo.Prompts
 
             var col = (scaleValue / 2) + 1;
 
-            var tb = (ToggleButton)this.ScaleButtonsGrid.Children
+            var toggleButton = (ToggleButton)this.ScaleButtonsGrid.Children
                 .Cast<UIElement>()
                 .First(e => Grid.GetColumn(e) == col);
-            tb.IsChecked = true;
+            toggleButton.IsChecked = true;
 
-            Update((Size)col);
+            Update((Size)toggleButton.Tag);
         }
 
         void ScaleButton_click(object sender, RoutedEventArgs e)
@@ -66,9 +66,8 @@ namespace Dynamo.Prompts
 
             var toggleButton = sender as ToggleButton;
             toggleButton.IsChecked = true;
-            int col = (int)toggleButton.GetValue(Grid.ColumnProperty);
 
-            Update((Size)col);
+            Update((Size)toggleButton.Tag);
         }
 
         void Apply_Click(object sender, RoutedEventArgs e)
