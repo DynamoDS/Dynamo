@@ -4462,6 +4462,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rerun the graph..
+        /// </summary>
+        public static string RerunButtonToolTip {
+            get {
+                return ResourceManager.GetString("RerunButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run completed..
         /// </summary>
         public static string RunCompletedMessage {
