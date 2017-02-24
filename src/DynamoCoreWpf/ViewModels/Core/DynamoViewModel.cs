@@ -58,6 +58,7 @@ namespace Dynamo.ViewModels
             set
             {
                 CurrentSpace.ScaleFactor = Math.Pow(10, value);
+                CurrentSpace.ScaleFactorChanged = true;
             }
         }
 
@@ -1434,11 +1435,6 @@ namespace Dynamo.ViewModels
         internal bool CanUpstreamVisibilityBeToggled(object parameters)
         {
             return true;
-        }
-
-        internal bool ChangeScaleFactorEnabled
-        {
-            get { return !ShowStartPage; }
         }
 
         internal void ShowPackageManagerSearch(object parameters)
