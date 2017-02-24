@@ -2180,4 +2180,7 @@ Want to publish a different package?</value>
   <data name="ScalingSmallButton" xml:space="preserve">
     <value>Small</value>
   </data>
+  <data name="RerunButtonToolTip" xml:space="preserve">
+    <value>Rerun the graph.</value>
+  </data>
 </root>
