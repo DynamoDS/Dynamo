@@ -2097,8 +2097,8 @@ Next assemblies were loaded several times:
     <comment>Notification Center Title</comment>
   </data>
   <data name="DynamoViewSettingsMenuChangeScaleFactor" xml:space="preserve">
-    <value>Geometry Scaling...</value>
-    <comment>Settings menu | Geometry Scaling</comment>
+    <value>Geometry Working Range...</value>
+    <comment>Settings menu | Geometry Working Range</comment>
   </data>
   <data name="ContextMenuLacingAuto" xml:space="preserve">
     <value>Auto</value>

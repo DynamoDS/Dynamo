@@ -1868,7 +1868,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Geometry Scaling....
+        ///   Looks up a localized string similar to Geometry Working Range....
         /// </summary>
         public static string DynamoViewSettingsMenuChangeScaleFactor {
             get {
