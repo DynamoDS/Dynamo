@@ -34,7 +34,7 @@ namespace Dynamo.Prompts
         private Dictionary<Size, Tuple<string, string, string>> scaleRanges = new Dictionary<Size, Tuple<string, string, string>>
         {
             {Size.Medium, new Tuple<string, string, string>("medium", "0.0001", "10,000")},
-            {Size.Small, new Tuple<string, string, string>("small", "0.000,001", "100")},
+            {Size.Small, new Tuple<string, string, string>("small", "1E-06", "100")},
             {Size.Large, new Tuple<string, string, string>("large", "0.01", "1,000,000")},
             {Size.ExtraLarge, new Tuple<string, string, string>("extra large", "1", "100,000,000")}
         };

@@ -869,8 +869,8 @@ It does not contain your graph or any personal data</value>
     <comment>Setting menu | Show Run Preview</comment>
   </data>
   <data name="DynamoViewSettingsMenuChangeScaleFactor" xml:space="preserve">
-    <value>Geometry Scaling...</value>
-    <comment>Settings menu | Geometry Scaling</comment>
+    <value>Geometry Working Range...</value>
+    <comment>Settings menu | Geometry Working Range</comment>
   </data>
   <data name="DynamoViewSettingsMenuIsolationMode" xml:space="preserve">
     <value>Isolate Selected Geometries</value>
