@@ -45,6 +45,9 @@ namespace Dynamo.Prompts
 
             var col = (scaleValue / 2) + 1;
 
+            // Reset col to 0 (Medium setting) for invalid scale values
+            if (col < 0 || col > 3) col = 1;
+
             var toggleButton = (ToggleButton)this.ScaleButtonsGrid.Children
                 .Cast<UIElement>()
                 .First(e => Grid.GetColumn(e) == col);
