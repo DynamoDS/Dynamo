@@ -417,14 +417,14 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        public virtual string ShortenName
+        private string ShortenName
         {
             get
             {
                 Type type = GetType();
                 object[] attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), false);
 
-                if (CreationName != null && CreationName != "")
+                if (!string.IsNullOrEmpty(CreationName))
                 {
                     // Obtain the node's default name from its creation name.
                     // e.g. For creation name DSCore.Math.Max@double,double - the name "Max" is obtained and appended to the final link.
@@ -436,10 +436,14 @@ namespace Dynamo.Graph.Nodes
                     return s.Substring(firstChar, s.Length - CreationName.Substring(0, firstChar).Length);
                 }
 
-                if (!type.IsAbstract && (attribs.Length > 0) && (attribs[0] is NodeNameAttribute))
+                if (!type.IsAbstract && (attribs.Length > 0))
                 {
-                    string name = ((NodeNameAttribute)attribs[0]).Name;
-                    if (name != null) return name;
+                    var attrib = attribs[0] as NodeNameAttribute;
+                    if (attrib != null)
+                    {
+                        string name = attrib.Name;
+                        if (!string.IsNullOrEmpty(name)) return name;
+                    }
                 }
                 return "";
             }
