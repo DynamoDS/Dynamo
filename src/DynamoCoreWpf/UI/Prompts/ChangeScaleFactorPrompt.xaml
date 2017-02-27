@@ -8,7 +8,7 @@
         Height="250" 
         Width="540"
         MinHeight="250"
-        MinWidth="540"
+        MinWidth="480"
         WindowStartupLocation="CenterOwner"
         Style="{DynamicResource DynamoWindowStyle}">
 
@@ -44,8 +44,8 @@
             </Style>
             <Style x:Key="ScaleTextblockStyle" TargetType="{x:Type TextBlock}">
                 <Setter Property="Margin" Value="10"/>
-                <Setter Property="FontSize" Value="16px"/>
-                <Setter Property="Foreground" Value="#bbbbbb"/>
+                <Setter Property="FontSize" Value="15"/>
+                <Setter Property="Foreground" Value="#cccccc"/>
                 <Setter Property="HorizontalAlignment" Value="Center"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
@@ -53,13 +53,13 @@
     </Window.Resources>
 
     <Border Padding="15" Background="#333">
-        <StackPanel>
+        <StackPanel TextBlock.FontFamily="{StaticResource OpenSansRegular}">
             <TextBlock Name="PromptText"
-                   Foreground="WhiteSmoke"
-                   Margin="10 0 10 0"
-                   FontSize="15"
-                   TextWrapping="Wrap"
-                   Text="{x:Static p:Resources.ChangeScaleFactorPromptCaptionText}"/>
+                       TextBlock.Foreground="#cccccc"
+                       TextBlock.FontSize="14"
+                       Margin="10 0 10 0"
+                       TextWrapping="Wrap"
+                       Text="{x:Static p:Resources.ChangeScaleFactorPromptCaptionText}"/>
             <Grid Margin="0 20 0 0"
                   Name ="ScaleButtonsGrid">
                 <Grid.ColumnDefinitions>
@@ -112,16 +112,16 @@
                     <TextBlock Name="DescriptionDefaultSetting"
                            FontSize="12"
                            Margin="10 0 0 0"
-                           Foreground="White"
+                           TextBlock.Foreground="#cccccc"
                            FontWeight="Bold"
                            TextWrapping="Wrap"
                            HorizontalAlignment="Left"
                            DockPanel.Dock="Top"/>
                     <TextBlock Name="DescriptionScaleRange"
-                           Width="240"
+                           FontSize="12"
+                           MinWidth="150"
                            Margin="10 0 0 0"
-                           FontSize="12px"
-                           Foreground="WhiteSmoke"
+                           TextBlock.Foreground="#cccccc"
                            TextWrapping="Wrap"
                            HorizontalAlignment="Left"
                            DockPanel.Dock="Bottom"/>
