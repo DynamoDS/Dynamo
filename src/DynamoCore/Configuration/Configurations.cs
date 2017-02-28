@@ -177,7 +177,7 @@ namespace Dynamo.Configuration
         internal static double ErrorCondensedContentMaxHeight = ErrorCondensedMaxHeight - 16;
 
         internal static double ErrorTextFontSize = 13;
-        internal static Thickness ErrorContentMargin = new Thickness(5, 5, 5, 12);
+        internal static Thickness ErrorContentMargin = new Thickness(7, 5, 7, 12);
 
         internal static double ErrorArrowWidth = 12;
         internal static double ErrorArrowHeight = 6;

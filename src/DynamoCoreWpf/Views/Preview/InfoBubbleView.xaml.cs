@@ -491,35 +491,6 @@ namespace Dynamo.Controls
             return textBlock;
         }
 
-        private TextBox GetNewTextBox(string text)
-        {
-            TextBox textBox = new TextBox();
-            textBox.Text = text;
-            textBox.TextWrapping = TextWrapping.Wrap;
-
-            textBox.Margin      = ContentMargin;
-            textBox.MaxHeight   = ContentMaxHeight;
-            textBox.MaxWidth    = ContentMaxWidth;
-
-            textBox.Foreground  = ContentForeground;
-            textBox.FontWeight  = ContentFontWeight;
-            textBox.FontSize    = ContentFontSize;
-
-            var font = SharedDictionaryManager.DynamoModernDictionary["OpenSansRegular"];
-            textBox.FontFamily = font as FontFamily;
-
-            textBox.Background      = Brushes.Transparent;
-            textBox.IsReadOnly      = true;
-            textBox.BorderThickness = new System.Windows.Thickness(0);
-
-            textBox.HorizontalAlignment = HorizontalAlignment.Center;
-            textBox.VerticalAlignment   = VerticalAlignment.Center;
-
-            textBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-
-            return textBox;
-        }
-
         #endregion
 
         #region Update Shape
