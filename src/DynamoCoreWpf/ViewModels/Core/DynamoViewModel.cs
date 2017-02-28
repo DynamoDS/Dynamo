@@ -58,6 +58,7 @@ namespace Dynamo.ViewModels
             set
             {
                 CurrentSpace.ScaleFactor = Math.Pow(10, value);
+                CurrentSpace.ScaleFactorChanged = true;
             }
         }
 
@@ -791,7 +792,7 @@ namespace Dynamo.ViewModels
 
         public static void ReportABug(object parameter)
         {
-            Process.Start(Configurations.GitHubBugReportingLink);
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubBugReportingLink));
         }
 
         public static void ReportABug()
@@ -801,7 +802,7 @@ namespace Dynamo.ViewModels
 
         internal static void DownloadDynamo()
         {
-            Process.Start(Configurations.DynamoDownloadLink);
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoDownloadLink));
         }
 
         internal bool CanReportABug(object parameter)
@@ -1436,11 +1437,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        internal bool ChangeScaleFactorEnabled
-        {
-            get { return !ShowStartPage; }
-        }
-
         internal void ShowPackageManagerSearch(object parameters)
         {
             OnRequestPackageManagerSearchDialog(this, EventArgs.Empty);
@@ -2060,7 +2056,7 @@ namespace Dynamo.ViewModels
 
         public void GoToWiki(object parameter)
         {
-            Process.Start(Configurations.DynamoWikiLink);
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoWikiLink));
         }
 
         internal bool CanGoToWiki(object parameter)
@@ -2070,7 +2066,7 @@ namespace Dynamo.ViewModels
 
         public void GoToSourceCode(object parameter)
         {
-            Process.Start(Configurations.GitHubDynamoLink);
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubDynamoLink));
         }
 
         internal bool CanGoToSourceCode(object parameter)
@@ -2080,7 +2076,7 @@ namespace Dynamo.ViewModels
 
         public void GoToDictionary(object parameter)
         {
-            Process.Start(Configurations.DynamoDictionary);
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoDictionary));
         }
 
         internal bool CanGoToDictionary(object parameter)
