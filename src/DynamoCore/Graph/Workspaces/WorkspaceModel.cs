@@ -59,6 +59,8 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        internal bool ScaleFactorChanged = false;
+
         /// <summary>
         ///     The step to offset elements between subsequent paste operations
         /// </summary>
@@ -899,6 +901,7 @@ namespace Dynamo.Graph.Workspaces
             X = 0.0;
             Y = 0.0;
             Zoom = 1.0;
+            ScaleFactor = 1.0;
             // Reset the workspace offset
             OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(X, Y)));
             workspaceLoaded = true;

@@ -57,7 +57,7 @@ namespace Dynamo.ViewModels
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode, CanGoToSourceCode);
             GoToDictionaryCommand = new DelegateCommand(GoToDictionary, CanGoToDictionary);
             DisplayStartPageCommand = new DelegateCommand(DisplayStartPage, CanDisplayStartPage);
-            ChangeScaleFactorCommand = new DelegateCommand(p => OnRequestScaleFactorDialog(this, EventArgs.Empty), o => ChangeScaleFactorEnabled);
+            ChangeScaleFactorCommand = new DelegateCommand(p => OnRequestScaleFactorDialog(this, EventArgs.Empty));
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
             PublishNewPackageCommand = new DelegateCommand(PackageManagerClientViewModel.PublishNewPackage, PackageManagerClientViewModel.CanPublishNewPackage);
             ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
