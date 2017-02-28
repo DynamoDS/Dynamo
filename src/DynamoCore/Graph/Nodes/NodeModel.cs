@@ -417,6 +417,38 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        private string ShortenName
+        {
+            get
+            {
+                Type type = GetType();
+                object[] attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), false);
+
+                if (!string.IsNullOrEmpty(CreationName))
+                {
+                    // Obtain the node's default name from its creation name.
+                    // e.g. For creation name DSCore.Math.Max@double,double - the name "Max" is obtained and appended to the final link.
+                    int indexAfter = (CreationName.LastIndexOf('@') == -1) ? CreationName.Length : CreationName.LastIndexOf('@');
+                    string s = CreationName.Substring(0, indexAfter);
+
+                    int indexBefore = s.LastIndexOf(Configurations.CategoryDelimiterString);
+                    int firstChar = (indexBefore == -1) ? 0 : indexBefore + 1;
+                    return s.Substring(firstChar, s.Length - CreationName.Substring(0, firstChar).Length);
+                }
+
+                if (!type.IsAbstract && (attribs.Length > 0))
+                {
+                    var attrib = attribs[0] as NodeNameAttribute;
+                    if (attrib != null)
+                    {
+                        string name = attrib.Name;
+                        if (!string.IsNullOrEmpty(name)) return name;
+                    }
+                }
+                return "";
+            }
+        }
+
         /// <summary>
         ///     Category property
         /// </summary>
@@ -444,6 +476,11 @@ namespace Dynamo.Graph.Nodes
         {
             Type type = GetType();
             object[] attribs = type.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
+            if (!type.IsAbstract && (attribs.Length > 0) && (attribs[0] is NodeCategoryAttribute))
+            {
+                string category = ((NodeCategoryAttribute)attribs[0]).ElementCategory;
+                if (category != null) return category;
+            }
 
             if (type.Namespace != "Dynamo.Graph.Nodes" || type.IsAbstract || attribs.Length <= 0
                 || !type.IsSubclassOf(typeof(NodeModel)))
@@ -492,15 +529,7 @@ namespace Dynamo.Graph.Nodes
                         finalLink += "Action/";
                         break;
                 }
-
-                // Obtain the node's default name from its creation name.
-                // e.g. For creation name DSCore.Math.Max@double,double - the name "Max" is obtained and appended to the final link.
-                int indexAfter = (CreationName.LastIndexOf('@') == -1) ? CreationName.Length : CreationName.LastIndexOf('@');
-                string s = CreationName.Substring(0, indexAfter);
-
-                int indexBefore = s.LastIndexOf(Configurations.CategoryDelimiterString);
-                int firstChar = (indexBefore == -1) ? 0 : indexBefore + 1;
-                finalLink += s.Substring(firstChar, s.Length - CreationName.Substring(0, firstChar).Length);
+                finalLink += this.ShortenName;
 
                 return finalLink;
             }
