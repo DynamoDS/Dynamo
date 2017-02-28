@@ -12,6 +12,8 @@ using Dynamo.Wpf.Utilities;
 using InfoBubbleViewModel = Dynamo.ViewModels.InfoBubbleViewModel;
 using Dynamo.ViewModels;
 using Dynamo.Utilities;
+using System.Diagnostics;
+using System.Windows.Documents;
 
 namespace Dynamo.Controls
 {
@@ -437,9 +439,56 @@ namespace Dynamo.Controls
                 {
                     content = Wpf.Properties.Resources.InfoBubbleError + content;
                 }
-                TextBox textBox = GetNewTextBox(content);
-                ContentContainer.Children.Add(textBox);
+                var newTextBlock = AddTextToTextBlock(GetNewTextBlock(), content);
+                ContentContainer.Children.Add(newTextBlock);
             }
+        }
+
+        private TextBlock GetNewTextBlock()
+        {
+            TextBlock textBlock = new TextBlock();
+
+            textBlock.TextWrapping = TextWrapping.Wrap;
+            textBlock.Margin = ContentMargin;
+            textBlock.MaxHeight = ContentMaxHeight;
+            textBlock.MaxWidth = ContentMaxWidth;
+
+            textBlock.Foreground = ContentForeground;
+            textBlock.FontWeight = ContentFontWeight;
+            textBlock.FontSize = ContentFontSize;
+
+            var font = SharedDictionaryManager.DynamoModernDictionary["OpenSansRegular"];
+            textBlock.FontFamily = font as FontFamily;
+
+            textBlock.Background = Brushes.Transparent;
+
+            textBlock.HorizontalAlignment = HorizontalAlignment.Center;
+            textBlock.VerticalAlignment = VerticalAlignment.Center;
+            return textBlock;
+        }
+
+        private TextBlock AddTextToTextBlock(TextBlock textBlock, string text)
+        {
+            string settingStr = "Settings => Geometry Working Range";
+            string[] content = text.Split(new[] { settingStr }, StringSplitOptions.None);
+            if (content.Length == 2)
+            {
+                textBlock.Inlines.Add(content[0]);
+
+                Hyperlink link = new Hyperlink();
+                link.Background = Brushes.Transparent;
+                link.Foreground = new SolidColorBrush(Color.FromRgb(35, 128, 192));
+                link.PreviewMouseLeftButtonUp += ViewModel.DynamoViewModel.OnRequestScaleFactorDialog;
+                link.Inlines.Add(settingStr);
+                textBlock.Inlines.Add(link);
+
+                textBlock.Inlines.Add(content[1]);
+            }
+            else
+            {
+                textBlock.Inlines.Add(text);
+            }
+            return textBlock;
         }
 
         private TextBox GetNewTextBox(string text)
