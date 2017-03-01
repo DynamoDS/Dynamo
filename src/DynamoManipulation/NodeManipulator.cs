@@ -526,7 +526,6 @@ namespace Dynamo.Manipulation
         {
             Dispose(true);
 
-            Node.ClearRuntimeError();
             DeleteGizmos();
             DetachHandlers();
         }
