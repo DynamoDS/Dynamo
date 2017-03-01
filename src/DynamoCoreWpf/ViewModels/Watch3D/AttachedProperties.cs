@@ -128,7 +128,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
-        /// A flag indicating whether the geometry is currently under Isolate Selected Geometries mode.
+        /// A flag indicating whether the geometry is currently under Isolate Selected Geometry mode.
         /// </summary>
         public static readonly DependencyProperty IsolationModeProperty = DependencyProperty.RegisterAttached(
             "IsolationMode",
