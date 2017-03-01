@@ -4,7 +4,7 @@
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         Title="{Binding NickName}" Height="480" Width="300">
-    
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -13,17 +13,16 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    
-    <ScrollViewer>
-        <StackPanel>
-            
-            <StackPanel.Background>
-                <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
-                    <GradientStop Color="#FFF" Offset="0.0" />
-                    <GradientStop Color="#EEE" Offset="1.0" />
-                </LinearGradientBrush>
-            </StackPanel.Background>
-            
+
+    <StackPanel>
+
+        <StackPanel.Background>
+            <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
+                <GradientStop Color="#FFF" Offset="0.0" />
+                <GradientStop Color="#EEE" Offset="1.0" />
+            </LinearGradientBrush>
+        </StackPanel.Background>
+        <ScrollViewer Height="415">
             <StackPanel Margin="10" Background="Transparent">
 
                 <TextBlock Name="TitleLabel" FontSize="10" Foreground="#AAA" Margin="0,10,0,10" Text="{x:Static p:Resources.NodeHelpWindowNodeType}"></TextBlock>
@@ -37,7 +36,7 @@
 
                 <TextBlock Name="InputsLabel" FontSize="10" Foreground="#AAA" Margin="0,20,0,0" Text="{x:Static p:Resources.NodeHelpWindowNodeInput}"></TextBlock>
                 <ListBox Name="Inputs" ItemsSource="{Binding InPortData}" BorderThickness="0" Padding="0" Margin="3" Background="Transparent">
-               
+
                     <ListBox.ItemTemplate>
                         <DataTemplate>
 
@@ -66,11 +65,16 @@
                     </ListBox.ItemTemplate>
 
                 </ListBox>
-            
-            </StackPanel>
-        </StackPanel>
-    </ScrollViewer>
 
-    
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel>
+            <TextBlock Name="DynamoDictionary" FontSize="12" Foreground="#2380C0" Margin="10,5,10,5" Text="{x:Static p:Resources.NodeHelpWindowDynamoDictionary}"
+                           Cursor="Hand" Tag="{Binding DictionaryLink}" MouseLeftButtonUp="OpenDynamoDictionary" />
+        </StackPanel>
+    </StackPanel>
+
+
 
 </Window>

@@ -137,10 +137,11 @@ namespace Dynamo.Graph.Workspaces
         public virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
         {
             this.HasRunWithoutCrash = e.EvaluationSucceeded;
-
+            
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);
 
+            this.ScaleFactorChanged = false;
         }
 
         /// <summary>
