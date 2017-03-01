@@ -139,13 +139,13 @@ PSInputCustom VShaderCustom(VSInputCustom input)
 	PSInputCustom output;
 
 	bool isSelected = input.customParams.x;
-	bool requiresPerVertexColoration = input.customParams.y;
+	bool requiresPerVertexColoration = input.customParams.z;
 
 	float4 inputp;
 	if (isSelected || requiresPerVertexColoration)
 	{
 		// Nudge the vertex out slightly along its normal.
-		float3 nudge = input.n * 0.0001;
+		float3 nudge = normalize(input.n) * 0.0001;
 		inputp = float4(input.p.x + nudge.x, input.p.y + nudge.y, input.p.z + nudge.z, input.p.w);
 	}
 	else
