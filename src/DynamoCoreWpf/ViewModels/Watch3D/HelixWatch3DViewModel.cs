@@ -823,7 +823,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         /// <summary>
         /// Update the attached properties and recalculate transparency sorting
-        /// after any update under Isolate Selected Geometries mode.
+        /// after any update under Isolate Selected Geometry mode.
         /// </summary>
         protected override void OnIsolationModeRequestUpdate()
         {
@@ -2160,7 +2160,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 return result;
             }
 
-            // under Isolate Selected Geometries mode, selected geometries will have higher precedence
+            // under Isolate Selected Geometry mode, selected geometries will have higher precedence
             // and rendered as closer to the camera compared to unselected geometries
             var selectedA = AttachedProperties.GetIsolationMode(a) &&
                 !AttachedProperties.GetShowSelected(a) && !AttachedProperties.IsSpecialRenderPackage(a);
