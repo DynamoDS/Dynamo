@@ -69,7 +69,7 @@ GSInputPS VShaderPoints(GSInputPS input)
 		output.c = input.c;
 	}
 
-	// unselected geometry is transparent under Isolate Selected Geometries mode
+	// unselected geometry is transparent under Isolate Selected Geometry mode
 	if (isIsolationMode && !isSelected) {
 		output.c.a = vTransparentLinePoint.a;
 	}

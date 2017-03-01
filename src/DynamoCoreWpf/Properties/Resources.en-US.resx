@@ -1834,6 +1834,9 @@ Want to publish a different package?</value>
   <data name="PublishPackageViewPackageVersion" xml:space="preserve">
     <value>Version (major minor build)</value>
   </data>
+  <data name="DynamoViewSettingsMenuIsolationMode" xml:space="preserve">
+    <value>Isolate Selected Geometry</value>
+  </data>
   <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
     <value>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</value>
   </data>
