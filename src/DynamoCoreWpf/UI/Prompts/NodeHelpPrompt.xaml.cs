@@ -6,6 +6,7 @@ using System.Diagnostics;
 using Dynamo.Configuration;
 using System.Windows.Input;
 using System.Windows.Controls;
+using System;
 
 namespace Dynamo.Prompts
 {
@@ -19,6 +20,12 @@ namespace Dynamo.Prompts
             this.DataContext = node;
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             InitializeComponent();
+
+            Type type = node.GetType();
+            if (type.Namespace == "Dynamo.Graph.Nodes.CustomNodes")
+            {
+                DynamoDictionaryHeight.Height = new GridLength(0);
+            }
         }
 
         private void OpenDynamoDictionary(object sender, MouseButtonEventArgs e)
