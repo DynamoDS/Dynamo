@@ -6133,7 +6133,7 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.LowerModelerExtentExceeded">
             <summary>
-              Looks up a localized string similar to Your inputs lie outside of the allowable modeling range, consider  choosing a modeling range between {0} and {1} from the &quot;Settings =&gt; Geometry Working Range&quot; dialog.
+              Looks up a localized string similar to Your inputs lie outside of the allowable modeling range, consider  choosing the {0} setting with a modeling range between {1} and {2} from the &quot;Settings =&gt; Geometry Working Range&quot; dialog.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
@@ -6218,7 +6218,7 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.UpperModelerExtentExceeded">
             <summary>
-              Looks up a localized string similar to Your inputs lie outside of the allowable modeling range, consider choosing a modeling range between {0} and {1} from the &quot;Settings =&gt; Geometry Working Range&quot; dialog.
+              Looks up a localized string similar to Your inputs lie outside of the allowable modeling range, consider choosing the {0} setting with a modeling range between {1} and {2} from the &quot;Settings =&gt; Geometry Working Range&quot; dialog.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.VertexColorNotSupported">
