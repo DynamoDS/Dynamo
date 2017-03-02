@@ -22,8 +22,9 @@ namespace Dynamo.Prompts
             InitializeComponent();
 
             Type type = node.GetType();
-            if (type.Namespace == "Dynamo.Graph.Nodes.CustomNodes")
+            if (type.Namespace == "Dynamo.Graph.Nodes.CustomNodes" || node.Category.Contains("Revit"))
             {
+                // Hide the dictionary link if the node is a custom node or a revit node
                 DynamoDictionaryHeight.Height = new GridLength(0);
             }
         }
