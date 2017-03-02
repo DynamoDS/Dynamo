@@ -23,6 +23,9 @@ using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
+using Dynamo.Models;
+using System.Collections;
+using Dynamo.Library;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -43,6 +46,7 @@ namespace Dynamo.Graph.Nodes
         private string persistentWarning = "";
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
+        private LibraryServices libraryServices;
 
         ///A flag indicating whether the node has been explicitly frozen.
         internal bool isFrozenExplicitly;
@@ -507,6 +511,36 @@ namespace Dynamo.Graph.Nodes
                 }
                 finalLink += this.ShortenName;
 
+                // Check if the method has overloads
+                libraryServices = DynamoModel.StaticLibraryServices;
+                IEnumerable<FunctionDescriptor> descriptors = libraryServices.GetAllFunctionDescriptors(CreationName.Split('@')[0]);
+                if (descriptors != null && descriptors.Count() > 1)
+                {
+                    // If there are overloads
+                    string parameters = "(";
+                    IEnumerable<Tuple<string, string>> inputParameters = null;
+
+                    foreach (FunctionDescriptor fd in descriptors)
+                    {
+                        if (fd.MangledName == CreationName) // Find the function descriptor among the overloads and obtain their parameter names
+                        {
+                            inputParameters = fd.InputParameters;
+                            break;
+                        }
+                    }
+                    // Convert the parameters into a valid Dictionary URL format, e.g. (x_double-y_double-z_double)
+                    if (inputParameters != null)
+                    {
+                        int parameterCount = inputParameters.Count();
+                        for (int k = 0; k < parameterCount - 1; k++)
+                        {
+                            parameters += inputParameters.ElementAt(k).Item1 + "_" + inputParameters.ElementAt(k).Item2 + "-";
+                        }
+                        // Append the last parameter without the dash and with the close bracket
+                        parameters += inputParameters.ElementAt(parameterCount - 1).Item1 + "_" + inputParameters.ElementAt(parameterCount - 1).Item2 + ")";
+                        finalLink += parameters;
+                    }
+                }
                 return finalLink;
             }
         }
