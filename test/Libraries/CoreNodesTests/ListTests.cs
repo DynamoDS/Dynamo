@@ -112,6 +112,183 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
+        public static void ListContainsInSublists()
+        {
+            Assert.IsTrue(List.Contains(new ArrayList { 1, 2, 3, 4, 5 }, 4));
+            Assert.IsTrue(List.Contains(new ArrayList { 1, new ArrayList { 2, 3 }, 4, 5 }, 2));
+            Assert.IsFalse(List.Contains(new ArrayList (), 0));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ListIsHomogeneous()
+        {
+            Assert.IsTrue(List.IsHomogeneous(new ArrayList { 1, 2, 4, 8 }));
+            Assert.IsFalse(List.IsHomogeneous(new ArrayList { "string", true, 4, 8 }));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ListIsRectangular()
+        {
+            Assert.IsTrue(List.IsRectangular(new ArrayList { new ArrayList { 1, 2, 3 }, new ArrayList { 4, 5, 6 } }));
+            Assert.IsFalse(List.IsRectangular(new ArrayList()));
+            Assert.IsFalse(List.IsRectangular(new ArrayList { 1, 2, 4, 8 }));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ListIsUniformDepth()
+        {
+            Assert.IsTrue(List.IsUniformDepth(new ArrayList()));
+            Assert.IsTrue(List.IsUniformDepth(new ArrayList { new ArrayList { 1, 2, 3 }, new ArrayList { 4, 5, 6, 7 } }));
+            Assert.IsFalse(List.IsUniformDepth(new ArrayList { new ArrayList { 1, 2, 3, new ArrayList { 0, 8, 2 } }, new ArrayList { 4, 5, 6, 7 } }));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ListSetDifference()
+        {
+            Assert.AreEqual(new ArrayList { 1 }, List.SetDifference(new ArrayList { 1, 2, 3 }, new ArrayList { 2, 3 }));
+            Assert.AreEqual(new ArrayList(), List.SetDifference(new ArrayList { 9 }, new ArrayList { 0, 1, 2 }));
+            Assert.AreEqual(new ArrayList { 9 }, List.SetDifference(new ArrayList { 9, 9, 8 }, new ArrayList { 8, 7 }));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ListSetIntersection()
+        {
+            Assert.AreEqual(new ArrayList { 2, 3 }, List.SetIntersection(new ArrayList { 1, 2, 3 }, new ArrayList { 2, 3 }));
+            Assert.AreEqual(new ArrayList(), List.SetIntersection(new ArrayList { 9 }, new ArrayList { 0, 1, 2 }));
+            Assert.AreEqual(new ArrayList { 8 }, List.SetIntersection(new ArrayList { 9, 9, 8 }, new ArrayList { 8, 7 }));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ListSetUnion()
+        {
+            Assert.AreEqual(new ArrayList { 1, 2, 3 }, List.SetUnion(new ArrayList { 1, 2, 3 }, new ArrayList { 2, 3 }));
+            Assert.AreEqual(new ArrayList { 0, 1, 2, 9 }, List.SetUnion(new ArrayList { 9 }, new ArrayList { 0, 1, 2 }));
+            Assert.AreEqual(new ArrayList { 8, 7 }, List.SetUnion(new ArrayList(), new ArrayList { 8, 7 }));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ListIndexOf()
+        {
+            Assert.AreEqual(1, List.IndexOf(new ArrayList { "x", "y", 1 }, "y"));
+            Assert.AreEqual(-1, List.IndexOf(new ArrayList { 3, 4, 6, 8 }, 9));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ListCountFalse()
+        {
+            Assert.AreEqual(0, List.CountFalse(new ArrayList { 1,3,6, true }));
+            Assert.AreEqual(2, List.CountFalse(new ArrayList { 2, new ArrayList { false }, false, true }));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ListCountTrue()
+        {
+            Assert.AreEqual(1, List.CountTrue(new ArrayList { 1, 3, 6, true }));
+            Assert.AreEqual(2, List.CountTrue(new ArrayList { 2, new ArrayList { true }, false, true }));
+        }
+
+        [Test]
+        public static void FlattenList()
+        {
+            Assert.AreEqual(
+                new ArrayList { 0, 1, 2, 3, 4, 5, 6, 7, 8 },
+                List.Flatten(
+                    new List<object>
+                    {
+                        new List<object> { 0, 1, 2 },
+                        new List<object> { 3, new List<object> { 4 }, 5 },
+                        new List<object> { 6, 7, 8 }
+                    }));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void FlattenListByAmount()
+        {
+            List<object> testList = new List<object>
+                    {
+                        new List<object> { 0, 1, 2 },
+                        new List<object> { 3, new List<object> { 4 }, 5 },
+                        new List<object> { 6, 7, 8 }
+                    };
+            
+            Assert.AreEqual(
+                new ArrayList { 0, 1, 2, 3, new List<object> { 4 }, 5, 6, 7, 8 },
+                List.Flatten(testList, 1));
+            Assert.AreEqual(
+                new ArrayList { 0, 1, 2, 3, 4, 5, 6, 7, 8 }, List.Flatten(testList, 2));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void InsertToList()
+        {
+            Assert.AreEqual(new ArrayList { 1, 9, 2, 3, 4, 5 }, List.Insert(new ArrayList { 1, 2, 3, 4, 5 }, 9, 1));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ReorderList()
+        {
+            Assert.AreEqual(new ArrayList { 4, 0, 3, 1, 2 }, List.Reorder(new ArrayList { 0, 1, 2, 3, 4 }, new ArrayList { 1, 3, 4, 2, 0 }));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void SortIndexByValue()
+        {
+            Assert.AreEqual(new ArrayList { 4, 2, 3, 1, 0 }, List.SortIndexByValue(new List<double> { 8.0, 4.1, 2.0, 4.0, 0.0 }));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void NormalizeDepth()
+        {
+            Assert.AreEqual(
+                new ArrayList {
+                    new ArrayList { 1 },
+                    new ArrayList { 2 },
+                    new ArrayList { 3, 4, 5 }
+                },
+                List.NormalizeDepth(
+                    new ArrayList { 1, 2, new ArrayList { 3, 4, 5 } }
+                    ));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void NormalizeDepthWithRank()
+        {
+            List<object> testList = new List<object> { 1, 2, new ArrayList { 3, 4, 5 } };
+            Assert.AreEqual(
+                new ArrayList {
+                    new ArrayList { 1 },
+                    new ArrayList { 2 },
+                    new ArrayList { 3, 4, 5 }
+                },
+                List.NormalizeDepth(testList, 2));
+            Assert.AreEqual(
+                new ArrayList { 1, 2, 3, 4, 5 }, List.NormalizeDepth(testList, 1));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void GetListValues()
+        {
+            Assert.AreEqual(new ArrayList { 5, 4, 3, 2, 1 }, List.GetValues(new ArrayList { 5, 4, 3, 2, 1 }));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public static void ReplaceItemAtIndex()
         {
             Assert.AreEqual(List.ReplaceItemAtIndex(new ArrayList { 5, 4, 3, 2, 1 }, 0, 20), new ArrayList { 20, 4, 3, 2, 1 });
@@ -550,21 +727,6 @@ namespace DSCoreNodesTests
         //                new List<object> { 3, new List<object> { 4 }, 5 },
         //                new List<object> { 6, 7, 8 }
         //            }));
-        //}
-
-        //[Test]
-        //public static void FlattenList()
-        //{
-        //    Assert.AreEqual(
-        //        new ArrayList { 0, 1, 2, 3, new List<object> { 4 }, 5, 6, 7, 8 },
-        //        List.Flatten(
-        //            new List<object>
-        //            {
-        //                new List<object> { 0, 1, 2 },
-        //                new List<object> { 3, new List<object> { 4 }, 5 },
-        //                new List<object> { 6, 7, 8 }
-        //            },
-        //            1));
         //}
 
         [Test]

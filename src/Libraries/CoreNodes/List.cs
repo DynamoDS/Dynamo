@@ -130,9 +130,9 @@ namespace DSCore
 
             foreach (var obj in list)
             {
-                if (!(obj is IList)) return false; //all items be a list in order to do a comparison
-                if (count == -1) count = ((IList)obj).Count; //if the count has not yet been initialized, assign the value
-                else if (count != ((IList)obj).Count) return false; //otherwise, check if they have the same count. If not, return false
+                if (!(obj is IList)) return false; // All items must be in a list in order to do a comparison
+                if (count == -1) count = ((IList)obj).Count; // If the count has not yet been initialized, assign the value
+                else if (count != ((IList)obj).Count) return false; // Otherwise, check if they have the same count. If not, return false
             }
             return true; //if all items have the same count
         }
@@ -159,12 +159,12 @@ namespace DSCore
             if (!(list is IList)) return 0;
 
             int depth = 1;
-            foreach (var obj in (IList)list) //if it is a list, check if it contains a sublist
+            foreach (var obj in (IList)list) // If it is a list, check if it contains a sublist
             {
-                if (obj is IList) //if it contains a sublist
+                if (obj is IList) // If it contains a sublist
                 {
                     int d = 1 + GetDepth((IList)obj);
-                    depth = (depth > d) ? depth : d; //get the maximum depth among all items
+                    depth = (depth > d) ? depth : d; // Get the maximum depth among all items
                 }
             }
             return depth;
@@ -175,14 +175,14 @@ namespace DSCore
         /// </summary>
         /// <param name="list1">List of objects to be included in the new list.</param>
         /// <param name="list2">List of objects to be excluded in the new list.</param>
-        /// <returns name="list1">The new list that contains objects in List1 but not in List2.</returns>
+        /// <returns name="newList">The new list that contains objects in List1 but not in List2.</returns>
         /// <search>difference,setdifference,set</search>
         public static IList SetDifference(IList list1, IList list2)
         {
             List<object> newList = new List<object>();
             for (int i = 0; i < list1.Count; i++)
             {
-                int index = IndexInList(list2, list1[i]); //check if list2 contains the item
+                int index = IndexInList(list2, list1[i]); // Check if list2 contains the item
                 if (index == -1) newList.Add(list1[i]);
             }
             return newList.Distinct().ToList();
@@ -257,17 +257,18 @@ namespace DSCore
         /// <summary>
         ///     Returns the number of the specified boolean values in the given list.
         /// </summary>
-        /// <param name="list">The list find the true boolean values.</param>
+        /// <param name="list">The list find the boolean values.</param>
+        /// <param name="value">The boolean value to be found</param>
         /// <returns name="int">The number of the specified boolean value in the list.</returns>
-        private static int CountBool(IList list, bool b)
+        private static int CountBool(IList list, bool value)
         {
             int count = 0;
             foreach (var obj in list)
             {
-                if ((obj is bool) && ((bool)obj == b)) count++;
+                if ((obj is bool) && ((bool)obj == value)) count++;
                 else if ((obj is IList))
                 {
-                    count += CountBool((IList)obj, b);
+                    count += CountBool((IList)obj, value);
                 }
             }
             return count;
@@ -285,7 +286,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Inserts an element into a list at specified index
+        ///     Inserts an element into a list at specified index.
         /// </summary>
         /// <param name="list">The list the element will be inserted to.</param>
         /// <param name="element">The element to be inserted.</param>
@@ -322,42 +323,6 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Checks if the specified key is present in the specified key-value pair list.
-        /// </summary>
-        /// <param name="list">The list to check if the specified key is present.</param>
-        /// <param name="key">The key to find in the given list.</param>
-        /// <returns name="bool">Whether the key can be found in the given list.</returns>
-        /// <search>key,contains,containskey</search>
-        public static bool ContainsKey(IList list, object key)
-        {
-            // Note: Is this method just to check against the index of each item in the list or
-            // a key-value pair in Dynamo?
-            int index;
-            if (int.TryParse(key.ToString(), out index) && (index < list.Count)) return true;
-            return false; // If it is not a valid index or if the index doesn't exist in the list
-        }
-
-        /// <summary>
-        ///     Returns a new list with the specified key removed.
-        /// </summary>
-        /// <param name="list">The list whose specified items are to be removed.</param>
-        /// <param name="key">The key be removed from the given list.</param>
-        /// <returns name="list">The list with the key removed.</returns>
-        /// <search>key,remove,removekey</search>
-        public static IList RemoveKey(IList list, [ArbitraryDimensionArrayImport] object key)
-        {
-            // Note: The method follows the behaviour of the BuiltIn method and is different 
-            // from the descriptions in Dynamo Dictionary
-            int index;
-            if (int.TryParse(key.ToString(), out index) && (index < list.Count))
-            {
-                list[index] = null;
-                return list;
-            }
-            return list;
-        }
-
-        /// <summary>
         ///     Sorts a list by the items and return their indices.
         /// </summary>
         /// <param name="list">The list of items to be sorted.</param>
@@ -377,6 +342,16 @@ namespace DSCore
             }
             return newList;
         }
+        
+        /// <summary>
+        ///     Returns multidimentional list according to the rank of the input list.
+        /// </summary>
+        /// <param name="list">The list whose depth is to be normalized.</param>
+        /// <returns name="list">The list with the normalized rank.</returns>
+        public static IList NormalizeDepth(IList list)
+        {
+            return NormalizeDepth(list, GetDepth(list));
+        }
 
         /// <summary>
         ///     Returns multidimentional list according the rank given.
@@ -386,7 +361,7 @@ namespace DSCore
         /// <returns name="list">The list with the normalized rank.</returns>
         public static IList NormalizeDepth(IList list, int rank)
         {
-            if (rank == 1)
+            if (rank <= 1)
             {
                 return Flatten(list);
             }
@@ -409,7 +384,7 @@ namespace DSCore
 
         private static IList IncreaseDepth(IList list, int amt)
         {
-            if (amt == 1)
+            if (amt <= 1)
             {
                 return list;
             }
@@ -434,12 +409,15 @@ namespace DSCore
         /// <returns name="newlist">The new list which contains the values.</returns>
         public static IList GetValues(IList list)
         {
+            /*
             List<object> newList = new List<object>();
             for (int i = 0; i < list.Count; i++)
             {
                 newList.Add(list[i]);
             }
-            return newList;
+            return newList; 
+            */
+            return list; // Return the values in the list
         }
 
         /// <summary>
