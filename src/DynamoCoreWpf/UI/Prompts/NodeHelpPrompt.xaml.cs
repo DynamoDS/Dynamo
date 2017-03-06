@@ -20,9 +20,8 @@ namespace Dynamo.Prompts
             this.DataContext = node;
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             InitializeComponent();
-
-            Type type = node.GetType();
-            if (type.Namespace == "Dynamo.Graph.Nodes.CustomNodes")
+            
+            if (node.IsCustomFunction)
             {
                 // Hide the dictionary link if the node is a custom node
                 DynamoDictionaryHeight.Height = new GridLength(0);
