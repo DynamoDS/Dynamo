@@ -484,6 +484,10 @@ namespace Dynamo.Graph.Nodes
             get
             {
                 string finalLink = Configurations.DynamoDictionary + "#/";
+                if (IsCustomFunction)
+                {
+                    return ""; // If it is not a core or Revit function, do not display the dictionary link
+                }
                 if (category == null || category == "")
                 {
                     return Configurations.DynamoDictionary; // if there is no category, return the link to home page
