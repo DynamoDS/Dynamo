@@ -46,7 +46,6 @@ namespace Dynamo.Graph.Nodes
         private string persistentWarning = "";
         private bool areInputPortsRegistered;
         private bool areOutputPortsRegistered;
-        private LibraryServices libraryServices;
 
         ///A flag indicating whether the node has been explicitly frozen.
         internal bool isFrozenExplicitly;
