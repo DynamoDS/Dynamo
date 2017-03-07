@@ -565,6 +565,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected override void OnWorkspaceCleared(WorkspaceModel workspace)
         {
             SetCameraData(new CameraData());
+            OnIsolationModeRequestUpdate(false);
+
             base.OnWorkspaceCleared(workspace);
         }
 
@@ -814,9 +816,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <summary>
         /// Update the attached properties and recalculate transparency sorting
         /// after any update under Isolate Selected Geometry mode.
+        /// <param name="value">Optional bool value to be assigned to IsolationMode property</param>
         /// </summary>
-        protected override void OnIsolationModeRequestUpdate()
+        protected override void OnIsolationModeRequestUpdate(bool? value = null)
         {
+            if (value != null)
+            {
+                IsolationMode = (bool)value;
+            }
+
             Model3DDictionary.Values.OfType<GeometryModel3D>().ToList().
                 ForEach(g => AttachedProperties.SetIsolationMode(g, IsolationMode));
             OnSceneItemsChanged();
