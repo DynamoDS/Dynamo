@@ -7,6 +7,8 @@ using Dynamo.Configuration;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System;
+using Dynamo.Controls;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Prompts
 {
@@ -30,7 +32,11 @@ namespace Dynamo.Prompts
 
         private void OpenDynamoDictionary(object sender, MouseButtonEventArgs e)
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", ((TextBlock)sender).Tag.ToString()));
+            var dynView = this.Owner.DataContext as DynamoViewModel;
+            var node = this.DataContext as NodeModel;
+            node.DictionaryLink = node.GetDictionaryLinkFromLibrary(dynView.Model.LibraryServices);
+
+            Process.Start(new ProcessStartInfo("explorer.exe", node.DictionaryLink));
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
