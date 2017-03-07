@@ -187,11 +187,6 @@ namespace Dynamo.Models
         public readonly LibraryServices LibraryServices;
 
         /// <summary>
-        ///     A static copy of LibraryServices.
-        /// </summary>
-        public static LibraryServices StaticLibraryServices;
-
-        /// <summary>
         ///     Flag specifying whether a shutdown of Dynamo was requested.
         /// </summary>
         public bool ShutdownRequested { get; internal set; }
@@ -622,7 +617,6 @@ namespace Dynamo.Models
             LibraryServices = new LibraryServices(libraryCore, pathManager, PreferenceSettings);
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
-            StaticLibraryServices = LibraryServices;
 
             ResetEngineInternal();
 
