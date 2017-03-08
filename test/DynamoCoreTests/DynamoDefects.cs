@@ -490,5 +490,15 @@ namespace Dynamo.Tests
             Assert.IsTrue(node1.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
             Assert.IsTrue(node2.ToolTipText.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency));
         }
+
+        /*[Test, Category("RegressionTests")]
+        public void Defect_DYN_286()
+        {
+            //Detail steps are here https://jira.autodesk.com/browse/DYN-286
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\DYN_286.dyn");
+            RunModel(openPath);
+            string nodeGUID = "ed2cfaa4-059d-4784-9afc-5bcd729b2048";
+            AssertPreviewValue(nodeGUID, 10000);
+        }*/
     }
 }
