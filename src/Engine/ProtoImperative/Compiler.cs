@@ -13,7 +13,10 @@ namespace ProtoImperative
 		{
 		}
 
-        public override bool Compile(out int blockId, ProtoCore.DSASM.CodeBlock parentBlock, ProtoCore.LanguageCodeBlock langBlock, ProtoCore.CompileTime.Context callContext, ProtoCore.DebugServices.EventSink sink, ProtoCore.AST.Node codeBlockNode, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
+        public override bool Compile(out int blockId, ProtoCore.DSASM.CodeBlock parentBlock, 
+            ProtoCore.LanguageCodeBlock langBlock, ProtoCore.CompileTime.Context callContext, 
+            ProtoCore.DebugServices.EventSink sink, ProtoCore.AST.Node codeBlockNode, 
+            ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
             Validity.Assert(langBlock != null);
             blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -21,7 +24,7 @@ namespace ProtoImperative
             bool buildSucceeded = false;
             try
             {
-                ProtoImperative.CodeGen codegen = new ProtoImperative.CodeGen(core, callContext, parentBlock);
+                ProtoImperative.CodeGen codegen = new ProtoImperative.CodeGen(core, callContext, langBlock, parentBlock);
 
                 codegen.context = callContext;
                 codegen.codeBlock.EventSink = sink;

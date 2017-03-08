@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using ProtoCore.AST;
+using ProtoCore.AST.AssociativeAST;
 
 namespace ProtoCore
 {
@@ -14,6 +16,8 @@ namespace ProtoCore
     {
         public Language Language { get; set; }
         public string Code { get; set; }
+
+        public Dictionary<string, AssociativeNode> CaptureList { get; set; } 
 
         public LanguageCodeBlock(Language lang = Language.NotSpecified)
         {

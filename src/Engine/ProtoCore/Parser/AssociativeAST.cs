@@ -199,12 +199,13 @@ namespace ProtoCore.AST.AssociativeAST
             buf.Append("]");
 
             buf.Append("(");
-            if (FormalArguments != null)
+            var args = FormalArguments;
+            if (args != null)
             {
-                for (int n = 0; n < FormalArguments.Count; ++n)
+                for (int n = 0; n < args.Count; ++n)
                 {
-                    buf.Append(FormalArguments[n]);
-                    if (n < FormalArguments.Count - 1)
+                    buf.Append(args[n]);
+                    if (n < args.Count - 1)
                     {
                         buf.Append(", ");
                     }

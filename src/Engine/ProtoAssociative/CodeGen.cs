@@ -2767,9 +2767,11 @@ namespace ProtoAssociative
 
                 //EmitCaptureList(node, graphNode, subPass);
 
-                core.Compilers[langblock.codeblock.Language].Compile(out blockId, codeBlock, langblock.codeblock, nextContext, codeBlock.EventSink, langblock.CodeBlockNode, propagateGraphNode);
+                core.Compilers[langblock.codeblock.Language].Compile(out blockId, codeBlock, langblock.codeblock, 
+                    nextContext, codeBlock.EventSink, langblock.CodeBlockNode, propagateGraphNode);
                 graphNode.isLanguageBlock = true;
                 graphNode.languageBlockId = blockId;
+
                 foreach (GraphNode dNode in nextContext.DependentVariablesInScope)
                 {
                     graphNode.PushDependent(dNode);
