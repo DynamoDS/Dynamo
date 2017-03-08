@@ -514,7 +514,7 @@ namespace Dynamo.Graph.Nodes
 
         private string dictionaryLink;
 
-        public string GetDictionaryLinkFromLibrary(LibraryServices libraryServices)
+        internal string ConstructDictionaryLinkFromLibrary(LibraryServices libraryServices)
         {
             string finalLink = Configurations.DynamoDictionary + "#/";
             if (IsCustomFunction)
@@ -550,7 +550,7 @@ namespace Dynamo.Graph.Nodes
 
             // Check if the method has overloads
             IEnumerable<FunctionDescriptor> descriptors = libraryServices.GetAllFunctionDescriptors(CreationName.Split('@')[0]);
-            if (descriptors != null && descriptors.Count() > 1)
+            if (descriptors != null && descriptors.Skip(1).Any())
             {
                 // If there are overloads
                 string parameters = "(";
@@ -573,7 +573,8 @@ namespace Dynamo.Graph.Nodes
                         parameters += inputParameters.ElementAt(k).Item1 + "_" + inputParameters.ElementAt(k).Item2 + "-";
                     }
                     // Append the last parameter without the dash and with the close bracket
-                    parameters += inputParameters.ElementAt(parameterCount - 1).Item1 + "_" + inputParameters.ElementAt(parameterCount - 1).Item2 + ")";
+                    var lastInputParam = inputParameters.ElementAt(parameterCount - 1);
+                    parameters += lastInputParam.Item1 + "_" + lastInputParam.Item2 + ")";
                     finalLink += parameters;
                 }
             }

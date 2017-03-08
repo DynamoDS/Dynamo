@@ -34,9 +34,15 @@ namespace Dynamo.Prompts
         {
             var dynView = this.Owner.DataContext as DynamoViewModel;
             var node = this.DataContext as NodeModel;
-            node.DictionaryLink = node.GetDictionaryLinkFromLibrary(dynView.Model.LibraryServices);
-
-            Process.Start(new ProcessStartInfo("explorer.exe", node.DictionaryLink));
+            if (dynView != null && node != null)
+            {
+                node.DictionaryLink = node.ConstructDictionaryLinkFromLibrary(dynView.Model.LibraryServices);
+                Process.Start(new ProcessStartInfo("explorer.exe", node.DictionaryLink));
+            }
+            else
+            {
+                Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoDictionary));
+            }
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
