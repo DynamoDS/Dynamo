@@ -53,7 +53,7 @@ namespace DSCore
         ///     Return a specified date and time as a string, in the specified format.
         /// </summary>
         /// <param name="dateTime">The DateTime to format.</param>
-        /// <param name="format">String representation of the date format. Defaults to standard format "F", which outputs acording to operating system locale : "Monday, June 15, 2009 1:45:30 PM" for (en-US).
+        /// <param name="format">String representation of the date format. Defaults to standard format "F" with InvariantCulture, which outputs e.g. independing to operating system locale : "Monday, June 15, 2009 1:45:30 PM" for (en-US).
         /// Search "MSDN Custom Date and Time Format Strings" for a comprehensive list of format specifiers.
         ///</param>
         /// <returns name="string">The specified date and time as a string, in the specified format.</returns>
