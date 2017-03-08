@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 using NUnit.Framework;
 
@@ -47,6 +48,11 @@ namespace DSCoreNodesTests
                     { "millisecond", aDateTime.Millisecond },
                 },
                 WrappedDT.Components(aDateTime));
+        }
+        [Test, Category("UnitTests")]
+        public static void TestDateTime_Format()
+        {
+            Assert.AreEqual(aDateTime.ToString("dd MMM yyyy", CultureInfo.InvariantCulture), WrappedDT.Format(WrappedDT.FromString(aDateTime.ToString()), "dd MMM yyyy"));
         }
 
         [Test, Category("UnitTests")]
