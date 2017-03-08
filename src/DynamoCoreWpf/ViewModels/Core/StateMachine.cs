@@ -218,23 +218,22 @@ namespace Dynamo.ViewModels
                 return false;
             }
 
-            PortModel srcPortM = FirstActiveConnector.ActiveStartPort;
-            PortModel desPortM = portVM.PortModel;
-
-            // No self connection
-            // No start to start or end or end connection
-            if (srcPortM.Owner != desPortM.Owner && srcPortM.PortType != desPortM.PortType)
+            foreach (ConnectorViewModel activeConnector in activeConnectors)
             {
-                // Change cursor to show compatible port connection
-                CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcAdding);
-                return true;
+                var srcPortM = activeConnector.ActiveStartPort;
+                var desPortM = portVM.PortModel;
+                // No self connection
+                // No start to start or end or end connection
+                if (srcPortM.Owner == desPortM.Owner || srcPortM.PortType == desPortM.PortType)
+                {
+                    // Change cursor to show not compatible
+                    CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
+                    return false;
+                }
             }
-            else
-            {
-                // Change cursor to show not compatible
-                CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
-                return false;
-            }
+            // If all connections are compatible, change cursor to show compatible port connection
+            CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcAdding);
+            return true;
         }
 
         internal void CancelConnection()

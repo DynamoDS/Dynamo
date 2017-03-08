@@ -1041,8 +1041,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(38, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(29, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(41, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(31, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check Surface.ByLoft
             var surface1ID = "3675e40d-1d1d-4869-b3e1-f8ea67286486";
@@ -1053,7 +1053,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(surface2.ToString(), "Surface");
           
             //check CBN, which includes a list of Vector
-            var cbnId = "e14439c9-b377-4653-bb63-4edd9a4f90a0";
+            var cbnId = "be2abed2-282f-44d5-8981-3cfb3e231d1b";
             AssertPreviewCount(cbnId, 18);
             for (int i = 0; i < 18; i++)
             {

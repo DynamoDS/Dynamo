@@ -45,6 +45,10 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DSCoreNodes, Version=2.0.0.4157, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Dynamo\Dynamo Core\1.2\DSCoreNodes.dll</HintPath>
+    </Reference>
     <Reference Include="Greg, Version=1.0.6176.18754, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\src\packages\Greg.1.0.6176.18754\lib\net45\Greg.dll</HintPath>
       <Private>True</Private>
@@ -137,6 +141,7 @@
     <Compile Include="..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="ColorPaletteTests.cs" />
     <Compile Include="ListAtLevelTest.cs" />
     <Compile Include="NoteViewTests.cs" />
     <Compile Include="NodeViewTests.cs" />

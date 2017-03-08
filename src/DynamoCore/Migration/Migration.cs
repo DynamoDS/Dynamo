@@ -313,22 +313,17 @@ namespace Dynamo.Migration
                               let attribute =
                                   method.GetCustomAttributes(false).OfType<NodeMigrationAttribute>().FirstOrDefault()
                               where attribute != null
-                              let result = new { method, attribute.From, attribute.To }
-                              orderby result.From
+                              let result = new { method, attribute.Version}
+                              orderby result.Version
                               select result).ToList();
 
             var nodeToMigrate = elNode as XmlElement;
             var migrationData = new NodeMigrationData(elNode.OwnerDocument);
             migrationData.AppendNode(elNode as XmlElement);
 
-            while (workspaceVersion != null && workspaceVersion < currentVersion)
+            foreach(var migration in migrations.Where(m=>m.Version >= workspaceVersion))
             {
-                var nextMigration = migrations.FirstOrDefault(x => x.From >= workspaceVersion);
-
-                if (nextMigration == null)
-                    break;
-
-                object ret = nextMigration.method.Invoke(this, new object[] { migrationData });
+                object ret = migration.method.Invoke(this, new object[] { migrationData });
                 migrationData = ret as NodeMigrationData;
 
                 if (DynamoModel.EnableMigrationLogging)
@@ -336,7 +331,6 @@ namespace Dynamo.Migration
                     // record migration data for successful migrations
                     migrationReport.AddMigrationDataToNodeMap(nodeToMigrate.Name, migrationData.MigratedNodes);
                 }
-                workspaceVersion = nextMigration.To;
             }
 
             return migrationData;
@@ -1353,19 +1347,13 @@ namespace Dynamo.Migration
     public class NodeMigrationAttribute : Attribute
     {
         /// <summary>
-        /// Latest Version this migration applies to.
+        /// Version specifies the latest workspace version to which this migration will be applied.
         /// </summary>
-        public Version From { get; private set; }
+        public Version Version { get; private set; }
 
-        /// <summary>
-        /// Version this migrates to.
-        /// </summary>
-        public Version To { get; private set; }
-
-        public NodeMigrationAttribute(string from, string to = "")
+        public NodeMigrationAttribute(string version)
         {
-            From = new Version(from);
-            To = String.IsNullOrEmpty(to) ? null : new Version(to);
+            Version = new Version(version);
         }
     }
 

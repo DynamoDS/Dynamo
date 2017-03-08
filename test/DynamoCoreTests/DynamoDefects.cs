@@ -284,8 +284,8 @@ namespace Dynamo.Tests
             RunModel(openPath);
             AssertPreviewCount("2ea813c4-7729-45b5-b23b-d7a3377f0b31", 4);
             var doubleInput = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
-                ("7eba96c0-4715-47f0-a874-01f1887ac465") as DoubleInput;
-            doubleInput.Value = "6..8";
+                ("7eba96c0-4715-47f0-a874-01f1887ac465") as CodeBlockNodeModel;
+            doubleInput.SetCodeContent("6..8;", new ProtoCore.Namespace.ElementResolver());
             BeginRun();
             AssertPreviewCount("2ea813c4-7729-45b5-b23b-d7a3377f0b31", 3);
         }
@@ -425,7 +425,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Bool_Case_3420.dyn");
             RunModel(openPath);
             AssertPreviewValue("ebd1f642-ee18-46d7-ad76-490d6adcf3f0", true);
-            AssertPreviewValue("b8f4c8fb-fa8b-4c10-96b7-70c5763917cd", 6.9115038378975449);
+            AssertPreviewValue("457dfbe9-0c65-4c43-aa83-667069ef562a", 6.9115038378975449);
 
             AssertPreviewValue("bf766c0b-15b1-49f7-90e3-bc3db3dd1987", true);
         }

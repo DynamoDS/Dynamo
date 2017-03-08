@@ -126,13 +126,19 @@ GSInputLS VShaderLines(VSInputLS input)
 	}
 
 	bool isSelected = input.parameters.x;
+	bool isIsolationMode = input.parameters.y;
 	float4 finalColor;
 
-	if (isSelected) {
+	if (isSelected && !isIsolationMode) {
 		finalColor = lerp(vSelectionColor, input.c, 0.3);
 	}
 	else {
 		finalColor = input.c;
+	}
+
+	// unselected geometry is transparent under Isolate Selected Geometry mode
+	if (isIsolationMode && !isSelected) {
+		finalColor.a = vTransparentLinePoint.a;
 	}
 
 	//set position into clip space	
@@ -236,7 +242,7 @@ float4 PShaderLinesFade(PSInputLS input) : SV_Target
 // Alpha is computed from the function exp2(-2(x)^2).
 float sigma = 2.0f / (vLineParams.y + 1e-6);
 dist *= dist;
-float alpha = exp2(-2 * dist / sigma);
+float alpha = input.c.a * exp2(-2 * dist / sigma);
 
 //if(alpha<0.1) discard;
 

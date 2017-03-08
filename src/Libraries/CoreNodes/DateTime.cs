@@ -50,6 +50,20 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Return a specified date and time as a string, in the specified format.
+        /// </summary>
+        /// <param name="dateTime">The DateTime to format.</param>
+        /// <param name="format">String representation of the date format. Defaults to standard format "F", which outputs acording to operating system locale : "Monday, June 15, 2009 1:45:30 PM" for (en-US).
+        /// Search "MSDN Custom Date and Time Format Strings" for a comprehensive list of format specifiers.
+        ///</param>
+        /// <returns name="string">The specified date and time as a string, in the specified format.</returns>
+        public static string Format(System.DateTime dateTime, string format="F")
+        {
+            if (System.String.IsNullOrEmpty(format)) format = "F";
+            return dateTime.ToString(format, CultureInfo.InvariantCulture);
+        }
+        
+        /// <summary>
         ///     Creates a new DateTime at an exact date.
         /// </summary>
         /// <param name="year">Exact year (1-9999)</param>

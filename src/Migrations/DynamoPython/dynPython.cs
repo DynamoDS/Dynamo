@@ -1,13 +1,11 @@
 ﻿using Dynamo.Migration;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Xml;
 
 namespace DSIronPythonNode
 {
     public class PythonNode : MigrationNode
     {
-        [NodeMigration(from: "0.8.3.0", to: "0.9.0.0")]
+        [NodeMigration(version: "0.8.3.0")]
         public static NodeMigrationData Migrate_0830_to_0900(NodeMigrationData data)
         {
             System.Xml.XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
@@ -21,7 +19,7 @@ namespace DSIronPythonNode
 
     public class PythonStringNode : MigrationNode
     {
-        [NodeMigration(from: "0.8.3.0", to: "0.9.0.0")]
+        [NodeMigration(version: "0.8.3.0")]
         public static NodeMigrationData Migrate_0830_to_0900(NodeMigrationData data)
         {
             System.Xml.XmlElement xmlNode = data.MigratedNodes.ElementAt(0);

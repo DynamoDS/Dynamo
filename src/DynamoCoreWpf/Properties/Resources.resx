@@ -134,19 +134,13 @@
     <comment>To indicate Dynamo is up to date</comment>
   </data>
   <data name="ChangeScaleFactorPromptCaptionText" xml:space="preserve">
-    <value>What is the range of geometry sizes that you will be working on?</value>
+    <value>To ensure accurate geometry rendering and calculation, select the range of geometry sizes that you will be working on:</value>
   </data>
   <data name="ChangeScaleFactorPromptDescriptionBox" xml:space="preserve">
     <value>Numerical range shown here denote numbers in the following unit:</value>
   </data>
-  <data name="ChangeScaleFactorPromptDescriptionContent0" xml:space="preserve">
-    <value>Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter.</value>
-  </data>
-  <data name="ChangeScaleFactorPromptDescriptionContent1" xml:space="preserve">
-    <value>Use this working range to model objects no larger than a truck and that can be built to manufacturing tolerances.</value>
-  </data>
-  <data name="ChangeScaleFactorPromptDescriptionContent2" xml:space="preserve">
-    <value>Use this working range to model precision parts no smaller than a few microns but no larger than a millimeter.</value>
+  <data name="ChangeScaleFactorPromptDescriptionContent" xml:space="preserve">
+    <value>Use this working range to model in values that fall between {0} to {1} units</value>
   </data>
   <data name="ChangeScaleFactorPromptDescriptionDefaultSetting" xml:space="preserve">
     <value>Default Setting:</value>
@@ -170,7 +164,7 @@
     <value>{0} mm</value>
   </data>
   <data name="ChangeScaleFactorPromptWindowTitle" xml:space="preserve">
-    <value>Change Geometry Scaling Factor</value>
+    <value>Geometry Working Range</value>
   </data>
   <data name="ContextMenuEditCustomNode" xml:space="preserve">
     <value>Edit Custom Node...</value>
@@ -777,6 +771,10 @@ It does not contain your graph or any personal data</value>
   <data name="NodeHelpWindowNodeType" xml:space="preserve">
     <value>NODE TYPE</value>
     <comment>Title label</comment>
+  </data>
+  <data name="NodeHelpWindowDynamoDictionary" xml:space="preserve">
+    <value>See more on the Dynamo Dictionary...</value>
+    <comment>Link to http://dictionary.dynamobim.com/ </comment>
   </data>
   <data name="StartPageAsk" xml:space="preserve">
     <value>ASK</value>
@@ -1650,11 +1648,20 @@ Do you want to install the latest Dynamo update?</value>
   <data name="RunCompletedMessage" xml:space="preserve">
     <value>Run completed.</value>
   </data>
+  <data name="RunCompletedWithScaleChangeMessage" xml:space="preserve">
+    <value>Run completed with new working range.</value>
+  </data>
   <data name="RunCompletedWithWarningsMessage" xml:space="preserve">
     <value>Run completed with warnings.</value>
   </data>
+  <data name="RunCompletedWithScaleChangeAndWarningsMessage" xml:space="preserve">
+    <value>Run completed with warnings on setting new working range.</value>
+  </data>
   <data name="RunStartedMessage" xml:space="preserve">
     <value>Run started...</value>
+  </data>
+  <data name="RunStartedWithScaleChangeMessage" xml:space="preserve">
+    <value>Run started with new working range...</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
     <value>&lt;Click here to edit the group title&gt;</value>
@@ -1782,6 +1789,9 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="DynamoViewEditMenuPresetsMenu" xml:space="preserve">
     <value>Presets</value>
+  </data>
+  <data name="DynamoViewSettingsMenuIsolationMode" xml:space="preserve">
+    <value>Isolate Selected Geometry</value>
   </data>
   <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
     <value>Show Edges</value>
@@ -2154,5 +2164,23 @@ Want to publish a different package?</value>
   </data>
   <data name="DynamoViewHelpDictionary" xml:space="preserve">
     <value>Open Dynamo Dictionary</value>
+  </data>
+  <data name="RerunButton" xml:space="preserve">
+    <value>Apply Changes</value>
+  </data>
+  <data name="ScalingLargeButton" xml:space="preserve">
+    <value>Large</value>
+  </data>
+  <data name="ScalingMediumButton" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="ScalingExtraLargeButton" xml:space="preserve">
+    <value>Extra large</value>
+  </data>
+  <data name="ScalingSmallButton" xml:space="preserve">
+    <value>Small</value>
+  </data>
+  <data name="RerunButtonToolTip" xml:space="preserve">
+    <value>Rerun the graph.</value>
   </data>
 </root>
