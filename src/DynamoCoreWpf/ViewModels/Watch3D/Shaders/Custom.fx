@@ -103,14 +103,7 @@ float4 PShaderCustom(PSInputCustom input) : SV_Target
 	}
 
 	/// set diffuse alpha
-	if (!isIsolationMode || isSelected)
-	{
-		I.a = vMaterialDiffuse.a;
-	}
-	else
-	{
-		I.a = vTransparentMaterial.a;
-	}
+	I.a = vMaterialDiffuse.a;
 
 	/// get reflection-color
 	if (bHasCubeMap)
@@ -121,6 +114,12 @@ float4 PShaderCustom(PSInputCustom input) : SV_Target
 	if (requiresPerVertexColoration)
 	{
 		I = I * input.c;
+	}
+
+	/// unselected geometry is transparent under Isolate Selected Geometry mode
+	if (isIsolationMode && !isSelected)
+	{
+		I.a = sqrt(I.a) * vTransparentMaterial.a;
 	}
 
 	if (isSelected && !isIsolationMode)
