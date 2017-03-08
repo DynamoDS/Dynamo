@@ -593,7 +593,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New Node F_rom Selection.
+        ///   Looks up a localized string similar to Create Custom Node.
         /// </summary>
         public static string ContextMenuNodesFromSelection {
             get {
