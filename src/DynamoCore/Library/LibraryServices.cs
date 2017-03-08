@@ -420,27 +420,25 @@ namespace Dynamo.Engine
         /// <summary>
         ///     Returns a list of function descriptors associated with the function name.
         /// </summary>
-        /// <param name="mangledName"></param>
+        /// <param name="qualifiedName"></param>
         /// <returns></returns>
-        public IEnumerable<FunctionDescriptor> GetAllFunctionDescriptors(string mangledName)
+        public IEnumerable<FunctionDescriptor> GetAllFunctionDescriptors(string qualifiedName)
         {
             IEnumerable<FunctionDescriptor> descriptors = null;
-            string qualifiedName = mangledName.Split('@')[0];
             FunctionGroup functionGroup;
 
             // Check through both builtinFunctionGroups and importedFunctionGroups to find the function descriptors
             if (builtinFunctionGroups.TryGetValue(qualifiedName, out functionGroup))
             {
-                functionGroup = builtinFunctionGroups[qualifiedName];
                 descriptors = functionGroup.Functions;
                 return descriptors;
             }
 
-            foreach (KeyValuePair<string, Dictionary<string, FunctionGroup>> fg in importedFunctionGroups)
+            foreach (var fg in importedFunctionGroups)
             {
                 if (fg.Value.TryGetValue(qualifiedName, out functionGroup))
                 {
-                    descriptors = fg.Value[qualifiedName].Functions;
+                    descriptors = functionGroup.Functions;
                     return descriptors;
                 }
             }
