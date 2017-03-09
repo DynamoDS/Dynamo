@@ -503,36 +503,82 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                string finalLink = Configurations.DynamoDictionary + "#/";
-                if (category == null || category == "")
-                {
-                    return Configurations.DynamoDictionary; // if there is no category, return the link to home page
-                }
-
-                int i = category.LastIndexOf(Configurations.CategoryDelimiterString);
-                switch (category.Substring(i + 1))
-                {
-                    case Configurations.CategoryGroupAction:
-                        finalLink += ObtainURL(category.Substring(0, i));
-                        finalLink += "Action/";
-                        break;
-                    case Configurations.CategoryGroupCreate:
-                        finalLink += ObtainURL(category.Substring(0, i));
-                        finalLink += "Create/";
-                        break;
-                    case Configurations.CategoryGroupQuery:
-                        finalLink += ObtainURL(category.Substring(0, i));
-                        finalLink += "Query/";
-                        break;
-                    default:
-                        finalLink += ObtainURL(category);
-                        finalLink += "Action/";
-                        break;
-                }
-                finalLink += this.ShortenName;
-
-                return finalLink;
+                dictionaryLink = dictionaryLink ?? Configurations.DynamoDictionary;
+                return dictionaryLink;
             }
+            set
+            {
+                dictionaryLink = value;
+            }
+        }
+
+        private string dictionaryLink;
+
+        internal string ConstructDictionaryLinkFromLibrary(LibraryServices libraryServices)
+        {
+            string finalLink = Configurations.DynamoDictionary + "#/";
+            if (IsCustomFunction)
+            {
+                return ""; // If it is not a core or Revit function, do not display the dictionary link
+            }
+            if (category == null || category == "")
+            {
+                return Configurations.DynamoDictionary; // if there is no category, return the link to home page
+            }
+
+            int i = category.LastIndexOf(Configurations.CategoryDelimiterString);
+            switch (category.Substring(i + 1))
+            {
+                case Configurations.CategoryGroupAction:
+                    finalLink += ObtainURL(category.Substring(0, i));
+                    finalLink += "Action/";
+                    break;
+                case Configurations.CategoryGroupCreate:
+                    finalLink += ObtainURL(category.Substring(0, i));
+                    finalLink += "Create/";
+                    break;
+                case Configurations.CategoryGroupQuery:
+                    finalLink += ObtainURL(category.Substring(0, i));
+                    finalLink += "Query/";
+                    break;
+                default:
+                    finalLink += ObtainURL(category);
+                    finalLink += "Action/";
+                    break;
+            }
+            finalLink += this.ShortenName;
+
+            // Check if the method has overloads
+            IEnumerable<FunctionDescriptor> descriptors = libraryServices.GetAllFunctionDescriptors(CreationName.Split('@')[0]);
+            if (descriptors != null && descriptors.Skip(1).Any())
+            {
+                // If there are overloads
+                string parameters = "(";
+                IEnumerable<Tuple<string, string>> inputParameters = null;
+
+                foreach (FunctionDescriptor fd in descriptors)
+                {
+                    if (fd.MangledName == CreationName) // Find the function descriptor among the overloads and obtain their parameter names
+                    {
+                        inputParameters = fd.InputParameters;
+                        break;
+                    }
+                }
+                // Convert the parameters into a valid Dictionary URL format, e.g. (x_double-y_double-z_double)
+                if (inputParameters != null)
+                {
+                    int parameterCount = inputParameters.Count();
+                    for (int k = 0; k < parameterCount - 1; k++)
+                    {
+                        parameters += inputParameters.ElementAt(k).Item1 + "_" + inputParameters.ElementAt(k).Item2 + "-";
+                    }
+                    // Append the last parameter without the dash and with the close bracket
+                    var lastInputParam = inputParameters.ElementAt(parameterCount - 1);
+                    parameters += lastInputParam.Item1 + "_" + lastInputParam.Item2 + ")";
+                    finalLink += parameters;
+                }
+            }
+            return finalLink;
         }
 
         /// <summary>
