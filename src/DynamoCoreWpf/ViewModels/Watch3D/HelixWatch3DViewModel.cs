@@ -610,6 +610,27 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 case NotifyCollectionChangedAction.Reset:
 
+                    // When deselecting (by clicking on the canvas), all the highlighted HelixWatch3D previews are switched off
+                    // This results in a scenario whereby the list item in the WatchTree/PreviewBubble is still selected, and its
+                    // labels are still displayed in the preview, but the highlighting has been switched off.
+                    // In order to prevent this unintuitive UX behavior, the nodes will first be checked if they are in the 
+                    // nodesSelected dictionary - if they are, they will not be switched off.
+                    var geometryModels = new Dictionary<string, Model3D>();
+                    foreach (var model in Model3DDictionary)
+                    {
+                        var nodePath = model.Key.Contains(':') ? model.Key.Remove(model.Key.IndexOf(':')) : model.Key;
+                        if (model.Value is GeometryModel3D && !nodesSelected.ContainsKey(nodePath))
+                        {
+                            geometryModels.Add(model.Key, model.Value);
+                        }
+                    }
+
+                    foreach (var geometryModel in geometryModels)
+                    {
+                        geometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, false);
+                    }
+                    break;
+
                 case NotifyCollectionChangedAction.Remove:
                     SetSelection(e.OldItems, false);
                     break;
