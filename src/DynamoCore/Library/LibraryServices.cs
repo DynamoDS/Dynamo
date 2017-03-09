@@ -418,6 +418,35 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
+        ///     Returns a list of function descriptors associated with the function name.
+        /// </summary>
+        /// <param name="qualifiedName"></param>
+        /// <returns></returns>
+        public IEnumerable<FunctionDescriptor> GetAllFunctionDescriptors(string qualifiedName)
+        {
+            IEnumerable<FunctionDescriptor> descriptors = null;
+            FunctionGroup functionGroup;
+
+            // Check through both builtinFunctionGroups and importedFunctionGroups to find the function descriptors
+            if (builtinFunctionGroups.TryGetValue(qualifiedName, out functionGroup))
+            {
+                descriptors = functionGroup.Functions;
+                return descriptors;
+            }
+
+            foreach (var fg in importedFunctionGroups)
+            {
+                if (fg.Value.TryGetValue(qualifiedName, out functionGroup))
+                {
+                    descriptors = functionGroup.Functions;
+                    return descriptors;
+                }
+            }
+
+            return null; // If no function descriptors are found
+        }
+
+        /// <summary>
         /// Checks if a given library is already loaded or not.
         /// Only unique assembly names are allowed to be loaded
         /// </summary>
