@@ -41,7 +41,7 @@ namespace DynamoConversions
             {ConversionUnit.SquareCentimeter,0.0001}, 
             {ConversionUnit.SquareMillimeter,0.000001}, 
             {ConversionUnit.Acres,4046.86}, 
-            {ConversionUnit.Hectares,0.0001},
+            {ConversionUnit.Hectares,10000},
             {ConversionUnit.CubicMeters,1},  
             {ConversionUnit.CubicFoot,0.0283},     
             {ConversionUnit.CubicYards,0.765},         
