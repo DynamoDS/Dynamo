@@ -8,6 +8,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="50" d:DesignWidth="310">
     <Grid>
-        <xctk:DateTimePicker Margin="5" Value ="{Binding SysDateTime, Mode=TwoWay}" AllowTextInput="False"/>
+        <xctk:DateTimePicker Margin="5" Value ="{Binding SysDateTime, Mode=TwoWay}" AllowTextInput="False" ValueChanged="DateTimePicker_ValueChanged"/>
     </Grid>
 </UserControl>
