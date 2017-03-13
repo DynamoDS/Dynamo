@@ -13,6 +13,8 @@ using DSCore.Properties;
 
 namespace DSCore
 {
+
+    #region public methods
     /// <summary>
     ///     Methods for creating and manipulating Lists.
     /// </summary>
@@ -40,18 +42,6 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Determines if the given list contains the given item.
-        /// </summary>
-        /// <param name="list">List to search in.</param>
-        /// <param name="item">Item to look for.</param>
-        /// <returns name="bool">Whether list contains the given item.</returns>
-        /// <search>item,search,in,listcontains</search>
-        public static bool ContainsItem(IList list, object item)
-        {
-            return list.Contains(item);
-        }
-
-        /// <summary>
         ///     Determines if the given list contains the given item. This function searches through the sublists contained in it.
         /// </summary>
         /// <param name="list">List to search in.</param>
@@ -68,31 +58,6 @@ namespace DSCore
 
             // After checking all sublists, check if the current list contains the item
             return result || (IndexInList(list, item) >= 0);
-        }
-
-        /// <summary>
-        ///     An alternative to using IList.Contains which uses Enumerable.SequenceEqual to check if
-        ///     the item is contained in the list if the item is an array. Returns the index if found, 
-        ///     -1 if not found.
-        /// </summary>
-        /// <param name="list">The list to check if it contains the item.</param>
-        /// <param name="item">The item that needs to be found.</param>
-        /// <returns name="index">Index of the item in the list.</returns>
-        private static int IndexInList(IList list, object item)
-        {
-            for (int index = 0; index < list.Count; index++)
-            {
-                if (list[index] is ArrayList && item is ArrayList)
-                {
-                    if (((ArrayList)list[index]).Cast<object>().SequenceEqual<object>(((ArrayList)item).Cast<object>())) return index;
-                }
-                else
-                {
-                    // This method of comparing is used in IList.Contains
-                    if (list[index].Equals(item)) return index;
-                }
-            }
-            return -1;
         }
 
         /// <summary>
@@ -154,22 +119,6 @@ namespace DSCore
             return true;
         }
 
-        private static int GetDepth(object list)
-        {
-            if (!(list is IList)) return 0;
-
-            int depth = 1;
-            foreach (var obj in (IList)list) // If it is a list, check if it contains a sublist
-            {
-                if (obj is IList) // If it contains a sublist
-                {
-                    int d = 1 + GetDepth((IList)obj);
-                    depth = (depth > d) ? depth : d; // Get the maximum depth among all items
-                }
-            }
-            return depth;
-        }
-
         /// <summary>
         ///     Returns a new list that includes objects in List1 but excludes objects in List2.
         /// </summary>
@@ -177,15 +126,9 @@ namespace DSCore
         /// <param name="list2">List of objects to be excluded in the new list.</param>
         /// <returns name="newList">The new list that contains objects in List1 but not in List2.</returns>
         /// <search>difference,setdifference,set</search>
-        public static IList SetDifference(IList list1, IList list2)
+        public static IList SetDifference(IList<object> list1, IList<object> list2)
         {
-            List<object> newList = new List<object>();
-            for (int i = 0; i < list1.Count; i++)
-            {
-                int index = IndexInList(list2, list1[i]); // Check if list2 contains the item
-                if (index == -1) newList.Add(list1[i]);
-            }
-            return newList.Distinct().ToList();
+            return Enumerable.Except(list1, list2).ToList();
         }
 
         /// <summary>
@@ -195,14 +138,9 @@ namespace DSCore
         /// <param name="list2">List of objects to be compared with list1.</param>
         /// <returns name="newList">The new list that contains objects that are in both List1 and List2.</returns>
         /// <search>intersection,setintersection,set</search>
-        public static IList SetIntersection(IList list1, IList list2)
+        public static IList SetIntersection(IList<object> list1, IList<object> list2)
         {
-            List<object> newList = new List<object>();
-            foreach (var obj in list1)
-            {
-                if (IndexInList(list2, obj) >= 0) newList.Add(obj);
-            }
-            return newList.Distinct().ToList();
+            return Enumerable.Intersect(list1, list2).ToList();
         }
 
         /// <summary>
@@ -212,12 +150,9 @@ namespace DSCore
         /// <param name="list2">List of objects to be included to List1.</param>
         /// <returns name="newList">The new list that contains objects that are either in List1 or List2.</returns>
         /// <search>union,setunion,set</search>
-        public static IList SetUnion(IList list1, IList list2)
+        public static IList SetUnion(IList<object> list1, IList<object> list2)
         {
-            List<object> newList = new List<object>();
-            foreach (var obj in list1) newList.Add(obj);
-            foreach (var obj in list2) newList.Add(obj);
-            return newList.Distinct().ToList();
+            return Enumerable.Union(list1, list2).ToList();
         }
 
         /// <summary>
@@ -255,32 +190,12 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Returns the number of the specified boolean values in the given list.
-        /// </summary>
-        /// <param name="list">The list find the boolean values.</param>
-        /// <param name="value">The boolean value to be found</param>
-        /// <returns name="int">The number of the specified boolean value in the list.</returns>
-        private static int CountBool(IList list, bool value)
-        {
-            int count = 0;
-            foreach (var obj in list)
-            {
-                if ((obj is bool) && ((bool)obj == value)) count++;
-                else if ((obj is IList))
-                {
-                    count += CountBool((IList)obj, value);
-                }
-            }
-            return count;
-        }
-
-        /// <summary>
         ///     Returns the flattened 1D list of the multi-dimensional input list.
         /// </summary>
         /// <param name="list">The list to be flattened.</param>
         /// <returns name="list">The flattened 1D list.</returns>
         /// <search>flatten,1D</search>
-        public static IList Flatten(IList list)
+        public static IList FlattenCompletely(IList list)
         {
             return Flatten(list, GetDepth(list), new List<object>());
         }
@@ -342,28 +257,18 @@ namespace DSCore
             }
             return newList;
         }
-        
-        /// <summary>
-        ///     Returns multidimentional list according to the rank of the input list.
-        /// </summary>
-        /// <param name="list">The list whose depth is to be normalized.</param>
-        /// <returns name="list">The list with the normalized rank.</returns>
-        public static IList NormalizeDepth(IList list)
-        {
-            return NormalizeDepth(list, GetDepth(list));
-        }
 
         /// <summary>
         ///     Returns multidimentional list according the rank given.
         /// </summary>
         /// <param name="list">The list whose depth is to be normalized according to the rank.</param>
-        /// <param name="rank">The rank the list is to be normalized to.</param>
+        /// <param name="rank">The rank the list is to be normalized to. Default value is 1.</param>
         /// <returns name="list">The list with the normalized rank.</returns>
-        public static IList NormalizeDepth(IList list, int rank)
+        public static IList NormalizeDepth(IList list, int rank = 1)
         {
             if (rank <= 1)
             {
-                return Flatten(list);
+                return FlattenCompletely(list);
             }
             else
             {
@@ -377,26 +282,6 @@ namespace DSCore
                     {
                         list[i] = IncreaseDepth(new List<object>() { list[i] }, rank - 1);
                     }
-                }
-            }
-            return list;
-        }
-
-        private static IList IncreaseDepth(IList list, int amt)
-        {
-            if (amt <= 1)
-            {
-                return list;
-            }
-            else
-            {
-                for (int i = 0; i < list.Count; i++)
-                {
-                    if (!(list[i] is IList))
-                    {
-                        list[i] = new List<object>() { list[i] };
-                    }
-                    list[i] = IncreaseDepth((IList)list[i], amt - 1);
                 }
             }
             return list;
@@ -521,16 +406,6 @@ namespace DSCore
         }
 
         /// <summary>
-        /// Converts integer to double, else returns the input object.
-        /// </summary>
-        private static object DoubleConverter(object obj)
-        {
-            if (obj is int)
-                return Convert.ToDouble(obj);
-            return obj;
-        }
-
-        /// <summary>
         ///     Filters a sequence by looking up corresponding indices in a separate list of
         ///     booleans.
         /// </summary>
@@ -551,35 +426,6 @@ namespace DSCore
                 { "in", result.Item1 },
                 { "out", result.Item2 }
             };
-        }
-
-        private static Tuple<ArrayList, ArrayList> FilterByMaskHelper(
-            IEnumerable<object> list, IEnumerable<object> mask)
-        {
-            var inList = new ArrayList();
-            var outList = new ArrayList();
-
-            foreach (var p in list.Zip(mask, (item, flag) => new { item, flag }))
-            {
-                if (p.flag is IList && p.item is IList)
-                {
-                    Tuple<ArrayList, ArrayList> recur =
-                        FilterByMaskHelper(
-                            (p.item as IList).Cast<object>(),
-                            (p.flag as IList).Cast<object>());
-                    inList.Add(recur.Item1);
-                    outList.Add(recur.Item2);
-                }
-                else
-                {
-                    if ((bool)p.flag)
-                        inList.Add(p.item);
-                    else
-                        outList.Add(p.item);
-                }
-            }
-
-            return Tuple.Create(inList, outList);
         }
 
         /// <summary>
@@ -1409,57 +1255,7 @@ namespace DSCore
             var indices = Enumerable.Range(0, list.Count).Where(i => list[i].Equals(item)).ToList();
             return indices;
         }
-
-        #region Combinatorics Helpers
-        private static IEnumerable<T> Singleton<T>(T t)
-        {
-            yield return t;
-        }
-
-        private static IEnumerable<IEnumerable<T>> GetCombinations<T>(
-            IEnumerable<T> items, int count, bool replace)
-        {
-            int i = 0;
-            IList<T> enumerable = items as IList<T> ?? items.ToList();
-            foreach (T item in enumerable)
-            {
-                if (count == 1)
-                    yield return Singleton(item);
-                else
-                {
-                    IEnumerable<IEnumerable<T>> combs =
-                        GetCombinations(enumerable.Skip(replace ? i : i + 1), count - 1, replace);
-                    foreach (var result in combs)
-                        yield return Singleton(item).Concat(result);
-                }
-
-                ++i;
-            }
-        }
-
-        private static IEnumerable<IEnumerable<T>> GetPermutations<T>(
-            IEnumerable<T> items, int count)
-        {
-            int i = 0;
-            IList<T> enumerable = items as IList<T> ?? items.ToList();
-            foreach (T item in enumerable)
-            {
-                if (count == 1)
-                    yield return Singleton(item);
-                else
-                {
-                    IEnumerable<IEnumerable<T>> perms =
-                        GetPermutations(
-                            enumerable.Take(i).Concat(enumerable.Skip(i + 1)),
-                            count - 1);
-                    foreach (var result in perms)
-                        yield return Singleton(item).Concat(result);
-                }
-
-                ++i;
-            }
-        }
-
+        
         /// <summary>
         ///     Flattens a nested list of lists by a certain amount.
         /// </summary>
@@ -1469,27 +1265,140 @@ namespace DSCore
         {
             return Flatten(list, amt, new List<object>());
         }
+        #endregion
 
-        private static IList Flatten(IList list, int amt, IList acc)
+        #region private helper methods
+        /// <summary>
+        ///     An alternative to using IList.Contains which uses Enumerable.SequenceEqual to check if
+        ///     the item is contained in the list if the item is an array. Returns the index if found, 
+        ///     -1 if not found.
+        /// </summary>
+        /// <param name="list">The list to check if it contains the item.</param>
+        /// <param name="item">The item that needs to be found.</param>
+        /// <returns name="index">Index of the item in the list.</returns>
+        private static int IndexInList(IList list, object item)
         {
-            if (amt == 0)
+            for (int index = 0; index < list.Count; index++)
             {
-                foreach (object item in list)
-                    acc.Add(item);
+                if (list[index] is ArrayList && item is ArrayList)
+                {
+                    if (((ArrayList)list[index]).Cast<object>().SequenceEqual<object>(((ArrayList)item).Cast<object>())) return index;
+                }
+                else
+                {
+                    // This method of comparing is used in IList.Contains
+                    if (list[index].Equals(item)) return index;
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        ///     Obtain the maximum depth of a given list.
+        /// </summary>
+        /// <param name="list">The input list to obtain the depth from.</param>
+        /// <returns name="depth">Depth of the given list.</returns>
+        private static int GetDepth(object list)
+        {
+            if (!(list is IList)) return 0;
+
+            int depth = 1;
+            foreach (var obj in (IList)list) // If it is a list, check if it contains a sublist
+            {
+                if (obj is IList) // If it contains a sublist
+                {
+                    int d = 1 + GetDepth((IList)obj);
+                    depth = (depth > d) ? depth : d; // Get the maximum depth among all items
+                }
+            }
+            return depth;
+        }
+
+        /// <summary>
+        ///     Returns the number of the specified boolean values in the given list.
+        /// </summary>
+        /// <param name="list">The list find the boolean values.</param>
+        /// <param name="value">The boolean value to be found</param>
+        /// <returns name="int">The number of the specified boolean value in the list.</returns>
+        private static int CountBool(IList list, bool value)
+        {
+            int count = 0;
+            foreach (var obj in list)
+            {
+                if ((obj is bool) && ((bool)obj == value)) count++;
+                else if ((obj is IList))
+                {
+                    count += CountBool((IList)obj, value);
+                }
+            }
+            return count;
+        }
+
+        /// <summary>
+        ///     Increase the depth of a given list by a specified amount. Depth is increased
+        ///     by creating a new list to contain the given list.
+        /// </summary>
+        /// <param name="list">The list whose depth is to be increased.</param>
+        /// <param name="amt">The amount the depth is to be increased by.</param>
+        /// <returns name="list">The new list whose depth is increased by amt.</returns>
+        private static IList IncreaseDepth(IList list, int amt)
+        {
+            if (amt <= 1)
+            {
+                return list;
             }
             else
             {
-                foreach (object item in list)
+                for (int i = 0; i < list.Count; i++)
                 {
-                    if (item is IList)
-                        acc = Flatten(item as IList, amt - 1, acc);
-                    else
-                        acc.Add(item);
+                    if (!(list[i] is IList))
+                    {
+                        list[i] = new List<object>() { list[i] };
+                    }
+                    list[i] = IncreaseDepth((IList)list[i], amt - 1);
                 }
             }
-            return acc;
+            return list;
         }
-        #endregion
+
+        /// <summary>
+        /// Converts integer to double, else returns the input object.
+        /// </summary>
+        private static object DoubleConverter(object obj)
+        {
+            if (obj is int)
+                return Convert.ToDouble(obj);
+            return obj;
+        }
+
+        private static Tuple<ArrayList, ArrayList> FilterByMaskHelper(
+            IEnumerable<object> list, IEnumerable<object> mask)
+        {
+            var inList = new ArrayList();
+            var outList = new ArrayList();
+
+            foreach (var p in list.Zip(mask, (item, flag) => new { item, flag }))
+            {
+                if (p.flag is IList && p.item is IList)
+                {
+                    Tuple<ArrayList, ArrayList> recur =
+                        FilterByMaskHelper(
+                            (p.item as IList).Cast<object>(),
+                            (p.flag as IList).Cast<object>());
+                    inList.Add(recur.Item1);
+                    outList.Add(recur.Item2);
+                }
+                else
+                {
+                    if ((bool)p.flag)
+                        inList.Add(p.item);
+                    else
+                        outList.Add(p.item);
+                }
+            }
+
+            return Tuple.Create(inList, outList);
+        }
 
         #region UniqueItems Comparer
         private class DistinctComparer : IEqualityComparer<object>
@@ -1557,6 +1466,79 @@ namespace DSCore
         }
         #endregion
 
+        #region Combinatorics Helpers
+        private static IEnumerable<T> Singleton<T>(T t)
+        {
+            yield return t;
+        }
+
+        private static IEnumerable<IEnumerable<T>> GetCombinations<T>(
+            IEnumerable<T> items, int count, bool replace)
+        {
+            int i = 0;
+            IList<T> enumerable = items as IList<T> ?? items.ToList();
+            foreach (T item in enumerable)
+            {
+                if (count == 1)
+                    yield return Singleton(item);
+                else
+                {
+                    IEnumerable<IEnumerable<T>> combs =
+                        GetCombinations(enumerable.Skip(replace ? i : i + 1), count - 1, replace);
+                    foreach (var result in combs)
+                        yield return Singleton(item).Concat(result);
+                }
+
+                ++i;
+            }
+        }
+
+        private static IEnumerable<IEnumerable<T>> GetPermutations<T>(
+            IEnumerable<T> items, int count)
+        {
+            int i = 0;
+            IList<T> enumerable = items as IList<T> ?? items.ToList();
+            foreach (T item in enumerable)
+            {
+                if (count == 1)
+                    yield return Singleton(item);
+                else
+                {
+                    IEnumerable<IEnumerable<T>> perms =
+                        GetPermutations(
+                            enumerable.Take(i).Concat(enumerable.Skip(i + 1)),
+                            count - 1);
+                    foreach (var result in perms)
+                        yield return Singleton(item).Concat(result);
+                }
+
+                ++i;
+            }
+        }
+
+        private static IList Flatten(IList list, int amt, IList acc)
+        {
+            if (amt == 0)
+            {
+                foreach (object item in list)
+                    acc.Add(item);
+            }
+            else
+            {
+                foreach (object item in list)
+                {
+                    if (item is IList)
+                        acc = Flatten(item as IList, amt - 1, acc);
+                    else
+                        acc.Add(item);
+                }
+            }
+            return acc;
+        }
+        #endregion
+
+        #endregion
+        
         /* Disabled Higher-order functions
          
         /// <summary>

@@ -103,15 +103,6 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
-        public static void ListContains()
-        {
-            Assert.IsTrue(List.ContainsItem(new ArrayList { 1, 2, 3, 4, 5 }, 4));
-            Assert.IsFalse(List.ContainsItem(new ArrayList { 1, 2 }, 3));
-            Assert.IsFalse(List.ContainsItem(new ArrayList(), 0));
-        }
-
-        [Test]
-        [Category("UnitTests")]
         public static void ListContainsInSublists()
         {
             Assert.IsTrue(List.Contains(new ArrayList { 1, 2, 3, 4, 5 }, 4));
@@ -149,27 +140,27 @@ namespace DSCoreNodesTests
         [Category("UnitTests")]
         public static void ListSetDifference()
         {
-            Assert.AreEqual(new ArrayList { 1 }, List.SetDifference(new ArrayList { 1, 2, 3 }, new ArrayList { 2, 3 }));
-            Assert.AreEqual(new ArrayList(), List.SetDifference(new ArrayList { 9 }, new ArrayList { 0, 1, 2 }));
-            Assert.AreEqual(new ArrayList { 9 }, List.SetDifference(new ArrayList { 9, 9, 8 }, new ArrayList { 8, 7 }));
+            Assert.AreEqual(new ArrayList { 1 }, List.SetDifference(new List<object> { 1, 2, 3 }, new List<object> { 2, 3 }));
+            Assert.AreEqual(new ArrayList { 9 }, List.SetDifference(new List<object> { 9 }, new List<object> { 0, 1, 2 }));
+            Assert.AreEqual(new ArrayList { 9 }, List.SetDifference(new List<object> { 9, 9, 8 }, new List<object> { 8, 7 }));
         }
 
         [Test]
         [Category("UnitTests")]
         public static void ListSetIntersection()
         {
-            Assert.AreEqual(new ArrayList { 2, 3 }, List.SetIntersection(new ArrayList { 1, 2, 3 }, new ArrayList { 2, 3 }));
-            Assert.AreEqual(new ArrayList(), List.SetIntersection(new ArrayList { 9 }, new ArrayList { 0, 1, 2 }));
-            Assert.AreEqual(new ArrayList { 8 }, List.SetIntersection(new ArrayList { 9, 9, 8 }, new ArrayList { 8, 7 }));
+            Assert.AreEqual(new ArrayList { 2, 3 }, List.SetIntersection(new List<object> { 1, 2, 3 }, new List<object> { 2, 3 }));
+            Assert.AreEqual(new ArrayList(), List.SetIntersection(new List<object> { 9 }, new List<object> { 0, 1, 2 }));
+            Assert.AreEqual(new ArrayList { 8 }, List.SetIntersection(new List<object> { 9, 9, 8 }, new List<object> { 8, 7 }));
         }
 
         [Test]
         [Category("UnitTests")]
         public static void ListSetUnion()
         {
-            Assert.AreEqual(new ArrayList { 1, 2, 3 }, List.SetUnion(new ArrayList { 1, 2, 3 }, new ArrayList { 2, 3 }));
-            Assert.AreEqual(new ArrayList { 0, 1, 2, 9 }, List.SetUnion(new ArrayList { 9 }, new ArrayList { 0, 1, 2 }));
-            Assert.AreEqual(new ArrayList { 8, 7 }, List.SetUnion(new ArrayList(), new ArrayList { 8, 7 }));
+            Assert.AreEqual(new ArrayList { 1, 2, 3 }, List.SetUnion(new List<object> { 1, 2, 3 }, new List<object> { 2, 3 }));
+            Assert.AreEqual(new ArrayList { 9, 0, 1, 2 }, List.SetUnion(new List<object> { 9 }, new List<object> { 0, 1, 2 }));
+            Assert.AreEqual(new ArrayList { 8, 7 }, List.SetUnion(new List<object>(), new List<object> { 8, 7 }));
         }
 
         [Test]
@@ -197,11 +188,11 @@ namespace DSCoreNodesTests
         }
 
         [Test]
-        public static void FlattenList()
+        public static void FlattenListCompletely()
         {
             Assert.AreEqual(
                 new ArrayList { 0, 1, 2, 3, 4, 5, 6, 7, 8 },
-                List.Flatten(
+                List.FlattenCompletely(
                     new List<object>
                     {
                         new List<object> { 0, 1, 2 },
@@ -239,7 +230,7 @@ namespace DSCoreNodesTests
         [Category("UnitTests")]
         public static void ReorderList()
         {
-            Assert.AreEqual(new ArrayList { 4, 0, 3, 1, 2 }, List.Reorder(new ArrayList { 0, 1, 2, 3, 4 }, new ArrayList { 1, 3, 4, 2, 0 }));
+            Assert.AreEqual(new ArrayList { 4, 8, 10, 6, 2 }, List.Reorder(new ArrayList { 2, 4, 6, 8, 10 }, new ArrayList { 1, 3, 4, 2, 0 }));
         }
 
         [Test]
@@ -248,22 +239,7 @@ namespace DSCoreNodesTests
         {
             Assert.AreEqual(new ArrayList { 4, 2, 3, 1, 0 }, List.SortIndexByValue(new List<double> { 8.0, 4.1, 2.0, 4.0, 0.0 }));
         }
-
-        [Test]
-        [Category("UnitTests")]
-        public static void NormalizeDepth()
-        {
-            Assert.AreEqual(
-                new ArrayList {
-                    new ArrayList { 1 },
-                    new ArrayList { 2 },
-                    new ArrayList { 3, 4, 5 }
-                },
-                List.NormalizeDepth(
-                    new ArrayList { 1, 2, new ArrayList { 3, 4, 5 } }
-                    ));
-        }
-
+        
         [Test]
         [Category("UnitTests")]
         public static void NormalizeDepthWithRank()

@@ -624,7 +624,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("indice", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1)),
                     },
                     ID = BuiltInMethods.MethodID.Reorder,
-                     MethodAttributes = new MethodAttributes(){Description = Resources.ReordersList}
+                     MethodAttributes = new MethodAttributes(true){Description = Resources.ReordersList}
                 },
 
                 new BuiltInMethod
@@ -647,7 +647,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.IsRectangular,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.ChecksIfLengthsAreSameInMultiDimentionalList}
+                    MethodAttributes = new MethodAttributes(true){Description = Resources.ChecksIfLengthsAreSameInMultiDimentionalList}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 }, 
 

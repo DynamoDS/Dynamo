@@ -90,7 +90,7 @@ namespace DSCoreNodesTests
         [Category("UnitTests")]
         public static void Map()
         {
-            Assert.AreEqual(0.2, DSCore.Math.Map(1, 3, 1.4));
+            Assert.AreEqual(0.25, DSCore.Math.Map(1, 5, 2));
             Assert.AreEqual(0, DSCore.Math.Map(2, 4, 1));
         }
 
