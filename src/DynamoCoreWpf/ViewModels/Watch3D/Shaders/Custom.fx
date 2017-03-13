@@ -66,8 +66,14 @@ float4 PShaderCustom(PSInputCustom input) : SV_Target
 	{
 		float4 vMaterialTexture = 1.0f;
 		float4 I = vMaterialTexture = texDiffuseMap.Sample(LinearSampler, input.t);
-		if (isSelected) {
+		if (isSelected && !isIsolationMode) {
 			I = lerp(vSelectionColor, I, 0.3);
+		}
+
+		// unselected geometry is transparent under Isolate Selected Geometry mode
+		if (isIsolationMode && !isSelected)
+		{
+			I.a = sqrt(I.a) * vTransparentLinePointTexture.a;
 		}
 
 		return I;
