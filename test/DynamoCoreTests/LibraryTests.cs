@@ -10,6 +10,8 @@ using ProtoCore;
 using TestServices;
 using System.Xml;
 using Dynamo.Configuration;
+using System.Collections.Generic;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Tests
 {
@@ -31,6 +33,7 @@ namespace Dynamo.Tests
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
             var pathResolver = new TestPathResolver();
+            pathResolver.AddPreloadLibraryPath("ProtoGeometry.dll");
             pathResolver.AddPreloadLibraryPath("DSCoreNodes.dll");
 
             var pathManager = new PathManager(new PathManagerParams
@@ -290,7 +293,25 @@ namespace Dynamo.Tests
             Assert.IsFalse(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
 
         }
+        
+        [Test]
+        [Category("UnitTests")]
+        public void GetAllFunctionDescriptorsTest()
+        {
+            IEnumerable<FunctionDescriptor> descriptors;
+            
+            descriptors = libraryServices.GetAllFunctionDescriptors("DSCore.Math.Round");
+            Assert.AreEqual(2, descriptors.Count()); // Math.Round has two overloads
 
+            descriptors = libraryServices.GetAllFunctionDescriptors("DSCore.Color.Add");
+            Assert.AreEqual(1, descriptors.Count()); // Color.Add has only one overload
+
+            descriptors = libraryServices.GetAllFunctionDescriptors("Invalid node name");
+            Assert.IsNull(descriptors);
+
+            descriptors = libraryServices.GetAllFunctionDescriptors("Autodesk.DesignScript.Geometry.Point.ByCoordinates");
+            Assert.AreEqual(2, descriptors.Count());
+        }
         #endregion
     }
 }
