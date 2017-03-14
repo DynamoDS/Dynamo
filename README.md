@@ -42,6 +42,7 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ### 1.3 ###
 New Functionality
+
 Core
 - Geometry Working Range, a solution that adjusts numerical precision to accommodate these large numbers.
 - Isolate Selected Geometry 
