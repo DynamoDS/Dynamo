@@ -41,6 +41,8 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 ## Releases ##
 
 ### 1.3 ###
+See http://dynamobim.org/dynamo-1-3-release/ for a full report
+
 New Functionality
 
 Core
