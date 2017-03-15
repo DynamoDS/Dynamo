@@ -138,7 +138,7 @@ GSInputLS VShaderLines(VSInputLS input)
 
 	// unselected geometry is transparent under Isolate Selected Geometry mode
 	if (isIsolationMode && !isSelected) {
-		finalColor.a = vTransparentLinePoint.a;
+		finalColor.a = vTransparentLinePointTexture.a;
 	}
 
 	//set position into clip space	
