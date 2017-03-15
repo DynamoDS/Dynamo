@@ -1041,8 +1041,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(38, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(29, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(41, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(31, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check Surface.ByLoft
             var surface1ID = "3675e40d-1d1d-4869-b3e1-f8ea67286486";

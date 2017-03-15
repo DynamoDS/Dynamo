@@ -63,7 +63,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void SetConverterValues()
         {
-            var converter = new DynamoConverter() {SelectedMetricConversion =ConversionMetricUnit.Area};
+            var converter = new DynamoConverter() { SelectedMetricConversion = ConversionMetricUnit.Area };
             Assert.NotNull(converter);
 
             Assert.AreEqual(ConversionMetricUnit.Area, converter.SelectedMetricConversion);
@@ -84,7 +84,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void ConvertSetConversionFromValue()
         {
-            var converter = new DynamoConverter() { SelectedMetricConversion = ConversionMetricUnit.Length }; 
+            var converter = new DynamoConverter() { SelectedMetricConversion = ConversionMetricUnit.Length };
             Assert.NotNull(converter);
 
             Assert.AreEqual(ConversionMetricUnit.Length, converter.SelectedMetricConversion);
@@ -101,7 +101,7 @@ namespace DynamoCoreWpfTests
         {
             var converter = new DynamoConverter() { SelectedMetricConversion = ConversionMetricUnit.Volume };
             Assert.NotNull(converter);
-          
+
             Assert.AreEqual(ConversionMetricUnit.Volume, converter.SelectedMetricConversion);
             Assert.AreEqual(ConversionUnit.CubicMeters, converter.SelectedFromConversion);
             Assert.AreEqual(ConversionUnit.CubicMeters, converter.SelectedToConversion);
@@ -147,7 +147,7 @@ namespace DynamoCoreWpfTests
                 model.CurrentWorkspace.NodeFromWorkspace("069b3f3c-bc81-4c2a-b705-69a811cc43da") as DynamoConverter;
             Assert.NotNull(converterNode);
             Assert.AreEqual(ConversionUnit.Meters, converterNode.SelectedFromConversion);
-            Assert.AreEqual(ConversionUnit.Millimeters, converterNode.SelectedToConversion);            
+            Assert.AreEqual(ConversionUnit.Millimeters, converterNode.SelectedToConversion);
             AssertPreviewValue("45f1ee23-5d81-4233-975e-faf218203de5", 10000.0);
 
             /* Now convert from Meters to Decimeters */
@@ -170,6 +170,21 @@ namespace DynamoCoreWpfTests
             Thread.Sleep(500);
 
             AssertPreviewValue("45f1ee23-5d81-4233-975e-faf218203de5", 10000.0);
+        }
+
+        [Test]
+        public void ConvertBetweenHectaresToSquareMeter()
+        {
+            var model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_DYN_286.dyn");
+            RunModel(openPath);
+
+            var converterNode =
+               model.CurrentWorkspace.NodeFromWorkspace("54435965-3778-49cd-8306-f116b3f73bde") as DynamoConverter;
+            Assert.NotNull(converterNode);
+            Assert.AreEqual(ConversionUnit.Hectares, converterNode.SelectedFromConversion);
+            Assert.AreEqual(ConversionUnit.SquareMeter, converterNode.SelectedToConversion);
+            AssertPreviewValue("54435965-3778-49cd-8306-f116b3f73bde", 10000.0);
         }
     }
 }

@@ -118,5 +118,13 @@ namespace CoreNodeModels.Input
         {
             return string.Format("Color(Alpha = {3}, Red = {0}, Green = {1}, Blue = {2})", dsColor.Alpha, dsColor.Red, dsColor.Green, dsColor.Blue);
         }
+
+        /// <summary>
+        ///     Indicates whether node is input node
+        /// </summary>
+        public override bool IsInputNode
+        {
+            get { return false; }
+        }
     }
 }
