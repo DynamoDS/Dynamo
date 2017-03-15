@@ -1243,6 +1243,10 @@
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
       <Name>VMDataBridge</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NodeServices2\NodeServices2.csproj">
+      <Project>{006fd2b8-4c3c-4641-b773-2724eeb53346}</Project>
+      <Name>NodeServices2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
