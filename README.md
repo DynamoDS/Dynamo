@@ -40,6 +40,34 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
+### 1.3 ###
+See http://dynamobim.org/dynamo-1-3-release/ for a full report
+
+New Functionality
+
+Core
+- Geometry Working Range, a solution that adjusts numerical precision to accommodate these large numbers.
+- Isolate Selected Geometry 
+- A direct link to the Dynamo Dictionary is added at the bottom of help menu popup window for each node. Definitions are currently  available for the out-of-the-box core Dynamo nodes, and we are actively working on Revit nodes.
+- Multi-output port re-connect feature using Shift+Left-Click
+- Highlight geometry from selection in preview bubbles and watch nodes.
+- DateTime.Format: (shout out to Radu Gidei!)
+
+Dynamo Studio:
+- Translate (CAD import) functionality now supports 3DM (Rhino) and SAT file formats, in addition to DWG and DXF.  (Additionally, import of FBX, OBJ, STL, and SKP formats are supported, but there is currently limited downstream capabilities with these meshes.)   
+
+Dynamo for Revit:
+- Revit allows for duplicate parameter names in a file, and Dynamo is now able to consistently pick between Named or Built-In parameters. 
+- Preview Bubbles enabled for Revit Selection nodes
+- New Revit nodes: a number of Creation methods for System Families, added access to Global Parameters, and exposed file auditing tools with the Performance Advisor. 
+
+Bug Fixes
+- Fixed line break issue in for group titles, increased group titles font size
+- Convert between units now gives correct Hectares for Area conversion
+- Fixed File Paths with spaces sometimes converting paths to escaped URI path
+- Fixes to Arc.ByCenterPointRadiusAngle, Arc.StartAngle, and Arc.EndAngle
+
+
 ### 1.2.1 ###
 
 Important Bug Fixes:
