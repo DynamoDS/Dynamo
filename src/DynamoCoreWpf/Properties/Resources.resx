@@ -134,7 +134,7 @@
     <comment>To indicate Dynamo is up to date</comment>
   </data>
   <data name="ChangeScaleFactorPromptCaptionText" xml:space="preserve">
-    <value>To ensure accurate geometry rendering and calculation, select the range of geometry sizes that you will be working on:</value>
+    <value>To ensure accurate geometry rendering and calculation, select the range of geometry sizes that you will be working in:</value>
   </data>
   <data name="ChangeScaleFactorPromptDescriptionBox" xml:space="preserve">
     <value>Numerical range shown here denote numbers in the following unit:</value>
