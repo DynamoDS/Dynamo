@@ -734,7 +734,7 @@ namespace Dynamo.Graph.Workspaces
             internal set
             {
                 scaleFactor = value;
-                WorkspaceEvents.OnWorkspaceSettingsChanged(scaleFactor);
+                WorkspaceEvents2.OnWorkspaceSettingsChanged(scaleFactor);
             }
         }
 
