@@ -9,6 +9,6 @@
              d:DesignHeight="30" d:DesignWidth="90">
 
     <Grid>
-        <xctk:ColorPicker HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="80" SelectedColor="{Binding MColor , Mode=TwoWay}" AvailableColorsHeader="Standard Colors" ShowStandardColors="False" ShowRecentColors="True" RecentColorsHeader="Recent Colors"/>
+        <xctk:ColorPicker HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="80" SelectedColor="{Binding MColor , Mode=TwoWay}" AvailableColorsHeader="Standard Colors" ShowStandardColors="False" ShowRecentColors="True" RecentColorsHeader="Recent Colors" SelectedColorChanged="On_Change"/>
     </Grid>
 </UserControl>

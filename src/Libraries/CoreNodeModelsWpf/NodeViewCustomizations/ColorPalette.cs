@@ -5,7 +5,7 @@ using Dynamo.Wpf;
 
 using CoreNodeModelsWpf.Controls;
 using CoreNodeModels.Input;
-
+using Dynamo.Graph.Workspaces;
 using DSColor = DSCore.Color;
 
 namespace CoreNodeModelsWpf.Nodes
@@ -25,8 +25,8 @@ namespace CoreNodeModelsWpf.Nodes
         {
             get { return mcolor; }
             set
-            {                
-                mcolor = value;              
+            {
+                mcolor = value;
                 colorPaletteNode.dsColor = DSColor.ByARGB(mcolor.A, mcolor.R, mcolor.G, mcolor.B);
                 RaisePropertyChanged("MColor");
             }
@@ -40,7 +40,7 @@ namespace CoreNodeModelsWpf.Nodes
         {
             colorPaletteNode = model;
             mcolor = Color.FromArgb(model.dsColor.Alpha, model.dsColor.Red, model.dsColor.Green, model.dsColor.Blue);
-            ColorPaletteUINode = new ColorPaletteUI();
+            ColorPaletteUINode = new ColorPaletteUI(model, nodeView);
             nodeView.inputGrid.Children.Add(ColorPaletteUINode);
             ColorPaletteUINode.DataContext = this;
         }
