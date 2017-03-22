@@ -39,9 +39,6 @@ namespace Dynamo.Interfaces
 
     public class DefaultWatchHandler : IWatchHandler
     {
-        // Formats double value into string. E.g. 1054.32179 => "1054.32179"
-        // For more info: https://msdn.microsoft.com/en-us/library/kfsatb94(v=vs.110).aspx
-        private const string numberFormat = "g";
         private readonly IPreferences preferences;
 
         public DefaultWatchHandler(IPreferences preferences)
