@@ -328,7 +328,8 @@ namespace Dynamo.UI.Controls
                 () =>
                 {
                     var mirrorData = nodeViewModel.NodeModel.CachedValue;
-                    newContent = CompactBubbleHandler.Process(mirrorData);
+                    newContent = CompactBubbleHandler.Process(mirrorData,
+                        nodeViewModel.DynamoViewModel.PreferenceSettings.NumberFormat);
                 },
                 (m) =>
                 {

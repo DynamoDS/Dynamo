@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
@@ -19,11 +20,12 @@ namespace Dynamo.Wpf.Utilities
         /// from given node value
         /// </summary>
         /// <param name="value">Node value</param>
+        /// <param name="numberFormat">number numberFormat</param>
         /// <returns>Instance of <cref name="CompactBubbleViewModel"/> class</returns>
-        public static CompactBubbleViewModel Process(MirrorData value)
+        public static CompactBubbleViewModel Process(MirrorData value, string numberFormat)
         {
             items = 0;
-            var viewModel = ProcessThing(value, true);
+            var viewModel = ProcessThing(value, true, numberFormat);
             viewModel.NumberOfItems = items;
             return viewModel;
         }
@@ -34,9 +36,11 @@ namespace Dynamo.Wpf.Utilities
         /// </summary>
         /// <param name="mirrorData">Data which represents the value of node output</param>
         /// <param name="generateViewModel">Flag to not create unused view models</param>
+        /// <param name="numberFormat"></param>
         /// <returns><cref name="CompactBubbleViewModel"/> instance 
         /// if <paramref name="generateViewModel"/> is specified. Otherwise, null</returns>
-        private static CompactBubbleViewModel ProcessThing(MirrorData mirrorData, bool generateViewModel)
+        private static CompactBubbleViewModel ProcessThing(MirrorData mirrorData, bool generateViewModel, 
+            string numberFormat)
         {
             if (mirrorData == null)
             {
@@ -49,7 +53,7 @@ namespace Dynamo.Wpf.Utilities
 
                 foreach (var item in list)
                 {
-                    ProcessThing(item, false);
+                    ProcessThing(item, false, numberFormat);
                 }
 
                 return generateViewModel
@@ -77,9 +81,9 @@ namespace Dynamo.Wpf.Utilities
             {
                 // Cut StringData so that only the type name remains
                 // for example, "Point (Z = 0.000, Y = 0.000, Z = 0.000)" -> "Point"
-                viewModel.NodeLabel = string.IsNullOrEmpty(mirrorData.StringData)
+                viewModel.NodeLabel = string.IsNullOrEmpty(mirrorData.StringData(numberFormat))
                     ? string.Empty
-                    : mirrorData.StringData.Split('(')[0];
+                    : mirrorData.StringData(numberFormat).Split('(')[0];
             }
 
             return viewModel;
