@@ -298,7 +298,7 @@ namespace Dynamo.Models
                 if (CurrentWorkspace.Connectors.Contains(connector))
                 {
                     var models = new List<ModelBase> { connector };
-                    CurrentWorkspace.SaveModelsForUndo(models);
+                    CurrentWorkspace.SaveAndDeleteModels(models);
                     connector.Delete();
                 }
             }
@@ -328,7 +328,7 @@ namespace Dynamo.Models
                 connectorsForDeletion.Add(connector);
                 activeStartPorts[i] = connector.End;
             }
-            CurrentWorkspace.SaveModelsForUndo(connectorsForDeletion);
+            CurrentWorkspace.SaveAndDeleteModels(connectorsForDeletion);
             for (int i = 0; i < numOfConnectors; i++) //delete the connectors
             {
                 selectedPort.Connectors[0].Delete();

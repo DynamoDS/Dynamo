@@ -242,6 +242,11 @@ namespace Dynamo.ViewModels
             this.SetActiveConnectors(null);
         }
 
+        internal void CancelConnectionFromUndo()
+        {
+            CancelActiveState();
+        }
+
         internal void UpdateActiveConnector(System.Windows.Point mouseCursor)
         {
             if (null != this.activeConnectors)
