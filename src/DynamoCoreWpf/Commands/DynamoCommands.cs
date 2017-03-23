@@ -235,7 +235,7 @@ namespace Dynamo.ViewModels
         {
             if (command.CmdOperation == DynamoModel.UndoRedoCommand.Operation.Undo)
             {
-                CurrentSpaceViewModel.CancelConnectionFromUndo();
+                CurrentSpaceViewModel.CancelActiveState();
             }
         }
 
