@@ -90,7 +90,19 @@ namespace DSCore
         /// <search>map,range,minimum,maximum,normalize</search>
         public static double Map(double rangeMin, double rangeMax, double inputValue)
         {
-            return MapTo(rangeMin, rangeMax, inputValue, 0, 1);
+            double result = (inputValue - rangeMin) / (rangeMax - rangeMin);
+            if (result < 0)
+            {
+                return 0.0;
+            }
+            else if (result > 1)
+            {
+                return 1.0;
+            }
+            else
+            {
+                return result;
+            }
         }
 
         /// <summary>
@@ -105,23 +117,8 @@ namespace DSCore
         /// <search>map,range,mapto,minimum,maximum,normalize</search>
         public static double MapTo(double rangeMin, double rangeMax, double inputValue, double targetRangeMin, double targetRangeMax)
         {
-            //Note: this behaviour is inconsistent with BuiltIn.MapTo if rangeMax < rangeMin
-            if (rangeMin == rangeMax)
-            {
-                if (inputValue > rangeMax) return targetRangeMax;
-                return targetRangeMin;
-            }
-            else if (rangeMax < rangeMin)
-            {
-                double x = rangeMax;
-                rangeMax = rangeMin;
-                rangeMin = x;
-                if (inputValue >= rangeMax) return targetRangeMin;
-                else if (inputValue <= rangeMin) return targetRangeMax;
-            }
-            if (inputValue >= rangeMax) return targetRangeMax;
-            else if (inputValue <= rangeMin) return targetRangeMin;
-            return ((inputValue - rangeMin) / (rangeMax - rangeMin)) * (targetRangeMax - targetRangeMin) + targetRangeMin;
+            double percent = Map(rangeMin, rangeMax, inputValue);
+            return targetRangeMin + (targetRangeMax - targetRangeMin) * percent;
         }
 
         /// <summary>

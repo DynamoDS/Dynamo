@@ -16,14 +16,29 @@ namespace DSCore
     public static class ImportExport
     {
         /// <summary>
-        ///     Imports data from a CSV (comma separated values) file and put the items into a list.
+        ///     Write a list of lists into a file using a comma-separated values 
+        ///     format. Outer list represents rows, inner lists represent columns. 
         /// </summary>
-        /// <param name="filePath">The CSV file to be converted into a list.</param>
-        /// <returns name="list">The list containing the items in the CSV file.</returns>
-        /// <search>import,csv,comma,file,list,separate</search>
-        public static IList ImportFromCSV(string filePath)
+        /// <param name="filePath">Path to write to</param>
+        /// <param name="data">List of lists to write into CSV</param>
+        /// <returns name="str">Contents of the text file.</returns>
+        /// <search>write,text,file</search>
+        public static void ExportCSV(string filePath, object[][] data)
         {
-            return List.Transpose(ImportFromCSV(filePath, true));
+            using (var writer = new StreamWriter(DSCore.IO.File.AbsolutePath(filePath)))
+            {
+                foreach (var line in data)
+                {
+                    int count = 0;
+                    foreach (var entry in line)
+                    {
+                        writer.Write(entry);
+                        if (++count < line.Length)
+                            writer.Write(",");
+                    }
+                    writer.WriteLine();
+                }
+            }
         }
 
         /// <summary>
@@ -34,9 +49,9 @@ namespace DSCore
         /// <param name="transpose">Whether the resulting list should be transposed.</param>
         /// <returns name="list">The list containing the items in the CSV file.</returns>
         /// <search>import,csv,comma,file,list,separate,transpose</search>
-        public static IList ImportFromCSV(string filePath, bool transpose)
+        public static IList ImportCSV(string filePath, bool transpose = false)
         {
-            if (null == filePath || !File.Exists(filePath))
+            if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
             {
                 // File not existing.
                 throw new FileNotFoundException();

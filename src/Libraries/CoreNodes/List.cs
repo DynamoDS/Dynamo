@@ -218,18 +218,18 @@ namespace DSCore
         ///     Reorders the input list based on the given list of indices.
         /// </summary>
         /// <param name="list">The list to be reordered.</param>
-        /// <param name="indice">The indices used to reorder the items in the list.</param>
+        /// <param name="indices">The indices used to reorder the items in the list.</param>
         /// <returns name="list">The reordered list.</returns>
         /// <search>reorder,index,indices</search>
-        public static IList Reorder(IList list, IList indice)
+        public static IList Reorder(IList list, IList indices)
         {
             // Note: slightly different behaviour from Builtin - invalid input indices will be ignored, 
             // and will return a list instead of null if the indices are invalid
             List<object> newList = new List<object>();
-            for (int i = 0; i < indice.Count; i++)
+            for (int i = 0; i < indices.Count; i++)
             {
                 int index;
-                if ((int.TryParse(indice[i].ToString(), out index) && (index < list.Count)))
+                if ((int.TryParse(indices[i].ToString(), out index) && (index >= 0) && (index < list.Count)))
                 {
                     newList.Add(list[index]);
                 }
@@ -242,7 +242,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">The list of items to be sorted.</param>
         /// <returns name="newList">The indices of the items in the sorted list.</returns>
-        public static IList SortIndexByValue(List<double> list)
+        public static IEnumerable SortIndexByValue(List<double> list)
         {
             List<Tuple<int, double>> tupleList = new List<Tuple<int, double>>();
             for (int i = 0; i < list.Count; i++)
@@ -250,16 +250,12 @@ namespace DSCore
                 tupleList.Add(new Tuple<int, double>(i, list[i]));
             }
             tupleList = tupleList.OrderBy(x => x.Item2).ToList();
-            List<int> newList = new List<int>();
-            foreach (Tuple<int, double> x in tupleList)
-            {
-                newList.Add(x.Item1);
-            }
+            IEnumerable<int> newList = tupleList.OrderBy(x => x.Item2).Select(y => y.Item1);
             return newList;
         }
 
         /// <summary>
-        ///     Returns multidimentional list according the rank given.
+        ///     Returns multidimensional list according the rank given.
         /// </summary>
         /// <param name="list">The list whose depth is to be normalized according to the rank.</param>
         /// <param name="rank">The rank the list is to be normalized to. Default value is 1.</param>
