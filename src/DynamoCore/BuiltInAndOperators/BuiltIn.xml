@@ -345,11 +345,5 @@
 			<param name="loopBody"></param>
             <search>loop,while,repeat</search>
         </member>
-		<member name="NewtonRootFind1DNoDeriv">
-			<param name="objFunc"></param>
-			<param name="start"></param>
-			<param name="maxIters"></param>
-            <search>newton,noderiv,numeric</search>
-        </member>
     </members>
 </doc>
