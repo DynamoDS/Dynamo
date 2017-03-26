@@ -1119,6 +1119,26 @@ namespace DynamoCoreWpfTests
             AssertPreviewValue("b63628be-4f75-4335-be66-f57ec0698b4d", 10.0); // value of the add node (5+5)
             AssertPreviewValue("e59a6337-51a0-44e9-aacb-894492530aba", 0.0); // value of the subtract node (5-5)
         }
+        
+        /// <summary>
+        /// The following tests exercise the following steps:
+        /// 
+        /// 1. Create one number node and one Point.ByCoordinates node
+        /// 2. Connect the number node to x and y input ports
+        /// 3. Grab the connector from y input port and hit undo
+        /// 
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestReconnectionUndo()
+        {
+            RunCommandsFromFile("TestReconnectionUndo.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count());
+
+            // After hitting undo, the connector should be placed back to y input port.
+            // Hence there are two connectors: one from number node to x, and another one to y.
+            Assert.AreEqual(2, workspace.Connectors.Count()); 
+        }
 
         #endregion
 
