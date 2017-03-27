@@ -304,16 +304,10 @@ namespace Dynamo.Tests
                 libraryServices.ImportLibrary(libraryPath);
                 Assert.IsTrue(LibraryLoaded);
             }
-            
-            string name = "FFITarget.TestOverloadConstructor.TestOverloadConstructor";
 
-            // Get the function groups that are named FFITarget.TestOverloadConstructor.TestOverloadConstructor
-            var descriptors = libraryServices.GetFunctionGroups(libraryPath)
-                                            .SelectMany(x => x.Functions)
-                                            .Where(y => y.QualifiedName.Contains(name));
-
-            // Check if the same results can be obtained if GetAllFunctionDescriptors() is used
-            Assert.AreEqual(libraryServices.GetAllFunctionDescriptors(name).Count(), descriptors.Count());
+            // Get the function descriptors that are named FFITarget.TestOverloadConstructor.TestOverloadConstructor
+            var descriptors = libraryServices.GetAllFunctionDescriptors("FFITarget.TestOverloadConstructor.TestOverloadConstructor");
+            Assert.AreEqual(4, descriptors.Count());
         }
         #endregion
     }
