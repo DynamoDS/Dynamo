@@ -298,19 +298,22 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void GetAllFunctionDescriptorsTest()
         {
-            IEnumerable<FunctionDescriptor> descriptors;
+            const string libraryPath = "FFITarget.dll";
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath);
+                Assert.IsTrue(LibraryLoaded);
+            }
             
-            descriptors = libraryServices.GetAllFunctionDescriptors("DSCore.Math.Round");
-            Assert.AreEqual(2, descriptors.Count()); // Math.Round has two overloads
+            string name = "FFITarget.TestOverloadConstructor.TestOverloadConstructor";
 
-            descriptors = libraryServices.GetAllFunctionDescriptors("DSCore.Color.Add");
-            Assert.AreEqual(1, descriptors.Count()); // Color.Add has only one overload
+            // Get the function groups that are named FFITarget.TestOverloadConstructor.TestOverloadConstructor
+            var descriptors = libraryServices.GetFunctionGroups(libraryPath)
+                                            .SelectMany(x => x.Functions)
+                                            .Where(y => y.QualifiedName.Contains(name));
 
-            descriptors = libraryServices.GetAllFunctionDescriptors("Invalid node name");
-            Assert.IsNull(descriptors);
-
-            descriptors = libraryServices.GetAllFunctionDescriptors("Autodesk.DesignScript.Geometry.Point.ByCoordinates");
-            Assert.AreEqual(2, descriptors.Count());
+            // Check if the same results can be obtained if GetAllFunctionDescriptors() is used
+            Assert.AreEqual(libraryServices.GetAllFunctionDescriptors(name).Count(), descriptors.Count());
         }
         #endregion
     }
