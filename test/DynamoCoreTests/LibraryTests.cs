@@ -33,7 +33,6 @@ namespace Dynamo.Tests
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
             var pathResolver = new TestPathResolver();
-            pathResolver.AddPreloadLibraryPath("ProtoGeometry.dll");
             pathResolver.AddPreloadLibraryPath("DSCoreNodes.dll");
 
             var pathManager = new PathManager(new PathManagerParams
