@@ -189,11 +189,17 @@ namespace Dynamo.ViewModels
 
             PortModel portModel = node.OutPorts[portIndex];
             if (portModel.Connectors.Count <= 0) return;
-            
-            var connectorsAr = new ConnectorViewModel[portModel.Connectors.Count];
-            for (int i = 0; i < portModel.Connectors.Count; i++)
+
+            // Try to obtain connectors whose nodes are selected
+            IEnumerable<PortModel> selected = portModel.Connectors.Where(x => x.End.Owner.IsSelected).Select(y => y.End);
+
+            // If there are no relevant nodes selected, obtain all the connectors associated
+            if (selected.Count() <= 0) selected = portModel.Connectors.Select(y => y.End);
+
+            var connectorsAr = new ConnectorViewModel[selected.Count()];
+            for (int i = 0; i < selected.Count(); i++)
             {
-                var c = new ConnectorViewModel(this, portModel.Connectors[i].End);
+                var c = new ConnectorViewModel(this, selected.ElementAt(i));
                 connectorsAr[i] = c;
              }
             this.SetActiveConnectors(connectorsAr);
