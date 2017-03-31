@@ -16,9 +16,6 @@ namespace ProtoCore
     {
         public Language Language { get; set; }
         public string Code { get; set; }
-
-        public Dictionary<string, AssociativeNode> CaptureList { get; set; } 
-
         public LanguageCodeBlock(Language lang = Language.NotSpecified)
         {
             Language = lang;

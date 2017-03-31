@@ -32,6 +32,8 @@ namespace ProtoCore.Utils
     /// </summary>
     public static class ParserUtils
     {
+        public const string ImperativeFunctionPrefix = @"__imperative_";
+
         private static string FindIdentifiers(string statement, int equalIndex)
         {
 
@@ -52,6 +54,12 @@ namespace ProtoCore.Utils
 
             return identifier;
         }
+
+        public static string GenerateImperativeFunctionName()
+        {
+            return ImperativeFunctionPrefix + Guid.NewGuid().ToString().Replace("-", string.Empty);
+        }
+
 
         public static List<string> GetLHSatAssignment(string line, int equalIndex)
         {

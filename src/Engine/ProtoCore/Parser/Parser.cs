@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
@@ -93,9 +94,6 @@ public Node root { get; set; }
     private bool disableKwCheck = false;
 
     private bool isLeft = false; // check if it is left hand side of the assignment expression
-
-    // This is used by GraphIDE mode parsing when determining how many statements the parser has processed
-    private int stmtsParsed = 0;
 
 
     private string GetEscapedString(string s)
@@ -763,9 +761,18 @@ public Node root { get; set; }
 			}
 			if (null != node)
 			{
-			   (codeblock as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(node); 
-			   
-			   stmtsParsed++;
+			    var newCodeBlock = node as CodeBlockNode;
+			    if (newCodeBlock != null)
+			    {
+			        foreach (var associativeNode in newCodeBlock.Body)
+			        {
+                        ((ProtoCore.AST.AssociativeAST.CodeBlockNode) codeblock).Body.Add(associativeNode);
+                    }
+			    }
+			    else
+			    {
+			        ((ProtoCore.AST.AssociativeAST.CodeBlockNode) codeblock).Body.Add(node);
+			    }
 			}
 			
 		}
@@ -852,7 +859,18 @@ public Node root { get; set; }
 			Associative_FunctionalStatement(out node);
 		} else if (la.kind == 10) {
 			Associative_LanguageBlock(out node);
-		} else if (StartOf(3)) {
+                var funcDefNode = node as FunctionDefinitionNode;
+                if (funcDefNode != null)
+                {
+                    ProtoCore.AST.AssociativeAST.IdentifierNode leftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
+                    leftNode.Value = leftNode.Name = Constants.kTempProcLeftVar;
+
+                    var unknownType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
+                    leftNode.datatype = unknownType;
+                    NodeUtils.CopyNodeLocation(leftNode, node);
+                    Associative_ImperativeFunctionCall(funcDefNode, leftNode, out node);
+                }
+            } else if (StartOf(3)) {
 			if (core.ParsingMode == ParseMode.AllowNonAssignment) {
 				if (StartOf(4)) {
 					Associative_Expression(out node);
@@ -898,7 +916,48 @@ public Node root { get; set; }
 		
 	}
 
-	void Associative_classdecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
+        void Imperative_functiondecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node)
+        {
+            ProtoCore.AST.AssociativeAST.FunctionDefinitionNode f = new ProtoCore.AST.AssociativeAST.
+                FunctionDefinitionNode
+            {
+                IsExternLib = false,
+                ExternLibName = String.Empty,
+                IsStatic = false,
+                Access = ProtoCore.CompilerDefinitions.AccessModifier.Public,
+                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)
+            };
+
+            ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
+            if (la.kind == 12)
+                Associative_ArgumentSignatureDefinition(out argumentSignature);
+
+            f.Name = ParserUtils.GenerateImperativeFunctionName(); // generate unique method name
+            f.Signature = argumentSignature as ProtoCore.AST.AssociativeAST.ArgumentSignatureNode;
+
+            Expect(44);
+            Node codeBlockNode = null;
+            Imperative(out codeBlockNode);
+
+            ProtoCore.AST.AssociativeAST.LanguageBlockNode langblock = new ProtoCore.AST.AssociativeAST.LanguageBlockNode();
+            langblock.CodeBlockNode = codeBlockNode;
+            var returnStatement = new BinaryExpressionNode
+            {
+                LeftNode = new IdentifierNode(DSDefinitions.Keyword.Return),
+                RightNode = langblock,
+                Optr = Operator.assign
+            };
+
+            ProtoCore.AST.AssociativeAST.CodeBlockNode functionBody = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
+            //Associative_FunctionDefinitionBody(out functionBody);
+            functionBody.Body = new List<AssociativeNode> {returnStatement};
+
+            f.FunctionBody = functionBody;
+
+            node = f;
+        }
+
+        void Associative_classdecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
 		ProtoCore.AST.AssociativeAST.ClassDeclNode classnode = new ProtoCore.AST.AssociativeAST.ClassDeclNode(); 
 		NodeUtils.SetNodeLocation(classnode, la); 
 		Expect(25);
@@ -1025,7 +1084,32 @@ public Node root { get; set; }
 		NodeUtils.SetNodeEndLocation(node, t); 
 	}
 
-	void Associative_FunctionalStatement(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
+    void Associative_ImperativeFunctionCall(FunctionDefinitionNode funcDefNode, AssociativeNode leftNode, out AssociativeNode node)
+    {
+        var identNode = AstFactory.BuildIdentifier(funcDefNode.Name);
+        identNode.datatype = TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.Var);
+        NodeUtils.SetNodeLocation(identNode, t);
+
+        FunctionCallNode f = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
+        NodeUtils.SetNodeStartLocation(f, t);
+        f.Function = identNode;
+        var argNodes = funcDefNode.Signature.Arguments.Select(x => AstFactory.BuildIdentifier(x.NameNode.Name));
+        argNodes.Select(x => x.datatype = TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.Var));
+        f.FormalArguments = argNodes.Select(x => x as AssociativeNode).ToList();
+
+        var codeBlockNode = new CodeBlockNode();
+        codeBlockNode.Body.Add(funcDefNode);
+
+        var expressionNode = new BinaryExpressionNode();
+        NodeUtils.SetNodeEndLocation(expressionNode, t);
+        expressionNode.LeftNode = leftNode;
+        expressionNode.RightNode = f;
+        expressionNode.Optr = Operator.assign;
+        codeBlockNode.Body.Add(expressionNode);
+        node = codeBlockNode;
+    }
+
+    void Associative_FunctionalStatement(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
 		while (!(StartOf(7))) {SynErr(73); Get();}
 		node = null; 
 		ProtoCore.AST.AssociativeAST.AssociativeNode leftNode = null; 
@@ -1077,14 +1161,26 @@ public Node root { get; set; }
 				node = expressionNode; 
 				
 			} else if (la.kind == 10) {
-				withinModifierCheckScope = false; 
-				
-				Associative_LanguageBlock(out rightNode);
-				NodeUtils.SetNodeEndLocation(expressionNode, t);
-				expressionNode.LeftNode = leftNode;
-				expressionNode.RightNode = rightNode;
-				expressionNode.Optr = Operator.assign;
-				node = expressionNode; 
+				withinModifierCheckScope = false;
+
+			    AssociativeNode lbNode;
+                Associative_LanguageBlock(out lbNode);
+
+			    var funcDefNode = lbNode as FunctionDefinitionNode;
+                if (funcDefNode != null)
+                {
+                    Associative_ImperativeFunctionCall(funcDefNode, leftNode, out node);
+                }
+                else
+                {
+                    rightNode = lbNode;
+
+                    NodeUtils.SetNodeEndLocation(expressionNode, t);
+                    expressionNode.LeftNode = leftNode;
+                    expressionNode.RightNode = rightNode;
+                    expressionNode.Optr = Operator.assign;
+                    node = expressionNode;
+                }
 				
 			} else if (StartOf(4)) {
 				Associative_Expression(out rightNode);
@@ -1125,6 +1221,7 @@ public Node root { get; set; }
 		
 		Expect(10);
 		NodeUtils.SetNodeLocation(langblock, t); 
+        
 		Expect(1);
 		if( 0 == t.val.CompareTo(ProtoCore.DSASM.kw.imperative)) {
 		   langblock.codeblock.Language = ProtoCore.Language.Imperative;
@@ -1144,14 +1241,46 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			Expect(44);
 			Hydrogen(out codeBlockNode);
 		} else if (langblock.codeblock.Language == ProtoCore.Language.Imperative ) {
-			if (la.kind == 12) {
-				List<AssociativeNode> args = null; 
-				Associative_Arguments(out args);
-				langblock.FormalArguments = args; 
-			}
-			Expect(44);
-			Imperative(out codeBlockNode);
-		} else SynErr(76);
+                ProtoCore.AST.AssociativeAST.FunctionDefinitionNode f = new ProtoCore.AST.AssociativeAST.
+                FunctionDefinitionNode
+                {
+                    IsExternLib = false,
+                    ExternLibName = String.Empty,
+                    IsStatic = false,
+                    Access = ProtoCore.CompilerDefinitions.AccessModifier.Public,
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)
+                };
+
+                ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
+                if (la.kind == 12)
+                    Associative_ArgumentSignatureDefinition(out argumentSignature);
+
+                f.Name = ParserUtils.GenerateImperativeFunctionName(); // generate unique method name
+                f.Signature = argumentSignature as ProtoCore.AST.AssociativeAST.ArgumentSignatureNode;
+
+                Expect(44);
+                Node cbNode = null;
+                Imperative(out cbNode);
+
+                langblock.CodeBlockNode = cbNode;
+                var returnStatement = new BinaryExpressionNode
+                {
+                    LeftNode = new IdentifierNode(DSDefinitions.Keyword.Return),
+                    RightNode = langblock,
+                    Optr = Operator.assign
+                };
+
+                ProtoCore.AST.AssociativeAST.CodeBlockNode functionBody = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
+                functionBody.Body = new List<AssociativeNode> { returnStatement };
+
+                f.FunctionBody = functionBody;
+
+                node = f;
+
+                Expect(45);
+                return;
+
+            } else SynErr(76);
 		if (langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			int openCurlyBraceCount = 0, closeCurlyBraceCount = 0; 
 			ProtoCore.AST.AssociativeAST.CodeBlockNode codeBlockInvalid = new ProtoCore.AST.AssociativeAST.CodeBlockNode(); 
@@ -1437,7 +1566,16 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		argumentSign = argumentSignature; 
 	}
 
-	void Associative_TypeRestriction(out ProtoCore.Type type) {
+        void ImperativeBlock_ArgumentSignature(out ProtoCore.AST.AssociativeAST.AssociativeNode argumentSign, out ProtoCore.Type returnType)
+        {
+            ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature = null;
+            returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank);
+
+            Associative_ArgumentSignatureDefinition(out argumentSignature);
+            argumentSign = argumentSignature;
+        }
+
+        void Associative_TypeRestriction(out ProtoCore.Type type) {
 		Expect(46);
 		Associative_ClassReference(out type);
 		type.rank = 0; 

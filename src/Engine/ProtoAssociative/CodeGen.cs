@@ -579,43 +579,7 @@ namespace ProtoAssociative
         }
 
         #endregion
-
-        private bool EmitCaptureList(AssociativeNode node, GraphNode graphNode = null,
-            ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None,
-            ProtoCore.AST.Node bnode = null)
-        {
-            var langBlockNode = node as LanguageBlockNode;
-
-            if (langBlockNode == null) return false;
-
-            var args = langBlockNode.FormalArguments;
-            if (args == null) return false;
-            
-            foreach(var arg in args)
-            {
-                //var symbol = arg.Name;
-
-                //SymbolNode symbolnode = null;
-                //bool isAccessible = false;
-                //bool isAllocated = VerifyAllocation(symbol, globalClassIndex, globalProcIndex, 
-                //    out symbolnode, out isAccessible);
-
-                //if(!isAllocated)
-                //{
-                //    // push null, EmitIdentifierNode 
-                //}
-                //else
-                //{
-                //    // push symbolNode, pop temp
-                //}
-                var paramType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
-
-                DfsTraverse(arg, ref paramType, false, graphNode, subPass, bnode);
-
-            }
-            return true;
-        }
-
+        
         /// <summary>
         /// Emits a block of code for the following cases:
         ///     Language block body
