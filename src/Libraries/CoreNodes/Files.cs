@@ -216,6 +216,13 @@ namespace DSCore.IO
             Image.WriteToFile(Path.Combine(filePath, fileName), image);
             return true;
         }
+
+        [NodeObsolete("ExportToCSVObsolete", typeof(Properties.Resources))]
+        public static bool ExportToCSV(string filePath, object[][] data)
+        {
+            ImportExport.ExportCSV(filePath, data);
+            return true;
+        }
         #endregion
     }
 
