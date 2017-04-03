@@ -1,0 +1,32 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand X="216" Y="269" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>ef399a2b-628c-471e-867c-13af985c3126</ModelGuid>
+    <CoreNodeModels.Input.DoubleInput guid="ef399a2b-628c-471e-867c-13af985c3126" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="216" y="269" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.Double value="0" />
+    </CoreNodeModels.Input.DoubleInput>
+  </CreateNodeCommand>
+  <CreateNodeCommand X="511" Y="281" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>af41cdde-5118-4b35-8fd0-d83e62bca5a5</ModelGuid>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="af41cdde-5118-4b35-8fd0-d83e62bca5a5" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Point.ByCoordinates" x="511" y="281" isVisible="true" isUpstreamVisible="true" lacing="Auto" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+  </CreateNodeCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>ef399a2b-628c-471e-867c-13af985c3126</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="0" ConnectionMode="1">
+    <ModelGuid>af41cdde-5118-4b35-8fd0-d83e62bca5a5</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>ef399a2b-628c-471e-867c-13af985c3126</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="1" Type="0" ConnectionMode="1">
+    <ModelGuid>af41cdde-5118-4b35-8fd0-d83e62bca5a5</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="1" Type="0" ConnectionMode="0">
+    <ModelGuid>af41cdde-5118-4b35-8fd0-d83e62bca5a5</ModelGuid>
+  </MakeConnectionCommand>
+  <UndoRedoCommand CmdOperation="0" />
+</Commands>
