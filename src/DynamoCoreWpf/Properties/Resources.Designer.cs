@@ -296,7 +296,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to What is the range of geometry sizes that you will be working on?.
+        ///   Looks up a localized string similar to To ensure accurate geometry rendering and calculation, select the range of geometry sizes that you will be working on:.
         /// </summary>
         public static string ChangeScaleFactorPromptCaptionText {
             get {
@@ -314,29 +314,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use this working range to model objects the size of a city block that can stretch a few kilometers and with no more accuracy than a millimeter..
+        ///   Looks up a localized string similar to Use this working range to model in values that fall between {0} to {1} units.
         /// </summary>
-        public static string ChangeScaleFactorPromptDescriptionContent0 {
+        public static string ChangeScaleFactorPromptDescriptionContent {
             get {
-                return ResourceManager.GetString("ChangeScaleFactorPromptDescriptionContent0", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use this working range to model objects no larger than a truck and that can be built to manufacturing tolerances..
-        /// </summary>
-        public static string ChangeScaleFactorPromptDescriptionContent1 {
-            get {
-                return ResourceManager.GetString("ChangeScaleFactorPromptDescriptionContent1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use this working range to model precision parts no smaller than a few microns but no larger than a millimeter..
-        /// </summary>
-        public static string ChangeScaleFactorPromptDescriptionContent2 {
-            get {
-                return ResourceManager.GetString("ChangeScaleFactorPromptDescriptionContent2", resourceCulture);
+                return ResourceManager.GetString("ChangeScaleFactorPromptDescriptionContent", resourceCulture);
             }
         }
         
@@ -404,7 +386,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change Geometry Scaling Factor.
+        ///   Looks up a localized string similar to Geometry Working Range.
         /// </summary>
         public static string ChangeScaleFactorPromptWindowTitle {
             get {
@@ -1900,6 +1882,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewSettingsMenuChangeScaleFactor {
             get {
                 return ResourceManager.GetString("DynamoViewSettingsMenuChangeScaleFactor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Isolate Selected Geometry.
+        /// </summary>
+        public static string DynamoViewSettingsMenuIsolationMode {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsMenuIsolationMode", resourceCulture);
             }
         }
         
@@ -3414,6 +3405,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to See more on the Dynamo Dictionary....
+        /// </summary>
+        public static string NodeHelpWindowDynamoDictionary {
+            get {
+                return ResourceManager.GetString("NodeHelpWindowDynamoDictionary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CATEGORY.
         /// </summary>
         public static string NodeHelpWindowNodeCategory {
@@ -4471,11 +4471,47 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apply Changes.
+        /// </summary>
+        public static string RerunButton {
+            get {
+                return ResourceManager.GetString("RerunButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rerun the graph..
+        /// </summary>
+        public static string RerunButtonToolTip {
+            get {
+                return ResourceManager.GetString("RerunButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run completed..
         /// </summary>
         public static string RunCompletedMessage {
             get {
                 return ResourceManager.GetString("RunCompletedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run completed with warnings on setting new working range..
+        /// </summary>
+        public static string RunCompletedWithScaleChangeAndWarningsMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithScaleChangeAndWarningsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run completed with new working range..
+        /// </summary>
+        public static string RunCompletedWithScaleChangeMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithScaleChangeMessage", resourceCulture);
             }
         }
         
@@ -4494,6 +4530,15 @@ namespace Dynamo.Wpf.Properties {
         public static string RunStartedMessage {
             get {
                 return ResourceManager.GetString("RunStartedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run started with new working range....
+        /// </summary>
+        public static string RunStartedWithScaleChangeMessage {
+            get {
+                return ResourceManager.GetString("RunStartedWithScaleChangeMessage", resourceCulture);
             }
         }
         
@@ -4557,6 +4602,42 @@ namespace Dynamo.Wpf.Properties {
         public static string SaveWorkbenToImageDialogTitle {
             get {
                 return ResourceManager.GetString("SaveWorkbenToImageDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extra large.
+        /// </summary>
+        public static string ScalingExtraLargeButton {
+            get {
+                return ResourceManager.GetString("ScalingExtraLargeButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Large.
+        /// </summary>
+        public static string ScalingLargeButton {
+            get {
+                return ResourceManager.GetString("ScalingLargeButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Medium.
+        /// </summary>
+        public static string ScalingMediumButton {
+            get {
+                return ResourceManager.GetString("ScalingMediumButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Small.
+        /// </summary>
+        public static string ScalingSmallButton {
+            get {
+                return ResourceManager.GetString("ScalingSmallButton", resourceCulture);
             }
         }
         

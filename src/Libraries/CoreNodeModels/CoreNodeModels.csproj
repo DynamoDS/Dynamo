@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Input\ColorPalette.cs" />
     <Compile Include="Input\DateTime.cs" />
     <Compile Include="DynamoConvert.cs" />
     <Compile Include="Input\SliderBase.cs" />

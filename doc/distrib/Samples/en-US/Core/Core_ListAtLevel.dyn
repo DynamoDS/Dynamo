@@ -1,0 +1,123 @@
+<Workspace Version="1.2.3.502" X="-409.247814975221" Y="1191.82616189481" zoom="0.331355767009987" ScaleFactor="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Math.PI" resolvedName="DSCore.Math" assemblyName="DSCoreNodes.dll" />
+    <ClassMap partialName="Math" resolvedName="DSCore.Math" assemblyName="DSCoreNodes.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="e9e56282-3e24-4d50-8095-f44acaca0c79" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="NurbsSurface.ByPoints" x="3638.71965002983" y="-3320.90411354737" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.NurbsSurface.ByPoints@Autodesk.DesignScript.Geometry.Point[][],int,int">
+      <PortInfo index="0" default="False" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="56111003-25e8-4182-88bf-4a1e6deff214" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Line.ByBestFitThroughPoints" x="3657.94900703305" y="-2981.25830387159" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Line.ByBestFitThroughPoints@Autodesk.DesignScript.Geometry.Point[]">
+      <PortInfo index="0" default="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <CoreNodeModels.HigherOrder.Map guid="3dbb73be-1e43-4b38-b336-e35a08157589" type="CoreNodeModels.HigherOrder.Map" nickname="List.Map" x="3438.45105241264" y="-2521.33850428021" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="true">
+      <PortInfo index="0" default="False" />
+      <PortInfo index="1" default="False" />
+    </CoreNodeModels.HigherOrder.Map>
+    <CoreNodeModels.HigherOrder.Map guid="fa13a54e-e7ba-4afb-970c-d9bf671a6050" type="CoreNodeModels.HigherOrder.Map" nickname="List.Map" x="3247.34798926348" y="-2521.33850428021" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
+      <PortInfo index="0" default="False" />
+      <PortInfo index="1" default="False" />
+    </CoreNodeModels.HigherOrder.Map>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="bec89968-68a4-4e49-b338-2bf3894ffc8f" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.GetItemAtIndex" x="3298.32631909464" y="-3194.67101989823" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="DSCoreNodes.dll" function="DSCore.List.GetItemAtIndex@var[]..[],int">
+      <PortInfo index="0" default="False" useLevels="True" level="2" shouldKeepListStructure="True" />
+      <PortInfo index="1" default="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="0e177600-e91b-4d8b-94c0-1eb5dfd3ad1e" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.GetItemAtIndex" x="3010.64492611433" y="-2521.33850428021" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.List.GetItemAtIndex@var[]..[],int">
+      <PortInfo index="0" default="False" />
+      <PortInfo index="1" default="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="8f9f6b94-ee3e-4a3e-8d6a-b211162899a9" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="2867.94186296517" y="-2508.13850428021" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="{1,2};" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="57e785b8-2788-4ee2-9692-7831eba1362b" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="3102.42315289156" y="-3144.79626601202" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="{1,2};" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="a9934a50-d37d-4671-8e28-5af2c2424a0c" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Point.ByCoordinates" x="1704.80757995593" y="-3193.85558176774" isVisible="true" isUpstreamVisible="true" lacing="CrossProduct" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="65faed89-3514-4f07-8560-00aa6d446ba4" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="1417.71339077391" y="-3193.85558176774" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="0..30..#8;&#xA;12..0..#4;" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="45fa8a42-b13d-4d4c-bf6d-322919856b3d" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.Count" x="2177.07556539785" y="-2884.77869645618" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="DSCoreNodes.dll" function="DSCore.List.Count@var[]..[]">
+      <PortInfo index="0" default="False" useLevels="True" level="3" shouldKeepListStructure="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="9fa6f44f-a1e5-4368-b4ff-207178ea7568" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.Count" x="2191.64511924494" y="-2335.7193431814" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="DSCoreNodes.dll" function="DSCore.List.Count@var[]..[]">
+      <PortInfo index="0" default="False" useLevels="True" level="2" shouldKeepListStructure="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="50f2ddc4-235d-45a4-a236-5877b09579ab" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.Count" x="2502.91730267205" y="-2335.7193431814" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="DSCoreNodes.dll" function="DSCore.List.Count@var[]..[]">
+      <PortInfo index="0" default="False" useLevels="True" level="2" shouldKeepListStructure="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="340b62de-c755-47b5-8ca9-18c628f2c721" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Flatten" x="2544.07235360353" y="-2856.91363504946" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="BuiltIn" function="Flatten@var[]..[]">
+      <PortInfo index="0" default="False" useLevels="True" level="3" shouldKeepListStructure="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="fa13a54e-e7ba-4afb-970c-d9bf671a6050" start_index="0" end="3dbb73be-1e43-4b38-b336-e35a08157589" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="bec89968-68a4-4e49-b338-2bf3894ffc8f" start_index="0" end="e9e56282-3e24-4d50-8095-f44acaca0c79" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="bec89968-68a4-4e49-b338-2bf3894ffc8f" start_index="0" end="56111003-25e8-4182-88bf-4a1e6deff214" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="0e177600-e91b-4d8b-94c0-1eb5dfd3ad1e" start_index="0" end="fa13a54e-e7ba-4afb-970c-d9bf671a6050" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="8f9f6b94-ee3e-4a3e-8d6a-b211162899a9" start_index="0" end="0e177600-e91b-4d8b-94c0-1eb5dfd3ad1e" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="57e785b8-2788-4ee2-9692-7831eba1362b" start_index="0" end="bec89968-68a4-4e49-b338-2bf3894ffc8f" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="a9934a50-d37d-4671-8e28-5af2c2424a0c" start_index="0" end="3dbb73be-1e43-4b38-b336-e35a08157589" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="a9934a50-d37d-4671-8e28-5af2c2424a0c" start_index="0" end="bec89968-68a4-4e49-b338-2bf3894ffc8f" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="a9934a50-d37d-4671-8e28-5af2c2424a0c" start_index="0" end="45fa8a42-b13d-4d4c-bf6d-322919856b3d" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="a9934a50-d37d-4671-8e28-5af2c2424a0c" start_index="0" end="340b62de-c755-47b5-8ca9-18c628f2c721" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="a9934a50-d37d-4671-8e28-5af2c2424a0c" start_index="0" end="9fa6f44f-a1e5-4368-b4ff-207178ea7568" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="a9934a50-d37d-4671-8e28-5af2c2424a0c" start_index="0" end="50f2ddc4-235d-45a4-a236-5877b09579ab" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="65faed89-3514-4f07-8560-00aa6d446ba4" start_index="0" end="a9934a50-d37d-4671-8e28-5af2c2424a0c" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="65faed89-3514-4f07-8560-00aa6d446ba4" start_index="1" end="a9934a50-d37d-4671-8e28-5af2c2424a0c" end_index="2" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="65faed89-3514-4f07-8560-00aa6d446ba4" start_index="1" end="a9934a50-d37d-4671-8e28-5af2c2424a0c" end_index="1" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Graph.Notes.NoteModel guid="5c3a7719-de77-4ea4-904d-671f0abb0dca" text="The lists exist at different levels, with L1 being the lowest level. The total number of elements produced by this node is 64, as shown at the bottom right." x="2927.54891625344" y="-2847.30626342554" />
+    <Dynamo.Graph.Notes.NoteModel guid="f680137a-312c-4de9-881b-54f7b9cf8aa2" text="In the previous version of Dynamo, List.Map is used to obtain the inner levels of lists. Even though the same result can be achieved using List.Map, it introduces more nodes into the workspace. Here we use List@Level to grab interior points of the grid in a more efficient way. We will use these points to create panels.&#xD;&#xA;&#xD;&#xA;We also utilized the &quot;Keep List Structure&quot; option to maintain the groupings of the initial list and prevent flattening. If &quot;Keep List Structure&quot; is disabled, a single NurbsSurface will be created instead of eight." x="3234.55106089349" y="-3391.02900756043" />
+    <Dynamo.Graph.Notes.NoteModel guid="a9cd8e77-dfc5-4359-b6a1-45218b7ca761" text="We want to create panels in the interior of the grid. To do so, we will need to obtain the points at indexes 1 and 2 of each list in the innermost level. This can easily be done by using the List@Level feature. The grouping of the lists are kept by enabling the option &quot;Keep list structure&quot;. But, first, let's inspect the list we created with Point.ByCoordinates a bit more to determine which level of the list we want to use." x="2113.55542586876" y="-3299.33901862344" />
+    <Dynamo.Graph.Notes.NoteModel guid="0a361063-945e-455b-8e32-57cff2642be2" text="In this example, we create a 3D list containing a series of points. There are 8 lists at L3, and each list contains another 4 lists (L2). Each of the 4 lists contains 4 points (L1), resulting in a total of 128 points." x="1644.27177911749" y="-3298.17017654349" />
+    <Dynamo.Graph.Notes.NoteModel guid="fa1915d2-e9e4-4dad-9165-9f7e24be4218" text="The List.Count node returns the number of elements that are present in each list. Depending on the selected level, different values are returned. Try changing the value of L3 by clicking on the arrows beside it." x="2112.67556539785" y="-3051.85218869871" />
+    <Dynamo.Graph.Notes.NoteModel guid="5a86a3b5-794c-42c8-aa41-e04f6b67a31b" text="There are eight lists at L3, each containing four lists. Hence, selecting L3 implements the List.Count function on the eight lists, giving eight '4' values." x="2114.47556539785" y="-2953.91544257744" />
+    <Dynamo.Graph.Notes.NoteModel guid="79cc8836-a465-418b-94bc-ccfaf086b340" text="As an additional example, you can easily flatten the nested structure at inner levels of the lists by making use of the List@Level feature, together with the Flatten node. Try changing which level will be flattened by clicking on the arrows beside in the List@Level spinner." x="2481.87235360353" y="-3053.17798751712" />
+    <Dynamo.Graph.Notes.NoteModel guid="ad757908-626b-43b9-b0d8-20f1e37c8e53" text="Selecting L3 converts the eight lists at that level into a 1D array. As each of the eight lists contains four items (which are also lists), this will flatten all of the lists at L3 producing eight lists of 16 points." x="2483.27235360353" y="-2940.64581128329" />
+    <Dynamo.Graph.Notes.NoteModel guid="c2a93eaf-afd8-43c3-8528-cb8b83038b45" text="LIST@LEVEL&#xD;&#xA;List@Level replaces the functionality of List.Map, by allowing you to directly select the level of list you want to work with." x="1325.60787741468" y="-3424.14881463484" />
+    <Dynamo.Graph.Notes.NoteModel guid="d0db3c96-e1bd-4408-9ed5-bf7b28d3b6ef" text="To change the list level you're working with, click the arrow beside the list input port and enable the &quot;Use levels&quot; option.&#xD;&#xA;&#xD;&#xA;When List@Level is first enabled on an input port, the list at the second innermost level (L2) is selected to be worked with. " x="1326.20787741468" y="-3325.03428225651" />
+    <Dynamo.Graph.Notes.NoteModel guid="64bb560e-2518-4efc-b68a-e42c72abfdbc" text="This node returns the number of elements that are present in each list in L2. By default, the results are flattened into a 1D list." x="2132.24511924494" y="-2405.35483573575" />
+    <Dynamo.Graph.Notes.NoteModel guid="6e2ad0ec-8d16-4d2f-889c-a49975a6b218" text="To preserve the nested structure of the lists, select the option &quot;Keep list structure&quot;. &quot;@@&quot; indicates how to keep the list structure in Designscript." x="2438.51730267204" y="-2405.35483573575" />
+    <Dynamo.Graph.Notes.NoteModel guid="aa8b961d-72e3-4ee1-b279-7c161109af2c" text="Below is the List.Map equivalent to applying List@Level which requires additional nodes" x="3284.30575774826" y="-2580.87255351999" />
+    <Dynamo.Graph.Notes.NoteModel guid="ac90dfe3-800a-487a-b7ce-b591a81b583c" text="With the sets of points selected, we can now create panels." x="3616.11965002983" y="-3390.7120495339" />
+    <Dynamo.Graph.Notes.NoteModel guid="1f382490-f13d-4dab-bcfb-d57caa09ec7c" text="To determine which level of the list you want to work with, look at the bottom of the preview bubble or watch node and follow the lines from the List@Level notation up." x="1632.51168517941" y="-2763.09409543869" />
+  </Notes>
+  <Annotations>
+    <Dynamo.Graph.Annotations.AnnotationModel guid="1bed1efe-74bb-4a1c-a06f-f814226a8034" annotationText="Replacing List.Map with List@Level" left="2857.94186296517" top="-3437.02900756043" width="720.10918944747" height="1021.49050328022" fontSize="30" InitialTop="-3391.02900756043" InitialHeight="169.026666539488" TextblockHeight="36" backgrouund="#FFA4E1FF">
+      <Models ModelGuid="bec89968-68a4-4e49-b338-2bf3894ffc8f" />
+      <Models ModelGuid="57e785b8-2788-4ee2-9692-7831eba1362b" />
+      <Models ModelGuid="3dbb73be-1e43-4b38-b336-e35a08157589" />
+      <Models ModelGuid="f680137a-312c-4de9-881b-54f7b9cf8aa2" />
+      <Models ModelGuid="fa13a54e-e7ba-4afb-970c-d9bf671a6050" />
+      <Models ModelGuid="0e177600-e91b-4d8b-94c0-1eb5dfd3ad1e" />
+      <Models ModelGuid="8f9f6b94-ee3e-4a3e-8d6a-b211162899a9" />
+      <Models ModelGuid="aa8b961d-72e3-4ee1-b279-7c161109af2c" />
+    </Dynamo.Graph.Annotations.AnnotationModel>
+    <Dynamo.Graph.Annotations.AnnotationModel guid="b94ccab3-12c9-4000-9338-190a9c4d373f" annotationText=" Using &quot;Keep List Structure&quot;" left="2122.24511924494" top="-2451.35483573575" width="623.072183427108" height="208.235492554355" fontSize="30" InitialTop="-2405.35483573575" InitialHeight="211.432807650001" TextblockHeight="36" backgrouund="#FFC1D676">
+      <Models ModelGuid="9fa6f44f-a1e5-4368-b4ff-207178ea7568" />
+      <Models ModelGuid="50f2ddc4-235d-45a4-a236-5877b09579ab" />
+      <Models ModelGuid="64bb560e-2518-4efc-b68a-e42c72abfdbc" />
+      <Models ModelGuid="6e2ad0ec-8d16-4d2f-889c-a49975a6b218" />
+    </Dynamo.Graph.Annotations.AnnotationModel>
+    <Dynamo.Graph.Annotations.AnnotationModel guid="71d074f3-b555-44bf-adca-dd78c591845a" annotationText="Inspecting a List with List@Level and Count" left="2102.67556539785" top="-3133.85218869871" width="316.8" height="341.673492242535" fontSize="30" InitialTop="-3051.85218869871" InitialHeight="289.67349224253" TextblockHeight="72" backgrouund="#FFC1D676">
+      <Models ModelGuid="45fa8a42-b13d-4d4c-bf6d-322919856b3d" />
+      <Models ModelGuid="fa1915d2-e9e4-4dad-9165-9f7e24be4218" />
+      <Models ModelGuid="5a86a3b5-794c-42c8-aa41-e04f6b67a31b" />
+    </Dynamo.Graph.Annotations.AnnotationModel>
+    <Dynamo.Graph.Annotations.AnnotationModel guid="24307639-62e3-47eb-8a12-eec7c513bbe9" annotationText="Creating Geometry" left="3606.11965002983" top="-3436.7120495339" width="310.4" height="548.053745662306" fontSize="30" InitialTop="-3390.7120495339" InitialHeight="288.235355977618" TextblockHeight="36" backgrouund="#FFFFC999">
+      <Models ModelGuid="e9e56282-3e24-4d50-8095-f44acaca0c79" />
+      <Models ModelGuid="56111003-25e8-4182-88bf-4a1e6deff214" />
+      <Models ModelGuid="ac90dfe3-800a-487a-b7ce-b591a81b583c" />
+    </Dynamo.Graph.Annotations.AnnotationModel>
+    <Dynamo.Graph.Annotations.AnnotationModel guid="77efdc5d-f117-499c-b0bf-bfad13bf6223" annotationText="Inspecting a List with List@Level and Flatten" left="2471.87235360353" top="-3135.17798751712" width="318.4" height="370.86435246766" fontSize="30" InitialTop="-3053.17798751712" InitialHeight="318.86435246766" TextblockHeight="72" backgrouund="#FFC1D676">
+      <Models ModelGuid="340b62de-c755-47b5-8ca9-18c628f2c721" />
+      <Models ModelGuid="79cc8836-a465-418b-94bc-ccfaf086b340" />
+      <Models ModelGuid="ad757908-626b-43b9-b0d8-20f1e37c8e53" />
+    </Dynamo.Graph.Annotations.AnnotationModel>
+  </Annotations>
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-8.03084484125684" eyeY="23.5219825788523" eyeZ="19.4110435982708" lookX="13.7184916838758" lookY="-18.5412801246102" lookZ="-39.6404241638214" upX="0.0650153434095374" upY="0.980040493243617" upZ="-0.187865824752609" />
+  </Cameras>
+</Workspace>

@@ -768,12 +768,16 @@ namespace Dynamo.Controls
             var view = new Prompts.ChangeScaleFactorPrompt(dynamoViewModel.ScaleFactorLog) { Owner = this };
             if (view.ShowDialog() == true)
             {
-                if (dynamoViewModel.ScaleFactorLog != view.SliderValue)
+                if (dynamoViewModel.ScaleFactorLog != view.ScaleValue)
                 {
-                    dynamoViewModel.ScaleFactorLog = view.SliderValue;
+                    dynamoViewModel.ScaleFactorLog = view.ScaleValue;
                     dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+                    
+                    Log(String.Format("Geometry working range changed to {0} ({1}, {2})", 
+                        view.ScaleRange.Item1, view.ScaleRange.Item2, view.ScaleRange.Item3));
 
-                    dynamoViewModel.ExecuteCommand(new DynamoModel.ForceRunCancelCommand(false, false));
+                    var allNodes = dynamoViewModel.HomeSpace.Nodes;
+                    dynamoViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
                 }
             }
         }
@@ -1639,6 +1643,11 @@ namespace Dynamo.Controls
 
             sidebarGrid.Visibility = Visibility.Collapsed;
             collapsedSidebar.Visibility = Visibility.Visible;
+        }
+
+        private void OnSettingsSubMenuOpened(object sender, RoutedEventArgs e)
+        {
+            this.ChangeScaleFactorMenu.IsEnabled = !dynamoViewModel.ShowStartPage;
         }
 
         private void Workspace_SizeChanged(object sender, SizeChangedEventArgs e)

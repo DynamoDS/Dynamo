@@ -128,6 +128,40 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
+        /// A flag indicating whether the geometry is currently under Isolate Selected Geometry mode.
+        /// </summary>
+        public static readonly DependencyProperty IsolationModeProperty = DependencyProperty.RegisterAttached(
+            "IsolationMode",
+            typeof(bool),
+            typeof(GeometryModel3D),
+            new PropertyMetadata(false, IsolationModePropertyChanged));
+
+        public static void SetIsolationMode(UIElement element, bool value)
+        {
+            element.SetValue(IsolationModeProperty, value);
+        }
+
+        public static bool GetIsolationMode(UIElement element)
+        {
+            return (bool)element.GetValue(IsolationModeProperty);
+        }
+        
+        private static void IsolationModePropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            if (obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D))
+            {
+                var geom = (GeometryModel3D)obj;
+
+                if (geom.IsAttached)
+                {
+                    var host = geom.RenderHost;
+                    geom.Detach();
+                    geom.Attach(host);
+                }
+            }
+        }
+
+        /// <summary>
         /// A flag indicating whether the geometry is special render package, such as used to draw manipulators.
         /// </summary>
         public static readonly DependencyProperty IsSpecialRenderPackageProperty = DependencyProperty.RegisterAttached(

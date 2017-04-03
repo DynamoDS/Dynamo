@@ -151,6 +151,23 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
+        /// A flag which indicates whether Isolate Selected Geometry mode is activated.
+        /// </summary>
+        private bool isolationMode;
+        public bool IsolationMode
+        {
+            get
+            {
+                return isolationMode;
+            }
+            set
+            {
+                isolationMode = value;
+                RaisePropertyChanged("IsolationMode");
+            }
+        }
+
+        /// <summary>
         /// A flag which indicates whether the user is holding the
         /// navigation override key (ESC).
         /// </summary>
@@ -173,6 +190,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public DelegateCommand ToggleOrbitCommand { get; set; }
 
         public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
+
+        public DelegateCommand ToggleIsolationModeCommand { get; set; }
 
         public DelegateCommand ZoomToFitCommand { get; set; }
 
@@ -234,6 +253,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
             ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
+            ToggleIsolationModeCommand = new DelegateCommand(ToggleIsolationMode, CanToggleIsolationMode);
             ZoomToFitCommand = new DelegateCommand(ZoomToFit, CanZoomToFit);
             CanBeActivated = true;
         }
@@ -298,7 +318,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         handler(CanNavigateBackground);
                     }
                     break;
+                case "IsolationMode":
+                    OnIsolationModeRequestUpdate();
+                    break;
             }
+        }
+
+        protected virtual void OnIsolationModeRequestUpdate()
+        {
+            // Override in inherited classes.
         }
 
         private void UnregisterEventHandlers()
@@ -706,6 +734,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected virtual bool CanToggleCanNavigateBackground(object parameter)
         {
             return false;
+        }
+
+        private void ToggleIsolationMode(object parameter)
+        {
+            IsolationMode = !IsolationMode;
+        }
+
+        private bool CanToggleIsolationMode(object parameter)
+        {
+            return true;
         }
 
         private static bool CanZoomToFit(object parameter)

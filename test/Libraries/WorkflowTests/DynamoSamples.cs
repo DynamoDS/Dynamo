@@ -401,8 +401,8 @@ namespace Dynamo.Tests
             OpenSampleModel(@"en-US\Core\Core_PassingFunctions.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(16, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(16, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(15, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 

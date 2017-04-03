@@ -59,6 +59,8 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        internal bool ScaleFactorChanged = false;
+
         /// <summary>
         ///     The step to offset elements between subsequent paste operations
         /// </summary>
@@ -899,6 +901,7 @@ namespace Dynamo.Graph.Workspaces
             X = 0.0;
             Y = 0.0;
             Zoom = 1.0;
+            ScaleFactor = 1.0;
             // Reset the workspace offset
             OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(X, Y)));
             workspaceLoaded = true;
@@ -2202,6 +2205,14 @@ namespace Dynamo.Graph.Workspaces
                 return;
             if (!ShouldProceedWithRecording(models))
                 return;
+            
+            if (null != savedModels)
+            {
+                // Before an existing connector is reconnected, we have one action group
+                // which records the deletion of the connector. Pop that out so that we can
+                // record the deletion and reconnection in one action group.
+                recorder.PopFromUndoGroup();
+            }
 
             using (recorder.BeginActionGroup())
             {
@@ -2328,17 +2339,21 @@ namespace Dynamo.Graph.Workspaces
 
         internal void DeleteSavedModels()
         {
-            if (null != savedModels)
-            {
-                RecordAndDeleteModels(savedModels);
-                savedModels = null;
-            }
+            savedModels = null;
         }
 
-        internal void SaveModelsForUndo(List<ModelBase> models)
+        internal void SaveAndDeleteModels(List<ModelBase> models)
         {
-            // save the models for deletion later in one action group
-            savedModels = models;
+            if (null != models)
+            {
+                // If an existing connector is grabbed (to be reconnected), save the 
+                // models for deletion later in one action group.
+                savedModels = models;
+
+                // After saving the models, delete them from the workspace
+                // in one action group.
+                RecordAndDeleteModels(models);
+            }
         }
 
         internal void RecordGroupModelBeforeUngroup(AnnotationModel annotation)

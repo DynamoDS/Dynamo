@@ -21,7 +21,6 @@ namespace Dynamo.Tests
             libraries.Add("DSCoreNodes.dll");   // Required for built-in nodes.
             libraries.Add("DSIronPython.dll");  // Required for Python tests.
             libraries.Add("FunctionObject.ds"); // Required for partially applied nodes.
-            libraries.Add("Optimize.ds");       // Required for NewtonRoot node test.
             base.GetLibrariesToPreload(libraries);
             
         }
@@ -1041,8 +1040,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(38, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(29, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(41, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(31, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check Surface.ByLoft
             var surface1ID = "3675e40d-1d1d-4869-b3e1-f8ea67286486";
@@ -1053,7 +1052,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(surface2.ToString(), "Surface");
           
             //check CBN, which includes a list of Vector
-            var cbnId = "e14439c9-b377-4653-bb63-4edd9a4f90a0";
+            var cbnId = "be2abed2-282f-44d5-8981-3cfb3e231d1b";
             AssertPreviewCount(cbnId, 18);
             for (int i = 0; i < 18; i++)
             {
@@ -1147,111 +1146,6 @@ namespace Dynamo.Tests
             var rectangular2ID = "b80fd260-243f-4475-96ec-5542ff0f1d75";
             var rectangular2 = GetPreviewValue(rectangular2ID) as Rectangle;
             Assert.AreEqual(rectangular1.ToString(), rectangular2.ToString());
-        }
-
-        [Test]
-        public void Test_NewtonRootFind()
-        {
-            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\NewtonRoot.dyn");
-            RunModel(openPath);
-
-            AssertNoDummyNodes();
-
-            //check the number of nodes and connectors
-            Assert.AreEqual(56, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(26, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-
-            double EPS = 1E-9;
-            object prev;
-            double root;
-
-            // input function f(x) = (x-1)(x-2)(x-3) + 5
-            // NewtonRootFind1DNoDeriv node
-            prev = GetPreviewValue("dd1857b4-a08d-4195-9694-b831530ece61");
-            Assert.IsNotNull(prev);
-            double.TryParse(prev.ToString(), out root);
-            Assert.AreEqual(root, 0.0958391408650794, EPS);
-
-            prev = GetPreviewValue("4ebbd113-a838-4549-9a3b-f03465d6c73a");
-            Assert.IsNotNull(prev);
-            double.TryParse(prev.ToString(), out root);
-            Assert.AreEqual(root, 0.0958391408650794, EPS);
-
-            prev = GetPreviewValue("bf5577fd-6717-428d-ab03-6b7ffc251867");
-            Assert.IsNotNull(prev);
-            double.TryParse(prev.ToString(), out root);
-            Assert.AreEqual(root, 0.0958391408650794, EPS);
-
-            // input function f(x) = (x-1)(x-2)(x-3) + 5
-            // NewtonRootFind1DWithDeriv node
-            prev = GetPreviewValue("48e0819a-b0c6-4ab7-bfe2-9033cb1a038c");
-            Assert.IsNotNull(prev);
-            double.TryParse(prev.ToString(), out root);
-            Assert.AreEqual(root, 0.0958391408650794, EPS);
-
-            prev = GetPreviewValue("a9590adc-f1d0-4b6a-92ab-5da8639c5d66");
-            Assert.IsNotNull(prev);
-            double.TryParse(prev.ToString(), out root);
-            Assert.AreEqual(root, 0.0958391408650794, EPS);
-
-            prev = GetPreviewValue("0bcd0f82-801f-4c38-98d1-844dd7dad3e4");
-            Assert.IsNotNull(prev);
-            double.TryParse(prev.ToString(), out root);
-            Assert.AreEqual(root, 0.0958391408650794, EPS);
-
-            // input function f(x) = (x-1)(x+2)(x-3) - 5
-            // NewtonRootFind1DNoDeriv node
-            prev = GetPreviewValue("2d881d8f-89d8-45ec-aeb3-7f49bb72e682");
-            Assert.IsNotNull(prev);
-            double.TryParse(prev.ToString(), out root);
-            Assert.AreEqual(root, -1.57577347265194, EPS);
-
-            prev = GetPreviewValue("db968241-0b10-4987-88a6-98e055ce33bb");
-            Assert.IsNotNull(prev);
-            double.TryParse(prev.ToString(), out root);
-            Assert.AreEqual(root, -1.57577347265194, EPS);
-
-            prev = GetPreviewValue("7717f496-4aae-4b8f-bccf-6cb9a9311aa2");
-            Assert.IsNotNull(prev);
-            double.TryParse(prev.ToString(), out root);
-            Assert.AreEqual(root, 0.187283725110224, EPS);
-
-            prev = GetPreviewValue("8b7bb56a-c5cc-4d6c-9a93-4f436d4514c2");
-            Assert.IsNotNull(prev);
-            double.TryParse(prev.ToString(), out root);
-            Assert.AreEqual(root, 0.187283725110224, EPS);
-
-            prev = GetPreviewValue("b7b5d015-f06f-4e6f-817c-a50e2787f45f");
-            Assert.IsNotNull(prev);
-            double.TryParse(prev.ToString(), out root);
-            Assert.AreEqual(root, 3.38848974754171, EPS);
-
-            // input function f(x) = (x-1)(x+2)(x-3) - 5
-            // NewtonRootFind1DWithDeriv node
-            prev = GetPreviewValue("b57455ac-7650-41e5-8d41-4fd205d2a2ce");
-            Assert.IsNotNull(prev);
-            double.TryParse(prev.ToString(), out root);
-            Assert.AreEqual(root, -1.57577347265194, EPS);
-
-            prev = GetPreviewValue("d23dbe66-8785-4566-82d9-58cc6cb965db");
-            Assert.IsNotNull(prev);
-            double.TryParse(prev.ToString(), out root);
-            Assert.AreEqual(root, -1.57577347265194, EPS);
-
-            prev = GetPreviewValue("e5a5cbc7-0afc-4edd-b976-aa2a74be06fc");
-            Assert.IsNotNull(prev);
-            double.TryParse(prev.ToString(), out root);
-            Assert.AreEqual(root, 0.187283725110224, EPS);
-
-            prev = GetPreviewValue("26444379-21f2-4c4c-b482-74cf2d17fda4");
-            Assert.IsNotNull(prev);
-            double.TryParse(prev.ToString(), out root);
-            Assert.AreEqual(root, 0.187283725110224, EPS);
-
-            prev = GetPreviewValue("586d42c8-7e13-4403-8e17-6f6fe64c06ad");
-            Assert.IsNotNull(prev);
-            double.TryParse(prev.ToString(), out root);
-            Assert.AreEqual(root, 3.38848974754171, EPS);
         }
         #endregion
 

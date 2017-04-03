@@ -96,11 +96,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     finalColor = color;
                 }
 
+                var isSelected = (bool)GetValue(AttachedProperties.ShowSelectedProperty);
+                var isIsolationMode = (bool)GetValue(AttachedProperties.IsolationModeProperty);
+                var isSpecialPackage = (bool)GetValue(AttachedProperties.IsSpecialRenderPackageProperty);
+
                 result[i] = new DynamoPointVertex
                 {
                     Position = new Vector4(positions[i], 1f),
                     Color = finalColor,
-                    Parameters = new Vector4((bool)GetValue(AttachedProperties.ShowSelectedProperty) ? 1 : 0, 0, 0, 0)
+                    Parameters = new Vector4(isSelected ? 1 : 0,
+                                            (isIsolationMode && !isSpecialPackage) ? 1 : 0, 0, 0)
                 };
             }
 

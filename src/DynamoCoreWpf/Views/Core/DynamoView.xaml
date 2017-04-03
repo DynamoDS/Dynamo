@@ -65,6 +65,9 @@
         <KeyBinding Key="L"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.GraphAutoLayoutCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="I"
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.BackgroundPreviewViewModel.ToggleIsolationModeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Tab"
                     Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
 
@@ -641,7 +644,8 @@
                     <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenu}"
                               Name="SettingsMenu"
                               Focusable="False"
-                              IsEnabled="True">
+                              IsEnabled="True"
+                              SubmenuOpened="OnSettingsSubMenuOpened">
                         <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReporting}"
                                   Name="ToggleIsAnalyticsReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
@@ -715,10 +719,15 @@
                             </StackPanel>
                         </MenuItem>
                         <MenuItem Focusable="False"
+                                  Name="ChangeScaleFactorMenu"
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuChangeScaleFactor}"
-                                  IsEnabled="{Binding ChangeScaleFactorEnabled}"
                                   Command="{Binding ChangeScaleFactorCommand}" />
                         <Separator />
+                        <MenuItem Focusable="False"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding Path=BackgroundPreviewViewModel.IsolationMode, Mode=TwoWay}"
+                                  Header="{x:Static p:Resources.DynamoViewSettingsMenuIsolationMode}"
+                                  InputGestureText="Ctrl + I"/>
                         <MenuItem Focusable="False"
                                   IsCheckable="True"
                                   IsChecked="{Binding Path=RenderPackageFactoryViewModel.ShowEdges, Mode=TwoWay}"

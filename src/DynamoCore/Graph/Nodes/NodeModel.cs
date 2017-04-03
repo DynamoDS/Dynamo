@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Connectors;
@@ -416,6 +417,38 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        private string ShortenName
+        {
+            get
+            {
+                Type type = GetType();
+                object[] attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), false);
+
+                if (!string.IsNullOrEmpty(CreationName))
+                {
+                    // Obtain the node's default name from its creation name.
+                    // e.g. For creation name DSCore.Math.Max@double,double - the name "Max" is obtained and appended to the final link.
+                    int indexAfter = (CreationName.LastIndexOf('@') == -1) ? CreationName.Length : CreationName.LastIndexOf('@');
+                    string s = CreationName.Substring(0, indexAfter);
+
+                    int indexBefore = s.LastIndexOf(Configurations.CategoryDelimiterString);
+                    int firstChar = (indexBefore == -1) ? 0 : indexBefore + 1;
+                    return s.Substring(firstChar, s.Length - CreationName.Substring(0, firstChar).Length);
+                }
+
+                if (!type.IsAbstract && (attribs.Length > 0))
+                {
+                    var attrib = attribs[0] as NodeNameAttribute;
+                    if (attrib != null)
+                    {
+                        string name = attrib.Name;
+                        if (!string.IsNullOrEmpty(name)) return name;
+                    }
+                }
+                return "";
+            }
+        }
+
         /// <summary>
         ///     Category property
         /// </summary>
@@ -443,6 +476,11 @@ namespace Dynamo.Graph.Nodes
         {
             Type type = GetType();
             object[] attribs = type.GetCustomAttributes(typeof(NodeCategoryAttribute), false);
+            if (!type.IsAbstract && (attribs.Length > 0) && (attribs[0] is NodeCategoryAttribute))
+            {
+                string category = ((NodeCategoryAttribute)attribs[0]).ElementCategory;
+                if (category != null) return category;
+            }
 
             if (type.Namespace != "Dynamo.Graph.Nodes" || type.IsAbstract || attribs.Length <= 0
                 || !type.IsSubclassOf(typeof(NodeModel)))
@@ -450,6 +488,120 @@ namespace Dynamo.Graph.Nodes
 
             var elCatAttrib = attribs[0] as NodeCategoryAttribute;
             return elCatAttrib.ElementCategory;
+        }
+
+        /// <summary>
+        ///     Dictionary Link property
+        /// </summary>
+        /// <value>
+        ///     If the node has a name and a category, convert them into a link going to the node's help page on
+        ///     Dynamo Dictionary, and return the link.
+        ///     Otherwise, return the Dynamo Dictionary home page.
+        /// </value>
+        [JsonIgnore]
+        public string DictionaryLink
+        {
+            get
+            {
+                dictionaryLink = dictionaryLink ?? Configurations.DynamoDictionary;
+                return dictionaryLink;
+            }
+            set
+            {
+                dictionaryLink = value;
+            }
+        }
+
+        private string dictionaryLink;
+
+        internal string ConstructDictionaryLinkFromLibrary(LibraryServices libraryServices)
+        {
+            string finalLink = Configurations.DynamoDictionary + "#/";
+            if (IsCustomFunction)
+            {
+                return ""; // If it is not a core or Revit function, do not display the dictionary link
+            }
+            if (category == null || category == "")
+            {
+                return Configurations.DynamoDictionary; // if there is no category, return the link to home page
+            }
+
+            int i = category.LastIndexOf(Configurations.CategoryDelimiterString);
+            switch (category.Substring(i + 1))
+            {
+                case Configurations.CategoryGroupAction:
+                    finalLink += ObtainURL(category.Substring(0, i));
+                    finalLink += "Action/";
+                    break;
+                case Configurations.CategoryGroupCreate:
+                    finalLink += ObtainURL(category.Substring(0, i));
+                    finalLink += "Create/";
+                    break;
+                case Configurations.CategoryGroupQuery:
+                    finalLink += ObtainURL(category.Substring(0, i));
+                    finalLink += "Query/";
+                    break;
+                default:
+                    finalLink += ObtainURL(category);
+                    finalLink += "Action/";
+                    break;
+            }
+            finalLink += this.ShortenName;
+
+            // Check if the method has overloads
+            IEnumerable<FunctionDescriptor> descriptors = libraryServices.GetAllFunctionDescriptors(CreationName.Split('@')[0]);
+            if (descriptors != null && descriptors.Skip(1).Any())
+            {
+                // If there are overloads
+                string parameters = "(";
+                IEnumerable<Tuple<string, string>> inputParameters = null;
+
+                foreach (FunctionDescriptor fd in descriptors)
+                {
+                    if (fd.MangledName == CreationName) // Find the function descriptor among the overloads and obtain their parameter names
+                    {
+                        inputParameters = fd.InputParameters;
+                        break;
+                    }
+                }
+                // Convert the parameters into a valid Dictionary URL format, e.g. (x_double-y_double-z_double)
+                if (inputParameters != null)
+                {
+                    int parameterCount = inputParameters.Count();
+                    for (int k = 0; k < parameterCount - 1; k++)
+                    {
+                        parameters += inputParameters.ElementAt(k).Item1 + "_" + inputParameters.ElementAt(k).Item2 + "-";
+                    }
+                    // Append the last parameter without the dash and with the close bracket
+                    var lastInputParam = inputParameters.ElementAt(parameterCount - 1);
+                    parameters += lastInputParam.Item1 + "_" + lastInputParam.Item2 + ")";
+                    finalLink += parameters;
+                }
+            }
+            return finalLink;
+        }
+
+        /// <summary>
+        /// This method converts the character '.' in the node's category to '/', and append
+        /// another '/' at the end, to be used as a URL.
+        /// e.g. Core.Input.Action is converted to Core/Input/Action/
+        /// </summary>
+        private string ObtainURL(string category)
+        {
+            string result = "";
+            for (int i = 0; i < category.Length; i++)
+            {
+                if (category[i] == '.')
+                {
+                    result += '/';
+                }
+                else
+                {
+                    result += category[i];
+                }
+            }
+            result += '/';
+            return result;
         }
 
         /// <summary>
