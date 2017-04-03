@@ -911,10 +911,32 @@ public Node root { get; set; }
 		ProtoCore.AST.AssociativeAST.AssociativeNode functionBody = null; 
 		
 		Associative_FunctionDefinitionBody(out functionBody);
-		f.FunctionBody = functionBody as ProtoCore.AST.AssociativeAST.CodeBlockNode; 
-		node = f;   
-		
-	}
+        var outerCodeBlock = new CodeBlockNode();
+	    CodeBlockNode newFunctionBody = null;
+        var funcBody = functionBody as ProtoCore.AST.AssociativeAST.CodeBlockNode;
+	    if (funcBody != null)
+	    {
+	        foreach (var associativeNode in funcBody.Body)
+	        {
+	            if (associativeNode is FunctionDefinitionNode)
+	            {
+	                outerCodeBlock.Body.Add(associativeNode);
+	            }
+                else if(associativeNode is CodeBlockNode)
+                    newFunctionBody = associativeNode as CodeBlockNode;
+	        }
+	    }
+        f.FunctionBody = newFunctionBody ?? funcBody;
+
+	    if (outerCodeBlock.Body.Any())
+	    {
+            outerCodeBlock.Body.Add(f);
+            node = outerCodeBlock;
+        }
+	    else
+    		node = f;
+
+        }
 
         void Imperative_functiondecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node)
         {
@@ -1524,10 +1546,36 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		
 		Expect(44);
 		Associative_StatementList(out body);
-		functionBody.Body =body;  
+        var newFunctionBody = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
+        var nodeList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
+        foreach (var associativeNode in body)
+        {
+            var codeBlock = associativeNode as CodeBlockNode;
+	        if (codeBlock != null)
+	        {
+	            foreach (var node in codeBlock.Body)
+	            {
+	                if(node is FunctionDefinitionNode)
+                        newFunctionBody.Body.Add(node);
+	                else
+	                {
+	                    nodeList.Add(node);
+	                }
+                }
+	        }
+            else 
+              nodeList.Add(associativeNode);  
+	    }
+		functionBody.Body = nodeList;  
 		Expect(45);
-		NodeUtils.SetNodeEndLocation(functionBody, t); 
-		funcBody = functionBody; 
+		NodeUtils.SetNodeEndLocation(functionBody, t);
+	    if (newFunctionBody.Body.Any())
+	    {
+	        newFunctionBody.Body.Add(functionBody);
+	        funcBody = newFunctionBody;
+	    }
+        else
+		    funcBody = functionBody; 
 	}
 
 	void Associative_Ident(out ProtoCore.AST.AssociativeAST.AssociativeNode node) {
