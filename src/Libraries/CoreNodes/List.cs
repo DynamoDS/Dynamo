@@ -195,7 +195,7 @@ namespace DSCore
         /// <param name="list">The list to be flattened.</param>
         /// <returns name="list">The flattened 1D list.</returns>
         /// <search>flatten,1D</search>
-        public static IList FlattenCompletely(IList list)
+        public static IList Flatten(IList list)
         {
             return Flatten(list, GetDepth(list), new List<object>());
         }
@@ -264,7 +264,7 @@ namespace DSCore
         {
             if (rank <= 1)
             {
-                return FlattenCompletely(list);
+                return Flatten(list);
             }
             else
             {
@@ -281,24 +281,6 @@ namespace DSCore
                 }
             }
             return list;
-        }
-
-        /// <summary>
-        ///     Returns the values of a list of key-value pair in a new list.
-        /// </summary>
-        /// <param name="list">The list to obtain the values from.</param>
-        /// <returns name="newlist">The new list which contains the values.</returns>
-        public static IList GetValues(IList list)
-        {
-            /*
-            List<object> newList = new List<object>();
-            for (int i = 0; i < list.Count; i++)
-            {
-                newList.Add(list[i]);
-            }
-            return newList; 
-            */
-            return list; // Return the values in the list
         }
 
         /// <summary>

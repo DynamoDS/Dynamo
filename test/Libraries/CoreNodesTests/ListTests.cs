@@ -192,7 +192,7 @@ namespace DSCoreNodesTests
         {
             Assert.AreEqual(
                 new ArrayList { 0, 1, 2, 3, 4, 5, 6, 7, 8 },
-                List.FlattenCompletely(
+                List.Flatten(
                     new List<object>
                     {
                         new List<object> { 0, 1, 2 },
@@ -254,13 +254,6 @@ namespace DSCoreNodesTests
                 List.NormalizeDepth(testList, 2));
             Assert.AreEqual(
                 new ArrayList { 1, 2, 3, 4, 5 }, List.NormalizeDepth(testList, 1));
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public static void GetListValues()
-        {
-            Assert.AreEqual(new ArrayList { 5, 4, 3, 2, 1 }, List.GetValues(new ArrayList { 5, 4, 3, 2, 1 }));
         }
 
         [Test]
