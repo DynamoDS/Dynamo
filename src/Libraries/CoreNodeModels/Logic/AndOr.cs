@@ -73,7 +73,7 @@ namespace CoreNodeModels.Logic
     /// Short-circuiting Logical AND
     /// </summary>
     [NodeName("And")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC)]
+    [NodeCategory("Core.Math.Actions")]
     [NodeDescription("AndDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     [OutPortTypes("bool")]
@@ -95,7 +95,7 @@ namespace CoreNodeModels.Logic
     /// Short-circuiting Logical OR
     /// </summary>
     [NodeName("Or")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC)]
+    [NodeCategory("Core.Math.Actions")]
     [NodeDescription("OrDescription", typeof(Resources))]
     [IsDesignScriptCompatible]
     [OutPortTypes("bool")]

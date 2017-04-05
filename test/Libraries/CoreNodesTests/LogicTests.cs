@@ -13,10 +13,10 @@ namespace DSCoreNodesTests
         [Category("UnitTests")]
         public static void Xor()
         {
-            Assert.AreEqual(false, Logic.Xor(true, true));
-            Assert.AreEqual(true, Logic.Xor(true, false));
-            Assert.AreEqual(true, Logic.Xor(false, true));
-            Assert.AreEqual(false, Logic.Xor(false, false));
+            Assert.AreEqual(false, DSCore.Math.Xor(true, true));
+            Assert.AreEqual(true, DSCore.Math.Xor(true, false));
+            Assert.AreEqual(true, DSCore.Math.Xor(false, true));
+            Assert.AreEqual(false, DSCore.Math.Xor(false, false));
         }
     }
 }

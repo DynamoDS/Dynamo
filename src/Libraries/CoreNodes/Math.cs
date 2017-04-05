@@ -5,6 +5,7 @@ using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using CSMath = System.Math;
 using DSCore.Properties;
+using NCalc;
 
 namespace DSCore
 {
@@ -304,6 +305,28 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Evaluates an NCalc formula with given parameter mappings.
+        /// </summary>
+        /// <param name="formulaString">NCalc formula</param>
+        /// <param name="parameters">Variable names</param>
+        /// <param name="args">Variable bindings</param>
+        /// <returns name="result">Result of the formula calculation.</returns>
+        public static object EvaluateFormula(string formulaString, string[] parameters, object[] args)
+        {
+            var e = new Expression(formulaString.ToLower(), EvaluateOptions.IgnoreCase);
+
+            e.Parameters["pi"] = 3.14159265358979;
+
+            foreach (var arg in args.Select((arg, i) => new { Value = arg, Index = i }))
+            {
+                var parameter = parameters[arg.Index];
+                e.Parameters[parameter] = arg.Value;
+            }
+
+            return e.Evaluate();
+        }
+
+        /// <summary>
         ///     Returns the exponential of the number, the constant e raised to the value number.
         /// </summary>
         /// <param name="number">Number.</param>
@@ -590,6 +613,18 @@ namespace DSCore
                     throw new OverflowException(Resources.FactorialOverflow);
                 }
             }
+        }
+
+        /// <summary>
+        ///     Boolean XOR: Returns true if and only if exactly one of the inputs is true.
+        /// </summary>
+        /// <param name="a">A boolean.</param>
+        /// <param name="b">A boolean.</param>
+        /// <returns name="bool">Boolean result.</returns>
+        /// <search>xor,exclusive,or</search>
+        public static bool Xor(bool a, bool b)
+        {
+            return a ^ b;
         }
 
         private static readonly Random mRandom = new Random();
