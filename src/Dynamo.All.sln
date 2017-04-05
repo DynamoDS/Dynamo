@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -220,6 +220,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPackagesUI", "DynamoPackagesUI\DynamoPackagesUI.csproj", "{297F6290-0325-4C9B-9E77-DB9041EB61F3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPackagesUITests", "..\test\DynamoPackagesUITests\DynamoPackagesUITests.csproj", "{170FCC78-96EA-428A-A195-606C88B6B9D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImportExport", "Libraries\ImportExport\ImportExport.csproj", "{374B0FF2-F697-4CFD-B819-9743E877AEEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -507,6 +509,10 @@ Global
 		{170FCC78-96EA-428A-A195-606C88B6B9D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{170FCC78-96EA-428A-A195-606C88B6B9D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{170FCC78-96EA-428A-A195-606C88B6B9D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{374B0FF2-F697-4CFD-B819-9743E877AEEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{374B0FF2-F697-4CFD-B819-9743E877AEEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{374B0FF2-F697-4CFD-B819-9743E877AEEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{374B0FF2-F697-4CFD-B819-9743E877AEEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -572,5 +578,6 @@ Global
 		{C4964946-B367-44EE-9ED2-451FF2A83D32} = {24A1EF6B-5A24-4536-B8BD-C879ABA26389}
 		{31183026-DE70-49CB-BC7C-0DFD0A088F62} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
 		{170FCC78-96EA-428A-A195-606C88B6B9D4} = {24A1EF6B-5A24-4536-B8BD-C879ABA26389}
+		{374B0FF2-F697-4CFD-B819-9743E877AEEE} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
 	EndGlobalSection
 EndGlobal

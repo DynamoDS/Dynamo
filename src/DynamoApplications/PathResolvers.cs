@@ -38,7 +38,8 @@ namespace Dynamo.Applications
                 "DynamoUnits.dll",
                 "Tessellation.dll",
                 "Analysis.dll",
-                "Display.dll"
+                "Display.dll",
+                "ImportExport.dll"
             };
 
         }
