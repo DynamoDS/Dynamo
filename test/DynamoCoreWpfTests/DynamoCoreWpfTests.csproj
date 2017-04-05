@@ -144,6 +144,7 @@
     </Compile>
     <Compile Include="ColorPaletteTests.cs" />
     <Compile Include="ListAtLevelTest.cs" />
+    <Compile Include="NodeHelpPromptTest.cs" />
     <Compile Include="NoteViewTests.cs" />
     <Compile Include="NodeViewTests.cs" />
     <Compile Include="NodeExecutionUITest.cs" />

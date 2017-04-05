@@ -10,6 +10,8 @@ using ProtoCore;
 using TestServices;
 using System.Xml;
 using Dynamo.Configuration;
+using System.Collections.Generic;
+using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Tests
 {
@@ -290,7 +292,22 @@ namespace Dynamo.Tests
             Assert.IsFalse(libraryServices.IsFunctionBuiltIn(categoryName, nickName));
 
         }
+        
+        [Test]
+        [Category("UnitTests")]
+        public void GetAllFunctionDescriptorsTest()
+        {
+            const string libraryPath = "FFITarget.dll";
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath);
+                Assert.IsTrue(LibraryLoaded);
+            }
 
+            // Get the function descriptors that are named FFITarget.TestOverloadConstructor.TestOverloadConstructor
+            var descriptors = libraryServices.GetAllFunctionDescriptors("FFITarget.TestOverloadConstructor.TestOverloadConstructor");
+            Assert.AreEqual(4, descriptors.Count());
+        }
         #endregion
     }
 }
