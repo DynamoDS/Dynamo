@@ -38,4 +38,20 @@
       </attribute>
     </additionalAttributes>
   </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.Formula.Evaluate</oldName>
+    <newName>DSCore.Math.EvaluateFormula</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.Logic.Xor</oldName>
+    <newName>DSCore.Math.Xor</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.Logic.And</oldName>
+    <newName>DSCore.Math.And</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.Logic.Or</oldName>
+    <newName>DSCore.Math.Or</newName>
+  </priorNameHint>
 </migrations>
