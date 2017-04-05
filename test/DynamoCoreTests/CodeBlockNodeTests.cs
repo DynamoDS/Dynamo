@@ -1450,7 +1450,7 @@ var06 = g;
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
 
             string functionPrefix = "";
-            string functionName = "Count";
+            string functionName = "ContainsKey";
 
             string code = "";
             var overloads = codeCompletionServices.GetFunctionSignatures(code, functionName, functionPrefix);
@@ -1462,7 +1462,7 @@ var06 = g;
             {
                 Assert.AreEqual(functionName, overload.Text);
             }
-            Assert.AreEqual("Count : int (list : [])", overloads.ElementAt(0).Stub);
+            Assert.AreEqual("ContainsKey : bool (list : [], key : var)", overloads.ElementAt(0).Stub);
         }
 
         [Test]
@@ -1514,10 +1514,10 @@ var06 = g;
             string code = "im";
             var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
 
-            // Expected 4 completion items
-            Assert.AreEqual(4, completions.Count());
+            // Expected 3 completion items
+            Assert.AreEqual(3, completions.Count());
 
-            string[] expected = { "Imperative", "ImportFromCSV", "Minimal", "MinimalTracedClass" };
+            string[] expected = { "Imperative", "Minimal", "MinimalTracedClass" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);

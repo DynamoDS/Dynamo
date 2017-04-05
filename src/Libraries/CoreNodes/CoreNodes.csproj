@@ -71,6 +71,7 @@
     <Compile Include="DateTime.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="Formula.cs" />
+    <Compile Include="ImportExport.cs" />
     <Compile Include="Logic.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
@@ -117,7 +118,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DSCoreNodesImages.resx" />
+    <EmbeddedResource Include="DSCoreNodesImages.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
