@@ -22,7 +22,7 @@
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.File.ExportToCSV</oldName>
-    <newName>DSCore.ImportExport.ExportCSV</newName>
+    <newName>DSCore.IO.File.ExportToCSV</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.IO.CSV.WriteToFile</oldName>
