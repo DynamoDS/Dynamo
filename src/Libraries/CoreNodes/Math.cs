@@ -81,6 +81,47 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Maps the input value to a number between 0 and 1 based on the input range.
+        /// </summary>
+        /// <param name="rangeMin">The minimum value of the input range.</param>
+        /// <param name="rangeMax">The maximum value of the input range.</param>
+        /// <param name="inputValue">The number to be mapped.</param>
+        /// <returns name="double">The mapped value.</returns>
+        /// <search>map,range,minimum,maximum,normalize</search>
+        public static double Map(double rangeMin, double rangeMax, double inputValue)
+        {
+            double result = (inputValue - rangeMin) / (rangeMax - rangeMin);
+            if (result < 0)
+            {
+                return 0.0;
+            }
+            else if (result > 1)
+            {
+                return 1.0;
+            }
+            else
+            {
+                return result;
+            }
+        }
+
+        /// <summary>
+        ///     Maps the input value to a number between targetRangeMin and targetRangeMax.
+        /// </summary>
+        /// <param name="rangeMin">The minimum value of the input range.</param>
+        /// <param name="rangeMax">The maximum value of the input range.</param>
+        /// <param name="inputValue">The number to be mapped.</param>
+        /// <param name="targetRangeMin">The minimum value of the new range.</param>
+        /// <param name="targetRangeMax">The maximum value of the new range.</param>
+        /// <returns name="double">The mapped value.</returns>
+        /// <search>map,range,mapto,minimum,maximum,normalize</search>
+        public static double MapTo(double rangeMin, double rangeMax, double inputValue, double targetRangeMin, double targetRangeMax)
+        {
+            double percent = Map(rangeMin, rangeMax, inputValue);
+            return targetRangeMin + (targetRangeMax - targetRangeMin) * percent;
+        }
+
+        /// <summary>
         ///     Adjusts the range of a list of numbers while preserving the
         ///     distribution ratio.
         /// </summary>
