@@ -14,69 +14,6 @@ using Rectangle = System.Drawing.Rectangle;
 namespace DSCore.IO
 {
     /// <summary>
-    ///     Methods for operating on strings representing file paths.
-    /// </summary>
-    public static class FilePath
-    {
-        /// <summary>
-        ///     Combines multiple strings into a single file path.
-        /// </summary>
-        /// <param name="paths">String to combine into a path.</param>
-        public static string Combine(params string[] paths)
-        {
-            return Path.Combine(paths);
-        }
-
-        /// <summary>
-        /// Returns the extension from a file path.
-        /// </summary>
-        /// <param name="path">Path to get extension of.</param>
-        public static string Extension(string path)
-        {
-            return Path.GetExtension(path);
-        }
-
-        /// <summary>
-        ///     Changes the extension of a file path.
-        /// </summary>
-        /// <param name="path">Path to change extension of.</param>
-        /// <param name="newExtension">New extension.</param>
-        public static string ChangeExtension(string path, string newExtension)
-        {
-            return Path.ChangeExtension(path, newExtension);
-        }
-
-        /// <summary>
-        /// Returns the directory name of a file path.
-        /// </summary>
-        /// <param name="path">Path to get directory information of.</param>
-        /// <search>directorypath</search>
-        public static string DirectoryName(string path)
-        {
-            return Path.GetDirectoryName(path);
-        }
-
-        /// <summary>
-        /// Returns the file name of a file path.
-        /// </summary>
-        /// <param name="path">Path to get the file name of.</param>
-        /// <param name="withExtension">Determines whether or not the extension is included in the result, defaults to true.</param>
-        public static string FileName(string path, bool withExtension=true)
-        {
-            return withExtension ? Path.GetFileName(path) : Path.GetFileNameWithoutExtension(path);
-        }
-
-        /// <summary>
-        ///     Determines whether or not a file path contains an extension.
-        /// </summary>
-        /// <param name="path">Path to check for an extension.</param>
-        public static bool HasExtension(string path)
-        {
-            return Path.HasExtension(path);
-        }
-    }
-
-    /// <summary>
     ///     Methods for working with Files.
     /// </summary>
     public static class File
@@ -220,7 +157,7 @@ namespace DSCore.IO
         [NodeObsolete("ExportToCSVObsolete", typeof(Properties.Resources))]
         public static bool ExportToCSV(string filePath, object[][] data)
         {
-            ImportExport.ExportCSV(filePath, data);
+            ImportExport.ImportExport.ExportCSV(filePath, data);
             return true;
         }
         #endregion
