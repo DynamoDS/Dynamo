@@ -321,8 +321,8 @@ namespace CoreNodeModels.Input
         }
     }
 
-    [NodeName("File.DirectoryFromPath")]
-    [NodeCategory(BuiltinNodeCategories.CORE_IO)]
+    [NodeName("DirectoryFromPath")]
+    [NodeCategory("Core.File.File")]
     [NodeDescription("DirectoryObjectNodeDescription",typeof(Resources))]
     [NodeSearchTags("DirectoryPathSearchTags", typeof(Resources))]
     [SupressImportIntoVM]
