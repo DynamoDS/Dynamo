@@ -29,7 +29,7 @@ namespace DynamoCoreWpfTests
             Model.AddNodeToCurrentWorkspace(colorPalette, true);
             homespace.Run();           
             Assert.DoesNotThrow(DispatcherUtil.DoEvents);
-            Assert.AreEqual(colorPalette.dsColor, DSColor.ByARGB(255,0,0,0));
+            Assert.AreEqual(colorPalette.DsColor, DSColor.ByARGB(255,0,0,0));
             Assert.Pass();
         }
     }
