@@ -10,7 +10,7 @@
   </priorNameHint>
   <priorNameHint>
     <oldName>ImportFromCSV</oldName>
-    <newName>DSCore.ImportExport.ImportCSV</newName>
+    <newName>DSCore.Data.ImportCSV</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>AllFalse</oldName>

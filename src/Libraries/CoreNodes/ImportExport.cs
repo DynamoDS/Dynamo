@@ -13,7 +13,7 @@ namespace DSCore
     /// <summary>
     ///     Methods for Import/Export category.
     /// </summary>
-    public static class ImportExport
+    public static class Data
     {
         /// <summary>
         ///     Write a list of lists into a file using a comma-separated values 

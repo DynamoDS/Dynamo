@@ -26,7 +26,7 @@
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.IO.CSV.WriteToFile</oldName>
-    <newName>DSCore.ImportExport.ExportCSV</newName>
+    <newName>DSCore.Data.ExportCSV</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.Display.ByGeometryColor</oldName>
