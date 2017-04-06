@@ -26,7 +26,7 @@
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.IO.CSV.WriteToFile</oldName>
-    <newName>DSCore.ImportExport.ExportCSV</newName>
+    <newName>DSCore.ImportExport.Import.ExportCSV</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.Display.ByGeometryColor</oldName>
@@ -37,5 +37,29 @@
         <value>Display.dll</value>
       </attribute>
     </additionalAttributes>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.HasExtension</oldName>
+    <newName>DSCore.ImportExport.File.FileHasExtension</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.ChangeExtension</oldName>
+    <newName>DSCore.ImportExport.File.ChangePathExtension</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.DirectoryName</oldName>
+    <newName>DSCore.ImportExport.File.DirectoryName</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.Combine</oldName>
+    <newName>DSCore.ImportExport.File.CombinePath</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.FileName</oldName>
+    <newName>DSCore.ImportExport.File.FileName</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.Extension</oldName>
+    <newName>DSCore.ImportExport.File.FileExtension</newName>
   </priorNameHint>
 </migrations>
