@@ -1374,7 +1374,6 @@ namespace ProtoCore
             List<FunctionEndPoint> resolvesFeps;
             List<ReplicationInstruction> replicationInstructions;
 
-            arguments = PerformRepGuideForcedPromotion(arguments, partialReplicationGuides, runtimeCore);
             ComputeFeps(context, arguments, funcGroup, partialInstructions, stackFrame, runtimeCore, out resolvesFeps, out replicationInstructions);
 
             if (resolvesFeps.Count == 0)
@@ -1830,58 +1829,6 @@ namespace ProtoCore
             //Everwhere where we have replication guides, we have single values
             //drop the guides
             return new List<List<ReplicationGuide>>();
-        }
-
-        /// <summary>
-        /// Method to ensure that dimensionality of the arguments is at least
-        /// as large as the number of replication guides provided
-        /// </summary>
-        /// <param name="arguments"></param>
-        /// <param name="providedRepGuides"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static List<StackValue> PerformRepGuideForcedPromotion(List<StackValue> arguments,
-                                                                      List<List<ReplicationGuide>> providedRepGuides, RuntimeCore runtimeCore)
-        {
-            if (providedRepGuides.Count == 0)
-                return arguments;
-
-            //copy the arguments
-            List<StackValue> newArgs = new List<StackValue>();
-            newArgs.AddRange(arguments);
-
-            //Compute depth of rep guides
-            List<int> listOfGuidesCounts =  providedRepGuides.Select((x) => x.Count).ToList();
-            List<int> maxDepths = new List<int>();
-
-            for (int i = 0; i < newArgs.Count; i++)
-            {
-                maxDepths.Add(Replicator.GetMaxReductionDepth(newArgs[i], runtimeCore));
-            }
-
-            for (int i = 0; i < newArgs.Count; i++)
-            {
-                int promotionsRequired = listOfGuidesCounts[i] - maxDepths[i];
-                StackValue oldSv = newArgs[i];
-                
-                for (int p = 0; p < promotionsRequired; p++)
-                {
-                    try
-                    {
-                        StackValue newSV = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[1] { oldSv });
-                        oldSv = newSV;
-                    }
-                    catch (RunOutOfMemoryException)
-                    {
-                        runtimeCore.RuntimeStatus.LogWarning(WarningID.RunOutOfMemory, Resources.RunOutOfMemory);
-                        oldSv = StackValue.Null;
-                    }
-                }
-
-                newArgs[i] = oldSv;
-            }
-
-            return newArgs;
         }
 
         public static StackValue PerformReturnTypeCoerce(ProcedureNode procNode, RuntimeCore runtimeCore, StackValue ret)
