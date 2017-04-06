@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GeometryColor</name>
+    </assembly>
+    <namespaces>
+      <namespace name="Modifiers">
+        <category>Modifiers</category>
+      </namespace>
+    </namespaces>
+</doc>
