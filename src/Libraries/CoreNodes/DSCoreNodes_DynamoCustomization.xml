@@ -7,6 +7,9 @@
         <namespace name="DSCore">
             <category>Core</category>
         </namespace>
+      <namespace name="DSCore.ImportExport">
+        <category>Core.ImportExport</category>
+      </namespace>
         <namespace name="DSCore.IO">
           <category>Core.File</category>
         </namespace>
