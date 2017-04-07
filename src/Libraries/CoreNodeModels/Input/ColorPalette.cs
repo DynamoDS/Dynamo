@@ -32,24 +32,22 @@ namespace CoreNodeModels.Input
     public class ColorPalette : NodeModel, INotifyPropertyChanged
     {
         private DSColor dscolor = DSColor.ByARGB(255, 0, 0, 0);
-        private DSColor update = DSColor.ByARGB(0, 0, 0, 255);
         private bool Isundo = false;
         public DSColor DsColor
         {
             get { return dscolor; }
             set
-            {
+            {                
                 if (dscolor.Equals(value))
                 {
-                    Isundo = true;
-                    OnPropertyChanged();                   
+                    Isundo = true;                 
                 }
-                dscolor = value;              
+                dscolor = value;                            
                 if (!Isundo)
                 {
                     Isundo = false;
                     Update = dscolor;                   
-                }
+                }               
                 OnNodeModified();
                 OnPropertyChanged();
             }
@@ -59,7 +57,6 @@ namespace CoreNodeModels.Input
         {
             set
             {
-                update = value;
                 OnPropertyChanged();
             }
         }
