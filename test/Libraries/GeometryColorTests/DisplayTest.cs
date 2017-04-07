@@ -15,7 +15,7 @@ namespace DisplayTests
         {
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DSCoreNodes.dll");
-            libraries.Add("Display.dll");
+            libraries.Add("GeometryColor.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
