@@ -10,5 +10,8 @@
         <namespace name="DSCore.IO">
           <category>Core.File</category>
         </namespace>
+        <namespace name="ImportExport">
+          <category>Core.ImportExport</category>
+        </namespace>
     </namespaces>
 </doc>
