@@ -140,6 +140,12 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestMigration_DSCore_Display_ByGeometryColor()
+        {
+            TestMigration("TestMigration_DSCore_Display_ByGeometryColor.dyn");
+        }
+
+        [Test]
         public void TestMigration_Display_ByGeometryColor()
         {
             TestMigration("TestMigration_Display_ByGeometryColor.dyn");
