@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
+
+using System.Runtime.CompilerServices;
 
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -13,6 +16,7 @@ using CoreNodeModels.Properties;
 using DSColor = DSCore.Color;
 
 using Autodesk.DesignScript.Runtime;
+using Dynamo.Graph.Workspaces;
 
 
 namespace CoreNodeModels.Input
@@ -25,17 +29,46 @@ namespace CoreNodeModels.Input
     [OutPortNames("Color")]
     [OutPortTypes("Color")]
     [OutPortDescriptions("Selected Color.")]
-    public class ColorPalette : NodeModel
+    public class ColorPalette : NodeModel, INotifyPropertyChanged
     {
-        private DSColor dscolor = DSColor.ByARGB(255,0,0,0);
-        public DSColor dsColor
+        private DSColor dscolor = DSColor.ByARGB(255, 0, 0, 0);
+        private DSColor update = DSColor.ByARGB(0, 0, 0, 255);
+        private bool Isundo = false;
+        public DSColor DsColor
         {
             get { return dscolor; }
             set
-            {                              
-                dscolor = value;
+            {
+                if (dscolor.Equals(value))
+                {
+                    Isundo = true;
+                    OnPropertyChanged();                   
+                }
+                dscolor = value;              
+                if (!Isundo)
+                {
+                    Isundo = false;
+                    Update = dscolor;                   
+                }
                 OnNodeModified();
+                OnPropertyChanged();
             }
+        }
+        
+        public DSColor Update
+        {
+            set
+            {
+                update = value;
+                OnPropertyChanged();
+            }
+        }
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         /// <summary>
         ///     Node constructor.
@@ -45,7 +78,7 @@ namespace CoreNodeModels.Input
             RegisterAllPorts();
         }
         private DSColor DeserializeValue(string val)
-         {
+        {
             try
             {
                 //Splits the xml string and returns each of the ARGB values as a string array.
@@ -59,7 +92,7 @@ namespace CoreNodeModels.Input
         }
         private string SerializeValue()
         {
-            return dsColor.ToString();
+            return DsColor.ToString();
         }
         /// <summary>
         ///     Store color value when graph is saved.
@@ -70,7 +103,7 @@ namespace CoreNodeModels.Input
         {
             base.SerializeCore(element, context);
 
-            XmlElement color = element.OwnerDocument.CreateElement("dsColor");
+            XmlElement color = element.OwnerDocument.CreateElement("DsColor");
             color.InnerText = SerializeValue();
             element.AppendChild(color);
         }
@@ -83,11 +116,11 @@ namespace CoreNodeModels.Input
         {
             base.DeserializeCore(element, context);
 
-            var colorNode = element.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == "dsColor");
+            var colorNode = element.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == "DsColor");
 
             if (colorNode != null)
             {
-                dsColor = DeserializeValue(colorNode.InnerText);
+                DsColor = DeserializeValue(colorNode.InnerText);
             }
 
         }
@@ -99,10 +132,10 @@ namespace CoreNodeModels.Input
         [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var av = AstFactory.BuildIntNode(Convert.ToInt32(dsColor.Alpha));
-            var ar = AstFactory.BuildIntNode(Convert.ToInt32(dsColor.Red));
-            var ag = AstFactory.BuildIntNode(Convert.ToInt32(dsColor.Green));
-            var ab = AstFactory.BuildIntNode(Convert.ToInt32(dsColor.Blue));
+            var av = AstFactory.BuildIntNode(Convert.ToInt32(DsColor.Alpha));
+            var ar = AstFactory.BuildIntNode(Convert.ToInt32(DsColor.Red));
+            var ag = AstFactory.BuildIntNode(Convert.ToInt32(DsColor.Green));
+            var ab = AstFactory.BuildIntNode(Convert.ToInt32(DsColor.Blue));
 
             var colorNode = AstFactory.BuildFunctionCall(
                     new Func<int, int, int, int, DSColor>(DSColor.ByARGB), new List<AssociativeNode> { av, ar, ag, ab });
@@ -116,7 +149,7 @@ namespace CoreNodeModels.Input
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format("Color(Alpha = {3}, Red = {0}, Green = {1}, Blue = {2})", dsColor.Alpha, dsColor.Red, dsColor.Green, dsColor.Blue);
+            return string.Format("Color(Alpha = {3}, Red = {0}, Green = {1}, Blue = {2})", DsColor.Alpha, DsColor.Red, DsColor.Green, DsColor.Blue);
         }
     }
 }
