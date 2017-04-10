@@ -141,14 +141,5 @@ namespace CoreNodeModels.Input
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), colorNode) };
         }
-
-        /// <summary>
-        ///     Override string representation of color in watch node.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return string.Format("Color(Alpha = {3}, Red = {0}, Green = {1}, Blue = {2} )", DsColor.Alpha, DsColor.Red, DsColor.Green, DsColor.Blue);
-        }
     }
 }
