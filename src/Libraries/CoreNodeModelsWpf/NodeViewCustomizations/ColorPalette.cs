@@ -5,7 +5,7 @@ using Dynamo.Wpf;
 
 using CoreNodeModelsWpf.Controls;
 using CoreNodeModels.Input;
-
+using Dynamo.Graph.Workspaces;
 using DSColor = DSCore.Color;
 
 namespace CoreNodeModelsWpf.Nodes
@@ -16,21 +16,9 @@ namespace CoreNodeModelsWpf.Nodes
         ///     WPF Control.
         /// </summary>
         private ColorPaletteUI ColorPaletteUINode;
+        private NodeView viewNode;
         private ColorPalette colorPaletteNode;
-        private Color mcolor;
-        /// <summary>
-        /// Selected Color
-        /// </summary>
-        public Color MColor
-        {
-            get { return mcolor; }
-            set
-            {                
-                mcolor = value;              
-                colorPaletteNode.dsColor = DSColor.ByARGB(mcolor.A, mcolor.R, mcolor.G, mcolor.B);
-                RaisePropertyChanged("MColor");
-            }
-        }
+        private Color color;
         /// <summary>
         ///     Customize View.
         /// </summary>
@@ -38,11 +26,22 @@ namespace CoreNodeModelsWpf.Nodes
         /// <param name="nodeView"></param>
         public void CustomizeView(ColorPalette model, NodeView nodeView)
         {
+            viewNode = nodeView;
             colorPaletteNode = model;
-            mcolor = Color.FromArgb(model.dsColor.Alpha, model.dsColor.Red, model.dsColor.Green, model.dsColor.Blue);
+            model.PropertyChanged += Model_PropertyChanged;
+            var undoRecorder = viewNode.ViewModel.WorkspaceViewModel.Model.UndoRecorder;
+            WorkspaceModel.RecordModelForModification(colorPaletteNode, undoRecorder);
             ColorPaletteUINode = new ColorPaletteUI();
             nodeView.inputGrid.Children.Add(ColorPaletteUINode);
-            ColorPaletteUINode.DataContext = this;
+            ColorPaletteUINode.DataContext = model;
+        }
+        private void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Update")
+            {
+                var undoRecorder = viewNode.ViewModel.WorkspaceViewModel.Model.UndoRecorder;
+                WorkspaceModel.RecordModelForModification(colorPaletteNode, undoRecorder);
+            }
         }
         /// <summary>
         ///     Dispose.
