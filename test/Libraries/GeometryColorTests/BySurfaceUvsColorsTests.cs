@@ -12,42 +12,42 @@ namespace DisplayTests
         [Test]
         public void BySurfaceUVsColors_Construction_AllGood()
         {
-            Assert.DoesNotThrow(() => Display.Display.BySurfaceColors(
+            Assert.DoesNotThrow(() => Modifiers.GeometryColor.BySurfaceColors(
                 CreateOneSurface(), CreateTwoRowsOfColors()));
         }
 
         [Test]
         public void BySurfaceUvsColors_Construction_NullSurface_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => Display.Display.BySurfaceColors(
+            Assert.Throws<ArgumentNullException>(() => Modifiers.GeometryColor.BySurfaceColors(
                 null, CreateTwoRowsOfColors()));
         }
 
         [Test]
         public void BySurfaceUvsColors_Construction_NullColors_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => Display.Display.BySurfaceColors(
+            Assert.Throws<ArgumentNullException>(() => Modifiers.GeometryColor.BySurfaceColors(
                 CreateOneSurface(), null));
         }
 
         [Test]
         public void BySurfaceUvsColors_Construction_NoColors_ThrowsException()
         {
-            Assert.Throws<ArgumentException>(() => Display.Display.BySurfaceColors(
+            Assert.Throws<ArgumentException>(() => Modifiers.GeometryColor.BySurfaceColors(
                 CreateOneSurface(), new Color[][]{}));
         }
 
         [Test]
         public void BySurfaceUvsColors_Construction_SingleDimensionColors_ThrowsException()
         {
-            Assert.Throws<ArgumentException>(() => Display.Display.BySurfaceColors(
+            Assert.Throws<ArgumentException>(() => Modifiers.GeometryColor.BySurfaceColors(
                 CreateOneSurface(), CreateOneRowOfColors()));
         }
 
         [Test]
         public void BySurfaceUvsColors_Construction_JaggedArrayColors_ThrowsException()
         {
-            Assert.Throws<ArgumentException>(() => Display.Display.BySurfaceColors(
+            Assert.Throws<ArgumentException>(() => Modifiers.GeometryColor.BySurfaceColors(
                 CreateOneSurface(), CreateOneRowOfColors()));
         }
 

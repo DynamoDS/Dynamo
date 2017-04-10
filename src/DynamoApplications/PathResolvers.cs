@@ -39,7 +39,8 @@ namespace Dynamo.Applications
                 "Tessellation.dll",
                 "Analysis.dll",
                 "Display.dll",
-                "ImportExport.dll"
+                "ImportExport.dll",
+                "GeometryColor.dll"
             };
 
         }
