@@ -1,7 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Text;
 using System.Windows;
 using CefSharp;
 using CefSharp.Wpf;
+using Dynamo.LibraryUI.Properties;
 using Dynamo.Models;
 using Newtonsoft.Json;
 
@@ -22,6 +26,10 @@ namespace Dynamo.LibraryUI.ViewModels
         {
             this.Address = address;
         }
-        
+
+        public void OnItemClicked(string item)
+        {
+            MessageBox.Show(item + " Clicked");
+        }
     }
 }

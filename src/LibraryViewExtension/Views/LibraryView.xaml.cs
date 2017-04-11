@@ -22,10 +22,6 @@ namespace Dynamo.LibraryUI.Views
             }
             
             InitializeComponent();
-
-            //viewModel.ParentWindow = this;
-            //cefHelper object for Explore Packages, Explore Authors and My Packages Tab
-            this.Browser.RegisterJsObject("controller", viewModel);
         }
     }
 }
