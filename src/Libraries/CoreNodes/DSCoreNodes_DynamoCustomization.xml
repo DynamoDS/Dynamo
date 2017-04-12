@@ -11,7 +11,7 @@
       <category>Core.File</category>
     </namespace>
     <namespace name="DSCore.ImportExport">
-      <category>Core.Import/Export</category>
+      <category>Core.ImportExport</category>
     </namespace>
   </namespaces>
 </doc>
