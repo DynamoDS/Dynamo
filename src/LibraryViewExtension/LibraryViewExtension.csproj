@@ -137,7 +137,11 @@
   <ItemGroup>
     <EmbeddedResource Include="web\library.html" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="web\dist\v0.0.1\resources\library-action.svg" />
+    <EmbeddedResource Include="web\dist\v0.0.1\resources\library-creation.svg" />
+    <EmbeddedResource Include="web\dist\v0.0.1\resources\library-query.svg" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="web\dist\v0.0.1\librarie.min.js" />
   </ItemGroup>

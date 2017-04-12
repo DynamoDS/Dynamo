@@ -1,6 +1,11 @@
+using System;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using CefSharp;
+using CefSharp.Wpf;
+using Dynamo.Extensions;
 using Dynamo.LibraryUI.ViewModels;
+using Dynamo.Models;
 
 namespace Dynamo.LibraryUI.Views
 {
@@ -22,6 +27,31 @@ namespace Dynamo.LibraryUI.Views
             }
             
             InitializeComponent();
+        }
+    }
+
+    /// <summary>
+    /// This class holds methods and data to be called from javascript
+    /// </summary>
+    public class LibraryViewController
+    {
+        private ChromiumWebBrowser browser;
+        private ICommandExecutive commandExecutive;
+
+        public LibraryViewController(ChromiumWebBrowser browser, ICommandExecutive commandExecutive)
+        {
+            this.browser = browser;
+            this.commandExecutive = commandExecutive;
+        }
+
+        public void OnItemClicked(string item)
+        {
+            browser.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                //Create the node of given item name
+                var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), item, -1, -1, true, false);
+                commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), ViewExtension.ExtensionName);
+            }));
         }
     }
 }

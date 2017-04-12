@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows;
 using CefSharp;
 using CefSharp.Wpf;
+using Dynamo.Extensions;
 using Dynamo.LibraryUI.Properties;
 using Dynamo.Models;
+using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
 
 namespace Dynamo.LibraryUI.ViewModels
@@ -14,22 +17,31 @@ namespace Dynamo.LibraryUI.ViewModels
     /// <summary>
     /// Package Manager View Loader
     /// </summary>
-    public class LibraryViewModel
+    public class LibraryViewModel : NotificationObject
     {
-        public string Address { get; set; }
-        
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="address"></param>
+        /// <param name="commandExecutive"></param>
         public LibraryViewModel(string address)
         {
-            this.Address = address;
+            this.address = address;
         }
 
-        public void OnItemClicked(string item)
+        /// <summary>
+        /// Returns Web URL to bind
+        /// </summary>
+        public string Address
         {
-            MessageBox.Show(item + " Clicked");
+            get { return address; }
+            set
+            {
+                address = value;
+                RaisePropertyChanged("Address");
+            }
         }
+
+        private string address;
     }
 }

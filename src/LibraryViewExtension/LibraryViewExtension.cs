@@ -22,9 +22,11 @@ namespace Dynamo.LibraryUI
             get { return "85941358-5525-4FF4-8D61-6CA831F122AB"; }
         }
 
+        public static readonly string ExtensionName = "LibraryUI";
+
         public string Name
         {
-            get { return "LibraryUI"; }
+            get { return ExtensionName; }
         }
 
         public void Startup(ViewStartupParams p)
@@ -46,7 +48,7 @@ namespace Dynamo.LibraryUI
             var rootnamespace = "Dynamo.LibraryUI.web.";
 
             sidebarGrid.Children.Add(view);
-            view.Browser.RegisterJsObject("controller", model);
+            view.Browser.RegisterJsObject("controller", new LibraryViewController(browser, p.CommandExecutive));
             var factory = (DefaultResourceHandlerFactory)(browser.ResourceHandlerFactory);
             if (factory == null) return;
 
@@ -66,32 +68,49 @@ namespace Dynamo.LibraryUI
 
                 var r = LoadResource(resource);                
                 factory.RegisterHandler("http://localhost/" + url,
-                     ResourceHandler.FromStream(r));
+                     ResourceHandler.FromStream(r, MimeType(url)));
             }
 
             view.Loaded += OnLibraryViewLoaded;
         }
 
-        private void OnLibraryViewLoaded(object sender, System.Windows.RoutedEventArgs e)
+        private string MimeType(string url)
         {
-            /*var view = sender as LibraryView;
-            var browser = view.Browser;
-            browser.ShowDevTools();
-            browser.ConsoleMessage += OnBrowserConsoleMessage;*/
+            var idx = url.LastIndexOf('.');
+            var ext = url.Substring(idx);
+            switch (ext)
+            {
+                case "svg":
+                    return "text/svg";
+                case "png":
+                    return "image/png";
+                case "js":
+                    return "text/javascript";
+                default:
+                    return "text/html";
+            }
         }
 
         private Stream LoadResource(string url)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var textStream = assembly
-                .GetManifestResourceStream(url);
+            var textStream = assembly.GetManifestResourceStream(url);
             return textStream;
+        }
+
+        private void OnLibraryViewLoaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+#if DEBUG
+            var view = sender as LibraryView;
+            var browser = view.Browser;
+            browser.ConsoleMessage += OnBrowserConsoleMessage;
+#endif
         }
 
         private void OnBrowserConsoleMessage(object sender, ConsoleMessageEventArgs e)
         {
+            System.Diagnostics.Trace.WriteLine("*****Chromium Browser Messages******");
             System.Diagnostics.Trace.Write(e.Message);
-            System.Diagnostics.Trace.WriteLine("*****");
         }
 
         public void Shutdown()
