@@ -27,11 +27,12 @@
             loadedTypesUrl: "loadedTypes.json", // A url where loaded types are to be downloaded.
             layoutSpecsUrl: "layoutSpecs.json"  // A url where layout specs are to be downloaded.
         };
-
+        let controller = window["controller"];
         let libView = new LibraryEntryPoint.LibraryView(configuration);
 
         libView.on("itemClicked", function(item) {
             console.log(item);
+            controller.onItemClicked(item);
         })
     </script>
 
