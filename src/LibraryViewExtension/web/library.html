@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Librarie.js sample page</title>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            background-color: #353535;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="libraryContainerPlaceholder"></div>
+
+    <!-- The main library view compoment -->
+    <script src='http://localhost/dist/v0.0.1/librarie.min.js'></script>
+
+    <script>
+        let configuration = {
+            htmlElementId: "libraryContainerPlaceholder",
+            loadedTypesUrl: "loadedTypes.json", // A url where loaded types are to be downloaded.
+            layoutSpecsUrl: "layoutSpecs.json"  // A url where layout specs are to be downloaded.
+        };
+        let controller = window["controller"];
+        let libView = new LibraryEntryPoint.LibraryView(configuration);
+
+        libView.on("itemClicked", function(item) {
+            console.log(item);
+            controller.onItemClicked(item);
+        })
+    </script>
+
+</body>
+
+</html>

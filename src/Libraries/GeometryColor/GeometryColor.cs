@@ -5,13 +5,14 @@ using Analysis;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
-using Display.Properties;
+using GeometryColor.Properties;
 using DSCore;
+using Dynamo.Graph.Nodes;
 using Math = DSCore.Math;
 
-namespace Display
+namespace Modifiers
 {
-    public class Display :  IGraphicItem
+    public class GeometryColor :  IGraphicItem
     {
         #region private members
 
@@ -25,13 +26,13 @@ namespace Display
 
         #region private constructors
 
-        private Display(Geometry geometry, Color color)
+        private GeometryColor(Geometry geometry, Color color)
         {
             this.geometry = geometry;
             this.singleColor = color;
         }
 
-        private Display(Surface surface, Color[][] colors)
+        private GeometryColor(Surface surface, Color[][] colors)
         {
             geometry = surface;
 
@@ -57,7 +58,7 @@ namespace Display
             } 
         }
 
-        private Display(Point[] vertices, Color[] colors)
+        private GeometryColor(Point[] vertices, Color[] colors)
         {
             this.vertices = vertices;
             meshVertexColors = colors;
@@ -73,7 +74,7 @@ namespace Display
         /// <param name="geometry">The geometry to which you would like to apply color.</param>
         /// <param name="color">The color.</param>
         /// <returns>A Display object.</returns>
-        public static Display ByGeometryColor([KeepReferenceAttribute]Geometry geometry, Color color)
+        public static GeometryColor ByGeometryColor([KeepReferenceAttribute]Geometry geometry, Color color)
         {
             if (geometry == null)
             {
@@ -85,7 +86,7 @@ namespace Display
                 throw new ArgumentNullException("color");
             }
 
-            return new Display(geometry, color);
+            return new GeometryColor(geometry, color);
         }
 
         /// <summary>
@@ -101,7 +102,7 @@ namespace Display
         /// The list of colors must be square. Attempting to pass a jagged array
         /// will result in an exception. </param>
         /// <returns>A Display object.</returns>
-        public static Display BySurfaceColors([KeepReferenceAttribute]Surface surface,
+        public static GeometryColor BySurfaceColors([KeepReferenceAttribute]Surface surface,
             [DefaultArgument("{{Color.ByARGB(255,255,0,0),Color.ByARGB(255,255,255,0)},{Color.ByARGB(255,0,255,255),Color.ByARGB(255,0,0,255)}};")] Color[][] colors)
         {
             if (surface == null)
@@ -133,7 +134,7 @@ namespace Display
                 }
             }
 
-            return new Display(surface, colors);
+            return new GeometryColor(surface, colors);
         }
 
         /// <summary>
@@ -153,7 +154,7 @@ namespace Display
         /// have the same number of Colors as the list of points will throw an exception.</param>
         /// <returns>A Display object.</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static Display ByPointsColors([KeepReferenceAttribute]Point[] points, Color[] colors)
+        public static GeometryColor ByPointsColors([KeepReferenceAttribute]Point[] points, Color[] colors)
         {
             if(points == null)
             {
@@ -185,7 +186,7 @@ namespace Display
                 throw new ArgumentException(Resources.VertexColorCountMismatchExceptionMessage, "colors");
             }
 
-            return new Display(points, colors);
+            return new GeometryColor(points, colors);
         }
 
         #endregion
@@ -221,7 +222,7 @@ namespace Display
 
         public override string ToString()
         {
-            return string.Format("Display" + "(Geometry = {0}, Appearance = {1})", geometry, singleColor != null ? singleColor.ToString() : "Multiple colors.");
+            return string.Format("GeometryColor" + "(Geometry = {0}, Appearance = {1})", geometry, singleColor != null ? singleColor.ToString() : "Multiple colors.");
         }
 
         #endregion

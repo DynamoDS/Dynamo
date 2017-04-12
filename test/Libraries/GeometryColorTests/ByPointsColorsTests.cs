@@ -7,7 +7,7 @@ using Autodesk.DesignScript.Interfaces;
 using Dynamo.Visualization;
 using TestServices;
 
-namespace DisplayTests
+namespace GeometryColorTests
 {
     [TestFixture]
     public class ByPointsColorsTests : GeometricTestBase
@@ -15,49 +15,49 @@ namespace DisplayTests
         [Test]
         public void Construction_AllGood()
         {
-            Assert.DoesNotThrow(() => Display.Display.ByPointsColors(
+            Assert.DoesNotThrow(() => Modifiers.GeometryColor.ByPointsColors(
             TestVertices(), TestColors()));
         }
 
         [Test]
         public void Construction_NullVertices_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => Display.Display.ByPointsColors(
+            Assert.Throws<ArgumentNullException>(() => Modifiers.GeometryColor.ByPointsColors(
             null, TestColors()));
         }
 
         [Test]
         public void Construction_NullColors_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => Display.Display.ByPointsColors(
+            Assert.Throws<ArgumentNullException>(() => Modifiers.GeometryColor.ByPointsColors(
             TestVertices(), null));
         }
 
         [Test]
         public void Construction_EmptyVertices_ThrowsException()
         {
-            Assert.Throws<ArgumentException>(() => Display.Display.ByPointsColors(
+            Assert.Throws<ArgumentException>(() => Modifiers.GeometryColor.ByPointsColors(
             new Point[] {}, TestColors()));
         }
 
         [Test]
         public void Construction_EmptyColors_ThrowsException()
         {
-            Assert.Throws<ArgumentException>(() => Display.Display.ByPointsColors(
+            Assert.Throws<ArgumentException>(() => Modifiers.GeometryColor.ByPointsColors(
             TestVertices(), new Color[] { }));
         }
 
         [Test]
         public void Construction_UnequalPointsAndColors_ThrowsException()
         {
-            Assert.Throws<ArgumentException>(() => Display.Display.ByPointsColors(
+            Assert.Throws<ArgumentException>(() => Modifiers.GeometryColor.ByPointsColors(
             TestVertices(), new Color[] { Color.ByARGB(), Color.ByARGB(255, 0, 0, 255) }));
         }
 
         [Test]
         public void Construction_ThreePointsInALine_DoesNotDrawTriangle()
         {
-            var displayMesh = Display.Display.ByPointsColors(TestVerticesInALine(), TestColors().Take(3).ToArray());
+            var displayMesh = Modifiers.GeometryColor.ByPointsColors(TestVerticesInALine(), TestColors().Take(3).ToArray());
             var factory = new DefaultRenderPackageFactory();
             var package = factory.CreateRenderPackage();
             displayMesh.Tessellate(package, new TessellationParameters());
@@ -67,7 +67,7 @@ namespace DisplayTests
         [Test]
         public void Construction_TWoPointInSamePlace_DoesNotDrawTriangle()
         {
-            var displayMesh = Display.Display.ByPointsColors(TestVerticesTwoInSamePlace(), TestColors().Take(3).ToArray());
+            var displayMesh = Modifiers.GeometryColor.ByPointsColors(TestVerticesTwoInSamePlace(), TestColors().Take(3).ToArray());
             var factory = new DefaultRenderPackageFactory();
             var package = factory.CreateRenderPackage();
             displayMesh.Tessellate(package, new TessellationParameters());
