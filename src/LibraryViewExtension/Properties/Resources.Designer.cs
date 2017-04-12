@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Display.Properties {
+namespace Dynamo.LibraryUI.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Display.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Display.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dynamo.LibraryUI.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,60 +57,6 @@ namespace Display.Properties {
             }
             set {
                 resourceCulture = value;
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The list of colors must not be a jagged list..
-        /// </summary>
-        internal static string JaggedListExceptionMessage {
-            get {
-                return ResourceManager.GetString("JaggedListExceptionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You must provide some colors..
-        /// </summary>
-        internal static string NoColorsExceptionMessage {
-            get {
-                return ResourceManager.GetString("NoColorsExceptionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You must provide some vertices..
-        /// </summary>
-        internal static string NoVertexExceptionMessage {
-            get {
-                return ResourceManager.GetString("NoVertexExceptionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You must supply a two dimensional list of Colors..
-        /// </summary>
-        internal static string TwoDimensionalListExceptionMessage {
-            get {
-                return ResourceManager.GetString("TwoDimensionalListExceptionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The number of colors supplied must match the number of vertices..
-        /// </summary>
-        internal static string VertexColorCountMismatchExceptionMessage {
-            get {
-                return ResourceManager.GetString("VertexColorCountMismatchExceptionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The number of vertices supplied must be divisible by three..
-        /// </summary>
-        internal static string VerticesDivisibleByThreeExceptionMessage {
-            get {
-                return ResourceManager.GetString("VerticesDivisibleByThreeExceptionMessage", resourceCulture);
             }
         }
     }

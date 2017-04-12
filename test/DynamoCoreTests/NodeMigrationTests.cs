@@ -140,6 +140,24 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestMigration_DSCore_Display_ByGeometryColor()
+        {
+            TestMigration("TestMigration_DSCore_Display_ByGeometryColor.dyn");
+        }
+
+        [Test]
+        public void TestMigration_Display_ByGeometryColor()
+        {
+            TestMigration("TestMigration_Display_ByGeometryColor.dyn");
+        }
+
+        [Test]
+        public void TestMigration_Display_BySurfaceColors()
+        {
+            TestMigration("TestMigration_Display_BySurfaceColors.dyn");
+        }
+
+        [Test]
         public void TestStringInput()
         {
             OpenModel(GetDynPath("TestStringInput.dyn"));

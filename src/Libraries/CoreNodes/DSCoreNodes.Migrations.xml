@@ -30,11 +30,31 @@
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.Display.ByGeometryColor</oldName>
-    <newName>Display.Display.ByGeometryColor</newName>
+    <newName>Modifiers.GeometryColor.ByGeometryColor</newName>
     <additionalAttributes>
       <attribute>
         <name>assembly</name>
-        <value>Display.dll</value>
+        <value>GeometryColor.dll</value>
+      </attribute>
+    </additionalAttributes>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Display.Display.ByGeometryColor</oldName>
+    <newName>Modifiers.GeometryColor.ByGeometryColor</newName>
+    <additionalAttributes>
+      <attribute>
+        <name>assembly</name>
+        <value>GeometryColor.dll</value>
+      </attribute>
+    </additionalAttributes>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Display.Display.BySurfaceColors</oldName>
+    <newName>Modifiers.GeometryColor.BySurfaceColors</newName>
+    <additionalAttributes>
+      <attribute>
+        <name>assembly</name>
+        <value>GeometryColor.dll</value>
       </attribute>
     </additionalAttributes>
   </priorNameHint>
