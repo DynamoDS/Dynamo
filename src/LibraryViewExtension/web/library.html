@@ -30,9 +30,9 @@
         let controller = window["controller"];
         let libView = new LibraryEntryPoint.LibraryView(configuration);
 
-        libView.on("itemClicked", function(item) {
-            console.log(item);
-            controller.onItemClicked(item);
+        libView.on("itemClicked", function(nodeCreationName) {
+            console.log(nodeCreationName);
+            controller.createNode(nodeCreationName);
         })
     </script>
 

@@ -74,6 +74,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LibraryViewController.cs" />
     <Compile Include="LibraryViewExtension.cs" />
     <Compile Include="Properties\Resources.en-US.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -84,6 +85,10 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\DetailsViewModel.cs" />
+    <Compile Include="Views\DetailsView.xaml.cs">
+      <DependentUpon>DetailsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LibraryView.xaml.cs">
       <DependentUpon>LibraryView.xaml</DependentUpon>
@@ -113,6 +118,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\DetailsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\LibraryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
