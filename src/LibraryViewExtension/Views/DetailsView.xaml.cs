@@ -40,8 +40,6 @@ namespace Dynamo.LibraryUI.Views
 
             InitializeComponent();
 
-            UpdateVisibility();
-
             this.IsVisibleChanged += OnVisibilityChange;
         }
 
@@ -49,7 +47,7 @@ namespace Dynamo.LibraryUI.Views
         {
             foreach (UIElement item in parentGrid.Children)
             {
-                if (item.Visibility == Visibility.Visible)
+                if (item.Visibility == Visibility.Visible && item != this)
                 {
                     lastVisibleItem = item;
                     lastVisibleItem.Visibility = Visibility.Collapsed;
@@ -60,9 +58,14 @@ namespace Dynamo.LibraryUI.Views
 
         private void OnVisibilityChange(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (lastVisibleItem != null)
+            if (this.Visibility != Visibility.Visible)
             {
-                lastVisibleItem.Visibility = Visibility.Visible;
+                if(lastVisibleItem != null) lastVisibleItem.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                lastVisibleItem = null;
+                UpdateVisibility();
             }
         }
     }

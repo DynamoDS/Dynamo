@@ -1,4 +1,5 @@
-﻿using Microsoft.Practices.Prism.ViewModel;
+﻿using System.Windows;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.LibraryUI.ViewModels
 {
@@ -31,19 +32,28 @@ namespace Dynamo.LibraryUI.ViewModels
         }
 
         /// <summary>
-        /// Checks if the view is visible
+        /// Checks and updates the visibility property
         /// </summary>
         public bool IsVisible
         {
-            get { return visible; }
+            get { return Visibility == Visibility.Visible; }
+            set { Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
+        }
+
+        /// <summary>
+        /// Controls visibilty of the view
+        /// </summary>
+        public Visibility Visibility
+        {
+            get { return visibility; }
             set
             {
-                visible = value;
-                RaisePropertyChanged("IsVisible");
+                visibility = value;
+                RaisePropertyChanged("Visibility");
             }
         }
 
-        private bool visible = true;
+        private Visibility visibility = Visibility.Visible;
         private string address;
     }
 }

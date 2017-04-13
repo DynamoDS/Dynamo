@@ -23,8 +23,9 @@ namespace Dynamo.LibraryUI
     {
         private Window dynamoWindow;
         private ICommandExecutive commandExecutive;
+        private DetailsView detailsView;
         private DetailsViewModel detailsViewModel;
-
+        
         /// <summary>
         /// Creates LibraryViewController
         /// </summary>
@@ -56,14 +57,14 @@ namespace Dynamo.LibraryUI
         /// <param name="item">item data for which details need to be shown</param>
         public void ShowDetailsView(string item)
         {
-            if(detailsViewModel == null)
+            DetailsViewContextData = item;
+            if(detailsView == null)
             {
                 dynamoWindow.Dispatcher.BeginInvoke(new Action(() => AddDetailsView(item)));
             }
             else
             {
-                detailsViewModel.IsVisible = true;
-                detailsViewModel.Address = "http://www.google.com"; //change it based on item
+                dynamoWindow.Dispatcher.BeginInvoke(new Action(() => detailsView.Visibility = Visibility.Visible));
             }
         }
 
@@ -72,8 +73,13 @@ namespace Dynamo.LibraryUI
         /// </summary>
         public void CloseDetailsView()
         {
-            detailsViewModel.IsVisible = false;
+            dynamoWindow.Dispatcher.BeginInvoke(new Action(() => detailsView.Visibility = Visibility.Collapsed));
         }
+
+        /// <summary>
+        /// Gets details view context data, e.g. packageId if it shows details of a package
+        /// </summary>
+        public string DetailsViewContextData { get; set; }
         
         /// <summary>
         /// Creates and add the library view to the WPF visual tree
@@ -140,20 +146,20 @@ namespace Dynamo.LibraryUI
 
         private DetailsView AddDetailsView(string item)
         {
-            detailsViewModel = new DetailsViewModel("http://dictionary.dynamobim.com/");
+            detailsViewModel = new DetailsViewModel("http://localhost/details.html");
 
             var tabcontrol = dynamoWindow.FindName("WorkspaceTabs") as TabControl;
             var grid = tabcontrol.Parent as Grid;
 
-            var detailView = new DetailsView(detailsViewModel, grid);
-            grid.Children.Add(detailView);
+            detailsView = new DetailsView(detailsViewModel, grid);
+            grid.Children.Add(detailsView);
 
-            var browser = detailView.Browser;
-            browser.RegisterJsObject("controller", detailsViewModel);
+            var browser = detailsView.Browser;
+            browser.RegisterJsObject("controller", detailsView);
             RegisterResources(browser);
-            detailView.Loaded += OnDescriptionViewLoaded;
+            detailsView.Loaded += OnDescriptionViewLoaded;
 
-            return detailView;
+            return detailsView;
         }
 
         private void RegisterResources(ChromiumWebBrowser browser)
