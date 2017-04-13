@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using System.Windows;
-using CefSharp;
-using CefSharp.Wpf;
-using Dynamo.Extensions;
-using Dynamo.LibraryUI.Properties;
-using Dynamo.Models;
-using Microsoft.Practices.Prism.ViewModel;
-using Newtonsoft.Json;
+﻿using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.LibraryUI.ViewModels
 {
@@ -42,6 +30,20 @@ namespace Dynamo.LibraryUI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Checks if the view is visible
+        /// </summary>
+        public bool IsVisible
+        {
+            get { return visible; }
+            set
+            {
+                visible = value;
+                RaisePropertyChanged("IsVisible");
+            }
+        }
+
+        private bool visible = true;
         private string address;
     }
 }
