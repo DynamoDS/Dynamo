@@ -155,7 +155,7 @@ namespace Dynamo.LibraryUI
             grid.Children.Add(detailsView);
 
             var browser = detailsView.Browser;
-            browser.RegisterJsObject("controller", detailsView);
+            browser.RegisterJsObject("controller", this);
             RegisterResources(browser);
             detailsView.Loaded += OnDescriptionViewLoaded;
 
@@ -182,11 +182,19 @@ namespace Dynamo.LibraryUI
                     url = url.Replace("dist.", "dist/");
                     url = url.Replace("/v0._0._1.", "/v0.0.1/");
                     url = url.Replace("/resources.", "/resources/");
+                    url = url.Replace("/icons.", "/icons/");
+                    url = url.Replace("/fonts.", "/fonts/");
                 }
+                var mime = MimeType(url);
 
+                if (url.EndsWith(".json"))
+                {
+                    var idx = url.LastIndexOf('.');
+                    url = url.Substring(0, idx);
+                }
                 var r = LoadResource(resource);
                 factory.RegisterHandler("http://localhost/" + url,
-                     ResourceHandler.FromStream(r, MimeType(url)));
+                     ResourceHandler.FromStream(r, mime));
             }
         }
 

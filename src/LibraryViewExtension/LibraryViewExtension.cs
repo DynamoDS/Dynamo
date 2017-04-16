@@ -38,6 +38,7 @@ namespace Dynamo.LibraryUI
             viewLoadedParams = p;
             controller = new LibraryViewController(p.DynamoWindow, p.CommandExecutive);
             controller.AddLibraryView();
+            //controller.ShowDetailsView("583d8ad8fdef23aa6e000037");
         }
 
         public void Shutdown()

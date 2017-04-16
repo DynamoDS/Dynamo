@@ -15,25 +15,44 @@
 </head>
 
 <body>
+    <link rel="stylesheet" href="./dist/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="./dist/resources/styles.css" />
+    <script src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
 
-    <div id="libraryContainerPlaceholder"></div>
-
+    <!-- Placeholders must exist before all other scripts that try to access them -->
+        <div id="libraryContainerPlaceholder"></div>
+    
     <!-- The main library view compoment -->
-    <script src='http://localhost/dist/v0.0.1/librarie.min.js'></script>
-
+    <script src='./dist/v0.0.1/librarie.min.js'></script>
+    
     <script>
+        let controller = window["controller"];
+    
+        //let tabControl = new PackageManagerEntryPoint.TabControl(tabControlConfig);
+        // tabControl.insertTab("Library", null);
+        // tabControl.insertTab("Packages", null);
+
+        // Register a callback event for tabControl
+        //tabControl.on("packageItemClicked", function (id) {
+        //    console.log(id);
+        //    controller.showDetailsView(id);
+            //detailedView.setActivePackageId(id);
+        //});
+
         let configuration = {
             htmlElementId: "libraryContainerPlaceholder",
-            loadedTypesUrl: "loadedTypes.json", // A url where loaded types are to be downloaded.
-            layoutSpecsUrl: "layoutSpecs.json"  // A url where layout specs are to be downloaded.
+            loadedTypesUrl: "loadedTypes", // A url where loaded types are to be downloaded.
+            layoutSpecsUrl: "layoutSpecs"  // A url where layout specs are to be downloaded.
         };
-        let controller = window["controller"];
+        
         let libView = new LibraryEntryPoint.LibraryView(configuration);
 
-        libView.on("itemClicked", function(nodeCreationName) {
+        libView.on("itemClicked", function (nodeCreationName) {
             console.log(nodeCreationName);
-            controller.createNode(nodeCreationName);
-        })
+            //controller.createNode(nodeCreationName);
+            controller.showDetailsView("583d8ad8fdef23aa6e000037");
+        });
     </script>
 
 </body>

@@ -1,0 +1,65 @@
+{
+    "success": true,
+    "message": "Found package",
+    "content": {
+        "_id": "583d8ad8fdef23aa6e000037",
+        "name": "DynamoJson",
+        "__v": 1,
+        "white_list": false,
+        "versions": [
+            {
+                "_id": "583d8ad8fdef23aa6e000038",
+                "contains_binaries": true,
+                "node_libraries": [
+                    "DynamoJson, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                ],
+                "url_with_deps": "",
+                "url": "https://s3.amazonaws.com/greg-pkgs-prod/2218d819-9f9d-453d-a80e-75f9f503c81dgregPkg989.zip",
+                "contents": "",
+                "engine_metadata": "",
+                "engine_version": "1.2.0.2831",
+                "created": "2016-11-29T14:04:08.404Z",
+                "full_dependency_versions": [
+                    "1.0.0"
+                ],
+                "full_dependency_ids": [
+                    {
+                        "_id": "583d8ad8fdef23aa6e000037",
+                        "name": "DynamoJson"
+                    }
+                ],
+                "direct_dependency_versions": [],
+                "direct_dependency_ids": [],
+                "change_log": "",
+                "version": "1.0.0"
+            }
+        ],
+        "latest_version_update": "2016-11-29T14:04:08.404Z",
+        "num_versions": 1,
+        "comments": [],
+        "num_comments": 0,
+        "latest_comment": "1970-01-01T00:00:00.000Z",
+        "votes": 1,
+        "downloads": 150,
+        "repository_url": "https://github.com/ellensi/DynamoJson",
+        "site_url": "",
+        "banned": false,
+        "deprecated": false,
+        "group": "",
+        "engine": "dynamo",
+        "license": "MIT",
+        "used_by": [],
+        "num_dependents": 0,
+        "description": "This package provides functionality to read and write Dynamo data to and from JSON strings or files.",
+        "maintainers": [
+            {
+                "_id": "5715c9ae287283f905000048",
+                "username": "ellensi"
+            }
+        ],
+        "keywords": [
+            "json;read;write;import;export;file;interop;convert;csv"
+        ],
+        "created": "2016-11-29T14:04:08.404Z"
+    }
+}
