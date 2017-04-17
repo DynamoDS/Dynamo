@@ -1,0 +1,64 @@
+{
+    "success": true,
+    "message": "Found package",
+    "content": {
+            "_id": "58b58359f4db78ec01000068",
+            "name": "ArePointsCollinear",
+            "__v": 1,
+            "white_list": false,
+            "versions": [
+                {
+                    "_id": "58b58359f4db78ec01000069",
+                    "contains_binaries": false,
+                    "node_libraries": [],
+                    "url_with_deps": "",
+                    "url": "https://s3.amazonaws.com/greg-pkgs-prod/5792cc5c-6740-427b-a9d5-f0aeead1e6a9gregPkg49.zip",
+                    "contents": "ArePointsCollinear - Tests whether points are collinear in the sequence that they are provided",
+                    "engine_metadata": "",
+                    "engine_version": "1.2.1.3083",
+                    "created": "2017-02-28T14:04:09.801Z",
+                    "full_dependency_versions": [
+                        "2017.1.1"
+                    ],
+                    "full_dependency_ids": [
+                        {
+                            "_id": "58b58359f4db78ec01000068",
+                            "name": "ArePointsCollinear"
+                        }
+                    ],
+                    "direct_dependency_versions": [],
+                    "direct_dependency_ids": [],
+                    "change_log": "",
+                    "version": "2017.1.1"
+                }
+            ],
+            "latest_version_update": "2017-02-28T14:04:09.801Z",
+            "num_versions": 1,
+            "comments": [],
+            "num_comments": 0,
+            "latest_comment": "1970-01-01T00:00:00.000Z",
+            "votes": 0,
+            "downloads": 28,
+            "repository_url": "",
+            "site_url": "",
+            "banned": false,
+            "deprecated": false,
+            "group": "Lightos",
+            "engine": "dynamo",
+            "license": "MIT",
+            "used_by": [],
+            "num_dependents": 0,
+            "description": "Produces a list a true or false statements testing whether sequential points are collinear",
+            "maintainers": [
+                {
+                    "_id": "5889cf44ca6a5edb650000a0",
+                    "username": "tom.james@bailygarner.co.uk"
+                }
+            ],
+            "keywords": [
+                "points",
+                "collinear"
+            ],
+            "created": "2017-02-28T14:04:09.801Z"
+        }
+}
