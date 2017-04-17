@@ -26,6 +26,7 @@ namespace Dynamo.LibraryUI
         private DetailsView detailsView;
         private DetailsViewModel detailsViewModel;
         private Dictionary<string, Stream> resourceStreams = new Dictionary<string, Stream>();
+        private Dictionary<string, object> callbacks = new Dictionary<string, object>();
         
         /// <summary>
         /// Creates LibraryViewController
@@ -60,6 +61,7 @@ namespace Dynamo.LibraryUI
         public void ShowDetailsView(string item)
         {
             DetailsViewContextData = item;
+            RaiseEvent("detailsViewContextDataChanged", item);
             if(detailsView == null)
             {
                 dynamoWindow.Dispatcher.BeginInvoke(new Action(() => AddDetailsView(item)));
@@ -76,6 +78,24 @@ namespace Dynamo.LibraryUI
         public void CloseDetailsView()
         {
             dynamoWindow.Dispatcher.BeginInvoke(new Action(() => detailsView.Visibility = Visibility.Collapsed));
+        }
+
+        public void On(string eventName, object callback)
+        {
+            callbacks.Add(eventName, callback);
+        }
+
+        private void RaiseEvent(string eventName, params object[] parameters)
+        {
+            object callback = null;
+            if(callbacks.TryGetValue(eventName, out callback))
+            {
+                var cbfunc = callback as IJavascriptCallback;
+                if(cbfunc.CanExecute)
+                {
+                    cbfunc.ExecuteAsync(parameters);
+                }
+            }
         }
 
         /// <summary>

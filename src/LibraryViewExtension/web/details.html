@@ -31,7 +31,11 @@
 
         pkgController.on("closeButtonClicked", function (pkgId) {
             controller.closeDetailsView();
-        })
+        });
+
+        controller.on("detailsViewContextDataChanged", function (item) {
+            detailedView.setActivePackageId(item);
+        });
 
     </script>
 </body>
