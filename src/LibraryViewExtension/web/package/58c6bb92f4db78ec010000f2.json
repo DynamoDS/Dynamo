@@ -1,0 +1,88 @@
+{
+    "success": true,
+    "message": "Found package",
+    "content": {
+        "_id": "58c6bb92f4db78ec010000f2",
+        "name": "lineal",
+        "__v": 1,
+        "white_list": false,
+        "versions": [
+            {
+                "_id": "58c6bb92f4db78ec010000f3",
+                "contains_binaries": false,
+                "node_libraries": [],
+                "url_with_deps": "",
+                "url": "https://s3.amazonaws.com/greg-pkgs-prod/4c26f94c-447e-4f4e-b5e5-5fc633f529f7gregPkg275.zip",
+                "contents": "# de columnas y filas y respectivo rango - Numero de columnas y de filas y su respectivo rango para su uso en recorridos de codigo el rango esta establecido como:\r\nRango Filas = # de filas + 1\r\nRango Columnas = # de columnas + 1, Creación de Planos Horizontales y Verticales - Crea planos verticales y horizonrales a partir de un muro que contenga Ventanas, Geometry.SplitRecursively - Splits a surface or a solid recursively, using the resulting reduced geometry for every consecutive split. Select a point or another geometry to control the direction of the split., Longitud de grupos de trozos horizontales - Saca la longitud de los grupos de los trozos que estan unidos de forma horizontal, Muro fantasma identico a muro real - Crea un muro fantasma con las mismas propiedades del muro real;\r\nCurve\r\nHeight\r\nLevel\r\nWall Type, Puntos recursivos origen y referencia para corte vertical muro - El nodo crea puntos recursivamente para hallar el origen del muro, este se usa para organizar los planos verticales y crea puntos recursivos para el corte recursivo de los Solidos, Referencia para cortes verticales - Dado un grupo de planos verticales y sus debidos origenes, los organiza para el corte recursivo",
+                "engine_metadata": "",
+                "engine_version": "1.2.1.3083",
+                "created": "2017-03-13T15:32:34.542Z",
+                "full_dependency_versions": [
+                    "1.1.1",
+                    "1.2.2",
+                    "0.90.7"
+                ],
+                "full_dependency_ids": [
+                    {
+                        "_id": "58c6bb92f4db78ec010000f2",
+                        "name": "lineal"
+                    },
+                    {
+                        "_id": "545a51aa893c653357000008",
+                        "name": "SteamNodes"
+                    },
+                    {
+                        "_id": "562f800e662bf0e9080002ab",
+                        "name": "Clockwork for Dynamo 0.9.x"
+                    }
+                ],
+                "direct_dependency_versions": [
+                    "0.90.7",
+                    "1.2.2"
+                ],
+                "direct_dependency_ids": [
+                    {
+                        "_id": "562f800e662bf0e9080002ab",
+                        "name": "Clockwork for Dynamo 0.9.x"
+                    },
+                    {
+                        "_id": "545a51aa893c653357000008",
+                        "name": "SteamNodes"
+                    }
+                ],
+                "change_log": "",
+                "version": "1.1.1"
+            }
+        ],
+        "latest_version_update": "2017-03-13T15:32:34.542Z",
+        "num_versions": 1,
+        "comments": [],
+        "num_comments": 0,
+        "latest_comment": "1970-01-01T00:00:00.000Z",
+        "votes": 0,
+        "downloads": 22,
+        "repository_url": "",
+        "site_url": "",
+        "banned": false,
+        "deprecated": false,
+        "group": "bolivar",
+        "engine": "dynamo",
+        "license": "MIT",
+        "used_by": [],
+        "num_dependents": 0,
+        "description": "lineal cuadrado metros muro",
+        "maintainers": [
+            {
+                "_id": "58c6aaf4f4db78ec010000ef",
+                "username": "js.galindo1155@uniandes.edu.co"
+            }
+        ],
+        "keywords": [
+            "lineal",
+            "cuadrado",
+            "metros",
+            "muro"
+        ],
+        "created": "2017-03-13T15:32:34.542Z"
+    }
+}
