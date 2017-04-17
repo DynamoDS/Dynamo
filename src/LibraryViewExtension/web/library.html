@@ -11,6 +11,37 @@
             margin: 0;
             background-color: #353535;
         }
+        /* Style the tab */
+        div.tab {
+            overflow: hidden;
+            background-color: black;
+        }
+
+        /* Style the buttons inside the tab */
+        div.tab button {
+            background-color: grey;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+        }
+
+        /* Change background color of buttons on hover */
+        div.tab button:hover {
+            background-color: #ddd;
+        }
+
+        /* Create an active/current tablink class */
+        div.tab button.active {
+            background-color: #ccc;
+        }
+
+        /* Style the tab content */
+        .tabcontent {
+            display: none;
+        }
     </style>
 </head>
 
@@ -21,24 +52,64 @@
     <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
 
     <!-- Placeholders must exist before all other scripts that try to access them -->
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'LibraryContents')" id="defaultTab">Library</button>
+        <button class="tablinks" onclick="openTab(event, 'PacakgesContents')">Packages</button>
+    </div>
+
+    <div id="LibraryContents" class="tabcontent">
         <div id="libraryContainerPlaceholder"></div>
+    </div>
+
+    <div id="PacakgesContents" class="tabcontent">
+        <div id="pacakgeContainerPlaceholder"></div>
+    </div>
     
     <!-- The main library view compoment -->
     <script src='./dist/v0.0.1/librarie.min.js'></script>
+    <script src='./dist/bundle.js'></script>
     
     <script>
+        function openTab(evt, content) {
+            // Declare all variables
+            var i, tabcontent, tablinks;
+
+            // Get all elements with class="tabcontent" and hide them
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            // Get all elements with class="tablinks" and remove the class "active"
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            // Show the current tab, and add an "active" class to the button that opened the tab
+            document.getElementById(content).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // Get the element with id="defaultOpen" and click on it
+        document.getElementById("defaultTab").click();
+
         let controller = window["controller"];
     
-        //let tabControl = new PackageManagerEntryPoint.TabControl(tabControlConfig);
-        // tabControl.insertTab("Library", null);
-        // tabControl.insertTab("Packages", null);
+        let pkgController = PackageManagerEntryPoint.CreatePackageController();
 
+        let tabControlConfig = {
+            pkgController: pkgController,
+            htmlElementId: "pacakgeContainerPlaceholder"
+        };
+
+        let tabControl = new PackageManagerEntryPoint.TabControl(tabControlConfig);
+        
         // Register a callback event for tabControl
-        //tabControl.on("packageItemClicked", function (id) {
-        //    console.log(id);
-        //    controller.showDetailsView(id);
-            //detailedView.setActivePackageId(id);
-        //});
+        tabControl.on("packageItemClicked", function (id) {
+            console.log(id);
+            controller.showDetailsView(id);
+        });
 
         let configuration = {
             htmlElementId: "libraryContainerPlaceholder",
@@ -50,8 +121,8 @@
 
         libView.on("itemClicked", function (nodeCreationName) {
             console.log(nodeCreationName);
-            //controller.createNode(nodeCreationName);
-            controller.showDetailsView("583d8ad8fdef23aa6e000037");
+            controller.createNode(nodeCreationName);
+            //controller.showDetailsView("583d8ad8fdef23aa6e000037");
         });
     </script>
 

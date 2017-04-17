@@ -7,9 +7,9 @@ var PackageManagerEntryPoint =
 /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-/******/
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
@@ -356,9 +356,10 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var PackageHeader_1 = __webpack_require__(9);
-var PackageDescription_1 = __webpack_require__(8);
+var PackageHeader_1 = __webpack_require__(10);
+var PackageDescription_1 = __webpack_require__(9);
 var VersionContainer_1 = __webpack_require__(14);
+var CloseButton_1 = __webpack_require__(8);
 var PackageDetailView = (function (_super) {
     __extends(PackageDetailView, _super);
     function PackageDetailView(props) {
@@ -382,6 +383,7 @@ var PackageDetailView = (function (_super) {
         });
     };
     PackageDetailView.prototype.render = function () {
+        var _this = this;
         if (this.props.packageId != this.state.activePackageId) {
             this.setState({ activePackageId: this.props.packageId });
             this.beginDownloadPackage(this.props.packageId);
@@ -392,9 +394,11 @@ var PackageDetailView = (function (_super) {
         var dependencies = ["jaz", "juice"];
         var content = this.state.activePackageJson.content;
         return (React.createElement("div", { id: "PackageDetailView", className: "PackageDetailView" },
+            this.props.showCloseButton == true ?
+                React.createElement(CloseButton_1.CloseButton, { onClickCallback: function () { return _this.props.pkgController.raiseEvent("closeButtonClicked", _this.props.packageId); } }) : null,
             React.createElement(PackageHeader_1.PackageHeader, { pkg: content }),
             React.createElement(PackageDescription_1.PackageDescription, { pkg: content }),
-            React.createElement(VersionContainer_1.VersionContainer, { pkgController: this.props.pkgController, pkg: content })));
+            React.createElement(VersionContainer_1.VersionContainer, { pkgController: this.props.pkgController, pkg: content }))); // Condiitonal rendering of close button based on if the value of showCloseButton is true
     };
     return PackageDetailView;
 }(React.Component));
@@ -419,9 +423,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var SearchBar_1 = __webpack_require__(12);
-var PackageList_1 = __webpack_require__(11);
-var TabHeader_1 = __webpack_require__(13);
+var SearchBar_1 = __webpack_require__(13);
+var PackageList_1 = __webpack_require__(12);
 var TabComponent = (function (_super) {
     __extends(TabComponent, _super);
     function TabComponent(props) {
@@ -457,11 +460,9 @@ var TabComponent = (function (_super) {
         var urls = ["/dist/resources/icons/tab-library.svg", "/dist/resources/icons/tab-package.svg"];
         var toolTips = ["library view", "package view"];
         var filterConfig = this.filterConfig;
-        return (React.createElement("div", { id: "TabComponent", className: "TabComponent" },
-            React.createElement(TabHeader_1.TabHeader, { iconUrls: urls, toolTips: toolTips }),
-            React.createElement("div", { id: "TabContentArea", className: "TabContentArea" },
-                React.createElement(SearchBar_1.SearchBar, { onSearchChanged: this.onSearchChanged }),
-                React.createElement(PackageList_1.PackageList, { pkgController: this.props.pkgController, filterConfig: filterConfig, setActivePackageId: this.setActivePackageId }))));
+        return (React.createElement("div", { id: "TabContentArea", className: "TabContentArea" },
+            React.createElement(SearchBar_1.SearchBar, { onSearchChanged: this.onSearchChanged }),
+            React.createElement(PackageList_1.PackageList, { pkgController: this.props.pkgController, filterConfig: filterConfig, setActivePackageId: this.setActivePackageId })));
     };
     return TabComponent;
 }(React.Component));
@@ -476,6 +477,47 @@ module.exports = ReactDOM;
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var CloseButton = (function (_super) {
+    __extends(CloseButton, _super);
+    function CloseButton() {
+        var _this = _super.call(this) || this;
+        _this.state = { visible: false };
+        return _this;
+    }
+    CloseButton.prototype.Display = function (display) {
+        this.setState({
+            visible: display
+        });
+    };
+    CloseButton.prototype.render = function () {
+        var font = "fa fa-times";
+        var widget = [];
+        widget.push(React.createElement("button", { className: font, style: { background: "transparent", border: "transparent" } }));
+        return (React.createElement("div", { className: "CloseDetailView", onClick: this.props.onClickCallback }, widget));
+    };
+    return CloseButton;
+}(React.Component));
+exports.CloseButton = CloseButton;
+
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -524,7 +566,7 @@ exports.PackageDescription = PackageDescription;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -592,7 +634,7 @@ exports.PackageHeader = PackageHeader;
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -651,7 +693,7 @@ exports.PackageItem = PackageItem;
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -668,7 +710,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var PackageItem_1 = __webpack_require__(10);
+var PackageItem_1 = __webpack_require__(11);
 var PackageList = (function (_super) {
     __extends(PackageList, _super);
     function PackageList(props) {
@@ -737,7 +779,7 @@ exports.PackageList = PackageList;
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -827,53 +869,6 @@ var SearchBar = (function (_super) {
     return SearchBar;
 }(React.Component));
 exports.SearchBar = SearchBar;
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(0);
-var TabHeader = (function (_super) {
-    __extends(TabHeader, _super);
-    function TabHeader(props) {
-        var _this = _super.call(this, props) || this;
-        _this.tabClicked = _this.tabClicked.bind(_this);
-        _this.state = { selectionIndex: -1 };
-        return _this;
-    }
-    TabHeader.prototype.tabClicked = function (idx) {
-        this.setState({ selectionIndex: idx });
-    };
-    TabHeader.prototype.render = function () {
-        var _this = this;
-        var tooptip = null;
-        var idx = -1;
-        var icons = this.props.iconUrls.map(function (item) {
-            idx++;
-            var tabstyle = idx === _this.state.selectionIndex ? "TabSelected" : "Tab";
-            return (React.createElement("div", { className: tabstyle, onClick: function (obj, j) { return function () { obj.tabClicked(j); }; }(_this, idx) },
-                React.createElement("img", { src: item, width: "50%", height: "auto" }),
-                React.createElement("span", { className: "tooltip" }, _this.props.toolTips[idx])));
-        });
-        return (React.createElement("div", { className: "TabHeader" }, icons));
-    };
-    return TabHeader;
-}(React.Component));
-exports.TabHeader = TabHeader;
 
 
 /***/ }),
@@ -1040,16 +1035,18 @@ var DetailedView = (function () {
     function DetailedView(config) {
         this.reactor = null;
         this.pkgController = null;
+        this.showClose = false;
         this.htmlElementId = config.htmlElementId;
         this.reactor = new EventHandler_1.Reactor();
         this.pkgController = config.pkgController;
+        this.showClose = config.showCloseButton;
         this.setActivePackageId = this.setActivePackageId.bind(this);
         this.on = this.on.bind(this);
         this.raiseEvent = this.raiseEvent.bind(this);
     }
     DetailedView.prototype.setActivePackageId = function (packageId) {
         var htmlElement = document.getElementById(this.htmlElementId);
-        ReactDOM.render(React.createElement(PackageDetailView_1.PackageDetailView, { pkgController: this.pkgController, packageId: packageId }), htmlElement);
+        ReactDOM.render(React.createElement(PackageDetailView_1.PackageDetailView, { pkgController: this.pkgController, packageId: packageId, showCloseButton: this.showClose }), htmlElement);
     };
     DetailedView.prototype.on = function (eventName, callback) {
         this.reactor.registerEvent(eventName, callback);

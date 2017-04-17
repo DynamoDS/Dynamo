@@ -25,6 +25,7 @@ namespace Dynamo.LibraryUI
         private ICommandExecutive commandExecutive;
         private DetailsView detailsView;
         private DetailsViewModel detailsViewModel;
+        private Dictionary<string, Stream> resourceStreams = new Dictionary<string, Stream>();
         
         /// <summary>
         /// Creates LibraryViewController
@@ -35,6 +36,7 @@ namespace Dynamo.LibraryUI
         {
             this.dynamoWindow = dynamoView;
             this.commandExecutive = commandExecutive;
+            InitializeResourceStreams();
         }
 
         /// <summary>
@@ -99,29 +101,7 @@ namespace Dynamo.LibraryUI
             view.Loaded += OnLibraryViewLoaded;
             return view;
         }
-
-        /// <summary>
-        /// Returns a mime type based on the path extension 
-        /// </summary>
-        /// <param name="path">Relative path</param>
-        /// <returns>mime type string</returns>
-        private string MimeType(string path)
-        {
-            var idx = path.LastIndexOf('.');
-            var ext = path.Substring(idx);
-            switch (ext)
-            {
-                case "svg":
-                    return "text/svg";
-                case "png":
-                    return "image/png";
-                case "js":
-                    return "text/javascript";
-                default:
-                    return "text/html";
-            }
-        }
-
+        
         private Stream LoadResource(string url)
         {
             var assembly = Assembly.GetExecutingAssembly();
@@ -162,13 +142,9 @@ namespace Dynamo.LibraryUI
             return detailsView;
         }
 
-        private void RegisterResources(ChromiumWebBrowser browser)
+        private void InitializeResourceStreams()
         {
             var rootnamespace = "Dynamo.LibraryUI.web.";
-
-            var factory = (DefaultResourceHandlerFactory)(browser.ResourceHandlerFactory);
-            if (factory == null) return;
-
             var resourceNames = Assembly.GetExecutingAssembly()
             .GetManifestResourceNames();
             foreach (var resource in resourceNames)
@@ -183,18 +159,39 @@ namespace Dynamo.LibraryUI
                     url = url.Replace("/v0._0._1.", "/v0.0.1/");
                     url = url.Replace("/resources.", "/resources/");
                     url = url.Replace("/icons.", "/icons/");
+                    url = url.Replace(".font_awesome_4._7._0.", "/font-awesome-4.7.0/");
                     url = url.Replace("/fonts.", "/fonts/");
+                    url = url.Replace("less.", "less/");
+                    url = url.Replace("css.", "css/");
                 }
-                var mime = MimeType(url);
+                else
+                    url = url.Replace("package.", "package/");
 
                 if (url.EndsWith(".json"))
                 {
-                    var idx = url.LastIndexOf('.');
-                    url = url.Substring(0, idx);
+                    url = url.Replace(".json", "");
                 }
                 var r = LoadResource(resource);
-                factory.RegisterHandler("http://localhost/" + url,
-                     ResourceHandler.FromStream(r, mime));
+                resourceStreams.Add("http://localhost/" + url, r);
+            }
+        }
+
+        private void RegisterResources(ChromiumWebBrowser browser)
+        {
+            var factory = (DefaultResourceHandlerFactory)(browser.ResourceHandlerFactory);
+            if (factory == null) return;
+
+            foreach (var pair in resourceStreams)
+            {
+                var url = pair.Key;
+                var idx = url.LastIndexOf('.');
+                var mime = "text/html";
+                if(idx > 0)
+                {
+                    mime = ResourceHandler.GetMimeType(url.Substring(idx));
+                }
+                
+                factory.RegisterHandler(url, ResourceHandler.FromStream(pair.Value, mime));
             }
         }
 

@@ -16,16 +16,22 @@
     <script src='./dist/bundle.js'></script>
     <script>
         let controller = window["controller"];
+        console.log(controller.detailsViewContextData);
 
         let pkgController = PackageManagerEntryPoint.CreatePackageController();
 
         let detailedConfig = {
             pkgController: pkgController,
+            showCloseButton: true,
             htmlElementId: "rightContentPlaceholder"
         };
 
         let detailedView = new PackageManagerEntryPoint.DetailedView(detailedConfig);
-        detailedView.setActivePackageId(controller.DetailsViewContextData);
+        detailedView.setActivePackageId(controller.detailsViewContextData);
+
+        pkgController.on("closeButtonClicked", function (pkgId) {
+            controller.closeDetailsView();
+        })
 
     </script>
 </body>

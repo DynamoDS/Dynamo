@@ -20,6 +20,17 @@ a {
     font-family: "Open Sans";
 }
 
+.CloseDetailView{
+    color:black;
+    font-size: 15px;
+    height: 15px;
+    margin: 0;
+    padding:0px;
+    border:0px;
+    float:right;
+   
+}
+
 .OuterMostContainer {
     display: flex;
     width: 100%;
