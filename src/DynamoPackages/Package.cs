@@ -199,6 +199,12 @@ namespace Dynamo.PackageManager
 
         }
 
+        public string GetJson()
+        {
+            // Obtain the content in pkg.json file of the package
+            return File.ReadAllText(Path.Combine(RootDirectory, "pkg.json"));
+        }
+
         public void EnumerateAdditionalFiles()
         {
             if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) return;

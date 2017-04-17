@@ -13,6 +13,7 @@ using Dynamo.Extensions;
 using Dynamo.LibraryUI.ViewModels;
 using Dynamo.LibraryUI.Views;
 using Dynamo.Models;
+using Dynamo.ViewModels;
 
 namespace Dynamo.LibraryUI
 {
@@ -195,6 +196,26 @@ namespace Dynamo.LibraryUI
             var view = sender as DetailsView;
             var browser = view.Browser;
             browser.ConsoleMessage += OnBrowserConsoleMessage;
+        }
+
+        public string LoadInstalledPackagesJSON()
+        {
+            var dynamoViewModel = this.dynamoWindow.DataContext as DynamoViewModel;
+            var dynamoModel = dynamoViewModel.Model;
+            var localPackages = dynamoModel.GetPackageManagerExtension().PackageLoader.LocalPackages;
+
+            string pkgStr = "{ \"success\": \"true\",";
+            pkgStr += "\"message\": \"Found packages\",";
+            pkgStr += "\"content\": [";
+
+            foreach (var pkg in localPackages)
+            {
+                pkgStr += pkg.GetJson();
+                pkgStr += ",";
+            }
+            pkgStr = pkgStr.Remove(pkgStr.Length - 1); // Remove the last comma
+            pkgStr += "] }";
+            return pkgStr;
         }
     }
 }
