@@ -97,12 +97,11 @@
         let controller = window["controller"];
     
         let pkgController = PackageManagerEntryPoint.CreatePackageController();
-        let installedPkg = JSON.parse(controller.getInstalledPackagesJSON());
+        // let installedPkg = JSON.parse(controller.loadInstalledPackagesJSON());
 
         let tabControlConfig = {
             pkgController: pkgController,
-            htmlElementId: "pacakgeContainerPlaceholder",
-            installedPackages: installedPkg
+            htmlElementId: "pacakgeContainerPlaceholder"
         };
 
         let tabControl = new PackageManagerEntryPoint.TabControl(tabControlConfig);
