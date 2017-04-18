@@ -1,6 +1,12 @@
 @font-face {
     font-family: "Open Sans";
-    src: url('fonts/OpenSans-Regular.ttf') format('truetype');
+    src: url('fonts/OpenSans.woff2') format('truetype');
+}
+
+@font-face {
+    font-family: "Open Sans";
+    src: url('fonts/OpenSans-Italic.woff2') format('truetype');
+    font-style: italic;
 }
 
 html, body {
@@ -20,6 +26,10 @@ a {
     font-family: "Open Sans";
 }
 
+i.fa {
+    padding-top: 3px;
+}
+
 .CloseDetailView{
     color:black;
     font-size: 15px;
@@ -28,7 +38,6 @@ a {
     padding:0px;
     border:0px;
     float:right;
-   
 }
 
 .OuterMostContainer {
@@ -54,22 +63,24 @@ a {
 #TabComponent .InstallButtons {
     width: 70px;
     padding: 1px 0px 1px 0px;
-    border: white 1.5px solid;
+    border: #888 1.5px solid;
     border-radius: 3px;
     text-align: center;
     font-size: 12px;
     cursor: pointer;
+    margin-left: 3px;
 }
 
 #PackageDetailView .InstallButtons {
     flex: 1;
     width: 90px;
     padding: 1px 0px 2px 0px;
-    border: white 1.5px solid;
+    border: #888 1.5px solid;
     border-radius: 4px;
     text-align: center;
     font-size: 14px;
     cursor: pointer;
+    margin-left: 3px;
 }
 
 #leftContentPlaceholder {
@@ -91,7 +102,7 @@ a {
 
 #PackageDetailView {
     background: #555;
-    padding: 10px;
+    padding: 15px;
 }
 
 .MainCaption {
@@ -168,12 +179,14 @@ a {
 .VersionBar {
     display: flex;
     flex-direction: row;
+    font-size: 15px;
 }
 
 .VersionBarInfo {
     display: flex;
     flex-direction: row;
     width: 100%;
+    max-width: 500px;
 }
 
 .VersionBarInfo .VersionBarColumn {
@@ -189,7 +202,7 @@ a {
 }
 
 .PackageHeaderLeftPanel {
-    min-width: 60px;
+    margin-right: 15px;
 }
 
 .PackageHeaderRightPanel
@@ -204,12 +217,24 @@ a {
     flex-direction: column;
 }
 
-.PackageName {
-    font-size: 24px;
+img.PackageIcon {
+    border-radius: 10px;
 }
 
-.PackageAuthor {
+.PackageName {
+    font-size: 22px;
+    margin-top: -5px;
+}
+
+.PackageAuthor, .PackageAuthor a {
     color: #aaa;
+    text-decoration: none;
+    font-size: 15px;
+    margin-bottom: 2px;
+}
+
+.PackageAuthor a:hover {
+    text-decoration: underline;
 }
 
 .StarRating {
@@ -218,7 +243,8 @@ a {
 }
 
 .StarRating button {
-    border:0px;
+    border:none;
+    outline: none;
     background: transparent;
     padding:0px;
     margin:0px;
@@ -239,6 +265,9 @@ a {
 .PackageCrumbles {
     display: flex;
     flex-direction: row;
+    font-size: 15px;
+    color: #aaa;
+    white-space: nowrap;
 }
 
 .PackageCrumbles .AlignLeft {
@@ -253,29 +282,47 @@ a {
 }
 
 .DetailSectionHeader {
-    margin: 22px 0px 6px 0px;
+    margin: 20px 0px 6px 0px;
     font-size: 14px;
     text-transform: uppercase;
-    color: #888;
+    color: #999;
 }
 
 .DetailSection ul {
     margin: 0;
 }
 
+.RegularBodyText {
+    font-size: 15px;
+}
+
+div.Keywords {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+span.Keyword {
+    background-color: #777;
+    border-radius: 5px;
+    margin-right: 10px;
+    margin-bottom: 5px;
+    padding: 0px 5px;
+    font-style: italic;
+}
+
 .PackageDescription {
-    margin: 15px 0px 25px 0px;
+    font-size: 15px;
 }
 
 .PackageDescriptionToggle {
-    width: 100%;
-    text-align: right;
+    margin-left: 10px;
     color: #aaa;
 }
 
-.PackageDescriptionToggle span:hover {
+.PackageDescriptionToggle:hover {
     cursor: pointer;
-    border-bottom: 1px solid #aaa;
+    text-decoration: underline;
 }
 
 .SearchBar {
@@ -286,10 +333,10 @@ a {
     margin: 5px 0px;
 }
 
-.SearchInput {
+.SearchBar .SearchInput {
     width: 100%;
     display: flex;
-    padding: 10px;
+    padding: 10px 0px 10px 10px;
     font-size: 15px;
     background: none;
     color: white;
@@ -297,12 +344,23 @@ a {
     border: none;
 }
 
-.SearchOptionsContainer {
+.SearchBar .CancelButton {
+    display: flex;
+    height: 10px;
+    padding: 15px;
+    color: #ccc;
+}
+
+.SearchBar .CancelButton:hover {
+    cursor: pointer;
+}
+
+.SearchBar .SearchOptionsContainer {
     display: flex;
     position: relative;
 }
 
-.SearchBar .Icon {
+.SearchBar .SortIcon {
     height: 20px;
     width: 20px;
     display: block;
@@ -310,7 +368,7 @@ a {
     background: #555;
 }
 
-.SearchBar .IconHighlight {
+.SearchBar .SortIconHighlight {
     height: 20px;
     width: 20px;
     display: block;
@@ -318,7 +376,7 @@ a {
     background: #444;
 }
 
-.SearchBar .Icon:hover, .SearchBar .IconHighlight {
+.SearchBar .SortIcon:hover, .SearchBar .SortIconHighlight {
     cursor: pointer;
     background: #444;
     -webkit-transition: all 0.25s linear;
@@ -330,37 +388,29 @@ a {
     color: white;
     position: absolute;
     right: 0px;
-    top: 50px;
+    top: 45px;
     box-shadow: 3px 3px 8px 3px #333;
 }
 
-.SearchBar .Options .Line {
-    border: 1px solid #dbdbdb;
-}
-
-.SearchBar .Options .SortBy{
+.SearchBar .Options .SortBy, .SearchBar .Options .OrderBy{
     padding: 10px;
     font-size: 13px;
     font-style: italic;
 }
 
 .SearchBar .Options .OrderBy {
-    padding: 10px;
-    font-size: 13px;
-    font-style: italic;
-    border-top: 1px solid white;
+    border-top: 1px solid #777;
 }
 
 .SearchBar .Options ul {
     margin: 0px;
     padding: 0px;
-    background: transparent;
 }
 
 .SearchBar .Options li{
     display: block;
-    padding: 10px;
-    width: 200px;
+    padding: 10px 10px 10px 25px;
+    width: 120px;
     line-height: 12px;
     font-size: 13px;
 }
@@ -369,7 +419,11 @@ a {
     background: #777;
     color: white;
     cursor: pointer;
-     -webkit-transition: all 0.25s linear;
+     -webkit-transition: all 0.15s linear;
+}
+
+.SearchBar .Options li:active {
+    background: #444;
 }
 
 .TabHeader {
