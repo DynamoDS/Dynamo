@@ -13,19 +13,28 @@ using Dynamo.Extensions;
 using Dynamo.LibraryUI.ViewModels;
 using Dynamo.LibraryUI.Views;
 using Dynamo.Models;
+using Dynamo.PackageManager;
 using Dynamo.ViewModels;
 
 namespace Dynamo.LibraryUI
 {
+    public interface IEventController
+    {
+        void On(string eventName, object callback);
+        void RaiseEvent(string eventName, params object[] parameters);
+    }
+
     /// <summary>
     /// This class holds methods and data to be called from javascript
     /// </summary>
-    public class LibraryViewController
+    public class LibraryViewController : IEventController
     {
         private Window dynamoWindow;
         private ICommandExecutive commandExecutive;
         private DetailsView detailsView;
         private DetailsViewModel detailsViewModel;
+        private DynamoPackagesHelper packageHelper;
+
         private Dictionary<string, Stream> resourceStreams = new Dictionary<string, Stream>();
         private Dictionary<string, object> callbacks = new Dictionary<string, object>();
         
@@ -37,6 +46,10 @@ namespace Dynamo.LibraryUI
         public LibraryViewController(Window dynamoView, ICommandExecutive commandExecutive)
         {
             this.dynamoWindow = dynamoView;
+            var dynamoViewModel = dynamoView.DataContext as DynamoViewModel;
+            var dynamoModel = dynamoViewModel.Model;
+            packageHelper = new DynamoPackagesHelper(this, dynamoModel);
+
             this.commandExecutive = commandExecutive;
             InitializeResourceStreams();
         }
@@ -86,7 +99,8 @@ namespace Dynamo.LibraryUI
             callbacks.Add(eventName, callback);
         }
 
-        private void RaiseEvent(string eventName, params object[] parameters)
+        [JavascriptIgnore]
+        public void RaiseEvent(string eventName, params object[] parameters)
         {
             object callback = null;
             if(callbacks.TryGetValue(eventName, out callback))
@@ -103,7 +117,47 @@ namespace Dynamo.LibraryUI
         /// Gets details view context data, e.g. packageId if it shows details of a package
         /// </summary>
         public string DetailsViewContextData { get; set; }
-        
+
+        /// <summary>
+        /// Returns a JSON string of all the packages installed on the system.
+        /// </summary>
+        /// <returns>string representing JSON object.</returns>
+        public string GetInstalledPackagesJSON()
+        {
+            return packageHelper.GetInstalledPackagesJSON();
+        }
+
+        /// <summary>
+        /// Gets the version name for the given installed package.
+        /// </summary>
+        /// <param name="packageName">Name of the package</param>
+        /// <returns>Returns version name of a given package if it is installed, else empty string</returns>
+        public string GetInstalledPackageVersion(string packageName)
+        {
+            return packageHelper.GetInstalledPackageVersion(packageName);
+        }
+
+        /// <summary>
+        /// Installs a dynamo package of given package id.
+        /// </summary>
+        /// <param name="name">name of the package to install</param>
+        /// <param name="version">version of package to install</param>
+        /// <param name="pkgId">package id</param>
+        /// <param name="installPath">path to install</param>
+        public void InstallPackage(string name, string version, string pkgId, string installPath)
+        {
+            dynamoWindow.Dispatcher.BeginInvoke(new Action(() => packageHelper.DownlodAndInstall(pkgId, name, version, installPath)));
+        }
+
+        /// <summary>
+        /// Uninstalls the given package
+        /// </summary>
+        /// <param name="packageName">Package name to uninstall</param>
+        public void UninstallPackage(string packageName)
+        {
+            dynamoWindow.Dispatcher.BeginInvoke(new Action(() => packageHelper.UninstallPackage(packageName)));
+        }
+
         /// <summary>
         /// Creates and add the library view to the WPF visual tree
         /// </summary>
@@ -221,39 +275,6 @@ namespace Dynamo.LibraryUI
             var view = sender as DetailsView;
             var browser = view.Browser;
             browser.ConsoleMessage += OnBrowserConsoleMessage;
-        }
-
-        public string GetInstalledPackagesJSON()
-        {
-            string pkg = null;
-            dynamoWindow.Dispatcher.BeginInvoke(new Action(() => pkg = LoadInstalledPackagesJSON()));
-            return pkg;
-        }
-
-        private string LoadInstalledPackagesJSON()
-        {
-            var dynamoViewModel = this.dynamoWindow.DataContext as DynamoViewModel;
-            var dynamoModel = dynamoViewModel.Model;
-            var localPackages = dynamoModel.GetPackageManagerExtension().PackageLoader.LocalPackages;
-            StringBuilder pkgStr = new StringBuilder();
-
-            pkgStr.Append("{ \"success\": \"true\",");
-            pkgStr.Append("\"message\": \"Found packages\",");
-            pkgStr.Append("\"content\": [");
-
-            foreach (var pkg in localPackages)
-            {
-                pkgStr.Append("{");
-                pkgStr.Append("\"name\": \"");
-                pkgStr.Append(pkg.Name);
-                pkgStr.Append("\",");
-                pkgStr.Append("\"version\": \"");
-                pkgStr.Append(pkg.VersionName);
-                pkgStr.Append("\"},");
-            }
-            pkgStr.Remove(pkgStr.Length - 1, 1); // Remove the last comma
-            pkgStr.Append("] }");
-            return pkgStr.ToString();
         }
     }
 }
