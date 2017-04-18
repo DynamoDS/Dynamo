@@ -13,6 +13,7 @@ using Dynamo.Extensions;
 using Dynamo.LibraryUI.ViewModels;
 using Dynamo.LibraryUI.Views;
 using Dynamo.Models;
+using Dynamo.ViewModels;
 
 namespace Dynamo.LibraryUI
 {
@@ -220,6 +221,39 @@ namespace Dynamo.LibraryUI
             var view = sender as DetailsView;
             var browser = view.Browser;
             browser.ConsoleMessage += OnBrowserConsoleMessage;
+        }
+
+        public string GetInstalledPackagesJSON()
+        {
+            string pkg = null;
+            dynamoWindow.Dispatcher.BeginInvoke(new Action(() => pkg = LoadInstalledPackagesJSON()));
+            return pkg;
+        }
+
+        private string LoadInstalledPackagesJSON()
+        {
+            var dynamoViewModel = this.dynamoWindow.DataContext as DynamoViewModel;
+            var dynamoModel = dynamoViewModel.Model;
+            var localPackages = dynamoModel.GetPackageManagerExtension().PackageLoader.LocalPackages;
+            StringBuilder pkgStr = new StringBuilder();
+
+            pkgStr.Append("{ \"success\": \"true\",");
+            pkgStr.Append("\"message\": \"Found packages\",");
+            pkgStr.Append("\"content\": [");
+
+            foreach (var pkg in localPackages)
+            {
+                pkgStr.Append("{");
+                pkgStr.Append("\"name\": \"");
+                pkgStr.Append(pkg.Name);
+                pkgStr.Append("\",");
+                pkgStr.Append("\"version\": \"");
+                pkgStr.Append(pkg.VersionName);
+                pkgStr.Append("\"},");
+            }
+            pkgStr.Remove(pkgStr.Length - 1, 1); // Remove the last comma
+            pkgStr.Append("] }");
+            return pkgStr.ToString();
         }
     }
 }

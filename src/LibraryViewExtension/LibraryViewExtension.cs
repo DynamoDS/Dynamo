@@ -7,6 +7,9 @@ using CefSharp.Wpf;
 using Dynamo.LibraryUI.ViewModels;
 using Dynamo.LibraryUI.Views;
 using Dynamo.Wpf.Extensions;
+using Dynamo.PackageManager;
+using Dynamo.Models;
+using System.Linq;
 
 namespace Dynamo.LibraryUI
 {
@@ -51,5 +54,13 @@ namespace Dynamo.LibraryUI
 
         }
 
+    }
+
+    public static class DynamoModelExtensions
+    {
+        public static PackageManagerExtension GetPackageManagerExtension(this DynamoModel model)
+        {
+            return PackageManager.DynamoModelExtensions.GetPackageManagerExtension(model);
+        }
     }
 }
