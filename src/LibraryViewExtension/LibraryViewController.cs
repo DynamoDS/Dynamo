@@ -203,13 +203,6 @@ namespace Dynamo.LibraryUI
             browser.ConsoleMessage += OnBrowserConsoleMessage;
         }
 
-        public string GetInstalledPackagesJSON()
-        {
-            string pkg = null;
-            dynamoWindow.Dispatcher.Invoke(new Action(() => pkg = LoadInstalledPackagesJSON()));
-            return pkg;
-        }
-
         public string LoadInstalledPackagesJSON()
         {
             var dynamoViewModel = this.dynamoWindow.DataContext as DynamoViewModel;
