@@ -64,7 +64,7 @@ var PackageManagerEntryPoint =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 16);
+/******/ 	return __webpack_require__(__webpack_require__.s = 17);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -143,6 +143,12 @@ exports.Reactor = Reactor;
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -159,7 +165,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var DownloadUtils = __webpack_require__(17);
+var DownloadUtils = __webpack_require__(18);
 var InstallButtons = (function (_super) {
     __extends(InstallButtons, _super);
     function InstallButtons(props) {
@@ -196,7 +202,7 @@ exports.InstallButtons = InstallButtons;
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -281,7 +287,32 @@ exports.StarRating = StarRating;
 
 
 /***/ }),
-/* 4 */
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function generatePackageIcon(pkg, dimensions) {
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
+    context.canvas.width = dimensions;
+    context.canvas.height = dimensions;
+    context.rect(0, 0, dimensions, dimensions);
+    context.fillStyle = '#eee';
+    context.fill();
+    context.font = "bold " + 0.85 * dimensions + "px \"Open Sans\"";
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillStyle = '#' + pkg._id.substr(0, 6); // the first 6 hex digits of package guid
+    context.fillText(pkg.name.charAt(0).toUpperCase(), dimensions / 2, dimensions / 2.05);
+    return canvas.toDataURL('image/png');
+}
+exports.generatePackageIcon = generatePackageIcon;
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -302,7 +333,12 @@ var PackageController = (function () {
      */
     function PackageController() {
         this.reactor = null;
+        this.requestHandler = {};
         this.reactor = new EventHandler_1.Reactor();
+        this.on = this.on.bind(this);
+        this.raiseEvent = this.raiseEvent.bind(this);
+        this.registerRequestHandler = this.registerRequestHandler.bind(this);
+        this.request = this.request.bind(this);
     }
     /**
      * This method allows any external component to subscribe to events that
@@ -333,13 +369,59 @@ var PackageController = (function () {
     PackageController.prototype.raiseEvent = function (name, params) {
         this.reactor.raiseEvent(name, params);
     };
+    /**
+     * This method registers the callback function when the value of a given
+     * named variable is requested. See PackageController.request method for
+     * more information on each available variable name.
+     *
+     * Note that if called more than once, this method replaces the original
+     * callback function with the new value.
+     *
+     * @param {string} variableName The name of the variable.
+     * @param {Function} callback The callback function to be invoked when a
+     * variable of the given name is queried.
+     */
+    PackageController.prototype.registerRequestHandler = function (variableName, callback) {
+        // Storing the callback function in the property map.
+        this.requestHandler[variableName] = callback;
+    };
+    /**
+     * External code calls this method to obtain the value of the given named
+     * variable. The execution of this method may or may not be asynchronous
+     * depending on the corresponding handler registered in onRequest. Once
+     * the value of the variable is obtained, the callback function is invoked
+     * with the value.
+     *
+     * Possible variable and their corresponding data types are as followed:
+     *
+     *      packageState: string
+     *
+     * @param {string} variableName The name of the variable whose value is to
+     * be retrieved.
+     * @param {Function} callback The callback function to be invoked when the
+     * variable value is obtained.
+     * @param {any[]} argsArray Zero or more argument values to be passed to the
+     * subscribed handler for this named variable.
+     */
+    PackageController.prototype.request = function (variableName, callback) {
+        var argsArray = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            argsArray[_i - 2] = arguments[_i];
+        }
+        // Invokve handler if there's one registered.
+        var requestHandler = this.requestHandler[variableName];
+        if (requestHandler && callback) {
+            var value = requestHandler(argsArray);
+            callback(value);
+        }
+    };
     return PackageController;
 }());
 exports.PackageController = PackageController;
 
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -356,10 +438,10 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var PackageHeader_1 = __webpack_require__(10);
-var PackageDescription_1 = __webpack_require__(9);
-var VersionContainer_1 = __webpack_require__(14);
-var CloseButton_1 = __webpack_require__(8);
+var PackageHeader_1 = __webpack_require__(11);
+var PackageDescription_1 = __webpack_require__(10);
+var VersionContainer_1 = __webpack_require__(15);
+var CloseButton_1 = __webpack_require__(9);
 var PackageDetailView = (function (_super) {
     __extends(PackageDetailView, _super);
     function PackageDetailView(props) {
@@ -406,7 +488,7 @@ exports.PackageDetailView = PackageDetailView;
 
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -423,8 +505,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var SearchBar_1 = __webpack_require__(13);
-var PackageList_1 = __webpack_require__(12);
+var SearchBar_1 = __webpack_require__(14);
+var PackageList_1 = __webpack_require__(13);
 var TabComponent = (function (_super) {
     __extends(TabComponent, _super);
     function TabComponent(props) {
@@ -457,8 +539,6 @@ var TabComponent = (function (_super) {
         this.setState({ filterChanged: true });
     };
     TabComponent.prototype.render = function () {
-        var urls = ["/dist/resources/icons/tab-library.svg", "/dist/resources/icons/tab-package.svg"];
-        var toolTips = ["library view", "package view"];
         var filterConfig = this.filterConfig;
         return (React.createElement("div", { id: "TabContentArea", className: "TabContentArea" },
             React.createElement(SearchBar_1.SearchBar, { onSearchChanged: this.onSearchChanged }),
@@ -470,13 +550,7 @@ exports.TabComponent = TabComponent;
 
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -517,7 +591,7 @@ exports.CloseButton = CloseButton;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -553,84 +627,18 @@ var PackageDescription = (function (_super) {
                 description = description.substr(0, 400) + "...";
                 toggleText = "[More]";
             }
-            toggle = React.createElement("div", { className: "PackageDescriptionToggle" },
-                React.createElement("span", { onClick: this.onToggleClick.bind(this) }, toggleText));
+            toggle = React.createElement("span", { className: "PackageDescriptionToggle", onClick: this.onToggleClick.bind(this) }, toggleText);
         }
+        var keys = this.props.pkg.keywords.map(function (key) { return React.createElement("span", { className: "Keyword" }, key); });
         return (React.createElement("div", { className: "PackageDescription" },
+            React.createElement("div", { className: "DetailSectionHeader" }, "Description"),
             description,
-            toggle));
+            toggle,
+            React.createElement("div", { className: "DetailSection Keywords" }, keys)));
     };
     return PackageDescription;
 }(React.Component));
 exports.PackageDescription = PackageDescription;
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(0);
-var StarRating_1 = __webpack_require__(3);
-var PackageHeader = (function (_super) {
-    __extends(PackageHeader, _super);
-    function PackageHeader(props) {
-        return _super.call(this, props) || this;
-    }
-    PackageHeader.prototype.render = function () {
-        var pkg = this.props.pkg;
-        var rate = 4.6;
-        var site = React.createElement("a", { href: pkg.site_url }, "Website");
-        if (pkg.site_url === "")
-            site = undefined;
-        var repo = React.createElement("a", { href: pkg.repository_url }, "Repository");
-        if (pkg.repository_url === "") {
-            repo = undefined;
-        }
-        var separator = (pkg.site_url === "" || pkg.repository_url === "") ? "" : " | ";
-        var starRating = React.createElement(StarRating_1.StarRating, { rate: rate });
-        return (React.createElement("div", { className: "PackageHeader" },
-            React.createElement("div", { className: "PackageHeaderLeftPanel" },
-                React.createElement("div", { className: "PackageIcon" },
-                    React.createElement("img", { className: "PackageIcon", src: "./dist/resources/icons/package.png" }))),
-            React.createElement("div", { className: "PackageHeaderRightPanel" },
-                React.createElement("div", { className: "PackageName" }, pkg.name),
-                React.createElement("div", { className: "PackageAuthor" },
-                    "by ",
-                    pkg.maintainers[0].username),
-                React.createElement("div", { className: "PackageCrumbles" },
-                    React.createElement("div", { className: "AlignLeft" },
-                        starRating,
-                        "\u00A0 (",
-                        pkg.votes,
-                        "\u00A0",
-                        React.createElement("i", { className: "fa fa-users" }),
-                        ")"),
-                    React.createElement("div", { className: "AlignLeft" },
-                        React.createElement("i", { className: "fa fa-download" }),
-                        "\u00A0",
-                        pkg.downloads,
-                        "\u00A0"),
-                    React.createElement("div", { className: "AlignRight" },
-                        site,
-                        separator,
-                        repo)))));
-    };
-    return PackageHeader;
-}(React.Component));
-exports.PackageHeader = PackageHeader;
 
 
 /***/ }),
@@ -651,45 +659,58 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var InstallButtons_1 = __webpack_require__(2);
-var StarRating_1 = __webpack_require__(3);
-var PackageItem = (function (_super) {
-    __extends(PackageItem, _super);
-    function PackageItem(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = { expanded: false };
-        _this.toggleExpandState = _this.toggleExpandState.bind(_this);
-        return _this;
+var JavaScriptUtils = __webpack_require__(5);
+var StarRating_1 = __webpack_require__(4);
+var PackageHeader = (function (_super) {
+    __extends(PackageHeader, _super);
+    function PackageHeader(props) {
+        return _super.call(this, props) || this;
     }
-    PackageItem.prototype.toggleExpandState = function () {
-        this.setState({ expanded: !this.state.expanded }); // Toggle boolean value
-    };
-    PackageItem.prototype.onPackageItemClicked = function () {
-        this.props.setSelection(this.props.index, this.props.data._id);
-    };
-    PackageItem.prototype.render = function () {
-        var pkg = this.props.data;
-        var description = pkg.description;
-        var selectedStyle = "PackageItem ";
-        selectedStyle += this.props.selected ? "PackageItemSelected" : "PackageItemBg";
-        return (React.createElement("div", { className: selectedStyle, onClick: this.onPackageItemClicked.bind(this) },
-            React.createElement("div", { className: "ItemLeftPanel" },
-                React.createElement("img", { src: "/dist/resources/icons/package.png" })),
-            React.createElement("div", { className: "ItemRightPanel" },
-                React.createElement("div", { className: "PackageCaption" },
-                    React.createElement("span", { className: "ItemPackageName" }, pkg.name),
-                    React.createElement("span", { className: "ItemPackageVersion" }, pkg.versions[0].version)),
-                React.createElement("div", { className: "ItemPackageAuthor" },
+    PackageHeader.prototype.render = function () {
+        var pkg = this.props.pkg;
+        var rate = 4.6;
+        var iconSource = pkg.icon_url;
+        if (!iconSource) {
+            iconSource = JavaScriptUtils.generatePackageIcon(pkg, 60);
+        }
+        var site = React.createElement("a", { href: pkg.site_url, target: "webpage" }, "Website");
+        if (pkg.site_url === "")
+            site = undefined;
+        var repo = React.createElement("a", { href: pkg.repository_url, target: "webpage" }, "Repository");
+        if (pkg.repository_url === "")
+            repo = undefined;
+        var separator = (pkg.site_url === "" || pkg.repository_url === "") ? "" : " | ";
+        var starRating = React.createElement(StarRating_1.StarRating, { rate: rate });
+        return (React.createElement("div", { className: "PackageHeader" },
+            React.createElement("div", { className: "PackageHeaderLeftPanel" },
+                React.createElement("div", { className: "PackageIcon" },
+                    React.createElement("img", { className: "PackageIcon", src: iconSource }))),
+            React.createElement("div", { className: "PackageHeaderRightPanel" },
+                React.createElement("div", { className: "PackageName" }, pkg.name),
+                React.createElement("div", { className: "PackageAuthor" },
                     "by ",
-                    pkg.maintainers[0].username),
-                React.createElement("div", { className: "ItemCrumbles" },
-                    React.createElement("div", { className: "ItemStars" },
-                        React.createElement(StarRating_1.StarRating, { rate: 4 })),
-                    React.createElement(InstallButtons_1.InstallButtons, { pkgController: this.props.pkgController, packageLink: undefined, packageName: pkg.name, packageVersion: pkg.versions[0].version })))));
+                    React.createElement("a", { href: "#" }, pkg.maintainers[0].username)),
+                React.createElement("div", { className: "PackageCrumbles" },
+                    React.createElement("div", { className: "AlignLeft" },
+                        starRating,
+                        "\u00A0(",
+                        pkg.votes,
+                        "\u00A0",
+                        React.createElement("i", { className: "fa fa-users" }),
+                        ")"),
+                    React.createElement("div", { className: "AlignLeft" },
+                        React.createElement("i", { className: "fa fa-download" }),
+                        "\u00A0",
+                        pkg.downloads,
+                        "\u00A0"),
+                    React.createElement("div", { className: "AlignRight" },
+                        site,
+                        separator,
+                        repo)))));
     };
-    return PackageItem;
+    return PackageHeader;
 }(React.Component));
-exports.PackageItem = PackageItem;
+exports.PackageHeader = PackageHeader;
 
 
 /***/ }),
@@ -710,7 +731,71 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var PackageItem_1 = __webpack_require__(11);
+var JavaScriptUtils = __webpack_require__(5);
+var InstallButtons_1 = __webpack_require__(3);
+var StarRating_1 = __webpack_require__(4);
+var PackageItem = (function (_super) {
+    __extends(PackageItem, _super);
+    function PackageItem(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = { expanded: false };
+        _this.toggleExpandState = _this.toggleExpandState.bind(_this);
+        return _this;
+    }
+    PackageItem.prototype.toggleExpandState = function () {
+        this.setState({ expanded: !this.state.expanded }); // Toggle boolean value
+    };
+    PackageItem.prototype.onPackageItemClicked = function () {
+        this.props.setSelection(this.props.index, this.props.data._id);
+    };
+    PackageItem.prototype.render = function () {
+        var pkg = this.props.data;
+        var description = pkg.description;
+        var selectedStyle = "PackageItem ";
+        selectedStyle += this.props.selected ? "PackageItemSelected" : "PackageItemBg";
+        var iconSource = pkg.icon_url;
+        if (!iconSource) {
+            iconSource = JavaScriptUtils.generatePackageIcon(pkg, 40);
+        }
+        return (React.createElement("div", { className: selectedStyle, onClick: this.onPackageItemClicked.bind(this) },
+            React.createElement("div", { className: "ItemLeftPanel" },
+                React.createElement("img", { className: "PackageIcon", src: iconSource })),
+            React.createElement("div", { className: "ItemRightPanel" },
+                React.createElement("div", { className: "PackageCaption" },
+                    React.createElement("span", { className: "ItemPackageName" }, pkg.name),
+                    React.createElement("span", { className: "ItemPackageVersion" }, pkg.versions[0].version)),
+                React.createElement("div", { className: "ItemPackageAuthor" },
+                    "by ",
+                    pkg.maintainers[0].username),
+                React.createElement("div", { className: "ItemCrumbles" },
+                    React.createElement("div", { className: "ItemStars" },
+                        React.createElement(StarRating_1.StarRating, { rate: 4 })),
+                    React.createElement(InstallButtons_1.InstallButtons, { pkgController: this.props.pkgController, packageLink: undefined, packageName: pkg.name, packageVersion: pkg.versions[0].version })))));
+    };
+    return PackageItem;
+}(React.Component));
+exports.PackageItem = PackageItem;
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var PackageItem_1 = __webpack_require__(12);
 var PackageList = (function (_super) {
     __extends(PackageList, _super);
     function PackageList(props) {
@@ -779,7 +864,7 @@ exports.PackageList = PackageList;
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -796,10 +881,13 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
+var ReactDOM = __webpack_require__(2);
 var SearchBar = (function (_super) {
     __extends(SearchBar, _super);
     function SearchBar(props) {
         var _this = _super.call(this, props) || this;
+        _this.sortKeys = ["PackageName", "DownloadCount", "Rating", "RecentlyUpdated", "Author"];
+        _this.sortOrders = ["Ascending", "Descending"];
         _this.filterConfig = {
             searchText: "",
             sortKey: "PackageName",
@@ -812,6 +900,38 @@ var SearchBar = (function (_super) {
         };
         return _this;
     }
+    SearchBar.prototype.componentWillMount = function () {
+        window.addEventListener("keydown", this.handleKeyDown.bind(this));
+        window.addEventListener("click", this.handleGlobalClick.bind(this));
+    };
+    SearchBar.prototype.componentWillUnmount = function () {
+        window.removeEventListener("keydown", this.handleKeyDown.bind(this));
+        window.removeEventListener("click", this.handleGlobalClick.bind(this));
+    };
+    SearchBar.prototype.handleKeyDown = function (event) {
+        switch (event.code) {
+            case "Escape":
+                this.clearSearch();
+                break;
+            default:
+                break;
+        }
+    };
+    // Collapse list dropdown menu when click happens outside this compnent
+    SearchBar.prototype.handleGlobalClick = function (event) {
+        if (!ReactDOM.findDOMNode(this).contains(event.target)) {
+            this.collapseMenu();
+        }
+    };
+    SearchBar.prototype.collapseMenu = function () {
+        this.setState({ expanded: false });
+    };
+    SearchBar.prototype.clearSearch = function () {
+        var searchInput = document.getElementById("SearchInput");
+        searchInput.value = '';
+        this.filterConfig.searchText = searchInput.value;
+        this.props.onSearchChanged(this.filterConfig);
+    };
     SearchBar.prototype.onTextChange = function (event) {
         var text = event.target.value.trim().toLowerCase();
         this.filterConfig.searchText = text;
@@ -842,28 +962,39 @@ var SearchBar = (function (_super) {
             expanded: false
         });
     };
+    // Split sortkey on uppercase characters
+    SearchBar.prototype.getNameFromSortKey = function (sortKey) {
+        return sortKey.match(/[A-Z][a-z]+|[0-9]+/g).join(" ");
+    };
     SearchBar.prototype.render = function () {
+        var _this = this;
         var options = null;
+        var cancelButton = null;
         var optionText = "OptionText";
         var optionTextHighlight = "OptionTextHighlight";
+        if (this.filterConfig.searchText.length > 0) {
+            cancelButton = React.createElement("div", { className: "CancelButton", onClick: this.clearSearch.bind(this) },
+                React.createElement("i", { className: "fa fa-times", "aria-hidden": "true" }));
+        }
         if (this.state.expanded) {
+            var sortKeys = this.sortKeys.map(function (sortKey) {
+                return React.createElement("li", { id: sortKey, className: _this.state.sortKey == sortKey ? optionTextHighlight : optionText, onClick: _this.onSortKeyClick.bind(_this) }, _this.getNameFromSortKey(sortKey));
+            });
+            var sortOrders = this.sortOrders.map(function (sortOrder) {
+                return React.createElement("li", { id: sortOrder, className: _this.state.sortOrder == sortOrder ? optionTextHighlight : optionText, onClick: _this.onSortOrderClick.bind(_this) }, sortOrder);
+            });
             options = (React.createElement("div", { className: "Options" },
                 React.createElement("div", { className: "SortBy" }, "Sort by: "),
-                React.createElement("ul", { className: "SortKeys" },
-                    React.createElement("li", { id: "PackageName", className: this.state.sortKey === "PackageName" ? optionTextHighlight : optionText, onClick: this.onSortKeyClick.bind(this) }, "Package name"),
-                    React.createElement("li", { id: "DownloadCount", className: this.state.sortKey === "DownloadCount" ? optionTextHighlight : optionText, onClick: this.onSortKeyClick.bind(this) }, "Download count"),
-                    React.createElement("li", { id: "Rating", className: this.state.sortKey === "Rating" ? optionTextHighlight : optionText, onClick: this.onSortKeyClick.bind(this) }, "Rating"),
-                    React.createElement("li", { id: "RecentlyUpdated", className: this.state.sortKey === "RecentlyUpdated" ? optionTextHighlight : optionText, onClick: this.onSortKeyClick.bind(this) }, "Recently Updated"),
-                    React.createElement("li", { id: "Author", className: this.state.sortKey === "Author" ? optionTextHighlight : optionText, onClick: this.onSortKeyClick.bind(this) }, "Author")),
+                React.createElement("ul", { className: "SortKeys" }, sortKeys),
                 React.createElement("div", { className: "OrderBy" }, "Order: "),
-                React.createElement("ul", { className: "Orders" },
-                    React.createElement("li", { id: "Ascending", className: this.state.sortOrder === "Ascending" ? optionTextHighlight : optionText, onClick: this.onSortOrderClick.bind(this) }, "Ascending"),
-                    React.createElement("li", { id: "Descending", className: this.state.sortOrder === "Descending" ? optionTextHighlight : optionText, onClick: this.onSortOrderClick.bind(this) }, "Descending"))));
+                React.createElement("ul", { className: "SortOrders" }, sortOrders)));
         }
         return (React.createElement("div", { className: "SearchBar" },
-            React.createElement("input", { className: "SearchInput", type: "search", placeholder: "Search...", onChange: this.onTextChange.bind(this) }),
+            React.createElement("input", { className: "SearchInput", id: "SearchInput", type: "search", placeholder: "Search...", onChange: this.onTextChange.bind(this), onFocus: this.collapseMenu.bind(this) }),
+            cancelButton,
             React.createElement("div", { className: "SearchOptionsContainer" },
-                React.createElement("img", { className: this.state.expanded ? "IconHighlight" : "Icon", src: "./dist/resources/icons/sort-button.png", onClick: this.onSortButtonClick.bind(this) }),
+                React.createElement("div", { className: this.state.expanded ? "SortIconHighlight" : "SortIcon", onClick: this.onSortButtonClick.bind(this) },
+                    React.createElement("i", { className: "fa fa-sort-amount-desc", "aria-hidden": "true" })),
                 options)));
     };
     return SearchBar;
@@ -872,7 +1003,7 @@ exports.SearchBar = SearchBar;
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -889,8 +1020,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var InstallButtons_1 = __webpack_require__(2);
-var VersionDetailView_1 = __webpack_require__(15);
+var InstallButtons_1 = __webpack_require__(3);
+var VersionDetailView_1 = __webpack_require__(16);
 function onPackageItemClick() {
     this.setState({ selectedVerIndex: 0 });
 }
@@ -926,16 +1057,23 @@ var VersionContainer = (function (_super) {
         var selectedVersion = versions[this.state.selectedVerIndex];
         var change_log = selectedVersion.change_log;
         var content = selectedVersion.content;
-        var deps = selectedVersion.full_dependency_ids.map(function (dep) { return dep.name; });
+        var deps = [];
+        for (var i = 0; i < selectedVersion.direct_dependency_ids.length; i++) {
+            deps.push({
+                name: selectedVersion.direct_dependency_ids[i].name,
+                version: selectedVersion.direct_dependency_versions[i]
+            });
+        }
         var versionDetailView = React.createElement(VersionDetailView_1.VersionDetailView, { changeLog: change_log, content: content, dependencies: deps });
         var options = [];
         if (versions) {
-            for (var i = versions.length - 1; i >= 0; i--) {
-                var index = versions.length - 1 - i;
-                options.push(React.createElement("option", { value: index }, versions[i].version));
+            for (var i_1 = versions.length - 1; i_1 >= 0; i_1--) {
+                var index = versions.length - 1 - i_1;
+                options.push(React.createElement("option", { value: index }, versions[i_1].version));
             }
         }
         return (React.createElement("div", { className: "VersionContainer" },
+            React.createElement("div", { className: "DetailSectionHeader" }, "Versions"),
             React.createElement("div", { className: "VersionBar" },
                 React.createElement("div", { className: "VersionBarInfo" },
                     React.createElement("div", { className: "VersionBarColumn" }, this.props.pkg.name),
@@ -953,7 +1091,7 @@ exports.VersionContainer = VersionContainer;
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -976,36 +1114,41 @@ var VersionDetailView = (function (_super) {
         return _super.call(this, detail) || this;
     }
     VersionDetailView.prototype.render = function () {
-        var deps = this.props.dependencies.map(function (dep) { return React.createElement("li", null, dep); });
+        var deps = this.props.dependencies.map(function (dep) { return React.createElement("li", null,
+            dep.name,
+            React.createElement("span", null, "\u00A0\u00A0"),
+            "(",
+            dep.version,
+            ")"); });
         return (React.createElement("div", { className: "VersionDetailView" },
             React.createElement("div", { className: "DetailSectionHeader" }, "What's New"),
             React.createElement("div", { className: "DetailSection" }, this.props.changeLog),
             React.createElement("div", { className: "DetailSectionHeader" }, "Known Issues"),
             React.createElement("div", { className: "DetailSection" }),
             React.createElement("div", { className: "DetailSectionHeader" }, "Dependencies"),
-            React.createElement("div", { className: "DetailSection" },
-                React.createElement("ul", null, deps)),
+            React.createElement("div", { className: "DetailSection" }, deps),
             React.createElement("div", { className: "DetailSectionHeader" }, "Package Contents"),
             React.createElement("div", { className: "DetailSection" }, this.props.content)));
     };
+    ;
     return VersionDetailView;
 }(React.Component));
 exports.VersionDetailView = VersionDetailView;
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(7);
-var PackageController_1 = __webpack_require__(4);
+var ReactDOM = __webpack_require__(2);
+var PackageController_1 = __webpack_require__(6);
 var EventHandler_1 = __webpack_require__(1);
-var TabComponent_1 = __webpack_require__(6);
-var PackageDetailView_1 = __webpack_require__(5);
+var TabComponent_1 = __webpack_require__(8);
+var PackageDetailView_1 = __webpack_require__(7);
 var TabControl = (function () {
     function TabControl(config) {
         this.tabCaptions = [];
@@ -1039,7 +1182,9 @@ var DetailedView = (function () {
         this.htmlElementId = config.htmlElementId;
         this.reactor = new EventHandler_1.Reactor();
         this.pkgController = config.pkgController;
-        this.showClose = config.showCloseButton;
+        if (config.showCloseButton) {
+            this.showClose = config.showCloseButton;
+        }
         this.setActivePackageId = this.setActivePackageId.bind(this);
         this.on = this.on.bind(this);
         this.raiseEvent = this.raiseEvent.bind(this);
@@ -1064,7 +1209,7 @@ exports.CreatePackageController = CreatePackageController;
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
