@@ -203,27 +203,37 @@ namespace Dynamo.LibraryUI
             browser.ConsoleMessage += OnBrowserConsoleMessage;
         }
 
-        public string LoadInstalledPackagesJSON()
+        public string GetInstalledPackagesJSON()
+        {
+            string pkg = null;
+            dynamoWindow.Dispatcher.BeginInvoke(new Action(() => pkg = LoadInstalledPackagesJSON()));
+            return pkg;
+        }
+
+        private string LoadInstalledPackagesJSON()
         {
             var dynamoViewModel = this.dynamoWindow.DataContext as DynamoViewModel;
             var dynamoModel = dynamoViewModel.Model;
             var localPackages = dynamoModel.GetPackageManagerExtension().PackageLoader.LocalPackages;
+            StringBuilder pkgStr = new StringBuilder();
 
-            string pkgStr = "{ \"success\": \"true\",";
-            pkgStr += "\"message\": \"Found packages\",";
-            pkgStr += "\"content\": [";
+            pkgStr.Append("{ \"success\": \"true\",");
+            pkgStr.Append("\"message\": \"Found packages\",");
+            pkgStr.Append("\"content\": [");
 
             foreach (var pkg in localPackages)
             {
-                pkgStr += "{";
-                pkgStr += "\"name\": \"" + pkg.Name + "\",";
-                pkgStr += "\"version\": \"" + pkg.VersionName + "\"";
-                pkgStr += "}";
-                pkgStr += ",";
+                pkgStr.Append("{");
+                pkgStr.Append("\"name\": \"");
+                pkgStr.Append(pkg.Name);
+                pkgStr.Append("\",");
+                pkgStr.Append("\"version\": \"");
+                pkgStr.Append(pkg.VersionName);
+                pkgStr.Append("\"},");
             }
-            pkgStr = pkgStr.Remove(pkgStr.Length - 1); // Remove the last comma
-            pkgStr += "] }";
-            return pkgStr;
+            pkgStr.Remove(pkgStr.Length - 1, 1); // Remove the last comma
+            pkgStr.Append("] }");
+            return pkgStr.ToString();
         }
     }
 }
