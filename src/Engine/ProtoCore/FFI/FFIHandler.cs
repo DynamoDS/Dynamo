@@ -37,11 +37,38 @@ namespace ProtoFFI
     }
 
     /// <summary>
+    /// Represents StackValue argument
+    /// </summary>
+    public class StackValueArgs : EventArgs
+    {
+        public StackValueArgs(StackValue data, ProtoCore.RuntimeCore core)
+        {
+            Data = data;
+            Core = core;
+        }
+
+        /// <summary>
+        /// The StackValue Data
+        /// </summary>
+        public StackValue Data { get; private set; }
+
+        /// <summary>
+        /// The RuntimeCore to which this StackValue belongs
+        /// </summary>
+        public ProtoCore.RuntimeCore Core { get; private set; }
+    }
+
+    /// <summary>
     /// This class is responsible for marshaling of FFI objects to DS world and 
     /// vice-versa.
     /// </summary>
     public abstract class FFIObjectMarshler
     {
+        /// <summary>
+        /// Event handler to get notified when a StackValue is disposed.
+        /// </summary>
+        public event EventHandler<StackValueArgs> ObjectDisposed;
+
         /// <summary>
         /// Marshales a given FFI object to DS Object of given ProtoCore.Type
         /// </summary>
@@ -85,6 +112,17 @@ namespace ProtoFFI
         /// <param name="dsObject">DS Object</param>
         /// <returns>string representation of a DS object</returns>
         public abstract string GetStringValue(StackValue dsObject);
+
+        /// <summary>
+        /// Raises event notification for object disposed.
+        /// </summary>
+        /// <param name="data">The StackValue data being disposed</param>
+        /// <param name="core">The RuntimCore to which the data belongs</param>
+        protected void NotifyObjectDisposed(StackValue data, ProtoCore.RuntimeCore core)
+        {
+            if (ObjectDisposed != null)
+                ObjectDisposed(this, new StackValueArgs(data, core));
+        }
     }
 
     public enum FFILanguage
