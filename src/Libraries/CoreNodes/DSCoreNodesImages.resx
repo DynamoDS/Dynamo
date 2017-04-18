@@ -518,7 +518,7 @@
         6WQX+wfYZd+V5M84Var/IKLfEeuRU3mtroIAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="DSCore.Formula.Evaluate.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.Math.EvaluateFormula.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAQvSURBVHhe7ZrNjSJBDIUnBEIgBEKYPa40hwmBEAiB
@@ -542,7 +542,7 @@
         QgghhBBCCCGEEEIIIYQQQnTw9vYfwO0wSVAAzjcAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="DSCore.Formula.Evaluate.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.Math.EvaluateFormula.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFCSURBVFhH7ZTRaYRAFEUtYUuwBEswn4F8bAmWYAl2
@@ -2190,7 +2190,7 @@
         jxG13u85Ligo+HNU1RsZDjRwgXrK9AAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="DSCore.Logic.Xor.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.Math.Xor.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAMUSURBVHhe7ZrBbdwwEEW3BJeQElyCcwzgg0twCS7B
@@ -2209,7 +2209,7 @@
         nTy7nRQ/GRgOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABw3ex2fwDgbxGeSaMlpwAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="DSCore.Logic.Xor.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.Math.Xor.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADdSURBVFhH7ZTNDYJAEEYpgRIswRL0aOLBEiyBEujA
