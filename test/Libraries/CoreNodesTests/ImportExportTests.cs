@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using System.IO;
-using ImportExport = DSCore.ImportExport;
+using ImportExport = DSCore.ImportExport.ImportExport;
 using Dynamo;
 
 namespace DSCoreNodesTests
