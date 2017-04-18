@@ -19,12 +19,11 @@
 
         /* Style the buttons inside the tab */
         div.tab button {
-            background-color: grey;
+            background-color: inherit;
             float: left;
-            border: none;
+            border: 1px;
             outline: none;
             cursor: pointer;
-            padding: 14px 16px;
             transition: 0.3s;
         }
 
@@ -53,8 +52,12 @@
 
     <!-- Placeholders must exist before all other scripts that try to access them -->
     <div class="tab">
-        <button class="tablinks" onclick="openTab(event, 'LibraryContents')" id="defaultTab">Library</button>
-        <button class="tablinks" onclick="openTab(event, 'PackagesContents')">Packages</button>
+        <button class="tablinks" onclick="openTab(event, 'LibraryContents')" id="defaultTab">
+            <img src='./dist/resources/icons/tab-library.svg' width="25%" height="auto" />
+        </button>
+        <button class="tablinks" onclick="openTab(event, 'PackagesContents')">
+            <img src='./dist/resources/icons/tab-package.svg' width="25%" height="auto" />
+        </button>
     </div>
 
     <div id="LibraryContents" class="tabcontent">
@@ -98,6 +101,7 @@
     
         let pkgController = PackageManagerEntryPoint.CreatePackageController();
         let installedPkg = JSON.parse(controller.getInstalledPackagesJSON());
+        console.log(installedPkg);
 
         let tabControlConfig = {
             pkgController: pkgController,
