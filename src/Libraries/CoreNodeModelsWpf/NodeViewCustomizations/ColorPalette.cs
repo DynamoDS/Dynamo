@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using System.ComponentModel;
+using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Wpf;
@@ -29,23 +30,26 @@ namespace CoreNodeModelsWpf.Nodes
             viewNode = nodeView;
             colorPaletteNode = model;
             model.PropertyChanged += Model_PropertyChanged;
-            var undoRecorder = viewNode.ViewModel.WorkspaceViewModel.Model.UndoRecorder;
-            WorkspaceModel.RecordModelForModification(colorPaletteNode, undoRecorder);
             ColorPaletteUINode = new ColorPaletteUI();
             nodeView.inputGrid.Children.Add(ColorPaletteUINode);
             ColorPaletteUINode.DataContext = model;
         }
-        private void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            var undoRecorder = viewNode.ViewModel.WorkspaceViewModel.Model.UndoRecorder;
+
             if (e.PropertyName == "Update")
-            {
-                var undoRecorder = viewNode.ViewModel.WorkspaceViewModel.Model.UndoRecorder;
+            {              
                 WorkspaceModel.RecordModelForModification(colorPaletteNode, undoRecorder);
             }
         }
+
         /// <summary>
         ///     Dispose.
         /// </summary>
-        public void Dispose() { }
+        public void Dispose()
+        {
+            colorPaletteNode.PropertyChanged -= Model_PropertyChanged;
+        }
     }
 }

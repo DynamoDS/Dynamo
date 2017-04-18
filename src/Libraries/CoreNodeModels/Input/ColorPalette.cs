@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 
-using System.Runtime.CompilerServices;
-
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+
+using System.Runtime.CompilerServices;
 
 using ProtoCore.AST.AssociativeAST;
 using CoreNodeModels.Properties;
@@ -29,7 +29,7 @@ namespace CoreNodeModels.Input
     [OutPortNames("Color")]
     [OutPortTypes("Color")]
     [OutPortDescriptions("Selected Color.")]
-    public class ColorPalette : NodeModel, INotifyPropertyChanged
+    public class ColorPalette : NodeModel
     {
         private DSColor dscolor = DSColor.ByARGB(255, 0, 0, 0);
         private bool Isundo = false;
@@ -41,7 +41,7 @@ namespace CoreNodeModels.Input
                 if (dscolor.Equals(value))
                 {
                     //Checks if undorecorder is being used
-                    Isundo = true;
+                    Isundo = true;     
                 }
                 dscolor = value;
                 if (!Isundo)
@@ -51,29 +51,22 @@ namespace CoreNodeModels.Input
                     Update = dscolor;
                 }
                 OnNodeModified();
-                OnPropertyChanged();
+                RaisePropertyChanged("DsColor");
             }
         }
-
         public DSColor Update
         {
             set
             {
-                OnPropertyChanged();
+                RaisePropertyChanged("Update");
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         /// <summary>
         ///     Node constructor.
         /// </summary>
         public ColorPalette()
-        {
+        {           
+            //this.PropertyChanged += RaisePropertyChanged;
             RegisterAllPorts();
         }
         private DSColor DeserializeValue(string val)
