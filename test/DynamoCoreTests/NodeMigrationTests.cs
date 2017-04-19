@@ -97,6 +97,12 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestMigration_DSCore_Math()
+        {
+            TestMigration("TestMigration_DSCore_Math.dyn");
+        }
+
+        [Test]
         public void TestMigration_InputOutput_Excel()
         {
             TestMigration("TestMigration_InputOutput_Excel.dyn");
