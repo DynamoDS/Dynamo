@@ -7357,7 +7357,7 @@
         SUVORK5CYII=
 </value>
   </data>
-  <data name="DSCore.ColorRange2D.ByColorsAndParameters.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.ColorRange.ByColorsAndParameters.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAJU0lEQVR4Xu1da2xVVRbemcRk
@@ -7403,7 +7403,7 @@
         PCTBwuNXfA3L/9XDw8PDw8PDw8PDw8PDw6MXKPUTpnr9WMU7cUQAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="DSCore.ColorRange2D.ByColorsAndParameters.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.ColorRange.ByColorsAndParameters.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAB10lEQVRYR+2XvUtCURjGXdsa
@@ -7417,7 +7417,7 @@
         fohEQWrC9ZDof8fPf37wg04cWkL5l5wK76t921ZUFIt9AsEwvDjqr0eSAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="DSCore.ColorRange2D.GetColorAtParameter.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.ColorRange.GetColorAtParameter.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAQ4ElEQVR4Xu1cC3AV1Rne6XSm
@@ -7496,7 +7496,7 @@
         QmCC
 </value>
   </data>
-  <data name="DSCore.ColorRange2D.GetColorAtParameter.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.ColorRange.GetColorAtParameter.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAE3UlEQVRYR+1WXUwcVRSexHcf
