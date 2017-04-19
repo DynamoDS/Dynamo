@@ -164,6 +164,12 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestMigration_ColorRange()
+        {
+            TestMigration("TestMigration_ColorRange.dyn");
+        }
+
+        [Test]
         public void TestStringInput()
         {
             OpenModel(GetDynPath("TestStringInput.dyn"));
