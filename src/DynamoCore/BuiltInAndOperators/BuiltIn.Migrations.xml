@@ -67,6 +67,12 @@
   <priorNameHint>
     <oldName>Flatten</oldName>
     <newName>DSCore.List.Flatten</newName>
+    <additionalAttributes>
+      <attribute>
+        <name>amt</name>
+        <value>-1</value>
+      </attribute>
+    </additionalAttributes>
   </priorNameHint>
   <priorNameHint>
     <oldName>Insert</oldName>

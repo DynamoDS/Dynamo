@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Librarie.js sample page</title>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            background-color: #353535;
+        }
+    </style>
+</head>
+
+<body>
+    <link rel="stylesheet" href="./dist/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="./dist/resources/styles.css" />
+    <script src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+
+    <!-- Placeholders must exist before all other scripts that try to access them -->
+    <div class="OuterMostContainer" id="tabControlPlaceholder"></div>
+    
+    <!-- The main library view compoment -->
+    <script src='./dist/v0.0.1/librarie.min.js'></script>
+    <script src='./dist/bundle.js'></script>
+    
+    <script>
+        //Get hold of object registered from C#
+        let csharpController = window["controller"];
+
+        //Create package controller for event notification
+        let pkgController = PackageManagerEntryPoint.CreatePackageController();
+
+        //Create library controller
+        let libController = LibraryEntryPoint.CreateLibraryController();
+
+        //Create library container
+        let jsonUrls = ["loadedTypes", "layoutSpecs"];
+        let downloader = LibraryEntryPoint.CreateJsonDownloader(jsonUrls, function (jsonUrl, jsonObject) {
+
+            let downloaded = downloader.getDownloadedJsonObjects();
+            let loadedTypesJson = downloaded["loadedTypes"];
+            let layoutSpecsJson = downloaded["layoutSpecs"];
+
+            if (!loadedTypesJson || (!layoutSpecsJson)) {
+                return; // Not fully downloaded yet, bail.
+            }
+
+            let libContainer = libController.createLibraryContainer(layoutSpecsJson, loadedTypesJson);
+            
+            //Create tab control and host library as well as Package browsers
+            let packageList = PackageManagerEntryPoint.CreatePackageList(pkgController, function (packageId) {
+                console.log('Package Item Clicked: ' + packageId);
+                csharpController.showDetailsView(packageId);
+            });
+
+            let tabControl = new PackageManagerEntryPoint.CreateTabControl(pkgController, "tabControlPlaceholder");
+            tabControl.insertTab("Nodes Library", "/dist/resources/icons/tab-library.svg", libContainer);
+            tabControl.insertTab("Package Browser", "/dist/resources/icons/tab-package.svg", packageList);
+            tabControl.setTabSelectionIndex(0);
+        });
+
+
+        // Register event handlers for various events on library controller and package controller.
+
+        libController.on("itemClicked", function (nodeCreationName) {
+            console.log('Library Node Clicked: ' + nodeCreationName);
+            csharpController.closeDetailsView(); //ensure that the details view is closed.
+            csharpController.createNode(nodeCreationName);
+        });
+
+        pkgController.on("StartInstallingPackage", function (id, name, version) {
+            console.log("Install Package Callback: {id: " + id + ", name: " + name + ", version: " + version + "}");
+            //csharpController.installPackage(id, name, version, "");
+        });
+
+    </script>
+
+</body>
+
+</html>
