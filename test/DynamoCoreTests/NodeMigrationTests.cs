@@ -1170,6 +1170,35 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestListFlatten()
+        {
+            // This file contains a code block node with value {1,3,5,{2,4,{6},8},7,9,{{0}}},
+            // connected to List.Flatten(list) node and List.Flatten(list, amt) node with amt = 1.
+            OpenModel(GetDynPath("TestListFlatten.dyn"));
+
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var flattenWithoutAmt = workspace.NodeFromWorkspace<DSFunction>(
+                "eba368d6-f0cf-4bbe-9cf8-949943ab7789");
+            var flattenWithAmt = workspace.NodeFromWorkspace<DSFunction>(
+                "6e175514-15ed-43f6-a124-a51dd43f15e7");
+
+            // 2 code block nodes (one with the list and one with amt) + 2 List.Flatten nodes
+            Assert.AreEqual(4, workspace.Nodes.Count());
+            Assert.AreEqual(3, workspace.Connectors.Count());
+
+            Assert.NotNull(flattenWithoutAmt);
+            Assert.NotNull(flattenWithAmt);
+
+            // List.Flatten(list) should be migrated and flatten the given list completely.
+            AssertPreviewValue("eba368d6-f0cf-4bbe-9cf8-949943ab7789",
+                new object[] { 1, 3, 5, 2, 4, 6, 8, 7, 9, 0});
+
+            // List.Flatten(list, amt) should have amt = 1 instead of the default value (-1).
+            AssertPreviewValue("6e175514-15ed-43f6-a124-a51dd43f15e7",
+                new object[] { 1, 3, 5, 2, 4, new object[] { 6 }, 8, 7, 9, new object[] { 0 } });
+        }
+
+        [Test]
         public void TestAddToList()
         {
             OpenModel(GetDynPath("TestAddToList.dyn"));
