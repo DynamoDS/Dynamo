@@ -220,12 +220,12 @@ namespace Dynamo.Tests
         {
             var tmp = GetNewFileNameOnTempPath("");
             Assert.IsFalse(Directory.Exists(tmp));
-            var info = ImportExport.File.DirectoryFromPath(tmp);
+            var info = File.DirectoryFromPath(tmp);
             Assert.AreEqual(tmp, info.FullName);
             Assert.IsTrue(info.Exists);
 
             //Make again now that it already exists
-            var info2 = ImportExport.File.DirectoryFromPath(tmp);
+            var info2 = File.DirectoryFromPath(tmp);
             Assert.AreEqual(tmp, info2.FullName);
             Assert.IsTrue(info2.Exists);
         }
@@ -239,9 +239,9 @@ namespace Dynamo.Tests
             File.WriteText(FilePath.Combine(tmpSrc, fileName), "test");
 
             var tmpDest = GetNewFileNameOnTempPath("");
-            ImportExport.File.MoveDirectory(tmpSrc, tmpDest);
-            Assert.IsFalse(ImportExport.File.DirectoryExists(tmpSrc));
-            Assert.IsTrue(ImportExport.File.DirectoryExists(tmpDest));
+            File.MoveDirectory(tmpSrc, tmpDest);
+            Assert.IsFalse(File.DirectoryExists(tmpSrc));
+            Assert.IsTrue(File.DirectoryExists(tmpDest));
 
             var destFileName = FilePath.Combine(tmpDest, fileName);
             Assert.IsTrue(File.Exists(destFileName));
@@ -252,14 +252,14 @@ namespace Dynamo.Tests
         public void Directory_Copy()
         {
             var tmpSrc = GetNewFileNameOnTempPath("");
-            var tmpSrcInfo = ImportExport.File.DirectoryFromPath(tmpSrc);
+            var tmpSrcInfo = File.DirectoryFromPath(tmpSrc);
             const string fileName = @"temp.txt";
             File.WriteText(FilePath.Combine(tmpSrc, fileName), "test");
 
             var tmpDest = GetNewFileNameOnTempPath("");
-            ImportExport.File.CopyDirectory(tmpSrcInfo, tmpDest);
-            Assert.IsTrue(ImportExport.File.DirectoryExists(tmpSrc));
-            Assert.IsTrue(ImportExport.File.DirectoryExists(tmpDest));
+            File.CopyDirectory(tmpSrcInfo, tmpDest);
+            Assert.IsTrue(File.DirectoryExists(tmpSrc));
+            Assert.IsTrue(File.DirectoryExists(tmpDest));
 
             var destFileName = FilePath.Combine(tmpDest, fileName);
             Assert.IsTrue(File.Exists(destFileName));
@@ -274,21 +274,21 @@ namespace Dynamo.Tests
             const string fileName = @"temp.txt";
             File.WriteText(FilePath.Combine(tmpSrc, fileName), "test");
 
-            Assert.Throws<IOException>(() => ImportExport.File.DeleteDirectory(tmpSrc));
-            ImportExport.File.DeleteDirectory(tmpSrc, recursive: true);
-            Assert.IsFalse(ImportExport.File.DirectoryExists(tmpSrc));
+            Assert.Throws<IOException>(() => File.DeleteDirectory(tmpSrc));
+            File.DeleteDirectory(tmpSrc, recursive: true);
+            Assert.IsFalse(File.DirectoryExists(tmpSrc));
 
             var tmpSrc2 = GetNewFileNameOnTempPath("");
             Directory.CreateDirectory(tmpSrc2);
-            ImportExport.File.DeleteDirectory(tmpSrc2);
-            Assert.IsFalse(ImportExport.File.DirectoryExists(tmpSrc2));
+            File.DeleteDirectory(tmpSrc2);
+            Assert.IsFalse(File.DirectoryExists(tmpSrc2));
         }
 
         [Test, Category("UnitTests")]
         public void Directory_Contents()
         {
             var tmpSrc = GetNewFileNameOnTempPath("");
-            var tmpSrcInfo = ImportExport.File.DirectoryFromPath(tmpSrc);
+            var tmpSrcInfo = File.DirectoryFromPath(tmpSrc);
             const string fileName = @"temp.txt";
             var newFile = FilePath.Combine(tmpSrc, fileName);
             File.WriteText(newFile, "test");
@@ -297,7 +297,7 @@ namespace Dynamo.Tests
             var newDir = FilePath.Combine(tmpSrc, dirName);
             Directory.CreateDirectory(newDir);
 
-            var contents = ImportExport.File.GetDirectoryContents(tmpSrcInfo);
+            var contents = File.GetDirectoryContents(tmpSrcInfo);
             Assert.AreEqual(new[] { newFile }, contents["files"]);
             Assert.AreEqual(new[] { newDir }, contents["directories"]);
         }
@@ -306,9 +306,9 @@ namespace Dynamo.Tests
         public void Directory_Exists()
         {
             var tmp = GetNewFileNameOnTempPath("");
-            Assert.IsFalse(ImportExport.File.DirectoryExists(tmp), "Directory hasn't been created yet.");
+            Assert.IsFalse(File.DirectoryExists(tmp), "Directory hasn't been created yet.");
             Directory.CreateDirectory(tmp);
-            Assert.IsTrue(ImportExport.File.DirectoryExists(tmp), "Directory has been created.");
+            Assert.IsTrue(File.DirectoryExists(tmp), "Directory has been created.");
         }
         #endregion
 

@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 #endregion
 
-namespace ImportExport
+namespace DSCore
 {
     /// <summary>
     ///     Methods for Import/Export category.
@@ -113,105 +113,6 @@ namespace ImportExport
             // Judge whether the array needed to be transposed (when transpose is false) or not (when transpose is true)
             if (transpose) return CSVdatalist;
             else return DSCore.List.Transpose(CSVdatalist);
-        }
-    }
-
-    public static class File
-    {
-
-
-        /// <summary>
-        ///     Returns all of the contents of a given directory.
-        /// </summary>
-        /// <param name="directory">Directory to get contents of.</param>
-        /// <param name="searchString">Search string used to filter results. Defaults to "*.*" (displays all contents).</param>
-        [MultiReturn("files", "directories")]
-        public static Dictionary<string, IList> GetDirectoryContents(DirectoryInfo directory, string searchString = "*.*")
-        {
-            return new Dictionary<string, IList>
-            {
-                { "files", directory.EnumerateFiles(searchString).Select(x => x.FullName).ToList() },
-                { "directories", directory.EnumerateDirectories(searchString).Select(x => x.FullName).ToList() }
-            };
-        }
-
-        /// <summary>
-        ///     Copies a directory to a destination location.
-        /// </summary>
-        /// <param name="directory">Directory to copy.</param>
-        /// <param name="destinationPath">Destination of the copy operation on disk.</param>
-        /// <param name="overwriteFiles"></param>
-        public static void CopyDirectory(DirectoryInfo directory, string destinationPath, bool overwriteFiles = false)
-        {
-            if (!DSCore.IO.File.Exists(destinationPath))
-                System.IO.Directory.CreateDirectory(destinationPath);
-
-            foreach (var file in directory.EnumerateFiles())
-            {
-                var newFilePath = Path.Combine(destinationPath, file.Name);
-                DSCore.IO.File.Copy(file, newFilePath, overwriteFiles);
-            }
-
-            foreach (var dir in directory.EnumerateDirectories())
-            {
-                var newDirPath = Path.Combine(destinationPath, dir.Name);
-                CopyDirectory(dir, newDirPath, overwriteFiles);
-            }
-        }
-
-        /// <summary>
-        ///     Deletes a directory.
-        /// </summary>
-        /// <param name="path">Path to a directory on disk.</param>
-        /// <param name="recursive">Whether or not to delete all contents of the directory, defaults to false.</param>
-        public static void DeleteDirectory(string path, bool recursive = false)
-        {
-            System.IO.Directory.Delete(path, recursive);
-        }
-
-        /// <summary>
-        ///     Determines if a directory exists at the given path.
-        /// </summary>
-        /// <param name="path">Path to a directory on disk.</param>
-        /// <search>directorypath</search>
-        public static bool DirectoryExists(string path)
-        {
-            return System.IO.Directory.Exists(path);
-        }
-        [IsVisibleInDynamoLibrary(false)]
-        public static DirectoryInfo DirectoryFromPath(string path)
-        {
-            if (!DirectoryExists(path))
-                System.IO.Directory.CreateDirectory(path);
-            return new DirectoryInfo(path);
-        }
-
-        /// <summary>
-        ///     Moves a directory to a new location.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="newPath"></param>
-        /// <param name="overwriteFiles"></param>
-        public static void MoveDirectory(string path, string newPath, bool overwriteFiles = false)
-        {
-            if (!DirectoryExists(newPath))
-            {
-                System.IO.Directory.Move(path, newPath);
-                return;
-            }
-
-            var info = new DirectoryInfo(path);
-            foreach (var file in info.EnumerateFiles())
-            {
-                var newFilePath = Path.Combine(newPath, file.Name);
-                DSCore.IO.File.Move(file.FullName, newFilePath, overwriteFiles);
-            }
-
-            foreach (var dir in info.EnumerateDirectories())
-            {
-                var newDirPath = Path.Combine(newPath, dir.Name);
-                MoveDirectory(dir.FullName, newDirPath, overwriteFiles);
-            }
         }
     }
 }

@@ -322,7 +322,7 @@ namespace CoreNodeModels.Input
     }
 
     [NodeName("DirectoryFromPath")]
-    [NodeCategory("Core.ImportExport.File")]
+    [NodeCategory("Core.File")]
     [NodeDescription("DirectoryObjectNodeDescription",typeof(Resources))]
     [NodeSearchTags("DirectoryPathSearchTags", typeof(Resources))]
     [SupressImportIntoVM]
@@ -332,10 +332,10 @@ namespace CoreNodeModels.Input
     {
         [JsonConstructor]
         private DirectoryObject(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : 
-            base(ImportExport.File.DirectoryFromPath, inPorts, outPorts) { }
+            base(DSCore.IO.File.DirectoryFromPath, inPorts, outPorts) { }
 
         public DirectoryObject()
-            : base(ImportExport.File.DirectoryFromPath)
+            : base(DSCore.IO.File.DirectoryFromPath)
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("path", Resources.DirectoryObjectPortDataPathToolTip)));
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("directory", Resources.DirectoryObjectPortDataResultToolTip)));
