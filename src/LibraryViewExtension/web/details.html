@@ -16,8 +16,7 @@
     <script src='./dist/bundle.js'></script>
     <script>
         let controller = window["controller"];
-        console.log(controller.detailsViewContextData);
-
+        
         let pkgController = PackageManagerEntryPoint.CreatePackageController();
 
         let detailedConfig = {
@@ -27,14 +26,35 @@
         };
 
         let detailedView = new PackageManagerEntryPoint.DetailedView(detailedConfig);
-        detailedView.setActivePackageId(controller.detailsViewContextData);
+        console.log(controller.detailsViewContextData);
 
+        let contextData = JSON.parse(controller.detailsViewContextData);
+        
+        detailedView.setActivePackageId(contextData.id, contextData.version);
+        
         pkgController.on("closeButtonClicked", function (pkgId) {
             controller.closeDetailsView();
         });
 
         controller.on("detailsViewContextDataChanged", function (item) {
-            detailedView.setActivePackageId(item);
+            console.log("detailsViewContextDataChanged to: " + item);
+            let data = JSON.parse(item);
+            detailedView.setActivePackageId(data.id, data.version);
+        });
+
+        pkgController.on("StartInstallingPackage", function (pkg) {
+            console.log("Install Package Callback: " + JSON.stringify(pkg));
+            controller.installPackage(pkg.name, pkg.version, pkg.id, "");
+        });
+
+        controller.on("installPercentComplete", function (id, percent) {
+            console.log("installPercentComplete id: " + id + " percent: " + percent);
+            pkgController.raiseEvent("installPercentComplete", id, percent);
+        });
+
+        controller.on("error", function (msg) {
+            console.log("Error: " + msg);
+            pkgController.raiseEvent("error", msg);
         });
 
     </script>
