@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using System.Windows;
-using CefSharp;
-using CefSharp.Wpf;
-using Dynamo.Extensions;
-using Dynamo.LibraryUI.Properties;
-using Dynamo.Models;
+﻿using System.Windows;
 using Microsoft.Practices.Prism.ViewModel;
-using Newtonsoft.Json;
 
 namespace Dynamo.LibraryUI.ViewModels
 {
@@ -42,6 +31,29 @@ namespace Dynamo.LibraryUI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Checks and updates the visibility property
+        /// </summary>
+        public bool IsVisible
+        {
+            get { return Visibility == Visibility.Visible; }
+            set { Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
+        }
+
+        /// <summary>
+        /// Controls visibilty of the view
+        /// </summary>
+        public Visibility Visibility
+        {
+            get { return visibility; }
+            set
+            {
+                visibility = value;
+                RaisePropertyChanged("Visibility");
+            }
+        }
+
+        private Visibility visibility = Visibility.Visible;
         private string address;
     }
 }

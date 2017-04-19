@@ -190,17 +190,6 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Returns the flattened 1D list of the multi-dimensional input list.
-        /// </summary>
-        /// <param name="list">The list to be flattened.</param>
-        /// <returns name="list">The flattened 1D list.</returns>
-        /// <search>flatten,1D</search>
-        public static IList Flatten(IList list)
-        {
-            return Flatten(list, GetDepth(list), new List<object>());
-        }
-
-        /// <summary>
         ///     Inserts an element into a list at specified index.
         /// </summary>
         /// <param name="list">The list the element will be inserted to.</param>
@@ -1239,8 +1228,12 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to flatten.</param>
         /// <param name="amt">Layers of nesting to remove.</param>
-        public static IList Flatten(IList list, int amt)
+        public static IList Flatten(IList list, int amt = -1)
         {
+            if (amt < 0)
+            {
+                return Flatten(list, GetDepth(list), new List<object>());
+            }
             return Flatten(list, amt, new List<object>());
         }
         #endregion

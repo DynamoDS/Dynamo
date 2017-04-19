@@ -81,5 +81,19 @@
   <priorNameHint>
     <oldName>DSCore.IO.FilePath.Extension</oldName>
     <newName>DSCore.ImportExport.File.FileExtension</newName>
+    <oldName>DSCore.Formula.Evaluate</oldName>
+    <newName>DSCore.Math.EvaluateFormula</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.Logic.Xor</oldName>
+    <newName>DSCore.Math.Xor</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.Logic.And</oldName>
+    <newName>DSCore.Math.And</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.Logic.Or</oldName>
+    <newName>DSCore.Math.Or</newName>
   </priorNameHint>
 </migrations>

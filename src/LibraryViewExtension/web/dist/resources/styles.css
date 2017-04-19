@@ -1,0 +1,469 @@
+@font-face {
+    font-family: "Open Sans";
+    src: url('fonts/OpenSans.woff2') format('truetype');
+}
+
+@font-face {
+    font-family: "Open Sans";
+    src: url('fonts/OpenSans-Italic.woff2') format('truetype');
+    font-style: italic;
+}
+
+html, body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    min-height: 100%;
+    color: white;
+    background-color: black;
+}
+
+a {
+    color: white;
+}
+
+* {
+    font-family: "Open Sans";
+}
+
+i.fa {
+    padding-top: 3px;
+}
+
+.CloseDetailView{
+    color:black;
+    font-size: 15px;
+    height: 15px;
+    margin: 0;
+    padding:0px;
+    border:0px;
+    float:right;
+}
+
+.OuterMostContainer {
+    display: flex;
+    width: 100%;
+    min-height: 100%;
+    align-content: stretch;
+}
+
+.LeftContainer, .RightContainer {
+    display: flex;
+}
+
+.InstallButtonGroup {
+    display: flex;
+    flex-direction: row;
+}
+
+.TabComponent, .PackageDetailView  {
+    flex: 1;
+}
+
+#TabComponent .InstallButtons {
+    width: 70px;
+    padding: 1px 0px 1px 0px;
+    border: #888 1.5px solid;
+    border-radius: 3px;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 3px;
+}
+
+#PackageDetailView .InstallButtons {
+    flex: 1;
+    width: 90px;
+    padding: 1px 0px 2px 0px;
+    border: #888 1.5px solid;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 3px;
+}
+
+#leftContentPlaceholder {
+    min-width: 400px;
+}
+
+#rightContentPlaceholder {
+    flex-grow: 1;
+}
+
+#contentPlaceholder #TabComponent, #contentPlaceholder #PackageDetailView {
+    width: 100%;
+}
+
+#TabComponent {
+    background: #353535;
+    padding: 10px;
+}
+
+#PackageDetailView {
+    background: #555;
+    padding: 15px;
+}
+
+.MainCaption {
+    color: #0000ff;
+}
+
+.PackageItem {
+    display:flex;
+    overflow:hidden;
+    margin-bottom: 5px;
+    background-color: #555;
+    border: rgba(0,0,0,0) 1px solid;
+}
+
+.PackageItem:hover {
+    background-color: #666;
+}
+
+.PackageItem:active {
+    background-color: #555;
+    border: #aaa 1px solid;
+}
+
+.PackageItemSelected {
+    background-color: #666;
+    border: #aaa 1px solid;
+}
+
+.ItemLeftPanel {
+    padding:5px;
+}
+
+.ItemRightPanel {
+    padding: 2px;
+    width:100%;
+}
+
+.ItemRightPanelSelected {
+    padding:5px;
+    background-color:#ddd;
+    width:100%;
+}
+
+.ItemPackageName {
+    font-size: 15px;
+}
+
+.ItemPackageVersion {
+    font-size: 10px;
+    margin-left: 8px;
+}
+
+.ItemPackageAuthor {
+    font-size: 11px;
+    color:#aaa;
+}
+
+.ItemCrumbles {
+    display: flex;
+    flex-direction: row;
+    margin: 3px 4px 4px 0px;
+}
+
+.ItemStars {
+    flex-grow: 1;
+    margin-top: auto;
+}
+
+.VersionContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.VersionBar {
+    display: flex;
+    flex-direction: row;
+    font-size: 15px;
+}
+
+.VersionBarInfo {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    max-width: 500px;
+}
+
+.VersionBarInfo .VersionBarColumn {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.PackageHeader {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 10px;
+    border-bottom: #888 1px solid;
+}
+
+.PackageHeaderLeftPanel {
+    margin-right: 15px;
+}
+
+.PackageHeaderRightPanel
+{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.PackageDetailContainer {
+    margin: 10px 0px;
+    flex-direction: column;
+}
+
+img.PackageIcon {
+    border-radius: 10px;
+}
+
+.PackageName {
+    font-size: 22px;
+    margin-top: -5px;
+}
+
+.PackageAuthor, .PackageAuthor a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 15px;
+    margin-bottom: 2px;
+}
+
+.PackageAuthor a:hover {
+    text-decoration: underline;
+}
+
+.StarRating {
+    display: flex;
+    flex-direction: row;
+}
+
+.StarRating button {
+    border:none;
+    outline: none;
+    background: transparent;
+    padding:0px;
+    margin:0px;
+}
+
+.StarRatingGrey {
+    color:#aaa;
+}
+
+.StarRatingWhite {
+    color:white;
+}
+
+.StarRatingYellow {
+    color:gold;
+}
+
+.PackageCrumbles {
+    display: flex;
+    flex-direction: row;
+    font-size: 15px;
+    color: #aaa;
+    white-space: nowrap;
+}
+
+.PackageCrumbles .AlignLeft {
+    display: flex;
+    flex-direction: row;
+    margin-right: 25px;
+}
+
+.PackageCrumbles .AlignRight {
+    text-align: right;
+    flex-grow: 1;
+}
+
+.DetailSectionHeader {
+    margin: 20px 0px 6px 0px;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #999;
+}
+
+.DetailSection ul {
+    margin: 0;
+}
+
+.RegularBodyText {
+    font-size: 15px;
+}
+
+div.Keywords {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+span.Keyword {
+    background-color: #777;
+    border-radius: 5px;
+    margin-right: 10px;
+    margin-bottom: 5px;
+    padding: 0px 5px;
+    font-style: italic;
+}
+
+.PackageDescription {
+    font-size: 15px;
+}
+
+.PackageDescriptionToggle {
+    margin-left: 10px;
+    color: #aaa;
+}
+
+.PackageDescriptionToggle:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.SearchBar {
+    height: 40px;
+    background: #666;
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0px;
+}
+
+.SearchBar .SearchInput {
+    width: 100%;
+    display: flex;
+    padding: 10px 0px 10px 10px;
+    font-size: 15px;
+    background: none;
+    color: white;
+    outline: none;
+    border: none;
+}
+
+.SearchBar .CancelButton {
+    display: flex;
+    height: 10px;
+    padding: 15px;
+    color: #ccc;
+}
+
+.SearchBar .CancelButton:hover {
+    cursor: pointer;
+}
+
+.SearchBar .SearchOptionsContainer {
+    display: flex;
+    position: relative;
+}
+
+.SearchBar .SortIcon {
+    height: 20px;
+    width: 20px;
+    display: block;
+    padding: 10px;
+    background: #555;
+}
+
+.SearchBar .SortIconHighlight {
+    height: 20px;
+    width: 20px;
+    display: block;
+    padding: 10px;
+    background: #444;
+}
+
+.SearchBar .SortIcon:hover, .SearchBar .SortIconHighlight {
+    cursor: pointer;
+    background: #444;
+    -webkit-transition: all 0.25s linear;
+}
+
+.SearchBar .Options {
+    float: right;
+    background: #555;
+    color: white;
+    position: absolute;
+    right: 0px;
+    top: 45px;
+    box-shadow: 3px 3px 8px 3px #333;
+}
+
+.SearchBar .Options .SortBy, .SearchBar .Options .OrderBy{
+    padding: 10px;
+    font-size: 13px;
+    font-style: italic;
+}
+
+.SearchBar .Options .OrderBy {
+    border-top: 1px solid #777;
+}
+
+.SearchBar .Options ul {
+    margin: 0px;
+    padding: 0px;
+}
+
+.SearchBar .Options li{
+    display: block;
+    padding: 10px 10px 10px 25px;
+    width: 120px;
+    line-height: 12px;
+    font-size: 13px;
+}
+
+.SearchBar .Options li:hover, .Options .OptionTextHighlight{
+    background: #777;
+    color: white;
+    cursor: pointer;
+     -webkit-transition: all 0.15s linear;
+}
+
+.SearchBar .Options li:active {
+    background: #444;
+}
+
+.TabHeader {
+    display: flex;
+}
+
+.tooltip {
+    visibility: hidden;
+    font-size: 12px;
+    display: block;
+    position: fixed;
+}
+.Tab{
+    
+    cursor: pointer;
+    width: 50px;
+    background-color: grey;
+}
+
+.TabSelected {
+    border: 1px solid;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 50px;
+    background-color: black
+}
+
+.Tab:hover .tooltip{
+    visibility: visible;
+}
+
+.TabSelected:hover .tooltip{
+    visibility: visible;
+}
+
+.SearchInput::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+}
+
+::-webkit-input-placeholder {
+  color: #dddddd;
+  font-style: italic;
+}
