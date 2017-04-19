@@ -8,7 +8,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using DSCore;
 using Dynamo.Controls;
 using Dynamo.Scheduler;
 using Dynamo.UI;
@@ -18,7 +17,6 @@ using Dynamo.Configuration;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 using ProtoCore.Mirror;
-using Color = DSCore.Color;
 using Dynamo.Wpf;
 
 namespace CoreNodeModelsWpf.Nodes
@@ -30,7 +28,7 @@ namespace CoreNodeModelsWpf.Nodes
         private ColorRange colorRangeNode;
         private DynamoModel dynamoModel;
         private System.Windows.Controls.Image gradientImage;
-        private ColorRange1D colorRange;
+        private DSCore.ColorRange1D colorRange;
 
         public void CustomizeView(ColorRange model, NodeView nodeView)
         {
@@ -76,7 +74,7 @@ namespace CoreNodeModelsWpf.Nodes
         public void Dispose() {}
 
         //http://gaggerostechnicalnotes.blogspot.com/2012/01/wpf-colors-scale.html
-        private WriteableBitmap CreateColorRangeBitmap(ColorRange1D colorRange)
+        private WriteableBitmap CreateColorRangeBitmap(DSCore.ColorRange1D colorRange)
         {
             const int width = 64;
             const int height = 1;
@@ -87,7 +85,7 @@ namespace CoreNodeModelsWpf.Nodes
             for (var i = 1; i <= width; i++)
             {
                 var t = (double)i / width;
-                var newColor = ColorRange1D.GetColorAtParameter(colorRange,t);
+                var newColor = DSCore.ColorRange1D.GetColorAtParameter(colorRange,t);
                 pixels[i-1] = (uint)((255 << 24) + (newColor.Red << 16) + (newColor.Green << 8) + newColor.Blue);
 
             }

@@ -1,0 +1,57 @@
+<Workspace Version="2.0.0.4621" X="185" Y="-31" zoom="1" ScaleFactor="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="dee0163a-e1e1-4514-be6f-21b281cb54f2" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="ColorRange2D.ByColorsAndParameters" x="589" y="267.215" isVisible="true" isUpstreamVisible="true" lacing="Auto" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="DSCoreNodes.dll" function="DSCore.ColorRange2D.ByColorsAndParameters@DSCore.Color[],Autodesk.DesignScript.Geometry.UV[]">
+      <PortInfo index="0" default="False" />
+      <PortInfo index="1" default="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="704a04f7-169e-4bc2-8c74-bd6b415e7f25" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="ColorRange2D.GetColorAtParameter" x="949" y="267.215" isVisible="true" isUpstreamVisible="true" lacing="Auto" isSelectedInput="False" IsFrozen="false" isPinned="true" assembly="DSCoreNodes.dll" function="DSCore.ColorRange2D.GetColorAtParameter@Autodesk.DesignScript.Geometry.UV">
+      <PortInfo index="0" default="False" />
+      <PortInfo index="1" default="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <CoreNodeModels.CreateList guid="8215da23-980d-485e-b15d-a1f72e98ccb1" type="CoreNodeModels.CreateList" nickname="List.Create" x="345" y="213.215" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" inputcount="2">
+      <PortInfo index="0" default="False" />
+      <PortInfo index="1" default="False" />
+    </CoreNodeModels.CreateList>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="774d13f9-13f5-456f-9b5b-eaa8a7d7b889" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="88" y="458.428333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="true" CodeText="0..1..#6;" ShouldFocus="false">
+      <OutPortInfo LineIndex="0" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="cb7b00e5-e68e-4546-9b78-661c1b205d06" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="UV.ByCoordinates" x="345" y="347.215" isVisible="true" isUpstreamVisible="true" lacing="Auto" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.UV.ByCoordinates@double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="302f5bf4-36d3-4c7a-970e-da370d3a3c0a" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Color.ByARGB" x="88" y="86.215" isVisible="true" isUpstreamVisible="true" lacing="Auto" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Color.ByARGB@int,int,int,int">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+      <PortInfo index="3" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="48bbab6b-df46-45ff-b713-5c3ac213f9f9" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Color.ByARGB" x="88" y="272.215" isVisible="true" isUpstreamVisible="true" lacing="Auto" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Color.ByARGB@int,int,int,int">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+      <PortInfo index="3" default="True" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="89386574-c9b8-4832-8fb7-9dd9c522b9ec" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-91" y="222.428333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="255;" ShouldFocus="false">
+      <OutPortInfo LineIndex="0" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="dee0163a-e1e1-4514-be6f-21b281cb54f2" start_index="0" end="704a04f7-169e-4bc2-8c74-bd6b415e7f25" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="8215da23-980d-485e-b15d-a1f72e98ccb1" start_index="0" end="dee0163a-e1e1-4514-be6f-21b281cb54f2" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="774d13f9-13f5-456f-9b5b-eaa8a7d7b889" start_index="0" end="cb7b00e5-e68e-4546-9b78-661c1b205d06" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="774d13f9-13f5-456f-9b5b-eaa8a7d7b889" start_index="0" end="cb7b00e5-e68e-4546-9b78-661c1b205d06" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="cb7b00e5-e68e-4546-9b78-661c1b205d06" start_index="0" end="dee0163a-e1e1-4514-be6f-21b281cb54f2" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="cb7b00e5-e68e-4546-9b78-661c1b205d06" start_index="0" end="704a04f7-169e-4bc2-8c74-bd6b415e7f25" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="302f5bf4-36d3-4c7a-970e-da370d3a3c0a" start_index="0" end="8215da23-980d-485e-b15d-a1f72e98ccb1" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="48bbab6b-df46-45ff-b713-5c3ac213f9f9" start_index="0" end="8215da23-980d-485e-b15d-a1f72e98ccb1" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="89386574-c9b8-4832-8fb7-9dd9c522b9ec" start_index="0" end="302f5bf4-36d3-4c7a-970e-da370d3a3c0a" end_index="1" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="89386574-c9b8-4832-8fb7-9dd9c522b9ec" start_index="0" end="48bbab6b-df46-45ff-b713-5c3ac213f9f9" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

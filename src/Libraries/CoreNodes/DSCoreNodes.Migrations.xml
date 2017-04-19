@@ -39,6 +39,14 @@
     </additionalAttributes>
   </priorNameHint>
   <priorNameHint>
+    <oldName>DSCore.ColorRange2D.ByColorsAndParameters</oldName>
+    <newName>DSCore.ColorRange.ByColorsAndParameters</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.ColorRange2D.GetColorAtParameter</oldName>
+    <newName>DSCore.ColorRange.GetColorAtParameter</newName>
+  </priorNameHint>
+  <priorNameHint>
     <oldName>Display.Display.ByGeometryColor</oldName>
     <newName>Modifiers.GeometryColor.ByGeometryColor</newName>
     <additionalAttributes>

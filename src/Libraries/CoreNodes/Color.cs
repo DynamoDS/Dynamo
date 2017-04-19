@@ -153,7 +153,7 @@ namespace DSCore
         [IsVisibleInDynamoLibrary(false)]
         public static Color BuildColorFrom2DRange(IList<Color> colors, IList<UV> parameters, UV parameter)
         {
-            var colorRange = ColorRange2D.ByColorsAndParameters(colors, parameters);
+            var colorRange = ColorRange.ByColorsAndParameters(colors, parameters);
             return colorRange.GetColorAtParameter(parameter);
         }
 
@@ -531,13 +531,13 @@ namespace DSCore
     }
 
     [IsVisibleInDynamoLibrary(true)]
-    public class ColorRange2D
+    public class ColorRange
     {
         private Quadtree quadtree;
         
         private IList<Color.IndexedColor2D> indexedColors;
 
-        private ColorRange2D(IEnumerable<Color> colors, IEnumerable<UV> parameters)
+        private ColorRange(IEnumerable<Color> colors, IEnumerable<UV> parameters)
         {
             var parameterList = parameters as UV[] ?? parameters.ToArray();
             var colorList = colors as Color[] ?? colors.ToArray();
@@ -545,15 +545,15 @@ namespace DSCore
         }
 
         /// <summary>
-        /// Create a ColorRange2D by supplying lists of colors and UVs.
+        /// Create a ColorRange by supplying lists of colors and UVs.
         /// </summary>
         /// <param name="colors">A list of colors.</param>
         /// <param name="parameters">A list of parameters between (0.0,0.0) and (1.0,1.0).</param>
-        /// <returns>A ColorRange2D object.</returns>
-        public static ColorRange2D ByColorsAndParameters(
+        /// <returns>A ColorRange object.</returns>
+        public static ColorRange ByColorsAndParameters(
             IList<Color> colors, IList<UV> parameters)
         {
-            return new ColorRange2D(colors, parameters);
+            return new ColorRange(colors, parameters);
         }
 
         /// <summary>

@@ -159,7 +159,8 @@
     <EmbeddedResource Include="web\package\58b58359f4db78ec01000068.json" />
     <EmbeddedResource Include="web\package\58c6bb92f4db78ec010000f2.json" />
     <EmbeddedResource Include="web\packages.json" />
-    <EmbeddedResource Include="web\dist\resources\fonts\OpenSans-Regular.ttf" />
+    <EmbeddedResource Include="web\dist\resources\fonts\OpenSans-Italic.woff" />
+    <EmbeddedResource Include="web\dist\resources\fonts\OpenSans-Regular.woff" />
     <EmbeddedResource Include="web\dist\resources\fonts\font-awesome-4.7.0\HELP-US-OUT.txt" />
     <EmbeddedResource Include="web\dist\resources\fonts\font-awesome-4.7.0\css\font-awesome.css" />
     <EmbeddedResource Include="web\dist\resources\fonts\font-awesome-4.7.0\css\font-awesome.min.css" />
