@@ -71,6 +71,14 @@ a {
     margin-left: 3px;
 }
 
+.PackageListEmpty {
+    background: #555;
+    text-align: center;
+    font-size: 0.9em;
+    color: #aaa;
+    font-style: italic;
+}
+
 .ButtonContainer {
     display: flex;
 }
@@ -78,17 +86,29 @@ a {
 .ButtonBody {
     width: 70px;
     padding: 1px 0px 1px 0px;
-    border: #888 1.5px solid;
+    border-top: #888 1.5px solid;
+    border-bottom: #888 1.5px solid;
+    border-left: #888 1.5px solid;
     text-align: center;
-    font-size: 12px;
+    font-size: 15px;
     margin-left: 3px;
     cursor: pointer;
 }
 
 .ButtonDropDown {
-    padding: 1px 2px;
-    border: #888 1.5px solid;
+    width: 20px;
+    padding: 2px 2px;
+    border-top: #888 1.5px solid;
+    border-bottom: #888 1.5px solid;
+    border-right: #888 1.5px solid;
     text-decoration: none;
+    text-align: center;
+    font-size: 12px;
+}
+
+.ButtonDropDown:hover{
+    color: black;
+    background-color: #a6c7fc;
 }
 
 .ButtonList {
@@ -473,34 +493,40 @@ span.Keyword {
 
 .TabHeader {
     display: flex;
+    flex-direction: row;
+    padding-top: 10px;
 }
 
 .tooltip {
-    visibility: hidden;
-    font-size: 12px;
-    display: block;
-    position: fixed;
+    /*visibility: hidden;*/
+    font-size: 15px;
+    padding: 2px 8px;
+    display: flex;
+    /*display: block;
+    position: fixed;*/
 }
-.Tab{
-    
+
+.Tab, .TabSelected {
+    border-radius: 15px 15px 0 0;
     cursor: pointer;
-    width: 50px;
-    background-color: grey;
+    padding: 5px 15px 3px 15px;
+    background-color: #353535;
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    border-bottom: 1px solid #888;
 }
 
 .TabSelected {
-    border: 1px solid;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 50px;
-    background-color: black
+    background-color: #666;
 }
 
-.Tab:hover .tooltip{
-    visibility: visible;
+.Tab img, .TabSelected img {
+    width: 25px;
+    height: 25px;
 }
 
-.TabSelected:hover .tooltip{
+.Tab:hover .tooltip, .TabSelected:hover .tooltip {
     visibility: visible;
 }
 

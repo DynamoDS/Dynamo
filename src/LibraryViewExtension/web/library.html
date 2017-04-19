@@ -51,11 +51,15 @@
 
             let libContainer = libController.createLibraryContainer(layoutSpecsJson, loadedTypesJson);
             
+            let installedPackagesJSON = csharpController.getInstalledPackagesJSON();
+            let installedPackagesResponse = JSON.parse(installedPackagesJSON);
+
             //Create tab control and host library as well as Package browsers
-            let packageList = PackageManagerEntryPoint.CreatePackageList(pkgController, function (packageId) {
-                console.log('Package Item Clicked: ' + packageId);
-                csharpController.showDetailsView(packageId);
-            });
+            let packageList = PackageManagerEntryPoint.CreatePackageList(pkgController, function (packageId, version) {
+                let ctx = JSON.stringify({ "id": packageId, "version": version });
+                console.log('Package Item Clicked: ' + ctx);                
+                csharpController.showDetailsView(ctx);
+            }, installedPackagesResponse.content);
 
             let tabControl = new PackageManagerEntryPoint.CreateTabControl(pkgController, "tabControlPlaceholder");
             tabControl.insertTab("Nodes Library", "/dist/resources/icons/tab-library.svg", libContainer);
@@ -72,9 +76,19 @@
             csharpController.createNode(nodeCreationName);
         });
 
-        pkgController.on("StartInstallingPackage", function (id, name, version) {
-            console.log("Install Package Callback: {id: " + id + ", name: " + name + ", version: " + version + "}");
-            //csharpController.installPackage(id, name, version, "");
+        pkgController.on("StartInstallingPackage", function (pkg) {
+            console.log("Install Package Callback: " + JSON.stringify(pkg));
+            csharpController.installPackage(pkg.name, pkg.version, pkg.id, "");
+        });
+
+        csharpController.on("installPercentComplete", function (id, percent) {
+            console.log("installPercentComplete id: " + id + " percent: " + percent);
+            pkgController.raiseEvent("installPercentComplete", id, percent);
+        });
+
+        csharpController.on("error", function (msg) {
+            console.log("Error: " + msg);
+            pkgController.raiseEvent("error", msg);
         });
 
     </script>

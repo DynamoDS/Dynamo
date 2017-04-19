@@ -61,6 +61,15 @@ namespace Dynamo.LibraryUI
 
         public void DownlodAndInstall(string packageId, string packageName, string version, string installPath)
         {
+            if (string.IsNullOrEmpty(packageId) || string.IsNullOrEmpty(packageName))
+            {
+                controller.RaiseEvent("error",
+                    string.Format("Invalid package info 'Package Id: {0} Name: {1} Version: {2}'", packageId, packageName, version));
+                return;
+            }
+            //Notify install progress
+            controller.RaiseEvent("installPercentComplete", packageId, 0.001);
+
             var installedVersion = GetInstalledPackageVersion(packageName);
             if(!string.IsNullOrEmpty(installedVersion))
             {
