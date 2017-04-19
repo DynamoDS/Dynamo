@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Librarie.js sample page</title>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            background-color: #353535;
+        }
+        /* Style the tab */
+        div.tab {
+            overflow: hidden;
+            background-color: black;
+        }
+
+        /* Style the buttons inside the tab */
+        div.tab button {
+            background-color: inherit;
+            float: left;
+            border: 1px;
+            outline: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* Change background color of buttons on hover */
+        div.tab button:hover {
+            background-color: #ddd;
+        }
+
+        /* Create an active/current tablink class */
+        div.tab button.active {
+            background-color: #ccc;
+        }
+
+        /* Style the tab content */
+        .tabcontent {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <link rel="stylesheet" href="./dist/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="./dist/resources/styles.css" />
+    <script src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+
+    <!-- Placeholders must exist before all other scripts that try to access them -->
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'LibraryContents')" id="defaultTab">
+            <img src='./dist/resources/icons/tab-library.svg' width="25%" height="auto" />
+        </button>
+        <button class="tablinks" onclick="openTab(event, 'PackagesContents')">
+            <img src='./dist/resources/icons/tab-package.svg' width="25%" height="auto" />
+        </button>
+    </div>
+
+    <div id="LibraryContents" class="tabcontent">
+        <div id="libraryContainerPlaceholder"></div>
+    </div>
+
+    <div id="PackagesContents" class="tabcontent">
+        <div id="packageContainerPlaceholder"></div>
+    </div>
+    
+    <!-- The main library view compoment -->
+    <script src='./dist/v0.0.1/librarie.min.js'></script>
+    <script src='./dist/bundle.js'></script>
+    
+    <script>
+        function openTab(evt, content) {
+            // Declare all variables
+            var i, tabcontent, tablinks;
+
+            // Get all elements with class="tabcontent" and hide them
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            // Get all elements with class="tablinks" and remove the class "active"
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            // Show the current tab, and add an "active" class to the button that opened the tab
+            document.getElementById(content).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // Get the element with id="defaultOpen" and click on it
+        document.getElementById("defaultTab").click();
+
+        let controller = window["controller"];
+    
+        let pkgController = PackageManagerEntryPoint.CreatePackageController();
+        let installedPkg = JSON.parse(controller.getInstalledPackagesJSON());
+        console.log(installedPkg);
+
+        let tabControlConfig = {
+            pkgController: pkgController,
+            htmlElementId: "packageContainerPlaceholder",
+            installedPackages: installedPkg
+        };
+
+        let tabControl = new PackageManagerEntryPoint.TabControl(tabControlConfig);
+        
+        // Register a callback event for tabControl
+        tabControl.on("packageItemClicked", function (id) {
+            console.log(id);
+            controller.showDetailsView(id);
+        });
+
+        let configuration = {
+            htmlElementId: "libraryContainerPlaceholder",
+            loadedTypesUrl: "loadedTypes", // A url where loaded types are to be downloaded.
+            layoutSpecsUrl: "layoutSpecs"  // A url where layout specs are to be downloaded.
+        };
+        
+        let libView = new LibraryEntryPoint.LibraryView(configuration);
+
+        libView.on("itemClicked", function (nodeCreationName) {
+            console.log(nodeCreationName);
+            controller.createNode(nodeCreationName);
+            //controller.showDetailsView("583d8ad8fdef23aa6e000037");
+        });
+    </script>
+
+</body>
+
+</html>
