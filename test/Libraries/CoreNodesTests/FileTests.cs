@@ -12,7 +12,7 @@ using NUnit.Framework;
 using Color = DSCore.Color;
 using Directory = System.IO.Directory;
 using File = DSCore.IO.File;
-using FilePath = DSCore.ImportExport.File;
+using FilePath = DSCore.File;
 using Image = DSCore.IO.Image;
 
 namespace Dynamo.Tests

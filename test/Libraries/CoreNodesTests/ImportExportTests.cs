@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using System.IO;
-using ImportExport = DSCore.ImportExport.ImportExport;
+using Data = DSCore.Data;
 using Dynamo;
 
 namespace DSCoreNodesTests
@@ -18,7 +18,7 @@ namespace DSCoreNodesTests
         public static void ImportCSV_PathTest()
         {
             string filePath = Path.Combine(TestDirectory, @"core\importExport\not a valid file.csv");
-            Assert.Throws<FileNotFoundException>(() => ImportExport.ImportCSV(filePath));
+            Assert.Throws<FileNotFoundException>(() => Data.ImportCSV(filePath));
         }
 
         [Test]
@@ -26,7 +26,7 @@ namespace DSCoreNodesTests
         public static void ImportCSVTest()
         {
             string filePath = Path.Combine(TestDirectory, @"core\importExport\test1.csv");
-            var CSVList = ImportExport.ImportCSV(filePath);
+            var CSVList = Data.ImportCSV(filePath);
             Assert.AreEqual(CSVList, new List<object> {
                 new List<object> { 2, 3, 4 },
                 new List<object> { 4, 6, 8 },
@@ -40,7 +40,7 @@ namespace DSCoreNodesTests
         public static void ImportCSVWithTransposeTest()
         {
             string filePath = Path.Combine(TestDirectory, @"core\importExport\test2.csv");
-            var CSVList = ImportExport.ImportCSV(filePath, true);
+            var CSVList = Data.ImportCSV(filePath, true);
             Assert.AreEqual(CSVList, new List<object> {
                 new List<object> { 1.2, 5.6, 7, 155 },
                 new List<object> { 2, 0.009, 10, 3.3 },
@@ -57,10 +57,10 @@ namespace DSCoreNodesTests
                     .Select(row => Enumerable.Range(0, 10).Select(col => row + col).Cast<object>().ToArray())
                     .ToArray();
             var fn = GetNewFileNameOnTempPath(".csv");
-            ImportExport.ExportCSV(fn, data);
+            Data.ExportCSV(fn, data);
 
             //Confirm it's correct
-            Assert.AreEqual(data, ImportExport.ImportCSV(fn));
+            Assert.AreEqual(data, Data.ImportCSV(fn));
         }
     }
 }

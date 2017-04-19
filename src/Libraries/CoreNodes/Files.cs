@@ -157,7 +157,7 @@ namespace DSCore.IO
         [NodeObsolete("ExportToCSVObsolete", typeof(Properties.Resources))]
         public static bool ExportToCSV(string filePath, object[][] data)
         {
-            ImportExport.ImportExport.ExportCSV(filePath, data);
+            Data.ExportCSV(filePath, data);
             return true;
         }
         #endregion
