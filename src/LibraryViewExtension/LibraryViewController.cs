@@ -91,7 +91,10 @@ namespace Dynamo.LibraryUI
         /// </summary>
         public void CloseDetailsView()
         {
-            dynamoWindow.Dispatcher.BeginInvoke(new Action(() => detailsView.Visibility = Visibility.Collapsed));
+            if(detailsView != null)
+            {
+                dynamoWindow.Dispatcher.BeginInvoke(new Action(() => detailsView.Visibility = Visibility.Collapsed));
+            }
         }
 
         public void On(string eventName, object callback)

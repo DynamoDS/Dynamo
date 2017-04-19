@@ -1,11 +1,11 @@
 @font-face {
     font-family: "Open Sans";
-    src: url('fonts/OpenSans.woff2') format('truetype');
+    src: url('fonts/OpenSans-Regular.woff') format('woff');
 }
 
 @font-face {
     font-family: "Open Sans";
-    src: url('fonts/OpenSans-Italic.woff2') format('truetype');
+    src: url('fonts/OpenSans-Italic.woff') format('woff');
     font-style: italic;
 }
 
@@ -26,18 +26,18 @@ a {
     font-family: "Open Sans";
 }
 
-i.fa {
-    padding-top: 3px;
+.CloseDetailViewButton {
+    color: #aaa;
+    font-size: 20px;
+    height: 0;
+    border: 0px;
+    margin-top: -5px;
+    float: right;
+    cursor: pointer;
 }
 
-.CloseDetailView{
-    color:black;
-    font-size: 15px;
-    height: 15px;
-    margin: 0;
-    padding:0px;
-    border:0px;
-    float:right;
+.CloseDetailViewButton:hover {
+    color: white;
 }
 
 .OuterMostContainer {
@@ -60,7 +60,7 @@ i.fa {
     flex: 1;
 }
 
-#TabComponent .InstallButtons {
+.PackageList .InstallButtons {
     width: 70px;
     padding: 1px 0px 1px 0px;
     border: #888 1.5px solid;
@@ -71,7 +71,47 @@ i.fa {
     margin-left: 3px;
 }
 
-#PackageDetailView .InstallButtons {
+.ButtonContainer {
+    display: flex;
+}
+
+.ButtonBody {
+    width: 70px;
+    padding: 1px 0px 1px 0px;
+    border: #888 1.5px solid;
+    text-align: center;
+    font-size: 12px;
+    margin-left: 3px;
+    cursor: pointer;
+}
+
+.ButtonDropDown {
+    padding: 1px 2px;
+    border: #888 1.5px solid;
+    text-decoration: none;
+}
+
+.ButtonList {
+    position: relative;
+    border: #888 1.5px solid;
+    display: none;
+    z-index: 1;
+}
+
+.ShowButtonList {
+    display: block;
+}
+
+.ButtonList div{
+    position: relative;
+    font-size: 12px;
+    border: #888 1.5px solid;
+    display: block;
+    z-index: 1;
+}
+
+
+.PackageDetailView .InstallButtons {
     flex: 1;
     width: 90px;
     padding: 1px 0px 2px 0px;
@@ -95,14 +135,13 @@ i.fa {
     width: 100%;
 }
 
-#TabComponent {
+.TabContentArea {
     background: #353535;
-    padding: 10px;
 }
 
-#PackageDetailView {
-    background: #555;
-    padding: 15px;
+.PackageDetailView {
+    background: #494949;
+    padding: 12px;
 }
 
 .MainCaption {
@@ -110,40 +149,36 @@ i.fa {
 }
 
 .PackageItem {
-    display:flex;
-    overflow:hidden;
-    margin-bottom: 5px;
-    background-color: #555;
-    border: rgba(0,0,0,0) 1px solid;
+    display: flex;
+    overflow: hidden;
+    background-color: #353535;
+    border-bottom: solid 1px #494949;
 }
 
 .PackageItem:hover {
-    background-color: #666;
+    background-color: #494949;
+    transition: 0.15s;
 }
 
 .PackageItem:active {
-    background-color: #555;
-    border: #aaa 1px solid;
+    background-color: #494949;
 }
 
 .PackageItemSelected {
-    background-color: #666;
-    border: #aaa 1px solid;
+    background-color: #494949;
 }
 
 .ItemLeftPanel {
-    padding:5px;
+    padding: 8px;
 }
 
 .ItemRightPanel {
-    padding: 2px;
-    width:100%;
+    padding: 8px 8px 8px 0px;
+    flex: 1;
 }
 
-.ItemRightPanelSelected {
-    padding:5px;
-    background-color:#ddd;
-    width:100%;
+.PackageCaption {
+    margin-top: -3px;
 }
 
 .ItemPackageName {
@@ -163,7 +198,6 @@ i.fa {
 .ItemCrumbles {
     display: flex;
     flex-direction: row;
-    margin: 3px 4px 4px 0px;
 }
 
 .ItemStars {
@@ -186,7 +220,7 @@ i.fa {
     display: flex;
     flex-direction: row;
     width: 100%;
-    max-width: 500px;
+    max-width: 460px;
 }
 
 .VersionBarInfo .VersionBarColumn {
@@ -270,6 +304,10 @@ img.PackageIcon {
     white-space: nowrap;
 }
 
+.PackageCrumbles i.fa {
+    padding-top: 3px;
+}
+
 .PackageCrumbles .AlignLeft {
     display: flex;
     flex-direction: row;
@@ -330,13 +368,12 @@ span.Keyword {
     background: #666;
     display: flex;
     justify-content: space-between;
-    margin: 5px 0px;
 }
 
 .SearchBar .SearchInput {
     width: 100%;
     display: flex;
-    padding: 10px 0px 10px 10px;
+    padding: 10px;
     font-size: 15px;
     background: none;
     color: white;
@@ -346,13 +383,21 @@ span.Keyword {
 
 .SearchBar .CancelButton {
     display: flex;
-    height: 10px;
-    padding: 15px;
-    color: #ccc;
+    padding-right: 12px;
 }
 
-.SearchBar .CancelButton:hover {
+.SearchBar .CancelButton button {
+    font-size: 20px;
+    color: #ccc;
+    background: transparent;
+    border: 0px;
+    padding: 0px;
+    outline: 0px;
+}
+
+.SearchBar .CancelButton button:hover {
     cursor: pointer;
+    color: white;
 }
 
 .SearchBar .SearchOptionsContainer {
@@ -464,6 +509,7 @@ span.Keyword {
 }
 
 ::-webkit-input-placeholder {
-  color: #dddddd;
-  font-style: italic;
+    font-family: "Open Sans";
+    font-style: italic;
+    color: #ddd;
 }

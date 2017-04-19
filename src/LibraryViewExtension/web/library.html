@@ -11,36 +11,6 @@
             margin: 0;
             background-color: #353535;
         }
-        /* Style the tab */
-        div.tab {
-            overflow: hidden;
-            background-color: black;
-        }
-
-        /* Style the buttons inside the tab */
-        div.tab button {
-            background-color: inherit;
-            float: left;
-            border: 1px;
-            outline: none;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        /* Change background color of buttons on hover */
-        div.tab button:hover {
-            background-color: #ddd;
-        }
-
-        /* Create an active/current tablink class */
-        div.tab button.active {
-            background-color: #ccc;
-        }
-
-        /* Style the tab content */
-        .tabcontent {
-            display: none;
-        }
     </style>
 </head>
 
@@ -51,85 +21,62 @@
     <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
 
     <!-- Placeholders must exist before all other scripts that try to access them -->
-    <div class="tab">
-        <button class="tablinks" onclick="openTab(event, 'LibraryContents')" id="defaultTab">
-            <img src='./dist/resources/icons/tab-library.svg' width="25%" height="auto" />
-        </button>
-        <button class="tablinks" onclick="openTab(event, 'PackagesContents')">
-            <img src='./dist/resources/icons/tab-package.svg' width="25%" height="auto" />
-        </button>
-    </div>
-
-    <div id="LibraryContents" class="tabcontent">
-        <div id="libraryContainerPlaceholder"></div>
-    </div>
-
-    <div id="PackagesContents" class="tabcontent">
-        <div id="packageContainerPlaceholder"></div>
-    </div>
+    <div class="OuterMostContainer" id="tabControlPlaceholder"></div>
     
     <!-- The main library view compoment -->
     <script src='./dist/v0.0.1/librarie.min.js'></script>
     <script src='./dist/bundle.js'></script>
     
     <script>
-        function openTab(evt, content) {
-            // Declare all variables
-            var i, tabcontent, tablinks;
+        //Get hold of object registered from C#
+        let csharpController = window["controller"];
 
-            // Get all elements with class="tabcontent" and hide them
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
-
-            // Get all elements with class="tablinks" and remove the class "active"
-            tablinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-
-            // Show the current tab, and add an "active" class to the button that opened the tab
-            document.getElementById(content).style.display = "block";
-            evt.currentTarget.className += " active";
-        }
-
-        // Get the element with id="defaultOpen" and click on it
-        document.getElementById("defaultTab").click();
-
-        let controller = window["controller"];
-    
+        //Create package controller for event notification
         let pkgController = PackageManagerEntryPoint.CreatePackageController();
-        let installedPkg = JSON.parse(controller.getInstalledPackagesJSON());
-        console.log(installedPkg);
 
-        let tabControlConfig = {
-            pkgController: pkgController,
-            htmlElementId: "packageContainerPlaceholder",
-            installedPackages: installedPkg
-        };
+        //Create library controller
+        let libController = LibraryEntryPoint.CreateLibraryController();
 
-        let tabControl = new PackageManagerEntryPoint.TabControl(tabControlConfig);
-        
-        // Register a callback event for tabControl
-        tabControl.on("packageItemClicked", function (id) {
-            console.log(id);
-            controller.showDetailsView(id);
+        //Create library container
+        let jsonUrls = ["loadedTypes", "layoutSpecs"];
+        let downloader = LibraryEntryPoint.CreateJsonDownloader(jsonUrls, function (jsonUrl, jsonObject) {
+
+            let downloaded = downloader.getDownloadedJsonObjects();
+            let loadedTypesJson = downloaded["loadedTypes"];
+            let layoutSpecsJson = downloaded["layoutSpecs"];
+
+            if (!loadedTypesJson || (!layoutSpecsJson)) {
+                return; // Not fully downloaded yet, bail.
+            }
+
+            let libContainer = libController.createLibraryContainer(layoutSpecsJson, loadedTypesJson);
+            
+            //Create tab control and host library as well as Package browsers
+            let packageList = PackageManagerEntryPoint.CreatePackageList(pkgController, function (packageId) {
+                console.log('Package Item Clicked: ' + packageId);
+                csharpController.showDetailsView(packageId);
+            });
+
+            let tabControl = new PackageManagerEntryPoint.CreateTabControl(pkgController, "tabControlPlaceholder");
+            tabControl.insertTab("Nodes Library", "/dist/resources/icons/tab-library.svg", libContainer);
+            tabControl.insertTab("Package Browser", "/dist/resources/icons/tab-package.svg", packageList);
+            tabControl.setTabSelectionIndex(0);
         });
 
-        let configuration = {
-            htmlElementId: "libraryContainerPlaceholder",
-            loadedTypesUrl: "loadedTypes", // A url where loaded types are to be downloaded.
-            layoutSpecsUrl: "layoutSpecs"  // A url where layout specs are to be downloaded.
-        };
-        
-        let libView = new LibraryEntryPoint.LibraryView(configuration);
 
-        libView.on("itemClicked", function (nodeCreationName) {
-            console.log(nodeCreationName);
-            controller.createNode(nodeCreationName);
-            //controller.showDetailsView("583d8ad8fdef23aa6e000037");
+        // Register event handlers for various events on library controller and package controller.
+
+        libController.on("itemClicked", function (nodeCreationName) {
+            console.log('Library Node Clicked: ' + nodeCreationName);
+            csharpController.closeDetailsView(); //ensure that the details view is closed.
+            csharpController.createNode(nodeCreationName);
         });
+
+        pkgController.on("StartInstallingPackage", function (id, name, version) {
+            console.log("Install Package Callback: {id: " + id + ", name: " + name + ", version: " + version + "}");
+            //csharpController.installPackage(id, name, version, "");
+        });
+
     </script>
 
 </body>
