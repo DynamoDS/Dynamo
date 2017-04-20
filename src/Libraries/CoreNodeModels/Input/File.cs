@@ -327,7 +327,7 @@ namespace CoreNodeModels.Input
     [NodeSearchTags("DirectoryPathSearchTags", typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCore.File.DirectoryObject", "DSCoreNodesUI.Input.DirectoryObject")]
+    [AlsoKnownAs("DSCore.File.DirectoryObject", "DSCoreNodesUI.Input.DirectoryObject", "Directory.FromPath")]
     public class DirectoryObject : FileSystemObject<DirectoryInfo>
     {
         [JsonConstructor]

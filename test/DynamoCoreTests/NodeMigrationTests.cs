@@ -107,6 +107,7 @@ namespace Dynamo.Tests
         public void TestMigration_ImportExportCSV()
         {
             TestMigration("TestMigration_ImportExportCSV.dyn");
+        }
 
         public void TestMigration_DSCore_Math()
         {
