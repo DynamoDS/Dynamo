@@ -186,6 +186,31 @@ namespace DSCore.IO
             System.IO.File.WriteAllText(fullpath, text);
         }
 
+        /// <summary>
+        ///     File path of the current workspace
+        /// </summary>
+        /// <returns></returns>
+        public static string WorkspacePath()
+        {
+            var session = Dynamo.Events.ExecutionEvents.ActiveSession;
+
+            if ( session != null && !string.IsNullOrEmpty( session.CurrentWorkspacePath ) )
+                return session.CurrentWorkspacePath;
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        ///     Directory of the current workspace
+        /// </summary>
+        /// <returns></returns>
+        public static string WorkspaceDirectory()
+        {
+            var filePath = WorkspacePath();
+
+            return FilePath.DirectoryName( filePath );
+        }
+
         #region Obsolete Methods
 
 
