@@ -270,6 +270,7 @@ namespace DSOffice
         /// <param name="readAsStrings">toggle to switch between reading Excel file as strings only or not</param>
         /// <returns name="data">Rows of data from the Excel worksheet.</returns>
         /// <search>office,excel,spreadsheet,ifequalreturnindex</search>
+        [IsVisibleInDynamoLibrary(false)]
         public static object[][] ReadFromFile(FileInfo file, string sheetName, bool readAsStrings = false)
         {
             WorkBook wb = WorkBook.ReadExcelFile(file.FullName);
@@ -303,6 +304,7 @@ namespace DSOffice
         /// <param name="overWrite"></param>
         /// <returns name="data">Data written to the spreadsheet.</returns>
         /// <search>office,excel,spreadsheet</search>
+        [IsVisibleInDynamoLibrary(false)]
         public static object[][] WriteToFile(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false)
         {
             WorkBook wb = new WorkBook(filePath);

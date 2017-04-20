@@ -1,5 +1,6 @@
 ﻿#region
 using Autodesk.DesignScript.Runtime;
+using DSOffice;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -113,6 +114,16 @@ namespace DSCore.IO
             // Judge whether the array needed to be transposed (when transpose is false) or not (when transpose is true)
             if (transpose) return CSVdatalist;
             else return List.Transpose(CSVdatalist);
+        }
+
+        public static object[][] ImportExcel(FileInfo file, string sheetName, bool readAsStrings = false)
+        {
+            return Excel.ReadFromFile(file, sheetName, readAsStrings);
+        }
+
+        public static object[][] ExportExcel(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false)
+        {
+            return Excel.WriteToFile(filePath, sheetName, startRow, startCol, data, overWrite);
         }
     }
 
