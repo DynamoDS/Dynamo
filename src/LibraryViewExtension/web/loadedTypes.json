@@ -4171,39 +4171,39 @@
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.FilePath.Combine",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.FilePath.Combine.png",
-      "contextData": "DSCore.IO.FilePath.Combine@string[]",
+      "fullyQualifiedName": "DSCore.IO.File.CombinePath",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.CombinePath.png",
+      "contextData": "DSCore.IO.File.CombinePath@string[]",
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.FilePath.Extension",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.FilePath.Extension.png",
-      "contextData": "DSCore.IO.FilePath.Extension@string",
+      "fullyQualifiedName": "DSCore.IO.File.FileExtension",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.FileExtension.png",
+      "contextData": "DSCore.IO.File.FileExtension@string",
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.FilePath.ChangeExtension",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.FilePath.ChangeExtension.png",
-      "contextData": "DSCore.IO.FilePath.ChangeExtension@string,string",
+      "fullyQualifiedName": "DSCore.IO.File.ChangePathExtension",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.ChangePathExtension.png",
+      "contextData": "DSCore.IO.File.ChangePathExtension@string,string",
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.FilePath.DirectoryName",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.FilePath.DirectoryName.png",
-      "contextData": "DSCore.IO.FilePath.DirectoryName@string",
+      "fullyQualifiedName": "DSCore.IO.File.DirectoryName",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.DirectoryName.png",
+      "contextData": "DSCore.IO.File.DirectoryName@string",
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.FilePath.FileName",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.FilePath.FileName.png",
-      "contextData": "DSCore.IO.FilePath.FileName@string,bool",
+      "fullyQualifiedName": "DSCore.IO.File.FileName",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.FileName.png",
+      "contextData": "DSCore.IO.File.FileName@string,bool",
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.FilePath.HasExtension",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.FilePath.HasExtension.png",
-      "contextData": "DSCore.IO.FilePath.HasExtension@string",
+      "fullyQualifiedName": "DSCore.IO.File.FileHasExtension",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.FileHasExtension.png",
+      "contextData": "DSCore.IO.File.FileHasExtension@string",
       "itemType": "action"
     },
     {
