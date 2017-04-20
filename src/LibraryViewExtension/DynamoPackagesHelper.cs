@@ -46,7 +46,10 @@ namespace Dynamo.LibraryUI
                 pkgStr.Append(pkg.VersionName);
                 pkgStr.Append("\"},");
             }
-            pkgStr.Remove(pkgStr.Length - 1, 1); // Remove the last comma
+            if (localPackages.Any())
+            {
+                pkgStr.Remove(pkgStr.Length - 1, 1); // Remove the last comma
+            }
             pkgStr.Append("] }");
             return pkgStr.ToString();
         }
