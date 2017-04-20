@@ -321,21 +321,21 @@ namespace CoreNodeModels.Input
         }
     }
 
-    [NodeName("Directory.FromPath")]
-    [NodeCategory(BuiltinNodeCategories.CORE_IO)]
+    [NodeName("DirectoryFromPath")]
+    [NodeCategory("Core.File")]
     [NodeDescription("DirectoryObjectNodeDescription",typeof(Resources))]
     [NodeSearchTags("DirectoryPathSearchTags", typeof(Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCore.File.DirectoryObject", "DSCoreNodesUI.Input.DirectoryObject")]
+    [AlsoKnownAs("DSCore.File.DirectoryObject", "DSCoreNodesUI.Input.DirectoryObject", "Directory.FromPath")]
     public class DirectoryObject : FileSystemObject<DirectoryInfo>
     {
         [JsonConstructor]
         private DirectoryObject(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : 
-            base(DSCore.IO.Directory.FromPath, inPorts, outPorts) { }
+            base(DSCore.IO.File.DirectoryFromPath, inPorts, outPorts) { }
 
         public DirectoryObject()
-            : base(DSCore.IO.Directory.FromPath)
+            : base(DSCore.IO.File.DirectoryFromPath)
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("path", Resources.DirectoryObjectPortDataPathToolTip)));
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("directory", Resources.DirectoryObjectPortDataResultToolTip)));

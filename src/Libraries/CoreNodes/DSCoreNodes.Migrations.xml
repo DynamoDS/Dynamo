@@ -29,6 +29,26 @@
     <newName>DSCore.IO.Data.ExportCSV</newName>
   </priorNameHint>
   <priorNameHint>
+    <oldName>DSCore.IO.Directory.Contents</oldName>
+    <newName>DSCore.IO.File.GetDirectoryContents</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.Directory.Copy</oldName>
+    <newName>DSCore.IO.File.CopyDirectory</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.Directory.Delete</oldName>
+    <newName>DSCore.IO.File.DeleteDirectory</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.Directory.Exists</oldName>
+    <newName>DSCore.IO.File.DirectoryExists</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.Directory.Move</oldName>
+    <newName>DSCore.IO.File.MoveDirectory</newName>
+  </priorNameHint>
+  <priorNameHint>
     <oldName>DSCore.Display.ByGeometryColor</oldName>
     <newName>Modifiers.GeometryColor.ByGeometryColor</newName>
     <additionalAttributes>

@@ -131,7 +131,7 @@ namespace DSCore.IO
         {
             return Path.Combine(paths);
         }
-
+  
         /// <summary>
         /// Returns the extension from a file path.
         /// </summary>
@@ -140,7 +140,7 @@ namespace DSCore.IO
         {
             return Path.GetExtension(path);
         }
-
+  
         /// <summary>
         ///     Changes the extension of a file path.
         /// </summary>
@@ -150,7 +150,7 @@ namespace DSCore.IO
         {
             return Path.ChangeExtension(path, newExtension);
         }
-
+  
         /// <summary>
         /// Returns the directory name of a file path.
         /// </summary>
@@ -160,7 +160,7 @@ namespace DSCore.IO
         {
             return Path.GetDirectoryName(path);
         }
-
+  
         /// <summary>
         /// Returns the file name of a file path.
         /// </summary>
@@ -170,7 +170,7 @@ namespace DSCore.IO
         {
             return withExtension ? Path.GetFileName(path) : Path.GetFileNameWithoutExtension(path);
         }
-
+  
         /// <summary>
         ///     Determines whether or not a file path contains an extension.
         /// </summary>
@@ -179,6 +179,103 @@ namespace DSCore.IO
         {
             return Path.HasExtension(path);
         }
+
+        /// <summary>          
+        ///     Returns all of the contents of a given directory.
+        /// </summary>
+        /// <param name="directory">Directory to get contents of.</param>
+        /// <param name="searchString">Search string used to filter results. Defaults to "*.*" (displays all contents).</param>
+        [MultiReturn("files", "directories")]
+        public static Dictionary<string, IList> GetDirectoryContents(DirectoryInfo directory, string searchString = "*.*")
+        {
+            return new Dictionary<string, IList>
+            {
+                { "files", directory.EnumerateFiles(searchString).Select(x => x.FullName).ToList() },
+                { "directories", directory.EnumerateDirectories(searchString).Select(x => x.FullName).ToList() }
+            };
+        }
+
+        #region directory methods
+        /// <summary>
+        ///     Copies a directory to a destination location.
+        /// </summary>
+        /// <param name="directory">Directory to copy.</param>
+        /// <param name="destinationPath">Destination of the copy operation on disk.</param>
+        /// <param name="overwriteFiles"></param>
+        public static void CopyDirectory(DirectoryInfo directory, string destinationPath, bool overwriteFiles = false)
+        {
+            if (!Exists(destinationPath))
+                System.IO.Directory.CreateDirectory(destinationPath);
+
+            foreach (var file in directory.EnumerateFiles())
+            {
+                var newFilePath = Path.Combine(destinationPath, file.Name);
+                Copy(file, newFilePath, overwriteFiles);
+            }
+
+            foreach (var dir in directory.EnumerateDirectories())
+            {
+                var newDirPath = Path.Combine(destinationPath, dir.Name);
+                CopyDirectory(dir, newDirPath, overwriteFiles);
+            }
+        }
+
+        /// <summary>
+        ///     Deletes a directory.
+        /// </summary>
+        /// <param name="path">Path to a directory on disk.</param>
+        /// <param name="recursive">Whether or not to delete all contents of the directory, defaults to false.</param>
+        public static void DeleteDirectory(string path, bool recursive = false)
+        {
+            Directory.Delete(path, recursive);
+        }
+
+        /// <summary>
+        ///     Determines if a directory exists at the given path.
+        /// </summary>
+        /// <param name="path">Path to a directory on disk.</param>
+        /// <search>directorypath</search>
+        public static bool DirectoryExists(string path)
+        {
+            return Directory.Exists(path);
+        }
+        [IsVisibleInDynamoLibrary(false)]
+        public static DirectoryInfo DirectoryFromPath(string path)
+        {
+            if (!DirectoryExists(path))
+                Directory.CreateDirectory(path);
+            return new DirectoryInfo(path);
+        }
+
+        /// <summary>
+        ///     Moves a directory to a new location.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="newPath"></param>
+        /// <param name="overwriteFiles"></param>
+        public static void MoveDirectory(string path, string newPath, bool overwriteFiles = false)
+        {
+            if (!DirectoryExists(newPath))
+            {
+                Directory.Move(path, newPath);
+                return;
+            }
+
+            var info = new DirectoryInfo(path);
+            foreach (var file in info.EnumerateFiles())
+            {
+                var newFilePath = Path.Combine(newPath, file.Name);
+                Move(file.FullName, newFilePath, overwriteFiles);
+            }
+
+            foreach (var dir in info.EnumerateDirectories())
+            {
+                var newDirPath = Path.Combine(newPath, dir.Name);
+                MoveDirectory(dir.FullName, newDirPath, overwriteFiles);
+            }
+        }
+        #endregion
+
 
         #region Obsolete Methods
 
@@ -214,111 +311,10 @@ namespace DSCore.IO
         [NodeObsolete("ExportToCSVObsolete", typeof(Properties.Resources))]
         public static bool ExportToCSV(string filePath, object[][] data)
         {
-            Data.ExportCSV(filePath, data);
+            DSCore.IO.Data.ExportCSV(filePath, data);
             return true;
         }
         #endregion
-    }
-
-    /// <summary>
-    ///     Methods for working with Directories.
-    /// </summary>
-    public static class Directory
-    {
-        [IsVisibleInDynamoLibrary(false)]
-        public static DirectoryInfo FromPath(string path)
-        {
-            if (!Exists(path))
-                System.IO.Directory.CreateDirectory(path);
-            return new DirectoryInfo(path);
-        }
-
-        /// <summary>
-        ///     Moves a directory to a new location.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="newPath"></param>
-        /// <param name="overwriteFiles"></param>
-        public static void Move(string path, string newPath, bool overwriteFiles = false)
-        {
-            if (!Exists(newPath))
-            {
-                System.IO.Directory.Move(path, newPath);
-                return;
-            }
-
-            var info = new DirectoryInfo(path);
-            foreach (var file in info.EnumerateFiles())
-            {
-                var newFilePath = Path.Combine(newPath, file.Name);
-                File.Move(file.FullName, newFilePath, overwriteFiles);
-            }
-
-            foreach (var dir in info.EnumerateDirectories())
-            {
-                var newDirPath = Path.Combine(newPath, dir.Name);
-                Move(dir.FullName, newDirPath, overwriteFiles);
-            }
-        }
-
-        /// <summary>
-        ///     Copies a directory to a destination location.
-        /// </summary>
-        /// <param name="directory">Directory to copy.</param>
-        /// <param name="destinationPath">Destination of the copy operation on disk.</param>
-        /// <param name="overwriteFiles"></param>
-        public static void Copy(DirectoryInfo directory, string destinationPath, bool overwriteFiles = false)
-        {
-            if (!Exists(destinationPath))
-                System.IO.Directory.CreateDirectory(destinationPath);
-
-            foreach (var file in directory.EnumerateFiles())
-            {
-                var newFilePath = Path.Combine(destinationPath, file.Name);
-                File.Copy(file, newFilePath, overwriteFiles);
-            }
-
-            foreach (var dir in directory.EnumerateDirectories())
-            {
-                var newDirPath = Path.Combine(destinationPath, dir.Name);
-                Copy(dir, newDirPath, overwriteFiles);
-            }
-        }
-
-        /// <summary>
-        ///     Deletes a directory.
-        /// </summary>
-        /// <param name="path">Path to a directory on disk.</param>
-        /// <param name="recursive">Whether or not to delete all contents of the directory, defaults to false.</param>
-        public static void Delete(string path, bool recursive = false)
-        {
-            System.IO.Directory.Delete(path, recursive);
-        }
-
-        /// <summary>
-        /// Returns all of the contents of a given directory.
-        /// </summary>
-        /// <param name="directory">Directory to get contents of.</param>
-        /// <param name="searchString">Search string used to filter results. Defaults to "*.*" (displays all contents).</param>
-        [MultiReturn("files", "directories")]
-        public static Dictionary<string, IList> Contents(DirectoryInfo directory, string searchString = "*.*")
-        {
-            return new Dictionary<string, IList>
-            {
-                { "files", directory.EnumerateFiles(searchString).Select(x => x.FullName).ToList() },
-                { "directories", directory.EnumerateDirectories(searchString).Select(x => x.FullName).ToList() }
-            };
-        }
-
-        /// <summary>
-        ///     Determines if a directory exists at the given path.
-        /// </summary>
-        /// <param name="path">Path to a directory on disk.</param>
-        /// <search>directorypath</search>
-        public static bool Exists(string path)
-        {
-            return System.IO.Directory.Exists(path);
-        }
     }
 
     /// <summary>

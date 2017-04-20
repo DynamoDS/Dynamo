@@ -5386,7 +5386,7 @@
         yngTyQAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="DSCore.IO.Directory.Contents.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.IO.File.GetDirectoryContents.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALISURBVHhe7dbRaVRhFATglGAJlmAJeRUsIqXYiSVY
@@ -5404,7 +5404,7 @@
         wdSIiIiIiIiIiIiIiIiIiIjo6e7uNwtoxDYwWX9KAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="DSCore.IO.Directory.Contents.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.IO.File.GetDirectoryContents.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAACBSURBVFhHYxgFo2AUjAJC4KCPpwMQ/8eDG6BKaQOA
@@ -5412,7 +5412,7 @@
         1AFUcQAlYHg4AFvQEis26gCqOIASMLQdQC0MNXIUjIJRMNgAAwMAGKNwYBJr1BAAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="DSCore.IO.Directory.Copy.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.IO.File.CopyDirectory.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAMvSURBVHhe7Zg9blNREIW9BGoqlkBH6xaJjhahLIEl
@@ -5432,7 +5432,7 @@
         LrDZPAAu3a4YyJNHyQAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="DSCore.IO.Directory.Copy.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.IO.File.CopyDirectory.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADISURBVFhH7ZJBCsIwEEVzDle9hdtuBY8gnsULeAbX
@@ -5442,7 +5442,7 @@
         AABJRU5ErkJggg==
 </value>
   </data>
-  <data name="DSCore.IO.Directory.Delete.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.IO.File.DeleteDirectory.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAL6SURBVHhe7dzvbdswFARwj5ARMkJHyNcC/dARPEJH
@@ -5461,7 +5461,7 @@
         IiIiIiIiIluz2/0De2vEJpk//isAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="DSCore.IO.Directory.Delete.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.IO.File.DeleteDirectory.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEASURBVFhH7ZXRDYMwDEQZgREYoSP0t1I/GKEjMAKb
@@ -5472,7 +5472,7 @@
         TkSuQmCC
 </value>
   </data>
-  <data name="DSCore.IO.Directory.Exists.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.IO.File.DirectoryExists.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALvSURBVHhe7ZvRbeJAFEUpgRJSAiXkd6X92BIoISWk
@@ -5491,7 +5491,7 @@
         AOp8FY/X12JTAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="DSCore.IO.Directory.Exists.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.IO.File.DirectoryExists.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADfSURBVFhH7ZXRDYMwDEQzAiMwAiPwW6kfHaEjZAQ2
@@ -5526,7 +5526,7 @@
         KAAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="DSCore.IO.Directory.Move.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.IO.File.MoveDirectory.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAOHSURBVHhe7ZoxbttAEEV1BNepfAR3ad0GSOc2CHwE
@@ -5547,7 +5547,7 @@
         1SddBdcmWPVJV8G1CVaFEEIIIYQQQgghhBBCCD+sVv8AQkgWwzNa1YQAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="DSCore.IO.Directory.Move.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.IO.File.MoveDirectory.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADtSURBVFhHYxgFo2DQgoM+ngZA/B/KxqCBuADEphkA
@@ -7571,44 +7571,44 @@
   </data>
   <data name="DSCore.IO.Data.ImportCSV.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        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
-        gv64uvoLFK94NiazvjoAAAAASUVORK5CYII=
-</value>
+      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
+      gv64uvoLFK94NiazvjoAAAAASUVORK5CYII=
+    </value>
   </data>
   <data name="DSCore.IO.Data.ImportCSV.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFnSURBVFhH7ZTBbYNAEEUpgRJSgktIjpFycAmUkBLo
-        wFIacAkuAaUCzjmlhJTg/Lf6g5a1rBgMipTwpC9mht2Z2V3YamNj4xbeX54fpFepxXbs0T5x3u+IpQkC
-        m5jd+ShJLX1KeyuKnSSKNI6hk6cxryNmdz5KQoHWbkI+TfV+VztMnKYumrkLJWKbRw0EitMAK01bb58j
-        QU0adC9KxGpYLaseye9HOySbhjq7y6CEnH1KLA1bbP8o5ceQdsDuH+csbP4O/6eBp7ePc8ihRNlAOU7P
-        g9RZwy05mUhYcm0HYjxFsa35t2IkLPmpAZB9lHpp/s0YCVVvJw3/eN6AzEZK21w0UFvswnBfTCISqsCe
-        oiJdsxh+0tiXdMCP8TmKzf8O8oQq0krAiiGKHz1k3QaAYlQ2FO/9KrF6A6Ci0UQvjc42Hy97uW+gRIU5
-        jouk+XjZy/0FtxLj9VzuHpgqz1vmJtzYWI+q+gZ05qhhEkqOhwAAAABJRU5ErkJggg==
-</value>
+      iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
+      dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFnSURBVFhH7ZTBbYNAEEUpgRJSgktIjpFycAmUkBLo
+      wFIacAkuAaUCzjmlhJTg/Lf6g5a1rBgMipTwpC9mht2Z2V3YamNj4xbeX54fpFepxXbs0T5x3u+IpQkC
+      m5jd+ShJLX1KeyuKnSSKNI6hk6cxryNmdz5KQoHWbkI+TfV+VztMnKYumrkLJWKbRw0EitMAK01bb58j
+      QU0adC9KxGpYLaseye9HOySbhjq7y6CEnH1KLA1bbP8o5ceQdsDuH+csbP4O/6eBp7ePc8ihRNlAOU7P
+      g9RZwy05mUhYcm0HYjxFsa35t2IkLPmpAZB9lHpp/s0YCVVvJw3/eN6AzEZK21w0UFvswnBfTCISqsCe
+      oiJdsxh+0tiXdMCP8TmKzf8O8oQq0krAiiGKHz1k3QaAYlQ2FO/9KrF6A6Ci0UQvjc42Hy97uW+gRIU5
+      jouk+XjZy/0FtxLj9VzuHpgqz1vmJtzYWI+q+gZ05qhhEkqOhwAAAABJRU5ErkJggg==
+    </value>
   </data>
 </root>
