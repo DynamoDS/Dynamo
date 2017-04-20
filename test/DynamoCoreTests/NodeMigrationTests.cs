@@ -108,11 +108,13 @@ namespace Dynamo.Tests
             TestMigration("TestMigration_ImportExportCSV.dyn");
         }
 
+        [Test]
         public void TestMigration_DSCore_IO_FilePath()
         {
             TestMigration("TestMigration_DSCore_IO_FilePath.dyn");
         }
 
+        [Test]
         public void TestMigration_DSCore_Math()
         {
             TestMigration("TestMigration_DSCore_Math.dyn");

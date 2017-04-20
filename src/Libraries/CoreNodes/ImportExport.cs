@@ -112,7 +112,7 @@ namespace DSCore.IO
 
             // Judge whether the array needed to be transposed (when transpose is false) or not (when transpose is true)
             if (transpose) return CSVdatalist;
-            else return DSCore.List.Transpose(CSVdatalist);
+            else return List.Transpose(CSVdatalist);
         }
     }
 

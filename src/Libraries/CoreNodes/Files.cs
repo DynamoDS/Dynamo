@@ -131,7 +131,7 @@ namespace DSCore.IO
         {
             return Path.Combine(paths);
         }
- 
+  
         /// <summary>
         /// Returns the extension from a file path.
         /// </summary>
@@ -140,7 +140,7 @@ namespace DSCore.IO
         {
             return Path.GetExtension(path);
         }
- 
+  
         /// <summary>
         ///     Changes the extension of a file path.
         /// </summary>
@@ -150,7 +150,7 @@ namespace DSCore.IO
         {
             return Path.ChangeExtension(path, newExtension);
         }
- 
+  
         /// <summary>
         /// Returns the directory name of a file path.
         /// </summary>
@@ -160,7 +160,7 @@ namespace DSCore.IO
         {
             return Path.GetDirectoryName(path);
         }
- 
+  
         /// <summary>
         /// Returns the file name of a file path.
         /// </summary>
@@ -168,9 +168,9 @@ namespace DSCore.IO
         /// <param name="withExtension">Determines whether or not the extension is included in the result, defaults to true.</param>
         public static string FileName(string path, bool withExtension = true)
         {
-            return withExtension? Path.GetFileName(path) : Path.GetFileNameWithoutExtension(path);
+            return withExtension ? Path.GetFileName(path) : Path.GetFileNameWithoutExtension(path);
         }
- 
+  
         /// <summary>
         ///     Determines whether or not a file path contains an extension.
         /// </summary>
