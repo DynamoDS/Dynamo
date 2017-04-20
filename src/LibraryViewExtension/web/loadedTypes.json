@@ -3223,15 +3223,15 @@
       "itemType": "creation"
     },
     {
-      "fullyQualifiedName": "DSCore.ColorRange2D.ByColorsAndParameters",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.ColorRange2D.ByColorsAndParameters.png",
-      "contextData": "DSCore.ColorRange2D.ByColorsAndParameters@DSCore.Color[],Autodesk.DesignScript.Geometry.UV[]",
+      "fullyQualifiedName": "DSCore.ColorRange.ByColorsAndParameters",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.ColorRange.ByColorsAndParameters.png",
+      "contextData": "DSCore.ColorRange.ByColorsAndParameters@DSCore.Color[],Autodesk.DesignScript.Geometry.UV[]",
       "itemType": "creation"
     },
     {
-      "fullyQualifiedName": "DSCore.ColorRange2D.GetColorAtParameter",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.ColorRange2D.GetColorAtParameter.png",
-      "contextData": "DSCore.ColorRange2D.GetColorAtParameter@Autodesk.DesignScript.Geometry.UV",
+      "fullyQualifiedName": "DSCore.ColorRange.GetColorAtParameter",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.ColorRange.GetColorAtParameter.png",
+      "contextData": "DSCore.ColorRange.GetColorAtParameter@Autodesk.DesignScript.Geometry.UV",
       "itemType": "action"
     },
     {
