@@ -33,7 +33,6 @@ namespace Dynamo.LibraryUI
         private ICommandExecutive commandExecutive;
         private DetailsView detailsView;
         private DetailsViewModel detailsViewModel;
-        private DynamoPackagesHelper packageHelper;
         private object contextData = null;
 
         private Dictionary<string, Stream> resourceStreams = new Dictionary<string, Stream>();
@@ -49,8 +48,7 @@ namespace Dynamo.LibraryUI
             this.dynamoWindow = dynamoView;
             var dynamoViewModel = dynamoView.DataContext as DynamoViewModel;
             var dynamoModel = dynamoViewModel.Model;
-            packageHelper = new DynamoPackagesHelper(this, dynamoModel);
-
+        
             this.commandExecutive = commandExecutive;
             InitializeResourceStreams();
         }
@@ -138,46 +136,6 @@ namespace Dynamo.LibraryUI
         }
 
         /// <summary>
-        /// Returns a JSON string of all the packages installed on the system.
-        /// </summary>
-        /// <returns>string representing JSON object.</returns>
-        public string GetInstalledPackagesJSON()
-        {
-            return packageHelper.GetInstalledPackagesJSON();
-        }
-
-        /// <summary>
-        /// Gets the version name for the given installed package.
-        /// </summary>
-        /// <param name="packageName">Name of the package</param>
-        /// <returns>Returns version name of a given package if it is installed, else empty string</returns>
-        public string GetInstalledPackageVersion(string packageName)
-        {
-            return packageHelper.GetInstalledPackageVersion(packageName);
-        }
-
-        /// <summary>
-        /// Installs a dynamo package of given package id.
-        /// </summary>
-        /// <param name="name">name of the package to install</param>
-        /// <param name="version">version of package to install</param>
-        /// <param name="pkgId">package id</param>
-        /// <param name="installPath">path to install</param>
-        public void InstallPackage(string name, string version, string pkgId, string installPath)
-        {
-            dynamoWindow.Dispatcher.BeginInvoke(new Action(() => packageHelper.DownlodAndInstall(pkgId, name, version, installPath)));
-        }
-
-        /// <summary>
-        /// Uninstalls the given package
-        /// </summary>
-        /// <param name="packageName">Package name to uninstall</param>
-        public void UninstallPackage(string packageName)
-        {
-            dynamoWindow.Dispatcher.BeginInvoke(new Action(() => packageHelper.UninstallPackage(packageName)));
-        }
-
-        /// <summary>
         /// Creates and add the library view to the WPF visual tree
         /// </summary>
         /// <returns>LibraryView control</returns>
@@ -252,15 +210,13 @@ namespace Dynamo.LibraryUI
                     url = url.Replace("dist.", "dist/");
                     url = url.Replace("/v0._0._1.", "/v0.0.1/");
                     url = url.Replace("/resources.", "/resources/");
-                    url = url.Replace("/icons.", "/icons/");
-                    url = url.Replace(".font_awesome_4._7._0.", "/font-awesome-4.7.0/");
-                    url = url.Replace("/fonts.", "/fonts/");
-                    url = url.Replace("less.", "less/");
-                    url = url.Replace("css.", "css/");
+                    //url = url.Replace("/icons.", "/icons/");
+                    //url = url.Replace(".font_awesome_4._7._0.", "/font-awesome-4.7.0/");
+                    //url = url.Replace("/fonts.", "/fonts/");
+                    //url = url.Replace("less.", "less/");
+                    //url = url.Replace("css.", "css/");
                 }
-                else
-                    url = url.Replace("package.", "package/");
-
+                
                 if (url.EndsWith(".json"))
                 {
                     url = url.Replace(".json", "");

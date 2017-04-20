@@ -21,18 +21,14 @@
     <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
 
     <!-- Placeholders must exist before all other scripts that try to access them -->
-    <div class="OuterMostContainer" id="tabControlPlaceholder"></div>
+    <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
     
     <!-- The main library view compoment -->
     <script src='./dist/v0.0.1/librarie.min.js'></script>
-    <script src='./dist/bundle.js'></script>
     
     <script>
         //Get hold of object registered from C#
         let csharpController = window["controller"];
-
-        //Create package controller for event notification
-        let pkgController = PackageManagerEntryPoint.CreatePackageController();
 
         //Create library controller
         let libController = LibraryEntryPoint.CreateLibraryController();
@@ -49,22 +45,7 @@
                 return; // Not fully downloaded yet, bail.
             }
 
-            let libContainer = libController.createLibraryContainer(layoutSpecsJson, loadedTypesJson);
-            
-            let installedPackagesJSON = csharpController.getInstalledPackagesJSON();
-            let installedPackagesResponse = JSON.parse(installedPackagesJSON);
-
-            //Create tab control and host library as well as Package browsers
-            let packageList = PackageManagerEntryPoint.CreatePackageList(pkgController, function (packageId, version) {
-                let ctx = JSON.stringify({ "id": packageId, "version": version });
-                console.log('Package Item Clicked: ' + ctx);                
-                csharpController.showDetailsView(ctx);
-            }, installedPackagesResponse.content);
-
-            let tabControl = new PackageManagerEntryPoint.CreateTabControl(pkgController, "tabControlPlaceholder");
-            tabControl.insertTab("Nodes Library", "/dist/resources/icons/tab-library.svg", libContainer);
-            tabControl.insertTab("Package Browser", "/dist/resources/icons/tab-package.svg", packageList);
-            tabControl.setTabSelectionIndex(0);
+            let libContainer = libController.createLibraryByElementId("libraryContainerPlaceholder", layoutSpecsJson, loadedTypesJson);
         });
 
 
@@ -72,18 +53,8 @@
 
         libController.on("itemClicked", function (nodeCreationName) {
             console.log('Library Node Clicked: ' + nodeCreationName);
-            csharpController.closeDetailsView(); //ensure that the details view is closed.
+            //csharpController.closeDetailsView(); //ensure that the details view is closed.
             csharpController.createNode(nodeCreationName);
-        });
-
-        pkgController.on("StartInstallingPackage", function (pkg) {
-            console.log("Install Package Callback: " + JSON.stringify(pkg));
-            csharpController.installPackage(pkg.name, pkg.version, pkg.id, "");
-        });
-
-        csharpController.on("installPercentComplete", function (id, percent) {
-            console.log("installPercentComplete id: " + id + " percent: " + percent);
-            pkgController.raiseEvent("installPercentComplete", id, percent);
         });
 
         csharpController.on("error", function (msg) {
