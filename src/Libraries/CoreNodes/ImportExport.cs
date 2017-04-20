@@ -8,12 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 #endregion
 
-namespace DSCore
+namespace DSCore.IO
 {
     /// <summary>
     ///     Methods for Import/Export category.
     /// </summary>
-    public static class ImportExport
+    public static class Data
     {
         /// <summary>
         ///     Write a list of lists into a file using a comma-separated values 
@@ -51,7 +51,7 @@ namespace DSCore
         /// <search>import,csv,comma,file,list,separate,transpose</search>
         public static IList ImportCSV(string filePath, bool transpose = false)
         {
-            if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+            if (string.IsNullOrEmpty(filePath) || !DSCore.IO.File.Exists(filePath))
             {
                 // File not existing.
                 throw new FileNotFoundException();
@@ -114,4 +114,5 @@ namespace DSCore
             else return List.Transpose(CSVdatalist);
         }
     }
+
 }

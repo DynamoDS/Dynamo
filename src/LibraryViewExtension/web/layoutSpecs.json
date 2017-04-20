@@ -929,22 +929,22 @@
               "path": "Core.File.Directory.FromPath"
             },
             {
-              "path": "DSCore.IO.FilePath.Combine"
+              "path": "DSCore.IO.File.CombinePath"
             },
             {
-              "path": "DSCore.IO.FilePath.Extension"
+              "path": "DSCore.IO.File.FileExtension"
             },
             {
-              "path": "DSCore.IO.FilePath.ChangeExtension"
+              "path": "DSCore.IO.File.ChangePathExtension"
             },
             {
-              "path": "DSCore.IO.FilePath.DirectoryName"
+              "path": "DSCore.IO.File.DirectoryName"
             },
             {
-              "path": "DSCore.IO.FilePath.FileName"
+              "path": "DSCore.IO.File.FileName"
             },
             {
-              "path": "DSCore.IO.FilePath.HasExtension"
+              "path": "DSCore.IO.File.FileHasExtension"
             },
             {
               "path": "DSCore.IO.File.ReadText"
