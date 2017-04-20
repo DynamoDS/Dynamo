@@ -34,10 +34,11 @@ namespace Dynamo.LibraryUI
         private DetailsView detailsView;
         private DetailsViewModel detailsViewModel;
         private DynamoPackagesHelper packageHelper;
+        private object contextData = null;
 
         private Dictionary<string, Stream> resourceStreams = new Dictionary<string, Stream>();
-        private Dictionary<string, object> callbacks = new Dictionary<string, object>();
-        
+        private Dictionary<string, List<IJavascriptCallback>> callbacks = new Dictionary<string, List<IJavascriptCallback>>();
+                
         /// <summary>
         /// Creates LibraryViewController
         /// </summary>
@@ -72,13 +73,12 @@ namespace Dynamo.LibraryUI
         /// Displays the details view over Dynamo canvas.
         /// </summary>
         /// <param name="item">item data for which details need to be shown</param>
-        public void ShowDetailsView(string item)
+        public void ShowDetailsView(object data)
         {
-            DetailsViewContextData = item;
-            RaiseEvent("detailsViewContextDataChanged", item);
+            DetailsViewContextData = data;
             if(detailsView == null)
             {
-                dynamoWindow.Dispatcher.BeginInvoke(new Action(() => AddDetailsView(item)));
+                dynamoWindow.Dispatcher.BeginInvoke(new Action(() => AddDetailsView()));
             }
             else
             {
@@ -99,19 +99,27 @@ namespace Dynamo.LibraryUI
 
         public void On(string eventName, object callback)
         {
-            callbacks.Add(eventName, callback);
+            List<IJavascriptCallback> cblist;
+            if(!callbacks.TryGetValue(eventName, out cblist))
+            {
+                cblist = new List<IJavascriptCallback>();
+            }
+            cblist.Add(callback as IJavascriptCallback);
+            callbacks[eventName] = cblist;
         }
 
         [JavascriptIgnore]
         public void RaiseEvent(string eventName, params object[] parameters)
         {
-            object callback = null;
-            if(callbacks.TryGetValue(eventName, out callback))
+            List<IJavascriptCallback> cblist;
+            if (callbacks.TryGetValue(eventName, out cblist))
             {
-                var cbfunc = callback as IJavascriptCallback;
-                if(cbfunc.CanExecute)
+                foreach (var cbfunc in cblist)
                 {
-                    cbfunc.ExecuteAsync(parameters);
+                    if (cbfunc.CanExecute)
+                    {
+                        cbfunc.ExecuteAsync(parameters);
+                    }
                 }
             }
         }
@@ -119,7 +127,15 @@ namespace Dynamo.LibraryUI
         /// <summary>
         /// Gets details view context data, e.g. packageId if it shows details of a package
         /// </summary>
-        public string DetailsViewContextData { get; set; }
+        public object DetailsViewContextData
+        {
+            get { return contextData; }
+            set
+            {
+                contextData = value;
+                this.RaiseEvent("detailsViewContextDataChanged", contextData);
+            }
+        }
 
         /// <summary>
         /// Returns a JSON string of all the packages installed on the system.
@@ -202,7 +218,7 @@ namespace Dynamo.LibraryUI
             System.Diagnostics.Trace.Write(e.Message);
         }
 
-        private DetailsView AddDetailsView(string item)
+        private DetailsView AddDetailsView()
         {
             detailsViewModel = new DetailsViewModel("http://localhost/details.html");
 

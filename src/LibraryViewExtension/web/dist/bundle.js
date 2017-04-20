@@ -181,13 +181,15 @@ function hasUpdates(data) {
     return true;
 }
 exports.hasUpdates = hasUpdates;
-function createInstallButtonElement(data, controller, cb) {
-    // TODO: handling the installing state as well
+function createInstallButtonElement(state, data, controller, cb) {
     var texts = [];
-    if (!data.installed) {
+    if (!data.installed && !state.installing) {
         texts.push("Install");
         texts.push("Install To...");
         return (React.createElement(InstallButtons_1.InstallButtons, { options: texts, pkgController: controller, packageId: data._id, clicked: cb }));
+    }
+    else if (state.installing) {
+        return React.createElement("div", { className: "fa fa-spinner fa-spin" });
     }
     else {
         texts.push("Installed");
@@ -207,10 +209,10 @@ function handleInstallButtonEvent(index, data, controller) {
         // Update
         switch (index) {
             case 1:
-                controller.raiseEvent("StartUninstallingPackage", { id: data.packageId, name: data.name, version: data.version });
+                controller.raiseEvent("StartUninstallingPackage", { id: data._id, name: data.name, version: data.version });
                 break;
             case 2:
-                controller.raiseEvent("StartUpdatingPackage", { id: data.packageId, name: data.name, version: data.version });
+                controller.raiseEvent("StartUpdatingPackage", { id: data._id, name: data.name, version: data.version });
                 break;
         }
     }
@@ -220,10 +222,10 @@ function handleInstallButtonEvent(index, data, controller) {
         // Install To...
         switch (index) {
             case 0:
-                controller.raiseEvent("StartInstallingPackage", { id: data.packageId, name: data.name, version: data.version });
+                controller.raiseEvent("StartInstallingPackage", { id: data._id, name: data.name, version: data.version });
                 break;
             case 1:
-                controller.raiseEvent("StartInstallingPackageTo", { id: data.packageId, name: data.name, version: data.version });
+                controller.raiseEvent("StartInstallingPackageTo", { id: data._id, name: data.name, version: data.version });
                 break;
         }
     }
@@ -483,9 +485,9 @@ var PackageList = (function (_super) {
             thisObject.setState({ packageJsonDownloaded: true });
         });
     };
-    PackageList.prototype.setSelection = function (index, id) {
+    PackageList.prototype.setSelection = function (index, id, installedVersion) {
         this.setState({ selectedIndex: index, selectedId: id });
-        this.props.setActivePackageId(id);
+        this.props.setActivePackageId(id, installedVersion);
     };
     PackageList.prototype.onSearchChanged = function (filterConfig) {
         this.setState({ filterConfig: filterConfig });
@@ -496,11 +498,35 @@ var PackageList = (function (_super) {
             return (React.createElement("div", null, "Downloading..."));
         }
         var index = 0;
+        var inSearch = false;
         var filteredPackages = this.activePackageJson.content;
         if (this.state.filterConfig.searchText.length > 0) {
             filteredPackages = this.activePackageJson.content.filter(function (pkg) {
                 return pkg.name.toLowerCase().indexOf(_this.state.filterConfig.searchText) >= 0;
             });
+            inSearch = true;
+        }
+        else if (this.props.installedPackages) {
+            // If the user is not doing a search, display the installed packages only
+            var pkgs = [];
+            if (this.props.installedPackages.length > 0) {
+                // If the user has some installed packages, populate filteredPackages with them
+                for (var _i = 0, filteredPackages_1 = filteredPackages; _i < filteredPackages_1.length; _i++) {
+                    var filterPkg = filteredPackages_1[_i];
+                    for (var _a = 0, _b = this.props.installedPackages; _a < _b.length; _a++) {
+                        var installedPkg = _b[_a];
+                        if (installedPkg.name == filterPkg.name) {
+                            filterPkg.installedVersion = installedPkg.version;
+                            pkgs.push(filterPkg);
+                        }
+                    }
+                }
+                filteredPackages = pkgs;
+            }
+            else {
+                // Otherwise, do not display any packages
+                filteredPackages = [];
+            }
         }
         filteredPackages.sort(function (pkg1, pkg2) {
             if (this.state.filterConfig.sortKey == "DownloadCount") {
@@ -525,6 +551,12 @@ var PackageList = (function (_super) {
         var packageElements = filteredPackages.map(function (pkg) {
             return React.createElement(PackageItem_1.PackageItem, { pkgController: _this.props.pkgController, index: ++index, data: pkg, selected: index == _this.state.selectedIndex, setSelection: _this.setSelection });
         });
+        if (packageElements.length == 0) {
+            if (inSearch)
+                packageElements = [React.createElement("div", { className: "PackageListEmpty" }, "Unable to find matching packages.")];
+            else
+                packageElements = [React.createElement("div", { className: "PackageListEmpty" }, "No packages installed.")];
+        }
         return (React.createElement("div", { className: "PackageList" },
             React.createElement(SearchBar_1.SearchBar, { onSearchChanged: this.onSearchChanged }),
             packageElements));
@@ -572,8 +604,8 @@ var TabHeader = (function (_super) {
             idx++;
             var tabstyle = idx === _this.state.selectionIndex ? "TabSelected" : "Tab";
             return (React.createElement("div", { className: tabstyle, onClick: function (obj, j) { return function () { obj.tabClicked(j); }; }(_this, idx) },
-                React.createElement("img", { src: item, width: "50%", height: "auto" }),
-                React.createElement("span", { className: "tooltip" }, _this.props.toolTips[idx])));
+                React.createElement("img", { src: item }),
+                React.createElement("div", { className: "tooltip" }, _this.props.toolTips[idx])));
         });
         return (React.createElement("div", { className: "TabHeader" }, icons));
     };
@@ -753,7 +785,8 @@ var InstallButtons = (function (_super) {
         return _this;
     }
     InstallButtons.prototype.onItemClicked = function (event) {
-        var index = event.target.attributes.value;
+        event.stopPropagation();
+        var index = parseInt(event.target.attributes.value.value);
         this.props.clicked(index);
     };
     InstallButtons.prototype.handleClickOutside = function (event) {
@@ -765,12 +798,14 @@ var InstallButtons = (function (_super) {
             for (var i = 0; i < nodes.length; i++) {
                 if (nodes[i].className.indexOf("ShowButtonList") != -1) {
                     nodes[i].classList.toggle("ShowButtonList");
+                    break;
                 }
             }
         }
     };
     InstallButtons.prototype.onDropDown = function (event) {
-        var nodes = event.target.parentElement.parentElement.children;
+        event.stopPropagation();
+        var nodes = event.target.parentElement.parentElement.parentElement.children;
         for (var i = 0; i < nodes.length; i++) {
             if (nodes[i].className.indexOf("ButtonList") != -1) {
                 nodes[i].classList.toggle("ShowButtonList");
@@ -789,7 +824,8 @@ var InstallButtons = (function (_super) {
         var firstItem = this.props.options[0];
         var restItems = this.props.options.slice(1, len);
         var buttonBody = (React.createElement("div", { className: "ButtonBody", value: 0, onClick: this.onItemClicked }, firstItem));
-        var buttonDropDown = (React.createElement("div", { className: "ButtonDropDown", onClick: this.onDropDown }, "v"));
+        var buttonDropDown = (React.createElement("div", { className: "ButtonDropDown", onClick: this.onDropDown },
+            React.createElement("i", { className: "fa fa-chevron-down", "aria-hidden": "true" })));
         var i = 0;
         var buttonList = (React.createElement("div", { className: "ButtonList" }, restItems.map(function (item) {
             i++;
@@ -954,9 +990,11 @@ var PackageItem = (function (_super) {
     __extends(PackageItem, _super);
     function PackageItem(props) {
         var _this = _super.call(this, props) || this;
-        _this.state = { expanded: false };
+        _this.state = { expanded: false, installing: false };
         _this.toggleExpandState = _this.toggleExpandState.bind(_this);
         _this.onInstallButtonsClicked = _this.onInstallButtonsClicked.bind(_this);
+        _this.onPackageInstallationProgressed = _this.onPackageInstallationProgressed.bind(_this);
+        props.pkgController.on("installPercentComplete", _this.onPackageInstallationProgressed);
         return _this;
     }
     PackageItem.prototype.toggleExpandState = function () {
@@ -966,7 +1004,22 @@ var PackageItem = (function (_super) {
         CommonUtils.handleInstallButtonEvent(index, this.props.data, this.props.pkgController);
     };
     PackageItem.prototype.onPackageItemClicked = function () {
-        this.props.setSelection(this.props.index, this.props.data._id);
+        this.props.setSelection(this.props.index, this.props.data._id, this.props.data.installedVersion);
+    };
+    PackageItem.prototype.onPackageInstallationProgressed = function (id, percentage) {
+        if (id != this.props.data._id) {
+            return;
+        }
+        var state = this.state;
+        if (!state.installing) {
+            if (percentage < 1.0) {
+                this.setState({ expanded: state.expanded, installing: true });
+            }
+            else {
+                this.props.data.installed = true;
+                this.setState({ expanded: state.expanded, installing: false });
+            }
+        }
     };
     PackageItem.prototype.render = function () {
         var pkg = this.props.data;
@@ -977,7 +1030,7 @@ var PackageItem = (function (_super) {
         if (!iconSource) {
             iconSource = JavaScriptUtils.generatePackageIcon(pkg, 40);
         }
-        var installControlArea = CommonUtils.createInstallButtonElement(this.props.data, this.props.pkgController, this.onInstallButtonsClicked);
+        var installControlArea = CommonUtils.createInstallButtonElement(this.state, this.props.data, this.props.pkgController, this.onInstallButtonsClicked);
         return (React.createElement("div", { className: selectedStyle, onClick: this.onPackageItemClicked.bind(this) },
             React.createElement("div", { className: "ItemLeftPanel" },
                 React.createElement("img", { className: "PackageIcon", src: iconSource })),
@@ -1021,6 +1074,7 @@ var SearchBar = (function (_super) {
     __extends(SearchBar, _super);
     function SearchBar(props) {
         var _this = _super.call(this, props) || this;
+        _this.timeoutId = undefined;
         _this.sortKeys = ["PackageName", "DownloadCount", "Rating", "RecentlyUpdated", "Author"];
         _this.sortOrders = ["Ascending", "Descending"];
         _this.filterConfig = {
@@ -1033,15 +1087,17 @@ var SearchBar = (function (_super) {
             sortKey: _this.filterConfig.sortKey,
             sortOrder: _this.filterConfig.sortOrder
         };
+        _this.handleKeyDown = _this.handleKeyDown.bind(_this);
+        _this.handleClick = _this.handleClick.bind(_this);
         return _this;
     }
     SearchBar.prototype.componentWillMount = function () {
-        window.addEventListener("keydown", this.handleKeyDown.bind(this));
-        window.addEventListener("click", this.handleGlobalClick.bind(this));
+        window.addEventListener("keydown", this.handleKeyDown);
+        window.addEventListener("click", this.handleClick);
     };
     SearchBar.prototype.componentWillUnmount = function () {
-        window.removeEventListener("keydown", this.handleKeyDown.bind(this));
-        window.removeEventListener("click", this.handleGlobalClick.bind(this));
+        window.removeEventListener("keydown", this.handleKeyDown);
+        window.removeEventListener("click", this.handleClick);
     };
     SearchBar.prototype.handleKeyDown = function (event) {
         switch (event.code) {
@@ -1053,7 +1109,7 @@ var SearchBar = (function (_super) {
         }
     };
     // Collapse list dropdown menu when click happens outside this compnent
-    SearchBar.prototype.handleGlobalClick = function (event) {
+    SearchBar.prototype.handleClick = function (event) {
         if (!ReactDOM.findDOMNode(this).contains(event.target)) {
             this.collapseMenu();
         }
@@ -1067,10 +1123,22 @@ var SearchBar = (function (_super) {
         this.filterConfig.searchText = searchInput.value;
         this.props.onSearchChanged(this.filterConfig);
     };
-    SearchBar.prototype.onTextChange = function (event) {
-        var text = event.target.value.trim().toLowerCase();
+    SearchBar.prototype.updateSearch = function (text) {
         this.filterConfig.searchText = text;
         this.props.onSearchChanged(this.filterConfig);
+    };
+    SearchBar.prototype.onTextChange = function (event) {
+        clearTimeout(this.timeoutId);
+        this.timeoutId = undefined;
+        var text = event.target.value.trim().toLowerCase();
+        if (text.length > 0) {
+            this.timeoutId = setTimeout(function () {
+                this.updateSearch(text);
+            }.bind(this), 300);
+        }
+        else {
+            this.clearSearch();
+        }
     };
     SearchBar.prototype.onSortButtonClick = function () {
         this.setState({
@@ -1168,9 +1236,11 @@ var VersionContainer = (function (_super) {
         // Pass in a package JSON object for initialization: 
         // <VersionContainer pkg={listOfPackages[selectedIndex]}/>        
         _super.call(this, props) || this;
-        _this.state = { selectedVerIndex: 0 };
+        _this.state = { selectedVerIndex: 0, installing: false };
         _this.prevPkg = props.pkg;
         _this.onInstallButtonsClicked = _this.onInstallButtonsClicked.bind(_this);
+        _this.onPackageInstallationProgressed = _this.onPackageInstallationProgressed.bind(_this);
+        props.pkgController.on("installPercentComplete", _this.onPackageInstallationProgressed);
         return _this;
     }
     VersionContainer.prototype.onVersionChange = function (event) {
@@ -1178,6 +1248,21 @@ var VersionContainer = (function (_super) {
     };
     VersionContainer.prototype.onPackageItemClick = function () {
         this.setState({ selectedVerIndex: 0 });
+    };
+    VersionContainer.prototype.onPackageInstallationProgressed = function (id, percentage) {
+        if (id != this.props.pkg._id) {
+            return;
+        }
+        var state = this.state;
+        if (!state.installing) {
+            if (percentage < 1.0) {
+                this.setState({ selectedVerIndex: state.selectedVerIndex, installing: true });
+            }
+            else {
+                this.props.pkg.installed = true;
+                this.setState({ selectedVerIndex: state.selectedVerIndex, installing: false });
+            }
+        }
     };
     VersionContainer.prototype.onInstallButtonsClicked = function (index) {
         CommonUtils.handleInstallButtonEvent(index, this.props.pkg, this.props.pkgController);
@@ -1211,7 +1296,7 @@ var VersionContainer = (function (_super) {
                 options.push(React.createElement("option", { value: index }, versions[i_1].version));
             }
         }
-        var installControlArea = CommonUtils.createInstallButtonElement(this.props.pkg, this.props.pkgController, this.onInstallButtonsClicked);
+        var installControlArea = CommonUtils.createInstallButtonElement(this.state, this.props.pkg, this.props.pkgController, this.onInstallButtonsClicked);
         var dynamoVersion = versions == null ? "" : versions[this.state.selectedVerIndex].engine_version;
         return (React.createElement("div", { className: "VersionContainer" },
             React.createElement("div", { className: "DetailSectionHeader" }, "Versions"),
@@ -1301,9 +1386,9 @@ var DetailedView = (function () {
         this.on = this.on.bind(this);
         this.raiseEvent = this.raiseEvent.bind(this);
     }
-    DetailedView.prototype.setActivePackageId = function (packageId) {
+    DetailedView.prototype.setActivePackageId = function (packageId, installedVersion) {
         var htmlElement = document.getElementById(this.htmlElementId);
-        ReactDOM.render(React.createElement(PackageDetailView_1.PackageDetailView, { pkgController: this.pkgController, packageId: packageId, showCloseButton: this.showCloseButton }), htmlElement);
+        ReactDOM.render(React.createElement(PackageDetailView_1.PackageDetailView, { pkgController: this.pkgController, packageId: packageId, installedVersion: installedVersion, showCloseButton: this.showCloseButton }), htmlElement);
     };
     DetailedView.prototype.on = function (eventName, callback) {
         this.pkgController.reactor.registerEvent(eventName, callback);
@@ -1323,8 +1408,8 @@ function CreateTabControl(pkgController, htmlElementId) {
     return ReactDOM.render(React.createElement(TabHeader_1.TabControl, { pkgController: pkgController }), htmlElement);
 }
 exports.CreateTabControl = CreateTabControl;
-function CreatePackageList(pkgController, setActivePackageId) {
-    return (React.createElement(PackageList_1.PackageList, { pkgController: pkgController, setActivePackageId: setActivePackageId }));
+function CreatePackageList(pkgController, setActivePackageId, installedPackages) {
+    return (React.createElement(PackageList_1.PackageList, { pkgController: pkgController, installedPackages: installedPackages, setActivePackageId: setActivePackageId }));
 }
 exports.CreatePackageList = CreatePackageList;
 
