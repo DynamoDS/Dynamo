@@ -123,6 +123,63 @@ namespace DSCore.IO
             System.IO.File.WriteAllText(fullpath, text);
         }
 
+        /// <summary>
+        ///     Combines multiple strings into a single file path.
+        /// </summary>
+        /// <param name="paths">String to combine into a path.</param>
+        public static string CombinePath(params string[] paths)
+        {
+            return Path.Combine(paths);
+        }
+
+        /// <summary>
+        /// Returns the extension from a file path.
+        /// </summary>
+        /// <param name="path">Path to get extension of.</param>
+        public static string FileExtension(string path)
+        {
+            return Path.GetExtension(path);
+        }
+
+        /// <summary>
+        ///     Changes the extension of a file path.
+        /// </summary>
+        /// <param name="path">Path to change extension of.</param>
+        /// <param name="newExtension">New extension.</param>
+        public static string ChangePathExtension(string path, string newExtension)
+        {
+            return Path.ChangeExtension(path, newExtension);
+        }
+
+        /// <summary>
+        /// Returns the directory name of a file path.
+        /// </summary>
+        /// <param name="path">Path to get directory information of.</param>
+        /// <search>directorypath</search>
+        public static string DirectoryName(string path)
+        {
+            return Path.GetDirectoryName(path);
+        }
+
+        /// <summary>
+        /// Returns the file name of a file path.
+        /// </summary>
+        /// <param name="path">Path to get the file name of.</param>
+        /// <param name="withExtension">Determines whether or not the extension is included in the result, defaults to true.</param>
+        public static string FileName(string path, bool withExtension = true)
+        {
+            return withExtension ? Path.GetFileName(path) : Path.GetFileNameWithoutExtension(path);
+        }
+
+        /// <summary>
+        ///     Determines whether or not a file path contains an extension.
+        /// </summary>
+        /// <param name="path">Path to check for an extension.</param>
+        public static bool FileHasExtension(string path)
+        {
+            return Path.HasExtension(path);
+        }
+
         #region Obsolete Methods
 
 
