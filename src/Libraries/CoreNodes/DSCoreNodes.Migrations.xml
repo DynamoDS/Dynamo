@@ -26,7 +26,7 @@
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.IO.CSV.WriteToFile</oldName>
-    <newName>DSCore.Data.ExportCSV</newName>
+    <newName>DSCore.IO.Data.ExportCSV</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.IO.Directory.Contents</oldName>
@@ -85,6 +85,30 @@
         <value>GeometryColor.dll</value>
       </attribute>
     </additionalAttributes>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.HasExtension</oldName>
+    <newName>DSCore.IO.File.FileHasExtension</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.ChangeExtension</oldName>
+    <newName>DSCore.IO.File.ChangePathExtension</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.DirectoryName</oldName>
+    <newName>DSCore.IO.File.DirectoryName</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.Combine</oldName>
+    <newName>DSCore.IO.File.CombinePath</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.FileName</oldName>
+    <newName>DSCore.IO.File.FileName</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.IO.FilePath.Extension</oldName>
+    <newName>DSCore.IO.File.FileExtension</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>DSCore.Formula.Evaluate</oldName>

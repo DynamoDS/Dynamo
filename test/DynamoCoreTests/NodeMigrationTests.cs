@@ -97,7 +97,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-
         public void TestMigration_File_Directory()
         {
             TestMigration("TestMigration_File_Directory.dyn");
@@ -107,6 +106,11 @@ namespace Dynamo.Tests
         public void TestMigration_ImportExportCSV()
         {
             TestMigration("TestMigration_ImportExportCSV.dyn");
+        }
+
+        public void TestMigration_DSCore_IO_FilePath()
+        {
+            TestMigration("TestMigration_DSCore_IO_FilePath.dyn");
         }
 
         public void TestMigration_DSCore_Math()

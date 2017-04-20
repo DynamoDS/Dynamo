@@ -33,11 +33,11 @@ namespace Dynamo.LibraryUI
         private ICommandExecutive commandExecutive;
         private DetailsView detailsView;
         private DetailsViewModel detailsViewModel;
-        private DynamoPackagesHelper packageHelper;
+        private object contextData = null;
 
         private Dictionary<string, Stream> resourceStreams = new Dictionary<string, Stream>();
-        private Dictionary<string, object> callbacks = new Dictionary<string, object>();
-        
+        private Dictionary<string, List<IJavascriptCallback>> callbacks = new Dictionary<string, List<IJavascriptCallback>>();
+                
         /// <summary>
         /// Creates LibraryViewController
         /// </summary>
@@ -48,8 +48,7 @@ namespace Dynamo.LibraryUI
             this.dynamoWindow = dynamoView;
             var dynamoViewModel = dynamoView.DataContext as DynamoViewModel;
             var dynamoModel = dynamoViewModel.Model;
-            packageHelper = new DynamoPackagesHelper(this, dynamoModel);
-
+        
             this.commandExecutive = commandExecutive;
             InitializeResourceStreams();
         }
@@ -72,13 +71,12 @@ namespace Dynamo.LibraryUI
         /// Displays the details view over Dynamo canvas.
         /// </summary>
         /// <param name="item">item data for which details need to be shown</param>
-        public void ShowDetailsView(string item)
+        public void ShowDetailsView(object data)
         {
-            DetailsViewContextData = item;
-            RaiseEvent("detailsViewContextDataChanged", item);
+            DetailsViewContextData = data;
             if(detailsView == null)
             {
-                dynamoWindow.Dispatcher.BeginInvoke(new Action(() => AddDetailsView(item)));
+                dynamoWindow.Dispatcher.BeginInvoke(new Action(() => AddDetailsView()));
             }
             else
             {
@@ -99,19 +97,27 @@ namespace Dynamo.LibraryUI
 
         public void On(string eventName, object callback)
         {
-            callbacks.Add(eventName, callback);
+            List<IJavascriptCallback> cblist;
+            if(!callbacks.TryGetValue(eventName, out cblist))
+            {
+                cblist = new List<IJavascriptCallback>();
+            }
+            cblist.Add(callback as IJavascriptCallback);
+            callbacks[eventName] = cblist;
         }
 
         [JavascriptIgnore]
         public void RaiseEvent(string eventName, params object[] parameters)
         {
-            object callback = null;
-            if(callbacks.TryGetValue(eventName, out callback))
+            List<IJavascriptCallback> cblist;
+            if (callbacks.TryGetValue(eventName, out cblist))
             {
-                var cbfunc = callback as IJavascriptCallback;
-                if(cbfunc.CanExecute)
+                foreach (var cbfunc in cblist)
                 {
-                    cbfunc.ExecuteAsync(parameters);
+                    if (cbfunc.CanExecute)
+                    {
+                        cbfunc.ExecuteAsync(parameters);
+                    }
                 }
             }
         }
@@ -119,46 +125,14 @@ namespace Dynamo.LibraryUI
         /// <summary>
         /// Gets details view context data, e.g. packageId if it shows details of a package
         /// </summary>
-        public string DetailsViewContextData { get; set; }
-
-        /// <summary>
-        /// Returns a JSON string of all the packages installed on the system.
-        /// </summary>
-        /// <returns>string representing JSON object.</returns>
-        public string GetInstalledPackagesJSON()
+        public object DetailsViewContextData
         {
-            return packageHelper.GetInstalledPackagesJSON();
-        }
-
-        /// <summary>
-        /// Gets the version name for the given installed package.
-        /// </summary>
-        /// <param name="packageName">Name of the package</param>
-        /// <returns>Returns version name of a given package if it is installed, else empty string</returns>
-        public string GetInstalledPackageVersion(string packageName)
-        {
-            return packageHelper.GetInstalledPackageVersion(packageName);
-        }
-
-        /// <summary>
-        /// Installs a dynamo package of given package id.
-        /// </summary>
-        /// <param name="name">name of the package to install</param>
-        /// <param name="version">version of package to install</param>
-        /// <param name="pkgId">package id</param>
-        /// <param name="installPath">path to install</param>
-        public void InstallPackage(string name, string version, string pkgId, string installPath)
-        {
-            dynamoWindow.Dispatcher.BeginInvoke(new Action(() => packageHelper.DownlodAndInstall(pkgId, name, version, installPath)));
-        }
-
-        /// <summary>
-        /// Uninstalls the given package
-        /// </summary>
-        /// <param name="packageName">Package name to uninstall</param>
-        public void UninstallPackage(string packageName)
-        {
-            dynamoWindow.Dispatcher.BeginInvoke(new Action(() => packageHelper.UninstallPackage(packageName)));
+            get { return contextData; }
+            set
+            {
+                contextData = value;
+                this.RaiseEvent("detailsViewContextDataChanged", contextData);
+            }
         }
 
         /// <summary>
@@ -202,7 +176,7 @@ namespace Dynamo.LibraryUI
             System.Diagnostics.Trace.Write(e.Message);
         }
 
-        private DetailsView AddDetailsView(string item)
+        private DetailsView AddDetailsView()
         {
             detailsViewModel = new DetailsViewModel("http://localhost/details.html");
 
@@ -236,15 +210,13 @@ namespace Dynamo.LibraryUI
                     url = url.Replace("dist.", "dist/");
                     url = url.Replace("/v0._0._1.", "/v0.0.1/");
                     url = url.Replace("/resources.", "/resources/");
-                    url = url.Replace("/icons.", "/icons/");
-                    url = url.Replace(".font_awesome_4._7._0.", "/font-awesome-4.7.0/");
-                    url = url.Replace("/fonts.", "/fonts/");
-                    url = url.Replace("less.", "less/");
-                    url = url.Replace("css.", "css/");
+                    //url = url.Replace("/icons.", "/icons/");
+                    //url = url.Replace(".font_awesome_4._7._0.", "/font-awesome-4.7.0/");
+                    //url = url.Replace("/fonts.", "/fonts/");
+                    //url = url.Replace("less.", "less/");
+                    //url = url.Replace("css.", "css/");
                 }
-                else
-                    url = url.Replace("package.", "package/");
-
+                
                 if (url.EndsWith(".json"))
                 {
                     url = url.Replace(".json", "");

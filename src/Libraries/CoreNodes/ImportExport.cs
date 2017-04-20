@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 #endregion
 
-namespace DSCore
+namespace DSCore.IO
 {
     /// <summary>
     ///     Methods for Import/Export category.
@@ -115,4 +115,5 @@ namespace DSCore
             else return DSCore.List.Transpose(CSVdatalist);
         }
     }
+
 }

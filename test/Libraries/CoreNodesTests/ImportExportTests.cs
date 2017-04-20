@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using System.IO;
-using Data = DSCore.Data;
+using Data = DSCore.IO.Data;
 using Dynamo;
 
 namespace DSCoreNodesTests
