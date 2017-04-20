@@ -1045,7 +1045,7 @@
       "text": "String",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Category.String.svg",
       "elementType": "category",
-      "include": [],
+      "include": [ ],
       "childElements": [
         {
           "text": "Inspect",
@@ -1077,7 +1077,7 @@
               "path": "DSCore.String.StartsWith"
             }
           ],
-          "childElements": []
+          "childElements": [ ]
         },
         {
           "text": "Modify",
@@ -1130,7 +1130,7 @@
               "path": "DSCore.String.ChangeCase"
             }
           ],
-          "childElements": []
+          "childElements": [ ]
         },
         {
           "text": "Generate",
@@ -1148,6 +1148,30 @@
             },
             {
               "path": "DSCore.String.Join"
+            }
+          ],
+          "childElements": [ ]
+        }
+      ]
+    },
+    {
+      "text": "Modifiers",
+      "iconUrl": "",
+      "elementType": "category",
+      "include": [],
+      "childElements": [
+        {
+          "text": "Geometry Color",
+          "iconUrl": "",
+          "elementType": "group",
+          "include": [
+            {
+              "path": "Modifiers.GeometryColor.ByGeometryColor",
+              "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Category.Geometry.svg"
+            },
+            {
+              "path": "Modifiers.GeometryColor.BySurfaceColors",
+              "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Category.Geometry.svg"
             }
           ],
           "childElements": []
@@ -1346,25 +1370,7 @@
               "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Autodesk.DesignScript.Geometry.Geometry.png"
             }
           ],
-          "childElements": [
-            {
-              "text": "Display",
-              "iconUrl": "",
-              "elementType": "group",
-              "include": [
-                {
-                  "path": "Display.Display.ByGeometryColor"
-                },
-                {
-                  "path": "Display.Display.BySurfaceColors"
-                },
-                {
-                  "path": "Display.Display.BySurfaceColors"
-                }
-              ],
-              "childElements": []
-            }
-          ]
+          "childElements": []
         },
         {
           "text": "Tessellation",
