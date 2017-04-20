@@ -785,6 +785,7 @@ var InstallButtons = (function (_super) {
         return _this;
     }
     InstallButtons.prototype.onItemClicked = function (event) {
+        event.stopPropagation();
         var index = parseInt(event.target.attributes.value.value);
         this.props.clicked(index);
     };
@@ -803,6 +804,7 @@ var InstallButtons = (function (_super) {
         }
     };
     InstallButtons.prototype.onDropDown = function (event) {
+        event.stopPropagation();
         var nodes = event.target.parentElement.parentElement.parentElement.children;
         for (var i = 0; i < nodes.length; i++) {
             if (nodes[i].className.indexOf("ButtonList") != -1) {
@@ -1005,7 +1007,6 @@ var PackageItem = (function (_super) {
         this.props.setSelection(this.props.index, this.props.data._id, this.props.data.installedVersion);
     };
     PackageItem.prototype.onPackageInstallationProgressed = function (id, percentage) {
-        console.log("onPackageInstallationProgress: " + id + ", percent = " + percentage);
         if (id != this.props.data._id) {
             return;
         }
@@ -1086,15 +1087,17 @@ var SearchBar = (function (_super) {
             sortKey: _this.filterConfig.sortKey,
             sortOrder: _this.filterConfig.sortOrder
         };
+        _this.handleKeyDown = _this.handleKeyDown.bind(_this);
+        _this.handleClick = _this.handleClick.bind(_this);
         return _this;
     }
     SearchBar.prototype.componentWillMount = function () {
-        window.addEventListener("keydown", this.handleKeyDown.bind(this));
-        window.addEventListener("click", this.handleGlobalClick.bind(this));
+        window.addEventListener("keydown", this.handleKeyDown);
+        window.addEventListener("click", this.handleClick);
     };
     SearchBar.prototype.componentWillUnmount = function () {
-        window.removeEventListener("keydown", this.handleKeyDown.bind(this));
-        window.removeEventListener("click", this.handleGlobalClick.bind(this));
+        window.removeEventListener("keydown", this.handleKeyDown);
+        window.removeEventListener("click", this.handleClick);
     };
     SearchBar.prototype.handleKeyDown = function (event) {
         switch (event.code) {
@@ -1106,7 +1109,7 @@ var SearchBar = (function (_super) {
         }
     };
     // Collapse list dropdown menu when click happens outside this compnent
-    SearchBar.prototype.handleGlobalClick = function (event) {
+    SearchBar.prototype.handleClick = function (event) {
         if (!ReactDOM.findDOMNode(this).contains(event.target)) {
             this.collapseMenu();
         }
@@ -1247,7 +1250,6 @@ var VersionContainer = (function (_super) {
         this.setState({ selectedVerIndex: 0 });
     };
     VersionContainer.prototype.onPackageInstallationProgressed = function (id, percentage) {
-        console.log("onPackageInstallationProgress: " + id + ", percent = " + percentage);
         if (id != this.props.pkg._id) {
             return;
         }
