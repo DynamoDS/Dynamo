@@ -163,7 +163,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.Count,
-                    MethodAttributes = new MethodAttributes(){Description  = Resources.ReturnsNumberOfItems}
+                    MethodAttributes = new MethodAttributes(true){Description  = Resources.ReturnsNumberOfItems}
                    
 
                 },
@@ -198,7 +198,7 @@ namespace ProtoCore.Lang
                     new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.Flatten,
-                    MethodAttributes = new MethodAttributes(){Description  = Resources.ReturnsTheFlattened1DList}
+                    MethodAttributes = new MethodAttributes(true){Description  = Resources.ReturnsTheFlattened1DList}
                 },
                 
                 new BuiltInMethod
@@ -223,7 +223,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1))
                     },
                     ID = BuiltInMethods.MethodID.Intersection, 
-                    MethodAttributes = new MethodAttributes(){Description  = Resources.ProducesTheSetIntersection}
+                    MethodAttributes = new MethodAttributes(true){Description  = Resources.ProducesTheSetIntersection}
                 },
 
                 new BuiltInMethod
@@ -235,7 +235,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1))
                     },
                     ID = BuiltInMethods.MethodID.Union,
-                     MethodAttributes = new MethodAttributes(){Description  = Resources.ProducesTheSetUnion}
+                     MethodAttributes = new MethodAttributes(true){Description  = Resources.ProducesTheSetUnion}
                 },
 
                 new BuiltInMethod
@@ -247,7 +247,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1))
                     },
                     ID = BuiltInMethods.MethodID.Difference,
-                    MethodAttributes = new MethodAttributes(){Description  = Resources.ObjectsContainsInList1NotInList2}
+                    MethodAttributes = new MethodAttributes(true){Description  = Resources.ObjectsContainsInList1NotInList2}
                 },
 
                 new BuiltInMethod
@@ -258,7 +258,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.CountTrue,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.ReturnsTheNumberOfTrueValue}
+                    MethodAttributes = new MethodAttributes(true){Description = Resources.ReturnsTheNumberOfTrueValue}
                 },
 
                 new BuiltInMethod
@@ -269,7 +269,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.CountFalse,
-                     MethodAttributes = new MethodAttributes(){Description  = Resources.ReturnsTheNumberOfFalseValueInList}
+                     MethodAttributes = new MethodAttributes(true){Description  = Resources.ReturnsTheNumberOfFalseValueInList}
                 },
 
                 new BuiltInMethod
@@ -280,7 +280,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.AllFalse,
-                     MethodAttributes = new MethodAttributes(){Description  = Resources.ChecksIfTheListIsAllFalse}
+                     MethodAttributes = new MethodAttributes(true){Description  = Resources.ChecksIfTheListIsAllFalse}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
@@ -292,7 +292,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.AllTrue,
-                    MethodAttributes = new MethodAttributes(){Description  = Resources.ChecksIfTheListIsAllTrue}
+                    MethodAttributes = new MethodAttributes(true){Description  = Resources.ChecksIfTheListIsAllTrue}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
@@ -304,7 +304,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.IsHomogeneous,
-                    MethodAttributes = new MethodAttributes(){Description  = Resources.CheckIfTheElementsInListAreSameType}
+                    MethodAttributes = new MethodAttributes(true){Description  = Resources.CheckIfTheElementsInListAreSameType}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
@@ -477,7 +477,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.Contains,
-                    MethodAttributes = new MethodAttributes(){Description  = Resources.ChecksIfListContainsTheElement}
+                    MethodAttributes = new MethodAttributes(true){Description  = Resources.ChecksIfListContainsTheElement}
                 },
 
                 new BuiltInMethod
@@ -501,7 +501,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("element", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.IndexOf,
-                    MethodAttributes = new MethodAttributes(){Description  = Resources.ReturnsTheIndex}
+                    MethodAttributes = new MethodAttributes(true){Description  = Resources.ReturnsTheIndex}
                 },
 
                 new BuiltInMethod
@@ -514,7 +514,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0))
                     },
                     ID = BuiltInMethods.MethodID.Insert,
-                    MethodAttributes = new MethodAttributes(){Description  = Resources.InsertsAnElementIntoList}
+                    MethodAttributes = new MethodAttributes(true){Description  = Resources.InsertsAnElementIntoList}
 
                 },
 
@@ -528,7 +528,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("index", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Integer, 0))
                     },
                     ID = BuiltInMethods.MethodID.Insert,
-                    MethodAttributes = new MethodAttributes(){Description  = Resources.InsertsAnElementIntoList}
+                    MethodAttributes = new MethodAttributes(true){Description  = Resources.InsertsAnElementIntoList}
                 },
 
             //Sort, SortWithMode, SortIndexByValue & SortIndexByValueWithMode
@@ -598,7 +598,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 1)),
                     },
                     ID = BuiltInMethods.MethodID.SortIndexByValue,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.SortsListByValueInAscending}
+                    MethodAttributes = new MethodAttributes(true){Description = Resources.SortsListByValueInAscending}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),  
                 },
 
@@ -611,7 +611,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0)),
                     },
                     ID = BuiltInMethods.MethodID.SortIndexByValue,
-                     MethodAttributes = new MethodAttributes(){Description = Resources.SortsListByValue}
+                     MethodAttributes = new MethodAttributes(true){Description = Resources.SortsListByValue}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true), 
                 },
 
@@ -624,7 +624,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("indice", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 1)),
                     },
                     ID = BuiltInMethods.MethodID.Reorder,
-                     MethodAttributes = new MethodAttributes(){Description = Resources.ReordersList}
+                     MethodAttributes = new MethodAttributes(true){Description = Resources.ReordersList}
                 },
 
                 new BuiltInMethod
@@ -635,7 +635,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.IsUniformDepth,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.ChecksListWithUniformDepth}
+                    MethodAttributes = new MethodAttributes(true){Description = Resources.ChecksListWithUniformDepth}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
@@ -647,7 +647,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.IsRectangular,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.ChecksIfLengthsAreSameInMultiDimentionalList}
+                    MethodAttributes = new MethodAttributes(true){Description = Resources.ChecksIfLengthsAreSameInMultiDimentionalList}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 }, 
 
@@ -659,7 +659,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.NormalizeDepth,
-                     MethodAttributes = new MethodAttributes(){Description = Resources.ReturnsListWithUniformDepth}
+                     MethodAttributes = new MethodAttributes(true){Description = Resources.ReturnsListWithUniformDepth}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
@@ -672,7 +672,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("rank", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
                     },
                     ID = BuiltInMethods.MethodID.NormalizeDepth,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.ReturnsListWithRankDepth}
+                    MethodAttributes = new MethodAttributes(true){Description = Resources.ReturnsListWithRankDepth}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 }, 
 
@@ -686,7 +686,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("inputValue", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0)),
                         },
                     ID = BuiltInMethods.MethodID.Map,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.MapsValueIntoInputRange}
+                    MethodAttributes = new MethodAttributes(true){Description = Resources.MapsValueIntoInputRange}
                 },
 
                 new BuiltInMethod
@@ -701,7 +701,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("targetRangeMax", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Double, 0)),
                     },
                     ID = BuiltInMethods.MethodID.MapTo,
-                     MethodAttributes = new MethodAttributes(){Description = Resources.MapsValueFromOneRangeToAnotherRange}
+                     MethodAttributes = new MethodAttributes(true){Description = Resources.MapsValueFromOneRangeToAnotherRange}
                 },
 
                 new BuiltInMethod
@@ -738,7 +738,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("filePath", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0)),
                     },
                     ID = BuiltInMethods.MethodID.LoadCSV,
-                     MethodAttributes = new MethodAttributes(){Description = Resources.ImportFileByGivenFilePath}
+                     MethodAttributes = new MethodAttributes(true){Description = Resources.ImportFileByGivenFilePath}
                 },
 
                 new BuiltInMethod()
@@ -750,7 +750,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("transpose", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0)),
                     },
                     ID = BuiltInMethods.MethodID.LoadCSV,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.ImportFileByGivenFilePathWithMode}
+                    MethodAttributes = new MethodAttributes(true){Description = Resources.ImportFileByGivenFilePathWithMode}
                 },
 
                 new BuiltInMethod()

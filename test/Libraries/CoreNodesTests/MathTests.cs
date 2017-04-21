@@ -85,5 +85,21 @@ namespace DSCoreNodesTests
             Assert.Throws<System.OverflowException>(() => DSCore.Math.Factorial(100));
 
         }
+        
+        [Test]
+        [Category("UnitTests")]
+        public static void Map()
+        {
+            Assert.AreEqual(0.25, DSCore.Math.Map(1, 5, 2));
+            Assert.AreEqual(0, DSCore.Math.Map(2, 4, 1));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void MapTo()
+        {
+            Assert.AreEqual(2.8, DSCore.Math.MapTo(1, 3, 1.4, 1, 10));
+            Assert.AreEqual(10, DSCore.Math.MapTo(2, 4, 5, 1, 10));
+        }
     }
 }

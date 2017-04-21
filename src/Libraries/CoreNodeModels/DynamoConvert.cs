@@ -63,7 +63,7 @@ namespace CoreNodeModels
             }
         }
 
-        [JsonProperty("MetricConversion"), JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty("MeasurementType"), JsonConverter(typeof(StringEnumConverter))]
         public ConversionMetricUnit SelectedMetricConversion
         {
             get { return selectedMetricConversion; }

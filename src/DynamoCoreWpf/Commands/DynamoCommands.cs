@@ -225,6 +225,11 @@ namespace Dynamo.ViewModels
                         nodeId, command.PortIndex, command.Type);
                     break;
 
+                case DynamoModel.MakeConnectionCommand.Mode.EndAndStartCtrlConnection:
+                    CurrentSpaceViewModel.EndAndStartCtrlConnection(
+                        nodeId, command.PortIndex, command.Type);
+                    break;
+
                 case DynamoModel.MakeConnectionCommand.Mode.Cancel:
                     CurrentSpaceViewModel.CancelConnection();
                     break;
