@@ -85,18 +85,6 @@
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "Core.Logic.And",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/CoreNodeModels.Logic.And.png",
-      "contextData": "And",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "Core.Logic.Or",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/CoreNodeModels.Logic.Or.png",
-      "contextData": "Or",
-      "itemType": "action"
-    },
-    {
       "fullyQualifiedName": "Core.Logic.If",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/CoreNodeModels.Logic.If.png",
       "contextData": "If",
@@ -3475,15 +3463,27 @@
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.Formula.Evaluate",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Formula.Evaluate.png",
-      "contextData": "DSCore.Formula.Evaluate@string,string[],var[]",
+      "fullyQualifiedName": "DSCore.Math.EvaluateFormula",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Math.EvaluateFormula.png",
+      "contextData": "DSCore.Math.EvaluateFormula@string,string[],var[]",
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.Logic.Xor",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Logic.Xor.png",
-      "contextData": "DSCore.Logic.Xor@bool,bool",
+      "fullyQualifiedName": "DSCore.Math.And",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Math.And.png",
+      "contextData": "And",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.Math.Or",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Math.Or.png",
+      "contextData": "Or",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.Math.Xor",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Math.Xor.png",
+      "contextData": "DSCore.Math.Xor@bool,bool",
       "itemType": "action"
     },
     {
