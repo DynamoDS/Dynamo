@@ -3,6 +3,12 @@
   <priorNameHint>
     <oldName>DSOffice.Excel.Write</oldName>
     <newName>DSCore.IO.Data.ExportExcel</newName>
+    <additionalAttributes>
+      <attribute>
+        <name>assembly</name>
+        <value>DSCoreNodes.dll</value>
+      </attribute>
+    </additionalAttributes>
   </priorNameHint>
   <priorNameHint>
     <oldName>DSOffice.Excel.WriteToFile</oldName>
