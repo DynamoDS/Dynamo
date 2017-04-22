@@ -32,24 +32,27 @@ namespace CoreNodeModels.Input
     public class ColorPalette : NodeModel
     {
         private DSColor dscolor = DSColor.ByARGB(255, 0, 0, 0);
+        private DSColor prevColor = DSColor.ByARGB(255, 0, 0, 0);
         private bool Isundo = false;
         public DSColor DsColor
         {
             get { return dscolor; }
             set
             {
-                if (dscolor.Equals(value))
+                if (dscolor.Equals(value) ||prevColor.Equals(value))
                 {
                     //Checks if undorecorder is being used
                     Isundo = true;     
                 }
-                dscolor = value;
+                
                 if (!Isundo)
                 {
                     //If undo recorder is not being used updates the undorecorder stack with new value
                     Isundo = false;
                     Update = dscolor;
                 }
+                prevColor = dscolor;
+                dscolor = value;
                 OnNodeModified();
                 RaisePropertyChanged("DsColor");
             }
@@ -69,6 +72,22 @@ namespace CoreNodeModels.Input
             //this.PropertyChanged += RaisePropertyChanged;
             RegisterAllPorts();
         }
+
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
+        {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
+            switch (name)
+            {
+                case "DsColor":
+                    this.DsColor = this.DeserializeValue(value);
+                    return true;
+            }
+
+            return base.UpdateValueCore(updateValueParams);
+        }
+
         private DSColor DeserializeValue(string val)
         {
             try

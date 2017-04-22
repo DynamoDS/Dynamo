@@ -33,6 +33,11 @@ namespace CoreNodeModelsWpf.Nodes
             ColorPaletteUINode = new ColorPaletteUI();
             nodeView.inputGrid.Children.Add(ColorPaletteUINode);
             ColorPaletteUINode.DataContext = model;
+
+            var undoRecorder = viewNode.ViewModel.WorkspaceViewModel.Model.UndoRecorder;
+            WorkspaceModel.RecordModelForModification(colorPaletteNode, undoRecorder);
+            
+
         }
         private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
