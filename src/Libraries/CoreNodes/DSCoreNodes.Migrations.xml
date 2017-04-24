@@ -31,6 +31,16 @@
     </additionalAttributes>
   </priorNameHint>
   <priorNameHint>
+    <oldName>DSCore.IO.File.ExportToCSV</oldName>
+    <newName>DSOffice.Data.ExportCSV</newName>
+    <additionalAttributes>
+      <attribute>
+        <name>assembly</name>
+        <value>DSOffice.dll</value>
+      </attribute>
+    </additionalAttributes>
+  </priorNameHint>
+  <priorNameHint>
     <oldName>DSCore.IO.CSV.WriteToFile</oldName>
     <newName>DSOffice.Data.ExportCSV</newName>
     <additionalAttributes>
