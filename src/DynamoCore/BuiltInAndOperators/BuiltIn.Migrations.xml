@@ -11,12 +11,6 @@
   <priorNameHint>
     <oldName>ImportFromCSV</oldName>
     <newName>DSOffice.Data.ImportCSV</newName>
-    <additionalAttributes>
-      <attribute>
-        <name>assembly</name>
-        <value>DSOffice.dll</value>
-      </attribute>
-    </additionalAttributes>
   </priorNameHint>
   <priorNameHint>
     <oldName>AllFalse</oldName>
