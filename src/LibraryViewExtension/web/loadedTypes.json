@@ -205,9 +205,9 @@
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "Core.File.Directory.FromPath",
+      "fullyQualifiedName": "Core.File.DirectoryFromPath",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/CoreNodeModels.Input.DirectoryObject.png",
-      "contextData": "Directory.FromPath",
+      "contextData": "DirectoryFromPath",
       "itemType": "action"
     },
     {
@@ -412,18 +412,6 @@
       "fullyQualifiedName": "MapTo",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/MapTo.png",
       "contextData": "MapTo@double,double,double,double,double",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "ImportFromCSV",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/ImportFromCSV.string.png",
-      "contextData": "ImportFromCSV@string",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "ImportFromCSV",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/ImportFromCSV.string-bool.png",
-      "contextData": "ImportFromCSV@string,bool",
       "itemType": "action"
     },
     {
@@ -4243,33 +4231,33 @@
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.Directory.Move",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.Directory.Move.png",
-      "contextData": "DSCore.IO.Directory.Move@string,string,bool",
+      "fullyQualifiedName": "DSCore.IO.File.MoveDirectory",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.MoveDirectory.png",
+      "contextData": "DSCore.IO.File.MoveDirectory@string,string,bool",
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.Directory.Copy",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.Directory.Copy.png",
-      "contextData": "DSCore.IO.Directory.Copy@var,string,bool",
+      "fullyQualifiedName": "DSCore.IO.File.CopyDirectory",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.CopyDirectory.png",
+      "contextData": "DSCore.IO.File.CopyDirectory@var,string,bool",
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.Directory.Delete",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.Directory.Delete.png",
-      "contextData": "DSCore.IO.Directory.Delete@string,bool",
+      "fullyQualifiedName": "DSCore.IO.File.DeleteDirectory",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.DeleteDirectory.png",
+      "contextData": "DSCore.IO.File.DeleteDirectory@string,bool",
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.Directory.Contents",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.Directory.Contents.png",
-      "contextData": "DSCore.IO.Directory.Contents@var,string",
+      "fullyQualifiedName": "DSCore.IO.File.GetDirectoryContents",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.GetDirectoryContents.png",
+      "contextData": "DSCore.IO.File.GetDirectoryContents@var,string",
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.Directory.Exists",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.Directory.Exists.png",
-      "contextData": "DSCore.IO.Directory.Exists@string",
+      "fullyQualifiedName": "DSCore.IO.File.DirectoryExists",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.DirectoryExists.png",
+      "contextData": "DSCore.IO.File.DirectoryExists@string",
       "itemType": "action"
     },
     {
@@ -4309,27 +4297,27 @@
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.CSV.WriteToFile",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.CSV.WriteToFile.png",
-      "contextData": "DSCore.IO.CSV.WriteToFile@string,var[][]",
+      "fullyQualifiedName": "DSOffice.Data.ExportCSV",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSOffice.Data.ExportCSV.png",
+      "contextData": "DSOffice.Data.ExportCSV@string,var[][]",
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.CSV.ReadFromFile",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.CSV.ReadFromFile.png",
-      "contextData": "DSCore.IO.CSV.ReadFromFile@var",
+      "fullyQualifiedName": "DSOffice.Data.ImportCSV",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSOffice.Data.ImportCSV.png",
+      "contextData": "DSOffice.Data.ImportCSV@var",
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSOffice.Excel.ReadFromFile",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSOffice.Excel.ReadFromFile.png",
-      "contextData": "DSOffice.Excel.ReadFromFile@var,string,bool",
+      "fullyQualifiedName": "DSOffice.Data.ImportExcel",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSOffice.Data.ImportExcel.png",
+      "contextData": "DSOffice.Data.ImportExcel@var,string,bool",
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSOffice.Excel.WriteToFile",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSOffice.Excel.WriteToFile.png",
-      "contextData": "DSOffice.Excel.WriteToFile@string,string,int,int,var[][],bool",
+      "fullyQualifiedName": "DSOffice.Data.ExportExcel",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSOffice.Data.ExportExcel.png",
+      "contextData": "DSOffice.Data.ExportExcel@string,string,int,int,var[][],bool",
       "itemType": "action"
     },
     {

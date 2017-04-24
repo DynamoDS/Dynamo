@@ -929,7 +929,7 @@
               "path": "Core.File.File.FromPath"
             },
             {
-              "path": "Core.File.Directory.FromPath"
+              "path": "Core.File.DirectoryFromPath"
             },
             {
               "path": "DSCore.IO.File.CombinePath"
@@ -968,19 +968,19 @@
               "path": "DSCore.IO.File.WriteText"
             },
             {
-              "path": "DSCore.IO.Directory.Move"
+              "path": "DSCore.IO.File.MoveDirectory"
             },
             {
-              "path": "DSCore.IO.Directory.Copy"
+              "path": "DSCore.IO.File.CopyDirectory"
             },
             {
-              "path": "DSCore.IO.Directory.Delete"
+              "path": "DSCore.IO.File.DeleteDirectory"
             },
             {
-              "path": "DSCore.IO.Directory.Contents"
+              "path": "DSCore.IO.File.GetDirectoryContents"
             },
             {
-              "path": "DSCore.IO.Directory.Exists"
+              "path": "DSCore.IO.File.DirectoryExists"
             }
           ],
           "childElements": []
@@ -1017,16 +1017,16 @@
           "elementType": "group",
           "include": [
             {
-              "path": "DSOffice.Excel.ReadFromFile"
+              "path": "DSOffice.Data.ImportExcel"
             },
             {
-              "path": "DSOffice.Excel.WriteToFile"
+              "path": "DSOffice.Data.ExportExcel"
             },
             {
-              "path": "DSCore.IO.CSV.WriteToFile"
+              "path": "DSOffice.Data.ImportCSV"
             },
             {
-              "path": "DSCore.IO.CSV.ReadFromFile"
+              "path": "DSOffice.Data.ExportCSV"
             }
           ],
           "childElements": []
