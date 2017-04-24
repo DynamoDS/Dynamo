@@ -18,7 +18,8 @@ namespace Tessellation
         public static IEnumerable<Curve> ByPoints(IEnumerable<Point> points)
         {
             var verts = points.Select(Vertex3.FromPoint).ToList();
-            var triResult = ConvexHull<Vertex3, TriangleFace>.Create(verts, new ConvexHullComputationConfig());
+            const double DefaultPlaneDistanceTolerance = 1e-6;
+            var triResult = ConvexHull<Vertex3, TriangleFace>.Create(verts, DefaultPlaneDistanceTolerance);
 
             // make edges
             foreach (var face in triResult.Faces)
