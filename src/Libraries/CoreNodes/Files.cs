@@ -311,8 +311,7 @@ namespace DSCore.IO
         [NodeObsolete("ExportToCSVObsolete", typeof(Properties.Resources))]
         public static bool ExportToCSV(string filePath, object[][] data)
         {
-            DSCore.IO.Data.ExportCSV(filePath, data);
-            return true;
+            return false;
         }
         #endregion
     }

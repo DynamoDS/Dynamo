@@ -70,7 +70,6 @@
     <Compile Include="Compare.cs" />
     <Compile Include="DateTime.cs" />
     <Compile Include="Files.cs" />
-    <Compile Include="ImportExport.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
     <Compile Include="Object.cs" />
@@ -98,10 +97,6 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\DSOffice\DSOffice.csproj">
-      <Project>{9B4FDC96-E2F9-4B8F-894A-4294405D50E7}</Project>
-      <Name>DSOffice</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
@@ -114,6 +109,7 @@
   <ItemGroup>
     <Content Include="DSCoreNodes.Migrations.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="DSCoreNodes_DynamoCustomization.xml">
       <SubType>Designer</SubType>

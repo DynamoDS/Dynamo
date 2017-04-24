@@ -2,32 +2,14 @@
 <migrations>
   <priorNameHint>
     <oldName>DSOffice.Excel.Write</oldName>
-    <newName>DSCore.IO.Data.ExportExcel</newName>
-    <additionalAttributes>
-      <attribute>
-        <name>assembly</name>
-        <value>DSCoreNodes.dll</value>
-      </attribute>
-    </additionalAttributes>
+    <newName>DSOffice.Data.ExportExcel</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>DSOffice.Excel.WriteToFile</oldName>
-    <newName>DSCore.IO.Data.ExportExcel</newName>
-    <additionalAttributes>
-      <attribute>
-        <name>assembly</name>
-        <value>DSCoreNodes.dll</value>
-      </attribute>
-    </additionalAttributes>
+    <newName>DSOffice.Data.ExportExcel</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>DSOffice.Excel.ReadFromFile</oldName>
-    <newName>DSCore.IO.Data.ImportExcel</newName>
-    <additionalAttributes>
-      <attribute>
-        <name>assembly</name>
-        <value>DSCoreNodes.dll</value>
-      </attribute>
-    </additionalAttributes>
+    <newName>DSOffice.Data.ImportExcel</newName>
   </priorNameHint>
 </migrations>

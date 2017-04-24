@@ -71,7 +71,6 @@
     <Compile Include="ColorTests.cs" />
     <Compile Include="ComparisonTests.cs" />
     <Compile Include="FileTests.cs" />
-    <Compile Include="ImportExportTests.cs" />
     <Compile Include="ListTests.cs" />
     <Compile Include="LogicTests.cs" />
     <Compile Include="MathTests.cs" />
