@@ -414,7 +414,7 @@ namespace ProtoCore
                         bool hidden = x.MethodAttribute == null ? false : x.MethodAttribute.HiddenInLibrary;
 
                         // There could be DS class constructors that are private
-                        return x.IsConstructor && x.AccessModifier == AccessModifier.Public && !hidden;
+                        return x.IsConstructor && x.AccessModifier != AccessModifier.Private && !hidden;
                     }
                     ).Select(y => new MethodMirror(y));
             }
