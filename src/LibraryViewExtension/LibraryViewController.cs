@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using CefSharp;
 using CefSharp.Wpf;
 using Dynamo.Extensions;
+using Dynamo.LibraryUI.Handlers;
 using Dynamo.LibraryUI.ViewModels;
 using Dynamo.LibraryUI.Views;
 using Dynamo.Models;
@@ -34,8 +35,9 @@ namespace Dynamo.LibraryUI
         private DetailsView detailsView;
         private DetailsViewModel detailsViewModel;
         private object contextData = null;
+        private ResourceHandlerFactory resourceFactory;
 
-        private Dictionary<string, Stream> resourceStreams = new Dictionary<string, Stream>();
+        //private Dictionary<string, Stream> resourceStreams = new Dictionary<string, Stream>();
         private Dictionary<string, List<IJavascriptCallback>> callbacks = new Dictionary<string, List<IJavascriptCallback>>();
                 
         /// <summary>
@@ -196,53 +198,36 @@ namespace Dynamo.LibraryUI
 
         private void InitializeResourceStreams()
         {
-            var rootnamespace = "Dynamo.LibraryUI.web.";
-            var resourceNames = Assembly.GetExecutingAssembly()
-            .GetManifestResourceNames();
-            foreach (var resource in resourceNames)
-            {
-                if (!resource.StartsWith(rootnamespace))
-                    continue;
+            resourceFactory = new ResourceHandlerFactory();
+            resourceFactory.RegisterProvider("/dist/v0.0.1", 
+                new DllResourceProvider() { BaseUrl = "http://localhost/dist/v0.0.1",
+                    RootNamespace = "Dynamo.LibraryUI.web.library" });
 
-                var url = resource.Replace(rootnamespace, "");
-                if (url.StartsWith("dist."))
-                {
-                    url = url.Replace("dist.", "dist/");
-                    url = url.Replace("/v0._0._1.", "/v0.0.1/");
-                    url = url.Replace("/resources.", "/resources/");
-                    //url = url.Replace("/icons.", "/icons/");
-                    //url = url.Replace(".font_awesome_4._7._0.", "/font-awesome-4.7.0/");
-                    //url = url.Replace("/fonts.", "/fonts/");
-                    //url = url.Replace("less.", "less/");
-                    //url = url.Replace("css.", "css/");
-                }
-                
-                if (url.EndsWith(".json"))
-                {
-                    url = url.Replace(".json", "");
-                }
-                var r = LoadResource(resource);
-                resourceStreams.Add("http://localhost/" + url, r);
+            {
+                var url = "http://localhost/library.html";
+                var resource = "Dynamo.LibraryUI.web.library.library.html";
+                var stream = LoadResource(resource);
+                resourceFactory.RegisterHandler(url, ResourceHandler.FromStream(stream));
+            }
+
+            {
+                var url = "http://localhost/loadedTypes";
+                var resource = "Dynamo.LibraryUI.web.library.loadedTypes.json";
+                var stream = LoadResource(resource);
+                resourceFactory.RegisterHandler(url, ResourceHandler.FromStream(stream));
+            }
+
+            {
+                var url = "http://localhost/layoutSpecs";
+                var resource = "Dynamo.LibraryUI.web.library.layoutSpecs.json";
+                var stream = LoadResource(resource);
+                resourceFactory.RegisterHandler(url, ResourceHandler.FromStream(stream));
             }
         }
 
         private void RegisterResources(ChromiumWebBrowser browser)
         {
-            var factory = (DefaultResourceHandlerFactory)(browser.ResourceHandlerFactory);
-            if (factory == null) return;
-
-            foreach (var pair in resourceStreams)
-            {
-                var url = pair.Key;
-                var idx = url.LastIndexOf('.');
-                var mime = "text/html";
-                if(idx > 0)
-                {
-                    mime = ResourceHandler.GetMimeType(url.Substring(idx));
-                }
-                
-                factory.RegisterHandler(url, ResourceHandler.FromStream(pair.Value, mime));
-            }
+            browser.ResourceHandlerFactory = resourceFactory;
         }
 
         private void OnDescriptionViewLoaded(object sender, System.Windows.RoutedEventArgs e)
