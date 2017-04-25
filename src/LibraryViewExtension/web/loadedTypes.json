@@ -3636,12 +3636,6 @@
       "contextData": "DSCore.List.Count@var[]..[]",
       "itemType": "action"
     },
-	{
-      "fullyQualifiedName": "Count2",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.Count.png",
-      "contextData": "List.Count2@var[]..[]",
-      "itemType": "action"
-    },
     {
       "fullyQualifiedName": "DSCore.List.Join",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.Join.png",

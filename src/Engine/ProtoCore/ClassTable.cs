@@ -43,6 +43,27 @@ namespace ProtoCore.DSASM
             }
         }
 
+        public bool IsFfiDerivedDsClass
+        {
+            get
+            {
+                if (ProtoCore.DSASM.Constants.kInvalidIndex == Base) return false;
+
+                var baseClassNode = TypeSystem.classTable.ClassNodes[Base];
+                if (!string.IsNullOrEmpty(ExternLib) && baseClassNode.IsImportedClass)
+                {
+                    if (ExternLib.EndsWith(".DS", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        public bool HasDSDerivedClass { get; set; }
+
+
         private ProcedureNode disposeMethod;
         private bool hasCachedDisposeMethod;
 
@@ -379,25 +400,6 @@ namespace ProtoCore.DSASM
             return disposeMethod;
         }
 
-        public bool IsFfiDerivedDsClass
-        {
-            get
-            {
-                if(ProtoCore.DSASM.Constants.kInvalidIndex == Base) return false;
-
-                var baseClassNode = TypeSystem.classTable.ClassNodes[Base];
-                if (!string.IsNullOrEmpty(ExternLib) && baseClassNode.IsImportedClass)
-                {
-                    if (ExternLib.EndsWith(".DS", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
-
-        public bool HasDSDerivedClass { get; set; }
     }
 
 

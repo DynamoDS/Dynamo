@@ -3000,15 +3000,6 @@ namespace ProtoAssociative
                         thisClass.CoerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.CoerceBaseClass);
 
                         // All DS classes declared in imported DS files that inherit from an FFI base class are imported
-                        //var baseClassNode = core.ClassTable.ClassNodes[baseClass];
-                        //var externLib = thisClass.ExternLib;
-                        //if (!string.IsNullOrEmpty(externLib) && baseClassNode.IsImportedClass)
-                        //{
-                        //    if (Path.GetExtension(externLib).Equals(".DS", StringComparison.InvariantCultureIgnoreCase))
-                        //    {
-                        //        thisClass.IsImportedClass = true;
-                        //    }
-                        //}
                         if (thisClass.IsFfiDerivedDsClass)
                         {
                             var baseClassNode = core.ClassTable.ClassNodes[baseClass];
