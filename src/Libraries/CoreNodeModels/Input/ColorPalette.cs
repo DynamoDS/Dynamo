@@ -33,22 +33,22 @@ namespace CoreNodeModels.Input
     {
         private DSColor dscolor = DSColor.ByARGB(255, 0, 0, 0);
         private DSColor prevColor = DSColor.ByARGB(255, 0, 0, 0);
-        private bool Isundo = false;
+        private bool ShouldRecordForUndo = true;
         public DSColor DsColor
         {
             get { return dscolor; }
             set
             {
-                if (dscolor.Equals(value) ||prevColor.Equals(value))
+                if (dscolor.Equals(value) || prevColor.Equals(value))
                 {
                     //Checks if undorecorder is being used
-                    Isundo = true;     
+                    ShouldRecordForUndo = false;
                 }
-                
-                if (!Isundo)
+
+                if (ShouldRecordForUndo)
                 {
                     //If undo recorder is not being used updates the undorecorder stack with new value
-                    Isundo = false;
+                    ShouldRecordForUndo = true;
                     Update = dscolor;
                 }
                 prevColor = dscolor;
@@ -68,8 +68,7 @@ namespace CoreNodeModels.Input
         ///     Node constructor.
         /// </summary>
         public ColorPalette()
-        {           
-            //this.PropertyChanged += RaisePropertyChanged;
+        {
             RegisterAllPorts();
         }
 
@@ -152,6 +151,14 @@ namespace CoreNodeModels.Input
                     new Func<int, int, int, int, DSColor>(DSColor.ByARGB), new List<AssociativeNode> { av, ar, ag, ab });
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), colorNode) };
+        }
+
+        /// <summary>
+        ///     Indicates whether node is input node
+        /// </summary>
+        public override bool IsInputNode
+        {
+            get { return false; }
         }
     }
 }
