@@ -283,7 +283,7 @@ namespace ProtoCore.DSASM
 
         public int Append(ProcedureNode node)
         {
-            var procNode = GetFunctionBySignature(node.Name, node.ArgumentTypes); 
+            var procNode = GetFunctionBySignature(node.Name, node.ArgumentTypes);
             if (procNode == null)
             {
                 Procedures.Add(node);
