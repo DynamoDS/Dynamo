@@ -186,7 +186,7 @@ def __ComposeBuffered(funcs: Function[], amt: int, arg: var[]..[])
     };
 }
 
-def MinimumItemByKey(list: var[]..[], keyProjector: Function)
+def __MinimumItemByKey(list: var[]..[], keyProjector: Function)
 {
     return = [Imperative]
     {
@@ -206,7 +206,7 @@ def MinimumItemByKey(list: var[]..[], keyProjector: Function)
     }
 }
 
-def MaximumItemByKey(list: var[]..[], keyProjector: Function)
+def __MaximumItemByKey(list: var[]..[], keyProjector: Function)
 {
     return = [Imperative]
     {
@@ -476,7 +476,7 @@ def __Reduce(accumulator: Function, seed: var[]..[], lists : var[]..[])
     };
 }
 
-def SortByFunction(list: var[]..[], func: Function)
+def __SortByFunction(list: var[]..[], func: Function)
 {
     return = [Imperative]
     {
@@ -501,7 +501,7 @@ def SortByFunction(list: var[]..[], func: Function)
     };
 }
 
-def GroupByFunction(list: var[]..[], func: Function)
+def __GroupByFunction(list: var[]..[], func: Function)
 {
     return = [Imperative]
     {
@@ -526,7 +526,7 @@ def GroupByFunction(list: var[]..[], func: Function)
     };
 }
 
-def TrueForAll(list: var[]..[], predicate: Function)
+def __TrueForAll(list: var[]..[], predicate: Function)
 {
     return = [Imperative]
     {
@@ -556,7 +556,7 @@ def TrueForAll(list: var[]..[], predicate: Function)
     };
 }
 
-def TrueForAny(list: var[]..[], predicate: Function)
+def __TrueForAny(list: var[]..[], predicate: Function)
 {
     return = [Imperative]
     {

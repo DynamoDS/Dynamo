@@ -327,13 +327,13 @@
     {
       "fullyQualifiedName": "RemoveIfNot",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/RemoveIfNot.png",
-      "contextData": "RemoveIfNot@var[]..[],string",
+      "contextData": "List.RemoveIfNot@var[]..[],string",
       "itemType": "action"
     },
     {
       "fullyQualifiedName": "Equals",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Equals.var-var.png",
-      "contextData": "Equals@var,var",
+      "contextData": "List.Equals@var,var",
       "itemType": "action"
     },
     {
@@ -429,61 +429,61 @@
     {
       "fullyQualifiedName": "GetKeys",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/GetKeys.png",
-      "contextData": "GetKeys@var[]..[]",
+      "contextData": "List.GetKeys@var[]..[]",
       "itemType": "action"
     },
     {
       "fullyQualifiedName": "GetValues",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/GetValues.png",
-      "contextData": "GetValues@var[]..[]",
+      "contextData": "List.GetValues@var[]..[]",
       "itemType": "action"
     },
     {
       "fullyQualifiedName": "RemoveKey",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/RemoveKey.png",
-      "contextData": "RemoveKey@var[]..[],var",
+      "contextData": "List.RemoveKey@var[]..[],var",
       "itemType": "action"
     },
     {
       "fullyQualifiedName": "ContainsKey",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/ContainsKey.png",
-      "contextData": "ContainsKey@var[]..[],var",
+      "contextData": "List.ContainsKey@var[]..[],var",
       "itemType": "action"
     },
     {
       "fullyQualifiedName": "MinimumItemByKey",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/MinimumItemByKey.png",
-      "contextData": "MinimumItemByKey@var[]..[],Function",
+      "contextData": "List.MinimumItemByKey@var[]..[],Function",
       "itemType": "action"
     },
     {
       "fullyQualifiedName": "MaximumItemByKey",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/MaximumItemByKey.png",
-      "contextData": "MaximumItemByKey@var[]..[],Function",
+      "contextData": "List.MaximumItemByKey@var[]..[],Function",
       "itemType": "action"
     },
     {
       "fullyQualifiedName": "SortByFunction",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/SortByFunction.png",
-      "contextData": "SortByFunction@var[]..[],Function",
+      "contextData": "List.SortByFunction@var[]..[],Function",
       "itemType": "action"
     },
     {
       "fullyQualifiedName": "GroupByFunction",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/GroupByFunction.png",
-      "contextData": "GroupByFunction@var[]..[],Function",
+      "contextData": "List.GroupByFunction@var[]..[],Function",
       "itemType": "action"
     },
     {
       "fullyQualifiedName": "TrueForAll",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/TrueForAll.png",
-      "contextData": "TrueForAll@var[]..[],Function",
+      "contextData": "List.TrueForAll@var[]..[],Function",
       "itemType": "action"
     },
     {
       "fullyQualifiedName": "TrueForAny",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/TrueForAny.png",
-      "contextData": "TrueForAny@var[]..[],Function",
+      "contextData": "List.TrueForAny@var[]..[],Function",
       "itemType": "action"
     },
     {
@@ -3634,6 +3634,12 @@
       "fullyQualifiedName": "DSCore.List.Count",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.Count.png",
       "contextData": "DSCore.List.Count@var[]..[]",
+      "itemType": "action"
+    },
+	{
+      "fullyQualifiedName": "Count2",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.Count.png",
+      "contextData": "List.Count2@var[]..[]",
       "itemType": "action"
     },
     {

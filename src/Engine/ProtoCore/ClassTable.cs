@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Properties;
 using ProtoCore.Utils;
@@ -377,6 +378,26 @@ namespace ProtoCore.DSASM
             }
             return disposeMethod;
         }
+
+        public bool IsFfiDerivedDsClass
+        {
+            get
+            {
+                if(ProtoCore.DSASM.Constants.kInvalidIndex == Base) return false;
+
+                var baseClassNode = TypeSystem.classTable.ClassNodes[Base];
+                if (!string.IsNullOrEmpty(ExternLib) && baseClassNode.IsImportedClass)
+                {
+                    if (ExternLib.EndsWith(".DS", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        public bool HasDSDerivedClass { get; set; }
     }
 
 

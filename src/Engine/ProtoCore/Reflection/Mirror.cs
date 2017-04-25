@@ -6,6 +6,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Lang;
 using ProtoCore.AST.AssociativeAST;
 using System.Text;
+using ProtoCore.CompilerDefinitions;
 
 namespace ProtoCore
 {
@@ -157,7 +158,8 @@ namespace ProtoCore
                 // if not used in the language: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6752
                 return core.ClassTable.ClassNodes.
                     Where(x => !CoreUtils.StartsWithSingleUnderscore(x.Name)
-                    && x.Name != DSDefinitions.Keyword.PointerReserved).
+                    && x.Name != DSDefinitions.Keyword.PointerReserved
+                    && !x.HasDSDerivedClass).
                     Select(x => new ClassMirror(core, x));
             }
 
@@ -410,7 +412,7 @@ namespace ProtoCore
                     x =>
                     {
                         bool hidden = x.MethodAttribute == null ? false : x.MethodAttribute.HiddenInLibrary;
-                        return x.IsConstructor && !hidden;
+                        return x.IsConstructor && x.AccessModifier == AccessModifier.Public && !hidden;
                     }
                     ).Select(y => new MethodMirror(y));
             }

@@ -2959,11 +2959,8 @@ namespace ProtoAssociative
                 thisClass.IsImportedClass = classDecl.IsImportedClass;
                 thisClass.TypeSystem = core.TypeSystem;
                 thisClass.ClassAttributes = classDecl.ClassAttributes;
-                
-                if (classDecl.ExternLibName != null)
-                    thisClass.ExternLib = classDecl.ExternLibName;
-                else
-                    thisClass.ExternLib = Path.GetFileName(core.CurrentDSFileName);
+
+                thisClass.ExternLib = classDecl.ExternLibName ?? Path.GetFileName(core.CurrentDSFileName);
 
                 globalClassIndex = core.ClassTable.Append(thisClass);
                 if (ProtoCore.DSASM.Constants.kInvalidIndex == globalClassIndex)
@@ -2999,17 +2996,24 @@ namespace ProtoAssociative
 
                     if (ProtoCore.DSASM.Constants.kInvalidIndex != baseClass)
                     {
-                        if (core.ClassTable.ClassNodes[baseClass].IsImportedClass && !thisClass.IsImportedClass)
-                        {
-                            string message = string.Format("Cannot derive from FFI class {0} (DA87AC4D).\n",
-                                core.ClassTable.ClassNodes[baseClass].Name);
-
-                            buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
-                            throw new BuildHaltException(message);
-                        }
-
                         thisClass.Base = baseClass;
                         thisClass.CoerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.CoerceBaseClass);
+
+                        // All DS classes declared in imported DS files that inherit from an FFI base class are imported
+                        //var baseClassNode = core.ClassTable.ClassNodes[baseClass];
+                        //var externLib = thisClass.ExternLib;
+                        //if (!string.IsNullOrEmpty(externLib) && baseClassNode.IsImportedClass)
+                        //{
+                        //    if (Path.GetExtension(externLib).Equals(".DS", StringComparison.InvariantCultureIgnoreCase))
+                        //    {
+                        //        thisClass.IsImportedClass = true;
+                        //    }
+                        //}
+                        if (thisClass.IsFfiDerivedDsClass)
+                        {
+                            var baseClassNode = core.ClassTable.ClassNodes[baseClass];
+                            baseClassNode.HasDSDerivedClass = true;
+                        }
                     }
                     else
                     {
@@ -3117,7 +3121,7 @@ namespace ProtoAssociative
                     else
                     {
                         // Generate a static function for member function f():
-                        //     satic def f(a: A)
+                        //     static def f(a: A)
                         //     { 
                         //        return = a.f()
                         //     }
@@ -3334,6 +3338,7 @@ namespace ProtoAssociative
                 Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex, "A constructor node must be associated with class");
                 localProcedure.LocalCount = 0;
                 localProcedure.ClassID = globalClassIndex;
+                localProcedure.AccessModifier = funcDef.Access;
 
                 localProcedure.MethodAttribute = funcDef.MethodAttributes;
 
