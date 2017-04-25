@@ -97,6 +97,12 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestMigration_Excel()
+        {
+            TestMigration("TestMigration_Excel.dyn");
+        }
+
+        [Test]
         public void TestMigration_File_Directory()
         {
             TestMigration("TestMigration_File_Directory.dyn");
