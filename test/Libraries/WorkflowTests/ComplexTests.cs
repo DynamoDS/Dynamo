@@ -243,8 +243,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(44, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(36, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(45, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(37, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check List.Map
             var map1 = "34986114-3561-4feb-993b-3c53c9ef352f";
@@ -668,8 +668,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check the number of nodes and connectors
-            Assert.AreEqual(32, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(26, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(33, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(27, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check List.Map
             var list = "34986114-3561-4feb-993b-3c53c9ef352f";
@@ -1009,8 +1009,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(64, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(40, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(69, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(45, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check Surface.Thicken
             var surfaceID = "a7b4e678-3278-4554-8ce2-7c76faca79d7";
