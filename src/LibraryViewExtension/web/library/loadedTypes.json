@@ -4381,15 +4381,15 @@
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "Display.Display.ByGeometryColor",
+      "fullyQualifiedName": "Modifiers.GeometryColor.ByGeometryColor",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Display.Display.ByGeometryColor.png",
-      "contextData": "Display.Display.ByGeometryColor@Autodesk.DesignScript.Geometry.Geometry,DSCore.Color",
+      "contextData": "Modifiers.GeometryColor.ByGeometryColor@Autodesk.DesignScript.Geometry.Geometry,DSCore.Color",
       "itemType": "creation"
     },
     {
-      "fullyQualifiedName": "Display.Display.BySurfaceColors",
+      "fullyQualifiedName": "Modifiers.GeometryColor.BySurfaceColors",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Display.Display.BySurfaceColors.png",
-      "contextData": "Display.Display.BySurfaceColors@Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][]",
+      "contextData": "Modifiers.GeometryColor.BySurfaceColors@Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][]",
       "itemType": "creation"
     }
   ]
