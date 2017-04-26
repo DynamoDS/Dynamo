@@ -32,36 +32,14 @@ namespace CoreNodeModels.Input
     public class ColorPalette : NodeModel
     {
         private DSColor dscolor = DSColor.ByARGB(255, 0, 0, 0);
-        private DSColor prevColor = DSColor.ByARGB(255, 0, 0, 0);
-        private bool ShouldRecordForUndo = true;
         public DSColor DsColor
         {
             get { return dscolor; }
             set
             {
-                if (dscolor.Equals(value) || prevColor.Equals(value))
-                {
-                    //Checks if undorecorder is being used
-                    ShouldRecordForUndo = false;
-                }
-
-                if (ShouldRecordForUndo)
-                {
-                    //If undo recorder is not being used updates the undorecorder stack with new value
-                    ShouldRecordForUndo = true;
-                    Update = dscolor;
-                }
-                prevColor = dscolor;
                 dscolor = value;
                 OnNodeModified();
                 RaisePropertyChanged("DsColor");
-            }
-        }
-        public DSColor Update
-        {
-            set
-            {
-                RaisePropertyChanged("Update");
             }
         }
         /// <summary>
