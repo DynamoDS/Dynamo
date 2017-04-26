@@ -777,6 +777,11 @@ namespace Dynamo.ViewModels
                         multipleConnections = true;
                         mode = DynamoModel.MakeConnectionCommand.Mode.BeginShiftReconnections;
                     }
+                    else if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        // If the control key is held down, check if there is a need to duplicate connections
+                        mode = DynamoModel.MakeConnectionCommand.Mode.BeginCtrlConnection;
+                    }
 
                     var command = new DynamoModel.MakeConnectionCommand(nodeId, portIndex, portModel.PortType, mode);
                     owningWorkspace.DynamoViewModel.ExecuteCommand(command);
