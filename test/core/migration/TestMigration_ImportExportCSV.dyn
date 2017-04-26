@@ -1,4 +1,4 @@
-<Workspace Version="1.3.0.1083" X="0" Y="0" zoom="1" ScaleFactor="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+<Workspace Version="1.3.0.1152" X="0" Y="0" zoom="1" ScaleFactor="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="8e4481d6-069e-4f92-aa33-1fe1b1a35daf" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="CSV.WriteToFile" x="309" y="492" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.IO.CSV.WriteToFile@string,var[][]">
@@ -11,6 +11,9 @@
     <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="499aa7f4-9def-4425-9b61-0b323cd46c45" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="ImportFromCSV" x="329" y="332" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="BuiltIn" function="ImportFromCSV@string,bool">
       <PortInfo index="0" default="False" />
       <PortInfo index="1" default="False" />
+    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="c2cdadf4-ac75-4605-87d7-97ee99d8f190" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="CSV.ReadFromFile" x="582" y="561" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.IO.CSV.ReadFromFile@var">
+      <PortInfo index="0" default="False" />
     </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
   </Elements>
   <Connectors />
