@@ -68,11 +68,19 @@ namespace CoreNodeModelsWpf.Nodes
 
         private void ColorPickerControl_Closed(object sender, System.Windows.RoutedEventArgs e)
         {
-            //we need to record a version of the colorPaleteNode set to the previous color.
-            var undoRecorder = viewNode.ViewModel.WorkspaceViewModel.Model.UndoRecorder;
-            WorkspaceModel.RecordModelForModification(colorPaletteNode, undoRecorder);
-            //now that we have recorded the old state, set the color on the model.
-            colorPaletteNode.DsColor = converter.ConvertBack(ColorPaletteUINode.xceedColorPickerControl.SelectedColor, null, null, null) as DSColor;
+            //if the model color is the same as the selected color when the color control is closed
+            //we should not record the model for undo again, it's already there.
+            var convertedModelColor = ((Color)(converter.Convert(colorPaletteNode.DsColor, null, null, null)));
+            var isSameColor = convertedModelColor
+                 .Equals(ColorPaletteUINode.xceedColorPickerControl.SelectedColor);
+            if (!isSameColor)
+            {
+                //we need to record the colorPicker node before the model is updated.
+                var undoRecorder = viewNode.ViewModel.WorkspaceViewModel.Model.UndoRecorder;
+                WorkspaceModel.RecordModelForModification(colorPaletteNode, undoRecorder);
+                //now that we have recorded the old state, set the color on the model.
+                colorPaletteNode.DsColor = converter.ConvertBack(ColorPaletteUINode.xceedColorPickerControl.SelectedColor, null, null, null) as DSColor;
+            }
         }
 
         /// <summary>
