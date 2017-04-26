@@ -3,12 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:m="clr-namespace:CoreNodeModelsWpf.Nodes"
+             xmlns:m="clr-namespace:CoreNodeModels.Input;assembly=CoreNodeModels"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="90">
-
+ 
     <Grid>
-        <xctk:ColorPicker HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="80" SelectedColor="{Binding MColor , Mode=TwoWay}" AvailableColorsHeader="Standard Colors" ShowStandardColors="False" ShowRecentColors="True" RecentColorsHeader="Recent Colors"/>
+        <xctk:ColorPicker Name="xceedColorPickerControl" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="80"  AvailableColorsHeader="Standard Colors" ShowStandardColors="False" ShowRecentColors="True" RecentColorsHeader="Recent Colors" />
     </Grid>
 </UserControl>
