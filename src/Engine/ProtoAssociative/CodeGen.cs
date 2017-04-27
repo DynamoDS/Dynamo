@@ -2959,6 +2959,7 @@ namespace ProtoAssociative
                 thisClass.IsImportedClass = classDecl.IsImportedClass;
                 thisClass.TypeSystem = core.TypeSystem;
                 thisClass.ClassAttributes = classDecl.ClassAttributes;
+                thisClass.IsStatic = classDecl.IsStatic;
 
                 thisClass.ExternLib = classDecl.ExternLibName ?? Path.GetFileName(core.CurrentDSFileName);
 
@@ -2996,14 +2997,29 @@ namespace ProtoAssociative
 
                     if (ProtoCore.DSASM.Constants.kInvalidIndex != baseClass)
                     {
+                        var baseClassNode = core.ClassTable.ClassNodes[baseClass];
+
+                        // Cannot derive DS class from non-static FFI class
+                        if (baseClassNode.IsImportedClass && !thisClass.IsImportedClass && !baseClassNode.IsStatic)
+                        {
+                            string message = string.Format("Cannot derive DS class from non-static FFI class {0} (DA87AC4D).\n",
+                                core.ClassTable.ClassNodes[baseClass].Name);
+
+                            buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
+                            throw new BuildHaltException(message);
+                        }
+
                         thisClass.Base = baseClass;
                         thisClass.CoerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.CoerceBaseClass);
 
-                        // All DS classes declared in imported DS files that inherit from an FFI base class are imported
-                        if (thisClass.IsFfiDerivedDsClass)
+                        // All DS classes declared in imported DS files that inherit from static FFI base classes are imported
+                        if (!string.IsNullOrEmpty(thisClass.ExternLib) && baseClassNode.IsImportedClass)
                         {
-                            var baseClassNode = core.ClassTable.ClassNodes[baseClass];
-                            baseClassNode.HasDSDerivedClass = true;
+                            if (thisClass.ExternLib.EndsWith(".DS", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                thisClass.IsStatic = baseClassNode.IsStatic;
+                                thisClass.IsImportedClass = true;
+                            }
                         }
                     }
                     else

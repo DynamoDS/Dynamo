@@ -31,6 +31,7 @@ namespace ProtoFFI
             CLRType = type;
             string classname = CLRObjectMarshler.GetTypeName(type);
             ClassNode = CreateEmptyClassNode(classname);
+            ClassNode.IsStatic = type.IsAbstract && type.IsSealed;
         }
 
         static CLRModuleType()
@@ -185,7 +186,8 @@ namespace ProtoFFI
         /// System.Type that was imported
         /// </summary>
         public Type CLRType { get; private set; }
-
+        
+        
         /// <summary>
         /// Imported ProtoCore.Type
         /// </summary>
@@ -282,13 +284,13 @@ namespace ProtoFFI
             Validity.Assert(type.IsEnum, "Non enum type is being imported as enum!!");
 
             string classname = alias;
-            if (classname == null | classname == string.Empty)
+            if (string.IsNullOrEmpty(classname))
                 classname = CLRObjectMarshler.GetTypeName(type);
 
             ProtoCore.AST.AssociativeAST.ClassDeclNode classnode = CreateEmptyClassNode(classname);
             classnode.ExternLibName = Module.Name;
-            classnode.ClassName = classname;
             classnode.Name = type.Name;
+            classnode.IsStatic = type.IsAbstract && type.IsSealed;
 
             FieldInfo[] fields = type.GetFields();
             foreach (var f in fields)
@@ -328,8 +330,9 @@ namespace ProtoFFI
 
             ProtoCore.AST.AssociativeAST.ClassDeclNode classnode = CreateEmptyClassNode(classname);
             classnode.ExternLibName = Module.Name;
-            classnode.ClassName = classname;
             classnode.Name = type.Name;
+            classnode.IsStatic = type.IsAbstract && type.IsSealed;
+
             Type baseType = GetBaseType(type);
             if (baseType != null && !CLRObjectMarshler.IsMarshaledAsNativeType(baseType))
             {
@@ -1293,6 +1296,10 @@ namespace ProtoFFI
                 else if(attr.HiddenInDynamoLibrary())
                 {
                     HiddenInLibrary = true;
+                }
+                else if (attr is IsVisibleInDynamoLibraryAttribute)
+                {
+                    HiddenInLibrary = false;
                 }
                 else if (attr is IsObsoleteAttribute)
                 {

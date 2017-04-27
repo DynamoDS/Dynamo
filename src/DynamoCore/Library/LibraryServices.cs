@@ -853,7 +853,7 @@ namespace Dynamo.Engine
 
             foreach (ClassNode classNode in LibraryManagementCore.ClassTable.ClassNodes)
             {
-                if ((classNode.IsImportedClass || classNode.IsFfiDerivedDsClass) && !string.IsNullOrEmpty(classNode.ExternLib))
+                if (classNode.IsImportedClass && !string.IsNullOrEmpty(classNode.ExternLib))
                 {
                     string library = Path.GetFileName(classNode.ExternLib);
                     ImportClass(library, classNode);

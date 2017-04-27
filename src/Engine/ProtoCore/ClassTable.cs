@@ -22,6 +22,7 @@ namespace ProtoCore.DSASM
         public int Base { get; set; }
         public bool IsImportedClass { get; set; }
         public ClassAttributes ClassAttributes { get; set; }
+        public bool IsStatic { get; set; }
 
         /// <summary>
         /// String description of where the classnode was loaded from 
@@ -42,28 +43,7 @@ namespace ProtoCore.DSASM
                 return IsImportedClass && string.IsNullOrEmpty(ExternLib);
             }
         }
-
-        public bool IsFfiDerivedDsClass
-        {
-            get
-            {
-                if (ProtoCore.DSASM.Constants.kInvalidIndex == Base) return false;
-
-                var baseClassNode = TypeSystem.classTable.ClassNodes[Base];
-                if (!string.IsNullOrEmpty(ExternLib) && baseClassNode.IsImportedClass)
-                {
-                    if (ExternLib.EndsWith(".DS", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
-
-        public bool HasDSDerivedClass { get; set; }
-
-
+        
         private ProcedureNode disposeMethod;
         private bool hasCachedDisposeMethod;
 

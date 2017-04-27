@@ -1439,6 +1439,7 @@ namespace ProtoCore.AST.AssociativeAST
             ExternLibName = rhs.ExternLibName;
         }
 
+        public bool IsStatic { get; set; }
         public bool IsImportedClass { get; set; }
         public string ClassName { get; set; }
         public List<AssociativeNode> Attributes { get; set; }
