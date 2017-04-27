@@ -449,7 +449,11 @@ namespace Dynamo.Core
         internal string GetUserDataFolder(IPathResolver pathResolver = null)
         {
             if (pathResolver != null && !string.IsNullOrEmpty(pathResolver.UserDataRootFolder))
-                return GetDynamoDataFolder(pathResolver.UserDataRootFolder);
+            {
+                var versionedPath = GetDynamoDataFolder(pathResolver.UserDataRootFolder);
+                if (Directory.Exists(versionedPath)) return versionedPath;
+                return pathResolver.UserDataRootFolder;
+            }
 
             if (!string.IsNullOrEmpty(userDataDir))
                 return userDataDir; //Return the cached userDataDir if we have one.
@@ -461,7 +465,11 @@ namespace Dynamo.Core
         private string GetCommonDataFolder(IPathResolver pathResolver)
         {
             if (pathResolver != null && !string.IsNullOrEmpty(pathResolver.CommonDataRootFolder))
-                return GetDynamoDataFolder(pathResolver.CommonDataRootFolder);
+            {
+                var versionedPath = GetDynamoDataFolder(pathResolver.CommonDataRootFolder);
+                if (Directory.Exists(versionedPath)) return versionedPath;
+                return pathResolver.CommonDataRootFolder;
+            }
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
             return GetDynamoDataFolder(Path.Combine(folder, "Dynamo", "Dynamo Core"));
