@@ -3010,14 +3010,11 @@ namespace ProtoAssociative
                         thisClass.CoerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.CoerceBaseClass);
 
                         // All DS classes declared in imported DS files that inherit from static FFI base classes are imported
-                        if (!string.IsNullOrEmpty(thisClass.ExternLib) && baseClassNode.IsImportedClass)
+                        if (!string.IsNullOrEmpty(thisClass.ExternLib) && baseClassNode.IsImportedClass && !classDecl.IsExternLib)
                         {
-                            if (thisClass.ExternLib.EndsWith(".DS", StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                classDecl.IsStatic = baseClassNode.IsStatic;
-                                thisClass.IsStatic = baseClassNode.IsStatic;
-                                thisClass.IsImportedClass = true;
-                            }
+                            classDecl.IsStatic = baseClassNode.IsStatic;
+                            thisClass.IsStatic = baseClassNode.IsStatic;
+                            thisClass.IsImportedClass = true;
                         }
                     }
                     else
@@ -3074,11 +3071,11 @@ namespace ProtoAssociative
                 List<AssociativeNode> thisPtrOverloadList = new List<AssociativeNode>();
                 foreach (AssociativeNode funcdecl in classDecl.Procedures)
                 {
-                    // If DS class is static and has a constructor defined
+                    // Do not allow static DS class to have a constructor defined 
                     if (!classDecl.IsExternLib && classDecl.IsStatic && funcdecl is ConstructorDefinitionNode)
                     {
-                        string message = string.Format(Resources.StaticDSClassCannotHaveConstructor, classDecl.ClassName);
-                        
+                        string message = string.Format("Static DS class {0} cannot have a constructor.\n", classDecl.ClassName);
+
                         buildStatus.LogSemanticError(message, core.CurrentDSFileName, funcdecl.line, funcdecl.col);
                     }
 
@@ -3208,7 +3205,6 @@ namespace ProtoAssociative
                             if (currentClassScope != sn.classScope)
                             {
                                 currentClassScope = sn.classScope;
-                                ix = 0;
                             }
                         }
                         else
@@ -3216,7 +3212,6 @@ namespace ProtoAssociative
                             if (currentClassScope != globalClassIndex)
                             {
                                 currentClassScope = globalClassIndex;
-                                ix = 0;
                             }
                         }
                     }
