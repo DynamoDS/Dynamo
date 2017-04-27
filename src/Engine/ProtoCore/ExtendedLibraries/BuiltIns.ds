@@ -7,7 +7,7 @@ class List extends DSCore.List
 		return = __RemoveIfNot(list, type);
 	}
 
-	public static def Equals(objectA: var, objectB: var)
+	public static def Equals: bool(objectA: var, objectB: var)
 	{
 		return = __Equals(objectA, objectB);
 	}
@@ -32,12 +32,12 @@ class List extends DSCore.List
 		return = __MinimumItemByKey(list, keyProjector);
 	}
 
-	public static def TrueForAll(list: var[]..[], predicate: Function)
+	public static def TrueForAll: bool(list: var[]..[], predicate: Function)
 	{
 		return = __TrueForAll(list, predicate);
 	}
 
-	public static def TrueForAny(list: var[]..[], predicate: Function)
+	public static def TrueForAny: bool(list: var[]..[], predicate: Function)
 	{
 		return = __TrueForAny(list, predicate);
 	}
@@ -57,7 +57,7 @@ class List extends DSCore.List
 		return = __GetKeys(list);
 	}
 
-	public static def ContainsKey(list: var[]..[], key: var)
+	public static def ContainsKey: bool(list: var[]..[], key: var)
 	{
 		return = __ContainsKey(list, key);
 	}

@@ -102,4 +102,52 @@
     <oldName>PI</oldName>
     <newName>DSCore.Math.PI</newName>
   </priorNameHint>
+  <priorNameHint>
+    <oldName>RemoveIfNot</oldName>
+    <newName>List.RemoveIfNot</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Equals</oldName>
+    <newName>List.Equals</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>GroupByFunction</oldName>
+    <newName>List.GroupByFunction</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>SortByFunction</oldName>
+    <newName>List.SortByFunction</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>MaximumItemByKey</oldName>
+    <newName>List.MaximumItemByKey</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>MinimumItemByKey</oldName>
+    <newName>List.MinimumItemByKey</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>TrueForAll</oldName>
+    <newName>List.TrueForAll</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>TrueForAny</oldName>
+    <newName>List.TrueForAny</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>RemoveKey</oldName>
+    <newName>List.RemoveKey</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>GetValues</oldName>
+    <newName>List.GetValues</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>GetKeys</oldName>
+    <newName>List.GetKeys</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>ContainsKey</oldName>
+    <newName>List.ContainsKey</newName>
+  </priorNameHint>
 </migrations>
