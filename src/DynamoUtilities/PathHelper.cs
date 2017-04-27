@@ -13,12 +13,14 @@ namespace DynamoUtilities
         {
             try
             {
-                // When network path is access denied, the Directory.Exits however still 
-                // return true.
-                // EnumerateDirectories operation is additional check
-                // to catch exception for network path.
                 if (!Directory.Exists(folderPath))
                     Directory.CreateDirectory(folderPath);
+
+                // When network path is access denied, the Directory.Exits however still 
+                // return true.
+                // This means no exception will be caught since Directory.CreateDirectory() is not run.
+                // Hence, EnumerateDirectories operation is additional check
+                // to catch exception for this network path access denied issue. 
                 Directory.EnumerateDirectories(folderPath);
             }
             catch (IOException ex) { return ex; }
