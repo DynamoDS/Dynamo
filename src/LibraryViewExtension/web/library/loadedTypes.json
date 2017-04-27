@@ -85,6 +85,18 @@
       "itemType": "action"
     },
     {
+      "fullyQualifiedName": "Core.Math.And",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/CoreNodeModels.Logic.And.png",
+      "contextData": "And",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "Core.Math.Or",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/CoreNodeModels.Logic.Or.png",
+      "contextData": "Or",
+      "itemType": "action"
+    },
+    {
       "fullyQualifiedName": "Core.Logic.If",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/CoreNodeModels.Logic.If.png",
       "contextData": "If",
@@ -161,6 +173,12 @@
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/CoreNodeModels.HigherOrder.Replace.png",
       "contextData": "ReplaceByCondition",
       "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "Core.Color.Color Palette",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/CoreNodeModels.Input.ColorPalette.png",
+      "contextData": "Color Palette",
+      "itemType": "creation"
     },
     {
       "fullyQualifiedName": "Core.Input.Date Time",
@@ -259,69 +277,9 @@
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "Count",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Count.png",
-      "contextData": "Count@var[]..[]",
-      "itemType": "action"
-    },
-    {
       "fullyQualifiedName": "Rank",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Rank.png",
       "contextData": "Rank@var[]..[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "Flatten",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Flatten.png",
-      "contextData": "Flatten@var[]..[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "SetIntersection",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/SetIntersection.png",
-      "contextData": "SetIntersection@var[],var[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "SetUnion",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/SetUnion.png",
-      "contextData": "SetUnion@var[],var[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "SetDifference",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/SetDifference.png",
-      "contextData": "SetDifference@var[],var[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "CountTrue",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/CountTrue.png",
-      "contextData": "CountTrue@var[]..[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "CountFalse",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/CountFalse.png",
-      "contextData": "CountFalse@var[]..[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "AllFalse",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/AllFalse.png",
-      "contextData": "AllFalse@var[]..[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "AllTrue",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/AllTrue.png",
-      "contextData": "AllTrue@var[]..[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "IsHomogeneous",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/IsHomogeneous.png",
-      "contextData": "IsHomogeneous@var[]..[]",
       "itemType": "action"
     },
     {
@@ -334,84 +292,6 @@
       "fullyQualifiedName": "Equals",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Equals.var-var.png",
       "contextData": "Equals@var,var",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "Contains",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Contains.png",
-      "contextData": "Contains@var[]..[],var[]..[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "IndexOf",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/IndexOf.varN-varN.png",
-      "contextData": "IndexOf@var[]..[],var[]..[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "Insert",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Insert.varN-var-int.png",
-      "contextData": "Insert@var[]..[],var,int",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "Insert",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Insert.varN-varN-int.png",
-      "contextData": "Insert@var[]..[],var[]..[],int",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "SortIndexByValue",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/SortIndexByValue.double1.png",
-      "contextData": "SortIndexByValue@double[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "SortIndexByValue",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/SortIndexByValue.double1-bool.png",
-      "contextData": "SortIndexByValue@double[],bool",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "Reorder",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Reorder.png",
-      "contextData": "Reorder@var[],var[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "IsUniformDepth",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/IsUniformDepth.png",
-      "contextData": "IsUniformDepth@var[]..[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "IsRectangular",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/IsRectangular.png",
-      "contextData": "IsRectangular@var[]..[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "NormalizeDepth",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/NormalizeDepth.varN.png",
-      "contextData": "NormalizeDepth@var[]..[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "NormalizeDepth",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/NormalizeDepth.varN-var.png",
-      "contextData": "NormalizeDepth@var[]..[],var",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "Map",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Map.png",
-      "contextData": "Map@double,double,double",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "MapTo",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/MapTo.png",
-      "contextData": "MapTo@double,double,double,double,double",
       "itemType": "action"
     },
     {
@@ -478,18 +358,6 @@
       "fullyQualifiedName": "LoopWhile",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/LoopWhile.png",
       "contextData": "LoopWhile@var[]..[],Function,Function",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "NewtonRootFind1DNoDeriv",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/NewtonRootFind1DNoDeriv.png",
-      "contextData": "NewtonRootFind1DNoDeriv@Function,double,int",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "NewtonRootFind1DWithDeriv",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/NewtonRootFind1DWithDeriv.png",
-      "contextData": "NewtonRootFind1DWithDeriv@Function,Function,double,int",
       "itemType": "action"
     },
     {
@@ -3235,6 +3103,12 @@
       "itemType": "query"
     },
     {
+      "fullyQualifiedName": "DSCore.DateTime.Format",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.DateTime.Format.png",
+      "contextData": "DSCore.DateTime.Format@var,string",
+      "itemType": "action"
+    },
+    {
       "fullyQualifiedName": "DSCore.DateTime.ByDate",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.DateTime.ByDate.png",
       "contextData": "DSCore.DateTime.ByDate@int,int,int",
@@ -3451,30 +3325,6 @@
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.Math.EvaluateFormula",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Math.EvaluateFormula.png",
-      "contextData": "DSCore.Math.EvaluateFormula@string,string[],var[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "DSCore.Math.And",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Math.And.png",
-      "contextData": "And",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "DSCore.Math.Or",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Math.Or.png",
-      "contextData": "Or",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "DSCore.Math.Xor",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Math.Xor.png",
-      "contextData": "DSCore.Math.Xor@bool,bool",
-      "itemType": "action"
-    },
-    {
       "fullyQualifiedName": "DSCore.List.Empty",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.Empty.png",
       "contextData": "DSCore.List.Empty",
@@ -3487,9 +3337,87 @@
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.List.ContainsItem",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.ContainsItem.png",
-      "contextData": "DSCore.List.ContainsItem@var[]..[],var",
+      "fullyQualifiedName": "DSCore.List.Contains",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.Contains.png",
+      "contextData": "DSCore.List.Contains@var[]..[],var[]..[]",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.IsHomogeneous",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.IsHomogeneous.png",
+      "contextData": "DSCore.List.IsHomogeneous@var[]..[]",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.IsRectangular",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.IsRectangular.png",
+      "contextData": "DSCore.List.IsRectangular@var[]..[]",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.IsUniformDepth",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.IsUniformDepth.png",
+      "contextData": "DSCore.List.IsUniformDepth@var[]..[]",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.SetDifference",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.SetDifference.png",
+      "contextData": "DSCore.List.SetDifference@var[],var[]",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.SetIntersection",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.SetIntersection.png",
+      "contextData": "DSCore.List.SetIntersection@var[],var[]",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.SetUnion",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.SetUnion.png",
+      "contextData": "DSCore.List.SetUnion@var[],var[]",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.IndexOf",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.IndexOf.png",
+      "contextData": "DSCore.List.IndexOf@var[]..[],var",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.CountFalse",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.CountFalse.png",
+      "contextData": "DSCore.List.CountFalse@var[]..[]",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.CountTrue",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.CountTrue.png",
+      "contextData": "DSCore.List.CountTrue@var[]..[]",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.Insert",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.Insert.png",
+      "contextData": "DSCore.List.Insert@var[]..[],var[]..[],int",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.Reorder",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.Reorder.png",
+      "contextData": "DSCore.List.Reorder@var[]..[],var[]..[]",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.SortIndexByValue",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.SortIndexByValue.png",
+      "contextData": "DSCore.List.SortIndexByValue@double[]",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.NormalizeDepth",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.NormalizeDepth.png",
+      "contextData": "DSCore.List.NormalizeDepth@var[]..[],int",
       "itemType": "action"
     },
     {
@@ -3616,6 +3544,18 @@
       "fullyQualifiedName": "DSCore.List.IsEmpty",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.IsEmpty.png",
       "contextData": "DSCore.List.IsEmpty@var[]..[]",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.AllTrue",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.AllTrue.png",
+      "contextData": "DSCore.List.AllTrue@var[]..[]",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.AllFalse",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.List.AllFalse.png",
+      "contextData": "DSCore.List.AllFalse@var[]..[]",
       "itemType": "action"
     },
     {
@@ -3757,6 +3697,18 @@
       "itemType": "action"
     },
     {
+      "fullyQualifiedName": "DSCore.Math.Map",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Math.Map.png",
+      "contextData": "DSCore.Math.Map@double,double,double",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.Math.MapTo",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Math.MapTo.png",
+      "contextData": "DSCore.Math.MapTo@double,double,double,double,double",
+      "itemType": "action"
+    },
+    {
       "fullyQualifiedName": "DSCore.Math.RemapRange",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Math.RemapRange.png",
       "contextData": "DSCore.Math.RemapRange@double[],double,double",
@@ -3850,6 +3802,12 @@
       "fullyQualifiedName": "DSCore.Math.DivRem",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Math.DivRem.png",
       "contextData": "DSCore.Math.DivRem@int,int",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.Math.EvaluateFormula",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Math.EvaluateFormula.png",
+      "contextData": "DSCore.Math.EvaluateFormula@string,string[],var[]",
       "itemType": "action"
     },
     {
@@ -3982,6 +3940,12 @@
       "fullyQualifiedName": "DSCore.Math.Factorial",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Math.Factorial.png",
       "contextData": "DSCore.Math.Factorial@int",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.Math.Xor",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.Math.Xor.png",
+      "contextData": "DSCore.Math.Xor@bool,bool",
       "itemType": "action"
     },
     {
@@ -4159,42 +4123,6 @@
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.CombinePath",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.CombinePath.png",
-      "contextData": "DSCore.IO.File.CombinePath@string[]",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "DSCore.IO.File.FileExtension",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.FileExtension.png",
-      "contextData": "DSCore.IO.File.FileExtension@string",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "DSCore.IO.File.ChangePathExtension",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.ChangePathExtension.png",
-      "contextData": "DSCore.IO.File.ChangePathExtension@string,string",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "DSCore.IO.File.DirectoryName",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.DirectoryName.png",
-      "contextData": "DSCore.IO.File.DirectoryName@string",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "DSCore.IO.File.FileName",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.FileName.png",
-      "contextData": "DSCore.IO.File.FileName@string,bool",
-      "itemType": "action"
-    },
-    {
-      "fullyQualifiedName": "DSCore.IO.File.FileHasExtension",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.FileHasExtension.png",
-      "contextData": "DSCore.IO.File.FileHasExtension@string",
-      "itemType": "action"
-    },
-    {
       "fullyQualifiedName": "DSCore.IO.File.ReadText",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.ReadText.var.png",
       "contextData": "DSCore.IO.File.ReadText@var",
@@ -4231,9 +4159,45 @@
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.MoveDirectory",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.MoveDirectory.png",
-      "contextData": "DSCore.IO.File.MoveDirectory@string,string,bool",
+      "fullyQualifiedName": "DSCore.IO.File.CombinePath",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.CombinePath.png",
+      "contextData": "DSCore.IO.File.CombinePath@string[]",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.IO.File.FileExtension",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.FileExtension.png",
+      "contextData": "DSCore.IO.File.FileExtension@string",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.IO.File.ChangePathExtension",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.ChangePathExtension.png",
+      "contextData": "DSCore.IO.File.ChangePathExtension@string,string",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.IO.File.DirectoryName",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.DirectoryName.png",
+      "contextData": "DSCore.IO.File.DirectoryName@string",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.IO.File.FileName",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.FileName.png",
+      "contextData": "DSCore.IO.File.FileName@string,bool",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.IO.File.FileHasExtension",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.FileHasExtension.png",
+      "contextData": "DSCore.IO.File.FileHasExtension@string",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.IO.File.GetDirectoryContents",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.GetDirectoryContents.png",
+      "contextData": "DSCore.IO.File.GetDirectoryContents@var,string",
       "itemType": "action"
     },
     {
@@ -4249,15 +4213,15 @@
       "itemType": "action"
     },
     {
-      "fullyQualifiedName": "DSCore.IO.File.GetDirectoryContents",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.GetDirectoryContents.png",
-      "contextData": "DSCore.IO.File.GetDirectoryContents@var,string",
-      "itemType": "action"
-    },
-    {
       "fullyQualifiedName": "DSCore.IO.File.DirectoryExists",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.DirectoryExists.png",
       "contextData": "DSCore.IO.File.DirectoryExists@string",
+      "itemType": "action"
+    },
+    {
+      "fullyQualifiedName": "DSCore.IO.File.MoveDirectory",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.IO.File.MoveDirectory.png",
+      "contextData": "DSCore.IO.File.MoveDirectory@string,string,bool",
       "itemType": "action"
     },
     {
@@ -4305,7 +4269,7 @@
     {
       "fullyQualifiedName": "DSOffice.Data.ImportCSV",
       "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSOffice.Data.ImportCSV.png",
-      "contextData": "DSOffice.Data.ImportCSV@var",
+      "contextData": "DSOffice.Data.ImportCSV@string,bool",
       "itemType": "action"
     },
     {
@@ -4382,13 +4346,13 @@
     },
     {
       "fullyQualifiedName": "Modifiers.GeometryColor.ByGeometryColor",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Display.Display.ByGeometryColor.png",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Modifiers.GeometryColor.ByGeometryColor.png",
       "contextData": "Modifiers.GeometryColor.ByGeometryColor@Autodesk.DesignScript.Geometry.Geometry,DSCore.Color",
       "itemType": "creation"
     },
     {
       "fullyQualifiedName": "Modifiers.GeometryColor.BySurfaceColors",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Display.Display.BySurfaceColors.png",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Modifiers.GeometryColor.BySurfaceColors.png",
       "contextData": "Modifiers.GeometryColor.BySurfaceColors@Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][]",
       "itemType": "creation"
     }
