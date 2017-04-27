@@ -64,7 +64,9 @@ namespace Dynamo.LibraryUI.Handlers
                     contextData = e.CreationName,
                     iconUrl = string.Format("{0}{1}.png", IconUrlServiceEndpoint, e.IconName),
                     itemType = e.Group.ToString().ToLower(),
-                    keywords = e.SearchKeywords.Any() ? e.SearchKeywords.Aggregate((x, y) => string.Format("{0}, {1}", x, y)) : string.Empty
+                    keywords = e.SearchKeywords.Any() 
+                        ? e.SearchKeywords.Where(s => !string.IsNullOrEmpty(s)).Aggregate((x, y) => string.Format("{0}, {1}", x, y)) 
+                        : string.Empty
                 }).ToList();
 
             var ms = new MemoryStream();
