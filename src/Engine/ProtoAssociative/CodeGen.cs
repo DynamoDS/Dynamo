@@ -3156,7 +3156,7 @@ namespace ProtoAssociative
 
                 classDecl.Procedures.AddRange(thisPtrOverloadList);
 
-
+                // Prevent creation of default constructor for static DS class
                 if (!classDecl.IsExternLib && !classDecl.IsStatic)
                 {
                     ProtoCore.DSASM.ProcedureTable vtable = core.ClassTable.ClassNodes[globalClassIndex].ProcTable;

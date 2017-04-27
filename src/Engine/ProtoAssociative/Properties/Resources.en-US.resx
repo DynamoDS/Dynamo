@@ -135,7 +135,4 @@
   <data name="MemberVariableAlreadyDefined" xml:space="preserve">
     <value>Member variable '{0}' is already defined in class {1}</value>
   </data>
-  <data name="StaticDSClassCannotHaveConstructor" xml:space="preserve">
-    <value>Static DS class {0} cannot have a constructor</value>
-  </data>
 </root>
