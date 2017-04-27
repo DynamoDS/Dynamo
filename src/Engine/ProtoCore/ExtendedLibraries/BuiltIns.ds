@@ -2,8 +2,6 @@ import("DSCoreNodes.dll");
 
 class List extends DSCore.List
 {
-	private constructor() {}
-
 	public static def RemoveIfNot(list: var[]..[], type: string)
 	{		
 		return = __RemoveIfNot(list, type);

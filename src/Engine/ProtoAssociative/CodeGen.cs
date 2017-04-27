@@ -2968,7 +2968,6 @@ namespace ProtoAssociative
                 {
                     string message = string.Format("Class redefinition '{0}' (BE1C3285).\n", classDecl.ClassName);
                     buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
-                    throw new BuildHaltException(message);
                 }
 
                 unPopulatedClasses.Add(globalClassIndex, classDecl);
@@ -2992,7 +2991,6 @@ namespace ProtoAssociative
                     {
                         string message = string.Format("Class '{0}' cannot derive from itself (DED0A61F).\n", classDecl.ClassName);
                         buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
-                        throw new BuildHaltException(message);
                     }
 
                     if (ProtoCore.DSASM.Constants.kInvalidIndex != baseClass)
@@ -3006,7 +3004,6 @@ namespace ProtoAssociative
                                 core.ClassTable.ClassNodes[baseClass].Name);
 
                             buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
-                            throw new BuildHaltException(message);
                         }
 
                         thisClass.Base = baseClass;
@@ -3017,6 +3014,7 @@ namespace ProtoAssociative
                         {
                             if (thisClass.ExternLib.EndsWith(".DS", StringComparison.InvariantCultureIgnoreCase))
                             {
+                                classDecl.IsStatic = baseClassNode.IsStatic;
                                 thisClass.IsStatic = baseClassNode.IsStatic;
                                 thisClass.IsImportedClass = true;
                             }
@@ -3026,7 +3024,6 @@ namespace ProtoAssociative
                     {
                         string message = string.Format("Unknown base class '{0}' (9E44FFB3).\n", classDecl.BaseClass);
                         buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
-                        throw new BuildHaltException(message);
                     }
                 }
             }
@@ -3077,6 +3074,14 @@ namespace ProtoAssociative
                 List<AssociativeNode> thisPtrOverloadList = new List<AssociativeNode>();
                 foreach (AssociativeNode funcdecl in classDecl.Procedures)
                 {
+                    // If DS class is static and has a constructor defined
+                    if (!classDecl.IsExternLib && classDecl.IsStatic && funcdecl is ConstructorDefinitionNode)
+                    {
+                        string message = string.Format(Resources.StaticDSClassCannotHaveConstructor, classDecl.ClassName);
+                        
+                        buildStatus.LogSemanticError(message, core.CurrentDSFileName, funcdecl.line, funcdecl.col);
+                    }
+
                     DfsTraverse(funcdecl, ref inferedType);
 
                     var funcDef = funcdecl as FunctionDefinitionNode;
@@ -3154,7 +3159,8 @@ namespace ProtoAssociative
 
                 classDecl.Procedures.AddRange(thisPtrOverloadList);
 
-                if (!classDecl.IsExternLib)
+
+                if (!classDecl.IsExternLib && !classDecl.IsStatic)
                 {
                     ProtoCore.DSASM.ProcedureTable vtable = core.ClassTable.ClassNodes[globalClassIndex].ProcTable;
                     if (vtable.GetFunctionBySignature(classDecl.ClassName, new List<ProtoCore.Type>()) == null)
