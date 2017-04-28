@@ -74,6 +74,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Handlers\NodeItemDataProvider.cs" />
     <Compile Include="Handlers\ResourceHandlerFactory.cs" />
     <Compile Include="Handlers\ResourceProviders.cs" />
     <Compile Include="LibraryViewController.cs" />
@@ -155,7 +156,7 @@
     <EmbeddedResource Include="web\library\resources\indent-arrow-down.svg" />
     <EmbeddedResource Include="web\library\resources\indent-arrow-right.svg" />
     <EmbeddedResource Include="web\library\resources\library-action.svg" />
-    <EmbeddedResource Include="web\library\resources\library-creation.svg" />
+    <EmbeddedResource Include="web\library\resources\library-create.svg" />
     <EmbeddedResource Include="web\library\resources\library-query.svg" />
     <EmbeddedResource Include="web\library\resources\OpenSans-Regular.ttf" />
   </ItemGroup>

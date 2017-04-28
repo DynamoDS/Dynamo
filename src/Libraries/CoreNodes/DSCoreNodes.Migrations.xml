@@ -21,6 +21,16 @@
     <newName>DSCore.IO.File.WriteText</newName>
   </priorNameHint>
   <priorNameHint>
+    <oldName>DSCore.IO.CSV.ReadFromFile</oldName>
+    <newName>DSOffice.Data.ImportCSV</newName>
+    <additionalAttributes>
+      <attribute>
+        <name>assembly</name>
+        <value>DSOffice.dll</value>
+      </attribute>
+    </additionalAttributes>
+  </priorNameHint>
+  <priorNameHint>
     <oldName>DSCore.File.ExportToCSV</oldName>
     <newName>DSOffice.Data.ExportCSV</newName>
     <additionalAttributes>

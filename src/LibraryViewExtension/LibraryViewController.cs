@@ -54,11 +54,10 @@ namespace Dynamo.LibraryUI
         {
             this.dynamoWindow = dynamoView;
             dynamoViewModel = dynamoView.DataContext as DynamoViewModel;
-
             libraryViewTooltip = CreateTooltipControl();
 
             this.commandExecutive = commandExecutive;
-            InitializeResourceStreams();
+            InitializeResourceStreams(dynamoViewModel.Model);
         }
 
         /// <summary>
@@ -263,7 +262,7 @@ namespace Dynamo.LibraryUI
             return detailsView;
         }
 
-        private void InitializeResourceStreams()
+        private void InitializeResourceStreams(DynamoModel model)
         {
             resourceFactory = new ResourceHandlerFactory();
             resourceFactory.RegisterProvider("/dist/v0.0.1", 
@@ -277,13 +276,9 @@ namespace Dynamo.LibraryUI
                 resourceFactory.RegisterHandler(url, ResourceHandler.FromStream(stream));
             }
 
-            {
-                var url = "http://localhost/loadedTypes";
-                var resource = "Dynamo.LibraryUI.web.library.loadedTypes.json";
-                var stream = LoadResource(resource);
-                resourceFactory.RegisterHandler(url, ResourceHandler.FromStream(stream));
-            }
-
+            //Register provider for node data
+            resourceFactory.RegisterProvider("/loadedTypes", new NodeItemDataProvider(model.SearchModel));
+            
             {
                 var url = "http://localhost/layoutSpecs";
                 var resource = "Dynamo.LibraryUI.web.library.layoutSpecs.json";
