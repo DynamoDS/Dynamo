@@ -1020,16 +1020,16 @@
               "elementType": "group",
               "include": [
                 {
-                  "path": "DSOffice.Excel.ReadFromFile"
+                  "path": "DSOffice.Data.ImportExcel"
                 },
                 {
-                  "path": "DSOffice.Excel.WriteToFile"
+                  "path": "DSOffice.Data.ExportExcel"
                 },
                 {
-                  "path": "DSCore.IO.CSV.WriteToFile"
+                  "path": "DSOffice.Data.ImportCSV"
                 },
                 {
-                  "path": "DSCore.IO.CSV.ReadFromFile"
+                  "path": "DSOffice.Data.ExportCSV"
                 }
               ],
               "childElements": [ ]
