@@ -16,6 +16,9 @@ using Dynamo.LibraryUI.Views;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.ViewModels;
+using System.Windows.Input;
+using Dynamo.Wpf.ViewModels;
+using Dynamo.Controls;
 
 namespace Dynamo.LibraryUI
 {
@@ -34,12 +37,14 @@ namespace Dynamo.LibraryUI
         private ICommandExecutive commandExecutive;
         private DetailsView detailsView;
         private DetailsViewModel detailsViewModel;
+        private DynamoViewModel dynamoViewModel;
+        private FloatingLibraryTooltipPopup libraryViewTooltip;
         private object contextData = null;
         private ResourceHandlerFactory resourceFactory;
+        private LibraryView libraryView = null;
 
-        //private Dictionary<string, Stream> resourceStreams = new Dictionary<string, Stream>();
         private Dictionary<string, List<IJavascriptCallback>> callbacks = new Dictionary<string, List<IJavascriptCallback>>();
-                
+
         /// <summary>
         /// Creates LibraryViewController
         /// </summary>
@@ -48,7 +53,8 @@ namespace Dynamo.LibraryUI
         public LibraryViewController(Window dynamoView, ICommandExecutive commandExecutive)
         {
             this.dynamoWindow = dynamoView;
-            var dynamoViewModel = dynamoView.DataContext as DynamoViewModel;
+            dynamoViewModel = dynamoView.DataContext as DynamoViewModel;
+            libraryViewTooltip = CreateTooltipControl();
 
             this.commandExecutive = commandExecutive;
             InitializeResourceStreams(dynamoViewModel.Model);
@@ -111,7 +117,7 @@ namespace Dynamo.LibraryUI
         public void RaiseEvent(string eventName, params object[] parameters)
         {
             List<IJavascriptCallback> cblist;
-            if (callbacks.TryGetValue(eventName, out cblist))
+            if(callbacks.TryGetValue(eventName, out cblist))
             {
                 foreach (var cbfunc in cblist)
                 {
@@ -154,7 +160,68 @@ namespace Dynamo.LibraryUI
             view.Loaded += OnLibraryViewLoaded;
             return view;
         }
-        
+
+        #region Tooltip
+
+        /// <summary>
+        /// Call this method to create a new node in Dynamo canvas.
+        /// </summary>
+        /// <param name="nodeName">Node creation name</param>
+        /// <param name="y">The y position</param>
+        public void ShowNodeTooltip(string nodeName, double y)
+        {
+            dynamoWindow.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                ShowTooltip(nodeName, y);
+            }));
+        }
+
+        /// <summary>
+        /// Call this method to create a new node in Dynamo canvas.
+        /// </summary>
+        public void CloseNodeTooltip(bool closeImmediately)
+        {
+            dynamoWindow.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                CloseTooltip(closeImmediately);
+            }));
+        }
+
+        private FloatingLibraryTooltipPopup CreateTooltipControl()
+        {
+            var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
+
+            var tooltipPopup = new FloatingLibraryTooltipPopup(200){ Name = "libraryToolTipPopup",
+                                    StaysOpen = true, AllowsTransparency = true, PlacementTarget = sidebarGrid };
+            sidebarGrid.Children.Add(tooltipPopup);
+
+            return tooltipPopup;
+        }
+
+        private NodeSearchElementViewModel FindTooltipContext(String nodeName)
+        {
+            return dynamoViewModel.SearchViewModel.FindViewModelForNode(nodeName);
+        }
+
+        private void ShowTooltip(String nodeName, double y)
+        {
+            var nseViewModel = FindTooltipContext(nodeName);
+            if(nseViewModel == null)
+            {
+                return;
+            }
+
+            libraryViewTooltip.UpdateYPosition(y);
+            libraryViewTooltip.SetDataContext(nseViewModel);
+        }
+
+        private void CloseTooltip(bool closeImmediately)
+        {
+            libraryViewTooltip.SetDataContext(null, closeImmediately);
+        }
+
+        #endregion
+
         private Stream LoadResource(string url)
         {
             var assembly = Assembly.GetExecutingAssembly();
@@ -164,9 +231,9 @@ namespace Dynamo.LibraryUI
 
         private void OnLibraryViewLoaded(object sender, RoutedEventArgs e)
         {
+            libraryView = sender as LibraryView;
 #if DEBUG
-            var view = sender as LibraryView;
-            var browser = view.Browser;
+            var browser = libraryView.Browser;
             browser.ConsoleMessage += OnBrowserConsoleMessage;
 #endif
         }
