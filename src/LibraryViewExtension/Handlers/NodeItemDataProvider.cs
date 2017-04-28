@@ -81,7 +81,7 @@ namespace Dynamo.LibraryUI.Handlers
 
         private string GetFullyQualifiedName(NodeSearchElement element)
         {
-            var pkgprefix = element.ElementType.HasFlag(ElementTypes.Packaged) ? "pkg://" : "";
+            var pkgprefix = element.ElementType.HasFlag(ElementTypes.Packaged) ? "Packages." : "";
             return string.Format("{0}{1}", pkgprefix, element.FullName);
         }
     }
