@@ -898,6 +898,29 @@
           "include": [ ],
           "childElements": [
             {
+              "text": "CAD",
+              "iconUrl": "",
+              "elementType": "group",
+              "include": [
+                {
+                  "path": "Dynamo.Translation.CAD.Import"
+                },
+                {
+                  "path": "Dynamo.Translation.CAD.Export"
+                },
+                {
+                  "path": "Dynamo.Translation.CAD.ConvertToGeometries"
+                },
+                {
+                  "path": "Dynamo.Translation.Models.Filter CAD Objects"
+                },
+                {
+                  "path": "Dynamo.Translation.Models.Select CAD Objects"
+                }
+              ],
+              "childElements": [ ]
+            },
+            {
               "text": "File",
               "iconUrl": "",
               "elementType": "group",
@@ -997,16 +1020,16 @@
               "elementType": "group",
               "include": [
                 {
-                  "path": "DSOffice.Excel.ReadFromFile"
+                  "path": "DSOffice.Data.ImportExcel"
                 },
                 {
-                  "path": "DSOffice.Excel.WriteToFile"
+                  "path": "DSOffice.Data.ExportExcel"
                 },
                 {
-                  "path": "DSCore.IO.CSV.WriteToFile"
+                  "path": "DSOffice.Data.ImportCSV"
                 },
                 {
-                  "path": "DSCore.IO.CSV.ReadFromFile"
+                  "path": "DSOffice.Data.ExportCSV"
                 }
               ],
               "childElements": [ ]
