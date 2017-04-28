@@ -2684,7 +2684,7 @@ d = ImportFromCSV(c);
             String code =
 @"
 a = { true,null,false,true};
-b = RemoveIfNot(a, ""bool"");
+b = List.RemoveIfNot(a, ""bool"");
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { true, false, true }
@@ -2701,7 +2701,7 @@ b;
 [Imperative]
 {
     a = { true,null,false,true};
-    b = RemoveIfNot(a, ""bool"");
+    b = List.RemoveIfNot(a, ""bool"");
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2718,7 +2718,7 @@ b;
 b;
     a = { true,null,false,true};
     c=""bool"";
-    b = RemoveIfNot(a, c);
+    b = List.RemoveIfNot(a, c);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { true, false, true }
@@ -2734,7 +2734,7 @@ b;
 b;
     a = { true,null,false,true};
     c=""int"";
-    b = RemoveIfNot(a, c);
+    b = List.RemoveIfNot(a, c);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { }
@@ -2750,7 +2750,7 @@ b;
 b;
     a = { 1.0,null,1,2};
     c=""double"";
-    b = RemoveIfNot(a, c);
+    b = List.RemoveIfNot(a, c);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { 1.0 }
@@ -2766,7 +2766,7 @@ b;
 b;
     a = { true,null,{true},false};
     c=""array"";
-    b = RemoveIfNot(a, c);
+    b = List.RemoveIfNot(a, c);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { new object[] { true } }

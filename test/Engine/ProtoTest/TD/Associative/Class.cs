@@ -443,5 +443,39 @@ t = ClassFunctionality.IntaVal;
                 ExecutionMirror mirror = thisTest.RunScriptSource(code);
             });
         }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void DSClass_FromStaticClass_CannotHaveConstructor()
+        {
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
+            {
+                string code = @"
+import(WrappersTest from ""FFITarget.dll"");
+class DerivedClass extends FFITarget.WrappersTest
+{
+    constructor DerivedClass() {}
+}
+";
+                ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            });
+        }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void DSClass_FromNonStaticClass_CannotDerive()
+        {
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
+            {
+                string code = @"
+import(WrapperObject from ""FFITarget.dll"");
+class DerivedClass extends FFITarget.WrapperObject
+{
+    constructor DerivedClass() {}
+}
+";
+                ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            });
+        }
     }
 }

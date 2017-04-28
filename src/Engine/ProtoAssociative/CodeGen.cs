@@ -2998,24 +2998,28 @@ namespace ProtoAssociative
                         var baseClassNode = core.ClassTable.ClassNodes[baseClass];
 
                         // Cannot derive DS class from non-static FFI class
-                        if (baseClassNode.IsImportedClass && !thisClass.IsImportedClass && !baseClassNode.IsStatic)
+                        if (baseClassNode.IsImportedClass && !classDecl.IsExternLib)
                         {
-                            string message = string.Format("Cannot derive DS class from non-static FFI class {0} (DA87AC4D).\n",
-                                core.ClassTable.ClassNodes[baseClass].Name);
+                            if (!baseClassNode.IsStatic)
+                            {
+                                string message =
+                                    string.Format("Cannot derive DS class from non-static FFI class {0} (DA87AC4D).\n",
+                                        core.ClassTable.ClassNodes[baseClass].Name);
 
-                            buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
+                                buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line,
+                                    classDecl.col);
+                            }
+                            else
+                            {
+                                // All DS classes declared in imported DS files that inherit from static FFI base classes are imported
+                                classDecl.IsStatic = baseClassNode.IsStatic;
+                                thisClass.IsStatic = baseClassNode.IsStatic;
+                                thisClass.IsImportedClass = true;
+                            }
                         }
 
                         thisClass.Base = baseClass;
                         thisClass.CoerceTypes.Add(baseClass, (int)ProtoCore.DSASM.ProcedureDistance.CoerceBaseClass);
-
-                        // All DS classes declared in imported DS files that inherit from static FFI base classes are imported
-                        if (!string.IsNullOrEmpty(thisClass.ExternLib) && baseClassNode.IsImportedClass && !classDecl.IsExternLib)
-                        {
-                            classDecl.IsStatic = baseClassNode.IsStatic;
-                            thisClass.IsStatic = baseClassNode.IsStatic;
-                            thisClass.IsImportedClass = true;
-                        }
                     }
                     else
                     {

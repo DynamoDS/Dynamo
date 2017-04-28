@@ -331,7 +331,6 @@ namespace ProtoFFI
             ProtoCore.AST.AssociativeAST.ClassDeclNode classnode = CreateEmptyClassNode(classname);
             classnode.ExternLibName = Module.Name;
             classnode.Name = type.Name;
-            classnode.IsStatic = type.IsAbstract && type.IsSealed;
 
             Type baseType = GetBaseType(type);
             if (baseType != null && !CLRObjectMarshler.IsMarshaledAsNativeType(baseType))
@@ -345,9 +344,9 @@ namespace ProtoFFI
 
             // There is no static class in runtime. static class is simply 
             // marked as sealed and abstract. 
-            bool isStaticClass = type.IsSealed && type.IsAbstract;
-
-            if (!isStaticClass)
+            classnode.IsStatic = type.IsAbstract && type.IsSealed;
+            
+            if (!classnode.IsStatic)
             {
                 // If all methods are static, it doesn't make sense to expose
                 // constructor. 
@@ -387,7 +386,7 @@ namespace ProtoFFI
                 if (SupressesImport(m, mGetterAttributes))
                     continue;
 
-                if (isStaticClass && m.GetBaseDefinition().DeclaringType == baseType && baseType == typeof(object))
+                if (classnode.IsStatic && m.GetBaseDefinition().DeclaringType == baseType && baseType == typeof(object))
                     continue;
 
                 // Mono issue: m == m.GetBaseDefinition() for methods from Object class returns True instead of False
