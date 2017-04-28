@@ -220,8 +220,15 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node.>
                                                 .)
     [
         kw_extend
-        ident                                   (.
-                                                    classnode.BaseClass = t.val;
+        ident								(. String baseClass = t.val; .)
+		{	
+			'.'
+			(. baseClass += t.val; .)
+			ident
+			(. baseClass += t.val; .)
+		}
+						                      (.
+                                                    classnode.BaseClass = baseClass;
                                                 .)
     ]
     '{'
@@ -248,6 +255,12 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node.>
                         kw_static               (. isStatic = true; .) 
                     ]
                     (
+						(
+                                                (. ProtoCore.AST.AssociativeAST.AssociativeNode funcnode; .)
+                            Associative_functiondecl<out funcnode, access, isStatic>      
+                                                (. classnode.Procedures.Add(funcnode); .)
+                        )
+                        |
                         (   
                                                 (. ProtoCore.AST.AssociativeAST.AssociativeNode varnode = null; .)  
                             Associative_memvardecl<out varnode, access, isStatic>    

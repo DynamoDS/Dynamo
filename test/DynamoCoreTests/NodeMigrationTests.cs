@@ -20,6 +20,7 @@ namespace Dynamo.Tests
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("DSOffice.dll");
             libraries.Add("FunctionObject.ds");
+            libraries.Add("BuiltIns.ds");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -2040,6 +2041,12 @@ namespace Dynamo.Tests
         public void TestMigration_SortByKeyUI()
         {
             TestMigration("TestMigration_SortByKeyUI.dyn");
+        }
+
+        [Test]
+        public void TestMigration_BuiltIns_To_DSBuiltInClass()
+        {
+            TestMigration("TestMigrateBuiltIn.dyn");
         }
 
         #endregion

@@ -52,10 +52,10 @@
                   "path": "IsRectangular"
                 },
                 {
-                  "path": "TrueForAll"
+                  "path": "List.TrueForAll"
                 },
                 {
-                  "path": "TrueForAny"
+                  "path": "List.TrueForAny"
                 },
                 {
                   "path": "DSCore.List.IsEmpty"
@@ -67,7 +67,7 @@
                   "path": "DSCore.List.FirstIndexOf"
                 },
                 {
-                  "path": "Equals"
+                  "path": "List.Equals"
                 },
                 {
                   "path": "CountTrue"
@@ -114,7 +114,7 @@
               "elementType": "group",
               "include": [
                 {
-                  "path": "RemoveIfNot"
+                  "path": "List.RemoveIfNot"
                 },
                 {
                   "path": "Core.List.List.Reduce"
@@ -209,13 +209,13 @@
               "elementType": "group",
               "include": [
                 {
-                  "path": "GroupByFunction"
+                  "path": "List.GroupByFunction"
                 },
                 {
                   "path": "Reorder"
                 },
                 {
-                  "path": "SortByFunction"
+                  "path": "List.SortByFunction"
                 },
                 {
                   "path": "SortIndexByValue"
@@ -228,22 +228,22 @@
                   "elementType": "category",
                   "include": [
                     {
-                      "path": "GetKeys"
+                      "path": "List.GetKeys"
                     },
                     {
-                      "path": "GetValues"
+                      "path": "List.GetValues"
                     },
                     {
-                      "path": "MaximumItemByKey"
+                      "path": "List.MaximumItemByKey"
                     },
                     {
-                      "path": "MinimumItemByKey"
+                      "path": "List.MinimumItemByKey"
                     },
                     {
-                      "path": "ContainsKey"
+                      "path": "List.ContainsKey"
                     },
                     {
-                      "path": "RemoveKey"
+                      "path": "List.RemoveKey"
                     },
                     {
                       "path": "DSCore.List.GroupByKey"
