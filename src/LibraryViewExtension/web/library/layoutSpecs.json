@@ -1331,15 +1331,15 @@
               ],
               "childElements": [
                 {
-                  "text": "Display",
+                  "text": "Geometry Color",
                   "iconUrl": "",
                   "elementType": "group",
                   "include": [
                     {
-                      "path": "Display.Display.ByGeometryColor"
+                      "path": "Modifiers.GeometryColor.ByGeometryColor"
                     },
                     {
-                      "path": "Display.Display.BySurfaceColors"
+                      "path": "Modifiers.GeometryColor.BySurfaceColors"
                     }
                   ],
                   "childElements": [ ]
