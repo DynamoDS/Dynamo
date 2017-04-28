@@ -46,10 +46,20 @@
 
         // Register event handlers for various events on library controller and package controller.
 
-        libController.on("itemClicked", function (nodeCreationName) {
+        libController.on(libController.ItemClickedEventName, function (nodeCreationName) {
             console.log('Library Node Clicked: ' + nodeCreationName);
             //csharpController.closeDetailsView(); //ensure that the details view is closed.
             csharpController.createNode(nodeCreationName);
+        });
+
+        libController.on(libController.ItemMouseEnterEventName, function (arg) {
+            //console.log('Mouse entered: ' + arg.data);
+            csharpController.showNodeTooltip(arg.data, arg.rect.top);
+        });
+
+        libController.on(libController.ItemMouseLeaveEventName, function (arg) {
+            //console.log('Mouse left: ' + arg.data);
+            csharpController.closeNodeTooltip(true);
         });
 
         csharpController.on("error", function (msg) {

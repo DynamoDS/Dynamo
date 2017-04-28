@@ -41,6 +41,12 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestMigration_BuiltIn()
+        {
+            TestMigration("TestMigration_BuiltIn.dyn");
+        }
+
+        [Test]
         [Category("Failure")]
         public void TestMigration_Core_Evaluate()
         {
