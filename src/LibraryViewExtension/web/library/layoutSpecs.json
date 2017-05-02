@@ -9,7 +9,7 @@
       "childElements": [
         {
           "text": "List",
-          "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Category.List.svg",
+          "iconUrl": "./dist/v0.0.1/resources/Category.List.svg",
           "elementType": "category",
           "include": [ ],
           "childElements": [
@@ -221,7 +221,7 @@
               "childElements": [
                 {
                   "text": "Keys",
-                  "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Category.Keys.svg",
+                  "iconUrl": "./dist/v0.0.1/resources/Category.Keys.svg",
                   "elementType": "category",
                   "include": [
                     {
@@ -315,7 +315,7 @@
         },
         {
           "text": "Input",
-          "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Category.Input.svg",
+          "iconUrl": "./dist/v0.0.1/resources/Category.Input.svg",
           "elementType": "category",
           "include": [ ],
           "childElements": [
@@ -528,7 +528,7 @@
         },
         {
           "text": "Math",
-          "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Category.Math.svg",
+          "iconUrl": "./dist/v0.0.1/resources/Category.Math.svg",
           "elementType": "category",
           "include": [ ],
           "childElements": [
@@ -679,7 +679,7 @@
             },
             {
               "text": "Operators",
-              "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Category.Operators.svg",
+              "iconUrl": "./dist/v0.0.1/resources/Category.Operators.svg",
               "elementType": "group",
               "include": [
                 {
@@ -748,7 +748,7 @@
         },
         {
           "text": "Script",
-          "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Category.Script.svg",
+          "iconUrl": "./dist/v0.0.1/resources/Category.Script.svg",
           "elementType": "category",
           "include": [ ],
           "childElements": [
@@ -804,7 +804,7 @@
         },
         {
           "text": "Display",
-          "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Category.Display.svg",
+          "iconUrl": "./dist/v0.0.1/resources/Category.Display.svg",
           "elementType": "category",
           "include": [ ],
           "childElements": [
@@ -893,7 +893,7 @@
         },
         {
           "text": "ImportExport",
-          "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Category.ImportExport.svg",
+          "iconUrl": "./dist/v0.0.1/resources/Category.ImportExport.svg",
           "elementType": "category",
           "include": [ ],
           "childElements": [
@@ -1049,7 +1049,7 @@
         },
         {
           "text": "String",
-          "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Category.String.svg",
+          "iconUrl": "./dist/v0.0.1/resources/Category.String.svg",
           "elementType": "category",
           "include": [ ],
           "childElements": [
@@ -1162,7 +1162,7 @@
         },
         {
           "text": "Geometry",
-          "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Category.Geometry.svg",
+          "iconUrl": "./dist/v0.0.1/resources/Category.Geometry.svg",
           "elementType": "category",
           "include": [ ],
           "childElements": [
@@ -1342,17 +1342,23 @@
               "text": "Modifiers",
               "iconUrl": "",
               "elementType": "group",
-              "include": [
-                {
-                  "path": "Geometry.Geometry",
-                  "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Geometry.Geometry.png"
-                },
-                {
-                  "path": "Autodesk.DesignScript.Geometry.Geometry",
-                  "iconUrl": "http://54.169.171.233:3456/src/resources/icons/Autodesk.DesignScript.Geometry.Geometry.png"
-                }
-              ],
+              "include": [ ],
               "childElements": [
+                {
+                  "text": "Geometry",
+                  "iconUrl": "",
+                  "elementType": "group",
+                  "include": [
+                    {
+                      "path": "Autodesk.DesignScript.Geometry.Geometry",
+                      "inclusive": false
+                    },
+                    {
+                      "path": "Geometry.Geometry.ExportToSAT"
+                    }
+                  ],
+                  "childElements": [ ]
+                },
                 {
                   "text": "Geometry Color",
                   "iconUrl": "",
@@ -1388,12 +1394,24 @@
                 }
               ],
               "childElements": [ ]
+            },
+            {
+              "text": "TSpline",
+              "iconUrl": "",
+              "elementType": "group",
+              "include": [
+                {
+                  "path": "Autodesk.DesignScript.Geometry.TSpline",
+                  "inclusive": false
+                }
+              ],
+              "childElements": [ ]
             }
           ]
         },
         {
           "text": "Revit",
-          "iconUrl": "http://54.169.171.233:3456/src/resources/ui/revit-icon.png",
+          "iconUrl": "./dist/v0.0.1/resources/revit-icon.png",
           "elementType": "category",
           "include": [
             {
@@ -1406,7 +1424,7 @@
     },
     {
       "text": "Miscellaneous",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/ui/add-on.svg",
+      "iconUrl": "./dist/v0.0.1/resources/misc.svg",
       "elementType": "section",
       "showHeader": true,
       "include": [ ],
@@ -1414,7 +1432,7 @@
     },
     {
       "text": "Add-ons",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/ui/plus-symbol.svg",
+      "iconUrl": "./dist/v0.0.1/resources/add-on.svg",
       "elementType": "section",
       "showHeader": true,
       "include": [
