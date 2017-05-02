@@ -104,8 +104,6 @@ namespace Dynamo.LibraryUI
             InitializeResourceStreams(dynamoViewModel.Model);
         }
 
-        public LibraryViewController() { }
-
         /// <summary>
         /// Call this method to create a new node in Dynamo canvas.
         /// </summary>

@@ -60,8 +60,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ViewExtensionLibraryTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
+	<Compile Include="..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+	<Link>Properties\AssemblySharedInfo.cs</Link>
+	</Compile>
+	<Compile Include="Properties\AssemblyInfo.cs" />
+    </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
