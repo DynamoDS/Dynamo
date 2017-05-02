@@ -223,6 +223,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryColor", "Libraries\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryColorTests", "..\test\Libraries\GeometryColorTests\GeometryColorTests.csproj", "{F8D2E3E5-4505-4463-9367-2EB2629D7DCD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewExtensionLibraryTests", "..\test\ViewExtensionLibraryTests\ViewExtensionLibraryTests.csproj", "{AE7F2579-104A-4AF4-AA7B-614AE9E79279}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -503,10 +505,8 @@ Global
 		{170FCC78-96EA-428A-A195-606C88B6B9D4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8EACBFD1-1CD4-4519-A5FC-215D40A67204}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{8EACBFD1-1CD4-4519-A5FC-215D40A67204}.Debug|Any CPU.Build.0 = Debug|x64
-		{8EACBFD1-1CD4-4519-A5FC-215D40A67204}.Debug|x64.ActiveCfg = Debug|x64
 		{8EACBFD1-1CD4-4519-A5FC-215D40A67204}.Release|Any CPU.ActiveCfg = Release|x64
 		{8EACBFD1-1CD4-4519-A5FC-215D40A67204}.Release|Any CPU.Build.0 = Release|x64
-		{8EACBFD1-1CD4-4519-A5FC-215D40A67204}.Release|x64.ActiveCfg = Release|x64
 		{A50C198C-DA6E-4081-BC53-0F44D287F207}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A50C198C-DA6E-4081-BC53-0F44D287F207}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A50C198C-DA6E-4081-BC53-0F44D287F207}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -515,6 +515,10 @@ Global
 		{F8D2E3E5-4505-4463-9367-2EB2629D7DCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8D2E3E5-4505-4463-9367-2EB2629D7DCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8D2E3E5-4505-4463-9367-2EB2629D7DCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE7F2579-104A-4AF4-AA7B-614AE9E79279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE7F2579-104A-4AF4-AA7B-614AE9E79279}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE7F2579-104A-4AF4-AA7B-614AE9E79279}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE7F2579-104A-4AF4-AA7B-614AE9E79279}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -580,5 +584,6 @@ Global
 		{170FCC78-96EA-428A-A195-606C88B6B9D4} = {24A1EF6B-5A24-4536-B8BD-C879ABA26389}
 		{A50C198C-DA6E-4081-BC53-0F44D287F207} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
 		{F8D2E3E5-4505-4463-9367-2EB2629D7DCD} = {0E492D35-2310-4849-9694-A2A53C09F21B}
+		{AE7F2579-104A-4AF4-AA7B-614AE9E79279} = {24A1EF6B-5A24-4536-B8BD-C879ABA26389}
 	EndGlobalSection
 EndGlobal

@@ -28,10 +28,57 @@ namespace Dynamo.LibraryUI
         void RaiseEvent(string eventName, params object[] parameters);
     }
 
+    public class EventController : IEventController
+    {
+        private object contextData = null;
+        private Dictionary<string, List<IJavascriptCallback>> callbacks = new Dictionary<string, List<IJavascriptCallback>>();
+
+        public void On(string eventName, object callback)
+        {
+            List<IJavascriptCallback> cblist;
+            if (!callbacks.TryGetValue(eventName, out cblist))
+            {
+                cblist = new List<IJavascriptCallback>();
+            }
+            cblist.Add(callback as IJavascriptCallback);
+            callbacks[eventName] = cblist;
+        }
+
+        [JavascriptIgnore]
+        public void RaiseEvent(string eventName, params object[] parameters)
+        {
+            List<IJavascriptCallback> cblist;
+            if (callbacks.TryGetValue(eventName, out cblist))
+            {
+                foreach (var cbfunc in cblist)
+                {
+                    if (cbfunc.CanExecute)
+                    {
+                        cbfunc.ExecuteAsync(parameters);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets details view context data, e.g. packageId if it shows details of a package
+        /// </summary>
+        public object DetailsViewContextData
+        {
+            get { return contextData; }
+            set
+            {
+                contextData = value;
+                this.RaiseEvent("detailsViewContextDataChanged", contextData);
+            }
+        }
+    }
+
+
     /// <summary>
     /// This class holds methods and data to be called from javascript
     /// </summary>
-    public class LibraryViewController : IEventController
+    public class LibraryViewController : EventController
     {
         private Window dynamoWindow;
         private ICommandExecutive commandExecutive;
@@ -39,12 +86,9 @@ namespace Dynamo.LibraryUI
         private DetailsViewModel detailsViewModel;
         private DynamoViewModel dynamoViewModel;
         private FloatingLibraryTooltipPopup libraryViewTooltip;
-        private object contextData = null;
         private ResourceHandlerFactory resourceFactory;
         private LibraryView libraryView = null;
-
-        private Dictionary<string, List<IJavascriptCallback>> callbacks = new Dictionary<string, List<IJavascriptCallback>>();
-
+        
         /// <summary>
         /// Creates LibraryViewController
         /// </summary>
@@ -99,46 +143,6 @@ namespace Dynamo.LibraryUI
             if(detailsView != null)
             {
                 dynamoWindow.Dispatcher.BeginInvoke(new Action(() => detailsView.Visibility = Visibility.Collapsed));
-            }
-        }
-
-        public void On(string eventName, object callback)
-        {
-            List<IJavascriptCallback> cblist;
-            if(!callbacks.TryGetValue(eventName, out cblist))
-            {
-                cblist = new List<IJavascriptCallback>();
-            }
-            cblist.Add(callback as IJavascriptCallback);
-            callbacks[eventName] = cblist;
-        }
-
-        [JavascriptIgnore]
-        public void RaiseEvent(string eventName, params object[] parameters)
-        {
-            List<IJavascriptCallback> cblist;
-            if(callbacks.TryGetValue(eventName, out cblist))
-            {
-                foreach (var cbfunc in cblist)
-                {
-                    if (cbfunc.CanExecute)
-                    {
-                        cbfunc.ExecuteAsync(parameters);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets details view context data, e.g. packageId if it shows details of a package
-        /// </summary>
-        public object DetailsViewContextData
-        {
-            get { return contextData; }
-            set
-            {
-                contextData = value;
-                this.RaiseEvent("detailsViewContextDataChanged", contextData);
             }
         }
 
