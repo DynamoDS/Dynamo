@@ -864,10 +864,10 @@
                   "path": "Core.Color.Color Range"
                 },
                 {
-                  "path": "DSCore.ColorRange2D.ByColorsAndParameters"
+                  "path": "DSCore.ColorRange.ByColorsAndParameters"
                 },
                 {
-                  "path": "DSCore.ColorRange2D.GetColorAtParameter"
+                  "path": "DSCore.ColorRange.GetColorAtParameter"
                 }
               ],
               "childElements": [ ]
