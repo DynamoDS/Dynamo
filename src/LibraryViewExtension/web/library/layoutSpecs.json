@@ -19,37 +19,34 @@
               "elementType": "group",
               "include": [
                 {
-                  "path": "AllFalse"
+                  "path": "DSCore.List.AllFalse"
                 },
                 {
-                  "path": "AllTrue"
+                  "path": "DSCore.List.AllTrue"
                 },
                 {
-                  "path": "SetIntersection"
+                  "path": "DSCore.List.SetIntersection"
                 },
                 {
-                  "path": "SetUnion"
+                  "path": "DSCore.List.SetUnion"
                 },
                 {
-                  "path": "SetDifference"
+                  "path": "DSCore.List.SetDifference"
                 },
                 {
-                  "path": "Contains"
-                },
-                {
-                  "path": "DSCore.List.ContainsItem"
+                  "path": "DSCore.List.Contains"
                 },
                 {
                   "path": "Rank"
                 },
                 {
-                  "path": "IsHomogeneous"
+                  "path": "DSCore.List.IsHomogeneous"
                 },
                 {
-                  "path": "IsUniformDepth"
+                  "path": "DSCore.List.IsUniformDepth"
                 },
                 {
-                  "path": "IsRectangular"
+                  "path": "DSCore.List.IsRectangular"
                 },
                 {
                   "path": "List.TrueForAll"
@@ -61,7 +58,7 @@
                   "path": "DSCore.List.IsEmpty"
                 },
                 {
-                  "path": "IndexOf"
+                  "path": "DSCore.List.IndexOf"
                 },
                 {
                   "path": "DSCore.List.FirstIndexOf"
@@ -70,10 +67,10 @@
                   "path": "List.Equals"
                 },
                 {
-                  "path": "CountTrue"
+                  "path": "DSCore.List.CountTrue"
                 },
                 {
-                  "path": "CountFalse"
+                  "path": "DSCore.List.CountFalse"
                 },
                 {
                   "path": "DSCore.List.MinimumItem"
@@ -129,7 +126,7 @@
                   "path": "DSCore.List.RestOfItems"
                 },
                 {
-                  "path": "Flatten"
+                  "path": "DSCore.List.Flatten"
                 },
                 {
                   "path": "DSCore.List.Flatten"
@@ -174,7 +171,7 @@
                   "path": "DSCore.List.ReplaceItemAtIndex"
                 },
                 {
-                  "path": "Insert"
+                  "path": "DSCore.List.Insert"
                 },
                 {
                   "path": "DSCore.List.AddItemToEnd"
@@ -198,7 +195,7 @@
                   "path": "DSCore.List.Sort"
                 },
                 {
-                  "path": "NormalizeDepth"
+                  "path": "DSCore.List.NormalizeDepth"
                 }
               ],
               "childElements": [ ]
@@ -212,13 +209,13 @@
                   "path": "List.GroupByFunction"
                 },
                 {
-                  "path": "Reorder"
+                  "path": "DSCore.List.Reorder"
                 },
                 {
                   "path": "List.SortByFunction"
                 },
                 {
-                  "path": "SortIndexByValue"
+                  "path": "DSCore.List.SortIndexByValue"
                 }
               ],
               "childElements": [
@@ -382,6 +379,9 @@
                   "path": "DSCore.DateTime.TimeOfDay"
                 },
                 {
+                  "path": "DSCore.DateTime.Format"
+                },
+                {
                   "path": "DSCore.DayOfWeek",
                   "iconUrl": "http://54.169.171.233:3456/src/resources/icons/DSCore.DayOfWeek.png"
                 }
@@ -420,6 +420,9 @@
                   "path": "Core.Input.Integer Slider"
                 },
                 {
+                  "path": "Core.Input.Number Slider"
+                },
+                {
                   "path": "Core.Input.String"
                 },
                 {
@@ -427,6 +430,12 @@
                 },
                 {
                   "path": "Core.Input.Code Block"
+                },
+                {
+                  "path": "Core.Input.Input"
+                },
+                {
+                  "path": "Core.Input.Output"
                 }
               ],
               "childElements": [ ]
@@ -488,26 +497,6 @@
               "childElements": [ ]
             },
             {
-              "text": "Input",
-              "iconUrl": "",
-              "elementType": "group",
-              "include": [
-                {
-                  "path": "Core.Input.Input"
-                },
-                {
-                  "path": "Core.Input.Output"
-                },
-                {
-                  "path": "Core.Input.Date Time"
-                },
-                {
-                  "path": "Core.Input.Number Slider"
-                }
-              ],
-              "childElements": [ ]
-            },
-            {
               "text": "Object",
               "iconUrl": "",
               "elementType": "group",
@@ -520,6 +509,17 @@
                 },
                 {
                   "path": "DSCore.Object.Type"
+                }
+              ],
+              "childElements": [ ]
+            },
+            {
+              "text": "Thread",
+              "iconUrl": "",
+              "elementType": "group",
+              "include": [
+                {
+                  "path": "DSCore.Thread"
                 }
               ],
               "childElements": [ ]
@@ -640,19 +640,16 @@
                   "path": "DSCore.Math.Factorial"
                 },
                 {
-                  "path": "Map"
+                  "path": "DSCore.Math.Map"
                 },
                 {
-                  "path": "MapTo"
-                },
-                {
-                  "path": "NewtonRootFind1DNoDeriv"
-                },
-                {
-                  "path": "NewtonRootFind1DWithDeriv"
+                  "path": "DSCore.Math.MapTo"
                 },
                 {
                   "path": "Core.Scripting.Formula"
+                },
+                {
+                  "path": "DSCore.Math.EvaluateFormula"
                 }
               ],
               "childElements": [ ]
@@ -736,10 +733,10 @@
               "elementType": "group",
               "include": [
                 {
-                  "path": "Core.Logic.And"
+                  "path": "Core.Math.And"
                 },
                 {
-                  "path": "Core.Logic.Or"
+                  "path": "Core.Math.Or"
                 },
                 {
                   "path": "Core.Logic.If"
@@ -781,7 +778,7 @@
                   "path": "Core.Logic.ScopeIf"
                 },
                 {
-                  "path": "DSCore.Logic.Xor"
+                  "path": "DSCore.Math.Xor"
                 }
               ],
               "childElements": [ ]
@@ -851,6 +848,9 @@
                 },
                 {
                   "path": "DSCore.Color.Divide"
+                },
+                {
+                  "path": "Core.Color.Color Palette"
                 }
               ],
               "childElements": [ ]
@@ -864,10 +864,10 @@
                   "path": "Core.Color.Color Range"
                 },
                 {
-                  "path": "DSCore.ColorRange2D.ByColorsAndParameters"
+                  "path": "DSCore.ColorRange.ByColorsAndParameters"
                 },
                 {
-                  "path": "DSCore.ColorRange2D.GetColorAtParameter"
+                  "path": "DSCore.ColorRange.GetColorAtParameter"
                 }
               ],
               "childElements": [ ]
@@ -935,25 +935,25 @@
                   "path": "Core.File.File.FromPath"
                 },
                 {
-                  "path": "Core.File.Directory.FromPath"
+                  "path": "Core.File.DirectoryFromPath"
                 },
                 {
-                  "path": "DSCore.IO.FilePath.Combine"
+                  "path": "DSCore.IO.File.CombinePath"
                 },
                 {
-                  "path": "DSCore.IO.FilePath.Extension"
+                  "path": "DSCore.IO.File.FileExtension"
                 },
                 {
-                  "path": "DSCore.IO.FilePath.ChangeExtension"
+                  "path": "DSCore.IO.File.ChangePathExtension"
                 },
                 {
-                  "path": "DSCore.IO.FilePath.DirectoryName"
+                  "path": "DSCore.IO.File.DirectoryName"
                 },
                 {
-                  "path": "DSCore.IO.FilePath.FileName"
+                  "path": "DSCore.IO.File.FileName"
                 },
                 {
-                  "path": "DSCore.IO.FilePath.HasExtension"
+                  "path": "DSCore.IO.File.FileHasExtension"
                 },
                 {
                   "path": "DSCore.IO.File.ReadText"
@@ -974,19 +974,19 @@
                   "path": "DSCore.IO.File.WriteText"
                 },
                 {
-                  "path": "DSCore.IO.Directory.Move"
+                  "path": "DSCore.IO.File.MoveDirectory"
                 },
                 {
-                  "path": "DSCore.IO.Directory.Copy"
+                  "path": "DSCore.IO.File.CopyDirectory"
                 },
                 {
-                  "path": "DSCore.IO.Directory.Delete"
+                  "path": "DSCore.IO.File.DeleteDirectory"
                 },
                 {
-                  "path": "DSCore.IO.Directory.Contents"
+                  "path": "DSCore.IO.File.GetDirectoryContents"
                 },
                 {
-                  "path": "DSCore.IO.Directory.Exists"
+                  "path": "DSCore.IO.File.DirectoryExists"
                 }
               ],
               "childElements": [ ]
@@ -1390,26 +1390,36 @@
               "childElements": [ ]
             }
           ]
+        },
+        {
+          "text": "Revit",
+          "iconUrl": "http://54.169.171.233:3456/src/resources/ui/revit-icon.png",
+          "elementType": "category",
+          "include": [
+            {
+              "path": "Analysis"
+            }
+          ],
+          "childElements": [ ]
         }
       ]
     },
     {
       "text": "Miscellaneous",
-      "iconUrl": "",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/ui/add-on.svg",
       "elementType": "section",
       "showHeader": true,
       "include": [ ],
       "childElements": [ ]
     },
     {
-      "text": "Add on",
-      "iconUrl": "http://54.169.171.233:3456/src/resources/ui/add-on.svg",
+      "text": "Add-ons",
+      "iconUrl": "http://54.169.171.233:3456/src/resources/ui/plus-symbol.svg",
       "elementType": "section",
       "showHeader": true,
       "include": [
         {
-          "path": "Packages",
-          "inclusive": false
+          "path": "pkg://"
         }
       ],
       "childElements": [ ]
