@@ -1411,7 +1411,7 @@
         },
         {
           "text": "Revit",
-          "iconUrl": "./dist/v0.0.1/resources/revit-icon.png",
+          "iconUrl": "./dist/v0.0.1/resources/Category.Revit.svg",
           "elementType": "category",
           "include": [
             {
