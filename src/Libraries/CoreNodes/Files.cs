@@ -218,11 +218,11 @@ namespace DSCore.IO
         }
 
         [NodeObsolete("ExportToCSVObsolete", typeof(Properties.Resources))]
-        public static void ExportToCSV(string filePath, object[][] data)
+        public static bool ExportToCSV(string filePath, object[][] data)
         {
-            CSV.WriteToFile(filePath, data);
+            ImportExport.ExportCSV(filePath, data);
+            return true;
         }
-
         #endregion
     }
 
@@ -445,85 +445,6 @@ namespace DSCore.IO
         public static void WriteToFile(string path, Bitmap image)
         {
             image.Save(File.AbsolutePath(path));
-        }
-    }
-
-    /// <summary>
-    ///     Methods for working with CSV (comma-separated values) files.
-    /// </summary>
-    public static class CSV
-    {
-        /// <summary>
-        ///     Write a list of lists into a file using a comma-separated values 
-        ///     format. Outer list represents rows, inner lists represent columns. 
-        /// </summary>
-        /// <param name="filePath">Path to write to</param>
-        /// <param name="data">List of lists to write into CSV</param>
-        /// <returns name="str">Contents of the text file.</returns>
-        /// <search>write,text,file</search>
-        public static void WriteToFile(string filePath, object[][] data)
-        {
-            using (var writer = new StreamWriter(File.AbsolutePath(filePath)))
-            {
-                foreach (var line in data)
-                {
-                    int count = 0;
-                    foreach (var entry in line)
-                    {
-                        writer.Write(entry);
-                        if (++count < line.Length)
-                            writer.Write(",");
-                    }
-                    writer.WriteLine();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Reads a text file containing comma-separated values into a two dimensional list.
-        /// Outer list represents rows, inner lists represent columns.
-        /// </summary>
-        /// <param name="file">File object to read from.</param>
-        /// <returns>CSV contents of the given file.</returns>
-        public static object[][] ReadFromFile(FileInfo file)
-        {
-            var csvDataQuery = from line in System.IO.File.ReadLines(file.FullName)
-                               let elements = line.Split(',')
-                               let count = elements.Length
-                               let data = elements.Select(MarshalStringFromCSV)
-                               select new { count, data };
-
-            var csvDataList = csvDataQuery.ToList();
-            var numCols = csvDataList.Max(row => row.count);
-            var resultArray =
-                csvDataList.Select(
-                    row =>
-                        row.data
-                            .Concat(Enumerable.Repeat("", numCols - row.count))
-                            .ToArray())
-                    .ToArray();
-            return resultArray;
-        }
-
-        private static object MarshalStringFromCSV(string elementSt)
-        {
-            if (string.IsNullOrWhiteSpace(elementSt))
-                return null;
-
-            if (elementSt.Contains('.'))
-            {
-                double dbl;
-                if (double.TryParse(elementSt, NumberStyles.Float, CultureInfo.InvariantCulture, out dbl))
-                {
-                    return dbl;
-                }
-            }
-
-            int i;
-            if (int.TryParse(elementSt, NumberStyles.Integer, CultureInfo.InvariantCulture, out i))
-                return i;
-
-            return elementSt;
         }
     }
 }

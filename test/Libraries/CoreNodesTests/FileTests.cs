@@ -404,36 +404,6 @@ namespace Dynamo.Tests
             }
         }
         #endregion
-
-        #region CSV Files
-        [Test, Category("UnitTests")]
-        public void CSV_Read()
-        {
-            //Make a CSV file
-            var data = Enumerable.Range(0, 10).Select(row => Enumerable.Range(0, 10).Select(col => row + col));
-            var fn = GetNewFileNameOnTempPath(".csv");
-            System.IO.File.WriteAllText(fn, string.Join("\n", data.Select(row => string.Join(",", row))));
-
-            //Now read it
-            var fnInfo = File.FromPath(fn);
-            Assert.AreEqual(data, CSV.ReadFromFile(fnInfo));
-        }
-
-        [Test, Category("UnitTests")]
-        public void CSV_Write()
-        {
-            //Write data to CSV
-            var data =
-                Enumerable.Range(0, 10)
-                    .Select(row => Enumerable.Range(0, 10).Select(col => row + col).Cast<object>().ToArray())
-                    .ToArray();
-            var fn = GetNewFileNameOnTempPath(".csv");
-            CSV.WriteToFile(fn, data);
-
-            //Confirm it's correct
-            Assert.AreEqual(data, CSV.ReadFromFile(File.FromPath(fn)));
-        }
-        #endregion
     }
 
     [TestFixture]

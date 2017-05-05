@@ -25,6 +25,10 @@
     <newName>DSCore.IO.File.ExportToCSV</newName>
   </priorNameHint>
   <priorNameHint>
+    <oldName>DSCore.IO.CSV.WriteToFile</oldName>
+    <newName>DSCore.ImportExport.ExportCSV</newName>
+  </priorNameHint>
+  <priorNameHint>
     <oldName>DSCore.Display.ByGeometryColor</oldName>
     <newName>Display.Display.ByGeometryColor</newName>
     <additionalAttributes>

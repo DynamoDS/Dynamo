@@ -144,14 +144,15 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
                 string[] oldSignature = function.Split('@');
                 string[] inputTypes = oldSignature.Length > 1 ? oldSignature[1].Split(',') : new string[]{};
                 int i = 0, j = 0;
-                foreach (var param in descriptor.Parameters)
+                foreach (var param in descriptor.InputParameters)
                 {
-                    if (i >= inputTypes.Length || param.Type.ToString() != inputTypes[i])
+                    if (i >= inputTypes.Length || param.Item2 != inputTypes[i])
                         result.InPorts[j].UsingDefaultValue = result.InPorts[j].DefaultValue != null;
                     else
                         i++;
                     j++;
                 }
+                
             }
 
             return result;

@@ -124,7 +124,7 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use CSV.WriteToFile node instead.
+        ///   Looks up a localized string similar to Use ImportExport.ExportCSV node instead.
         /// </summary>
         internal static string ExportToCSVObsolete {
             get {
