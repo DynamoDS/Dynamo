@@ -23,7 +23,7 @@ setlocal DisableDelayedExpansion
 set version=%Major%.%Minor%.%Build%-beta%Revision%
 
 :: Clean files generated from the previous run
-del *.nupkg
+if exist *.nupkg ( del *.nupkg )
 if exist nuspec ( rmdir /s /q nuspec )
 mkdir nuspec
 
@@ -40,7 +40,9 @@ for %%f in (%1\*.nuspec) do (
 )
 
 :: Pack .nupkg files based on each .nuspec in the "nuspec" folder
-@echo on
 for %%f in (nuspec\*.nuspec) do (
   nuget pack %%f -basepath %harvestPath%
+  if not exist %%~nf.%version%.nupkg (
+    exit /b 1
+  )
 )
