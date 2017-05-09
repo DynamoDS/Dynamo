@@ -19,6 +19,7 @@ namespace Dynamo.LibraryUI.Handlers
         public string fullyQualifiedName { get; set; }
         public string iconUrl { get; set; }
         public string contextData { get; set; }
+        public string parameters { get; set; }
         public string itemType { get; set; }
         public string keywords { get; set; }
     }
@@ -63,6 +64,7 @@ namespace Dynamo.LibraryUI.Handlers
                     fullyQualifiedName = GetFullyQualifiedName(e),
                     contextData = e.CreationName,
                     iconUrl = string.Format("{0}{1}.png", IconUrlServiceEndpoint, e.IconName),
+                    parameters = e.Parameters,
                     itemType = e.Group.ToString().ToLower(),
                     keywords = e.SearchKeywords.Any() 
                         ? e.SearchKeywords.Where(s => !string.IsNullOrEmpty(s)).Aggregate((x, y) => string.Format("{0}, {1}", x, y)) 

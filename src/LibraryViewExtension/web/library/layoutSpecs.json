@@ -129,9 +129,6 @@
                   "path": "DSCore.List.Flatten"
                 },
                 {
-                  "path": "DSCore.List.Flatten"
-                },
-                {
                   "path": "DSCore.List.Deconstruct"
                 },
                 {
