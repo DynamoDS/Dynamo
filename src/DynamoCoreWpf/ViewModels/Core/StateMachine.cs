@@ -212,7 +212,7 @@ namespace Dynamo.ViewModels
             this.SetActiveConnectors(null);
         }
 
-        internal void EndAndStartCtrlConnection(Guid nodeId, int portIndex, PortType portType)
+        internal void BeginCreateConnections(Guid nodeId, int portIndex, PortType portType)
         {
             // Only handle ctrl connections if selected port is an input port
             if (firstStartPort == null || portType == PortType.Output) return; 
@@ -780,7 +780,7 @@ namespace Dynamo.ViewModels
                     else if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
                         // If the control key is held down, check if there is a need to duplicate connections
-                        mode = DynamoModel.MakeConnectionCommand.Mode.BeginCtrlConnection;
+                        mode = DynamoModel.MakeConnectionCommand.Mode.BeginDuplicateConnection;
                     }
 
                     var command = new DynamoModel.MakeConnectionCommand(nodeId, portIndex, portModel.PortType, mode);
@@ -811,7 +811,7 @@ namespace Dynamo.ViewModels
                         }
                         else if (Keyboard.Modifiers == ModifierKeys.Control) // If the control key is held down
                         {
-                            mode = DynamoModel.MakeConnectionCommand.Mode.EndAndStartCtrlConnection;
+                            mode = DynamoModel.MakeConnectionCommand.Mode.BeginCreateConnections;
                             this.currentState = State.Connection; // Start a new connection
                             owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect); // Reassign the cursor
                         }

@@ -271,12 +271,12 @@ namespace Dynamo.Models
                     EndShiftReconnections(nodeId, command.PortIndex, command.Type);
                     break;
 
-                case MakeConnectionCommand.Mode.BeginCtrlConnection:
-                    BeginCtrlConnection(nodeId, command.PortIndex, command.Type);
+                case MakeConnectionCommand.Mode.BeginDuplicateConnection:
+                    BeginDuplicateConnection(nodeId, command.PortIndex, command.Type);
                     break;
 
-                case MakeConnectionCommand.Mode.EndAndStartCtrlConnection:
-                    EndAndStartCtrlConnection(nodeId, command.PortIndex, command.Type);
+                case MakeConnectionCommand.Mode.BeginCreateConnections:
+                    BeginCreateConnections(nodeId, command.PortIndex, command.Type);
                     break;
 
                 case MakeConnectionCommand.Mode.Cancel:
@@ -319,7 +319,7 @@ namespace Dynamo.Models
             }
         }
 
-        void BeginCtrlConnection(Guid nodeId, int portIndex, PortType portType)
+        void BeginDuplicateConnection(Guid nodeId, int portIndex, PortType portType)
         {
             // If the port clicked is an output port, begin connection as per normal
             if (portType == PortType.Output) 
@@ -418,7 +418,7 @@ namespace Dynamo.Models
             return;
         }
 
-        void EndAndStartCtrlConnection(Guid nodeId, int portIndex, PortType portType)
+        void BeginCreateConnections(Guid nodeId, int portIndex, PortType portType)
         {
             if (portType == PortType.Output) return; // Only handle ctrl connections if selected port is an input port
             if (firstStartPort == null || activeStartPorts == null || activeStartPorts.Count() <= 0) return;
