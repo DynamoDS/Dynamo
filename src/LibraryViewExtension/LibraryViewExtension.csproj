@@ -136,9 +136,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.en-US.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
@@ -170,6 +167,14 @@
     <EmbeddedResource Include="web\library\resources\Category.Revit.svg" />
     <EmbeddedResource Include="web\library\resources\Category.Script.svg" />
     <EmbeddedResource Include="web\library\resources\Category.String.svg" />
+    <EmbeddedResource Include="web\library\resources\ArtifaktElement-Light.otf" />
+    <EmbeddedResource Include="web\library\resources\ArtifaktElement-Medium.otf" />
+    <EmbeddedResource Include="web\library\resources\ArtifaktElement-Regular.otf" />
+    <EmbeddedResource Include="web\library\resources\fontawesome-webfont.eot" />
+    <EmbeddedResource Include="web\library\resources\fontawesome-webfont.ttf" />
+    <EmbeddedResource Include="web\library\resources\fontawesome-webfont.woff" />
+    <EmbeddedResource Include="web\library\resources\fontawesome-webfont.woff2" />
+    <EmbeddedResource Include="web\library\resources\fontawesome-webfont.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\cef.redist.x64.3.2623.1401\build\cef.redist.x64.targets" Condition="Exists('..\packages\cef.redist.x64.3.2623.1401\build\cef.redist.x64.targets')" />
