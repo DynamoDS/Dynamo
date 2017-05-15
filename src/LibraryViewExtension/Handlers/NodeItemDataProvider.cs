@@ -32,22 +32,16 @@ namespace Dynamo.LibraryUI.Handlers
     /// <summary>
     /// Provides json resource data for all the loaded nodes
     /// </summary>
-    class NodeItemDataProvider : IResourceProvider
+    class NodeItemDataProvider : ResourceProviderBase
     {
         private NodeSearchModel model;
 
-        public static readonly string IconUrlServiceEndpoint = "http://54.169.171.233:3456/src/resources/icons/";
-
-        public NodeItemDataProvider(NodeSearchModel model)
+        public NodeItemDataProvider(NodeSearchModel model) : base(false)
         {
             this.model = model;
         }
 
-        public bool IsStaticResource { get { return false; } }
-
-        public string Scheme { get { return "http"; } }
-
-        public Stream GetResource(IRequest request, out string extension)
+        public override Stream GetResource(IRequest request, out string extension)
         {
             extension = "json";
             return GetNodeItemDataStream(model.SearchEntries);
@@ -58,18 +52,7 @@ namespace Dynamo.LibraryUI.Handlers
             var data = new LoadedTypeData();
             data.loadedTypes = searchEntries
                 //.Where(e => !e.ElementType.HasFlag(ElementTypes.Packaged))
-                .Select(
-                e => new LoadedTypeItem()
-                {
-                    fullyQualifiedName = GetFullyQualifiedName(e),
-                    contextData = e.CreationName,
-                    iconUrl = string.Format("{0}{1}.png", IconUrlServiceEndpoint, e.IconName),
-                    parameters = e.Parameters,
-                    itemType = e.Group.ToString().ToLower(),
-                    keywords = e.SearchKeywords.Any() 
-                        ? e.SearchKeywords.Where(s => !string.IsNullOrEmpty(s)).Aggregate((x, y) => string.Format("{0}, {1}", x, y)) 
-                        : string.Empty
-                }).ToList();
+                .Select(e => CreateLoadedTypeItem(e)).ToList();
 
             var ms = new MemoryStream();
             var sw = new StreamWriter(ms);
@@ -81,10 +64,41 @@ namespace Dynamo.LibraryUI.Handlers
             return ms;
         }
 
-        private string GetFullyQualifiedName(NodeSearchElement element)
+        /// <summary>
+        /// Creates LoadedTypeItem from given node search element
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        private LoadedTypeItem CreateLoadedTypeItem(NodeSearchElement element)
         {
-            var pkgprefix = element.ElementType.HasFlag(ElementTypes.Packaged) ? "pkg://" : "";
-            return string.Format("{0}{1}", pkgprefix, element.FullName);
+            //Create LoadedTypeItem with base class
+            var item = new LoadedTypeItem()
+            {
+                fullyQualifiedName = element.FullName,
+                contextData = element.CreationName,
+                iconUrl = new IconUrl(element.IconName, element.Assembly).Url,
+                parameters = element.Parameters,
+                itemType = element.Group.ToString().ToLower(),
+                keywords = element.SearchKeywords.Any()
+                        ? element.SearchKeywords.Where(s => !string.IsNullOrEmpty(s)).Aggregate((x, y) => string.Format("{0}, {1}", x, y))
+                        : string.Empty
+            };
+
+            //If the node search element is part of a package, then we need to prefix pkg:// for it
+            var packaged = element.ElementType.HasFlag(ElementTypes.Packaged);
+            if (packaged)
+            {
+                item.fullyQualifiedName = string.Format("{0}{1}", "pkg://", element.FullName);
+            }
+
+            //If this element is not a custom node then we are done. The icon url for custom node is different
+            if (!element.ElementType.HasFlag(ElementTypes.CustomNode)) return item;
+
+            var customNode = element as CustomNodeSearchElement;
+            if (customNode == null) return item;
+
+            item.iconUrl = new IconUrl(customNode.IconName, customNode.Path, true).Url;
+            return item;
         }
     }
 }
