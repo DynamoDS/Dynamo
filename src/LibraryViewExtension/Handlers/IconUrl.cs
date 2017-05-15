@@ -34,12 +34,11 @@ namespace Dynamo.LibraryUI.Handlers
             {
                 string customizationPath = System.IO.Path.GetDirectoryName(Path);
                 customizationPath = Directory.GetParent(customizationPath).FullName;
-                customizationPath = System.IO.Path.Combine(customizationPath, "bin", "Package.dll");
-                Path = customizationPath;
-                if (!File.Exists(customizationPath))
+                Path = "DynamoCore.dll";
+                Name = "DefaultCustomNode.Small";
+                if (File.Exists(System.IO.Path.Combine(customizationPath, "bin", "Package.customization.dll")))
                 {
-                    Path = "DynamoCore.dll";
-                    Name = "DefaultCustomNode.Small";
+                    Path = System.IO.Path.Combine(customizationPath, "bin", "Package.dll");
                 }
             }
 
