@@ -82,13 +82,10 @@ namespace Dynamo.LibraryUI
     {
         private Window dynamoWindow;
         private ICommandExecutive commandExecutive;
-        private DetailsView detailsView;
-        private DetailsViewModel detailsViewModel;
         private DynamoViewModel dynamoViewModel;
         private FloatingLibraryTooltipPopup libraryViewTooltip;
         private ResourceHandlerFactory resourceFactory;
-        private LibraryView libraryView = null;
-        
+
         /// <summary>
         /// Creates LibraryViewController
         /// </summary>
@@ -116,34 +113,6 @@ namespace Dynamo.LibraryUI
                 var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
                 commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), ViewExtension.ExtensionName);
             }));
-        }
-
-        /// <summary>
-        /// Displays the details view over Dynamo canvas.
-        /// </summary>
-        /// <param name="item">item data for which details need to be shown</param>
-        public void ShowDetailsView(object data)
-        {
-            DetailsViewContextData = data;
-            if(detailsView == null)
-            {
-                dynamoWindow.Dispatcher.BeginInvoke(new Action(() => AddDetailsView()));
-            }
-            else
-            {
-                dynamoWindow.Dispatcher.BeginInvoke(new Action(() => detailsView.Visibility = Visibility.Visible));
-            }
-        }
-
-        /// <summary>
-        /// Closes the details view
-        /// </summary>
-        public void CloseDetailsView()
-        {
-            if(detailsView != null)
-            {
-                dynamoWindow.Dispatcher.BeginInvoke(new Action(() => detailsView.Visibility = Visibility.Collapsed));
-            }
         }
 
         /// <summary>
@@ -235,7 +204,7 @@ namespace Dynamo.LibraryUI
 
         private void OnLibraryViewLoaded(object sender, RoutedEventArgs e)
         {
-            libraryView = sender as LibraryView;
+            var libraryView = sender as LibraryView;
 #if DEBUG
             var browser = libraryView.Browser;
             browser.ConsoleMessage += OnBrowserConsoleMessage;
@@ -246,24 +215,6 @@ namespace Dynamo.LibraryUI
         {
             System.Diagnostics.Trace.WriteLine("*****Chromium Browser Messages******");
             System.Diagnostics.Trace.Write(e.Message);
-        }
-
-        private DetailsView AddDetailsView()
-        {
-            detailsViewModel = new DetailsViewModel("http://localhost/details.html");
-
-            var tabcontrol = dynamoWindow.FindName("WorkspaceTabs") as TabControl;
-            var grid = tabcontrol.Parent as Grid;
-
-            detailsView = new DetailsView(detailsViewModel, grid);
-            grid.Children.Add(detailsView);
-
-            var browser = detailsView.Browser;
-            browser.RegisterJsObject("controller", this);
-            RegisterResources(browser);
-            detailsView.Loaded += OnDescriptionViewLoaded;
-
-            return detailsView;
         }
 
         private void InitializeResourceStreams(DynamoModel model)
