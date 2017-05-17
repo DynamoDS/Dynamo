@@ -41,13 +41,15 @@ namespace Dynamo.LibraryUI.Handlers
             var assemblyName = String.Join("", temp.Take(temp.Length - 1));
             var rm = new ResourceManager(assemblyName + imagesSuffix, assembly);
 
-            var image = (Bitmap)rm.GetObject(url.Name);
-            if (image == null) return null;
+            using (var image = (Bitmap)rm.GetObject(url.Name))
+            {
+                if (image == null) return null;
 
-            var stream = new MemoryStream();
-            image.Save(stream, ImageFormat.Png);
+                var stream = new MemoryStream();
+                image.Save(stream, ImageFormat.Png);
 
-            return stream;
+                return stream;
+            }
         }
     }
 }

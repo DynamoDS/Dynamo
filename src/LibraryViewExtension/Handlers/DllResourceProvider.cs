@@ -13,23 +13,27 @@ namespace Dynamo.LibraryUI.Handlers
     public class DllResourceProvider : ResourceProviderBase
     {
         /// <summary>
-        /// Root namespace from where resource can be searched. 
-        /// For example if this provider serves resources at Dynamo.LibraryUI.web.XXXX
-        /// where XXXX is name of the actual resource then the Root namespace is 
-        /// 'Dynamo.LibraryUI.web'
+        /// Root namespace for this resource provider. For an example, if this provider
+        /// serves resources at "Dynamo.LibraryUI.Web.Xxxx" (where "Xxxx" is the actual
+        /// name of the resource), then root namespace would be "Dynamo.LibraryUI.Web".
         /// </summary>
         public string RootNamespace { get; set; }
 
         /// <summary>
-        /// The base Url from where the request is served.
-        /// For example, if this provider serves requests at http://localhost/dist/v0.0.1/XXXX
-        /// where XXXX is the name of the request then the base Url is http://localhost/dist/v0.0.1
+        /// The base url from where the request is served. For example, if this provider 
+        /// serves requests at http://localhost/dist/v0.0.1/Xxxx (where "Xxxx" is the name
+        /// of the request), then the base url is "http://localhost/dist/v0.0.1".
         /// </summary>
         public string BaseUrl { get; set; }
 
         /// <summary>
-        /// Gets resource stream for the given request.
+        /// Call this method to get the stream for a given requested resource.
         /// </summary>
+        /// <param name="request">The request object.</param>
+        /// <param name="extension">Output parameter whose value is the extension
+        /// of the requested resource. This extension does not contain "." character.</param>
+        /// <returns>Returns the stream if the requested resource can be found, or null 
+        /// otherwise.</returns>
         public override Stream GetResource(IRequest request, out string extension)
         {
             extension = "txt";

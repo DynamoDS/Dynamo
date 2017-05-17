@@ -19,11 +19,13 @@ namespace Dynamo.LibraryUI.Handlers
         bool IsStaticResource { get; }
 
         /// <summary>
-        /// Gets a resource stream and an extension to define mime type for the given request.
+        /// Call this method to get the stream for a given requested resource.
         /// </summary>
-        /// <param name="request">Web request</param>
-        /// <param name="extension">output data stream extension</param>
-        /// <returns>Resource stream</returns>
+        /// <param name="request">The request object.</param>
+        /// <param name="extension">Output parameter whose value is the extension
+        /// of the requested resource. This extension does not contain "." character.</param>
+        /// <returns>Returns the stream if the requested resource can be found, or null 
+        /// otherwise.</returns>
         Stream GetResource(IRequest request, out string extension);
     }
 

@@ -11,54 +11,65 @@ using DynamoUtilities;
 namespace Dynamo.Engine
 {
     /// <summary>
-    /// Provides access to library custoization objects
+    /// Provides access to library customization objects
     /// </summary>
-    public interface ILibraryCustomizationServices
+    internal interface ILibraryCustomizationServices
     {
         /// <summary>
-        /// Provides a LibraryCustomization for a given assembly
+        /// Call this method to obtain the corresponding LibraryCustomization object
+        /// for a given assembly path.
         /// </summary>
-        /// <param name="assemblyPath">Assembly for which library customization is needed</param>
-        /// <returns></returns>
+        /// <param name="assemblyPath">Path of assembly for which LibraryCustomization
+        /// object is to be obtained.</param>
+        /// <returns>Returns the corresponding LibraryCustomization object if one is 
+        /// found, or null otherwise.</returns>
         LibraryCustomization GetLibraryCustomization(string assemblyPath);
     }
 
     /// <summary>
     /// LibraryCustomizationServices class that implements ILibraryCustomizationServices interface
     /// </summary>
-    public class LibraryCustomizationServices : ILibraryCustomizationServices
+    internal class LibraryCustomizationServices : ILibraryCustomizationServices
     {
         private static Dictionary<string, bool> triedPaths = new Dictionary<string, bool>();
         private static Dictionary<string, LibraryCustomization> cache = new Dictionary<string, LibraryCustomization>();
         private IPathManager pathManager;
 
         /// <summary>
-        /// Creates the customization services instance using given path manager
+        /// Creates an instance of LibraryCustomizationServices given an IPathManager.
         /// </summary>
-        /// <param name="assemblyPathManager">Path manager to resolve assembly path</param>
+        /// <param name="assemblyPathManager">Path manager through which assembly paths 
+        /// are to be resolved.</param>
         public LibraryCustomizationServices(IPathManager assemblyPathManager)
         {
             this.pathManager = assemblyPathManager;
         }
 
         /// <summary>
-        /// Provides a LibraryCustomization for a given assembly
+        /// Call this method to obtain the corresponding LibraryCustomization object
+        /// for a given assembly path.
         /// </summary>
-        /// <param name="assemblyPath">Assembly for which library customization is needed</param>
-        /// <returns></returns>
+        /// <param name="assemblyPath">Path of assembly for which LibraryCustomization
+        /// object is to be obtained.</param>
+        /// <returns>Returns the corresponding LibraryCustomization object if one is 
+        /// found, or null otherwise.</returns>
         public LibraryCustomization GetLibraryCustomization(string assemblyPath)
         {
             return GetForAssembly(assemblyPath, pathManager, false); 
         }
 
         /// <summary>
-        /// Provides a LibraryCustomization for a given assembly
+        /// Call this method to obtain the corresponding LibraryCustomization object
+        /// for a given assembly path.
         /// </summary>
-        /// <param name="assemblyPath">Assembly for which library customization is needed</param>
-        /// <param name="pathManager">Path manager to resolve assembly path</param>
-        /// <param name="useAdditionalPaths">Whether to use additional path at 
-        /// path manager to resolve the assembly for customization resources</param>
-        /// <returns></returns>
+        /// <param name="assemblyPath">Path of assembly for which LibraryCustomization
+        /// object is to be obtained.</param>
+        /// <param name="pathManager">Path manager through which assembly paths are 
+        /// to be resolved.</param>
+        /// <param name="useAdditionalPaths">Set this parameter to true if additional 
+        /// paths are to be considered when an assembly path is being resolved.</param>
+        /// <returns>Returns the corresponding LibraryCustomization object if one is 
+        /// found, or null otherwise.</returns>
         public static LibraryCustomization GetForAssembly(string assemblyPath, IPathManager pathManager, bool useAdditionalPaths = true)
         {
             if (triedPaths.ContainsKey(assemblyPath))
@@ -164,7 +175,7 @@ namespace Dynamo.Engine
     /// <summary>
     /// Implements library customization class that provides customization resources
     /// </summary>
-    public class LibraryCustomization
+    internal class LibraryCustomization
     {
         private readonly Assembly resourceAssembly;
         private readonly XDocument xmlDocument;
