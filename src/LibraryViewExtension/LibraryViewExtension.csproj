@@ -74,9 +74,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Handlers\IconResourceProvider.cs" />
+    <Compile Include="Handlers\IconUrl.cs" />
     <Compile Include="Handlers\NodeItemDataProvider.cs" />
     <Compile Include="Handlers\ResourceHandlerFactory.cs" />
-    <Compile Include="Handlers\ResourceProviders.cs" />
+    <Compile Include="Handlers\ResourceProvider.cs" />
+    <Compile Include="Handlers\DllResourceProvider.cs" />
     <Compile Include="LibraryViewController.cs" />
     <Compile Include="LibraryViewExtension.cs" />
     <Compile Include="LibraryViewToolTip.cs" />
