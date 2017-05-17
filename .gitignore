@@ -36,7 +36,7 @@ packages/
 ######################
 .DS_Store*
 ehthumbs.db
-Icon?
+# Icon?
 Thumbs.db
 
 # DEBUG FILES #
