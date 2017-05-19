@@ -27,7 +27,8 @@ namespace Dynamo.LibraryUI.Handlers
         {
             extension = "png";
             var url = new IconUrl(new Uri(request.Url));
-            var libraryCustomization = LibraryCustomizationServices.GetForAssembly(url.Path, pathManager, true);
+            var path = Path.GetFullPath(url.Path);
+            var libraryCustomization = LibraryCustomizationServices.GetForAssembly(path, pathManager, true);
             if (libraryCustomization == null)
                 return null;
 
