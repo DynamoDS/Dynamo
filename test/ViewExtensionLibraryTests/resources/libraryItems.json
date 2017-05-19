@@ -5618,7 +5618,7 @@
     },
     {
       "fullyQualifiedName": "List.RemoveIfNot",
-      "iconUrl": "http://localhost/icons/List.RemoveIfNot.Small?path=BuiltIns.ds",
+      "iconUrl": "http://localhost/icons/List.RemoveIfNot.Small?path=BuiltIn.ds",
       "contextData": "List.RemoveIfNot@var[]..[],string",
       "parameters": null,
       "itemType": "action",
@@ -5626,7 +5626,7 @@
     },
     {
       "fullyQualifiedName": "List.Equals",
-      "iconUrl": "http://localhost/icons/List.Equals.Small?path=BuiltIns.ds",
+      "iconUrl": "http://localhost/icons/List.Equals.Small?path=BuiltIn.ds",
       "contextData": "List.Equals@var,var",
       "parameters": null,
       "itemType": "action",
@@ -5634,7 +5634,7 @@
     },
     {
       "fullyQualifiedName": "List.GroupByFunction",
-      "iconUrl": "http://localhost/icons/List.GroupByFunction.Small?path=BuiltIns.ds",
+      "iconUrl": "http://localhost/icons/List.GroupByFunction.Small?path=BuiltIn.ds",
       "contextData": "List.GroupByFunction@var[]..[],Function",
       "parameters": null,
       "itemType": "action",
@@ -5642,7 +5642,7 @@
     },
     {
       "fullyQualifiedName": "List.SortByFunction",
-      "iconUrl": "http://localhost/icons/List.SortByFunction.Small?path=BuiltIns.ds",
+      "iconUrl": "http://localhost/icons/List.SortByFunction.Small?path=BuiltIn.ds",
       "contextData": "List.SortByFunction@var[]..[],Function",
       "parameters": null,
       "itemType": "action",
@@ -5650,7 +5650,7 @@
     },
     {
       "fullyQualifiedName": "List.MaximumItemByKey",
-      "iconUrl": "http://localhost/icons/List.MaximumItemByKey.Small?path=BuiltIns.ds",
+      "iconUrl": "http://localhost/icons/List.MaximumItemByKey.Small?path=BuiltIn.ds",
       "contextData": "List.MaximumItemByKey@var[]..[],Function",
       "parameters": null,
       "itemType": "action",
@@ -5658,7 +5658,7 @@
     },
     {
       "fullyQualifiedName": "List.MinimumItemByKey",
-      "iconUrl": "http://localhost/icons/List.MinimumItemByKey.Small?path=BuiltIns.ds",
+      "iconUrl": "http://localhost/icons/List.MinimumItemByKey.Small?path=BuiltIn.ds",
       "contextData": "List.MinimumItemByKey@var[]..[],Function",
       "parameters": null,
       "itemType": "action",
@@ -5666,7 +5666,7 @@
     },
     {
       "fullyQualifiedName": "List.TrueForAll",
-      "iconUrl": "http://localhost/icons/List.TrueForAll.Small?path=BuiltIns.ds",
+      "iconUrl": "http://localhost/icons/List.TrueForAll.Small?path=BuiltIn.ds",
       "contextData": "List.TrueForAll@var[]..[],Function",
       "parameters": null,
       "itemType": "action",
@@ -5674,7 +5674,7 @@
     },
     {
       "fullyQualifiedName": "List.TrueForAny",
-      "iconUrl": "http://localhost/icons/List.TrueForAny.Small?path=BuiltIns.ds",
+      "iconUrl": "http://localhost/icons/List.TrueForAny.Small?path=BuiltIn.ds",
       "contextData": "List.TrueForAny@var[]..[],Function",
       "parameters": null,
       "itemType": "action",
@@ -5682,7 +5682,7 @@
     },
     {
       "fullyQualifiedName": "List.RemoveKey",
-      "iconUrl": "http://localhost/icons/List.RemoveKey.Small?path=BuiltIns.ds",
+      "iconUrl": "http://localhost/icons/List.RemoveKey.Small?path=BuiltIn.ds",
       "contextData": "List.RemoveKey@var[]..[],var",
       "parameters": null,
       "itemType": "action",
@@ -5690,7 +5690,7 @@
     },
     {
       "fullyQualifiedName": "List.GetValues",
-      "iconUrl": "http://localhost/icons/List.GetValues.Small?path=BuiltIns.ds",
+      "iconUrl": "http://localhost/icons/List.GetValues.Small?path=BuiltIn.ds",
       "contextData": "List.GetValues@var[]..[]",
       "parameters": null,
       "itemType": "action",
@@ -5698,7 +5698,7 @@
     },
     {
       "fullyQualifiedName": "List.GetKeys",
-      "iconUrl": "http://localhost/icons/List.GetKeys.Small?path=BuiltIns.ds",
+      "iconUrl": "http://localhost/icons/List.GetKeys.Small?path=BuiltIn.ds",
       "contextData": "List.GetKeys@var[]..[]",
       "parameters": null,
       "itemType": "action",
@@ -5706,7 +5706,7 @@
     },
     {
       "fullyQualifiedName": "List.ContainsKey",
-      "iconUrl": "http://localhost/icons/List.ContainsKey.Small?path=BuiltIns.ds",
+      "iconUrl": "http://localhost/icons/List.ContainsKey.Small?path=BuiltIn.ds",
       "contextData": "List.ContainsKey@var[]..[],var",
       "parameters": null,
       "itemType": "action",
@@ -5775,22 +5775,6 @@
       "parameters": null,
       "itemType": "action",
       "keywords": "uvs"
-    },
-    {
-      "fullyQualifiedName": "Analysis.Label.ByPointAndString",
-      "iconUrl": "http://localhost/icons/Analysis.Label.ByPointAndString.Small?path=Analysis.dll",
-      "contextData": "Analysis.Label.ByPointAndString@Autodesk.DesignScript.Geometry.Point,string",
-      "parameters": null,
-      "itemType": "create",
-      "keywords": ""
-    },
-    {
-      "fullyQualifiedName": "Analysis.AnalysisExtensions.IsAlmostEqualTo",
-      "iconUrl": "http://localhost/icons/Analysis.AnalysisExtensions.IsAlmostEqualTo.Small?path=Analysis.dll",
-      "contextData": "Analysis.AnalysisExtensions.IsAlmostEqualTo@Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV",
-      "parameters": null,
-      "itemType": "action",
-      "keywords": ""
     },
     {
       "fullyQualifiedName": "Modifiers.GeometryColor.ByGeometryColor",

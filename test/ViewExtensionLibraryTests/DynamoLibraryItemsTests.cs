@@ -26,7 +26,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("Failure")]
+        [Category("UnitTests")]
         public void VerifyIconsForLibraryItems()
         {
             var iconProvider = new IconResourceProvider(GetModel().PathManager);

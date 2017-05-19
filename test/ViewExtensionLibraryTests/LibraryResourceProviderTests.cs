@@ -1,17 +1,15 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
-using System.Linq.Expressions;
 using CefSharp;
+using Dynamo;
 using Dynamo.Extensions;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.LibraryUI;
 using Dynamo.LibraryUI.Handlers;
 using Dynamo.Search.SearchElements;
 using Moq;
-using Moq.Protected;
 using NUnit.Framework;
-using Dynamo;
-using System;
-using Dynamo.Graph.Nodes.CustomNodes;
 
 namespace ViewExtensionLibraryTests
 {
@@ -32,7 +30,7 @@ namespace ViewExtensionLibraryTests
         }
     }
 
-    public class ViewExtensionLibraryTests
+    public class LibraryResourceProviderTests
     {
         [Test]
         [Category("UnitTests")]

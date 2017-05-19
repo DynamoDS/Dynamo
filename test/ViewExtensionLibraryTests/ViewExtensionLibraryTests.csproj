@@ -63,7 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DynamoLibraryItemsTests.cs" />
-    <Compile Include="ViewExtensionLibraryTests.cs" />
+    <Compile Include="LibraryResourceProviderTests.cs" />
     <Compile Include="..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
