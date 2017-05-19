@@ -35,20 +35,25 @@
   <ItemGroup>
     <Reference Include="CefSharp">
       <HintPath>..\..\src\packages\CefSharp.Common.49.0.1\CefSharp\x64\CefSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="CefSharp.Core">
       <HintPath>..\..\src\packages\CefSharp.Common.49.0.1\CefSharp\x64\CefSharp.Core.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Moq">
       <HintPath>..\..\src\packages\Moq.4.2.1507.0118\lib\net40\Moq.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\src\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -73,22 +78,27 @@
     <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\CoreNodeModels\CoreNodeModels.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>CoreNodeModels</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\LibraryViewExtension\LibraryViewExtension.csproj">
       <Project>{8eacbfd1-1cd4-4519-a5fc-215d40a67204}</Project>
       <Name>LibraryViewExtension</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
       <Name>DynamoCoreTests</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\SystemTestServices\SystemTestServices.csproj">
       <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
       <Name>SystemTestServices</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
