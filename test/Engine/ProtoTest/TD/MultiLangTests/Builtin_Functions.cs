@@ -2683,7 +2683,7 @@ d = ImportFromCSV(c);
         {
             String code =
 @"
-import(""BuiltIns.ds"");
+import(""BuiltIn.ds"");
 a = { true,null,false,true};
 b = List.RemoveIfNot(a, ""bool"");
 ";
@@ -2698,7 +2698,7 @@ b = List.RemoveIfNot(a, ""bool"");
         {
             String code =
 @"
-import(""BuiltIns.ds"");
+import(""BuiltIn.ds"");
 b;
 [Imperative]
 {
@@ -2717,7 +2717,7 @@ b;
         {
             String code =
 @"
-import(""BuiltIns.ds"");
+import(""BuiltIn.ds"");
 b;
     a = { true,null,false,true};
     c=""bool"";
@@ -2734,7 +2734,7 @@ b;
         {
             String code =
 @"
-import(""BuiltIns.ds"");
+import(""BuiltIn.ds"");
 b;
     a = { true,null,false,true};
     c=""int"";
@@ -2751,7 +2751,7 @@ b;
         {
             String code =
 @"
-import(""BuiltIns.ds"");
+import(""BuiltIn.ds"");
 b;
     a = { 1.0,null,1,2};
     c=""double"";
@@ -2768,7 +2768,7 @@ b;
         {
             String code =
 @"
-import(""BuiltIns.ds"");
+import(""BuiltIn.ds"");
 b;
     a = { true,null,{true},false};
     c=""array"";
@@ -3409,7 +3409,7 @@ def foo ()
         public void TestRemoveKeyNoThrow()
         {
             string code = @"
-import(""BuiltIns.ds"");
+import(""BuiltIn.ds"");
 x = 0;
 y = List.RemoveKey(x, x);
 ";
@@ -3421,7 +3421,7 @@ y = List.RemoveKey(x, x);
         public void TestContainsKeyNoThrow()
         {
             string code = @"
-import(""BuiltIns.ds"");
+import(""BuiltIn.ds"");
 x = 0;
 y = List.ContainsKey(x, x);
 ";
