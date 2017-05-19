@@ -7,8 +7,12 @@ namespace Dynamo.LibraryUI.Handlers
 {
     class IconUrl
     {
-        public static readonly string ServiceEndpoint = "/icons";
+        public const string ServiceEndpoint = "/icons";
         private const string query = @"?path=";
+
+        internal const string DefaultPath = "DynamoCore.dll";
+        internal const string DefaultIcon = "DefaultCustomNode.Small";
+
         /// <summary>
         /// Creates IconUrl object by extracting parameters from the given Uri
         /// </summary>
@@ -34,8 +38,8 @@ namespace Dynamo.LibraryUI.Handlers
             {
                 string customizationPath = System.IO.Path.GetDirectoryName(Path);
                 customizationPath = Directory.GetParent(customizationPath).FullName;
-                Path = "DynamoCore.dll";
-                Name = "DefaultCustomNode.Small";
+                Path = DefaultPath;
+                Name = DefaultIcon;
                 if (File.Exists(System.IO.Path.Combine(customizationPath, "bin", "Package.customization.dll")))
                 {
                     Path = System.IO.Path.Combine(customizationPath, "bin", "Package.dll");

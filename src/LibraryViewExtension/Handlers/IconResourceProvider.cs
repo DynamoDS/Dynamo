@@ -26,8 +26,10 @@ namespace Dynamo.LibraryUI.Handlers
         public override Stream GetResource(IRequest request, out string extension)
         {
             extension = "png";
-            var url = new IconUrl(new Uri(request.Url));
-            var libraryCustomization = LibraryCustomizationServices.GetForAssembly(url.Path, pathManager, true);
+            //Create IconUrl to parse the request.Url to icon name and path.
+            var icon = new IconUrl(new Uri(request.Url));
+            var path = Path.GetFullPath(icon.Path); //Get full path if it's a relative path.
+            var libraryCustomization = LibraryCustomizationServices.GetForAssembly(path, pathManager, true);
             if (libraryCustomization == null)
                 return null;
 
@@ -41,7 +43,7 @@ namespace Dynamo.LibraryUI.Handlers
             var assemblyName = String.Join("", temp.Take(temp.Length - 1));
             var rm = new ResourceManager(assemblyName + imagesSuffix, assembly);
 
-            using (var image = (Bitmap)rm.GetObject(url.Name))
+            using (var image = (Bitmap)rm.GetObject(icon.Name))
             {
                 if (image == null) return null;
 
