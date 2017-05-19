@@ -1186,7 +1186,7 @@ r = c[3];
         {
             // Test builtin functions GetKeys() for array
             String code = @"
-import(""BuiltIns.ds"");
+import(""BuiltIn.ds"");
 a = {1, 2, 3};
 a[true] = 41;
 a[""x""] = ""foo"";
@@ -1201,7 +1201,7 @@ r = Count(List.GetKeys(a));
         {
             // Test builtin functions GetValues() for array
             String code = @"
-import(""BuiltIns.ds"");
+import(""BuiltIn.ds"");
 a = {1, 2, 3};
 a[true] = 41;
 a[""x""] = ""foo"";
@@ -1216,7 +1216,7 @@ r = Count(List.GetValues(a));
         {
             // Test builtin functions ContainsKey() for array
             String code = @"
-import(""BuiltIns.ds"");
+import(""BuiltIn.ds"");
 a = {1, 2, 3};
 a[true] = 41;
 a[""x""] = ""foo"";
@@ -1233,7 +1233,7 @@ r2 = List.ContainsKey(a, true);
         {
             // Test builtin functions RemoveKey() for array
             String code = @"
-import(""BuiltIns.ds"");
+import(""BuiltIn.ds"");
 a = {1, 2, 3};
 a[true] = 41;
 a[""x""] = ""foo"";
