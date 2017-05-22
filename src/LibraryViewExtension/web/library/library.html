@@ -74,7 +74,7 @@
         });
 
         libController.on(libController.ItemToolTipExpandEventName, function (arg) {
-            console.log("toolTip expanding now : " + arg.data);
+            //console.log("toolTip expanding now : " + arg.data);
             let nodeData = csharpController.getToolTipData(arg.data);
             arg.dataReceiver(nodeData);
         });
