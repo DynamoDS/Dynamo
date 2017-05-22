@@ -43,7 +43,6 @@
             let libContainer = libController.createLibraryByElementId("libraryContainerPlaceholder", layoutSpecsJson, loadedTypesJson);
         });
 
-
         // Register event handlers for various events on library controller and package controller.
 
         libController.on(libController.ItemClickedEventName, function (nodeCreationName) {
@@ -60,6 +59,12 @@
         libController.on(libController.ItemMouseLeaveEventName, function (arg) {
             //console.log('Mouse left: ' + arg.data);
             csharpController.closeNodeTooltip(true);
+        });
+
+        libController.on(libController.ItemToolTipExpandEventName, function (arg) {
+            console.log("toolTip expanding now : " + arg.data);
+            let nodeData = csharpController.getToolTipData(arg.data);
+            arg.dataReceiver(nodeData);
         });
 
         csharpController.on("error", function (msg) {

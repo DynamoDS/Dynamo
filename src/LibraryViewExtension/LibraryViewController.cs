@@ -19,6 +19,7 @@ using Dynamo.ViewModels;
 using System.Windows.Input;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Controls;
+using Newtonsoft.Json;
 
 namespace Dynamo.LibraryUI
 {
@@ -113,6 +114,18 @@ namespace Dynamo.LibraryUI
                 var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
                 commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), ViewExtension.ExtensionName);
             }));
+        }
+
+        /// <summary>
+        /// Get data for showing overlay tooltip within library
+        /// </summary>
+        /// <param name="nodeName">Node creation name</param>
+        public string GetToolTipData(string nodeName)
+        {
+            var node = dynamoViewModel.SearchViewModel.FindViewModelForNode(nodeName);
+            var nodeData = new Tuple<IEnumerable<Tuple<string, string>>, IEnumerable<string>>(
+                node.InputParameters, node.OutputParameters);
+            return JsonConvert.SerializeObject(nodeData);
         }
 
         /// <summary>
