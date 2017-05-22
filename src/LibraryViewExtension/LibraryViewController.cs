@@ -123,8 +123,8 @@ namespace Dynamo.LibraryUI
         public string GetToolTipData(string nodeName)
         {
             var node = dynamoViewModel.SearchViewModel.FindViewModelForNode(nodeName);
-            var nodeData = new Tuple<IEnumerable<Tuple<string, string>>, IEnumerable<string>>(
-                node.InputParameters, node.OutputParameters);
+            var nodeData = new Tuple<IEnumerable<Tuple<string, string>>, IEnumerable<string>, string>(
+                node.InputParameters, node.OutputParameters, node.Description);
             return JsonConvert.SerializeObject(nodeData);
         }
 
