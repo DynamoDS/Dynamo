@@ -199,7 +199,7 @@
         gIEBABOi1tXEFFiTAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="Dynamo.Graph.Nodes.Output.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Dynamo.Graph.Nodes.CustomNodes.Output.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGvSURBVHhe7drNTQJQEMRxSqAU2jDxYAmWQCeWQAmW
@@ -213,7 +213,7 @@
         gg==
 </value>
   </data>
-  <data name="Dynamo.Graph.Nodes.Output.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Dynamo.Graph.Nodes.CustomNodes.Output.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAACOSURBVFhHYxgFo2AUjIJBDd69e/efVAzVSh1AqoGD
@@ -222,7 +222,7 @@
         AAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="Dynamo.Graph.Nodes.Symbol.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Dynamo.Graph.Nodes.CustomNodes.Symbol.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGrSURBVHhe7drRbcJAEIRhl5ASUgJtIKUIOqOElBBR
@@ -235,7 +235,7 @@
         2yfdPLDbxIp9KwV3mVixb6XgLhMrAgAAAAAAAAAAAAAAf8NwAyVoRks3qNaKAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="Dynamo.Graph.Nodes.Symbol.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Dynamo.Graph.Nodes.CustomNodes.Symbol.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAACESURBVFhHYxgFo2AUjIJRQCp49+7df1IxVCt1AKkG

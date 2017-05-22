@@ -69,7 +69,7 @@ namespace Dynamo.LibraryUI.Handlers
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        private LoadedTypeItem CreateLoadedTypeItem(NodeSearchElement element)
+        internal LoadedTypeItem CreateLoadedTypeItem(NodeSearchElement element)
         {
             //Create LoadedTypeItem with base class
             var item = new LoadedTypeItem()

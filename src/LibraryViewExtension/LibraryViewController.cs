@@ -234,8 +234,8 @@ namespace Dynamo.LibraryUI
         {
             resourceFactory = new ResourceHandlerFactory();
             resourceFactory.RegisterProvider("/dist/v0.0.1", 
-                new DllResourceProvider() { BaseUrl = "http://localhost/dist/v0.0.1",
-                    RootNamespace = "Dynamo.LibraryUI.web.library" });
+                new DllResourceProvider("http://localhost/dist/v0.0.1",
+                    "Dynamo.LibraryUI.web.library"));
 
             resourceFactory.RegisterProvider(IconUrl.ServiceEndpoint, new IconResourceProvider(model.PathManager));
 
