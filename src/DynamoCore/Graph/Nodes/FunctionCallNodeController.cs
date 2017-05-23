@@ -113,8 +113,9 @@ namespace Dynamo.Graph.Nodes
         /// <param name="resultAst">Result accumulator: add all new output AST to this list.</param>
         protected virtual void AssignIdentifiersForFunctionCall(NodeModel model, AssociativeNode rhs, List<AssociativeNode> resultAst)
         {
-            resultAst.Add(AstFactory.BuildAssignment(model.AstIdentifierForPreview, rhs));
 
+           resultAst.Add(AstFactory.BuildAssignment(model.AstIdentifierForPreview, rhs));
+          
             var keys = Definition.ReturnKeys ?? Enumerable.Empty<string>();
             resultAst.AddRange(
                 from item in keys.Zip(Enumerable.Range(0, keys.Count()), (key, idx) => new { key, idx })
@@ -123,8 +124,11 @@ namespace Dynamo.Graph.Nodes
                 let getValueCall = AstFactory.BuildFunctionCall(
                     BuiltInMethods.GetMethodName(BuiltInMethods.MethodID.TryGetValueFromNestedDictionaries),
                     new List<AssociativeNode> {model.AstIdentifierForPreview, AstFactory.BuildStringNode(item.key)})
-                select
-                AstFactory.BuildAssignment(outputIdentiferNode, getValueCall));
+                select 
+             
+             Definition.ReturnKeys.Count() == 1 ? AstFactory.BuildAssignment(model.AstIdentifierForPreview, getValueCall)
+                    : AstFactory.BuildAssignment(outputIdentiferNode, getValueCall));
+              
         }
 
         /// <summary>
