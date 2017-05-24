@@ -143,7 +143,7 @@ namespace Dynamo.Manipulation
                 }
                 planes.Add(Plane.ByOriginXAxisYAxis(Origin, axis3, axis1));
             }
-            
+
             if (axes.Count == 1 && hitAxis != null)
             {
                 hitAxis = axes.First();
