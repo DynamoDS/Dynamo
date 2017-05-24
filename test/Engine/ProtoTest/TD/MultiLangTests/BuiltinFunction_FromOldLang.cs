@@ -318,7 +318,7 @@ newArray[2] = { 7, 8, 9 }; // and good
         public void set_operation_functions_test_1()
         {
             string code = @"
-import(""BuiltIns.ds"");
+import(""BuiltIn.ds"");
 set = { true, { false, true } };
 allFalseSet = AllFalse(set);
 someFalseSet = SomeFalse(set);

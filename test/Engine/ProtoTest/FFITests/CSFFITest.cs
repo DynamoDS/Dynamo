@@ -1300,7 +1300,7 @@ p11;
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1947
             string code =
                 @"import(""FFITarget.dll"");
-                    import(""BuiltIns.ds"");
+                    import(""BuiltIn.ds"");
                     x = 1..2;
 
                     Xo = x[0];
@@ -1332,7 +1332,7 @@ p11;
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1947
             string code =
                 @"import(""FFITarget.dll"");
-                    import(""BuiltIns.ds"");
+                    import(""BuiltIn.ds"");
                     aDup = A.DupTargetTest(0);
                     aReadback = aDup.Prop;
 

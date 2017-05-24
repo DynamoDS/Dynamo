@@ -28,22 +28,63 @@ namespace Dynamo.LibraryUI
         void RaiseEvent(string eventName, params object[] parameters);
     }
 
+    public class EventController : IEventController
+    {
+        private object contextData = null;
+        private Dictionary<string, List<IJavascriptCallback>> callbacks = new Dictionary<string, List<IJavascriptCallback>>();
+
+        public void On(string eventName, object callback)
+        {
+            List<IJavascriptCallback> cblist;
+            if (!callbacks.TryGetValue(eventName, out cblist))
+            {
+                cblist = new List<IJavascriptCallback>();
+            }
+            cblist.Add(callback as IJavascriptCallback);
+            callbacks[eventName] = cblist;
+        }
+
+        [JavascriptIgnore]
+        public void RaiseEvent(string eventName, params object[] parameters)
+        {
+            List<IJavascriptCallback> cblist;
+            if (callbacks.TryGetValue(eventName, out cblist))
+            {
+                foreach (var cbfunc in cblist)
+                {
+                    if (cbfunc.CanExecute)
+                    {
+                        cbfunc.ExecuteAsync(parameters);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets details view context data, e.g. packageId if it shows details of a package
+        /// </summary>
+        public object DetailsViewContextData
+        {
+            get { return contextData; }
+            set
+            {
+                contextData = value;
+                this.RaiseEvent("detailsViewContextDataChanged", contextData);
+            }
+        }
+    }
+
+
     /// <summary>
     /// This class holds methods and data to be called from javascript
     /// </summary>
-    public class LibraryViewController : IEventController
+    public class LibraryViewController : EventController
     {
         private Window dynamoWindow;
         private ICommandExecutive commandExecutive;
-        private DetailsView detailsView;
-        private DetailsViewModel detailsViewModel;
         private DynamoViewModel dynamoViewModel;
         private FloatingLibraryTooltipPopup libraryViewTooltip;
-        private object contextData = null;
         private ResourceHandlerFactory resourceFactory;
-        private LibraryView libraryView = null;
-
-        private Dictionary<string, List<IJavascriptCallback>> callbacks = new Dictionary<string, List<IJavascriptCallback>>();
 
         /// <summary>
         /// Creates LibraryViewController
@@ -72,74 +113,6 @@ namespace Dynamo.LibraryUI
                 var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
                 commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), ViewExtension.ExtensionName);
             }));
-        }
-
-        /// <summary>
-        /// Displays the details view over Dynamo canvas.
-        /// </summary>
-        /// <param name="item">item data for which details need to be shown</param>
-        public void ShowDetailsView(object data)
-        {
-            DetailsViewContextData = data;
-            if(detailsView == null)
-            {
-                dynamoWindow.Dispatcher.BeginInvoke(new Action(() => AddDetailsView()));
-            }
-            else
-            {
-                dynamoWindow.Dispatcher.BeginInvoke(new Action(() => detailsView.Visibility = Visibility.Visible));
-            }
-        }
-
-        /// <summary>
-        /// Closes the details view
-        /// </summary>
-        public void CloseDetailsView()
-        {
-            if(detailsView != null)
-            {
-                dynamoWindow.Dispatcher.BeginInvoke(new Action(() => detailsView.Visibility = Visibility.Collapsed));
-            }
-        }
-
-        public void On(string eventName, object callback)
-        {
-            List<IJavascriptCallback> cblist;
-            if(!callbacks.TryGetValue(eventName, out cblist))
-            {
-                cblist = new List<IJavascriptCallback>();
-            }
-            cblist.Add(callback as IJavascriptCallback);
-            callbacks[eventName] = cblist;
-        }
-
-        [JavascriptIgnore]
-        public void RaiseEvent(string eventName, params object[] parameters)
-        {
-            List<IJavascriptCallback> cblist;
-            if(callbacks.TryGetValue(eventName, out cblist))
-            {
-                foreach (var cbfunc in cblist)
-                {
-                    if (cbfunc.CanExecute)
-                    {
-                        cbfunc.ExecuteAsync(parameters);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets details view context data, e.g. packageId if it shows details of a package
-        /// </summary>
-        public object DetailsViewContextData
-        {
-            get { return contextData; }
-            set
-            {
-                contextData = value;
-                this.RaiseEvent("detailsViewContextDataChanged", contextData);
-            }
         }
 
         /// <summary>
@@ -231,7 +204,7 @@ namespace Dynamo.LibraryUI
 
         private void OnLibraryViewLoaded(object sender, RoutedEventArgs e)
         {
-            libraryView = sender as LibraryView;
+            var libraryView = sender as LibraryView;
 #if DEBUG
             var browser = libraryView.Browser;
             browser.ConsoleMessage += OnBrowserConsoleMessage;
@@ -244,30 +217,14 @@ namespace Dynamo.LibraryUI
             System.Diagnostics.Trace.Write(e.Message);
         }
 
-        private DetailsView AddDetailsView()
-        {
-            detailsViewModel = new DetailsViewModel("http://localhost/details.html");
-
-            var tabcontrol = dynamoWindow.FindName("WorkspaceTabs") as TabControl;
-            var grid = tabcontrol.Parent as Grid;
-
-            detailsView = new DetailsView(detailsViewModel, grid);
-            grid.Children.Add(detailsView);
-
-            var browser = detailsView.Browser;
-            browser.RegisterJsObject("controller", this);
-            RegisterResources(browser);
-            detailsView.Loaded += OnDescriptionViewLoaded;
-
-            return detailsView;
-        }
-
         private void InitializeResourceStreams(DynamoModel model)
         {
             resourceFactory = new ResourceHandlerFactory();
             resourceFactory.RegisterProvider("/dist/v0.0.1", 
-                new DllResourceProvider() { BaseUrl = "http://localhost/dist/v0.0.1",
-                    RootNamespace = "Dynamo.LibraryUI.web.library" });
+                new DllResourceProvider("http://localhost/dist/v0.0.1",
+                    "Dynamo.LibraryUI.web.library"));
+
+            resourceFactory.RegisterProvider(IconUrl.ServiceEndpoint, new IconResourceProvider(model.PathManager));
 
             {
                 var url = "http://localhost/library.html";

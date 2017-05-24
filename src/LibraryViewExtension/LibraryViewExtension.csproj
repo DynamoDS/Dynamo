@@ -74,9 +74,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Handlers\IconResourceProvider.cs" />
+    <Compile Include="Handlers\IconUrl.cs" />
     <Compile Include="Handlers\NodeItemDataProvider.cs" />
     <Compile Include="Handlers\ResourceHandlerFactory.cs" />
-    <Compile Include="Handlers\ResourceProviders.cs" />
+    <Compile Include="Handlers\ResourceProvider.cs" />
+    <Compile Include="Handlers\DllResourceProvider.cs" />
     <Compile Include="LibraryViewController.cs" />
     <Compile Include="LibraryViewExtension.cs" />
     <Compile Include="LibraryViewToolTip.cs" />
@@ -136,9 +139,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.en-US.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
@@ -151,16 +151,34 @@
   <ItemGroup>
     <EmbeddedResource Include="web\library\layoutSpecs.json" />
     <EmbeddedResource Include="web\library\library.html" />
-    <EmbeddedResource Include="web\library\loadedTypes.json" />
     <EmbeddedResource Include="web\library\librarie.min.js" />
     <EmbeddedResource Include="web\library\resources\indent-arrow-down.svg" />
     <EmbeddedResource Include="web\library\resources\indent-arrow-right.svg" />
     <EmbeddedResource Include="web\library\resources\library-action.svg" />
     <EmbeddedResource Include="web\library\resources\library-create.svg" />
     <EmbeddedResource Include="web\library\resources\library-query.svg" />
-    <EmbeddedResource Include="web\library\resources\OpenSans-Regular.ttf" />
+    <EmbeddedResource Include="web\library\resources\add-on.svg" />
+    <EmbeddedResource Include="web\library\resources\misc.svg" />
+    <EmbeddedResource Include="web\library\resources\Dynamo.svg" />
+    <EmbeddedResource Include="web\library\resources\Category.Display.svg" />
+    <EmbeddedResource Include="web\library\resources\Category.Geometry.svg" />
+    <EmbeddedResource Include="web\library\resources\Category.ImportExport.svg" />
+    <EmbeddedResource Include="web\library\resources\Category.Input.svg" />
+    <EmbeddedResource Include="web\library\resources\Category.List.svg" />
+    <EmbeddedResource Include="web\library\resources\Category.Math.svg" />
+    <EmbeddedResource Include="web\library\resources\Category.Revit.svg" />
+    <EmbeddedResource Include="web\library\resources\Category.Script.svg" />
+    <EmbeddedResource Include="web\library\resources\Category.String.svg" />
+    <EmbeddedResource Include="web\library\resources\fontawesome-webfont.eot" />
+    <EmbeddedResource Include="web\library\resources\fontawesome-webfont.ttf" />
+    <EmbeddedResource Include="web\library\resources\fontawesome-webfont.woff" />
+    <EmbeddedResource Include="web\library\resources\fontawesome-webfont.woff2" />
+    <EmbeddedResource Include="web\library\resources\fontawesome-webfont.svg" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="web\library\resources\ArtifaktElement-Bold.woff" />
+    <EmbeddedResource Include="web\library\resources\ArtifaktElement-Regular.woff" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\cef.redist.x64.3.2623.1401\build\cef.redist.x64.targets" Condition="Exists('..\packages\cef.redist.x64.3.2623.1401\build\cef.redist.x64.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

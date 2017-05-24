@@ -25,24 +25,35 @@
         //Get hold of object registered from C#
         let csharpController = window["controller"];
 
+        function refreshLibraryView(libraryController) {
+            //Create library container
+            let jsonUrls = ["loadedTypes", "layoutSpecs"];
+            let downloader = LibraryEntryPoint.CreateJsonDownloader(jsonUrls, function (jsonUrl, jsonObject) {
+
+                let downloaded = downloader.getDownloadedJsonObjects();
+                let loadedTypesJson = downloaded["loadedTypes"];
+                let layoutSpecsJson = downloaded["layoutSpecs"];
+
+                if (!loadedTypesJson || (!layoutSpecsJson)) {
+                    console.log("Error: Couldn't get enough data to load library.");
+                    return; // Not fully downloaded yet, bail.
+                }
+
+                // Supply loaded types and layout specs at a much later time.
+                let append = false; // Replace existing contents instead of appending.
+                libraryController.setLoadedTypesJson(loadedTypesJson, append);
+                libraryController.setLayoutSpecsJson(layoutSpecsJson, append);
+                libraryController.refreshLibraryView(); // Refresh library view.
+            });
+        }
+
         //Create library controller
         let libController = LibraryEntryPoint.CreateLibraryController();
 
-        //Create library container
-        let jsonUrls = ["loadedTypes", "layoutSpecs"];
-        let downloader = LibraryEntryPoint.CreateJsonDownloader(jsonUrls, function (jsonUrl, jsonObject) {
-
-            let downloaded = downloader.getDownloadedJsonObjects();
-            let loadedTypesJson = downloaded["loadedTypes"];
-            let layoutSpecsJson = downloaded["layoutSpecs"];
-
-            if (!loadedTypesJson || (!layoutSpecsJson)) {
-                return; // Not fully downloaded yet, bail.
-            }
-
-            let libContainer = libController.createLibraryByElementId("libraryContainerPlaceholder", layoutSpecsJson, loadedTypesJson);
-        });
-
+        //Create library view
+        let libContainer = libController.createLibraryByElementId("libraryContainerPlaceholder");
+        //Update the view with contents
+        refreshLibraryView(libController);
 
         // Register event handlers for various events on library controller and package controller.
 
@@ -65,6 +76,10 @@
         csharpController.on("error", function (msg) {
             console.log("Error: " + msg);
             pkgController.raiseEvent("error", msg);
+        });
+
+        csharpController.on("libraryDataUpdated", function () {
+            refreshLibraryView(libController);
         });
 
     </script>

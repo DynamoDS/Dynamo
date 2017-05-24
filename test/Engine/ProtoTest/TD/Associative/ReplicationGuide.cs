@@ -2372,7 +2372,7 @@ test1 = ReplicationTestA.ReplicationTestA(x<1>, y<2>, z<3>).A ;
         {
             string code =
 @" 
-    import(""BuiltIns.ds"");
+    import(""BuiltIn.ds"");
     x = {0,1,2,3};
     y = {0,1};
     z = { ""int"", ""double"" };
@@ -2402,7 +2402,7 @@ test1 = ReplicationTestA.ReplicationTestA(x<1>, y<2>, z<3>).A ;
         {
             string code =
 @" 
-import(""BuiltIns.ds"");
+import(""BuiltIn.ds"");
 test1;
 test2;
 test3;
