@@ -40,10 +40,16 @@ namespace Dynamo.LibraryUI.Handlers
         private NodeSearchModel model;
         private IEventController controller;
         private Timer throttle;
-        private long duetime;
+        private long throttlingTime; //in millseconds
         private List<string> items = new List<string>();
 
-        public NodeItemDataProvider(NodeSearchModel model, IEventController controller = null, long dueTime = 200) : base(false)
+        /// <summary>
+        /// Creates a NodeItemDataProvider
+        /// </summary>
+        /// <param name="model">The NodeSearcModel from where nodes data is fetched</param>
+        /// <param name="controller">Event controller for notification</param>
+        /// <param name="throttlingTime">Throttling time in milliseconds</param>
+        public NodeItemDataProvider(NodeSearchModel model, IEventController controller = null, long throttlingTime = 200) : base(false)
         {
             this.model = model;
             if (model == null) throw new ArgumentNullException("model");
@@ -55,7 +61,7 @@ namespace Dynamo.LibraryUI.Handlers
                 model.EntryUpdated += OnLibraryDataUpdated;
 
                 this.controller = controller;
-                this.duetime = dueTime;
+                this.throttlingTime = throttlingTime;
                 throttle = new Timer(RaiseLibraryDataUpdated, controller, Timeout.Infinite, Timeout.Infinite); //disabled at begining
             }
         }
@@ -64,7 +70,7 @@ namespace Dynamo.LibraryUI.Handlers
         {
             items.Add(FullyQualifiedName(obj));
             //Raise event only after due milliseconds.
-            throttle.Change(duetime, 0); //enabled now
+            throttle.Change(throttlingTime, 0); //enabled now
         }
 
         private void RaiseLibraryDataUpdated(object state)
