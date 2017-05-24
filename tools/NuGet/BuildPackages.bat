@@ -20,7 +20,7 @@ for /f %%f in ('cscript //Nologo ..\install\GetFileVersion.vbs %harvestPath%\Dyn
   set /a count=!count!+1
 )
 setlocal DisableDelayedExpansion
-set version=%Major%.%Minor%.%Build%-beta%Revision%
+set version=%Major%.%Minor%.0
 
 :: Clean files generated from the previous run
 del *.nupkg
