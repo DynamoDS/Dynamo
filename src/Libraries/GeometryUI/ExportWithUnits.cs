@@ -76,6 +76,11 @@ namespace GeometryUI
         public override IEnumerable<AssociativeNode> BuildOutputAst(
             List<AssociativeNode> inputAstNodes)
         {
+            if (!InPorts[0].IsConnected || !InPorts[1].IsConnected)
+            {
+                return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
+            }
+
             double unitsMM = Conversions.ConversionDictionary[SelectedExportedUnit]*1000.0;
 
             var geometryListNode = inputAstNodes[0];
