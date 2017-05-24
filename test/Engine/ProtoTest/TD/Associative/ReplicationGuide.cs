@@ -385,7 +385,7 @@ test = foo( x<1>,y<2> );
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new Object[][] { new object[]{4},new object[]{ 5} });
+            thisTest.Verify("test", new Object[] { 4, 5});
         }
 
         [Test]
