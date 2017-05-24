@@ -370,6 +370,37 @@ namespace ProtoAssociative
                         }
                         newAstList.Add(node);
                     }
+                    else if (node is LanguageBlockNode)
+                    {
+                        var lbNode = node as LanguageBlockNode;
+
+                        if (context.applySSATransform && core.Options.GenerateSSA)
+                        {
+                            int ssaID = ProtoCore.DSASM.Constants.kInvalidIndex;
+                            ssaID = core.ExpressionUID++;
+                            //ssaUIDList.Add(name, ssaID);
+
+                            Stack<AssociativeNode> ssaStack = new Stack<AssociativeNode>();
+                            DFSEmitSSA_AST(node, ssaStack, ref newASTList);
+
+                            // Set the unique expression id for this range of SSA nodes
+                            foreach (AssociativeNode aNode in newASTList)
+                            {
+                                Validity.Assert(aNode is BinaryExpressionNode);
+
+                                // Set the exprID of the SSA's node
+                                BinaryExpressionNode ssaNode = aNode as BinaryExpressionNode;
+                                ssaNode.ExpressionUID = ssaID;
+                                ssaNode.SSASubExpressionID = ssaExprID;
+                                ssaNode.SSAExpressionUID = core.SSAExpressionUID;
+                                //ssaNode.guid = lbNode.guid;
+                                //ssaNode.OriginalAstID = lbNode.OriginalAstID;
+                                ssaNode.IsModifier = node.IsModifier;
+                                NodeUtils.SetNodeLocation(ssaNode, node, node);
+                            }
+                            newAstList.AddRange(newASTList);
+                        }
+                    }
                     else
                     {
                         newAstList.Add(node);
@@ -945,6 +976,33 @@ namespace ProtoAssociative
             {
                 var leftNode = AstFactory.BuildIdentifier(CoreUtils.BuildSSATemp(core));
                 var bnode = AstFactory.BuildAssignment(leftNode, node);
+                bnode.isSSAAssignment = true;
+
+                astlist.Add(bnode);
+                ssaStack.Push(bnode);
+            }
+            else if (node is LanguageBlockNode)
+            {
+                var lbNode = node as LanguageBlockNode;
+
+                var args = lbNode.FormalArguments;
+                if (args != null)
+                {
+                    lbNode.codeblock.CaptureList = new Dictionary<string, AssociativeNode>();
+                    for (int i = 0; i < args.Count; i++)
+                    {
+                        DFSEmitSSA_AST(args[i], ssaStack, ref astlist);
+                        var bNode = astlist[i] as BinaryExpressionNode;
+                        if (bNode != null)
+                        {
+                            lbNode.codeblock.CaptureList[args[i].Name] = bNode.LeftNode;
+                            args[i] = bNode.LeftNode;
+                        }
+                    }
+                }
+                // Left node
+                var identNode = AstFactory.BuildIdentifier(CoreUtils.BuildSSATemp(core));
+                var bnode = AstFactory.BuildAssignment(identNode, node);
                 bnode.isSSAAssignment = true;
 
                 astlist.Add(bnode);

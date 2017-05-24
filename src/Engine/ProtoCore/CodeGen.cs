@@ -59,6 +59,7 @@ namespace ProtoCore
         protected ProtoCore.AST.Node localFunctionDefNode;
         protected ProtoCore.AST.Node localCodeBlockNode;
         protected bool emitDebugInfo = true;
+        protected LanguageCodeBlock languageCodeBlock { get; set; }
 
         protected List<ProtoCore.DSASM.ProcedureNode> functionCallStack;
         protected bool IsAssociativeArrayIndexing { get; set; }
@@ -83,11 +84,13 @@ namespace ProtoCore
         // The first graphnode of the SSA'd identifier
         protected ProtoCore.AssociativeGraph.GraphNode firstSSAGraphNode = null;
 
-        public CodeGen(Core coreObj, ProtoCore.DSASM.CodeBlock parentBlock = null)
+        public CodeGen(Core coreObj, ProtoCore.DSASM.CodeBlock parentBlock = null, LanguageCodeBlock languageCodeBlock = null)
         {
             Validity.Assert(coreObj != null);
             core = coreObj;
             buildStatus = core.BuildStatus;
+            this.languageCodeBlock = languageCodeBlock;
+
             isEntrySet = false;
 
             emitReplicationGuide = false;
@@ -938,7 +941,7 @@ namespace ProtoCore
         /// <param name="symbol"></param>
         /// <param name="isAccessible"></param>
         /// <returns></returns>
-        protected bool VerifyAllocation(string name, int classScope, int functionScope, out ProtoCore.DSASM.SymbolNode symbol, out bool isAccessible)
+        protected virtual bool VerifyAllocation(string name, int classScope, int functionScope, out ProtoCore.DSASM.SymbolNode symbol, out bool isAccessible)
         {
             int symbolIndex = Constants.kInvalidIndex;
             symbol = null;

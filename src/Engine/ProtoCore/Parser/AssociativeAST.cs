@@ -149,6 +149,10 @@ namespace ProtoCore.AST.AssociativeAST
         }
 
         public Node CodeBlockNode { get; set; }
+
+        //public AssociativeNode CaptureListNode { get; set; }
+        public List<AssociativeNode> FormalArguments { get; set; }
+
         public LanguageCodeBlock codeblock { get; set; }
         public List<AssociativeNode> Attributes { get; set; }
 
@@ -193,6 +197,21 @@ namespace ProtoCore.AST.AssociativeAST
             buf.Append("[");
             buf.Append(strLang);
             buf.Append("]");
+
+            buf.Append("(");
+            var args = FormalArguments;
+            if (args != null)
+            {
+                for (int n = 0; n < args.Count; ++n)
+                {
+                    buf.Append(args[n]);
+                    if (n < args.Count - 1)
+                    {
+                        buf.Append(", ");
+                    }
+                }
+            }
+            buf.Append(")");
 
             buf.Append("\n");
             buf.Append("{");

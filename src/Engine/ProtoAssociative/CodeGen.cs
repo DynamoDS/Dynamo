@@ -40,7 +40,8 @@ namespace ProtoAssociative
         //      <t2, p>
         //
         Dictionary<string, string> ssaTempToFirstPointerMap = new Dictionary<string, string>();
-
+        
+        #region Constructors
         // This constructor is only called for Preloading of assemblies and 
         // precompilation of CodeBlockNode nodes in GraphUI for global language blocks - pratapa
         public CodeGen(Core coreObj) : base(coreObj)
@@ -131,6 +132,8 @@ namespace ProtoAssociative
 
             unPopulatedClasses = new Dictionary<int, ClassDeclNode>();
         }
+
+        #endregion
 
         /// <summary>
         /// Pushes the symbol as a dependent to graphNode if codegeneration semantic conditions are met
@@ -372,6 +375,9 @@ namespace ProtoAssociative
                 return false;
             }
         }
+        
+
+        #region Allocate Methods
 
         private SymbolNode Allocate(
             int classIndex,  // In which class table this variable will be allocated to ?
@@ -538,7 +544,78 @@ namespace ProtoAssociative
             }
             return symbolindex;
         }
-        
+
+        private void AllocateContextGlobals()
+        {
+            if (null != context && null != context.GlobalVarList && context.GlobalVarList.Count > 0)
+            {
+                ProtoCore.Type type = new ProtoCore.Type();
+                foreach (string globalName in context.GlobalVarList.Keys)
+                {
+                    Allocate(Constants.kInvalidIndex, Constants.kInvalidIndex, Constants.kGlobalScope, globalName, type);
+                }
+            }
+        }
+
+        public int AllocateMemberVariable(int classIndex, int classScope, string name, int rank = 0, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false)
+        {
+            // TODO Jun: Create a class table for holding the primitive and custom data types
+            int datasize = ProtoCore.DSASM.Constants.kPointerSize;
+            ProtoCore.Type ptrType = new ProtoCore.Type();
+            if (rank == 0)
+                ptrType.UID = (int)PrimitiveType.Pointer;
+            else
+                ptrType.UID = (int)PrimitiveType.Array;
+            ptrType.rank = rank;
+            ProtoCore.DSASM.SymbolNode symnode = Allocate(classIndex, classScope, ProtoCore.DSASM.Constants.kGlobalScope, name, ptrType, isStatic, access);
+            if (null == symnode)
+            {
+                buildStatus.LogSemanticError(String.Format(Resources.MemberVariableAlreadyDefined, name, core.ClassTable.ClassNodes[classIndex].Name));
+                return ProtoCore.DSASM.Constants.kInvalidIndex;
+            }
+
+
+            return symnode.symbolTableIndex;
+        }
+
+        #endregion
+
+        private bool EmitCaptureList(AssociativeNode node, GraphNode graphNode = null,
+            ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None,
+            ProtoCore.AST.Node bnode = null)
+        {
+            var langBlockNode = node as LanguageBlockNode;
+
+            if (langBlockNode == null) return false;
+
+            var args = langBlockNode.FormalArguments;
+            if (args == null) return false;
+            
+            foreach(var arg in args)
+            {
+                //var symbol = arg.Name;
+
+                //SymbolNode symbolnode = null;
+                //bool isAccessible = false;
+                //bool isAllocated = VerifyAllocation(symbol, globalClassIndex, globalProcIndex, 
+                //    out symbolnode, out isAccessible);
+
+                //if(!isAllocated)
+                //{
+                //    // push null, EmitIdentifierNode 
+                //}
+                //else
+                //{
+                //    // push symbolNode, pop temp
+                //}
+                var paramType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0);
+
+                DfsTraverse(arg, ref paramType, false, graphNode, subPass, bnode);
+
+            }
+            return true;
+        }
+
         /// <summary>
         /// Emits a block of code for the following cases:
         ///     Language block body
@@ -2044,18 +2121,7 @@ namespace ProtoAssociative
             return codeBlock.codeBlockId;
         }
 
-        private void AllocateContextGlobals()
-        {
-            if (null != context && null != context.GlobalVarList && context.GlobalVarList.Count > 0)
-            {
-                ProtoCore.Type type = new ProtoCore.Type();
-                foreach (string globalName in context.GlobalVarList.Keys)
-                {
-                    Allocate(Constants.kInvalidIndex, Constants.kInvalidIndex, Constants.kGlobalScope, globalName, type);
-                }
-            }
-        }
-
+       
         public override int Emit(ProtoCore.AST.Node codeBlockNode, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
             if (core.Options.IsDeltaExecution)
@@ -2147,27 +2213,7 @@ namespace ProtoAssociative
             return codeBlock.codeBlockId;
         }
 
-        public int AllocateMemberVariable(int classIndex, int classScope, string name, int rank = 0, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false)
-        {
-            // TODO Jun: Create a class table for holding the primitive and custom data types
-            int datasize = ProtoCore.DSASM.Constants.kPointerSize;
-            ProtoCore.Type ptrType = new ProtoCore.Type();
-            if (rank == 0)
-                ptrType.UID = (int)PrimitiveType.Pointer;
-            else
-                ptrType.UID = (int)PrimitiveType.Array;
-            ptrType.rank = rank;
-            ProtoCore.DSASM.SymbolNode symnode = Allocate(classIndex, classScope, ProtoCore.DSASM.Constants.kGlobalScope, name, ptrType, isStatic, access);
-            if (null == symnode)
-            {
-                buildStatus.LogSemanticError(String.Format(Resources.MemberVariableAlreadyDefined, name, core.ClassTable.ClassNodes[classIndex].Name));
-                return ProtoCore.DSASM.Constants.kInvalidIndex;
-            }
-
-
-            return symnode.symbolTableIndex;
-        }
-
+        
         private void EmitIdentifierNode(AssociativeNode node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None, BinaryExpressionNode parentNode = null)
         {
             IdentifierNode t = node as IdentifierNode;
@@ -2719,9 +2765,13 @@ namespace ProtoAssociative
                     propagateGraphNode = graphNode;
                 }
 
-                core.Compilers[langblock.codeblock.Language].Compile(out blockId, codeBlock, langblock.codeblock, nextContext, codeBlock.EventSink, langblock.CodeBlockNode, propagateGraphNode);
+                //EmitCaptureList(node, graphNode, subPass);
+
+                core.Compilers[langblock.codeblock.Language].Compile(out blockId, codeBlock, langblock.codeblock, 
+                    nextContext, codeBlock.EventSink, langblock.CodeBlockNode, propagateGraphNode);
                 graphNode.isLanguageBlock = true;
                 graphNode.languageBlockId = blockId;
+
                 foreach (GraphNode dNode in nextContext.DependentVariablesInScope)
                 {
                     graphNode.PushDependent(dNode);

@@ -295,14 +295,20 @@ Associative_LanguageBlock<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                             }
                                         .)
     closebracket    
-    '{'                      (. Node codeBlockNode = null; .)
+                          (. Node codeBlockNode = null; .)
     
     (
     IF( langblock.codeblock.Language == ProtoCore.Language.Associative ||
         langblock.codeblock.Language == ProtoCore.Language.NotSpecified)
+	'{'
     Hydrogen<out codeBlockNode>              
     |    
     IF( langblock.codeblock.Language == ProtoCore.Language.Imperative )
+	[
+						(. List<ProtoCore.AST.AssociativeAST.AssociativeNode> args = null; .)
+		Associative_Arguments<out args> 	(. langblock.FormalArguments = args; .)
+	]
+	'{'
     Imperative<out codeBlockNode>              
     )
     (

@@ -81,6 +81,9 @@ namespace ProtoCore.AST.ImperativeAST
         public ProtoCore.LanguageCodeBlock codeblock { get; set; }
         public Node CodeBlockNode { get; set; }
 
+        //public AssociativeNode CaptureListNode { get; set; }
+        public List<AssociativeNode> FormalArguments { get; set; }
+
         public override bool Equals(object other)
         {
             var otherNode = other as LanguageBlockNode;
@@ -123,6 +126,21 @@ namespace ProtoCore.AST.ImperativeAST
             buf.Append("[");
             buf.Append(strLang);
             buf.Append("]");
+
+            buf.Append("(");
+            var args = FormalArguments;
+            if (args != null)
+            {
+                for (int n = 0; n < args.Count; ++n)
+                {
+                    buf.Append(args[n]);
+                    if (n < args.Count - 1)
+                    {
+                        buf.Append(", ");
+                    }
+                }
+            }
+            buf.Append(")");
 
             buf.Append("\n");
             buf.Append("{");

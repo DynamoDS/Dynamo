@@ -44,14 +44,20 @@ Imperative_languageblock<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                                 errors.SemErr(t.line, t.col, String.Format(Resources.InvalidLanguageBlockIdentifier, t.val));
                                             }
                                         .)
-    closebracket                        
-    '{'                      (. Node codeBlockNode = null; .)
+    closebracket              
+                          (. Node codeBlockNode = null; .)
     (
     IF( langblock.codeblock.Language == ProtoCore.Language.Associative ||
         langblock.codeblock.Language == ProtoCore.Language.NotSpecified)
+	'{'
     Hydrogen<out codeBlockNode>              
     |    
     IF( langblock.codeblock.Language == ProtoCore.Language.Imperative )
+	[
+							(. List<ProtoCore.AST.AssociativeAST.AssociativeNode> args = null; .)
+		Associative_Arguments<out args> 	(. langblock.FormalArguments = args; .)
+	]          
+	'{'
     Imperative<out codeBlockNode>              
     )
     (

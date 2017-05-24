@@ -4,9 +4,27 @@ using ProtoCore;
 using ProtoCore.AST.ImperativeAST;
 using ProtoCore.DSASM;
 using System.Text;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
 using ProtoCore.BuildData;
 using ProtoImperative.Properties;
+using ArrayNode = ProtoCore.AST.ImperativeAST.ArrayNode;
+using AstKind = ProtoCore.AST.ImperativeAST.AstKind;
+using BinaryExpressionNode = ProtoCore.AST.ImperativeAST.BinaryExpressionNode;
+using BooleanNode = ProtoCore.AST.ImperativeAST.BooleanNode;
+using CodeBlockNode = ProtoCore.AST.ImperativeAST.CodeBlockNode;
+using DoubleNode = ProtoCore.AST.ImperativeAST.DoubleNode;
+using FunctionCallNode = ProtoCore.AST.ImperativeAST.FunctionCallNode;
+using GroupExpressionNode = ProtoCore.AST.ImperativeAST.GroupExpressionNode;
+using IdentifierListNode = ProtoCore.AST.ImperativeAST.IdentifierListNode;
+using IdentifierNode = ProtoCore.AST.ImperativeAST.IdentifierNode;
+using InlineConditionalNode = ProtoCore.AST.ImperativeAST.InlineConditionalNode;
+using IntNode = ProtoCore.AST.ImperativeAST.IntNode;
+using LanguageBlockNode = ProtoCore.AST.ImperativeAST.LanguageBlockNode;
+using NullNode = ProtoCore.AST.ImperativeAST.NullNode;
+using RangeExprNode = ProtoCore.AST.ImperativeAST.RangeExprNode;
+using TypedIdentifierNode = ProtoCore.AST.ImperativeAST.TypedIdentifierNode;
+using UnaryExpressionNode = ProtoCore.AST.ImperativeAST.UnaryExpressionNode;
 
 namespace ProtoImperative
 {
@@ -27,7 +45,9 @@ namespace ProtoImperative
         private readonly BackpatchMap backpatchMap;
         private NodeBuilder nodeBuilder;
 
-        public CodeGen(Core coreObj, ProtoCore.CompileTime.Context callContext, ProtoCore.DSASM.CodeBlock parentBlock = null) : base(coreObj, parentBlock)
+        public CodeGen(Core coreObj, ProtoCore.CompileTime.Context callContext, 
+            LanguageCodeBlock languageCodeBlock, ProtoCore.DSASM.CodeBlock parentBlock = null) 
+            : base(coreObj, parentBlock, languageCodeBlock)
         {
             context = callContext;
 
@@ -184,6 +204,131 @@ namespace ProtoImperative
             symbolnode.symbolTableIndex = symbolindex;
             return symbolnode;
         }
+
+        protected override bool VerifyAllocation(string name, int classScope, int functionScope, out SymbolNode symbol, out bool isAccessible)
+        {
+            int symbolIndex = Constants.kInvalidIndex;
+            symbol = null;
+            isAccessible = false;
+            CodeBlock currentCodeBlock = codeBlock;
+            if (core.Options.RunMode == InterpreterMode.Expression)
+            {
+                int tempBlockId = context.CurrentBlockId;
+                currentCodeBlock = CoreUtils.GetCodeBlock(core.CodeBlockList, tempBlockId);
+            }
+
+            if (classScope != Constants.kGlobalScope)
+            {
+                if (currentCodeBlock.blockType != CodeBlockType.Function)
+                {
+                    // step 1: go through nested language block chain till the top one
+                    while (symbolIndex == Constants.kInvalidIndex && currentCodeBlock.parent != null)
+                    {
+                        symbolIndex = currentCodeBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
+                        if (symbolIndex == Constants.kInvalidIndex)
+                        {
+                            currentCodeBlock = currentCodeBlock.parent;
+                            if (currentCodeBlock.parent == null)
+                            {
+                                // currentCodeBlock is top language block. Break here.
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            symbol = currentCodeBlock.symbolTable.symbolList[symbolIndex];
+                            isAccessible = true;
+                            return true;
+                        }
+                    }
+                }
+
+                if ((int)PrimitiveType.Void == classScope)
+                {
+                    return false;
+                }
+
+                if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.Expression)
+                {
+                    //Search local variables in the class member function first
+                    if (functionScope != Constants.kGlobalScope)
+                    {
+                        symbol = core.GetFirstVisibleSymbol(name, classScope, functionScope, currentCodeBlock);
+                        isAccessible = symbol != null;
+                        return isAccessible;
+                    }
+                }
+
+                ClassNode thisClass = core.ClassTable.ClassNodes[classScope];
+
+                bool hasThisSymbol;
+                AddressType addressType;
+                symbolIndex = ClassUtils.GetSymbolIndex(thisClass, name, classScope, functionScope, currentCodeBlock.codeBlockId, core.CompleteCodeBlockList, out hasThisSymbol, out addressType);
+                if (Constants.kInvalidIndex != symbolIndex)
+                {
+                    // It is static member, then get node from code block
+                    if (AddressType.StaticMemVarIndex == addressType)
+                    {
+                        symbol = core.CodeBlockList[0].symbolTable.symbolList[symbolIndex];
+                    }
+                    else
+                    {
+                        symbol = thisClass.Symbols.symbolList[symbolIndex];
+                    }
+
+                    isAccessible = true;
+                }
+
+                return hasThisSymbol;
+            }
+
+            if (functionScope != Constants.kGlobalScope)
+            {
+                symbol = core.GetFirstVisibleSymbol(name, Constants.kGlobalScope, functionScope, currentCodeBlock);
+                isAccessible = symbol != null;
+                return symbol != null;
+            }
+
+            // check if the symbol exists in the capture list of the language block
+            if (languageCodeBlock.CaptureList != null)
+            {
+                AssociativeNode arg;
+                if (languageCodeBlock.CaptureList.TryGetValue(name, out arg))
+                {
+                    CodeBlock searchBlock = currentCodeBlock.parent;
+                    // Argument from capture list has to be passed down from immediate parent block
+                    symbolIndex = searchBlock.symbolTable.IndexOf(arg.Name, Constants.kGlobalScope, Constants.kGlobalScope);
+                    if (symbolIndex != Constants.kInvalidIndex)
+                    {
+                        symbol = searchBlock.symbolTable.symbolList[symbolIndex];
+                        bool ignoreImportedSymbols = !string.IsNullOrEmpty(symbol.ExternLib) && core.IsParsingCodeBlockNode;
+                        if (ignoreImportedSymbols)
+                        {
+                            return false;
+                        }
+                        isAccessible = true;
+                        return true;
+                    }
+                }
+            }
+
+            // check if the symbol name matches with any of the arguments
+            symbolIndex = currentCodeBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
+            if (symbolIndex != Constants.kInvalidIndex)
+            {
+                symbol = currentCodeBlock.symbolTable.symbolList[symbolIndex];
+                bool ignoreImportedSymbols = !string.IsNullOrEmpty(symbol.ExternLib) && core.IsParsingCodeBlockNode;
+                if (ignoreImportedSymbols)
+                {
+                    return false;
+                }
+                isAccessible = true;
+                return true;
+            }
+
+            return false;
+        }
+
 
         protected override void EmitReturn(int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex)
@@ -710,6 +855,8 @@ namespace ProtoImperative
             ProtoCore.DSASM.SymbolNode symbolnode = null;
             bool isAccessible = false;
             bool isAllocated = VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+            if (symbolnode != null) t.Value = symbolnode.name;
+
             if (!isAllocated && null == t.ArrayDimensions)
             {
                 //check if it is a function instance
@@ -1443,6 +1590,7 @@ namespace ProtoImperative
                     else
                     {
                         isAllocated = VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+                        if (symbolnode != null) t.Value = symbolnode.name;
                     }
 
                     if (!string.IsNullOrEmpty(t.ArrayName) && symbolnode != null)
