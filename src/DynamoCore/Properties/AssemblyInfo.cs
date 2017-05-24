@@ -25,3 +25,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Reach")]
 [assembly: InternalsVisibleTo("Dynamo.Storage")]
 [assembly: InternalsVisibleTo("LibraryViewExtension")]
+[assembly: InternalsVisibleTo("ViewExtensionLibraryTests")]

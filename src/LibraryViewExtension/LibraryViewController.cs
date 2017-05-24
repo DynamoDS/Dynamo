@@ -234,7 +234,7 @@ namespace Dynamo.LibraryUI
             }
 
             //Register provider for node data
-            resourceFactory.RegisterProvider("/loadedTypes", new NodeItemDataProvider(model.SearchModel));
+            resourceFactory.RegisterProvider("/loadedTypes", new NodeItemDataProvider(model.SearchModel, this));
             
             {
                 var url = "http://localhost/layoutSpecs";

@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using CefSharp;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -35,10 +38,44 @@ namespace Dynamo.LibraryUI.Handlers
     class NodeItemDataProvider : ResourceProviderBase
     {
         private NodeSearchModel model;
+        private IEventController controller;
+        private Timer throttle;
+        private long duetime;
+        private List<string> items = new List<string>();
 
-        public NodeItemDataProvider(NodeSearchModel model) : base(false)
+        public NodeItemDataProvider(NodeSearchModel model, IEventController controller = null, long dueTime = 200) : base(false)
         {
             this.model = model;
+            if (model == null) throw new ArgumentNullException("model");
+
+            if(controller != null)
+            {
+                model.EntryAdded += OnLibraryDataUpdated;
+                model.EntryRemoved += OnLibraryDataUpdated;
+                model.EntryUpdated += OnLibraryDataUpdated;
+
+                this.controller = controller;
+                this.duetime = dueTime;
+                throttle = new Timer(RaiseLibraryDataUpdated, controller, Timeout.Infinite, Timeout.Infinite); //disabled at begining
+            }
+        }
+
+        private void OnLibraryDataUpdated(NodeSearchElement obj)
+        {
+            items.Add(FullyQualifiedName(obj));
+            //Raise event only after due milliseconds.
+            throttle.Change(duetime, 0); //enabled now
+        }
+
+        private void RaiseLibraryDataUpdated(object state)
+        {
+            if(controller != null)
+            {
+                var text = string.Join(", ", items);
+                controller.RaiseEvent("libraryDataUpdated", text);
+                //reset items
+                items.Clear();
+            }
         }
 
         public override Stream GetResource(IRequest request, out string extension)
@@ -65,6 +102,20 @@ namespace Dynamo.LibraryUI.Handlers
         }
 
         /// <summary>
+        /// Gets fully qualified name for the given node search element
+        /// </summary>
+        private static string FullyQualifiedName(NodeSearchElement element)
+        {
+            //If the node search element is part of a package, then we need to prefix pkg:// for it
+            if (element.ElementType.HasFlag(ElementTypes.Packaged))
+            {
+                //Use FullCategory and name as read from _customization.xml file
+                return string.Format("{0}{1}.{2}", "pkg://", element.FullCategoryName, element.Name);
+            }
+            return element.FullName;
+        }
+
+        /// <summary>
         /// Creates LoadedTypeItem from given node search element
         /// </summary>
         /// <param name="element"></param>
@@ -74,7 +125,7 @@ namespace Dynamo.LibraryUI.Handlers
             //Create LoadedTypeItem with base class
             var item = new LoadedTypeItem()
             {
-                fullyQualifiedName = element.FullName,
+                fullyQualifiedName = FullyQualifiedName(element),
                 contextData = element.CreationName,
                 iconUrl = new IconUrl(element.IconName, element.Assembly).Url,
                 parameters = element.Parameters,
@@ -83,14 +134,6 @@ namespace Dynamo.LibraryUI.Handlers
                         ? element.SearchKeywords.Where(s => !string.IsNullOrEmpty(s)).Aggregate((x, y) => string.Format("{0}, {1}", x, y))
                         : string.Empty
             };
-
-            //If the node search element is part of a package, then we need to prefix pkg:// for it
-            var packaged = element.ElementType.HasFlag(ElementTypes.Packaged);
-            if (packaged)
-            {
-                //Use FullCategory and name as read from _customization.xml file
-                item.fullyQualifiedName = string.Format("{0}{1}.{2}", "pkg://", element.FullCategoryName, element.Name);
-            }
 
             //If this element is not a custom node then we are done. The icon url for custom node is different
             if (!element.ElementType.HasFlag(ElementTypes.CustomNode)) return item;

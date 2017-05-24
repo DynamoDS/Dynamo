@@ -1,12 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using CefSharp;
 using Dynamo;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.LibraryUI;
 using Dynamo.LibraryUI.Handlers;
+using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Moq;
 using NUnit.Framework;
@@ -218,12 +220,10 @@ namespace ViewExtensionLibraryTests
         {
             var fullname = "abc.xyz.something";
             var creationName = "create abc xyz";
-            var moq = new Mock<NodeSearchElement>() { CallBase = true };
+            Mock<NodeSearchElement> moq = MockNodeSearchElement(fullname, creationName);
             var element = moq.Object;
-            moq.Setup(e => e.FullName).Returns(fullname);
-            moq.Setup(e => e.CreationName).Returns(creationName);
-            
-            var provider = new NodeItemDataProvider(null);
+
+            var provider = new NodeItemDataProvider(new NodeSearchModel());
             var item = provider.CreateLoadedTypeItem(element);
             Assert.AreEqual(fullname, item.fullyQualifiedName);
             Assert.AreEqual(creationName, item.contextData);
@@ -242,7 +242,7 @@ namespace ViewExtensionLibraryTests
             var element = moq.Object;
             moq.Setup(e => e.CreationName).Returns(creationName);
             
-            var provider = new NodeItemDataProvider(null);
+            var provider = new NodeItemDataProvider(new NodeSearchModel());
             var item = provider.CreateLoadedTypeItem(element);
             Assert.AreEqual(expectedQualifiedName, item.fullyQualifiedName);
             Assert.AreEqual(creationName, item.contextData);
@@ -266,7 +266,7 @@ namespace ViewExtensionLibraryTests
             var moq = new Mock<ICustomNodeSource>();
             var element = new CustomNodeSearchElement(moq.Object, info);
             
-            var provider = new NodeItemDataProvider(null);
+            var provider = new NodeItemDataProvider(new NodeSearchModel());
             var item = provider.CreateLoadedTypeItem(element);
             Assert.AreEqual(expectedQualifiedName, item.fullyQualifiedName);
             Assert.AreEqual(guid.ToString(), item.contextData);
@@ -290,13 +290,47 @@ namespace ViewExtensionLibraryTests
             var moq = new Mock<ICustomNodeSource>();
             var element = new CustomNodeSearchElement(moq.Object, info);
 
-            var provider = new NodeItemDataProvider(null);
+            var provider = new NodeItemDataProvider(new NodeSearchModel());
             var item = provider.CreateLoadedTypeItem(element);
             Assert.AreEqual(expectedQualifiedName, item.fullyQualifiedName);
             Assert.AreEqual(guid.ToString(), item.contextData);
             Assert.AreEqual(string.Empty, item.keywords);
             var url = new IconUrl(name, path, true);
             Assert.AreEqual(url.Url, item.iconUrl);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void LibraryDataUpdatedEventRaised()
+        {
+            const string libraryDataUpdated = "libraryDataUpdated";
+            var resetevent = new AutoResetEvent(false);
+
+            var model = new NodeSearchModel();
+            var controller = new Mock<IEventController>();
+            controller.Setup(c => c.RaiseEvent(It.IsAny<string>(), It.IsAny<object[]>())).Callback(() => resetevent.Set());
+
+            var provider = new NodeItemDataProvider(model, controller.Object, 10);
+            controller.Verify(c => c.RaiseEvent(libraryDataUpdated, It.IsAny<object[]>()), Times.Never);
+
+            var d1 = MockNodeSearchElement("A", "B");
+            var d2 = MockNodeSearchElement("C", "D");
+            var d3 = MockNodeSearchElement("E", "F");
+            model.Add(d1.Object);
+            model.Add(d2.Object);
+            model.Add(d3.Object);
+            Assert.AreEqual(3, model.NumElements);
+
+            Assert.IsTrue(resetevent.WaitOne(20));
+            controller.Verify(c => c.RaiseEvent("libraryDataUpdated", "A, C, E"), Times.Once);
+        }
+
+        private static Mock<NodeSearchElement> MockNodeSearchElement(string fullname, string creationName)
+        {
+            var moq = new Mock<NodeSearchElement>() { CallBase = true };
+            moq.Setup(e => e.FullName).Returns(fullname);
+            moq.Setup(e => e.CreationName).Returns(creationName);
+            return moq;
         }
     }
 }
