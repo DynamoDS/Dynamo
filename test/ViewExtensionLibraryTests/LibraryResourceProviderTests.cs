@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using CefSharp;
 using Dynamo;
 using Dynamo.Extensions;
@@ -304,13 +306,14 @@ namespace ViewExtensionLibraryTests
         public void LibraryDataUpdatedEventRaised()
         {
             const string libraryDataUpdated = "libraryDataUpdated";
+            var timeout = 50; //50 milliseconds
             var resetevent = new AutoResetEvent(false);
 
             var model = new NodeSearchModel();
             var controller = new Mock<IEventController>();
             controller.Setup(c => c.RaiseEvent(It.IsAny<string>(), It.IsAny<object[]>())).Callback(() => resetevent.Set());
 
-            var provider = new NodeItemDataProvider(model, controller.Object, 10);
+            var disposable = LibraryViewController.SetupSearchModelEventsObserver(model, controller.Object, timeout);
             controller.Verify(c => c.RaiseEvent(libraryDataUpdated, It.IsAny<object[]>()), Times.Never);
 
             var d1 = MockNodeSearchElement("A", "B");
@@ -321,8 +324,114 @@ namespace ViewExtensionLibraryTests
             model.Add(d3.Object);
             Assert.AreEqual(3, model.NumElements);
 
-            Assert.IsTrue(resetevent.WaitOne(20));
+            Assert.IsTrue(resetevent.WaitOne(timeout*3));
             controller.Verify(c => c.RaiseEvent("libraryDataUpdated", "A, C, E"), Times.Once);
+
+            //Dispose
+            disposable.Dispose();
+            d1 = MockNodeSearchElement("G", "B");
+            d2 = MockNodeSearchElement("H", "D");
+            d3 = MockNodeSearchElement("I", "F");
+            model.Add(d1.Object);
+            model.Add(d2.Object);
+            model.Add(d3.Object);
+            Assert.AreEqual(6, model.NumElements);
+            controller.Verify(c => c.RaiseEvent(libraryDataUpdated, It.IsAny<object[]>()), Times.Once);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void SimpleEventObserver()
+        {
+            var controller = new Mock<IEventController>();
+            var observer = new EventObserver<int, bool>(
+                    x => controller.Object.RaiseEvent("X", x),
+                    x => x%2 == 0
+                );
+
+            var list = Enumerable.Range(1, 10).ToList();
+            list.ForEach(x => observer.OnEvent(x)); //notify OnEvent
+            controller.Verify(c => c.RaiseEvent("X", It.IsAny<bool>()), Times.Exactly(10));
+            controller.Verify(c => c.RaiseEvent("X", true), Times.Exactly(5));
+            controller.Verify(c => c.RaiseEvent("X", false), Times.Exactly(5));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ThrottleAggregateEventObserver()
+        {
+            var timeout = 50;
+            var resetevent = new AutoResetEvent(false);
+
+            var controller = new Mock<IEventController>();
+            controller.Setup(c => c.RaiseEvent(It.IsAny<string>(), It.IsAny<object[]>())).Callback(() => resetevent.Set());
+
+            var observer = new EventObserver<int, int>(
+                    x => controller.Object.RaiseEvent("X", x),
+                    (x, y) => x + y
+                ).Throttle(TimeSpan.FromMilliseconds(timeout));
+
+            var list = Enumerable.Range(1, 10).ToList();
+            list.ForEach(x => observer.OnEvent(x)); //notify OnEvent
+
+            resetevent.WaitOne(timeout * 3);
+            controller.Verify(c => c.RaiseEvent("X", It.IsAny<int>()), Times.Once);
+            controller.Verify(c => c.RaiseEvent("X", list.Sum()), Times.Once);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ThrottleIdentityEventObserver()
+        {
+            var timeout = 50;
+            var resetevent = new AutoResetEvent(false);
+
+            var controller = new Mock<IEventController>();
+            controller.Setup(c => c.RaiseEvent(It.IsAny<string>(), It.IsAny<object[]>())).Callback(() => resetevent.Set());
+
+            var observer = new EventObserver<int, int>(
+                    x => controller.Object.RaiseEvent("X", x),
+                    EventObserver<int, int>.Identity
+                ).Throttle(TimeSpan.FromMilliseconds(timeout));
+
+            var list = Enumerable.Range(1, 10).ToList();
+            list.ForEach(x => observer.OnEvent(x)); //notify OnEvent
+
+            resetevent.WaitOne(timeout*3);
+            controller.Verify(c => c.RaiseEvent("X", It.IsAny<int>()), Times.Once);
+            controller.Verify(c => c.RaiseEvent("X", list.Last()), Times.Once);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ParallelEventObserver()
+        {
+            var resetevent = new AutoResetEvent(false);
+
+            var controller = new Mock<IEventController>();
+            var observer = new EventObserver<int, int>(
+                    x => controller.Object.RaiseEvent("X", x),
+                    (x, y) => x + y
+                ).Throttle(TimeSpan.FromMilliseconds(10));
+
+            var list = Enumerable.Range(1, 10);
+            var result = Parallel.ForEach(list, x => observer.OnEvent(x));
+
+            resetevent.WaitOne(250);
+            Assert.IsTrue(result.IsCompleted);
+            controller.Verify(c => c.RaiseEvent("X", It.IsAny<int>()), Times.Once);
+            controller.Verify(c => c.RaiseEvent("X", 55), Times.Once);
+        }
+
+        [Test, Category("UnitTests")]
+        public void AnonymousDisposable()
+        {
+            var controller = new Mock<IEventController>();
+            var disposable = new AnonymousDisposable(() => controller.Object.RaiseEvent("Disposed"));
+            disposable.Dispose();
+            disposable.Dispose();
+            disposable.Dispose();
+            controller.Verify(c => c.RaiseEvent("Disposed"), Times.Once);
         }
 
         private static Mock<NodeSearchElement> MockNodeSearchElement(string fullname, string creationName)

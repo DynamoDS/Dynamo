@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using CefSharp;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -38,50 +35,10 @@ namespace Dynamo.LibraryUI.Handlers
     class NodeItemDataProvider : ResourceProviderBase
     {
         private NodeSearchModel model;
-        private IEventController controller;
-        private Timer throttle;
-        private long throttlingTime; //in millseconds
-        private List<string> items = new List<string>();
 
-        /// <summary>
-        /// Creates a NodeItemDataProvider
-        /// </summary>
-        /// <param name="model">The NodeSearcModel from where nodes data is fetched</param>
-        /// <param name="controller">Event controller for notification</param>
-        /// <param name="throttlingTime">Throttling time in milliseconds</param>
-        public NodeItemDataProvider(NodeSearchModel model, IEventController controller = null, long throttlingTime = 200) : base(false)
+        public NodeItemDataProvider(NodeSearchModel model) : base(false)
         {
             this.model = model;
-            if (model == null) throw new ArgumentNullException("model");
-
-            if(controller != null)
-            {
-                model.EntryAdded += OnLibraryDataUpdated;
-                model.EntryRemoved += OnLibraryDataUpdated;
-                model.EntryUpdated += OnLibraryDataUpdated;
-
-                this.controller = controller;
-                this.throttlingTime = throttlingTime;
-                throttle = new Timer(RaiseLibraryDataUpdated, controller, Timeout.Infinite, Timeout.Infinite); //disabled at begining
-            }
-        }
-
-        private void OnLibraryDataUpdated(NodeSearchElement obj)
-        {
-            items.Add(FullyQualifiedName(obj));
-            //Raise event only after due milliseconds.
-            throttle.Change(throttlingTime, 0); //enabled now
-        }
-
-        private void RaiseLibraryDataUpdated(object state)
-        {
-            if(controller != null)
-            {
-                var text = string.Join(", ", items);
-                controller.RaiseEvent("libraryDataUpdated", text);
-                //reset items
-                items.Clear();
-            }
         }
 
         public override Stream GetResource(IRequest request, out string extension)
@@ -110,7 +67,7 @@ namespace Dynamo.LibraryUI.Handlers
         /// <summary>
         /// Gets fully qualified name for the given node search element
         /// </summary>
-        private static string FullyQualifiedName(NodeSearchElement element)
+        public static string GetFullyQualifiedName(NodeSearchElement element)
         {
             //If the node search element is part of a package, then we need to prefix pkg:// for it
             if (element.ElementType.HasFlag(ElementTypes.Packaged))
@@ -131,7 +88,7 @@ namespace Dynamo.LibraryUI.Handlers
             //Create LoadedTypeItem with base class
             var item = new LoadedTypeItem()
             {
-                fullyQualifiedName = FullyQualifiedName(element),
+                fullyQualifiedName = GetFullyQualifiedName(element),
                 contextData = element.CreationName,
                 iconUrl = new IconUrl(element.IconName, element.Assembly).Url,
                 parameters = element.Parameters,

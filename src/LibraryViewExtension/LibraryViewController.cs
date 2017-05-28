@@ -19,6 +19,8 @@ using Dynamo.ViewModels;
 using System.Windows.Input;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Controls;
+using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.LibraryUI
 {
@@ -85,6 +87,7 @@ namespace Dynamo.LibraryUI
         private DynamoViewModel dynamoViewModel;
         private FloatingLibraryTooltipPopup libraryViewTooltip;
         private ResourceHandlerFactory resourceFactory;
+        private IDisposable observer;
 
         /// <summary>
         /// Creates LibraryViewController
@@ -99,6 +102,7 @@ namespace Dynamo.LibraryUI
 
             this.commandExecutive = commandExecutive;
             InitializeResourceStreams(dynamoViewModel.Model);
+            this.observer = SetupSearchModelEventsObserver(dynamoViewModel.Model.SearchModel, this);
         }
 
         /// <summary>
@@ -217,6 +221,29 @@ namespace Dynamo.LibraryUI
             System.Diagnostics.Trace.Write(e.Message);
         }
 
+        internal static IDisposable SetupSearchModelEventsObserver(NodeSearchModel model, IEventController controller, int throttleTime = 200)
+        {
+            var observer = new EventObserver<NodeSearchElement, string>(
+                    nodes => controller.RaiseEvent("libraryDataUpdated", nodes),
+                    (s, e) => {
+                            var name = NodeItemDataProvider.GetFullyQualifiedName(e);
+                            return string.IsNullOrEmpty(s) ? name : string.Format("{0}, {1}", s, name);
+                        }
+                ).Throttle(TimeSpan.FromMilliseconds(throttleTime));
+
+            model.EntryAdded += observer.OnEvent;
+            model.EntryRemoved += observer.OnEvent;
+            model.EntryUpdated += observer.OnEvent;
+
+            return new AnonymousDisposable(() =>
+            {
+                model.EntryAdded -= observer.OnEvent;
+                model.EntryRemoved -= observer.OnEvent;
+                model.EntryUpdated -= observer.OnEvent;
+                observer.Dispose();
+            });
+        }
+
         private void InitializeResourceStreams(DynamoModel model)
         {
             resourceFactory = new ResourceHandlerFactory();
@@ -234,7 +261,7 @@ namespace Dynamo.LibraryUI
             }
 
             //Register provider for node data
-            resourceFactory.RegisterProvider("/loadedTypes", new NodeItemDataProvider(model.SearchModel, this));
+            resourceFactory.RegisterProvider("/loadedTypes", new NodeItemDataProvider(model.SearchModel));
             
             {
                 var url = "http://localhost/layoutSpecs";
