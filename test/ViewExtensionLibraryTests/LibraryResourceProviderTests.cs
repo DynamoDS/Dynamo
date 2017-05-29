@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -358,25 +359,55 @@ namespace ViewExtensionLibraryTests
 
         [Test]
         [Category("UnitTests")]
+        public void SimpleEvenNumberObserver()
+        {
+            const string EvenNumber = "Even Number";
+            var controller = new Mock<IEventController>();
+            int number = -1;
+            var observer = new EventObserver<int, bool>(
+                    x => {
+                        if (x)
+                            controller.Object.RaiseEvent(EvenNumber, number);
+                    },
+                    x => { number = x;  return number % 2 == 0; }
+                );
+
+            var list = Enumerable.Range(1, 10).ToList();
+            list.ForEach(x => observer.OnEvent(x)); //notify OnEvent
+            controller.Verify(c => c.RaiseEvent(It.IsAny<string>(), It.IsAny<object[]>()), Times.Exactly(5));
+            controller.Verify(c => c.RaiseEvent(EvenNumber, 2), Times.Once);
+            controller.Verify(c => c.RaiseEvent(EvenNumber, 4), Times.Once);
+            controller.Verify(c => c.RaiseEvent(EvenNumber, 6), Times.Once);
+            controller.Verify(c => c.RaiseEvent(EvenNumber, 8), Times.Once);
+            controller.Verify(c => c.RaiseEvent(EvenNumber, 10), Times.Once);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void ThrottleAggregateEventObserver()
         {
-            var timeout = 50;
+            var timeout = 500;
             var resetevent = new AutoResetEvent(false);
 
+            object[] objexts = { 0 };
             var controller = new Mock<IEventController>();
-            controller.Setup(c => c.RaiseEvent(It.IsAny<string>(), It.IsAny<object[]>())).Callback(() => resetevent.Set());
+            controller.Setup(c => c.RaiseEvent(It.IsAny<string>(), It.IsAny<object[]>())).Callback<string, object[]>((s, x) => { objexts = x; resetevent.Set(); });
 
-            var observer = new EventObserver<int, int>(
+            var observer = new EventObserver<int, List<int>>(
                     x => controller.Object.RaiseEvent("X", x),
-                    (x, y) => x + y
+                    (x, y) => {
+                        if (x == null) return new List<int>() { y};
+                        x.Add(y);
+                        return x;
+                    }
                 ).Throttle(TimeSpan.FromMilliseconds(timeout));
 
             var list = Enumerable.Range(1, 10).ToList();
             list.ForEach(x => observer.OnEvent(x)); //notify OnEvent
 
             resetevent.WaitOne(timeout * 3);
-            controller.Verify(c => c.RaiseEvent("X", It.IsAny<int>()), Times.Once);
-            controller.Verify(c => c.RaiseEvent("X", list.Sum()), Times.Once);
+            controller.Verify(c => c.RaiseEvent("X", It.IsAny<object[]>()), Times.Once);
+            Assert.IsTrue(list.SequenceEqual(objexts[0] as IEnumerable<int>));
         }
 
         [Test]
