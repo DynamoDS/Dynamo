@@ -73,6 +73,13 @@
             csharpController.closeNodeTooltip(true);
         });
 
+        libController.on(libController.SectionIconClickedEventName, function (section) {
+            console.log("Section clicked: " + section);
+            if (section == "Add-ons") {
+                csharpController.importLibrary();
+            }
+        });
+
         csharpController.on("error", function (msg) {
             console.log("Error: " + msg);
             pkgController.raiseEvent("error", msg);

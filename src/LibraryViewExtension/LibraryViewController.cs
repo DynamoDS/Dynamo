@@ -116,6 +116,17 @@ namespace Dynamo.LibraryUI
         }
 
         /// <summary>
+        /// Call this method to import a zero touch library. It will prompt
+        /// user to select the zero touch dll.
+        /// </summary>
+        public void ImportLibrary()
+        {
+            dynamoWindow.Dispatcher.BeginInvoke(new Action(() =>
+                dynamoViewModel.ImportLibraryCommand.Execute(null)
+            ));
+        }
+
+        /// <summary>
         /// Creates and add the library view to the WPF visual tree
         /// </summary>
         /// <returns>LibraryView control</returns>
