@@ -480,7 +480,7 @@ namespace DynamoCoreWpfTests
 
         #region PreferenceSettings
         [Test, RequiresSTA]
-        [Category("DynamoUI")]
+        [Category("DynamoUI"), Category("Failure")]
         public void PreferenceSetting()
         {
             // Test Case to ensure that the link for these persistent variable
