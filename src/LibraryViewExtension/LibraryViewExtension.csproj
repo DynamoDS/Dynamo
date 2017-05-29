@@ -152,7 +152,6 @@
     <EmbeddedResource Include="web\library\layoutSpecs.json" />
     <EmbeddedResource Include="web\library\library.html" />
     <EmbeddedResource Include="web\library\librarie.min.js" />
-    <EmbeddedResource Include="web\library\resources\OpenSans-Regular.ttf" />
     <EmbeddedResource Include="web\library\resources\indent-arrow-down.svg" />
     <EmbeddedResource Include="web\library\resources\indent-arrow-right.svg" />
     <EmbeddedResource Include="web\library\resources\library-action.svg" />
