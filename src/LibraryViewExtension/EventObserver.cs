@@ -109,6 +109,8 @@ namespace Dynamo.LibraryUI
 
             this.duetime = duetime;
             this.throttler = new Timer(Notify, this, Timeout.Infinite, Timeout.Infinite);
+            //when throttled, reset the result after notification is fired.
+            accumulate = false;
             return this;
         }
 

@@ -454,6 +454,34 @@ namespace ViewExtensionLibraryTests
             controller.Verify(c => c.RaiseEvent("X", 55), Times.Once);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void RefireTrhottledEvents()
+        {
+            var resetevent = new AutoResetEvent(false);
+
+            var controller = new Mock<IEventController>();
+            var observer = new EventObserver<int, int>(
+                    x => controller.Object.RaiseEvent("X", x),
+                    (x, y) => x + y
+                ).Throttle(TimeSpan.FromMilliseconds(10));
+
+            var list = Enumerable.Range(1, 10);
+            var result = Parallel.ForEach(list, x => observer.OnEvent(x));
+
+            resetevent.WaitOne(250);
+            Assert.IsTrue(result.IsCompleted);
+            controller.Verify(c => c.RaiseEvent("X", It.IsAny<int>()), Times.Once);
+            controller.Verify(c => c.RaiseEvent("X", list.Sum()), Times.Once);
+
+            var list2 = Enumerable.Range(11, 10); //different range of values
+            result = Parallel.ForEach(list2, x => observer.OnEvent(x));
+            resetevent.WaitOne(250);
+            Assert.IsTrue(result.IsCompleted);
+            controller.Verify(c => c.RaiseEvent("X", It.IsAny<int>()), Times.Exactly(2));
+            controller.Verify(c => c.RaiseEvent("X", list2.Sum()), Times.Once); //doesn't contain old values
+        }
+
         [Test, Category("UnitTests")]
         public void AnonymousDisposable()
         {
