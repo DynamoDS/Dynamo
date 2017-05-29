@@ -21,6 +21,7 @@ namespace Dynamo.LibraryUI.Handlers
         public string contextData { get; set; }
         public string parameters { get; set; }
         public string itemType { get; set; }
+        public string description { get; set; }
         public string keywords { get; set; }
     }
 
@@ -79,6 +80,7 @@ namespace Dynamo.LibraryUI.Handlers
                 iconUrl = new IconUrl(element.IconName, element.Assembly).Url,
                 parameters = element.Parameters,
                 itemType = element.Group.ToString().ToLower(),
+                description = element.Description,
                 keywords = element.SearchKeywords.Any()
                         ? element.SearchKeywords.Where(s => !string.IsNullOrEmpty(s)).Aggregate((x, y) => string.Format("{0}, {1}", x, y))
                         : string.Empty
