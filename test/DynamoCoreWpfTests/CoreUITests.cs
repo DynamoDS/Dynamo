@@ -480,7 +480,7 @@ namespace DynamoCoreWpfTests
 
         #region PreferenceSettings
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failure")]
+        [Category("DynamoUI")]
         public void PreferenceSetting()
         {
             // Test Case to ensure that the link for these persistent variable
@@ -498,7 +498,7 @@ namespace DynamoCoreWpfTests
             #endregion
 
             #region ConsoleHeight
-            int expectedHeight = 100; ;
+            int expectedHeight = 100;
             ViewModel.ToggleConsoleShowing(null);
             Assert.AreEqual(expectedHeight, ViewModel.Model.PreferenceSettings.ConsoleHeight);
 
@@ -652,7 +652,6 @@ namespace DynamoCoreWpfTests
 
             //create the view
             View = new DynamoView(ViewModel);
-            View.Show();
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
