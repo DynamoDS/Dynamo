@@ -24,9 +24,14 @@ namespace Dynamo.LibraryUI.Handlers
         public string keywords { get; set; }
     }
 
-    class LoadedTypeData
+    class LoadedTypeItemExtended : LoadedTypeItem
     {
-        public List<LoadedTypeItem> loadedTypes { get; set; }
+        public int weight { get; set; }
+    }
+
+    class LoadedTypeData<T>
+    {
+        public List<T> loadedTypes { get; set; }
     }
 
     /// <summary>
@@ -34,30 +39,48 @@ namespace Dynamo.LibraryUI.Handlers
     /// </summary>
     class NodeItemDataProvider : ResourceProviderBase
     {
-        private NodeSearchModel model;
+        private IEnumerable<NodeSearchElement> elements;
+        private bool isElementWeighted = false;
 
-        public NodeItemDataProvider(NodeSearchModel model) : base(false)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="weighted">This means the items are associated with weights based on the order</param>
+        public NodeItemDataProvider(IEnumerable<NodeSearchElement> items, bool weighted = false) : base(false)
         {
-            this.model = model;
+            this.elements = items;
+            this.isElementWeighted = weighted;
         }
 
         public override Stream GetResource(IRequest request, out string extension)
         {
             extension = "json";
-            return GetNodeItemDataStream(model.SearchEntries);
+            return GetNodeItemDataStream(elements);
         }
 
         private Stream GetNodeItemDataStream(IEnumerable<NodeSearchElement> searchEntries)
         {
-            var data = new LoadedTypeData();
-            data.loadedTypes = searchEntries
-                //.Where(e => !e.ElementType.HasFlag(ElementTypes.Packaged))
-                .Select(e => CreateLoadedTypeItem(e)).ToList();
-
             var ms = new MemoryStream();
             var sw = new StreamWriter(ms);
             var serializer = new JsonSerializer();
-            serializer.Serialize(sw, data);
+
+            if (isElementWeighted)
+            {
+                int w = 0; //represents the weight
+                var data = new LoadedTypeData<LoadedTypeItemExtended>();
+                data.loadedTypes = searchEntries
+                    .Select(e => CreateLoadedTypeItem(e, w++) as LoadedTypeItemExtended).ToList();
+                serializer.Serialize(sw, data);
+            }
+            else
+            {
+                var data = new LoadedTypeData<LoadedTypeItem>();
+                data.loadedTypes = searchEntries
+                    //.Where(e => !e.ElementType.HasFlag(ElementTypes.Packaged))
+                    .Select(e => CreateLoadedTypeItem(e)).ToList();
+                serializer.Serialize(sw, data);
+            }
 
             sw.Flush();
             ms.Position = 0;
@@ -68,21 +91,41 @@ namespace Dynamo.LibraryUI.Handlers
         /// Creates LoadedTypeItem from given node search element
         /// </summary>
         /// <param name="element"></param>
+        /// <param name="w"></param>
         /// <returns></returns>
-        internal LoadedTypeItem CreateLoadedTypeItem(NodeSearchElement element)
+        internal LoadedTypeItem CreateLoadedTypeItem(NodeSearchElement element, int w = 0)
         {
             //Create LoadedTypeItem with base class
-            var item = new LoadedTypeItem()
+            LoadedTypeItem item = null;
+            if (isElementWeighted)
             {
-                fullyQualifiedName = element.FullName,
-                contextData = element.CreationName,
-                iconUrl = new IconUrl(element.IconName, element.Assembly).Url,
-                parameters = element.Parameters,
-                itemType = element.Group.ToString().ToLower(),
-                keywords = element.SearchKeywords.Any()
-                        ? element.SearchKeywords.Where(s => !string.IsNullOrEmpty(s)).Aggregate((x, y) => string.Format("{0}, {1}", x, y))
-                        : string.Empty
-            };
+                item = new LoadedTypeItemExtended()
+                {
+                    fullyQualifiedName = element.FullName,
+                    contextData = element.CreationName,
+                    iconUrl = new IconUrl(element.IconName, element.Assembly).Url,
+                    parameters = element.Parameters,
+                    itemType = element.Group.ToString().ToLower(),
+                    keywords = element.SearchKeywords.Any()
+                            ? element.SearchKeywords.Where(s => !string.IsNullOrEmpty(s)).Aggregate((x, y) => string.Format("{0}, {1}", x, y))
+                            : string.Empty,
+                    weight = w
+                };
+            }
+            else
+            {
+                item = new LoadedTypeItem()
+                {
+                    fullyQualifiedName = element.FullName,
+                    contextData = element.CreationName,
+                    iconUrl = new IconUrl(element.IconName, element.Assembly).Url,
+                    parameters = element.Parameters,
+                    itemType = element.Group.ToString().ToLower(),
+                    keywords = element.SearchKeywords.Any()
+                            ? element.SearchKeywords.Where(s => !string.IsNullOrEmpty(s)).Aggregate((x, y) => string.Format("{0}, {1}", x, y))
+                            : string.Empty
+                };
+            }
 
             //If the node search element is part of a package, then we need to prefix pkg:// for it
             var packaged = element.ElementType.HasFlag(ElementTypes.Packaged);

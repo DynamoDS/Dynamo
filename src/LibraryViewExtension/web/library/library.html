@@ -55,6 +55,23 @@
         //Update the view with contents
         refreshLibraryView(libController);
 
+        libController.searchLibraryItemsHandler = function (text, callback) {
+            let url = csharpController.searchLibraryItems(text);
+            let jsonUrls = [url];
+            let downloader = LibraryEntryPoint.CreateJsonDownloader(jsonUrls, function (jsonUrl, jsonObject) {
+
+                let downloaded = downloader.getDownloadedJsonObjects();
+                let searchLoadedTypesJson = downloaded[url];
+
+                if (!searchLoadedTypesJson) {
+                    console.log("Error: no search result.");
+                    return;
+                }
+
+                callback(searchLoadedTypesJson);
+            });
+        }
+
         // Register event handlers for various events on library controller and package controller.
 
         libController.on(libController.ItemClickedEventName, function (nodeCreationName) {

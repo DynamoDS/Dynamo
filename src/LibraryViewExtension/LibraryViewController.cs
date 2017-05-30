@@ -116,6 +116,22 @@ namespace Dynamo.LibraryUI
         }
 
         /// <summary>
+        /// Call this method to search the library given a text as input.
+        /// </summary>
+        /// <param name="searchText"></param>
+        /// <returns></returns>
+        public string SearchLibraryItems(string searchText)
+        {
+            Console.WriteLine("Search Text: " + searchText);
+            const string result = "searchLoadedTypes";
+            var elements = dynamoViewModel.Model.SearchModel.Search(searchText);
+            //Register provider for node data as search result
+            resourceFactory.RegisterProvider("/" + result, new NodeItemDataProvider(elements, true));
+
+            return result;
+        }
+
+        /// <summary>
         /// Creates and add the library view to the WPF visual tree
         /// </summary>
         /// <returns>LibraryView control</returns>
@@ -234,7 +250,7 @@ namespace Dynamo.LibraryUI
             }
 
             //Register provider for node data
-            resourceFactory.RegisterProvider("/loadedTypes", new NodeItemDataProvider(model.SearchModel));
+            resourceFactory.RegisterProvider("/loadedTypes", new NodeItemDataProvider(model.SearchModel.SearchEntries));
             
             {
                 var url = "http://localhost/layoutSpecs";

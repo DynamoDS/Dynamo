@@ -61,7 +61,7 @@ namespace ViewExtensionLibraryTests
         [Category("UnitTests")]
         public void NodeItemDataProvider()
         {
-            var provider = new NodeItemDataProvider(GetModel().SearchModel);
+            var provider = new NodeItemDataProvider(GetModel().SearchModel.SearchEntries);
             var request = new Mock<IRequest>();
             string ext = "txt";
             using (var stream = provider.GetResource(request.Object, out ext))
