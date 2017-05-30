@@ -10,6 +10,8 @@ using Dynamo.Wpf.Extensions;
 using Dynamo.PackageManager;
 using Dynamo.Models;
 using System.Linq;
+using Dynamo.Controls;
+using Dynamo.ViewModels;
 
 namespace Dynamo.LibraryUI
 {
@@ -38,10 +40,13 @@ namespace Dynamo.LibraryUI
         }
         public void Loaded(ViewLoadedParams p)
         {
-            viewLoadedParams = p;
-            controller = new LibraryViewController(p.DynamoWindow, p.CommandExecutive);
-            controller.AddLibraryView();
-            //controller.ShowDetailsView("583d8ad8fdef23aa6e000037");
+            if (!DynamoModel.IsTestMode)
+            {
+                viewLoadedParams = p;
+                controller = new LibraryViewController(p.DynamoWindow, p.CommandExecutive);
+                controller.AddLibraryView();
+                //controller.ShowDetailsView("583d8ad8fdef23aa6e000037");
+            }
         }
 
         public void Shutdown()

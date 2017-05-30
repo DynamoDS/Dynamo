@@ -498,7 +498,7 @@ namespace DynamoCoreWpfTests
             #endregion
 
             #region ConsoleHeight
-            int expectedHeight = 100; ;
+            int expectedHeight = 100;
             ViewModel.ToggleConsoleShowing(null);
             Assert.AreEqual(expectedHeight, ViewModel.Model.PreferenceSettings.ConsoleHeight);
 
@@ -652,7 +652,6 @@ namespace DynamoCoreWpfTests
 
             //create the view
             View = new DynamoView(ViewModel);
-            View.Show();
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
