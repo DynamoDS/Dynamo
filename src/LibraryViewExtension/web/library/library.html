@@ -73,10 +73,10 @@
             csharpController.closeNodeTooltip(true);
         });
 
-        libController.on(libController.ItemToolTipExpandEventName, function (arg) {
-            //console.log("toolTip expanding now : " + arg.data);
-            let nodeData = csharpController.getToolTipData(arg.data);
-            arg.dataReceiver(nodeData);
+        libController.on(libController.ItemSummaryExpandEventName, function (arg) {
+            //console.log("ItemSummary expanding now : " + arg.data);
+            let nodeData = csharpController.getItemSummaryData(arg.data);
+            arg.onDataReceivedHandler(nodeData);
         });
 
         csharpController.on("error", function (msg) {

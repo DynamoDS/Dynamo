@@ -117,14 +117,16 @@ namespace Dynamo.LibraryUI
         }
 
         /// <summary>
-        /// Get data for showing overlay tooltip within library
+        /// Get data for showing item summary within library
         /// </summary>
         /// <param name="nodeName">Node creation name</param>
-        public string GetToolTipData(string nodeName)
+        public string GetItemSummaryData(string nodeName)
         {
             var node = dynamoViewModel.SearchViewModel.FindViewModelForNode(nodeName);
-            var nodeData = new Tuple<IEnumerable<Tuple<string, string>>, IEnumerable<string>, string>(
-                node.InputParameters, node.OutputParameters, node.Description);
+            var nodeData = new Dictionary<string, object>();
+            nodeData.Add("InputParameters", node.InputParameters);
+            nodeData.Add("OutputParameters", node.OutputParameters);
+            nodeData.Add("Description", node.Description);
             return JsonConvert.SerializeObject(nodeData);
         }
 
