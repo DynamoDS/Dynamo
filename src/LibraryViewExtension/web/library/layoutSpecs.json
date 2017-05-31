@@ -1412,7 +1412,6 @@
     },
     {
       "text": "Miscellaneous",
-      "iconUrl": "./dist/v0.0.1/resources/misc.svg",
       "elementType": "section",
       "showHeader": true,
       "include": [ ],
@@ -1420,7 +1419,7 @@
     },
     {
       "text": "Add-ons",
-      "iconUrl": "./dist/v0.0.1/resources/add-on.svg",
+      "iconUrl": "./dist/v0.0.1/resources/plus-symbol.svg",
       "elementType": "section",
       "showHeader": true,
       "include": [

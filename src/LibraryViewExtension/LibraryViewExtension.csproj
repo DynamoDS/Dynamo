@@ -157,8 +157,7 @@
     <EmbeddedResource Include="web\library\resources\library-action.svg" />
     <EmbeddedResource Include="web\library\resources\library-create.svg" />
     <EmbeddedResource Include="web\library\resources\library-query.svg" />
-    <EmbeddedResource Include="web\library\resources\add-on.svg" />
-    <EmbeddedResource Include="web\library\resources\misc.svg" />
+    <EmbeddedResource Include="web\library\resources\plus-symbol.svg" />
     <EmbeddedResource Include="web\library\resources\Dynamo.svg" />
     <EmbeddedResource Include="web\library\resources\Category.Display.svg" />
     <EmbeddedResource Include="web\library\resources\Category.Geometry.svg" />
