@@ -213,42 +213,33 @@
                 },
                 {
                   "path": "DSCore.List.SortIndexByValue"
+                },
+				{
+                  "path": "List.GetKeys"
+                },
+                {
+                  "path": "List.GetValues"
+                },
+                {
+                  "path": "List.MaximumItemByKey"
+                },
+                {
+                  "path": "List.MinimumItemByKey"
+                },
+                {
+                  "path": "List.ContainsKey"
+                },
+                {
+                  "path": "List.RemoveKey"
+                },
+                {
+                  "path": "DSCore.List.GroupByKey"
+                },
+                {
+                  "path": "DSCore.List.SortByKey"
                 }
               ],
-              "childElements": [
-                {
-                  "text": "Keys",
-                  "iconUrl": "./dist/v0.0.1/resources/Category.Keys.svg",
-                  "elementType": "category",
-                  "include": [
-                    {
-                      "path": "List.GetKeys"
-                    },
-                    {
-                      "path": "List.GetValues"
-                    },
-                    {
-                      "path": "List.MaximumItemByKey"
-                    },
-                    {
-                      "path": "List.MinimumItemByKey"
-                    },
-                    {
-                      "path": "List.ContainsKey"
-                    },
-                    {
-                      "path": "List.RemoveKey"
-                    },
-                    {
-                      "path": "DSCore.List.GroupByKey"
-                    },
-                    {
-                      "path": "DSCore.List.SortByKey"
-                    }
-                  ],
-                  "childItems": [ ]
-                }
-              ]
+				"childElements": [ ]
             },
             {
               "text": "Generate",
@@ -1421,7 +1412,6 @@
     },
     {
       "text": "Miscellaneous",
-      "iconUrl": "./dist/v0.0.1/resources/misc.svg",
       "elementType": "section",
       "showHeader": true,
       "include": [ ],
@@ -1429,7 +1419,7 @@
     },
     {
       "text": "Add-ons",
-      "iconUrl": "./dist/v0.0.1/resources/add-on.svg",
+      "iconUrl": "./dist/v0.0.1/resources/plus-symbol.svg",
       "elementType": "section",
       "showHeader": true,
       "include": [
