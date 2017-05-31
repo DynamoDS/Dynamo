@@ -66,6 +66,20 @@ namespace Dynamo.LibraryUI.Handlers
         }
 
         /// <summary>
+        /// Gets fully qualified name for the given node search element
+        /// </summary>
+        public static string GetFullyQualifiedName(NodeSearchElement element)
+        {
+            //If the node search element is part of a package, then we need to prefix pkg:// for it
+            if (element.ElementType.HasFlag(ElementTypes.Packaged))
+            {
+                //Use FullCategory and name as read from _customization.xml file
+                return string.Format("{0}{1}.{2}", "pkg://", element.FullCategoryName, element.Name);
+            }
+            return element.FullName;
+        }
+
+        /// <summary>
         /// Creates LoadedTypeItem from given node search element
         /// </summary>
         /// <param name="element"></param>
@@ -75,7 +89,7 @@ namespace Dynamo.LibraryUI.Handlers
             //Create LoadedTypeItem with base class
             var item = new LoadedTypeItem()
             {
-                fullyQualifiedName = element.FullName,
+                fullyQualifiedName = GetFullyQualifiedName(element),
                 contextData = element.CreationName,
                 iconUrl = new IconUrl(element.IconName, element.Assembly).Url,
                 parameters = element.Parameters,
@@ -85,14 +99,6 @@ namespace Dynamo.LibraryUI.Handlers
                         ? element.SearchKeywords.Where(s => !string.IsNullOrEmpty(s)).Aggregate((x, y) => string.Format("{0}, {1}", x, y))
                         : string.Empty
             };
-
-            //If the node search element is part of a package, then we need to prefix pkg:// for it
-            var packaged = element.ElementType.HasFlag(ElementTypes.Packaged);
-            if (packaged)
-            {
-                //Use FullCategory and name as read from _customization.xml file
-                item.fullyQualifiedName = string.Format("{0}{1}.{2}", "pkg://", element.FullCategoryName, element.Name);
-            }
 
             //If this element is not a custom node then we are done. The icon url for custom node is different
             if (!element.ElementType.HasFlag(ElementTypes.CustomNode)) return item;

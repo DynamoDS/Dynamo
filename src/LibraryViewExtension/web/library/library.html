@@ -85,7 +85,8 @@
             pkgController.raiseEvent("error", msg);
         });
 
-        csharpController.on("libraryDataUpdated", function () {
+        csharpController.on("libraryDataUpdated", function (items) {
+            console.log(items);
             refreshLibraryView(libController);
         });
 
