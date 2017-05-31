@@ -23,7 +23,8 @@ namespace Dynamo.Tests
         public void OpeningWorkspaceSetsZoom()
         {
             var ws = OpenWorkspaceFromSampleFile();
-            Assert.AreEqual(ws.Zoom, 1.3, .1);
+            var wvm = ViewModel.CurrentSpaceViewModel;
+            Assert.AreEqual(wvm.Zoom, 1.3, .1);
         }
 
         [Test]
@@ -31,9 +32,10 @@ namespace Dynamo.Tests
         {
             var ws = OpenWorkspaceFromSampleFile();
             ws.Clear();
-            Assert.AreEqual(0, ws.X);
-            Assert.AreEqual(0, ws.Y);
-            Assert.AreEqual(1, ws.Zoom);
+            var wvm = ViewModel.CurrentSpaceViewModel;
+            Assert.AreEqual(0, wvm.X);
+            Assert.AreEqual(0, wvm.Y);
+            Assert.AreEqual(1, wvm.Zoom);
         }
 
         [Test]
@@ -41,7 +43,7 @@ namespace Dynamo.Tests
         public void ManipulatingWorkspaceDoesNotAffectZoom()
         {
             var ws = OpenWorkspaceFromSampleFile();
-
+         
             // Pan 
             ViewModel.PanCommand.Execute("Left");
 
@@ -51,7 +53,8 @@ namespace Dynamo.Tests
             ws.Clear();
 
             ws = OpenWorkspaceFromSampleFile();
-            Assert.AreEqual(ws.Zoom, 1.3, .1);
+            var wvm = ViewModel.CurrentSpaceViewModel;
+            Assert.AreEqual(wvm.Zoom, 1.3, .1);
         }
 
         private WorkspaceModel OpenWorkspaceFromSampleFile()

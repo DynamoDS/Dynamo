@@ -35,15 +35,7 @@ namespace Dynamo.Graph.Workspaces
     public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable, IWorkspaceModel
     {
 
-        /// <summary>
-        /// Represents maximum value of workspace zoom
-        /// </summary>
-        public const double ZOOM_MAXIMUM = 4.0;
-
-        /// <summary>
-        /// Represents minimum value of workspace zoom
-        /// </summary>
-        public const double ZOOM_MINIMUM = 0.01;
+       
 
         #region private/internal members
 
@@ -125,34 +117,6 @@ namespace Dynamo.Graph.Workspaces
             if (RequestNodeCentered != null)
                 RequestNodeCentered(this, e);
         }
-
-
-        /// <summary>
-        ///     Function that can be used to respond to a changed workspace Zoom amount.
-        /// </summary>
-        /// <param name="sender">The object where the event handler is attached.</param>
-        /// <param name="e">The event data.</param>
-        public delegate void ZoomEventHandler(object sender, EventArgs e);
-
-        /// <summary>
-        ///     Event that is fired every time the zoom factor of a workspace changes.
-        /// </summary>
-        public event ZoomEventHandler ZoomChanged;
-
-        /// <summary>
-        /// Used during open and workspace changes to set the zoom of the workspace
-        /// </summary>
-        /// <param name="sender">The object which triggers the event</param>
-        /// <param name="e">The zoom event data.</param>
-        internal virtual void OnZoomChanged(object sender, ZoomEventArgs e)
-        {
-            if (ZoomChanged != null)
-            {
-                //Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
-                ZoomChanged(this, e);
-            }
-        }
-
         /// <summary>
         ///     Function that can be used to respond to a "point event"
         /// </summary>
@@ -612,19 +576,6 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Get or set the zoom value of the workspace.
-        /// </summary>
-        public double Zoom
-        {
-            get { return zoom; }
-            set
-            {
-                zoom = value;
-                RaisePropertyChanged("Zoom");
-            }
-        }
-
-        /// <summary>
         ///     Returns the height of the workspace's bounds.
         /// </summary>
         public double Height
@@ -766,7 +717,6 @@ namespace Dynamo.Graph.Workspaces
             X = info.X;
             Y = info.Y;
             FileName = info.FileName;
-            Zoom = info.Zoom;
 
             HasUnsavedChanges = false;
             IsReadOnly = DynamoUtilities.PathHelper.IsReadOnlyPath(fileName);
@@ -900,7 +850,6 @@ namespace Dynamo.Graph.Workspaces
 
             X = 0.0;
             Y = 0.0;
-            Zoom = 1.0;
             ScaleFactor = 1.0;
             // Reset the workspace offset
             OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(X, Y)));
@@ -1829,7 +1778,6 @@ namespace Dynamo.Graph.Workspaces
                 root.SetAttribute("Version", WorkspaceVersion.ToString());
                 root.SetAttribute("X", X.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("zoom", Zoom.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("ScaleFactor", ScaleFactor.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Name", Name);
                 root.SetAttribute("Description", Description);
