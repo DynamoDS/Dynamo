@@ -28,6 +28,12 @@ namespace Dynamo.LibraryUI
         private object root = new object();
 
         /// <summary>
+        /// This event is fired when this object is disposed, clients can 
+        /// register a callback for Dispose.
+        /// </summary>
+        public event Action Disposed;
+
+        /// <summary>
         /// Creates the event observer with a registered observe action and 
         /// a reduce function for notification.
         /// </summary>
@@ -137,6 +143,8 @@ namespace Dynamo.LibraryUI
             if (!disposed)
             {
                 disposed = true;
+                if (Disposed != null) { Disposed(); }
+                Disposed = null;
                 observer = null;
                 reducer = null;
             }
@@ -157,7 +165,7 @@ namespace Dynamo.LibraryUI
 
         public void Dispose()
         {
-            dispose?.Invoke();
+            if(dispose != null) { dispose(); }
             dispose = null;
         }
     }

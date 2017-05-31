@@ -37,6 +37,8 @@ namespace ViewExtensionLibraryTests
 
     public class LibraryResourceProviderTests
     {
+        private const string EventX = "X";
+
         [Test]
         [Category("UnitTests")]
         public void EventControllerCallback()
@@ -326,7 +328,7 @@ namespace ViewExtensionLibraryTests
             Assert.AreEqual(3, model.NumElements);
 
             Assert.IsTrue(resetevent.WaitOne(timeout*3));
-            controller.Verify(c => c.RaiseEvent("libraryDataUpdated", "A, C, E"), Times.Once);
+            controller.Verify(c => c.RaiseEvent(libraryDataUpdated, "A, C, E"), Times.Once);
 
             //Dispose
             disposable.Dispose();
@@ -344,22 +346,30 @@ namespace ViewExtensionLibraryTests
         [Category("UnitTests")]
         public void SimpleEventObserver()
         {
+            const string disposed = "Disposed";
             var controller = new Mock<IEventController>();
-            var observer = new EventObserver<int, bool>(
-                    x => controller.Object.RaiseEvent("X", x),
-                    x => x%2 == 0
-                );
+            using (var observer = new EventObserver<int, bool>(
+                    x => controller.Object.RaiseEvent(EventX, x),
+                    x => x % 2 == 0
+                ))
+            {
 
-            var list = Enumerable.Range(1, 10).ToList();
-            list.ForEach(x => observer.OnEvent(x)); //notify OnEvent
-            controller.Verify(c => c.RaiseEvent("X", It.IsAny<bool>()), Times.Exactly(10));
-            controller.Verify(c => c.RaiseEvent("X", true), Times.Exactly(5));
-            controller.Verify(c => c.RaiseEvent("X", false), Times.Exactly(5));
+                observer.Disposed += () => controller.Object.RaiseEvent(disposed);
+                var list = Enumerable.Range(1, 10).ToList();
+                list.ForEach(x => observer.OnEvent(x)); //notify OnEvent
+                controller.Verify(c => c.RaiseEvent(EventX, It.IsAny<bool>()), Times.Exactly(10));
+                controller.Verify(c => c.RaiseEvent(EventX, true), Times.Exactly(5));
+                controller.Verify(c => c.RaiseEvent(EventX, false), Times.Exactly(5));
+
+                //Dispose is not yet called
+                controller.Verify(c => c.RaiseEvent(disposed), Times.Never);
+            }
+            controller.Verify(c => c.RaiseEvent(disposed), Times.Once); //must be called once
         }
 
         [Test]
         [Category("UnitTests")]
-        public void SimpleEvenNumberObserver()
+        public void EvenNumberEventObserver()
         {
             const string EvenNumber = "Even Number";
             var controller = new Mock<IEventController>();
@@ -394,7 +404,7 @@ namespace ViewExtensionLibraryTests
             controller.Setup(c => c.RaiseEvent(It.IsAny<string>(), It.IsAny<object[]>())).Callback<string, object[]>((s, x) => { objexts = x; resetevent.Set(); });
 
             var observer = new EventObserver<int, List<int>>(
-                    x => controller.Object.RaiseEvent("X", x),
+                    x => controller.Object.RaiseEvent(EventX, x),
                     (x, y) => {
                         if (x == null) return new List<int>() { y};
                         x.Add(y);
@@ -406,7 +416,7 @@ namespace ViewExtensionLibraryTests
             list.ForEach(x => observer.OnEvent(x)); //notify OnEvent
 
             resetevent.WaitOne(timeout * 3);
-            controller.Verify(c => c.RaiseEvent("X", It.IsAny<object[]>()), Times.Once);
+            controller.Verify(c => c.RaiseEvent(EventX, It.IsAny<object[]>()), Times.Once);
             Assert.IsTrue(list.SequenceEqual(objexts[0] as IEnumerable<int>));
         }
 
@@ -421,7 +431,7 @@ namespace ViewExtensionLibraryTests
             controller.Setup(c => c.RaiseEvent(It.IsAny<string>(), It.IsAny<object[]>())).Callback(() => resetevent.Set());
 
             var observer = new EventObserver<int, int>(
-                    x => controller.Object.RaiseEvent("X", x),
+                    x => controller.Object.RaiseEvent(EventX, x),
                     EventObserver<int, int>.Identity
                 ).Throttle(TimeSpan.FromMilliseconds(timeout));
 
@@ -429,8 +439,8 @@ namespace ViewExtensionLibraryTests
             list.ForEach(x => observer.OnEvent(x)); //notify OnEvent
 
             resetevent.WaitOne(timeout*3);
-            controller.Verify(c => c.RaiseEvent("X", It.IsAny<int>()), Times.Once);
-            controller.Verify(c => c.RaiseEvent("X", list.Last()), Times.Once);
+            controller.Verify(c => c.RaiseEvent(EventX, It.IsAny<int>()), Times.Once);
+            controller.Verify(c => c.RaiseEvent(EventX, list.Last()), Times.Once);
         }
 
         [Test]
@@ -441,7 +451,7 @@ namespace ViewExtensionLibraryTests
 
             var controller = new Mock<IEventController>();
             var observer = new EventObserver<int, int>(
-                    x => controller.Object.RaiseEvent("X", x),
+                    x => controller.Object.RaiseEvent(EventX, x),
                     (x, y) => x + y
                 ).Throttle(TimeSpan.FromMilliseconds(10));
 
@@ -450,19 +460,19 @@ namespace ViewExtensionLibraryTests
 
             resetevent.WaitOne(250);
             Assert.IsTrue(result.IsCompleted);
-            controller.Verify(c => c.RaiseEvent("X", It.IsAny<int>()), Times.Once);
-            controller.Verify(c => c.RaiseEvent("X", 55), Times.Once);
+            controller.Verify(c => c.RaiseEvent(EventX, It.IsAny<int>()), Times.Once);
+            controller.Verify(c => c.RaiseEvent(EventX, 55), Times.Once);
         }
 
         [Test]
         [Category("UnitTests")]
-        public void RefireTrhottledEvents()
+        public void RefireThrottledEvents()
         {
             var resetevent = new AutoResetEvent(false);
 
             var controller = new Mock<IEventController>();
             var observer = new EventObserver<int, int>(
-                    x => controller.Object.RaiseEvent("X", x),
+                    x => controller.Object.RaiseEvent(EventX, x),
                     (x, y) => x + y
                 ).Throttle(TimeSpan.FromMilliseconds(10));
 
@@ -471,15 +481,15 @@ namespace ViewExtensionLibraryTests
 
             resetevent.WaitOne(250);
             Assert.IsTrue(result.IsCompleted);
-            controller.Verify(c => c.RaiseEvent("X", It.IsAny<int>()), Times.Once);
-            controller.Verify(c => c.RaiseEvent("X", list.Sum()), Times.Once);
+            controller.Verify(c => c.RaiseEvent(EventX, It.IsAny<int>()), Times.Once);
+            controller.Verify(c => c.RaiseEvent(EventX, list.Sum()), Times.Once);
 
             var list2 = Enumerable.Range(11, 10); //different range of values
             result = Parallel.ForEach(list2, x => observer.OnEvent(x));
             resetevent.WaitOne(250);
             Assert.IsTrue(result.IsCompleted);
-            controller.Verify(c => c.RaiseEvent("X", It.IsAny<int>()), Times.Exactly(2));
-            controller.Verify(c => c.RaiseEvent("X", list2.Sum()), Times.Once); //doesn't contain old values
+            controller.Verify(c => c.RaiseEvent(EventX, It.IsAny<int>()), Times.Exactly(2));
+            controller.Verify(c => c.RaiseEvent(EventX, list2.Sum()), Times.Once); //doesn't contain old values
         }
 
         [Test, Category("UnitTests")]

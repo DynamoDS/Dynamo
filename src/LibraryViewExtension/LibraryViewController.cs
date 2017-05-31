@@ -231,17 +231,20 @@ namespace Dynamo.LibraryUI
                         }
                 ).Throttle(TimeSpan.FromMilliseconds(throttleTime));
 
+            //Set up the event callback
             model.EntryAdded += observer.OnEvent;
             model.EntryRemoved += observer.OnEvent;
             model.EntryUpdated += observer.OnEvent;
 
-            return new AnonymousDisposable(() =>
+            //Set up the dispose event handler
+            observer.Disposed += () =>
             {
                 model.EntryAdded -= observer.OnEvent;
                 model.EntryRemoved -= observer.OnEvent;
                 model.EntryUpdated -= observer.OnEvent;
-                observer.Dispose();
-            });
+            };
+
+            return observer;
         }
 
         private void InitializeResourceStreams(DynamoModel model)
