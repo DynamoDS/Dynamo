@@ -345,7 +345,7 @@ namespace Dynamo.ViewModels
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
         {
             this.DynamoViewModel = dynamoViewModel;
-
+            this.Zoom = 1.0;
             Model = model;
             stateMachine = new StateMachine(this);
 

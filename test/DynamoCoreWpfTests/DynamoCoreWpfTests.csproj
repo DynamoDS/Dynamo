@@ -45,11 +45,6 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DSCoreNodes, Version=2.0.0.4157, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files\Dynamo\Dynamo Core\1.2\DSCoreNodes.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Greg, Version=1.0.6176.18754, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\src\packages\Greg.1.0.6176.18754\lib\net45\Greg.dll</HintPath>
       <Private>True</Private>
@@ -242,6 +237,10 @@
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>CoreNodeModels</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\CoreNodes\CoreNodes.csproj">
+      <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
+      <Name>CoreNodes</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\DynamoConversions\DynamoConversions.csproj">
       <Project>{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}</Project>
