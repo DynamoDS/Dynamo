@@ -115,22 +115,6 @@ namespace Dynamo.LibraryUI
             }));
         }
 
-        /// <summary>
-        /// Call this method to search the library given a text as input.
-        /// </summary>
-        /// <param name="searchText"></param>
-        /// <returns></returns>
-        public string SearchLibraryItems(string searchText)
-        {
-            Console.WriteLine("Search Text: " + searchText);
-            const string result = "searchLoadedTypes";
-            var elements = dynamoViewModel.Model.SearchModel.Search(searchText);
-            //Register provider for node data as search result
-            resourceFactory.RegisterProvider("/" + result, new NodeItemDataProvider(elements, true));
-
-            return result;
-        }
-
         /// Call this method to import a zero touch library. It will prompt
         /// user to select the zero touch dll.
         /// </summary>
@@ -260,7 +244,7 @@ namespace Dynamo.LibraryUI
             }
 
             //Register provider for node data
-            resourceFactory.RegisterProvider("/loadedTypes", new NodeItemDataProvider(model.SearchModel.SearchEntries));
+            resourceFactory.RegisterProvider("/loadedTypes", new NodeItemDataProvider(model.SearchModel));
             
             {
                 var url = "http://localhost/layoutSpecs";
@@ -268,6 +252,9 @@ namespace Dynamo.LibraryUI
                 var stream = LoadResource(resource);
                 resourceFactory.RegisterHandler(url, ResourceHandler.FromStream(stream));
             }
+
+            //Register provider for node data
+            resourceFactory.RegisterProvider("/search", new SearchResultDataProvider(model.SearchModel));
         }
 
         private void RegisterResources(ChromiumWebBrowser browser)
