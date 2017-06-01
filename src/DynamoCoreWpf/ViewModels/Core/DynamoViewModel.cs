@@ -1590,7 +1590,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Returns the selected nodes that are "input" nodes, and makes an 
         /// exception for CodeBlockNodes as these are marked false so they 
-        /// do not expose a IsInput checkbox
+        /// do not expose the IsInput checkbox
         /// </summary>
         /// <returns></returns>
         internal IEnumerable<NodeModel> GetInputNodesFromSelectionForPresets()
