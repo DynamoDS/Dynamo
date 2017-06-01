@@ -24,6 +24,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Newtonsoft.Json;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
 namespace Dynamo.Graph.Workspaces
@@ -545,6 +546,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns all of the annotations currently present in the workspace.
         /// </summary>
+        [JsonIgnore]
         public IEnumerable<AnnotationModel> Annotations
         {
             get
@@ -1148,7 +1150,7 @@ namespace Dynamo.Graph.Workspaces
             // Check if all the selected models are groups
             bool isGroupLayout = selection.Count > 0 &&
                 selection.All(x => x is AnnotationModel ||
-                    selection.OfType<AnnotationModel>().Any(g => g.SelectedModels.Contains(x)));
+                    selection.OfType<AnnotationModel>().Any(g => g.Nodes.Contains(x)));
 
             GenerateCombinedGraph(isGroupLayout);
             RecordUndoGraphLayout(isGroupLayout);
@@ -1197,7 +1199,7 @@ namespace Dynamo.Graph.Workspaces
                 if (!isGroupLayout)
                 {
                     AnnotationModel group = Annotations.Where(
-                        g => g.SelectedModels.Contains(node)).ToList().FirstOrDefault();
+                        g => g.Nodes.Contains(node)).ToList().FirstOrDefault();
 
                     // Do not process nodes within groups
                     if (group == null)
@@ -1220,9 +1222,9 @@ namespace Dynamo.Graph.Workspaces
                 {
                     AnnotationModel startGroup = null, endGroup = null;
                     startGroup = Annotations.Where(
-                        g => g.SelectedModels.Contains(edge.Start.Owner)).ToList().FirstOrDefault();
+                        g => g.Nodes.Contains(edge.Start.Owner)).ToList().FirstOrDefault();
                     endGroup = Annotations.Where(
-                        g => g.SelectedModels.Contains(edge.End.Owner)).ToList().FirstOrDefault();
+                        g => g.Nodes.Contains(edge.End.Owner)).ToList().FirstOrDefault();
 
                     // Treat a group as a node, but do not process edges within a group
                     if (startGroup == null || endGroup == null || startGroup != endGroup)
@@ -1244,7 +1246,7 @@ namespace Dynamo.Graph.Workspaces
             foreach (NoteModel note in Notes)
             {
                 AnnotationModel group = Annotations.Where(
-                    g => g.SelectedModels.Contains(note)).ToList().FirstOrDefault();
+                    g => g.Nodes.Contains(note)).ToList().FirstOrDefault();
 
                 GraphLayout.Node nd = null;
 
@@ -1258,7 +1260,7 @@ namespace Dynamo.Graph.Workspaces
                 else
                 {
                     // If note is part of a group, link to the nearest node in the group
-                    NodeModel ndm = group.SelectedModels.OfType<NodeModel>().OrderBy(node =>
+                    NodeModel ndm = group.Nodes.OfType<NodeModel>().OrderBy(node =>
                         Math.Pow(node.X + node.Width / 2 - note.X - note.Width / 2, 2) +
                         Math.Pow(node.Y + node.Height / 2 - note.Y - note.Height / 2, 2)).FirstOrDefault();
 
@@ -1292,7 +1294,7 @@ namespace Dynamo.Graph.Workspaces
                 foreach (AnnotationModel group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
                 {
                     List<GraphLayout.Node> cluster = new List<GraphLayout.Node>();
-                    cluster.AddRange(group.SelectedModels.OfType<NodeModel>().Select(x => combinedGraph.FindNode(x.GUID)));
+                    cluster.AddRange(group.Nodes.OfType<NodeModel>().Select(x => combinedGraph.FindNode(x.GUID)));
                     SubgraphClusters.Add(cluster);
                 }
             }
@@ -1324,8 +1326,8 @@ namespace Dynamo.Graph.Workspaces
                 {
                     if (group.IsSelected)
                     {
-                        group.SelectedModels.OfType<NodeModel>().ToList().ForEach(x => x.IsSelected = false);
-                        undoItems.AddRange(group.SelectedModels);
+                        group.Nodes.OfType<NodeModel>().ToList().ForEach(x => x.IsSelected = false);
+                        undoItems.AddRange(group.Nodes);
                     }
                 }
             }
@@ -1487,7 +1489,7 @@ namespace Dynamo.Graph.Workspaces
 
                     double deltaX = n.X - group.X;
                     double deltaY = n.Y - group.Y + graph.OffsetY;
-                    foreach (var node in group.SelectedModels.OfType<NodeModel>())
+                    foreach (var node in group.Nodes.OfType<NodeModel>())
                     {
                         node.X += deltaX;
                         node.Y += deltaY;
@@ -1582,7 +1584,7 @@ namespace Dynamo.Graph.Workspaces
             bool nodesInSameGroup = false;
             foreach (var group in this.Annotations)
             {
-                var groupModels = group.SelectedModels;
+                var groupModels = group.Nodes;
                 nodesInSameGroup = !selectedModels.Except(groupModels).Any();
                 if (nodesInSameGroup)
                     break;

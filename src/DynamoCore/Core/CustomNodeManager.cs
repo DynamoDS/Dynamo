@@ -888,7 +888,7 @@ namespace Dynamo.Core
                     currentWorkspace.RemoveGroup(group);
 
                     group.GUID = Guid.NewGuid();
-                    group.SelectedModels = group.DeletedModelBases;
+                    group.Nodes = group.DeletedModelBases;
                     newAnnotations.Add(group);
                 }
                 

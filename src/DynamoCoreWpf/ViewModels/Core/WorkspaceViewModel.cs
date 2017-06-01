@@ -565,7 +565,7 @@ namespace Dynamo.ViewModels
                 {
                     selection.AddUnique(n);
                     // if annotation is selected its children should be added to selection too
-                    foreach (var m in n.SelectedModels)
+                    foreach (var m in n.Nodes)
                     {
                         selection.AddUnique(m);
                     }

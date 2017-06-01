@@ -372,7 +372,7 @@ namespace Autodesk.Workspaces
             writer.WriteValue(anno.AnnotationText);
             writer.WritePropertyName("SelectedModels");
             writer.WriteStartArray();
-            foreach (var m in anno.SelectedModels)
+            foreach (var m in anno.Nodes)
             {
                 writer.WriteValue(m.GUID.ToString());
             }

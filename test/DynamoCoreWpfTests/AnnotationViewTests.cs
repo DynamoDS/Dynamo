@@ -116,7 +116,7 @@ namespace DynamoCoreWpfTests
             var annotationView = NodeViewWithGuid("ce97bb23-ad59-461b-ae81-17e8c48cf8de");
             Assert.IsNotNull(annotationView);
 
-            var modelCount = annotationView.ViewModel.AnnotationModel.SelectedModels.Count();
+            var modelCount = annotationView.ViewModel.AnnotationModel.Nodes.Count();
             Assert.AreEqual(1,modelCount);
         }
     }

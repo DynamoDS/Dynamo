@@ -110,13 +110,13 @@ namespace Dynamo.Tests
             model.DeleteModelInternal(modelToDelete);
 
             //Check for the model count now
-            Assert.AreEqual(1, annotation.SelectedModels.Count());
+            Assert.AreEqual(1, annotation.Nodes.Count());
 
             //Undo the operation
             model.CurrentWorkspace.Undo();
 
             //Check for the model count now
-            Assert.AreEqual(2, annotation.SelectedModels.Count());
+            Assert.AreEqual(2, annotation.Nodes.Count());
 
         }
 
@@ -162,7 +162,7 @@ namespace Dynamo.Tests
             //Check for the model count 
             annotation = model.CurrentWorkspace.Annotations.FirstOrDefault();
             Assert.NotNull(annotation);
-            Assert.AreEqual(2, annotation.SelectedModels.Count());
+            Assert.AreEqual(2, annotation.Nodes.Count());
         }
 
         [Test]
@@ -196,13 +196,13 @@ namespace Dynamo.Tests
             model.UngroupModel(modelToUngroup);
 
             //Check for the model count now
-            Assert.AreEqual(1, annotation.SelectedModels.Count());
+            Assert.AreEqual(1, annotation.Nodes.Count());
 
             //Undo the operation
             model.CurrentWorkspace.Undo();
 
             //Check for the model count now
-            Assert.AreEqual(2, annotation.SelectedModels.Count());
+            Assert.AreEqual(2, annotation.Nodes.Count());
 
         }
 
@@ -283,7 +283,7 @@ namespace Dynamo.Tests
             model.CurrentWorkspace.Undo();
             annotation = model.CurrentWorkspace.Annotations.FirstOrDefault();
             Assert.NotNull(annotation);
-            Assert.AreEqual(2, annotation.SelectedModels.Count());
+            Assert.AreEqual(2, annotation.Nodes.Count());
         }
 
         [Test]
@@ -330,7 +330,7 @@ namespace Dynamo.Tests
             model.AddToGroup(modelsToAdd);
 
             //Group should have the new node added 
-            Assert.AreEqual(3, annotation.SelectedModels.Count());
+            Assert.AreEqual(3, annotation.Nodes.Count());
 
             DynamoSelection.Instance.ClearSelection();
 
@@ -350,7 +350,7 @@ namespace Dynamo.Tests
             model.AddToGroup(modelsToAdd);
 
             //Group should have the new note added 
-            Assert.AreEqual(4, annotation.SelectedModels.Count());
+            Assert.AreEqual(4, annotation.Nodes.Count());
         }
 
         [Test]
@@ -540,19 +540,19 @@ namespace Dynamo.Tests
             model.DeleteModelInternal(modelToDelete);
 
             //Check for the model count now
-            Assert.AreEqual(1, annotation.SelectedModels.Count());
+            Assert.AreEqual(1, annotation.Nodes.Count());
 
             //Undo the operation
             model.CurrentWorkspace.Undo();
 
             //Check for the model count now
-            Assert.AreEqual(2, annotation.SelectedModels.Count());
+            Assert.AreEqual(2, annotation.Nodes.Count());
 
             //Redo the operation
             model.CurrentWorkspace.Redo();
             
             //Check for the model count now
-            Assert.AreEqual(1, annotation.SelectedModels.Count());
+            Assert.AreEqual(1, annotation.Nodes.Count());
         }
 
         [Test]
@@ -687,7 +687,7 @@ namespace Dynamo.Tests
             model.AddToGroup(modelsToAdd);
 
             //Group should have the new node added 
-            Assert.AreEqual(3, annotation.SelectedModels.Count());
+            Assert.AreEqual(3, annotation.Nodes.Count());
 
             DynamoSelection.Instance.ClearSelection();
 
@@ -707,17 +707,17 @@ namespace Dynamo.Tests
             model.AddToGroup(modelsToAdd);
 
             //Group should have the new note added 
-            Assert.AreEqual(4, annotation.SelectedModels.Count());
+            Assert.AreEqual(4, annotation.Nodes.Count());
 
             //Undo the operation
             model.CurrentWorkspace.Undo();
 
             //Notes should not be a part of the group
-            Assert.AreEqual(3, annotation.SelectedModels.Count());
+            Assert.AreEqual(3, annotation.Nodes.Count());
 
             //Redo the operation - notes should be within that group
             model.CurrentWorkspace.Redo();
-            Assert.AreEqual(4, annotation.SelectedModels.Count());
+            Assert.AreEqual(4, annotation.Nodes.Count());
         }
 
         [Test]
@@ -756,7 +756,7 @@ namespace Dynamo.Tests
             CurrentDynamoModel.DeleteModelInternal(modelToDelete);
 
             // only the note should remain
-            Assert.AreEqual(1, annotation.SelectedModels.Count());
+            Assert.AreEqual(1, annotation.Nodes.Count());
 
             //paste the group
             CurrentDynamoModel.Paste();
@@ -766,7 +766,7 @@ namespace Dynamo.Tests
             var pastedGroup = ws.Annotations.First(g => g != annotation);
 
             // group has been copied with 1 node and 1 note
-            Assert.AreEqual(2, pastedGroup.SelectedModels.Count());
+            Assert.AreEqual(2, pastedGroup.Nodes.Count());
         }
 
         [Test]
@@ -779,7 +779,7 @@ namespace Dynamo.Tests
             // check if all models are loaded correctly
             Assert.AreEqual(4, ws.Nodes.Count());
             Assert.AreEqual(1, ws.Annotations.Count());
-            Assert.AreEqual(4, ws.Annotations.First().SelectedModels.Count());
+            Assert.AreEqual(4, ws.Annotations.First().Nodes.Count());
         }
     }
 }
