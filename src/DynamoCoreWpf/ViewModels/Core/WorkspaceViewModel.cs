@@ -49,7 +49,6 @@ namespace Dynamo.ViewModels
 
         public DynamoViewModel DynamoViewModel { get; private set; }
         public readonly WorkspaceModel Model;
-        private double zoom;
 
         private bool _canFindNodesFromElements = false;
 
@@ -281,10 +280,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public double Zoom
         {
-            get { return zoom; }
+            get { return this.Model.Zoom; }
             set
             {
-                zoom = value;
+                this.Model.Zoom = value;
                 RaisePropertyChanged("Zoom");
             }
         }
@@ -345,7 +344,6 @@ namespace Dynamo.ViewModels
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
         {
             this.DynamoViewModel = dynamoViewModel;
-            this.Zoom = 1.0;
             Model = model;
             stateMachine = new StateMachine(this);
 

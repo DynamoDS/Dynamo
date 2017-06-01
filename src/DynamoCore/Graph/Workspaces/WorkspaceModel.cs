@@ -16,6 +16,7 @@ using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
 using ProtoCore.Namespace;
 using System;
 using System.Collections.Generic;
@@ -574,6 +575,19 @@ namespace Dynamo.Graph.Workspaces
                 RaisePropertyChanged("Y");
             }
         }
+        /// <summary>
+        ///     Get or set the zoom value of the workspace.
+        /// </summary>
+        [JsonIgnore]
+        public double Zoom
+        {
+            get { return zoom; }
+            set
+            {
+                zoom = value;
+                RaisePropertyChanged("Zoom");
+            }
+        }
 
         /// <summary>
         ///     Returns the height of the workspace's bounds.
@@ -717,6 +731,8 @@ namespace Dynamo.Graph.Workspaces
             X = info.X;
             Y = info.Y;
             FileName = info.FileName;
+            Zoom = info.Zoom; 
+
 
             HasUnsavedChanges = false;
             IsReadOnly = DynamoUtilities.PathHelper.IsReadOnlyPath(fileName);
@@ -850,6 +866,7 @@ namespace Dynamo.Graph.Workspaces
 
             X = 0.0;
             Y = 0.0;
+            Zoom = 1.0;
             ScaleFactor = 1.0;
             // Reset the workspace offset
             OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(X, Y)));
