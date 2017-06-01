@@ -553,6 +553,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns or set the X position of the workspace.
         /// </summary>
+        [Obsolete("This property will be removed from the model, please use the X property on the WorkspaceViewModel in DynamoCoreWpf assembly.")]
         public double X
         {
             get { return x; }
@@ -566,6 +567,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns or set the Y position of the workspace
         /// </summary>
+        [Obsolete("This property will be removed from the model, please use the Y property on the WorkspaceViewModel in DynamoCoreWpf assembly.")]
         public double Y
         {
             get { return y; }
@@ -579,6 +581,7 @@ namespace Dynamo.Graph.Workspaces
         ///     Get or set the zoom value of the workspace.
         /// </summary>
         [JsonIgnore]
+        [Obsolete("This property will be removed from the model, please use the Zoom property on the WorkspaceViewModel in DynamoCoreWpf assembly.")]
         public double Zoom
         {
             get { return zoom; }
