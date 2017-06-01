@@ -1253,6 +1253,10 @@
       <Name>ShapewaysClient</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Workspaces\Workspaces.csproj">
+      <Project>{d2aaa2dd-6c7e-41f4-8e36-8e0d112cb8dc}</Project>
+      <Name>Workspaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\StartPage\icon-customnode.png" />

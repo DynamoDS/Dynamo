@@ -1,4 +1,17 @@
-﻿using Dynamo.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Forms;
+using System.Windows.Threading;
+using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Exceptions;
 using Dynamo.Graph;
@@ -22,20 +35,6 @@ using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Threading;
-using Dynamo.Controls;
 using ISelectable = Dynamo.Selection.ISelectable;
 
 
@@ -1385,7 +1384,10 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
+                var ws = model.CurrentWorkspace;
+                var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(ws, model.LibraryServices, model.EngineController,
+                    model.Scheduler, model.NodeFactory, false, false, model.CustomNodeManager);
+                File.WriteAllText(path, json);
             }
             catch (System.Exception ex)
             {
@@ -1402,7 +1404,7 @@ namespace Dynamo.ViewModels
         /// <returns>true if save was successful, false otherwise</returns>
         internal bool ShowSaveDialogIfNeededAndSave(WorkspaceModel workspace)
         {
-            // crash sould always allow save as
+            // crash should always allow save as
             if (!String.IsNullOrEmpty(workspace.FileName) && !DynamoModel.IsCrashing)
             {
                 workspace.Save(EngineController.LiveRunnerRuntimeCore);
