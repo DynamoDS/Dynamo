@@ -547,6 +547,7 @@ namespace Dynamo.Graph.Workspaces
         ///     Returns all of the annotations currently present in the workspace.
         /// </summary>
         [JsonIgnore]
+        [Obsolete("This property will be removed from the model, please use Annotations on the WorkspaceViewModel in DynamoCoreWpf assembly")]
         public IEnumerable<AnnotationModel> Annotations
         {
             get

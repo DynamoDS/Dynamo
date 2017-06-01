@@ -258,7 +258,7 @@ namespace Dynamo.Graph.Annotations
         /// </summary>      
         internal void UpdateBoundaryFromSelection()
         {          
-            var selectedModelsList = selectedModels.ToList();
+            var selectedModelsList = nodes.ToList();
           
             if (selectedModelsList.Any())
             {
@@ -297,11 +297,11 @@ namespace Dynamo.Graph.Annotations
 
                 //Calculate the boundary if there is any overlap
                 ModelBase overlap = null;
-                foreach (var nodes in Nodes)
+                foreach (var nodesList in Nodes)
                 {
-                    if (!region.Contains(nodes.Rect))
+                    if (!region.Contains(nodesList.Rect))
                     {
-                        overlap = nodes;
+                        overlap = nodesList;
                         if (overlap.Rect.Top < this.X ||
                                     overlap.Rect.Bottom > region.Bottom) //Overlap in height - increase the region height
                         {
