@@ -80,6 +80,19 @@ namespace Dynamo.LibraryUI.Handlers
             return data;
         }
 
+        /// Gets fully qualified name for the given node search element
+        /// </summary>
+        public static string GetFullyQualifiedName(NodeSearchElement element)
+        {
+            //If the node search element is part of a package, then we need to prefix pkg:// for it
+            if (element.ElementType.HasFlag(ElementTypes.Packaged))
+            {
+                //Use FullCategory and name as read from _customization.xml file
+                return string.Format("{0}{1}.{2}", "pkg://", element.FullCategoryName, element.Name);
+            }
+            return element.FullName;
+        }
+
         /// <summary>
         /// Creates LoadedTypeItem from given node search element
         /// </summary>
@@ -89,7 +102,7 @@ namespace Dynamo.LibraryUI.Handlers
         {
             var item = new LoadedTypeItem()
             {
-                fullyQualifiedName = element.FullName,
+                fullyQualifiedName = GetFullyQualifiedName(element),
                 contextData = element.CreationName,
                 iconUrl = new IconUrl(element.IconName, element.Assembly).Url,
                 parameters = element.Parameters,
@@ -118,7 +131,7 @@ namespace Dynamo.LibraryUI.Handlers
                 //Use FullCategory and name as read from _customization.xml file
                 item.fullyQualifiedName = string.Format("{0}{1}.{2}", "pkg://", element.FullCategoryName, element.Name);
             }
-
+            
             //If this element is not a custom node then we are done. The icon url for custom node is different
             if (!element.ElementType.HasFlag(ElementTypes.CustomNode)) return;
 
