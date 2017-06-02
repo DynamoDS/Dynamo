@@ -1263,6 +1263,13 @@ namespace Dynamo.Models
         #endregion
 
         #region save/load
+        public void SaveAs(string path)
+        {
+            var ws = this.CurrentWorkspace;
+            var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(ws, this.LibraryServices, this.EngineController,
+                this.Scheduler, this.NodeFactory, false, false, this.CustomNodeManager);
+            File.WriteAllText(path, json);
+        }
 
         /// <summary>
         ///     Opens a Dynamo workspace from a path to an Xml file on disk.

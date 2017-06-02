@@ -1384,10 +1384,7 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                var ws = model.CurrentWorkspace;
-                var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(ws, model.LibraryServices, model.EngineController,
-                    model.Scheduler, model.NodeFactory, false, false, model.CustomNodeManager);
-                File.WriteAllText(path, json);
+                model.SaveAs(path);
             }
             catch (System.Exception ex)
             {
