@@ -283,8 +283,8 @@ namespace Dynamo.LibraryUI
                 resourceFactory.RegisterHandler(url, ResourceHandler.FromStream(stream));
             }
 
-            //Register provider for node data
-            resourceFactory.RegisterProvider("/search", new SearchResultDataProvider(model.SearchModel));
+            //Register provider for searching node data
+            resourceFactory.RegisterProvider(SearchResultDataProvider.serviceIdentifier, new SearchResultDataProvider(model.SearchModel));
         }
 
         private void RegisterResources(ChromiumWebBrowser browser)

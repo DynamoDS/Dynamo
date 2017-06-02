@@ -11,6 +11,11 @@ namespace Dynamo.LibraryUI.Handlers
     class LoadedTypeItemExtended : LoadedTypeItem
     {
         public int weight { get; set; }
+        public LoadedTypeItemExtended setWeight(int w)
+        {
+            this.weight = w;
+            return this;
+        }
     }
 
     /// <summary>
@@ -18,8 +23,7 @@ namespace Dynamo.LibraryUI.Handlers
     /// </summary>
     class SearchResultDataProvider : NodeItemDataProvider
     {
-        private const string serviceIdentifier = "search";
-        private IEnumerable<NodeSearchElement> elements;
+        public const string serviceIdentifier = "/nodeSearch";
 
         /// <summary>
         /// Constructor
@@ -53,34 +57,8 @@ namespace Dynamo.LibraryUI.Handlers
             int w = 0; //represents the weight
             var data = new LoadedTypeData<LoadedTypeItemExtended>();
             data.loadedTypes = searchEntries
-                .Select(e => CreateLoadedTypeItemExtended(e, w++) as LoadedTypeItemExtended).ToList();
+                .Select(e => CreateLoadedTypeItem<LoadedTypeItemExtended>(e).setWeight(w++)).ToList();
             return data;
-        }
-
-        /// <summary>
-        /// Creates LoadedTypeItem from given node search element
-        /// </summary>
-        /// <param name="element"></param>
-        /// <param name="w"></param>
-        /// <returns></returns>
-        private LoadedTypeItem CreateLoadedTypeItemExtended(NodeSearchElement element, int w = 0)
-        {
-            var item = new LoadedTypeItemExtended()
-            {
-                fullyQualifiedName = element.FullName,
-                contextData = element.CreationName,
-                iconUrl = new IconUrl(element.IconName, element.Assembly).Url,
-                parameters = element.Parameters,
-                itemType = element.Group.ToString().ToLower(),
-                description = element.Description,
-                keywords = element.SearchKeywords.Any()
-                        ? element.SearchKeywords.Where(s => !string.IsNullOrEmpty(s)).Aggregate((x, y) => string.Format("{0}, {1}", x, y))
-                        : string.Empty,
-                weight = w
-            };
-
-            InitializeLoadedTypeItem(element, item);
-            return item;
         }
     }
 }

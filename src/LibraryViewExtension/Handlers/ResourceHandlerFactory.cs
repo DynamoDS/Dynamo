@@ -47,20 +47,8 @@ namespace Dynamo.LibraryUI.Handlers
         /// requests starting with the given base url.</param>
         public void RegisterProvider(string baseurl, IResourceProvider provider)
         {
-            if (!resourceProviders.ContainsKey(baseurl))
-            {
-                supportedSchemes.Add(provider.Scheme);
-                resourceProviders.Add(baseurl, provider);
-            }
-            else
-            {
-                var oldProvider = resourceProviders[baseurl];
-                if (oldProvider.Scheme != provider.Scheme)
-                {
-                    throw new Exception("Update an existing provider with different schemes!");
-                }
-                resourceProviders[baseurl] = provider;
-            }
+            supportedSchemes.Add(provider.Scheme);
+            resourceProviders.Add(baseurl, provider);
         }
 
         /// <summary>

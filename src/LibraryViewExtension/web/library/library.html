@@ -56,7 +56,7 @@
         refreshLibraryView(libController);
 
         libController.searchLibraryItemsHandler = function (text, callback) {
-            let url = "search" + "/" + text;
+            let url = "nodeSearch" + "/" + text;
             let jsonUrls = [url];
             let downloader = LibraryEntryPoint.CreateJsonDownloader(jsonUrls, function (jsonUrl, jsonObject) {
 

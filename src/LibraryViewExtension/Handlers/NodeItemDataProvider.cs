@@ -25,7 +25,7 @@ namespace Dynamo.LibraryUI.Handlers
         public string keywords { get; set; }
     }
 
-    class LoadedTypeData<T>
+    class LoadedTypeData<T> where T : LoadedTypeItem
     {
         public List<T> loadedTypes { get; set; }
     }
@@ -76,7 +76,7 @@ namespace Dynamo.LibraryUI.Handlers
             var data = new LoadedTypeData<LoadedTypeItem>();
             data.loadedTypes = searchEntries
                 //.Where(e => !e.ElementType.HasFlag(ElementTypes.Packaged))
-                .Select(e => CreateLoadedTypeItem(e)).ToList();
+                .Select(e => CreateLoadedTypeItem<LoadedTypeItem>(e)).ToList();
             return data;
         }
 
@@ -98,9 +98,9 @@ namespace Dynamo.LibraryUI.Handlers
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        internal LoadedTypeItem CreateLoadedTypeItem(NodeSearchElement element)
+        internal T CreateLoadedTypeItem<T>(NodeSearchElement element) where T: LoadedTypeItem, new()
         {
-            var item = new LoadedTypeItem()
+            var item = new T()
             {
                 fullyQualifiedName = GetFullyQualifiedName(element),
                 contextData = element.CreationName,
@@ -113,17 +113,6 @@ namespace Dynamo.LibraryUI.Handlers
                         : string.Empty
             };
 
-            InitializeLoadedTypeItem(element, item);
-            return item;
-        }
-
-        /// <summary>
-        /// Initialize a LoadedTypeItem object
-        /// </summary>
-        /// <param name="element"></param>
-        /// <param name="item"></param>
-        protected void InitializeLoadedTypeItem(NodeSearchElement element, LoadedTypeItem item)
-        {
             //If the node search element is part of a package, then we need to prefix pkg:// for it
             var packaged = element.ElementType.HasFlag(ElementTypes.Packaged);
             if (packaged)
@@ -131,15 +120,17 @@ namespace Dynamo.LibraryUI.Handlers
                 //Use FullCategory and name as read from _customization.xml file
                 item.fullyQualifiedName = string.Format("{0}{1}.{2}", "pkg://", element.FullCategoryName, element.Name);
             }
-            
+
             //If this element is not a custom node then we are done. The icon url for custom node is different
-            if (!element.ElementType.HasFlag(ElementTypes.CustomNode)) return;
+            if (!element.ElementType.HasFlag(ElementTypes.CustomNode)) return item;
 
             var customNode = element as CustomNodeSearchElement;
             if (customNode != null)
             {
                 item.iconUrl = new IconUrl(customNode.IconName, customNode.Path, true).Url;
             }
+
+            return item;
         }
     }
 }
