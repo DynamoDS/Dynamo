@@ -92,6 +92,7 @@ namespace Dynamo.Graph.Workspaces
         private double scaleFactor = 1.0;
         private bool hasNodeInSyncWithDefinition;
         protected Guid guid;
+        private HashSet<Guid> dependencies = new HashSet<Guid>();
 
         /// <summary>
         /// This is set to true after a workspace is added.
@@ -390,6 +391,34 @@ namespace Dynamo.Graph.Workspaces
             {
                 lastSaved = value;
                 RaisePropertyChanged("LastSaved");
+            }
+        }
+
+        /// <summary>
+        /// gathers the direct workspace dependencies of this workspace.
+        /// </summary>
+        /// <returns> a list of workspace IDs in GUID form</returns>
+        public HashSet<Guid> Dependencies
+        {
+            get {
+                dependencies.Clear();
+                //if the workspace is a main workspace then find all functions and their dependencies
+                if (this is HomeWorkspaceModel)
+                {
+                    foreach (var node in this.Nodes.OfType<Function>())
+                    {
+                        dependencies.Add(node.GUID);
+                    }
+                }
+                //else the workspace is a customnode - and we can add the dependencies directly
+                else
+                {
+                    foreach (var id in (this as CustomNodeWorkspaceModel).CustomNodeDefinition.DirectDependencies.Select(x => x.FunctionId))
+                    {
+                        dependencies.Add(id);
+                    }
+                }
+                return dependencies;
             }
         }
 
