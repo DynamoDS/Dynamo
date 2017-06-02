@@ -124,9 +124,20 @@ namespace Dynamo.LibraryUI
         {
             var node = dynamoViewModel.SearchViewModel.FindViewModelForNode(nodeName);
             var nodeData = new Dictionary<string, object>();
-            nodeData.Add("InputParameters", node.InputParameters);
-            nodeData.Add("OutputParameters", node.OutputParameters);
-            nodeData.Add("Description", node.Description);
+            var inputParams = new List<Dictionary<string, string>>();
+
+            foreach(Tuple<string, string> inputParameter in node.InputParameters)
+            {
+                var param = new Dictionary<string, string>();
+                param.Add("name", inputParameter.Item1);
+                param.Add("type", inputParameter.Item2);
+                inputParams.Add(param);
+            }
+
+            nodeData.Add("inputParameters", inputParams);
+            nodeData.Add("outputParameters", node.OutputParameters);
+            nodeData.Add("description", node.Description);
+
             return JsonConvert.SerializeObject(nodeData);
         }
 
