@@ -47,11 +47,6 @@ namespace Autodesk.Workspaces
             return ws;
         }
 
-        public static string SaveWorkspaceToJson(DynamoModel model)
-        {
-            return SaveWorkspaceToJson(model.CurrentWorkspace, model.LibraryServices, model.EngineController, model.Scheduler,
-                model.NodeFactory, false, false, model.CustomNodeManager);
-        }
         /// <summary>
         /// Save a Workspace to json.
         /// </summary>
