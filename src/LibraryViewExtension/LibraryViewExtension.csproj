@@ -74,7 +74,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamoPackagesHelper.cs" />
     <Compile Include="EventObserver.cs" />
+    <Compile Include="Handlers\DynamoPackagesProvider.cs" />
     <Compile Include="Handlers\IconResourceProvider.cs" />
     <Compile Include="Handlers\IconUrl.cs" />
     <Compile Include="Handlers\NodeItemDataProvider.cs" />
@@ -150,16 +152,49 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="web\fonts\OpenSans-Italic.woff" />
+    <EmbeddedResource Include="web\fonts\OpenSans-Regular.woff" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\css\font-awesome.css" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\css\font-awesome.min.css" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\fonts\fontawesome-webfont.eot" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\fonts\fontawesome-webfont.svg" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\fonts\fontawesome-webfont.ttf" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\fonts\fontawesome-webfont.woff" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\fonts\fontawesome-webfont.woff2" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\fonts\FontAwesome.otf" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\less\animated.less" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\less\bordered-pulled.less" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\less\core.less" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\less\fixed-width.less" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\less\font-awesome.less" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\less\icons.less" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\less\larger.less" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\less\list.less" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\less\mixins.less" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\less\path.less" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\less\rotated-flipped.less" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\less\screen-reader.less" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\less\stacked.less" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\less\variables.less" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\scss\font-awesome.scss" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\scss\_animated.scss" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\scss\_bordered-pulled.scss" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\scss\_core.scss" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\scss\_fixed-width.scss" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\scss\_icons.scss" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\scss\_larger.scss" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\scss\_list.scss" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\scss\_mixins.scss" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\scss\_path.scss" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\scss\_rotated-flipped.scss" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\scss\_screen-reader.scss" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\scss\_stacked.scss" />
+    <EmbeddedResource Include="web\fonts\font-awesome-4.7.0\scss\_variables.scss" />
     <EmbeddedResource Include="web\library\layoutSpecs.json" />
-    <EmbeddedResource Include="web\library\library.html" />
     <EmbeddedResource Include="web\library\librarie.min.js" />
-    <EmbeddedResource Include="web\library\resources\indent-arrow-down.svg" />
-    <EmbeddedResource Include="web\library\resources\indent-arrow-right.svg" />
-    <EmbeddedResource Include="web\library\resources\library-action.svg" />
-    <EmbeddedResource Include="web\library\resources\library-create.svg" />
-    <EmbeddedResource Include="web\library\resources\library-query.svg" />
-    <EmbeddedResource Include="web\library\resources\plus-symbol.svg" />
-    <EmbeddedResource Include="web\library\resources\Dynamo.svg" />
+    <EmbeddedResource Include="web\index.html" />
+    <EmbeddedResource Include="web\library\resources\ArtifaktElement-Bold.woff" />
+    <EmbeddedResource Include="web\library\resources\ArtifaktElement-Regular.woff" />
     <EmbeddedResource Include="web\library\resources\Category.Display.svg" />
     <EmbeddedResource Include="web\library\resources\Category.Geometry.svg" />
     <EmbeddedResource Include="web\library\resources\Category.ImportExport.svg" />
@@ -169,15 +204,28 @@
     <EmbeddedResource Include="web\library\resources\Category.Revit.svg" />
     <EmbeddedResource Include="web\library\resources\Category.Script.svg" />
     <EmbeddedResource Include="web\library\resources\Category.String.svg" />
+    <EmbeddedResource Include="web\library\resources\Dynamo.svg" />
     <EmbeddedResource Include="web\library\resources\fontawesome-webfont.eot" />
+    <EmbeddedResource Include="web\library\resources\fontawesome-webfont.svg" />
     <EmbeddedResource Include="web\library\resources\fontawesome-webfont.ttf" />
     <EmbeddedResource Include="web\library\resources\fontawesome-webfont.woff" />
     <EmbeddedResource Include="web\library\resources\fontawesome-webfont.woff2" />
-    <EmbeddedResource Include="web\library\resources\fontawesome-webfont.svg" />
+    <EmbeddedResource Include="web\library\resources\indent-arrow-down.svg" />
+    <EmbeddedResource Include="web\library\resources\indent-arrow-right.svg" />
+    <EmbeddedResource Include="web\library\resources\library-action.svg" />
+    <EmbeddedResource Include="web\library\resources\library-create.svg" />
+    <EmbeddedResource Include="web\library\resources\library-query.svg" />
+    <EmbeddedResource Include="web\library\resources\plus-symbol.svg" />
+    <EmbeddedResource Include="web\packageManager\bundle.js" />
+    <EmbeddedResource Include="web\details.html" />
+    <EmbeddedResource Include="web\packageManager\resources\styles.css" />
+    <EmbeddedResource Include="web\packageManager\resources\icons\package.png" />
+    <EmbeddedResource Include="web\packageManager\resources\icons\sort-button.png" />
+    <EmbeddedResource Include="web\packageManager\resources\icons\tab-library.svg" />
+    <EmbeddedResource Include="web\packageManager\resources\icons\tab-package.svg" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="web\library\resources\ArtifaktElement-Bold.woff" />
-    <EmbeddedResource Include="web\library\resources\ArtifaktElement-Regular.woff" />
+    <EmbeddedResource Include="web\packageManager\packages.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\cef.redist.x64.3.2623.1401\build\cef.redist.x64.targets" Condition="Exists('..\packages\cef.redist.x64.3.2623.1401\build\cef.redist.x64.targets')" />

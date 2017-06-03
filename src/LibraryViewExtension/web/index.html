@@ -15,15 +15,24 @@
 </head>
 
 <body>
+    <link rel="stylesheet" href="./dist/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="./dist/resources/styles.css" />
+    <script src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+
     <!-- Placeholders must exist before all other scripts that try to access them -->
-    <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
+    <div class="OuterMostContainer" id="tabControlPlaceholder"></div>
     
     <!-- The main library view compoment -->
     <script src='./dist/v0.0.1/librarie.min.js'></script>
+    <script src='./dist/bundle.js'></script>
     
     <script>
         //Get hold of object registered from C#
         let csharpController = window["controller"];
+
+        //Create package controller for event notification
+        let pkgController = PackageManagerEntryPoint.CreatePackageController();
 
         function refreshLibraryView(libraryController) {
             //Create library container
@@ -51,9 +60,24 @@
         let libController = LibraryEntryPoint.CreateLibraryController();
 
         //Create library view
-        let libContainer = libController.createLibraryByElementId("libraryContainerPlaceholder");
+        let libContainer = libController.createLibraryContainer();
         //Update the view with contents
         refreshLibraryView(libController);
+    
+        let installedPackagesJSON = csharpController.getInstalledPackagesJSON();
+        let installedPackagesResponse = JSON.parse(installedPackagesJSON);
+
+        //Create tab control and host library as well as Package browsers
+        let packageList = PackageManagerEntryPoint.CreatePackageList(pkgController, function (packageId, version) {
+            let ctx = JSON.stringify({ "id": packageId, "version": version });
+            console.log('Package Item Clicked: ' + ctx);                
+            csharpController.showDetailsView(ctx);
+        }, installedPackagesResponse.content);
+
+        let tabControl = new PackageManagerEntryPoint.CreateTabControl(pkgController, "tabControlPlaceholder");
+        tabControl.insertTab("Nodes Library", "/dist/resources/icons/tab-library.svg", libContainer);
+        tabControl.insertTab("Package Browser", "/dist/resources/icons/tab-package.svg", packageList);
+        tabControl.setTabSelectionIndex(0);
 
         // Register event handlers for various events on library controller and package controller.
 
@@ -78,6 +102,16 @@
             if (section == "Add-ons") {
                 csharpController.importLibrary();
             }
+        });
+
+        pkgController.on("StartInstallingPackage", function (pkg) {
+            console.log("Install Package Callback: " + JSON.stringify(pkg));
+            csharpController.installPackage(pkg.name, pkg.version, pkg.id, "");
+        });
+
+        csharpController.on("installPercentComplete", function (id, percent) {
+            console.log("installPercentComplete id: " + id + " percent: " + percent);
+            pkgController.raiseEvent("installPercentComplete", id, percent);
         });
 
         csharpController.on("error", function (msg) {

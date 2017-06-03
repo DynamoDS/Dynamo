@@ -99,7 +99,7 @@ namespace Dynamo.LibraryUI.Handlers
                 var lastItem = subfolders.LastOrDefault();
                 subfolders.Add(string.Format("{0}/{1}", lastItem, item));
             }
-
+            subfolders.Reverse();
             return subfolders.ToArray();
         }
     }

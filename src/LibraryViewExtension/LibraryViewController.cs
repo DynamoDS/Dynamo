@@ -85,6 +85,9 @@ namespace Dynamo.LibraryUI
         private Window dynamoWindow;
         private ICommandExecutive commandExecutive;
         private DynamoViewModel dynamoViewModel;
+        private DetailsView detailsView;
+        private DetailsViewModel detailsViewModel;
+        private DynamoPackagesHelper packageHelper;
         private FloatingLibraryTooltipPopup libraryViewTooltip;
         private ResourceHandlerFactory resourceFactory;
         private IDisposable observer;
@@ -103,6 +106,8 @@ namespace Dynamo.LibraryUI
             this.commandExecutive = commandExecutive;
             InitializeResourceStreams(dynamoViewModel.Model);
             this.observer = SetupSearchModelEventsObserver(dynamoViewModel.Model.SearchModel, this);
+
+            packageHelper = new DynamoPackagesHelper(this, dynamoViewModel.Model);
         }
 
         /// <summary>
@@ -117,6 +122,74 @@ namespace Dynamo.LibraryUI
                 var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
                 commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), ViewExtension.ExtensionName);
             }));
+        }
+
+        /// <summary>
+        /// Displays the details view over Dynamo canvas.
+        /// </summary>
+        /// <param name="item">item data for which details need to be shown</param>
+        public void ShowDetailsView(object data)
+        {
+            DetailsViewContextData = data;
+            if (detailsView == null)
+            {
+                dynamoWindow.Dispatcher.BeginInvoke(new Action(() => AddDetailsView()));
+            }
+            else
+            {
+                dynamoWindow.Dispatcher.BeginInvoke(new Action(() => detailsView.Visibility = Visibility.Visible));
+            }
+        }
+
+        /// <summary>
+        /// Closes the details view
+        /// </summary>
+        public void CloseDetailsView()
+        {
+            if (detailsView != null)
+            {
+                dynamoWindow.Dispatcher.BeginInvoke(new Action(() => detailsView.Visibility = Visibility.Collapsed));
+            }
+        }
+
+        /// <summary>
+        /// Returns a JSON string of all the packages installed on the system.
+        /// </summary>
+        /// <returns>string representing JSON object.</returns>
+        public string GetInstalledPackagesJSON()
+        {
+            return packageHelper.GetInstalledPackagesJSON();
+        }
+
+        /// <summary>
+        /// Gets the version name for the given installed package.
+        /// </summary>
+        /// <param name="packageName">Name of the package</param>
+        /// <returns>Returns version name of a given package if it is installed, else empty string</returns>
+        public string GetInstalledPackageVersion(string packageName)
+        {
+            return packageHelper.GetInstalledPackageVersion(packageName);
+        }
+
+        /// <summary>
+        /// Installs a dynamo package of given package id.
+        /// </summary>
+        /// <param name="name">name of the package to install</param>
+        /// <param name="version">version of package to install</param>
+        /// <param name="pkgId">package id</param>
+        /// <param name="installPath">path to install</param>
+        public void InstallPackage(string name, string version, string pkgId, string installPath)
+        {
+            dynamoWindow.Dispatcher.BeginInvoke(new Action(() => packageHelper.DownlodAndInstall(pkgId, name, version, installPath)));
+        }
+
+        /// <summary>
+        /// Uninstalls the given package
+        /// </summary>
+        /// <param name="packageName">Package name to uninstall</param>
+        public void UninstallPackage(string packageName)
+        {
+            dynamoWindow.Dispatcher.BeginInvoke(new Action(() => packageHelper.UninstallPackage(packageName)));
         }
 
         /// <summary>
@@ -137,7 +210,7 @@ namespace Dynamo.LibraryUI
         internal LibraryView AddLibraryView()
         {
             var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
-            var model = new LibraryViewModel("http://localhost/library.html");
+            var model = new LibraryViewModel("http://localhost/index.html");
             var view = new LibraryView(model);
 
             var browser = view.Browser;
@@ -232,6 +305,24 @@ namespace Dynamo.LibraryUI
             System.Diagnostics.Trace.Write(e.Message);
         }
 
+        private DetailsView AddDetailsView()
+        {
+            detailsViewModel = new DetailsViewModel("http://localhost/details.html");
+
+            var tabcontrol = dynamoWindow.FindName("WorkspaceTabs") as TabControl;
+            var grid = tabcontrol.Parent as Grid;
+
+            detailsView = new DetailsView(detailsViewModel, grid);
+            grid.Children.Add(detailsView);
+
+            var browser = detailsView.Browser;
+            browser.RegisterJsObject("controller", this);
+            RegisterResources(browser);
+            detailsView.Loaded += OnDescriptionViewLoaded;
+
+            return detailsView;
+        }
+
         internal static IDisposable SetupSearchModelEventsObserver(NodeSearchModel model, IEventController controller, int throttleTime = 200)
         {
             var observer = new EventObserver<NodeSearchElement, string>(
@@ -267,22 +358,40 @@ namespace Dynamo.LibraryUI
 
             resourceFactory.RegisterProvider(IconUrl.ServiceEndpoint, new IconResourceProvider(model.PathManager));
 
-            {
-                var url = "http://localhost/library.html";
-                var resource = "Dynamo.LibraryUI.web.library.library.html";
-                var stream = LoadResource(resource);
-                resourceFactory.RegisterHandler(url, ResourceHandler.FromStream(stream));
-            }
-
             //Register provider for node data
             resourceFactory.RegisterProvider("/loadedTypes", new NodeItemDataProvider(model.SearchModel));
-            
-            {
-                var url = "http://localhost/layoutSpecs";
-                var resource = "Dynamo.LibraryUI.web.library.layoutSpecs.json";
-                var stream = LoadResource(resource);
-                resourceFactory.RegisterHandler(url, ResourceHandler.FromStream(stream));
-            }
+
+            resourceFactory.RegisterProvider("/dist/resources",
+                new DllResourceProvider("http://localhost/dist/resources",
+                    "Dynamo.LibraryUI.web.packageManager.resources"));
+
+            resourceFactory.RegisterProvider("/dist/resources/fonts",
+                new DllResourceProvider("http://localhost/dist/resources/fonts",
+                    "Dynamo.LibraryUI.web.fonts"));
+
+            resourceFactory.RegisterProvider("/dist/resources/fonts/font-awesome-4.7.0",
+                new DllResourceProvider("http://localhost/dist/resources/fonts/font-awesome-4.7.0",
+                    "Dynamo.LibraryUI.web.fonts.font_awesome_4._7._0"));
+
+            var packageProvider = new DynamoPackagesProvider(this, model);
+            resourceFactory.RegisterProvider("/packages", packageProvider);
+            resourceFactory.RegisterProvider("/package", packageProvider);
+
+            //Register static resources
+            RegisterDllResourceHandler("/index.html", "index.html");
+            RegisterDllResourceHandler("/layoutSpecs", "library.layoutSpecs.json");
+            RegisterDllResourceHandler("/details.html", "details.html");
+            RegisterDllResourceHandler("/dist/bundle.js", "packageManager.bundle.js");
+        }
+
+        private void RegisterDllResourceHandler(string url, string resource)
+        {
+            const string localhost = "http://localhost";
+            const string web = "Dynamo.LibraryUI.web.";
+            var fullurl = localhost + url;
+            var resourceName = web + resource;
+            var stream = LoadResource(resourceName);
+            resourceFactory.RegisterHandler(fullurl, ResourceHandler.FromStream(stream));
         }
 
         private void RegisterResources(ChromiumWebBrowser browser)

@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Details View</title>
+</head>
+<body>
+    <link rel="stylesheet" href="./dist/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="./dist/resources/styles.css" />
+    <script src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+
+    <!-- Placeholders must exist before all other scripts that try to access them -->
+    <div id="rightContentPlaceholder" class="RightContainer"></div>
+    <script src='./dist/bundle.js'></script>
+    <script>
+        let controller = window["controller"];
+        
+        let pkgController = PackageManagerEntryPoint.CreatePackageController();
+
+        let detailedConfig = {
+            pkgController: pkgController,
+            showCloseButton: true,
+            htmlElementId: "rightContentPlaceholder"
+        };
+
+        let detailedView = new PackageManagerEntryPoint.DetailedView(detailedConfig);
+        console.log(controller.detailsViewContextData);
+
+        let contextData = JSON.parse(controller.detailsViewContextData);
+        
+        detailedView.setActivePackageId(contextData.id, contextData.version);
+        
+        pkgController.on("closeButtonClicked", function (pkgId) {
+            controller.closeDetailsView();
+        });
+
+        controller.on("detailsViewContextDataChanged", function (item) {
+            console.log("detailsViewContextDataChanged to: " + item);
+            let data = JSON.parse(item);
+            detailedView.setActivePackageId(data.id, data.version);
+        });
+
+        pkgController.on("StartInstallingPackage", function (pkg) {
+            console.log("Install Package Callback: " + JSON.stringify(pkg));
+            controller.installPackage(pkg.name, pkg.version, pkg.id, "");
+        });
+
+        controller.on("installPercentComplete", function (id, percent) {
+            console.log("installPercentComplete id: " + id + " percent: " + percent);
+            pkgController.raiseEvent("installPercentComplete", id, percent);
+        });
+
+        controller.on("error", function (msg) {
+            console.log("Error: " + msg);
+            pkgController.raiseEvent("error", msg);
+        });
+
+    </script>
+</body>
+</html>

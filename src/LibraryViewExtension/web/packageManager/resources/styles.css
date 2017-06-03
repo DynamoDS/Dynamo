@@ -1,0 +1,541 @@
+@font-face {
+    font-family: "Open Sans";
+    src: url('fonts/OpenSans-Regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: "Open Sans";
+    src: url('fonts/OpenSans-Italic.woff') format('woff');
+    font-style: italic;
+}
+
+html, body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    min-height: 100%;
+    color: white;
+    background-color: black;
+}
+
+a {
+    color: white;
+}
+
+* {
+    font-family: "Open Sans";
+}
+
+.CloseDetailViewButton {
+    color: #aaa;
+    font-size: 20px;
+    height: 0;
+    border: 0px;
+    margin-top: -5px;
+    float: right;
+    cursor: pointer;
+}
+
+.CloseDetailViewButton:hover {
+    color: white;
+}
+
+.OuterMostContainer {
+    display: flex;
+    width: 100%;
+    min-height: 100%;
+    align-content: stretch;
+}
+
+.LeftContainer, .RightContainer {
+    display: flex;
+}
+
+.InstallButtonGroup {
+    display: flex;
+    flex-direction: row;
+}
+
+.TabComponent, .PackageDetailView  {
+    flex: 1;
+}
+
+.PackageList .InstallButtons {
+    width: 70px;
+    padding: 1px 0px 1px 0px;
+    border: #888 1.5px solid;
+    border-radius: 3px;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 3px;
+}
+
+.PackageListEmpty {
+    background: #555;
+    text-align: center;
+    font-size: 0.9em;
+    color: #aaa;
+    font-style: italic;
+}
+
+.ButtonContainer {
+    display: flex;
+}
+
+.ButtonBody {
+    width: 70px;
+    padding: 1px 0px 1px 0px;
+    border-top: #888 1.5px solid;
+    border-bottom: #888 1.5px solid;
+    border-left: #888 1.5px solid;
+    text-align: center;
+    font-size: 15px;
+    margin-left: 3px;
+    cursor: pointer;
+}
+
+.ButtonDropDown {
+    width: 20px;
+    padding: 2px 2px;
+    border-top: #888 1.5px solid;
+    border-bottom: #888 1.5px solid;
+    border-right: #888 1.5px solid;
+    text-decoration: none;
+    text-align: center;
+    font-size: 12px;
+}
+
+.ButtonDropDown:hover{
+    color: black;
+    background-color: #a6c7fc;
+}
+
+.ButtonList {
+    position: relative;
+    border: #888 1.5px solid;
+    display: none;
+    z-index: 1;
+}
+
+.ShowButtonList {
+    display: block;
+}
+
+.ButtonList div{
+    position: relative;
+    font-size: 12px;
+    border: #888 1.5px solid;
+    display: block;
+    z-index: 1;
+}
+
+
+.PackageDetailView .InstallButtons {
+    flex: 1;
+    width: 90px;
+    padding: 1px 0px 2px 0px;
+    border: #888 1.5px solid;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 3px;
+}
+
+#leftContentPlaceholder {
+    min-width: 400px;
+}
+
+#rightContentPlaceholder {
+    flex-grow: 1;
+}
+
+#contentPlaceholder #TabComponent, #contentPlaceholder #PackageDetailView {
+    width: 100%;
+}
+
+.TabContentArea {
+    background: #353535;
+}
+
+.PackageDetailView {
+    background: #494949;
+    padding: 12px;
+}
+
+.MainCaption {
+    color: #0000ff;
+}
+
+.PackageItem {
+    display: flex;
+    overflow: hidden;
+    background-color: #353535;
+    border-bottom: solid 1px #494949;
+}
+
+.PackageItem:hover {
+    background-color: #494949;
+    transition: 0.15s;
+}
+
+.PackageItem:active {
+    background-color: #494949;
+}
+
+.PackageItemSelected {
+    background-color: #494949;
+}
+
+.ItemLeftPanel {
+    padding: 8px;
+}
+
+.ItemRightPanel {
+    padding: 8px 8px 8px 0px;
+    flex: 1;
+}
+
+.PackageCaption {
+    margin-top: -3px;
+}
+
+.ItemPackageName {
+    font-size: 15px;
+}
+
+.ItemPackageVersion {
+    font-size: 10px;
+    margin-left: 8px;
+}
+
+.ItemPackageAuthor {
+    font-size: 11px;
+    color:#aaa;
+}
+
+.ItemCrumbles {
+    display: flex;
+    flex-direction: row;
+}
+
+.ItemStars {
+    flex-grow: 1;
+    margin-top: auto;
+}
+
+.VersionContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.VersionBar {
+    display: flex;
+    flex-direction: row;
+    font-size: 15px;
+}
+
+.VersionBarInfo {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    max-width: 460px;
+}
+
+.VersionBarInfo .VersionBarColumn {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.PackageHeader {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 10px;
+    border-bottom: #888 1px solid;
+}
+
+.PackageHeaderLeftPanel {
+    margin-right: 15px;
+}
+
+.PackageHeaderRightPanel
+{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.PackageDetailContainer {
+    margin: 10px 0px;
+    flex-direction: column;
+}
+
+img.PackageIcon {
+    border-radius: 10px;
+}
+
+.PackageName {
+    font-size: 22px;
+    margin-top: -5px;
+}
+
+.PackageAuthor, .PackageAuthor a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 15px;
+    margin-bottom: 2px;
+}
+
+.PackageAuthor a:hover {
+    text-decoration: underline;
+}
+
+.StarRating {
+    display: flex;
+    flex-direction: row;
+}
+
+.StarRating button {
+    border:none;
+    outline: none;
+    background: transparent;
+    padding:0px;
+    margin:0px;
+}
+
+.StarRatingGrey {
+    color:#aaa;
+}
+
+.StarRatingWhite {
+    color:white;
+}
+
+.StarRatingYellow {
+    color:gold;
+}
+
+.PackageCrumbles {
+    display: flex;
+    flex-direction: row;
+    font-size: 15px;
+    color: #aaa;
+    white-space: nowrap;
+}
+
+.PackageCrumbles i.fa {
+    padding-top: 3px;
+}
+
+.PackageCrumbles .AlignLeft {
+    display: flex;
+    flex-direction: row;
+    margin-right: 25px;
+}
+
+.PackageCrumbles .AlignRight {
+    text-align: right;
+    flex-grow: 1;
+}
+
+.DetailSectionHeader {
+    margin: 20px 0px 6px 0px;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #999;
+}
+
+.DetailSection ul {
+    margin: 0;
+}
+
+.RegularBodyText {
+    font-size: 15px;
+}
+
+div.Keywords {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+span.Keyword {
+    background-color: #777;
+    border-radius: 5px;
+    margin-right: 10px;
+    margin-bottom: 5px;
+    padding: 0px 5px;
+    font-style: italic;
+}
+
+.PackageDescription {
+    font-size: 15px;
+}
+
+.PackageDescriptionToggle {
+    margin-left: 10px;
+    color: #aaa;
+}
+
+.PackageDescriptionToggle:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.SearchBar {
+    height: 40px;
+    background: #666;
+    display: flex;
+    justify-content: space-between;
+}
+
+.SearchBar .SearchInput {
+    width: 100%;
+    display: flex;
+    padding: 10px;
+    font-size: 15px;
+    background: none;
+    color: white;
+    outline: none;
+    border: none;
+}
+
+.SearchBar .CancelButton {
+    display: flex;
+    padding-right: 12px;
+}
+
+.SearchBar .CancelButton button {
+    font-size: 20px;
+    color: #ccc;
+    background: transparent;
+    border: 0px;
+    padding: 0px;
+    outline: 0px;
+}
+
+.SearchBar .CancelButton button:hover {
+    cursor: pointer;
+    color: white;
+}
+
+.SearchBar .SearchOptionsContainer {
+    display: flex;
+    position: relative;
+}
+
+.SearchBar .SortIcon {
+    height: 20px;
+    width: 20px;
+    display: block;
+    padding: 10px;
+    background: #555;
+}
+
+.SearchBar .SortIconHighlight {
+    height: 20px;
+    width: 20px;
+    display: block;
+    padding: 10px;
+    background: #444;
+}
+
+.SearchBar .SortIcon:hover, .SearchBar .SortIconHighlight {
+    cursor: pointer;
+    background: #444;
+    -webkit-transition: all 0.25s linear;
+}
+
+.SearchBar .Options {
+    float: right;
+    background: #555;
+    color: white;
+    position: absolute;
+    right: 0px;
+    top: 45px;
+    box-shadow: 3px 3px 8px 3px #333;
+}
+
+.SearchBar .Options .SortBy, .SearchBar .Options .OrderBy{
+    padding: 10px;
+    font-size: 13px;
+    font-style: italic;
+}
+
+.SearchBar .Options .OrderBy {
+    border-top: 1px solid #777;
+}
+
+.SearchBar .Options ul {
+    margin: 0px;
+    padding: 0px;
+}
+
+.SearchBar .Options li{
+    display: block;
+    padding: 10px 10px 10px 25px;
+    width: 120px;
+    line-height: 12px;
+    font-size: 13px;
+}
+
+.SearchBar .Options li:hover, .Options .OptionTextHighlight{
+    background: #777;
+    color: white;
+    cursor: pointer;
+     -webkit-transition: all 0.15s linear;
+}
+
+.SearchBar .Options li:active {
+    background: #444;
+}
+
+.TabHeader {
+    display: flex;
+    flex-direction: row;
+    padding-top: 10px;
+}
+
+.tooltip {
+    /*visibility: hidden;*/
+    font-size: 15px;
+    padding: 2px 8px;
+    display: flex;
+    /*display: block;
+    position: fixed;*/
+}
+
+.Tab, .TabSelected {
+    border-radius: 15px 15px 0 0;
+    cursor: pointer;
+    padding: 5px 15px 3px 15px;
+    background-color: #353535;
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    border-bottom: 1px solid #888;
+}
+
+.TabSelected {
+    background-color: #666;
+}
+
+.Tab img, .TabSelected img {
+    width: 25px;
+    height: 25px;
+}
+
+.Tab:hover .tooltip, .TabSelected:hover .tooltip {
+    visibility: visible;
+}
+
+.SearchInput::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+}
+
+::-webkit-input-placeholder {
+    font-family: "Open Sans";
+    font-style: italic;
+    color: #ddd;
+}
