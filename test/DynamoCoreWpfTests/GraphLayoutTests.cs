@@ -30,9 +30,9 @@ namespace Dynamo.Tests
         [Test]
         public void GraphLayoutEmpty()
         {
-            var x = ViewModel.CurrentSpace.X;
-            var y = ViewModel.CurrentSpace.Y;
-            var zoom = ViewModel.CurrentSpace.Zoom;
+            var x = ViewModel.CurrentSpaceViewModel.X;
+            var y = ViewModel.CurrentSpaceViewModel.Y;
+            var zoom = ViewModel.CurrentSpaceViewModel.Zoom;
 
             ViewModel.DoGraphAutoLayout(null);
 

@@ -102,24 +102,24 @@ namespace DynamoCoreWpfTests
             double zoom;
             
             // Test Zoom in
-            zoom = workspaceModel.Zoom;
+            zoom = workspaceVM.Zoom;
             if ( ViewModel.ZoomInCommand.CanExecute(null) )
                 ViewModel.ZoomInCommand.Execute(null);
-            Assert.Greater(workspaceModel.Zoom, zoom);
+            Assert.Greater(workspaceVM.Zoom, zoom);
 
             // Test Zoom out
-            zoom = workspaceModel.Zoom;
+            zoom = workspaceVM.Zoom;
             if (ViewModel.ZoomOutCommand.CanExecute(null))
                 ViewModel.ZoomOutCommand.Execute(null);
-            Assert.Greater(zoom, workspaceModel.Zoom);
+            Assert.Greater(zoom, workspaceVM.Zoom);
 
             // Test can set zoom (at random zoom for 10 times)
             int testLoop = 10;
             for (int i = 0; i < testLoop; i++)
             {
                 // Get random number for the zoom
-                double upperBound = WorkspaceModel.ZOOM_MAXIMUM;
-                double lowerBound = WorkspaceModel.ZOOM_MINIMUM;
+                double upperBound = WorkspaceViewModel.ZOOM_MAXIMUM;
+                double lowerBound = WorkspaceViewModel.ZOOM_MINIMUM;
                 Random random = new Random();
                 double randomNumber = random.NextDouble() * (upperBound - lowerBound) + lowerBound;
 
@@ -127,41 +127,41 @@ namespace DynamoCoreWpfTests
                     ViewModel.CurrentSpaceViewModel.SetZoomCommand.Execute(randomNumber);
 
                 // Check Zoom is correct
-                Assert.AreEqual(randomNumber, workspaceModel.Zoom);
+                Assert.AreEqual(randomNumber, workspaceVM.Zoom);
             }
 
             // Border Test for Set Zoom
             // Min zoom
-            zoom = WorkspaceModel.ZOOM_MINIMUM;
+            zoom = WorkspaceViewModel.ZOOM_MINIMUM;
             if (workspaceVM.SetZoomCommand.CanExecute(zoom))
                 workspaceVM.SetZoomCommand.Execute(zoom);
-            Assert.AreEqual(zoom, workspaceModel.Zoom);
+            Assert.AreEqual(zoom, workspaceVM.Zoom);
             // Zoom out over limit (check that it does not zoom out)
             if (ViewModel.ZoomOutCommand.CanExecute(null))
                 ViewModel.ZoomOutCommand.Execute(null);
-            Assert.AreEqual(zoom, workspaceModel.Zoom);
+            Assert.AreEqual(zoom, workspaceVM.Zoom);
             
             // Max zoom
-            zoom = WorkspaceModel.ZOOM_MAXIMUM;
+            zoom = WorkspaceViewModel.ZOOM_MAXIMUM;
             if (workspaceVM.SetZoomCommand.CanExecute(zoom))
                 workspaceVM.SetZoomCommand.Execute(zoom);
-            Assert.AreEqual(zoom, workspaceModel.Zoom);
+            Assert.AreEqual(zoom, workspaceVM.Zoom);
             // Zoom in over limit (check that it does not zoom in)
             if (ViewModel.ZoomInCommand.CanExecute(null))
                 ViewModel.ZoomInCommand.Execute(null);
-            Assert.AreEqual(zoom, workspaceModel.Zoom);
+            Assert.AreEqual(zoom, workspaceVM.Zoom);
 
             // Above Max Limit Test
-            zoom = WorkspaceModel.ZOOM_MAXIMUM + 0.1;
+            zoom = WorkspaceViewModel.ZOOM_MAXIMUM + 0.1;
             if (workspaceVM.SetZoomCommand.CanExecute(zoom))
                 workspaceVM.SetZoomCommand.Execute(zoom);
-            Assert.AreNotEqual(zoom, workspaceModel.Zoom);
+            Assert.AreNotEqual(zoom, workspaceVM.Zoom);
 
             // Below Min Limit Test
-            zoom = WorkspaceModel.ZOOM_MINIMUM - 0.1;
+            zoom = WorkspaceViewModel.ZOOM_MINIMUM - 0.1;
             if (workspaceVM.SetZoomCommand.CanExecute(zoom))
                 workspaceVM.SetZoomCommand.Execute(zoom);
-            Assert.AreNotEqual(zoom, workspaceModel.Zoom);
+            Assert.AreNotEqual(zoom, workspaceVM.Zoom);
 
             // Stress Test
             // Zoom in and out repeatly
@@ -190,12 +190,11 @@ namespace DynamoCoreWpfTests
         [Category("DynamoUI")]
         public void CanPanLeft()
         {
-            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
             int numOfPanTested = 100;
-            double posX = workspaceModel.X;
-            double posY = workspaceModel.Y;
+            double posX = workspaceVM.X;
+            double posY = workspaceVM.Y;
 
             // Pan left repeatly
             for (int i = 0; i < numOfPanTested; i++)
@@ -204,20 +203,19 @@ namespace DynamoCoreWpfTests
                     ViewModel.PanCommand.Execute("Left");
             }
 
-            Assert.Greater(workspaceModel.X, posX);
-            Assert.AreEqual(workspaceModel.Y, posY);
+            Assert.Greater(workspaceVM.X, posX);
+            Assert.AreEqual(workspaceVM.Y, posY);
         }
 
         [Test, RequiresSTA]
         [Category("DynamoUI")]
         public void CanPanRight()
         {
-            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
             int numOfPanTested = 100;
-            double posX = workspaceModel.X;
-            double posY = workspaceModel.Y;
+            double posX = workspaceVM.X;
+            double posY = workspaceVM.Y;
 
             // Pan left repeatly
             for (int i = 0; i < numOfPanTested; i++)
@@ -226,20 +224,19 @@ namespace DynamoCoreWpfTests
                     ViewModel.PanCommand.Execute("Right");
             }
 
-            Assert.Greater(posX, workspaceModel.X);
-            Assert.AreEqual(workspaceModel.Y, posY);
+            Assert.Greater(posX, workspaceVM.X);
+            Assert.AreEqual(workspaceVM.Y, posY);
         }
 
         [Test, RequiresSTA]
         [Category("DynamoUI")]
         public void CanPanUp()
         {
-            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
             int numOfPanTested = 100;
-            double posX = workspaceModel.X;
-            double posY = workspaceModel.Y;
+            double posX = workspaceVM.X;
+            double posY = workspaceVM.Y;
 
             // Pan left repeatly
             for (int i = 0; i < numOfPanTested; i++)
@@ -248,20 +245,19 @@ namespace DynamoCoreWpfTests
                     ViewModel.PanCommand.Execute("Up");
             }
 
-            Assert.AreEqual(posX, workspaceModel.X);
-            Assert.Greater(workspaceModel.Y, posY);
+            Assert.AreEqual(posX, workspaceVM.X);
+            Assert.Greater(workspaceVM.Y, posY);
         }
 
         [Test, RequiresSTA]
         [Category("DynamoUI")]
         public void CanPanDown()
         {
-            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
             int numOfPanTested = 100;
-            double posX = workspaceModel.X;
-            double posY = workspaceModel.Y;
+            double posX = workspaceVM.X;
+            double posY = workspaceVM.Y;
 
             // Pan left repeatly
             for (int i = 0; i < numOfPanTested; i++)
@@ -270,8 +266,8 @@ namespace DynamoCoreWpfTests
                     ViewModel.PanCommand.Execute("Down");
             }
 
-            Assert.AreEqual(posX, workspaceModel.X);
-            Assert.Greater(posY, workspaceModel.Y);
+            Assert.AreEqual(posX, workspaceVM.X);
+            Assert.Greater(posY, workspaceVM.Y);
         }
 
         #endregion
@@ -282,32 +278,30 @@ namespace DynamoCoreWpfTests
         [Category("DynamoUI")]
         public void FitViewWithNoNodes()
         {
-            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
-            double initZoom = workspaceModel.Zoom;
-            double initX = workspaceModel.X;
-            double initY = workspaceModel.Y;
+            double initZoom = workspaceVM.Zoom;
+            double initX = workspaceVM.X;
+            double initY = workspaceVM.Y;
 
             // Zoom to max zoom value
             workspaceVM.FitViewInternal();
             
             // Check for no changes
-            Assert.AreEqual(workspaceModel.Zoom, initZoom);
-            Assert.AreEqual(workspaceModel.X, initX);
-            Assert.AreEqual(workspaceModel.Y, initY);
+            Assert.AreEqual(workspaceVM.Zoom, initZoom);
+            Assert.AreEqual(workspaceVM.X, initX);
+            Assert.AreEqual(workspaceVM.Y, initY);
         }
 
         [Test, RequiresSTA]
         [Category("DynamoUI")]
         public void CanFitView()
         {
-            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
-            double initZoom = workspaceModel.Zoom;
-            double initX = workspaceModel.X;
-            double initY = workspaceModel.Y;
+            double initZoom = workspaceVM.Zoom;
+            double initX = workspaceVM.X;
+            double initY = workspaceVM.Y;
 
             CreateNodeOnCurrentWorkspace();
 
@@ -315,9 +309,9 @@ namespace DynamoCoreWpfTests
             workspaceVM.FitViewInternal();
 
             // Check for no changes
-            Assert.AreNotEqual(workspaceModel.Zoom, initZoom);
-            Assert.AreNotEqual(workspaceModel.X, initX);
-            Assert.AreNotEqual(workspaceModel.Y, initY);
+            Assert.AreNotEqual(workspaceVM.Zoom, initZoom);
+            Assert.AreNotEqual(workspaceVM.X, initX);
+            Assert.AreNotEqual(workspaceVM.Y, initY);
 
             ViewModel.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
         }
@@ -326,12 +320,11 @@ namespace DynamoCoreWpfTests
         [Category("DynamoUI")]
         public void CanFitViewTwiceForActualZoom()
         {
-            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
-            double initZoom = workspaceModel.Zoom;
-            double initX = workspaceModel.X;
-            double initY = workspaceModel.Y;
+            double initZoom = workspaceVM.Zoom;
+            double initX = workspaceVM.X;
+            double initY = workspaceVM.Y;
 
             CreateNodeOnCurrentWorkspace();
 
@@ -339,9 +332,9 @@ namespace DynamoCoreWpfTests
             workspaceVM.FitViewInternal();
 
             // Check for no changes
-            Assert.AreNotEqual(workspaceModel.Zoom, initZoom);
-            Assert.AreNotEqual(workspaceModel.X, initX);
-            Assert.AreNotEqual(workspaceModel.Y, initY);
+            Assert.AreNotEqual(workspaceVM.Zoom, initZoom);
+            Assert.AreNotEqual(workspaceVM.X, initX);
+            Assert.AreNotEqual(workspaceVM.Y, initY);
 
             ViewModel.CurrentSpace.HasUnsavedChanges = false;
         }
@@ -350,12 +343,11 @@ namespace DynamoCoreWpfTests
         [Category("DynamoUI")]
         public void FitViewStressTest()
         {
-            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
             
-            double initZoom = workspaceModel.Zoom;
-            double initX = workspaceModel.X;
-            double initY = workspaceModel.Y;
+            double initZoom = workspaceVM.Zoom;
+            double initX = workspaceVM.X;
+            double initY = workspaceVM.Y;
 
             CreateNodeOnCurrentWorkspace();
 
@@ -375,16 +367,15 @@ namespace DynamoCoreWpfTests
         [Category("DynamoUI")]
         public void CanFitViewResetByZoom()
         {
-            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
             CreateNodeOnCurrentWorkspace();
 
             workspaceVM.FitViewInternal();
 
-            double curZoom = workspaceModel.Zoom;
-            double curX = workspaceModel.X;
-            double curY = workspaceModel.Y;
+            double curZoom = workspaceVM.Zoom;
+            double curX = workspaceVM.X;
+            double curY = workspaceVM.Y;
 
             // Do some zoom action before FitView again
             ViewModel.ZoomIn(null);
@@ -392,9 +383,9 @@ namespace DynamoCoreWpfTests
             workspaceVM.FitViewInternal();
 
             // Check actual zoom
-            Assert.AreEqual(workspaceModel.Zoom, curZoom);
-            Assert.AreEqual(workspaceModel.X, curX);
-            Assert.AreEqual(workspaceModel.Y, curY);
+            Assert.AreEqual(workspaceVM.Zoom, curZoom);
+            Assert.AreEqual(workspaceVM.X, curX);
+            Assert.AreEqual(workspaceVM.Y, curY);
 
             ViewModel.CurrentSpace.HasUnsavedChanges = false;
         }
@@ -403,16 +394,15 @@ namespace DynamoCoreWpfTests
         [Category("DynamoUI")]
         public void CanFitViewResetByPan()
         {
-            WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
 
             CreateNodeOnCurrentWorkspace();
 
             workspaceVM.FitViewInternal();
 
-            double curZoom = workspaceModel.Zoom;
-            double curX = workspaceModel.X;
-            double curY = workspaceModel.Y;
+            double curZoom = workspaceVM.Zoom;
+            double curX = workspaceVM.X;
+            double curY = workspaceVM.Y;
 
             // Do some pan action before FitView again
             ViewModel.Pan("Up" as object);
@@ -420,9 +410,9 @@ namespace DynamoCoreWpfTests
             workspaceVM.FitViewInternal();
 
             // Check actual zoom
-            Assert.AreEqual(workspaceModel.Zoom, curZoom);
-            Assert.AreEqual(workspaceModel.X, curX);
-            Assert.AreEqual(workspaceModel.Y, curY);
+            Assert.AreEqual(workspaceVM.Zoom, curZoom);
+            Assert.AreEqual(workspaceVM.X, curX);
+            Assert.AreEqual(workspaceVM.Y, curY);
 
             ViewModel.CurrentSpace.HasUnsavedChanges = false;
         }
