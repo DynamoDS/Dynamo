@@ -407,7 +407,7 @@ namespace Dynamo.Graph.Workspaces
                 {
                     foreach (var node in this.Nodes.OfType<Function>())
                     {
-                        dependencies.Add(node.GUID);
+                        dependencies.Add(node.FunctionUuid);
                     }
                 }
                 //else the workspace is a customnode - and we can add the dependencies directly
