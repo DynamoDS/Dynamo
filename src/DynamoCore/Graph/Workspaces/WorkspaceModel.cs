@@ -413,10 +413,9 @@ namespace Dynamo.Graph.Workspaces
                 //else the workspace is a customnode - and we can add the dependencies directly
                 else
                 {
-                    foreach (var id in (this as CustomNodeWorkspaceModel).CustomNodeDefinition.DirectDependencies.Select(x => x.FunctionId))
-                    {
-                        dependencies.Add(id);
-                    }
+                    var customNodeDirectDependencies = new HashSet<Guid>((this as CustomNodeWorkspaceModel).
+                        CustomNodeDefinition.DirectDependencies.Select(x => x.FunctionId));
+                    dependencies.UnionWith(customNodeDirectDependencies);
                 }
                 return dependencies;
             }

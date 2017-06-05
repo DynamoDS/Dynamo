@@ -67,6 +67,9 @@ namespace Dynamo.Tests
             CurrentDynamoModel.AddNodeToCurrentWorkspace(customNode, false);
             Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Dependencies.ToList().Count());
 
+            //assert that guid we have stored is is the custom nodes functionID
+            Assert.AreEqual(customNode.FunctionUuid, CurrentDynamoModel.CurrentWorkspace.Dependencies.First());
+
         }
 
         [Test]
