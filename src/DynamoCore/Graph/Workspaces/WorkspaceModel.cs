@@ -415,7 +415,7 @@ namespace Dynamo.Graph.Workspaces
                 {
                     var customNodeDirectDependencies = new HashSet<Guid>((this as CustomNodeWorkspaceModel).
                         CustomNodeDefinition.DirectDependencies.Select(x => x.FunctionId));
-                    dependencies.UnionWith(customNodeDirectDependencies);
+                    dependencies = customNodeDirectDependencies;
                 }
                 return dependencies;
             }
