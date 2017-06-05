@@ -132,7 +132,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(homeSpace.RunSettings.RunPeriod, RunSettings.DefaultRunPeriod);
         }
 
-        [Test]
+        // TODO: Enable when Open() is expanded to open Json
+        [Test, Ignore]
         public void RunSettingsControllerSavesAndLoads()
         {
             var homeSpace = GetHomeSpace();
