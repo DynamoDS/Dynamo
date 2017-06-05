@@ -629,8 +629,9 @@ namespace Dynamo.Graph.Nodes
                 // in which case, a local copy of the ER obtained from the CBN is used
                 var resolver = workspaceElementResolver ?? this.ElementResolver;
                 var parseParam = new ParseParam(GUID, code, resolver);
+                var priorNames = libraryServices.GetPriorNames();
 
-                if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ref parseParam))
+                if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ref parseParam, priorNames))
                 {
                     if (parseParam.ParsedNodes != null)
                     {

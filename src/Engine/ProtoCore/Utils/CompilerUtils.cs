@@ -267,10 +267,11 @@ namespace ProtoCore.Utils
         /// stores list of AST nodes, errors and warnings
         /// Evaluates and stores list of unbound identifiers
         /// </summary>
+        /// <param name="priorNames"></param>
         /// <param name="parseParams"> container for compilation related parameters </param>
         /// <param name="elementResolver"> classname resolver </param>
         /// <returns> true if code compilation succeeds, false otherwise </returns>
-        public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams)
+        public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams, IDictionary<string, string> priorNames = null)
         {
             string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
 
@@ -292,10 +293,10 @@ namespace ProtoCore.Utils
 
             // Compile the code to get the resultant unboundidentifiers  
             // and any errors or warnings that were caught by the compiler and cache them in parseParams
-            return CompileCodeBlockAST(core, parseParams);
+            return CompileCodeBlockAST(core, parseParams, priorNames);
         }
 
-        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams)
+        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams, IDictionary<string, string> priorNames)
         {
             var unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
 
@@ -320,6 +321,12 @@ namespace ProtoCore.Utils
                 // update Resolution map in elementResolver with fully resolved name from compiler.
                 var reWrittenNodes = ElementRewriter.RewriteElementNames(core.ClassTable,  
                     parseParams.ElementResolver, astNodes, core.BuildStatus.LogSymbolConflictWarning);
+
+                if (priorNames != null)
+                {
+                    // Use migration rewriter to migrate old method names to new names based on priorNameHints from LibraryServices
+                    reWrittenNodes = MigrationRewriter.MigrateMethodNames(reWrittenNodes, priorNames);
+                }
 
                 // Clone a disposable copy of AST nodes for PreCompile() as Codegen mutates AST's
                 // while performing SSA transforms and we want to keep the original AST's

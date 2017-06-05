@@ -123,7 +123,7 @@ namespace Dynamo.Engine
         {
             this.libraryServices = libraryServices;
             libraryServices.LibraryLoaded += LibraryLoaded;
-            CompilationServices = new CompilationServices(libraryServices.LibraryManagementCore);
+            CompilationServices = new CompilationServices(libraryServices);
 
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
 
@@ -545,14 +545,16 @@ namespace Dynamo.Engine
     public class CompilationServices
     {
         private ProtoCore.Core compilationCore;
+        private readonly Dictionary<string, string> priorNames;
 
         /// <summary>
         /// Creates CompilationServices.
         /// </summary>
         /// <param name="core">Copilation core</param>
-        public CompilationServices(ProtoCore.Core core)
+        public CompilationServices(LibraryServices libraryServices)
         {
-            compilationCore = core;
+            compilationCore = libraryServices.LibraryManagementCore;
+            priorNames = libraryServices.GetPriorNames();
         }
 
         /// <summary>
@@ -562,7 +564,7 @@ namespace Dynamo.Engine
         /// <returns>true if code compilation succeeds, false otherwise</returns>
         public bool PreCompileCodeBlock(ref ParseParam parseParams)
         {
-            return CompilerUtils.PreCompileCodeBlock(compilationCore, ref parseParams);
+            return CompilerUtils.PreCompileCodeBlock(compilationCore, ref parseParams, priorNames);
         }
     }
 
