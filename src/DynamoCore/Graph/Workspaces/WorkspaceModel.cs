@@ -877,14 +877,15 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Save assuming that the Filepath attribute is set.
+        /// Internal save logic exception for serialization.
         /// </summary>
         /// <param name="newPath">The path to save to</param>
         /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
         public virtual bool Save(string newPath, bool isBackup = false)
         {
             if (String.IsNullOrEmpty(newPath)) return false;
-            if (!isBackup)OnWorkspaceSaved();
+            if (!isBackup) OnWorkspaceSaved();
+            FileName = newPath;
             return true;
         }
 

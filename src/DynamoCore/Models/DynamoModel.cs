@@ -1281,7 +1281,6 @@ namespace Dynamo.Models
                     this.Scheduler, this.NodeFactory, false, false, this.CustomNodeManager);
                 Logger.Log(String.Format(Resources.SavingInProgress, path));
                 File.WriteAllText(path, json);
-                ws.FileName = path;
             }
             catch(Exception ex)
             {
