@@ -1273,6 +1273,23 @@ namespace Dynamo.Models
         public bool SaveWorkspace(string path, WorkspaceModel ws, bool isBackup = false)
         {
             if (String.IsNullOrEmpty(path)) return false;
+            if(ws is CustomNodeWorkspaceModel)
+            {
+                var originalPath = ws.FileName;
+                // A SaveAs to an existing function id prompts the creation of a new 
+                // custom node with a new function id
+                if (originalPath != path)
+                {
+                    ws.FileName = path;
+                    // If it is a newly created node, no need to generate a new guid
+                    if (!string.IsNullOrEmpty(originalPath))
+                        (ws as CustomNodeWorkspaceModel).CustomNodeId = Guid.NewGuid();
+                    // This comes after updating the Id, as if to associate the new name
+                    // with the new Id.
+                    (ws as CustomNodeWorkspaceModel).SetInfo(Path.GetFileNameWithoutExtension(path));
+                }
+            }
+
             try
             {
                 var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(ws, this.LibraryServices, this.EngineController,

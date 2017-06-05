@@ -25,7 +25,7 @@ namespace Dynamo.Graph.Workspaces
         public Guid CustomNodeId
         {
             get { return customNodeId; }
-            private set
+            set
             {
                 if (value == customNodeId) 
                     return;
