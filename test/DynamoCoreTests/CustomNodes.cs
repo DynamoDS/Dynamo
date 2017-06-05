@@ -854,7 +854,7 @@ namespace Dynamo.Tests
             Guid groupid = Guid.NewGuid();
             var annotation = CurrentDynamoModel.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
             Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Annotations.Count(), 1);
-            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Annotations.First().SelectedModels.Count(), 3);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Annotations.First().Nodes.Count(), 3);
 
             CurrentDynamoModel.AddToSelection(annotation);
 

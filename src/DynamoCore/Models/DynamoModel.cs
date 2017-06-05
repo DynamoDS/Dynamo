@@ -1505,13 +1505,13 @@ namespace Dynamo.Models
                     //If there is only one model, then deleting that model should delete the group. In that case, do not record
                     //the group for modification. Until we have one model in a group, group should be recorded for modification
                     //otherwise, undo operation cannot get the group back.
-                    if (annotation.SelectedModels.Count() > 1 && annotation.SelectedModels.Where(x => x.GUID == model.GUID).Any())
+                    if (annotation.Nodes.Count() > 1 && annotation.Nodes.Where(x => x.GUID == model.GUID).Any())
                     {
                         CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                     }
                 }
 
-                if (annotation.SelectedModels.Any() && !annotation.SelectedModels.Except(modelsToDelete).Any())
+                if (annotation.Nodes.Any() && !annotation.Nodes.Except(modelsToDelete).Any())
                 {
                     //Annotation Model has to be serialized first - before the nodes.
                     //so, store the Annotation model as first object. This will serialize the
@@ -1543,16 +1543,16 @@ namespace Dynamo.Models
             {
                 foreach (var annotation in annotations)
                 {
-                    if (annotation.SelectedModels.Any(x => x.GUID == model.GUID))
+                    if (annotation.Nodes.Any(x => x.GUID == model.GUID))
                     {
-                        var list = annotation.SelectedModels.ToList();
+                        var list = annotation.Nodes.ToList();
 
                         if(list.Count > 1)
                         {
                             CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                             if (list.Remove(model))
                             {
-                                annotation.SelectedModels = list;
+                                annotation.Nodes = list;
                                 annotation.UpdateBoundaryFromSelection();
                             }
                         }
@@ -1871,7 +1871,7 @@ namespace Dynamo.Models
                 // some models can be deleted after copying them,
                 // so they need to be in pasted annotation as well
                 var modelsToRestore = annotation.DeletedModelBases.Intersect(ClipBoard);
-                var modelsToAdd = annotation.SelectedModels.Concat(modelsToRestore);
+                var modelsToAdd = annotation.Nodes.Concat(modelsToRestore);
                 // checked condition here that supports pasting of multiple groups
                 foreach (var models in modelsToAdd)
                 {

@@ -345,7 +345,7 @@ namespace Autodesk.Workspaces
 
             // This is a collection of string Guids, which
             // should be accessible in the ReferenceResolver.
-            var models = obj["SelectedModels"].Values<JValue>();
+            var models = obj["Nodes"].Values<JValue>();
 
             var existing = models.Select(m => serializer.ReferenceResolver.ResolveReference(serializer.Context, m.Value<string>()));
 
@@ -367,9 +367,9 @@ namespace Autodesk.Workspaces
 
             writer.WritePropertyName("Title");
             writer.WriteValue(anno.AnnotationText);
-            writer.WritePropertyName("SelectedModels");
+            writer.WritePropertyName("Nodes");
             writer.WriteStartArray();
-            foreach (var m in anno.SelectedModels)
+            foreach (var m in anno.Nodes)
             {
                 writer.WriteValue(m.GUID.ToString());
             }
