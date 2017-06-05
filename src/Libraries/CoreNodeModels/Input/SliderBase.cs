@@ -100,6 +100,13 @@ namespace CoreNodeModels.Input
 
         public static string ConvertNumberToString(T value)
         {
+            if (value.GetType() == typeof(double))
+            {
+                var obj = (object)value;
+                var val = (double)obj;
+                val = Math.Round(val, 1);
+                return Convert.ToString(val, CultureInfo.InvariantCulture);
+            }
             return Convert.ToString(value, CultureInfo.InvariantCulture);
         }
 
