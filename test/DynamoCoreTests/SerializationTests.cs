@@ -111,7 +111,7 @@ namespace Dynamo.Tests
                 }
             }
 
-            return value.StringData;
+            return value.StringData();
         }
 
         private void CompareWorkspaces(WorkspaceComparisonData a, WorkspaceComparisonData b)

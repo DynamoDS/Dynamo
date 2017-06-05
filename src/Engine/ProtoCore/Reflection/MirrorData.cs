@@ -203,32 +203,26 @@ namespace ProtoCore
             /// <summary>
             /// Returns string representation of data
             /// </summary>
-            public string StringData
+            public string StringData(string format = "f3")
             {
-                get
+                if (object.ReferenceEquals(Data, null) || this.IsNull)
                 {
-                    if (object.ReferenceEquals(Data, null) || this.IsNull)
-                    {
-                        return "null";
-                    }
-                    else if (Data is bool)
-                    {
-                        return Data.ToString().ToLower();
-                    }
-                    else if (Data is IFormattable)
-                    {
-                        // Object.ToString() by default will use the current 
-                        // culture to do formatting. For example, Double.ToString()
-                        // https://msdn.microsoft.com/en-us/library/3hfd35ad(v=vs.110).aspx
-                        // We should always use invariant culture format for formattable 
-                        // object.
-                        return (Data as IFormattable).ToString(null, CultureInfo.InvariantCulture);
-                    }
-                    else
-                    {
-                        return Data.ToString();
-                    }
+                    return "null";
                 }
+                if (Data is bool)
+                {
+                    return Data.ToString().ToLower();
+                }
+                if (Data is IFormattable)
+                {
+                    // Object.ToString() by default will use the current 
+                    // culture to do formatting. For example, Double.ToString()
+                    // https://msdn.microsoft.com/en-us/library/3hfd35ad(v=vs.110).aspx
+                    // We should always use invariant culture format for formattable 
+                    // object.
+                    return (Data as IFormattable).ToString(format, CultureInfo.InvariantCulture);
+                }
+                return Data.ToString();
             }
 
             /// <summary>
