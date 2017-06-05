@@ -43,6 +43,7 @@ namespace Dynamo.LibraryUI.Handlers
                     data = GetAllPackages();
                     break;
                 case "package":
+                case "package/":
                     data = GetPackage(segments[2]);
                     break;
                 default:
@@ -84,6 +85,10 @@ namespace Dynamo.LibraryUI.Handlers
                 }
                 packages.Add(id, header);
             }
+            if(header.keywords == null)
+            {
+                header.keywords = new List<string>();
+            }
 
             return new ResponseWithContentBody<PackageHeader>()
             {
@@ -95,6 +100,11 @@ namespace Dynamo.LibraryUI.Handlers
 
         private ResponseWithContentBody<IEnumerable<PackageHeader>> GetAllPackages()
         {
+            if (!packages.Any())
+            {
+                packages = dynamopackagesClient.ListAll().ToDictionary(p => p._id);
+            }
+
             return new ResponseWithContentBody<IEnumerable<PackageHeader>>()
             {
                 content = packages.Values,
