@@ -908,37 +908,6 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Save to a specific file path, if the path is null or empty, does nothing.
-        ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
-        /// </summary>
-        /// <param name="newPath">The path to save to</param>
-        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object
-        /// to obtain serialized trace data for node list to save.</param>
-        /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
-        /// we should add it to recent files. Otherwise leave it.</param>
-        public virtual bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackup = false)
-        {
-            if (String.IsNullOrEmpty(newPath)) return false;
-
-            Log(String.Format(Resources.SavingInProgress, newPath));
-            try
-            {
-                if (SaveInternal(newPath, runtimeCore) && !isBackup)
-                    OnWorkspaceSaved();
-            }
-            catch (Exception ex)
-            {
-                //Log(ex);
-                Log(ex.Message);
-                Log(ex.StackTrace);
-                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                throw (ex);
-            }
-
-            return true;
-        }
-
-        /// <summary>
         ///     Adds a node to this workspace.
         /// </summary>
         /// <param name="node">The node which is being added to the workspace.</param>
@@ -1589,16 +1558,6 @@ namespace Dynamo.Graph.Workspaces
             }
 
             return nodesInSameGroup;
-        }
-
-        /// <summary>
-        /// Save assuming that the Filepath attribute is set.
-        /// </summary>
-        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object
-        /// to obtain serialized trace data for node list to save.</param>
-        public virtual bool Save(ProtoCore.RuntimeCore runtimeCore)
-        {
-            return SaveAs(FileName, runtimeCore);
         }
 
         internal void ResetWorkspace()

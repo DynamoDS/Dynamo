@@ -1263,28 +1263,25 @@ namespace Dynamo.Models
         #endregion
 
         #region save/load
-        
-        /// <summary>
-        /// Save current workspace to specified path.
-        /// </summary>
-        /// <param name="path">The path to save to</param>
-        public void SaveCurrentWorkspace(string path)
-        {
-            var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(this.CurrentWorkspace, this.LibraryServices, this.EngineController,
-                this.Scheduler, this.NodeFactory, false, false, this.CustomNodeManager);
-            File.WriteAllText(path, json);
-        }
 
         /// <summary>
         /// Save workspace to specified path.
         /// </summary>
         /// <param name="path">The path to save to</param>
         /// <param name="ws">workspace to save</param>
-        public void SaveWorkspace(string path, WorkspaceModel ws)
+        public bool SaveWorkspace(string path, WorkspaceModel ws)
         {
-            var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(ws, this.LibraryServices, this.EngineController,
-                this.Scheduler, this.NodeFactory, false, false, this.CustomNodeManager);
-            File.WriteAllText(path, json);
+            try
+            {
+                var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(ws, this.LibraryServices, this.EngineController,
+                    this.Scheduler, this.NodeFactory, false, false, this.CustomNodeManager);
+                File.WriteAllText(path, json);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
         }
 
         /// <summary>

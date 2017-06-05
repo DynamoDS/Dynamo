@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
+using System.Diagnostics;
 using System.Linq;
 using System.Xml;
 using Dynamo.Graph.Annotations;
@@ -10,9 +10,7 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
-using Dynamo.Interfaces;
 using ProtoCore.Namespace;
-using System.Diagnostics;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -285,39 +283,6 @@ namespace Dynamo.Graph.Workspaces
         {
             var handler = FunctionIdChanged;
             if (handler != null) handler(oldId);
-        }
-
-        /// <summary>
-        /// Saves custom node workspace to a file
-        /// </summary>
-        /// <param name="newPath">New location to save the workspace.</param>
-        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object 
-        /// to obtain serialized trace data for node list to save.</param>
-        /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
-        /// we should add it to recent files. Otherwise leave it.</param>
-        /// <returns></returns>
-        public override bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackUp = false)
-        {
-            if (isBackUp)
-                return base.SaveAs(newPath, runtimeCore, isBackUp);
-
-            var originalPath = FileName;
-
-            // A SaveAs to an existing function id prompts the creation of a new 
-            // custom node with a new function id
-            if (originalPath != newPath)
-            {
-                FileName = newPath;
-                // If it is a newly created node, no need to generate a new guid
-                if (!string.IsNullOrEmpty(originalPath))
-                    CustomNodeId = Guid.NewGuid();
-
-                // This comes after updating the Id, as if to associate the new name
-                // with the new Id.
-                SetInfo(Path.GetFileNameWithoutExtension(newPath));
-            }
-
-            return base.SaveAs(newPath, runtimeCore, isBackUp);
         }
 
         protected override bool PopulateXmlDocument(XmlDocument document)

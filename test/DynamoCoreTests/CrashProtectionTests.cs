@@ -72,11 +72,11 @@ namespace Dynamo.Tests
             ws.RunSettings.RunType = RunType.Automatic;
 
             // save the file to a temp location
-            var tp = Path.Combine(TempFolder, "tempCrashProtection.dyn");
-            ws.SaveAs(tp, CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore);
+            var path = Path.Combine(TempFolder, "tempCrashProtection.dyn");
+            CurrentDynamoModel.SaveWorkspace(path, CurrentDynamoModel.CurrentWorkspace);
 
             // open the file
-            var nws = Open<HomeWorkspaceModel>(tp);
+            var nws = Open<HomeWorkspaceModel>(path);
 
             AssertAuto(nws);
         }
