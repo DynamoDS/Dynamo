@@ -1496,7 +1496,7 @@ namespace Dynamo.ViewModels
             {
                 //set the zoom and offsets events
                 CurrentSpace.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(CurrentSpace.X, CurrentSpace.Y)));
-                CurrentSpace.OnZoomChanged(this, new ZoomEventArgs(CurrentSpace.Zoom));
+                CurrentSpaceViewModel.OnZoomChanged(this, new ZoomEventArgs(CurrentSpaceViewModel.Zoom));
             }
         }
 
@@ -1741,7 +1741,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void GoHomeView(object parameter)
         {
-            model.CurrentWorkspace.Zoom = 1.0;
+            CurrentSpaceViewModel.Zoom = 1.0;
 
             var ws = this.Model.Workspaces.First(x => x == model.CurrentWorkspace);
             ws.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(0, 0)));
@@ -2115,10 +2115,10 @@ namespace Dynamo.ViewModels
 
         internal void Pan(object parameter)
         {
-            Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", model.CurrentWorkspace.X, model.CurrentWorkspace.Y, model.CurrentWorkspace.Zoom));
+            Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", CurrentSpaceViewModel.X, CurrentSpaceViewModel.Y, currentWorkspaceViewModel.Zoom));
             var panType = parameter.ToString();
             double pan = 10;
-            var pt = new Point2D(model.CurrentWorkspace.X, model.CurrentWorkspace.Y);
+            var pt = new Point2D(CurrentSpaceViewModel.X, CurrentSpaceViewModel.Y);
 
             switch (panType)
             {
