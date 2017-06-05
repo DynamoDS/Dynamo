@@ -133,6 +133,21 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         #region public properties
+        /// <summary>
+        /// Id for this node, must be unique within the graph.
+        /// </summary>
+        [JsonProperty("Id")]
+        public override Guid GUID
+        {
+            get
+            {
+                return base.GUID;
+            }
+            set
+            {
+                base.GUID = value;
+            }
+        }
 
         /// <summary>
         ///     All of the connectors entering and exiting the NodeModel.

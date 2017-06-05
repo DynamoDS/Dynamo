@@ -7,9 +7,46 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Graph.Nodes
 {
+
+    public class IdToGuidConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(Guid);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var obj = JValue.Load(reader);
+            Guid deterministicGuid;
+            if (!Guid.TryParse(obj.Value<string>(), out deterministicGuid))
+            {
+                Console.WriteLine("the id was not a guid, converting to a guid");
+                Console.WriteLine(obj);
+
+                deterministicGuid = GuidUtility.Create(GuidUtility.UrlNamespace, obj.Value<string>());
+                Console.WriteLine(obj + " becomes " + deterministicGuid);
+            }
+            return deterministicGuid;
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool CanWrite
+        {
+            get
+            {
+                return false;
+            }
+        }
+    }
     /// <summary>
     /// Interaction logic for dynPort.xaml
     /// </summary>
@@ -35,6 +72,7 @@ namespace Dynamo.Graph.Nodes
         /// ID of the PortModel, which is unique on the node.
         /// </summary>
         [JsonProperty("Id")]
+        [JsonConverter(typeof(IdToGuidConverter))]
         public override Guid GUID
         {
             get

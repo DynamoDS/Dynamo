@@ -54,10 +54,19 @@ namespace Autodesk.Workspaces
 
             var obj = JObject.Load(reader);
             var type = Type.GetType(obj["$type"].Value<string>());
-            
-            var guid = Guid.Parse(obj["Uuid"].Value<string>());
+
+            //if the id is not a guid, makes a guid based on the id of the node
+            Guid nodeId;
+            if (!Guid.TryParse((obj["Id"].Value<string>()), out nodeId))
+            {
+                nodeId = GuidUtility.Create(GuidUtility.UrlNamespace, (obj["Id"].Value<string>()));
+            }
+
+            var guid = nodeId;
             var displayName = obj["DisplayName"].Value<string>();
 
+            //TODO we'll want to generate new guids if the port ids are not guids, as this deserialization
+            //will fail when the ids are not guids...
             var inPorts = obj["InputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
             var outPorts = obj["OutputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
 
@@ -344,7 +353,12 @@ namespace Autodesk.Workspaces
         {
             var obj = JObject.Load(reader);
             var title = obj["Title"].Value<string>();
-            var guid = Guid.Parse(obj["Uuid"].Value<string>());
+            //if the id is not a guid, makes a guid based on the id of the model
+            Guid annotationId;
+            if (!Guid.TryParse((obj["Id"].Value<string>()), out annotationId))
+            {
+                annotationId = GuidUtility.Create(GuidUtility.UrlNamespace, (obj["Id"].Value<string>()));
+            }
 
             // This is a collection of string Guids, which
             // should be accessible in the ReferenceResolver.
@@ -357,7 +371,7 @@ namespace Autodesk.Workspaces
 
             var anno = new AnnotationModel(nodes, notes);
             anno.AnnotationText = title;
-            anno.GUID = guid;
+            anno.GUID = annotationId;
 
             return anno;
         }
@@ -377,7 +391,7 @@ namespace Autodesk.Workspaces
                 writer.WriteValue(m.GUID.ToString());
             }
             writer.WriteEndArray();
-            writer.WritePropertyName("Uuid");
+            writer.WritePropertyName("Id");
             writer.WriteValue(anno.GUID.ToString());
 
             writer.WriteEndObject();
@@ -422,7 +436,12 @@ namespace Autodesk.Workspaces
                 endPort = (PortModel)resolver.ResolveReferenceFromMap(serializer.Context, endId);
             }
 
-            var connectorId = Guid.Parse(obj["Uuid"].Value<string>());
+            //if the id is not a guid, makes a guid based on the id of the model
+            Guid connectorId;
+            if (!Guid.TryParse((obj["Id"].Value<string>()), out connectorId))
+            {
+                connectorId = GuidUtility.Create(GuidUtility.UrlNamespace, (obj["Id"].Value<string>()));
+            }
             return new ConnectorModel(startPort, endPort, connectorId);
         }
 
@@ -435,7 +454,7 @@ namespace Autodesk.Workspaces
             writer.WriteValue(connector.Start.GUID.ToString());
             writer.WritePropertyName("End");
             writer.WriteValue(connector.End.GUID.ToString());
-            writer.WritePropertyName("Uuid");
+            writer.WritePropertyName("Id");
             writer.WriteValue(connector.GUID.ToString());
             writer.WriteEndObject();
         }
@@ -452,18 +471,28 @@ namespace Autodesk.Workspaces
 
         /// <summary>
         /// Add a reference to a newly created object, referencing
-        /// an old Guid.
+        /// an old id.
         /// </summary>
-        /// <param name="oldGuid">The old Guid of the object.</param>
-        /// <param name="newObject">The new object which maps to the old Guid.</param>
-        public void AddToReferenceMap(Guid oldGuid, object newObject)
+        /// <param name="oldid">The old id of the object.</param>
+        /// <param name="newObject">The new object which maps to the old id.</param>
+        public void AddToReferenceMap(Guid oldId, object newObject)
         {
-            modelMap.Add(oldGuid, newObject);
+            if (modelMap.ContainsKey(oldId))
+            {
+                throw new InvalidOperationException(@"the map already contains a model with this id, the id must
+                    be unique for the workspace that is currently being deserialized: "+oldId);
+            }
+            modelMap.Add(oldId, newObject);
         }
 
         public void AddReference(object context, string reference, object value)
         {
             Guid id = new Guid(reference);
+            if (models.ContainsKey(id))
+            {
+                throw new InvalidOperationException(@"the map already contains a model with this id, the id must
+                    be unique for the workspace that is currently being deserialized :"+id);
+            }
             models[id] = value;
         }
 
@@ -507,7 +536,7 @@ namespace Autodesk.Workspaces
 
         /// <summary>
         /// Resolve a reference to a newly created object, given
-        /// the original Guid for the object.
+        /// the original id for the object.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="reference"></param>
@@ -515,7 +544,6 @@ namespace Autodesk.Workspaces
         public object ResolveReferenceFromMap(object context, string reference)
         {
             var id = new Guid(reference);
-
             object model;
             modelMap.TryGetValue(id, out model);
 
