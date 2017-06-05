@@ -1269,19 +1269,27 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="path">The path to save to</param>
         /// <param name="ws">workspace to save</param>
-        public bool SaveWorkspace(string path, WorkspaceModel ws)
+        /// <param name="isBackup">indicate saving for backup</param>
+        public bool SaveWorkspace(string path, WorkspaceModel ws, bool isBackup = false)
         {
+            if (String.IsNullOrEmpty(path)) return false;
             try
             {
                 var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(ws, this.LibraryServices, this.EngineController,
                     this.Scheduler, this.NodeFactory, false, false, this.CustomNodeManager);
+                Logger.Log(String.Format(Resources.SavingInProgress, path));
                 File.WriteAllText(path, json);
-                return true;
+                ws.FileName = path;
+                if (!isBackup) OnWorkspaceSaved(ws);
             }
             catch(Exception ex)
             {
-                return false;
-            }
+                Logger.Log(ex.Message);
+                Logger.Log(ex.StackTrace);
+                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                throw (ex);
+;           }
+            return true;
         }
 
         /// <summary>
@@ -1443,7 +1451,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     var oldFileName = workspace.FileName;
                     var oldName = workspace.Name;
-                    SaveWorkspace(savePath, workspace);
+                    SaveWorkspace(savePath, workspace, true);
                     workspace.FileName = oldFileName;
                     workspace.Name = oldName;
                     backupFilesDict[workspace.Guid] = savePath;
