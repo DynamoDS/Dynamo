@@ -1,4 +1,11 @@
-﻿using Dynamo.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Xml;
+using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Engine.NodeToCode;
@@ -18,13 +25,6 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.Namespace;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Xml;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
 namespace Dynamo.Graph.Workspaces
@@ -874,6 +874,18 @@ namespace Dynamo.Graph.Workspaces
             // Reset the workspace offset
             OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(X, Y)));
             workspaceLoaded = true;
+        }
+
+        /// <summary>
+        /// Save assuming that the Filepath attribute is set.
+        /// </summary>
+        /// <param name="newPath">The path to save to</param>
+        /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
+        public virtual bool Save(string newPath, bool isBackup = false)
+        {
+            if (String.IsNullOrEmpty(newPath)) return false;
+            if (!isBackup)OnWorkspaceSaved();
+            return true;
         }
 
         /// <summary>
