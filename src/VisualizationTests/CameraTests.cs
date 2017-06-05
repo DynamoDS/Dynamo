@@ -91,7 +91,7 @@ namespace WpfVisualizationTests
             cam.LookDirection = testLook;
 
             var tempFileName = Path.GetTempPath() + ".dyn";
-            ViewModel.Model.SaveWorkspace(tempFileName, ViewModel.Model.CurrentWorkspace);
+            ViewModel.SaveAs(tempFileName);
 
             ViewModel.Model.ClearCurrentWorkspace();
             Assert.True(CameraHasDefaultOrientation());
