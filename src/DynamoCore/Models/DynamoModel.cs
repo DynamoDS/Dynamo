@@ -1263,9 +1263,25 @@ namespace Dynamo.Models
         #endregion
 
         #region save/load
-        public void SaveAs(string path)
+        
+        /// <summary>
+        /// Save current workspace to specified path.
+        /// </summary>
+        /// <param name="path">The path to save to</param>
+        public void SaveCurrentWorkspace(string path)
         {
-            var ws = this.CurrentWorkspace;
+            var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(this.CurrentWorkspace, this.LibraryServices, this.EngineController,
+                this.Scheduler, this.NodeFactory, false, false, this.CustomNodeManager);
+            File.WriteAllText(path, json);
+        }
+
+        /// <summary>
+        /// Save workspace to specified path.
+        /// </summary>
+        /// <param name="path">The path to save to</param>
+        /// <param name="ws">workspace to save</param>
+        public void SaveWorkspace(string path, WorkspaceModel ws)
+        {
             var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(ws, this.LibraryServices, this.EngineController,
                 this.Scheduler, this.NodeFactory, false, false, this.CustomNodeManager);
             File.WriteAllText(path, json);
@@ -1430,7 +1446,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     var oldFileName = workspace.FileName;
                     var oldName = workspace.Name;
-                    workspace.SaveAs(savePath, null, true);
+                    SaveWorkspace(savePath, workspace);
                     workspace.FileName = oldFileName;
                     workspace.Name = oldName;
                     backupFilesDict[workspace.Guid] = savePath;

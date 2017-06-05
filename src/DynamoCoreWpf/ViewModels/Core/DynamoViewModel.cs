@@ -1384,7 +1384,7 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                model.SaveAs(path);
+                model.SaveCurrentWorkspace(path);
             }
             catch (System.Exception ex)
             {
