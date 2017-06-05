@@ -1711,38 +1711,6 @@ namespace Dynamo.Graph.Workspaces
 
         #region private/internal methods
 
-        private bool SaveInternal(string targetFilePath, ProtoCore.RuntimeCore runtimeCore)
-        {
-            // Create the xml document to write to.
-            var document = new XmlDocument();
-            document.CreateXmlDeclaration("1.0", null, null);
-            document.AppendChild(document.CreateElement("Workspace"));
-
-            Utils.SetDocumentXmlPath(document, targetFilePath);
-
-            if (!PopulateXmlDocument(document))
-                return false;
-
-            SerializeSessionData(document, runtimeCore);
-
-            try
-            {
-                Utils.SetDocumentXmlPath(document, string.Empty);
-                document.Save(targetFilePath);
-            }
-            catch (IOException ex)
-            {
-                throw (ex);
-            }
-            catch (System.UnauthorizedAccessException ex)
-            {
-                throw (ex);
-            }
-
-            FileName = targetFilePath;
-            return true;
-        }
-
         private void SerializeElementResolver(XmlDocument xmlDoc)
         {
             Debug.Assert(xmlDoc != null);
