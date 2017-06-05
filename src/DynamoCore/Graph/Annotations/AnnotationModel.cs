@@ -6,6 +6,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Properties;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Annotations
 {
@@ -149,6 +150,22 @@ namespace Dynamo.Graph.Annotations
                     }
                 }
             }            
+        }
+
+        /// <summary>
+        /// ID of the AnnotationModel, which is unique within the graph.
+        /// </summary>
+        [JsonProperty("Id")]
+        public override Guid GUID
+        {
+            get
+            {
+                return base.GUID;
+            }
+            set
+            {
+                base.GUID = value;
+            }
         }
 
         /// <summary>
