@@ -104,6 +104,11 @@
             }
         });
 
+        libController.registerRequestHandler(libController.RefreshLibraryViewRequestName, function () {
+            refreshLibraryView(libController);
+            return false;
+        });
+
         pkgController.on("StartInstallingPackage", function (pkg) {
             console.log("Install Package Callback: " + JSON.stringify(pkg));
             csharpController.installPackage(pkg.name, pkg.version, pkg.id, "");
