@@ -31,6 +31,21 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         #region public members
+        /// <summary>
+        /// ID of the PortModel, which is unique on the node.
+        /// </summary>
+        [JsonProperty("Id")]
+        public override Guid GUID
+        {
+            get
+            {
+                return base.GUID;
+            }
+            set
+            {
+                base.GUID = value;
+            }
+        }
 
         /// <summary>
         /// Returns the connectors between the specified ports.

@@ -3,6 +3,7 @@ using System.Xml;
 using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
 using System.Diagnostics;
+using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Connectors
 {
@@ -38,6 +39,22 @@ namespace Dynamo.Graph.Connectors
         /// Returns end port model.
         /// </summary>
         public PortModel End { get; private set; }
+
+        /// <summary>
+        /// ID of the Connector, which is unique on in the graph.
+        /// </summary>
+        [JsonProperty("Id")]
+        public override Guid GUID
+        {
+            get
+            {
+                return base.GUID;
+            }
+            set
+            {
+                base.GUID = value;
+            }
+        }
 
         #endregion 
 
