@@ -69,7 +69,7 @@ namespace Dynamo.Graph.Nodes
 
         #region public members
         /// <summary>
-        /// ID of the PortModel, which is unique on the node.
+        /// ID of the PortModel, which is unique within the graph.
         /// </summary>
         [JsonProperty("Id")]
         [JsonConverter(typeof(IdToGuidConverter))]
