@@ -18,6 +18,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using Function = Dynamo.Graph.Nodes.CustomNodes.Function;
 
 namespace Dynamo.ViewModels
@@ -63,6 +64,16 @@ namespace Dynamo.ViewModels
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
         public PortViewModel portViewModel { get; set; }
         public bool IsSnapping { get; set; }
+
+        /// <summary>
+        /// Gets the Camera Data. This is used when serializing Camera Data in the View block
+        /// of Graph.Json.
+        /// </summary>
+        
+        public CameraData Camera
+        {
+            get { return DynamoViewModel.BackgroundPreviewViewModel.GetCameraInformation(); }
+        }
 
         /// <summary>
         /// ViewModel that is used in InCanvasSearch in context menu and called by Shift+DoubleClick.
@@ -633,7 +644,7 @@ namespace Dynamo.ViewModels
                 {
                     selection.AddUnique(n);
                     // if annotation is selected its children should be added to selection too
-                    foreach (var m in n.SelectedModels)
+                    foreach (var m in n.Nodes)
                     {
                         selection.AddUnique(m);
                     }
