@@ -879,15 +879,21 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Internal save logic exception for serialization.
+        /// Internal save logic unrelated to serialization.
         /// </summary>
         /// <param name="newPath">The path to save to</param>
         /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
+        /// we should add it to recent files. Otherwise leave it.</param>
         public virtual bool Save(string newPath, bool isBackup = false)
         {
             if (String.IsNullOrEmpty(newPath)) return false;
-            if (!isBackup) OnWorkspaceSaved();
-            FileName = newPath;
+
+            // Only for actual save, update file path and recent file list
+            if (!isBackup)
+            {
+                FileName = newPath;
+                OnWorkspaceSaved();
+            }
             return true;
         }
 

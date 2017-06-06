@@ -1,3 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Threading;
+using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -25,20 +36,8 @@ using Dynamo.Utilities;
 using DynamoServices;
 using DynamoUnits;
 using Greg;
-using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Threading;
-using System.Xml;
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
 using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
@@ -1265,7 +1264,7 @@ namespace Dynamo.Models
         #region save/load
 
         /// <summary>
-        /// Save workspace to specified path.
+        /// Save workspace in Json format to specified path.
         /// </summary>
         /// <param name="path">The path to save to</param>
         /// <param name="ws">workspace to save</param>
@@ -1273,10 +1272,12 @@ namespace Dynamo.Models
         public bool SaveWorkspace(string path, WorkspaceModel ws, bool isBackup = false)
         {
             if (String.IsNullOrEmpty(path)) return false;
+            // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
             ws.Save(path, isBackup);
             
             try
             {
+                // Serialize ws into string json
                 var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(ws, this.LibraryServices, this.EngineController,
                     this.Scheduler, this.NodeFactory, false, false, this.CustomNodeManager);
                 Logger.Log(String.Format(Resources.SavingInProgress, path));
