@@ -137,6 +137,7 @@ namespace Dynamo.Graph.Nodes
         /// Id for this node, must be unique within the graph.
         /// </summary>
         [JsonProperty("Id")]
+        [JsonConverter(typeof(IdToGuidConverter))]
         public override Guid GUID
         {
             get

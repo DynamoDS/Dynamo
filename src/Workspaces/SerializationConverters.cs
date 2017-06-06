@@ -364,7 +364,14 @@ namespace Autodesk.Workspaces
             // should be accessible in the ReferenceResolver.
             var models = obj["SelectedModels"].Values<JValue>();
 
-            var existing = models.Select(m => serializer.ReferenceResolver.ResolveReference(serializer.Context, m.Value<string>()));
+            var existing = models.Select(m => {
+                Guid modelId;
+                if (!Guid.TryParse(m.Value<string>(), out modelId))
+                {
+                    modelId = GuidUtility.Create(GuidUtility.UrlNamespace,m.Value<string>());
+                }
+                return serializer.ReferenceResolver.ResolveReference(serializer.Context, modelId.ToString());
+                });
 
             var nodes = existing.Where(m => typeof(NodeModel).IsAssignableFrom(m.GetType())).Cast<NodeModel>();
             var notes = existing.Where(m => typeof(NoteModel).IsAssignableFrom(m.GetType())).Cast<NoteModel>();
@@ -420,20 +427,31 @@ namespace Autodesk.Workspaces
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
 
-            var startPort = (PortModel)resolver.ResolveReference(serializer.Context, startId);
-            var endPort = (PortModel)resolver.ResolveReference(serializer.Context, endId);
+            Guid startIdGuid;
+            if (!Guid.TryParse((obj["Id"].Value<string>()), out startIdGuid))
+            {
+                startIdGuid = GuidUtility.Create(GuidUtility.UrlNamespace, startId);
+            }
+            Guid endIdGuid;
+            if (!Guid.TryParse((obj["Id"].Value<string>()), out endIdGuid))
+            {
+                endIdGuid = GuidUtility.Create(GuidUtility.UrlNamespace, endId);
+            }
+
+            var startPort = (PortModel)resolver.ResolveReference(serializer.Context, startIdGuid.ToString());
+            var endPort = (PortModel)resolver.ResolveReference(serializer.Context, endIdGuid.ToString());
 
             // If the start or end ports can't be found in the resolver,
             // try to resolve them from the resolver's map, which maps
             // the persisted port ids to the new port ids.
             if(startPort == null)
             {
-                startPort = (PortModel)resolver.ResolveReferenceFromMap(serializer.Context, startId);
+                startPort = (PortModel)resolver.ResolveReferenceFromMap(serializer.Context, startIdGuid.ToString());
             }
 
             if(endPort == null)
             {
-                endPort = (PortModel)resolver.ResolveReferenceFromMap(serializer.Context, endId);
+                endPort = (PortModel)resolver.ResolveReferenceFromMap(serializer.Context, endIdGuid.ToString());
             }
 
             //if the id is not a guid, makes a guid based on the id of the model
@@ -526,8 +544,13 @@ namespace Autodesk.Workspaces
 
         public object ResolveReference(object context, string reference)
         {
-            var id = new Guid(reference);
-
+            Guid id;
+            if (!Guid.TryParse(reference, out id))
+            {
+                //if this is not a guid, it won't be in the resolver.
+                Console.WriteLine("not a guid");
+                return null;
+            }
             object model;
             models.TryGetValue(id, out model);
 
@@ -543,7 +566,13 @@ namespace Autodesk.Workspaces
         /// <returns></returns>
         public object ResolveReferenceFromMap(object context, string reference)
         {
-            var id = new Guid(reference);
+            Guid id;
+            if (!Guid.TryParse(reference, out id))
+            {
+                //if this is not a guid, it won't be in the resolver.
+                Console.WriteLine("not a guid");
+                return null;
+            }
             object model;
             modelMap.TryGetValue(id, out model);
 

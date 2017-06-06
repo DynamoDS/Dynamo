@@ -12,6 +12,7 @@ using Newtonsoft.Json.Linq;
 namespace Dynamo.Graph.Nodes
 {
 
+    //TODO move this into serializationConverters file after it is merged to DynamoCore.
     public class IdToGuidConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)

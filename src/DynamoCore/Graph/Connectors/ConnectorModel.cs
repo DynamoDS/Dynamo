@@ -44,6 +44,7 @@ namespace Dynamo.Graph.Connectors
         /// ID of the Connector, which is unique on in the graph.
         /// </summary>
         [JsonProperty("Id")]
+        [JsonConverter(typeof(IdToGuidConverter))]
         public override Guid GUID
         {
             get

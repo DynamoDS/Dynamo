@@ -156,6 +156,7 @@ namespace Dynamo.Graph.Annotations
         /// ID of the AnnotationModel, which is unique within the graph.
         /// </summary>
         [JsonProperty("Id")]
+        [JsonConverter(typeof(IdToGuidConverter))]
         public override Guid GUID
         {
             get
