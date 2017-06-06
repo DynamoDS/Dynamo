@@ -1,3 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Threading;
+using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -25,20 +36,8 @@ using Dynamo.Utilities;
 using DynamoServices;
 using DynamoUnits;
 using Greg;
-using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Threading;
-using System.Xml;
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
 using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
@@ -1265,6 +1264,36 @@ namespace Dynamo.Models
         #region save/load
 
         /// <summary>
+        /// Save workspace in Json format to specified path.
+        /// </summary>
+        /// <param name="path">The path to save to</param>
+        /// <param name="ws">workspace to save</param>
+        /// <param name="isBackup">indicate saving for backup</param>
+        public bool SaveWorkspace(string path, WorkspaceModel ws, bool isBackup = false)
+        {
+            if (String.IsNullOrEmpty(path)) return false;
+            // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
+            ws.Save(path, isBackup);
+            
+            try
+            {
+                // Serialize ws into string json
+                var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(ws, this.LibraryServices, this.EngineController,
+                    this.Scheduler, this.NodeFactory, false, false, this.CustomNodeManager);
+                Logger.Log(String.Format(Resources.SavingInProgress, path));
+                File.WriteAllText(path, json);
+            }
+            catch(Exception ex)
+            {
+                Logger.Log(ex.Message);
+                Logger.Log(ex.StackTrace);
+                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                throw (ex);
+;           }
+            return true;
+        }
+
+        /// <summary>
         ///     Opens a Dynamo workspace from a path to an Xml file on disk.
         /// </summary>
         /// <param name="xmlPath">Path to file</param>
@@ -1423,7 +1452,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     var oldFileName = workspace.FileName;
                     var oldName = workspace.Name;
-                    workspace.SaveAs(savePath, null, true);
+                    SaveWorkspace(savePath, workspace, true);
                     workspace.FileName = oldFileName;
                     workspace.Name = oldName;
                     backupFilesDict[workspace.Guid] = savePath;

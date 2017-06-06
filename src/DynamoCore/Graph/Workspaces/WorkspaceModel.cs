@@ -1,4 +1,11 @@
-﻿using Dynamo.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Xml;
+using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Engine.NodeToCode;
@@ -18,14 +25,6 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.Namespace;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Xml;
-using Newtonsoft.Json;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
 namespace Dynamo.Graph.Workspaces
@@ -908,33 +907,21 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Save to a specific file path, if the path is null or empty, does nothing.
-        ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
+        /// Internal save logic unrelated to serialization.
         /// </summary>
         /// <param name="newPath">The path to save to</param>
-        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object
-        /// to obtain serialized trace data for node list to save.</param>
         /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
         /// we should add it to recent files. Otherwise leave it.</param>
-        public virtual bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackup = false)
+        public virtual bool Save(string newPath, bool isBackup = false)
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            Log(String.Format(Resources.SavingInProgress, newPath));
-            try
+            // Only for actual save, update file path and recent file list
+            if (!isBackup)
             {
-                if (SaveInternal(newPath, runtimeCore) && !isBackup)
-                    OnWorkspaceSaved();
+                FileName = newPath;
+                OnWorkspaceSaved();
             }
-            catch (Exception ex)
-            {
-                //Log(ex);
-                Log(ex.Message);
-                Log(ex.StackTrace);
-                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                throw (ex);
-            }
-
             return true;
         }
 
@@ -1591,16 +1578,6 @@ namespace Dynamo.Graph.Workspaces
             return nodesInSameGroup;
         }
 
-        /// <summary>
-        /// Save assuming that the Filepath attribute is set.
-        /// </summary>
-        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object
-        /// to obtain serialized trace data for node list to save.</param>
-        public virtual bool Save(ProtoCore.RuntimeCore runtimeCore)
-        {
-            return SaveAs(FileName, runtimeCore);
-        }
-
         internal void ResetWorkspace()
         {
             ElementResolver = new ElementResolver();
@@ -1767,38 +1744,6 @@ namespace Dynamo.Graph.Workspaces
         #endregion
 
         #region private/internal methods
-
-        private bool SaveInternal(string targetFilePath, ProtoCore.RuntimeCore runtimeCore)
-        {
-            // Create the xml document to write to.
-            var document = new XmlDocument();
-            document.CreateXmlDeclaration("1.0", null, null);
-            document.AppendChild(document.CreateElement("Workspace"));
-
-            Utils.SetDocumentXmlPath(document, targetFilePath);
-
-            if (!PopulateXmlDocument(document))
-                return false;
-
-            SerializeSessionData(document, runtimeCore);
-
-            try
-            {
-                Utils.SetDocumentXmlPath(document, string.Empty);
-                document.Save(targetFilePath);
-            }
-            catch (IOException ex)
-            {
-                throw (ex);
-            }
-            catch (System.UnauthorizedAccessException ex)
-            {
-                throw (ex);
-            }
-
-            FileName = targetFilePath;
-            return true;
-        }
 
         private void SerializeElementResolver(XmlDocument xmlDoc)
         {
