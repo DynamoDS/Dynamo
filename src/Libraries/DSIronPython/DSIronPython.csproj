@@ -37,10 +37,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="IronPython">
-      <HintPath>..\..\..\extern\IronPython\IronPython.dll</HintPath>
+      <HintPath>$(PACKAGESPATH)\IronPython\lib\Net40\IronPython.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Scripting">
-      <HintPath>..\..\..\extern\IronPython\Microsoft.Scripting.dll</HintPath>
+      <HintPath>$(PACKAGESPATH)\IronPython\lib\Net40\Microsoft.Scripting.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

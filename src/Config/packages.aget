@@ -1,0 +1,34 @@
+{
+  "nuget": {
+    "repos": [
+      "team-dynamo-nuget"
+    ],
+    "references": {
+      "AvalonEdit" : "4.3.1.9430",
+      "cef.redist.x64" : "3.2623.1401",
+      "cef.redist.x86" : "3.2623.1401",
+      "CefSharp.Wpf" : "49.0.1",
+      "Cyotek.Drawing.BitmapFont" : "1.0.2.0",
+      "Greg" : "1.0.6176.18754",
+      "HelixToolkit" : "2015.1.629",
+      "HelixToolkit.Wpf" : "2015.1.629",
+      "HelixToolkit.Wpf.SharpDX" : "2015.1.629",
+      "IronPython" : "2.7.2",
+      "Moq" : "4.2.1507.0118",
+      "Newtonsoft.Json" : "8.0.3",
+      "NUnit" : "2.6.2",
+      "Prism" : "4.1.0",
+      "RestSharp" : "105.2.3",
+      "SharpDX" : "2.6.3",
+      "SharpDX.D3DCompiler" : "2.6.3",
+      "SharpDX.Direct2D1" : "2.6.3",
+      "SharpDX.Direct3D9" : "2.6.3",
+      "SharpDX.Direct3D11" : "2.6.3",
+      "SharpDX.Direct3D11.Effects" : "2.6.3",
+      "SharpDX.DXGI" : "2.6.3",
+      "SharpDX.Toolkit" : "2.6.3",
+      "SharpDX.Toolkit.Graphics" : "2.6.3",
+      "Unofficial.Ionic.Zip" : "1.9.1.8"
+    }
+  }
+}

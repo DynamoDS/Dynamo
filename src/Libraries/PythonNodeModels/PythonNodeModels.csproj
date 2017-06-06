@@ -36,15 +36,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="IronPython">
-      <HintPath>..\..\..\extern\IronPython\IronPython.dll</HintPath>
+      <HintPath>$(PACKAGESPATH)\IronPython\lib\Net40\IronPython.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Dynamic">
-      <HintPath>..\..\..\extern\IronPython\Microsoft.Dynamic.dll</HintPath>
+      <HintPath>$(PACKAGESPATH)\IronPython\lib\Net40\Microsoft.Dynamic.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(PACKAGESPATH)\Newtonsoft.Json\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -103,9 +103,6 @@
       <Project>{9eef4f42-6b3b-4358-9a8a-c2701539a822}</Project>
       <Name>DSIronPython</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">

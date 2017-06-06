@@ -4,9 +4,6 @@ platform: Any CPU
 
 configuration: Release
 
-before_build:
-  - nuget restore .\src\Dynamo.All.sln
-
 environment:
   dynamo_solution: src/Dynamo.All.sln
   xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
