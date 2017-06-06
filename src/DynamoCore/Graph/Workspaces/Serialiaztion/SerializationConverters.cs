@@ -100,8 +100,9 @@ namespace Autodesk.Workspaces
                 node = manager.CreateCustomNodeInstance(functionId);
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
-            else if (type.ToString() == "Formula")
+            else if (type.ToString() == "CoreNodeModels.Formula")
             {
+                node = (NodeModel)obj.ToObject(type);
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
             else
