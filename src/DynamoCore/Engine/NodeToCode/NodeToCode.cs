@@ -113,7 +113,7 @@ namespace Dynamo.Engine.NodeToCode
     /// code, its inputs and outputs may be renamed to avoid confliction, the
     /// result contains maps for inputs/new-inputs and outputs/new-outputs.
     /// </summary>
-    internal class NodeToCodeResult
+    public class NodeToCodeResult
     {
         /// <summary>
         /// AST nodes that compiled from NodeModel.
@@ -550,7 +550,11 @@ namespace Dynamo.Engine.NodeToCode
         }
     }
 
-    internal class NodeToCodeCompiler
+    /// <summary>
+    /// The class to get string representation from a set of <see cref="NodeModel"/> objects.
+    /// String is written on DesignScipt programming language and can be used in code block node or by DesignScript evaluation engine
+    /// </summary>
+    public class NodeToCodeCompiler
     {
         /// <summary>
         /// The numbering state of a variable.
@@ -696,7 +700,7 @@ namespace Dynamo.Engine.NodeToCode
         /// </summary>
         /// <param name="selection"></param>
         /// <returns></returns>
-        public static List<List<NodeModel>> GetCliques(
+        internal static List<List<NodeModel>> GetCliques(
             IEnumerable<NodeModel> selection)
         {
             var selectionSet = new HashSet<NodeModel>(selection);
@@ -1211,7 +1215,7 @@ namespace Dynamo.Engine.NodeToCode
         /// <param name="nodes">Selected node that can be converted to a single code block node</param>
         /// <param name="namingProvider"></param>
         /// <returns></returns>
-        internal static NodeToCodeResult NodeToCode(
+        public static NodeToCodeResult NodeToCode(
             ProtoCore.Core core,
             IEnumerable<NodeModel> workspaceNodes,
             IEnumerable<NodeModel> nodes,

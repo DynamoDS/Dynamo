@@ -17,6 +17,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
+using Utils = Dynamo.Graph.Nodes.Utilities;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -177,7 +178,48 @@ namespace Dynamo.Graph.Workspaces
 
         #endregion
 
-        #region Constructors
+        #region Initializators and constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HomeWorkspaceModel"/> class
+        /// by given information about it and its parsed xml representation
+        /// </summary>
+        /// <param name="document">XmlDocument representing the parsed home workspace</param>
+        /// <param name="engine"><see cref="EngineController"/> object assosiated with this home workspace
+        /// to coordinate the interactions between some DesignScript sub components.</param>
+        /// <param name="scheduler"><see cref="DynamoScheduler"/> object to add tasks in queue to execute</param>
+        /// <param name="factory">Node factory to create nodes</param>
+        /// <param name="info">Information for creating custom node workspace</param>
+        /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
+        /// <param name="isTestMode">Indicates if current code is running in tests</param>
+        /// <returns></returns>
+        public static HomeWorkspaceModel FromXmlDocument(
+            XmlDocument document,
+            EngineController engine,
+            DynamoScheduler scheduler,
+            NodeFactory factory,
+            WorkspaceInfo info,
+            bool verboseLogging,
+            bool isTestMode)
+        {
+            var nodeGraph = NodeGraph.LoadGraphFromXml(document, factory);
+
+            var newWorkspace = new HomeWorkspaceModel(
+                engine,
+                scheduler,
+                factory,
+                Utils.LoadTraceDataFromXmlDocument(document),
+                nodeGraph.Nodes,
+                nodeGraph.Notes,
+                nodeGraph.Annotations,
+                nodeGraph.Presets,
+                nodeGraph.ElementResolver,
+                info,
+                verboseLogging,
+                isTestMode);
+
+            return newWorkspace;
+        }
 
         /// <summary>
         /// Initializes a new empty instance of the <see cref="HomeWorkspaceModel"/> class

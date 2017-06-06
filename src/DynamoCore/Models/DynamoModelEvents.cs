@@ -268,23 +268,45 @@ namespace Dynamo.Models
                 RequestsCrashPrompt(this, args);
         }
 
-        internal delegate void TaskDialogHandler(object sender, TaskDialogEventArgs e);
-        internal event TaskDialogHandler RequestTaskDialog;
+        /// <summary>
+        /// Represents the method that will handle the <see cref="RequestTaskDialog"/> event of the <see cref="DynamoModel"/> class.
+        /// </summary>
+        /// <param name="sender">The object which caused the event</param>
+        /// <param name="e">Event arguments <see cref="TaskDialogEventArgs"/> object</param>
+        public delegate void TaskDialogHandler(object sender, TaskDialogEventArgs e);
+
+        /// <summary>
+        /// Occurs when <see cref="DynamoModel"/> requests dialog
+        /// </summary>
+        public event TaskDialogHandler RequestTaskDialog;
+
         internal void OnRequestTaskDialog(object sender, TaskDialogEventArgs args)
         {
             if (RequestTaskDialog != null)
                 RequestTaskDialog(sender, args);
         }
 
-        internal delegate void VoidHandler();
-        internal event VoidHandler RequestDownloadDynamo;
+        /// <summary>
+        /// Empty delegate
+        /// </summary>
+        public delegate void VoidHandler();
+
+        /// <summary>
+        /// Occurs when <see cref="DynamoModel"/> requests download of new Dynamo version
+        /// </summary>
+        public event VoidHandler RequestDownloadDynamo;
+
         internal void OnRequestDownloadDynamo()
         {
             if (RequestDownloadDynamo != null)
                 RequestDownloadDynamo();
         }
 
-        internal event VoidHandler RequestBugReport;
+        /// <summary>
+        /// Occurs when <see cref="DynamoModel"/> requests a bug report
+        /// </summary>
+        public event VoidHandler RequestBugReport;
+
         internal void OnRequestBugReport()
         {
             if (RequestBugReport != null)

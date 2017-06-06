@@ -1126,7 +1126,13 @@ namespace Dynamo.Core
             return newWorkspace;
         }
 
-        internal IEnumerable<Guid> GetAllDependenciesGuids(CustomNodeDefinition def)
+        /// <summary>
+        ///     Returns identifiers of custom nodes which are dependencies
+        ///     of the given custom node.
+        /// </summary>
+        /// <param name="def">Custom node definition to search dependencies for</param>
+        /// <returns></returns>
+        public IEnumerable<Guid> GetAllDependenciesGuids(CustomNodeDefinition def)
         {
             var idSet = new HashSet<Guid>();
             idSet.Add(def.FunctionId);

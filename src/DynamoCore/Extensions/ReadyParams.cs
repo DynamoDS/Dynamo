@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 
 namespace Dynamo.Extensions
 {
@@ -57,6 +58,14 @@ namespace Dynamo.Extensions
         public virtual ICommandExecutive CommandExecutive 
         {
             get { return commandExecutive ?? (commandExecutive = new ExtensionCommandExecutive(dynamoModel)); }
+        }
+
+        /// <summary>
+        /// Return logger for sending information to Dynamo console
+        /// </summary>
+        public ILogger Logger
+        {
+            get { return dynamoModel.Logger; }
         }
 
         /// <summary>

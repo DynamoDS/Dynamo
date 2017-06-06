@@ -230,11 +230,7 @@ namespace Dynamo.Tests
 
             // Test target file path removal through an empty string.
             Graph.Nodes.Utilities.SetDocumentXmlPath(document, string.Empty);
-
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                Graph.Nodes.Utilities.GetDocumentXmlPath(document);
-            });
+            Assert.IsEmpty(Graph.Nodes.Utilities.GetDocumentXmlPath(document));
         }
 
         [Test]
@@ -252,11 +248,7 @@ namespace Dynamo.Tests
 
             // Test target file path removal through a null value.
             Graph.Nodes.Utilities.SetDocumentXmlPath(document, null);
-
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                Graph.Nodes.Utilities.GetDocumentXmlPath(document);
-            });
+            Assert.IsEmpty(Graph.Nodes.Utilities.GetDocumentXmlPath(document));
         }
 
         [Test]
@@ -286,13 +278,11 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void GetDocumentXmlPath02()
         {
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                // Test XmlDocument root element without path.
-                XmlDocument document = new XmlDocument();
-                document.AppendChild(document.CreateElement("RootElement"));
-                Graph.Nodes.Utilities.GetDocumentXmlPath(document);
-            });
+            // Test XmlDocument root element without path.
+            XmlDocument document = new XmlDocument();
+            document.AppendChild(document.CreateElement("RootElement"));
+            var path = Graph.Nodes.Utilities.GetDocumentXmlPath(document);
+            Assert.IsEmpty(path);
         }
 
         [Test]
@@ -424,22 +414,20 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void MakeRelativePath00()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                // Test method call without a valid base path.
-                Graph.Nodes.Utilities.MakeRelativePath(null, Path.GetTempPath());
-            });
+            // Test method call without a valid base path.
+            string basePath = Path.GetTempPath();
+            var result = Graph.Nodes.Utilities.MakeRelativePath(null, basePath);
+            Assert.AreEqual(basePath, result);
         }
 
         [Test]
         [Category("UnitTests")]
         public void MakeRelativePath01()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                // Test method call without an empty base path.
-                Graph.Nodes.Utilities.MakeRelativePath("", Path.GetTempPath());
-            });
+            // Test method call without an empty base path.
+            string basePath = Path.GetTempPath();
+            var result = Graph.Nodes.Utilities.MakeRelativePath("", basePath);
+            Assert.AreEqual(basePath, result);
         }
 
         [Test]
@@ -516,14 +504,16 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void MakeAbsolutePath00()
         {
+            //If path is relative, then base path must be presented
+            string relative = @"Dummy\Path.dyn";
             Assert.Throws<ArgumentNullException>(() =>
             {
-                Graph.Nodes.Utilities.MakeAbsolutePath(null, "Dummy");
+                Graph.Nodes.Utilities.MakeAbsolutePath(null, relative);
             });
 
             Assert.Throws<ArgumentNullException>(() =>
             {
-                Graph.Nodes.Utilities.MakeAbsolutePath(string.Empty, "Dummy");
+                Graph.Nodes.Utilities.MakeAbsolutePath(string.Empty, relative);
             });
 
             Assert.Throws<ArgumentNullException>(() =>
@@ -535,6 +525,12 @@ namespace Dynamo.Tests
             {
                 Graph.Nodes.Utilities.MakeAbsolutePath("Dummy", string.Empty);
             });
+
+            string absolute = Path.Combine(Path.GetTempPath(), "Dummy.dyn");
+            Assert.AreEqual(absolute,
+                Graph.Nodes.Utilities.MakeAbsolutePath(null, absolute));
+            Assert.AreEqual(absolute,
+                Graph.Nodes.Utilities.MakeAbsolutePath(string.Empty, absolute));
         }
 
         [Test]
@@ -583,6 +579,12 @@ namespace Dynamo.Tests
             // will not be modified to prefix with a directory.
             // 
             var result = Graph.Nodes.Utilities.MakeAbsolutePath(basePath, relativePath);
+            Assert.AreEqual(relativePath, result);
+
+            result = Graph.Nodes.Utilities.MakeAbsolutePath(string.Empty, relativePath);
+            Assert.AreEqual(relativePath, result);
+
+            result = Graph.Nodes.Utilities.MakeAbsolutePath(null, relativePath);
             Assert.AreEqual(relativePath, result);
         }
 

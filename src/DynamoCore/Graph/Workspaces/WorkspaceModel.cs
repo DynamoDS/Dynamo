@@ -923,8 +923,15 @@ namespace Dynamo.Graph.Workspaces
             Log(String.Format(Resources.SavingInProgress, newPath));
             try
             {
-                if (SaveInternal(newPath, runtimeCore) && !isBackup)
-                    OnWorkspaceSaved();
+                XmlDocument document = null;
+                if (SerializeAsXml(newPath, runtimeCore, out document))
+                {
+                    document.Save(newPath);
+
+                    FileName = newPath;
+                    if (!isBackup)
+                        OnWorkspaceSaved();
+                }
             }
             catch (Exception ex)
             {
@@ -935,6 +942,35 @@ namespace Dynamo.Graph.Workspaces
                 throw (ex);
             }
 
+            return true;
+        }
+
+        /// <summary>
+        ///     Serializes the workspace to XmlDocument
+        /// </summary>
+        /// <param name="targetPath">The path associated with xml file.
+        /// Empty string can be passed if xml document shouldn't be related to a file on disk.</param>
+        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object
+        /// to obtain serialized trace data for node list to save.</param>
+        /// <param name="document">Xml representation of the workspace filled inside the function</param>
+        /// <returns></returns>
+        public bool SerializeAsXml(
+            string targetPath, ProtoCore.RuntimeCore runtimeCore, out XmlDocument document)
+        {
+            document = new XmlDocument();
+            document.CreateXmlDeclaration("1.0", null, null);
+            document.AppendChild(document.CreateElement("Workspace"));
+
+            if(!string.IsNullOrEmpty(targetPath))
+                Utils.SetDocumentXmlPath(document, targetPath);
+
+            if (!PopulateXmlDocument(document))
+                return false;
+
+            SerializeSessionData(document, runtimeCore);
+
+            if (!string.IsNullOrEmpty(targetPath))
+                Utils.SetDocumentXmlPath(document, targetPath);
             return true;
         }
 
@@ -1767,38 +1803,6 @@ namespace Dynamo.Graph.Workspaces
         #endregion
 
         #region private/internal methods
-
-        private bool SaveInternal(string targetFilePath, ProtoCore.RuntimeCore runtimeCore)
-        {
-            // Create the xml document to write to.
-            var document = new XmlDocument();
-            document.CreateXmlDeclaration("1.0", null, null);
-            document.AppendChild(document.CreateElement("Workspace"));
-
-            Utils.SetDocumentXmlPath(document, targetFilePath);
-
-            if (!PopulateXmlDocument(document))
-                return false;
-
-            SerializeSessionData(document, runtimeCore);
-
-            try
-            {
-                Utils.SetDocumentXmlPath(document, string.Empty);
-                document.Save(targetFilePath);
-            }
-            catch (IOException ex)
-            {
-                throw (ex);
-            }
-            catch (System.UnauthorizedAccessException ex)
-            {
-                throw (ex);
-            }
-
-            FileName = targetFilePath;
-            return true;
-        }
 
         private void SerializeElementResolver(XmlDocument xmlDoc)
         {
@@ -2702,15 +2706,8 @@ namespace Dynamo.Graph.Workspaces
             document.CreateXmlDeclaration("1.0", null, null);
             document.AppendChild(document.CreateElement("Workspace"));
 
-            //This is only used for computing relative offsets, it's not actually created
-            string virtualFileName = Path.Combine(Path.GetTempPath(), "DynamoTemp.dyn");
-            Utils.SetDocumentXmlPath(document, virtualFileName);
-
             if (!PopulateXmlDocument(document))
                 return String.Empty;
-
-            //Now unset the temp file name again
-            Utils.SetDocumentXmlPath(document, null);
 
             return document.OuterXml;
         }

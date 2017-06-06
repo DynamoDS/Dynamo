@@ -40,7 +40,19 @@ namespace Dynamo.Graph.Workspaces
             HasRunWithoutCrash = true;
         }
 
-        internal static bool FromXmlDocument(XmlDocument xmlDoc, string path, bool isTestMode, 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WorkspaceInfo"/> class
+        /// by its parsed xml representation
+        /// </summary>
+        /// <param name="xmlDoc">XmlDocument representing the parsed workspace information</param>
+        /// <param name="path">Path to the file where workspace is stored</param>
+        /// <param name="isTestMode">Indicates if current code is running in tests</param>
+        /// <param name="forceManualExecutionMode">Indicates if discard execution mode
+        /// specified in the file and set manual mode</param>
+        /// <param name="logger">A logger to be used to log the exception</param>
+        /// <param name="workspaceInfo">Workspace header filled inside the function</param>
+        /// <returns></returns>
+        public static bool FromXmlDocument(XmlDocument xmlDoc, string path, bool isTestMode, 
             bool forceManualExecutionMode, ILogger logger, out WorkspaceInfo workspaceInfo)
         {
             try

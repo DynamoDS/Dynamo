@@ -262,9 +262,7 @@ namespace Dynamo.Graph.Nodes
 
             if (attrib == null)
             {
-                throw new InvalidOperationException(
-                    string.Format("'{0}' attribute not found in XmlDocument",
-                    Configurations.FilePathAttribName));
+                return string.Empty;
             }
 
             return attrib.Value;
@@ -398,7 +396,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="basePath">The base path which relative path is to be 
         /// computed from. This base path does not need to point to a valid file
-        /// on disk, but it cannot be an empty string.</param>
+        /// on disk.</param>
         /// <param name="subjectPath">The subject path of which the relative
         /// path is to be computed. If this path is not empty but does not 
         /// represent a valid path string, a UriFormatException is thrown.</param>
@@ -406,16 +404,14 @@ namespace Dynamo.Graph.Nodes
         /// path.</returns>
         internal static string MakeRelativePath(string basePath, string subjectPath)
         {
-            if (string.IsNullOrEmpty(basePath))
-                throw new ArgumentNullException("basePath");
-
             if (string.IsNullOrEmpty(subjectPath))
                 return string.Empty;
 
             // Determine if we have any directory information in the 
             // subjectPath. For example, we won't want to form a relative 
             // path if the input of this method is just "ProtoGeometry.dll".
-            if (!HasPathInformation(subjectPath))
+            // Also if base path is not provided absolute path is returned.
+            if (!HasPathInformation(subjectPath) || string.IsNullOrEmpty(basePath))
                 return subjectPath;
 
             var documentUri = new Uri(basePath, UriKind.Absolute);
@@ -445,14 +441,12 @@ namespace Dynamo.Graph.Nodes
         /// base path and the relative path.
         /// </summary>
         /// <param name="basePath">The base path from which the absolute path is 
-        /// to be computed. This argument cannot be null or empty.</param>
+        /// to be computed.</param>
         /// <param name="relativePath">The relative path to the target. This 
         /// argument cannot be null or empty.</param>
         /// <returns>Returns the absolute path.</returns>
         internal static string MakeAbsolutePath(string basePath, string relativePath)
         {
-            if (string.IsNullOrEmpty(basePath))
-                throw new ArgumentNullException("basePath");
             if (string.IsNullOrEmpty(relativePath))
                 throw new ArgumentNullException("relativePath");
 
@@ -461,6 +455,16 @@ namespace Dynamo.Graph.Nodes
             // path if the input of this method is just "ProtoGeometry.dll".
             if (!HasPathInformation(relativePath))
                 return relativePath;
+
+            // If base path is not provided then other path should be absolute
+            if (string.IsNullOrEmpty(basePath))
+            {
+                //Check if relativePath is already in absolute form
+                Uri uri;
+                if (!Uri.TryCreate(relativePath, UriKind.Absolute, out uri))
+                    throw new ArgumentNullException(basePath);
+                return uri.LocalPath;
+            }
 
             var baseUri = new Uri(basePath, UriKind.Absolute);
             var relativeUri = new Uri(relativePath, UriKind.Relative);
