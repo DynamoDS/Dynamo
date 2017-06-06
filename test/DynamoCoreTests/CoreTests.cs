@@ -51,6 +51,29 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void WorkspaceModelHasCorrectDependencies()
+        {   
+            var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
+            var ws = this.CurrentDynamoModel.CustomNodeManager.CreateCustomNode("someNode", "someCategory", "");
+            var csid =  (ws as CustomNodeWorkspaceModel).CustomNodeId;
+            var customNode = this.CurrentDynamoModel.CustomNodeManager.CreateCustomNodeInstance(csid);
+
+            Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Dependencies.ToList().Count());
+
+            CurrentDynamoModel.AddNodeToCurrentWorkspace(customNode,false);
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Dependencies.ToList().Count());
+            //assert that we still only record one dep even though custom node is in graph twice.
+            CurrentDynamoModel.AddNodeToCurrentWorkspace(customNode, false);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Dependencies.ToList().Count());
+
+            //assert that guid we have stored is is the custom nodes functionID
+            Assert.AreEqual(customNode.FunctionUuid, CurrentDynamoModel.CurrentWorkspace.Dependencies.First());
+
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void CanAddANote()
         {
             // Create some test note data
