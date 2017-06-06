@@ -123,7 +123,7 @@ namespace CoreNodeModels.Input
         {
             get
             {
-                return "FloatInputNode";
+                return "NumberInputNode";
             }
         }
 
