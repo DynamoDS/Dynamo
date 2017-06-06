@@ -15,7 +15,34 @@ namespace Dynamo.Graph.Workspaces
 {
     public partial class WorkspaceModel
     {
-        #region Undo/Redo Supporting Methods
+        /// <summary>
+        /// Returns the current UndoRedoRecorder that is associated with the current
+        /// WorkspaceModel. Note that external parties should not have the needs
+        /// to access the recorder directly, so this property is exposed just as
+        /// a "temporary solution". Before using this property, consider using
+        /// WorkspaceModel.RecordModelsForUndo method which allows for multiple
+        /// modifications in a single action group.
+        /// </summary>
+        internal UndoRedoRecorder UndoRecorder
+        {
+            get { return undoRecorder; }
+        }
+
+        /// <summary>
+        ///     Determine if undo operation is currently possible.
+        /// </summary>
+        public bool CanUndo
+        {
+            get { return ((null != undoRecorder) && undoRecorder.CanUndo); }
+        }
+
+        /// <summary>
+        ///     Determine if redo operation is currently possible.
+        /// </summary>
+        public bool CanRedo
+        {
+            get { return ((null != undoRecorder) && undoRecorder.CanRedo); }
+        }
 
         internal void Undo()
         {
@@ -262,10 +289,6 @@ namespace Dynamo.Graph.Workspaces
             return (null != models && (models.Count > 0));
         }
 
-        #endregion
-
-        #region IUndoRedoRecorderClient Members
-
         /// <summary>
         /// Deletes <see cref="ModelBase"/> object given by <see cref="XmlElement"/>
         /// from a corresponding collection of the workspace.
@@ -494,7 +517,5 @@ namespace Dynamo.Graph.Workspaces
 
             return foundModels;
         }
-
-        #endregion
     }
 }

@@ -471,17 +471,6 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        /// <summary>
-        /// List of subgraphs for graph layout algorithm.
-        /// </summary>
-        internal List<GraphLayout.Graph> LayoutSubgraphs;
-
-        /// <summary>
-        /// List of clusters (groups of nodes) which will be processed separately
-        /// in the subgraph creation of graph layout algorithm.
-        /// </summary>
-        private List<List<GraphLayout.Node>> SubgraphClusters;
-
         private void AddNode(NodeModel node)
         {
             lock (nodes)
@@ -536,7 +525,7 @@ namespace Dynamo.Graph.Workspaces
         ///     Returns all of the annotations currently present in the workspace.
         /// </summary>
         [JsonIgnore]
-        [Obsolete("This property will be removed from the model, please use Annotations on the WorkspaceViewModel in DynamoCoreWpf assembly")]
+        [Obsolete("This property will be removed from the model, please use Annotations on the WorkspaceViewModel in the DynamoCoreWpf assembly")]
         public IEnumerable<AnnotationModel> Annotations
         {
             get
@@ -580,7 +569,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns or set the X position of the workspace.
         /// </summary>
-        [Obsolete("This property will be removed from the model, please use the X property on the WorkspaceViewModel in DynamoCoreWpf assembly.")]
+        [Obsolete("This property will be removed from the model, please use the X property on the WorkspaceViewModel in the DynamoCoreWpf assembly.")]
         public double X
         {
             get { return x; }
@@ -594,7 +583,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns or set the Y position of the workspace
         /// </summary>
-        [Obsolete("This property will be removed from the model, please use the Y property on the WorkspaceViewModel in DynamoCoreWpf assembly.")]
+        [Obsolete("This property will be removed from the model, please use the Y property on the WorkspaceViewModel in the DynamoCoreWpf assembly.")]
         public double Y
         {
             get { return y; }
@@ -604,11 +593,12 @@ namespace Dynamo.Graph.Workspaces
                 RaisePropertyChanged("Y");
             }
         }
+        
         /// <summary>
         ///     Get or set the zoom value of the workspace.
         /// </summary>
         [JsonIgnore]
-        [Obsolete("This property will be removed from the model, please use the Zoom property on the WorkspaceViewModel in DynamoCoreWpf assembly.")]
+        [Obsolete("This property will be removed from the model, please use the Zoom property on the WorkspaceViewModel in the DynamoCoreWpf assembly.")]
         public double Zoom
         {
             get { return zoom; }
@@ -622,6 +612,8 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns the height of the workspace's bounds.
         /// </summary>
+        [JsonIgnore]
+        [Obsolete("This property will be removed from the model, please use the Zoom property on the WorkspaceViewModel in the DynamoCoreWpf assembly.")]
         public double Height
         {
             get { return height; }
@@ -635,6 +627,8 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns the width of the workspace's bounds.
         /// </summary>
+        [JsonIgnore]
+        [Obsolete("This property will be removed from the model, please use the Zoom property on the WorkspaceViewModel in the DynamoCoreWpf assembly.")]
         public double Width
         {
             get { return width; }
@@ -651,22 +645,6 @@ namespace Dynamo.Graph.Workspaces
         public Rect2D Rect
         {
             get { return new Rect2D(x, y, width, height); }
-        }
-
-        /// <summary>
-        ///     Determine if undo operation is currently possible.
-        /// </summary>
-        public bool CanUndo
-        {
-            get { return ((null != undoRecorder) && undoRecorder.CanUndo); }
-        }
-
-        /// <summary>
-        ///     Determine if redo operation is currently possible.
-        /// </summary>
-        public bool CanRedo
-        {
-            get { return ((null != undoRecorder) && undoRecorder.CanRedo); }
         }
 
         //TODO(Steve): This probably isn't needed inside of WorkspaceModel -- MAGN-5714
@@ -690,19 +668,6 @@ namespace Dynamo.Graph.Workspaces
         {
             get { return 0; }
             set { }
-        }
-
-        /// <summary>
-        /// Returns the current UndoRedoRecorder that is associated with the current
-        /// WorkspaceModel. Note that external parties should not have the needs
-        /// to access the recorder directly, so this property is exposed just as
-        /// a "temporary solution". Before using this property, consider using
-        /// WorkspaceModel.RecordModelsForUndo method which allows for multiple
-        /// modifications in a single action group.
-        /// </summary>
-        internal UndoRedoRecorder UndoRecorder
-        {
-            get { return undoRecorder; }
         }
 
         /// <summary>
@@ -966,7 +931,7 @@ namespace Dynamo.Graph.Workspaces
 
         }
 
-        protected virtual void RequestRun()
+        internal virtual void RequestRun()
         {
 
         }
@@ -1447,130 +1412,6 @@ namespace Dynamo.Graph.Workspaces
             }
 
             HasUnsavedChanges = true;
-        }
-
-        internal void ConvertNodesToCodeInternal(EngineController engineController, INamingProvider namingProvider)
-        {
-            var selectedNodes = DynamoSelection.Instance
-                                               .Selection
-                                               .OfType<NodeModel>()
-                                               .Where(n => n.IsConvertible);
-            if (!selectedNodes.Any())
-                return;
-
-            var cliques = NodeToCodeCompiler.GetCliques(selectedNodes).Where(c => !(c.Count == 1 && c.First() is CodeBlockNodeModel));
-            var codeBlockNodes = new List<CodeBlockNodeModel>();
-
-            //UndoRedo Action Group----------------------------------------------
-            NodeToCodeUndoHelper undoHelper = new NodeToCodeUndoHelper();
-
-            // using (UndoRecorder.BeginActionGroup())
-            {
-                foreach (var nodeList in cliques)
-                {
-                    //Create two dictionarys to store the details of the external connections that have to
-                    //be recreated after the conversion
-                    var externalInputConnections = new Dictionary<ConnectorModel, string>();
-                    var externalOutputConnections = new Dictionary<ConnectorModel, string>();
-
-                    //Also collect the average X and Y co-ordinates of the different nodes
-                    int nodeCount = nodeList.Count;
-
-                    var nodeToCodeResult = engineController.ConvertNodesToCode(this.nodes, nodeList, namingProvider);
-
-                    #region Step I. Delete all nodes and their connections
-
-                    double totalX = 0, totalY = 0;
-
-                    foreach (var node in nodeList)
-                    {
-                        #region Step I.A. Delete the connections for the node
-
-                        foreach (var connector in node.AllConnectors.ToList())
-                        {
-                            if (!IsInternalNodeToCodeConnection(nodeList, connector))
-                            {
-                                //If the connector is an external connector, the save its details
-                                //for recreation later
-                                var startNode = connector.Start.Owner;
-                                int index = startNode.OutPorts.IndexOf(connector.Start);
-                                //We use the varibleName as the connection between the port of the old Node
-                                //to the port of the new node.
-                                var variableName = startNode.GetAstIdentifierForOutputIndex(index).Value;
-
-                                //Store the data in the corresponding dictionary
-                                if (startNode == node)
-                                {
-                                    if (nodeToCodeResult.OutputMap.ContainsKey(variableName))
-                                        variableName = nodeToCodeResult.OutputMap[variableName];
-                                    externalOutputConnections.Add(connector, variableName);
-                                }
-                                else
-                                {
-                                    if (nodeToCodeResult.InputMap.ContainsKey(variableName))
-                                        variableName = nodeToCodeResult.InputMap[variableName];
-                                    externalInputConnections.Add(connector, variableName);
-                                }
-                            }
-
-                            //Delete the connector
-                            undoHelper.RecordDeletion(connector);
-                            connector.Delete();
-                        }
-                        #endregion
-
-                        #region Step I.B. Delete the node
-                        totalX += node.X;
-                        totalY += node.Y;
-                        undoHelper.RecordDeletion(node);
-                        RemoveAndDisposeNode(node);
-                        #endregion
-                    }
-                    #endregion
-
-                    #region Step II. Create the new code block node
-                    var outputVariables = externalOutputConnections.Values;
-                    var newResult = NodeToCodeCompiler.ConstantPropagationForTemp(nodeToCodeResult, outputVariables);
-
-                    // Rewrite the AST using the shortest unique name in case of namespace conflicts
-                    NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
-                        engineController.LibraryServices.LibraryManagementCore.ClassTable, newResult.AstNodes, ElementResolver);
-                    var codegen = new ProtoCore.CodeGenDS(newResult.AstNodes);
-                    var code = codegen.GenerateCode();
-
-                    var codeBlockNode = new CodeBlockNodeModel(
-                        code,
-                        System.Guid.NewGuid(),
-                        totalX / nodeCount,
-                        totalY / nodeCount, engineController.LibraryServices, ElementResolver);
-                    undoHelper.RecordCreation(codeBlockNode);
-
-                    AddAndRegisterNode(codeBlockNode, false);
-                    codeBlockNodes.Add(codeBlockNode);
-                    #endregion
-
-                    #region Step III. Recreate the necessary connections
-                    var newInputConnectors = ReConnectInputConnections(externalInputConnections, codeBlockNode);
-                    foreach (var connector in newInputConnectors)
-                    {
-                        undoHelper.RecordCreation(connector);
-                    }
-
-                    var newOutputConnectors = ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
-                    foreach (var connector in newOutputConnectors)
-                    {
-                        undoHelper.RecordCreation(connector);
-                    }
-                    #endregion
-                }
-            }
-
-            undoHelper.ApplyActions(UndoRecorder);
-
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.AddRange(codeBlockNodes);
-
-            RequestRun();
         }
 
         #endregion

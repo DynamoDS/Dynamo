@@ -12,6 +12,17 @@ namespace Dynamo.Graph.Workspaces
     public partial class WorkspaceModel
     {
         /// <summary>
+        /// List of subgraphs for graph layout algorithm.
+        /// </summary>
+        internal List<GraphLayout.Graph> LayoutSubgraphs;
+
+        /// <summary>
+        /// List of clusters (groups of nodes) which will be processed separately
+        /// in the subgraph creation of graph layout algorithm.
+        /// </summary>
+        private List<List<GraphLayout.Node>> SubgraphClusters;
+
+        /// <summary>
         /// This function wraps a few methods on the workspace model layer
         /// to set up and run the graph layout algorithm.
         /// </summary>
