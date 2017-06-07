@@ -568,7 +568,7 @@ namespace DynamoCoreWpfTests
             var vm = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault();
             Assert.IsNotNull(vm);
             vm.Select();
-            Assert.AreEqual(annotation.SelectedModels.Count(), annotation.SelectedModels.Count(x => x.IsSelected));
+            Assert.AreEqual(annotation.Nodes.Count(), annotation.Nodes.Count(x => x.IsSelected));
         }
 
         [Test]
@@ -599,7 +599,7 @@ namespace DynamoCoreWpfTests
             var vm = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault();
             Assert.IsNotNull(vm);
             vm.Select();
-            Assert.AreEqual(annotation.SelectedModels.Count(), annotation.SelectedModels.Count(x => x.IsSelected));
+            Assert.AreEqual(annotation.Nodes.Count(), annotation.Nodes.Count(x => x.IsSelected));
 
             //Execute the delete command - This should delete the entire group and models
             ViewModel.DeleteCommand.Execute(null);
@@ -634,7 +634,7 @@ namespace DynamoCoreWpfTests
             var vm = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault();
             Assert.IsNotNull(vm);
             vm.Select();
-            Assert.AreEqual(annotation.SelectedModels.Count(), annotation.SelectedModels.Count(x => x.IsSelected));
+            Assert.AreEqual(annotation.Nodes.Count(), annotation.Nodes.Count(x => x.IsSelected));
 
             //Execute the delete command - This should delete the entire group and models
             ViewModel.DeleteCommand.Execute(null);
@@ -646,7 +646,7 @@ namespace DynamoCoreWpfTests
 
             annotation = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault();
             Assert.IsNotNull(annotation);
-            Assert.AreEqual(1, annotation.SelectedModels.Count());
+            Assert.AreEqual(1, annotation.Nodes.Count());
 
         }
 

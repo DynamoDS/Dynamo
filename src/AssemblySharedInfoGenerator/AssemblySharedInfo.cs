@@ -45,8 +45,10 @@ using System.Runtime.InteropServices;
 // to distinguish one build from another. AssemblyFileVersion is specified
 // in AssemblyVersionInfo.cs so that it can be easily incremented by the
 // automated build process.
+ 
 
 [assembly: AssemblyVersion("2.0.0.4057")]
+ 
  
 
 
@@ -67,5 +69,7 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
  
+ 
 [assembly: AssemblyFileVersion("2.0.0.4057")]
+ 
  

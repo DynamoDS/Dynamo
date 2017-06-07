@@ -1,4 +1,11 @@
-﻿using Dynamo.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Xml;
+using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Engine.NodeToCode;
@@ -16,14 +23,8 @@ using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
 using ProtoCore.Namespace;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Xml;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
 namespace Dynamo.Graph.Workspaces
@@ -35,15 +36,7 @@ namespace Dynamo.Graph.Workspaces
     public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable, IWorkspaceModel
     {
 
-        /// <summary>
-        /// Represents maximum value of workspace zoom
-        /// </summary>
-        public const double ZOOM_MAXIMUM = 4.0;
-
-        /// <summary>
-        /// Represents minimum value of workspace zoom
-        /// </summary>
-        public const double ZOOM_MINIMUM = 0.01;
+       
 
         #region private/internal members
 
@@ -92,6 +85,7 @@ namespace Dynamo.Graph.Workspaces
         private double scaleFactor = 1.0;
         private bool hasNodeInSyncWithDefinition;
         protected Guid guid;
+        private HashSet<Guid> dependencies = new HashSet<Guid>();
 
         /// <summary>
         /// This is set to true after a workspace is added.
@@ -125,34 +119,6 @@ namespace Dynamo.Graph.Workspaces
             if (RequestNodeCentered != null)
                 RequestNodeCentered(this, e);
         }
-
-
-        /// <summary>
-        ///     Function that can be used to respond to a changed workspace Zoom amount.
-        /// </summary>
-        /// <param name="sender">The object where the event handler is attached.</param>
-        /// <param name="e">The event data.</param>
-        public delegate void ZoomEventHandler(object sender, EventArgs e);
-
-        /// <summary>
-        ///     Event that is fired every time the zoom factor of a workspace changes.
-        /// </summary>
-        public event ZoomEventHandler ZoomChanged;
-
-        /// <summary>
-        /// Used during open and workspace changes to set the zoom of the workspace
-        /// </summary>
-        /// <param name="sender">The object which triggers the event</param>
-        /// <param name="e">The zoom event data.</param>
-        internal virtual void OnZoomChanged(object sender, ZoomEventArgs e)
-        {
-            if (ZoomChanged != null)
-            {
-                //Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
-                ZoomChanged(this, e);
-            }
-        }
-
         /// <summary>
         ///     Function that can be used to respond to a "point event"
         /// </summary>
@@ -394,6 +360,33 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// gathers the direct workspace dependencies of this workspace.
+        /// </summary>
+        /// <returns> a list of workspace IDs in GUID form</returns>
+        public HashSet<Guid> Dependencies
+        {
+            get {
+                dependencies.Clear();
+                //if the workspace is a main workspace then find all functions and their dependencies
+                if (this is HomeWorkspaceModel)
+                {
+                    foreach (var node in this.Nodes.OfType<Function>())
+                    {
+                        dependencies.Add(node.FunctionUuid);
+                    }
+                }
+                //else the workspace is a customnode - and we can add the dependencies directly
+                else
+                {
+                    var customNodeDirectDependencies = new HashSet<Guid>((this as CustomNodeWorkspaceModel).
+                        CustomNodeDefinition.DirectDependencies.Select(x => x.FunctionId));
+                    dependencies = customNodeDirectDependencies;
+                }
+                return dependencies;
+            }
+        }
+
+        /// <summary>
         ///     An author of the workspace
         /// </summary>
         public string Author
@@ -545,6 +538,8 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns all of the annotations currently present in the workspace.
         /// </summary>
+        [JsonIgnore]
+        [Obsolete("This property will be removed from the model, please use Annotations on the WorkspaceViewModel in DynamoCoreWpf assembly")]
         public IEnumerable<AnnotationModel> Annotations
         {
             get
@@ -588,6 +583,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns or set the X position of the workspace.
         /// </summary>
+        [Obsolete("This property will be removed from the model, please use the X property on the WorkspaceViewModel in DynamoCoreWpf assembly.")]
         public double X
         {
             get { return x; }
@@ -601,6 +597,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns or set the Y position of the workspace
         /// </summary>
+        [Obsolete("This property will be removed from the model, please use the Y property on the WorkspaceViewModel in DynamoCoreWpf assembly.")]
         public double Y
         {
             get { return y; }
@@ -610,10 +607,11 @@ namespace Dynamo.Graph.Workspaces
                 RaisePropertyChanged("Y");
             }
         }
-
         /// <summary>
         ///     Get or set the zoom value of the workspace.
         /// </summary>
+        [JsonIgnore]
+        [Obsolete("This property will be removed from the model, please use the Zoom property on the WorkspaceViewModel in DynamoCoreWpf assembly.")]
         public double Zoom
         {
             get { return zoom; }
@@ -766,7 +764,8 @@ namespace Dynamo.Graph.Workspaces
             X = info.X;
             Y = info.Y;
             FileName = info.FileName;
-            Zoom = info.Zoom;
+            Zoom = info.Zoom; 
+
 
             HasUnsavedChanges = false;
             IsReadOnly = DynamoUtilities.PathHelper.IsReadOnlyPath(fileName);
@@ -908,33 +907,21 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Save to a specific file path, if the path is null or empty, does nothing.
-        ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
+        /// Internal save logic unrelated to serialization.
         /// </summary>
         /// <param name="newPath">The path to save to</param>
-        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object
-        /// to obtain serialized trace data for node list to save.</param>
         /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
         /// we should add it to recent files. Otherwise leave it.</param>
-        public virtual bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackup = false)
+        public virtual bool Save(string newPath, bool isBackup = false)
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            Log(String.Format(Resources.SavingInProgress, newPath));
-            try
+            // Only for actual save, update file path and recent file list
+            if (!isBackup)
             {
-                if (SaveInternal(newPath, runtimeCore) && !isBackup)
-                    OnWorkspaceSaved();
+                FileName = newPath;
+                OnWorkspaceSaved();
             }
-            catch (Exception ex)
-            {
-                //Log(ex);
-                Log(ex.Message);
-                Log(ex.StackTrace);
-                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                throw (ex);
-            }
-
             return true;
         }
 
@@ -1148,7 +1135,7 @@ namespace Dynamo.Graph.Workspaces
             // Check if all the selected models are groups
             bool isGroupLayout = selection.Count > 0 &&
                 selection.All(x => x is AnnotationModel ||
-                    selection.OfType<AnnotationModel>().Any(g => g.SelectedModels.Contains(x)));
+                    selection.OfType<AnnotationModel>().Any(g => g.Nodes.Contains(x)));
 
             GenerateCombinedGraph(isGroupLayout);
             RecordUndoGraphLayout(isGroupLayout);
@@ -1197,7 +1184,7 @@ namespace Dynamo.Graph.Workspaces
                 if (!isGroupLayout)
                 {
                     AnnotationModel group = Annotations.Where(
-                        g => g.SelectedModels.Contains(node)).ToList().FirstOrDefault();
+                        g => g.Nodes.Contains(node)).ToList().FirstOrDefault();
 
                     // Do not process nodes within groups
                     if (group == null)
@@ -1220,9 +1207,9 @@ namespace Dynamo.Graph.Workspaces
                 {
                     AnnotationModel startGroup = null, endGroup = null;
                     startGroup = Annotations.Where(
-                        g => g.SelectedModels.Contains(edge.Start.Owner)).ToList().FirstOrDefault();
+                        g => g.Nodes.Contains(edge.Start.Owner)).ToList().FirstOrDefault();
                     endGroup = Annotations.Where(
-                        g => g.SelectedModels.Contains(edge.End.Owner)).ToList().FirstOrDefault();
+                        g => g.Nodes.Contains(edge.End.Owner)).ToList().FirstOrDefault();
 
                     // Treat a group as a node, but do not process edges within a group
                     if (startGroup == null || endGroup == null || startGroup != endGroup)
@@ -1244,7 +1231,7 @@ namespace Dynamo.Graph.Workspaces
             foreach (NoteModel note in Notes)
             {
                 AnnotationModel group = Annotations.Where(
-                    g => g.SelectedModels.Contains(note)).ToList().FirstOrDefault();
+                    g => g.Nodes.Contains(note)).ToList().FirstOrDefault();
 
                 GraphLayout.Node nd = null;
 
@@ -1258,7 +1245,7 @@ namespace Dynamo.Graph.Workspaces
                 else
                 {
                     // If note is part of a group, link to the nearest node in the group
-                    NodeModel ndm = group.SelectedModels.OfType<NodeModel>().OrderBy(node =>
+                    NodeModel ndm = group.Nodes.OfType<NodeModel>().OrderBy(node =>
                         Math.Pow(node.X + node.Width / 2 - note.X - note.Width / 2, 2) +
                         Math.Pow(node.Y + node.Height / 2 - note.Y - note.Height / 2, 2)).FirstOrDefault();
 
@@ -1292,7 +1279,7 @@ namespace Dynamo.Graph.Workspaces
                 foreach (AnnotationModel group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
                 {
                     List<GraphLayout.Node> cluster = new List<GraphLayout.Node>();
-                    cluster.AddRange(group.SelectedModels.OfType<NodeModel>().Select(x => combinedGraph.FindNode(x.GUID)));
+                    cluster.AddRange(group.Nodes.OfType<NodeModel>().Select(x => combinedGraph.FindNode(x.GUID)));
                     SubgraphClusters.Add(cluster);
                 }
             }
@@ -1324,8 +1311,8 @@ namespace Dynamo.Graph.Workspaces
                 {
                     if (group.IsSelected)
                     {
-                        group.SelectedModels.OfType<NodeModel>().ToList().ForEach(x => x.IsSelected = false);
-                        undoItems.AddRange(group.SelectedModels);
+                        group.Nodes.OfType<NodeModel>().ToList().ForEach(x => x.IsSelected = false);
+                        undoItems.AddRange(group.Nodes);
                     }
                 }
             }
@@ -1487,7 +1474,7 @@ namespace Dynamo.Graph.Workspaces
 
                     double deltaX = n.X - group.X;
                     double deltaY = n.Y - group.Y + graph.OffsetY;
-                    foreach (var node in group.SelectedModels.OfType<NodeModel>())
+                    foreach (var node in group.Nodes.OfType<NodeModel>())
                     {
                         node.X += deltaX;
                         node.Y += deltaY;
@@ -1582,23 +1569,13 @@ namespace Dynamo.Graph.Workspaces
             bool nodesInSameGroup = false;
             foreach (var group in this.Annotations)
             {
-                var groupModels = group.SelectedModels;
+                var groupModels = group.Nodes;
                 nodesInSameGroup = !selectedModels.Except(groupModels).Any();
                 if (nodesInSameGroup)
                     break;
             }
 
             return nodesInSameGroup;
-        }
-
-        /// <summary>
-        /// Save assuming that the Filepath attribute is set.
-        /// </summary>
-        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object
-        /// to obtain serialized trace data for node list to save.</param>
-        public virtual bool Save(ProtoCore.RuntimeCore runtimeCore)
-        {
-            return SaveAs(FileName, runtimeCore);
         }
 
         internal void ResetWorkspace()
@@ -1768,38 +1745,6 @@ namespace Dynamo.Graph.Workspaces
 
         #region private/internal methods
 
-        private bool SaveInternal(string targetFilePath, ProtoCore.RuntimeCore runtimeCore)
-        {
-            // Create the xml document to write to.
-            var document = new XmlDocument();
-            document.CreateXmlDeclaration("1.0", null, null);
-            document.AppendChild(document.CreateElement("Workspace"));
-
-            Utils.SetDocumentXmlPath(document, targetFilePath);
-
-            if (!PopulateXmlDocument(document))
-                return false;
-
-            SerializeSessionData(document, runtimeCore);
-
-            try
-            {
-                Utils.SetDocumentXmlPath(document, string.Empty);
-                document.Save(targetFilePath);
-            }
-            catch (IOException ex)
-            {
-                throw (ex);
-            }
-            catch (System.UnauthorizedAccessException ex)
-            {
-                throw (ex);
-            }
-
-            FileName = targetFilePath;
-            return true;
-        }
-
         private void SerializeElementResolver(XmlDocument xmlDoc)
         {
             Debug.Assert(xmlDoc != null);
@@ -1829,7 +1774,6 @@ namespace Dynamo.Graph.Workspaces
                 root.SetAttribute("Version", WorkspaceVersion.ToString());
                 root.SetAttribute("X", X.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("zoom", Zoom.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("ScaleFactor", ScaleFactor.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Name", Name);
                 root.SetAttribute("Description", Description);

@@ -26,6 +26,7 @@ using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using System.Runtime.Serialization;
 using System.Diagnostics;
+using Autodesk.Workspaces;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -133,6 +134,22 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         #region public properties
+        /// <summary>
+        /// Id for this node, must be unique within the graph.
+        /// </summary>
+        [JsonProperty("Id")]
+        [JsonConverter(typeof(IdToGuidConverter))]
+        public override Guid GUID
+        {
+            get
+            {
+                return base.GUID;
+            }
+            set
+            {
+                base.GUID = value;
+            }
+        }
 
         /// <summary>
         ///     All of the connectors entering and exiting the NodeModel.

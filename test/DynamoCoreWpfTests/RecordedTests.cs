@@ -997,8 +997,8 @@ namespace DynamoCoreWpfTests
             var group = workspace.Annotations.First();
 
             // Should contain only 1 NodeModel
-            Assert.AreEqual(1, group.SelectedModels.Count());
-            Assert.IsTrue(group.SelectedModels.Any(m => m.GUID == Guid.Parse("7dc3b638-284f-4296-a793-8185ef42cd71")));
+            Assert.AreEqual(1, group.Nodes.Count());
+            Assert.IsTrue(group.Nodes.Any(m => m.GUID == Guid.Parse("7dc3b638-284f-4296-a793-8185ef42cd71")));
         }
 
         [Test, RequiresSTA]
