@@ -233,7 +233,7 @@ namespace Dynamo.Tests
             var dummyNodes = ws1.Nodes.Where(n => n is DummyNode);
             if (dummyNodes.Any())
             {
-                Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.NickName).ToArray()));
+                Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.Name).ToArray()));
             }
 
             var cbnErrorNodes = ws1.Nodes.Where(n => n is CodeBlockNodeModel && n.State == ElementState.Error);
@@ -318,7 +318,7 @@ namespace Dynamo.Tests
             dummyNodes = ws2.Nodes.Where(n => n is DummyNode);
             if (dummyNodes.Any())
             {
-                Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.NickName).ToArray()));
+                Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.Name).ToArray()));
             }
 
             var wcd2 = new WorkspaceComparisonData(ws2, CurrentDynamoModel.EngineController);

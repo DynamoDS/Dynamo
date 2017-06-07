@@ -327,7 +327,7 @@ namespace Dynamo.Tests
             var modelsToDelete = new List<ModelBase>();
             var addition = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSFunction>();
             Assert.IsNotNull(addition);
-            Assert.AreEqual("+", addition.NickName);
+            Assert.AreEqual("+", addition.Name);
 
             modelsToDelete.Add(addition);
             CurrentDynamoModel.DeleteModelInternal(modelsToDelete);

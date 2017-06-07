@@ -141,10 +141,10 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public string NickName
+        public string Name
         {
-            get { return nodeLogic.NickName; }
-            set { nodeLogic.NickName = value; }
+            get { return nodeLogic.Name; }
+            set { nodeLogic.Name = value; }
         }
 
         public ElementState State
@@ -600,8 +600,8 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case "NickName":
-                    RaisePropertyChanged("NickName");
+                case "Name":
+                    RaisePropertyChanged("Name");
                     break;
                 case "X":
                     RaisePropertyChanged("Left");

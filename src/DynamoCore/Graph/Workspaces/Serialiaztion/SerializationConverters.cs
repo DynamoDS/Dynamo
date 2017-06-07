@@ -111,7 +111,7 @@ namespace Autodesk.Workspaces
             }
 
             node.GUID = guid;
-            node.NickName = displayName;
+            node.Name = displayName;
             //node.X = x;
             //node.Y = y;
 
@@ -291,9 +291,9 @@ namespace Autodesk.Workspaces
             serializer.Serialize(writer, ws.Nodes);
 
             //notes
-            writer.WritePropertyName("Notes");
+           writer.WritePropertyName("Notes");
             serializer.Serialize(writer, ws.Notes);
-
+ 
             //connectors
             writer.WritePropertyName("Connectors");
             serializer.Serialize(writer, ws.Connectors);

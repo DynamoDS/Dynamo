@@ -1542,7 +1542,7 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNull(cbn);
 
-            Assert.AreEqual("CBN", cbn.NickName);
+            Assert.AreEqual("CBN", cbn.Name);
         }
 
         [Test, RequiresSTA]
@@ -3992,7 +3992,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(number);
             Assert.IsNotNull(note);
 
-            Assert.AreEqual("Caption 1", number.NickName);
+            Assert.AreEqual("Caption 1", number.Name);
             Assert.AreEqual("Caption 3", note.Text);
 
             //Assert.Inconclusive("Porting : DoubleInput");

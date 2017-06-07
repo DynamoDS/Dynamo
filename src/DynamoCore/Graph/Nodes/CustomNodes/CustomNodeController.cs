@@ -157,13 +157,13 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             if (IsInSyncWithNode(model))
             {
                 Debug.WriteLine("Custom node definition is already in sync for: " + 
-                    model.NickName + 
+                    model.Name + 
                     string.Format(", {0} returns, {1} parameters", Definition.Returns.Count(), Definition.Parameters.Count()));
                 return;
             } 
 
             Debug.WriteLine("Syncing custom node with definition for: " + 
-                model.NickName + 
+                model.Name + 
                 string.Format(", {0} returns, {1} parameters", Definition.Returns.Count(), Definition.Parameters.Count()));
 
             base.SyncNodeWithDefinition(model);
@@ -183,7 +183,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
             outEl.SetAttribute("value", Definition.FunctionId.ToString());
             nodeElement.AppendChild(outEl);
-            nodeElement.SetAttribute("nickname", NickName);
+            nodeElement.SetAttribute("nickname", Name);
         }
 
         /// <summary>

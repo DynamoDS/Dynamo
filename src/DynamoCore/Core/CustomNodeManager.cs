@@ -125,15 +125,15 @@ namespace Dynamo.Core
         ///     Creates a new Custom Node Instance.
         /// </summary>
         /// <param name="id">Identifier referring to a custom node definition.</param>
-        /// <param name="nickname">
-        ///     Nickname for the custom node to be instantiated, used for error recovery if
+        /// <param name="name">
+        ///     Name for the custom node to be instantiated, used for error recovery if
         ///     the given id could not be found.
         /// </param>
         /// <param name="isTestMode">
         ///     Flag specifying whether or not this should operate in "test mode".
         /// </param>
         public Function CreateCustomNodeInstance(
-            Guid id, string nickname = null, bool isTestMode = false)
+            Guid id, string name = null, bool isTestMode = false)
         {
             CustomNodeWorkspaceModel workspace;
             CustomNodeDefinition def;
@@ -146,15 +146,15 @@ namespace Dynamo.Core
             }
             else
             {
-                // Couldn't get the workspace with the given ID, try a nickname lookup instead.
-                if (nickname != null && TryGetNodeInfo(nickname, out info))
-                    return CreateCustomNodeInstance(info.FunctionId, nickname, isTestMode);
+                // Couldn't get the workspace with the given ID, try a name lookup instead.
+                if (name != null && TryGetNodeInfo(name, out info))
+                    return CreateCustomNodeInstance(info.FunctionId, name, isTestMode);
                 
                 // Couldn't find the workspace at all, prepare for a late initialization.
                 Log(
                     Properties.Resources.UnableToCreateCustomNodeID + id + "\"",
                     WarningLevel.Moderate);
-                info = new CustomNodeInfo(id, nickname ?? "", "", "", "");
+                info = new CustomNodeInfo(id, name ?? "", "", "", "");
             }
 
             if (def == null)
@@ -166,18 +166,18 @@ namespace Dynamo.Core
             if (loadedWorkspaceModels.TryGetValue(id, out workspace))
                 RegisterCustomNodeInstanceForUpdates(node, workspace);
             else
-                RegisterCustomNodeInstanceForLateInitialization(node, id, nickname, isTestMode);
+                RegisterCustomNodeInstanceForLateInitialization(node, id, name, isTestMode);
 
             return node;
         }
 
-        private void RegisterCustomNodeInstanceForLateInitialization(Function node, Guid id, string nickname, bool isTestMode)
+        private void RegisterCustomNodeInstanceForLateInitialization(Function node, Guid id, string name, bool isTestMode)
         {
             var disposed = false;
             Action<CustomNodeInfo> infoUpdatedHandler = null;
             infoUpdatedHandler = newInfo =>
             {
-                if (newInfo.FunctionId == id || newInfo.Name == nickname)
+                if (newInfo.FunctionId == id || newInfo.Name == name)
                 {
                     CustomNodeWorkspaceModel foundWorkspace;
                     if (TryGetFunctionWorkspace(newInfo.FunctionId, isTestMode, out foundWorkspace))
@@ -208,7 +208,7 @@ namespace Dynamo.Core
             Action infoChangedHandler = () =>
             {
                 var info = workspace.CustomNodeInfo;
-                node.NickName = info.Name;
+                node.Name = info.Name;
                 node.Description = info.Description;
                 node.Category = info.Category;
             };
@@ -973,7 +973,7 @@ namespace Dynamo.Core
                             }
                         }
 
-                        node.SetNickNameFromAttribute();
+                        node.SetNamePropertyFromAttribute();
                         node.Y = inputIndex*(50 + node.Height);
 
                         uniqueInputSenders[key] = node;
@@ -1014,7 +1014,7 @@ namespace Dynamo.Core
 
                             node.Y = i*(50 + node.Height);
 
-                            node.SetNickNameFromAttribute();
+                            node.SetNamePropertyFromAttribute();
 
                             newNodes.Add(node);
                             ConnectorModel.Make(outputSenderNode, node, outputSenderData, 0);
@@ -1053,7 +1053,7 @@ namespace Dynamo.Core
                             X = rightMost + 75 - leftShift
                         };
                         node.Y = i*(50 + node.Height);
-                        node.SetNickNameFromAttribute();
+                        node.SetNamePropertyFromAttribute();
 
                         newNodes.Add(node);
                         ConnectorModel.Make(hanging.node, node, hanging.port, 0);

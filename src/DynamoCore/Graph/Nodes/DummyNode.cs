@@ -58,7 +58,7 @@ namespace Dynamo.Graph.Nodes
             OutputCount = outputCount;
             LegacyNodeName = legacyName;
             LegacyFullName = legacyName;
-            NickName = legacyName;
+            Name = legacyName;
             OriginalNodeContent = originalElement;
             LegacyAssembly = legacyAssembly;
             NodeNature = nodeNature;
