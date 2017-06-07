@@ -131,19 +131,19 @@ namespace Dynamo.Graph.Annotations
             }
         }
               
-        private IEnumerable<ModelBase> selectedModels;
+        private IEnumerable<ModelBase> nodes;
         /// <summary>
         /// Returns collection of models (nodes and notes) which the group contains
         /// </summary>
-        public IEnumerable<ModelBase> SelectedModels
+        public IEnumerable<ModelBase> Nodes
         {
-            get { return selectedModels; }
+            get { return nodes; }
             set
             {
-                selectedModels = value.ToList(); ;
-                if (selectedModels != null && selectedModels.Any())
+                nodes = value.ToList(); ;
+                if (nodes != null && nodes.Any())
                 {
-                    foreach (var model in selectedModels)
+                    foreach (var model in nodes)
                     {
                         model.PropertyChanged +=model_PropertyChanged;
                         model.Disposed+=model_Disposed;
@@ -237,7 +237,7 @@ namespace Dynamo.Graph.Annotations
             var nodeModels = nodes as NodeModel[] ?? nodes.ToArray();           
             var noteModels = notes as NoteModel[] ?? notes.ToArray();
             DeletedModelBases = new List<ModelBase>(); 
-            this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();      
+            this.Nodes = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();      
             UpdateBoundaryFromSelection();
         }
 
@@ -261,12 +261,12 @@ namespace Dynamo.Graph.Annotations
         /// <param name="model"></param>
         private void model_Disposed(ModelBase model)
         {
-            var modelList = this.SelectedModels.ToList();
+            var modelList = this.Nodes.ToList();
             bool remove = modelList.Remove(model);
             if (remove)
             {
                 DeletedModelBases.Add(model);
-                SelectedModels = modelList;
+                Nodes = modelList;
                 UpdateBoundaryFromSelection();
             }
         }
@@ -276,7 +276,7 @@ namespace Dynamo.Graph.Annotations
         /// </summary>      
         internal void UpdateBoundaryFromSelection()
         {          
-            var selectedModelsList = selectedModels.ToList();
+            var selectedModelsList = nodes.ToList();
           
             if (selectedModelsList.Any())
             {
@@ -315,11 +315,11 @@ namespace Dynamo.Graph.Annotations
 
                 //Calculate the boundary if there is any overlap
                 ModelBase overlap = null;
-                foreach (var nodes in SelectedModels)
+                foreach (var nodesList in Nodes)
                 {
-                    if (!region.Contains(nodes.Rect))
+                    if (!region.Contains(nodesList.Rect))
                     {
-                        overlap = nodes;
+                        overlap = nodesList;
                         if (overlap.Rect.Top < this.X ||
                                     overlap.Rect.Bottom > region.Bottom) //Overlap in height - increase the region height
                         {
@@ -359,8 +359,8 @@ namespace Dynamo.Graph.Annotations
         /// <returns> the width and height of the last model </returns>
         private Tuple<Double,Double> CalculateWidthAndHeight()
         {           
-            var xgroup = SelectedModels.OrderBy(x => x.X).ToList();
-            var ygroup = SelectedModels.OrderBy(x => x.Y).ToList();
+            var xgroup = Nodes.OrderBy(x => x.X).ToList();
+            var ygroup = Nodes.OrderBy(x => x.Y).ToList();
             double yheight = ygroup.Last().Height;
 
             //If the last model is Node, then increase the height so that 
@@ -411,7 +411,7 @@ namespace Dynamo.Graph.Annotations
             helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));        
             //Serialize Selected models
             XmlDocument xmlDoc = element.OwnerDocument;            
-            foreach (var guids in this.SelectedModels.Select(x => x.GUID))
+            foreach (var guids in this.Nodes.Select(x => x.GUID))
             {
                 if (xmlDoc != null)
                 {
@@ -441,7 +441,7 @@ namespace Dynamo.Graph.Annotations
             if (element.HasChildNodes)
             {
                 var listOfModels = new List<ModelBase>();
-                if (SelectedModels != null)
+                if (Nodes != null)
                 {
                     foreach (var childnode in element.ChildNodes)
                     {
@@ -449,7 +449,7 @@ namespace Dynamo.Graph.Annotations
                         var result = mhelper.ReadGuid("ModelGuid", new Guid());
                         var model = ModelBaseRequested != null
                             ? ModelBaseRequested(result)
-                            : SelectedModels.FirstOrDefault(x => x.GUID == result);
+                            : Nodes.FirstOrDefault(x => x.GUID == result);
 
                         if (model != null)
                         {
@@ -458,7 +458,7 @@ namespace Dynamo.Graph.Annotations
                     }
                 }
 
-                SelectedModels = listOfModels;
+                Nodes = listOfModels;
             }
 
             //On any Undo Operation, current values are restored to previous values.
@@ -478,11 +478,11 @@ namespace Dynamo.Graph.Annotations
         /// completely inside that group</param>
         internal void AddToSelectedModels(ModelBase model, bool checkOverlap = false)
         {           
-            var list = this.SelectedModels.ToList();
+            var list = this.Nodes.ToList();
             if (list.Where(x => x.GUID == model.GUID).Any()) return;
             if (!CheckModelIsInsideGroup(model, checkOverlap)) return;           
             list.Add(model);
-            this.SelectedModels = list;
+            this.Nodes = list;
             this.UpdateBoundaryFromSelection();
         }
 
@@ -506,7 +506,7 @@ namespace Dynamo.Graph.Annotations
         /// </summary>
         public override void Select()
         {
-            foreach (var models in SelectedModels)
+            foreach (var models in Nodes)
             {
                 models.IsSelected = true;
             }
@@ -521,7 +521,7 @@ namespace Dynamo.Graph.Annotations
         /// </summary>
         public override void Deselect()
         {           
-            foreach (var models in SelectedModels)
+            foreach (var models in Nodes)
             {
                 models.IsSelected = false;
             }   
@@ -534,9 +534,9 @@ namespace Dynamo.Graph.Annotations
         /// </summary>
         public override void Dispose()
         {           
-            if (this.SelectedModels.Any())
+            if (this.Nodes.Any())
             {
-                foreach (var model in this.SelectedModels)
+                foreach (var model in this.Nodes)
                 {
                     model.PropertyChanged -= model_PropertyChanged;
                     model.Disposed -= model_Disposed;                    

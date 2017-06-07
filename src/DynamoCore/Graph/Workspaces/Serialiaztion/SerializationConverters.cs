@@ -1,27 +1,25 @@
-﻿using Dynamo.Engine;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Dynamo.Core;
+using Dynamo.Engine;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.NodeLoaders;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
+using Dynamo.Graph.Presets;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Scheduler;
+using Dynamo.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Dynamo.Graph.Nodes.NodeLoaders;
-using Dynamo.Graph.Presets;
 using ProtoCore;
-using Type = System.Type;
-using Dynamo.Core;
-using Dynamo.Utilities;
-using Dynamo.Graph.Nodes.CustomNodes;
 using ProtoCore.Namespace;
-using Dynamo.Graph.Nodes.ZeroTouch;
-using System.Globalization;
-using CoreNodeModels;
+using Type = System.Type;
 
 namespace Autodesk.Workspaces
 {
@@ -111,9 +109,9 @@ namespace Autodesk.Workspaces
                 node = manager.CreateCustomNodeInstance(functionId);
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
-            else if(type == typeof(Formula))
+            else if (type.ToString() == "CoreNodeModels.Formula")
             {
-                node = (Formula)obj.ToObject(type);
+                node = (NodeModel)obj.ToObject(type);
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
             else
@@ -362,7 +360,7 @@ namespace Autodesk.Workspaces
 
             // This is a collection of string Guids, which
             // should be accessible in the ReferenceResolver.
-            var models = obj["SelectedModels"].Values<JValue>();
+            var models = obj["Nodes"].Values<JValue>();
 
             var existing = models.Select(m => {
                 Guid modelId;
@@ -391,9 +389,9 @@ namespace Autodesk.Workspaces
 
             writer.WritePropertyName("Title");
             writer.WriteValue(anno.AnnotationText);
-            writer.WritePropertyName("SelectedModels");
+            writer.WritePropertyName("Nodes");
             writer.WriteStartArray();
-            foreach (var m in anno.SelectedModels)
+            foreach (var m in anno.Nodes)
             {
                 writer.WriteValue(m.GUID.ToString());
             }
