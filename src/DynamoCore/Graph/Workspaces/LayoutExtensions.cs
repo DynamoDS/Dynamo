@@ -29,10 +29,10 @@ namespace Dynamo.Graph.Workspaces
                 selection.All(x => x is AnnotationModel ||
                     selection.OfType<AnnotationModel>().Any(g => g.Nodes.Contains(x)));
 
+            List<GraphLayout.Graph> layoutSubgraphs;
+            List<List<GraphLayout.Node>> subgraphClusters;
 
-            GenerateCombinedGraph(workspace, isGroupLayout,
-                out List<GraphLayout.Graph> layoutSubgraphs, 
-                out List<List<GraphLayout.Node>> subgraphClusters);
+            GenerateCombinedGraph(workspace, isGroupLayout,out layoutSubgraphs, out subgraphClusters);
 
             RecordUndoGraphLayout(workspace, isGroupLayout);
 

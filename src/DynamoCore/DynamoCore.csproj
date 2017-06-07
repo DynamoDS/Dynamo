@@ -120,8 +120,8 @@ limitations under the License.
     <Compile Include="Graph\Workspaces\LayoutExtensions.cs" />
     <Compile Include="Graph\Workspaces\NodesToCodeExtensions.cs" />
     <Compile Include="Graph\Workspaces\PresetExtensions.cs" />
-    <Compile Include="Graph\Workspaces\Serialiaztion\SerializationConverters.cs" />
-    <Compile Include="Graph\Workspaces\Serialiaztion\Workspaces.cs" />
+    <Compile Include="Graph\Workspaces\SerializationConverters.cs" />
+    <Compile Include="Graph\Workspaces\SerializationExtensions.cs" />
     <Compile Include="Graph\Workspaces\UndoRedo.cs" />
     <Compile Include="Logging\AnalyticsService.cs" />
     <Compile Include="Logging\DynamoAnalyticsClient.cs" />

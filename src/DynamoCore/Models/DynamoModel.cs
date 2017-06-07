@@ -1278,7 +1278,7 @@ namespace Dynamo.Models
             try
             {
                 // Serialize ws into string json
-                var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(ws, LibraryServices, EngineController,
+                var json = ws.ToJson(LibraryServices, EngineController,
                     Scheduler, NodeFactory, false, false, CustomNodeManager);
                 Logger.Log(String.Format(Resources.SavingInProgress, path));
                 File.WriteAllText(path, json);

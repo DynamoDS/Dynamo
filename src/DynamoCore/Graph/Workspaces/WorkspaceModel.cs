@@ -24,6 +24,8 @@ using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.Namespace;
 using Utils = Dynamo.Graph.Nodes.Utilities;
+using Dynamo.Engine;
+using Dynamo.Scheduler;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -1467,5 +1469,46 @@ namespace Dynamo.Graph.Workspaces
 
         #endregion
 
+
+        /// <summary>
+        /// Load a WorkspaceModel from json. If the WorkspaceModel is a HomeWorkspaceModel
+        /// it will be set as the current workspace.
+        /// </summary>
+        /// <param name="json"></param>
+        /// <param name="libraryServices"></param>
+        /// <param name="engineController"></param>
+        /// <param name="scheduler"></param>
+        /// <param name="factory"></param>
+        /// <param name="isTestMode"></param>
+        /// <param name="verboseLogging"></param>
+        /// <param name="manager"></param>
+        public static WorkspaceModel FromJson(string json, LibraryServices libraryServices,
+            EngineController engineController, DynamoScheduler scheduler, NodeFactory factory,
+            bool isTestMode, bool verboseLogging, CustomNodeManager manager)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                Converters = new List<JsonConverter>{
+                        new ConnectorConverter(),
+                        new AnnotationConverter(),
+                        new WorkspaceConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
+                        new NodeModelConverter(manager, libraryServices),
+                    },
+                ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
+            };
+
+            var result = SerializationExtensions.ReplaceTypeDeclarations(json, true);
+            var ws = JsonConvert.DeserializeObject<WorkspaceModel>(result, settings);
+
+            return ws;
+        }
     }
 }
