@@ -8,6 +8,7 @@ using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Library;
+using Newtonsoft.Json.Linq;
 using ProtoCore;
 
 namespace Dynamo.Graph.Nodes
@@ -272,28 +273,22 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Call this method to serialize given node-data-list pairs into an 
-        /// XmlDocument. Serialized data in the XmlDocument can be loaded by a 
-        /// call to LoadTraceDataFromXmlDocument method.
+        /// Json. Serialized data in the Json can be loaded by a 
+        /// call to LoadTraceDataFromJson method.
         /// </summary>
-        /// <param name="document">The target document to which the trade data 
+        /// <param name="json">The target document to which the trade data 
         /// is to be written. This parameter cannot be null and must represent 
-        /// a valid XmlDocument object.</param>
+        /// a valid Json object.</param>
         /// <param name="nodeTraceDataList">A dictionary of node-data-list pairs
-        /// to be saved to the XmlDocument. This parameter cannot be null and 
+        /// to be saved to the Json. This parameter cannot be null and 
         /// must represent a non-empty list of node-data-list pairs.</param>
-        internal static void SaveTraceDataToXmlDocument(XmlDocument document,
+        internal static void SaveTraceDataToJson(string json,
             IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> nodeTraceDataList)
         {
             #region Parameter Validations
 
-            if (document == null)
-                throw new ArgumentNullException("document");
-
-            if (document.DocumentElement == null)
-            {
-                const string message = "Document does not have a root element";
-                throw new ArgumentException(message, "document");
-            }
+            if (String.IsNullOrEmpty(json))
+                throw new ArgumentNullException("json");
 
             if (nodeTraceDataList == null)
                 throw new ArgumentNullException("nodeTraceDataList");
@@ -305,17 +300,19 @@ namespace Dynamo.Graph.Nodes
             }
 
             #endregion
+            var array = JArray.Parse(json);
 
-            #region Session Xml Element
+            #region Session json block
 
-            var sessionElement = document.CreateElement(
-                Configurations.SessionTraceDataXmlTag);
+            var sessionTraceData = new JObject();
+            var sessionElement = json.CreateElement(
+                Configurations.SessionTraceDataTag);
 
             document.DocumentElement.AppendChild(sessionElement);
 
             #endregion
 
-            #region Serialize Node Xml Elements
+            #region Serialize Node json Elements
 
             foreach (var pair in nodeTraceDataList)
             {

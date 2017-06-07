@@ -251,7 +251,7 @@ namespace Dynamo.Configuration
 
         #region Externally Visible Strings
 
-        internal static readonly string SessionTraceDataXmlTag = "SessionTraceData";
+        internal static readonly string SessionTraceDataTag = "Bindings";
         internal static readonly string NodeTraceDataXmlTag = "NodeTraceData";
         internal static readonly string CallsiteTraceDataXmlTag = "CallsiteTraceData";
         internal static readonly string NodeIdAttribName = "NodeId";

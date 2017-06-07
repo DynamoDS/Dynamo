@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Graph.Annotations;
@@ -13,7 +14,6 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Scheduler;
-using Dynamo.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -307,6 +307,7 @@ namespace Autodesk.Workspaces
             writer.WriteStartArray();
             writer.WriteEndArray();
 
+            // Dependencies
             writer.WritePropertyName("Dependencies");
             writer.WriteStartArray();
             var functions = ws.Nodes.Where(n => n is Function);
@@ -319,6 +320,42 @@ namespace Autodesk.Workspaces
                 }
             }
             writer.WriteEndArray();
+
+            // Bindings
+            writer.WritePropertyName(Configurations.NodeTraceDataXmlTag);
+
+            // Selecting all nodes that are either a DSFunction,
+            // a DSVarArgFunction or a CodeBlockNodeModel into a list.
+            var nodeGuids =
+                ws.Nodes.Where(
+                        n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel || n is Function)
+                    .Select(n => n.GUID);
+
+            var nodeTraceDataList = this.engine.LiveRunnerRuntimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids,
+                this.engine.LiveRunnerRuntimeCore.DSExecutable);
+
+            if (nodeTraceDataList.Any())
+            {
+                writer.WriteStartArray();
+                foreach (var pair in nodeTraceDataList)
+                {
+                    // Set the node ID attribute for this element.
+                    var nodeGuid = pair.Key.ToString();
+                    writer.WritePropertyName(Configurations.NodeIdAttribName);
+                    writer.WriteValue(nodeGuid);
+
+                    foreach (var data in pair.Value)
+                    {
+                        writer.WritePropertyName(Configurations.CallsiteTraceDataXmlTag);
+                        callsiteXmlElement.SetAttribute(Configurations.CallSiteID, data.ID);
+
+                        callsiteXmlElement.InnerText = data.Data;
+                        nodeElement.AppendChild(callsiteXmlElement);
+                    }
+                }
+                writer.WriteEndArray();
+            }
+            Dynamo.Graph.Nodes.Utilities.SaveTraceDataToJson(json, nodeTraceDataList);
 
             writer.WriteEndObject();
         }
