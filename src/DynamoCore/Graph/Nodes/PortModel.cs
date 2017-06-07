@@ -45,8 +45,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Name of the port.
         /// </summary>
-        [JsonProperty("DisplayName")]
-        public string PortName
+        public string Name
         {
             get;
             internal set;
@@ -287,7 +286,7 @@ namespace Dynamo.Graph.Nodes
             DefaultValue = null;
             LineIndex = -1;
             this.toolTip = toolTip;
-            this.PortName = name;
+            this.Name = name;
 
             MarginThickness = new Thickness(0);
             Height = Math.Abs(Height) < 0.001 ? Configurations.PortHeightInPixels : Height;
@@ -312,7 +311,7 @@ namespace Dynamo.Graph.Nodes
             UsingDefaultValue = DefaultValue != null;
             LineIndex = data.LineIndex;
             toolTip = data.ToolTipString;
-            PortName = data.Name;
+            Name = data.Name;
             
             MarginThickness = new Thickness(0);
             Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;

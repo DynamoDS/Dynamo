@@ -205,7 +205,7 @@ namespace CoreNodeModels
             Func<string, string[], object[], object> backingMethod = DSCore.Formula.Evaluate;
 
             // Format input names to be used as function parameters
-            var inputs = InPorts.Select(x => x.PortName.Replace(' ', '_')).ToList();
+            var inputs = InPorts.Select(x => x.Name.Replace(' ', '_')).ToList();
 
 
             /*  def formula_partial(<params>) {
@@ -237,7 +237,7 @@ namespace CoreNodeModels
                                                 AstFactory.BuildExprList(
                                                     InPorts.Select(
                                                         x =>
-                                                            AstFactory.BuildStringNode(x.PortName) as
+                                                            AstFactory.BuildStringNode(x.Name) as
                                                             AssociativeNode).ToList()),
                                                 AstFactory.BuildExprList(
                                                     inputs.Select(AstFactory.BuildIdentifier)

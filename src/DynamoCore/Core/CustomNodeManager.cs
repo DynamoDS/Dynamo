@@ -932,7 +932,7 @@ namespace Dynamo.Core
 
                         node = new Symbol
                         {
-                            InputSymbol = inputReceiverNode.InPorts[inputReceiverData].PortName,
+                            InputSymbol = inputReceiverNode.InPorts[inputReceiverData].Name,
                             X = 0
                         };
 
@@ -1008,7 +1008,7 @@ namespace Dynamo.Core
                             //Create Symbol Node
                             var node = new Output
                             {
-                                Symbol = outputSenderNode.OutPorts[outputSenderData].PortName,
+                                Symbol = outputSenderNode.OutPorts[outputSenderData].Name,
                                 X = rightMost + 75 - leftShift
                             };
 
@@ -1049,7 +1049,7 @@ namespace Dynamo.Core
                         //Create Symbol Node
                         var node = new Output
                         {
-                            Symbol = hanging.node.OutPorts[hanging.port].PortName,
+                            Symbol = hanging.node.OutPorts[hanging.port].Name,
                             X = rightMost + 75 - leftShift
                         };
                         node.Y = i*(50 + node.Height);

@@ -100,7 +100,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             element.AppendChild(outEl);
 
             outEl = xmlDoc.CreateElement("Inputs");
-            foreach (string input in InPorts.Select(x => x.PortName))
+            foreach (string input in InPorts.Select(x => x.Name))
             {
                 XmlElement inputEl = xmlDoc.CreateElement("Input");
                 inputEl.SetAttribute("value", input);
@@ -109,7 +109,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             element.AppendChild(outEl);
 
             outEl = xmlDoc.CreateElement("Outputs");
-            foreach (string output in OutPorts.Select(x => x.PortName))
+            foreach (string output in OutPorts.Select(x => x.Name))
             {
                 XmlElement outputEl = xmlDoc.CreateElement("Output");
                 outputEl.SetAttribute("value", output);

@@ -289,7 +289,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///  The name that is displayed in the UI for this NodeModel.
         /// </summary>
-        [JsonProperty("Name")]
+        [JsonIgnore()]
         public string Name
         {
             get { return name; }
@@ -1242,7 +1242,7 @@ namespace Dynamo.Graph.Nodes
                                           ArrayDimensions =
                                               new ArrayNode
                                               {
-                                                  Expr = new StringNode { Value = outNode.PortName }
+                                                  Expr = new StringNode { Value = outNode.Name }
                                               }
                                       },
                                       GetAstIdentifierForOutputIndex(index))));
@@ -1832,7 +1832,7 @@ namespace Dynamo.Graph.Nodes
             }
             else
             {
-                s += "(lambda (" + string.Join(" ", InPorts.Where((_, i) => !InPorts[i].IsConnected).Select(x => x.PortName))
+                s += "(lambda (" + string.Join(" ", InPorts.Where((_, i) => !InPorts[i].IsConnected).Select(x => x.Name))
                      + ") (" + nick;
                 foreach (int data in Enumerable.Range(0, InPorts.Count))
                 {
@@ -1841,7 +1841,7 @@ namespace Dynamo.Graph.Nodes
                     if (TryGetInput(data, out input))
                         s += input.Item2.PrintExpression();
                     else
-                        s += InPorts[data].PortName;
+                        s += InPorts[data].Name;
                 }
                 s += "))";
             }

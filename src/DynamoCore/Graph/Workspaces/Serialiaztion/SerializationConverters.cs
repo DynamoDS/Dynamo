@@ -54,7 +54,6 @@ namespace Autodesk.Workspaces
             var type = Type.GetType(obj["$type"].Value<string>());
             
             var guid = Guid.Parse(obj["Uuid"].Value<string>());
-            var displayName = obj["DisplayName"].Value<string>();
 
             var inPorts = obj["InputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
             var outPorts = obj["OutputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
@@ -111,9 +110,6 @@ namespace Autodesk.Workspaces
             }
 
             node.GUID = guid;
-            node.Name = displayName;
-            //node.X = x;
-            //node.Y = y;
 
             // Add references to the node and the ports to the reference resolver,
             // so that they are available for entities which are deserialized later.

@@ -39,7 +39,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string PortName
         {
-            get { return _port.PortName; }
+            get { return _port.Name; }
         }
 
         /// <summary>

@@ -1276,8 +1276,8 @@ namespace DynamoCoreWpfTests
 
             //CBN Input Ports
             //   >PortName stores name of variable
-            Assert.AreEqual("x", cbn.InPorts[0].PortName);
-            Assert.AreEqual("y", cbn.InPorts[1].PortName);
+            Assert.AreEqual("x", cbn.InPorts[0].Name);
+            Assert.AreEqual("y", cbn.InPorts[1].Name);
 
             //Check the connections
             var connectors = workspaceViewModel.Connectors;

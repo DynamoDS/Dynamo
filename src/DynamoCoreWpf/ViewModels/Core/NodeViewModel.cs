@@ -141,6 +141,10 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// The Name of the nodemodel this view points to
+        /// this is the name of the node as it is displayed in the UI.
+        /// </summary>
         public string Name
         {
             get { return nodeLogic.Name; }
