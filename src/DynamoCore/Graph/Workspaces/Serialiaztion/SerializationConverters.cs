@@ -322,8 +322,8 @@ namespace Autodesk.Workspaces
             writer.WriteEndArray();
 
             // Bindings
-            writer.WritePropertyName(Configurations.NodeTraceDataTag);
-
+            writer.WritePropertyName(Configurations.SessionTraceDataTag);
+            writer.WriteStartArray();
             // Selecting all nodes that are either a DSFunction,
             // a DSVarArgFunction or a CodeBlockNodeModel into a list.
             var nodeGuids =
@@ -334,9 +334,10 @@ namespace Autodesk.Workspaces
             var nodeTraceDataList = this.engine.LiveRunnerRuntimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids,
                 this.engine.LiveRunnerRuntimeCore.DSExecutable);
 
+            // serialize given node-data-list pairs into an Json.
             if (nodeTraceDataList.Any())
             {
-                writer.WriteStartArray();
+                writer.WritePropertyName(Configurations.NodeTraceDataTag);
                 foreach (var pair in nodeTraceDataList)
                 {
                     // Set the node ID attribute for this element.
@@ -353,9 +354,8 @@ namespace Autodesk.Workspaces
                     }
                     writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
             }
-
+            writer.WriteEndArray();
             writer.WriteEndObject();
         }
     }

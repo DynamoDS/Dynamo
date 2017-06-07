@@ -272,73 +272,6 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Call this method to serialize given node-data-list pairs into an 
-        /// Json. Serialized data in the Json can be loaded by a 
-        /// call to LoadTraceDataFromJson method.
-        /// </summary>
-        /// <param name="json">The target document to which the trade data 
-        /// is to be written. This parameter cannot be null and must represent 
-        /// a valid Json object.</param>
-        /// <param name="nodeTraceDataList">A dictionary of node-data-list pairs
-        /// to be saved to the Json. This parameter cannot be null and 
-        /// must represent a non-empty list of node-data-list pairs.</param>
-        internal static void SaveTraceDataToJson(string json,
-            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> nodeTraceDataList)
-        {
-            #region Parameter Validations
-
-            if (String.IsNullOrEmpty(json))
-                throw new ArgumentNullException("json");
-
-            if (nodeTraceDataList == null)
-                throw new ArgumentNullException("nodeTraceDataList");
-
-            if (!nodeTraceDataList.Any())
-            {
-                const string message = "Trade data list must be non-empty";
-                throw new ArgumentException(message, "nodeTraceDataList");
-            }
-
-            #endregion
-            var array = JArray.Parse(json);
-
-            #region Session json block
-
-            var sessionTraceData = new JObject();
-            var sessionElement = json.CreateElement(
-                Configurations.SessionTraceDataTag);
-
-            document.DocumentElement.AppendChild(sessionElement);
-
-            #endregion
-
-            #region Serialize Node json Elements
-
-            foreach (var pair in nodeTraceDataList)
-            {
-                var nodeElement = document.CreateElement(
-                    Configurations.NodeTraceDataXmlTag);
-
-                // Set the node ID attribute for this element.
-                var nodeGuid = pair.Key.ToString();
-                nodeElement.SetAttribute(Configurations.NodeIdAttribName, nodeGuid);
-                sessionElement.AppendChild(nodeElement);
-
-                foreach (var data in pair.Value)
-                {
-                    var callsiteXmlElement = document.CreateElement(
-                        Configurations.CallsiteTraceDataXmlTag);
-                    callsiteXmlElement.SetAttribute(Configurations.CallSiteID, data.ID);
-
-                    callsiteXmlElement.InnerText = data.Data;
-                    nodeElement.AppendChild(callsiteXmlElement);
-                }
-            }
-
-            #endregion
-        }
-
-        /// <summary>
         /// Call this method to load serialized node-data-list pairs (through a 
         /// prior call to SaveTraceDataToXmlDocument) from a given XmlDocument.
         /// </summary>
@@ -359,7 +292,7 @@ namespace Dynamo.Graph.Nodes
             }
 
             var childNodes = document.DocumentElement.ChildNodes.Cast<XmlElement>();
-            var sessionXmlTagName = Configurations.SessionTraceDataXmlTag;
+            var sessionXmlTagName = Configurations.SessionTraceDataTag;
             var query = from childNode in childNodes
                         where childNode.Name.Equals(sessionXmlTagName)
                         select childNode;
