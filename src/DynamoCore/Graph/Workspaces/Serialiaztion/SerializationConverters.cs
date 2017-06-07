@@ -59,8 +59,7 @@ namespace Autodesk.Workspaces
             var guid = nodeId;
             var displayName = obj["DisplayName"].Value<string>();
 
-            //TODO we'll want to generate new guids if the port ids are not guids, as this deserialization
-            //will fail when the ids are not guids...
+           
             var inPorts = obj["InputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
             var outPorts = obj["OutputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
 
