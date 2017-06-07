@@ -1125,7 +1125,7 @@ namespace Dynamo.ViewModels
 
         private void DoGraphAutoLayout(object o)
         {
-            LayoutExtensions.DoGraphAutoLayout(Model);
+            Model.DoGraphAutoLayout();
             DynamoViewModel.RaiseCanExecuteUndoRedo();
 
             Dynamo.Logging.Analytics.TrackCommandEvent("GraphLayout");

@@ -25,18 +25,6 @@ namespace Dynamo.Tests
         #region Graph Layout Tests
 
         [Test]
-        public void GraphLayoutEmpty()
-        {
-            var x = ViewModel.CurrentSpaceViewModel.X;
-            var y = ViewModel.CurrentSpaceViewModel.Y;
-            var zoom = ViewModel.CurrentSpaceViewModel.Zoom;
-
-            ViewModel.DoGraphAutoLayout(null);
-
-            //Assert.IsNull(ViewModel.CurrentSpace.LayoutSubgraphs);
-        }
-
-        [Test]
         public void GraphLayoutMarkFileAsDirty()
         {
             // A graph with one node
