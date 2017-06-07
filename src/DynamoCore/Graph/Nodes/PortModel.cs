@@ -256,7 +256,7 @@ namespace Dynamo.Graph.Nodes
                 {
                     useLevels = value;
                     
-                    if (!useLevels) ShouldKeepListStructure = useLevels;
+                    if (!useLevels) KeepListStructure = useLevels;
                     RaisePropertyChanged("UseLevels");
                 }
             }
@@ -267,7 +267,7 @@ namespace Dynamo.Graph.Nodes
         /// node will be re-aligned into the original structure
         /// of the nested list.
         /// </summary>
-        public bool ShouldKeepListStructure
+        public bool KeepListStructure
         {
             get
             {
@@ -300,7 +300,7 @@ namespace Dynamo.Graph.Nodes
         internal PortModel(string nickName, string toolTip)
         {
             UseLevels = false;
-            ShouldKeepListStructure = false;
+            KeepListStructure = false;
             Level = 2;
 
             Height = 0.0;
@@ -324,7 +324,7 @@ namespace Dynamo.Graph.Nodes
             PortType = portType;
             Owner = owner;
             UseLevels = false;
-            ShouldKeepListStructure = false;
+            KeepListStructure = false;
             Level = 2;
 
             Height = data.Height;

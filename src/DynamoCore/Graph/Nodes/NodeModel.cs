@@ -1305,7 +1305,7 @@ namespace Dynamo.Graph.Nodes
             {
                 if (InPorts[i].UseLevels)
                 {
-                    inputs[i] = AstFactory.AddAtLevel(inputs[i], -InPorts[i].Level, InPorts[i].ShouldKeepListStructure);
+                    inputs[i] = AstFactory.AddAtLevel(inputs[i], -InPorts[i].Level, InPorts[i].KeepListStructure);
                 }
             }
 
@@ -1791,7 +1791,7 @@ namespace Dynamo.Graph.Nodes
             {
                 case "Level":
                 case "UseLevels":
-                case "ShouldKeepListStructure":
+                case "KeepListStructure":
                     OnNodeModified();
                     break;
                 case "UsingDefaultValue":
@@ -1998,15 +1998,15 @@ namespace Dynamo.Graph.Nodes
                         if (int.TryParse(keepListStructureInfos[0], out portIndex) &&
                             bool.TryParse(keepListStructureInfos[1], out keepListStructure))
                         {
-                            inPorts[portIndex].ShouldKeepListStructure = keepListStructure;
+                            inPorts[portIndex].KeepListStructure = keepListStructure;
                             if (keepListStructure)
                             {
                                 // Only allow one input port to keep list structure
                                 for (int i = 0; i < inPorts.Count; i++)
                                 {
-                                    if (portIndex != i && inPorts[i].ShouldKeepListStructure)
+                                    if (portIndex != i && inPorts[i].KeepListStructure)
                                     {
-                                        inPorts[i].ShouldKeepListStructure = false;
+                                        inPorts[i].KeepListStructure = false;
                                     }
                                 }
                             }
@@ -2095,7 +2095,7 @@ namespace Dynamo.Graph.Nodes
                 {
                     portInfo.SetAttribute("useLevels", t.port.UseLevels.ToString());
                     portInfo.SetAttribute("level", t.port.Level.ToString());
-                    portInfo.SetAttribute("shouldKeepListStructure", t.port.ShouldKeepListStructure.ToString());
+                    portInfo.SetAttribute("shouldKeepListStructure", t.port.KeepListStructure.ToString());
                 }
                 element.AppendChild(portInfo);
             }
@@ -2174,7 +2174,7 @@ namespace Dynamo.Graph.Nodes
                         {
                             bool.TryParse(attrValue.Value, out shouldKeepListStructure);
                         }
-                        inPorts[index].ShouldKeepListStructure = shouldKeepListStructure;
+                        inPorts[index].KeepListStructure = shouldKeepListStructure;
 
                         attrValue = subNode.Attributes["level"];
                         if (attrValue != null)
