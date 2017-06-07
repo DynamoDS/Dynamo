@@ -54,9 +54,8 @@ namespace Autodesk.Workspaces
             var type = Type.GetType(obj["$type"].Value<string>());
 
             //if the id is not a guid, makes a guid based on the id of the node
-            Guid nodeId = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
-
-            var guid = nodeId;
+            var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
+        
             var displayName = obj["DisplayName"].Value<string>();
 
            
