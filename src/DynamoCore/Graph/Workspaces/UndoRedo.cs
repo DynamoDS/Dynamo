@@ -203,7 +203,7 @@ namespace Dynamo.Graph.Workspaces
                     else if (model is PresetModel)
                     {
                         undoRecorder.RecordDeletionForUndo(model);
-                        RemovePreset(model as PresetModel);
+                        this.RemovePreset(model as PresetModel);
                     }
 
                     else if (model is NodeModel)
@@ -313,7 +313,7 @@ namespace Dynamo.Graph.Workspaces
             }
             else if (model is PresetModel)
             {
-                RemovePreset(model as PresetModel);
+                this.RemovePreset(model as PresetModel);
             }
             else if (model is ConnectorModel)
             {

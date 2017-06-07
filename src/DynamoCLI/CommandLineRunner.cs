@@ -9,6 +9,7 @@ using DynamoUtilities;
 using Dynamo.Applications;
 using Dynamo.Graph;
 using Autodesk.Workspaces;
+using Dynamo.Graph.Workspaces;
 
 namespace DynamoCLI
 {

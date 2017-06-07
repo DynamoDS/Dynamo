@@ -6,9 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Dynamo.Core;
-using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
-using Dynamo.Engine.NodeToCode;
 using Dynamo.Events;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
@@ -76,7 +74,7 @@ namespace Dynamo.Graph.Workspaces
         private readonly List<NodeModel> nodes;
         private readonly List<NoteModel> notes;
         private readonly List<AnnotationModel> annotations;
-        private readonly List<PresetModel> presets;
+        internal readonly List<PresetModel> presets;
         private readonly UndoRedoRecorder undoRecorder;
         private static List<ModelBase> savedModels = null;
         private double scaleFactor = 1.0;

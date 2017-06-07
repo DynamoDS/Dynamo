@@ -12,13 +12,13 @@ namespace Dynamo.Graph.Workspaces
     /// <summary>
     /// Layout class contains methods for organizing graphs.
     /// </summary>
-    public static class Layout
+    public static class LayoutExtensions
     {
         /// <summary>
         /// This function wraps a few methods on the workspace model layer
         /// to set up and run the graph layout algorithm.
         /// </summary>
-        internal static List<GraphLayout.Graph> DoGraphAutoLayout(WorkspaceModel workspace)
+        internal static List<GraphLayout.Graph> DoGraphAutoLayout(this WorkspaceModel workspace)
         {
             if (workspace.Nodes.Count() < 2) return null;
 
@@ -62,7 +62,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="layoutSubgraphs"></param>
         /// <param name="subgraphClusters"></param>
         /// </summary>
-        private static void GenerateCombinedGraph(WorkspaceModel workspace, bool isGroupLayout, 
+        private static void GenerateCombinedGraph(this WorkspaceModel workspace, bool isGroupLayout, 
             out List<GraphLayout.Graph> layoutSubgraphs, out List<List<GraphLayout.Node>> subgraphClusters)
         {
             layoutSubgraphs = new List<GraphLayout.Graph>
@@ -194,7 +194,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="workspace">A <see cref="WorkspaceModel"/>.</param>
         /// <param name="isGroupLayout">True if all the selected models are groups.</param>
-        private static void RecordUndoGraphLayout(WorkspaceModel workspace, bool isGroupLayout)
+        private static void RecordUndoGraphLayout(this WorkspaceModel workspace, bool isGroupLayout)
         {
             List<ModelBase> undoItems = new List<ModelBase>();
 
@@ -365,7 +365,7 @@ namespace Dynamo.Graph.Workspaces
         /// This method pushes changes from the GraphLayout.Graph objects
         /// back to the workspace models.
         /// </summary>
-        private static void SaveLayoutGraph(WorkspaceModel workspace, List<GraphLayout.Graph> layoutSubgraphs)
+        private static void SaveLayoutGraph(this WorkspaceModel workspace, List<GraphLayout.Graph> layoutSubgraphs)
         {
             // Assign coordinates to nodes inside groups
             foreach (var group in workspace.Annotations)
