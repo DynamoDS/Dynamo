@@ -322,7 +322,7 @@ namespace Autodesk.Workspaces
             writer.WriteEndArray();
 
             // Bindings
-            writer.WritePropertyName(Configurations.NodeTraceDataXmlTag);
+            writer.WritePropertyName(Configurations.NodeTraceDataTag);
 
             // Selecting all nodes that are either a DSFunction,
             // a DSVarArgFunction or a CodeBlockNodeModel into a list.
@@ -343,19 +343,18 @@ namespace Autodesk.Workspaces
                     var nodeGuid = pair.Key.ToString();
                     writer.WritePropertyName(Configurations.NodeIdAttribName);
                     writer.WriteValue(nodeGuid);
-
+                    writer.WriteStartArray();
                     foreach (var data in pair.Value)
                     {
-                        writer.WritePropertyName(Configurations.CallsiteTraceDataXmlTag);
-                        callsiteXmlElement.SetAttribute(Configurations.CallSiteID, data.ID);
-
-                        callsiteXmlElement.InnerText = data.Data;
-                        nodeElement.AppendChild(callsiteXmlElement);
+                        writer.WritePropertyName(Configurations.CallsiteTraceDataTag);
+                        writer.WriteValue(Configurations.CallSiteID);
+                        writer.WriteValue(data.ID);
+                        writer.WriteValue(data.Data);
                     }
+                    writer.WriteEndArray();
                 }
                 writer.WriteEndArray();
             }
-            Dynamo.Graph.Nodes.Utilities.SaveTraceDataToJson(json, nodeTraceDataList);
 
             writer.WriteEndObject();
         }
