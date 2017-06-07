@@ -11,6 +11,24 @@ namespace Dynamo.Utilities
     public static class GuidUtility
     {
         /// <summary>
+        /// attempts to parse a string into a guid - 
+        /// if this fails, uses the create method to create
+        /// a deterministic UUID.
+        /// </summary>
+        /// <param name="idstring"></param>
+        /// <returns></returns>
+        public static Guid tryParseOrCreateGuid(string idstring)
+        {
+            Guid id;
+            if (!Guid.TryParse(idstring, out id))
+            {
+                id = GuidUtility.Create(GuidUtility.UrlNamespace, idstring);
+            }
+
+            return id;
+        }
+
+        /// <summary>
         /// Creates a name-based UUID using the algorithm from RFC 4122 §4.3.
         /// </summary>
         /// <param name="namespaceId">The ID of the namespace.</param>
