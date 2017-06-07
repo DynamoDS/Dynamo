@@ -52,10 +52,13 @@ namespace Autodesk.Workspaces
 
             var obj = JObject.Load(reader);
             var type = Type.GetType(obj["$type"].Value<string>());
-            
-            var guid = Guid.Parse(obj["Uuid"].Value<string>());
+
+            //if the id is not a guid, makes a guid based on the id of the node
+            var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
+        
             var displayName = obj["DisplayName"].Value<string>();
 
+           
             var inPorts = obj["InputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
             var outPorts = obj["OutputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
 
@@ -67,19 +70,19 @@ namespace Autodesk.Workspaces
                 node = manager.CreateCustomNodeInstance(functionId);
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
-            else if(type == typeof(CodeBlockNodeModel))
+            else if (type == typeof(CodeBlockNodeModel))
             {
                 var code = obj["Code"].Value<string>();
                 node = new CodeBlockNodeModel(code, guid, 0.0, 0.0, libraryServices, ElementResolver);
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
-            else if(typeof(DSFunctionBase).IsAssignableFrom(type))
+            else if (typeof(DSFunctionBase).IsAssignableFrom(type))
             {
                 var mangledName = obj["FunctionSignature"].Value<string>();
 
                 var description = libraryServices.GetFunctionDescriptor(mangledName);
 
-                if(type == typeof(DSVarArgFunction))
+                if (type == typeof(DSVarArgFunction))
                 {
                     node = new DSVarArgFunction(description);
                     // The node syncs with the function definition.
@@ -87,10 +90,10 @@ namespace Autodesk.Workspaces
                     var varg = (DSVarArgFunction)node;
                     varg.VarInputController.SetNumInputs(inPorts.Count());
                 }
-                else if(type == typeof(DSFunction))
+                else if (type == typeof(DSFunction))
                 {
                     node = new DSFunction(description);
-                    
+
                 }
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
@@ -119,7 +122,7 @@ namespace Autodesk.Workspaces
             // so that they are available for entities which are deserialized later.
             serializer.ReferenceResolver.AddReference(serializer.Context, node.GUID.ToString(), node);
 
-            foreach(var p in node.InPorts)
+            foreach (var p in node.InPorts)
             {
                 serializer.ReferenceResolver.AddReference(serializer.Context, p.GUID.ToString(), p);
             }
@@ -129,6 +132,8 @@ namespace Autodesk.Workspaces
             }
             return node;
         }
+
+       
 
         /// <summary>
         /// Map old Guids to new Models in the IdReferenceResolver.
@@ -342,20 +347,25 @@ namespace Autodesk.Workspaces
         {
             var obj = JObject.Load(reader);
             var title = obj["Title"].Value<string>();
-            var guid = Guid.Parse(obj["Uuid"].Value<string>());
+            //if the id is not a guid, makes a guid based on the id of the model
+            Guid annotationId =  GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
 
             // This is a collection of string Guids, which
             // should be accessible in the ReferenceResolver.
             var models = obj["Nodes"].Values<JValue>();
 
-            var existing = models.Select(m => serializer.ReferenceResolver.ResolveReference(serializer.Context, m.Value<string>()));
+            var existing = models.Select(m => {
+                Guid modelId = GuidUtility.tryParseOrCreateGuid(m.Value<string>());
+              
+                return serializer.ReferenceResolver.ResolveReference(serializer.Context, modelId.ToString());
+                });
 
             var nodes = existing.Where(m => typeof(NodeModel).IsAssignableFrom(m.GetType())).Cast<NodeModel>();
             var notes = existing.Where(m => typeof(NoteModel).IsAssignableFrom(m.GetType())).Cast<NoteModel>();
 
             var anno = new AnnotationModel(nodes, notes);
             anno.AnnotationText = title;
-            anno.GUID = guid;
+            anno.GUID = annotationId;
 
             return anno;
         }
@@ -375,7 +385,7 @@ namespace Autodesk.Workspaces
                 writer.WriteValue(m.GUID.ToString());
             }
             writer.WriteEndArray();
-            writer.WritePropertyName("Uuid");
+            writer.WritePropertyName("Id");
             writer.WriteValue(anno.GUID.ToString());
 
             writer.WriteEndObject();
@@ -404,23 +414,28 @@ namespace Autodesk.Workspaces
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
 
-            var startPort = (PortModel)resolver.ResolveReference(serializer.Context, startId);
-            var endPort = (PortModel)resolver.ResolveReference(serializer.Context, endId);
+            Guid startIdGuid = GuidUtility.tryParseOrCreateGuid(startId);
+            Guid endIdGuid = GuidUtility.tryParseOrCreateGuid(endId);
+
+            var startPort = (PortModel)resolver.ResolveReference(serializer.Context, startIdGuid.ToString());
+            var endPort = (PortModel)resolver.ResolveReference(serializer.Context, endIdGuid.ToString());
 
             // If the start or end ports can't be found in the resolver,
             // try to resolve them from the resolver's map, which maps
             // the persisted port ids to the new port ids.
             if(startPort == null)
             {
-                startPort = (PortModel)resolver.ResolveReferenceFromMap(serializer.Context, startId);
+                startPort = (PortModel)resolver.ResolveReferenceFromMap(serializer.Context, startIdGuid.ToString());
             }
 
             if(endPort == null)
             {
-                endPort = (PortModel)resolver.ResolveReferenceFromMap(serializer.Context, endId);
+                endPort = (PortModel)resolver.ResolveReferenceFromMap(serializer.Context, endIdGuid.ToString());
             }
 
-            var connectorId = Guid.Parse(obj["Uuid"].Value<string>());
+            //if the id is not a guid, makes a guid based on the id of the model
+            Guid connectorId = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
+
             return new ConnectorModel(startPort, endPort, connectorId);
         }
 
@@ -433,9 +448,46 @@ namespace Autodesk.Workspaces
             writer.WriteValue(connector.Start.GUID.ToString());
             writer.WritePropertyName("End");
             writer.WriteValue(connector.End.GUID.ToString());
-            writer.WritePropertyName("Uuid");
+            writer.WritePropertyName("Id");
             writer.WriteValue(connector.GUID.ToString());
             writer.WriteEndObject();
+        }
+    }
+    /// <summary>
+    /// This converter is used to attempt to convert an id string to a guid - if the id
+    /// is not a guid string, it will create a UUID based on the string.
+    /// </summary>
+    public class IdToGuidConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(Guid);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var obj = JValue.Load(reader);
+            Guid deterministicGuid;
+            if (!Guid.TryParse(obj.Value<string>(), out deterministicGuid))
+            {
+                Console.WriteLine("the id was not a guid, converting to a guid");
+                deterministicGuid = GuidUtility.Create(GuidUtility.UrlNamespace, obj.Value<string>());
+                Console.WriteLine(obj + " becomes " + deterministicGuid);
+            }
+            return deterministicGuid;
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool CanWrite
+        {
+            get
+            {
+                return false;
+            }
         }
     }
 
@@ -450,18 +502,28 @@ namespace Autodesk.Workspaces
 
         /// <summary>
         /// Add a reference to a newly created object, referencing
-        /// an old Guid.
+        /// an old id.
         /// </summary>
-        /// <param name="oldGuid">The old Guid of the object.</param>
-        /// <param name="newObject">The new object which maps to the old Guid.</param>
-        public void AddToReferenceMap(Guid oldGuid, object newObject)
+        /// <param name="oldid">The old id of the object.</param>
+        /// <param name="newObject">The new object which maps to the old id.</param>
+        public void AddToReferenceMap(Guid oldId, object newObject)
         {
-            modelMap.Add(oldGuid, newObject);
+            if (modelMap.ContainsKey(oldId))
+            {
+                throw new InvalidOperationException(@"the map already contains a model with this id, the id must
+                    be unique for the workspace that is currently being deserialized: "+oldId);
+            }
+            modelMap.Add(oldId, newObject);
         }
 
         public void AddReference(object context, string reference, object value)
         {
             Guid id = new Guid(reference);
+            if (models.ContainsKey(id))
+            {
+                throw new InvalidOperationException(@"the map already contains a model with this id, the id must
+                    be unique for the workspace that is currently being deserialized :"+id);
+            }
             models[id] = value;
         }
 
@@ -495,8 +557,13 @@ namespace Autodesk.Workspaces
 
         public object ResolveReference(object context, string reference)
         {
-            var id = new Guid(reference);
-
+            Guid id;
+            if (!Guid.TryParse(reference, out id))
+            {
+                //if this is not a guid, it won't be in the resolver.
+                Console.WriteLine("not a guid");
+                return null;
+            }
             object model;
             models.TryGetValue(id, out model);
 
@@ -505,15 +572,20 @@ namespace Autodesk.Workspaces
 
         /// <summary>
         /// Resolve a reference to a newly created object, given
-        /// the original Guid for the object.
+        /// the original id for the object.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="reference"></param>
         /// <returns></returns>
         public object ResolveReferenceFromMap(object context, string reference)
         {
-            var id = new Guid(reference);
-
+            Guid id;
+            if (!Guid.TryParse(reference, out id))
+            {
+                //if this is not a guid, it won't be in the resolver.
+                Console.WriteLine("not a guid");
+                return null;
+            }
             object model;
             modelMap.TryGetValue(id, out model);
 
