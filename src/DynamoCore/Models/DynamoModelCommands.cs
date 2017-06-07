@@ -528,7 +528,7 @@ namespace Dynamo.Models
         {
             var libServices = new LibraryCustomizationServices(pathManager);
             var namingProvider = new NamingProvider(EngineController.LibraryServices.LibraryManagementCore, libServices);
-            NodesToCode.ConvertNodesToCodeInternal(CurrentWorkspace, EngineController, namingProvider);
+            CurrentWorkspace.ConvertNodesToCodeInternal(EngineController, namingProvider);
 
             CurrentWorkspace.HasUnsavedChanges = true;
         }

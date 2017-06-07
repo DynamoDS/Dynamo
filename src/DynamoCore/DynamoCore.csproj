@@ -118,7 +118,7 @@ limitations under the License.
     <Compile Include="Core\DynamoMigrator.cs" />
     <Compile Include="Exceptions\LibraryLoadFailedException.cs" />
     <Compile Include="Graph\Workspaces\LayoutExtensions.cs" />
-    <Compile Include="Graph\Workspaces\NodesToCode.cs" />
+    <Compile Include="Graph\Workspaces\NodesToCodeExtensions.cs" />
     <Compile Include="Graph\Workspaces\PresetExtensions.cs" />
     <Compile Include="Graph\Workspaces\Serialiaztion\SerializationConverters.cs" />
     <Compile Include="Graph\Workspaces\Serialiaztion\Workspaces.cs" />

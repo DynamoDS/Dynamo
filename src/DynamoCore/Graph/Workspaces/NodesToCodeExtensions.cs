@@ -8,9 +8,9 @@ using System.Linq;
 
 namespace Dynamo.Graph.Workspaces
 {
-    internal class NodesToCode
+    internal static class NodesToCodeExtensions
     {
-        internal static void ConvertNodesToCodeInternal(WorkspaceModel workspace, EngineController engineController, 
+        internal static void ConvertNodesToCodeInternal(this WorkspaceModel workspace, EngineController engineController, 
             INamingProvider namingProvider)
         {
             var selectedNodes = DynamoSelection.Instance
@@ -110,7 +110,7 @@ namespace Dynamo.Graph.Workspaces
                 #endregion
 
                 #region Step III. Recreate the necessary connections
-                var newInputConnectors = NodesToCode.ReConnectInputConnections(externalInputConnections, codeBlockNode, workspace.Connectors);
+                var newInputConnectors = ReConnectInputConnections(externalInputConnections, codeBlockNode, workspace.Connectors);
                 foreach (var connector in newInputConnectors)
                 {
                     undoHelper.RecordCreation(connector);
