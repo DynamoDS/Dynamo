@@ -9,26 +9,18 @@ using System.Linq;
 
 namespace Dynamo.Graph.Workspaces
 {
-    public partial class WorkspaceModel
+    /// <summary>
+    /// Layout class contains methods for organizing graphs.
+    /// </summary>
+    public static class Layout
     {
-        /// <summary>
-        /// List of subgraphs for graph layout algorithm.
-        /// </summary>
-        internal List<GraphLayout.Graph> LayoutSubgraphs;
-
-        /// <summary>
-        /// List of clusters (groups of nodes) which will be processed separately
-        /// in the subgraph creation of graph layout algorithm.
-        /// </summary>
-        private List<List<GraphLayout.Node>> SubgraphClusters;
-
         /// <summary>
         /// This function wraps a few methods on the workspace model layer
         /// to set up and run the graph layout algorithm.
         /// </summary>
-        internal void DoGraphAutoLayout()
+        internal static List<GraphLayout.Graph> DoGraphAutoLayout(WorkspaceModel workspace)
         {
-            if (Nodes.Count() < 2) return;
+            if (workspace.Nodes.Count() < 2) return null;
 
             var selection = DynamoSelection.Instance.Selection;
 
@@ -37,41 +29,52 @@ namespace Dynamo.Graph.Workspaces
                 selection.All(x => x is AnnotationModel ||
                     selection.OfType<AnnotationModel>().Any(g => g.Nodes.Contains(x)));
 
-            GenerateCombinedGraph(isGroupLayout);
-            RecordUndoGraphLayout(isGroupLayout);
+
+            GenerateCombinedGraph(workspace, isGroupLayout,
+                out List<GraphLayout.Graph> layoutSubgraphs, 
+                out List<List<GraphLayout.Node>> subgraphClusters);
+
+            RecordUndoGraphLayout(workspace, isGroupLayout);
 
             // Generate subgraphs separately for each cluster
-            SubgraphClusters.ForEach(
-                x => GenerateSeparateSubgraphs(new HashSet<GraphLayout.Node>(x)));
+            subgraphClusters.ForEach(
+                x => GenerateSeparateSubgraphs(new HashSet<GraphLayout.Node>(x), layoutSubgraphs));
 
             // Deselect all nodes
-            SubgraphClusters.ForEach(c => c.ForEach(x => x.IsSelected = false));
+            subgraphClusters.ForEach(c => c.ForEach(x => x.IsSelected = false));
 
             // Run layout algorithm for each subgraph
-            LayoutSubgraphs.Skip(1).ToList().ForEach(g => RunLayoutSubgraph(g, isGroupLayout));
-            AvoidSubgraphOverlap();
-            SaveLayoutGraph();
+            layoutSubgraphs.Skip(1).ToList().ForEach(g => RunLayoutSubgraph(g, isGroupLayout));
+            AvoidSubgraphOverlap(layoutSubgraphs);
+            SaveLayoutGraph(workspace, layoutSubgraphs);
 
             // Restore the workspace model selection information
             selection.ToList().ForEach(x => x.Select());
+
+            return layoutSubgraphs;
         }
 
         /// <summary>
+        /// <param name="workspace">A <see cref="WorkspaceModel"/>.</param>
         /// This method extracts all models from the workspace and puts them
         /// into the combined graph object, LayoutSubgraphs.First()
         /// <param name="isGroupLayout">True if all the selected models are groups.</param>
+        /// <param name="layoutSubgraphs"></param>
+        /// <param name="subgraphClusters"></param>
         /// </summary>
-        private void GenerateCombinedGraph(bool isGroupLayout)
+        private static void GenerateCombinedGraph(WorkspaceModel workspace, bool isGroupLayout, 
+            out List<GraphLayout.Graph> layoutSubgraphs, out List<List<GraphLayout.Node>> subgraphClusters)
         {
-            LayoutSubgraphs = new List<GraphLayout.Graph>();
-            LayoutSubgraphs.Add(new GraphLayout.Graph());
-
-            GraphLayout.Graph combinedGraph = LayoutSubgraphs.First();
-            SubgraphClusters = new List<List<GraphLayout.Node>>();
+            layoutSubgraphs = new List<GraphLayout.Graph>
+            {
+                new GraphLayout.Graph()
+            };
+            var combinedGraph = layoutSubgraphs.First();
+            subgraphClusters = new List<List<GraphLayout.Node>>();
 
             if (!isGroupLayout)
             {
-                foreach (AnnotationModel group in Annotations)
+                foreach (AnnotationModel group in workspace.Annotations)
                 {
                     // Treat a group as a graph layout node/vertex
                     combinedGraph.AddNode(group.GUID, group.Width, group.Height, group.X, group.Y,
@@ -79,11 +82,11 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
-            foreach (NodeModel node in Nodes)
+            foreach (NodeModel node in workspace.Nodes)
             {
                 if (!isGroupLayout)
                 {
-                    AnnotationModel group = Annotations.Where(
+                    AnnotationModel group = workspace.Annotations.Where(
                         g => g.Nodes.Contains(node)).ToList().FirstOrDefault();
 
                     // Do not process nodes within groups
@@ -101,14 +104,14 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
-            foreach (ConnectorModel edge in Connectors)
+            foreach (ConnectorModel edge in workspace.Connectors)
             {
                 if (!isGroupLayout)
                 {
                     AnnotationModel startGroup = null, endGroup = null;
-                    startGroup = Annotations.Where(
+                    startGroup = workspace.Annotations.Where(
                         g => g.Nodes.Contains(edge.Start.Owner)).ToList().FirstOrDefault();
-                    endGroup = Annotations.Where(
+                    endGroup = workspace.Annotations.Where(
                         g => g.Nodes.Contains(edge.End.Owner)).ToList().FirstOrDefault();
 
                     // Treat a group as a node, but do not process edges within a group
@@ -128,9 +131,9 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
-            foreach (NoteModel note in Notes)
+            foreach (NoteModel note in workspace.Notes)
             {
-                AnnotationModel group = Annotations.Where(
+                AnnotationModel group = workspace.Annotations.Where(
                     g => g.Nodes.Contains(note)).ToList().FirstOrDefault();
 
                 GraphLayout.Node nd = null;
@@ -171,7 +174,7 @@ namespace Dynamo.Graph.Workspaces
                 // Add all nodes to one big cluster
                 List<GraphLayout.Node> bigcluster = new List<GraphLayout.Node>();
                 bigcluster.AddRange(combinedGraph.Nodes);
-                SubgraphClusters.Add(bigcluster);
+                subgraphClusters.Add(bigcluster);
             }
             else
             {
@@ -180,7 +183,7 @@ namespace Dynamo.Graph.Workspaces
                 {
                     List<GraphLayout.Node> cluster = new List<GraphLayout.Node>();
                     cluster.AddRange(group.Nodes.OfType<NodeModel>().Select(x => combinedGraph.FindNode(x.GUID)));
-                    SubgraphClusters.Add(cluster);
+                    subgraphClusters.Add(cluster);
                 }
             }
 
@@ -189,16 +192,17 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// This method adds relevant models to the undo recorder.
         /// </summary>
+        /// <param name="workspace">A <see cref="WorkspaceModel"/>.</param>
         /// <param name="isGroupLayout">True if all the selected models are groups.</param>
-        private void RecordUndoGraphLayout(bool isGroupLayout)
+        private static void RecordUndoGraphLayout(WorkspaceModel workspace, bool isGroupLayout)
         {
             List<ModelBase> undoItems = new List<ModelBase>();
 
             if (!isGroupLayout)
             {
                 // Add all selected items to the undo recorder
-                undoItems.AddRange(Nodes);
-                undoItems.AddRange(Notes);
+                undoItems.AddRange(workspace.Nodes);
+                undoItems.AddRange(workspace.Notes);
                 if (DynamoSelection.Instance.Selection.Count > 0)
                 {
                     undoItems = undoItems.Where(x => x.IsSelected).ToList();
@@ -207,7 +211,7 @@ namespace Dynamo.Graph.Workspaces
             else
             {
                 // Add all models inside selected groups
-                foreach (var group in Annotations)
+                foreach (var group in workspace.Annotations)
                 {
                     if (group.IsSelected)
                     {
@@ -217,7 +221,7 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
-            WorkspaceModel.RecordModelsForModification(undoItems, UndoRecorder);
+            WorkspaceModel.RecordModelsForModification(undoItems, workspace.UndoRecorder);
         }
 
         /// <summary>
@@ -226,10 +230,11 @@ namespace Dynamo.Graph.Workspaces
         /// until all selected nodes have been processed.
         /// </summary>
         /// <param name="nodes">A cluster of nodes to be separated into subgraphs.</param>
-        private void GenerateSeparateSubgraphs(HashSet<GraphLayout.Node> nodes)
+        /// <param name="layoutSubgraphs">A collection of layout subgraphs.</param>
+        private static void GenerateSeparateSubgraphs(HashSet<GraphLayout.Node> nodes, List<GraphLayout.Graph> layoutSubgraphs)
         {
             int processed = 0;
-            var combinedGraph = LayoutSubgraphs.First();
+            var combinedGraph = layoutSubgraphs.First();
             GraphLayout.Graph graph = new GraphLayout.Graph();
             Queue<GraphLayout.Node> queue = new Queue<GraphLayout.Node>();
 
@@ -243,7 +248,7 @@ namespace Dynamo.Graph.Workspaces
                     {
                         // Save the subgraph and subtract these nodes from the combined graph
 
-                        LayoutSubgraphs.Add(graph);
+                        layoutSubgraphs.Add(graph);
                         nodes.ExceptWith(graph.Nodes);
                         combinedGraph.Nodes.ExceptWith(graph.Nodes);
                         graph = new GraphLayout.Graph();
@@ -288,7 +293,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="graph">The subgraph to be processed.</param>
         /// <param name="isGroupLayout">True if all selected models are groups.</param>
-        private void RunLayoutSubgraph(GraphLayout.Graph graph, bool isGroupLayout)
+        private static void RunLayoutSubgraph(GraphLayout.Graph graph, bool isGroupLayout)
         {
             // Select relevant nodes
             graph.Nodes.ToList().ForEach(x => x.IsSelected = true);
@@ -314,7 +319,7 @@ namespace Dynamo.Graph.Workspaces
         /// This method repeatedly shifts subgraphs away vertically from each other
         /// when there are any two nodes from different subgraphs overlapping.
         /// </summary>
-        private void AvoidSubgraphOverlap()
+        private static void AvoidSubgraphOverlap(List<GraphLayout.Graph> layoutSubgraphs)
         {
             bool done;
 
@@ -322,9 +327,9 @@ namespace Dynamo.Graph.Workspaces
             {
                 done = true;
 
-                foreach (var g1 in LayoutSubgraphs.Skip(1))
+                foreach (var g1 in layoutSubgraphs.Skip(1))
                 {
-                    foreach (var g2 in LayoutSubgraphs.Skip(1))
+                    foreach (var g2 in layoutSubgraphs.Skip(1))
                     {
                         // The first subgraph's center point must be higher than the second subgraph
                         if (!g1.Equals(g2) && (g1.GraphCenterY + g1.OffsetY <= g2.GraphCenterY + g2.OffsetY))
@@ -360,12 +365,12 @@ namespace Dynamo.Graph.Workspaces
         /// This method pushes changes from the GraphLayout.Graph objects
         /// back to the workspace models.
         /// </summary>
-        private void SaveLayoutGraph()
+        private static void SaveLayoutGraph(WorkspaceModel workspace, List<GraphLayout.Graph> layoutSubgraphs)
         {
             // Assign coordinates to nodes inside groups
-            foreach (var group in Annotations)
+            foreach (var group in workspace.Annotations)
             {
-                GraphLayout.Graph graph = LayoutSubgraphs
+                GraphLayout.Graph graph = layoutSubgraphs
                     .FirstOrDefault(g => g.FindNode(group.GUID) != null);
 
                 if (graph != null)
@@ -394,9 +399,9 @@ namespace Dynamo.Graph.Workspaces
             }
 
             // Assign coordinates to nodes outside groups
-            foreach (var node in Nodes)
+            foreach (var node in workspace.Nodes)
             {
-                GraphLayout.Graph graph = LayoutSubgraphs
+                GraphLayout.Graph graph = layoutSubgraphs
                     .FirstOrDefault(g => g.FindNode(node.GUID) != null);
 
                 if (graph != null)
@@ -407,7 +412,7 @@ namespace Dynamo.Graph.Workspaces
                     node.X = n.X;
                     node.Y = n.Y + n.NotesHeight + offsetY;
                     node.ReportPosition();
-                    HasUnsavedChanges = true;
+                    workspace.HasUnsavedChanges = true;
 
                     double noteOffset = -n.NotesHeight;
                     foreach (NoteModel note in n.LinkedNotes)
