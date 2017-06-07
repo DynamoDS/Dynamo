@@ -1422,7 +1422,7 @@ namespace Dynamo.ViewModels
         /// <returns>true if save was successful, false otherwise</returns>
         internal bool ShowSaveDialogIfNeededAndSave(WorkspaceModel workspace)
         {
-            // crash sould always allow save as
+            // crash should always allow save as
             if (!String.IsNullOrEmpty(workspace.FileName) && !DynamoModel.IsCrashing)
             {
                 SaveAs(workspace.FileName, workspace);

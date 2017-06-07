@@ -54,11 +54,7 @@ namespace Autodesk.Workspaces
             var type = Type.GetType(obj["$type"].Value<string>());
 
             //if the id is not a guid, makes a guid based on the id of the node
-            Guid nodeId;
-            if (!Guid.TryParse((obj["Id"].Value<string>()), out nodeId))
-            {
-                nodeId = GuidUtility.Create(GuidUtility.UrlNamespace, (obj["Id"].Value<string>()));
-            }
+            Guid nodeId = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
 
             var guid = nodeId;
             var displayName = obj["DisplayName"].Value<string>();
@@ -76,19 +72,19 @@ namespace Autodesk.Workspaces
                 node = manager.CreateCustomNodeInstance(functionId);
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
-            else if(type == typeof(CodeBlockNodeModel))
+            else if (type == typeof(CodeBlockNodeModel))
             {
                 var code = obj["Code"].Value<string>();
                 node = new CodeBlockNodeModel(code, guid, 0.0, 0.0, libraryServices, ElementResolver);
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
-            else if(typeof(DSFunctionBase).IsAssignableFrom(type))
+            else if (typeof(DSFunctionBase).IsAssignableFrom(type))
             {
                 var mangledName = obj["FunctionSignature"].Value<string>();
 
                 var description = libraryServices.GetFunctionDescriptor(mangledName);
 
-                if(type == typeof(DSVarArgFunction))
+                if (type == typeof(DSVarArgFunction))
                 {
                     node = new DSVarArgFunction(description);
                     // The node syncs with the function definition.
@@ -96,10 +92,10 @@ namespace Autodesk.Workspaces
                     var varg = (DSVarArgFunction)node;
                     varg.VarInputController.SetNumInputs(inPorts.Count());
                 }
-                else if(type == typeof(DSFunction))
+                else if (type == typeof(DSFunction))
                 {
                     node = new DSFunction(description);
-                    
+
                 }
                 RemapPorts(node, inPorts, outPorts, resolver);
             }
@@ -128,7 +124,7 @@ namespace Autodesk.Workspaces
             // so that they are available for entities which are deserialized later.
             serializer.ReferenceResolver.AddReference(serializer.Context, node.GUID.ToString(), node);
 
-            foreach(var p in node.InPorts)
+            foreach (var p in node.InPorts)
             {
                 serializer.ReferenceResolver.AddReference(serializer.Context, p.GUID.ToString(), p);
             }
@@ -138,6 +134,8 @@ namespace Autodesk.Workspaces
             }
             return node;
         }
+
+       
 
         /// <summary>
         /// Map old Guids to new Models in the IdReferenceResolver.
@@ -352,22 +350,15 @@ namespace Autodesk.Workspaces
             var obj = JObject.Load(reader);
             var title = obj["Title"].Value<string>();
             //if the id is not a guid, makes a guid based on the id of the model
-            Guid annotationId;
-            if (!Guid.TryParse((obj["Id"].Value<string>()), out annotationId))
-            {
-                annotationId = GuidUtility.Create(GuidUtility.UrlNamespace, (obj["Id"].Value<string>()));
-            }
+            Guid annotationId =  GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
 
             // This is a collection of string Guids, which
             // should be accessible in the ReferenceResolver.
             var models = obj["Nodes"].Values<JValue>();
 
             var existing = models.Select(m => {
-                Guid modelId;
-                if (!Guid.TryParse(m.Value<string>(), out modelId))
-                {
-                    modelId = GuidUtility.Create(GuidUtility.UrlNamespace,m.Value<string>());
-                }
+                Guid modelId = GuidUtility.tryParseOrCreateGuid(m.Value<string>());
+              
                 return serializer.ReferenceResolver.ResolveReference(serializer.Context, modelId.ToString());
                 });
 
@@ -425,16 +416,8 @@ namespace Autodesk.Workspaces
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
 
-            Guid startIdGuid;
-            if (!Guid.TryParse((obj["Id"].Value<string>()), out startIdGuid))
-            {
-                startIdGuid = GuidUtility.Create(GuidUtility.UrlNamespace, startId);
-            }
-            Guid endIdGuid;
-            if (!Guid.TryParse((obj["Id"].Value<string>()), out endIdGuid))
-            {
-                endIdGuid = GuidUtility.Create(GuidUtility.UrlNamespace, endId);
-            }
+            Guid startIdGuid = GuidUtility.tryParseOrCreateGuid(startId);
+            Guid endIdGuid = GuidUtility.tryParseOrCreateGuid(endId);
 
             var startPort = (PortModel)resolver.ResolveReference(serializer.Context, startIdGuid.ToString());
             var endPort = (PortModel)resolver.ResolveReference(serializer.Context, endIdGuid.ToString());
@@ -453,11 +436,8 @@ namespace Autodesk.Workspaces
             }
 
             //if the id is not a guid, makes a guid based on the id of the model
-            Guid connectorId;
-            if (!Guid.TryParse((obj["Id"].Value<string>()), out connectorId))
-            {
-                connectorId = GuidUtility.Create(GuidUtility.UrlNamespace, (obj["Id"].Value<string>()));
-            }
+            Guid connectorId = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
+
             return new ConnectorModel(startPort, endPort, connectorId);
         }
 
@@ -473,6 +453,43 @@ namespace Autodesk.Workspaces
             writer.WritePropertyName("Id");
             writer.WriteValue(connector.GUID.ToString());
             writer.WriteEndObject();
+        }
+    }
+    /// <summary>
+    /// This converter is used to attempt to convert an id string to a guid - if the id
+    /// is not a guid string, it will create a UUID based on the string.
+    /// </summary>
+    public class IdToGuidConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(Guid);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var obj = JValue.Load(reader);
+            Guid deterministicGuid;
+            if (!Guid.TryParse(obj.Value<string>(), out deterministicGuid))
+            {
+                Console.WriteLine("the id was not a guid, converting to a guid");
+                deterministicGuid = GuidUtility.Create(GuidUtility.UrlNamespace, obj.Value<string>());
+                Console.WriteLine(obj + " becomes " + deterministicGuid);
+            }
+            return deterministicGuid;
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool CanWrite
+        {
+            get
+            {
+                return false;
+            }
         }
     }
 

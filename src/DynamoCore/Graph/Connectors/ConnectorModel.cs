@@ -4,6 +4,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using Autodesk.Workspaces;
 
 namespace Dynamo.Graph.Connectors
 {
@@ -41,7 +42,7 @@ namespace Dynamo.Graph.Connectors
         public PortModel End { get; private set; }
 
         /// <summary>
-        /// ID of the Connector, which is unique on in the graph.
+        /// ID of the Connector, which is unique within the graph.
         /// </summary>
         [JsonProperty("Id")]
         [JsonConverter(typeof(IdToGuidConverter))]
