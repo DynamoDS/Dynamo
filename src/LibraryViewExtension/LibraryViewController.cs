@@ -119,7 +119,6 @@ namespace Dynamo.LibraryUI
             }));
         }
 
-        /// <summary>
         /// Call this method to import a zero touch library. It will prompt
         /// user to select the zero touch dll.
         /// </summary>
@@ -283,6 +282,9 @@ namespace Dynamo.LibraryUI
                 var stream = LoadResource(resource);
                 resourceFactory.RegisterHandler(url, ResourceHandler.FromStream(stream));
             }
+
+            //Register provider for searching node data
+            resourceFactory.RegisterProvider(SearchResultDataProvider.serviceIdentifier, new SearchResultDataProvider(model.SearchModel));
         }
 
         private void RegisterResources(ChromiumWebBrowser browser)

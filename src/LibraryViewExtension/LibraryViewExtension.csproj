@@ -81,6 +81,7 @@
     <Compile Include="Handlers\ResourceHandlerFactory.cs" />
     <Compile Include="Handlers\ResourceProvider.cs" />
     <Compile Include="Handlers\DllResourceProvider.cs" />
+    <Compile Include="Handlers\SearchResultDataProvider.cs" />
     <Compile Include="LibraryViewController.cs" />
     <Compile Include="LibraryViewExtension.cs" />
     <Compile Include="LibraryViewToolTip.cs" />
