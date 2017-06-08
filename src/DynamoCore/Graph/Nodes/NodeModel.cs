@@ -74,7 +74,7 @@ namespace Dynamo.Graph.Nodes
         /// The unique name that was created the node by
         /// </summary>
         [JsonIgnore]
-        public virtual string CreationName { get { return this.NameAttribute; } }
+        public virtual string CreationName { get { return this.Name; } }
 
         /// <summary>
         /// This property queries all the Upstream Nodes  for a given node, ONLY after the graph is loaded.
@@ -376,26 +376,6 @@ namespace Dynamo.Graph.Nodes
                     // Mark node for update
                     OnNodeModified();
                 }
-            }
-        }
-
-        /// <summary>
-        ///  If the node has a name attribute, return it.  Otherwise return empty string.
-        /// </summary>
-        [JsonIgnore]
-        public string NameAttribute
-        {
-            get
-            {
-                Type type = GetType();
-                object[] attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), false);
-                if (type.Namespace == "Dynamo.Graph.Nodes" && !type.IsAbstract && attribs.Length > 0
-                    && type.IsSubclassOf(typeof(NodeModel)))
-                {
-                    var elCatAttrib = attribs[0] as NodeNameAttribute;
-                    return elCatAttrib.Name;
-                }
-                return "";
             }
         }
 
@@ -1631,7 +1611,7 @@ namespace Dynamo.Graph.Nodes
             if (names.Count != descriptions.Count)
             {
                 Log(String.Concat(
-                        NameAttribute,
+                        Name,
                         ": ",
                         Properties.Resources.PortsNameDescriptionDoNotEqualWarningMessage));
 

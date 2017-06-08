@@ -33,7 +33,7 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                return this.Controller != null ? this.Controller.Definition.MangledName : this.NameAttribute;
+                return this.Controller != null ? this.Controller.Definition.MangledName : this.Name;
             }
         }
     }
