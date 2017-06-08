@@ -24,9 +24,6 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using Newtonsoft.Json;
 using Dynamo.Wpf.ViewModels.Core;
-using Dynamo.Engine;
-using Dynamo.Core;
-using Dynamo.Properties;
 using System.Diagnostics;
 
 namespace Dynamo.ViewModels
@@ -46,47 +43,17 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Represents maximum value of workspace zoom
         /// </summary>
+        [JsonIgnore]
         public const double ZOOM_MAXIMUM = 4.0;
 
         /// <summary>
         /// Represents minimum value of workspace zoom
         /// </summary>
+        [JsonIgnore]
         public const double ZOOM_MINIMUM = 0.01;
         #endregion
 
-        #region Properties and Fields
-
-        public DynamoViewModel DynamoViewModel { get; private set; }
-        public readonly WorkspaceModel Model;
-
-        private bool _canFindNodesFromElements = false;
-
-        public event ZoomEventHandler RequestZoomToViewportCenter;
-        public event ZoomEventHandler RequestZoomToViewportPoint;
-        public event ZoomEventHandler RequestZoomToFitView;
-
-        public event NodeEventHandler RequestCenterViewOnElement;
-
-        public event ViewEventHandler RequestAddViewToOuterCanvas;
-        public event SelectionEventHandler RequestSelectionBoxUpdate;
-        public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
-        public PortViewModel portViewModel { get; set; }
-        public bool IsSnapping { get; set; }
-
-        /// <summary>
-        /// Gets the Camera Data. This is used when serializing Camera Data in the View block
-        /// of Graph.Json.
-        /// </summary>
-        
-        public CameraData Camera
-        {
-            get { return DynamoViewModel.BackgroundPreviewViewModel.GetCameraInformation(); }
-        }
-
-        /// <summary>
-        /// ViewModel that is used in InCanvasSearch in context menu and called by Shift+DoubleClick.
-        /// </summary>
-        public SearchViewModel InCanvasSearchViewModel { get; private set; }
+        #region events 
 
         /// <summary>
         ///     Function that can be used to respond to a changed workspace Zoom amount.
@@ -114,6 +81,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event ZoomEventHandler RequestZoomToViewportCenter;
         /// <summary>
         /// For requesting registered workspace to zoom in center
         /// </summary>
@@ -127,6 +95,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event ZoomEventHandler RequestZoomToViewportPoint;
         /// <summary>
         /// For requesting registered workspace to zoom in out from a point
         /// </summary>
@@ -140,6 +109,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event ZoomEventHandler RequestZoomToFitView;
         /// <summary>
         /// For requesting registered workspace to zoom in or out to fitview
         /// </summary>
@@ -153,25 +123,28 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event NodeEventHandler RequestCenterViewOnElement;
         internal virtual void OnRequestCenterViewOnElement(object sender, ModelEventArgs e)
         {
             if (RequestCenterViewOnElement != null)
                 RequestCenterViewOnElement(this, e);
         }
 
-
+        public event ViewEventHandler RequestAddViewToOuterCanvas;
         public virtual void OnRequestAddViewToOuterCanvas(object sender, ViewEventArgs e)
         {
             if (RequestAddViewToOuterCanvas != null)
                 RequestAddViewToOuterCanvas(this, e);
         }
 
+        public event SelectionEventHandler RequestSelectionBoxUpdate;
         public virtual void OnRequestSelectionBoxUpdate(object sender, SelectionBoxUpdateArgs e)
         {
             if (RequestSelectionBoxUpdate != null)
                 RequestSelectionBoxUpdate(this, e);
         }
 
+        public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
         public virtual void OnWorkspacePropertyEditRequested()
         {
             // extend this for all workspaces
@@ -189,10 +162,45 @@ namespace Dynamo.ViewModels
                 RequestShowInCanvasSearch(flag);
         }
 
+        #endregion
+
+        #region Properties and Fields
+
+        [JsonIgnore]
+        public DynamoViewModel DynamoViewModel { get; private set; }
+
+        [JsonIgnore]
+        public readonly WorkspaceModel Model;
+
+        private bool _canFindNodesFromElements = false;
+
+        [JsonIgnore]
+        public PortViewModel portViewModel { get; set; }
+
+        [JsonIgnore]
+        public bool IsSnapping { get; set; }
+
+        /// <summary>
+        /// Gets the Camera Data. This is used when serializing Camera Data in the View block
+        /// of Graph.Json.
+        /// </summary>
+        [JsonProperty("Cameras")]
+        public CameraData Camera
+        {
+            get { return DynamoViewModel.BackgroundPreviewViewModel.GetCameraInformation(); }
+        }
+
+        /// <summary>
+        /// ViewModel that is used in InCanvasSearch in context menu and called by Shift+DoubleClick.
+        /// </summary>
+        [JsonIgnore]
+        public SearchViewModel InCanvasSearchViewModel { get; private set; }
+
         /// <summary>
         /// Cursor Property Binding for WorkspaceView
         /// </summary>
         private Cursor currentCursor = null;
+        [JsonIgnore]
         public Cursor CurrentCursor
         {
             get { return currentCursor; }
@@ -203,6 +211,7 @@ namespace Dynamo.ViewModels
         /// Force Cursor Property Binding for WorkspaceView
         /// </summary>
         private bool isCursorForced = false;
+        [JsonIgnore]
         public bool IsCursorForced
         {
             get { return isCursorForced; }
@@ -210,21 +219,29 @@ namespace Dynamo.ViewModels
         }
 
         private CompositeCollection _workspaceElements = new CompositeCollection();
+        [JsonIgnore]
         public CompositeCollection WorkspaceElements { get { return _workspaceElements; } }
-
+        
         ObservableCollection<ConnectorViewModel> _connectors = new ObservableCollection<ConnectorViewModel>();
-        private ObservableCollection<Watch3DFullscreenViewModel> _watches = new ObservableCollection<Watch3DFullscreenViewModel>();
-        ObservableCollection<NodeViewModel> _nodes = new ObservableCollection<NodeViewModel>();
-        ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
-        ObservableCollection<InfoBubbleViewModel> _errors = new ObservableCollection<InfoBubbleViewModel>();
-        ObservableCollection<AnnotationViewModel> _annotations = new ObservableCollection<AnnotationViewModel>();
-
+        [JsonIgnore]
         public ObservableCollection<ConnectorViewModel> Connectors { get { return _connectors; } }
+
+        ObservableCollection<NodeViewModel> _nodes = new ObservableCollection<NodeViewModel>();
         public ObservableCollection<NodeViewModel> Nodes { get { return _nodes; } }
+
+        ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
+        [JsonIgnore]
         public ObservableCollection<NoteViewModel> Notes { get { return _notes; } }
+
+        ObservableCollection<InfoBubbleViewModel> _errors = new ObservableCollection<InfoBubbleViewModel>();
+        [JsonIgnore]
         public ObservableCollection<InfoBubbleViewModel> Errors { get { return _errors; } }
+
+        ObservableCollection<AnnotationViewModel> _annotations = new ObservableCollection<AnnotationViewModel>();
+        [JsonIgnore]
         public ObservableCollection<AnnotationViewModel> Annotations { get { return _annotations; } }
 
+        [JsonIgnore]
         public string Name
         {
             get
@@ -234,6 +251,7 @@ namespace Dynamo.ViewModels
                 return Model.Name;
             }
         }
+
         /// <summary>
         ///     Returns or set the X position of the workspace.
         /// </summary>
@@ -258,32 +276,39 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public string FileName
         {
             get { return Model.FileName; }
         }
 
+        [JsonIgnore]
         public bool CanEditName
         {
             get { return Model != DynamoViewModel.HomeSpace; }
         }
 
+        [JsonIgnore]
         public bool IsCurrentSpace
         {
             get { return Model == DynamoViewModel.CurrentSpace; }
         }
 
+        [JsonIgnore]
         public bool IsHomeSpace
         {
             get { return Model == DynamoViewModel.HomeSpace; }
         }
 
+        [JsonIgnore]
         public bool HasUnsavedChanges
         {
             get { return Model.HasUnsavedChanges; }
             set { Model.HasUnsavedChanges = value; }
         }
 
+        private ObservableCollection<Watch3DFullscreenViewModel> _watches = new ObservableCollection<Watch3DFullscreenViewModel>();
+        [JsonIgnore]
         public ObservableCollection<Watch3DFullscreenViewModel> Watch3DViewModels
         {
             get { return _watches; }
@@ -307,30 +332,19 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public bool CanZoomIn
         {
             get { return CanZoom(Configurations.ZoomIncrement); }
         }
 
+        [JsonIgnore]
         public bool CanZoomOut
         {
             get { return CanZoom(-Configurations.ZoomIncrement); }
         }
 
-        internal void ZoomInInternal()
-        {
-            var args = new ZoomEventArgs(Configurations.ZoomIncrement);
-            OnRequestZoomToViewportCenter(this, args);
-            ResetFitViewToggle(null);
-        }
-
-        internal void ZoomOutInternal()
-        {
-            var args = new ZoomEventArgs(-Configurations.ZoomIncrement);
-            OnRequestZoomToViewportCenter(this, args);
-            ResetFitViewToggle(null);
-        }
-
+        [JsonIgnore]
         public bool CanFindNodesFromElements
         {
             get { return _canFindNodesFromElements; }
@@ -341,11 +355,13 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public bool CanShowInfoBubble
         {
             get { return stateMachine.IsInIdleState; }
         }
 
+        [JsonIgnore]
         public bool CanRunNodeToCode
         {
             get
@@ -354,10 +370,12 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public Action FindNodesFromElements { get; set; }
 
+        [JsonIgnore]
         public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
-         
+
         #endregion
 
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
@@ -418,6 +436,20 @@ namespace Dynamo.ViewModels
             InCanvasSearchViewModel.Visible = true;
         }
 
+        internal void ZoomInInternal()
+        {
+            var args = new ZoomEventArgs(Configurations.ZoomIncrement);
+            OnRequestZoomToViewportCenter(this, args);
+            ResetFitViewToggle(null);
+        }
+
+        internal void ZoomOutInternal()
+        {
+            var args = new ZoomEventArgs(-Configurations.ZoomIncrement);
+            OnRequestZoomToViewportCenter(this, args);
+            ResetFitViewToggle(null);
+        }
+
         /// <summary>
         /// WorkspaceViewModel's Save method does a two-part serialization. First, it serializes the Workspace,
         /// then adds a View property to serialized Workspace, and sets its value to the serialized ViewModel.
@@ -438,7 +470,8 @@ namespace Dynamo.ViewModels
 
                 // Stage 2: Add the View.
                 var jo = JObject.Parse(json);
-                jo.Add("View", this.ToJson());
+                var token = JToken.Parse(this.ToJson());
+                jo.Add("View", token);
 
                 // Stage 3: Save
                 File.WriteAllText(filePath, jo.ToString());
@@ -559,7 +592,6 @@ namespace Dynamo.ViewModels
         /// Handles the port snapping on Mouse Enter.
         /// </summary>
         /// <param name="portViewModel">The port view model.</param>
-        /// <param name="eventType">Type of the event.</param>
         private void nodeViewModel_SnapInputEvent(PortViewModel portViewModel)
         {
             switch (portViewModel.EventType)
@@ -1008,11 +1040,6 @@ namespace Dynamo.ViewModels
         {
             CollapseSelectedNodes();
         }
-
-        //private void NodeFromSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
-        //{
-        //    NodeFromSelectionCommand.RaiseCanExecuteChanged();
-        //}
 
         private void AlignSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
         {

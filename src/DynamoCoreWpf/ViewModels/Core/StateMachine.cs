@@ -13,6 +13,7 @@ using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
 using ModifierKeys = System.Windows.Input.ModifierKeys;
 using Point = System.Windows.Point;
+using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels
 {
@@ -40,14 +41,26 @@ namespace Dynamo.ViewModels
         // connections are all connected to firstStartPort.
         private PortModel firstStartPort;
 
+        [JsonIgnore]
         // These properties need to be public for data-binding to work.
         public bool IsInIdleState { get { return stateMachine.IsInIdleState; } }
+
+        [JsonIgnore]
         public bool IsSelecting { get { return stateMachine.IsSelecting; } }
+
+        [JsonIgnore]
         public bool IsDragging { get { return stateMachine.IsDragging; } }
+
+        [JsonIgnore]
         public bool IsConnecting { get { return stateMachine.IsConnecting; } }
+
+        [JsonIgnore]
         public bool IsPanning { get { return stateMachine.IsPanning; } }
+
+        [JsonIgnore]
         public bool IsOrbiting { get { return stateMachine.IsOrbiting; } }
 
+        [JsonIgnore]
         internal ConnectorViewModel FirstActiveConnector
         {
             get {

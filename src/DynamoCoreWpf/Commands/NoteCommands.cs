@@ -1,10 +1,12 @@
 ﻿using Dynamo.UI.Commands;
+using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels
 {
     public partial class NoteViewModel
     {
         private DelegateCommand _selectCommand;
+        [JsonIgnore]
         public DelegateCommand SelectCommand
         {
             get
@@ -16,6 +18,7 @@ namespace Dynamo.ViewModels
         }
 
         private DelegateCommand _createGroupCommand;
+        [JsonIgnore]
         public DelegateCommand CreateGroupCommand
         {
             get
@@ -29,6 +32,7 @@ namespace Dynamo.ViewModels
         }
 
         private DelegateCommand _ungroupCommand;
+        [JsonIgnore]
         public DelegateCommand UngroupCommand
         {
             get
@@ -42,6 +46,7 @@ namespace Dynamo.ViewModels
         }
 
         private DelegateCommand _addToGroupCommand;
+        [JsonIgnore]
         public DelegateCommand AddToGroupCommand
         {
             get

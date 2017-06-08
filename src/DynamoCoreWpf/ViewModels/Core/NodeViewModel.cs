@@ -16,7 +16,7 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Selection;
 using Dynamo.Wpf.ViewModels.Core;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels
 {
@@ -37,6 +37,7 @@ namespace Dynamo.ViewModels
         public event SnapInputEventHandler SnapInputEvent;
         #endregion
 
+        [JsonIgnore]
         public Action OnMouseLeave;
 
         #region private members
@@ -52,11 +53,17 @@ namespace Dynamo.ViewModels
 
         #region public members
 
+        [JsonIgnore]
         public readonly DynamoViewModel DynamoViewModel;
+
+        [JsonIgnore]
         public readonly WorkspaceViewModel WorkspaceViewModel;
+
+        [JsonIgnore]
         public readonly Size? PreferredSize;
 
         private bool previewPinned;
+        [JsonIgnore]
         public bool PreviewPinned {
             get { return previewPinned; }
             set
@@ -70,25 +77,31 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; } }
 
+        [JsonIgnore]
         public LacingStrategy ArgumentLacing
         {
             get { return nodeLogic.ArgumentLacing; }
         }
 
+        [JsonIgnore]
         public NodeModel NodeLogic
         {
             get { return nodeLogic; }
         }
 
+        [JsonIgnore]
         public InfoBubbleViewModel ErrorBubble { get; set; }
 
+        [JsonIgnore]
         public string ToolTipText
         {
             get { return nodeLogic.ToolTipText; }
         }
 
+        [JsonIgnore]
         public ObservableCollection<PortViewModel> InPorts
         {
             get { return inPorts; }
@@ -99,6 +112,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public ObservableCollection<PortViewModel> OutPorts
         {
             get { return outPorts; }
@@ -109,6 +123,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public bool IsSelected
         {
             get
@@ -117,6 +132,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public bool IsInput
         {
             get
@@ -125,6 +141,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public bool IsSetAsInput
         {
             get
@@ -141,22 +158,26 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public string NickName
         {
             get { return nodeLogic.NickName; }
             set { nodeLogic.NickName = value; }
         }
 
+        [JsonIgnore]
         public ElementState State
         {
             get { return nodeLogic.State; }
         }
 
+        [JsonIgnore]
         public string Description
         {
             get { return nodeLogic.Description; }
         }
 
+        [JsonIgnore]
         public bool IsCustomFunction
         {
             get { return nodeLogic.IsCustomFunction ? true : false; }
@@ -165,6 +186,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Element's left position is two-way bound to this value
         /// </summary>
+        [JsonIgnore]
         public double Left
         {
             get { return nodeLogic.X; }
@@ -178,6 +200,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Element's top position is two-way bound to this value
         /// </summary>
+        [JsonIgnore]
         public double Top
         {
             get { return nodeLogic.Y; }
@@ -201,6 +224,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// ZIndex represents the order on the z-plane in which nodes appear.
         /// </summary>
+        [JsonIgnore]
         public int ZIndex
         {
             get { return zIndex; }
@@ -215,6 +239,7 @@ namespace Dynamo.ViewModels
         /// Input grid's enabled state is now bound to this property
         /// which tracks the node model's InteractionEnabled property
         /// </summary>
+        [JsonIgnore]
         public bool IsInteractionEnabled
         {
             get { return true; }
@@ -228,6 +253,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public bool IsUpstreamVisible
         {
             get
@@ -236,6 +262,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public Visibility PeriodicUpdateVisibility
         {
             get
@@ -245,22 +272,27 @@ namespace Dynamo.ViewModels
                     : Visibility.Collapsed;
             }
         }
+
+        [JsonIgnore]
         public bool EnablePeriodicUpdate
         {
             get { return nodeLogic.CanUpdatePeriodically; }
             set { nodeLogic.CanUpdatePeriodically = value; }
         }
 
+        [JsonIgnore]
         public bool ShowsVisibilityToggles
         {
             get { return true; }
         }
 
+        [JsonIgnore]
         public bool IsPreviewInsetVisible
         {
             get { return WorkspaceViewModel.Model is HomeWorkspaceModel && nodeLogic.ShouldDisplayPreview; }
         }
 
+        [JsonIgnore]
         public bool ShouldShowGlyphBar
         {
             get { return IsPreviewInsetVisible || ArgumentLacing != LacingStrategy.Disabled; }
@@ -269,6 +301,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Enable or disable text labels on nodes.
         /// </summary>
+        [JsonIgnore]
         public bool IsDisplayingLabels
         {
             get { return nodeLogic.DisplayLabels; }
@@ -279,6 +312,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public bool CanDisplayLabels
         {
             get
@@ -292,6 +326,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public string ASTText
         {
             get { return astText; }
@@ -302,6 +337,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public bool ShowDebugASTs
         {
             get { return DynamoViewModel.Model.DebugSettings.ShowDebugASTs; }
@@ -311,6 +347,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public bool WillForceReExecuteOfNode
         {
             get
@@ -320,6 +357,7 @@ namespace Dynamo.ViewModels
         }
 
         private bool showExectionPreview;
+        [JsonIgnore]
         public bool ShowExecutionPreview
         {
             get
@@ -334,6 +372,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public PreviewState PreviewState
         {
             get
@@ -353,6 +392,7 @@ namespace Dynamo.ViewModels
         }
 
         private bool isNodeNewlyAdded;
+        [JsonIgnore]
         public bool IsNodeAddedRecently
         {
             get
@@ -371,6 +411,7 @@ namespace Dynamo.ViewModels
         /// <value>
         ///   <c>true</c> if this instance is frozen; otherwise, <c>false</c>.
         /// </value>
+        [JsonIgnore]
         public bool IsFrozen
         {
             get
@@ -384,13 +425,14 @@ namespace Dynamo.ViewModels
                 NodeModel.IsFrozen = value;                    
             }
         }
-        
+
         /// <summary>
         /// A flag indicating whether the node is set to freeze by the user.
         /// </summary>
         /// <value>
         ///  Returns true if the node has been frozen explicitly by the user, otherwise false.
-        /// </value>        
+        /// </value>  
+        [JsonIgnore]
         public bool IsFrozenExplicitly
         {
             get
@@ -413,6 +455,7 @@ namespace Dynamo.ViewModels
         ///  This will return false if this node is not the root of the freeze operation, otherwise it will return 
         ///  true.
         /// </value>
+        [JsonIgnore]
         public bool CanToggleFrozen
         {
             get
