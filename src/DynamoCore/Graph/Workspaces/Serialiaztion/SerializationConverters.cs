@@ -59,8 +59,8 @@ namespace Autodesk.Workspaces
             var displayName = obj["DisplayName"].Value<string>();
 
            
-            var inPorts = obj["InputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
-            var outPorts = obj["OutputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
+            var inPorts = obj["Inputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
+            var outPorts = obj["Outputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
 
