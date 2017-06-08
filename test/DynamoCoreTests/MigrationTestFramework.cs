@@ -14,6 +14,7 @@ namespace Dynamo.Tests
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("DSOffice.dll");
             libraries.Add("FunctionObject.ds");
+            libraries.Add("BuiltIn.ds");
             base.GetLibrariesToPreload(libraries);
         }
 

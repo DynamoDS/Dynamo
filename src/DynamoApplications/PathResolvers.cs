@@ -96,6 +96,7 @@ namespace Dynamo.Applications
                 "DSCoreNodes.dll",
                 "DSIronPython.dll",
                 "FunctionObject.ds",
+                "BuiltIn.ds",
                 "DynamoConversions.dll",
                 "DynamoUnits.dll",
             };
