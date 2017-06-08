@@ -1,5 +1,7 @@
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Engine;
+using Dynamo.Migration;
+using System.Linq;
 
 namespace Dynamo.Graph.Nodes.ZeroTouch
 {
@@ -49,6 +51,28 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             : base(new ZeroTouchNodeController<FunctionDescriptor>(functionDescription)) 
         {
         }
+
+        [NodeMigration(version: "2.0.0.0")]
+        public static NodeMigrationData MigrateGetImportedObjects(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            var node = data.MigratedNodes.ElementAt(0);
+
+            if (node.GetAttribute("function").Equals("Dynamo.Translation.FileLoader.GetImportedObjects"))
+            {
+                var nodeGuid = node.GetAttribute("guid");
+                var inputConnector = data.FindFirstConnector(new PortId(nodeGuid, 0, PortType.Input));
+                var outputConnector = data.FindFirstConnector(new PortId(nodeGuid, 0, PortType.Output));
+
+                // Reconnect the input node and the output node
+                inputConnector.SetAttribute("end", outputConnector.GetAttribute("end"));
+                migrationData.CreateConnector(inputConnector);
+            }
+            else
+            {
+                migrationData.AppendNode(node);
+            }
+            return migrationData;
+        }
     }
 }
-
