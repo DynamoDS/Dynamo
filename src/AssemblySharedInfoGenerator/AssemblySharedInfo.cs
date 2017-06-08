@@ -46,11 +46,7 @@ using System.Runtime.InteropServices;
 // in AssemblyVersionInfo.cs so that it can be easily incremented by the
 // automated build process.
 
-
-[assembly: AssemblyVersion("2.0.0.5245")]
-
-
-
+[assembly: AssemblyVersion("2.0.0.4057")]
 
 // By default, the "Product version" shown in the file properties window is
 // the same as the value specified for AssemblyFileVersionAttribute.
@@ -69,7 +65,6 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-
-[assembly: AssemblyFileVersion("2.0.0.5245")]
+[assembly: AssemblyFileVersion("2.0.0.4057")]
 
 
