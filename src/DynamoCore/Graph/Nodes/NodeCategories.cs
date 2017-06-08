@@ -8,7 +8,6 @@ using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Library;
-using Newtonsoft.Json.Linq;
 using ProtoCore;
 
 namespace Dynamo.Graph.Nodes
