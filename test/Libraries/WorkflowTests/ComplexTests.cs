@@ -624,8 +624,8 @@ namespace Dynamo.Tests
             var codeBlock = "75b9d0a3-e954-42b5-8ccf-66845b122e3f";
             AssertPreviewValue(codeBlock,true);
 
-            // text writing to csv, persistent warning should be shown
-            // since the node is obsolete
+            // text writing to csv, the node is obsolete but 
+            // is migrated, so no warning should be shown on this node
             var writeCSV = "3ddc75fb-e607-4932-8e08-f215ee86211e";
             nodeModel = workspace.NodeFromWorkspace(writeCSV);
             Assert.AreEqual(ElementState.Active, nodeModel.State);
