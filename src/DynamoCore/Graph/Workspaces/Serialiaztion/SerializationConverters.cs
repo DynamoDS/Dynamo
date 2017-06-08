@@ -328,7 +328,7 @@ namespace Autodesk.Workspaces
             writer.WriteEndArray();
 
             // Bindings
-            writer.WritePropertyName(Configurations.SessionTraceDataTag);
+            writer.WritePropertyName("Bindings");
             writer.WriteStartArray();
             // Selecting all nodes that are either a DSFunction,
             // a DSVarArgFunction or a CodeBlockNodeModel into a list.
@@ -343,7 +343,7 @@ namespace Autodesk.Workspaces
             // serialize given node-data-list pairs into an Json.
             if (nodeTraceDataList.Any())
             {
-                writer.WritePropertyName(Configurations.NodeTraceDataTag);
+                writer.WritePropertyName(Configurations.NodeTraceDataXmlTag);
                 foreach (var pair in nodeTraceDataList)
                 {
                     // Set the node ID attribute for this element.
@@ -353,7 +353,7 @@ namespace Autodesk.Workspaces
                     writer.WriteStartArray();
                     foreach (var data in pair.Value)
                     {
-                        writer.WritePropertyName(Configurations.CallsiteTraceDataTag);
+                        writer.WritePropertyName(Configurations.CallsiteTraceDataXmlTag);
                         writer.WriteValue(Configurations.CallSiteID);
                         writer.WriteValue(data.ID);
                         writer.WriteValue(data.Data);

@@ -292,7 +292,7 @@ namespace Dynamo.Graph.Nodes
             }
 
             var childNodes = document.DocumentElement.ChildNodes.Cast<XmlElement>();
-            var sessionXmlTagName = Configurations.SessionTraceDataTag;
+            var sessionXmlTagName = Configurations.SessionTraceDataXmlTag;
             var query = from childNode in childNodes
                         where childNode.Name.Equals(sessionXmlTagName)
                         select childNode;
