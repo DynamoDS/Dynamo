@@ -2059,9 +2059,8 @@ namespace Dynamo.Tests
             OpenModel(oldPath);
 
             var newPath = this.GetNewFileNameOnTempPath("dyn");
-            var res = CurrentDynamoModel.SaveWorkspace(newPath, CurrentDynamoModel.CurrentWorkspace);
+            CurrentDynamoModel.CurrentWorkspace.Save(newPath);
 
-            Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
 
             XmlDocument docOld = new XmlDocument();
@@ -2099,9 +2098,8 @@ namespace Dynamo.Tests
             OpenModel(oldPath);
 
             var newPath = this.GetNewFileNameOnTempPath("dyn");
-            var res = model.SaveWorkspace(newPath, model.CurrentWorkspace);
+            model.CurrentWorkspace.Save(newPath);
 
-            Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
 
             XmlDocument docOld = new XmlDocument();

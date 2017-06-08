@@ -82,7 +82,6 @@ namespace Dynamo.Models
                 RequestsFunctionNamePrompt(this, e);
         }
 
-
         internal event Action<PresetsNamePromptEventArgs> RequestPresetsNamePrompt;
         internal void OnRequestPresetNamePrompt(PresetsNamePromptEventArgs e)
         {
@@ -91,13 +90,28 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Occurs when a workspace is saved to a file
+        /// Occurs when a workspace is saved to a file.
         /// </summary>
         public event WorkspaceHandler WorkspaceSaved;
-        internal void OnWorkspaceSaved(WorkspaceModel model)
+        internal void OnWorkspaceSaved(WorkspaceModel workspace)
         {
             if (WorkspaceSaved != null)
-                WorkspaceSaved(model);
+            {
+                WorkspaceSaved(workspace);
+            } 
+        }
+
+        /// <summary>
+        /// Event fired during workspace serialization. The string passed to the 
+        /// Action is the serialized representation of the Workspace.
+        /// </summary>
+        public event Action<string> WorkspaceSaving;
+        internal void OnWorkspaceSaving(string workspace)
+        {
+            if(WorkspaceSaving != null)
+            {
+                WorkspaceSaving(workspace);
+            }
         }
 
         /// <summary>
@@ -1264,36 +1278,6 @@ namespace Dynamo.Models
         #region save/load
 
         /// <summary>
-        /// Save workspace in Json format to specified path.
-        /// </summary>
-        /// <param name="path">The path to save to</param>
-        /// <param name="ws">workspace to save</param>
-        /// <param name="isBackup">indicate saving for backup</param>
-        public bool SaveWorkspace(string path, WorkspaceModel ws, bool isBackup = false)
-        {
-            if (String.IsNullOrEmpty(path)) return false;
-            // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
-            ws.Save(path, isBackup);
-            
-            try
-            {
-                // Serialize ws into string json
-                var json = ws.ToJson(LibraryServices, EngineController,
-                    Scheduler, NodeFactory, false, false, CustomNodeManager);
-                Logger.Log(String.Format(Resources.SavingInProgress, path));
-                File.WriteAllText(path, json);
-            }
-            catch(Exception ex)
-            {
-                Logger.Log(ex.Message);
-                Logger.Log(ex.StackTrace);
-                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                throw (ex);
-;           }
-            return true;
-        }
-
-        /// <summary>
         ///     Opens a Dynamo workspace from a path to an Xml file on disk.
         /// </summary>
         /// <param name="xmlPath">Path to file</param>
@@ -1452,7 +1436,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     var oldFileName = workspace.FileName;
                     var oldName = workspace.Name;
-                    SaveWorkspace(savePath, workspace, true);
+                    workspace.Save(savePath, true);
                     workspace.FileName = oldFileName;
                     workspace.Name = oldName;
                     backupFilesDict[workspace.Guid] = savePath;
@@ -2051,12 +2035,12 @@ namespace Dynamo.Models
             if (workspace == null) return;
 
             Action savedHandler = () => OnWorkspaceSaved(workspace);
-            workspace.WorkspaceSaved += savedHandler;
+            workspace.Saved += savedHandler;
             workspace.MessageLogged += LogMessage;
             workspace.PropertyChanged += OnWorkspacePropertyChanged;
             workspace.Disposed += () =>
             {
-                workspace.WorkspaceSaved -= savedHandler;
+                workspace.Saved -= savedHandler;
                 workspace.MessageLogged -= LogMessage;
                 workspace.PropertyChanged -= OnWorkspacePropertyChanged;
             };

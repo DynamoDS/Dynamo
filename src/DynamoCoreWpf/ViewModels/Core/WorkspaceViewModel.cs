@@ -20,6 +20,14 @@ using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using Function = Dynamo.Graph.Nodes.CustomNodes.Function;
+using Newtonsoft.Json.Linq;
+using System.IO;
+using Newtonsoft.Json;
+using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Engine;
+using Dynamo.Core;
+using Dynamo.Properties;
+using System.Diagnostics;
 
 namespace Dynamo.ViewModels
 {
@@ -410,6 +418,41 @@ namespace Dynamo.ViewModels
             InCanvasSearchViewModel.Visible = true;
         }
 
+        /// <summary>
+        /// WorkspaceViewModel's Save method does a two-part serialization. First, it serializes the Workspace,
+        /// then adds a View property to serialized Workspace, and sets its value to the serialized ViewModel.
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
+        internal void Save(string filePath)
+        {
+            if (String.IsNullOrEmpty(filePath))
+            {
+                throw new ArgumentNullException("filePath");
+            }
+
+            try
+            {
+                // Stage 1: Serialize the workspace.
+                var json = Model.ToJson();
+
+                // Stage 2: Add the View.
+                var jo = JObject.Parse(json);
+                jo.Add("View", this.ToJson());
+
+                // Stage 3: Save
+                File.WriteAllText(filePath, jo.ToString());
+
+                Model.FileName = filePath;
+                Model.OnSaved();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                throw (ex);
+            }
+        }
+
         void CopyPasteChanged(object sender, EventArgs e)
         {
             RaisePropertyChanged("CanPaste", "CanCopy", "CanCopyOrPaste");
@@ -461,7 +504,6 @@ namespace Dynamo.ViewModels
         {
             _annotations.Clear();
         }
-
 
         void Model_NodesCleared()
         {

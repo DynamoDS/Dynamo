@@ -74,7 +74,7 @@ namespace Dynamo.Tests
 
             // save the file to a temp location
             var path = Path.Combine(TempFolder, "tempCrashProtection.dyn");
-            CurrentDynamoModel.SaveWorkspace(path, CurrentDynamoModel.CurrentWorkspace);
+            CurrentDynamoModel.CurrentWorkspace.Save(path);
 
             // open the file
             var nws = Open<HomeWorkspaceModel>(path);

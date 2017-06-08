@@ -27,14 +27,14 @@ namespace Dynamo.Graph.Workspaces
     /// These nodes require a CustomNodeDefinition which can only be supplied
     /// by looking it up in the CustomNodeManager.
     /// </summary>
-    public class NodeModelConverter : JsonConverter
+    public class NodeReadConverter : JsonConverter
     {
         private CustomNodeManager manager;
         private LibraryServices libraryServices;
         
         public ElementResolver ElementResolver { get; set; }
 
-        public NodeModelConverter(CustomNodeManager manager, LibraryServices libraryServices)
+        public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices)
         {
             this.manager = manager;
             this.libraryServices = libraryServices;
@@ -181,7 +181,7 @@ namespace Dynamo.Graph.Workspaces
     /// a NodeFactory, and a Scheduler. These must be supplied at the time of 
     /// construction and should not be serialized.
     /// </summary>
-    public class WorkspaceConverter : JsonConverter
+    public class WorkspaceReadConverter : JsonConverter
     {
         DynamoScheduler scheduler;
         EngineController engine;
@@ -189,7 +189,7 @@ namespace Dynamo.Graph.Workspaces
         bool isTestMode;
         bool verboseLogging;
 
-        public WorkspaceConverter(EngineController engine, 
+        public WorkspaceReadConverter(EngineController engine, 
             DynamoScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging)
         {
             this.scheduler = scheduler;
@@ -203,6 +203,8 @@ namespace Dynamo.Graph.Workspaces
         {
             return typeof(WorkspaceModel).IsAssignableFrom(objectType);
         }
+
+        public override bool CanWrite => false;
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
@@ -218,7 +220,7 @@ namespace Dynamo.Graph.Workspaces
             var name = obj["Name"].Value<string>();
 
             var elementResolver = obj["ElementResolver"].ToObject<ElementResolver>(serializer);
-            var nmc = (NodeModelConverter)serializer.Converters.First(c => c is NodeModelConverter);
+            var nmc = (NodeReadConverter)serializer.Converters.First(c => c is NodeReadConverter);
             nmc.ElementResolver = elementResolver;
 
             // nodes
@@ -264,6 +266,24 @@ namespace Dynamo.Graph.Workspaces
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// WorkspaceWriteConverter is used for serializing Workspaces to JSON.
+    /// </summary>
+    public class WorkspaceWriteConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return typeof(WorkspaceModel).IsAssignableFrom(objectType);
+        }
+
+        public override bool CanRead => false;
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
             var ws = (WorkspaceModel)value;
 
             writer.WriteStartObject();
@@ -272,7 +292,7 @@ namespace Dynamo.Graph.Workspaces
             writer.WriteValue(ws.Guid.ToString());
             writer.WritePropertyName("IsCustomNode");
             writer.WriteValue(value is CustomNodeWorkspaceModel ? true : false);
-            if(value is CustomNodeWorkspaceModel)
+            if (value is CustomNodeWorkspaceModel)
             {
                 writer.WritePropertyName("Category");
                 writer.WriteValue(((CustomNodeWorkspaceModel)value).Category);
@@ -317,7 +337,7 @@ namespace Dynamo.Graph.Workspaces
             if (functions.Any())
             {
                 var deps = functions.Cast<Function>().Select(f => f.Definition.FunctionId).Distinct();
-                foreach(var d in deps)
+                foreach (var d in deps)
                 {
                     writer.WriteValue(d);
                 }
@@ -325,6 +345,11 @@ namespace Dynamo.Graph.Workspaces
             writer.WriteEndArray();
 
             writer.WriteEndObject();
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -452,6 +477,7 @@ namespace Dynamo.Graph.Workspaces
             writer.WriteEndObject();
         }
     }
+
     /// <summary>
     /// This converter is used to attempt to convert an id string to a guid - if the id
     /// is not a guid string, it will create a UUID based on the string.
