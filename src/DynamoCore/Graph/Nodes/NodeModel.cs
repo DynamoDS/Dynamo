@@ -74,7 +74,13 @@ namespace Dynamo.Graph.Nodes
         /// The unique name that was created the node by
         /// </summary>
         [JsonIgnore]
-        public virtual string CreationName { get { return this.Name; } }
+        public virtual string CreationName
+        {
+            get
+            {
+                return getNameFromNodeNameAttribute();
+            }
+        }
 
         /// <summary>
         /// This property queries all the Upstream Nodes  for a given node, ONLY after the graph is loaded.
@@ -1060,6 +1066,19 @@ namespace Dynamo.Graph.Nodes
                     break;
             }
             SetNodeStateBasedOnConnectionAndDefaults();
+        }
+
+        private string getNameFromNodeNameAttribute()
+        {
+            Type type = GetType();
+            object[] attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), false);
+            if (type.Namespace == "Dynamo.Graph.Nodes" && !type.IsAbstract && attribs.Length > 0
+                && type.IsSubclassOf(typeof(NodeModel)))
+            {
+                var elCatAttrib = attribs[0] as NodeNameAttribute;
+                return elCatAttrib.Name;
+            }
+            return "";
         }
 
         /// <summary>
