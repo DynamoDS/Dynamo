@@ -1,4 +1,4 @@
-﻿:: Argument %1: path to template folder
+:: Argument %1: path to template folder
 :: Argument %2: path to dynamo build directory
 ::
 

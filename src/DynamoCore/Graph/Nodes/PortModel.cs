@@ -7,9 +7,13 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
+using Newtonsoft.Json.Linq;
+using Autodesk.Workspaces;
 
 namespace Dynamo.Graph.Nodes
 {
+
+    
     /// <summary>
     /// Interaction logic for dynPort.xaml
     /// </summary>
@@ -31,6 +35,22 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         #region public members
+        /// <summary>
+        /// ID of the PortModel, which is unique within the graph.
+        /// </summary>
+        [JsonProperty("Id")]
+        [JsonConverter(typeof(IdToGuidConverter))]
+        public override Guid GUID
+        {
+            get
+            {
+                return base.GUID;
+            }
+            set
+            {
+                base.GUID = value;
+            }
+        }
 
         /// <summary>
         /// Returns the connectors between the specified ports.
@@ -235,7 +255,7 @@ namespace Dynamo.Graph.Nodes
                 {
                     useLevels = value;
                     
-                    if (!useLevels) ShouldKeepListStructure = useLevels;
+                    if (!useLevels) KeepListStructure = useLevels;
                     RaisePropertyChanged("UseLevels");
                 }
             }
@@ -246,7 +266,7 @@ namespace Dynamo.Graph.Nodes
         /// node will be re-aligned into the original structure
         /// of the nested list.
         /// </summary>
-        public bool ShouldKeepListStructure
+        public bool KeepListStructure
         {
             get
             {
@@ -279,7 +299,7 @@ namespace Dynamo.Graph.Nodes
         internal PortModel(string name, string toolTip)
         {
             UseLevels = false;
-            ShouldKeepListStructure = false;
+            KeepListStructure = false;
             Level = 2;
 
             Height = 0.0;
@@ -303,7 +323,7 @@ namespace Dynamo.Graph.Nodes
             PortType = portType;
             Owner = owner;
             UseLevels = false;
-            ShouldKeepListStructure = false;
+            KeepListStructure = false;
             Level = 2;
 
             Height = data.Height;
