@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Core;
@@ -266,7 +266,15 @@ namespace Autodesk.Workspaces
             writer.WriteStartObject();
 
             writer.WritePropertyName("Uuid");
-            writer.WriteValue(ws.Guid.ToString());
+            if (value is CustomNodeWorkspaceModel)
+            {
+                writer.WriteValue((ws as CustomNodeWorkspaceModel).CustomNodeId.ToString());
+            }
+            else
+            {
+                writer.WriteValue(ws.Guid.ToString());
+
+            }
             writer.WritePropertyName("IsCustomNode");
             writer.WriteValue(value is CustomNodeWorkspaceModel ? true : false);
             if(value is CustomNodeWorkspaceModel)
