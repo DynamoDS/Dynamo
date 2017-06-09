@@ -9,7 +9,7 @@ namespace Dynamo.Extensions
     /// This class handles registration, lookup, and disposal of extensions.  There should only 
     /// be one of these per application instance.
     /// </summary>
-    public interface IExtensionManager : IDisposable
+    public interface IExtensionManager : IServiceManager, IDisposable
     {
         /// <summary>
         /// Add an extension to the current application session.
