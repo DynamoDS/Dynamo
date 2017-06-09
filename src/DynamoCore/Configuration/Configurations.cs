@@ -251,10 +251,14 @@ namespace Dynamo.Configuration
 
         #region Externally Visible Strings
 
-        #region XML sessionTraceData deserialization
+        #region Legacy XML sessionTraceData serialization
         internal static readonly string SessionTraceDataXmlTag = "SessionTraceData";
-        internal static readonly string NodeTraceDataXmlTag = "NodeTraceData";
-        internal static readonly string CallsiteTraceDataXmlTag = "CallsiteTraceData";
+        #endregion
+
+        #region Bindings Json serialization
+        internal static readonly string BindingsTag = "Bindings";
+        internal static readonly string NodeTraceDataTag = "NodeTraceData";
+        internal static readonly string CallsiteTraceDataTag = "CallsiteTraceData";
         internal static readonly string NodeIdAttribName = "NodeId";
         internal static readonly string CallSiteID = "CallSiteID";
         #endregion
