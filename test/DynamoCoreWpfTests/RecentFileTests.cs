@@ -24,7 +24,7 @@ namespace Dynamo.Tests
             for (int i = 0; i < maxNum + 1; i++)
             {
                 var newPath = GetNewFileNameOnTempPath("dyn");
-                model.CurrentWorkspace.Save(newPath);
+                ViewModel.SaveAs(newPath);
                 paths.Add(newPath);
             }
 
