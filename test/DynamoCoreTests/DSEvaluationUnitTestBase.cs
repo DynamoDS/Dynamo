@@ -49,7 +49,7 @@ namespace Dynamo.Tests
             string logs = string.Empty;
             foreach (var node in dummyNodes)
             {
-                logs += string.Format("{0} is a {1} node\n", node.NickName, node.NodeNature);
+                logs += string.Format("{0} is a {1} node\n", node.Name, node.NodeNature);
             }
 
             double dummyNodesCount = dummyNodes.Count();

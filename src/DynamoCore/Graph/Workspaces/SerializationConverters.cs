@@ -55,7 +55,6 @@ namespace Dynamo.Graph.Workspaces
             //if the id is not a guid, makes a guid based on the id of the node
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
         
-            var displayName = obj["DisplayName"].Value<string>();
 
            
             var inPorts = obj["Inputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
@@ -113,9 +112,6 @@ namespace Dynamo.Graph.Workspaces
             }
 
             node.GUID = guid;
-            node.NickName = displayName;
-            //node.X = x;
-            //node.Y = y;
 
             // Add references to the node and the ports to the reference resolver,
             // so that they are available for entities which are deserialized later.
@@ -269,7 +265,15 @@ namespace Dynamo.Graph.Workspaces
             writer.WriteStartObject();
 
             writer.WritePropertyName("Uuid");
-            writer.WriteValue(ws.Guid.ToString());
+            if (value is CustomNodeWorkspaceModel)
+            {
+                writer.WriteValue((ws as CustomNodeWorkspaceModel).CustomNodeId.ToString());
+            }
+            else
+            {
+                writer.WriteValue(ws.Guid.ToString());
+
+            }
             writer.WritePropertyName("IsCustomNode");
             writer.WriteValue(value is CustomNodeWorkspaceModel ? true : false);
             if(value is CustomNodeWorkspaceModel)
@@ -295,9 +299,9 @@ namespace Dynamo.Graph.Workspaces
             serializer.Serialize(writer, ws.Nodes);
 
             //notes
-            writer.WritePropertyName("Notes");
+           writer.WritePropertyName("Notes");
             serializer.Serialize(writer, ws.Notes);
-
+ 
             //connectors
             writer.WritePropertyName("Connectors");
             serializer.Serialize(writer, ws.Connectors);

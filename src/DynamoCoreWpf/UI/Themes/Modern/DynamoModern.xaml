@@ -55,7 +55,7 @@
     <Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
     <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
 
-    <clr:Double x:Key="NodeNickNameHeight">27</clr:Double>
+    <clr:Double x:Key="NodeNameHeight">27</clr:Double>
 
     <!--InfoBubble colors-->
     <SolidColorBrush x:Key="InfoBubbleBackNormalBrush"

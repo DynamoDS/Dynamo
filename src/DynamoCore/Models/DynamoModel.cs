@@ -1798,8 +1798,8 @@ namespace Dynamo.Models
 
                 var lacing = node.ArgumentLacing.ToString();
                 newNode.UpdateValue(new UpdateValueParams("ArgumentLacing", lacing));
-                if (!string.IsNullOrEmpty(node.NickName) && !(node is Symbol) && !(node is Output))
-                    newNode.NickName = node.NickName;
+                if (!string.IsNullOrEmpty(node.Name) && !(node is Symbol) && !(node is Output))
+                    newNode.Name = node.Name;
 
                 newNode.Width = node.Width;
                 newNode.Height = node.Height;

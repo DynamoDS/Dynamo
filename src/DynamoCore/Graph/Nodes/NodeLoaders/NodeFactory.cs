@@ -119,14 +119,14 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
         ///     time by means of user uploading the definition.
         /// </summary>
         /// <param name="id">Identifier of the custom node instance.</param>
-        /// <param name="name">The name represents the GUID of the custom node 
+        /// <param name="functionId">The functionId represents the GUID of the custom node 
         /// definition that is used for creating the custom node instance.</param>
-        /// <param name="nickName">The display name of the custom node.</param>
+        /// <param name="name">The display name of the custom node.</param>
         /// <param name="inputs">Number of input ports.</param>
         /// <param name="outputs">Number of output ports.</param>
         /// <returns>Returns the custom node instance if creation was successful, 
         /// or null otherwise.</returns>
-        internal NodeModel CreateProxyNodeInstance(Guid id, string name, string nickName, int inputs, int outputs)
+        internal NodeModel CreateProxyNodeInstance(Guid id, string functionId, string name, int inputs, int outputs)
         {
             Guid guid;
             INodeLoader<NodeModel> data;
@@ -137,7 +137,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
 
 
             // create an instance of Function node 
-            var result = (data as CustomNodeLoader).CreateProxyNode(guid, nickName, id, inputs, outputs);
+            var result = (data as CustomNodeLoader).CreateProxyNode(guid, name, id, inputs, outputs);
             return result;
         }
 
