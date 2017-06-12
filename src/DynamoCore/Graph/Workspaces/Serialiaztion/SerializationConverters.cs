@@ -343,12 +343,12 @@ namespace Autodesk.Workspaces
             // serialize given node-data-list pairs into an Json.
             if (nodeTraceDataList.Any())
             {
-                writer.WritePropertyName(Configurations.NodeTraceDataTag);
+                writer.WriteStartObject();
+                writer.WritePropertyName(Configurations.NodeTraceDataTag + " " + Configurations.NodeIdAttribName);
                 foreach (var pair in nodeTraceDataList)
                 {
                     // Set the node ID attribute for this element.
                     var nodeGuid = pair.Key.ToString();
-                    writer.WritePropertyName(Configurations.NodeIdAttribName);
                     writer.WriteValue(nodeGuid);
                     writer.WriteStartArray();
                     foreach (var data in pair.Value)
@@ -360,6 +360,7 @@ namespace Autodesk.Workspaces
                     }
                     writer.WriteEndArray();
                 }
+                writer.WriteEndObject();
             }
             writer.WriteEndArray();
             writer.WriteEndObject();
