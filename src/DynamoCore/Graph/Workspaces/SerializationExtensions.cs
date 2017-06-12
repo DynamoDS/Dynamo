@@ -1,57 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Dynamo.Core;
+﻿using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes.NodeLoaders;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Models;
 using Dynamo.Scheduler;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
-namespace Autodesk.Workspaces
+namespace Dynamo.Graph.Workspaces
 {
-    public static class Utilities
+    /// <summary>
+    /// Contains methods for serializing a WorkspaceModel to json.
+    /// </summary>
+    public static class SerializationExtensions
     {
-        /// <summary>
-        /// Load a WorkspaceModel from json. If the WorkspaceModel is a HomeWorkspaceModel
-        /// it will be set as the current workspace.
-        /// </summary>
-        /// <param name="json"></param>
-        public static WorkspaceModel LoadWorkspaceFromJson(string json, LibraryServices libraryServices,
-            EngineController engineController, DynamoScheduler scheduler, NodeFactory factory,
-            bool isTestMode, bool verboseLogging, CustomNodeManager manager)
-        {
-            var settings = new JsonSerializerSettings
-            {
-                Error = (sender, args) =>
-                {
-                    args.ErrorContext.Handled = true;
-                    Console.WriteLine(args.ErrorContext.Error);
-                },
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Formatting.Indented,
-                Converters = new List<JsonConverter>{
-                        new ConnectorConverter(),
-                        new AnnotationConverter(),
-                        new WorkspaceConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
-                        new NodeModelConverter(manager, libraryServices),
-                    },
-                ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
-            };
-
-            var result = ReplaceTypeDeclarations(json, true);
-            var ws = JsonConvert.DeserializeObject<WorkspaceModel>(result, settings);
-
-            return ws;
-        }
-
         /// <summary>
         /// Save a Workspace to json.
         /// </summary>
         /// <returns>A string representing the serialized WorkspaceModel.</returns>
-        public static string SaveWorkspaceToJson(WorkspaceModel workspace, LibraryServices libraryServices, 
+        public static string ToJson(this WorkspaceModel workspace, LibraryServices libraryServices,
             EngineController engineController, DynamoScheduler scheduler, NodeFactory factory,
             bool isTestMode, bool verboseLogging, CustomNodeManager manager)
         {
@@ -89,7 +56,7 @@ namespace Autodesk.Workspaces
         /// <param name="fromServer">A flag indicating whether this json is coming from the server, and thus
         /// needs to be converted back to its Json.net friendly format.</param>
         /// <returns></returns>
-        private static string ReplaceTypeDeclarations(string json, bool fromServer = false)
+        internal static string ReplaceTypeDeclarations(string json, bool fromServer = false)
         {
             var result = json;
 

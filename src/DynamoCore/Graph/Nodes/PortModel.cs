@@ -7,13 +7,12 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
-using Newtonsoft.Json.Linq;
-using Autodesk.Workspaces;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Graph.Nodes
 {
 
-    
+
     /// <summary>
     /// Interaction logic for dynPort.xaml
     /// </summary>
