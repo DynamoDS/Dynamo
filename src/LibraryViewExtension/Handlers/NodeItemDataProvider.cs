@@ -25,9 +25,9 @@ namespace Dynamo.LibraryUI.Handlers
         public string keywords { get; set; }
     }
 
-    class LoadedTypeData
+    class LoadedTypeData<T> where T : LoadedTypeItem
     {
-        public List<LoadedTypeItem> loadedTypes { get; set; }
+        public List<T> loadedTypes { get; set; }
     }
 
     /// <summary>
@@ -35,8 +35,12 @@ namespace Dynamo.LibraryUI.Handlers
     /// </summary>
     class NodeItemDataProvider : ResourceProviderBase
     {
-        private NodeSearchModel model;
+        protected NodeSearchModel model;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="items"></param>
         public NodeItemDataProvider(NodeSearchModel model) : base(false)
         {
             this.model = model;
@@ -48,16 +52,13 @@ namespace Dynamo.LibraryUI.Handlers
             return GetNodeItemDataStream(model.SearchEntries);
         }
 
-        private Stream GetNodeItemDataStream(IEnumerable<NodeSearchElement> searchEntries)
+        protected Stream GetNodeItemDataStream(IEnumerable<NodeSearchElement> searchEntries)
         {
-            var data = new LoadedTypeData();
-            data.loadedTypes = searchEntries
-                //.Where(e => !e.ElementType.HasFlag(ElementTypes.Packaged))
-                .Select(e => CreateLoadedTypeItem(e)).ToList();
-
             var ms = new MemoryStream();
             var sw = new StreamWriter(ms);
             var serializer = new JsonSerializer();
+
+            var data = CreateObjectForSerialization(searchEntries);
             serializer.Serialize(sw, data);
 
             sw.Flush();
@@ -66,6 +67,19 @@ namespace Dynamo.LibraryUI.Handlers
         }
 
         /// <summary>
+        /// Create a LoadedTypeData object for serialization
+        /// </summary>
+        /// <param name="searchEntries"></param>
+        /// <returns></returns>
+        protected virtual object CreateObjectForSerialization(IEnumerable<NodeSearchElement> searchEntries)
+        {
+            var data = new LoadedTypeData<LoadedTypeItem>();
+            data.loadedTypes = searchEntries
+                //.Where(e => !e.ElementType.HasFlag(ElementTypes.Packaged))
+                .Select(e => CreateLoadedTypeItem<LoadedTypeItem>(e)).ToList();
+            return data;
+        }
+
         /// Gets fully qualified name for the given node search element
         /// </summary>
         public static string GetFullyQualifiedName(NodeSearchElement element)
@@ -84,10 +98,9 @@ namespace Dynamo.LibraryUI.Handlers
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        internal LoadedTypeItem CreateLoadedTypeItem(NodeSearchElement element)
+        internal T CreateLoadedTypeItem<T>(NodeSearchElement element) where T: LoadedTypeItem, new()
         {
-            //Create LoadedTypeItem with base class
-            var item = new LoadedTypeItem()
+            var item = new T()
             {
                 fullyQualifiedName = GetFullyQualifiedName(element),
                 contextData = element.CreationName,
@@ -100,13 +113,23 @@ namespace Dynamo.LibraryUI.Handlers
                         : string.Empty
             };
 
+            //If the node search element is part of a package, then we need to prefix pkg:// for it
+            var packaged = element.ElementType.HasFlag(ElementTypes.Packaged);
+            if (packaged)
+            {
+                //Use FullCategory and name as read from _customization.xml file
+                item.fullyQualifiedName = string.Format("{0}{1}.{2}", "pkg://", element.FullCategoryName, element.Name);
+            }
+
             //If this element is not a custom node then we are done. The icon url for custom node is different
             if (!element.ElementType.HasFlag(ElementTypes.CustomNode)) return item;
 
             var customNode = element as CustomNodeSearchElement;
-            if (customNode == null) return item;
+            if (customNode != null)
+            {
+                item.iconUrl = new IconUrl(customNode.IconName, customNode.Path, true).Url;
+            }
 
-            item.iconUrl = new IconUrl(customNode.IconName, customNode.Path, true).Url;
             return item;
         }
     }
