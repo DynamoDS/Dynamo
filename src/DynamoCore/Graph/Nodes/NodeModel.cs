@@ -25,8 +25,7 @@ using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using System.Runtime.Serialization;
-using System.Diagnostics;
-using Autodesk.Workspaces;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Graph.Nodes
 {

@@ -421,6 +421,30 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        ///     Returns or set the X position of the Node.
+        /// </summary>
+        public double X
+        {
+            get { return NodeModel.X; }
+            set
+            {
+                NodeModel.X = value;
+            }
+        }
+
+        /// <summary>
+        ///     Returns or set the Y position of the Node.
+        /// </summary>
+        public double Y
+        {
+            get { return NodeModel.Y; }
+            set
+            {
+                NodeModel.Y = value;
+            }
+        }
+
         #endregion
 
         #region events
