@@ -897,8 +897,6 @@ namespace Dynamo.Graph.Workspaces
                     FileName = filePath;
                     OnSaved();
                 }
-
-                OnSaved();
             }
             catch (Exception ex)
             {
