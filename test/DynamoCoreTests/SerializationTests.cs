@@ -341,7 +341,7 @@ namespace Dynamo.Tests
 
             lastExecutionDuration = new TimeSpan();
 
-            var ws2 = Autodesk.Workspaces.Utilities.LoadWorkspaceFromJson(json, model.LibraryServices,
+            var ws2 = WorkspaceModel.FromJson(json, model.LibraryServices,
                 model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false,
                 model.CustomNodeManager);
 
@@ -448,7 +448,7 @@ namespace Dynamo.Tests
 
         private static string ConvertCurrentWorkspaceToJsonAndSave(DynamoModel model, string filePathBase)
         {
-            var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(model.CurrentWorkspace, model.LibraryServices,
+            var json = model.CurrentWorkspace.ToJson(model.LibraryServices,
                 model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false,
                 model.CustomNodeManager);
 
@@ -474,7 +474,7 @@ namespace Dynamo.Tests
 
         private string ConvertCurrentWorkspaceToNonGuidJsonAndSave(DynamoModel model, string filePathBase)
         {
-            var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(model.CurrentWorkspace, model.LibraryServices,
+            var json = model.CurrentWorkspace.ToJson(model.LibraryServices,
                 model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false,
                 model.CustomNodeManager);
             var idcount = 0;

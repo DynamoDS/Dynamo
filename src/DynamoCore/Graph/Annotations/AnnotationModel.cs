@@ -7,7 +7,7 @@ using Dynamo.Graph.Notes;
 using Dynamo.Properties;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
-using Autodesk.Workspaces;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Graph.Annotations
 {
@@ -467,7 +467,7 @@ namespace Dynamo.Graph.Annotations
             RaisePropertyChanged("Background");
             RaisePropertyChanged("FontSize");
             RaisePropertyChanged("AnnotationText");
-            RaisePropertyChanged("SelectedModels");
+            RaisePropertyChanged("Nodes");
         }
 
         /// <summary>

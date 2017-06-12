@@ -25,8 +25,7 @@ using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using System.Runtime.Serialization;
-using System.Diagnostics;
-using Autodesk.Workspaces;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -326,7 +325,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Collection of PortModels representing all Input ports.
         /// </summary>
-        [JsonProperty("InputPorts")]
+        [JsonProperty("Inputs")]
         public ObservableCollection<PortModel> InPorts
         {
             get { return inPorts; }
@@ -340,7 +339,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Collection of PortModels representing all Output ports.
         /// </summary>
-        [JsonProperty("OutputPorts")]
+        [JsonProperty("Outputs")]
         public ObservableCollection<PortModel> OutPorts
         {
             get { return outPorts; }

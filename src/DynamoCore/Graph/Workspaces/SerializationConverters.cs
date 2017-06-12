@@ -11,7 +11,6 @@ using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
-using Dynamo.Graph.Workspaces;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
@@ -21,7 +20,7 @@ using ProtoCore;
 using ProtoCore.Namespace;
 using Type = System.Type;
 
-namespace Autodesk.Workspaces
+namespace Dynamo.Graph.Workspaces
 {
     /// <summary>
     /// The NodeModelConverter is used to serialize and deserialize NodeModels.
@@ -58,8 +57,8 @@ namespace Autodesk.Workspaces
         
 
            
-            var inPorts = obj["InputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
-            var outPorts = obj["OutputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
+            var inPorts = obj["Inputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
+            var outPorts = obj["Outputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
 

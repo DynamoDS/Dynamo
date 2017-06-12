@@ -5,6 +5,7 @@ using Dynamo.Utilities;
 using System;
 using System.Windows.Controls;
 using Dynamo.ViewModels;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Nodes
 {
