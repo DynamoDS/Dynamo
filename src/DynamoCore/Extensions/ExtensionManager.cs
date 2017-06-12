@@ -15,6 +15,7 @@ namespace Dynamo.Extensions
     {
         private readonly List<IExtension> extensions = new List<IExtension>();
         private readonly ExtensionLoader extensionLoader = new ExtensionLoader();
+        private readonly Dictionary<Type, KeyValuePair<string, object>> services = new Dictionary<Type, KeyValuePair<string, object>>();
 
         /// <summary>
         /// Creates ExtensionManager.
@@ -132,6 +133,69 @@ namespace Dynamo.Extensions
         private void Log(string message)
         {
             Log(LogMessage.Info(message));
+        }
+
+        /// <summary>
+        /// Allows extension applications to register some specific service by its type.
+        /// Only one service of a given type can be registered.
+        /// </summary>
+        /// <typeparam name="T">Type of the service</typeparam>
+        /// <param name="service">The service object to register</param>
+        /// <returns>A key for the registered service if registeration is 
+        /// successful else null.</returns>
+        public string RegisterService<T>(T service)
+        {
+            //If the input service is null, throw ArgumentNullException.
+            if (service == null) throw new ArgumentNullException("service");
+
+            //If there is a service already registered, return null
+            if (Service<T>() != null) return null;
+
+            var id = Guid.NewGuid().ToString();
+            services.Add(typeof(T), new KeyValuePair<string, object>(id, service));
+            return id;
+        }
+
+        /// <summary>
+        /// Unregisters a service of given type registered with given key. 
+        /// </summary>
+        /// <typeparam name="T">Type of the service</typeparam>
+        /// <param name="serviceKey">The service key to ensure that only authorized
+        /// client is unregistering this service type.</param>
+        /// <returns></returns>
+        public bool UnregisterService<T>(string serviceKey)
+        {
+            var type = typeof(T);
+            KeyValuePair<string, object> pair;
+            if(services.TryGetValue(type, out pair) && pair.Key.Equals(serviceKey))
+            {
+                return services.Remove(type);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the service object of the specified type.
+        /// </summary>
+        /// <typeparam name="T">Type of the service</typeparam>
+        /// <returns>The service object if registered else null</returns>
+        public T Service<T>()
+        {
+            return (T)GetService(typeof(T));
+        }
+
+        /// <summary>
+        /// Gets the service object of the specified type.
+        /// </summary>
+        /// <param name="serviceType">Type of the service</param>
+        /// <returns>The service object if registered else null</returns>
+        public object GetService(Type serviceType)
+        {
+            KeyValuePair<string, object> pair;
+            if (services.TryGetValue(serviceType, out pair)) return pair.Value;
+
+            return null;
         }
     }
 }

@@ -229,7 +229,7 @@ namespace ViewExtensionLibraryTests
             var element = moq.Object;
 
             var provider = new NodeItemDataProvider(new NodeSearchModel());
-            var item = provider.CreateLoadedTypeItem(element);
+            var item = provider.CreateLoadedTypeItem<LoadedTypeItem>(element);
             Assert.AreEqual(fullname, item.fullyQualifiedName);
             Assert.AreEqual(creationName, item.contextData);
         }
@@ -248,7 +248,7 @@ namespace ViewExtensionLibraryTests
             moq.Setup(e => e.CreationName).Returns(creationName);
             
             var provider = new NodeItemDataProvider(new NodeSearchModel());
-            var item = provider.CreateLoadedTypeItem(element);
+            var item = provider.CreateLoadedTypeItem<LoadedTypeItem>(element);
             Assert.AreEqual(expectedQualifiedName, item.fullyQualifiedName);
             Assert.AreEqual(creationName, item.contextData);
             Assert.AreEqual("abc, xyz, somepackage", item.keywords);
@@ -272,7 +272,7 @@ namespace ViewExtensionLibraryTests
             var element = new CustomNodeSearchElement(moq.Object, info);
             
             var provider = new NodeItemDataProvider(new NodeSearchModel());
-            var item = provider.CreateLoadedTypeItem(element);
+            var item = provider.CreateLoadedTypeItem<LoadedTypeItem>(element);
             Assert.AreEqual(expectedQualifiedName, item.fullyQualifiedName);
             Assert.AreEqual(guid.ToString(), item.contextData);
             Assert.AreEqual(string.Empty, item.keywords);
@@ -296,7 +296,7 @@ namespace ViewExtensionLibraryTests
             var element = new CustomNodeSearchElement(moq.Object, info);
 
             var provider = new NodeItemDataProvider(new NodeSearchModel());
-            var item = provider.CreateLoadedTypeItem(element);
+            var item = provider.CreateLoadedTypeItem<LoadedTypeItem>(element);
             Assert.AreEqual(expectedQualifiedName, item.fullyQualifiedName);
             Assert.AreEqual(guid.ToString(), item.contextData);
             Assert.AreEqual(string.Empty, item.keywords);

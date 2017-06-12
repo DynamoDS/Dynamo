@@ -81,12 +81,12 @@ namespace ViewExtensionLibraryTests
             }
         }
 
-        private LoadedTypeData GetLoadedTypesFromJson(Stream stream)
+        private LoadedTypeData<LoadedTypeItem> GetLoadedTypesFromJson(Stream stream)
         {
             using (var sr = new StreamReader(stream))
             {
                 var serializer = new JsonSerializer();
-                return (LoadedTypeData)serializer.Deserialize(sr, typeof(LoadedTypeData));
+                return (LoadedTypeData< LoadedTypeItem>)serializer.Deserialize(sr, typeof(LoadedTypeData<LoadedTypeItem>));
             }
         }
     }

@@ -1447,9 +1447,13 @@ var06 = g;
         [Category("UnitTests")]
         public void TestBuiltInMethodSignatureCompletion()
         {
+            const string libraryPath = "BuiltIn.ds";
+
+            CompilerUtils.TryLoadAssemblyIntoCore(libraryServicesCore, libraryPath);
+
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
 
-            string functionPrefix = "";
+            string functionPrefix = "List";
             string functionName = "ContainsKey";
 
             string code = "";
