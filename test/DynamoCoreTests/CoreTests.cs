@@ -531,8 +531,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CannotSaveEmptyWorkspaceIfSaveIsCalledWithoutSettingPath()
         {
-            CurrentDynamoModel.CurrentWorkspace.Save(CurrentDynamoModel.CurrentWorkspace.FileName);
-
+            Assert.Throws<ArgumentNullException>(()=>CurrentDynamoModel.CurrentWorkspace.Save(CurrentDynamoModel.CurrentWorkspace.FileName));
             Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.FileName, string.Empty);
         }
 
@@ -549,8 +548,7 @@ namespace Dynamo.Tests
                 Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             }
 
-            CurrentDynamoModel.CurrentWorkspace.Save(CurrentDynamoModel.CurrentWorkspace.FileName);
-
+            Assert.Throws<ArgumentNullException>(()=>CurrentDynamoModel.CurrentWorkspace.Save(CurrentDynamoModel.CurrentWorkspace.FileName));
             Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.FileName, string.Empty);
         }
 
