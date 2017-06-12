@@ -101,6 +101,7 @@ namespace Dynamo.Graph
         /// <summary>
         /// The X coordinate of the node in canvas space.
         /// </summary>
+        [Obsolete("This property will be removed from the model, please use the X property on the ViewModel in DynamoCoreWpf assembly.")]
         public double X
         {
             get { return x; }
@@ -123,6 +124,7 @@ namespace Dynamo.Graph
         /// <summary>
         /// The Y coordinate of the node in canvas space.
         /// </summary>
+        [Obsolete("This property will be removed from the model, please use the Y property on the ViewModel in DynamoCoreWpf assembly.")]
         public double Y
         {
             get { return y; }
