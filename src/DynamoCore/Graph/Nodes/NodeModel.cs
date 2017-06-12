@@ -979,7 +979,7 @@ namespace Dynamo.Graph.Nodes
             };
 
             //Fetch the element name from the custom attribute.
-            SetNamePropertyFromAttribute();
+            SetNameFromNodeNameAttribute();
 
             IsSelected = false;
             State = ElementState.Dead;
@@ -1012,7 +1012,7 @@ namespace Dynamo.Graph.Nodes
             };
 
             //Fetch the element name from the custom attribute.
-            SetNamePropertyFromAttribute();
+            SetNameFromNodeNameAttribute();
 
             IsSelected = false;
             State = ElementState.Dead;
@@ -1111,7 +1111,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Sets the name of this node from the attributes on the class definining it.
         /// </summary>
-        public void SetNamePropertyFromAttribute()
+        public void SetNameFromNodeNameAttribute()
         {
             var elNameAttrib = GetType().GetCustomAttributes<NodeNameAttribute>(false).FirstOrDefault();
             if (elNameAttrib != null)

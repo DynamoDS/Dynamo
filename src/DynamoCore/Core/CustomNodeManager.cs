@@ -973,7 +973,7 @@ namespace Dynamo.Core
                             }
                         }
 
-                        node.SetNamePropertyFromAttribute();
+                        node.SetNameFromNodeNameAttribute();
                         node.Y = inputIndex*(50 + node.Height);
 
                         uniqueInputSenders[key] = node;
@@ -1014,7 +1014,7 @@ namespace Dynamo.Core
 
                             node.Y = i*(50 + node.Height);
 
-                            node.SetNamePropertyFromAttribute();
+                            node.SetNameFromNodeNameAttribute();
 
                             newNodes.Add(node);
                             ConnectorModel.Make(outputSenderNode, node, outputSenderData, 0);
@@ -1053,7 +1053,7 @@ namespace Dynamo.Core
                             X = rightMost + 75 - leftShift
                         };
                         node.Y = i*(50 + node.Height);
-                        node.SetNamePropertyFromAttribute();
+                        node.SetNameFromNodeNameAttribute();
 
                         newNodes.Add(node);
                         ConnectorModel.Make(hanging.node, node, hanging.port, 0);
