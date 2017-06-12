@@ -1278,7 +1278,7 @@ namespace Dynamo.Models
         #region save/load
 
         /// <summary>
-        ///     Opens a Dynamo workspace from a path to an Xml file on disk.
+        /// Opens a Dynamo workspace from a path to an Xml file on disk.
         /// </summary>
         /// <param name="xmlPath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard

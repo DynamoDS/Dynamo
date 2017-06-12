@@ -449,7 +449,6 @@ namespace Dynamo.Tests
         private static string ConvertCurrentWorkspaceToJsonAndSave(DynamoModel model, string filePathBase)
         {
             var json = model.CurrentWorkspace.ToJson();
-
             Assert.IsNotNullOrEmpty(json);
 
             var tempPath = Path.GetTempPath();
