@@ -350,12 +350,11 @@ namespace Autodesk.Workspaces
                     // Set the node ID attribute for this element.
                     var nodeGuid = pair.Key.ToString();
                     writer.WriteValue(nodeGuid);
+                    writer.WritePropertyName(Configurations.CallsiteTraceDataTag);
                     writer.WriteStartArray();
                     foreach (var data in pair.Value)
-                    {
-                        writer.WritePropertyName(Configurations.CallsiteTraceDataTag);
-                        writer.WriteValue(Configurations.CallSiteID);
-                        writer.WriteValue(data.ID);
+                    {                 
+                        writer.WriteValue(Configurations.CallSiteID + " " + data.ID);
                         writer.WriteValue(data.Data);
                     }
                     writer.WriteEndArray();
