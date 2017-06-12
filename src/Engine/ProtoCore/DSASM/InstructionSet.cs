@@ -362,15 +362,8 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                try
-                {
-                    Check(IsMemberVariableIndex, "The type of StackValue is not MemberVariableIndex");
-                    return (int)opdata;
-                }
-                catch
-                {
-                    return -1;
-                }
+                Check(IsMemberVariableIndex, "The type of StackValue is not MemberVariableIndex");
+                return (int)opdata;
             }
         }
 

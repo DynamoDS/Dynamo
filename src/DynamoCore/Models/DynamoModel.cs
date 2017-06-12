@@ -102,19 +102,6 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Event fired during workspace serialization. The string passed to the 
-        /// Action is the serialized representation of the Workspace.
-        /// </summary>
-        public event Action<string> WorkspaceSaving;
-        internal void OnWorkspaceSaving(string workspace)
-        {
-            if(WorkspaceSaving != null)
-            {
-                WorkspaceSaving(workspace);
-            }
-        }
-
-        /// <summary>
         /// Event that is fired during the opening of the workspace.
         ///
         /// Use the XmlDocument object provided to conduct additional
