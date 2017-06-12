@@ -4,7 +4,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
 using System.Diagnostics;
 using Newtonsoft.Json;
-using Autodesk.Workspaces;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Graph.Connectors
 {
@@ -82,7 +82,7 @@ namespace Dynamo.Graph.Connectors
                 return new ConnectorModel(start, end, startIndex, endIndex, guid ?? Guid.NewGuid());
             }
 
-            Debug.WriteLine("Could not create a connector between {0} and {1}.", start.NickName, end.NickName);
+            Debug.WriteLine("Could not create a connector between {0} and {1}.", start.Name, end.Name);
 
             return null;
         }
@@ -96,7 +96,7 @@ namespace Dynamo.Graph.Connectors
         public ConnectorModel(PortModel start, PortModel end, Guid guid)
         {
             Debug.WriteLine("Creating a connector between ports {0}(owner:{1}) and {2}(owner:{3}).", 
-                start.GUID, start.Owner == null?"null":start.Owner.NickName, end.GUID, end.Owner == null?"null":end.Owner.NickName);
+                start.GUID, start.Owner == null?"null":start.Owner.Name, end.GUID, end.Owner == null?"null":end.Owner.Name);
             Start = start;
             Start.Connectors.Add(this);
             Connect(end);
@@ -112,7 +112,7 @@ namespace Dynamo.Graph.Connectors
             PortModel endPort = end.InPorts[endIndex];
 
             Debug.WriteLine("Creating a connector between ports {0}(owner:{1}) and {2}(owner:{3}).",
-                start.GUID, Start.Owner == null ? "null" : Start.Owner.NickName, end.GUID, endPort.Owner == null ? "null" : endPort.Owner.NickName);
+                start.GUID, Start.Owner == null ? "null" : Start.Owner.Name, end.GUID, endPort.Owner == null ? "null" : endPort.Owner.Name);
 
             Start.Connectors.Add(this);
             Connect(endPort);

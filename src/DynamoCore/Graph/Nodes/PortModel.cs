@@ -7,13 +7,12 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
-using Newtonsoft.Json.Linq;
-using Autodesk.Workspaces;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Graph.Nodes
 {
 
-    
+
     /// <summary>
     /// Interaction logic for dynPort.xaml
     /// </summary>
@@ -65,8 +64,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Name of the port.
         /// </summary>
-        [JsonProperty("DisplayName")]
-        public string PortName
+        public string Name
         {
             get;
             internal set;
@@ -297,7 +295,7 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         [JsonConstructor]
-        internal PortModel(string nickName, string toolTip)
+        internal PortModel(string name, string toolTip)
         {
             UseLevels = false;
             KeepListStructure = false;
@@ -307,7 +305,7 @@ namespace Dynamo.Graph.Nodes
             DefaultValue = null;
             LineIndex = -1;
             this.toolTip = toolTip;
-            this.PortName = nickName;
+            this.Name = name;
 
             MarginThickness = new Thickness(0);
             Height = Math.Abs(Height) < 0.001 ? Configurations.PortHeightInPixels : Height;
@@ -332,7 +330,7 @@ namespace Dynamo.Graph.Nodes
             UsingDefaultValue = DefaultValue != null;
             LineIndex = data.LineIndex;
             toolTip = data.ToolTipString;
-            PortName = data.NickName;
+            Name = data.Name;
             
             MarginThickness = new Thickness(0);
             Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
@@ -376,9 +374,9 @@ namespace Dynamo.Graph.Nodes
     public class PortData
     {
         /// <summary>
-        /// Nickname of the port.
+        /// Name of the port.
         /// </summary>
-        public string NickName { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Tooltip of the port.
@@ -403,20 +401,20 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Creates PortData.
         /// </summary>
-        /// <param name="nickName">Nickname of the port</param>
+        /// <param name="name">name of the port</param>
         /// <param name="toolTipString">Tooltip of the port</param>
-        public PortData(string nickName, string toolTipString) : this(nickName, toolTipString, null) { }
+        public PortData(string name, string toolTipString) : this(name, toolTipString, null) { }
 
         /// <summary>
         /// Creates PortData.
         /// </summary>
-        /// <param name="nickName">Nickname of the port</param>
+        /// <param name="name">name of the port</param>
         /// <param name="toolTipString">Tooltip of the port</param>
         /// <param name="defaultValue">Default value of the port</param>
         [JsonConstructor]
-        public PortData(string nickName, string toolTipString, AssociativeNode defaultValue)
+        public PortData(string name, string toolTipString, AssociativeNode defaultValue)
         {
-            NickName = nickName;
+            Name = name;
             ToolTipString = toolTipString;
             DefaultValue = defaultValue;
             LineIndex = -1;

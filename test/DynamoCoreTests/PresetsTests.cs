@@ -11,6 +11,7 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Tests
 {
@@ -127,7 +128,7 @@ namespace Dynamo.Tests
 
             //delete state
             var state = model.CurrentWorkspace.Presets.First();
-           model.CurrentWorkspace.RemovePreset(state);
+            model.CurrentWorkspace.RemovePreset(state);
 
            Assert.AreEqual(model.CurrentWorkspace.Presets.Count(), 1);
 

@@ -25,8 +25,7 @@ using ProtoCore.Mirror;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using System.Runtime.Serialization;
-using System.Diagnostics;
-using Autodesk.Workspaces;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -34,13 +33,12 @@ namespace Dynamo.Graph.Nodes
     {
         #region private members
 
-        private bool overrideNameWithNickName;
         private LacingStrategy argumentLacing = LacingStrategy.Auto;
         private bool displayLabels;
         private bool isUpstreamVisible;
         private bool isVisible;
         private bool canUpdatePeriodically;
-        private string nickName;
+        private string name;
         private ElementState state;
         private string toolTipText = "";
         private string description;
@@ -76,7 +74,13 @@ namespace Dynamo.Graph.Nodes
         /// The unique name that was created the node by
         /// </summary>
         [JsonIgnore]
-        public virtual string CreationName { get { return this.Name; } }
+        public virtual string CreationName
+        {
+            get
+            {
+                return getNameFromNodeNameAttribute();
+            }
+        }
 
         /// <summary>
         /// This property queries all the Upstream Nodes  for a given node, ONLY after the graph is loaded.
@@ -305,37 +309,23 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        ///     Should we override the displayed name with this Node's NickName property?
+        ///  The name that is displayed in the UI for this NodeModel.
         /// </summary>
-        [JsonIgnore]
-        public bool OverrideNameWithNickName
+        [JsonIgnore()]
+        public string Name
         {
-            get { return overrideNameWithNickName; }
+            get { return name; }
             set
             {
-                overrideNameWithNickName = value;
-                RaisePropertyChanged("OverrideNameWithNickName");
-            }
-        }
-
-        /// <summary>
-        ///     The name that is displayed in the UI for this NodeModel.
-        /// </summary>
-        [JsonProperty("DisplayName")]
-        public string NickName
-        {
-            get { return nickName; }
-            set
-            {
-                nickName = value;
-                RaisePropertyChanged("NickName");
+                name = value;
+                RaisePropertyChanged("Name");
             }
         }
 
         /// <summary>
         ///     Collection of PortModels representing all Input ports.
         /// </summary>
-        [JsonProperty("InputPorts")]
+        [JsonProperty("Inputs")]
         public ObservableCollection<PortModel> InPorts
         {
             get { return inPorts; }
@@ -349,7 +339,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Collection of PortModels representing all Output ports.
         /// </summary>
-        [JsonProperty("OutputPorts")]
+        [JsonProperty("Outputs")]
         public ObservableCollection<PortModel> OutPorts
         {
             get { return outPorts; }
@@ -408,29 +398,6 @@ namespace Dynamo.Graph.Nodes
                     // Mark node for update
                     OnNodeModified();
                 }
-            }
-        }
-
-        /// <summary>
-        ///     Name property
-        /// </summary>
-        /// <value>
-        ///     If the node has a name attribute, return it.  Otherwise return empty string.
-        /// </value>
-        [JsonIgnore]
-        public string Name
-        {
-            get
-            {
-                Type type = GetType();
-                object[] attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), false);
-                if (type.Namespace == "Dynamo.Graph.Nodes" && !type.IsAbstract && attribs.Length > 0
-                    && type.IsSubclassOf(typeof(NodeModel)))
-                {
-                    var elCatAttrib = attribs[0] as NodeNameAttribute;
-                    return elCatAttrib.Name;
-                }
-                return "";
             }
         }
 
@@ -1006,13 +973,13 @@ namespace Dynamo.Graph.Nodes
                 switch (args.PropertyName)
                 {
                     case ("OverrideName"):
-                        RaisePropertyChanged("NickName");
+                        RaisePropertyChanged("Name");
                         break;
                 }
             };
 
             //Fetch the element name from the custom attribute.
-            SetNickNameFromAttribute();
+            SetNameFromNodeNameAttribute();
 
             IsSelected = false;
             State = ElementState.Dead;
@@ -1039,13 +1006,13 @@ namespace Dynamo.Graph.Nodes
                 switch (args.PropertyName)
                 {
                     case ("OverrideName"):
-                        RaisePropertyChanged("NickName");
+                        RaisePropertyChanged("Name");
                         break;
                 }
             };
 
             //Fetch the element name from the custom attribute.
-            SetNickNameFromAttribute();
+            SetNameFromNodeNameAttribute();
 
             IsSelected = false;
             State = ElementState.Dead;
@@ -1117,6 +1084,19 @@ namespace Dynamo.Graph.Nodes
             SetNodeStateBasedOnConnectionAndDefaults();
         }
 
+        private string getNameFromNodeNameAttribute()
+        {
+            Type type = GetType();
+            object[] attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), false);
+            if (type.Namespace == "Dynamo.Graph.Nodes" && !type.IsAbstract && attribs.Length > 0
+                && type.IsSubclassOf(typeof(NodeModel)))
+            {
+                var elCatAttrib = attribs[0] as NodeNameAttribute;
+                return elCatAttrib.Name;
+            }
+            return "";
+        }
+
         /// <summary>
         /// Returns the most recent value of this node stored in an EngineController that has evaluated it.
         /// </summary>
@@ -1129,13 +1109,13 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        ///     Sets the nickname of this node from the attributes on the class definining it.
+        ///     Sets the name of this node from the attributes on the class definining it.
         /// </summary>
-        public void SetNickNameFromAttribute()
+        public void SetNameFromNodeNameAttribute()
         {
             var elNameAttrib = GetType().GetCustomAttributes<NodeNameAttribute>(false).FirstOrDefault();
             if (elNameAttrib != null)
-                NickName = elNameAttrib.Name;
+                Name = elNameAttrib.Name;
 
         }
 
@@ -1277,7 +1257,7 @@ namespace Dynamo.Graph.Nodes
                                           ArrayDimensions =
                                               new ArrayNode
                                               {
-                                                  Expr = new StringNode { Value = outNode.PortName }
+                                                  Expr = new StringNode { Value = outNode.Name }
                                               }
                                       },
                                       GetAstIdentifierForOutputIndex(index))));
@@ -1847,7 +1827,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns>S-Expression</returns>
         public virtual string PrintExpression()
         {
-            string nick = NickName.Replace(' ', '_');
+            string nick = Name.Replace(' ', '_');
 
             if (!InPorts.Any(p=>p.IsConnected))
                 return nick;
@@ -1867,7 +1847,7 @@ namespace Dynamo.Graph.Nodes
             }
             else
             {
-                s += "(lambda (" + string.Join(" ", InPorts.Where((_, i) => !InPorts[i].IsConnected).Select(x => x.PortName))
+                s += "(lambda (" + string.Join(" ", InPorts.Where((_, i) => !InPorts[i].IsConnected).Select(x => x.Name))
                      + ") (" + nick;
                 foreach (int data in Enumerable.Range(0, InPorts.Count))
                 {
@@ -1876,7 +1856,7 @@ namespace Dynamo.Graph.Nodes
                     if (TryGetInput(data, out input))
                         s += input.Item2.PrintExpression();
                     else
-                        s += InPorts[data].PortName;
+                        s += InPorts[data].Name;
                 }
                 s += "))";
             }
@@ -1904,8 +1884,8 @@ namespace Dynamo.Graph.Nodes
 
             switch (name)
             {
-                case "NickName":
-                    NickName = value;
+                case "Name":
+                    Name = value;
                     return true;
 
                 case "Position":
@@ -2072,7 +2052,7 @@ namespace Dynamo.Graph.Nodes
 
             // Set the type attribute
             helper.SetAttribute("type", GetType());
-            helper.SetAttribute("nickname", NickName);
+            helper.SetAttribute("nickname", Name);
             helper.SetAttribute("x", X);
             helper.SetAttribute("y", Y);
             helper.SetAttribute("isVisible", IsVisible);
@@ -2121,14 +2101,14 @@ namespace Dynamo.Graph.Nodes
             // Resolve node nick name.
             string name = helper.ReadString("nickname", string.Empty);
             if (!string.IsNullOrEmpty(name))
-                nickName = name;
+                this.name = name;
             else
             {
                 Type type = GetType();
                 object[] attribs = type.GetCustomAttributes(typeof(NodeNameAttribute), true);
                 var attrib = attribs[0] as NodeNameAttribute;
                 if (null != attrib)
-                    nickName = attrib.Name;
+                    this.name = attrib.Name;
             }
 
             X = helper.ReadDouble("x", 0.0);
@@ -2205,7 +2185,7 @@ namespace Dynamo.Graph.Nodes
                 // respect to their models.
                 RaisePropertyChanged("InteractionEnabled");
                 RaisePropertyChanged("State");
-                RaisePropertyChanged("NickName");
+                RaisePropertyChanged("Name");
                 RaisePropertyChanged("ArgumentLacing");
                 RaisePropertyChanged("IsVisible");
                 RaisePropertyChanged("IsUpstreamVisible");
@@ -2412,18 +2392,18 @@ namespace Dynamo.Graph.Nodes
         #region Node Migration Helper Methods
 
         protected static NodeMigrationData MigrateToDsFunction(
-            NodeMigrationData data, string nickname, string funcName)
+            NodeMigrationData data, string name, string funcName)
         {
-            return MigrateToDsFunction(data, "", nickname, funcName);
+            return MigrateToDsFunction(data, "", name, funcName);
         }
 
         protected static NodeMigrationData MigrateToDsFunction(
-            NodeMigrationData data, string assembly, string nickname, string funcName)
+            NodeMigrationData data, string assembly, string name, string funcName)
         {
             XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
             var element = MigrationManager.CreateFunctionNodeFrom(xmlNode);
             element.SetAttribute("assembly", assembly);
-            element.SetAttribute("nickname", nickname);
+            element.SetAttribute("nickname", name);
             element.SetAttribute("function", funcName);
 
             var migrationData = new NodeMigrationData(data.Document);
@@ -2432,12 +2412,12 @@ namespace Dynamo.Graph.Nodes
         }
 
         protected static NodeMigrationData MigrateToDsVarArgFunction(
-            NodeMigrationData data, string assembly, string nickname, string funcName)
+            NodeMigrationData data, string assembly, string name, string funcName)
         {
             XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
             var element = MigrationManager.CreateVarArgFunctionNodeFrom(xmlNode);
             element.SetAttribute("assembly", assembly);
-            element.SetAttribute("nickname", nickname);
+            element.SetAttribute("nickname", name);
             element.SetAttribute("function", funcName);
 
             var migrationData = new NodeMigrationData(data.Document);

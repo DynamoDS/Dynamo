@@ -327,7 +327,7 @@ namespace Dynamo.Graph.Workspaces
         ///     has taken place.  If in run-automatic, a new run will take place,
         ///     otherwise nothing will happen.
         /// </summary>
-        protected override void RequestRun()
+        internal override void RequestRun()
         {
             base.RequestRun();
 

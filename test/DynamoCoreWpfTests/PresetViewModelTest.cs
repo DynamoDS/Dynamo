@@ -6,6 +6,7 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Tests;
 using NUnit.Framework;
+using Dynamo.Graph.Workspaces;
 
 namespace DynamoCoreWpfTests
 {

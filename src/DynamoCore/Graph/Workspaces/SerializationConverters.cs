@@ -12,7 +12,6 @@ using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
-using Dynamo.Graph.Workspaces;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
@@ -22,7 +21,7 @@ using ProtoCore;
 using ProtoCore.Namespace;
 using Type = System.Type;
 
-namespace Autodesk.Workspaces
+namespace Dynamo.Graph.Workspaces
 {
     /// <summary>
     /// The NodeModelConverter is used to serialize and deserialize NodeModels.
@@ -57,11 +56,10 @@ namespace Autodesk.Workspaces
             //if the id is not a guid, makes a guid based on the id of the node
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
         
-            var displayName = obj["DisplayName"].Value<string>();
 
            
-            var inPorts = obj["InputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
-            var outPorts = obj["OutputPorts"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
+            var inPorts = obj["Inputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
+            var outPorts = obj["Outputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
 
@@ -115,9 +113,6 @@ namespace Autodesk.Workspaces
             }
 
             node.GUID = guid;
-            node.NickName = displayName;
-            //node.X = x;
-            //node.Y = y;
 
             // Add references to the node and the ports to the reference resolver,
             // so that they are available for entities which are deserialized later.
@@ -271,7 +266,15 @@ namespace Autodesk.Workspaces
             writer.WriteStartObject();
 
             writer.WritePropertyName("Uuid");
-            writer.WriteValue(ws.Guid.ToString());
+            if (value is CustomNodeWorkspaceModel)
+            {
+                writer.WriteValue((ws as CustomNodeWorkspaceModel).CustomNodeId.ToString());
+            }
+            else
+            {
+                writer.WriteValue(ws.Guid.ToString());
+
+            }
             writer.WritePropertyName("IsCustomNode");
             writer.WriteValue(value is CustomNodeWorkspaceModel ? true : false);
             if(value is CustomNodeWorkspaceModel)
@@ -297,9 +300,9 @@ namespace Autodesk.Workspaces
             serializer.Serialize(writer, ws.Nodes);
 
             //notes
-            writer.WritePropertyName("Notes");
+           writer.WritePropertyName("Notes");
             serializer.Serialize(writer, ws.Notes);
-
+ 
             //connectors
             writer.WritePropertyName("Connectors");
             serializer.Serialize(writer, ws.Connectors);

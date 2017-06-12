@@ -172,7 +172,7 @@ namespace Dynamo.Logging
 
             foreach (var node in dynamoModel.Workspaces.SelectMany(ws => ws.Nodes))
             {
-                string fullName = node.NickName;
+                string fullName = node.Name;
                 if (!ret.ContainsKey(fullName))
                     ret[fullName] = 0;
 
@@ -195,7 +195,7 @@ namespace Dynamo.Logging
                 if (node.State != ElementState.Error)
                     continue;
 
-                string fullName = node.NickName;
+                string fullName = node.Name;
                 if (!ret.ContainsKey(fullName))
                     ret[fullName] = 0;
                 

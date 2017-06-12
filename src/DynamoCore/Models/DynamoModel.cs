@@ -1278,8 +1278,8 @@ namespace Dynamo.Models
             try
             {
                 // Serialize ws into string json
-                var json = Autodesk.Workspaces.Utilities.SaveWorkspaceToJson(ws, this.LibraryServices, this.EngineController,
-                    this.Scheduler, this.NodeFactory, false, false, this.CustomNodeManager);
+                var json = ws.ToJson(LibraryServices, EngineController,
+                    Scheduler, NodeFactory, false, false, CustomNodeManager);
                 Logger.Log(String.Format(Resources.SavingInProgress, path));
                 File.WriteAllText(path, json);
             }
@@ -1798,8 +1798,8 @@ namespace Dynamo.Models
 
                 var lacing = node.ArgumentLacing.ToString();
                 newNode.UpdateValue(new UpdateValueParams("ArgumentLacing", lacing));
-                if (!string.IsNullOrEmpty(node.NickName) && !(node is Symbol) && !(node is Output))
-                    newNode.NickName = node.NickName;
+                if (!string.IsNullOrEmpty(node.Name) && !(node is Symbol) && !(node is Output))
+                    newNode.Name = node.Name;
 
                 newNode.Width = node.Width;
                 newNode.Height = node.Height;

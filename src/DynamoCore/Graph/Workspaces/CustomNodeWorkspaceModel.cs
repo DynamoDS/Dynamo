@@ -235,7 +235,7 @@ namespace Dynamo.Graph.Workspaces
 
         private bool isVisibleInDynamoLibrary;
 
-        protected override void RequestRun()
+        internal override void RequestRun()
         {
             base.RequestRun();
             HasUnsavedChanges = true;
