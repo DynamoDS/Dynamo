@@ -871,7 +871,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Workspace's Save method serializes the Workspace to JSON and writes it to the specified file path.
         /// </summary>
-        /// <param name="filePath">The path the file.</param>
+        /// <param name="filePath">The path of the file.</param>
         /// <param name="isBackup">A flag indicating whether this save operation represents a backup. If it's not backup,
         /// we should add it to recent files. Otherwise leave it.</param>
         /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
