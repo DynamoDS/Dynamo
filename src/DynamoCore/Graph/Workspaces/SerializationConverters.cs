@@ -356,9 +356,11 @@ namespace Dynamo.Graph.Workspaces
                     writer.WritePropertyName(Configurations.CallsiteTraceDataTag);
                     writer.WriteStartArray();
                     foreach (var data in pair.Value)
-                    {                 
-                        writer.WriteValue(Configurations.CallSiteID + " " + data.ID);
+                    {
+                        writer.WriteStartObject();
+                        writer.WritePropertyName(Configurations.CallSiteID + " " + data.ID);
                         writer.WriteValue(data.Data);
+                        writer.WriteEndObject();
                     }
                     writer.WriteEndArray();
                 }
