@@ -22,7 +22,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto" MaxHeight="{StaticResource NodeNickNameHeight}"></RowDefinition>
+            <RowDefinition Height="Auto" MaxHeight="{StaticResource NodeNameHeight}"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -200,14 +200,14 @@
             </Rectangle.Fill>
         </Rectangle>
 
-        <Rectangle Name="nickNameBackground"
+        <Rectangle Name="NameBackground"
                    Grid.Row="1"
                    Grid.ColumnSpan="3"
                    StrokeThickness="0,0,0,1"
                    IsHitTestVisible="True"
                    Canvas.ZIndex="11"
                    ToolTipService.ShowDuration="60000"
-                   MouseDown="NickNameBlock_OnMouseDown">
+                   MouseDown="NameBlock_OnMouseDown">
             <Rectangle.Stroke>
                 <Binding Path="State"
                          UpdateSourceTrigger="PropertyChanged"
@@ -264,12 +264,12 @@
         </Border>
 
 
-        <TextBlock Name="nickNameBlock"
+        <TextBlock Name="NameBlock"
                    Grid.Row="1"
                    Grid.ColumnSpan="3"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Stretch"
-                   Text="{Binding NickName, UpdateSourceTrigger=PropertyChanged}"
+                   Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
                    Padding="5"
                    FontSize="13"
                    FontWeight="SemiBold"
@@ -277,7 +277,7 @@
                    TextAlignment="Center"
                    IsHitTestVisible="False"
                    Canvas.ZIndex="12"
-                   Height="{StaticResource NodeNickNameHeight}"
+                   Height="{StaticResource NodeNameHeight}"
                    Background="{x:Null}"
                    Style="{StaticResource SZoomFadeText}">
             <TextBlock.Foreground>

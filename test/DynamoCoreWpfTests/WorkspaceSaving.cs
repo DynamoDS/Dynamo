@@ -800,7 +800,7 @@ namespace Dynamo.Tests
                     .Where(x => x.Definition.FunctionId == nodeWorkspace.CustomNodeId)
                     .ToList();
             Assert.AreEqual(10, funcs.Count);
-            funcs.ForEach(x => Assert.AreEqual(newName, x.NickName));
+            funcs.ForEach(x => Assert.AreEqual(newName, x.Name));
             
         }
 

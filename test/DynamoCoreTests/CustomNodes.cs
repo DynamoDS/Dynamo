@@ -327,7 +327,7 @@ namespace Dynamo.Tests
             var modelsToDelete = new List<ModelBase>();
             var addition = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSFunction>();
             Assert.IsNotNull(addition);
-            Assert.AreEqual("+", addition.NickName);
+            Assert.AreEqual("+", addition.Name);
 
             modelsToDelete.Add(addition);
             CurrentDynamoModel.DeleteModelInternal(modelsToDelete);
@@ -467,7 +467,7 @@ namespace Dynamo.Tests
                 node.InputSymbol = label;
 
                 Assert.AreEqual(++currentInPortAmt, instance.InPorts.Count);
-                Assert.AreEqual(label, instance.InPorts.Last().PortName);
+                Assert.AreEqual(label, instance.InPorts.Last().Name);
 
                 return node;
             };
@@ -480,7 +480,7 @@ namespace Dynamo.Tests
                 node.Symbol = label;
 
                 Assert.AreEqual(++currentOutPortAmt, instance.OutPorts.Count);
-                Assert.AreEqual(label, instance.OutPorts.Last().PortName);
+                Assert.AreEqual(label, instance.OutPorts.Last().Name);
 
                 return node;
             };
@@ -490,13 +490,13 @@ namespace Dynamo.Tests
             Action<Symbol, int, string> renameInput = (input, idx, s) =>
             {
                 input.InputSymbol = s;
-                Assert.AreEqual(s, instance.InPorts[idx].PortName);
+                Assert.AreEqual(s, instance.InPorts[idx].Name);
             };
 
             Action<Output, int, string> renameOutput = (output, idx, s) =>
             {
                 output.Symbol = s;
-                Assert.AreEqual(s, instance.OutPorts[idx].PortName);
+                Assert.AreEqual(s, instance.OutPorts[idx].Name);
             };
             #endregion
 
@@ -826,7 +826,7 @@ namespace Dynamo.Tests
 
             customInstance.ResyncWithDefinition(customWorkspace.CustomNodeDefinition);
 
-            Assert.AreEqual("x", customInstance.InPorts.First().PortName);
+            Assert.AreEqual("x", customInstance.InPorts.First().Name);
             Assert.AreEqual("bool", customInstance.InPorts.First().ToolTip);
         }
 
@@ -946,28 +946,28 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, customInstance.InPorts.Count());
             Assert.AreEqual(3, customInstance.OutPorts.Count());
 
-            Assert.AreEqual("", customInstance.InPorts[0].PortName);
+            Assert.AreEqual("", customInstance.InPorts[0].Name);
             Assert.AreEqual(@"var[]..[]", customInstance.InPorts[0].ToolTip);
 
-            Assert.AreEqual("x1", customInstance.InPorts[1].PortName);
+            Assert.AreEqual("x1", customInstance.InPorts[1].Name);
             Assert.AreEqual("x1\n\nvar[]..[]", customInstance.InPorts[1].ToolTip);
 
-            Assert.AreEqual("x2", customInstance.InPorts[2].PortName);
+            Assert.AreEqual("x2", customInstance.InPorts[2].Name);
             Assert.AreEqual("x2:var\n\nvar", customInstance.InPorts[2].ToolTip);
 
-            Assert.AreEqual("x3", customInstance.InPorts[3].PortName);
+            Assert.AreEqual("x3", customInstance.InPorts[3].Name);
             Assert.AreEqual("x3:var\n\nvar[]\nDefault value : {1}", customInstance.InPorts[3].ToolTip);
 
-            Assert.AreEqual("x4", customInstance.InPorts[4].PortName);
+            Assert.AreEqual("x4", customInstance.InPorts[4].Name);
             Assert.AreEqual("comment1\ncomment2\ncomment3\n\nvar[]..[]", customInstance.InPorts[4].ToolTip);
 
-            Assert.AreEqual("", customInstance.OutPorts[0].PortName);
+            Assert.AreEqual("", customInstance.OutPorts[0].Name);
             Assert.AreEqual("return value", customInstance.OutPorts[0].ToolTip);
 
-            Assert.AreEqual("y1", customInstance.OutPorts[1].PortName);
+            Assert.AreEqual("y1", customInstance.OutPorts[1].Name);
             Assert.AreEqual("y1", customInstance.OutPorts[1].ToolTip);
 
-            Assert.AreEqual("y2", customInstance.OutPorts[2].PortName);
+            Assert.AreEqual("y2", customInstance.OutPorts[2].Name);
             Assert.AreEqual("comment1\ncomment2\ncomment3", customInstance.OutPorts[2].ToolTip);
         }
 
@@ -980,10 +980,10 @@ namespace Dynamo.Tests
             var customInstance = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(x => x is Function) as Function;
             Assert.AreEqual(4, customInstance.OutPorts.Count());
 
-            Assert.AreEqual("x", customInstance.OutPorts[0].PortName);
-            Assert.AreEqual("y", customInstance.OutPorts[1].PortName);
-            Assert.AreEqual("def foo() {}", customInstance.OutPorts[2].PortName);
-            Assert.AreEqual("class bar {}", customInstance.OutPorts[3].PortName);
+            Assert.AreEqual("x", customInstance.OutPorts[0].Name);
+            Assert.AreEqual("y", customInstance.OutPorts[1].Name);
+            Assert.AreEqual("def foo() {}", customInstance.OutPorts[2].Name);
+            Assert.AreEqual("class bar {}", customInstance.OutPorts[3].Name);
         }
 
         [Test]
@@ -994,7 +994,7 @@ namespace Dynamo.Tests
 
             var customInstance = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(x => x is Function) as Function;
             Assert.AreEqual("comment", customInstance.OutPorts[0].ToolTip);
-            Assert.AreEqual("Point", customInstance.OutPorts[0].PortName);
+            Assert.AreEqual("Point", customInstance.OutPorts[0].Name);
 
             var previewValue = GetPreviewValue(customInstance.GUID.ToString());
             Assert.AreEqual(21, previewValue);

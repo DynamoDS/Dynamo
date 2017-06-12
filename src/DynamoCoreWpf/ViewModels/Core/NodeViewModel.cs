@@ -158,11 +158,14 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [JsonIgnore]
-        public string NickName
+        /// <summary>
+        /// The Name of the nodemodel this view points to
+        /// this is the name of the node as it is displayed in the UI.
+        /// </summary>
+        public string Name
         {
-            get { return nodeLogic.NickName; }
-            set { nodeLogic.NickName = value; }
+            get { return nodeLogic.Name; }
+            set { nodeLogic.Name = value; }
         }
 
         [JsonIgnore]
@@ -464,6 +467,30 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        ///     Returns or set the X position of the Node.
+        /// </summary>
+        public double X
+        {
+            get { return NodeModel.X; }
+            set
+            {
+                NodeModel.X = value;
+            }
+        }
+
+        /// <summary>
+        ///     Returns or set the Y position of the Node.
+        /// </summary>
+        public double Y
+        {
+            get { return NodeModel.Y; }
+            set
+            {
+                NodeModel.Y = value;
+            }
+        }
+
         #endregion
 
         #region events
@@ -643,8 +670,8 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case "NickName":
-                    RaisePropertyChanged("NickName");
+                case "Name":
+                    RaisePropertyChanged("Name");
                     break;
                 case "X":
                     RaisePropertyChanged("Left");

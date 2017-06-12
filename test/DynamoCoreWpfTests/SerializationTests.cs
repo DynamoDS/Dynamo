@@ -30,7 +30,7 @@ namespace DynamoCoreWpfTests
             //Assert inital values
             Assert.AreEqual(400, sumNode.X);
             Assert.AreEqual(100, sumNode.Y);
-            Assert.AreEqual("+", sumNode.NickName);
+            Assert.AreEqual("+", sumNode.Name);
             Assert.AreEqual(LacingStrategy.Auto, sumNode.ArgumentLacing);
             Assert.AreEqual(true, sumNode.IsVisible);
             Assert.AreEqual(true, sumNode.IsUpstreamVisible);
@@ -41,7 +41,7 @@ namespace DynamoCoreWpfTests
             XmlElement serializedEl = sumNode.Serialize(xmlDoc, SaveContext.Undo);
             sumNode.X = 250;
             sumNode.Y = 0;
-            sumNode.NickName = "TestNode";
+            sumNode.Name = "TestNode";
             sumNode.UpdateValue(new UpdateValueParams("ArgumentLacing", "CrossProduct"));
             sumNode.UpdateValue(new UpdateValueParams("IsVisible", "false"));
             sumNode.UpdateValue(new UpdateValueParams("IsUpstreamVisible", "false"));
@@ -50,7 +50,7 @@ namespace DynamoCoreWpfTests
             //Assert New Changes
             Assert.AreEqual(250, sumNode.X);
             Assert.AreEqual(0, sumNode.Y);
-            Assert.AreEqual("TestNode", sumNode.NickName);
+            Assert.AreEqual("TestNode", sumNode.Name);
             Assert.AreEqual(LacingStrategy.CrossProduct, sumNode.ArgumentLacing);
             Assert.AreEqual(false, sumNode.IsVisible);
             Assert.AreEqual(false, sumNode.IsUpstreamVisible);
@@ -60,7 +60,7 @@ namespace DynamoCoreWpfTests
             sumNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(400, sumNode.X);
             Assert.AreEqual(100, sumNode.Y);
-            Assert.AreEqual("+", sumNode.NickName);
+            Assert.AreEqual("+", sumNode.Name);
             Assert.AreEqual(LacingStrategy.Auto, sumNode.ArgumentLacing);
             Assert.AreEqual(true, sumNode.IsVisible);
             Assert.AreEqual(true, sumNode.IsUpstreamVisible);
@@ -250,7 +250,7 @@ namespace DynamoCoreWpfTests
             listNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(400, listNode.X);
             Assert.AreEqual(3, listNode.InPortData.Count);
-            Assert.AreEqual("index 2", listNode.InPortData.ElementAt(2).NickName);
+            Assert.AreEqual("index 2", listNode.InPortData.ElementAt(2).Name);
 */
             Assert.Inconclusive("Porting : NewList");
 
@@ -308,28 +308,28 @@ namespace DynamoCoreWpfTests
             //Assert initial values
             Assert.AreEqual(534.75, graphNode.X);
             Assert.AreEqual("07e6b150-d902-4abb-8103-79193552eee7", graphNode.Definition.FunctionId.ToString());
-            Assert.AreEqual("GraphFunction", graphNode.NickName);
+            Assert.AreEqual("GraphFunction", graphNode.Name);
             Assert.AreEqual(4, graphNode.InPorts.Count);
-            Assert.AreEqual("y", graphNode.InPorts[3].PortName);
+            Assert.AreEqual("y", graphNode.InPorts[3].Name);
 
             //Serialize node and then change values
             XmlDocument xmlDoc = new XmlDocument();
             XmlElement serializedEl = graphNode.Serialize(xmlDoc, SaveContext.Undo);
             graphNode.X = 250;
-            graphNode.NickName = "NewNode";
+            graphNode.Name = "NewNode";
             graphNode.InPorts.RemoveAt(graphNode.InPorts.Count - 1);
 
             //Assert new changes
             Assert.AreEqual(250, graphNode.X);
             Assert.AreEqual(3, graphNode.InPorts.Count);
-            Assert.AreEqual("NewNode", graphNode.NickName);
+            Assert.AreEqual("NewNode", graphNode.Name);
 
             //Deserialize and aasert old values
             graphNode.Deserialize(serializedEl, SaveContext.Undo);
             Assert.AreEqual(534.75, graphNode.X);
             Assert.AreEqual(4, graphNode.InPorts.Count);
-            Assert.AreEqual("GraphFunction", graphNode.NickName);
-            Assert.AreEqual("y", graphNode.InPorts[3].PortName);
+            Assert.AreEqual("GraphFunction", graphNode.Name);
+            Assert.AreEqual("y", graphNode.InPorts[3].Name);
         }
 
         [Test]
@@ -350,7 +350,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, dummyNode.OutputCount);
 
             // Ensure all properties updated data members accordingly.
-            Assert.AreEqual("Point.ByLuck", dummyNode.NickName);
+            Assert.AreEqual("Point.ByLuck", dummyNode.Name);
             Assert.AreEqual(3, dummyNode.InPorts.Count);
             Assert.AreEqual(2, dummyNode.OutPorts.Count);
         }

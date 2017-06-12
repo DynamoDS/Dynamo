@@ -1971,9 +1971,9 @@ namespace Dynamo.Tests
             // check that no nodes are migrated to dummy nodes
             Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DummyNode));
 
-            // check that the node is migrated to a DSFunction nicknamed "ReferencePoint.ByPoint"
+            // check that the node is migrated to a DSFunction named "ReferencePoint.ByPoint"
             StringAssert.Contains("Reference", workspace.NodeFromWorkspace<DSFunction>(
-                "d615cc73-d32d-4b1f-b519-0b8f9b903ebf").NickName);
+                "d615cc73-d32d-4b1f-b519-0b8f9b903ebf").Name);
         }
 
         [Test]
@@ -1990,9 +1990,9 @@ namespace Dynamo.Tests
             // check that no nodes are migrated to dummy nodes
             Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DummyNode));
 
-            // check that the node is migrated to a DSFunction nicknamed "FamilyInstance.ByPoint"
+            // check that the node is migrated to a DSFunction named "FamilyInstance.ByPoint"
             StringAssert.Contains("Instance", workspace.NodeFromWorkspace<DSFunction>(
-                "fc83b9b2-42c6-4a9f-8f60-a6ee29ef8a34").NickName);
+                "fc83b9b2-42c6-4a9f-8f60-a6ee29ef8a34").Name);
         }
 
         [Test]
@@ -2009,9 +2009,9 @@ namespace Dynamo.Tests
             // check that no nodes are migrated to dummy nodes
             Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DummyNode));
 
-            // check that the node is migrated to a DSFunction nicknamed "ModelCurve.ByCurve"
+            // check that the node is migrated to a DSFunction named "ModelCurve.ByCurve"
             StringAssert.Contains("Model", workspace.NodeFromWorkspace<DSFunction>(
-                "fdea006e-b127-4280-a407-4058b78b93a3").NickName);
+                "fdea006e-b127-4280-a407-4058b78b93a3").Name);
         }
 
         [Test]
@@ -2046,7 +2046,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DummyNode));
 
             // check that some of the nodes are Excel nodes
-            Assert.AreEqual(4, workspace.Nodes.AsQueryable().Count(x => x.NickName.Contains("Excel")));
+            Assert.AreEqual(4, workspace.Nodes.AsQueryable().Count(x => x.Name.Contains("Excel")));
         }
 
         [Test]
@@ -2153,7 +2153,7 @@ namespace Dynamo.Tests
                 if (node.NodeNature == DummyNode.Nature.Unresolved)
                 {
                     unresolvedNodeCount++;
-                    str += node.NickName;
+                    str += node.Name;
                     str += "\n";
                 }
             }

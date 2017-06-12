@@ -467,7 +467,7 @@ namespace Dynamo.Graph.Annotations
             RaisePropertyChanged("Background");
             RaisePropertyChanged("FontSize");
             RaisePropertyChanged("AnnotationText");
-            RaisePropertyChanged("SelectedModels");
+            RaisePropertyChanged("Nodes");
         }
 
         /// <summary>

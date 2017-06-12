@@ -309,7 +309,7 @@ namespace Dynamo.Controls
 
             editWindow.Owner = Window.GetWindow(this);
 
-            editWindow.BindToProperty(null, new Binding("NickName")
+            editWindow.BindToProperty(null, new Binding("Name")
             {
                 Mode = BindingMode.TwoWay,
                 NotifyOnValidationError = false,
@@ -418,11 +418,11 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
-        private void NickNameBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
+        private void NameBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
             {
-                Debug.WriteLine("Nickname double clicked!");
+                Debug.WriteLine("Name double clicked!");
                 if (ViewModel != null && ViewModel.RenameCommand.CanExecute(null))
                 {
                     ViewModel.RenameCommand.Execute(null);
