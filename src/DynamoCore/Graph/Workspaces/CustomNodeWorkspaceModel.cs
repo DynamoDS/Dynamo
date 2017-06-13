@@ -330,11 +330,5 @@ namespace Dynamo.Graph.Workspaces
             
             return true;
         }
-
-        protected override void SerializeSessionData(XmlDocument document, ProtoCore.RuntimeCore runtimeCore)
-        {
-            // Since custom workspace does not have any runtime data to persist,
-            // do not allow base class to serialize any session data.
-        }
     }
 }

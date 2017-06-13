@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Graph.Annotations;
@@ -315,6 +316,7 @@ namespace Dynamo.Graph.Workspaces
             writer.WriteStartArray();
             writer.WriteEndArray();
 
+            // Dependencies
             writer.WritePropertyName("Dependencies");
             writer.WriteStartArray();
             var functions = ws.Nodes.Where(n => n is Function);
@@ -328,6 +330,42 @@ namespace Dynamo.Graph.Workspaces
             }
             writer.WriteEndArray();
 
+            // Bindings
+            writer.WritePropertyName(Configurations.BindingsTag);
+            writer.WriteStartArray();
+            // Selecting all nodes that are either a DSFunction,
+            // a DSVarArgFunction or a CodeBlockNodeModel into a list.
+            var nodeGuids =
+                ws.Nodes.Where(
+                        n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel || n is Function)
+                    .Select(n => n.GUID);
+
+            var nodeTraceDataList = this.engine.LiveRunnerRuntimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids,
+                this.engine.LiveRunnerRuntimeCore.DSExecutable);
+
+            // serialize given node-data-list pairs into an Json.
+            if (nodeTraceDataList.Any())
+            {
+                foreach (var pair in nodeTraceDataList)
+                {
+                    writer.WriteStartObject();
+                    writer.WritePropertyName(Configurations.NodeIdAttribName);
+                    // Set the node ID attribute for this element.
+                    var nodeGuid = pair.Key.ToString();
+                    writer.WriteValue(nodeGuid);
+                    writer.WritePropertyName(Configurations.BingdingTag);
+                    // D4R binding
+                    writer.WriteStartObject();
+                    foreach (var data in pair.Value)
+                    {
+                        writer.WritePropertyName(data.ID);
+                        writer.WriteValue(data.Data);
+                    }
+                    writer.WriteEndObject();
+                    writer.WriteEndObject();
+                }
+            }
+            writer.WriteEndArray();
             writer.WriteEndObject();
         }
     }

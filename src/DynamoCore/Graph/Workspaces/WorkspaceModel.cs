@@ -13,7 +13,6 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
-using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Logging;
@@ -1313,42 +1312,6 @@ namespace Dynamo.Graph.Workspaces
                 Log(ex.Message);
                 Log(ex.StackTrace);
                 return false;
-            }
-        }
-
-        // TODO(Ben): Documentation to come before pull request.
-        // TODO(Steve): This probably only belongs on HomeWorkspaceModel. -- MAGN-5715
-        protected virtual void SerializeSessionData(XmlDocument document, ProtoCore.RuntimeCore runtimeCore)
-        {
-            if (document.DocumentElement == null)
-            {
-                const string message = "Workspace should have been saved before this";
-                throw new InvalidOperationException(message);
-            }
-
-            try
-            {
-                if (runtimeCore == null) // No execution yet as of this point.
-                    return;
-
-                // Selecting all nodes that are either a DSFunction,
-                // a DSVarArgFunction or a CodeBlockNodeModel into a list.
-                var nodeGuids =
-                    Nodes.Where(
-                        n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel || n is Function)
-                        .Select(n => n.GUID);
-
-                var nodeTraceDataList = runtimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids, runtimeCore.DSExecutable);
-
-                if (nodeTraceDataList.Any())
-                    Utils.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
-            }
-            catch (Exception exception)
-            {
-                // We'd prefer file saving process to not crash Dynamo,
-                // otherwise user will lose the last hope in retaining data.
-                Log(exception.Message);
-                Log(exception.StackTrace);
             }
         }
 
