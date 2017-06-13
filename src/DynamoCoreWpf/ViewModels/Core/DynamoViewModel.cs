@@ -1404,7 +1404,7 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                workspace.Save(path);
+                workspace.Save(path, false, EngineController);
             }
             catch (Exception ex)
             {

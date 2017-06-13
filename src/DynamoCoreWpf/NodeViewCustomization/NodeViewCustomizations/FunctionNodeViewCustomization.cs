@@ -102,7 +102,7 @@ namespace Dynamo.Wpf
 
                 if (!string.IsNullOrEmpty(ws.FileName))
                 {
-                    ws.Save(ws.FileName);
+                    ws.Save(ws.FileName, false, dynamoViewModel.EngineController);
                 }
             }
         }

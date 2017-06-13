@@ -129,8 +129,6 @@ namespace Dynamo.Graph.Workspaces
             return node;
         }
 
-       
-
         /// <summary>
         /// Map old Guids to new Models in the IdReferenceResolver.
         /// </summary>
@@ -272,6 +270,16 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public class WorkspaceWriteConverter : JsonConverter
     {
+        private EngineController engine;
+
+        public WorkspaceWriteConverter(EngineController engine = null)
+        {
+            if (engine != null)
+            {
+                this.engine = engine;
+            }
+        }
+
         public override bool CanConvert(Type objectType)
         {
             return typeof(WorkspaceModel).IsAssignableFrom(objectType);
@@ -350,43 +358,47 @@ namespace Dynamo.Graph.Workspaces
             }
             writer.WriteEndArray();
 
-            // Bindings
-            writer.WritePropertyName(Configurations.BindingsTag);
-            writer.WriteStartArray();
-            // Selecting all nodes that are either a DSFunction,
-            // a DSVarArgFunction or a CodeBlockNodeModel into a list.
-            var nodeGuids =
-                ws.Nodes.Where(
-                        n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel || n is Function)
-                    .Select(n => n.GUID);
-
-            var nodeTraceDataList = this.engine.LiveRunnerRuntimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids,
-                this.engine.LiveRunnerRuntimeCore.DSExecutable);
-
-            // serialize given node-data-list pairs into an Json.
-            if (nodeTraceDataList.Any())
+            if (engine != null)
             {
-                foreach (var pair in nodeTraceDataList)
+                // Bindings
+                writer.WritePropertyName(Configurations.BindingsTag);
+                writer.WriteStartArray();
+
+                // Selecting all nodes that are either a DSFunction,
+                // a DSVarArgFunction or a CodeBlockNodeModel into a list.
+                var nodeGuids =
+                    ws.Nodes.Where(
+                            n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel || n is Function)
+                        .Select(n => n.GUID);
+
+                var nodeTraceDataList = engine.LiveRunnerRuntimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids,
+                    this.engine.LiveRunnerRuntimeCore.DSExecutable);
+
+                // serialize given node-data-list pairs into an Json.
+                if (nodeTraceDataList.Any())
                 {
-                    writer.WriteStartObject();
-                    writer.WritePropertyName(Configurations.NodeIdAttribName);
-                    // Set the node ID attribute for this element.
-                    var nodeGuid = pair.Key.ToString();
-                    writer.WriteValue(nodeGuid);
-                    writer.WritePropertyName(Configurations.BingdingTag);
-                    // D4R binding
-                    writer.WriteStartObject();
-                    foreach (var data in pair.Value)
+                    foreach (var pair in nodeTraceDataList)
                     {
-                        writer.WritePropertyName(data.ID);
-                        writer.WriteValue(data.Data);
+                        writer.WriteStartObject();
+                        writer.WritePropertyName(Configurations.NodeIdAttribName);
+                        // Set the node ID attribute for this element.
+                        var nodeGuid = pair.Key.ToString();
+                        writer.WriteValue(nodeGuid);
+                        writer.WritePropertyName(Configurations.BingdingTag);
+                        // D4R binding
+                        writer.WriteStartObject();
+                        foreach (var data in pair.Value)
+                        {
+                            writer.WritePropertyName(data.ID);
+                            writer.WriteValue(data.Data);
+                        }
+                        writer.WriteEndObject();
+                        writer.WriteEndObject();
                     }
-                    writer.WriteEndObject();
-                    writer.WriteEndObject();
                 }
+                writer.WriteEndArray();
+                writer.WriteEndObject();
             }
-            writer.WriteEndArray();
-            writer.WriteEndObject();
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
