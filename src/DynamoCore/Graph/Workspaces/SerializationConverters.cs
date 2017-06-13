@@ -354,7 +354,6 @@ namespace Dynamo.Graph.Workspaces
                     var nodeGuid = pair.Key.ToString();
                     writer.WriteValue(nodeGuid);
                     writer.WritePropertyName(Configurations.BingdingTag);
-                    writer.WriteStartArray();
                     // D4R binding
                     writer.WriteStartObject();
                     foreach (var data in pair.Value)
@@ -363,7 +362,6 @@ namespace Dynamo.Graph.Workspaces
                         writer.WriteValue(data.Data);
                     }
                     writer.WriteEndObject();
-                    writer.WriteEndArray();
                     writer.WriteEndObject();
                 }
             }
