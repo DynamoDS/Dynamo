@@ -346,25 +346,25 @@ namespace Dynamo.Graph.Workspaces
             // serialize given node-data-list pairs into an Json.
             if (nodeTraceDataList.Any())
             {
-                writer.WriteStartObject();
-                writer.WritePropertyName(Configurations.NodeTraceDataTag + " " + Configurations.NodeIdAttribName);
                 foreach (var pair in nodeTraceDataList)
                 {
+                    writer.WriteStartObject();
+                    writer.WritePropertyName(Configurations.NodeIdAttribName);
                     // Set the node ID attribute for this element.
                     var nodeGuid = pair.Key.ToString();
                     writer.WriteValue(nodeGuid);
                     writer.WritePropertyName(Configurations.CallsiteTraceDataTag);
                     writer.WriteStartArray();
+                    writer.WriteStartObject();
                     foreach (var data in pair.Value)
                     {
-                        writer.WriteStartObject();
-                        writer.WritePropertyName(Configurations.CallSiteID + " " + data.ID);
+                        writer.WritePropertyName(data.ID);
                         writer.WriteValue(data.Data);
-                        writer.WriteEndObject();
                     }
+                    writer.WriteEndObject();
                     writer.WriteEndArray();
+                    writer.WriteEndObject();
                 }
-                writer.WriteEndObject();
             }
             writer.WriteEndArray();
             writer.WriteEndObject();
