@@ -142,16 +142,16 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Event that is fired when the workspace is saved.
+        /// Event that is fired when the workspace is saved.
         /// </summary>
-        public event Action WorkspaceSaved;
-        protected virtual void OnWorkspaceSaved()
+        public event Action Saved;
+        internal virtual void OnSaved()
         {
             LastSaved = DateTime.Now;
             HasUnsavedChanges = false;
 
-            if (WorkspaceSaved != null)
-                WorkspaceSaved();
+            if (Saved != null)
+                Saved();
         }
 
         /// <summary>
@@ -868,22 +868,40 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Internal save logic unrelated to serialization.
+        /// Workspace's Save method serializes the Workspace to JSON and writes it to the specified file path.
         /// </summary>
-        /// <param name="newPath">The path to save to</param>
-        /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
+        /// <param name="filePath">The path of the file.</param>
+        /// <param name="isBackup">A flag indicating whether this save operation represents a backup. If it's not backup,
         /// we should add it to recent files. Otherwise leave it.</param>
-        public virtual bool Save(string newPath, bool isBackup = false)
+        /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
+        public virtual void Save(string filePath, bool isBackup = false)
         {
-            if (String.IsNullOrEmpty(newPath)) return false;
-
-            // Only for actual save, update file path and recent file list
-            if (!isBackup)
+            if (String.IsNullOrEmpty(filePath))
             {
-                FileName = newPath;
-                OnWorkspaceSaved();
+                throw new ArgumentNullException("filePath");
             }
-            return true;
+
+            try
+            {
+                // Stage 1: Serialize the workspace.
+                var json = this.ToJson();
+
+                // Stage 2: Save
+                File.WriteAllText(filePath, json);
+
+                // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
+                // Only for actual save, update file path and recent file list
+                if (!isBackup)
+                {
+                    FileName = filePath;
+                    OnSaved();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                throw (ex);
+            }
         }
 
         /// <summary>
@@ -1462,8 +1480,8 @@ namespace Dynamo.Graph.Workspaces
                 Converters = new List<JsonConverter>{
                         new ConnectorConverter(),
                         new AnnotationConverter(),
-                        new WorkspaceConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
-                        new NodeModelConverter(manager, libraryServices),
+                        new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
+                        new NodeReadConverter(manager, libraryServices),
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };

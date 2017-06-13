@@ -293,7 +293,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
         /// we should add it to recent files. Otherwise leave it.</param>
         /// <returns></returns>
-        public override bool Save(string newPath, bool isBackup = false)
+        public override void Save(string newPath, bool isBackup = false)
         {
             var originalPath = FileName;
 
@@ -311,7 +311,7 @@ namespace Dynamo.Graph.Workspaces
                 SetInfo(Path.GetFileNameWithoutExtension(newPath));
             }
 
-            return base.Save(newPath, isBackup);
+            base.Save(newPath, isBackup);
         }
 
         protected override bool PopulateXmlDocument(XmlDocument document)

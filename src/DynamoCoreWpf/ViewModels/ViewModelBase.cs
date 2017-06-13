@@ -1,9 +1,11 @@
 ﻿using Microsoft.Practices.Prism.ViewModel;
+using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels
 {
     public abstract class ViewModelBase : NotificationObject
     {
+        [JsonIgnore]
         public bool IsDebugBuild
         {
             get

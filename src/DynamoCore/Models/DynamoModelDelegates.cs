@@ -18,8 +18,8 @@ namespace Dynamo.Models
     /// <summary>
     /// Represents the method that will handle workspace related events.
     /// </summary>
-    /// <param name="model">The <see cref="WorkspaceModel"/> object which caused the event.</param>
-    public delegate void WorkspaceHandler(WorkspaceModel model);
+    /// <param name="workspace">The <see cref="WorkspaceModel"/> which was saved.</param>
+    public delegate void WorkspaceHandler(WorkspaceModel workspace);
 
     /// <summary>
     /// This delegate is used to manage Dynamo's request dispatcher invoke.
