@@ -353,8 +353,9 @@ namespace Dynamo.Graph.Workspaces
                     // Set the node ID attribute for this element.
                     var nodeGuid = pair.Key.ToString();
                     writer.WriteValue(nodeGuid);
-                    writer.WritePropertyName(Configurations.CallsiteTraceDataTag);
+                    writer.WritePropertyName(Configurations.BingdingTag);
                     writer.WriteStartArray();
+                    // D4R binding
                     writer.WriteStartObject();
                     foreach (var data in pair.Value)
                     {

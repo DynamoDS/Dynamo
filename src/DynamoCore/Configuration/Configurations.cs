@@ -257,8 +257,7 @@ namespace Dynamo.Configuration
 
         #region Bindings Json serialization
         internal static readonly string BindingsTag = "Bindings";
-        internal static readonly string NodeTraceDataTag = "NodeTraceData";
-        internal static readonly string CallsiteTraceDataTag = "CallsiteTraceData";
+        internal static readonly string BingdingTag = "Binding";
         internal static readonly string NodeIdAttribName = "NodeId";
         internal static readonly string CallSiteID = "CallSiteID";
         #endregion
