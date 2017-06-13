@@ -361,12 +361,6 @@
     <Compile Include="Views\PackageManager\InstalledPackagesView.xaml.cs">
       <DependentUpon>InstalledPackagesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Search\LibraryContainerView.xaml.cs">
-      <DependentUpon>LibraryContainerView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Search\LibrarySearchView.xaml.cs">
-      <DependentUpon>LibrarySearchView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Search\LibraryView.xaml.cs">
       <DependentUpon>LibraryView.xaml</DependentUpon>
     </Compile>
@@ -1152,14 +1146,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\Search\LibraryContainerView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Search\LibrarySearchView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\Search\LibraryView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

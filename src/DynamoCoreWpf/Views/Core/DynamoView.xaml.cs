@@ -502,19 +502,6 @@ namespace Dynamo.Controls
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();
 #endif
-            #region Search initialization
-            var libraryUI = viewExtensionManager.ViewExtensions.Any(v=>v.Name == "LibraryUI");
-            
-            if(!libraryUI)
-            {
-                var search = new SearchView(
-                dynamoViewModel.SearchViewModel,
-                dynamoViewModel);
-                sidebarGrid.Children.Add(search);
-                dynamoViewModel.SearchViewModel.Visible = true;
-            }
-            
-            #endregion
 
             #region Package manager
 
