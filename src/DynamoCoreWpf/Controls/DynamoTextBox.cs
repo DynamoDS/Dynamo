@@ -444,7 +444,10 @@ namespace Dynamo.UI.Controls
                 .Transform(new Point(0, 0));
 
             double x = 0;
-            var placementTarget = this.PlacementTarget as FrameworkElement;
+            // Count width.
+            // multiplying by xfactor scales the placement point of the library UI tooltip to the correct location
+            //otherwise direct pixel coordinates are off by this factor due to screen dpi.
+            var placementTarget = PlacementTarget as FrameworkElement;
             if (placementTarget != null)
             {
                 x = (placementTarget.ActualWidth + gap * 2 + targetLocation.X * (-1)) * xfactor;
@@ -458,7 +461,7 @@ namespace Dynamo.UI.Controls
             if (availableHeight < Configurations.BottomPanelHeight)
                 y = availableHeight - (Configurations.BottomPanelHeight + gap * 4);
 
-            return new CustomPopupPlacement[]
+            return new[]
             {
                 new CustomPopupPlacement()
                 {
