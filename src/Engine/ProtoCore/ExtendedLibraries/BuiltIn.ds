@@ -17,6 +17,12 @@ class List extends DSCore.List
 		return = __Equals(objectA, objectB);
 	}
 
+	public static def Equals: bool(objectA: var[]..[], objectB: var[]..[])
+    {
+        return = __Equals(objectA, objectB);
+	}
+
+
 	public static def GroupByFunction(list: var[]..[], func: Function)
 	{
 		return = __GroupByFunction(list, func);
