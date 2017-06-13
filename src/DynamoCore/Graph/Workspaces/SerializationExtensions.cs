@@ -1,7 +1,4 @@
-﻿using Dynamo.Core;
-using Dynamo.Engine;
-using Dynamo.Graph.Nodes.NodeLoaders;
-using Dynamo.Scheduler;
+﻿using Dynamo.Engine;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,7 +15,7 @@ namespace Dynamo.Graph.Workspaces
         /// Save a Workspace to json.
         /// </summary>
         /// <returns>A string representing the serialized WorkspaceModel.</returns>
-        public static string ToJson(this WorkspaceModel workspace)
+        internal static string ToJson(this WorkspaceModel workspace, EngineController engine)
         {
             var settings = new JsonSerializerSettings
             {
@@ -33,7 +30,7 @@ namespace Dynamo.Graph.Workspaces
                 Converters = new List<JsonConverter>{
                         new ConnectorConverter(),
                         new AnnotationConverter(),
-                        new WorkspaceWriteConverter()
+                        new WorkspaceWriteConverter(engine)
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };

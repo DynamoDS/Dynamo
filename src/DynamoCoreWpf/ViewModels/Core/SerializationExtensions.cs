@@ -14,7 +14,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// </summary>
         /// <param name="viewModel"></param>
         /// <returns>A JSON string representing the WorkspaceViewModel</returns>
-        public static string ToJson(this WorkspaceViewModel viewModel)
+        internal static string ToJson(this WorkspaceViewModel viewModel)
         {
             var settings = new JsonSerializerSettings
             {

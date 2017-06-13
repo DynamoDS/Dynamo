@@ -25,6 +25,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Dynamo.Wpf.ViewModels.Core;
 using System.Diagnostics;
+using Dynamo.Engine;
 
 namespace Dynamo.ViewModels
 {
@@ -455,8 +456,9 @@ namespace Dynamo.ViewModels
         /// then adds a View property to serialized Workspace, and sets its value to the serialized ViewModel.
         /// </summary>
         /// <param name="filePath"></param>
+        /// <param name="engine"></param>
         /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
-        internal void Save(string filePath)
+        internal void Save(string filePath, EngineController engine = null)
         {
             if (String.IsNullOrEmpty(filePath))
             {
@@ -466,7 +468,7 @@ namespace Dynamo.ViewModels
             try
             {
                 // Stage 1: Serialize the workspace.
-                var json = Model.ToJson();
+                var json = Model.ToJson(engine);
 
                 // Stage 2: Add the View.
                 var jo = JObject.Parse(json);
