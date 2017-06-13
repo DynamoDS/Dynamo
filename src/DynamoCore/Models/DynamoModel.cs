@@ -1423,7 +1423,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     var oldFileName = workspace.FileName;
                     var oldName = workspace.Name;
-                    workspace.Save(savePath, true);
+                    workspace.Save(savePath, true, EngineController);
                     workspace.FileName = oldFileName;
                     workspace.Name = oldName;
                     backupFilesDict[workspace.Guid] = savePath;

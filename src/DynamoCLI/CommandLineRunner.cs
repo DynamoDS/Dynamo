@@ -178,7 +178,7 @@ namespace DynamoCLI
             model.OpenFileFromPath(dynPath);
 
             var ws = model.CurrentWorkspace;
-            var json = ws.ToJson();
+            var json = ws.ToJson(model.EngineController);
 
             var newFilePath = Path.Combine(Path.GetDirectoryName(dynPath), Path.GetFileNameWithoutExtension(dynPath) + ".json");
             File.WriteAllText(newFilePath, json);

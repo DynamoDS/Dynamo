@@ -873,8 +873,9 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="filePath">The path of the file.</param>
         /// <param name="isBackup">A flag indicating whether this save operation represents a backup. If it's not backup,
         /// we should add it to recent files. Otherwise leave it.</param>
+        /// <param name="engine">An EngineController instance to be used to serialize node bindings.</param>
         /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
-        public virtual void Save(string filePath, bool isBackup = false)
+        public virtual void Save(string filePath, bool isBackup = false, EngineController engine = null)
         {
             if (String.IsNullOrEmpty(filePath))
             {
@@ -884,7 +885,7 @@ namespace Dynamo.Graph.Workspaces
             try
             {
                 // Stage 1: Serialize the workspace.
-                var json = this.ToJson();
+                var json = this.ToJson(engine);
 
                 // Stage 2: Save
                 File.WriteAllText(filePath, json);
