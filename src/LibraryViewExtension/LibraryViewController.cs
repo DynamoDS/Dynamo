@@ -260,8 +260,8 @@ namespace Dynamo.LibraryUI
         private void InitializeResourceStreams(DynamoModel model)
         {
             resourceFactory = new ResourceHandlerFactory();
-            resourceFactory.RegisterProvider("/dist/v0.0.1", 
-                new DllResourceProvider("http://localhost/dist/v0.0.1",
+            resourceFactory.RegisterProvider("/dist", 
+                new DllResourceProvider("http://localhost/dist",
                     "Dynamo.LibraryUI.web.library"));
 
             resourceFactory.RegisterProvider(IconUrl.ServiceEndpoint, new IconResourceProvider(model.PathManager));
