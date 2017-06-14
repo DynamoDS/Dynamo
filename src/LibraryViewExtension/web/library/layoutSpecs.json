@@ -9,7 +9,7 @@
       "childElements": [
         {
           "text": "List",
-          "iconUrl": "./dist/v0.0.1/resources/Category.List.svg",
+          "iconUrl": "./dist/resources/Category.List.svg",
           "elementType": "category",
           "include": [ ],
           "childElements": [
@@ -303,7 +303,7 @@
         },
         {
           "text": "Input",
-          "iconUrl": "./dist/v0.0.1/resources/Category.Input.svg",
+          "iconUrl": "./dist/resources/Category.Input.svg",
           "elementType": "category",
           "include": [ ],
           "childElements": [
@@ -516,7 +516,7 @@
         },
         {
           "text": "Math",
-          "iconUrl": "./dist/v0.0.1/resources/Category.Math.svg",
+          "iconUrl": "./dist/resources/Category.Math.svg",
           "elementType": "category",
           "include": [ ],
           "childElements": [
@@ -667,7 +667,7 @@
             },
             {
               "text": "Operators",
-              "iconUrl": "./dist/v0.0.1/resources/Category.Operators.svg",
+              "iconUrl": "./dist/resources/Category.Operators.svg",
               "elementType": "group",
               "include": [
                 {
@@ -736,7 +736,7 @@
         },
         {
           "text": "Script",
-          "iconUrl": "./dist/v0.0.1/resources/Category.Script.svg",
+          "iconUrl": "./dist/resources/Category.Script.svg",
           "elementType": "category",
           "include": [ ],
           "childElements": [
@@ -792,7 +792,7 @@
         },
         {
           "text": "Display",
-          "iconUrl": "./dist/v0.0.1/resources/Category.Display.svg",
+          "iconUrl": "./dist/resources/Category.Display.svg",
           "elementType": "category",
           "include": [ ],
           "childElements": [
@@ -881,7 +881,7 @@
         },
         {
           "text": "ImportExport",
-          "iconUrl": "./dist/v0.0.1/resources/Category.ImportExport.svg",
+          "iconUrl": "./dist/resources/Category.ImportExport.svg",
           "elementType": "category",
           "include": [ ],
           "childElements": [
@@ -1037,7 +1037,7 @@
         },
         {
           "text": "String",
-          "iconUrl": "./dist/v0.0.1/resources/Category.String.svg",
+          "iconUrl": "./dist/resources/Category.String.svg",
           "elementType": "category",
           "include": [ ],
           "childElements": [
@@ -1150,7 +1150,7 @@
         },
         {
           "text": "Geometry",
-          "iconUrl": "./dist/v0.0.1/resources/Category.Geometry.svg",
+          "iconUrl": "./dist/resources/Category.Geometry.svg",
           "elementType": "category",
           "include": [ ],
           "childElements": [
@@ -1399,7 +1399,7 @@
         },
         {
           "text": "Revit",
-          "iconUrl": "./dist/v0.0.1/resources/Category.Revit.svg",
+          "iconUrl": "./dist/resources/Category.Revit.svg",
           "elementType": "category",
           "include": [
             {
@@ -1419,7 +1419,7 @@
     },
     {
       "text": "Add-ons",
-      "iconUrl": "./dist/v0.0.1/resources/plus-symbol.svg",
+      "iconUrl": "./dist/resources/plus-symbol.svg",
       "elementType": "section",
       "showHeader": true,
       "include": [
