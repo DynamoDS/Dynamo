@@ -1425,6 +1425,9 @@
       "include": [
         {
           "path": "pkg://"
+        },
+        {
+          "path": "dyf://"
         }
       ],
       "childElements": [ ]

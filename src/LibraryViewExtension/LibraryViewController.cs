@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using CefSharp;
@@ -14,13 +12,11 @@ using Dynamo.LibraryUI.Handlers;
 using Dynamo.LibraryUI.ViewModels;
 using Dynamo.LibraryUI.Views;
 using Dynamo.Models;
-using Dynamo.PackageManager;
-using Dynamo.ViewModels;
-using System.Windows.Input;
-using Dynamo.Wpf.ViewModels;
-using Dynamo.Controls;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Interfaces;
+using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.LibraryUI
 {
@@ -94,15 +90,14 @@ namespace Dynamo.LibraryUI
         /// </summary>
         /// <param name="dynamoView">DynamoView hosting library component</param>
         /// <param name="commandExecutive">Command executive to run dynamo commands</param>
-        public LibraryViewController(Window dynamoView, ICommandExecutive commandExecutive)
+        public LibraryViewController(Window dynamoView, ICommandExecutive commandExecutive, ILibraryViewCustomization customization)
         {
             this.dynamoWindow = dynamoView;
             dynamoViewModel = dynamoView.DataContext as DynamoViewModel;
             libraryViewTooltip = CreateTooltipControl();
 
             this.commandExecutive = commandExecutive;
-            InitializeResourceStreams(dynamoViewModel.Model);
-            this.observer = SetupSearchModelEventsObserver(dynamoViewModel.Model.SearchModel, this);
+            InitializeResourceStreams(dynamoViewModel.Model, customization);
         }
 
         /// <summary>
@@ -231,33 +226,65 @@ namespace Dynamo.LibraryUI
             System.Diagnostics.Trace.Write(e.Message);
         }
 
-        internal static IDisposable SetupSearchModelEventsObserver(NodeSearchModel model, IEventController controller, int throttleTime = 200)
+        internal static IDisposable SetupSearchModelEventsObserver(NodeSearchModel model, IEventController controller, ILibraryViewCustomization customization, int throttleTime = 200)
         {
-            var observer = new EventObserver<NodeSearchElement, string>(
-                    nodes => controller.RaiseEvent("libraryDataUpdated", nodes),
-                    (s, e) => {
-                            var name = NodeItemDataProvider.GetFullyQualifiedName(e);
-                            return string.IsNullOrEmpty(s) ? name : string.Format("{0}, {1}", s, name);
-                        }
+            customization.SpecificationUpdated += (o,e) => controller.RaiseEvent("libraryDataUpdated");
+
+            var observer = new EventObserver<NodeSearchElement, IEnumerable<NodeSearchElement>>(
+                    elements => NotifySearchModelUpdate(customization, elements), CollectToList
                 ).Throttle(TimeSpan.FromMilliseconds(throttleTime));
+
+            Action<NodeSearchElement> onRemove = e => observer.OnEvent(null);
 
             //Set up the event callback
             model.EntryAdded += observer.OnEvent;
-            model.EntryRemoved += observer.OnEvent;
+            model.EntryRemoved += onRemove;
             model.EntryUpdated += observer.OnEvent;
 
             //Set up the dispose event handler
             observer.Disposed += () =>
             {
                 model.EntryAdded -= observer.OnEvent;
-                model.EntryRemoved -= observer.OnEvent;
+                model.EntryRemoved -= onRemove;
                 model.EntryUpdated -= observer.OnEvent;
             };
 
             return observer;
         }
 
-        private void InitializeResourceStreams(DynamoModel model)
+        /// <summary>
+        /// Returns a new list by adding the given element to the given list
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list">This old list of elements</param>
+        /// <param name="element">The element to add to the list</param>
+        /// <returns>The new list containing all items from input list and the given element</returns>
+        private static IEnumerable<T> CollectToList<T>(IEnumerable<T> list, T element)
+        {
+            //Accumulate all non-null element into a list.
+            if (list == null) list = Enumerable.Empty<T>();
+            return element != null ? list.Concat(Enumerable.Repeat(element, 1)) : list;
+        }
+
+        /// <summary>
+        /// Notifies the SearchModel update event with list of updated elements
+        /// </summary>
+        /// <param name="customization">ILibraryViewCustomization to update the 
+        /// specification and raise specification changed event.</param>
+        /// <param name="elements">List of updated elements</param>
+        private static void NotifySearchModelUpdate(ILibraryViewCustomization customization, IEnumerable<NodeSearchElement> elements)
+        {
+            var includes = elements
+                .Select(NodeItemDataProvider.GetFullyQualifiedName)
+                .Select(name => name.Split('.').First())
+                .Distinct()
+                .SkipWhile(s => s.Contains("://"))
+                .Select(p => new LayoutIncludeInfo() { path = p });
+
+            customization.AddIncludeInfo(includes, "Add-ons");
+        }
+
+        private void InitializeResourceStreams(DynamoModel model, ILibraryViewCustomization customization)
         {
             resourceFactory = new ResourceHandlerFactory();
             resourceFactory.RegisterProvider("/dist", 
@@ -275,18 +302,17 @@ namespace Dynamo.LibraryUI
 
             //Register provider for node data
             resourceFactory.RegisterProvider("/loadedTypes", new NodeItemDataProvider(model.SearchModel));
-            
-            {
-                var url = "http://localhost/layoutSpecs";
-                var resource = "Dynamo.LibraryUI.web.library.layoutSpecs.json";
-                var stream = LoadResource(resource);
-                resourceFactory.RegisterHandler(url, ResourceHandler.FromStream(stream));
-            }
+
+            //Register provider for layout spec
+            resourceFactory.RegisterProvider("/layoutSpecs", new LayoutSpecProvider(customization, "Dynamo.LibraryUI.web.library.layoutSpecs.json"));
+
+            //Setup the event observer for NodeSearchModel to update customization/spec provider.
+            observer = SetupSearchModelEventsObserver(model.SearchModel, this, customization);
 
             //Register provider for searching node data
             resourceFactory.RegisterProvider(SearchResultDataProvider.serviceIdentifier, new SearchResultDataProvider(model.SearchModel));
         }
-
+        
         private void RegisterResources(ChromiumWebBrowser browser)
         {
             browser.ResourceHandlerFactory = resourceFactory;

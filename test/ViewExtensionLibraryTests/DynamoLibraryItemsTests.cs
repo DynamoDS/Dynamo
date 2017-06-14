@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using CefSharp;
 using Dynamo;
+using Dynamo.Controls;
+using Dynamo.LibraryUI;
 using Dynamo.LibraryUI.Handlers;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Interfaces;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -79,6 +84,33 @@ namespace ViewExtensionLibraryTests
                     Assert.IsNotNullOrEmpty(e.itemType);
                 });
             }
+        }
+
+        [Test, Category("UnitTests")]
+        public void LibraryViewCustomizationServiceLoaded()
+        {
+            var model = GetModel();
+            var vm = DynamoViewModel.Start(new DynamoViewModel.StartConfiguration() { DynamoModel = model });
+            var view = new DynamoView(vm);
+
+            var customization = model.ExtensionManager.Service<ILibraryViewCustomization>();
+
+            Assert.IsNotNull(customization);
+            var eventanme = "SpecChanged";
+            var controller = new Mock<IEventController>();
+            customization.SpecificationUpdated += (o, e) => controller.Object.RaiseEvent(eventanme);
+
+            var sectiontext = "Y";
+            customization.AddSections(new[] { "X", "Y", "Z" }.Select(s => new LayoutSection(s)));
+
+            var spec = customization.GetSpecification();
+            Assert.AreEqual(3, spec.sections.Count);
+
+            LibraryViewCustomizationTests.VerifyAddElements(customization, sectiontext, 3);
+
+            LibraryViewCustomizationTests.VerifyAddIncludeInfo(customization, "X", 3);
+
+            controller.Verify(c => c.RaiseEvent(eventanme), Times.Exactly(3)); //Only notified twice
         }
 
         private LoadedTypeData<LoadedTypeItem> GetLoadedTypesFromJson(Stream stream)
