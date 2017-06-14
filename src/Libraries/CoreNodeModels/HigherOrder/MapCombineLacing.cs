@@ -288,14 +288,14 @@ namespace CoreNodeModels.HigherOrder
         private void UpdateReductorPort()
         {
             if (InPorts.Count > 6) 
-                reductorPort.NickName = "f(x1, x2, ... xN, a)";
+                reductorPort.Name = "f(x1, x2, ... xN, a)";
             else
             {
                 if (InPorts.Count == 3) 
-                    reductorPort.NickName = "f(x, a)";
+                    reductorPort.Name = "f(x, a)";
                 else
                 {
-                    reductorPort.NickName = "f("
+                    reductorPort.Name = "f("
                         + string.Join(
                             ", ",
                             Enumerable.Range(0, InPorts.Count - 2).Select(x => "x" + (x + 1)))
@@ -378,14 +378,14 @@ namespace CoreNodeModels.HigherOrder
         private void UpdateReductorPort()
         {
             if (InPorts.Count > 6)
-                reductorPort.NickName = "f(x1, x2, ... xN, a)";
+                reductorPort.Name = "f(x1, x2, ... xN, a)";
             else
             {
                 if (InPorts.Count == 3)
-                    reductorPort.NickName = "f(x, a)";
+                    reductorPort.Name = "f(x, a)";
                 else
                 {
-                    reductorPort.NickName = "f("
+                    reductorPort.Name = "f("
                         + string.Join(
                             ", ",
                             Enumerable.Range(0, InPorts.Count - 2).Select(x => "x" + (x + 1)))

@@ -1,4 +1,4 @@
-﻿using Dynamo.Configuration;
+using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Exceptions;
 using Dynamo.Graph;
@@ -1385,7 +1385,27 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
+                model.SaveWorkspace(path, model.CurrentWorkspace);
+            }
+            catch (System.Exception ex)
+            {
+                if (ex is IOException || ex is System.UnauthorizedAccessException)
+                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+            }
+        }
+
+        /// <summary>
+        /// Save a specific workspace to a specific file path, if the path is null 
+        /// or empty, does nothing. If successful, the CurrentWorkspace.FileName
+        /// field is updated as a side effect.
+        /// </summary>
+        /// <param name="path">The path to save to</param>
+        /// <param name="ws">workspace to save</param>
+        internal void SaveAs(string path, WorkspaceModel ws)
+        {
+            try
+            {
+                model.SaveWorkspace(path, ws);
             }
             catch (System.Exception ex)
             {
@@ -1402,10 +1422,10 @@ namespace Dynamo.ViewModels
         /// <returns>true if save was successful, false otherwise</returns>
         internal bool ShowSaveDialogIfNeededAndSave(WorkspaceModel workspace)
         {
-            // crash sould always allow save as
+            // crash should always allow save as
             if (!String.IsNullOrEmpty(workspace.FileName) && !DynamoModel.IsCrashing)
             {
-                workspace.Save(EngineController.LiveRunnerRuntimeCore);
+                SaveAs(workspace.FileName, workspace);
                 return true;
             }
             else
@@ -1419,7 +1439,7 @@ namespace Dynamo.ViewModels
                 fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
-                    workspace.SaveAs(fd.FileName, EngineController.LiveRunnerRuntimeCore);
+                    SaveAs(fd.FileName, workspace);
                     return true;
                 }
             }
@@ -1477,7 +1497,7 @@ namespace Dynamo.ViewModels
             {
                 //set the zoom and offsets events
                 CurrentSpace.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(CurrentSpace.X, CurrentSpace.Y)));
-                CurrentSpace.OnZoomChanged(this, new ZoomEventArgs(CurrentSpace.Zoom));
+                CurrentSpaceViewModel.OnZoomChanged(this, new ZoomEventArgs(CurrentSpaceViewModel.Zoom));
             }
         }
 
@@ -1722,7 +1742,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void GoHomeView(object parameter)
         {
-            model.CurrentWorkspace.Zoom = 1.0;
+            CurrentSpaceViewModel.Zoom = 1.0;
 
             var ws = this.Model.Workspaces.First(x => x == model.CurrentWorkspace);
             ws.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(0, 0)));
@@ -2096,10 +2116,10 @@ namespace Dynamo.ViewModels
 
         internal void Pan(object parameter)
         {
-            Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", model.CurrentWorkspace.X, model.CurrentWorkspace.Y, model.CurrentWorkspace.Zoom));
+            Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", CurrentSpaceViewModel.X, CurrentSpaceViewModel.Y, currentWorkspaceViewModel.Zoom));
             var panType = parameter.ToString();
             double pan = 10;
-            var pt = new Point2D(model.CurrentWorkspace.X, model.CurrentWorkspace.Y);
+            var pt = new Point2D(CurrentSpaceViewModel.X, CurrentSpaceViewModel.Y);
 
             switch (panType)
             {

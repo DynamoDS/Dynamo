@@ -18,6 +18,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using Function = Dynamo.Graph.Nodes.CustomNodes.Function;
 
 namespace Dynamo.ViewModels
@@ -33,6 +34,18 @@ namespace Dynamo.ViewModels
 
     public partial class WorkspaceViewModel : ViewModelBase
     {
+        #region constants
+        /// <summary>
+        /// Represents maximum value of workspace zoom
+        /// </summary>
+        public const double ZOOM_MAXIMUM = 4.0;
+
+        /// <summary>
+        /// Represents minimum value of workspace zoom
+        /// </summary>
+        public const double ZOOM_MINIMUM = 0.01;
+        #endregion
+
         #region Properties and Fields
 
         public DynamoViewModel DynamoViewModel { get; private set; }
@@ -40,9 +53,9 @@ namespace Dynamo.ViewModels
 
         private bool _canFindNodesFromElements = false;
 
-        public event WorkspaceModel.ZoomEventHandler RequestZoomToViewportCenter;
-        public event WorkspaceModel.ZoomEventHandler RequestZoomToViewportPoint;
-        public event WorkspaceModel.ZoomEventHandler RequestZoomToFitView;
+        public event ZoomEventHandler RequestZoomToViewportCenter;
+        public event ZoomEventHandler RequestZoomToViewportPoint;
+        public event ZoomEventHandler RequestZoomToFitView;
 
         public event NodeEventHandler RequestCenterViewOnElement;
 
@@ -53,9 +66,45 @@ namespace Dynamo.ViewModels
         public bool IsSnapping { get; set; }
 
         /// <summary>
+        /// Gets the Camera Data. This is used when serializing Camera Data in the View block
+        /// of Graph.Json.
+        /// </summary>
+        
+        public CameraData Camera
+        {
+            get { return DynamoViewModel.BackgroundPreviewViewModel.GetCameraInformation(); }
+        }
+
+        /// <summary>
         /// ViewModel that is used in InCanvasSearch in context menu and called by Shift+DoubleClick.
         /// </summary>
         public SearchViewModel InCanvasSearchViewModel { get; private set; }
+
+        /// <summary>
+        ///     Function that can be used to respond to a changed workspace Zoom amount.
+        /// </summary>
+        /// <param name="sender">The object where the event handler is attached.</param>
+        /// <param name="e">The event data.</param>
+        public delegate void ZoomEventHandler(object sender, EventArgs e);
+
+        /// <summary>
+        ///     Event that is fired every time the zoom factor of a workspace changes.
+        /// </summary>
+        public event ZoomEventHandler ZoomChanged;
+
+        /// <summary>
+        /// Used during open and workspace changes to set the zoom of the workspace
+        /// </summary>
+        /// <param name="sender">The object which triggers the event</param>
+        /// <param name="e">The zoom event data.</param>
+        internal virtual void OnZoomChanged(object sender, ZoomEventArgs e)
+        {
+            if (ZoomChanged != null)
+            {
+                //Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
+                ZoomChanged(this, e);
+            }
+        }
 
         /// <summary>
         /// For requesting registered workspace to zoom in center
@@ -177,6 +226,29 @@ namespace Dynamo.ViewModels
                 return Model.Name;
             }
         }
+        /// <summary>
+        ///     Returns or set the X position of the workspace.
+        /// </summary>
+        public double X
+        {
+            get { return Model.X; }
+            set
+            {
+                Model.X = value;
+            }
+        }
+
+        /// <summary>
+        ///     Returns or set the Y position of the workspace
+        /// </summary>
+        public double Y
+        {
+            get { return Model.Y; }
+            set
+            {
+                Model.Y = value;
+            }
+        }
 
         public string FileName
         {
@@ -214,9 +286,17 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        ///     Get or set the zoom value of the workspace.
+        /// </summary>
         public double Zoom
         {
-            get { return Model.Zoom; }
+            get { return this.Model.Zoom; }
+            set
+            {
+                this.Model.Zoom = value;
+                RaisePropertyChanged("Zoom");
+            }
         }
 
         public bool CanZoomIn
@@ -275,7 +355,6 @@ namespace Dynamo.ViewModels
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
         {
             this.DynamoViewModel = dynamoViewModel;
-
             Model = model;
             stateMachine = new StateMachine(this);
 
@@ -486,7 +565,7 @@ namespace Dynamo.ViewModels
                 case "Y":
                     break;
                 case "Zoom":
-                    this.Model.OnZoomChanged(this, new ZoomEventArgs(Model.Zoom));
+                    this.OnZoomChanged(this, new ZoomEventArgs(this.Zoom));
                     RaisePropertyChanged("Zoom");
                     break;
                 case "IsCurrentSpace":
@@ -565,7 +644,7 @@ namespace Dynamo.ViewModels
                 {
                     selection.AddUnique(n);
                     // if annotation is selected its children should be added to selection too
-                    foreach (var m in n.SelectedModels)
+                    foreach (var m in n.Nodes)
                     {
                         selection.AddUnique(m);
                     }
@@ -906,19 +985,19 @@ namespace Dynamo.ViewModels
 
         private bool CanZoom(double zoom)
         {
-            return (!(zoom < 0) || !(Model.Zoom <= WorkspaceModel.ZOOM_MINIMUM)) && (!(zoom > 0) 
-                || !(Model.Zoom >= WorkspaceModel.ZOOM_MAXIMUM));
+            return (!(zoom < 0) || !(this.Zoom <= WorkspaceViewModel.ZOOM_MINIMUM)) && (!(zoom > 0) 
+                || !(this.Zoom >= WorkspaceViewModel.ZOOM_MAXIMUM));
         }
 
         private void SetZoom(object zoom)
         {
-            Model.Zoom = Convert.ToDouble(zoom);
+            this.Zoom = Convert.ToDouble(zoom);
         }
 
         private static bool CanSetZoom(object zoom)
         {
             double setZoom = Convert.ToDouble(zoom);
-            return setZoom >= WorkspaceModel.ZOOM_MINIMUM && setZoom <= WorkspaceModel.ZOOM_MAXIMUM;
+            return setZoom >= WorkspaceViewModel.ZOOM_MINIMUM && setZoom <= WorkspaceViewModel.ZOOM_MAXIMUM;
         }
 
         private bool _fitViewActualZoomToggle = false;
@@ -1084,8 +1163,8 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsHomeSpace");
 
             // New workspace or swapped workspace to follow it offset and zoom
-            this.Model.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(Model.X, Model.Y)));
-            this.Model.OnZoomChanged(this, new ZoomEventArgs(Model.Zoom));
+            this.Model.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(this.X, this.Y)));
+            this.OnZoomChanged(this, new ZoomEventArgs(this.Zoom));
         }
 
         private void RefreshViewOnSelectionChange()

@@ -247,7 +247,7 @@ namespace Dynamo.Engine
             }
         }
 
-        internal string NicknameFromFunctionSignatureHint(string functionSignature)
+        internal string NameFromFunctionSignature(string functionSignature)
         {
             string[] splitted = null;
             string newName = null;
@@ -462,14 +462,14 @@ namespace Dynamo.Engine
         /// Checks if a given function is in the builtinFunctionGroups so we do not necessarily look for it's library based on its Assembly tag
         /// </summary>
         /// <param name="library">assembly name</param>
-        /// <param name="nickname">nick name, used for searching as key with default value ""</param>
+        /// <param name="name">name, used for searching as key with default value ""</param>
         /// <returns></returns>
-        internal bool IsFunctionBuiltIn(string library, string nickname = "")
+        internal bool IsFunctionBuiltIn(string library, string name = "")
         {
             // For Nodes with not .dll specific Assembly tag
             if (library == Categories.BuiltIn || library == Categories.Operators)
             {
-                return builtinFunctionGroups.ContainsKey(nickname);
+                return builtinFunctionGroups.ContainsKey(name);
             }
             else
             {

@@ -80,8 +80,8 @@ namespace Dynamo
             var node = new DummyNodeModel();
             Assert.AreEqual(2, node.InPorts.Count);
 
-            Assert.AreEqual("input1", node.InPorts[0].PortName);
-            Assert.AreEqual("input2", node.InPorts[1].PortName);
+            Assert.AreEqual("input1", node.InPorts[0].Name);
+            Assert.AreEqual("input2", node.InPorts[1].Name);
 
             Assert.AreEqual("This is input1", node.InPorts[0].ToolTip);
             Assert.AreEqual("This is input2", node.InPorts[1].ToolTip);
@@ -99,8 +99,8 @@ namespace Dynamo
             var node = new DummyNodeModel();
             Assert.AreEqual(2, node.InPorts.Count);
 
-            Assert.AreEqual("output1", node.OutPorts[0].PortName);
-            Assert.AreEqual("output2", node.OutPorts[1].PortName);
+            Assert.AreEqual("output1", node.OutPorts[0].Name);
+            Assert.AreEqual("output2", node.OutPorts[1].Name);
 
             Assert.AreEqual("some description", node.OutPorts[0].ToolTip);
             Assert.AreEqual("", node.OutPorts[1].ToolTip);

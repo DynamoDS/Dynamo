@@ -87,12 +87,12 @@ namespace Dynamo.Tests
                 var sortedNodes = AstBuilder.TopologicalSort(shuffle.ShuffledList).ToList();
                 Assert.AreEqual(sortedNodes.Count(), 4);
 
-                List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
+                List<int> names = sortedNodes.Select(node => Int32.Parse(node.Name)).ToList();
 
                 var nodePosMap = new Dictionary<int, int>();
-                for (int idx = 0; idx < nickNames.Count; ++idx)
+                for (int idx = 0; idx < names.Count; ++idx)
                 {
-                    nodePosMap[nickNames[idx]] = idx;
+                    nodePosMap[names[idx]] = idx;
                 }
 
                 // no matter input nodes in whatever order, there invariants 
@@ -126,12 +126,12 @@ namespace Dynamo.Tests
                 var sortedNodes = AstBuilder.TopologicalSort(shuffle.ShuffledList).ToList();
                 Assert.AreEqual(sortedNodes.Count(), 4);
 
-                List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
+                List<int> names = sortedNodes.Select(node => Int32.Parse(node.Name)).ToList();
 
                 var nodePosMap = new Dictionary<int, int>();
-                for (int idx = 0; idx < nickNames.Count; ++idx)
+                for (int idx = 0; idx < names.Count; ++idx)
                 {
-                    nodePosMap[nickNames[idx]] = idx;
+                    nodePosMap[names[idx]] = idx;
                 }
 
                 // no matter input nodes in whatever order, there invariants 
@@ -164,12 +164,12 @@ namespace Dynamo.Tests
                 var sortedNodes = AstBuilder.TopologicalSort(shuffle.ShuffledList).ToList();
                 Assert.AreEqual(sortedNodes.Count(), 3);
 
-                List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
+                List<int> names = sortedNodes.Select(node => Int32.Parse(node.Name)).ToList();
 
                 var nodePosMap = new Dictionary<int, int>();
-                for (int idx = 0; idx < nickNames.Count; ++idx)
+                for (int idx = 0; idx < names.Count; ++idx)
                 {
-                    nodePosMap[nickNames[idx]] = idx;
+                    nodePosMap[names[idx]] = idx;
                 }
 
                 // no matter input nodes in whatever order, there invariants 
@@ -199,12 +199,12 @@ namespace Dynamo.Tests
                 var sortedNodes = AstBuilder.TopologicalSort(shuffle.ShuffledList).ToList();
                 Assert.AreEqual(sortedNodes.Count(), 4);
 
-                List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
+                List<int> names = sortedNodes.Select(node => Int32.Parse(node.Name)).ToList();
 
                 var nodePosMap = new Dictionary<int, int>();
-                for (int idx = 0; idx < nickNames.Count; ++idx)
+                for (int idx = 0; idx < names.Count; ++idx)
                 {
-                    nodePosMap[nickNames[idx]] = idx;
+                    nodePosMap[names[idx]] = idx;
                 }
 
                 // no matter input nodes in whatever order, there invariants 
@@ -243,11 +243,11 @@ namespace Dynamo.Tests
                 var sortedNodes = AstBuilder.TopologicalSort(nodes).ToList();
                 Assert.AreEqual(sortedNodes.Count(), 9);
 
-                var nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
+                var names = sortedNodes.Select(node => Int32.Parse(node.Name)).ToList();
                 var nodePosMap = new Dictionary<int, int>();
-                for (int idx = 0; idx < nickNames.Count; ++idx)
+                for (int idx = 0; idx < names.Count; ++idx)
                 {
-                    nodePosMap[nickNames[idx]] = idx;
+                    nodePosMap[names[idx]] = idx;
                 }
 
                 // no matter input nodes in whatever order, there invariants 
@@ -295,12 +295,12 @@ namespace Dynamo.Tests
                 var sortedNodes = AstBuilder.TopologicalSortForGraph(shuffle.ShuffledList).ToList();
                 Assert.AreEqual(sortedNodes.Count(), 4);
 
-                List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
+                List<int> names = sortedNodes.Select(node => Int32.Parse(node.Name)).ToList();
 
                 var nodePosMap = new Dictionary<int, int>();
-                for (int idx = 0; idx < nickNames.Count; ++idx)
+                for (int idx = 0; idx < names.Count; ++idx)
                 {
-                    nodePosMap[nickNames[idx]] = idx;
+                    nodePosMap[names[idx]] = idx;
                 }
 
                 // no matter input nodes in whatever order, there invariants 
@@ -334,12 +334,12 @@ namespace Dynamo.Tests
                 var sortedNodes = AstBuilder.TopologicalSortForGraph(shuffle.ShuffledList).ToList();
                 Assert.AreEqual(sortedNodes.Count(), 4);
 
-                List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
+                List<int> names = sortedNodes.Select(node => Int32.Parse(node.Name)).ToList();
 
                 var nodePosMap = new Dictionary<int, int>();
-                for (int idx = 0; idx < nickNames.Count; ++idx)
+                for (int idx = 0; idx < names.Count; ++idx)
                 {
-                    nodePosMap[nickNames[idx]] = idx;
+                    nodePosMap[names[idx]] = idx;
                 }
 
                 // no matter input nodes in whatever order, there invariants 
@@ -375,12 +375,12 @@ namespace Dynamo.Tests
                 var sortedNodes = AstBuilder.TopologicalSortForGraph(shuffle.ShuffledList).ToList();
                 Assert.AreEqual(sortedNodes.Count(), 3);
 
-                List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
+                List<int> names = sortedNodes.Select(node => Int32.Parse(node.Name)).ToList();
 
                 var nodePosMap = new Dictionary<int, int>();
-                for (int idx = 0; idx < nickNames.Count; ++idx)
+                for (int idx = 0; idx < names.Count; ++idx)
                 {
-                    nodePosMap[nickNames[idx]] = idx;
+                    nodePosMap[names[idx]] = idx;
                 }
 
                 // no matter input nodes in whatever order, there invariants 
@@ -410,12 +410,12 @@ namespace Dynamo.Tests
                 var sortedNodes = AstBuilder.TopologicalSortForGraph(shuffle.ShuffledList).ToList();
                 Assert.AreEqual(sortedNodes.Count(), 4);
 
-                List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
+                List<int> names = sortedNodes.Select(node => Int32.Parse(node.Name)).ToList();
 
                 var nodePosMap = new Dictionary<int, int>();
-                for (int idx = 0; idx < nickNames.Count; ++idx)
+                for (int idx = 0; idx < names.Count; ++idx)
                 {
-                    nodePosMap[nickNames[idx]] = idx;
+                    nodePosMap[names[idx]] = idx;
                 }
 
                 // no matter input nodes in whatever order, there invariants 
@@ -454,11 +454,11 @@ namespace Dynamo.Tests
                 var sortedNodes = AstBuilder.TopologicalSortForGraph(nodes).ToList();
                 Assert.AreEqual(sortedNodes.Count(), 9);
 
-                var nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
+                var names = sortedNodes.Select(node => Int32.Parse(node.Name)).ToList();
                 var nodePosMap = new Dictionary<int, int>();
-                for (int idx = 0; idx < nickNames.Count; ++idx)
+                for (int idx = 0; idx < names.Count; ++idx)
                 {
-                    nodePosMap[nickNames[idx]] = idx;
+                    nodePosMap[names[idx]] = idx;
                 }
 
                 // no matter input nodes in whatever order, there invariants 
@@ -501,8 +501,8 @@ namespace Dynamo.Tests
                 var sortedNodes = AstBuilder.TopologicalSortForGraph(nodes).ToList();
                 Assert.AreEqual(sortedNodes.Count(), 13);
 
-                var nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
-                Assert.IsTrue(nickNames.SequenceEqual(Enumerable.Range(1, 13)));
+                var names = sortedNodes.Select(node => Int32.Parse(node.Name)).ToList();
+                Assert.IsTrue(names.SequenceEqual(Enumerable.Range(1, 13)));
             }
         }
     }

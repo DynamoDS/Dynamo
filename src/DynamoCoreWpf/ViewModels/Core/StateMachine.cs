@@ -35,6 +35,11 @@ namespace Dynamo.ViewModels
         private ConnectorViewModel[] activeConnectors = null;
         private static bool multipleConnections = false;
 
+        // firstStartPort records the first port selected when connections
+        // are made using ctrl + click, so that the subsequent new
+        // connections are all connected to firstStartPort.
+        private PortModel firstStartPort;
+
         // These properties need to be public for data-binding to work.
         public bool IsInIdleState { get { return stateMachine.IsInIdleState; } }
         public bool IsSelecting { get { return stateMachine.IsSelecting; } }
@@ -164,6 +169,7 @@ namespace Dynamo.ViewModels
                 // Define the new active connector
                 var c = new ConnectorViewModel[] { new ConnectorViewModel(this, portModel.Connectors[0].Start) };
                 this.SetActiveConnectors(c);
+                firstStartPort = portModel.Connectors[0].Start;
             }
             else
             {
@@ -172,6 +178,7 @@ namespace Dynamo.ViewModels
                     // Create an array containing a connector view model to begin drawing
                     var connectors = new ConnectorViewModel[] { new ConnectorViewModel(this, portModel) };
                     this.SetActiveConnectors(connectors);
+                    firstStartPort = isInPort ? null : node.OutPorts[portIndex];
                 }
                 catch (Exception ex)
                 {
@@ -203,6 +210,29 @@ namespace Dynamo.ViewModels
         internal void EndConnection(Guid nodeId, int portIndex, PortType portType)
         {
             this.SetActiveConnectors(null);
+        }
+
+        internal void EndAndStartCtrlConnection(Guid nodeId, int portIndex, PortType portType)
+        {
+            // Only handle ctrl connections if selected port is an input port
+            if (firstStartPort == null || portType == PortType.Output) return; 
+            this.SetActiveConnectors(null); // End the current connection
+
+            // Then, start a new connection
+            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
+            if (node == null)
+                return;
+            try
+            {
+                // Create an array containing a connector view model to begin drawing
+                var connectors = new ConnectorViewModel[] { new ConnectorViewModel(this, firstStartPort) };
+                this.SetActiveConnectors(connectors);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+
+            }
         }
 
         internal bool CheckActiveConnectorCompatibility(PortViewModel portVM,bool isSnapping = true)
@@ -240,6 +270,7 @@ namespace Dynamo.ViewModels
         {
             multipleConnections = false;
             this.SetActiveConnectors(null);
+            firstStartPort = null;
         }
 
         internal void UpdateActiveConnector(System.Windows.Point mouseCursor)
@@ -766,18 +797,24 @@ namespace Dynamo.ViewModels
                         int portIndex = portModel.Index;
 
                         var mode = DynamoModel.MakeConnectionCommand.Mode.End;
+                        this.currentState = State.None;
+                        owningWorkspace.CurrentCursor = null;
+
                         if (multipleConnections)
                         {
                             mode = DynamoModel.MakeConnectionCommand.Mode.EndShiftReconnections;
                         }
+                        else if (Keyboard.Modifiers == ModifierKeys.Control) // If the control key is held down
+                        {
+                            mode = DynamoModel.MakeConnectionCommand.Mode.EndAndStartCtrlConnection;
+                            this.currentState = State.Connection; // Start a new connection
+                            owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect); // Reassign the cursor
+                        }
                         var command = new DynamoModel.MakeConnectionCommand(nodeId,
                             portIndex, portModel.PortType, mode);
                         owningWorkspace.DynamoViewModel.ExecuteCommand(command);
-
                         multipleConnections = false;
-                        owningWorkspace.CurrentCursor = null;
                         owningWorkspace.IsCursorForced = false;
-                        this.currentState = State.None;
                     }
                 }
 

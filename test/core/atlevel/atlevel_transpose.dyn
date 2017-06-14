@@ -1,11 +1,19 @@
-<Workspace Version="1.0.0.482" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+<Workspace Version="2.0.0.4820" X="0" Y="0" zoom="1" ScaleFactor="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
   <NamespaceResolutionMap>
     <ClassMap partialName="List" resolvedName="DSCore.List" assemblyName="DSCoreNodes.dll" />
   </NamespaceResolutionMap>
   <Elements>
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="4a26f8d9-01e3-4748-968e-245e0d6613f7" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="161" y="160" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" CodeText="xs = {{{0..2, 3..5}, {6..8, 9..11}}};" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="2bc82773-3dd9-4491-bca2-d2ee9adb9d81" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="579" y="187" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" CodeText="List.Transpose(xs@-3&lt;1&gt;);" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="2c65b3e2-17cb-4847-b11d-3c390f06dd0f" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="903" y="210" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" CodeText="xs[0];" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="4a26f8d9-01e3-4748-968e-245e0d6613f7" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="161" y="160" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="xs = {{{0..2, 3..5}, {6..8, 9..11}}};" ShouldFocus="false">
+      <OutPortInfo LineIndex="0" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="2bc82773-3dd9-4491-bca2-d2ee9adb9d81" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="579" y="187" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="true" CodeText="List.Transpose(xs@L3&lt;1&gt;);" ShouldFocus="false">
+      <PortInfo index="0" default="False" name="xs" />
+      <OutPortInfo LineIndex="0" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="2c65b3e2-17cb-4847-b11d-3c390f06dd0f" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="903" y="210" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="true" CodeText="xs[0];" ShouldFocus="false">
+      <PortInfo index="0" default="False" name="xs" />
+      <OutPortInfo LineIndex="0" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
   </Elements>
   <Connectors>
     <Dynamo.Graph.Connectors.ConnectorModel start="4a26f8d9-01e3-4748-968e-245e0d6613f7" start_index="0" end="2bc82773-3dd9-4491-bca2-d2ee9adb9d81" end_index="0" portType="0" />
