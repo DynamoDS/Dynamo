@@ -1380,7 +1380,7 @@ namespace Dynamo.ViewModels
             {
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
 
-                CurrentSpaceViewModel.Save(path);
+                CurrentSpaceViewModel.Save(path, Model.EngineController);
                 
                 AddToRecentFiles(path);
             }
