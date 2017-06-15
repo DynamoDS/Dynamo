@@ -877,11 +877,11 @@ var06 = g;
             Assert.AreEqual(2, data.Count());
 
             var data0 = data.ElementAt(0);
-            Assert.AreEqual(unboundIdentifiers[0], data0.NickName);
+            Assert.AreEqual(unboundIdentifiers[0], data0.Name);
             Assert.AreEqual(unboundIdentifiers[0], data0.ToolTipString);
 
             var data1 = data.ElementAt(1);
-            Assert.AreEqual("LongerVariableNameTha...", data1.NickName);
+            Assert.AreEqual("LongerVariableNameTha...", data1.Name);
             Assert.AreEqual(unboundIdentifiers[1], data1.ToolTipString);
         }
 
