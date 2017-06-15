@@ -334,21 +334,12 @@ namespace Dynamo.Graph.Workspaces
             serializer.Serialize(writer, ws.Nodes);
 
             //notes
-           writer.WritePropertyName("Notes");
+            writer.WritePropertyName("Notes");
             serializer.Serialize(writer, ws.Notes);
  
             //connectors
             writer.WritePropertyName("Connectors");
             serializer.Serialize(writer, ws.Connectors);
-
-            //annotations
-            writer.WritePropertyName("Annotations");
-            serializer.Serialize(writer, ws.Annotations);
-
-            //cameras
-            writer.WritePropertyName("Cameras");
-            writer.WriteStartArray();
-            writer.WriteEndArray();
 
             // Dependencies
             writer.WritePropertyName("Dependencies");

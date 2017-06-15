@@ -228,6 +228,7 @@ namespace Dynamo.ViewModels
         public ObservableCollection<ConnectorViewModel> Connectors { get { return _connectors; } }
 
         ObservableCollection<NodeViewModel> _nodes = new ObservableCollection<NodeViewModel>();
+        [JsonProperty("NodeViews")]
         public ObservableCollection<NodeViewModel> Nodes { get { return _nodes; } }
 
         ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
@@ -239,7 +240,6 @@ namespace Dynamo.ViewModels
         public ObservableCollection<InfoBubbleViewModel> Errors { get { return _errors; } }
 
         ObservableCollection<AnnotationViewModel> _annotations = new ObservableCollection<AnnotationViewModel>();
-        [JsonIgnore]
         public ObservableCollection<AnnotationViewModel> Annotations { get { return _annotations; } }
 
         [JsonIgnore]
