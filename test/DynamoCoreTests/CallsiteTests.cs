@@ -111,7 +111,7 @@ namespace Dynamo.Tests
 
             CurrentDynamoModel.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(3);
 
-            var traceNode = ws.Nodes.Where(n=>n is DSFunction).FirstOrDefault(f=>f.NickName == "TraceExampleWrapper.ByString");
+            var traceNode = ws.Nodes.Where(n=>n is DSFunction).FirstOrDefault(f=>f.Name == "TraceExampleWrapper.ByString");
             Assert.NotNull(traceNode);
 
             ws.RemoveAndDisposeNode(traceNode);

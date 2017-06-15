@@ -320,7 +320,7 @@ namespace Dynamo.Views
                 WorkspaceViewModel oldViewModel = (WorkspaceViewModel)e.OldValue;
 
                 oldViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
-                oldViewModel.Model.ZoomChanged -= vm_ZoomChanged;
+                oldViewModel.ZoomChanged -= vm_ZoomChanged;
                 oldViewModel.RequestZoomToViewportCenter -= vm_ZoomAtViewportCenter;
                 oldViewModel.RequestZoomToViewportPoint -= vm_ZoomAtViewportPoint;
                 oldViewModel.RequestZoomToFitView -= vm_ZoomToFitView;
@@ -335,7 +335,7 @@ namespace Dynamo.Views
             {
                 // Adding registration of event listener
                 ViewModel.Model.CurrentOffsetChanged += vm_CurrentOffsetChanged;
-                ViewModel.Model.ZoomChanged +=vm_ZoomChanged;
+                ViewModel.ZoomChanged +=vm_ZoomChanged;
                 ViewModel.RequestZoomToViewportCenter += vm_ZoomAtViewportCenter;
                 ViewModel.RequestZoomToViewportPoint += vm_ZoomAtViewportPoint;
                 ViewModel.RequestZoomToFitView += vm_ZoomToFitView;
@@ -491,11 +491,11 @@ namespace Dynamo.Views
             double zoom = AdjustZoomForCurrentZoomAmount((e as ZoomEventArgs).Zoom);
 
             // Limit Zoom
-            double resultZoom = ViewModel.Model.Zoom + zoom;
-            if (resultZoom < WorkspaceModel.ZOOM_MINIMUM)
-                resultZoom = WorkspaceModel.ZOOM_MINIMUM;
-            else if (resultZoom > WorkspaceModel.ZOOM_MAXIMUM)
-                resultZoom = WorkspaceModel.ZOOM_MAXIMUM;
+            double resultZoom = ViewModel.Zoom + zoom;
+            if (resultZoom < WorkspaceViewModel.ZOOM_MINIMUM)
+                resultZoom = WorkspaceViewModel.ZOOM_MINIMUM;
+            else if (resultZoom > WorkspaceViewModel.ZOOM_MAXIMUM)
+                resultZoom = WorkspaceViewModel.ZOOM_MAXIMUM;
 
             // Get Viewpoint Center point
             var centerPoint = new Point2D();
@@ -504,8 +504,8 @@ namespace Dynamo.Views
 
             // Get relative point of ZoomBorder child in relates to viewpoint center point
             var relativePoint = new Point2D();
-            relativePoint.X = (centerPoint.X - ViewModel.Model.X) / ViewModel.Model.Zoom;
-            relativePoint.Y = (centerPoint.Y - ViewModel.Model.Y) / ViewModel.Model.Zoom;
+            relativePoint.X = (centerPoint.X - ViewModel.Model.X) / ViewModel.Zoom;
+            relativePoint.Y = (centerPoint.Y - ViewModel.Model.Y) / ViewModel.Zoom;
 
             ZoomAtViewportPoint(zoom, relativePoint);
         }
@@ -519,7 +519,7 @@ namespace Dynamo.Views
             //var adjustedZoom = (lowerLimit + Math.Pow((ViewModel.Model.Zoom / WorkspaceModel.ZOOM_MAXIMUM), 2) * (upperLimit - lowerLimit)) * zoom;
 
             //linear adjustment
-            var adjustedZoom = (lowerLimit + (ViewModel.Model.Zoom / WorkspaceModel.ZOOM_MAXIMUM) * (upperLimit - lowerLimit)) * zoom;
+            var adjustedZoom = (lowerLimit + (ViewModel.Zoom / WorkspaceViewModel.ZOOM_MAXIMUM) * (upperLimit - lowerLimit)) * zoom;
 
             return adjustedZoom;
         }
@@ -535,20 +535,20 @@ namespace Dynamo.Views
         private void ZoomAtViewportPoint(double zoom, Point2D relative)
         {
             // Limit zoom
-            double resultZoom = ViewModel.Model.Zoom + zoom;
-            if (resultZoom < WorkspaceModel.ZOOM_MINIMUM)
-                resultZoom = WorkspaceModel.ZOOM_MINIMUM;
-            else if (resultZoom > WorkspaceModel.ZOOM_MAXIMUM)
-                resultZoom = WorkspaceModel.ZOOM_MAXIMUM;
+            double resultZoom = ViewModel.Zoom + zoom;
+            if (resultZoom < WorkspaceViewModel.ZOOM_MINIMUM)
+                resultZoom = WorkspaceViewModel.ZOOM_MINIMUM;
+            else if (resultZoom > WorkspaceViewModel.ZOOM_MAXIMUM)
+                resultZoom = WorkspaceViewModel.ZOOM_MAXIMUM;
 
             double absoluteX, absoluteY;
-            absoluteX = relative.X * ViewModel.Model.Zoom + ViewModel.Model.X;
-            absoluteY = relative.Y * ViewModel.Model.Zoom + ViewModel.Model.Y;
+            absoluteX = relative.X * ViewModel.Zoom + ViewModel.Model.X;
+            absoluteY = relative.Y * ViewModel.Zoom + ViewModel.Model.Y;
             var resultOffset = new Point2D();
             resultOffset.X = absoluteX - (relative.X * resultZoom);
             resultOffset.Y = absoluteY - (relative.Y * resultZoom);
 
-            ViewModel.Model.Zoom = resultZoom;
+            ViewModel.Zoom = resultZoom;
             ViewModel.Model.X = resultOffset.X;
             ViewModel.Model.Y = resultOffset.Y;
 
@@ -576,10 +576,10 @@ namespace Dynamo.Views
             }
 
             // Limit Zoom
-            if (scaleRequired > WorkspaceModel.ZOOM_MAXIMUM)
-                scaleRequired = WorkspaceModel.ZOOM_MAXIMUM;
-            else if (scaleRequired < WorkspaceModel.ZOOM_MINIMUM)
-                scaleRequired = WorkspaceModel.ZOOM_MINIMUM;
+            if (scaleRequired > WorkspaceViewModel.ZOOM_MAXIMUM)
+                scaleRequired = WorkspaceViewModel.ZOOM_MAXIMUM;
+            else if (scaleRequired < WorkspaceViewModel.ZOOM_MINIMUM)
+                scaleRequired = WorkspaceViewModel.ZOOM_MINIMUM;
 
             // Center position
             double centerOffsetX = viewportPadding + (fitWidth - (zoomArgs.FocusWidth * scaleRequired)) / 2;
@@ -590,7 +590,7 @@ namespace Dynamo.Views
             resultOffset.Y = -(zoomArgs.Offset.Y * scaleRequired) + centerOffsetY;
 
             // Apply on model
-            ViewModel.Model.Zoom = scaleRequired;
+            ViewModel.Zoom = scaleRequired;
             ViewModel.Model.X = resultOffset.X;
             ViewModel.Model.Y = resultOffset.Y;
 

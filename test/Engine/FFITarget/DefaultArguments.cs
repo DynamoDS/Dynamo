@@ -15,6 +15,11 @@ namespace FFITarget
         //    return true;
         //}
 
+        public static DefaultArguments CreateDefaultArguments()
+        {
+            return new DefaultArguments();
+        }
+
         public static bool Foobar(int arg0, int arg1, bool arg2 = true)
         {
             return true;
@@ -36,5 +41,16 @@ namespace FFITarget
             return true;
         }
 
+        // Deprecated function for testing default argument
+        //public bool InstanceFooBar(int arg0)
+        //{
+        //    return true;
+        //}
+
+        public bool InstanceFooBar(int arg0, bool arg1 = true)
+        {
+            return true;
+        }
+        
     }
 }

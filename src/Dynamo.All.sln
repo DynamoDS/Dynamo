@@ -2,6 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -210,8 +211,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoManipulation", "DynamoManipulation\DynamoManipulation.csproj", "{33F88E8C-CC3C-4237-8AA9-CC891EFCABFA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications", "Notifications\Notifications.csproj", "{09F48994-BB2F-4A26-8CCD-469FE3F7F904}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workspaces", "Workspaces\Workspaces.csproj", "{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPackagesUI", "DynamoPackagesUI\DynamoPackagesUI.csproj", "{297F6290-0325-4C9B-9E77-DB9041EB61F3}"
 EndProject
@@ -491,10 +490,6 @@ Global
 		{09F48994-BB2F-4A26-8CCD-469FE3F7F904}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09F48994-BB2F-4A26-8CCD-469FE3F7F904}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09F48994-BB2F-4A26-8CCD-469FE3F7F904}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{297F6290-0325-4C9B-9E77-DB9041EB61F3}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{297F6290-0325-4C9B-9E77-DB9041EB61F3}.Debug|Any CPU.Build.0 = Debug|x64
 		{297F6290-0325-4C9B-9E77-DB9041EB61F3}.Release|Any CPU.ActiveCfg = Release|x64

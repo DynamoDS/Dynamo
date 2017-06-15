@@ -1,12 +1,19 @@
-﻿using System.Windows.Media;
+﻿using System.ComponentModel;
+using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Wpf;
 
 using CoreNodeModelsWpf.Controls;
 using CoreNodeModels.Input;
-
+using Dynamo.Graph.Workspaces;
 using DSColor = DSCore.Color;
+using System.Windows.Data;
+using System.Windows.Controls;
+using Dynamo.Utilities;
+using System.Windows.Input;
+using System.Windows.Shapes;
+using System.Collections.Generic;
 
 namespace CoreNodeModelsWpf.Nodes
 {
@@ -16,21 +23,9 @@ namespace CoreNodeModelsWpf.Nodes
         ///     WPF Control.
         /// </summary>
         private ColorPaletteUI ColorPaletteUINode;
+        private NodeView viewNode;
         private ColorPalette colorPaletteNode;
-        private Color mcolor;
-        /// <summary>
-        /// Selected Color
-        /// </summary>
-        public Color MColor
-        {
-            get { return mcolor; }
-            set
-            {                
-                mcolor = value;              
-                colorPaletteNode.dsColor = DSColor.ByARGB(mcolor.A, mcolor.R, mcolor.G, mcolor.B);
-                RaisePropertyChanged("MColor");
-            }
-        }
+        private Converters.MediatoDSColorConverter converter;
         /// <summary>
         ///     Customize View.
         /// </summary>
@@ -38,15 +33,64 @@ namespace CoreNodeModelsWpf.Nodes
         /// <param name="nodeView"></param>
         public void CustomizeView(ColorPalette model, NodeView nodeView)
         {
+            viewNode = nodeView;
             colorPaletteNode = model;
-            mcolor = Color.FromArgb(model.dsColor.Alpha, model.dsColor.Red, model.dsColor.Green, model.dsColor.Blue);
+            converter = new Converters.MediatoDSColorConverter();
             ColorPaletteUINode = new ColorPaletteUI();
-            nodeView.inputGrid.Children.Add(ColorPaletteUINode);
-            ColorPaletteUINode.DataContext = this;
+            ColorPaletteUINode.xceedColorPickerControl.Closed += ColorPickerControl_Closed;
+            colorPaletteNode.PropertyChanged += ColorPaletteNode_PropertyChanged;
+            nodeView.ContentGrid.Children.Add(ColorPaletteUINode);
+
+
+            var undoRecorder = viewNode.ViewModel.WorkspaceViewModel.Model.UndoRecorder;
+            WorkspaceModel.RecordModelForModification(colorPaletteNode, undoRecorder);
+            //kick off ui to match initial model state.
+            this.ColorPaletteNode_PropertyChanged(ColorPaletteUINode, new PropertyChangedEventArgs("DsColor"));
         }
+
+        private void ColorPaletteNode_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            //if the property name was DsColor
+           if (e.PropertyName == "DsColor")
+            {
+
+                var convertedModelColor = ((Color)(converter.Convert(colorPaletteNode.DsColor, null, null, null)));
+                var isSameColor = convertedModelColor
+                     .Equals(ColorPaletteUINode.xceedColorPickerControl.SelectedColor);
+                //and if the color on the model is different than the selected Color on the view
+                //then update the view.
+                if (!isSameColor)
+                {
+                    ColorPaletteUINode.xceedColorPickerControl.SelectedColor = convertedModelColor;
+                }
+            }
+        }
+
+        private void ColorPickerControl_Closed(object sender, System.Windows.RoutedEventArgs e)
+        {
+            //if the model color is the same as the selected color when the color control is closed
+            //we should not record the model for undo again, it's already there.
+            var convertedModelColor = ((Color)(converter.Convert(colorPaletteNode.DsColor, null, null, null)));
+            var isSameColor = convertedModelColor
+                 .Equals(ColorPaletteUINode.xceedColorPickerControl.SelectedColor);
+            if (!isSameColor)
+            {
+                //we need to record the colorPicker node before the model is updated.
+                var undoRecorder = viewNode.ViewModel.WorkspaceViewModel.Model.UndoRecorder;
+                WorkspaceModel.RecordModelForModification(colorPaletteNode, undoRecorder);
+                //now that we have recorded the old state, set the color on the model.
+                colorPaletteNode.DsColor = converter.ConvertBack(ColorPaletteUINode.xceedColorPickerControl.SelectedColor, null, null, null) as DSColor;
+            }
+        }
+
         /// <summary>
         ///     Dispose.
         /// </summary>
-        public void Dispose() { }
+        public void Dispose()
+        {
+            ColorPaletteUINode.xceedColorPickerControl.Closed -= ColorPickerControl_Closed; ;
+            colorPaletteNode.PropertyChanged -= ColorPaletteNode_PropertyChanged;
+
+        }
     }
 }
