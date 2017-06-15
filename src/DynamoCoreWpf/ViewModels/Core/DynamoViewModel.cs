@@ -35,7 +35,6 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
-using Dynamo.Controls;
 using ISelectable = Dynamo.Selection.ISelectable;
 
 
@@ -694,7 +693,6 @@ namespace Dynamo.ViewModels
 
         private void SubscribeModelChangedHandlers()
         {
-            model.WorkspaceSaved += ModelWorkspaceSaved;
             model.PropertyChanged += _model_PropertyChanged;
             model.WorkspaceCleared += ModelWorkspaceCleared;
             model.RequestCancelActiveStateForNode += this.CancelActiveState;
@@ -702,7 +700,6 @@ namespace Dynamo.ViewModels
 
         private void UnsubscribeModelChangedEvents()
         {
-            model.WorkspaceSaved -= ModelWorkspaceSaved;
             model.PropertyChanged -= _model_PropertyChanged;
             model.WorkspaceCleared -= ModelWorkspaceCleared;
             model.RequestCancelActiveStateForNode -= this.CancelActiveState;
@@ -752,11 +749,6 @@ namespace Dynamo.ViewModels
             {
                 action();
             }
-        }
-
-        private void ModelWorkspaceSaved(WorkspaceModel model)
-        {
-            this.AddToRecentFiles(model.FileName);
         }
 
         private void ModelWorkspaceCleared(WorkspaceModel workspace)
@@ -1376,40 +1368,50 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Save the current workspace to a specific file path, if the path is null 
-        /// or empty, does nothing. If successful, the CurrentWorkspace.FileName
-        /// field is updated as a side effect.
+        /// Save the current workspace to a specific file path. If the file path is null or empty, an
+        /// exception is written to the console.
         /// </summary>
-        /// <param name="path">The path to save to</param>
+        /// <param name="path">The path to the file.</param>
+        /// <exception cref="IOException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
         internal void SaveAs(string path)
         {
             try
             {
-                model.SaveWorkspace(path, model.CurrentWorkspace);
+                Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
+
+                CurrentSpaceViewModel.Save(path, Model.EngineController);
+                
+                AddToRecentFiles(path);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                if (ex is IOException || ex is System.UnauthorizedAccessException)
+                Model.Logger.Log(ex.Message);
+                Model.Logger.Log(ex.StackTrace);
+
+                if (ex is IOException || ex is UnauthorizedAccessException)
                     System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
             }
         }
 
         /// <summary>
-        /// Save a specific workspace to a specific file path, if the path is null 
-        /// or empty, does nothing. If successful, the CurrentWorkspace.FileName
-        /// field is updated as a side effect.
+        /// Save the specified workspace to a file. If the file path is null or empty, an
+        /// exception is written to the console.
         /// </summary>
-        /// <param name="path">The path to save to</param>
-        /// <param name="ws">workspace to save</param>
-        internal void SaveAs(string path, WorkspaceModel ws)
+        /// <param name="path">The path to the file.</param>
+        /// <param name="workspace">The Workspace to save.</param>
+        internal void SaveAs(string path, WorkspaceModel workspace)
         {
             try
             {
-                model.SaveWorkspace(path, ws);
+                workspace.Save(path, false, EngineController);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                if (ex is IOException || ex is System.UnauthorizedAccessException)
+                Model.Logger.Log(ex.Message);
+                Model.Logger.Log(ex.StackTrace);
+
+                if (ex is IOException || ex is UnauthorizedAccessException)
                     System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
             }
         }

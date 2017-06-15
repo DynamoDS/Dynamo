@@ -12,6 +12,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
+using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
@@ -26,11 +27,15 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         #region commands
 
+        [JsonIgnore]
         public DelegateCommand StartPeriodicTimerCommand { get; set; }
+
+        [JsonIgnore]
         public DelegateCommand StopPeriodicTimerCommand { get; set; }
 
         #endregion
 
+        [JsonIgnore]
         public NotificationLevel CurrentNotificationLevel
         {
             get { return curentNotificationLevel; }
@@ -41,6 +46,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             }
         }
 
+        [JsonIgnore]
         public string CurrentNotificationMessage
         {
             get { return currentNotificationMessage; }
