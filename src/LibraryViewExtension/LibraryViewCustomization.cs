@@ -18,22 +18,6 @@ namespace Dynamo.LibraryUI
         }
 
         /// <summary>
-        /// Gets a copy of the current library layout specification
-        /// </summary>
-        public LayoutSpecification Specification
-        {
-            get
-            {
-                return root.Clone();
-            }
-            private set
-            {
-                root = value;
-                RaiseSepcificationUpdated();
-            }
-        }
-
-        /// <summary>
         /// This event is raised when the specification is updated
         /// </summary>
         public event EventHandler SpecificationUpdated;
@@ -46,13 +30,13 @@ namespace Dynamo.LibraryUI
         /// </summary>
         public bool AddSections(IEnumerable<LayoutSection> sections)
         {
-            var spec = Specification;
+            var spec = GetSpecification();
             spec.sections.AddRange(sections);
             var count = spec.sections.Count;
             if (spec.sections.GroupBy(s => s.text).Count() < count) return false; //some duplicate sections exist
-            
+
             //Update the specification
-            Specification = spec;
+            SetSpecification(spec);
             return true;
         }
 
@@ -69,7 +53,7 @@ namespace Dynamo.LibraryUI
             {
                 text = sectionText;
             }
-            var spec = Specification;
+            var spec = GetSpecification();
             var section = spec.sections.FirstOrDefault(x => string.Equals(x.text, text));
             if (section == null)
             {
@@ -81,7 +65,7 @@ namespace Dynamo.LibraryUI
             if (section.childElements.GroupBy(e => e.text).Count() < count) return false;
 
             //Update the specification
-            Specification = spec;
+            SetSpecification(spec);
             return true;
         }
 
@@ -98,7 +82,7 @@ namespace Dynamo.LibraryUI
             {
                 text = sectionText;
             }
-            var spec = Specification;
+            var spec = GetSpecification();
             var section = spec.sections.FirstOrDefault(x => string.Equals(x.text, text));
             if (section == null)
             {
@@ -110,7 +94,7 @@ namespace Dynamo.LibraryUI
             if (section.include.GroupBy(e => e.path).Count() < count) return false;
 
             //Update the specification
-            Specification = spec;
+            SetSpecification(spec);
             return true;
         }
 
@@ -119,7 +103,16 @@ namespace Dynamo.LibraryUI
         /// </summary>
         public LayoutSpecification GetSpecification()
         {
-            return Specification; //returns clone
+            return root.Clone(); //returns clone
+        }
+
+        /// <summary>
+        /// Sets a copy of the current library layout specification
+        /// </summary>
+        public void SetSpecification(LayoutSpecification spec)
+        {
+            root = spec;
+            RaiseSepcificationUpdated();
         }
 
         /// <summary>

@@ -73,8 +73,10 @@ namespace Dynamo.Wpf.Interfaces
         /// <returns>A cloned LayoutSpecification object</returns>
         public LayoutSpecification Clone()
         {
-            var s = ToJSONStream();
-            return FromJSONStream(s);
+            using (var s = ToJSONStream())
+            {
+                return FromJSONStream(s);
+            }
         }
     }
 

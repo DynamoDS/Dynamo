@@ -332,7 +332,7 @@ namespace ViewExtensionLibraryTests
             Assert.IsTrue(resetevent.WaitOne(timeout*3));
             controller.Verify(c => c.RaiseEvent(libraryDataUpdated), Times.Once);
 
-            var spec = customization.Specification;
+            var spec = customization.GetSpecification();
             var section = spec.sections.FirstOrDefault();
             Assert.AreEqual(1, spec.sections.Count);
             //There must be a section named "Add-ons" now.
