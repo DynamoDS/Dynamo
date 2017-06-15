@@ -24,7 +24,7 @@ namespace Dynamo.Search.SearchElements
         public override string CreationName { get { return functionDescriptor != null ? functionDescriptor.MangledName : this.Name; } }
 
         /// <summary>
-        ///     The full name of entry which consists of qualified name for function descriptor.
+        ///     The full name of entry which consists of assembly name and qualified name for function descriptor.
         /// </summary>
         public override string FullName { get { return fullname; } }
         
