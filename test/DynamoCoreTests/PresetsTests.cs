@@ -338,12 +338,9 @@ namespace Dynamo.Tests
 
               //save these states
               var newPath = GetNewFileNameOnTempPath("dyn");
-              var res = model.SaveWorkspace(newPath, model.CurrentWorkspace);
+              model.CurrentWorkspace.Save(newPath);
 
-              Assert.IsTrue(res);
               Assert.IsTrue(File.Exists(newPath));
-         
-
           }
 
         // TODO: Enable when Open() is expanded to open Json
@@ -365,9 +362,8 @@ namespace Dynamo.Tests
             //then save this dyn
             
             var newPath = GetNewFileNameOnTempPath("dyn");
-            var res = model.SaveWorkspace(newPath, model.CurrentWorkspace);
+            model.CurrentWorkspace.Save(newPath);
 
-            Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
             //and open this new dyn
             OpenModel(newPath);

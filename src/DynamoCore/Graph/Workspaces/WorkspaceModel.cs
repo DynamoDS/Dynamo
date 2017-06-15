@@ -13,7 +13,6 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
-using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Logging;
@@ -143,16 +142,16 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Event that is fired when the workspace is saved.
+        /// Event that is fired when the workspace is saved.
         /// </summary>
-        public event Action WorkspaceSaved;
-        protected virtual void OnWorkspaceSaved()
+        public event Action Saved;
+        internal virtual void OnSaved()
         {
             LastSaved = DateTime.Now;
             HasUnsavedChanges = false;
 
-            if (WorkspaceSaved != null)
-                WorkspaceSaved();
+            if (Saved != null)
+                Saved();
         }
 
         /// <summary>
@@ -869,22 +868,41 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Internal save logic unrelated to serialization.
+        /// Workspace's Save method serializes the Workspace to JSON and writes it to the specified file path.
         /// </summary>
-        /// <param name="newPath">The path to save to</param>
-        /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
+        /// <param name="filePath">The path of the file.</param>
+        /// <param name="isBackup">A flag indicating whether this save operation represents a backup. If it's not backup,
         /// we should add it to recent files. Otherwise leave it.</param>
-        public virtual bool Save(string newPath, bool isBackup = false)
+        /// <param name="engine">An EngineController instance to be used to serialize node bindings.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
+        public virtual void Save(string filePath, bool isBackup = false, EngineController engine = null)
         {
-            if (String.IsNullOrEmpty(newPath)) return false;
-
-            // Only for actual save, update file path and recent file list
-            if (!isBackup)
+            if (String.IsNullOrEmpty(filePath))
             {
-                FileName = newPath;
-                OnWorkspaceSaved();
+                throw new ArgumentNullException("filePath");
             }
-            return true;
+
+            try
+            {
+                // Stage 1: Serialize the workspace.
+                var json = this.ToJson(engine);
+
+                // Stage 2: Save
+                File.WriteAllText(filePath, json);
+
+                // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
+                // Only for actual save, update file path and recent file list
+                if (!isBackup)
+                {
+                    FileName = filePath;
+                    OnSaved();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                throw (ex);
+            }
         }
 
         /// <summary>
@@ -1316,42 +1334,6 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        // TODO(Ben): Documentation to come before pull request.
-        // TODO(Steve): This probably only belongs on HomeWorkspaceModel. -- MAGN-5715
-        protected virtual void SerializeSessionData(XmlDocument document, ProtoCore.RuntimeCore runtimeCore)
-        {
-            if (document.DocumentElement == null)
-            {
-                const string message = "Workspace should have been saved before this";
-                throw new InvalidOperationException(message);
-            }
-
-            try
-            {
-                if (runtimeCore == null) // No execution yet as of this point.
-                    return;
-
-                // Selecting all nodes that are either a DSFunction,
-                // a DSVarArgFunction or a CodeBlockNodeModel into a list.
-                var nodeGuids =
-                    Nodes.Where(
-                        n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel || n is Function)
-                        .Select(n => n.GUID);
-
-                var nodeTraceDataList = runtimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids, runtimeCore.DSExecutable);
-
-                if (nodeTraceDataList.Any())
-                    Utils.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
-            }
-            catch (Exception exception)
-            {
-                // We'd prefer file saving process to not crash Dynamo,
-                // otherwise user will lose the last hope in retaining data.
-                Log(exception.Message);
-                Log(exception.StackTrace);
-            }
-        }
-
         internal void SendModelEvent(Guid modelGuid, string eventName, int value)
         {
             var retrievedModel = GetModelInternal(modelGuid);
@@ -1499,8 +1481,8 @@ namespace Dynamo.Graph.Workspaces
                 Converters = new List<JsonConverter>{
                         new ConnectorConverter(),
                         new AnnotationConverter(),
-                        new WorkspaceConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
-                        new NodeModelConverter(manager, libraryServices),
+                        new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
+                        new NodeReadConverter(manager, libraryServices),
                     },
                 ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
             };

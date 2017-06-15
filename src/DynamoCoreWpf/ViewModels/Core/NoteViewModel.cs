@@ -6,6 +6,7 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Configuration;
+using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels
 {
@@ -27,10 +28,13 @@ namespace Dynamo.ViewModels
         #region Properties
 
         private NoteModel _model;
+
+        [JsonIgnore]
         public readonly WorkspaceViewModel WorkspaceViewModel;
         private int zIndex = Configurations.NodeStartZIndex; // initialize the start Z-Index of a note to the same as that of a node
-        internal static int StaticZIndex = Configurations.NodeStartZIndex; 
+        internal static int StaticZIndex = Configurations.NodeStartZIndex;
 
+        [JsonIgnore]
         public NoteModel Model
         {
             get { return _model; }
@@ -44,6 +48,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Element's left position is two-way bound to this value
         /// </summary>
+        [JsonIgnore]
         public double Left
         {
             get { return _model.X; }
@@ -57,6 +62,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Element's top position is two-way bound to this value
         /// </summary>
+        [JsonIgnore]
         public double Top
         {
             get { return _model.Y; }
@@ -70,6 +76,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// ZIndex represents the order on the z-plane in which the notes and other objects appear. 
         /// </summary>
+        [JsonIgnore]
         public int ZIndex
          {
 
@@ -77,12 +84,14 @@ namespace Dynamo.ViewModels
             set { zIndex = value; RaisePropertyChanged("ZIndex"); }
         }
 
+        [JsonIgnore]
         public string Text
         {
             get { return _model.Text; }
             set { _model.Text = value; }
         }
 
+        [JsonIgnore]
         public bool IsSelected
         {
             get { return _model.IsSelected; }

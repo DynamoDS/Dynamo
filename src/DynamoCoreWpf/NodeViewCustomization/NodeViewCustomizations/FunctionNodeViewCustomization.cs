@@ -101,7 +101,9 @@ namespace Dynamo.Wpf
                 ws.SetInfo(args.Name, args.Category, args.Description);
 
                 if (!string.IsNullOrEmpty(ws.FileName))
-                    model.SaveWorkspace(ws.FileName, ws);
+                {
+                    ws.Save(ws.FileName, false, dynamoViewModel.EngineController);
+                }
             }
         }
 

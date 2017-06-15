@@ -448,10 +448,7 @@ namespace Dynamo.Tests
 
         private static string ConvertCurrentWorkspaceToJsonAndSave(DynamoModel model, string filePathBase)
         {
-            var json = model.CurrentWorkspace.ToJson(model.LibraryServices,
-                model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false,
-                model.CustomNodeManager);
-
+            var json = model.CurrentWorkspace.ToJson(model.EngineController);
             Assert.IsNotNullOrEmpty(json);
 
             var tempPath = Path.GetTempPath();
@@ -474,10 +471,9 @@ namespace Dynamo.Tests
 
         private string ConvertCurrentWorkspaceToNonGuidJsonAndSave(DynamoModel model, string filePathBase)
         {
-            var json = model.CurrentWorkspace.ToJson(model.LibraryServices,
-                model.EngineController, model.Scheduler, model.NodeFactory, DynamoModel.IsTestMode, false,
-                model.CustomNodeManager);
+            var json = model.CurrentWorkspace.ToJson(model.EngineController);
             var idcount = 0;
+
             //alter the output json so that all node ids are not guids
             foreach(var nodeId in model.CurrentWorkspace.Nodes.Select(x => x.GUID))
             {

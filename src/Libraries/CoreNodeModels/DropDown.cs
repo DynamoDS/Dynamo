@@ -6,6 +6,7 @@ using System.Xml;
 using CoreNodeModels.Properties;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Newtonsoft.Json;
 
 namespace CoreNodeModels
 {
@@ -50,6 +51,8 @@ namespace CoreNodeModels
         }
 
         private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
+
+        [JsonIgnore]
         public ObservableCollection<DynamoDropDownItem> Items
         {
             get { return items; }

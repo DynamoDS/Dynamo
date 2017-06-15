@@ -1,12 +1,10 @@
 ﻿using System.Linq;
-using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using Dynamo.Wpf.Properties;
+using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels
 {
@@ -37,16 +35,19 @@ namespace Dynamo.ViewModels
 
         #region Public Delegate Commands
 
+        [JsonIgnore]
         public DelegateCommand CopyCommand
         {
             get { return DynamoViewModel.CopyCommand; }
         }
 
+        [JsonIgnore]
         public DelegateCommand PasteCommand
         {
             get { return _pasteCommand ?? (_pasteCommand = new DelegateCommand(Paste, DynamoViewModel.CanPaste)); }
         }
 
+        [JsonIgnore]
         public DelegateCommand SelectAllCommand
         {
             get
@@ -57,6 +58,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand GraphAutoLayoutCommand
         {
             get {
@@ -67,6 +69,7 @@ namespace Dynamo.ViewModels
         }
 
         private DelegateCommand _nodeToCodeCommand;
+        [JsonIgnore]
         public DelegateCommand NodeToCodeCommand
         {
             get
@@ -79,6 +82,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand HideCommand
         {
             get
@@ -90,6 +94,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand SetCurrentOffsetCommand
         {
             get
@@ -101,6 +106,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand NodeFromSelectionCommand
         {
             get
@@ -112,6 +118,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand SetZoomCommand
         {
             get
@@ -122,6 +129,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand ResetFitViewToggleCommand
         {
             get
@@ -132,6 +140,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand FindByIdCommand
         {
             get
@@ -143,6 +152,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand AlignSelectedCommand
         {
             get
@@ -154,6 +164,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand SetArgumentLacingCommand
         {
             get
@@ -168,6 +179,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand FindNodesFromSelectionCommand
         {
             get
@@ -179,6 +191,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand ShowHideAllGeometryPreviewCommand
         {
             get
@@ -193,6 +206,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand ShowHideAllUpstreamPreviewCommand
         {
             get
@@ -207,6 +221,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand ShowInCanvasSearchCommand
         {
             get
@@ -217,26 +232,30 @@ namespace Dynamo.ViewModels
                 return _showInCanvasSearchCommand;
             }
         }
-         
+
         #endregion
 
         #region Properties for Command Data Binding
 
+        [JsonIgnore]
         public bool CanCopy
         {
             get { return DynamoViewModel.CanCopy(null); }
         }
 
+        [JsonIgnore]
         public bool CanPaste
         {
             get { return DynamoViewModel.CanPaste(null); }
         }
 
+        [JsonIgnore]
         public bool CanCopyOrPaste
         {
             get { return CanCopy || CanPaste; }
         }
 
+        [JsonIgnore]
         public bool AnyNodeVisible
         {
             get
@@ -246,6 +265,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public bool AnyNodeUpstreamVisible
         {
             get
@@ -255,11 +275,13 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public bool HasSelection
         {
             get { return DynamoSelection.Instance.Selection.Count > 0; }
         }
 
+        [JsonIgnore]
         public bool IsGeometryOperationEnabled
         {
             get
@@ -275,6 +297,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public LacingStrategy SelectionArgumentLacing
         {
             // TODO We may need a better way to do this

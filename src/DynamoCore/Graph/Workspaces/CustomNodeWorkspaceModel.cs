@@ -12,6 +12,7 @@ using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using ProtoCore.Namespace;
+using Dynamo.Engine;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -292,8 +293,9 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="newPath">New location to save the workspace.</param>
         /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
         /// we should add it to recent files. Otherwise leave it.</param>
+        /// <param name="engine"></param>
         /// <returns></returns>
-        public override bool Save(string newPath, bool isBackup = false)
+        public override void Save(string newPath, bool isBackup = false, EngineController engine = null)
         {
             var originalPath = FileName;
 
@@ -311,7 +313,7 @@ namespace Dynamo.Graph.Workspaces
                 SetInfo(Path.GetFileNameWithoutExtension(newPath));
             }
 
-            return base.Save(newPath, isBackup);
+            base.Save(newPath, isBackup, engine);
         }
 
         protected override bool PopulateXmlDocument(XmlDocument document)
@@ -329,12 +331,6 @@ namespace Dynamo.Graph.Workspaces
             root.SetAttribute("Category", Category);
             
             return true;
-        }
-
-        protected override void SerializeSessionData(XmlDocument document, ProtoCore.RuntimeCore runtimeCore)
-        {
-            // Since custom workspace does not have any runtime data to persist,
-            // do not allow base class to serialize any session data.
         }
     }
 }
