@@ -237,10 +237,11 @@ namespace Dynamo.Graph.Workspaces
             // relevant ports.
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
-            // annotations
-            var annotations = obj["Annotations"].ToObject<IEnumerable<AnnotationModel>>(serializer);
-
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
+
+            //Build an empty annotations. Annotations are defined in the view block. If the file has View block
+            //serialize view block first and build the annotations.
+            var annotations = new List<AnnotationModel>();
 
             WorkspaceModel ws;
             if (isCustomNode)
@@ -397,68 +398,6 @@ namespace Dynamo.Graph.Workspaces
         }
     }
 
-    /// <summary>
-    /// The AnnotationConverter is used to serialize and deserialize AnnotationModels.
-    /// The SelectedModels property on AnnotationModel is a list of references
-    /// to ModelBase objects. During serialization we want to refer to these objects
-    /// by their ids. During deserialization, we use the ReferenceResolver to
-    /// find the correct ModelBase instances to reference.
-    /// </summary>
-    public class AnnotationConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(AnnotationModel);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            var obj = JObject.Load(reader);
-            var title = obj["Title"].Value<string>();
-            //if the id is not a guid, makes a guid based on the id of the model
-            Guid annotationId =  GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
-
-            // This is a collection of string Guids, which
-            // should be accessible in the ReferenceResolver.
-            var models = obj["Nodes"].Values<JValue>();
-
-            var existing = models.Select(m => {
-                Guid modelId = GuidUtility.tryParseOrCreateGuid(m.Value<string>());
-              
-                return serializer.ReferenceResolver.ResolveReference(serializer.Context, modelId.ToString());
-                });
-
-            var nodes = existing.Where(m => typeof(NodeModel).IsAssignableFrom(m.GetType())).Cast<NodeModel>();
-            var notes = existing.Where(m => typeof(NoteModel).IsAssignableFrom(m.GetType())).Cast<NoteModel>();
-
-            var anno = new AnnotationModel(nodes, notes);
-            anno.AnnotationText = title;
-            anno.GUID = annotationId;
-
-            return anno;
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var anno = (AnnotationModel)value;
-
-            writer.WriteStartObject();
-
-            writer.WritePropertyName("Title");
-            writer.WriteValue(anno.AnnotationText);
-            writer.WritePropertyName("Nodes");
-            writer.WriteStartArray();
-            foreach (var m in anno.Nodes)
-            {
-                writer.WriteValue(m.GUID.ToString());
-            }
-            writer.WriteEndArray();
-            writer.WritePropertyName("Id");
-            writer.WriteValue(anno.GUID.ToString());
-
-            writer.WriteEndObject();
-        }
-    }
 
     /// <summary>
     /// The ConnectorConverter is used to serialize and deserialize ConnectorModels.

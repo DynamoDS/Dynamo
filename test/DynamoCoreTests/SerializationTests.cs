@@ -63,8 +63,7 @@ namespace Dynamo.Tests
         {
             public Guid Guid { get; set; }
             public int NodeCount { get; set; }
-            public int ConnectorCount { get; set; }
-            public int GroupCount { get; set; }
+            public int ConnectorCount { get; set; }            
             public int NoteCount { get; set; }
             public Dictionary<Guid,Type> NodeTypeMap { get; set; }
             public Dictionary<Guid,List<object>> NodeDataMap { get; set; }
@@ -76,8 +75,7 @@ namespace Dynamo.Tests
             {
                 Guid = workspace.Guid;
                 NodeCount = workspace.Nodes.Count();
-                ConnectorCount = workspace.Connectors.Count();
-                GroupCount = workspace.Annotations.Count();
+                ConnectorCount = workspace.Connectors.Count();               
                 NoteCount = workspace.Notes.Count();
                 NodeTypeMap = new Dictionary<Guid, Type>();
                 NodeDataMap = new Dictionary<Guid, List<object>>();
@@ -127,7 +125,6 @@ namespace Dynamo.Tests
             }
             Assert.AreEqual(a.NodeCount, b.NodeCount, "The workspaces don't have the same number of nodes.");
             Assert.AreEqual(a.ConnectorCount, b.ConnectorCount, "The workspaces don't have the same number of connectors.");
-            Assert.AreEqual(a.GroupCount, b.GroupCount, "The workspaces don't have the same number of groups.");
             Assert.AreEqual(a.NoteCount, b.NoteCount, "The workspaces don't have the same number of notes.");
             foreach (var kvp in a.InportCountMap)
             {
@@ -180,7 +177,8 @@ namespace Dynamo.Tests
             }
             Assert.AreEqual(a.NodeCount, b.NodeCount, "The workspaces don't have the same number of nodes.");
             Assert.AreEqual(a.ConnectorCount, b.ConnectorCount, "The workspaces don't have the same number of connectors.");
-            Assert.AreEqual(a.GroupCount, b.GroupCount, "The workspaces don't have the same number of groups.");
+            //TODO: Annotations tests should be in viewmodel serialization tests.
+           // Assert.AreEqual(a.GroupCount, b.GroupCount, "The workspaces don't have the same number of groups.");
             Assert.AreEqual(a.NoteCount, b.NoteCount, "The workspaces don't have the same number of notes.");
             foreach(var kvp in a.InportCountMap)
             {

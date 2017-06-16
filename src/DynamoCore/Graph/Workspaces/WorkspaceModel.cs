@@ -1480,7 +1480,6 @@ namespace Dynamo.Graph.Workspaces
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Converters = new List<JsonConverter>{
                         new ConnectorConverter(),
-                        new AnnotationConverter(),
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
                         new NodeReadConverter(manager, libraryServices),
                     },
