@@ -48,25 +48,7 @@ namespace Dynamo.LibraryUI
         /// </summary>
         public bool AddElements(IEnumerable<LayoutElement> elements, string sectionText = "")
         {
-            var text = DefaultSectionName;
-            if (!string.IsNullOrEmpty(sectionText))
-            {
-                text = sectionText;
-            }
-            var spec = GetSpecification();
-            var section = spec.sections.FirstOrDefault(x => string.Equals(x.text, text));
-            if (section == null)
-            {
-                section = new LayoutSection(text);
-                spec.sections.Add(section);
-            }
-            section.childElements.AddRange(elements);
-            int count = section.childElements.Count;
-            if (section.childElements.GroupBy(e => e.text).Count() < count) return false;
-
-            //Update the specification
-            SetSpecification(spec);
-            return true;
+            return UpdateSpecification(elements, s => s.childElements, e => e.text, sectionText);
         }
 
         /// <summary>
@@ -76,6 +58,20 @@ namespace Dynamo.LibraryUI
         /// includes.
         /// </summary>
         public bool AddIncludeInfo(IEnumerable<LayoutIncludeInfo> includes, string sectionText = "")
+        {
+            return UpdateSpecification(includes, s => s.include, info => info.path, sectionText);
+        }
+
+        /// <summary>
+        /// Updates the specification with given list of items.
+        /// </summary>
+        /// <typeparam name="T">Type of items LayoutElement or LayoutIncludeInfo</typeparam>
+        /// <param name="items">List of items to add</param>
+        /// <param name="getlist">Function to get the list of a given section to update</param>
+        /// <param name="keyselector">Function to select key for the given item to identify it uniquely.</param>
+        /// <param name="sectionText">Name of the section where the given items will be added</param>
+        /// <returns></returns>
+        private bool UpdateSpecification<T>(IEnumerable<T> items, Func<LayoutSection, List<T>> getlist, Func<T, string> keyselector, string sectionText)
         {
             var text = DefaultSectionName;
             if (!string.IsNullOrEmpty(sectionText))
@@ -89,9 +85,17 @@ namespace Dynamo.LibraryUI
                 section = new LayoutSection(text);
                 spec.sections.Add(section);
             }
-            section.include.AddRange(includes);
-            int count = section.include.Count;
-            if (section.include.GroupBy(e => e.path).Count() < count) return false;
+
+            //obtain the list to update
+            var list = getlist(section);
+            list.AddRange(items); //add items to the list
+            int count = list.Count;
+            var groups = list.GroupBy(keyselector).ToList();
+            if (groups.Count < count)
+            {
+                var duplicates = string.Join(", ", groups.Where(g => g.Count() > 1).Select(g => g.Key));
+                throw new InvalidOperationException(string.Format("Duplicate entries found, ex: {0}", duplicates));
+            }
 
             //Update the specification
             SetSpecification(spec);
@@ -107,11 +111,12 @@ namespace Dynamo.LibraryUI
         }
 
         /// <summary>
-        /// Sets a copy of the current library layout specification
+        /// Sets the given specification as the current library layout 
+        /// specification by overwriting the current one.
         /// </summary>
-        public void SetSpecification(LayoutSpecification spec)
+        public void SetSpecification(LayoutSpecification specification)
         {
-            root = spec;
+            root = specification;
             RaiseSepcificationUpdated();
         }
 

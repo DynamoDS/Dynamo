@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Dynamo.LibraryUI;
 using Dynamo.Wpf.Interfaces;
 using Moq;
@@ -56,9 +57,9 @@ namespace ViewExtensionLibraryTests
 
             Assert.AreEqual("A, B, C", string.Join(", ", section.childElements.Select(s => s.text)));
 
-            //Adding same set of sections returns false
-            Assert.False(customization.AddElements(elements.Take(1)));
-            Assert.False(customization.AddElements(elements));
+            //Adding same set of elements to the given section should throw exception
+            Assert.Throws<InvalidOperationException>(() => customization.AddElements(elements.Take(1)));
+            Assert.Throws<InvalidOperationException>(() => customization.AddElements(elements));
 
             spec = customization.GetSpecification();
             section = spec.sections.FirstOrDefault();
@@ -135,9 +136,9 @@ namespace ViewExtensionLibraryTests
 
             Assert.AreEqual("A, B, C", string.Join(", ", section.childElements.Select(s => s.text)));
 
-            //Adding same set of sections returns false
-            Assert.False(customization.AddElements(elements.Take(1), sectiontext));
-            Assert.False(customization.AddElements(elements, sectiontext));
+            //Adding same set of elements should throw exception
+            Assert.Throws<InvalidOperationException>(() => customization.AddElements(elements.Take(1), sectiontext));
+            Assert.Throws<InvalidOperationException>(() => customization.AddElements(elements, sectiontext));
 
             spec = customization.GetSpecification();
             section = spec.sections.FirstOrDefault(s => string.Equals(sectiontext, s.text));
@@ -166,9 +167,9 @@ namespace ViewExtensionLibraryTests
 
             Assert.AreEqual("A, B, C, D", string.Join(", ", section.include.Select(s => s.path)));
 
-            //Adding same set of sections returns false
-            Assert.False(customization.AddIncludeInfo(includes.Take(1)));
-            Assert.False(customization.AddIncludeInfo(includes));
+            //Adding same set of includes should throw exception
+            Assert.Throws<InvalidOperationException>(() => customization.AddIncludeInfo(includes.Take(1)));
+            Assert.Throws<InvalidOperationException>(() => customization.AddIncludeInfo(includes));
 
             spec = customization.GetSpecification();
             section = spec.sections.FirstOrDefault();
@@ -243,9 +244,9 @@ namespace ViewExtensionLibraryTests
 
             Assert.AreEqual("A, B, C, D", string.Join(", ", section.include.Select(s => s.path)));
 
-            //Adding same set of sections returns false
-            Assert.False(customization.AddIncludeInfo(includes.Take(1), sectiontext));
-            Assert.False(customization.AddIncludeInfo(includes, sectiontext));
+            //Adding same set of includes should throw exception
+            Assert.Throws<InvalidOperationException>(() => customization.AddIncludeInfo(includes.Take(1), sectiontext));
+            Assert.Throws<InvalidOperationException>(() => customization.AddIncludeInfo(includes, sectiontext));
 
             spec = customization.GetSpecification();
             section = spec.sections.FirstOrDefault(s => string.Equals(sectiontext, s.text));

@@ -20,6 +20,13 @@ namespace Dynamo.Wpf.Interfaces
         LayoutSpecification GetSpecification();
 
         /// <summary>
+        /// Sets the given specification as the current library layout 
+        /// specification by overwriting the current one.
+        /// </summary>
+        /// <param name="specification">New layout specification</param>
+        void SetSpecification(LayoutSpecification specification);
+
+        /// <summary>
         /// Serializes the current specification to JSON stream
         /// </summary>
         Stream ToJSONStream();
@@ -46,7 +53,7 @@ namespace Dynamo.Wpf.Interfaces
         bool AddElements(IEnumerable<LayoutElement> elements, string sectionText = "");
 
         /// <summary>
-        /// Allows clients to add a list of include path to a given section. This 
+        /// Allows clients to add a list of layout include info to a given section. This 
         /// operation will fail if the path property of any of the includes 
         /// of the given section conflicts with the path property of the given 
         /// includes.

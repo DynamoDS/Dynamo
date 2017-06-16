@@ -105,7 +105,13 @@ namespace Dynamo.Wpf.Interfaces
         public string iconUrl { get; set; }
 
         /// <summary>
-        /// 
+        /// Checks if a new category to be created for its path. If the include 
+        /// path is "A.B.C" under an element say "Root" and for two nodes 
+        /// fully qualified name is "A.B.C.D" and "A.B.C.E", then by default 
+        /// inclusive is true that means there we will get a category "C" under 
+        /// "Root" element as parent and "D" and "E" as children. If inclusive 
+        /// is false then both "D" and "E" will be direct children of "Root" and 
+        /// there won't be any intermediate element "C".
         /// </summary>
         public bool inclusive { get; set; }
     }
@@ -187,7 +193,7 @@ namespace Dynamo.Wpf.Interfaces
         /// Default constructor
         /// </summary>
         /// <param name="text">Text value of the element</param>
-        public LayoutElement(string text = "")
+        public LayoutElement(string text)
         {
             this.text = text;
             childElements = new List<LayoutElement>();
@@ -243,7 +249,7 @@ namespace Dynamo.Wpf.Interfaces
         /// Default constructor
         /// </summary>
         /// <param name="text">Text value of the element</param>
-        public LayoutSection(string text = "") : base(text)
+        public LayoutSection(string text) : base(text)
         {
             elementType = LayoutElementType.section;
             showHeader = true;
