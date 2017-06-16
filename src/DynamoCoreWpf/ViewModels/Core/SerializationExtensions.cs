@@ -64,7 +64,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             writer.WriteValue(nodeViewModel.X);
             writer.WritePropertyName("Y");
             writer.WriteValue(nodeViewModel.Y);
-            writer.WritePropertyName("isVisible");
+            writer.WritePropertyName("IsVisible");
             writer.WriteValue(nodeViewModel.IsVisible);
             writer.WritePropertyName("IsUpstreamVisible");
             writer.WriteValue(nodeViewModel.IsUpstreamVisible);
