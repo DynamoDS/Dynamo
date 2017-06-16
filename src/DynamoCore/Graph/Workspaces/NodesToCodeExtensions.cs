@@ -4,6 +4,7 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Selection;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Dynamo.Graph.Workspaces
@@ -110,7 +111,7 @@ namespace Dynamo.Graph.Workspaces
                 #endregion
 
                 #region Step III. Recreate the necessary connections
-                var newInputConnectors = ReConnectInputConnections(externalInputConnections, codeBlockNode, workspace.Connectors);
+                var newInputConnectors = ReConnectInputConnections(externalInputConnections, codeBlockNode, workspace);
                 foreach (var connector in newInputConnectors)
                 {
                     undoHelper.RecordCreation(connector);
@@ -129,6 +130,7 @@ namespace Dynamo.Graph.Workspaces
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.AddRange(codeBlockNodes);
 
+            Debug.WriteLine(string.Format("Workspace has {0} nodes and {1} connectors after N2C operation.", workspace.Nodes.Count(), workspace.Connectors.Count()));
             workspace.RequestRun();
         }
 
@@ -181,8 +183,9 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="externalInputConnections">List of connectors to remake, along with the port names of the new port</param>
         /// <param name="cbn">The new Node To Code created Code Block Node</param>
+        /// <param name="workspace"></param>
         private static List<ConnectorModel> ReConnectInputConnections(
-            Dictionary<ConnectorModel, string> externalInputConnections, CodeBlockNodeModel cbn, IEnumerable<ConnectorModel> existingConnectors)
+            Dictionary<ConnectorModel, string> externalInputConnections, CodeBlockNodeModel cbn, WorkspaceModel workspace)
         {
             List<ConnectorModel> newConnectors = new List<ConnectorModel>();
 
@@ -195,9 +198,9 @@ namespace Dynamo.Graph.Workspaces
                 if (endPortIndex < 0)
                     continue;
 
-                if (existingConnectors.Any(c => c.End == cbn.InPorts[endPortIndex]))
+                if (workspace.Connectors.Any(c => c.End == cbn.InPorts[endPortIndex]))
                     continue;
-
+                
                 var newConnector = ConnectorModel.Make(
                     connector.Start.Owner,
                     cbn,
