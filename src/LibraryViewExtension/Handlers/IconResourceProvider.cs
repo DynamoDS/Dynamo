@@ -22,9 +22,9 @@ namespace Dynamo.LibraryUI.Handlers
         private string defaultIconName;
 
         /// <summary>
-        /// Defaaault constructor for the IconResourceProvider
+        /// Default constructor for the IconResourceProvider
         /// </summary>
-        /// <param name="pathManager">Path maanager instance to resolve the 
+        /// <param name="pathManager">Path manager instance to resolve the 
         /// customization resource path</param>
         /// <param name="defaultIcon">Name of the default icon (including 
         /// extension) to be used when it can't find the requested icon</param>
