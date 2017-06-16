@@ -267,7 +267,7 @@ namespace ViewExtensionLibraryTests
             var path = @"C:\temp\xyz.dyf";
             var guid = Guid.NewGuid();
             var info = new CustomNodeInfo(guid, name, category, "some description", path);
-            var expectedQualifiedName = "abc.xyz.somepackage.My Node";
+            var expectedQualifiedName = "dyf://abc.xyz.somepackage.My Node";
             var moq = new Mock<ICustomNodeSource>();
             var element = new CustomNodeSearchElement(moq.Object, info);
             
@@ -316,7 +316,9 @@ namespace ViewExtensionLibraryTests
             var controller = new Mock<IEventController>();
             controller.Setup(c => c.RaiseEvent(It.IsAny<string>(), It.IsAny<object[]>())).Callback(() => resetevent.Set());
 
-            var disposable = LibraryViewController.SetupSearchModelEventsObserver(model, controller.Object, timeout);
+            var customization = new LibraryViewCustomization();
+
+            var disposable = LibraryViewController.SetupSearchModelEventsObserver(model, controller.Object, customization, timeout);
             controller.Verify(c => c.RaiseEvent(libraryDataUpdated, It.IsAny<object[]>()), Times.Never);
 
             var d1 = MockNodeSearchElement("A", "B");
@@ -328,7 +330,15 @@ namespace ViewExtensionLibraryTests
             Assert.AreEqual(3, model.NumElements);
 
             Assert.IsTrue(resetevent.WaitOne(timeout*3));
-            controller.Verify(c => c.RaiseEvent(libraryDataUpdated, "A, C, E"), Times.Once);
+            controller.Verify(c => c.RaiseEvent(libraryDataUpdated), Times.Once);
+
+            var spec = customization.GetSpecification();
+            var section = spec.sections.FirstOrDefault();
+            Assert.AreEqual(1, spec.sections.Count);
+            //There must be a section named "Add-ons" now.
+            Assert.AreEqual("Add-ons", section.text);
+            Assert.AreEqual(3, section.include.Count);
+            Assert.AreEqual("A, C, E", string.Join(", ", section.include.Select(i => i.path)));
 
             //Dispose
             disposable.Dispose();

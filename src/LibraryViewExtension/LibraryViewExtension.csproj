@@ -77,12 +77,14 @@
     <Compile Include="EventObserver.cs" />
     <Compile Include="Handlers\IconResourceProvider.cs" />
     <Compile Include="Handlers\IconUrl.cs" />
+    <Compile Include="Handlers\LayoutSpecProvider.cs" />
     <Compile Include="Handlers\NodeItemDataProvider.cs" />
     <Compile Include="Handlers\ResourceHandlerFactory.cs" />
     <Compile Include="Handlers\ResourceProvider.cs" />
     <Compile Include="Handlers\DllResourceProvider.cs" />
     <Compile Include="Handlers\SearchResultDataProvider.cs" />
     <Compile Include="LibraryViewController.cs" />
+    <Compile Include="LibraryViewCustomization.cs" />
     <Compile Include="LibraryViewExtension.cs" />
     <Compile Include="LibraryViewToolTip.cs" />
     <Compile Include="Properties\Resources.en-US.Designer.cs">

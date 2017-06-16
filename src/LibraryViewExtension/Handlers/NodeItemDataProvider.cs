@@ -90,6 +90,11 @@ namespace Dynamo.LibraryUI.Handlers
                 //Use FullCategory and name as read from _customization.xml file
                 return string.Format("{0}{1}.{2}", "pkg://", element.FullCategoryName, element.Name);
             }
+            else if (element.ElementType.HasFlag(ElementTypes.CustomNode))
+            {
+                //Use FullCategory and name as read from _customization.xml file
+                return string.Format("{0}{1}", "dyf://", element.FullName);
+            }
             return element.FullName;
         }
 
@@ -112,14 +117,6 @@ namespace Dynamo.LibraryUI.Handlers
                         ? element.SearchKeywords.Where(s => !string.IsNullOrEmpty(s)).Aggregate((x, y) => string.Format("{0}, {1}", x, y))
                         : string.Empty
             };
-
-            //If the node search element is part of a package, then we need to prefix pkg:// for it
-            var packaged = element.ElementType.HasFlag(ElementTypes.Packaged);
-            if (packaged)
-            {
-                //Use FullCategory and name as read from _customization.xml file
-                item.fullyQualifiedName = string.Format("{0}{1}.{2}", "pkg://", element.FullCategoryName, element.Name);
-            }
 
             //If this element is not a custom node then we are done. The icon url for custom node is different
             if (!element.ElementType.HasFlag(ElementTypes.CustomNode)) return item;
