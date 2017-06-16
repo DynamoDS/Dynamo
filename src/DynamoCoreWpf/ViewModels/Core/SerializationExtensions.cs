@@ -29,8 +29,9 @@ namespace Dynamo.Wpf.ViewModels.Core
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
                 Converters = new List<JsonConverter>{
-                        new AnnotationViewModelConverter(),                        
-                    },
+                    new AnnotationViewModelConverter(),
+                    new NodeViewModelConverter(),
+                },
             };
 
             var json = JsonConvert.SerializeObject(viewModel, settings);

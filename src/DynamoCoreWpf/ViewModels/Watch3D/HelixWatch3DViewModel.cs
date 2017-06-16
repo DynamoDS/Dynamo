@@ -37,6 +37,7 @@ using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
+using Newtonsoft.Json;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -58,7 +59,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public Vector3D UpDirection { get; set; }
         public Vector3D LookDirection { get; set; }
         public string Name { get; set; }
+        [JsonIgnore]
         public double NearPlaneDistance { get; set; }
+        [JsonIgnore]
         public double FarPlaneDistance { get; set; }
 
         public CameraData()

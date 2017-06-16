@@ -209,9 +209,6 @@ namespace Dynamo.Graph.Workspaces
             var obj = JObject.Load(reader);
 
             var isCustomNode = obj["IsCustomNode"].Value<bool>();
-            var lastModifiedStr = obj["LastModified"].Value<string>();
-            var lastModified = DateTime.Parse(lastModifiedStr);
-            var author = obj["LastModifiedBy"].Value<string>();
             var description = obj["Description"].Value<string>();
             var guidStr = obj["Uuid"].Value<string>();
             var guid = Guid.Parse(guidStr);
@@ -317,10 +314,6 @@ namespace Dynamo.Graph.Workspaces
                 writer.WritePropertyName("Category");
                 writer.WriteValue(((CustomNodeWorkspaceModel)value).Category);
             }
-            writer.WritePropertyName("LastModified");
-            writer.WriteValue(ws.LastSaved.ToUniversalTime());
-            writer.WritePropertyName("LastModifiedBy");
-            writer.WriteValue(ws.Author);
             writer.WritePropertyName("Description");
             writer.WriteValue(ws.Description);
             writer.WritePropertyName("Name");
