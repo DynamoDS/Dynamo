@@ -33,7 +33,7 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             //if the id is not a guid, makes a guid based on the id of the model
             Guid annotationId = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
 
-            // This is a collection of string Guids, which
+            // This is a string id, which
             // should be accessible in the ReferenceResolver.
             var models = obj["Nodes"].Values<JValue>();
 
