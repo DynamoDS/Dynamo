@@ -9,6 +9,7 @@ using CefSharp;
 using Dynamo;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Interfaces;
 using Dynamo.LibraryUI;
 using Dynamo.LibraryUI.Handlers;
 using Dynamo.Search;
@@ -511,6 +512,27 @@ namespace ViewExtensionLibraryTests
             disposable.Dispose();
             disposable.Dispose();
             controller.Verify(c => c.RaiseEvent("Disposed"), Times.Once);
+        }
+
+        [Test, Category("UnitTests")]
+        public void ConcurrentIconRequest()
+        {
+            var resetevent = new AutoResetEvent(false);
+            var requests = (new[] { "A", "B", "C", "D", "E" })
+                .Select(s => new IconUrl(s, s))
+                .Select(icon => {
+                    var req = new Mock<IRequest>();
+                    req.Setup(r => r.Url).Returns(icon.Url);
+                    return req;
+                }).ToList();
+
+            var pathmanager = new Mock<IPathManager>();
+            var provider = new IconResourceProvider(pathmanager.Object);
+            string ext;
+            var result = Parallel.ForEach(requests, r => Assert.IsNotNull(provider.GetResource(r.Object, out ext)));
+
+            resetevent.WaitOne(250);
+            Assert.IsTrue(result.IsCompleted);
         }
 
         private static Mock<NodeSearchElement> MockNodeSearchElement(string fullname, string creationName)
