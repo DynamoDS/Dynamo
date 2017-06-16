@@ -22,7 +22,8 @@ namespace Dynamo.ViewModels
     {
         private AnnotationModel annotationModel;
         public readonly WorkspaceViewModel WorkspaceViewModel;        
-      
+        
+        [JsonIgnore]
         public AnnotationModel AnnotationModel
         {
             get { return annotationModel; }

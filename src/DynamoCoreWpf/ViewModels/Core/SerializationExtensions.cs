@@ -29,7 +29,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
                 Converters = new List<JsonConverter>{
-                        new AnnotationConverter(),                        
+                        new AnnotationViewModelConverter(),                        
                     },
             };
 

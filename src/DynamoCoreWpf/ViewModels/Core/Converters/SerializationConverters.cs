@@ -3,7 +3,9 @@ using System.Linq;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Type = System.Type;
@@ -17,11 +19,11 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
     /// by their ids. During deserialization, we use the ReferenceResolver to
     /// find the correct ModelBase instances to reference.
     /// </summary>
-    public class AnnotationConverter : JsonConverter
+    public class AnnotationViewModelConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(AnnotationModel);
+            return objectType == typeof(AnnotationViewModel);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -62,7 +64,9 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            var anno = (AnnotationModel)value;
+            var annoVM = (AnnotationViewModel)value;
+            var anno = annoVM.AnnotationModel;
+
 
             writer.WriteStartObject();
 
@@ -78,7 +82,7 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             }
             writer.WriteEndArray();
             writer.WritePropertyName("Left");
-            writer.WriteValue(anno.X.ToString());
+            writer.WriteValue(anno.X);
             writer.WritePropertyName("Top");
             writer.WriteValue(anno.Y);
             writer.WritePropertyName("Width");
