@@ -62,6 +62,7 @@ namespace Dynamo.Tests
         internal class WorkspaceComparisonData
         {
             public Guid Guid { get; set; }
+            public string Description { get; set; }
             public int NodeCount { get; set; }
             public int ConnectorCount { get; set; }            
             public int NoteCount { get; set; }
@@ -74,6 +75,7 @@ namespace Dynamo.Tests
             public WorkspaceComparisonData(WorkspaceModel workspace, EngineController controller)
             {
                 Guid = workspace.Guid;
+                Description = workspace.Description;
                 NodeCount = workspace.Nodes.Count();
                 ConnectorCount = workspace.Connectors.Count();               
                 NoteCount = workspace.Notes.Count();
@@ -175,6 +177,7 @@ namespace Dynamo.Tests
             {
                 Assert.Fail("The workspaces don't have the same number of nodes. The json workspace is missing: " + string.Join(",", nodeDiff.Select(i => i.Value.ToString())));
             }
+            Assert.AreEqual(a.Description, b.Description, "The workspaces don't have the same description.");
             Assert.AreEqual(a.NodeCount, b.NodeCount, "The workspaces don't have the same number of nodes.");
             Assert.AreEqual(a.ConnectorCount, b.ConnectorCount, "The workspaces don't have the same number of connectors.");
             //TODO: Annotations tests should be in viewmodel serialization tests.
@@ -302,6 +305,7 @@ namespace Dynamo.Tests
 
             var model = CurrentDynamoModel;
             var ws1 = model.CurrentWorkspace;
+            ws1.Description = "TestDescription";
 
             var dummyNodes = ws1.Nodes.Where(n => n is DummyNode);
             if (dummyNodes.Any())
