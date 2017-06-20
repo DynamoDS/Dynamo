@@ -222,14 +222,15 @@ namespace Dynamo.Graph.Workspaces
             var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
             
             // notes
-            var notes = obj["Notes"].ToObject<IEnumerable<NoteModel>>(serializer);
-            if (notes.Any())
-            {
-                foreach(var n in notes)
-                {
-                    serializer.ReferenceResolver.AddReference(serializer.Context, n.GUID.ToString(), n);
-                }
-            }
+            //TODO: Check this when implementing ReadJSON in ViewModel.
+            //var notes = obj["Notes"].ToObject<IEnumerable<NoteModel>>(serializer);
+            //if (notes.Any())
+            //{
+            //    foreach(var n in notes)
+            //    {
+            //        serializer.ReferenceResolver.AddReference(serializer.Context, n.GUID.ToString(), n);
+            //    }
+            //}
 
             // connectors
             // Although connectors are not used in the construction of the workspace
@@ -242,6 +243,10 @@ namespace Dynamo.Graph.Workspaces
             //Build an empty annotations. Annotations are defined in the view block. If the file has View block
             //serialize view block first and build the annotations.
             var annotations = new List<AnnotationModel>();
+
+            //Build an empty notes. Notes are defined in the view block. If the file has View block
+            //serialize view block first and build the notes.
+            var notes = new List<NoteModel>();
 
             WorkspaceModel ws;
             if (isCustomNode)
@@ -327,10 +332,6 @@ namespace Dynamo.Graph.Workspaces
             writer.WritePropertyName("Nodes");
             serializer.Serialize(writer, ws.Nodes);
 
-            //notes
-            writer.WritePropertyName("Notes");
-            serializer.Serialize(writer, ws.Notes);
- 
             //connectors
             writer.WritePropertyName("Connectors");
             serializer.Serialize(writer, ws.Connectors);

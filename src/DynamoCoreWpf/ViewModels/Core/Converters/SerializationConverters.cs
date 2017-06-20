@@ -143,4 +143,39 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             throw new NotImplementedException();
         }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class NoteViewModelConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(NoteViewModel);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
+            JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var noteViewModel = (NoteViewModel)value;
+            var notes = noteViewModel.Model;
+
+            // For each noteViewModel, start a new object
+            writer.WriteStartObject();
+            writer.WritePropertyName("Id");
+            writer.WriteValue(notes.GUID);
+            writer.WritePropertyName("X");
+            writer.WriteValue(notes.X);
+            writer.WritePropertyName("Y");
+            writer.WriteValue(notes.Y);
+            writer.WritePropertyName("Text");
+            writer.WriteValue(notes.Text);
+            writer.WriteEndObject();
+        }
+    }
 }
