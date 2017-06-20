@@ -294,28 +294,28 @@ namespace Dynamo.Graph.Workspaces
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var ws = (WorkspaceModel)value;
-
+            bool isCustomNode = value is CustomNodeWorkspaceModel;
             writer.WriteStartObject();
-
             writer.WritePropertyName("Uuid");
-            if (value is CustomNodeWorkspaceModel)
-            {
+            if (isCustomNode)
                 writer.WriteValue((ws as CustomNodeWorkspaceModel).CustomNodeId.ToString());
-            }
             else
-            {
                 writer.WriteValue(ws.Guid.ToString());
-
-            }
+            // TODO: revisit IsCustomNode during DYN/DYF convergence
             writer.WritePropertyName("IsCustomNode");
             writer.WriteValue(value is CustomNodeWorkspaceModel ? true : false);
-            if (value is CustomNodeWorkspaceModel)
+            if (isCustomNode)
             {
                 writer.WritePropertyName("Category");
                 writer.WriteValue(((CustomNodeWorkspaceModel)value).Category);
             }
+
+            // Description
             writer.WritePropertyName("Description");
-            writer.WriteValue(ws.Description);
+            if (isCustomNode)
+                writer.WriteValue(((CustomNodeWorkspaceModel)ws).Description);
+            else
+                writer.WriteValue(ws.Description);
             writer.WritePropertyName("Name");
             writer.WriteValue(ws.Name);
 
