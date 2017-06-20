@@ -145,7 +145,7 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
     }
 
     /// <summary>
-    /// 
+    /// Serialize NoteViewModel.
     /// </summary>
     public class NoteViewModelConverter : JsonConverter
     {
