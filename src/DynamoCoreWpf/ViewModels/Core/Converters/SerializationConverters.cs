@@ -118,11 +118,8 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             var nodeViewModel = (NodeViewModel)value;
             // For each nodeViewModel, start a new object
             writer.WriteStartObject();
-            // Serialize Node Id as property name
-            writer.WritePropertyName(nodeViewModel.Id.ToString());
-
-            // Start a new object for all the nodeViewModel properties
-            writer.WriteStartObject();
+            writer.WritePropertyName("Id");
+            writer.WriteValue(nodeViewModel.Id.ToString());
             writer.WritePropertyName("Name");
             writer.WriteValue(nodeViewModel.Name);
             writer.WritePropertyName("X");
@@ -133,7 +130,6 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WriteValue(nodeViewModel.IsVisible);
             writer.WritePropertyName("IsUpstreamVisible");
             writer.WriteValue(nodeViewModel.IsUpstreamVisible);
-            writer.WriteEndObject();
             writer.WriteEndObject();
         }
 
