@@ -30,6 +30,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                 Formatting = Formatting.Indented,
                 Converters = new List<JsonConverter>{
                     new AnnotationViewModelConverter(),
+                    new NoteViewModelConverter(),
                     new NodeViewModelConverter(),
                 },
             };

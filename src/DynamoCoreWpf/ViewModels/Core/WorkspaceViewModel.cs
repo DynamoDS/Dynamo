@@ -232,7 +232,7 @@ namespace Dynamo.ViewModels
         public ObservableCollection<NodeViewModel> Nodes { get { return _nodes; } }
 
         ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
-        [JsonIgnore]
+        [JsonProperty("Notes")]
         public ObservableCollection<NoteViewModel> Notes { get { return _notes; } }
 
         ObservableCollection<InfoBubbleViewModel> _errors = new ObservableCollection<InfoBubbleViewModel>();
