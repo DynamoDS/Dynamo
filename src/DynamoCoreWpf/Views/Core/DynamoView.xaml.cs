@@ -44,6 +44,7 @@ using System.Windows.Threading;
 using HelixToolkit.Wpf.SharpDX;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using String = System.String;
+using Dynamo.Extensions;
 
 namespace Dynamo.Controls
 {
@@ -141,8 +142,10 @@ namespace Dynamo.Controls
             }
 
             viewExtensionManager.MessageLogged += Log;
-
-            var startupParams = new ViewStartupParams(dynamoViewModel);
+            var dm = dynamoViewModel.Model;
+            var startupParams = new StartupParams(dm.AuthenticationManager.AuthProvider,
+                    dm.PathManager, new ExtensionLibraryLoader(dm), dm.CustomNodeManager,
+                    dm.GetType().Assembly.GetName().Version, dm.PreferenceSettings, dm.ExtensionManager);
 
             foreach (var ext in viewExtensions)
             {

@@ -123,7 +123,7 @@ namespace Dynamo.Manipulation
             UnregisterEventHandlers();
         }
 
-        public void Startup(ViewStartupParams p)
+        public void Startup(StartupParams p)
         {
             manipulatorDaemon = ManipulatorDaemon.Create(new NodeManipulatorFactoryLoader());
         }

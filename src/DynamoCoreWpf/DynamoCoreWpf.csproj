@@ -173,7 +173,6 @@
     <Compile Include="Extensions\ViewExtensionManager.cs" />
     <Compile Include="Extensions\ViewLoadedParams.cs" />
     <Compile Include="Extensions\ViewExtensionDefinition.cs" />
-    <Compile Include="Extensions\ViewStartupParams.cs" />
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />

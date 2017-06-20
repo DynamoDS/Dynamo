@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using DynamoPackages.Properties;
 using DynamoUtilities;
 using Dynamo.Core;
+using Dynamo.Extensions;
 
 namespace Dynamo.PackageManager
 {
@@ -29,8 +30,12 @@ namespace Dynamo.PackageManager
     {
         internal event Action<Assembly> RequestLoadNodeLibrary;
         internal event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
+        internal event Func<string,IExtension> RequestLoadExtensionHandler;
+        internal Action<IExtension> RequestAddExtensionHandler;
+
         public event Action<Package> PackageAdded;
         public event Action<Package> PackageRemoved;
+
 
         private readonly List<Package> localPackages = new List<Package>();
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }
@@ -40,6 +45,7 @@ namespace Dynamo.PackageManager
         {
             get { return packagesDirectories[0]; }
         }
+
 
         public PackageLoader(string overridePackageDirectory)
             : this(new[] { overridePackageDirectory })
@@ -107,6 +113,23 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private IExtension OnRequestLoadExtension(string extensionPath)
+        {
+            if (RequestLoadExtensionHandler != null)
+            {
+                return RequestLoadExtensionHandler(extensionPath);
+            }
+            return null;
+        }
+
+        private void OnRequestAddExtension(IExtension extension)
+        {
+            if (RequestAddExtensionHandler != null)
+            {
+                RequestAddExtensionHandler(extension);
+            }
+        }
+
         private IEnumerable<CustomNodeInfo> OnRequestLoadCustomNodeDirectory(string directory)
         {
             if (RequestLoadCustomNodeDirectory != null)
@@ -151,6 +174,16 @@ namespace Dynamo.PackageManager
                 package.LoadedCustomNodes.AddRange(customNodes);
 
                 package.EnumerateAdditionalFiles();
+                //if the additional files contained an extension manifest
+                //request to load it
+                var extensionManifests = package.AdditionalFiles.Where(file => file.Model.Name.Contains("ExtensionDefinition.xml")).ToList();
+                foreach (var extPath in extensionManifests)
+                {
+                var extension = OnRequestLoadExtension(extPath.Model.FullName);
+                    OnRequestAddExtension(extension);
+                }
+                
+                //attemp to start the package
                 package.Loaded = true;
             }
             catch (Exception e)

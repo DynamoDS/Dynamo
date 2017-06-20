@@ -142,7 +142,11 @@ namespace Dynamo.Models
             if (ShutdownCompleted != null)
                 ShutdownCompleted(this);
         }
-
+        /// <summary>
+        /// this event is fired when Dynamo is ready for user interaction
+        /// </summary>
+        public event Action<ReadyParams> DynamoReady;
+        private bool dynamoReady;
         #endregion
 
         #region static properties
@@ -578,7 +582,7 @@ namespace Dynamo.Models
             // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
             // PackageFolders
             if (PreferenceSettings.CustomPackageFolders.Count == 0)
-                PreferenceSettings.CustomPackageFolders = new List<string> {pathManager.UserDataDirectory};
+                PreferenceSettings.CustomPackageFolders = new List<string> { pathManager.UserDataDirectory };
 
             //Make sure that the default package folder is added in the list if custom packages folder.
             var userDataFolder = pathManager.GetUserDataFolder(); //Get the default user data path
@@ -603,6 +607,14 @@ namespace Dynamo.Models
             extensionManager = new ExtensionManager();
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? LoadExtensions();
+            //when dynamo is ready - alert loaded extensions
+            DynamoReady += (readyParams)=> { this.dynamoReady = true;
+                DynamoReadyExtensionHandler(readyParams, ExtensionManager.Extensions); } ;
+            //when an extension is added if dynamo is ready, alert that extension (this alerts late
+            // loaded extensions)
+            ExtensionManager.ExtensionAdded += (extension) => { if (this.dynamoReady)
+                { DynamoReadyExtensionHandler(new ReadyParams(this),
+                    new List<IExtension>() { extension }); }; };
 
             Loader = new NodeModelAssemblyLoader();
             Loader.MessageLogged += LogMessage;
@@ -629,7 +641,7 @@ namespace Dynamo.Models
             // config.UpdateManager has to be cast to IHostUpdateManager in order to extract the HostVersion and HostName
             // see IHostUpdateManager summary for more details 
             var hostUpdateManager = config.UpdateManager as IHostUpdateManager;
-          
+
             if (hostUpdateManager != null)
             {
                 HostName = hostUpdateManager.HostName;
@@ -640,7 +652,7 @@ namespace Dynamo.Models
                 HostName = string.Empty;
                 HostVersion = null;
             }
-            
+
             UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode && !IsHeadless)
             {
@@ -656,7 +668,7 @@ namespace Dynamo.Models
             {
                 var startupParams = new StartupParams(config.AuthProvider,
                     pathManager, new ExtensionLibraryLoader(this), CustomNodeManager,
-                    GetType().Assembly.GetName().Version, PreferenceSettings);
+                    GetType().Assembly.GetName().Version, PreferenceSettings, ExtensionManager);
 
                 foreach (var ext in extensions)
                 {
@@ -682,8 +694,12 @@ namespace Dynamo.Models
             StartBackupFilesTimer();
 
             TraceReconciliationProcessor = this;
+            DynamoReady(new ReadyParams(this));
+        }
 
-            foreach (var ext in ExtensionManager.Extensions)
+        private void DynamoReadyExtensionHandler(ReadyParams readyParams, IEnumerable<IExtension> extensions)
+        {
+            foreach (var ext in extensions)
             {
                 try
                 {

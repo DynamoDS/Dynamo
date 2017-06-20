@@ -1,4 +1,5 @@
-﻿using Dynamo.Wpf.Extensions;
+﻿using Dynamo.Extensions;
+using Dynamo.Wpf.Extensions;
 using NUnit.Framework;
 using System;
 using System.Reflection;
@@ -52,7 +53,7 @@ namespace DynamoCoreWpfTests
             get { return "DummyViewExtension"; }
         }
 
-        public void Startup(ViewStartupParams p)
+        public void Startup(StartupParams p)
         {
 
         }
