@@ -104,43 +104,6 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
     }
 
     /// <summary>
-    /// The NodeViewModelConverter is used to serialize and deserialize NodeViewModels.
-    /// </summary>
-    public class NodeViewModelConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(NodeViewModel);
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var nodeViewModel = (NodeViewModel)value;
-            // For each nodeViewModel, start a new object
-            writer.WriteStartObject();
-            writer.WritePropertyName("Id");
-            writer.WriteValue(nodeViewModel.Id.ToString());
-            writer.WritePropertyName("Name");
-            writer.WriteValue(nodeViewModel.Name);
-            writer.WritePropertyName("X");
-            writer.WriteValue(nodeViewModel.X);
-            writer.WritePropertyName("Y");
-            writer.WriteValue(nodeViewModel.Y);
-            writer.WritePropertyName("IsVisible");
-            writer.WriteValue(nodeViewModel.IsVisible);
-            writer.WritePropertyName("IsUpstreamVisible");
-            writer.WriteValue(nodeViewModel.IsUpstreamVisible);
-            writer.WriteEndObject();
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
-            JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    /// <summary>
     /// Serialize NoteViewModel.
     /// </summary>
     public class NoteViewModelConverter : JsonConverter
