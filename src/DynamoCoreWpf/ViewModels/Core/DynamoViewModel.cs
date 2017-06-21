@@ -1213,6 +1213,11 @@ namespace Dynamo.ViewModels
                     xmlFilePath = parameters as string;
                 }
                 ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath, forceManualMode));
+
+                string fileContents = File.ReadAllText(xmlFilePath);
+                WorkspaceViewModel view = WorkspaceViewModel.FromJson(fileContents);
+
+                // TODO: Finish initialization of the WorkspaceModel with additional view information here
             }
             catch (Exception e)
             {

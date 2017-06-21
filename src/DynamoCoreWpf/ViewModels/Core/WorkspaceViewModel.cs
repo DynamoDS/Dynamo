@@ -488,6 +488,16 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Load a WorkspaceViewModel from json.
+        /// </summary>
+        /// <param name="json"></param>
+        public static WorkspaceViewModel FromJson(string json)
+        {
+            // TODO: Fill in WorkspaceViewModel deserialization here
+            return null;
+        }
+
         void CopyPasteChanged(object sender, EventArgs e)
         {
             RaisePropertyChanged("CanPaste", "CanCopy", "CanCopyOrPaste");
