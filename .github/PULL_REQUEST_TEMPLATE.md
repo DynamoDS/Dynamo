@@ -1,3 +1,10 @@
+Please Note:
+1. Dynamo Team will meet 1x a month to review PRs found on Github (Issues will be handled separately)
+2. PRs will be reviewed from oldest to newest
+3. If a reviewed PR requires changes by the owner, the owner of the PR has 30 days to respond. If the PR has seen no activity by the next session, it will be either closed by the team or depending on its utility will be taken over by someone on the team
+4. PRs that do not have template completely filled out and all declarations satisfied will not be reviewed by the Dynamo team.
+5. PRs made to the `Dynamo` repo will need to be cherry-picked into all the Release branches that Dynamo supports. Contributors will be responsible for cherry-picking their reviewed commits to the other branches after a `LGTM` label is added to the PR.
+
 ### Purpose
 
 (FILL ME IN) This section describes why this PR is here. Usually it would include a reference 
