@@ -26,6 +26,7 @@ using Newtonsoft.Json;
 using Dynamo.Wpf.ViewModels.Core;
 using System.Diagnostics;
 using Dynamo.Engine;
+using Dynamo.Wpf.ViewModels.Core.Converters;
 
 namespace Dynamo.ViewModels
 {
@@ -489,13 +490,27 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Load a WorkspaceViewModel from json.
+        /// Load the extra view information required to fully construct a WorkspaceModel object 
         /// </summary>
         /// <param name="json"></param>
-        public static WorkspaceViewModel FromJson(string json)
+        static public ExtraViewInfo ExtraViewInfoFromJson(string json)
         {
-            // TODO: Fill in WorkspaceViewModel deserialization here
-            return null;
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                Converters = new List<JsonConverter>{
+                   new ExtraViewInfoReadConverter()
+                }
+            };
+
+            return JsonConvert.DeserializeObject<ExtraViewInfo>(json, settings);
         }
 
         void CopyPasteChanged(object sender, EventArgs e)

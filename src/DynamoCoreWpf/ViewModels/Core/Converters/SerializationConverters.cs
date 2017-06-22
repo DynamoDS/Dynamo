@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -9,9 +10,55 @@ using Dynamo.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Type = System.Type;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Wpf.ViewModels.Core.Converters
 {
+    /// <summary>
+    /// The ExtraViewInfoReadConverter is used to serialize and deserialize the extra 
+    /// view information that is required to completely deserialize a JSON WorkspaceModel object.
+    /// </summary>
+    public class ExtraViewInfoReadConverter : JsonConverter
+    {
+        public ExtraViewInfoReadConverter()
+        {
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(ExtraViewInfo);
+        }
+
+        public override bool CanWrite
+        {
+            get { return false; }
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var obj = JObject.Load(reader);
+            var viewBlock = obj["View"];
+
+            ExtraViewInfo viewInfo = new ExtraViewInfo();
+            viewInfo.X = viewBlock["X"].Value<double>();
+            viewInfo.Y = viewBlock["Y"].Value<double>();
+            viewInfo.Zoom = viewBlock["Zoom"].Value<double>();        
+
+            //viewInfo.Cameras = viewBlock["Cameras"].Value<object>();
+
+            //viewInfo.NodeViews = viewBlock["NodeViews"].ToObject<IEnumerable<object>>();
+            //viewInfo.Notes = viewBlock["Notes"].ToObject<IEnumerable<object>>();
+            //viewInfo.Annotations = viewBlock["Annotations"].ToObject<IEnumerable<object>>();
+
+            return viewInfo;
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     /// <summary>
     /// The AnnotationConverter is used to serialize and deserialize AnnotationModels.
     /// The SelectedModels property on AnnotationModel is a list of references

@@ -29,6 +29,21 @@ using Dynamo.Scheduler;
 namespace Dynamo.Graph.Workspaces
 {
     /// <summary>
+    /// Non view-specific container for additional view information required to
+    /// fully construct a WorkspaceModel from JSON
+    /// </summary>
+    public struct ExtraViewInfo
+    {
+        public object Cameras;
+        public IEnumerable<object> NodeViews;
+        public IEnumerable<object> Notes;
+        public IEnumerable<object> Annotations;
+        public double X;
+        public double Y;
+        public double Zoom;        
+    }
+
+    /// <summary>
     /// Represents base class for all kind of workspaces which contains general data
     /// such as Name, collections of nodes, notes, annotations, etc.
     /// </summary>
@@ -1490,6 +1505,23 @@ namespace Dynamo.Graph.Workspaces
             var ws = JsonConvert.DeserializeObject<WorkspaceModel>(result, settings);
 
             return ws;
+        }
+
+        public void UpdateWithExtraViewInfo(ExtraViewInfo viewInfo)
+        {
+            // TODO: The collections need to be properly updated here with the view info
+            // Update for viewInfo.NodeViews
+            // Update for viewInfo.Notes
+            // Update for viewInfo.Annotations
+
+            // TODO: These items are not in the extra view info
+            //Name = info.Name;
+            //Description = info.Description;
+            //FileName = info.FileName;
+
+            X = viewInfo.X;
+            Y = viewInfo.Y;
+            Zoom = viewInfo.Zoom; 
         }
     }
 }
