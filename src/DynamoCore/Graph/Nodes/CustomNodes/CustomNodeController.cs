@@ -37,7 +37,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
                 if(model.InPorts.Count > i)
                 {
-                    model.InPorts[i].PortName = input.Item1;
+                    model.InPorts[i].Name = input.Item1;
                     model.InPorts[i].ToolTip = input.Item2;
                     model.InPorts[i].DefaultValue = input.Item3;
                 }
@@ -74,7 +74,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
                     if(model.OutPorts.Count > i)
                     {
-                        model.OutPorts[i].PortName = key;
+                        model.OutPorts[i].Name = key;
                         model.OutPorts[i].ToolTip = tooltip;
                     }
                     else
@@ -157,13 +157,13 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             if (IsInSyncWithNode(model))
             {
                 Debug.WriteLine("Custom node definition is already in sync for: " + 
-                    model.NickName + 
+                    model.Name + 
                     string.Format(", {0} returns, {1} parameters", Definition.Returns.Count(), Definition.Parameters.Count()));
                 return;
             } 
 
             Debug.WriteLine("Syncing custom node with definition for: " + 
-                model.NickName + 
+                model.Name + 
                 string.Format(", {0} returns, {1} parameters", Definition.Returns.Count(), Definition.Parameters.Count()));
 
             base.SyncNodeWithDefinition(model);
@@ -183,7 +183,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
             outEl.SetAttribute("value", Definition.FunctionId.ToString());
             nodeElement.AppendChild(outEl);
-            nodeElement.SetAttribute("nickname", NickName);
+            nodeElement.SetAttribute("nickname", Name);
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
             if (Definition.DisplayParameters != null)
             {
-                var paramNames = model.InPorts.Select(p => p.PortName);
+                var paramNames = model.InPorts.Select(p => p.Name);
                 if (!Definition.DisplayParameters.SequenceEqual(paramNames))
                     return false;
             }
@@ -213,7 +213,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
             if (Definition.ReturnKeys != null)
             {
-                var returnKeys = model.OutPorts.Select(p => p.PortName);
+                var returnKeys = model.OutPorts.Select(p => p.Name);
                 if (!Definition.ReturnKeys.SequenceEqual(returnKeys))
                     return false;
             }

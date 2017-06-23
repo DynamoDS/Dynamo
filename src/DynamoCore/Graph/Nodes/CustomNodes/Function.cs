@@ -26,11 +26,11 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         : FunctionCallBase<CustomNodeController<CustomNodeDefinition>, CustomNodeDefinition>
     {
         [JsonConstructor]
-        private Function(string nickName, string description, string category)
+        private Function(string name, string description, string category)
             : base(new CustomNodeController<CustomNodeDefinition>(null))
         {
             ArgumentLacing = LacingStrategy.Auto;
-            NickName = nickName;
+            Name = name;
             Description = description;
             Category = category;
         }
@@ -39,16 +39,16 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// Initializes a new instance of the <see cref="Function"/> class.
         /// </summary>
         /// <param name="def">CustomNode definition.</param>
-        /// <param name="nickName">Nickname.</param>
+        /// <param name="name">Name.</param>
         /// <param name="description">Description.</param>
         /// <param name="category">Category.</param>
         public Function(
-            CustomNodeDefinition def, string nickName, string description, string category)
+            CustomNodeDefinition def, string name, string description, string category)
             : base(new CustomNodeController<CustomNodeDefinition>(def))
         {
             ValidateDefinition(def);
             ArgumentLacing = LacingStrategy.Auto;
-            NickName = nickName;
+            Name = name;
             Description = description;
             Category = category;
         }
@@ -92,7 +92,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             var xmlDoc = element.OwnerDocument;
 
             var outEl = xmlDoc.CreateElement("Name");
-            outEl.SetAttribute("value", NickName);
+            outEl.SetAttribute("value", Name);
             element.AppendChild(outEl);
 
             outEl = xmlDoc.CreateElement("Description");
@@ -100,7 +100,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             element.AppendChild(outEl);
 
             outEl = xmlDoc.CreateElement("Inputs");
-            foreach (string input in InPorts.Select(x => x.PortName))
+            foreach (string input in InPorts.Select(x => x.Name))
             {
                 XmlElement inputEl = xmlDoc.CreateElement("Input");
                 inputEl.SetAttribute("value", input);
@@ -109,7 +109,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             element.AppendChild(outEl);
 
             outEl = xmlDoc.CreateElement("Outputs");
-            foreach (string output in OutPorts.Select(x => x.PortName))
+            foreach (string output in OutPorts.Select(x => x.Name))
             {
                 XmlElement outputEl = xmlDoc.CreateElement("Output");
                 outputEl.SetAttribute("value", output);
@@ -250,7 +250,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
             XmlNode nameNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Name"));
             if (nameNode != null && nameNode.Attributes != null)
-                NickName = nameNode.Attributes["value"].Value;
+                Name = nameNode.Attributes["value"].Value;
 
             XmlNode descNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Description"));
             if (descNode != null && descNode.Attributes != null)
@@ -297,7 +297,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
     public class Symbol : NodeModel
     {
         private string inputSymbol = String.Empty;
-        private string nickName = String.Empty;
+        private string name = String.Empty;
         private ElementResolver workspaceElementResolver;
 
         /// <summary>
@@ -344,7 +344,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             set
             {
                 inputSymbol = value;
-                nickName = inputSymbol;
+                name = inputSymbol;
                 ClearRuntimeError();
 
                 var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
@@ -352,7 +352,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
                 string comment = null;
 
-                if (!string.IsNullOrEmpty(nickName))
+                if (!string.IsNullOrEmpty(name))
                 {
                     // three cases:
                     //    x = default_value
@@ -361,7 +361,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     IdentifierNode identifierNode;
                     if (TryParseInputExpression(inputSymbol, out identifierNode, out defaultValue, out comment))
                     {
-                        nickName = identifierNode.Value;
+                        name = identifierNode.Value;
 
                         if (identifierNode.datatype.UID == Constants.kInvalidIndex)
                         {
@@ -377,7 +377,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
                     }
                 }
 
-                Parameter = new TypedParameter(nickName, type, defaultValue, null, comment);
+                Parameter = new TypedParameter(name, type, defaultValue, null, comment);
 
                 OnNodeModified();
                 RaisePropertyChanged("InputSymbol");
@@ -401,7 +401,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         {
             return
                 AstFactory.BuildIdentifier(
-                    string.IsNullOrEmpty(nickName) ? AstIdentifierBase : nickName + "__" + AstIdentifierBase);
+                    string.IsNullOrEmpty(name) ? AstIdentifierBase : name + "__" + AstIdentifierBase);
         }
 
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)

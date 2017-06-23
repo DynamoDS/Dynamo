@@ -877,11 +877,11 @@ var06 = g;
             Assert.AreEqual(2, data.Count());
 
             var data0 = data.ElementAt(0);
-            Assert.AreEqual(unboundIdentifiers[0], data0.NickName);
+            Assert.AreEqual(unboundIdentifiers[0], data0.Name);
             Assert.AreEqual(unboundIdentifiers[0], data0.ToolTipString);
 
             var data1 = data.ElementAt(1);
-            Assert.AreEqual("LongerVariableNameTha...", data1.NickName);
+            Assert.AreEqual("LongerVariableNameTha...", data1.Name);
             Assert.AreEqual(unboundIdentifiers[1], data1.ToolTipString);
         }
 
@@ -1447,9 +1447,13 @@ var06 = g;
         [Category("UnitTests")]
         public void TestBuiltInMethodSignatureCompletion()
         {
+            const string libraryPath = "BuiltIn.ds";
+
+            CompilerUtils.TryLoadAssemblyIntoCore(libraryServicesCore, libraryPath);
+
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
 
-            string functionPrefix = "";
+            string functionPrefix = "List";
             string functionName = "ContainsKey";
 
             string code = "";

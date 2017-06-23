@@ -17,6 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Controls
 {
@@ -30,7 +31,7 @@ namespace Dynamo.Controls
         private const double MaxMajorGridSpacing = MinMajorGridSpacing * MinorDivisions;
         private const double ScaleFactor = MaxMajorGridSpacing / MinMajorGridSpacing;
 
-        private WorkspaceModel workspaceModel;
+        private WorkspaceViewModel workspaceViewModel;
         private Pen majorGridPen, minorGridPen;
         private DrawingVisual drawingVisual = new DrawingVisual();
 
@@ -78,18 +79,18 @@ namespace Dynamo.Controls
                     "InfiniteGridView should be a nested element of WorkspaceView");
             }
 
-            workspaceModel = workspaceView.ViewModel.Model;
+            workspaceViewModel = workspaceView.ViewModel;
         }
 
         private void UpdateDrawingVisual()
         {
-            if (workspaceModel == null)
+            if (workspaceViewModel == null)
             {
                 // Indicates that this is a first load, so ws should be initialized first
                 InitializeWorkspaceModel();
             }
-
-            UpdateDrawingVisual(workspaceModel.X, workspaceModel.Y, workspaceModel.Zoom);
+            
+            UpdateDrawingVisual(workspaceViewModel.X, workspaceViewModel.Y, workspaceViewModel.Zoom);
         }
 
         private void UpdateDrawingVisual(double x, double y, double zoom)

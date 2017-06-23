@@ -502,19 +502,6 @@ namespace Dynamo.Controls
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();
 #endif
-            #region Search initialization
-            var libraryUI = viewExtensionManager.ViewExtensions.Any(v=>v.Name == "LibraryUI");
-            
-            if(!libraryUI)
-            {
-                var search = new SearchView(
-                dynamoViewModel.SearchViewModel,
-                dynamoViewModel);
-                sidebarGrid.Children.Add(search);
-                dynamoViewModel.SearchViewModel.Visible = true;
-            }
-            
-            #endregion
 
             #region Package manager
 
@@ -1219,8 +1206,8 @@ namespace Dynamo.Controls
                 if (workspace_index == -1) return;
 
                 var workspace_vm = dynamoViewModel.Workspaces[workspace_index];
-                workspace_vm.Model.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(workspace_vm.Model.X, workspace_vm.Model.Y)));
-                workspace_vm.Model.OnZoomChanged(this, new ZoomEventArgs(workspace_vm.Zoom));
+                workspace_vm.Model.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(workspace_vm.X, workspace_vm.Y)));
+                workspace_vm.OnZoomChanged(this, new ZoomEventArgs(workspace_vm.Zoom));
 
                 ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
             }

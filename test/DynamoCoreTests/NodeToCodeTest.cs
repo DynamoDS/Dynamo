@@ -61,8 +61,8 @@ namespace Dynamo.Tests
             {
                if (group.Count == 2)
                {
-                   Assert.IsNotNull(group.Find(n => n.NickName == "2"));
-                   Assert.IsNotNull(group.Find(n => n.NickName == "3"));
+                   Assert.IsNotNull(group.Find(n => n.Name == "2"));
+                   Assert.IsNotNull(group.Find(n => n.Name == "3"));
                } 
             }
         }
@@ -81,7 +81,7 @@ namespace Dynamo.Tests
             var groups = NodeToCodeCompiler.GetCliques(nodes);
             Assert.AreEqual(2, groups.Count);
             var group = groups.Where(g => g.Count == 2).First();
-            Assert.IsNotNull(group.Find(n => n.NickName == "2"));
+            Assert.IsNotNull(group.Find(n => n.Name == "2"));
         }
 
         [Test]
@@ -98,8 +98,8 @@ namespace Dynamo.Tests
             var groups = NodeToCodeCompiler.GetCliques(nodes);
             Assert.AreEqual(1, groups.Count);
             var group = groups.First();
-            Assert.IsNotNull(group.Find(n => n.NickName == "1"));
-            Assert.IsNotNull(group.Find(n => n.NickName == "2"));
+            Assert.IsNotNull(group.Find(n => n.Name == "1"));
+            Assert.IsNotNull(group.Find(n => n.Name == "2"));
         }
 
         [Test]
@@ -112,7 +112,7 @@ namespace Dynamo.Tests
             // 2 ----> x --> 5  
             // 3
             OpenModel(@"core\node2code\partition5.dyn");
-            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(n => n.NickName != "X");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(n => n.Name != "X");
             var groups = NodeToCodeCompiler.GetCliques(nodes);
             Assert.AreEqual(2, groups.Count);
 
@@ -122,13 +122,13 @@ namespace Dynamo.Tests
             var group2 = groups.Where(g => g.Count == 2).FirstOrDefault();
             Assert.IsNotNull(group2);
 
-            var nickNames = group1.Select(n => Int32.Parse(n.NickName)).ToList();
-            nickNames.Sort();
-            Assert.IsTrue(nickNames.SequenceEqual(new[] { 1, 2, 3 }));
+            var names = group1.Select(n => Int32.Parse(n.Name)).ToList();
+            names.Sort();
+            Assert.IsTrue(names.SequenceEqual(new[] { 1, 2, 3 }));
 
-            nickNames = group2.Select(n => Int32.Parse(n.NickName)).ToList();
-            nickNames.Sort();
-            Assert.IsTrue(nickNames.SequenceEqual(new[] { 4, 5 }));
+            names = group2.Select(n => Int32.Parse(n.Name)).ToList();
+            names.Sort();
+            Assert.IsTrue(names.SequenceEqual(new[] { 4, 5 }));
         }
 
         [Test]

@@ -19,8 +19,8 @@ namespace Dynamo.Prompts
     {
         public NodeHelpPrompt(NodeModel node)
         {
-            this.DataContext = node;
-            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            DataContext = node;
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
             InitializeComponent();
             
             if (node.IsCustomFunction)

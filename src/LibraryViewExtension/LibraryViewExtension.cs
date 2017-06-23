@@ -10,6 +10,9 @@ using Dynamo.Wpf.Extensions;
 using Dynamo.PackageManager;
 using Dynamo.Models;
 using System.Linq;
+using Dynamo.Controls;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.LibraryUI
 {
@@ -17,7 +20,7 @@ namespace Dynamo.LibraryUI
     {
         private ViewLoadedParams viewLoadedParams;
         private ViewStartupParams viewStartupParams;
-
+        private ILibraryViewCustomization customization = new LibraryViewCustomization();
         private LibraryViewController controller;
 
         public string UniqueId
@@ -35,13 +38,17 @@ namespace Dynamo.LibraryUI
         public void Startup(ViewStartupParams p)
         {
             viewStartupParams = p;
+            p.ExtensionManager.RegisterService(customization);
         }
+
         public void Loaded(ViewLoadedParams p)
         {
-            viewLoadedParams = p;
-            controller = new LibraryViewController(p.DynamoWindow, p.CommandExecutive);
-            controller.AddLibraryView();
-            //controller.ShowDetailsView("583d8ad8fdef23aa6e000037");
+            if (!DynamoModel.IsTestMode)
+            {
+                viewLoadedParams = p;
+                controller = new LibraryViewController(p.DynamoWindow, p.CommandExecutive, customization);
+                controller.AddLibraryView();
+            }
         }
 
         public void Shutdown()
@@ -53,7 +60,6 @@ namespace Dynamo.LibraryUI
         {
 
         }
-
     }
 
     public static class DynamoModelExtensions

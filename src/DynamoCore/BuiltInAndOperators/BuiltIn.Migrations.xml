@@ -1,16 +1,14 @@
 <?xml version="1.0"?>
 <migrations>
   <priorNameHint>
-    <oldName>GroupByKey</oldName>
-    <newName>GroupByFunction</newName>
-  </priorNameHint>
-  <priorNameHint>
-    <oldName>SortByKey</oldName>
-    <newName>SortByFunction</newName>
-  </priorNameHint>
-  <priorNameHint>
     <oldName>ImportFromCSV</oldName>
     <newName>DSOffice.Data.ImportCSV</newName>
+    <additionalAttributes>
+      <attribute>
+        <name>assembly</name>
+        <value>DSOffice.dll</value>
+      </attribute>
+    </additionalAttributes>
   </priorNameHint>
   <priorNameHint>
     <oldName>AllFalse</oldName>
@@ -111,8 +109,16 @@
     <newName>List.Equals</newName>
   </priorNameHint>
   <priorNameHint>
+    <oldName>GroupByKey</oldName>
+    <newName>GroupByFunction</newName>
+  </priorNameHint>
+  <priorNameHint>
     <oldName>GroupByFunction</oldName>
     <newName>List.GroupByFunction</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>SortByKey</oldName>
+    <newName>SortByFunction</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>SortByFunction</oldName>

@@ -1,4 +1,5 @@
 ﻿using Dynamo.UI.Commands;
+using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels
 {
@@ -14,9 +15,6 @@ namespace Dynamo.ViewModels
         private DelegateCommand _toggleIsVisibleCommand;
         private DelegateCommand _toggleIsUpstreamVisibleCommand;
         private DelegateCommand _renameCommand;
-        //private DelegateCommand _showTooltipCommand;
-        //private DelegateCommand _hideTooltipCommand;
-        //private DelegateCommand _fadeOutTooltipCommand;
         private DelegateCommand _setModelSizeCommand;
         private DelegateCommand _gotoWorkspaceCommand;
         private DelegateCommand _createGroupCommand;
@@ -24,6 +22,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _addToGroupCommand;
         private DelegateCommand _computeRunStateOfTheNodeCommand;
 
+        [JsonIgnore]
         public DelegateCommand RenameCommand
         {
             get
@@ -34,6 +33,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand DeleteCommand
         {
             get
@@ -46,6 +46,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand SetLacingTypeCommand
         {
             get
@@ -58,6 +59,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand SetStateCommand
         {
             get
@@ -70,6 +72,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand SelectCommand
         {
             get
@@ -82,6 +85,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand ShowHelpCommand
         {
             get
@@ -94,6 +98,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand ViewCustomNodeWorkspaceCommand
         {
             get
@@ -106,6 +111,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand ToggleIsVisibleCommand
         {
             get
@@ -118,6 +124,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand ToggleIsUpstreamVisibleCommand
         {
             get
@@ -130,6 +137,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand SetModelSizeCommand
         {
             get
@@ -140,6 +148,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand GotoWorkspaceCommand
         {
             get
@@ -150,6 +159,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand CreateGroupCommand
         {
             get
@@ -161,7 +171,8 @@ namespace Dynamo.ViewModels
                 return _createGroupCommand;
             }
         }
-       
+
+        [JsonIgnore]
         public DelegateCommand UngroupCommand
         {
             get
@@ -174,6 +185,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand AddToGroupCommand
         {
             get
@@ -186,6 +198,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public DelegateCommand ToggleIsFrozenCommand
         {
             get

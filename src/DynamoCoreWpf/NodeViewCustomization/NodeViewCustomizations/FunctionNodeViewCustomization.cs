@@ -99,9 +99,11 @@ namespace Dynamo.Wpf
                     DynamoModel.IsTestMode,
                     out ws);
                 ws.SetInfo(args.Name, args.Category, args.Description);
-                
+
                 if (!string.IsNullOrEmpty(ws.FileName))
-                    ws.Save(model.EngineController.LiveRunnerRuntimeCore);
+                {
+                    ws.Save(ws.FileName, false, dynamoViewModel.EngineController);
+                }
             }
         }
 

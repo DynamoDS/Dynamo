@@ -19,6 +19,7 @@ namespace Dynamo.Tests
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("DSIronPython.dll");
             libraries.Add("FunctionObject.ds");
+            libraries.Add("BuiltIn.ds");
             base.GetLibrariesToPreload(libraries);
         }
 

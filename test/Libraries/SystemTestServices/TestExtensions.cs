@@ -47,7 +47,7 @@ namespace Dynamo.Tests
         public static NodeModel GetDSFunctionNodeFromWorkspace(this WorkspaceModel model, string nodeName)
         {
             return model.Nodes.FirstOrDefault(node => node is DSFunction &&
-                node.NickName == nodeName);
+                node.Name == nodeName);
         }
     }
 }

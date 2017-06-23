@@ -118,6 +118,13 @@ limitations under the License.
     <Compile Include="Configuration\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
     <Compile Include="Exceptions\LibraryLoadFailedException.cs" />
+    <Compile Include="Graph\Workspaces\LayoutExtensions.cs" />
+    <Compile Include="Graph\Workspaces\NodesToCodeExtensions.cs" />
+    <Compile Include="Graph\Workspaces\PresetExtensions.cs" />
+    <Compile Include="Graph\Workspaces\SerializationConverters.cs" />
+    <Compile Include="Graph\Workspaces\SerializationExtensions.cs" />
+    <Compile Include="Graph\Workspaces\UndoRedo.cs" />
+    <Compile Include="Extensions\IServiceManager.cs" />
     <Compile Include="Logging\AnalyticsService.cs" />
     <Compile Include="Logging\DynamoAnalyticsClient.cs" />
     <Compile Include="Logging\IAnalyticsSession.cs" />

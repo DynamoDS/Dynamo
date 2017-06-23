@@ -17,10 +17,10 @@
 <body>
     <!-- Placeholders must exist before all other scripts that try to access them -->
     <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
-    
+
     <!-- The main library view compoment -->
-    <script src='./dist/v0.0.1/librarie.min.js'></script>
-    
+    <script src='./dist/librarie.min.js'></script>
+
     <script>
         //Get hold of object registered from C#
         let csharpController = window["controller"];
@@ -55,6 +55,23 @@
         //Update the view with contents
         refreshLibraryView(libController);
 
+        libController.searchLibraryItemsHandler = function (text, callback) {
+            let url = "nodeSearch" + "/" + text;
+            let jsonUrls = [url];
+            let downloader = LibraryEntryPoint.CreateJsonDownloader(jsonUrls, function (jsonUrl, jsonObject) {
+
+                let downloaded = downloader.getDownloadedJsonObjects();
+                let searchLoadedTypesJson = downloaded[url];
+
+                if (!searchLoadedTypesJson) {
+                    console.log("Error: no search result.");
+                    return;
+                }
+
+                callback(searchLoadedTypesJson);
+            });
+        }
+
         // Register event handlers for various events on library controller and package controller.
 
         libController.on(libController.ItemClickedEventName, function (nodeCreationName) {
@@ -73,11 +90,17 @@
             csharpController.closeNodeTooltip(true);
         });
 
-        libController.on(libController.ItemToolTipExpandEventName, function (arg) {
+        libController.on(libController.ItemSummaryExpandedEventName, function (arg) {
             //console.log("ItemSummary expanding now : " + arg.data);
             let nodeData = csharpController.getItemSummaryData(arg.contextData);
-            console.log(nodeData);
             arg.setDataCallback(nodeData);
+        });
+
+        libController.on(libController.SectionIconClickedEventName, function (section) {
+            console.log("Section clicked: " + section);
+            if (section == "Add-ons") {
+                csharpController.importLibrary();
+            }
         });
 
         csharpController.on("error", function (msg) {
@@ -85,7 +108,8 @@
             pkgController.raiseEvent("error", msg);
         });
 
-        csharpController.on("libraryDataUpdated", function () {
+        csharpController.on("libraryDataUpdated", function (items) {
+            console.log(items);
             refreshLibraryView(libController);
         });
 

@@ -71,7 +71,7 @@ namespace Dynamo
                                 : topNode.OutPorts
                                     .Select(
                                         (port, i) =>
-                                            new {portIndex = i, node = topNode, name = port.PortName})
+                                            new {portIndex = i, node = topNode, name = port.Name})
                                     .Where(x => !topNode.OutPorts[x.portIndex].IsConnected));
 
                 foreach (var rtnAndIndex in rtnPorts.Select((rtn, i) => new {rtn, idx = i}))

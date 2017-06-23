@@ -1,4 +1,4 @@
-﻿using Dynamo.Configuration;
+using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Exceptions;
 using Dynamo.Graph;
@@ -35,7 +35,6 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
-using Dynamo.Controls;
 using ISelectable = Dynamo.Selection.ISelectable;
 
 
@@ -694,7 +693,6 @@ namespace Dynamo.ViewModels
 
         private void SubscribeModelChangedHandlers()
         {
-            model.WorkspaceSaved += ModelWorkspaceSaved;
             model.PropertyChanged += _model_PropertyChanged;
             model.WorkspaceCleared += ModelWorkspaceCleared;
             model.RequestCancelActiveStateForNode += this.CancelActiveState;
@@ -702,7 +700,6 @@ namespace Dynamo.ViewModels
 
         private void UnsubscribeModelChangedEvents()
         {
-            model.WorkspaceSaved -= ModelWorkspaceSaved;
             model.PropertyChanged -= _model_PropertyChanged;
             model.WorkspaceCleared -= ModelWorkspaceCleared;
             model.RequestCancelActiveStateForNode -= this.CancelActiveState;
@@ -752,11 +749,6 @@ namespace Dynamo.ViewModels
             {
                 action();
             }
-        }
-
-        private void ModelWorkspaceSaved(WorkspaceModel model)
-        {
-            this.AddToRecentFiles(model.FileName);
         }
 
         private void ModelWorkspaceCleared(WorkspaceModel workspace)
@@ -1376,20 +1368,50 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Save the current workspace to a specific file path, if the path is null 
-        /// or empty, does nothing. If successful, the CurrentWorkspace.FileName
-        /// field is updated as a side effect.
+        /// Save the current workspace to a specific file path. If the file path is null or empty, an
+        /// exception is written to the console.
         /// </summary>
-        /// <param name="path">The path to save to</param>
+        /// <param name="path">The path to the file.</param>
+        /// <exception cref="IOException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
         internal void SaveAs(string path)
         {
             try
             {
-                Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
+                Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
+
+                CurrentSpaceViewModel.Save(path, Model.EngineController);
+                
+                AddToRecentFiles(path);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                if (ex is IOException || ex is System.UnauthorizedAccessException)
+                Model.Logger.Log(ex.Message);
+                Model.Logger.Log(ex.StackTrace);
+
+                if (ex is IOException || ex is UnauthorizedAccessException)
+                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+            }
+        }
+
+        /// <summary>
+        /// Save the specified workspace to a file. If the file path is null or empty, an
+        /// exception is written to the console.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="workspace">The Workspace to save.</param>
+        internal void SaveAs(string path, WorkspaceModel workspace)
+        {
+            try
+            {
+                workspace.Save(path, false, EngineController);
+            }
+            catch (Exception ex)
+            {
+                Model.Logger.Log(ex.Message);
+                Model.Logger.Log(ex.StackTrace);
+
+                if (ex is IOException || ex is UnauthorizedAccessException)
                     System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
             }
         }
@@ -1402,10 +1424,10 @@ namespace Dynamo.ViewModels
         /// <returns>true if save was successful, false otherwise</returns>
         internal bool ShowSaveDialogIfNeededAndSave(WorkspaceModel workspace)
         {
-            // crash sould always allow save as
+            // crash should always allow save as
             if (!String.IsNullOrEmpty(workspace.FileName) && !DynamoModel.IsCrashing)
             {
-                workspace.Save(EngineController.LiveRunnerRuntimeCore);
+                SaveAs(workspace.FileName, workspace);
                 return true;
             }
             else
@@ -1419,7 +1441,7 @@ namespace Dynamo.ViewModels
                 fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
-                    workspace.SaveAs(fd.FileName, EngineController.LiveRunnerRuntimeCore);
+                    SaveAs(fd.FileName, workspace);
                     return true;
                 }
             }
@@ -1477,7 +1499,7 @@ namespace Dynamo.ViewModels
             {
                 //set the zoom and offsets events
                 CurrentSpace.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(CurrentSpace.X, CurrentSpace.Y)));
-                CurrentSpace.OnZoomChanged(this, new ZoomEventArgs(CurrentSpace.Zoom));
+                CurrentSpaceViewModel.OnZoomChanged(this, new ZoomEventArgs(CurrentSpaceViewModel.Zoom));
             }
         }
 
@@ -1722,7 +1744,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void GoHomeView(object parameter)
         {
-            model.CurrentWorkspace.Zoom = 1.0;
+            CurrentSpaceViewModel.Zoom = 1.0;
 
             var ws = this.Model.Workspaces.First(x => x == model.CurrentWorkspace);
             ws.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(0, 0)));
@@ -2096,10 +2118,10 @@ namespace Dynamo.ViewModels
 
         internal void Pan(object parameter)
         {
-            Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", model.CurrentWorkspace.X, model.CurrentWorkspace.Y, model.CurrentWorkspace.Zoom));
+            Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", CurrentSpaceViewModel.X, CurrentSpaceViewModel.Y, currentWorkspaceViewModel.Zoom));
             var panType = parameter.ToString();
             double pan = 10;
-            var pt = new Point2D(model.CurrentWorkspace.X, model.CurrentWorkspace.Y);
+            var pt = new Point2D(CurrentSpaceViewModel.X, CurrentSpaceViewModel.Y);
 
             switch (panType)
             {
