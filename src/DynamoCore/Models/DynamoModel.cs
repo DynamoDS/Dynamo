@@ -196,7 +196,7 @@ namespace Dynamo.Models
         /// </summary>
         public string Version
         {
-            get { return UpdateManager.ProductVersion.ToString(); }
+            get { return DefaultUpdateManager.GetProductVersion().ToString(); }
         }
 
         /// <summary>
