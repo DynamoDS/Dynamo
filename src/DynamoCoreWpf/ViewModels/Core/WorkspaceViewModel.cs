@@ -495,6 +495,10 @@ namespace Dynamo.ViewModels
         /// <param name="json"></param>
         static public ExtraViewInfo ExtraViewInfoFromJson(string json)
         {
+            JsonReader reader = new JsonTextReader(new StringReader(json));
+            var obj = JObject.Load(reader);
+            var viewBlock = obj["View"];
+           
             var settings = new JsonSerializerSettings
             {
                 Error = (sender, args) =>
@@ -504,13 +508,10 @@ namespace Dynamo.ViewModels
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Newtonsoft.Json.Formatting.Indented,
-                Converters = new List<JsonConverter>{
-                   new ExtraViewInfoReadConverter()
-                }
+                Formatting = Newtonsoft.Json.Formatting.Indented
             };
 
-            return JsonConvert.DeserializeObject<ExtraViewInfo>(json, settings);
+            return JsonConvert.DeserializeObject<ExtraViewInfo>(viewBlock.ToString(), settings);
         }
 
         void CopyPasteChanged(object sender, EventArgs e)
