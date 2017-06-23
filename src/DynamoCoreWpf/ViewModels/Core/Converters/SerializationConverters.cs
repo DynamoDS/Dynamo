@@ -46,7 +46,7 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
 
             viewInfo.Cameras = viewBlock["Cameras"].Value<object>();
 
-            //viewInfo.NodeViews = viewBlock["NodeViews"].ToObject<IEnumerable<object>>();
+            viewInfo.NodeViews = viewBlock["NodeViews"].ToObject<IEnumerable<ExtraNodeViewInfo>>();
             //viewInfo.Notes = viewBlock["Notes"].ToObject<IEnumerable<object>>();
             //viewInfo.Annotations = viewBlock["Annotations"].ToObject<IEnumerable<object>>();
 

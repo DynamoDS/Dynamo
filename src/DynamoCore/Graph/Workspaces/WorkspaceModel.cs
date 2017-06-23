@@ -35,12 +35,26 @@ namespace Dynamo.Graph.Workspaces
     public class ExtraViewInfo
     {
         public object Cameras;
-        public IEnumerable<object> NodeViews;
+        public IEnumerable<ExtraNodeViewInfo> NodeViews;
         public IEnumerable<object> Notes;
         public IEnumerable<object> Annotations;
         public double X;
         public double Y;
         public double Zoom;        
+    }
+
+    /// <summary>
+    /// Non view-specific container for additional node view information 
+    /// required to fully construct a WorkspaceModel from JSON
+    /// </summary>
+    public class ExtraNodeViewInfo
+    {
+        public string Id;
+        public string Name;
+        public double X;
+        public double Y;
+        public bool IsVisible;
+        public bool IsUpstreamVisible;
     }
 
     /// <summary>
@@ -1509,8 +1523,22 @@ namespace Dynamo.Graph.Workspaces
 
         public void UpdateWithExtraViewInfo(ExtraViewInfo viewInfo)
         {
+            X = viewInfo.X;
+            Y = viewInfo.Y;
+            Zoom = viewInfo.Zoom; 
+
+            foreach (ExtraNodeViewInfo nodeInfo in viewInfo.NodeViews)
+            {
+                Guid guidValue = Guid.Parse(nodeInfo.Id);
+                var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
+                if (nodeModel != null)
+                {
+                    nodeModel.X = nodeInfo.X;
+                    nodeModel.Y = nodeInfo.Y;
+                }
+            }
+
             // TODO: The collections need to be properly updated here with the view info
-            // Update for viewInfo.NodeViews
             // Update for viewInfo.Notes
             // Update for viewInfo.Annotations
 
@@ -1518,10 +1546,6 @@ namespace Dynamo.Graph.Workspaces
             //Name = info.Name;
             //Description = info.Description;
             //FileName = info.FileName;
-
-            X = viewInfo.X;
-            Y = viewInfo.Y;
-            Zoom = viewInfo.Zoom; 
         }
     }
 }
