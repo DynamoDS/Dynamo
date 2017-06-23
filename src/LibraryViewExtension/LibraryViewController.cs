@@ -131,7 +131,10 @@ namespace Dynamo.LibraryUI
         /// <param name="nodeName">Node creation name</param>
         public string GetItemSummaryData(string nodeName)
         {
-            var node = dynamoViewModel.SearchViewModel.FindViewModelForNode(nodeName);
+            var node = dynamoViewModel.Model.SearchModel.SearchEntries.FirstOrDefault(e => e.CreationName.Equals(nodeName));
+            if (node == null)
+                return string.Empty;
+
             var nodeData = new Dictionary<string, object>();
             var inputParams = new List<Dictionary<string, string>>();
 
