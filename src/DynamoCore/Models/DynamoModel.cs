@@ -1279,7 +1279,7 @@ namespace Dynamo.Models
           bool failed = false;
           try
           {
-            OpenJsonFileFromPath(xmlPath, forceManualExecutionMode);
+            OpenXmlFileFromPath(xmlPath, forceManualExecutionMode);
           }
           catch (Exception e)
           {
@@ -1289,7 +1289,7 @@ namespace Dynamo.Models
           if (!failed)
             return;
 
-          OpenXmlFileFromPath(xmlPath, forceManualExecutionMode);
+          OpenJsonFileFromPath(xmlPath, forceManualExecutionMode);
         }
 
         /// <summary>

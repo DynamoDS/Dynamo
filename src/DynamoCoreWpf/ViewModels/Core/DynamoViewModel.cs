@@ -1215,11 +1215,21 @@ namespace Dynamo.ViewModels
                 ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath, forceManualMode));
 
                 string fileContents = File.ReadAllText(xmlFilePath);
-                ExtraViewInfo viewInfo = WorkspaceViewModel.ExtraViewInfoFromJson(fileContents);
-                this.Model.CurrentWorkspace.UpdateWithExtraViewInfo(viewInfo);
+                try
+                {
+                    // This call will fail in the case of an XML file
+                    ExtraViewInfo viewInfo = WorkspaceViewModel.ExtraViewInfoFromJson(fileContents);
+
+                    this.Model.CurrentWorkspace.UpdateWithExtraViewInfo(viewInfo);
+                }
+                catch (Exception e)
+                {
+                    this.ShowStartPage = false; // Hide start page if there's one.
+                    return;
+                }
 
                 // TODO: Finish initialization of the WorkspaceViewModel
-      }
+            }
             catch (Exception e)
             {
                 if (!DynamoModel.IsTestMode)
