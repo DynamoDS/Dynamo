@@ -158,6 +158,7 @@
     <EmbeddedResource Include="web\library\librarie.min.js" />
     <EmbeddedResource Include="web\library\resources\indent-arrow-down.svg" />
     <EmbeddedResource Include="web\library\resources\indent-arrow-right.svg" />
+    <EmbeddedResource Include="web\library\resources\indent-arrow-right-last.svg" />
     <EmbeddedResource Include="web\library\resources\library-action.svg" />
     <EmbeddedResource Include="web\library\resources\library-create.svg" />
     <EmbeddedResource Include="web\library\resources\library-query.svg" />
