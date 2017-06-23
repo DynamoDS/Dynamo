@@ -44,7 +44,7 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             viewInfo.Y = viewBlock["Y"].Value<double>();
             viewInfo.Zoom = viewBlock["Zoom"].Value<double>();        
 
-            //viewInfo.Cameras = viewBlock["Cameras"].Value<object>();
+            viewInfo.Cameras = viewBlock["Cameras"].Value<object>();
 
             //viewInfo.NodeViews = viewBlock["NodeViews"].ToObject<IEnumerable<object>>();
             //viewInfo.Notes = viewBlock["Notes"].ToObject<IEnumerable<object>>();

@@ -1221,6 +1221,7 @@ namespace Dynamo.ViewModels
                     ExtraViewInfo viewInfo = WorkspaceViewModel.ExtraViewInfoFromJson(fileContents);
 
                     this.Model.CurrentWorkspace.UpdateWithExtraViewInfo(viewInfo);
+                    this.Model.OnWorkspaceOpening(viewInfo);
                 }
                 catch (Exception e)
                 {

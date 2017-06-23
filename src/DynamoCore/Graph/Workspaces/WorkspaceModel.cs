@@ -32,7 +32,7 @@ namespace Dynamo.Graph.Workspaces
     /// Non view-specific container for additional view information required to
     /// fully construct a WorkspaceModel from JSON
     /// </summary>
-    public struct ExtraViewInfo
+    public class ExtraViewInfo
     {
         public object Cameras;
         public IEnumerable<object> NodeViews;

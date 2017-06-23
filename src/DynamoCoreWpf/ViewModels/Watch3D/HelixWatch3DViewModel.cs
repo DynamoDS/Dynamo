@@ -38,6 +38,7 @@ using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -571,26 +572,53 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             base.OnWorkspaceCleared(workspace);
         }
 
-        protected override void OnWorkspaceOpening(XmlDocument doc)
+        protected override void OnWorkspaceOpening(object obj)
         {
-            var camerasElements = doc.GetElementsByTagName("Cameras");
-            if (camerasElements.Count == 0)
+            XmlDocument doc = obj as XmlDocument;
+            if (doc != null)
             {
+                var camerasElements = doc.GetElementsByTagName("Cameras");
+                if (camerasElements.Count == 0)
+                {
+                    return;
+                }
+
+                foreach (XmlNode cameraNode in camerasElements[0].ChildNodes)
+                {
+                    try
+                    {
+                        var camData = DeserializeCamera(cameraNode);
+                        SetCameraData(camData);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex.Message);
+                        logger.Log(ex);
+                    }
+                }
+
                 return;
             }
 
-            foreach (XmlNode cameraNode in camerasElements[0].ChildNodes)
+            ExtraViewInfo viewInfo = obj as ExtraViewInfo;
+            if (viewInfo != null)
             {
-                try
+                var cameraJson = viewInfo.Cameras.ToString();
+
+                var settings = new JsonSerializerSettings
                 {
-                    var camData = DeserializeCamera(cameraNode);
-                    SetCameraData(camData);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex.Message);
-                    logger.Log(ex);
-                }
+                    Error = (sender, args) =>
+                    {
+                        args.ErrorContext.Handled = true;
+                        Console.WriteLine(args.ErrorContext.Error);
+                    },
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.Auto,
+                    Formatting = Newtonsoft.Json.Formatting.Indented
+                };
+
+                var cameraData = JsonConvert.DeserializeObject<CameraData>(cameraJson, settings);
+                SetCameraData(cameraData);
             }
         }
 

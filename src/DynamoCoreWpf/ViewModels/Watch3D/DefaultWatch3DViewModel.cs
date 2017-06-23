@@ -433,7 +433,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnClear();
         }
 
-        protected virtual void OnWorkspaceOpening(XmlDocument doc)
+        protected virtual void OnWorkspaceOpening(object obj)
         {
             // Override in derived classes.
         }

@@ -111,11 +111,10 @@ namespace Dynamo.Models
         /// Use the XmlDocument object provided to conduct additional
         /// workspace opening operations.
         /// </summary>
-        public event Action<XmlDocument> WorkspaceOpening;
-        internal void OnWorkspaceOpening(XmlDocument obj)
+        public event Action<object> WorkspaceOpening;
+        internal void OnWorkspaceOpening(object obj)
         {
-            var handler = WorkspaceOpening;
-            if (handler != null) handler(obj);
+            WorkspaceOpening?.Invoke(obj);
         }
 
         /// <summary>
