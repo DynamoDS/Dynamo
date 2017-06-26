@@ -1529,7 +1529,7 @@ namespace Dynamo.Graph.Workspaces
 
             foreach (ExtraNodeViewInfo nodeInfo in viewInfo.NodeViews)
             {
-                Guid guidValue = Guid.Parse(nodeInfo.Id);
+                Guid guidValue = IdToGuidConverter(nodeInfo.Id);
                 var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
                 if (nodeModel != null)
                 {
@@ -1546,6 +1546,19 @@ namespace Dynamo.Graph.Workspaces
             //Name = info.Name;
             //Description = info.Description;
             //FileName = info.FileName;
+        }
+
+        private Guid IdToGuidConverter(string id)
+        {
+            Guid deterministicGuid;
+            if (!Guid.TryParse(id, out deterministicGuid))
+            {
+                Console.WriteLine("The id was not a guid, converting to a guid");
+                deterministicGuid = GuidUtility.Create(GuidUtility.UrlNamespace, id);
+                Console.WriteLine(id + " becomes " + deterministicGuid);
+            }
+
+            return deterministicGuid;
         }
     }
 }
