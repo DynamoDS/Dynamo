@@ -40,6 +40,7 @@ namespace Dynamo.Models
         }
         
         private PortModel[] activeStartPorts;
+        private PortModel firstStartPort;
 
         protected virtual void OpenFileImpl(OpenFileCommand command)
         {
@@ -270,6 +271,10 @@ namespace Dynamo.Models
                     EndShiftReconnections(nodeId, command.PortIndex, command.Type);
                     break;
 
+                case MakeConnectionCommand.Mode.EndAndStartCtrlConnection:
+                    EndAndStartCtrlConnection(nodeId, command.PortIndex, command.Type);
+                    break;
+
                 case MakeConnectionCommand.Mode.Cancel:
                     CancelConnections();
                     break;
@@ -291,6 +296,7 @@ namespace Dynamo.Models
             if (portModel.Connectors.Count > 0 && portModel.Connectors[0].Start != portModel)
             {
                 activeStartPorts = new PortModel[] { portModel.Connectors[0].Start };
+                firstStartPort = portModel.Connectors[0].Start;
                 // Disconnect the connector model from its start and end ports
                 // and remove it from the connectors collection. This will also
                 // remove the view model.
@@ -305,6 +311,7 @@ namespace Dynamo.Models
             else
             {
                 activeStartPorts = new PortModel[] { portModel };
+                firstStartPort = isInPort ? null : portModel; // Only assign firstStartPort if the port selected is an output port
             }
         }
 
@@ -355,6 +362,7 @@ namespace Dynamo.Models
 
             WorkspaceModel.RecordModelsForUndo(models, CurrentWorkspace.UndoRecorder);
             activeStartPorts = null;
+            firstStartPort = null;
         }
 
         void EndShiftReconnections(Guid nodeId, int portIndex, PortType portType)
@@ -380,10 +388,26 @@ namespace Dynamo.Models
             return;
         }
 
+        void EndAndStartCtrlConnection(Guid nodeId, int portIndex, PortType portType)
+        {
+            if (portType == PortType.Output) return; // Only handle ctrl connections if selected port is an input port
+            if (firstStartPort == null || activeStartPorts == null || activeStartPorts.Count() <= 0) return;
+            
+            var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
+            if (node == null) return;
+
+            PortModel portModel = node.InPorts[portIndex];
+            var models = GetConnectorsToAddAndDelete(portModel, activeStartPorts[0]);
+            WorkspaceModel.RecordModelsForUndo(models, CurrentWorkspace.UndoRecorder);
+            
+            activeStartPorts = new PortModel[] { firstStartPort };
+        }
+
         void CancelConnections()
         {
             CurrentWorkspace.DeleteSavedModels();
             activeStartPorts = null;
+            firstStartPort = null;
             return;
         }
 

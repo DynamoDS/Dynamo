@@ -997,8 +997,8 @@ namespace DynamoCoreWpfTests
             var group = workspace.Annotations.First();
 
             // Should contain only 1 NodeModel
-            Assert.AreEqual(1, group.SelectedModels.Count());
-            Assert.IsTrue(group.SelectedModels.Any(m => m.GUID == Guid.Parse("7dc3b638-284f-4296-a793-8185ef42cd71")));
+            Assert.AreEqual(1, group.Nodes.Count());
+            Assert.IsTrue(group.Nodes.Any(m => m.GUID == Guid.Parse("7dc3b638-284f-4296-a793-8185ef42cd71")));
         }
 
         [Test, RequiresSTA]
@@ -1067,7 +1067,59 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count()); //reconnections are cancelled; connectors are removed from workspace
         }
+        
+        /// <summary>
+        /// The following test exercises the following steps:
+        /// 
+        /// 1. Create one number node with value "2.000"
+        /// 2. Create one add node and one subtract node
+        /// 3. Use ctrl + click to connect the number node to the 4 inputs of add and subtract nodes
+        /// 
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestCtrlConnections()
+        {
+            RunCommandsFromFile("TestCtrlConnections.xml");
+            Assert.AreEqual(3, workspace.Nodes.Count()); // 1 number nodes + 1 add node + 1 subtract node
+            Assert.AreEqual(4, workspace.Connectors.Count());
 
+            AssertPreviewValue("a7eb8e17-5ceb-4e3f-a971-d20f12899821", 4.0); // value of the add node (2+2)
+            AssertPreviewValue("6cac23b8-8f50-4f9b-9bd9-128701d88860", 0.0); // value of the subtract node (2-2)
+        }
+        
+        /// <summary>
+        /// The following two tests exercise the following steps:
+        /// 
+        /// 1. Create two number nodes with values "2.000" and "5.000"
+        /// 2. Create one add node and one subtract node
+        /// 3. Use ctrl + click to connect "2.000" to the add and subtract nodes
+        /// 4. Use ctrl + click to connect "5.000" to the add and subtract nodes
+        /// 
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestCtrlConnectionsUndo()
+        {
+            RunCommandsFromFile("TestCtrlConnectionsUndo.xml");
+            Assert.AreEqual(4, workspace.Nodes.Count()); // 2 number nodes + 1 add node + 1 subtract node
+            Assert.AreEqual(4, workspace.Connectors.Count());
+
+            // Undo 4 times to restore the connections
+            AssertPreviewValue("cb84f91e-8856-4b2b-afe8-23cad5d6c111", 4.0); // value of the add node (2+2)
+            AssertPreviewValue("511760d9-1a05-41a8-bcc8-8856a95b1df0", 0.0); // value of the subtract node (2-2)
+        }
+
+        [Test, RequiresSTA]
+        public void TestCtrlConnectionsUndoRedo()
+        {
+            RunCommandsFromFile("TestCtrlConnectionsUndoRedo.xml");
+            Assert.AreEqual(4, workspace.Nodes.Count()); // 2 number nodes + 1 add node + 1 subtract node
+            Assert.AreEqual(4, workspace.Connectors.Count());
+
+            // Undo 4 times and redo 4 times
+            AssertPreviewValue("b63628be-4f75-4335-be66-f57ec0698b4d", 10.0); // value of the add node (5+5)
+            AssertPreviewValue("e59a6337-51a0-44e9-aacb-894492530aba", 0.0); // value of the subtract node (5-5)
+        }
+        
         /// <summary>
         /// The following tests exercise the following steps:
         /// 
@@ -1224,8 +1276,8 @@ namespace DynamoCoreWpfTests
 
             //CBN Input Ports
             //   >PortName stores name of variable
-            Assert.AreEqual("x", cbn.InPorts[0].PortName);
-            Assert.AreEqual("y", cbn.InPorts[1].PortName);
+            Assert.AreEqual("x", cbn.InPorts[0].Name);
+            Assert.AreEqual("y", cbn.InPorts[1].Name);
 
             //Check the connections
             var connectors = workspaceViewModel.Connectors;
@@ -1490,7 +1542,7 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNull(cbn);
 
-            Assert.AreEqual("CBN", cbn.NickName);
+            Assert.AreEqual("CBN", cbn.Name);
         }
 
         [Test, RequiresSTA]
@@ -3940,7 +3992,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(number);
             Assert.IsNotNull(note);
 
-            Assert.AreEqual("Caption 1", number.NickName);
+            Assert.AreEqual("Caption 1", number.Name);
             Assert.AreEqual("Caption 3", note.Text);
 
             //Assert.Inconclusive("Porting : DoubleInput");

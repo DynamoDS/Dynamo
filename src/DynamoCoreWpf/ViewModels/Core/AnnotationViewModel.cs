@@ -164,9 +164,9 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public IEnumerable<ModelBase> SelectedModels
+        public IEnumerable<ModelBase> Nodes
         {
-            get { return annotationModel.SelectedModels; }
+            get { return annotationModel.Nodes; }
         }
        
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
@@ -240,7 +240,7 @@ namespace Dynamo.ViewModels
 
             //Select all the models inside the group - This avoids some performance bottleneck 
             //with many nodes selected at the same time - which makes moving the group very slow
-            DynamoSelection.Instance.Selection.AddRange(this.AnnotationModel.SelectedModels);
+            DynamoSelection.Instance.Selection.AddRange(this.AnnotationModel.Nodes);
         }
     }
 }

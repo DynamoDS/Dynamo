@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -10,9 +11,8 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
-using Dynamo.Interfaces;
 using ProtoCore.Namespace;
-using System.Diagnostics;
+using Dynamo.Engine;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -236,7 +236,7 @@ namespace Dynamo.Graph.Workspaces
 
         private bool isVisibleInDynamoLibrary;
 
-        protected override void RequestRun()
+        internal override void RequestRun()
         {
             base.RequestRun();
             HasUnsavedChanges = true;
@@ -288,19 +288,15 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Saves custom node workspace to a file
+        /// Saves custom node workspace
         /// </summary>
         /// <param name="newPath">New location to save the workspace.</param>
-        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object 
-        /// to obtain serialized trace data for node list to save.</param>
         /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
         /// we should add it to recent files. Otherwise leave it.</param>
+        /// <param name="engine"></param>
         /// <returns></returns>
-        public override bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackUp = false)
+        public override void Save(string newPath, bool isBackup = false, EngineController engine = null)
         {
-            if (isBackUp)
-                return base.SaveAs(newPath, runtimeCore, isBackUp);
-
             var originalPath = FileName;
 
             // A SaveAs to an existing function id prompts the creation of a new 
@@ -317,7 +313,7 @@ namespace Dynamo.Graph.Workspaces
                 SetInfo(Path.GetFileNameWithoutExtension(newPath));
             }
 
-            return base.SaveAs(newPath, runtimeCore, isBackUp);
+            base.Save(newPath, isBackup, engine);
         }
 
         protected override bool PopulateXmlDocument(XmlDocument document)
@@ -335,12 +331,6 @@ namespace Dynamo.Graph.Workspaces
             root.SetAttribute("Category", Category);
             
             return true;
-        }
-
-        protected override void SerializeSessionData(XmlDocument document, ProtoCore.RuntimeCore runtimeCore)
-        {
-            // Since custom workspace does not have any runtime data to persist,
-            // do not allow base class to serialize any session data.
         }
     }
 }

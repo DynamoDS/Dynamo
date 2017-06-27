@@ -353,7 +353,7 @@ namespace Dynamo.Graph.Nodes
             var inPorts = childNodes.Where(node => node.Name.Equals("PortInfo"));
             foreach (var tuple in inPorts.Zip(InPorts, Tuple.Create))
             {
-                tuple.Item1.SetAttribute("name", tuple.Item2.PortName);
+                tuple.Item1.SetAttribute("name", tuple.Item2.Name);
             }
 
             //write output port line number info

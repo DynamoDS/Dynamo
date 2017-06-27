@@ -1,7 +1,7 @@
 <Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
   <CreateNodeCommand NodeId="a9762506-2ab6-4b50-8166-138de5b0c704" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="a9762506-2ab6-4b50-8166-138de5b0c704" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="a9762506-2ab6-4b50-8166-138de5b0c704" Name="NickName" Value="Caption 1" />
+  <UpdateModelValueCommand ModelGuid="a9762506-2ab6-4b50-8166-138de5b0c704" Name="Name" Value="Caption 1" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <CreateNodeCommand NodeId="cdada95d-fd36-4945-aba5-a41416cc3ca5" NodeName="Code Block" X="307" Y="393" DefaultPosition="false" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
@@ -10,7 +10,7 @@
   <UpdateModelValueCommand ModelGuid="cdada95d-fd36-4945-aba5-a41416cc3ca5" Name="Code" Value="&quot;String&quot;;" />
   <SelectModelCommand ModelGuid="cdada95d-fd36-4945-aba5-a41416cc3ca5" Modifiers="0" />
   <SelectModelCommand ModelGuid="cdada95d-fd36-4945-aba5-a41416cc3ca5" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="cdada95d-fd36-4945-aba5-a41416cc3ca5" Name="NickName" Value="Caption 2" />
+  <UpdateModelValueCommand ModelGuid="cdada95d-fd36-4945-aba5-a41416cc3ca5" Name="Name" Value="Caption 2" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <CreateNoteCommand NodeId="21c66403-d102-42bd-97ae-9e7b9c0b6e7d" NoteText="" X="0" Y="0" DefaultPosition="true" />
   <SelectModelCommand ModelGuid="21c66403-d102-42bd-97ae-9e7b9c0b6e7d" Modifiers="0" />

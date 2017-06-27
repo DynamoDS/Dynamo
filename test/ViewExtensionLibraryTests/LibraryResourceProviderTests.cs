@@ -9,6 +9,7 @@ using CefSharp;
 using Dynamo;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Interfaces;
 using Dynamo.LibraryUI;
 using Dynamo.LibraryUI.Handlers;
 using Dynamo.Search;
@@ -267,7 +268,7 @@ namespace ViewExtensionLibraryTests
             var path = @"C:\temp\xyz.dyf";
             var guid = Guid.NewGuid();
             var info = new CustomNodeInfo(guid, name, category, "some description", path);
-            var expectedQualifiedName = "abc.xyz.somepackage.My Node";
+            var expectedQualifiedName = "dyf://abc.xyz.somepackage.My Node";
             var moq = new Mock<ICustomNodeSource>();
             var element = new CustomNodeSearchElement(moq.Object, info);
             
@@ -316,7 +317,9 @@ namespace ViewExtensionLibraryTests
             var controller = new Mock<IEventController>();
             controller.Setup(c => c.RaiseEvent(It.IsAny<string>(), It.IsAny<object[]>())).Callback(() => resetevent.Set());
 
-            var disposable = LibraryViewController.SetupSearchModelEventsObserver(model, controller.Object, timeout);
+            var customization = new LibraryViewCustomization();
+
+            var disposable = LibraryViewController.SetupSearchModelEventsObserver(model, controller.Object, customization, timeout);
             controller.Verify(c => c.RaiseEvent(libraryDataUpdated, It.IsAny<object[]>()), Times.Never);
 
             var d1 = MockNodeSearchElement("A", "B");
@@ -328,7 +331,15 @@ namespace ViewExtensionLibraryTests
             Assert.AreEqual(3, model.NumElements);
 
             Assert.IsTrue(resetevent.WaitOne(timeout*3));
-            controller.Verify(c => c.RaiseEvent(libraryDataUpdated, "A, C, E"), Times.Once);
+            controller.Verify(c => c.RaiseEvent(libraryDataUpdated), Times.Once);
+
+            var spec = customization.GetSpecification();
+            var section = spec.sections.FirstOrDefault();
+            Assert.AreEqual(1, spec.sections.Count);
+            //There must be a section named "Add-ons" now.
+            Assert.AreEqual("Add-ons", section.text);
+            Assert.AreEqual(3, section.include.Count);
+            Assert.AreEqual("A, C, E", string.Join(", ", section.include.Select(i => i.path)));
 
             //Dispose
             disposable.Dispose();
@@ -501,6 +512,27 @@ namespace ViewExtensionLibraryTests
             disposable.Dispose();
             disposable.Dispose();
             controller.Verify(c => c.RaiseEvent("Disposed"), Times.Once);
+        }
+
+        [Test, Category("UnitTests")]
+        public void ConcurrentIconRequest()
+        {
+            var resetevent = new AutoResetEvent(false);
+            var requests = (new[] { "A", "B", "C", "D", "E" })
+                .Select(s => new IconUrl(s, s))
+                .Select(icon => {
+                    var req = new Mock<IRequest>();
+                    req.Setup(r => r.Url).Returns(icon.Url);
+                    return req;
+                }).ToList();
+
+            var pathmanager = new Mock<IPathManager>();
+            var provider = new IconResourceProvider(pathmanager.Object);
+            string ext;
+            var result = Parallel.ForEach(requests, r => Assert.IsNotNull(provider.GetResource(r.Object, out ext)));
+
+            resetevent.WaitOne(250);
+            Assert.IsTrue(result.IsCompleted);
         }
 
         private static Mock<NodeSearchElement> MockNodeSearchElement(string fullname, string creationName)

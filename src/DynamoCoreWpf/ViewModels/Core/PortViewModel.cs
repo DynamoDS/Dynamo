@@ -39,7 +39,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string PortName
         {
-            get { return _port.PortName; }
+            get { return _port.Name; }
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool ShouldKeepListStructure
         {
-            get { return _port.ShouldKeepListStructure; }
+            get { return _port.KeepListStructure; }
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace Dynamo.ViewModels
                 case "Level":
                     RaisePropertyChanged("Level");
                     break;
-                case "ShouldKeepListStructure":
+                case "KeepListStructure":
                     RaisePropertyChanged("ShouldKeepListStructure");
                     break;
             }

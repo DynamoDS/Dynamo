@@ -86,7 +86,7 @@ namespace Dynamo.Search
                 {
                     var parameterNode = XmlHelper.AddNode(inputNode, "InputParameter");
 
-                    XmlHelper.AddAttribute(parameterNode, "Name", dynamoNode.InPorts[i].PortName);
+                    XmlHelper.AddAttribute(parameterNode, "Name", dynamoNode.InPorts[i].Name);
 
                     // Case for UI nodes as ColorRange, List.Create etc.
                     // UI nodes  do not have incoming ports in NodeSearchElement, but do have incoming ports in NodeModel.
@@ -118,7 +118,7 @@ namespace Dynamo.Search
                 for (int i = 0; i < dynamoNode.OutPorts.Count; i++)
                 {
                     var parameterNode = XmlHelper.AddNode(outputNode, "OutputParameter");
-                    XmlHelper.AddAttribute(parameterNode, "Name", dynamoNode.OutPorts[i].PortName);
+                    XmlHelper.AddAttribute(parameterNode, "Name", dynamoNode.OutPorts[i].Name);
 
                     // Case for UI nodes as ColorRange.
                     if (dynamoNode.OutPorts.Count == entry.OutputParameters.Count()

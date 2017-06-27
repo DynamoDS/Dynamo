@@ -23,9 +23,9 @@ namespace Dynamo.Graph.Nodes
         public T Definition { get; set; }
 
         /// <summary>
-        ///     NickName for nodes using this controller, based on the underlying FunctionDescriptor.
+        ///     Name for nodes using this controller, based on the underlying FunctionDescriptor.
         /// </summary>
-        public string NickName 
+        public string Name 
         {
             get
             {
@@ -189,7 +189,7 @@ namespace Dynamo.Graph.Nodes
             InitializeInputs(model);
             InitializeOutputs(model);
             model.RegisterAllPorts();
-            model.NickName = NickName;
+            model.Name = Name;
             OnSyncWithDefintionEnd(model);
         }
 

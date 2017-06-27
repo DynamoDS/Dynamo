@@ -7,18 +7,18 @@ namespace Dynamo.Migration
     public class MigrationNode
     {
         protected static NodeMigrationData MigrateToDsFunction(
-            NodeMigrationData data, string nickname, string funcName)
+            NodeMigrationData data, string name, string funcName)
         {
-            return MigrateToDsFunction(data, "", nickname, funcName);
+            return MigrateToDsFunction(data, "", name, funcName);
         }
 
         protected static NodeMigrationData MigrateToDsFunction(
-            NodeMigrationData data, string assembly, string nickname, string funcName)
+            NodeMigrationData data, string assembly, string name, string funcName)
         {
             XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
             var element = MigrationManager.CreateFunctionNodeFrom(xmlNode);
             element.SetAttribute("assembly", assembly);
-            element.SetAttribute("nickname", nickname);
+            element.SetAttribute("nickname", name);
             element.SetAttribute("function", funcName);
 
             var lacingAttribute = xmlNode.Attributes["lacing"];
@@ -33,12 +33,12 @@ namespace Dynamo.Migration
         }
 
         protected static NodeMigrationData MigrateToDsVarArgFunction(
-            NodeMigrationData data, string assembly, string nickname, string funcName)
+            NodeMigrationData data, string assembly, string name, string funcName)
         {
             XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
             var element = MigrationManager.CreateVarArgFunctionNodeFrom(xmlNode);
             element.SetAttribute("assembly", assembly);
-            element.SetAttribute("nickname", nickname);
+            element.SetAttribute("nickname", name);
             element.SetAttribute("function", funcName);
             element.SetAttribute("lacing", xmlNode.Attributes["lacing"].Value);
 

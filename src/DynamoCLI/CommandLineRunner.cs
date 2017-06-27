@@ -8,7 +8,7 @@ using Dynamo.Models;
 using DynamoUtilities;
 using Dynamo.Applications;
 using Dynamo.Graph;
-using Autodesk.Workspaces;
+using Dynamo.Graph.Workspaces;
 
 namespace DynamoCLI
 {
@@ -178,8 +178,7 @@ namespace DynamoCLI
             model.OpenFileFromPath(dynPath);
 
             var ws = model.CurrentWorkspace;
-            var json = Utilities.SaveWorkspaceToJson(ws, model.LibraryServices, model.EngineController,
-                model.Scheduler, model.NodeFactory, false, false, model.CustomNodeManager);
+            var json = ws.ToJson(model.EngineController);
 
             var newFilePath = Path.Combine(Path.GetDirectoryName(dynPath), Path.GetFileNameWithoutExtension(dynPath) + ".json");
             File.WriteAllText(newFilePath, json);

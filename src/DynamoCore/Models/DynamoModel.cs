@@ -1,3 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Threading;
+using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -25,20 +36,8 @@ using Dynamo.Utilities;
 using DynamoServices;
 using DynamoUnits;
 using Greg;
-using Newtonsoft.Json;
 using ProtoCore;
 using ProtoCore.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Threading;
-using System.Xml;
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
 using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
@@ -83,7 +82,6 @@ namespace Dynamo.Models
                 RequestsFunctionNamePrompt(this, e);
         }
 
-
         internal event Action<PresetsNamePromptEventArgs> RequestPresetsNamePrompt;
         internal void OnRequestPresetNamePrompt(PresetsNamePromptEventArgs e)
         {
@@ -92,13 +90,15 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Occurs when a workspace is saved to a file
+        /// Occurs when a workspace is saved to a file.
         /// </summary>
         public event WorkspaceHandler WorkspaceSaved;
-        internal void OnWorkspaceSaved(WorkspaceModel model)
+        internal void OnWorkspaceSaved(WorkspaceModel workspace)
         {
             if (WorkspaceSaved != null)
-                WorkspaceSaved(model);
+            {
+                WorkspaceSaved(workspace);
+            } 
         }
 
         /// <summary>
@@ -1265,7 +1265,7 @@ namespace Dynamo.Models
         #region save/load
 
         /// <summary>
-        ///     Opens a Dynamo workspace from a path to an Xml file on disk.
+        /// Opens a Dynamo workspace from a path to an Xml file on disk.
         /// </summary>
         /// <param name="xmlPath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
@@ -1423,7 +1423,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     var oldFileName = workspace.FileName;
                     var oldName = workspace.Name;
-                    workspace.SaveAs(savePath, null, true);
+                    workspace.Save(savePath, true, EngineController);
                     workspace.FileName = oldFileName;
                     workspace.Name = oldName;
                     backupFilesDict[workspace.Guid] = savePath;
@@ -1477,13 +1477,13 @@ namespace Dynamo.Models
                     //If there is only one model, then deleting that model should delete the group. In that case, do not record
                     //the group for modification. Until we have one model in a group, group should be recorded for modification
                     //otherwise, undo operation cannot get the group back.
-                    if (annotation.SelectedModels.Count() > 1 && annotation.SelectedModels.Where(x => x.GUID == model.GUID).Any())
+                    if (annotation.Nodes.Count() > 1 && annotation.Nodes.Where(x => x.GUID == model.GUID).Any())
                     {
                         CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                     }
                 }
 
-                if (annotation.SelectedModels.Any() && !annotation.SelectedModels.Except(modelsToDelete).Any())
+                if (annotation.Nodes.Any() && !annotation.Nodes.Except(modelsToDelete).Any())
                 {
                     //Annotation Model has to be serialized first - before the nodes.
                     //so, store the Annotation model as first object. This will serialize the
@@ -1515,16 +1515,16 @@ namespace Dynamo.Models
             {
                 foreach (var annotation in annotations)
                 {
-                    if (annotation.SelectedModels.Any(x => x.GUID == model.GUID))
+                    if (annotation.Nodes.Any(x => x.GUID == model.GUID))
                     {
-                        var list = annotation.SelectedModels.ToList();
+                        var list = annotation.Nodes.ToList();
 
                         if(list.Count > 1)
                         {
                             CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                             if (list.Remove(model))
                             {
-                                annotation.SelectedModels = list;
+                                annotation.Nodes = list;
                                 annotation.UpdateBoundaryFromSelection();
                             }
                         }
@@ -1769,8 +1769,8 @@ namespace Dynamo.Models
 
                 var lacing = node.ArgumentLacing.ToString();
                 newNode.UpdateValue(new UpdateValueParams("ArgumentLacing", lacing));
-                if (!string.IsNullOrEmpty(node.NickName) && !(node is Symbol) && !(node is Output))
-                    newNode.NickName = node.NickName;
+                if (!string.IsNullOrEmpty(node.Name) && !(node is Symbol) && !(node is Output))
+                    newNode.Name = node.Name;
 
                 newNode.Width = node.Width;
                 newNode.Height = node.Height;
@@ -1843,7 +1843,7 @@ namespace Dynamo.Models
                 // some models can be deleted after copying them,
                 // so they need to be in pasted annotation as well
                 var modelsToRestore = annotation.DeletedModelBases.Intersect(ClipBoard);
-                var modelsToAdd = annotation.SelectedModels.Concat(modelsToRestore);
+                var modelsToAdd = annotation.Nodes.Concat(modelsToRestore);
                 // checked condition here that supports pasting of multiple groups
                 foreach (var models in modelsToAdd)
                 {
@@ -2022,12 +2022,12 @@ namespace Dynamo.Models
             if (workspace == null) return;
 
             Action savedHandler = () => OnWorkspaceSaved(workspace);
-            workspace.WorkspaceSaved += savedHandler;
+            workspace.Saved += savedHandler;
             workspace.MessageLogged += LogMessage;
             workspace.PropertyChanged += OnWorkspacePropertyChanged;
             workspace.Disposed += () =>
             {
-                workspace.WorkspaceSaved -= savedHandler;
+                workspace.Saved -= savedHandler;
                 workspace.MessageLogged -= LogMessage;
                 workspace.PropertyChanged -= OnWorkspacePropertyChanged;
             };

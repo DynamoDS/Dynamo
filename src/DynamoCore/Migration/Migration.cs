@@ -573,17 +573,17 @@ namespace Dynamo.Migration
         /// <param name="nodeIndex">Index of the node</param>
         /// <param name="assembly">Name of the assembly that implements this 
         /// function.</param>
-        /// <param name="nickname">The nickname to display on the node.</param>
+        /// <param name="name">The name to display on the node.</param>
         /// <param name="signature">The signature of the function.</param>
         /// <returns>Returns the XmlElement that represents a DSFunction node 
         /// with its basic function information with default attributes.</returns>
         public static XmlElement CreateFunctionNode(XmlDocument document, XmlElement oldNode,
-            int nodeIndex, string assembly, string nickname, string signature)
+            int nodeIndex, string assembly, string name, string signature)
         {
             XmlElement element = document.CreateElement("Dynamo.Graph.Nodes.ZeroTouch.DSFunction");
             element.SetAttribute("type", "Dynamo.Graph.Nodes.ZeroTouch.DSFunction");
             element.SetAttribute("assembly", assembly);
-            element.SetAttribute("nickname", nickname);
+            element.SetAttribute("nickname", name);
             element.SetAttribute("function", signature);
 
             // Attributes with default values (as in DynamoModel.OpenWorkspace).
@@ -611,17 +611,17 @@ namespace Dynamo.Migration
         /// <param name="nodeIndex">Index of the node</param>
         /// <param name="assembly">Name of the assembly that implements this 
         /// function.</param>
-        /// <param name="nickname">The nickname to display on the node.</param>
+        /// <param name="name">The name to display on the node.</param>
         /// <param name="signature">The signature of the function.</param>
         /// <returns>Returns the XmlElement that represents a DSVarArgFunction node 
         /// with its basic function information with default attributes.</returns>
         public static XmlElement CreateVarArgFunctionNode(XmlDocument document, XmlElement oldNode,
-            int nodeIndex, string assembly, string nickname, string signature, string inputcount)
+            int nodeIndex, string assembly, string name, string signature, string inputcount)
         {
             XmlElement element = document.CreateElement("Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction");
             element.SetAttribute("type", "Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction");
             element.SetAttribute("assembly", assembly);
-            element.SetAttribute("nickname", nickname);
+            element.SetAttribute("nickname", name);
             element.SetAttribute("function", signature);
             element.SetAttribute("inputcount", inputcount);
 
@@ -684,16 +684,16 @@ namespace Dynamo.Migration
         /// <param name="document">The XmlDocument to create the node in.</param>
         /// <param name="oldNode">Base node to create a new one</param>
         /// <param name="nodeIndex">Index of the node</param>
-        /// <param name="name">Node name</param>
-        /// <param name="nickname">Name to display on the node</param>
+        /// <param name="type">Node type name</param>
+        /// <param name="name">Name to display on the node</param>
         /// <returns>Returns the XmlElement that represents a NodeModel node 
         /// with its basic function information with default attributes.</returns>
         public static XmlElement CreateNode(XmlDocument document, XmlElement oldNode,
-            int nodeIndex, string name, string nickname)
+            int nodeIndex, string type, string name)
         {
-            XmlElement element = document.CreateElement(name);
-            element.SetAttribute("type", name);
-            element.SetAttribute("nickname", nickname);
+            XmlElement element = document.CreateElement(type);
+            element.SetAttribute("type", type);
+            element.SetAttribute("nickname", name);
 
             // Attributes with default values (as in DynamoModel.OpenWorkspace).
             element.SetAttribute("isVisible", "true");
@@ -894,12 +894,12 @@ namespace Dynamo.Migration
         /// <param name="element">The XmlElement to be cloned and the type name 
         /// updated.</param>
         /// <param name="type">The fully qualified name of the new type.</param>
-        /// <param name="nickname">The new nickname, by which this node is known.</param>
+        /// <param name="name">The new name, by which this node is known.</param>
         /// <param name="cloneInnerXml">Parameter indicating whether the inner xml 
         /// of the original node should be cloned.</param>
         /// <returns>Returns the cloned and updated XmlElement.</returns>
         public static XmlElement CloneAndChangeName(XmlElement element, string type, 
-            string nickname, bool cloneInnerXml = false)
+            string name, bool cloneInnerXml = false)
         {
             XmlDocument document = element.OwnerDocument;
             XmlElement cloned = document.CreateElement(type);
@@ -913,7 +913,7 @@ namespace Dynamo.Migration
             }
 
             cloned.SetAttribute("type", type);
-            cloned.SetAttribute("nickname", nickname);
+            cloned.SetAttribute("nickname", name);
             return cloned;
         }
 
@@ -997,12 +997,12 @@ namespace Dynamo.Migration
         }
 
         /// <summary>
-        /// Sets function data such as assembly, nickname and function name
+        /// Sets function data such as assembly, display name and function signature
         /// </summary>
         /// <param name="element">Xml element where to set data</param>
         /// <param name="assemblyName">Assembly name of the function</param>
-        /// <param name="methodName">Nickname of the function</param>
-        /// <param name="signature">Name of the function</param>
+        /// <param name="methodName">Name of the function</param>
+        /// <param name="signature">FullName of the function</param>
         public static void SetFunctionSignature(XmlElement element,
             string assemblyName, string methodName, string signature)
         {

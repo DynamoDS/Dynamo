@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Build core nodes for Dynamo. It contains the following files:
 1) Analysis.dll
-2) Display.dll
+2) GeometryColor.dll
 3) DSCoreNodes.dll</description>
     <copyright>Copyright Autodesk 2017</copyright>
     <dependencies>
@@ -24,8 +24,8 @@
   <files>
     <file src="Analysis.dll" target="lib\net45" />
     <file src="Analysis.xml" target="build\net45" />
-    <file src="Display.dll" target="lib\net45" />
-    <file src="Display.xml" target="build\net45" />
+    <file src="GeometryColor.dll" target="lib\net45" />
+    <file src="GeometryColor.xml" target="build\net45" />
     <file src="DSCoreNodes.dll" target="lib\net45" />
     <file src="DSCoreNodes.xml" target="build\net45" />
   </files>

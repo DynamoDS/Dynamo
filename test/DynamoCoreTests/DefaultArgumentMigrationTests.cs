@@ -81,5 +81,20 @@ namespace Dynamo.Tests
             Assert.IsTrue(dummyNode2.InPorts[1].UsingDefaultValue);
             Assert.IsTrue(dummyNode2.InPorts[2].UsingDefaultValue);
         }
+
+        [Test]
+        public void TestEnableDefaultArgumentForAddedParamInstanceMethod()
+        {
+            RunModel(@"core\default_values\defaultArgumentAdded3.dyn");
+
+            var dummyNode1 =
+                CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("1ef1f522-3ab4-43a1-9ab4-43cf46b973cd");
+            // The saved instance node only has 1 input param (InstanceFooBar@int) but after loading the node should be
+            // migrated to the new version with 2 input params (InstanceFooBar@int,bool) 
+            Assert.AreEqual(dummyNode1.InPorts.Count, 3);
+
+            // Since the 3rd param has default argument, UsingDefaultArgument should be enabled.
+            Assert.IsTrue(dummyNode1.InPorts[2].UsingDefaultValue);
+        }
     }
 }

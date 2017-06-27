@@ -931,22 +931,22 @@ namespace Dynamo.Models
             ///
             /// </summary>
             /// <param name="nodeId"></param>
-            /// <param name="nodeName"></param>
+            /// <param name="customnodeFunctionId"></param>
             /// <param name="x"></param>
             /// <param name="y"></param>
             /// <param name="defaultPosition"></param>
             /// <param name="transformCoordinates"></param>
-            /// <param name="nickName"></param>
+            /// <param name="name"></param>
             /// <param name="inputs"></param>
             /// <param name="outputs"></param>
             [JsonConstructor]
-            public CreateProxyNodeCommand(string nodeId, string nodeName,
+            public CreateProxyNodeCommand(string nodeId, string customnodeFunctionId,
                 double x, double y,
                 bool defaultPosition, bool transformCoordinates,
-                string nickName, int inputs, int outputs)
-                : base(nodeId, nodeName, x, y, defaultPosition, transformCoordinates)
+                string name, int inputs, int outputs)
+                : base(nodeId, customnodeFunctionId, x, y, defaultPosition, transformCoordinates)
             {
-                this.NickName = nickName;
+                this.NickName = name;
                 this.Inputs = inputs;
                 this.Outputs = outputs;
             }
@@ -1355,6 +1355,10 @@ namespace Dynamo.Models
                 /// End shift reconnections.
                 /// </summary>
                 EndShiftReconnections,
+                /// <summary>
+                /// End and start control connections.
+                /// </summary>
+                EndAndStartCtrlConnection,
                 /// <summary>
                 /// Cancel connection.
                 /// </summary>
