@@ -155,7 +155,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByBestFitThroughPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
             <summary>
-            best fit arc through points
+            Create an arc that best approximates a collection of points
             </summary>
             <param name="points"> Points to fit </param>
             <returns>  </returns>
@@ -2548,7 +2548,7 @@
             <summary>
             Offset polycurve in its plane.
             </summary>
-            <param name="distance">  </param>
+            <param name="signedDistance"> Signed offset </param>
             <param name="extendCircular"> If true, corners will be made circular </param>
             <returns>  </returns>
         </member>
@@ -2905,7 +2905,7 @@
             </summary>
             <param name="path"> The input path to sweep along. </param>
             <param name="guideRail"> A rail to guide the orientation of the sweep. </param>
-            <param name="profile">  </param>
+            <param name="profile"> The profile curve to sweep along the path </param>
             <returns>  </returns>
             <search>
             Brep,brep,sweep2,guides,sweepprofile
@@ -3148,7 +3148,7 @@
             </summary>
             <param name="path"> The input path to sweep along. </param>
             <param name="guideRail"> A rail to guide the orientation of the sweep. </param>
-            <param name="profile">  </param>
+            <param name="profile"> The profile curve to sweep along the path. </param>
             <returns>  </returns>
             <search>
             sweep2,guides
@@ -4202,7 +4202,21 @@
             <param name="inSmoothMode">Show T-Spline Surface in box or smooth visualization</param>
             <search>nurbs surface,tspline,curvature</search>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByExtrude(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double,System.Int32,System.Int32,System.Int32,System.Boolean,System.Boolean)" -->
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByExtrude(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double,System.Int32,System.Int32,System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            Construct a T-Spline by extruding a curve along the given vector.
+            </summary>
+            <param name="curve">Profile curve</param>
+            <param name="direction">Extrude vector</param>
+            <param name="frontDistance">Extrude distance by vector direction</param>
+            <param name="backDistance">Extrude distance againts vector direction</param>
+            <param name="frontSpans">Spans number by vector direction. No extrusion by vector direction will be performed if 0 is passed</param>
+            <param name="backSpans">Spans number againts vector direction. No extrusion against vector direction will be performed if 0 is passed</param>
+            <param name="profileSpans">Spans number in profile direction. Automatically defined if 0 or less</param>
+            <param name="uniform">Use uniform or curvature strategy for spans distribution along profile direction</param>
+            <param name="inSmoothMode">Show T-Spline Surface in box or smooth visualization</param>
+            <search>tspline,extrude,curve</search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             Construct a T-Spline by sweeping a cross section Curve along a path.
@@ -5650,7 +5664,7 @@
             <summary>
             Obtain the distance from this Geometry to another
             </summary>
-            <param name="entity">The other Geometry</param>
+            <param name="other">The other Geometry</param>
             <returns>The distance</returns>
             <search>between,length,from,to</search>
         </member>
