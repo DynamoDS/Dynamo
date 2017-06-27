@@ -455,11 +455,11 @@ namespace Dynamo.Models
             /// <summary>
             ///
             /// </summary>
-            /// <param name="xmlFilePath">The path to the file.</param>
+            /// <param name="filePath">The path to the file.</param>
             /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
-            public OpenFileCommand(string xmlFilePath, bool forceManualExecutionMode = false)
+            public OpenFileCommand(string filePath, bool forceManualExecutionMode = false)
             {
-                XmlFilePath = xmlFilePath;
+                FilePath = filePath;
                 ForceManualExecutionMode = forceManualExecutionMode;
             }
 
@@ -491,7 +491,7 @@ namespace Dynamo.Models
             internal static OpenFileCommand DeserializeCore(XmlElement element)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                string xmlFilePath = TryFindFile(helper.ReadString("XmlFilePath"), element.OwnerDocument.BaseURI);
+                string xmlFilePath = TryFindFile(helper.ReadString("FilePath"), element.OwnerDocument.BaseURI);
                 return new OpenFileCommand(xmlFilePath);
             }
 
@@ -500,7 +500,7 @@ namespace Dynamo.Models
             #region Public Command Properties
 
             [DataMember]
-            internal string XmlFilePath { get; private set; }
+            internal string FilePath { get; private set; }
             internal bool ForceManualExecutionMode { get; private set; }
             private DynamoModel dynamoModel;
 
@@ -517,14 +517,14 @@ namespace Dynamo.Models
             protected override void SerializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
-                helper.SetAttribute("XmlFilePath", XmlFilePath);
+                helper.SetAttribute("FilePath", FilePath);
             }
 
             internal override void TrackAnalytics()
             {
                 // Log file open action and the number of nodes in the opened workspace
                 Dynamo.Logging.Analytics.TrackFileOperationEvent(
-                    XmlFilePath,
+                    FilePath,
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
 
