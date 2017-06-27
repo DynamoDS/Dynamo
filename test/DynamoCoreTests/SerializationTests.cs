@@ -221,14 +221,14 @@ namespace Dynamo.Tests
         public void CustomNodeSerializationTest()
         {
             var customNodeTestPath = Path.Combine(TestDirectory , @"core\CustomNodes\TestAdd.dyn");
-            DoWorkspaceOpenAndCompare(customNodeTestPath, ConvertCurrentWorkspaceToJsonAndSave, CompareWorkspaces);
+            DoWorkspaceOpenAndCompare(customNodeTestPath,"json", ConvertCurrentWorkspaceToJsonAndSave, CompareWorkspaces);
         }
 
         [Test]
         public void AllTypesSerialize()
         {
             var customNodeTestPath = Path.Combine(TestDirectory, @"core\serialization\serialization.dyn");
-            DoWorkspaceOpenAndCompare(customNodeTestPath, ConvertCurrentWorkspaceToJsonAndSave, CompareWorkspaces);
+            DoWorkspaceOpenAndCompare(customNodeTestPath, "json", ConvertCurrentWorkspaceToJsonAndSave, CompareWorkspaces);
         }
 
         public object[] FindWorkspaces()
@@ -248,7 +248,7 @@ namespace Dynamo.Tests
         [Test, TestCaseSource("FindWorkspaces")]
         public void SerializationTest(string filePath)
         {
-            DoWorkspaceOpenAndCompare(filePath,ConvertCurrentWorkspaceToJsonAndSave,CompareWorkspaces);
+            DoWorkspaceOpenAndCompare(filePath, "json",ConvertCurrentWorkspaceToJsonAndSave,CompareWorkspaces);
         }
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace Dynamo.Tests
         public void SerializationNonGuidIdsTest(string filePath)
         {
             modelsGuidToIdMap.Clear();
-            DoWorkspaceOpenAndCompare(filePath,ConvertCurrentWorkspaceToNonGuidJsonAndSave, CompareWorkspacesDifferentGuids);
+            DoWorkspaceOpenAndCompare(filePath, "json_nonGuidIds",ConvertCurrentWorkspaceToNonGuidJsonAndSave, CompareWorkspacesDifferentGuids);
         }
 
         private static List<string> bannedTests = new List<string>()
@@ -288,7 +288,7 @@ namespace Dynamo.Tests
                 "TestFrozen"
             };
 
-        private void DoWorkspaceOpenAndCompare(string filePath,
+        private void DoWorkspaceOpenAndCompare(string filePath,string dirName,
             Func<DynamoModel,string,string> saveFunction,
             Action<WorkspaceComparisonData, WorkspaceComparisonData> workspaceCompareFunction)
         {
@@ -325,7 +325,7 @@ namespace Dynamo.Tests
 
             var wcd1 = new WorkspaceComparisonData(ws1, CurrentDynamoModel.EngineController);
 
-            var dirPath = Path.Combine(Path.GetTempPath(), "json");
+            var dirPath = Path.Combine(Path.GetTempPath(), dirName);
             if (!Directory.Exists(dirPath))
             {
                 Directory.CreateDirectory(dirPath);
