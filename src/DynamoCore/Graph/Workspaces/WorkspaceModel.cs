@@ -1535,6 +1535,12 @@ namespace Dynamo.Graph.Workspaces
                 {
                     nodeModel.X = nodeInfo.X;
                     nodeModel.Y = nodeInfo.Y;
+                    nodeModel.Name = nodeInfo.Name;
+
+                    // Note: These parameters are not directly accessible due to undo/redo considerations
+                    //       which should not be used during deserialization (see "ArgumentLacing" for details)
+                    nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeInfo.IsVisible.ToString()));
+                    nodeModel.UpdateValue(new UpdateValueParams("IsUpstreamVisible", nodeInfo.IsUpstreamVisible.ToString()));
                 }
             }
 
