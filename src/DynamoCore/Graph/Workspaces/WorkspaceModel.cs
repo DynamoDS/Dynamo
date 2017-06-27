@@ -36,7 +36,7 @@ namespace Dynamo.Graph.Workspaces
     {
         public object Cameras;
         public IEnumerable<ExtraNodeViewInfo> NodeViews;
-        public IEnumerable<object> Notes;
+        public IEnumerable<ExtraNoteViewInfo> Notes;
         public IEnumerable<object> Annotations;
         public double X;
         public double Y;
@@ -55,6 +55,19 @@ namespace Dynamo.Graph.Workspaces
         public double Y;
         public bool IsVisible;
         public bool IsUpstreamVisible;
+    }
+
+    /// <summary>
+    /// Non view-specific container for additional note view information 
+    /// required to fully construct a WorkspaceModel from JSON
+    /// </summary>
+    public class ExtraNoteViewInfo
+    {
+        public string Id;
+        public double X;
+        public double Y;
+        public string Text;
+        public int ZIndex;
     }
 
     /// <summary>
@@ -1544,8 +1557,15 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
-            // TODO: The collections need to be properly updated here with the view info
-            // Update for viewInfo.Notes
+            foreach (ExtraNoteViewInfo noteInfo in viewInfo.Notes)
+            {
+                Guid guidValue = IdToGuidConverter(noteInfo.Id);
+
+                // TODO: Figure out if ZIndex needs to be set here as well
+                var noteModel = new NoteModel(noteInfo.X, noteInfo.Y, noteInfo.Text, guidValue);
+                this.NoteAdded(noteModel);
+            }
+
             // Update for viewInfo.Annotations
 
             // TODO: These items are not in the extra view info
