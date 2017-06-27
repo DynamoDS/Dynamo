@@ -794,7 +794,11 @@
           "text": "Display",
           "iconUrl": "./dist/resources/Category.Display.svg",
           "elementType": "category",
-          "include": [ ],
+          "include": [
+            {
+              "path":  "Analysis.Analysis.Label"
+            }
+          ],
           "childElements": [
             {
               "text": "Color",
@@ -1396,17 +1400,6 @@
               "childElements": [ ]
             }
           ]
-        },
-        {
-          "text": "Revit",
-          "iconUrl": "./dist/resources/Category.Revit.svg",
-          "elementType": "category",
-          "include": [
-            {
-              "path": "Analysis"
-            }
-          ],
-          "childElements": [ ]
         }
       ]
     },
