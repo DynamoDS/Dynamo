@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <migrations>
   <priorNameHint>
+    <oldName>DSCore.List.ContainsItem</oldName>
+    <newName>DSCore.List.Contains</newName>
+  </priorNameHint>
+  <priorNameHint>
     <oldName>DSCore.File.ReadImage</oldName>
     <newName>DSCore.IO.File.ReadImage</newName>
   </priorNameHint>
