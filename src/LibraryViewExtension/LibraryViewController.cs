@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -76,7 +77,7 @@ namespace Dynamo.LibraryUI
     /// <summary>
     /// This class holds methods and data to be called from javascript
     /// </summary>
-    public class LibraryViewController : EventController
+    public class LibraryViewController : EventController, IDisposable
     {
         private Window dynamoWindow;
         private ICommandExecutive commandExecutive;
@@ -90,7 +91,7 @@ namespace Dynamo.LibraryUI
         /// </summary>
         /// <param name="dynamoView">DynamoView hosting library component</param>
         /// <param name="commandExecutive">Command executive to run dynamo commands</param>
-        public LibraryViewController(Window dynamoView, ICommandExecutive commandExecutive, ILibraryViewCustomization customization)
+        public LibraryViewController(Window dynamoView, ICommandExecutive commandExecutive, LibraryViewCustomization customization)
         {
             this.dynamoWindow = dynamoView;
             dynamoViewModel = dynamoView.DataContext as DynamoViewModel;
@@ -284,9 +285,19 @@ namespace Dynamo.LibraryUI
             customization.AddIncludeInfo(includes, "Add-ons");
         }
 
-        private void InitializeResourceStreams(DynamoModel model, ILibraryViewCustomization customization)
+        private void InitializeResourceStreams(DynamoModel model, LibraryViewCustomization customization)
         {
             resourceFactory = new ResourceHandlerFactory();
+
+            //Register the resource stream registered through the LibraryViewCustomization
+            foreach (var item in customization.Resources)
+            {
+                OnResourceStreamRegistered(item.Key, item.Value);
+            }
+
+            //Setup the event handler for resource registration
+            customization.ResourceStreamRegistered += OnResourceStreamRegistered;
+
             resourceFactory.RegisterProvider("/dist", 
                 new DllResourceProvider("http://localhost/dist",
                     "Dynamo.LibraryUI.web.library"));
@@ -312,7 +323,18 @@ namespace Dynamo.LibraryUI
             //Register provider for searching node data
             resourceFactory.RegisterProvider(SearchResultDataProvider.serviceIdentifier, new SearchResultDataProvider(model.SearchModel));
         }
-        
+
+        private void OnResourceStreamRegistered(string key, Stream value)
+        {
+            Uri url = new Uri(key, UriKind.RelativeOrAbsolute);
+            if (!url.IsAbsoluteUri)
+                url = new Uri(new Uri("http://localhost"), url);
+
+            var extension = Path.GetExtension(key);
+            var handler = ResourceHandler.FromStream(value, ResourceHandler.GetMimeType(extension));
+            resourceFactory.RegisterHandler(url.AbsoluteUri, handler);
+        }
+
         private void RegisterResources(ChromiumWebBrowser browser)
         {
             browser.ResourceHandlerFactory = resourceFactory;
@@ -323,6 +345,20 @@ namespace Dynamo.LibraryUI
             var view = sender as DetailsView;
             var browser = view.Browser;
             browser.ConsoleMessage += OnBrowserConsoleMessage;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (!disposing) return;
+
+            if (observer != null) observer.Dispose();
+            observer = null;
         }
     }
 }

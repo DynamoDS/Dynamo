@@ -1,17 +1,6 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-using System.Windows.Controls;
-using CefSharp;
-using CefSharp.Wpf;
-using Dynamo.LibraryUI.ViewModels;
-using Dynamo.LibraryUI.Views;
-using Dynamo.Wpf.Extensions;
+﻿using Dynamo.Models;
 using Dynamo.PackageManager;
-using Dynamo.Models;
-using System.Linq;
-using Dynamo.Controls;
-using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.LibraryUI
@@ -20,7 +9,7 @@ namespace Dynamo.LibraryUI
     {
         private ViewLoadedParams viewLoadedParams;
         private ViewStartupParams viewStartupParams;
-        private ILibraryViewCustomization customization = new LibraryViewCustomization();
+        private LibraryViewCustomization customization = new LibraryViewCustomization();
         private LibraryViewController controller;
 
         public string UniqueId
@@ -38,7 +27,7 @@ namespace Dynamo.LibraryUI
         public void Startup(ViewStartupParams p)
         {
             viewStartupParams = p;
-            p.ExtensionManager.RegisterService(customization);
+            p.ExtensionManager.RegisterService<ILibraryViewCustomization>(customization);
         }
 
         public void Loaded(ViewLoadedParams p)
@@ -58,7 +47,9 @@ namespace Dynamo.LibraryUI
 
         public void Dispose()
         {
-
+            if (controller != null) controller.Dispose();
+            customization = null;
+            controller = null;
         }
     }
 

@@ -20,9 +20,15 @@ namespace Dynamo.LibraryUI.Handlers
         public IconUrl(Uri url)
         {
             Url = url.AbsoluteUri;
-
-            var assemblyPath = url.Query.Substring(query.Length);
-            Path = WebUtility.UrlDecode(assemblyPath); //Decode the path to normal path
+            if(string.IsNullOrEmpty(url.Query))
+            {
+                Path = DefaultPath;
+            }
+            else
+            {
+                var assemblyPath = url.Query.Substring(query.Length);
+                Path = WebUtility.UrlDecode(assemblyPath); //Decode the path to normal path
+            }
 
             Name = url.Segments.Last();
         }

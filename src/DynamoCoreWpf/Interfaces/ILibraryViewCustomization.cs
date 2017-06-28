@@ -62,5 +62,21 @@ namespace Dynamo.Wpf.Interfaces
         /// <param name="sectionText">The name of the section to be updated</param>
         /// <returns>True if the operation was successful</returns>
         bool AddIncludeInfo(IEnumerable<LayoutIncludeInfo> includes, string sectionText = "");
+
+        /// <summary>
+        /// Registers a given resource stream for a given url. If registered 
+        /// successfully the requested resource is returned from the given stream.
+        /// </summary>
+        /// <param name="urlpath">relative path of url including 
+        /// extension of the resource, e.g. /myicons/xicon.png</param>
+        /// <param name="resource">resource data stream</param>
+        /// <returns>True if the operation was successful</returns>
+        bool RegisterResourceStream(string urlpath, Stream resource);
+
+        /// <summary>
+        /// This method can be called by host application to notify the aplication
+        /// shutdown so that the customization service can do the cleanup of resources.
+        /// </summary>
+        void OnAppShutdown();
     }
 }
