@@ -47,10 +47,21 @@ namespace Dynamo.LibraryUI
 
         public void Dispose()
         {
+            Dispose(true);
+            System.GC.SuppressFinalize(this);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (!disposing) return;
+
             if (controller != null) controller.Dispose();
+            if (customization != null) customization.Dispose();
+
             customization = null;
             controller = null;
         }
+        
     }
 
     public static class DynamoModelExtensions
