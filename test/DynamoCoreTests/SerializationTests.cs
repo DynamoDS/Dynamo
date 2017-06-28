@@ -560,8 +560,9 @@ namespace Dynamo.Tests
                 }
                 File.WriteAllText(dsPath, ds);
             }
-            catch
+            catch(Exception ex)
             {
+                Console.WriteLine(ex);
                 Assert.Inconclusive("The current workspace could not be converted to Design Script.");
             }
         }
