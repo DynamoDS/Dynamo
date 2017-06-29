@@ -37,7 +37,7 @@ namespace Dynamo.Graph.Workspaces
         public object Cameras;
         public IEnumerable<ExtraNodeViewInfo> NodeViews;
         public IEnumerable<ExtraNoteViewInfo> Notes;
-        public IEnumerable<object> Annotations;
+        public IEnumerable<ExtraAnnotationViewInfo> Annotations;
         public double X;
         public double Y;
         public double Zoom;        
@@ -67,7 +67,33 @@ namespace Dynamo.Graph.Workspaces
         public double X;
         public double Y;
         public string Text;
-        public int ZIndex;
+
+        // TODO: Figure out if this is necessary
+        //public int ZIndex;
+    }
+
+    /// <summary>
+    /// Non view-specific container for additional annotation view information 
+    /// required to fully construct a WorkspaceModel from JSON
+    /// </summary>
+    public class ExtraAnnotationViewInfo
+    {
+        public string Id;
+        public string Title;
+        public IEnumerable<string> Nodes;
+        public double Left;
+        public double Top;
+        public double Width;
+        public double Height;
+        public double FontSize;
+
+        // TODO: Determine if these are required
+        //public double InitialTop;
+        //public double InitialHeight;
+        //public double TextBlockHeight;
+
+        // TODO: System.Windows.Media.Color is only known on the view level
+        //public Color Background;
     }
 
     /// <summary>
@@ -1542,7 +1568,7 @@ namespace Dynamo.Graph.Workspaces
 
             foreach (ExtraNodeViewInfo nodeInfo in viewInfo.NodeViews)
             {
-                Guid guidValue = IdToGuidConverter(nodeInfo.Id);
+                var guidValue = IdToGuidConverter(nodeInfo.Id);
                 var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
                 if (nodeModel != null)
                 {
@@ -1559,14 +1585,55 @@ namespace Dynamo.Graph.Workspaces
 
             foreach (ExtraNoteViewInfo noteInfo in viewInfo.Notes)
             {
-                Guid guidValue = IdToGuidConverter(noteInfo.Id);
+                var guidValue = IdToGuidConverter(noteInfo.Id);
 
                 // TODO: Figure out if ZIndex needs to be set here as well
                 var noteModel = new NoteModel(noteInfo.X, noteInfo.Y, noteInfo.Text, guidValue);
-                this.NoteAdded(noteModel);
+                this.AddNote(noteModel);
             }
 
-            // Update for viewInfo.Annotations
+            foreach (ExtraAnnotationViewInfo annotationInfo in viewInfo.Annotations)
+            {
+                // TODO: Determine where to set the ID for annotations
+                //Guid guidValue = IdToGuidConverter(annotationInfo.Id);
+
+                // Create a collection of nodes in the given annotation
+                var nodes = new List<NodeModel>();
+                foreach (string nodeId in annotationInfo.Nodes)
+                {
+                  var guidValue = IdToGuidConverter(nodeId);
+                  if (guidValue == null)
+                    continue;
+
+                  var nodeModel = Nodes.First(node => node.GUID == guidValue);
+                  if (nodeModel == null)
+                    continue;
+
+                  nodes.Add(nodeModel);
+                }
+
+                // Create a collection of notes in the given annotation
+                var notes = new List<NoteModel>();
+                //foreach (string noteId in annotationInfo.Notes)
+                //{
+                //  var guidValue = IdToGuidConverter(noteId);
+                //  if (guidValue == null)
+                //    continue;
+
+                //  var noteModel = Notes.First(note => note.GUID == guidValue);
+                //  if (noteModel == null)
+                //    continue;
+
+                //  notes.Add(noteModel);
+                //}
+
+                var annotationModel = new AnnotationModel(nodes, notes);
+                //annotationModel.GUID = IdToGuidConverter(annotationInfo.Id);
+                annotationModel.AnnotationText = annotationInfo.Title;
+                annotationModel.FontSize = annotationInfo.FontSize;
+                //this.AnnotationAdded(annotationModel);
+                this.AddNewAnnotation(annotationModel);
+            }
 
             // TODO: These items are not in the extra view info
             //Name = info.Name;
