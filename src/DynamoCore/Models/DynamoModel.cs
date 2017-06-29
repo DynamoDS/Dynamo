@@ -1270,15 +1270,15 @@ namespace Dynamo.Models
         /// <summary>
         /// Opens a Dynamo workspace from a path to a file on disk.
         /// </summary>
-        /// <param name="xmlPath">Path to file</param>
+        /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
-        public void OpenFileFromPath(string xmlPath, bool forceManualExecutionMode = false)
+        public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
           bool failed = false;
           try
           {
-            OpenXmlFileFromPath(xmlPath, forceManualExecutionMode);
+            OpenXmlFileFromPath(filePath, forceManualExecutionMode);
           }
           catch (Exception e)
           {
@@ -1288,18 +1288,18 @@ namespace Dynamo.Models
           if (!failed)
             return;
 
-          OpenJsonFileFromPath(xmlPath, forceManualExecutionMode);
+          OpenJsonFileFromPath(filePath, forceManualExecutionMode);
         }
 
         /// <summary>
         /// Opens a Dynamo workspace from a path to an JSON file on disk.
         /// </summary>
-        /// <param name="xmlPath">Path to file</param>
+        /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
-        private void OpenJsonFileFromPath(string xmlPath, bool forceManualExecutionMode)
+        private void OpenJsonFileFromPath(string filePath, bool forceManualExecutionMode)
         {
-          string fileContents = File.ReadAllText(xmlPath);
+          string fileContents = File.ReadAllText(filePath);
 
           // TODO: Figure out the correct way to read in WorkspaceInfo, seems like lots of missing information in the file
           WorkspaceInfo workspaceInfo = JsonConvert.DeserializeObject<WorkspaceInfo>(fileContents);
@@ -1356,22 +1356,22 @@ namespace Dynamo.Models
               }
             }
           }
-          Logger.LogError("Could not open workspace at: " + xmlPath);
+          Logger.LogError("Could not open workspace at: " + filePath);
         }
 
         /// <summary>
         /// Opens a Dynamo workspace from a path to an Xml file on disk.
         /// </summary>
-        /// <param name="xmlPath">Path to file</param>
+        /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
-        private void OpenXmlFileFromPath(string xmlPath, bool forceManualExecutionMode)
+        private void OpenXmlFileFromPath(string filePath, bool forceManualExecutionMode)
         {
           var xmlDoc = new XmlDocument();
-          xmlDoc.Load(xmlPath);
+          xmlDoc.Load(filePath);
 
           WorkspaceInfo workspaceInfo;
-          if (WorkspaceInfo.FromXmlDocument(xmlDoc, xmlPath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
+          if (WorkspaceInfo.FromXmlDocument(xmlDoc, filePath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
           {
             if (MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
             {
@@ -1423,7 +1423,7 @@ namespace Dynamo.Models
               }
             }
           }
-          Logger.LogError("Could not open workspace at: " + xmlPath);
+          Logger.LogError("Could not open workspace at: " + filePath);
         }
 
         private bool OpenJsonFile(WorkspaceInfo workspaceInfo, string fileContents, out WorkspaceModel workspace)
