@@ -86,14 +86,12 @@ namespace Dynamo.Graph.Workspaces
         public double Width;
         public double Height;
         public double FontSize;
+        public string Background;
 
         // TODO: Determine if these are required
         //public double InitialTop;
         //public double InitialHeight;
         //public double TextBlockHeight;
-
-        // TODO: System.Windows.Media.Color is only known on the view level
-        //public Color Background;
     }
 
     /// <summary>
@@ -1632,6 +1630,7 @@ namespace Dynamo.Graph.Workspaces
                 var annotationModel = new AnnotationModel(nodes, notes);
                 annotationModel.AnnotationText = annotationInfo.Title;
                 annotationModel.FontSize = annotationInfo.FontSize;
+                annotationModel.Background = annotationInfo.Background;
                 this.AddNewAnnotation(annotationModel);
             }
 
