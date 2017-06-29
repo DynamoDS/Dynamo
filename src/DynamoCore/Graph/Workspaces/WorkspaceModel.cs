@@ -1605,7 +1605,8 @@ namespace Dynamo.Graph.Workspaces
                   if (guidValue == null)
                     continue;
 
-                  var nodeModel = Nodes.First(node => node.GUID == guidValue);
+                  // NOTE: Some nodes may be annotations and not be found here
+                  var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
                   if (nodeModel == null)
                     continue;
 
@@ -1614,24 +1615,23 @@ namespace Dynamo.Graph.Workspaces
 
                 // Create a collection of notes in the given annotation
                 var notes = new List<NoteModel>();
-                //foreach (string noteId in annotationInfo.Notes)
-                //{
-                //  var guidValue = IdToGuidConverter(noteId);
-                //  if (guidValue == null)
-                //    continue;
+                foreach (string noteId in annotationInfo.Nodes)
+                {
+                  var guidValue = IdToGuidConverter(noteId);
+                  if (guidValue == null)
+                    continue;
 
-                //  var noteModel = Notes.First(note => note.GUID == guidValue);
-                //  if (noteModel == null)
-                //    continue;
+                  // NOTE: Some nodes may not be annotations and not be found here
+                  var noteModel = Notes.FirstOrDefault(note => note.GUID == guidValue);
+                  if (noteModel == null)
+                    continue;
 
-                //  notes.Add(noteModel);
-                //}
+                  notes.Add(noteModel);
+                }
 
                 var annotationModel = new AnnotationModel(nodes, notes);
-                //annotationModel.GUID = IdToGuidConverter(annotationInfo.Id);
                 annotationModel.AnnotationText = annotationInfo.Title;
                 annotationModel.FontSize = annotationInfo.FontSize;
-                //this.AnnotationAdded(annotationModel);
                 this.AddNewAnnotation(annotationModel);
             }
 
