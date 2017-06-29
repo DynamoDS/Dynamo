@@ -1311,47 +1311,8 @@ namespace Dynamo.Models
               WorkspaceModel ws;
               if (OpenJsonFile(workspaceInfo, fileContents, out ws))
               {
-                // TODO: #4258
-                // The logic to remove all other home workspaces from the model
-                // was moved from the ViewModel. When #4258 is implemented, we will need to
-                // remove this step.
-                var currentHomeSpaces = Workspaces.OfType<HomeWorkspaceModel>().ToList();
-                if (currentHomeSpaces.Any())
-                {
-                  // If the workspace we're opening is a home workspace,
-                  // then remove all the other home workspaces. Otherwise,
-                  // Remove all but the first home workspace.
-                  var end = ws is HomeWorkspaceModel ? 0 : 1;
-
-                  for (var i = currentHomeSpaces.Count - 1; i >= end; i--)
-                  {
-                    RemoveWorkspace(currentHomeSpaces[i]);
-                  }
-                }
-
-                AddWorkspace(ws);
-
-                //OnWorkspaceOpening(null); //xmlDoc);
-
-                // TODO: #4258
-                // The following logic to start periodic evaluation will need to be moved
-                // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
-                // as it causes an immediate crash due to the above ResetEngine call.
-                var hws = ws as HomeWorkspaceModel;
-                if (hws != null)
-                {
-                  // TODO: #4258
-                  // Remove this ResetEngine call when multiple home workspaces is supported.
-                  // This call formerly lived in DynamoViewModel
-                  ResetEngine();
-
-                  if (hws.RunSettings.RunType == RunType.Periodic)
-                  {
-                    hws.StartPeriodicEvaluation();
-                  }
-                }
-
-                CurrentWorkspace = ws;
+                OpenWorkspace(ws);
+                SetPeriodicEvaluation(ws);
                 return;
               }
             }
@@ -1378,52 +1339,62 @@ namespace Dynamo.Models
               WorkspaceModel ws;
               if (OpenXmlFile(workspaceInfo, xmlDoc, out ws))
               {
-                // TODO: #4258
-                // The logic to remove all other home workspaces from the model
-                // was moved from the ViewModel. When #4258 is implemented, we will need to
-                // remove this step.
-                var currentHomeSpaces = Workspaces.OfType<HomeWorkspaceModel>().ToList();
-                if (currentHomeSpaces.Any())
-                {
-                  // If the workspace we're opening is a home workspace,
-                  // then remove all the other home workspaces. Otherwise,
-                  // Remove all but the first home workspace.
-                  var end = ws is HomeWorkspaceModel ? 0 : 1;
+                OpenWorkspace(ws);
 
-                  for (var i = currentHomeSpaces.Count - 1; i >= end; i--)
-                  {
-                    RemoveWorkspace(currentHomeSpaces[i]);
-                  }
-                }
-
-                AddWorkspace(ws);
-
+                // Set up workspace cameras here
                 OnWorkspaceOpening(xmlDoc);
 
-                // TODO: #4258
-                // The following logic to start periodic evaluation will need to be moved
-                // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
-                // as it causes an immediate crash due to the above ResetEngine call.
-                var hws = ws as HomeWorkspaceModel;
-                if (hws != null)
-                {
-                  // TODO: #4258
-                  // Remove this ResetEngine call when multiple home workspaces is supported.
-                  // This call formerly lived in DynamoViewModel
-                  ResetEngine();
-
-                  if (hws.RunSettings.RunType == RunType.Periodic)
-                  {
-                    hws.StartPeriodicEvaluation();
-                  }
-                }
-
-                CurrentWorkspace = ws;
+                SetPeriodicEvaluation(ws);
                 return;
               }
             }
           }
           Logger.LogError("Could not open workspace at: " + filePath);
+        }
+
+        private void OpenWorkspace(WorkspaceModel ws)
+        {
+          // TODO: #4258
+          // The logic to remove all other home workspaces from the model
+          // was moved from the ViewModel. When #4258 is implemented, we will need to
+          // remove this step.
+          var currentHomeSpaces = Workspaces.OfType<HomeWorkspaceModel>().ToList();
+          if (currentHomeSpaces.Any())
+          {
+            // If the workspace we're opening is a home workspace,
+            // then remove all the other home workspaces. Otherwise,
+            // Remove all but the first home workspace.
+            var end = ws is HomeWorkspaceModel ? 0 : 1;
+
+            for (var i = currentHomeSpaces.Count - 1; i >= end; i--)
+            {
+              RemoveWorkspace(currentHomeSpaces[i]);
+            }
+          }
+
+          AddWorkspace(ws);
+          CurrentWorkspace = ws;
+        }
+
+        private void SetPeriodicEvaluation(WorkspaceModel ws)
+        {
+          // TODO: #4258
+          // The following logic to start periodic evaluation will need to be moved
+          // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
+          // as it causes an immediate crash due to the above ResetEngine call.
+          var hws = ws as HomeWorkspaceModel;
+          if (hws != null)
+          {
+            // TODO: #4258
+            // Remove this ResetEngine call when multiple home workspaces is supported.
+            // This call formerly lived in DynamoViewModel
+            ResetEngine();
+
+            if (hws.RunSettings.RunType == RunType.Periodic)
+            {
+              hws.StartPeriodicEvaluation();
+            }
+          }
         }
 
         private bool OpenJsonFile(WorkspaceInfo workspaceInfo, string fileContents, out WorkspaceModel workspace)
@@ -1453,7 +1424,7 @@ namespace Dynamo.Models
             return true;
         }
 
-       private bool OpenXmlFile(WorkspaceInfo workspaceInfo, XmlDocument xmlDoc, out WorkspaceModel workspace)
+        private bool OpenXmlFile(WorkspaceInfo workspaceInfo, XmlDocument xmlDoc, out WorkspaceModel workspace)
         {
             CustomNodeManager.AddUninitializedCustomNodesInPath(
                 Path.GetDirectoryName(workspaceInfo.FileName),
