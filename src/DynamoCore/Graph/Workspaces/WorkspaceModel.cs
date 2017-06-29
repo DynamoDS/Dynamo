@@ -78,21 +78,21 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public class ExtraAnnotationViewInfo
     {
-        public string Id;
-        public string Title;
-        public IEnumerable<string> Nodes;
-        public double Left;
-        public double Top;
-        public double Width;
-        public double Height;
-        public double FontSize;
-        public string Background;
+      public string Title;
+      public IEnumerable<string> Nodes;
+      public double FontSize;
+      public string Background;
 
-        // TODO: Determine if these are required
-        //public double InitialTop;
-        //public double InitialHeight;
-        //public double TextBlockHeight;
-    }
+      // TODO: Determine if these are required
+      //public string Id;
+      //public double Left;
+      //public double Top;
+      //public double Width;
+      //public double Height;
+      //public double InitialTop;
+      //public double InitialHeight;
+      //public double TextBlockHeight;
+  }
 
     /// <summary>
     /// Represents base class for all kind of workspaces which contains general data
