@@ -1675,7 +1675,7 @@ namespace Dynamo.ViewModels
 
             FileDialog _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
 
-            //if the xmlPath is not empty set the default directory
+            // If the filePath is not empty set the default directory
             if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
             {
                 var fi = new FileInfo(vm.Model.CurrentWorkspace.FileName);
