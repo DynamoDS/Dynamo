@@ -6,10 +6,16 @@ using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.LibraryUI
 {
-    class LibraryViewCustomization : ILibraryViewCustomization
+    class LibraryViewCustomization : ILibraryViewCustomization, IDisposable
     {
         public const string DefaultSectionName = "default";
         private LayoutSpecification root = new LayoutSpecification();
+        private Dictionary<string, Stream> resources = new Dictionary<string, Stream>();
+
+        /// <summary>
+        /// Returns a list of key value pair of all the registered resources
+        /// </summary>
+        public IEnumerable<KeyValuePair<string, Stream>> Resources { get { return resources; } }
 
         private void RaiseSepcificationUpdated()
         {
@@ -126,6 +132,68 @@ namespace Dynamo.LibraryUI
         public Stream ToJSONStream()
         {
             return root.ToJSONStream();
+        }
+
+        /// <summary>
+        /// Notifies when a resource stream is registered. This event is
+        /// used by ResourceHandlerFactory to register the resource handler
+        /// for provided url path.
+        /// </summary>
+        public event Action<string, Stream> ResourceStreamRegistered;
+
+        /// <summary>
+        /// Registers a given resource stream for a given url. If registered 
+        /// successfully the requested resource is returned from the given stream.
+        /// </summary>
+        /// <param name="urlpath">relative path of url including 
+        /// extension of the resource, e.g. /myicons/xicon.png</param>
+        /// <param name="resource">resource data stream</param>
+        /// <returns>True if the operation was successful</returns>
+        public bool RegisterResourceStream(string urlpath, Stream resource)
+        {
+            var extension = Path.GetExtension(urlpath);
+            if (string.IsNullOrEmpty(extension)) return false;
+
+            resources.Add(urlpath, resource);
+
+            var handler = ResourceStreamRegistered;
+            if (handler != null)
+            {
+                handler(urlpath, resource);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// To be called by host application to request CEF shutdown
+        /// </summary>
+        public void OnAppShutdown()
+        {
+            if (CefSharp.Cef.IsInitialized)
+            {
+                CefSharp.Cef.Shutdown();
+            }
+        }
+
+        /// <summary>
+        /// IDisposable implementation
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                foreach (var item in resources)
+                {
+                    item.Value.Dispose();
+                }
+                resources.Clear();
+            }
         }
     }
 }
