@@ -1305,6 +1305,9 @@ namespace Dynamo.Models
           WorkspaceInfo workspaceInfo = JsonConvert.DeserializeObject<WorkspaceInfo>(fileContents);
           if (workspaceInfo != null)
           {
+            // Need to set the FileName property here to show the file name in the view tab
+            workspaceInfo.FileName = filePath;
+
             // TODO: Figure out JSON migration strategy
             if (true) //MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
             {
@@ -1412,6 +1415,8 @@ namespace Dynamo.Models
                 IsTestMode, 
                 false,
                 CustomNodeManager);
+            
+            workspace.FileName = workspaceInfo.FileName;
 
             workspace.OnCurrentOffsetChanged(
                 this,
