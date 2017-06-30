@@ -91,7 +91,7 @@ namespace Dynamo.LibraryUI
         /// </summary>
         /// <param name="dynamoView">DynamoView hosting library component</param>
         /// <param name="commandExecutive">Command executive to run dynamo commands</param>
-        public LibraryViewController(Window dynamoView, ICommandExecutive commandExecutive, LibraryViewCustomization customization)
+        internal LibraryViewController(Window dynamoView, ICommandExecutive commandExecutive, LibraryViewCustomization customization)
         {
             this.dynamoWindow = dynamoView;
             dynamoViewModel = dynamoView.DataContext as DynamoViewModel;

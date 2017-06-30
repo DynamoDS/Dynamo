@@ -6,7 +6,7 @@ using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.LibraryUI
 {
-    public class LibraryViewCustomization : ILibraryViewCustomization, IDisposable
+    class LibraryViewCustomization : ILibraryViewCustomization, IDisposable
     {
         public const string DefaultSectionName = "default";
         private LayoutSpecification root = new LayoutSpecification();
@@ -135,7 +135,9 @@ namespace Dynamo.LibraryUI
         }
 
         /// <summary>
-        /// Notifies when a resource stream is registered
+        /// Notifies when a resource stream is registered. This event is
+        /// used by ResourceHandlerFactory to register the resource handler
+        /// for provided url path.
         /// </summary>
         public event Action<string, Stream> ResourceStreamRegistered;
 
@@ -149,19 +151,22 @@ namespace Dynamo.LibraryUI
         /// <returns>True if the operation was successful</returns>
         public bool RegisterResourceStream(string urlpath, Stream resource)
         {
-            var handler = ResourceStreamRegistered;
-            if(handler != null)
-            {
-                handler(urlpath, resource);
-            }
-
             var extension = Path.GetExtension(urlpath);
             if (string.IsNullOrEmpty(extension)) return false;
 
             resources.Add(urlpath, resource);
+
+            var handler = ResourceStreamRegistered;
+            if (handler != null)
+            {
+                handler(urlpath, resource);
+            }
             return true;
         }
 
+        /// <summary>
+        /// To be called by host application to request CEF shutdown
+        /// </summary>
         public void OnAppShutdown()
         {
             if (CefSharp.Cef.IsInitialized)
@@ -170,6 +175,9 @@ namespace Dynamo.LibraryUI
             }
         }
 
+        /// <summary>
+        /// IDisposable implementation
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
