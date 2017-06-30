@@ -134,11 +134,11 @@ namespace Dynamo.Scheduler
 
             foreach (var mirrorData in data)
             {
-                GetRenderPackagesFromMirrorData(mirrorData, previewIdentifierName, displayLabels, isNodeSelected);
+                GetRenderPackagesFromMirrorData(mirrorData, previewIdentifierName, displayLabels);
             }
         }
 
-        private void GetRenderPackagesFromMirrorData(MirrorData mirrorData, string tag, bool displayLabels, bool isNodeSelectednt)
+        private void GetRenderPackagesFromMirrorData(MirrorData mirrorData, string tag, bool displayLabels)
         {
             if (mirrorData.IsNull)
             {
@@ -153,7 +153,7 @@ namespace Dynamo.Scheduler
                     if (el.IsCollection || el.Data is IGraphicItem)
                     {
                         string newTag = tag + ":" + count;
-                        GetRenderPackagesFromMirrorData(el, newTag, displayLabels, isNodeSelected);
+                        GetRenderPackagesFromMirrorData(el, newTag, displayLabels);
                     }
                     count = count + 1;
                 }
