@@ -221,14 +221,14 @@ namespace Dynamo.Tests
         public void CustomNodeSerializationTest()
         {
             var customNodeTestPath = Path.Combine(TestDirectory , @"core\CustomNodes\TestAdd.dyn");
-            DoWorkspaceOpenAndCompare(customNodeTestPath,"json", ConvertCurrentWorkspaceToJsonAndSave, CompareWorkspaces);
+            DoWorkspaceOpenAndCompare(customNodeTestPath,"json", ConvertCurrentWorkspaceToJsonAndSave, CompareWorkspaces,SaveWorkspaceComparisonData);
         }
 
         [Test]
         public void AllTypesSerialize()
         {
             var customNodeTestPath = Path.Combine(TestDirectory, @"core\serialization\serialization.dyn");
-            DoWorkspaceOpenAndCompare(customNodeTestPath, "json", ConvertCurrentWorkspaceToJsonAndSave, CompareWorkspaces);
+            DoWorkspaceOpenAndCompare(customNodeTestPath, "json", ConvertCurrentWorkspaceToJsonAndSave, CompareWorkspaces,SaveWorkspaceComparisonData);
         }
 
         public object[] FindWorkspaces()
@@ -248,7 +248,7 @@ namespace Dynamo.Tests
         [Test, TestCaseSource("FindWorkspaces")]
         public void SerializationTest(string filePath)
         {
-            DoWorkspaceOpenAndCompare(filePath, "json",ConvertCurrentWorkspaceToJsonAndSave,CompareWorkspaces);
+            DoWorkspaceOpenAndCompare(filePath, "json",ConvertCurrentWorkspaceToJsonAndSave,CompareWorkspaces,SaveWorkspaceComparisonData);
         }
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace Dynamo.Tests
         public void SerializationNonGuidIdsTest(string filePath)
         {
             modelsGuidToIdMap.Clear();
-            DoWorkspaceOpenAndCompare(filePath, "json_nonGuidIds",ConvertCurrentWorkspaceToNonGuidJsonAndSave, CompareWorkspacesDifferentGuids);
+            DoWorkspaceOpenAndCompare(filePath, "json_nonGuidIds",ConvertCurrentWorkspaceToNonGuidJsonAndSave, CompareWorkspacesDifferentGuids,SaveWorkspaceComparisonDataWithNonGuidIds);
         }
 
         private static List<string> bannedTests = new List<string>()
@@ -290,7 +290,8 @@ namespace Dynamo.Tests
 
         private void DoWorkspaceOpenAndCompare(string filePath,string dirName,
             Func<DynamoModel,string,string> saveFunction,
-            Action<WorkspaceComparisonData, WorkspaceComparisonData> workspaceCompareFunction)
+            Action<WorkspaceComparisonData, WorkspaceComparisonData> workspaceCompareFunction,
+            Action<WorkspaceComparisonData,string,TimeSpan> workspaceDataSaveFunction)
         {
             var openPath = filePath;
 
@@ -337,7 +338,7 @@ namespace Dynamo.Tests
 
             string json = saveFunction(model, filePathBase);
 
-            SaveWorkspaceComparisonData(wcd1, filePathBase, lastExecutionDuration);
+            workspaceDataSaveFunction(wcd1, filePathBase, lastExecutionDuration);
 
             lastExecutionDuration = new TimeSpan();
 
@@ -437,6 +438,42 @@ namespace Dynamo.Tests
                                 Formatting = Formatting.Indented,
                                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                             });
+
+            var dataPath = filePathBase + ".data";
+            if (File.Exists(dataPath))
+            {
+                File.Delete(dataPath);
+            }
+            File.WriteAllText(dataPath, dataMapStr);
+        }
+
+        private void SaveWorkspaceComparisonDataWithNonGuidIds(WorkspaceComparisonData wcd1, string filePathBase, TimeSpan executionDuration)
+        {
+            var nodeData = new Dictionary<string, Dictionary<string, object>>();
+            foreach (var d in wcd1.NodeDataMap)
+            {
+                var t = wcd1.NodeTypeMap[d.Key];
+                var nodeDataDict = new Dictionary<string, object>();
+                nodeDataDict.Add("nodeType", t.ToString());
+                nodeDataDict.Add("portValues", d.Value);
+                nodeData.Add(d.Key.ToString(), nodeDataDict);
+            }
+
+            var workspaceDataDict = new Dictionary<string, object>();
+            workspaceDataDict.Add("nodeData", nodeData);
+            workspaceDataDict.Add("executionDuration", executionDuration.TotalSeconds);
+
+            var dataMapStr = JsonConvert.SerializeObject(workspaceDataDict,
+                            new JsonSerializerSettings()
+                            {
+                                Formatting = Formatting.Indented,
+                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                            });
+            //replace all the guids in the data file with all of our remapped ids.
+            foreach(var guidKey in modelsGuidToIdMap.Keys)
+            {
+                dataMapStr = dataMapStr.Replace(guidKey.ToString(), modelsGuidToIdMap[guidKey]);
+            }
 
             var dataPath = filePathBase + ".data";
             if (File.Exists(dataPath))
