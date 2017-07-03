@@ -202,7 +202,7 @@ namespace CoreNodeModels
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            Func<string, string[], object[], object> backingMethod = DSCore.Formula.Evaluate;
+            Func<string, string[], object[], object> backingMethod = DSCore.Math.EvaluateFormula;
 
             // Format input names to be used as function parameters
             var inputs = InPorts.Select(x => x.Name.Replace(' ', '_')).ToList();

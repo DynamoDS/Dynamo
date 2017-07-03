@@ -283,7 +283,7 @@ namespace Dynamo.Tests
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
-            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("de5c9439-bc4c-408d-9484-798d8d8b8aed");
             ViewModel.HomeSpace.Run();
             var data = new object[] { new object[] { 4 }, new object[] { 5 }, new object[] { 6 }, new object[] { 7 }, new object[] { 8 }, new object[] { 9 }, new object[] { 10 } };
             AssertPreviewValue(watch.GUID.ToString(), data);
@@ -306,10 +306,7 @@ namespace Dynamo.Tests
             stringNode.Value = filePath;
 
             // watch displays the data from the Read node
-            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
-
-            // writeNode should have the same data contained in watch
-            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("de5c9439-bc4c-408d-9484-798d8d8b8aed");
 
             ViewModel.HomeSpace.Run();
 
@@ -341,7 +338,7 @@ namespace Dynamo.Tests
 
             ViewModel.HomeSpace.Run();
             
-            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("de5c9439-bc4c-408d-9484-798d8d8b8aed");
             var excelFileName = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("b9b04f1f-9069-4eaf-a31c-eee7428aacab");
             var FileObject = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("1bd2c2da-b0e9-4b88-9f9e-33bd0906c6e9");
             
@@ -398,8 +395,7 @@ namespace Dynamo.Tests
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
             // watch displays the data from the Read node
-            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
-            
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("de5c9439-bc4c-408d-9484-798d8d8b8aed");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
@@ -423,8 +419,7 @@ namespace Dynamo.Tests
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
             // watch displays the data from the Read node
-            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
-
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("e1fdbd63-f1b1-43df-8a34-057600f7b925");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
@@ -481,7 +476,7 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(9, ViewModel.CurrentSpace.Nodes.Count());
         
-            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("cda3623e-f092-4488-8957-250b6a43a2dc");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
@@ -539,7 +534,7 @@ namespace Dynamo.Tests
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
-            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("d5388751-3c9f-4b48-8498-3cf5ff5f88e2");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
@@ -563,7 +558,7 @@ namespace Dynamo.Tests
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
-            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("d5388751-3c9f-4b48-8498-3cf5ff5f88e2");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
@@ -672,8 +667,7 @@ namespace Dynamo.Tests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>();
             stringNode.Value = filePath;
 
-            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
-
+            var writeNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("f1839832-130c-47ed-ada6-200abc6f8a86");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(File.Exists(filePath));
@@ -722,8 +716,7 @@ namespace Dynamo.Tests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>();
             stringNode.Value = filePath;
 
-            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
-
+            var writeNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("f1839832-130c-47ed-ada6-200abc6f8a86");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(File.Exists(filePath));
@@ -744,8 +737,7 @@ namespace Dynamo.Tests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>();
             stringNode.Value = filePath;
 
-            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
-
+            var writeNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("9bce1a0e-8623-4360-b48b-c0db96f47c0b");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(File.Exists(filePath));
@@ -769,8 +761,7 @@ namespace Dynamo.Tests
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
-            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
-
+            var writeNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("9ccbd3c2-ca04-4460-809c-7c5205dbf929");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(File.Exists(filename.Value));
@@ -795,8 +786,7 @@ namespace Dynamo.Tests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>();
             stringNode.Value = filePath;
 
-            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
-
+            var writeNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("9bce1a0e-8623-4360-b48b-c0db96f47c0b");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(File.Exists(filePath));
@@ -821,7 +811,7 @@ namespace Dynamo.Tests
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
-            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            var writeNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("763670b1-c982-493c-9b40-5716972b82ca");
 
             ViewModel.HomeSpace.Run();
 
@@ -849,7 +839,7 @@ namespace Dynamo.Tests
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
-            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            var writeNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("763670b1-c982-493c-9b40-5716972b82ca");
 
             ViewModel.HomeSpace.Run();
 
@@ -879,8 +869,7 @@ namespace Dynamo.Tests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>();
             stringNode.Value = filePath;
 
-            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
-
+            var writeNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("a629fc97-1f9e-438f-a9ba-748339e04acd");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(File.Exists(filePath));
@@ -903,8 +892,7 @@ namespace Dynamo.Tests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>();
             stringNode.Value = filePath;
 
-            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
-
+            var writeNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("9bce1a0e-8623-4360-b48b-c0db96f47c0b");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(File.Exists(filePath));
@@ -926,8 +914,7 @@ namespace Dynamo.Tests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>();
             stringNode.Value = filePath;
 
-            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
-
+            var writeNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("f236e4bd-2c1c-4846-b632-ff318f3cab42");
             ViewModel.HomeSpace.Run();
 
             ProtoCore.RuntimeCore runtimeCore = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
@@ -1034,8 +1021,7 @@ namespace Dynamo.Tests
             if (fileAttributes != FileAttributes.ReadOnly)
                 File.SetAttributes(filePath, FileAttributes.ReadOnly);
             
-            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
-
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("88fa7b79-ddc3-4d80-9546-e377cf2434a5");
             ViewModel.HomeSpace.Run();
             Assert.IsNull(watch.CachedValue.Data);
             Assert.IsTrue(watch.State == ElementState.Warning);
@@ -1062,7 +1048,7 @@ namespace Dynamo.Tests
 
             ViewModel.HomeSpace.Run();
 
-            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("88fa7b79-ddc3-4d80-9546-e377cf2434a5");
             var watch2 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("5e6a2a5b-7c69-4ab6-b33d-f27267fb2762");
              Assert.IsTrue(watch.CachedValue.IsCollection);
             var list1 = watch.CachedValue.GetElements().ToList();
@@ -1099,8 +1085,8 @@ namespace Dynamo.Tests
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
             ViewModel.HomeSpace.Run();
-            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
-            var watch2 = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("78370571-c7bc-4ed8-be2e-90c5be172767");
+            var watch2 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("88fa7b79-ddc3-4d80-9546-e377cf2434a5");
             // Write {5,6,7,8,9,10} into excel
             var watch3 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("17bf44dd-0285-496f-a388-58649cadbff8");
             Assert.IsTrue(watch.CachedValue.IsCollection);
@@ -1135,8 +1121,7 @@ namespace Dynamo.Tests
 
             ViewModel.HomeSpace.Run();
 
-            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
-
+            var writeNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("37081341-ba10-435b-b775-5f26db443197");
             Assert.IsTrue(File.Exists(filename.Value));
 
             Assert.IsTrue(writeNode.CachedValue.IsCollection);
@@ -1219,7 +1204,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(7, ViewModel.CurrentSpace.Nodes.Count());
             ViewModel.HomeSpace.Run();
             //Write into Excel - {5,6,7,8,9,10}
-            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("88fa7b79-ddc3-4d80-9546-e377cf2434a5");
             Assert.IsTrue(watch.CachedValue.IsCollection);
             
             var data = new object[] { new object[] { 5 }, new object[] { 6 }, new object[] { 7 }, new object[] { 8 }, new object[] { 9 }, new object[] { 10 } };
@@ -1256,11 +1241,66 @@ namespace Dynamo.Tests
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", testDir);
             ViewModel.HomeSpace.Run();
-            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
+
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("78370571-c7bc-4ed8-be2e-90c5be172767");
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var data2 = new object[] { new object[] { 1 }, new object[] { 2 }, new object[] { 3 }, new object[] { null }, new object[] { 6 } };
             AssertPreviewValue(watch.GUID.ToString(), data2);
         }
         #endregion
+    }
+
+    [TestFixture]
+    public class CSVTests : UnitTestBase
+    {
+        [Test]
+        [Category("UnitTests")]
+        public static void ImportCSV_PathTest()
+        {
+            string filePath = Path.Combine(TestDirectory, @"core\importExport\not a valid file.csv");
+            Assert.Throws<FileNotFoundException>(() => Data.ImportCSV(filePath));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ImportCSVTest()
+        {
+            string filePath = Path.Combine(TestDirectory, @"core\importExport\test1.csv");
+            var CSVList = Data.ImportCSV(filePath);
+            Assert.AreEqual(CSVList, new List<object> {
+                new List<object> { 2, 3, 4 },
+                new List<object> { 4, 6, 8 },
+                new List<object> { 6, 9, 12 },
+                new List<object> { 8, 12, 16 }
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ImportCSVWithTransposeTest()
+        {
+            string filePath = Path.Combine(TestDirectory, @"core\importExport\test2.csv");
+            var CSVList = Data.ImportCSV(filePath, true);
+            Assert.AreEqual(CSVList, new List<object> {
+                new List<object> { 1.2, 5.6, 7, 155 },
+                new List<object> { 2, 0.009, 10, 3.3 },
+                new List<object> { null, 3, 3, null }
+            });
+        }
+
+        [Test, Category("UnitTests")]
+        public void ExportCSVTest()
+        {
+            //Write data to CSV
+            var data =
+                Enumerable.Range(0, 10)
+                    .Select(row => Enumerable.Range(0, 10).Select(col => row + col).Cast<object>().ToArray())
+                    .ToArray();
+            var fn = GetNewFileNameOnTempPath(".csv");
+            Data.ExportCSV(fn, data);
+
+            //Confirm it's correct
+            Assert.AreEqual(data, Data.ImportCSV(fn));
+        }
     }
 }

@@ -178,7 +178,6 @@
     <Compile Include="RunSettingsTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="SearchViewModelTests.cs" />
-    <Compile Include="SearchViewTests.cs" />
     <Compile Include="SerializationTests.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="SliderTests.cs" />

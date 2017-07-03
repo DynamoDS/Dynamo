@@ -33,12 +33,12 @@ namespace Dynamo.Applications
                 "DSOffice.dll",
                 "DSIronPython.dll",
                 "FunctionObject.ds",
-                "Optimize.ds",
+                "BuiltIn.ds",
                 "DynamoConversions.dll",
                 "DynamoUnits.dll",
                 "Tessellation.dll",
                 "Analysis.dll",
-                "Display.dll"
+                "GeometryColor.dll"
             };
 
         }
@@ -96,6 +96,7 @@ namespace Dynamo.Applications
                 "DSCoreNodes.dll",
                 "DSIronPython.dll",
                 "FunctionObject.ds",
+                "BuiltIn.ds",
                 "DynamoConversions.dll",
                 "DynamoUnits.dll",
             };

@@ -25,3 +25,5 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("WpfVisualizationTests")]
 [assembly: InternalsVisibleTo("Reach")]
 [assembly: InternalsVisibleTo("Dynamo.Storage")]
+[assembly: InternalsVisibleTo("LibraryViewExtension")]
+[assembly: InternalsVisibleTo("ViewExtensionLibraryTests")]

@@ -216,6 +216,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ExtendedLibraries\BuiltIn.ds" />
     <None Include="ExtendedLibraries\FunctionObject.ds" />
     <None Include="Parser\atg\Associative.atg" />
     <None Include="Parser\atg\End.atg" />
