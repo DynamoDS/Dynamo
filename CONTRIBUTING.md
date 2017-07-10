@@ -4,6 +4,15 @@ Dynamo is an open source project.
 
 It is the work of many contributors. We appreciate your help!
 
+Please Note:
+
+1. Before submitting the PR, please review this page for guidelines
+2. Dynamo Team will meet 1x a month to review PRs found on Github (Issues will be handled separately)
+PRs will be reviewed from oldest to newest
+3. If a reviewed PR requires changes by the owner, the owner of the PR has 30 days to respond. If the PR has seen no activity by the next session, it will be either closed by the team or depending on its utility will be taken over by someone on the team
+4. PRs that do not have the PR template completely filled out and all declarations satisfied will NOT be reviewed by the Dynamo team.
+5. PRs made to the Dynamo repo will need to be cherry-picked into all the Release branches that Dynamo supports. Contributors will be responsible for cherry-picking their reviewed commits to the other branches after a LGTM label is added to the PR.
+
 ## Filing issues
 
 When filing an issue, make sure to answer these five questions:
