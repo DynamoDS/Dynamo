@@ -32,7 +32,7 @@ namespace Dynamo.Graph.Workspaces
     /// Non view-specific container for additional view information required to
     /// fully construct a WorkspaceModel from JSON
     /// </summary>
-    public class ExtraViewInfo
+    public class ExtraWorkspaceViewInfo
     {
         public object Cameras;
         public IEnumerable<ExtraNodeViewInfo> NodeViews;
@@ -1558,46 +1558,46 @@ namespace Dynamo.Graph.Workspaces
             return ws;
         }
 
-        public void UpdateWithExtraViewInfo(ExtraViewInfo viewInfo)
+        public void UpdateWithExtraWorkspaceViewInfo(ExtraWorkspaceViewInfo workspaceViewInfo)
         {
-            X = viewInfo.X;
-            Y = viewInfo.Y;
-            Zoom = viewInfo.Zoom; 
+            X = workspaceViewInfo.X;
+            Y = workspaceViewInfo.Y;
+            Zoom = workspaceViewInfo.Zoom; 
 
-            foreach (ExtraNodeViewInfo nodeInfo in viewInfo.NodeViews)
+            foreach (ExtraNodeViewInfo nodeViewInfo in workspaceViewInfo.NodeViews)
             {
-                var guidValue = IdToGuidConverter(nodeInfo.Id);
+                var guidValue = IdToGuidConverter(nodeViewInfo.Id);
                 var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
                 if (nodeModel != null)
                 {
-                    nodeModel.X = nodeInfo.X;
-                    nodeModel.Y = nodeInfo.Y;
-                    nodeModel.Name = nodeInfo.Name;
+                    nodeModel.X = nodeViewInfo.X;
+                    nodeModel.Y = nodeViewInfo.Y;
+                    nodeModel.Name = nodeViewInfo.Name;
 
                     // Note: These parameters are not directly accessible due to undo/redo considerations
                     //       which should not be used during deserialization (see "ArgumentLacing" for details)
-                    nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeInfo.IsVisible.ToString()));
-                    nodeModel.UpdateValue(new UpdateValueParams("IsUpstreamVisible", nodeInfo.IsUpstreamVisible.ToString()));
+                    nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeViewInfo.IsVisible.ToString()));
+                    nodeModel.UpdateValue(new UpdateValueParams("IsUpstreamVisible", nodeViewInfo.IsUpstreamVisible.ToString()));
                 }
             }
 
-            foreach (ExtraNoteViewInfo noteInfo in viewInfo.Notes)
+            foreach (ExtraNoteViewInfo noteViewInfo in workspaceViewInfo.Notes)
             {
-                var guidValue = IdToGuidConverter(noteInfo.Id);
+                var guidValue = IdToGuidConverter(noteViewInfo.Id);
 
                 // TODO: Figure out if ZIndex needs to be set here as well
-                var noteModel = new NoteModel(noteInfo.X, noteInfo.Y, noteInfo.Text, guidValue);
+                var noteModel = new NoteModel(noteViewInfo.X, noteViewInfo.Y, noteViewInfo.Text, guidValue);
                 this.AddNote(noteModel);
             }
 
-            foreach (ExtraAnnotationViewInfo annotationInfo in viewInfo.Annotations)
+            foreach (ExtraAnnotationViewInfo annotationViewInfo in workspaceViewInfo.Annotations)
             {
                 // TODO: Determine where to set the ID for annotations
                 //Guid guidValue = IdToGuidConverter(annotationInfo.Id);
 
                 // Create a collection of nodes in the given annotation
                 var nodes = new List<NodeModel>();
-                foreach (string nodeId in annotationInfo.Nodes)
+                foreach (string nodeId in annotationViewInfo.Nodes)
                 {
                   var guidValue = IdToGuidConverter(nodeId);
                   if (guidValue == null)
@@ -1613,7 +1613,7 @@ namespace Dynamo.Graph.Workspaces
 
                 // Create a collection of notes in the given annotation
                 var notes = new List<NoteModel>();
-                foreach (string noteId in annotationInfo.Nodes)
+                foreach (string noteId in annotationViewInfo.Nodes)
                 {
                   var guidValue = IdToGuidConverter(noteId);
                   if (guidValue == null)
@@ -1628,9 +1628,9 @@ namespace Dynamo.Graph.Workspaces
                 }
 
                 var annotationModel = new AnnotationModel(nodes, notes);
-                annotationModel.AnnotationText = annotationInfo.Title;
-                annotationModel.FontSize = annotationInfo.FontSize;
-                annotationModel.Background = annotationInfo.Background;
+                annotationModel.AnnotationText = annotationViewInfo.Title;
+                annotationModel.FontSize = annotationViewInfo.FontSize;
+                annotationModel.Background = annotationViewInfo.Background;
                 this.AddNewAnnotation(annotationModel);
             }
 

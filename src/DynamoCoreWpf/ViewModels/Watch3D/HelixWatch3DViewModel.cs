@@ -600,10 +600,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 return;
             }
 
-            ExtraViewInfo viewInfo = obj as ExtraViewInfo;
-            if (viewInfo != null)
+            ExtraWorkspaceViewInfo workspaceViewInfo = obj as ExtraWorkspaceViewInfo;
+            if (workspaceViewInfo != null)
             {
-                var cameraJson = viewInfo.Cameras.ToString();
+                var cameraJson = workspaceViewInfo.Cameras.ToString();
 
                 var settings = new JsonSerializerSettings
                 {

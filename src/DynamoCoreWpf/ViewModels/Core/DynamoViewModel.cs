@@ -1218,9 +1218,9 @@ namespace Dynamo.ViewModels
                 try
                 {
                     // This call will fail in the case of an XML file
-                    ExtraViewInfo viewInfo = WorkspaceViewModel.ExtraViewInfoFromJson(fileContents);
+                    ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
 
-                    this.Model.CurrentWorkspace.UpdateWithExtraViewInfo(viewInfo);
+                    this.Model.CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo);
                     this.Model.OnWorkspaceOpening(viewInfo);
                 }
                 catch (Exception e)

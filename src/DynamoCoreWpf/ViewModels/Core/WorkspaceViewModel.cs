@@ -493,7 +493,7 @@ namespace Dynamo.ViewModels
         /// Load the extra view information required to fully construct a WorkspaceModel object 
         /// </summary>
         /// <param name="json"></param>
-        static public ExtraViewInfo ExtraViewInfoFromJson(string json)
+        static public ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
         {
             JsonReader reader = new JsonTextReader(new StringReader(json));
             var obj = JObject.Load(reader);
@@ -511,7 +511,7 @@ namespace Dynamo.ViewModels
                 Formatting = Newtonsoft.Json.Formatting.Indented
             };
 
-            return JsonConvert.DeserializeObject<ExtraViewInfo>(viewBlock.ToString(), settings);
+            return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
         }
 
         void CopyPasteChanged(object sender, EventArgs e)
