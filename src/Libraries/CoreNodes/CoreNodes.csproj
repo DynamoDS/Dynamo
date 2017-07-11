@@ -70,9 +70,6 @@
     <Compile Include="Compare.cs" />
     <Compile Include="DateTime.cs" />
     <Compile Include="Files.cs" />
-    <Compile Include="Formula.cs" />
-    <Compile Include="ImportExport.cs" />
-    <Compile Include="Logic.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
     <Compile Include="Object.cs" />
@@ -112,6 +109,7 @@
   <ItemGroup>
     <Content Include="DSCoreNodes.Migrations.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="DSCoreNodes_DynamoCustomization.xml">
       <SubType>Designer</SubType>

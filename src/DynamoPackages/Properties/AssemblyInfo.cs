@@ -14,3 +14,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("PackageManagerTests")]
 [assembly: InternalsVisibleTo("DynamoCoreWpf")]
 [assembly: InternalsVisibleTo("DynamoPackagesUI")]
+[assembly: InternalsVisibleTo("LibraryViewExtension")]

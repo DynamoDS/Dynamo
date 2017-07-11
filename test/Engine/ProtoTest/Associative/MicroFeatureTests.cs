@@ -1186,10 +1186,11 @@ r = c[3];
         {
             // Test builtin functions GetKeys() for array
             String code = @"
-        a = {1, 2, 3};
+import(""BuiltIn.ds"");
+a = {1, 2, 3};
 a[true] = 41;
 a[""x""] = ""foo"";
-r = Count(GetKeys(a));
+r = Count(List.GetKeys(a));
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 5);
@@ -1200,10 +1201,11 @@ r = Count(GetKeys(a));
         {
             // Test builtin functions GetValues() for array
             String code = @"
-        a = {1, 2, 3};
+import(""BuiltIn.ds"");
+a = {1, 2, 3};
 a[true] = 41;
 a[""x""] = ""foo"";
-r = Count(GetValues(a));
+r = Count(List.GetValues(a));
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 5);
@@ -1214,11 +1216,12 @@ r = Count(GetValues(a));
         {
             // Test builtin functions ContainsKey() for array
             String code = @"
-        a = {1, 2, 3};
+import(""BuiltIn.ds"");
+a = {1, 2, 3};
 a[true] = 41;
 a[""x""] = ""foo"";
-r1 = ContainsKey(a, ""x"");
-r2 = ContainsKey(a, true);
+r1 = List.ContainsKey(a, ""x"");
+r2 = List.ContainsKey(a, true);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", true);
@@ -1230,13 +1233,14 @@ r2 = ContainsKey(a, true);
         {
             // Test builtin functions RemoveKey() for array
             String code = @"
-        a = {1, 2, 3};
+import(""BuiltIn.ds"");
+a = {1, 2, 3};
 a[true] = 41;
 a[""x""] = ""foo"";
-r1 = RemoveKey(a, ""x"");
-r2 = RemoveKey(r1, true);
-r3 = ContainsKey(r2, ""x"");
-r4 = ContainsKey(r2, true);
+r1 = List.RemoveKey(a, ""x"");
+r2 = List.RemoveKey(r1, true);
+r3 = List.ContainsKey(r2, ""x"");
+r4 = List.ContainsKey(r2, true);
 ";
             // Tracked in:http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4155
             string errmsg = "MAGN-4155 : ContainsKey returns wrong value";

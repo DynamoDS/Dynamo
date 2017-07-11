@@ -21,6 +21,7 @@ namespace Dynamo.Tests
             libraries.Add("DSCoreNodes.dll");   // Required for built-in nodes.
             libraries.Add("DSIronPython.dll");  // Required for Python tests.
             libraries.Add("FunctionObject.ds"); // Required for partially applied nodes.
+            libraries.Add("BuiltIn.ds");
             base.GetLibrariesToPreload(libraries);
             
         }
@@ -607,7 +608,7 @@ namespace Dynamo.Tests
             var text = GetPreviewValue(readText) as string;
             Assert.AreEqual(text,"1234");
 
-            // test writting. Write text is not obsolete but the
+            // test writing. Write text is not obsolete but the
             // namespace needs to be migrated, no warning should
             // be shown in this node
             var writeText = "ac1e30c2-27c5-46ef-88c9-52f0a2c0d1d9";
@@ -623,11 +624,11 @@ namespace Dynamo.Tests
             var codeBlock = "75b9d0a3-e954-42b5-8ccf-66845b122e3f";
             AssertPreviewValue(codeBlock,true);
 
-            // text writing to csv, persistent warning should be shown
-            // since the node is obsolete
+            // text writing to csv, the node is obsolete but 
+            // is migrated, so no warning should be shown on this node
             var writeCSV = "3ddc75fb-e607-4932-8e08-f215ee86211e";
             nodeModel = workspace.NodeFromWorkspace(writeCSV);
-            Assert.AreEqual(ElementState.PersistentWarning, nodeModel.State);
+            Assert.AreEqual(ElementState.Active, nodeModel.State);
         }
 
         #endregion

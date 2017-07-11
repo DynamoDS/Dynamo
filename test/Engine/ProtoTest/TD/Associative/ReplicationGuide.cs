@@ -2372,6 +2372,7 @@ test1 = ReplicationTestA.ReplicationTestA(x<1>, y<2>, z<3>).A ;
         {
             string code =
 @" 
+    import(""BuiltIn.ds"");
     x = {0,1,2,3};
     y = {0,1};
     z = { ""int"", ""double"" };
@@ -2379,7 +2380,7 @@ test1 = ReplicationTestA.ReplicationTestA(x<1>, y<2>, z<3>).A ;
     test2 = IndexOf ( x, y) ;
     test3 = Remove ( x, y) ;
     test5 = NormalizeDepth ( x, y) ; 
-    test6 = RemoveIfNot ( x, z) ; 
+    test6 = List.RemoveIfNot ( x, z) ; 
     test7 = SortIndexByValue ( x, y) ; 
     test8 = Map ( {1,2}, {3,4}, {2,3}) ;   
 ";
@@ -2401,6 +2402,7 @@ test1 = ReplicationTestA.ReplicationTestA(x<1>, y<2>, z<3>).A ;
         {
             string code =
 @" 
+import(""BuiltIn.ds"");
 test1;
 test2;
 test3;
@@ -2419,7 +2421,7 @@ test8;
     test3 = Remove ( x<1>, y<2>) ; 
     test4 = Insert ( x<1>, y<2>, y<2>) ;
     test5 = NormalizeDepth ( x<1>, y<2>) ; 
-    test6 = RemoveIfNot ( x<1>, z<2>) ; 
+    test6 = List.RemoveIfNot ( x<1>, z<2>) ; 
     test7 = SortIndexByValue ( x<1>, y<2>) ; 
     test8 = Map ( {1,2}<1>, {5,6}<2>, {2,3}<2>) ; 
     

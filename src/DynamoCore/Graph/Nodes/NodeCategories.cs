@@ -42,6 +42,8 @@ namespace Dynamo.Graph.Nodes
 
         public const string IO = "Input/Output";
         public const string IO_HARDWARE = "Input/Output.Hardware";
+
+        public const string MODIFIERS = "Modifiers";
     }
 
     /// <summary>

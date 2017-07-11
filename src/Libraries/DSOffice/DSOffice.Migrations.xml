@@ -2,6 +2,14 @@
 <migrations>
   <priorNameHint>
     <oldName>DSOffice.Excel.Write</oldName>
-    <newName>DSOffice.Excel.WriteToFile</newName>
+    <newName>DSOffice.Data.ExportExcel</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSOffice.Excel.WriteToFile</oldName>
+    <newName>DSOffice.Data.ExportExcel</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSOffice.Excel.ReadFromFile</oldName>
+    <newName>DSOffice.Data.ImportExcel</newName>
   </priorNameHint>
 </migrations>

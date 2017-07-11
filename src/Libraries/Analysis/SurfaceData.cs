@@ -381,6 +381,7 @@ namespace Analysis
         //}
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     public static class AnalysisExtensions
     {
         /// <summary>

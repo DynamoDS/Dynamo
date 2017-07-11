@@ -35,7 +35,7 @@ Find more about how to build Dynamo at our [wiki](https://github.com/DynamoDS/Dy
 
 ## Contribute ##
 
-Dynamo is an open-source project and would be nothing without its community.  You can make suggestions or track and submit bugs via [Github issues](https://github.com/DynamoDS/Dynamo/issues).  You can submit your own code to the Dynamo project via a Github [pull request](https://help.github.com/articles/using-pull-requests).
+Dynamo is an open-source project and would be nothing without its community.  You can make suggestions or track and submit bugs via [Github issues](https://github.com/DynamoDS/Dynamo/issues).  You can submit your own code to the Dynamo project via a Github [pull request](https://github.com/DynamoDS/Dynamo/blob/master/CONTRIBUTING.md).
 
 
 ## Releases ##

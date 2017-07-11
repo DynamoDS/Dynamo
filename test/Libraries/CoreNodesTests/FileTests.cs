@@ -28,28 +28,28 @@ namespace Dynamo.Tests
         [Test, Category("UnitTests")]
         public void SimpleWrappers()
         {
-            Assert.AreEqual(Path.Combine("test"), FilePath.Combine("test"));
-            Assert.AreEqual(Path.Combine("test", "1"), FilePath.Combine("test", "1"));
-            Assert.AreEqual(Path.Combine("test/", @"1\"), FilePath.Combine("test/", @"1\"));
+            Assert.AreEqual(Path.Combine("test"), File.CombinePath("test"));
+            Assert.AreEqual(Path.Combine("test", "1"), File.CombinePath("test", "1"));
+            Assert.AreEqual(Path.Combine("test/", @"1\"), File.CombinePath("test/", @"1\"));
 
             const string aFilePath = @"hello\there.txt";
             const string aFileName = "hello";
 
-            Assert.AreEqual(Path.GetExtension(aFilePath), FilePath.Extension(aFilePath));
-            Assert.AreEqual(Path.GetExtension(aFileName), FilePath.Extension(aFileName));
+            Assert.AreEqual(Path.GetExtension(aFilePath), File.FileExtension(aFilePath));
+            Assert.AreEqual(Path.GetExtension(aFileName), File.FileExtension(aFileName));
 
             Assert.AreEqual(
                 Path.ChangeExtension(aFilePath, ".png"),
-                FilePath.ChangeExtension(aFilePath, ".png"));
+                File.ChangePathExtension(aFilePath, ".png"));
             Assert.AreEqual(
                 Path.ChangeExtension(aFileName, ".txt"),
-                FilePath.ChangeExtension(aFileName, ".txt"));
+                File.ChangePathExtension(aFileName, ".txt"));
 
-            Assert.AreEqual(Path.GetDirectoryName(aFilePath), FilePath.DirectoryName(aFilePath));
-            Assert.AreEqual(Path.GetDirectoryName(aFileName), FilePath.DirectoryName(aFileName));
+            Assert.AreEqual(Path.GetDirectoryName(aFilePath), File.DirectoryName(aFilePath));
+            Assert.AreEqual(Path.GetDirectoryName(aFileName), File.DirectoryName(aFileName));
 
-            Assert.AreEqual(Path.HasExtension(aFilePath), FilePath.HasExtension(aFilePath));
-            Assert.AreEqual(Path.HasExtension(aFileName), FilePath.HasExtension(aFileName));
+            Assert.AreEqual(Path.HasExtension(aFilePath), File.FileHasExtension(aFilePath));
+            Assert.AreEqual(Path.HasExtension(aFileName), File.FileHasExtension(aFileName));
         }
 
         [Test, Category("UnitTests")]
@@ -57,10 +57,10 @@ namespace Dynamo.Tests
         {
             const string aFilePath = @"hello\there.txt";
 
-            Assert.AreEqual(Path.GetFileName(aFilePath), FilePath.FileName(aFilePath));
+            Assert.AreEqual(Path.GetFileName(aFilePath), File.FileName(aFilePath));
             Assert.AreEqual(
                 Path.GetFileNameWithoutExtension(aFilePath),
-                FilePath.FileName(aFilePath, withExtension: false));
+                File.FileName(aFilePath, withExtension: false));
         }
         #endregion
 
@@ -220,12 +220,12 @@ namespace Dynamo.Tests
         {
             var tmp = GetNewFileNameOnTempPath("");
             Assert.IsFalse(Directory.Exists(tmp));
-            var info = DSCore.IO.Directory.FromPath(tmp);
+            var info = File.DirectoryFromPath(tmp);
             Assert.AreEqual(tmp, info.FullName);
             Assert.IsTrue(info.Exists);
 
             //Make again now that it already exists
-            var info2 = DSCore.IO.Directory.FromPath(tmp);
+            var info2 = File.DirectoryFromPath(tmp);
             Assert.AreEqual(tmp, info2.FullName);
             Assert.IsTrue(info2.Exists);
         }
@@ -236,14 +236,14 @@ namespace Dynamo.Tests
             var tmpSrc = GetNewFileNameOnTempPath("");
             Directory.CreateDirectory(tmpSrc);
             const string fileName = @"temp.txt";
-            File.WriteText(FilePath.Combine(tmpSrc, fileName), "test");
+            File.WriteText(File.CombinePath(tmpSrc, fileName), "test");
 
             var tmpDest = GetNewFileNameOnTempPath("");
-            DSCore.IO.Directory.Move(tmpSrc, tmpDest);
-            Assert.IsFalse(DSCore.IO.Directory.Exists(tmpSrc));
-            Assert.IsTrue(DSCore.IO.Directory.Exists(tmpDest));
+            File.MoveDirectory(tmpSrc, tmpDest);
+            Assert.IsFalse(File.DirectoryExists(tmpSrc));
+            Assert.IsTrue(File.DirectoryExists(tmpDest));
 
-            var destFileName = FilePath.Combine(tmpDest, fileName);
+            var destFileName = File.CombinePath(tmpDest, fileName);
             Assert.IsTrue(File.Exists(destFileName));
             Assert.AreEqual("test", File.ReadText(File.FromPath(destFileName)));
         }
@@ -252,16 +252,16 @@ namespace Dynamo.Tests
         public void Directory_Copy()
         {
             var tmpSrc = GetNewFileNameOnTempPath("");
-            var tmpSrcInfo = DSCore.IO.Directory.FromPath(tmpSrc);
+            var tmpSrcInfo = File.DirectoryFromPath(tmpSrc);
             const string fileName = @"temp.txt";
-            File.WriteText(FilePath.Combine(tmpSrc, fileName), "test");
+            File.WriteText(File.CombinePath(tmpSrc, fileName), "test");
 
             var tmpDest = GetNewFileNameOnTempPath("");
-            DSCore.IO.Directory.Copy(tmpSrcInfo, tmpDest);
-            Assert.IsTrue(DSCore.IO.Directory.Exists(tmpSrc));
-            Assert.IsTrue(DSCore.IO.Directory.Exists(tmpDest));
+            File.CopyDirectory(tmpSrcInfo, tmpDest);
+            Assert.IsTrue(File.DirectoryExists(tmpSrc));
+            Assert.IsTrue(File.DirectoryExists(tmpDest));
 
-            var destFileName = FilePath.Combine(tmpDest, fileName);
+            var destFileName = File.CombinePath(tmpDest, fileName);
             Assert.IsTrue(File.Exists(destFileName));
             Assert.AreEqual("test", File.ReadText(File.FromPath(destFileName)));
         }
@@ -272,32 +272,32 @@ namespace Dynamo.Tests
             var tmpSrc = GetNewFileNameOnTempPath("");
             Directory.CreateDirectory(tmpSrc);
             const string fileName = @"temp.txt";
-            File.WriteText(FilePath.Combine(tmpSrc, fileName), "test");
+            File.WriteText(File.CombinePath(tmpSrc, fileName), "test");
 
-            Assert.Throws<IOException>(() => DSCore.IO.Directory.Delete(tmpSrc));
-            DSCore.IO.Directory.Delete(tmpSrc, recursive: true);
-            Assert.IsFalse(DSCore.IO.Directory.Exists(tmpSrc));
+            Assert.Throws<IOException>(() => File.DeleteDirectory(tmpSrc));
+            File.DeleteDirectory(tmpSrc, recursive: true);
+            Assert.IsFalse(File.DirectoryExists(tmpSrc));
 
             var tmpSrc2 = GetNewFileNameOnTempPath("");
             Directory.CreateDirectory(tmpSrc2);
-            DSCore.IO.Directory.Delete(tmpSrc2);
-            Assert.IsFalse(DSCore.IO.Directory.Exists(tmpSrc2));
+            File.DeleteDirectory(tmpSrc2);
+            Assert.IsFalse(File.DirectoryExists(tmpSrc2));
         }
 
         [Test, Category("UnitTests")]
         public void Directory_Contents()
         {
             var tmpSrc = GetNewFileNameOnTempPath("");
-            var tmpSrcInfo = DSCore.IO.Directory.FromPath(tmpSrc);
+            var tmpSrcInfo = File.DirectoryFromPath(tmpSrc);
             const string fileName = @"temp.txt";
-            var newFile = FilePath.Combine(tmpSrc, fileName);
+            var newFile = File.CombinePath(tmpSrc, fileName);
             File.WriteText(newFile, "test");
 
             const string dirName = @"subDir";
-            var newDir = FilePath.Combine(tmpSrc, dirName);
+            var newDir = File.CombinePath(tmpSrc, dirName);
             Directory.CreateDirectory(newDir);
 
-            var contents = DSCore.IO.Directory.Contents(tmpSrcInfo);
+            var contents = File.GetDirectoryContents(tmpSrcInfo);
             Assert.AreEqual(new[] { newFile }, contents["files"]);
             Assert.AreEqual(new[] { newDir }, contents["directories"]);
         }
@@ -306,9 +306,9 @@ namespace Dynamo.Tests
         public void Directory_Exists()
         {
             var tmp = GetNewFileNameOnTempPath("");
-            Assert.IsFalse(DSCore.IO.Directory.Exists(tmp), "Directory hasn't been created yet.");
+            Assert.IsFalse(File.DirectoryExists(tmp), "Directory hasn't been created yet.");
             Directory.CreateDirectory(tmp);
-            Assert.IsTrue(DSCore.IO.Directory.Exists(tmp), "Directory has been created.");
+            Assert.IsTrue(File.DirectoryExists(tmp), "Directory has been created.");
         }
         #endregion
 
