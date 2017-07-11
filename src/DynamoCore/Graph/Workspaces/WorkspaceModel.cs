@@ -1558,6 +1558,11 @@ namespace Dynamo.Graph.Workspaces
             return ws;
         }
 
+        /// <summary>
+        /// Updates a workspace model with extra view information. When loading a workspace from JSON,
+        /// the data is split into two parts, model and view. This method sets the view information.
+        /// </summary>
+        /// <param name="workspaceViewInfo">The extra view information from the workspace to update the model with.</param>
         public void UpdateWithExtraWorkspaceViewInfo(ExtraWorkspaceViewInfo workspaceViewInfo)
         {
             X = workspaceViewInfo.X;
