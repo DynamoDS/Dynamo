@@ -322,8 +322,7 @@ namespace Dynamo.Configuration
             ShowDetailedLayout = true;
             NamespacesToExcludeFromLibrary = new List<string>();
 
-            var defaultPythonFolderPath = Path.GetDirectoryName(new PathManager(new PathManagerParams()).PreferenceFilePath);
-            PythonTemplateFilePath = Path.Combine(defaultPythonFolderPath, "PythonTemplate.py");
+            PythonTemplateFilePath = new PathManager(new PathManagerParams()).PythonTemplateFilePath;
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;

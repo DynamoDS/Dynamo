@@ -60,6 +60,7 @@ namespace Dynamo.Core
         public const string GalleryDirectoryName = "gallery";
         public const string BackupDirectoryName = "backup";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
+        public const string PythonTemplateFileName = "PythonTemplate.py";
         public const string GalleryContentsFileName = "GalleryContents.xml";
 
         private readonly int majorFileVersion;
@@ -75,6 +76,7 @@ namespace Dynamo.Core
         private readonly string backupDirectory;
         private readonly string preferenceFilePath;
         private readonly string galleryFilePath;
+        private readonly string pythonTemplateFilePath;
 
         private readonly List<string> rootDirectories;
         private readonly HashSet<string> nodeDirectories;
@@ -167,6 +169,11 @@ namespace Dynamo.Core
         public string PreferenceFilePath
         {
             get { return preferenceFilePath; }
+        }
+
+        public string PythonTemplateFilePath
+        {
+            get { return pythonTemplateFilePath; }
         }
 
         public string GalleryFilePath
@@ -329,6 +336,7 @@ namespace Dynamo.Core
                                         LogsDirectoryName);
 
             preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
+            pythonTemplateFilePath = Path.Combine(userDataDir, PythonTemplateFileName);
             backupDirectory = Path.Combine(userDataDirNoVersion, BackupDirectoryName);
 
             // Common directories.
