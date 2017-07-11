@@ -1275,20 +1275,13 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
-          bool failed = false;
-          try
-          {
-            OpenXmlFileFromPath(filePath, forceManualExecutionMode);
-          }
-          catch (Exception e)
-          {
-            failed = true;
-          }
-
-          if (!failed)
+          if (OpenXmlFileFromPath(filePath, forceManualExecutionMode))
             return;
 
-          OpenJsonFileFromPath(filePath, forceManualExecutionMode);
+          if (OpenJsonFileFromPath(filePath, forceManualExecutionMode))
+            return;
+
+          Logger.LogError("Could not open workspace at: " + filePath);
         }
 
         /// <summary>
@@ -1297,30 +1290,39 @@ namespace Dynamo.Models
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
-        private void OpenJsonFileFromPath(string filePath, bool forceManualExecutionMode)
+        /// <returns>True if workspace was opened successfully</returns>
+        private bool OpenJsonFileFromPath(string filePath, bool forceManualExecutionMode)
         {
-          string fileContents = File.ReadAllText(filePath);
-
-          // TODO: Figure out the correct way to read in WorkspaceInfo, seems like lots of missing information in the file
-          WorkspaceInfo workspaceInfo = JsonConvert.DeserializeObject<WorkspaceInfo>(fileContents);
-          if (workspaceInfo != null)
+          bool success = true;
+          try
           {
-            // Need to set the FileName property here to show the file name in the view tab
-            workspaceInfo.FileName = filePath;
+            string fileContents = File.ReadAllText(filePath);
 
-            // TODO: Figure out JSON migration strategy
-            if (true) //MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
+            // TODO: Figure out the correct way to read in WorkspaceInfo, seems like lots of missing information in the file
+            WorkspaceInfo workspaceInfo = JsonConvert.DeserializeObject<WorkspaceInfo>(fileContents);
+            if (workspaceInfo != null)
             {
-              WorkspaceModel ws;
-              if (OpenJsonFile(workspaceInfo, fileContents, out ws))
+              // Need to set the FileName property here to show the file name in the view tab
+              workspaceInfo.FileName = filePath;
+
+              // TODO: Figure out JSON migration strategy
+              if (true) //MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
               {
-                OpenWorkspace(ws);
-                SetPeriodicEvaluation(ws);
-                return;
+                WorkspaceModel ws;
+                if (OpenJsonFile(workspaceInfo, fileContents, out ws))
+                {
+                  OpenWorkspace(ws);
+                  SetPeriodicEvaluation(ws);
+                }
               }
             }
           }
-          Logger.LogError("Could not open workspace at: " + filePath);
+          catch (Exception e)
+          {
+            success = false;
+          }
+
+          return success;
         }
 
         /// <summary>
@@ -1329,30 +1331,38 @@ namespace Dynamo.Models
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
-        private void OpenXmlFileFromPath(string filePath, bool forceManualExecutionMode)
+        /// <returns>True if workspace was opened successfully</returns>
+        private bool OpenXmlFileFromPath(string filePath, bool forceManualExecutionMode)
         {
-          var xmlDoc = new XmlDocument();
-          xmlDoc.Load(filePath);
-
-          WorkspaceInfo workspaceInfo;
-          if (WorkspaceInfo.FromXmlDocument(xmlDoc, filePath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
+          bool success = true;
+          try
           {
-            if (MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(filePath);
+
+            WorkspaceInfo workspaceInfo;
+            if (WorkspaceInfo.FromXmlDocument(xmlDoc, filePath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
             {
-              WorkspaceModel ws;
-              if (OpenXmlFile(workspaceInfo, xmlDoc, out ws))
+              if (MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
               {
-                OpenWorkspace(ws);
+                WorkspaceModel ws;
+                if (OpenXmlFile(workspaceInfo, xmlDoc, out ws))
+                {
+                  OpenWorkspace(ws);
 
-                // Set up workspace cameras here
-                OnWorkspaceOpening(xmlDoc);
-
-                SetPeriodicEvaluation(ws);
-                return;
+                  // Set up workspace cameras here
+                  OnWorkspaceOpening(xmlDoc);
+                  SetPeriodicEvaluation(ws);
+                }
               }
             }
           }
-          Logger.LogError("Could not open workspace at: " + filePath);
+          catch (Exception e)
+          {
+            success = false;
+          }
+
+          return success;
         }
 
         private void OpenWorkspace(WorkspaceModel ws)
