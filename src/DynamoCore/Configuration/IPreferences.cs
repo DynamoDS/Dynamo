@@ -159,6 +159,12 @@ namespace Dynamo.Interfaces
         /// <returns>Returns true if the serialization is successful, or false 
         /// otherwise.</returns>
         bool Save(string filePath);
+
+        /// <summary>
+        /// Return full path to the Python (.py) file to use as a starting template when creating a new PythonScript Node.
+        /// </summary>
+        string PythonTemplateFilePath { get; set; }
+
     }
 
     /// <summary>
