@@ -250,6 +250,10 @@ namespace Dynamo.Configuration
         /// </summary>
         public List<string> PackageDirectoriesToUninstall { get; set; }
 
+        /// <summary>
+        /// Path to the Python (.py) file to use as a starting template when creating a new PythonScript Node.
+        /// </summary>
+        public string PythonTemplateFilePath { get; set; }
 
         /// <summary>
         /// This defines how long (in milliseconds) will the graph be automatically saved.
@@ -317,6 +321,9 @@ namespace Dynamo.Configuration
             OpenFileInManualExecutionMode = false;
             ShowDetailedLayout = true;
             NamespacesToExcludeFromLibrary = new List<string>();
+
+            var defaultPythonFolderPath = Path.GetDirectoryName(new PathManager(new PathManagerParams()).PreferenceFilePath);
+            PythonTemplateFilePath = Path.Combine(defaultPythonFolderPath, "PythonTemplate.py");
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
