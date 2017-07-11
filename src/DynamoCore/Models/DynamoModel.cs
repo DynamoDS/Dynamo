@@ -1305,6 +1305,10 @@ namespace Dynamo.Models
               // Need to set the FileName property here to show the file name in the view tab
               workspaceInfo.FileName = filePath;
 
+              // The scale factor is being defaulted to 1 (instead of 0) to enable 
+              // geometry display when loading JSON
+              workspaceInfo.ScaleFactor = 1;
+
               // TODO: Figure out JSON migration strategy
               if (true) //MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
               {
