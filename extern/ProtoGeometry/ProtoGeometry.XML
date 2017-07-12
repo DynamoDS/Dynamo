@@ -78,6 +78,11 @@
         <member name="M:Autodesk.DesignScript.Geometry.GeometryGraphicItem.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage,Autodesk.DesignScript.Interfaces.TessellationParameters)">
             <notranslation>true</notranslation>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Arc.ToString">
+            <summary>
+            Get a string representation of the Arc
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByThreePoints(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>
             Create an arc by providing three sequential points along its circumference.
@@ -219,6 +224,11 @@
             <search>
             arc,arcs
             </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ToString">
+            <summary>
+            Get a string representation of the BoundingBox
+            </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.Equals(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
             <summary>
@@ -367,6 +377,11 @@
             converttosurfaces,convert2surfaces,bbtosrfs,bbtosrfs,bounding to surfaces,bound to poly,convert2poly
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Circle.ToString">
+            <summary>
+            Get a string representation of the Circle
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
             <summary>
             Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.
@@ -433,6 +448,11 @@
             The radius of the circle
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoEdge.ToString">
+            <summary>
+            Get a string representation of the CoEdge
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoEdge.Previous">
             <summary>
             The previous CoEdge in the containing Loop
@@ -476,6 +496,11 @@
         <member name="P:Autodesk.DesignScript.Geometry.CoEdge.ParameterCurve">
             <summary>
             Curve in parametric space of the owner surface. The curve is in 2D form, thus Z coordinates of this curve are 0.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Cone.ToString">
+            <summary>
+            Get a string representation of the Cone
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByPointsRadius(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double)">
@@ -573,6 +598,11 @@
             cone,cones
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ToString">
+            <summary>
+            Get a string representation of the Cuboid
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ByLengths(System.Double,System.Double,System.Double)">
             <summary>
             Create a Cuboid centered at WCS origin, with width, length, and height.
@@ -635,6 +665,11 @@
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Height">
             <summary>
             Returns height distance.                         Note: This return the input dimensions of the Cuboid, NOT the                   actual world space dimensions. In other words, if you create a Cuboid                   width (X-axis) length 10, and transform it to a CoordinateSystem with                   2 times scaling in X, the width will still be 10. ASM does not allow you                   to extract the Vertices of a body in any predictable order, so it                    impossible to determine the dimensions after a transform.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToString">
+            <summary>
+            Get a string representation of the Curve
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ByParameterLineOnSurface(Autodesk.DesignScript.Geometry.Surface,Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
@@ -1423,6 +1458,11 @@
             fitcurve,reducecurve,simplecurve,approximate
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ToString">
+            <summary>
+            Get a string representation of the Cylinder
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ByRadiusHeight(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
             <summary>
             Construct a Solid Cylinder defined by a parent CoordinateSystem, the radius, and the height of the cylinder
@@ -1452,6 +1492,27 @@
             The radius of the Cylinder
             </summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Cylinder.Height">
+            <summary>
+            The total height
+            </summary>
+            <search>
+            cylinder
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Cylinder.Axis">
+            <summary>
+            Axis of the cylinder
+            </summary>
+            <search>
+            cylinder
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Edge.ToString">
+            <summary>
+            Get a string representation of the Edge
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Edge.CurveGeometry">
             <summary>
             The underlying Curve making up the Edge
@@ -1475,6 +1536,11 @@
         <member name="P:Autodesk.DesignScript.Geometry.Edge.CoEdges">
             <summary>
             The CoEdges associated with this Edge
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ToString">
+            <summary>
+            Get a string representation of the Ellipse
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByOriginRadii(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
@@ -1538,6 +1604,11 @@
         <member name="P:Autodesk.DesignScript.Geometry.Ellipse.MinorAxis">
             <summary>
             The minor axis of the Ellipse.  This is the shorter axis.  The length of the Vector is the Minor radius.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ToString">
+            <summary>
+            Get a string representation of the EllipseArc
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiAngles(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double,System.Double)">
@@ -1616,6 +1687,11 @@
             ellipsearc,arcs
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Face.ToString">
+            <summary>
+            Get a string representation of the Face
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Face.Edges">
             <summary>
             All of the Edges around this Face in counterclockwise order
@@ -1648,6 +1724,11 @@
             The underlying Surface making up the Face
             </summary>
             <returns>  </returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Helix.ToString">
+            <summary>
+            Get a string representation of the Helix
+            </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Helix.ByAxis(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
             <summary>
@@ -1690,6 +1771,11 @@
             <search>
             origin,helixstart
             </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.IndexGroup.ToString">
+            <summary>
+            Get a string representation of the IndexGroup
+            </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.IndexGroup.Equals(System.Object)">
             <summary>
@@ -1754,6 +1840,11 @@
             The fourth index
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Line.ToString">
+            <summary>
+            Get a string representation of the Line
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>
             Creates a straight Line between two input Points.
@@ -1806,6 +1897,11 @@
             lines
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Loop.ToString">
+            <summary>
+            Get a string representation of the Loop
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Loop.Face">
             <summary>
             The containing Face of the Loop
@@ -1819,6 +1915,11 @@
         <member name="P:Autodesk.DesignScript.Geometry.Loop.IsExternal">
             <summary>
             Whether the loop is border or inner
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ToString">
+            <summary>
+            Get a string representation of the Mesh
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsFaceIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
@@ -1855,6 +1956,11 @@
             <search>
             mesh,meshes
             </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ToString">
+            <summary>
+            Get a string representation of the NurbsCurve
+            </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
             <summary>
@@ -2012,6 +2118,11 @@
             ptweight
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ToString">
+            <summary>
+            Get a string representation of the NurbsSurface
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByPoints(Autodesk.DesignScript.Geometry.Point[][],System.Int32,System.Int32)">
             <summary>
             Creates a NurbsSurface with specified interpolated points and  U and V degrees.  The resultant surface will pass through all of the points.
@@ -2156,6 +2267,11 @@
             </summary>
             <returns>  </returns>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Plane.ToString">
+            <summary>
+            Get a string representation of the Plane
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByOriginNormal(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
             <summary>
             Create a Plane centered at root Point, with input normal Vector.
@@ -2280,6 +2396,11 @@
             <search>
             alongnormal,moveplane
             </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Point.ToString">
+            <summary>
+            Get a string representation of the Point
+            </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Point.Equals(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
             <summary>
@@ -2428,6 +2549,11 @@
             <param name="projectionDirection">  </param>
             <returns>  </returns>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
+            <summary>
+            Get a string representation of the PolyCurve
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>
             Make PolyCurve by joining curves. Flips curve as needed for connectivity
@@ -2563,6 +2689,11 @@
             round,smooth,radius
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ToString">
+            <summary>
+            Get a string representation of the Polygon
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
             <summary>
             Construct a Polygon Curve by connecting Points.
@@ -2615,6 +2746,11 @@
             </summary>
             <param name="point">  </param>
             <returns>  </returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ToString">
+            <summary>
+            Get a string representation of the PolySurface
+            </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>
@@ -2772,6 +2908,11 @@
             bevel,flattenedges
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ToString">
+            <summary>
+            Get a string representation of the Rectangle
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByCornerPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
             <summary>
             Create a Rectangle by four corner Points.
@@ -2845,6 +2986,11 @@
             <search>
             rectY,recty
             </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Solid.ToString">
+            <summary>
+            Get a string representation of the Solid
+            </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByJoinedSurfaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
             <summary>
@@ -3035,6 +3181,11 @@
             bevel,flattenedges
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Sphere.ToString">
+            <summary>
+            Get a string representation of the Sphere
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
             <summary>
             Create a Solid Sphere cetered at the input Point, with given radius.
@@ -3074,6 +3225,11 @@
         <member name="P:Autodesk.DesignScript.Geometry.Sphere.Radius">
             <summary>
             Return the radius of the Sphere.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToString">
+            <summary>
+            Get a string representation of the Surface
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
@@ -3442,6 +3598,11 @@
             projecttosurface,projectonto
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Topology.ToString">
+            <summary>
+            Get a string representation of the Topology
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Topology.Vertices">
             <summary>
             The Vertices of the Topology
@@ -3455,6 +3616,11 @@
         <member name="P:Autodesk.DesignScript.Geometry.Topology.Faces">
             <summary>
             The Faces of the Topology
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineEdge.ToString">
+            <summary>
+            Get a string representation of the TSplineEdge
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineEdge.AdjacentFaces">
@@ -3498,6 +3664,11 @@
             </summary>
             <returns>  </returns>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineFace.ToString">
+            <summary>
+            Get a string representation of the TSplineFace
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineFace.Edges">
             <summary>
             All of the TSplineEdges around this Face in counterclockwise order
@@ -3533,6 +3704,11 @@
             A bunch of TSplineFace properties: uvnFrame, index, valence and number of sides
             </summary>
             <returns>  </returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ToString">
+            <summary>
+            Get a string representation of the TSplineInitialSymmetry
+            </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ByRadial(System.Int32)">
             <summary>
@@ -3581,6 +3757,11 @@
             Number of faces in symmetry segment. Only available if t-spline has radial symmetry.
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineReflection.ToString">
+            <summary>
+            Get a string representation of the TSplineReflection
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineReflection.ByAxial(Autodesk.DesignScript.Geometry.Plane)">
             <summary>
             Create axial reflection for t-spline symmetry by given plane.
@@ -3626,6 +3807,11 @@
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineReflection.Axis">
             <summary>
             Axis of the reflection
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.ToString">
+            <summary>
+            Get a string representation of the TSplineTopology
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.Vertices">
@@ -3771,6 +3957,11 @@
             tspline,face,byindex
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineUVNFrame.ToString">
+            <summary>
+            Get a string representation of the TSplineUVNFrame
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineUVNFrame.Position">
             <summary>
             Point of the TopologyItem on the hull
@@ -3789,6 +3980,11 @@
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineUVNFrame.Normal">
             <summary>
             Normal of the TopologyItem
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineVertex.ToString">
+            <summary>
+            Get a string representation of the TSplineVertex
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineVertex.AdjacentEdges">
@@ -4924,6 +5120,11 @@
             <returns>A set of newly loaded T-Spline Surfaces</returns>
             <search>tspline,import,load,tss,file</search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.UV.ToString">
+            <summary>
+            Get a string representation of the UV
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.UV.Equals(System.Object)">
             <summary>
             Compare two UV's
@@ -4963,6 +5164,11 @@
             <search>
             uv,uvs
             </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Vector.ToString">
+            <summary>
+            Get a string representation of the Vector
+            </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Equals(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
             <summary>
@@ -5237,6 +5443,11 @@
             rotation angle
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Vertex.ToString">
+            <summary>
+            Get a string representation of the Vertex
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Vertex.PointGeometry">
             <summary>
             The Point where this Vertex is located
@@ -5250,6 +5461,11 @@
         <member name="P:Autodesk.DesignScript.Geometry.Vertex.AdjacentFaces">
             <summary>
             The Faces adjacent to this Vertex
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ToString">
+            <summary>
+            Get a string representation of the CoordinateSystem
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Identity">
