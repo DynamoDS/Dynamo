@@ -38,7 +38,6 @@ using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
