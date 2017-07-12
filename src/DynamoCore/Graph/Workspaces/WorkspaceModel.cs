@@ -68,8 +68,8 @@ namespace Dynamo.Graph.Workspaces
         public double Y;
         public string Text;
 
-        // TODO: Figure out if this is necessary
-        //public int ZIndex;
+        // TODO, QNTM-1099: Figure out if this is necessary
+        // public int ZIndex;
     }
 
     /// <summary>
@@ -83,15 +83,15 @@ namespace Dynamo.Graph.Workspaces
       public double FontSize;
       public string Background;
 
-      // TODO: Determine if these are required
-      //public string Id;
-      //public double Left;
-      //public double Top;
-      //public double Width;
-      //public double Height;
-      //public double InitialTop;
-      //public double InitialHeight;
-      //public double TextBlockHeight;
+      // TODO, QNTM-1099: Determine if these are required
+      // public string Id;
+      // public double Left;
+      // public double Top;
+      // public double Width;
+      // public double Height;
+      // public double InitialTop;
+      // public double InitialHeight;
+      // public double TextBlockHeight;
   }
 
     /// <summary>
@@ -1590,15 +1590,15 @@ namespace Dynamo.Graph.Workspaces
             {
                 var guidValue = IdToGuidConverter(noteViewInfo.Id);
 
-                // TODO: Figure out if ZIndex needs to be set here as well
+                // TODO, QNTM-1099: Figure out if ZIndex needs to be set here as well
                 var noteModel = new NoteModel(noteViewInfo.X, noteViewInfo.Y, noteViewInfo.Text, guidValue);
                 this.AddNote(noteModel);
             }
 
             foreach (ExtraAnnotationViewInfo annotationViewInfo in workspaceViewInfo.Annotations)
             {
-                // TODO: Determine where to set the ID for annotations
-                //Guid guidValue = IdToGuidConverter(annotationInfo.Id);
+                // TODO, QNTM-1099: Determine where to set the ID for annotations
+                // Guid guidValue = IdToGuidConverter(annotationInfo.Id);
 
                 // Create a collection of nodes in the given annotation
                 var nodes = new List<NodeModel>();
@@ -1639,10 +1639,10 @@ namespace Dynamo.Graph.Workspaces
                 this.AddNewAnnotation(annotationModel);
             }
 
-            // TODO: These items are not in the extra view info
-            //Name = info.Name;
-            //Description = info.Description;
-            //FileName = info.FileName;
+            // TODO, QNTM-1099: These items are not in the extra view info
+            // Name = info.Name;
+            // Description = info.Description;
+            // FileName = info.FileName;
         }
 
         private Guid IdToGuidConverter(string id)
