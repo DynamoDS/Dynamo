@@ -26,7 +26,6 @@ using Newtonsoft.Json;
 using Dynamo.Wpf.ViewModels.Core;
 using System.Diagnostics;
 using Dynamo.Engine;
-using Dynamo.Wpf.ViewModels.Core.Converters;
 
 namespace Dynamo.ViewModels
 {
