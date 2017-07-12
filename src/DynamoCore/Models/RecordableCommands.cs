@@ -491,7 +491,7 @@ namespace Dynamo.Models
             internal static OpenFileCommand DeserializeCore(XmlElement element)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                string xmlFilePath = TryFindFile(helper.ReadString("FilePath"), element.OwnerDocument.BaseURI);
+                string xmlFilePath = TryFindFile(helper.ReadString("XmlFilePath"), element.OwnerDocument.BaseURI);
                 return new OpenFileCommand(xmlFilePath);
             }
 
@@ -517,7 +517,7 @@ namespace Dynamo.Models
             protected override void SerializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
-                helper.SetAttribute("FilePath", FilePath);
+                helper.SetAttribute("XmlFilePath", FilePath);
             }
 
             internal override void TrackAnalytics()
