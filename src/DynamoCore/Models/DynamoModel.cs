@@ -44,8 +44,7 @@ using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
-// TODO: For WorkspaceInfo deserialization, should probably be moved once
-//       it is determined what the plan is for WorkspaceInfo
+// NOTE, QNTM-1101: For WorkspaceInfo deserialization
 using Newtonsoft.Json;
 
 namespace Dynamo.Models
@@ -1298,18 +1297,20 @@ namespace Dynamo.Models
           {
             string fileContents = File.ReadAllText(filePath);
 
-            // TODO: Figure out the correct way to read in WorkspaceInfo, seems like lots of missing information in the file
+            // TODO, QNTM-1101: Figure out the plan for WorkspaceInfoin JSON files
+            // NOTE, short-term fix, QNTM-1100: Either implicit or explicit default WorkspaceInfo values 
+            // are being used for now, long-term fix is being tracked by QNTM-1101
             WorkspaceInfo workspaceInfo = JsonConvert.DeserializeObject<WorkspaceInfo>(fileContents);
             if (workspaceInfo != null)
             {
-              // Need to set the FileName property here to show the file name in the view tab
+              // NOTE, short-term fix, QNTM-1100: Default the FileName property here to show the file name in the view tab
               workspaceInfo.FileName = filePath;
 
-              // The scale factor is being defaulted to 1 (instead of 0) to enable 
-              // geometry display when loading JSON
+              // NOTE, short-term fix, QNTM-1100: Default The scale factor to 1 (instead of 0) to enable 
+              // proper geometry display when loading JSON
               workspaceInfo.ScaleFactor = 1;
 
-              // TODO: Figure out JSON migration strategy
+              // TODO, QNTM-1101: Figure out JSON migration strategy
               if (true) //MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
               {
                 WorkspaceModel ws;
@@ -1420,6 +1421,8 @@ namespace Dynamo.Models
                 Path.GetDirectoryName(workspaceInfo.FileName),
                 IsTestMode);
 
+            // TODO, QNTM-1108: WorkspaceModel.FromJson does not check a schema and so will not fail as long
+            // as the fileContents are valid JSON, regardless of if all required data is present or not
             workspace = WorkspaceModel.FromJson(
                 fileContents, 
                 LibraryServices,
@@ -1438,8 +1441,6 @@ namespace Dynamo.Models
 
             workspace.ScaleFactor = workspaceInfo.ScaleFactor;
 
-            // TODO: DeserializeObject does not appear to check a schema and so will not fail?
-            //       Need to figure out how to validate the input JSON data
             return true;
         }
 
