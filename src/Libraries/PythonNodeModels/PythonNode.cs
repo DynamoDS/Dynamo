@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 using Autodesk.DesignScript.Runtime;
@@ -11,8 +9,9 @@ using Autodesk.DesignScript.Runtime;
 using DSIronPython;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
 using ProtoCore.AST.AssociativeAST;
+using System.IO;
+using Dynamo.Configuration;
 
 namespace PythonNodeModels
 {
@@ -71,12 +70,19 @@ namespace PythonNodeModels
     {
         public PythonNode()
         {
-            script = "import clr\nclr.AddReference('ProtoGeometry')\n"
-                + "from Autodesk.DesignScript.Geometry import *\n"
-                + "#" + Properties.Resources.PythonScriptEditorInputComment + "\n"
-                + "dataEnteringNode = IN\n\n"
-                + "#" + Properties.Resources.PythonScriptEditorOutputComment + "\n"
-                + "OUT = 0";
+            var pythonTemplatePath = new PreferenceSettings().PythonTemplateFilePath;
+            if (!String.IsNullOrEmpty(pythonTemplatePath) && File.Exists(pythonTemplatePath))
+                script = File.ReadAllText(pythonTemplatePath);
+            else
+                script = Properties.Resources.PythonScriptEditorImports + Environment.NewLine + 
+                    "import clr" + Environment.NewLine + 
+                    "clr.AddReference('ProtoGeometry')" + Environment.NewLine +
+                    "from Autodesk.DesignScript.Geometry import *" + Environment.NewLine +
+                    "#" + Properties.Resources.PythonScriptEditorInputComment + Environment.NewLine +
+                    "dataEnteringNode = IN" + Environment.NewLine + Environment.NewLine + Environment.NewLine +
+                    Properties.Resources.PythonScriptEditorCodeComment + Environment.NewLine + Environment.NewLine +
+                    "#" + Properties.Resources.PythonScriptEditorOutputComment + Environment.NewLine +
+                    "OUT = 0";
 
             AddInput();
 
