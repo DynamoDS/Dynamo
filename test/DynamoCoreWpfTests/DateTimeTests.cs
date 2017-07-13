@@ -42,8 +42,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(string.Format("{0:" + PreferenceSettings.DefaultDateFormat + "}", dt), PreferenceSettings.DynamoDefaultTime.ToString(PreferenceSettings.DefaultDateFormat));
         }
 
-        // TODO: Enable when Open() is expanded to open Json
-        [Test, Ignore]
+        [Test]
         public void DateTimeNode_Open_Edit_SerializesCorrectly()
         {
             var path = Path.Combine(TestDirectory, "core", "dateTime", "DateTime.dyn");

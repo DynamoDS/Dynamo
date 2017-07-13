@@ -55,8 +55,7 @@ namespace Dynamo.Tests
             AssertManual(ws);
         }
 
-        // TODO: Enable when Open() is expanded to open Json
-        [Test, Ignore]
+        [Test]
         public void RunAutoFileWithSuccessfulRunSavesFlag()
         {
             //On save, if run auto & HasRunWithoutCrash = true, this should be saved

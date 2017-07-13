@@ -343,8 +343,7 @@ namespace Dynamo.Tests
               Assert.IsTrue(File.Exists(newPath));
           }
 
-        // TODO: Enable when Open() is expanded to open Json
-        [Test, Ignore]
+        [Test]
         public void CanSaveAndLoadStateWithMissingNodesWithoutLosingThem()
         {
             var model = CurrentDynamoModel;
