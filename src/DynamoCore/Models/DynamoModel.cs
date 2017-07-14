@@ -113,7 +113,8 @@ namespace Dynamo.Models
         public event Action<object> WorkspaceOpening;
         internal void OnWorkspaceOpening(object obj)
         {
-            WorkspaceOpening?.Invoke(obj);
+            var handler = WorkspaceOpening;
+            if (handler != null) handler(obj);
         }
 
         /// <summary>
