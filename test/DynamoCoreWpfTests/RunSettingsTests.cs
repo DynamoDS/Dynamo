@@ -132,7 +132,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(homeSpace.RunSettings.RunPeriod, RunSettings.DefaultRunPeriod);
         }
 
-        [Test]
+        // TODO, QNTM-1100: Re-enable this test once the strategy for WorkspaceInfo has been decided on
+        [Test, Ignore]
         public void RunSettingsControllerSavesAndLoads()
         {
             var homeSpace = GetHomeSpace();
