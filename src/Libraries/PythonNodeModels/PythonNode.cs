@@ -13,6 +13,7 @@ using ProtoCore.AST.AssociativeAST;
 using System.IO;
 using Dynamo.Configuration;
 using System.Windows.Forms;
+using System.Web.Script.Serialization;
 
 namespace PythonNodeModels
 {
@@ -71,8 +72,9 @@ namespace PythonNodeModels
     {
         public PythonNode()
         {
-            var settings = Dynamo.Models.DynamoModel.TestStaticProp;
-            MessageBox.Show("Dynamo settings say that :" + Environment.NewLine + settings);
+            var settings = Dynamo.Models.DynamoModel.PublicSettings;
+            var json = new JavaScriptSerializer().Serialize(settings);
+            MessageBox.Show("Dynamo settings say that :" + Environment.NewLine + json);
             var pythonTemplatePath = new PreferenceSettings().PythonTemplateFilePath;
             if (!String.IsNullOrEmpty(pythonTemplatePath) && File.Exists(pythonTemplatePath))
                 script = File.ReadAllText(pythonTemplatePath);

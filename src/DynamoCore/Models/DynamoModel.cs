@@ -175,7 +175,7 @@ namespace Dynamo.Models
         /// Setting this flag enables creation of an XML in following format that records
         /// node mapping information - which old node has been converted to which to new node(s)
         /// </summary>
-        public static string TestStaticProp { get { return "this is a static property"; }  }
+        public static PreferenceSettings PublicSettings { get; set; }
 
         #endregion
 
@@ -284,7 +284,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Preference settings for this instance of Dynamo.
         /// </summary>
-        public readonly PreferenceSettings PreferenceSettings;
+        public static readonly PreferenceSettings PreferenceSettings;
 
         /// <summary>
         ///     Node Factory, used for creating and intantiating loaded Dynamo nodes.
@@ -545,6 +545,7 @@ namespace Dynamo.Models
             if (settings != null)
             {
                 PreferenceSettings = settings;
+                PublicSettings = settings;
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             }
 
@@ -570,10 +571,12 @@ namespace Dynamo.Models
                 {
                     var isFirstRun = PreferenceSettings.IsFirstRun;
                     PreferenceSettings = migrator.PreferenceSettings;
+                    PublicSettings = migrator.PreferenceSettings;
 
                     // Preserve the preference settings for IsFirstRun as this needs to be set
                     // only by UsageReportingManager
                     PreferenceSettings.IsFirstRun = isFirstRun;
+                    PublicSettings.IsFirstRun = isFirstRun;
                 }
             }
             InitializePreferences(PreferenceSettings);
