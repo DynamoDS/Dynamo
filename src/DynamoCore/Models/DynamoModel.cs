@@ -171,6 +171,12 @@ namespace Dynamo.Models
         /// </summary>
         public static bool EnableMigrationLogging { get; set; }
 
+        /// <summary>
+        /// Setting this flag enables creation of an XML in following format that records
+        /// node mapping information - which old node has been converted to which to new node(s)
+        /// </summary>
+        public static string TestStaticProp { get { return "this is a static property"; }  }
+
         #endregion
 
         #region public properties

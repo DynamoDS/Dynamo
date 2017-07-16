@@ -12,6 +12,7 @@ using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using System.IO;
 using Dynamo.Configuration;
+using System.Windows.Forms;
 
 namespace PythonNodeModels
 {
@@ -70,6 +71,8 @@ namespace PythonNodeModels
     {
         public PythonNode()
         {
+            var settings = Dynamo.Models.DynamoModel.TestStaticProp;
+            MessageBox.Show("Dynamo settings say that :" + Environment.NewLine + settings);
             var pythonTemplatePath = new PreferenceSettings().PythonTemplateFilePath;
             if (!String.IsNullOrEmpty(pythonTemplatePath) && File.Exists(pythonTemplatePath))
                 script = File.ReadAllText(pythonTemplatePath);
