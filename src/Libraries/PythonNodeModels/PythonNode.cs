@@ -76,12 +76,12 @@ namespace PythonNodeModels
                 script = "#" + Properties.Resources.PythonScriptEditorImports + Environment.NewLine + 
                     "import clr" + Environment.NewLine + 
                     "clr.AddReference('ProtoGeometry')" + Environment.NewLine +
-                    "from Autodesk.DesignScript.Geometry import *" + Environment.NewLine +
+                    "from Autodesk.DesignScript.Geometry import *" + Environment.NewLine + Environment.NewLine +
                     "#" + Properties.Resources.PythonScriptEditorInputComment + Environment.NewLine +
                     "dataEnteringNode = IN" + Environment.NewLine + Environment.NewLine + 
                     "#" + Properties.Resources.PythonScriptEditorCodeComment + Environment.NewLine + Environment.NewLine +
                     "#" + Properties.Resources.PythonScriptEditorOutputComment + Environment.NewLine +
-                    "OUT = yourOutputVariableHere";
+                    "OUT = 0";
 
             AddInput();
 
