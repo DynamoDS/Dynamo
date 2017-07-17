@@ -73,14 +73,14 @@ namespace PythonNodeModels
             if (!String.IsNullOrEmpty(pythonTemplatePath) && File.Exists(pythonTemplatePath))
                 script = File.ReadAllText(pythonTemplatePath);
             else
-                script = "#" + Properties.Resources.PythonScriptEditorImports + Environment.NewLine + 
+                script = "# " + Properties.Resources.PythonScriptEditorImports + Environment.NewLine + 
                     "import clr" + Environment.NewLine + 
                     "clr.AddReference('ProtoGeometry')" + Environment.NewLine +
                     "from Autodesk.DesignScript.Geometry import *" + Environment.NewLine + Environment.NewLine +
-                    "#" + Properties.Resources.PythonScriptEditorInputComment + Environment.NewLine +
+                    "# " + Properties.Resources.PythonScriptEditorInputComment + Environment.NewLine +
                     "dataEnteringNode = IN" + Environment.NewLine + Environment.NewLine + 
-                    "#" + Properties.Resources.PythonScriptEditorCodeComment + Environment.NewLine + Environment.NewLine +
-                    "#" + Properties.Resources.PythonScriptEditorOutputComment + Environment.NewLine +
+                    "# " + Properties.Resources.PythonScriptEditorCodeComment + Environment.NewLine + Environment.NewLine +
+                    "# " + Properties.Resources.PythonScriptEditorOutputComment + Environment.NewLine +
                     "OUT = 0";
 
             AddInput();
