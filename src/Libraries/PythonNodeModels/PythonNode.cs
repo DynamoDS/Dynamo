@@ -23,7 +23,7 @@ namespace PythonNodeModels
         /// </summary>
         /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
         /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
-        protected PythonNodeBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base( inPorts, outPorts)
+        protected PythonNodeBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
         }
@@ -107,14 +107,14 @@ namespace PythonNodeModels
             if (!String.IsNullOrEmpty(pythonTemplatePath) && File.Exists(pythonTemplatePath))
                 script = File.ReadAllText(pythonTemplatePath);
             else
-                script = Properties.Resources.PythonScriptEditorImports + Environment.NewLine + 
-                    "import clr" + Environment.NewLine + 
+                script = "# " + Properties.Resources.PythonScriptEditorImports + Environment.NewLine +
+                    "import clr" + Environment.NewLine +
                     "clr.AddReference('ProtoGeometry')" + Environment.NewLine +
-                    "from Autodesk.DesignScript.Geometry import *" + Environment.NewLine +
-                    "#" + Properties.Resources.PythonScriptEditorInputComment + Environment.NewLine +
-                    "dataEnteringNode = IN" + Environment.NewLine + Environment.NewLine + Environment.NewLine +
-                    Properties.Resources.PythonScriptEditorCodeComment + Environment.NewLine + Environment.NewLine +
-                    "#" + Properties.Resources.PythonScriptEditorOutputComment + Environment.NewLine +
+                    "from Autodesk.DesignScript.Geometry import *" + Environment.NewLine + Environment.NewLine +
+                    "# " + Properties.Resources.PythonScriptEditorInputComment + Environment.NewLine +
+                    "dataEnteringNode = IN" + Environment.NewLine + Environment.NewLine +
+                    "# " + Properties.Resources.PythonScriptEditorCodeComment + Environment.NewLine + Environment.NewLine +
+                    "# " + Properties.Resources.PythonScriptEditorOutputComment + Environment.NewLine +
                     "OUT = 0";
 
             AddInput();
