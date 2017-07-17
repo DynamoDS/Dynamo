@@ -11,9 +11,6 @@ using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using System.IO;
-using Dynamo.Configuration;
-using System.Windows.Forms;
-using System.Web.Script.Serialization;
 
 namespace PythonNodeModels
 {
