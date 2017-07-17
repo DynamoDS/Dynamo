@@ -11,7 +11,6 @@ using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using System.IO;
-using Dynamo.Configuration;
 
 namespace PythonNodeModels
 {
@@ -70,19 +69,19 @@ namespace PythonNodeModels
     {
         public PythonNode()
         {
-            var pythonTemplatePath = new PreferenceSettings().PythonTemplateFilePath;
+            var pythonTemplatePath = Dynamo.Models.DynamoModel.PublicPreferenceSettings.PythonTemplateFilePath;
             if (!String.IsNullOrEmpty(pythonTemplatePath) && File.Exists(pythonTemplatePath))
                 script = File.ReadAllText(pythonTemplatePath);
             else
-                script = Properties.Resources.PythonScriptEditorImports + Environment.NewLine + 
+                script = "#" + Properties.Resources.PythonScriptEditorImports + Environment.NewLine + 
                     "import clr" + Environment.NewLine + 
                     "clr.AddReference('ProtoGeometry')" + Environment.NewLine +
                     "from Autodesk.DesignScript.Geometry import *" + Environment.NewLine +
                     "#" + Properties.Resources.PythonScriptEditorInputComment + Environment.NewLine +
-                    "dataEnteringNode = IN" + Environment.NewLine + Environment.NewLine + Environment.NewLine +
-                    Properties.Resources.PythonScriptEditorCodeComment + Environment.NewLine + Environment.NewLine +
+                    "dataEnteringNode = IN" + Environment.NewLine + Environment.NewLine + 
+                    "#" + Properties.Resources.PythonScriptEditorCodeComment + Environment.NewLine + Environment.NewLine +
                     "#" + Properties.Resources.PythonScriptEditorOutputComment + Environment.NewLine +
-                    "OUT = 0";
+                    "OUT = yourOutputVariableHere";
 
             AddInput();
 
