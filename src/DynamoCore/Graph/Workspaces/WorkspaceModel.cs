@@ -29,6 +29,72 @@ using Dynamo.Scheduler;
 namespace Dynamo.Graph.Workspaces
 {
     /// <summary>
+    /// Non view-specific container for additional view information required to
+    /// fully construct a WorkspaceModel from JSON
+    /// </summary>
+    public class ExtraWorkspaceViewInfo
+    {
+        public object Cameras;
+        public IEnumerable<ExtraNodeViewInfo> NodeViews;
+        public IEnumerable<ExtraNoteViewInfo> Notes;
+        public IEnumerable<ExtraAnnotationViewInfo> Annotations;
+        public double X;
+        public double Y;
+        public double Zoom;        
+    }
+
+    /// <summary>
+    /// Non view-specific container for additional node view information 
+    /// required to fully construct a WorkspaceModel from JSON
+    /// </summary>
+    public class ExtraNodeViewInfo
+    {
+        public string Id;
+        public string Name;
+        public double X;
+        public double Y;
+        public bool IsVisible;
+        public bool IsUpstreamVisible;
+    }
+
+    /// <summary>
+    /// Non view-specific container for additional note view information 
+    /// required to fully construct a WorkspaceModel from JSON
+    /// </summary>
+    public class ExtraNoteViewInfo
+    {
+        public string Id;
+        public double X;
+        public double Y;
+        public string Text;
+
+        // TODO, QNTM-1099: Figure out if this is necessary
+        // public int ZIndex;
+    }
+
+    /// <summary>
+    /// Non view-specific container for additional annotation view information 
+    /// required to fully construct a WorkspaceModel from JSON
+    /// </summary>
+    public class ExtraAnnotationViewInfo
+    {
+      public string Title;
+      public IEnumerable<string> Nodes;
+      public double FontSize;
+      public string Background;
+
+      // TODO, QNTM-1099: Determine if these are required
+      // public string Id;
+      // public double Left;
+      // public double Top;
+      // public double Width;
+      // public double Height;
+      // public double InitialTop;
+      // public double InitialHeight;
+      // public double TextBlockHeight;
+  }
+
+    /// <summary>
     /// Represents base class for all kind of workspaces which contains general data
     /// such as Name, collections of nodes, notes, annotations, etc.
     /// </summary>
@@ -1490,6 +1556,106 @@ namespace Dynamo.Graph.Workspaces
             var ws = JsonConvert.DeserializeObject<WorkspaceModel>(result, settings);
 
             return ws;
+        }
+
+        /// <summary>
+        /// Updates a workspace model with extra view information. When loading a workspace from JSON,
+        /// the data is split into two parts, model and view. This method sets the view information.
+        /// </summary>
+        /// <param name="workspaceViewInfo">The extra view information from the workspace to update the model with.</param>
+        public void UpdateWithExtraWorkspaceViewInfo(ExtraWorkspaceViewInfo workspaceViewInfo)
+        {
+            X = workspaceViewInfo.X;
+            Y = workspaceViewInfo.Y;
+            Zoom = workspaceViewInfo.Zoom; 
+
+            foreach (ExtraNodeViewInfo nodeViewInfo in workspaceViewInfo.NodeViews)
+            {
+                var guidValue = IdToGuidConverter(nodeViewInfo.Id);
+                var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
+                if (nodeModel != null)
+                {
+                    nodeModel.X = nodeViewInfo.X;
+                    nodeModel.Y = nodeViewInfo.Y;
+                    nodeModel.Name = nodeViewInfo.Name;
+
+                    // Note: These parameters are not directly accessible due to undo/redo considerations
+                    //       which should not be used during deserialization (see "ArgumentLacing" for details)
+                    nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeViewInfo.IsVisible.ToString()));
+                    nodeModel.UpdateValue(new UpdateValueParams("IsUpstreamVisible", nodeViewInfo.IsUpstreamVisible.ToString()));
+                }
+            }
+
+            foreach (ExtraNoteViewInfo noteViewInfo in workspaceViewInfo.Notes)
+            {
+                var guidValue = IdToGuidConverter(noteViewInfo.Id);
+
+                // TODO, QNTM-1099: Figure out if ZIndex needs to be set here as well
+                var noteModel = new NoteModel(noteViewInfo.X, noteViewInfo.Y, noteViewInfo.Text, guidValue);
+                this.AddNote(noteModel);
+            }
+
+            foreach (ExtraAnnotationViewInfo annotationViewInfo in workspaceViewInfo.Annotations)
+            {
+                // TODO, QNTM-1099: Determine where to set the ID for annotations
+                // Guid guidValue = IdToGuidConverter(annotationInfo.Id);
+
+                // Create a collection of nodes in the given annotation
+                var nodes = new List<NodeModel>();
+                foreach (string nodeId in annotationViewInfo.Nodes)
+                {
+                  var guidValue = IdToGuidConverter(nodeId);
+                  if (guidValue == null)
+                    continue;
+
+                  // NOTE: Some nodes may be annotations and not be found here
+                  var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
+                  if (nodeModel == null)
+                    continue;
+
+                  nodes.Add(nodeModel);
+                }
+
+                // Create a collection of notes in the given annotation
+                var notes = new List<NoteModel>();
+                foreach (string noteId in annotationViewInfo.Nodes)
+                {
+                  var guidValue = IdToGuidConverter(noteId);
+                  if (guidValue == null)
+                    continue;
+
+                  // NOTE: Some nodes may not be annotations and not be found here
+                  var noteModel = Notes.FirstOrDefault(note => note.GUID == guidValue);
+                  if (noteModel == null)
+                    continue;
+
+                  notes.Add(noteModel);
+                }
+
+                var annotationModel = new AnnotationModel(nodes, notes);
+                annotationModel.AnnotationText = annotationViewInfo.Title;
+                annotationModel.FontSize = annotationViewInfo.FontSize;
+                annotationModel.Background = annotationViewInfo.Background;
+                this.AddNewAnnotation(annotationModel);
+            }
+
+            // TODO, QNTM-1099: These items are not in the extra view info
+            // Name = info.Name;
+            // Description = info.Description;
+            // FileName = info.FileName;
+        }
+
+        private Guid IdToGuidConverter(string id)
+        {
+            Guid deterministicGuid;
+            if (!Guid.TryParse(id, out deterministicGuid))
+            {
+                Console.WriteLine("The id was not a guid, converting to a guid");
+                deterministicGuid = GuidUtility.Create(GuidUtility.UrlNamespace, id);
+                Console.WriteLine(id + " becomes " + deterministicGuid);
+            }
+
+            return deterministicGuid;
         }
     }
 }
