@@ -71,6 +71,17 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
+        /// The type of node.
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "CustomFunctionNode";
+            }
+        }
+
+        /// <summary>
         /// Returns customNode definition.
         /// </summary>
         [JsonIgnore]
