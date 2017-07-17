@@ -161,7 +161,7 @@ namespace Dynamo.Models
         public static bool IsHeadless { get; set; }
 
         /// <summary>
-        ///     Specifies whether or not Dynamo is in a crash-state.
+        /// Specifies whether or not Dynamo is in a crash-state.
         /// </summary>
         public static bool IsCrashing { get; set; }
 
@@ -170,6 +170,14 @@ namespace Dynamo.Models
         /// node mapping information - which old node has been converted to which to new node(s)
         /// </summary>
         public static bool EnableMigrationLogging { get; set; }
+
+        /// <summary>
+        /// This property is a static, thread-safe and read-only COPY of the current Dynamo settings
+        /// The property is updated when settings are updated through GUI and is only meant to provide a mechanism
+        /// to read Dynamo settings for nodes and other components that are not aware of Dynamo context
+        /// (such as current DynamoModel or DynamoViewModel)
+        /// </summary>
+        public static PreferenceSettings PublicPreferenceSettings { get; private set; }
 
         #endregion
 
@@ -579,15 +587,16 @@ namespace Dynamo.Models
             if (PreferenceSettings.CustomPackageFolders.Count == 0)
                 PreferenceSettings.CustomPackageFolders = new List<string> {pathManager.UserDataDirectory};
 
-            //Make sure that the default package folder is added in the list if custom packages folder.
+            // Make sure that the default package folder is added in the list if custom packages folder.
             var userDataFolder = pathManager.GetUserDataFolder(); //Get the default user data path
             if (Directory.Exists(userDataFolder) && !PreferenceSettings.CustomPackageFolders.Contains(userDataFolder))
             {
                 PreferenceSettings.CustomPackageFolders.Add(userDataFolder);
             }
 
+            // propagate settings to dependants
             pathManager.Preferences = PreferenceSettings;
-
+            PublicPreferenceSettings = PreferenceSettings;
 
             SearchModel = new NodeSearchModel();
             SearchModel.ItemProduced +=
@@ -1429,6 +1438,7 @@ namespace Dynamo.Models
                     Logger.Log("Backup file is saved: " + savePath);
                 }
                 PreferenceSettings.BackupFiles.AddRange(backupFilesDict.Values);
+                PublicPreferenceSettings = PreferenceSettings;
             });
         }
 
