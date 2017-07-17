@@ -284,7 +284,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Preference settings for this instance of Dynamo.
         /// </summary>
-        public static readonly PreferenceSettings PreferenceSettings;
+        public readonly PreferenceSettings PreferenceSettings;
 
         /// <summary>
         ///     Node Factory, used for creating and intantiating loaded Dynamo nodes.
