@@ -983,7 +983,7 @@ namespace Dynamo.Tests
             var lineID = "c8aaaf1b-975a-4075-99e0-fb0092a232fb";
             Assert.IsNotNull(lineID);
             var cylinder = GetPreviewValue(lineID);
-            Assert.AreEqual(cylinder.ToString(), "Cylinder(Radius = 6.000)");
+            Assert.AreEqual(cylinder.ToString(), "Cylinder(Radius = 6.000, Height = 20.000, Axis = Vector(X = -20.000, Y = 0.000, Z = 0.000, Length = 20.000))");
             
             //check CBN which contain a function
             var cbnId = "18e3cdff-8932-4e31-ae82-98c3beee8b08";
