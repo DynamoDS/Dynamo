@@ -180,7 +180,6 @@ namespace Dynamo.Graph.Nodes
         ///     Returns whether the node is to be included in visualizations.
         /// </summary>
         [JsonIgnore]
-        [JsonProperty("ShowGeometry")]
         public bool IsVisible
         {
             get
