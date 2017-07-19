@@ -62,6 +62,15 @@ namespace Dynamo.Tests
             public bool UseLevels { get; set; }
             public bool KeepListStructure { get; set; }
             public int Level { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                var other = (obj as portComparisonData);
+                return ID == other.ID &&
+                    other.KeepListStructure == this.KeepListStructure && 
+                    other.Level == this.Level && 
+                    other.UseLevels == this.UseLevels;
+            }
         }
 
         /// <summary>
@@ -180,8 +189,12 @@ namespace Dynamo.Tests
             {
                 //convert the old guid to the new guid
                 var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, this.modelsGuidToIdMap[portkvp.Key]);
-                Assert.IsTrue(b.PortDataMap.ContainsKey(portkvp.Key));
-                Assert.AreEqual(a.PortDataMap[portkvp.Key], b.PortDataMap[newGuid]);
+                Assert.IsTrue(b.PortDataMap.ContainsKey(newGuid));
+                var aPort = a.PortDataMap[portkvp.Key];
+                var bPort= b.PortDataMap[newGuid];
+                Assert.AreEqual(aPort.UseLevels,bPort.UseLevels);
+                Assert.AreEqual(aPort.KeepListStructure, bPort.KeepListStructure);
+                Assert.AreEqual(aPort.Level, bPort.Level);
             }
 
             foreach (var kvp in a.NodeDataMap)
