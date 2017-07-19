@@ -84,6 +84,7 @@ namespace Dynamo.Tests
             public int ConnectorCount { get; set; }
             public Dictionary<Guid, Type> NodeTypeMap { get; set; }
             public Dictionary<Guid, List<object>> NodeDataMap { get; set; }
+            public Dictionary<Guid,string> NodeReplicationMap { get; set; }
             public Dictionary<Guid, int> InportCountMap { get; set; }
             public Dictionary<Guid, int> OutportCountMap { get; set; }
             public Dictionary<Guid, portComparisonData> PortDataMap { get; set; }
@@ -100,10 +101,12 @@ namespace Dynamo.Tests
                 InportCountMap = new Dictionary<Guid, int>();
                 OutportCountMap = new Dictionary<Guid, int>();
                 PortDataMap = new Dictionary<Guid, portComparisonData>();
+                NodeReplicationMap = new Dictionary<Guid, string>();
 
                 foreach (var n in workspace.Nodes)
                 {
                     NodeTypeMap.Add(n.GUID, n.GetType());
+                    NodeReplicationMap.Add(n.GUID,n.ArgumentLacing.ToString());
 
                     var portvalues = n.OutPorts.Select(p =>
                         GetDataOfValue(n.GetValue(p.Index, controller))).ToList<object>();
@@ -197,6 +200,14 @@ namespace Dynamo.Tests
                 Assert.AreEqual(aPort.Level, bPort.Level);
             }
 
+            foreach(var kvp in a.NodeReplicationMap)
+            {
+                var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, this.modelsGuidToIdMap[kvp.Key]);
+                var valueA = kvp.Value;
+                var valueB = b.NodeReplicationMap[newGuid];
+                Assert.AreEqual(valueA, valueB);
+            }
+
             foreach (var kvp in a.NodeDataMap)
             {
                 var valueA = kvp.Value;
@@ -252,6 +263,13 @@ namespace Dynamo.Tests
             {
                 Assert.IsTrue(b.PortDataMap.ContainsKey(portkvp.Key));
                 Assert.AreEqual(a.PortDataMap[portkvp.Key], b.PortDataMap[portkvp.Key]);
+            }
+
+            foreach (var kvp in a.NodeReplicationMap)
+            {
+                var valueA = kvp.Value;
+                var valueB = b.NodeReplicationMap[kvp.Key];
+                Assert.AreEqual(valueA, valueB);
             }
 
             foreach (var kvp in a.NodeDataMap)
