@@ -41,6 +41,7 @@ namespace Dynamo.Graph.Nodes
         private readonly List<string> tempVariables = new List<string>();
         private string previewVariable;
         private readonly LibraryServices libraryServices;
+        private const string ReachTempVarForNonAssignment = "temp6BBA4B28C5E54CF89F300D510499A11E_";
 
         private bool shouldFocus = true;
 
@@ -801,6 +802,19 @@ namespace Dynamo.Graph.Nodes
                 string tooltip = def.Key;
                 if (tempVariables.Contains(def.Key))
                     tooltip = Formatting.TOOL_TIP_FOR_TEMP_VARIABLE;
+
+                // there's hardcoded prefix tooltip for all non unassigned variables on CBN.
+                // but also there's a delta between 0.9 and 1.0 versions prefixes.
+                // to overcome it we cast dynamo prefix to universal pre-defined one.
+                var tooltip_guid = ProtoCore.DSASM.Constants.kTempVarForNonAssignment;
+
+                if (tooltip.IndexOf(tooltip_guid) != -1)
+                {
+                    var tempArray = tooltip.Split(new string[] { tooltip_guid }, System.StringSplitOptions.None);
+                    tooltip = (tempArray.Length > 1)
+                        ? ReachTempVarForNonAssignment + tempArray[1]
+                        : tooltip;
+                }
 
                 OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
                 {
