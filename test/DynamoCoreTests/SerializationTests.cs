@@ -56,7 +56,7 @@ namespace Dynamo.Tests
             lastExecutionDuration = (TimeSpan)session.GetParameterValue(Session.ParameterKeys.LastExecutionDuration);
         }
 
-        internal class portComparisonData
+        internal class PortComparisonData
         {
             public string ID { get; set; }
             public bool UseLevels { get; set; }
@@ -65,7 +65,7 @@ namespace Dynamo.Tests
 
             public override bool Equals(object obj)
             {
-                var other = (obj as portComparisonData);
+                var other = (obj as PortComparisonData);
                 return ID == other.ID &&
                     other.KeepListStructure == this.KeepListStructure && 
                     other.Level == this.Level && 
@@ -87,7 +87,7 @@ namespace Dynamo.Tests
             public Dictionary<Guid,string> NodeReplicationMap { get; set; }
             public Dictionary<Guid, int> InportCountMap { get; set; }
             public Dictionary<Guid, int> OutportCountMap { get; set; }
-            public Dictionary<Guid, portComparisonData> PortDataMap { get; set; }
+            public Dictionary<Guid, PortComparisonData> PortDataMap { get; set; }
             public string DesignScript { get; set; }
 
             public WorkspaceComparisonData(WorkspaceModel workspace, EngineController controller)
@@ -100,7 +100,7 @@ namespace Dynamo.Tests
                 NodeDataMap = new Dictionary<Guid, List<object>>();
                 InportCountMap = new Dictionary<Guid, int>();
                 OutportCountMap = new Dictionary<Guid, int>();
-                PortDataMap = new Dictionary<Guid, portComparisonData>();
+                PortDataMap = new Dictionary<Guid, PortComparisonData>();
                 NodeReplicationMap = new Dictionary<Guid, string>();
 
                 foreach (var n in workspace.Nodes)
@@ -114,25 +114,24 @@ namespace Dynamo.Tests
                     n.InPorts.ToList().ForEach(p =>
                     {
                         PortDataMap.Add(p.GUID,
-    new portComparisonData
-    {
-        ID = p.GUID.ToString(),
-        UseLevels = p.UseLevels,
-        KeepListStructure = p.KeepListStructure,
-        Level = p.Level
-    });
+                            new PortComparisonData
+                            {
+                                ID = p.GUID.ToString(),
+                                UseLevels = p.UseLevels,
+                                KeepListStructure = p.KeepListStructure,
+                                Level = p.Level
+                            });
                     });
 
                     n.OutPorts.ToList().ForEach(p =>
                     {
                         PortDataMap.Add(p.GUID,
-    new portComparisonData
-    {
-        ID = p.GUID.ToString(),
+                            new PortComparisonData
+                            {
+                                ID = p.GUID.ToString(),
 
-    });
+                            });
                     });
-
 
                     NodeDataMap.Add(n.GUID, portvalues);
                     InportCountMap.Add(n.GUID, n.InPorts.Count);
@@ -200,7 +199,7 @@ namespace Dynamo.Tests
                 Assert.AreEqual(aPort.Level, bPort.Level);
             }
 
-            foreach(var kvp in a.NodeReplicationMap)
+            foreach (var kvp in a.NodeReplicationMap)
             {
                 var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, this.modelsGuidToIdMap[kvp.Key]);
                 var valueA = kvp.Value;
@@ -259,7 +258,7 @@ namespace Dynamo.Tests
                 Assert.AreEqual(countA, countB, string.Format("One {0} node has {1} outports, while the other has {2}", a.NodeTypeMap[kvp.Key], countA, countB));
             }
 
-            foreach(var portkvp in a.PortDataMap)
+            foreach (var portkvp in a.PortDataMap)
             {
                 Assert.IsTrue(b.PortDataMap.ContainsKey(portkvp.Key));
                 Assert.AreEqual(a.PortDataMap[portkvp.Key], b.PortDataMap[portkvp.Key]);
