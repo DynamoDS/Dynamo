@@ -257,6 +257,7 @@ namespace Dynamo.ViewModels
             get { return true; }
         }
 
+        [JsonProperty("ShowGeometry")]
         public bool IsVisible
         {
             get
