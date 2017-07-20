@@ -53,6 +53,6 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// This event is fired when a workspace is opened.
         /// </summary>
-        event Action<XmlDocument> WorkspaceOpening;
+        event Action<object> WorkspaceOpening;
     }
 }

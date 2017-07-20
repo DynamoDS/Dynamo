@@ -1198,21 +1198,38 @@ namespace Dynamo.ViewModels
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
             // that can't be handled reliably
-            string xmlFilePath = string.Empty;
+            string filePath = string.Empty;
             bool forceManualMode = false; 
             try
             {
                 var packedParams = parameters as Tuple<string, bool>;
                 if (packedParams != null)
                 {
-                    xmlFilePath = packedParams.Item1;
+                    filePath = packedParams.Item1;
                     forceManualMode = packedParams.Item2;
                 }
                 else
                 {
-                    xmlFilePath = parameters as string;
+                    filePath = parameters as string;
                 }
-                ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath, forceManualMode));
+                ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
+
+                string fileContents = File.ReadAllText(filePath);
+                try
+                {
+                    // This call will fail in the case of an XML file
+                    ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
+
+                    this.Model.CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo);
+                    this.Model.OnWorkspaceOpening(viewInfo);
+                }
+                catch (Exception e)
+                {
+                    this.ShowStartPage = false; // Hide start page if there's one.
+                    return;
+                }
+
+                // TODO: Finish initialization of the WorkspaceViewModel
             }
             catch (Exception e)
             {
@@ -1223,15 +1240,15 @@ namespace Dynamo.ViewModels
                     // Catch all the IO exceptions and file access here. The message provided by .Net is clear enough to indicate the problem in this case.
                     if (e is IOException || e is UnauthorizedAccessException)
                     {
-                        errorMsgString = String.Format(e.Message, xmlFilePath);
+                        errorMsgString = String.Format(e.Message, filePath);
                     }
                     else if (e is System.Xml.XmlException)
                     {
-                        errorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, xmlFilePath);
+                        errorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, filePath);
                     }
                     else
                     {
-                        errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, xmlFilePath);
+                        errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, filePath);
                     }
                     model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
                     System.Windows.MessageBox.Show(errorMsgString);
@@ -1658,7 +1675,7 @@ namespace Dynamo.ViewModels
 
             FileDialog _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
 
-            //if the xmlPath is not empty set the default directory
+            // If the filePath is not empty set the default directory
             if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
             {
                 var fi = new FileInfo(vm.Model.CurrentWorkspace.FileName);

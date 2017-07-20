@@ -56,6 +56,23 @@ namespace Dynamo.Tests
             lastExecutionDuration = (TimeSpan)session.GetParameterValue(Session.ParameterKeys.LastExecutionDuration);
         }
 
+        internal class PortComparisonData
+        {
+            public string ID { get; set; }
+            public bool UseLevels { get; set; }
+            public bool KeepListStructure { get; set; }
+            public int Level { get; set; }
+
+            public override bool Equals(object obj)
+            {
+                var other = (obj as PortComparisonData);
+                return ID == other.ID &&
+                    other.KeepListStructure == this.KeepListStructure && 
+                    other.Level == this.Level && 
+                    other.UseLevels == this.UseLevels;
+            }
+        }
+
         /// <summary>
         /// Caches workspaces data for comparison.
         /// </summary>
@@ -64,11 +81,13 @@ namespace Dynamo.Tests
             public Guid Guid { get; set; }
             public string Description { get; set; }
             public int NodeCount { get; set; }
-            public int ConnectorCount { get; set; }           
-            public Dictionary<Guid,Type> NodeTypeMap { get; set; }
-            public Dictionary<Guid,List<object>> NodeDataMap { get; set; }
-            public Dictionary<Guid,int> InportCountMap { get; set; }
-            public Dictionary<Guid,int> OutportCountMap { get; set; }
+            public int ConnectorCount { get; set; }
+            public Dictionary<Guid, Type> NodeTypeMap { get; set; }
+            public Dictionary<Guid, List<object>> NodeDataMap { get; set; }
+            public Dictionary<Guid,string> NodeReplicationMap { get; set; }
+            public Dictionary<Guid, int> InportCountMap { get; set; }
+            public Dictionary<Guid, int> OutportCountMap { get; set; }
+            public Dictionary<Guid, PortComparisonData> PortDataMap { get; set; }
             public string DesignScript { get; set; }
 
             public WorkspaceComparisonData(WorkspaceModel workspace, EngineController controller)
@@ -76,18 +95,43 @@ namespace Dynamo.Tests
                 Guid = workspace.Guid;
                 Description = workspace.Description;
                 NodeCount = workspace.Nodes.Count();
-                ConnectorCount = workspace.Connectors.Count();               
+                ConnectorCount = workspace.Connectors.Count();
                 NodeTypeMap = new Dictionary<Guid, Type>();
                 NodeDataMap = new Dictionary<Guid, List<object>>();
                 InportCountMap = new Dictionary<Guid, int>();
                 OutportCountMap = new Dictionary<Guid, int>();
+                PortDataMap = new Dictionary<Guid, PortComparisonData>();
+                NodeReplicationMap = new Dictionary<Guid, string>();
 
                 foreach (var n in workspace.Nodes)
                 {
                     NodeTypeMap.Add(n.GUID, n.GetType());
+                    NodeReplicationMap.Add(n.GUID,n.ArgumentLacing.ToString());
 
                     var portvalues = n.OutPorts.Select(p =>
                         GetDataOfValue(n.GetValue(p.Index, controller))).ToList<object>();
+
+                    n.InPorts.ToList().ForEach(p =>
+                    {
+                        PortDataMap.Add(p.GUID,
+                            new PortComparisonData
+                            {
+                                ID = p.GUID.ToString(),
+                                UseLevels = p.UseLevels,
+                                KeepListStructure = p.KeepListStructure,
+                                Level = p.Level
+                            });
+                    });
+
+                    n.OutPorts.ToList().ForEach(p =>
+                    {
+                        PortDataMap.Add(p.GUID,
+                            new PortComparisonData
+                            {
+                                ID = p.GUID.ToString(),
+
+                            });
+                    });
 
                     NodeDataMap.Add(n.GUID, portvalues);
                     InportCountMap.Add(n.GUID, n.InPorts.Count);
@@ -118,14 +162,14 @@ namespace Dynamo.Tests
 
         private void CompareWorkspacesDifferentGuids(WorkspaceComparisonData a, WorkspaceComparisonData b)
         {
-            var nodeDiff = a.NodeTypeMap.Select(x=>x.Value).Except(b.NodeTypeMap.Select(x => x.Value));
+            var nodeDiff = a.NodeTypeMap.Select(x => x.Value).Except(b.NodeTypeMap.Select(x => x.Value));
             if (nodeDiff.Any())
             {
                 Assert.Fail("The workspaces don't have the same number of nodes. The json workspace is missing: " + string.Join(",", nodeDiff.Select(i => i.ToString())));
             }
             Assert.AreEqual(a.NodeCount, b.NodeCount, "The workspaces don't have the same number of nodes.");
             Assert.AreEqual(a.ConnectorCount, b.ConnectorCount, "The workspaces don't have the same number of connectors.");
-            
+
             foreach (var kvp in a.InportCountMap)
             {
                 var countA = kvp.Value;
@@ -141,6 +185,26 @@ namespace Dynamo.Tests
                 var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, this.modelsGuidToIdMap[kvp.Key]);
                 var countB = b.OutportCountMap[newGuid];
                 Assert.AreEqual(countA, countB, string.Format("One {0} node has {1} outports, while the other has {2}", a.NodeTypeMap[kvp.Key], countA, countB));
+            }
+
+            foreach (var portkvp in a.PortDataMap)
+            {
+                //convert the old guid to the new guid
+                var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, this.modelsGuidToIdMap[portkvp.Key]);
+                Assert.IsTrue(b.PortDataMap.ContainsKey(newGuid));
+                var aPort = a.PortDataMap[portkvp.Key];
+                var bPort= b.PortDataMap[newGuid];
+                Assert.AreEqual(aPort.UseLevels,bPort.UseLevels);
+                Assert.AreEqual(aPort.KeepListStructure, bPort.KeepListStructure);
+                Assert.AreEqual(aPort.Level, bPort.Level);
+            }
+
+            foreach (var kvp in a.NodeReplicationMap)
+            {
+                var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, this.modelsGuidToIdMap[kvp.Key]);
+                var valueA = kvp.Value;
+                var valueB = b.NodeReplicationMap[newGuid];
+                Assert.AreEqual(valueA, valueB);
             }
 
             foreach (var kvp in a.NodeDataMap)
@@ -179,9 +243,9 @@ namespace Dynamo.Tests
             Assert.AreEqual(a.NodeCount, b.NodeCount, "The workspaces don't have the same number of nodes.");
             Assert.AreEqual(a.ConnectorCount, b.ConnectorCount, "The workspaces don't have the same number of connectors.");
             //TODO: Annotations / Note tests should be in viewmodel serialization tests.
-           // Assert.AreEqual(a.GroupCount, b.GroupCount, "The workspaces don't have the same number of groups.");
-           // Assert.AreEqual(a.NoteCount, b.NoteCount, "The workspaces don't have the same number of notes.");
-            foreach(var kvp in a.InportCountMap)
+            // Assert.AreEqual(a.GroupCount, b.GroupCount, "The workspaces don't have the same number of groups.");
+            // Assert.AreEqual(a.NoteCount, b.NoteCount, "The workspaces don't have the same number of notes.");
+            foreach (var kvp in a.InportCountMap)
             {
                 var countA = kvp.Value;
                 var countB = b.InportCountMap[kvp.Key];
@@ -192,6 +256,19 @@ namespace Dynamo.Tests
                 var countA = kvp.Value;
                 var countB = b.OutportCountMap[kvp.Key];
                 Assert.AreEqual(countA, countB, string.Format("One {0} node has {1} outports, while the other has {2}", a.NodeTypeMap[kvp.Key], countA, countB));
+            }
+
+            foreach (var portkvp in a.PortDataMap)
+            {
+                Assert.IsTrue(b.PortDataMap.ContainsKey(portkvp.Key));
+                Assert.AreEqual(a.PortDataMap[portkvp.Key], b.PortDataMap[portkvp.Key]);
+            }
+
+            foreach (var kvp in a.NodeReplicationMap)
+            {
+                var valueA = kvp.Value;
+                var valueB = b.NodeReplicationMap[kvp.Key];
+                Assert.AreEqual(valueA, valueB);
             }
 
             foreach (var kvp in a.NodeDataMap)
@@ -220,22 +297,22 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeSerializationTest()
         {
-            var customNodeTestPath = Path.Combine(TestDirectory , @"core\CustomNodes\TestAdd.dyn");
-            DoWorkspaceOpenAndCompare(customNodeTestPath, ConvertCurrentWorkspaceToJsonAndSave, CompareWorkspaces);
+            var customNodeTestPath = Path.Combine(TestDirectory, @"core\CustomNodes\TestAdd.dyn");
+            DoWorkspaceOpenAndCompare(customNodeTestPath, "json", ConvertCurrentWorkspaceToJsonAndSave, CompareWorkspaces, SaveWorkspaceComparisonData);
         }
 
         [Test]
         public void AllTypesSerialize()
         {
             var customNodeTestPath = Path.Combine(TestDirectory, @"core\serialization\serialization.dyn");
-            DoWorkspaceOpenAndCompare(customNodeTestPath, ConvertCurrentWorkspaceToJsonAndSave, CompareWorkspaces);
+            DoWorkspaceOpenAndCompare(customNodeTestPath, "json", ConvertCurrentWorkspaceToJsonAndSave, CompareWorkspaces, SaveWorkspaceComparisonData);
         }
 
         public object[] FindWorkspaces()
         {
             var di = new DirectoryInfo(TestDirectory);
             var fis = di.GetFiles("*.dyn", SearchOption.AllDirectories);
-            return fis.Select(fi=>fi.FullName).ToArray();
+            return fis.Select(fi => fi.FullName).ToArray();
         }
 
         /// <summary>
@@ -248,7 +325,7 @@ namespace Dynamo.Tests
         [Test, TestCaseSource("FindWorkspaces")]
         public void SerializationTest(string filePath)
         {
-            DoWorkspaceOpenAndCompare(filePath,ConvertCurrentWorkspaceToJsonAndSave,CompareWorkspaces);
+            DoWorkspaceOpenAndCompare(filePath, "json", ConvertCurrentWorkspaceToJsonAndSave, CompareWorkspaces, SaveWorkspaceComparisonData);
         }
 
         /// <summary>
@@ -264,7 +341,7 @@ namespace Dynamo.Tests
         public void SerializationNonGuidIdsTest(string filePath)
         {
             modelsGuidToIdMap.Clear();
-            DoWorkspaceOpenAndCompare(filePath,ConvertCurrentWorkspaceToNonGuidJsonAndSave, CompareWorkspacesDifferentGuids);
+            DoWorkspaceOpenAndCompare(filePath, "json_nonGuidIds", ConvertCurrentWorkspaceToNonGuidJsonAndSave, CompareWorkspacesDifferentGuids, SaveWorkspaceComparisonDataWithNonGuidIds);
         }
 
         private static List<string> bannedTests = new List<string>()
@@ -288,9 +365,10 @@ namespace Dynamo.Tests
                 "TestFrozen"
             };
 
-        private void DoWorkspaceOpenAndCompare(string filePath,
-            Func<DynamoModel,string,string> saveFunction,
-            Action<WorkspaceComparisonData, WorkspaceComparisonData> workspaceCompareFunction)
+        private void DoWorkspaceOpenAndCompare(string filePath, string dirName,
+            Func<DynamoModel, string, string> saveFunction,
+            Action<WorkspaceComparisonData, WorkspaceComparisonData> workspaceCompareFunction,
+            Action<WorkspaceComparisonData, string, TimeSpan> workspaceDataSaveFunction)
         {
             var openPath = filePath;
 
@@ -318,26 +396,26 @@ namespace Dynamo.Tests
                                     "of the graph will not execute; skipping test ...");
             }
 
-            if (((HomeWorkspaceModel)ws1).RunSettings.RunType== Models.RunType.Manual)
+            if (((HomeWorkspaceModel)ws1).RunSettings.RunType == Models.RunType.Manual)
             {
                 RunCurrentModel();
             }
 
             var wcd1 = new WorkspaceComparisonData(ws1, CurrentDynamoModel.EngineController);
 
-            var dirPath = Path.Combine(Path.GetTempPath(), "json");
+            var dirPath = Path.Combine(Path.GetTempPath(), dirName);
             if (!Directory.Exists(dirPath))
             {
                 Directory.CreateDirectory(dirPath);
             }
             var fi = new FileInfo(filePath);
-            var filePathBase = dirPath + @"\" +  Path.GetFileNameWithoutExtension(fi.Name);
+            var filePathBase = dirPath + @"\" + Path.GetFileNameWithoutExtension(fi.Name);
 
             ConvertCurrentWorkspaceToDesignScriptAndSave(filePathBase);
 
             string json = saveFunction(model, filePathBase);
 
-            SaveWorkspaceComparisonData(wcd1, filePathBase, lastExecutionDuration);
+            workspaceDataSaveFunction(wcd1, filePathBase, lastExecutionDuration);
 
             lastExecutionDuration = new TimeSpan();
 
@@ -418,7 +496,7 @@ namespace Dynamo.Tests
         private static void SaveWorkspaceComparisonData(WorkspaceComparisonData wcd1, string filePathBase, TimeSpan executionDuration)
         {
             var nodeData = new Dictionary<string, Dictionary<string, object>>();
-            foreach(var d in wcd1.NodeDataMap)
+            foreach (var d in wcd1.NodeDataMap)
             {
                 var t = wcd1.NodeTypeMap[d.Key];
                 var nodeDataDict = new Dictionary<string, object>();
@@ -437,6 +515,42 @@ namespace Dynamo.Tests
                                 Formatting = Formatting.Indented,
                                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                             });
+
+            var dataPath = filePathBase + ".data";
+            if (File.Exists(dataPath))
+            {
+                File.Delete(dataPath);
+            }
+            File.WriteAllText(dataPath, dataMapStr);
+        }
+
+        private void SaveWorkspaceComparisonDataWithNonGuidIds(WorkspaceComparisonData wcd1, string filePathBase, TimeSpan executionDuration)
+        {
+            var nodeData = new Dictionary<string, Dictionary<string, object>>();
+            foreach (var d in wcd1.NodeDataMap)
+            {
+                var t = wcd1.NodeTypeMap[d.Key];
+                var nodeDataDict = new Dictionary<string, object>();
+                nodeDataDict.Add("nodeType", t.ToString());
+                nodeDataDict.Add("portValues", d.Value);
+                nodeData.Add(d.Key.ToString(), nodeDataDict);
+            }
+
+            var workspaceDataDict = new Dictionary<string, object>();
+            workspaceDataDict.Add("nodeData", nodeData);
+            workspaceDataDict.Add("executionDuration", executionDuration.TotalSeconds);
+
+            var dataMapStr = JsonConvert.SerializeObject(workspaceDataDict,
+                            new JsonSerializerSettings()
+                            {
+                                Formatting = Formatting.Indented,
+                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                            });
+            //replace all the guids in the data file with all of our remapped ids.
+            foreach (var guidKey in modelsGuidToIdMap.Keys)
+            {
+                dataMapStr = dataMapStr.Replace(guidKey.ToString(), modelsGuidToIdMap[guidKey]);
+            }
 
             var dataPath = filePathBase + ".data";
             if (File.Exists(dataPath))
@@ -475,7 +589,7 @@ namespace Dynamo.Tests
             var idcount = 0;
 
             //alter the output json so that all node ids are not guids
-            foreach(var nodeId in model.CurrentWorkspace.Nodes.Select(x => x.GUID))
+            foreach (var nodeId in model.CurrentWorkspace.Nodes.Select(x => x.GUID))
             {
                 modelsGuidToIdMap.Add(nodeId, idcount.ToString());
                 json = json.Replace(nodeId.ToString(), idcount.ToString());
@@ -485,7 +599,7 @@ namespace Dynamo.Tests
             //alter the output json so that all port ids are not guids
             foreach (var node in model.CurrentWorkspace.Nodes)
             {
-              foreach(var port in node.InPorts)
+                foreach (var port in node.InPorts)
                 {
                     modelsGuidToIdMap.Add(port.GUID, idcount.ToString());
                     json = json.Replace(port.GUID.ToString(), idcount.ToString());
@@ -560,8 +674,9 @@ namespace Dynamo.Tests
                 }
                 File.WriteAllText(dsPath, ds);
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 Assert.Inconclusive("The current workspace could not be converted to Design Script.");
             }
         }

@@ -54,20 +54,22 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
-        /// A flag used during serialization to indicate
-        /// that the node is a custom node.
-        /// </summary>
-        public bool IsCustomNode
-        {
-            get { return true; }
-        }
-
-        /// <summary>
         /// The unique id of the underlying function.
         /// </summary>
         public Guid FunctionUuid
         {
             get { return Definition.FunctionId; }
+        }
+
+        /// <summary>
+        /// The type of node.
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "CustomFunctionNode";
+            }
         }
 
         /// <summary>
