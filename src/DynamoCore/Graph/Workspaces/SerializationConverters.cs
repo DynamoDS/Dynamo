@@ -55,8 +55,8 @@ namespace Dynamo.Graph.Workspaces
 
             //if the id is not a guid, makes a guid based on the id of the node
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
-        
 
+            var replication = obj["Replication"].Value<string>();
            
             var inPorts = obj["Inputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
             var outPorts = obj["Outputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
@@ -111,7 +111,8 @@ namespace Dynamo.Graph.Workspaces
             {
                 node = (NodeModel)obj.ToObject(type);
             }
-
+            //cannot set Lacing directly as property is protected
+            node.UpdateValue(new UpdateValueParams("ArgumentLacing", replication));
             node.GUID = guid;
 
             // Add references to the node and the ports to the reference resolver,
@@ -126,6 +127,8 @@ namespace Dynamo.Graph.Workspaces
             {
                 serializer.ReferenceResolver.AddReference(serializer.Context, p.GUID.ToString(), p);
             }
+
+
             return node;
         }
 
@@ -140,12 +143,25 @@ namespace Dynamo.Graph.Workspaces
         {
             foreach (var p in node.InPorts)
             {
-                resolver.AddToReferenceMap(inPorts[p.Index].GUID, p);
+                var deserializedPort = inPorts[p.Index];
+                resolver.AddToReferenceMap(deserializedPort.GUID, p);
+                setPortDataOnNewPort(p, deserializedPort);
             }
             foreach (var p in node.OutPorts)
             {
-                resolver.AddToReferenceMap(outPorts[p.Index].GUID, p);
+                var deserializedPort = outPorts[p.Index];
+                resolver.AddToReferenceMap(deserializedPort.GUID, p);
+                setPortDataOnNewPort(p, deserializedPort);
             }
+        }
+
+        private static void setPortDataOnNewPort(PortModel newPort, PortModel deserializedPort )
+        {
+            //set the appropriate properties on the new port.
+            newPort.GUID = deserializedPort.GUID;
+            newPort.UseLevels = deserializedPort.UseLevels;
+            newPort.Level = deserializedPort.Level;
+            newPort.KeepListStructure = deserializedPort.KeepListStructure;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
