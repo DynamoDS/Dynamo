@@ -185,6 +185,18 @@ namespace DSCore.IO
             var fullpath = AbsolutePath(filePath);
             System.IO.File.WriteAllText(fullpath, text);
         }
+        
+        /// <summary>
+        ///     Append the text content to a file specified by the path
+        /// </summary>
+        /// <param name="filePath">Path to write to</param>
+        /// <param name="text">Text content</param>
+        /// <search>append file,text,file,filepath</search>
+        public static void AppendText(string filePath, string text)
+        {
+            var fullpath = AbsolutePath(filePath);
+            System.IO.File.AppendAllText(fullpath, text);
+        }
 
         #region Obsolete Methods
 

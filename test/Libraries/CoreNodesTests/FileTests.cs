@@ -212,6 +212,18 @@ namespace Dynamo.Tests
             Assert.IsTrue(System.IO.File.Exists(fn));
             Assert.AreEqual(contents, System.IO.File.ReadAllText(fn));
         }
+        
+        [Test, Category("UnitTests")]
+        public void File_AppendText()
+        {
+            const string contents = "test";
+            var fn = GetNewFileNameOnTempPath(".txt");
+            Assert.IsFalse(System.IO.File.Exists(fn));
+            File.WriteText(fn, contents);
+            File.AppendText(fn, contents);
+            Assert.IsTrue(System.IO.File.Exists(fn));
+            Assert.AreEqual(contents+contents, System.IO.File.ReadAllText(fn));
+        }
         #endregion
 
         #region Directories
