@@ -8,11 +8,23 @@ namespace CoreNodeModels.Input
 {
     public abstract class SliderBase<T> : BasicInteractive<T> where T : IComparable<T>
     {
+        private string numberType;
         private T max;
         private T min;
         private T step;
 
-        [JsonProperty("RangeMax")]
+        [JsonProperty("NumberType")]
+        public string NumberType
+        {
+            get { return numberType; }
+            set
+            {
+                numberType = value;
+                RaisePropertyChanged("NumberType");
+            }
+        }
+
+        [JsonProperty("MaximumValue")]
         public T Max
         {
             get { return max; }
@@ -34,7 +46,7 @@ namespace CoreNodeModels.Input
             }
         }
 
-        [JsonProperty("RangeMin")]
+        [JsonProperty("MinimumValue")]
         public T Min
         {
             get { return min; }
@@ -56,7 +68,7 @@ namespace CoreNodeModels.Input
             }
         }
 
-        [JsonProperty("RangeStep")]
+        [JsonProperty("StepValue")]
         public T Step
         {
             get { return step; }

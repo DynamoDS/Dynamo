@@ -33,7 +33,7 @@ namespace CoreNodeModels.Input
         {
             get
             {
-                return "IntegerRangeInputNode";
+                return "NumberInputNode";
             }
         }
 
@@ -41,6 +41,7 @@ namespace CoreNodeModels.Input
         private IntegerSlider(IEnumerable<PortModel> inPorts,
             IEnumerable<PortModel> outPorts): base(inPorts, outPorts)
         {
+            NumberType = "Integer";
             Min = 0;
             Max = 100;
             Step = 1;
@@ -52,6 +53,7 @@ namespace CoreNodeModels.Input
         {
             RegisterAllPorts();
 
+            NumberType = "Integer";
             Min = 0;
             Max = 100;
             Step = 1;

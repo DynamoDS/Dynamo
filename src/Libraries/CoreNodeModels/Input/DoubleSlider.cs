@@ -31,7 +31,7 @@ namespace CoreNodeModels.Input
         {
             get
             {
-                return "FloatRangeInputNode";
+                return "NumberInputNode";
             }
         }
 
@@ -39,6 +39,7 @@ namespace CoreNodeModels.Input
         private DoubleSlider(IEnumerable<PortModel> inPorts,
             IEnumerable<PortModel> outPorts): base(inPorts, outPorts)
         {
+            NumberType = "Double";
             Min = 0;
             Max = 100;
             Step = 0.1;
@@ -48,6 +49,7 @@ namespace CoreNodeModels.Input
 
         public DoubleSlider()
         {
+            NumberType = "Double";
             Min = 0;
             Max = 100;
             Step = 0.1;
