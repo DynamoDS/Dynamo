@@ -41,14 +41,7 @@ namespace CoreNodeModels.Input
         {
             get
             {
-                if (this.GetType().ToString() == "CoreNodeModels.Input.IntegerSlider")
-                {
-                    return "Integer";
-                }
-                else
-                {
-                    return this.GetType().ToString();
-                }
+                return "Integer";
             }
         }
 

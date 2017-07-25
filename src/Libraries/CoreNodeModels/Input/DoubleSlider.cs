@@ -38,14 +38,7 @@ namespace CoreNodeModels.Input
         {
             get
             {
-                if (this.GetType().ToString() == "CoreNodeModels.Input.DoubleSlider")
-                {
-                    return "Double";
-                }
-                else
-                {
-                    return this.GetType().ToString();
-                }
+                return "Double";
             }
         }
 
