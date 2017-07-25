@@ -114,19 +114,6 @@ namespace CoreNodeModels.Input
     [AlsoKnownAs("Dynamo.Nodes.DoubleInput", "Dynamo.Nodes.dynDoubleInput", "DSCoreNodesUI.Input.DoubleInput")]
     public class DoubleInput : NodeModel
     {
-        private string numberType;
-
-        [JsonProperty("NumberType")]
-        public string NumberType
-        {
-            get { return numberType; }
-            set
-            {
-                numberType = value;
-                RaisePropertyChanged("NumberType");
-            }
-        }
-
         /// <summary>
         /// The NodeType property provides a name which maps to the 
         /// server type for the node. This property should only be
@@ -140,12 +127,26 @@ namespace CoreNodeModels.Input
             }
         }
 
+        public string NumberType
+        {
+            get
+            {
+                if(this.GetType().ToString() == "CoreNodeModels.Input.DoubleInput")
+                {
+                    return "Double";
+                }
+                else
+                {
+                    return this.GetType().ToString();
+                }
+            }
+        }
+
         [JsonConstructor]
         private DoubleInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
         {
             InPorts.AddRange(inPorts);
             OutPorts.AddRange(outPorts);
-            NumberType = "Double";
             ShouldDisplayPreviewCore = false;
             ConvertToken = Convert;
             Value = "0";
@@ -156,7 +157,6 @@ namespace CoreNodeModels.Input
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", "")));
             RegisterAllPorts();
 
-            NumberType = "Double";
             ShouldDisplayPreviewCore = false;
             ConvertToken = Convert;
             Value = "0";

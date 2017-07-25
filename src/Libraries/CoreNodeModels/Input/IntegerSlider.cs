@@ -37,11 +37,26 @@ namespace CoreNodeModels.Input
             }
         }
 
+        public string NumberType
+        {
+            get
+            {
+                if (this.GetType().ToString() == "CoreNodeModels.Input.IntegerSlider")
+                {
+                    return "Integer";
+                }
+                else
+                {
+                    return this.GetType().ToString();
+                }
+            }
+        }
+
+
         [JsonConstructor]
         private IntegerSlider(IEnumerable<PortModel> inPorts,
             IEnumerable<PortModel> outPorts): base(inPorts, outPorts)
         {
-            NumberType = "Integer";
             Min = 0;
             Max = 100;
             Step = 1;
@@ -53,7 +68,6 @@ namespace CoreNodeModels.Input
         {
             RegisterAllPorts();
 
-            NumberType = "Integer";
             Min = 0;
             Max = 100;
             Step = 1;

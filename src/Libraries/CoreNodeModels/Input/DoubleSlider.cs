@@ -34,12 +34,25 @@ namespace CoreNodeModels.Input
                 return "NumberInputNode";
             }
         }
+        public string NumberType
+        {
+            get
+            {
+                if (this.GetType().ToString() == "CoreNodeModels.Input.DoubleSlider")
+                {
+                    return "Double";
+                }
+                else
+                {
+                    return this.GetType().ToString();
+                }
+            }
+        }
 
         [JsonConstructor]
         private DoubleSlider(IEnumerable<PortModel> inPorts,
             IEnumerable<PortModel> outPorts): base(inPorts, outPorts)
         {
-            NumberType = "Double";
             Min = 0;
             Max = 100;
             Step = 0.1;
@@ -49,7 +62,6 @@ namespace CoreNodeModels.Input
 
         public DoubleSlider()
         {
-            NumberType = "Double";
             Min = 0;
             Max = 100;
             Step = 0.1;

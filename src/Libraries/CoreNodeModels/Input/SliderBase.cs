@@ -13,17 +13,6 @@ namespace CoreNodeModels.Input
         private T min;
         private T step;
 
-        [JsonProperty("NumberType")]
-        public string NumberType
-        {
-            get { return numberType; }
-            set
-            {
-                numberType = value;
-                RaisePropertyChanged("NumberType");
-            }
-        }
-
         [JsonProperty("MaximumValue")]
         public T Max
         {
