@@ -8,7 +8,6 @@ namespace CoreNodeModels.Input
 {
     public abstract class SliderBase<T> : BasicInteractive<T> where T : IComparable<T>
     {
-        private string numberType;
         private T max;
         private T min;
         private T step;
