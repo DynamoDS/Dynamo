@@ -12,10 +12,7 @@ namespace Dynamo.Search.SearchElements
     public class NodeModelSearchElement : NodeModelSearchElementBase
     {
         private readonly Func<NodeModel> constructor;
-        private readonly string creationName;
 
-        public override string CreationName { get {return creationName;} }
-        
         /// <summary>
         /// Initializes a new instance of the <see cref="NodeModelSearchElement"/> class.
         /// </summary>
@@ -23,14 +20,11 @@ namespace Dynamo.Search.SearchElements
         internal NodeModelSearchElement(TypeLoadData typeLoadData) : base(typeLoadData)
         {
             constructor = typeLoadData.Type.GetDefaultConstructor<NodeModel>();
-            creationName = typeLoadData.Type.ToString();
         }
 
         protected override NodeModel ConstructNewNodeModel()
         {
             return constructor();
         }
-
-
     }
 }
