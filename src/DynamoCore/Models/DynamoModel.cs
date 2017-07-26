@@ -1982,12 +1982,10 @@ namespace Dynamo.Models
                 {
                     namespaces.Add(str);
                 }
-                //SearchModel.RemoveNamespace(library, namespc);
             }
             else // unhide
             {
                 namespaces.Remove(str);
-                //AddZeroTouchNodesToSearch(LibraryServices.GetFunctionGroups(library));
             }
         }
 

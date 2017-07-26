@@ -1415,6 +1415,11 @@ namespace Dynamo.Graph.Nodes
             ToolTipText = "";
         }
 
+        private void ClearPersistentWarning()
+        {
+            persistentWarning = String.Empty;
+        }
+
         /// <summary>
         /// Clears the errors/warnings that are generated when running the graph.
         /// If the node has a value supplied for the persistentWarning, then the
@@ -1425,15 +1430,10 @@ namespace Dynamo.Graph.Nodes
         public virtual void ClearRuntimeError()
         {
             State = ElementState.Dead;
+            ClearPersistentWarning();
+
             SetNodeStateBasedOnConnectionAndDefaults();
-            if (!string.IsNullOrEmpty(persistentWarning))
-            {
-                ToolTipText = persistentWarning;
-            }
-            else
-            {
-                ClearTooltipText();
-            }
+            ClearTooltipText();
         }
 
         public void SelectNeighbors()
@@ -1497,12 +1497,17 @@ namespace Dynamo.Graph.Nodes
             if (isPersistent)
             {
                 State = ElementState.PersistentWarning;
-                ToolTipText = string.Format("{0}\n{1}", persistentWarning, p);
+                if (!string.Equals(persistentWarning, p))
+                {
+                    persistentWarning += p;
+                }
+                ToolTipText = persistentWarning;
             }
             else
             {
                 State = ElementState.Warning;
-                ToolTipText = p;
+                ToolTipText = string.Format("{0}\n{1}", persistentWarning, p);
+                ClearPersistentWarning();
             }
         }
 

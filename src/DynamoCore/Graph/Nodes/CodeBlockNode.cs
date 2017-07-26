@@ -241,7 +241,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        ///     Sets string content of CodeBlock node.
+        /// Sets string content of CodeBlock node.
         /// </summary>
         /// <param name="newCode">New content of the code block</param>
         /// <param name="workspaceElementResolver"><see cref="ElementResolver"/> object</param>
@@ -278,9 +278,13 @@ namespace Dynamo.Graph.Nodes
 
                 ClearRuntimeError();
                 if (!string.IsNullOrEmpty(errorMessage))
+                {
                     Error(errorMessage);
+                }
                 else if (!string.IsNullOrEmpty(warningMessage))
-                    Warning(warningMessage);
+                {
+                    Warning(warningMessage, true);
+                }
 
                 this.OnRequestSilenceModifiedEvents(false);
 
@@ -607,7 +611,7 @@ namespace Dynamo.Graph.Nodes
             }
             else if (!string.IsNullOrEmpty(warningMessage))
             {
-                Warning(warningMessage);
+                Warning(warningMessage, true);
             }
 
             // Mark node for update
