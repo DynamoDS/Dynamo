@@ -44,6 +44,9 @@ using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
+// NOTE, QNTM-1101: For WorkspaceInfo deserialization
+using Newtonsoft.Json;
+
 namespace Dynamo.Models
 {
     /// <summary>
@@ -107,8 +110,8 @@ namespace Dynamo.Models
         /// Use the XmlDocument object provided to conduct additional
         /// workspace opening operations.
         /// </summary>
-        public event Action<XmlDocument> WorkspaceOpening;
-        internal void OnWorkspaceOpening(XmlDocument obj)
+        public event Action<object> WorkspaceOpening;
+        internal void OnWorkspaceOpening(object obj)
         {
             var handler = WorkspaceOpening;
             if (handler != null) handler(obj);
@@ -196,7 +199,7 @@ namespace Dynamo.Models
         /// </summary>
         public string Version
         {
-            get { return UpdateManager.ProductVersion.ToString(); }
+            get { return DefaultUpdateManager.GetProductVersion().ToString(); }
         }
 
         /// <summary>
@@ -1265,73 +1268,184 @@ namespace Dynamo.Models
         #region save/load
 
         /// <summary>
-        /// Opens a Dynamo workspace from a path to an Xml file on disk.
+        /// Opens a Dynamo workspace from a path to a file on disk.
         /// </summary>
-        /// <param name="xmlPath">Path to file</param>
+        /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
-        public void OpenFileFromPath(string xmlPath, bool forceManualExecutionMode = false)
+        public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
-            var xmlDoc = new XmlDocument();
-            xmlDoc.Load(xmlPath);
+          if (OpenXmlFileFromPath(filePath, forceManualExecutionMode))
+            return;
 
-            WorkspaceInfo workspaceInfo;
-            if (WorkspaceInfo.FromXmlDocument(xmlDoc, xmlPath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
-            {
-                if (MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
-                {
-                    WorkspaceModel ws;
-                    if (OpenFile(workspaceInfo, xmlDoc, out ws))
-                    {
-                        // TODO: #4258
-                        // The logic to remove all other home workspaces from the model
-                        // was moved from the ViewModel. When #4258 is implemented, we will need to
-                        // remove this step.
-                        var currentHomeSpaces = Workspaces.OfType<HomeWorkspaceModel>().ToList();
-                        if (currentHomeSpaces.Any())
-                        {
-                            // If the workspace we're opening is a home workspace,
-                            // then remove all the other home workspaces. Otherwise,
-                            // Remove all but the first home workspace.
-                            var end = ws is HomeWorkspaceModel ? 0 : 1;
+          if (OpenJsonFileFromPath(filePath, forceManualExecutionMode))
+            return;
 
-                            for (var i = currentHomeSpaces.Count - 1; i >= end; i--)
-                            {
-                                RemoveWorkspace(currentHomeSpaces[i]);
-                            }
-                        }
-
-                        AddWorkspace(ws);
-
-                        OnWorkspaceOpening(xmlDoc);
-
-                        // TODO: #4258
-                        // The following logic to start periodic evaluation will need to be moved
-                        // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
-                        // as it causes an immediate crash due to the above ResetEngine call.
-                        var hws = ws as HomeWorkspaceModel;
-                        if (hws != null)
-                        {
-                            // TODO: #4258
-                            // Remove this ResetEngine call when multiple home workspaces is supported.
-                            // This call formerly lived in DynamoViewModel
-                            ResetEngine();
-
-                            if (hws.RunSettings.RunType == RunType.Periodic)
-                            {
-                                hws.StartPeriodicEvaluation();
-                            }
-                        }
-
-                        CurrentWorkspace = ws;
-                        return;
-                    }
-                }
-            }
-            Logger.LogError("Could not open workspace at: " + xmlPath);
+          Logger.LogError("Could not open workspace at: " + filePath);
         }
 
-        private bool OpenFile(WorkspaceInfo workspaceInfo, XmlDocument xmlDoc, out WorkspaceModel workspace)
+        /// <summary>
+        /// Opens a Dynamo workspace from a path to an JSON file on disk.
+        /// </summary>
+        /// <param name="filePath">Path to file</param>
+        /// <param name="forceManualExecutionMode">Set this to true to discard
+        /// execution mode specified in the file and set manual mode</param>
+        /// <returns>True if workspace was opened successfully</returns>
+        private bool OpenJsonFileFromPath(string filePath, bool forceManualExecutionMode)
+        {
+          bool success = true;
+          try
+          {
+            string fileContents = File.ReadAllText(filePath);
+
+            // TODO, QNTM-1101: Figure out the plan for WorkspaceInfoin JSON files
+            // NOTE, short-term fix, QNTM-1100: Either implicit or explicit default WorkspaceInfo values 
+            // are being used for now, long-term fix is being tracked by QNTM-1101
+            WorkspaceInfo workspaceInfo = JsonConvert.DeserializeObject<WorkspaceInfo>(fileContents);
+            if (workspaceInfo != null)
+            {
+              // NOTE, short-term fix, QNTM-1100: Default the FileName property here to show the file name in the view tab
+              workspaceInfo.FileName = filePath;
+
+              // NOTE, short-term fix, QNTM-1100: Default The scale factor to 1 (instead of 0) to enable 
+              // proper geometry display when loading JSON
+              workspaceInfo.ScaleFactor = 1;
+
+              // TODO, QNTM-1101: Figure out JSON migration strategy
+              if (true) //MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
+              {
+                WorkspaceModel ws;
+                if (OpenJsonFile(workspaceInfo, fileContents, out ws))
+                {
+                  OpenWorkspace(ws);
+                  SetPeriodicEvaluation(ws);
+                }
+              }
+            }
+          }
+          catch (Exception e)
+          {
+            success = false;
+          }
+
+          return success;
+        }
+
+        /// <summary>
+        /// Opens a Dynamo workspace from a path to an Xml file on disk.
+        /// </summary>
+        /// <param name="filePath">Path to file</param>
+        /// <param name="forceManualExecutionMode">Set this to true to discard
+        /// execution mode specified in the file and set manual mode</param>
+        /// <returns>True if workspace was opened successfully</returns>
+        private bool OpenXmlFileFromPath(string filePath, bool forceManualExecutionMode)
+        {
+          bool success = true;
+          try
+          {
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(filePath);
+
+            WorkspaceInfo workspaceInfo;
+            if (WorkspaceInfo.FromXmlDocument(xmlDoc, filePath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
+            {
+              if (MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
+              {
+                WorkspaceModel ws;
+                if (OpenXmlFile(workspaceInfo, xmlDoc, out ws))
+                {
+                  OpenWorkspace(ws);
+
+                  // Set up workspace cameras here
+                  OnWorkspaceOpening(xmlDoc);
+                  SetPeriodicEvaluation(ws);
+                }
+              }
+            }
+          }
+          catch (Exception e)
+          {
+            success = false;
+          }
+
+          return success;
+        }
+
+        private void OpenWorkspace(WorkspaceModel ws)
+        {
+          // TODO: #4258
+          // The logic to remove all other home workspaces from the model
+          // was moved from the ViewModel. When #4258 is implemented, we will need to
+          // remove this step.
+          var currentHomeSpaces = Workspaces.OfType<HomeWorkspaceModel>().ToList();
+          if (currentHomeSpaces.Any())
+          {
+            // If the workspace we're opening is a home workspace,
+            // then remove all the other home workspaces. Otherwise,
+            // Remove all but the first home workspace.
+            var end = ws is HomeWorkspaceModel ? 0 : 1;
+
+            for (var i = currentHomeSpaces.Count - 1; i >= end; i--)
+            {
+              RemoveWorkspace(currentHomeSpaces[i]);
+            }
+          }
+
+          AddWorkspace(ws);
+          CurrentWorkspace = ws;
+        }
+
+        private void SetPeriodicEvaluation(WorkspaceModel ws)
+        {
+          // TODO: #4258
+          // The following logic to start periodic evaluation will need to be moved
+          // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
+          // as it causes an immediate crash due to the above ResetEngine call.
+          var hws = ws as HomeWorkspaceModel;
+          if (hws != null)
+          {
+            // TODO: #4258
+            // Remove this ResetEngine call when multiple home workspaces is supported.
+            // This call formerly lived in DynamoViewModel
+            ResetEngine();
+
+            if (hws.RunSettings.RunType == RunType.Periodic)
+            {
+              hws.StartPeriodicEvaluation();
+            }
+          }
+        }
+
+        private bool OpenJsonFile(WorkspaceInfo workspaceInfo, string fileContents, out WorkspaceModel workspace)
+        {
+            CustomNodeManager.AddUninitializedCustomNodesInPath(
+                Path.GetDirectoryName(workspaceInfo.FileName),
+                IsTestMode);
+
+            // TODO, QNTM-1108: WorkspaceModel.FromJson does not check a schema and so will not fail as long
+            // as the fileContents are valid JSON, regardless of if all required data is present or not
+            workspace = WorkspaceModel.FromJson(
+                fileContents, 
+                LibraryServices,
+                EngineController, 
+                Scheduler, 
+                NodeFactory, 
+                IsTestMode, 
+                false,
+                CustomNodeManager);
+            
+            workspace.FileName = workspaceInfo.FileName;
+
+            workspace.OnCurrentOffsetChanged(
+                this,
+                new PointEventArgs(new Point2D(workspaceInfo.X, workspaceInfo.Y)));
+
+            workspace.ScaleFactor = workspaceInfo.ScaleFactor;
+
+            return true;
+        }
+
+        private bool OpenXmlFile(WorkspaceInfo workspaceInfo, XmlDocument xmlDoc, out WorkspaceModel workspace)
         {
             CustomNodeManager.AddUninitializedCustomNodesInPath(
                 Path.GetDirectoryName(workspaceInfo.FileName),
@@ -1339,7 +1453,7 @@ namespace Dynamo.Models
 
             var result = workspaceInfo.IsCustomNodeWorkspace
                 ? CustomNodeManager.OpenCustomNodeWorkspace(xmlDoc, workspaceInfo, IsTestMode, out workspace)
-                : OpenHomeWorkspace(xmlDoc, workspaceInfo, out workspace);
+                : OpenXmlHomeWorkspace(xmlDoc, workspaceInfo, out workspace);
 
             workspace.OnCurrentOffsetChanged(
                 this,
@@ -1349,7 +1463,7 @@ namespace Dynamo.Models
             return result;
         }
 
-        private bool OpenHomeWorkspace(
+        private bool OpenXmlHomeWorkspace(
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);

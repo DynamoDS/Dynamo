@@ -343,7 +343,7 @@ namespace Dynamo.Tests
               Assert.IsTrue(File.Exists(newPath));
           }
 
-        // TODO: Enable when Open() is expanded to open Json
+        // TODO, QNTM-1129: Re-enable this test once presets are saved and loaded properly in JSON format
         [Test, Ignore]
         public void CanSaveAndLoadStateWithMissingNodesWithoutLosingThem()
         {

@@ -228,10 +228,11 @@ namespace Dynamo.ViewModels
         public ObservableCollection<ConnectorViewModel> Connectors { get { return _connectors; } }
 
         ObservableCollection<NodeViewModel> _nodes = new ObservableCollection<NodeViewModel>();
+        [JsonProperty("NodeViews")]
         public ObservableCollection<NodeViewModel> Nodes { get { return _nodes; } }
 
         ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
-        [JsonIgnore]
+        [JsonProperty("Notes")]
         public ObservableCollection<NoteViewModel> Notes { get { return _notes; } }
 
         ObservableCollection<InfoBubbleViewModel> _errors = new ObservableCollection<InfoBubbleViewModel>();
@@ -239,7 +240,6 @@ namespace Dynamo.ViewModels
         public ObservableCollection<InfoBubbleViewModel> Errors { get { return _errors; } }
 
         ObservableCollection<AnnotationViewModel> _annotations = new ObservableCollection<AnnotationViewModel>();
-        [JsonIgnore]
         public ObservableCollection<AnnotationViewModel> Annotations { get { return _annotations; } }
 
         [JsonIgnore]
@@ -486,6 +486,31 @@ namespace Dynamo.ViewModels
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 throw (ex);
             }
+        }
+
+        /// <summary>
+        /// Load the extra view information required to fully construct a WorkspaceModel object 
+        /// </summary>
+        /// <param name="json"></param>
+        static public ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
+        {
+            JsonReader reader = new JsonTextReader(new StringReader(json));
+            var obj = JObject.Load(reader);
+            var viewBlock = obj["View"];
+           
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Newtonsoft.Json.Formatting.Indented
+            };
+
+            return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
         }
 
         void CopyPasteChanged(object sender, EventArgs e)

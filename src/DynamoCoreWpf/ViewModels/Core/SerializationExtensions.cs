@@ -1,6 +1,8 @@
 ﻿using Dynamo.ViewModels;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using Dynamo.Wpf.ViewModels.Core.Converters;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
@@ -25,7 +27,11 @@ namespace Dynamo.Wpf.ViewModels.Core
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Formatting.Indented
+                Formatting = Formatting.Indented,
+                Converters = new List<JsonConverter>{
+                    new AnnotationViewModelConverter(),
+                    new NoteViewModelConverter(),
+                },
             };
 
             var json = JsonConvert.SerializeObject(viewModel, settings);

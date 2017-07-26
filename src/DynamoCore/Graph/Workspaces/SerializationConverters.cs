@@ -55,8 +55,8 @@ namespace Dynamo.Graph.Workspaces
 
             //if the id is not a guid, makes a guid based on the id of the node
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
-        
 
+            var replication = obj["Replication"].Value<string>();
            
             var inPorts = obj["Inputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
             var outPorts = obj["Outputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
@@ -111,7 +111,8 @@ namespace Dynamo.Graph.Workspaces
             {
                 node = (NodeModel)obj.ToObject(type);
             }
-
+            //cannot set Lacing directly as property is protected
+            node.UpdateValue(new UpdateValueParams("ArgumentLacing", replication));
             node.GUID = guid;
 
             // Add references to the node and the ports to the reference resolver,
@@ -126,6 +127,8 @@ namespace Dynamo.Graph.Workspaces
             {
                 serializer.ReferenceResolver.AddReference(serializer.Context, p.GUID.ToString(), p);
             }
+
+
             return node;
         }
 
@@ -140,12 +143,25 @@ namespace Dynamo.Graph.Workspaces
         {
             foreach (var p in node.InPorts)
             {
-                resolver.AddToReferenceMap(inPorts[p.Index].GUID, p);
+                var deserializedPort = inPorts[p.Index];
+                resolver.AddToReferenceMap(deserializedPort.GUID, p);
+                setPortDataOnNewPort(p, deserializedPort);
             }
             foreach (var p in node.OutPorts)
             {
-                resolver.AddToReferenceMap(outPorts[p.Index].GUID, p);
+                var deserializedPort = outPorts[p.Index];
+                resolver.AddToReferenceMap(deserializedPort.GUID, p);
+                setPortDataOnNewPort(p, deserializedPort);
             }
+        }
+
+        private static void setPortDataOnNewPort(PortModel newPort, PortModel deserializedPort )
+        {
+            //set the appropriate properties on the new port.
+            newPort.GUID = deserializedPort.GUID;
+            newPort.UseLevels = deserializedPort.UseLevels;
+            newPort.Level = deserializedPort.Level;
+            newPort.KeepListStructure = deserializedPort.KeepListStructure;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -209,9 +225,6 @@ namespace Dynamo.Graph.Workspaces
             var obj = JObject.Load(reader);
 
             var isCustomNode = obj["IsCustomNode"].Value<bool>();
-            var lastModifiedStr = obj["LastModified"].Value<string>();
-            var lastModified = DateTime.Parse(lastModifiedStr);
-            var author = obj["LastModifiedBy"].Value<string>();
             var description = obj["Description"].Value<string>();
             var guidStr = obj["Uuid"].Value<string>();
             var guid = Guid.Parse(guidStr);
@@ -225,14 +238,15 @@ namespace Dynamo.Graph.Workspaces
             var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
             
             // notes
-            var notes = obj["Notes"].ToObject<IEnumerable<NoteModel>>(serializer);
-            if (notes.Any())
-            {
-                foreach(var n in notes)
-                {
-                    serializer.ReferenceResolver.AddReference(serializer.Context, n.GUID.ToString(), n);
-                }
-            }
+            //TODO: Check this when implementing ReadJSON in ViewModel.
+            //var notes = obj["Notes"].ToObject<IEnumerable<NoteModel>>(serializer);
+            //if (notes.Any())
+            //{
+            //    foreach(var n in notes)
+            //    {
+            //        serializer.ReferenceResolver.AddReference(serializer.Context, n.GUID.ToString(), n);
+            //    }
+            //}
 
             // connectors
             // Although connectors are not used in the construction of the workspace
@@ -240,10 +254,15 @@ namespace Dynamo.Graph.Workspaces
             // relevant ports.
             var connectors = obj["Connectors"].ToObject<IEnumerable<ConnectorModel>>(serializer);
 
-            // annotations
-            var annotations = obj["Annotations"].ToObject<IEnumerable<AnnotationModel>>(serializer);
-
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
+
+            //Build an empty annotations. Annotations are defined in the view block. If the file has View block
+            //serialize view block first and build the annotations.
+            var annotations = new List<AnnotationModel>();
+
+            //Build an empty notes. Notes are defined in the view block. If the file has View block
+            //serialize view block first and build the notes.
+            var notes = new List<NoteModel>();
 
             WorkspaceModel ws;
             if (isCustomNode)
@@ -296,32 +315,28 @@ namespace Dynamo.Graph.Workspaces
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var ws = (WorkspaceModel)value;
-
+            bool isCustomNode = value is CustomNodeWorkspaceModel;
             writer.WriteStartObject();
-
             writer.WritePropertyName("Uuid");
-            if (value is CustomNodeWorkspaceModel)
-            {
+            if (isCustomNode)
                 writer.WriteValue((ws as CustomNodeWorkspaceModel).CustomNodeId.ToString());
-            }
             else
-            {
                 writer.WriteValue(ws.Guid.ToString());
-
-            }
+            // TODO: revisit IsCustomNode during DYN/DYF convergence
             writer.WritePropertyName("IsCustomNode");
             writer.WriteValue(value is CustomNodeWorkspaceModel ? true : false);
-            if (value is CustomNodeWorkspaceModel)
+            if (isCustomNode)
             {
                 writer.WritePropertyName("Category");
                 writer.WriteValue(((CustomNodeWorkspaceModel)value).Category);
             }
-            writer.WritePropertyName("LastModified");
-            writer.WriteValue(ws.LastSaved.ToUniversalTime());
-            writer.WritePropertyName("LastModifiedBy");
-            writer.WriteValue(ws.Author);
+
+            // Description
             writer.WritePropertyName("Description");
-            writer.WriteValue(ws.Description);
+            if (isCustomNode)
+                writer.WriteValue(((CustomNodeWorkspaceModel)ws).Description);
+            else
+                writer.WriteValue(ws.Description);
             writer.WritePropertyName("Name");
             writer.WriteValue(ws.Name);
 
@@ -333,22 +348,9 @@ namespace Dynamo.Graph.Workspaces
             writer.WritePropertyName("Nodes");
             serializer.Serialize(writer, ws.Nodes);
 
-            //notes
-           writer.WritePropertyName("Notes");
-            serializer.Serialize(writer, ws.Notes);
- 
             //connectors
             writer.WritePropertyName("Connectors");
             serializer.Serialize(writer, ws.Connectors);
-
-            //annotations
-            writer.WritePropertyName("Annotations");
-            serializer.Serialize(writer, ws.Annotations);
-
-            //cameras
-            writer.WritePropertyName("Cameras");
-            writer.WriteStartArray();
-            writer.WriteEndArray();
 
             // Dependencies
             writer.WritePropertyName("Dependencies");
@@ -413,68 +415,6 @@ namespace Dynamo.Graph.Workspaces
         }
     }
 
-    /// <summary>
-    /// The AnnotationConverter is used to serialize and deserialize AnnotationModels.
-    /// The SelectedModels property on AnnotationModel is a list of references
-    /// to ModelBase objects. During serialization we want to refer to these objects
-    /// by their ids. During deserialization, we use the ReferenceResolver to
-    /// find the correct ModelBase instances to reference.
-    /// </summary>
-    public class AnnotationConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(AnnotationModel);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            var obj = JObject.Load(reader);
-            var title = obj["Title"].Value<string>();
-            //if the id is not a guid, makes a guid based on the id of the model
-            Guid annotationId =  GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
-
-            // This is a collection of string Guids, which
-            // should be accessible in the ReferenceResolver.
-            var models = obj["Nodes"].Values<JValue>();
-
-            var existing = models.Select(m => {
-                Guid modelId = GuidUtility.tryParseOrCreateGuid(m.Value<string>());
-              
-                return serializer.ReferenceResolver.ResolveReference(serializer.Context, modelId.ToString());
-                });
-
-            var nodes = existing.Where(m => typeof(NodeModel).IsAssignableFrom(m.GetType())).Cast<NodeModel>();
-            var notes = existing.Where(m => typeof(NoteModel).IsAssignableFrom(m.GetType())).Cast<NoteModel>();
-
-            var anno = new AnnotationModel(nodes, notes);
-            anno.AnnotationText = title;
-            anno.GUID = annotationId;
-
-            return anno;
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var anno = (AnnotationModel)value;
-
-            writer.WriteStartObject();
-
-            writer.WritePropertyName("Title");
-            writer.WriteValue(anno.AnnotationText);
-            writer.WritePropertyName("Nodes");
-            writer.WriteStartArray();
-            foreach (var m in anno.Nodes)
-            {
-                writer.WriteValue(m.GUID.ToString());
-            }
-            writer.WriteEndArray();
-            writer.WritePropertyName("Id");
-            writer.WriteValue(anno.GUID.ToString());
-
-            writer.WriteEndObject();
-        }
-    }
 
     /// <summary>
     /// The ConnectorConverter is used to serialize and deserialize ConnectorModels.

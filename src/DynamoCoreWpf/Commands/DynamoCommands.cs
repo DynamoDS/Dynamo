@@ -89,7 +89,7 @@ namespace Dynamo.ViewModels
             switch (name)
             {
                 case "OpenFileCommand":
-                    this.AddToRecentFiles((command as DynamoModel.OpenFileCommand).XmlFilePath);
+                    this.AddToRecentFiles((command as DynamoModel.OpenFileCommand).FilePath);
                     break;
 
                 case "MutateTestCommand":
