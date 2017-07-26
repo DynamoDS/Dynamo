@@ -959,6 +959,11 @@ namespace Dynamo.Graph.Nodes
             inputNodes = new Dictionary<int, Tuple<int, NodeModel>>();
             outputNodes = new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
+            // Initialize the port events
+            // Note; It is important that this occurs before the ports are added next
+            InPorts.CollectionChanged += PortsCollectionChanged;
+            OutPorts.CollectionChanged += PortsCollectionChanged;
+
             // Set the ports from the deserialized data
             InPorts.AddRange(inPorts);
             OutPorts.AddRange(outPorts);
@@ -986,9 +991,6 @@ namespace Dynamo.Graph.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
 
             RaisesModificationEvents = true;
-
-            InPorts.CollectionChanged += PortsCollectionChanged;
-            OutPorts.CollectionChanged += PortsCollectionChanged;
         }
 
         protected NodeModel()
