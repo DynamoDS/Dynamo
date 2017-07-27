@@ -276,14 +276,15 @@ namespace Dynamo.Graph.Nodes
 
                 ReportPosition();
 
-                ClearRuntimeError();
+                ClearErrorsAndWarnings();
                 if (!string.IsNullOrEmpty(errorMessage))
                 {
                     Error(errorMessage);
                 }
                 else if (!string.IsNullOrEmpty(warningMessage))
                 {
-                    Warning(warningMessage, true);
+                    // Build warnings must persist so that they are not cleared by runtime warnings
+                    Warning(warningMessage, isPersistent:true);
                 }
 
                 this.OnRequestSilenceModifiedEvents(false);
@@ -604,14 +605,15 @@ namespace Dynamo.Graph.Nodes
             ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
 
-            ClearRuntimeError();
+            ClearErrorsAndWarnings();
             if (!string.IsNullOrEmpty(errorMessage))
             {
                 Error(errorMessage);
             }
             else if (!string.IsNullOrEmpty(warningMessage))
             {
-                Warning(warningMessage, true);
+                // Build warnings must persist so that they are not cleared by runtime warnings
+                Warning(warningMessage, isPersistent:true);
             }
 
             // Mark node for update

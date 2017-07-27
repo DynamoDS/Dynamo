@@ -197,7 +197,7 @@ namespace CoreNodeModels
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData(p, "variable")));
             }
 
-            ClearRuntimeError();
+            ClearErrorsAndWarnings();
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)

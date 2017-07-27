@@ -14,11 +14,17 @@ namespace ProtoCore
     public class MigrationRewriter : AstReplacer
     {
         private readonly IDictionary<string, string> priorNames;
-        public MigrationRewriter(IDictionary<string, string> priorNames)
+        private MigrationRewriter(IDictionary<string, string> priorNames)
         {
             this.priorNames = priorNames;
         }
 
+        /// <summary>
+        /// Migrates old method names to new names based on priorNameHints from LibraryServices
+        /// </summary>
+        /// <param name="astNodes"></param>
+        /// <param name="priorNames">dictionary of old names vs. new names for node migration</param>
+        /// <returns>migrated AST nodes after method renaming</returns>
         public static IEnumerable<Node> MigrateMethodNames(IEnumerable<Node> astNodes, IDictionary<string, string> priorNames)
         {
             var rewriter = new MigrationRewriter(priorNames);
