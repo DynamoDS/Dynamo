@@ -1506,7 +1506,7 @@ namespace Dynamo.Graph.Nodes
             else
             {
                 State = ElementState.Warning;
-                ToolTipText = string.Format("{0}\n{1}", persistentWarning, p);
+                ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.Format("{0}\n{1}", persistentWarning, p);
                 ClearPersistentWarning();
             }
         }
