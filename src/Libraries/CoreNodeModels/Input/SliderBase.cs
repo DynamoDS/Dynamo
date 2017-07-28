@@ -79,8 +79,7 @@ namespace CoreNodeModels.Input
             }
         }
 
-        protected SliderBase(IEnumerable<PortModel> inPorts,
-            IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        protected SliderBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             base.PropertyChanged += SliderBase_PropertyChanged;
         }

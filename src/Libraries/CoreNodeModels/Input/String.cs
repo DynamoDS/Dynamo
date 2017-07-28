@@ -7,9 +7,13 @@ namespace CoreNodeModels.Input
 {
     public abstract class String : BasicInteractive<string>
     {
-        protected String() { }
+        protected String()
+        {
+        }
 
-        protected String(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+        protected String(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+        }
 
         public override string PrintExpression()
         {

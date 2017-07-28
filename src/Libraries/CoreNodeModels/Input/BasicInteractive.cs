@@ -43,12 +43,9 @@ namespace CoreNodeModels.Input
         protected abstract T DeserializeValue(string val);
         protected abstract string SerializeValue();
 
-        protected BasicInteractive(IEnumerable<PortModel> inPorts,
-            IEnumerable<PortModel> outPorts)
+        protected BasicInteractive(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             Type type = typeof(T);
-            InPorts.AddRange(inPorts);
-            OutPorts.AddRange(outPorts);
         }
 
         protected BasicInteractive()

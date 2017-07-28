@@ -36,8 +36,7 @@ namespace CoreNodeModels.Input
         }
 
         [JsonConstructor]
-        private DoubleSlider(IEnumerable<PortModel> inPorts,
-            IEnumerable<PortModel> outPorts): base(inPorts, outPorts)
+        private DoubleSlider(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             Min = 0;
             Max = 100;

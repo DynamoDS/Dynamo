@@ -38,7 +38,8 @@ namespace CoreNodeModels.Input
         }
 
         [JsonConstructor]
-        private StringInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) {
+        private StringInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
             Value = "";
             ShouldDisplayPreviewCore = false;
         }
