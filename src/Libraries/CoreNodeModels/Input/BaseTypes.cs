@@ -124,7 +124,15 @@ namespace CoreNodeModels.Input
         {
             get
             {
-                return "FloatInputNode";
+                return "NumberInputNode";
+            }
+        }
+
+        public string NumberType
+        {
+            get
+            {
+                return "Double";
             }
         }
 
