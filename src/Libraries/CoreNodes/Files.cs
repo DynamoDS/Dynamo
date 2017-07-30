@@ -199,13 +199,17 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="directory">Directory to get contents of.</param>
         /// <param name="searchString">Search string used to filter results. Defaults to "*.*" (displays all contents).</param>
+        /// <param name="includeSubdirectories">Set to true to include files & folders in subdirectories (recursive) or set to false to include results from top-level of given directory only. Defaults to false.</param>
         [MultiReturn("files", "directories")]
-        public static Dictionary<string, IList> GetDirectoryContents(DirectoryInfo directory, string searchString = "*.*")
+        public static Dictionary<string, IList> GetDirectoryContents(DirectoryInfo directory, string searchString = "*.*", bool includeSubdirectories = false)
         {
+            var searchOptions = SearchOption.TopDirectoryOnly;
+            if (includeSubdirectories == true) searchOptions = SearchOption.AllDirectories;
+
             return new Dictionary<string, IList>
             {
-                { "files", directory.EnumerateFiles(searchString).Select(x => x.FullName).ToList() },
-                { "directories", directory.EnumerateDirectories(searchString).Select(x => x.FullName).ToList() }
+                { "files", directory.EnumerateFiles(searchString, searchOptions).Select(x => x.FullName).ToList() },
+                { "directories", directory.EnumerateDirectories(searchString, searchOptions).Select(x => x.FullName).ToList() }
             };
         }
         #endregion
