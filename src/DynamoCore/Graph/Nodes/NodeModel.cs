@@ -960,7 +960,7 @@ namespace Dynamo.Graph.Nodes
             outputNodes = new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
             // Initialize the port events
-            // Note; It is important that this occurs before the ports are added next
+            // Note: It is important that this occurs before the ports are added next
             InPorts.CollectionChanged += PortsCollectionChanged;
             OutPorts.CollectionChanged += PortsCollectionChanged;
 
