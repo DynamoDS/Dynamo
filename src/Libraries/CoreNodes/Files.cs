@@ -18,6 +18,8 @@ namespace DSCore.IO
     /// </summary>
     public static class File
     {
+        #region file methods
+
         /// <summary>
         /// Returns absolute path from the given path. If the given path is 
         /// relative path then it is resolved with respect to the current 
@@ -124,10 +126,22 @@ namespace DSCore.IO
         }
 
         /// <summary>
-        ///     Combines multiple strings into a single file path.
+        /// Append the text content to a file specified by the path
         /// </summary>
-        /// <param name="paths">String to combine into a path.</param>
-        public static string CombinePath(params string[] paths)
+        /// <param name="filePath">Path to write to</param>
+        /// <param name="text">Text content</param>
+        /// <search>append file,write file,text,file,filepath</search>
+        public static void AppendText(string filePath, string text)
+        { 
+            var fullpath = AbsolutePath(filePath); 
+            System.IO.File.AppendAllText(fullpath, text); 
+        }
+
+    /// <summary>
+    ///     Combines multiple strings into a single file path.
+    /// </summary>
+    /// <param name="paths">String to combine into a path.</param>
+    public static string CombinePath(params string[] paths)
         {
             return Path.Combine(paths);
         }
@@ -194,6 +208,7 @@ namespace DSCore.IO
                 { "directories", directory.EnumerateDirectories(searchString).Select(x => x.FullName).ToList() }
             };
         }
+        #endregion
 
         #region directory methods
         /// <summary>
@@ -275,7 +290,6 @@ namespace DSCore.IO
             }
         }
         #endregion
-
 
         #region Obsolete Methods
 
