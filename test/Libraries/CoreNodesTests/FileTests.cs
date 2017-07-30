@@ -70,7 +70,7 @@ namespace Dynamo.Tests
         {
             Assert.IsNull(ExecutionEvents.ActiveSession);
             string wspath = Path.Combine(TestDirectory, @"core\files\dummy.dyn");
-            
+
             var session = new Mock<IExecutionSession>();
             session.Setup(s => s.CurrentWorkspacePath).Returns(wspath);
             SetActiveSession(session.Object);
@@ -315,6 +315,33 @@ namespace Dynamo.Tests
         }
 
         [Test, Category("UnitTests")]
+        public void Directory_ContentsRecursive()
+        {
+            var tmpSrc = GetNewFileNameOnTempPath("");
+            var tmpSrcInfo = File.DirectoryFromPath(tmpSrc);
+
+            // make test file
+            const string fileName = @"temp.txt";
+            var newFile = File.CombinePath(tmpSrc, fileName);
+            File.WriteText(newFile, "test");
+
+            // make subdirectory
+            const string dirName = @"subDir";
+            var newDir = File.CombinePath(tmpSrc, dirName);
+            Directory.CreateDirectory(newDir);
+
+            // make another test file in subdirectory
+            const string subdirFileName = @"tempSubdir.txt";
+            var newSubdirFile = File.CombinePath(newDir, subdirFileName);
+            File.WriteText(newSubdirFile, "testSubdir");
+
+            var contents = File.GetDirectoryContents(tmpSrcInfo, "*.*", true);
+            Assert.AreEqual(new[] { newFile, newSubdirFile }, contents["files"]);
+            Assert.AreEqual(new[] { newDir }, contents["directories"]);
+        }
+
+
+        [Test, Category("UnitTests")]
         public void Directory_Exists()
         {
             var tmp = GetNewFileNameOnTempPath("");
@@ -331,7 +358,7 @@ namespace Dynamo.Tests
             return new[] { "png", "jpg", "bmp", "tif" }.Select(
                 ext => Path.ChangeExtension(imagePath, ext));
         }
-            
+
         [Test, Category("UnitTests")]
         public void Image_ReadFromFile()
         {
@@ -339,7 +366,7 @@ namespace Dynamo.Tests
             {
                 Image.ReadFromFile(File.FromPath(file));
                 Assert.DoesNotThrow(
-                    () => 
+                    () =>
                     {
                         using (System.IO.File.OpenRead(file)) { } //Check that it's not locked
                     },
@@ -370,7 +397,7 @@ namespace Dynamo.Tests
         public void Image_FromPixels()
         {
             const int size = 50;
-            
+
             var rectPixels =
                 Enumerable.Repeat(Enumerable.Repeat(Color.ByColor(System.Drawing.Color.Blue), size).ToArray(), size)
                     .ToArray();
@@ -378,7 +405,7 @@ namespace Dynamo.Tests
             var bmpFromRect = Image.FromPixels(rectPixels);
             Assert.AreEqual(size, bmpFromRect.Width);
             Assert.AreEqual(size, bmpFromRect.Height);
-            
+
             var flatPixels = rectPixels.SelectMany(x => x).ToArray();
 
             var bmpFromFlat = Image.FromPixels(flatPixels, size, size);
