@@ -78,7 +78,7 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WriteStartArray();
             foreach (var m in anno.Nodes)
             {
-                writer.WriteValue(m.GUID.ToString());
+                writer.WriteValue(m.GUID.ToString("N"));
             }
             writer.WriteEndArray();
             writer.WritePropertyName("Left");
