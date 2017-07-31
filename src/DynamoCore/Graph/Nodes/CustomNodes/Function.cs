@@ -269,7 +269,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             } 
             else
             {
-                this.ClearRuntimeError();
+                this.ClearErrorsAndWarnings();
             }
         }
 
@@ -347,7 +347,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             {
                 inputSymbol = value;
                 name = inputSymbol;
-                ClearRuntimeError();
+                ClearErrorsAndWarnings();
 
                 var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
                 AssociativeNode defaultValue = null;
@@ -569,7 +569,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             set
             {
                 symbol = value;
-                ClearRuntimeError();
+                ClearErrorsAndWarnings();
 
                 string comment = string.Empty;
                 IdentifierNode identNode;

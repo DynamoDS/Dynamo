@@ -140,7 +140,7 @@ namespace Dynamo.Scheduler
                     node.WasInvolvedInExecution = true;
                     node.WasRenderPackageUpdatedAfterExecution = false;
                     if (node.State == ElementState.Warning)
-                        node.ClearRuntimeError();
+                        node.ClearErrorsAndWarnings();
                 }
 
                 engineController.RemoveRecordedAstGuidsForSession(graphSyncData.SessionID);

@@ -24,11 +24,6 @@ namespace Dynamo.Search
             base.Add(entry);
         }
 
-        internal void RemoveNamespace(string library, string namespc)
-        {
-            Remove(x => x.Assembly.Equals(library) && x.CreationName.StartsWith(namespc));
-        }
-
         /// <summary>
         ///     Dumps the contents of search into an Xml file.
         /// </summary>

@@ -1415,25 +1415,22 @@ namespace Dynamo.Graph.Nodes
             ToolTipText = "";
         }
 
+        private void ClearPersistentWarning()
+        {
+            persistentWarning = String.Empty;
+        }
+
         /// <summary>
-        /// Clears the errors/warnings that are generated when running the graph.
-        /// If the node has a value supplied for the persistentWarning, then the
-        /// node's State will be set to ElementState.Persistent and the ToolTipText will
-        /// be set to the persistent warning. Otherwise, the State will be
-        /// set to ElementState.Dead
+        /// Clears the errors/warnings that are generated when running the graph,
+        /// the State will be set to ElementState.Dead.
         /// </summary>
-        public virtual void ClearRuntimeError()
+        public virtual void ClearErrorsAndWarnings()
         {
             State = ElementState.Dead;
+            ClearPersistentWarning();
+
             SetNodeStateBasedOnConnectionAndDefaults();
-            if (!string.IsNullOrEmpty(persistentWarning))
-            {
-                ToolTipText = persistentWarning;
-            }
-            else
-            {
-                ClearTooltipText();
-            }
+            ClearTooltipText();
         }
 
         public void SelectNeighbors()
@@ -1497,12 +1494,17 @@ namespace Dynamo.Graph.Nodes
             if (isPersistent)
             {
                 State = ElementState.PersistentWarning;
-                ToolTipText = string.Format("{0}\n{1}", persistentWarning, p);
+                if (!string.Equals(persistentWarning, p))
+                {
+                    persistentWarning += p;
+                }
+                ToolTipText = persistentWarning;
             }
             else
             {
                 State = ElementState.Warning;
-                ToolTipText = p;
+                ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.Format("{0}\n{1}", persistentWarning, p);
+                ClearPersistentWarning();
             }
         }
 

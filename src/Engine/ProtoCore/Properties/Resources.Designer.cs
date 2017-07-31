@@ -1376,6 +1376,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; has been deprecated, please use method &apos;{1}&apos; instead.
+        /// </summary>
+        public static string kMethodDeprecated {
+            get {
+                return ResourceManager.GetString("kMethodDeprecated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}()&apos; has some invalid arguments.
         /// </summary>
         public static string kMethodHasInvalidArguments {

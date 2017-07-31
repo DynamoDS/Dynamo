@@ -1034,6 +1034,23 @@ var06 = g;
                 ProtoCore.Properties.Resources.kConvertNonConvertibleTypes));
         }
 
+        [Test]
+        // This test case is specific to the "ExportCSV node, needs to be updated whenever there is a change to the node
+        public void MethodDeprecated_LogsWarning()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\dsevaluation\MigrateCBN.dyn");
+            RunModel(openPath);
+
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+            var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
+                ("eff3e874-cfc3-455c-8275-741ab5b42ebd");
+
+            Assert.IsTrue(node1.ToolTipText.Contains(
+                "Method 'DSCore.IO.CSV.WriteToFile' has been deprecated, please use method 'DSOffice.Data.ExportCSV' instead"));
+        }
+
         #endregion
 
         #region Codeblock Namespace Resolution Tests
