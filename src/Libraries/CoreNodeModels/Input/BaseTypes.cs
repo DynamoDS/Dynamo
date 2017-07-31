@@ -204,7 +204,7 @@ namespace CoreNodeModels.Input
                         InPorts.Add(new PortModel(PortType.Input, this, new PortData(id, "variable")));
                     }
 
-                    ClearRuntimeError();
+                    ClearErrorsAndWarnings();
 
                     ArgumentLacing = InPorts.Any() ? LacingStrategy.Longest : LacingStrategy.Disabled;
                 }
