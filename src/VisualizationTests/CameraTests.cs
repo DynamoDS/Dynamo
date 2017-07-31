@@ -66,6 +66,30 @@ namespace WpfVisualizationTests
         }
 
         [Test]
+        public void Camera_GoodSaveData_JSONLoadsCorrectly()
+        {
+            // This test validates camera loading from JSON matches XML. 
+            // The camera position should match the Camera_GoodSaveData_LoadsCorrectly test above
+
+            var openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\camera\CameraDataJSON.dyn");
+            OpenDynamoDefinition(openPath);
+
+            var cam = ((HelixWatch3DViewModel)ViewModel.BackgroundPreviewViewModel).Camera;
+
+            Assert.AreEqual(cam.Position.X, -12.3667749293475, 1e-6);
+            Assert.AreEqual(cam.Position.Y, -10.6603353890713, 1e-6);
+            Assert.AreEqual(cam.Position.Z, 28.1556199871808, 1e-6);
+            Assert.AreEqual(cam.LookDirection.X, 12.0340153661115, 1e-6);
+            Assert.AreEqual(cam.LookDirection.Y, 17.1294198216205, 1e-6);
+            Assert.AreEqual(cam.LookDirection.Z, -27.0288410500148, 1e-6);
+            Assert.AreEqual(cam.UpDirection.X, -0.369622383590052, 1e-6);
+            Assert.AreEqual(cam.UpDirection.Y, 0.417338454481821, 1e-6);
+            Assert.AreEqual(cam.UpDirection.Z, 0.830185466001387, 1e-6);
+        }
+
+        [Test]
         public void Camera_WorkspaceCleared_ResetsToDefault()
         {
             string openPath = Path.Combine(
