@@ -1,0 +1,26 @@
+<Workspace Version="1.2.3.466" X="0" Y="0" zoom="1" ScaleFactor="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="CSV" resolvedName="DSCore.IO.CSV" assemblyName="DSCoreNodes.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <CoreNodeModels.Input.Filename guid="2a44f001-1e33-4a34-9cf9-1acca24aa33e" type="CoreNodeModels.Input.Filename" nickname="File Path" x="231" y="233" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.String>..\..\..\test\core\dsevaluation\New Text Document.txt</System.String>
+      <HintPath>..\..\..\test\core\dsevaluation\New Text Document.txt</HintPath>
+    </CoreNodeModels.Input.Filename>
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="1643b792-8d0b-4fb0-aa51-ed89d7f44fb3" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="371" y="380" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="{&quot;a, 1&quot;, &quot;b, 2&quot;};" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="eff3e874-cfc3-455c-8275-741ab5b42ebd" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="773" y="289" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="t3 = CSV.WriteToFile(t1, t2);" ShouldFocus="false">
+      <PortInfo index="0" default="False" />
+      <PortInfo index="1" default="False" />
+    </Dynamo.Graph.Nodes.CodeBlockNodeModel>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="2a44f001-1e33-4a34-9cf9-1acca24aa33e" start_index="0" end="eff3e874-cfc3-455c-8275-741ab5b42ebd" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="1643b792-8d0b-4fb0-aa51-ed89d7f44fb3" start_index="0" end="eff3e874-cfc3-455c-8275-741ab5b42ebd" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

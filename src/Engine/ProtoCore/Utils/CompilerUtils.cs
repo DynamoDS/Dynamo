@@ -9,6 +9,7 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ProtoCore.BuildData;
 
 namespace ProtoCore.Utils
 {
@@ -325,7 +326,7 @@ namespace ProtoCore.Utils
                 if (priorNames != null)
                 {
                     // Use migration rewriter to migrate old method names to new names based on priorNameHints from LibraryServices
-                    reWrittenNodes = MigrationRewriter.MigrateMethodNames(reWrittenNodes, priorNames);
+                    reWrittenNodes = MigrationRewriter.MigrateMethodNames(reWrittenNodes, priorNames, core.BuildStatus.LogDeprecatedMethodWarning);
                 }
 
                 // Clone a disposable copy of AST nodes for PreCompile() as Codegen mutates AST's
