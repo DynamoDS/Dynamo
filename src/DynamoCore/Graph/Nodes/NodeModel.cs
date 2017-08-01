@@ -852,6 +852,11 @@ namespace Dynamo.Graph.Nodes
             return false;
         }
 
+        public virtual NodeInputData InputData()
+        {
+            return null;
+        }
+
         #endregion
 
         #region freeze execution

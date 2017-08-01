@@ -17,7 +17,8 @@ using DSColor = DSCore.Color;
 
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Graph.Workspaces;
-
+using Newtonsoft.Json;
+using System.IO;
 
 namespace CoreNodeModels.Input
 {
@@ -41,6 +42,21 @@ namespace CoreNodeModels.Input
                 OnNodeModified();
                 RaisePropertyChanged("DsColor");
             }
+        }
+        public override NodeInputData InputData()
+        {
+            //this object which we'll convert to a json string matches the format the schema expects for colors
+            var colorObj = new { Red = Convert.ToInt32(DsColor.Red), Blue = Convert.ToInt32(DsColor.Blue), Green = Convert.ToInt32(DsColor.Green), Alpha = Convert.ToInt32(DsColor.Alpha) };
+
+            return new NodeInputData()
+            {
+                Id = this.GUID.ToString("N"),
+                Name = this.Name,
+
+                Type = NodeInputTypes.colorInput,
+                Description = this.Description,
+                Value = JsonConvert.SerializeObject(colorObj),
+            };
         }
         /// <summary>
         ///     Node constructor.

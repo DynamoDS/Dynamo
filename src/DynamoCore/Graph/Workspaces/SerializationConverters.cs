@@ -344,6 +344,12 @@ namespace Dynamo.Graph.Workspaces
             writer.WritePropertyName("ElementResolver");
             serializer.Serialize(writer, ws.ElementResolver);
 
+            //inputs
+            writer.WritePropertyName("Inputs");
+            //we'll loop over all nodes, getting inputs and only serialize this nodes
+            var inputNodeDatas = ws.Nodes.Where((node) => node.IsSetAsInput == true).Select(inputNode => inputNode.InputData()).ToList();
+            serializer.Serialize(writer, inputNodeDatas);
+
             //nodes
             writer.WritePropertyName("Nodes");
             serializer.Serialize(writer, ws.Nodes);

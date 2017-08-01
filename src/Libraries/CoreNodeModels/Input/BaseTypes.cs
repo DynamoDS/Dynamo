@@ -126,6 +126,20 @@ namespace CoreNodeModels.Input
                 return "NumberInputNode";
             }
         }
+        public override NodeInputData InputData()
+        {
+            return new NodeInputData()
+            {
+                Id = this.GUID.ToString("N"),
+                Name = this.Name,
+                Type = NodeInputTypes.numberInput,
+                Description = this.Description,
+                Value = Value.ToString(),
+
+                NumberType = this.NumberType,
+
+            };
+        }
 
         public string NumberType
         {

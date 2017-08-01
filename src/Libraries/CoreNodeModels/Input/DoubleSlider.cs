@@ -41,6 +41,26 @@ namespace CoreNodeModels.Input
                 return "Double";
             }
         }
+        public override NodeInputData InputData()
+        {
+            //TODO nodeModel should actually return null here
+            //as we don't know this is an input node
+            return new NodeInputData()
+            {
+                Id = this.GUID.ToString("N"),
+                Name = this.Name,
+                Type = NodeInputTypes.numberInput,
+                Description = this.Description,
+                Value = Value.ToString(),
+
+                MinimumValue = this.Min,
+                MaximumValue = this.Max,
+                StepValue = this.Step,
+                NumberType = this.NumberType,
+
+            };
+        }
+
 
         [JsonConstructor]
         private DoubleSlider(IEnumerable<PortModel> inPorts,

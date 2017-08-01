@@ -63,6 +63,22 @@ namespace CoreNodeModels
             }
         }
 
+        public override NodeInputData InputData()
+        {
+
+            return new NodeInputData()
+            {
+                Id = this.GUID.ToString("N"),
+                Name = this.Name,
+
+                Type = NodeInputTypes.selectionInput,
+                Description = this.Description,
+                //TODO should this be the selected item to string or the index?
+                Value = this.SelectedIndex.ToString(),
+                Choices = this.items.Select(x => x.Name).ToList(),
+            };
+        }
+
         private int selectedIndex = 0;
         public int SelectedIndex
         {
