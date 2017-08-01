@@ -401,7 +401,10 @@ namespace ProtoCore.Lang.Replication
                     }
                     else
                     {
-                        maxReductionDepths[ri.CartesianIndex] = maxReductionDepths[ri.CartesianIndex] - 1;
+                        if (maxReductionDepths[ri.CartesianIndex] > 0)
+                        {
+                            maxReductionDepths[ri.CartesianIndex] = maxReductionDepths[ri.CartesianIndex] - 1;
+                        }
                     }
                 }
             }
