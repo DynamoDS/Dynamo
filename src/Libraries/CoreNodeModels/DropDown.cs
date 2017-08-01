@@ -73,8 +73,8 @@ namespace CoreNodeModels
 
                 Type = NodeInputTypes.selectionInput,
                 Description = this.Description,
-                //TODO should this be the selected item to string or the index?
-                Value = this.SelectedIndex.ToString(),
+                //TODO investigate if this node type also needs to serialize it's selected index.
+                Value = this.Items[this.selectedIndex].Name,
                 Choices = this.items.Select(x => x.Name).ToList(),
             };
         }

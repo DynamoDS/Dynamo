@@ -64,7 +64,6 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public string Description { get; set; }
 
-        //TODO... or give up and just encode this in the different NodeModel types...
         private static Dictionary<Type, NodeInputTypes> dotNetTypeToNodeInputType = new Dictionary<Type, NodeInputTypes>
         {
             {typeof(String),NodeInputTypes.stringInput},
@@ -94,8 +93,7 @@ namespace Dynamo.Graph.Nodes
                 return output;
             }
             else
-            {//TODO maybe return string as default?
-
+            {
                 throw new ArgumentException("could not find an inputType for this type");
             }
         }
