@@ -1,4 +1,4 @@
-﻿using Dynamo.Configuration;
+using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Exceptions;
 using Dynamo.Graph;
@@ -35,7 +35,6 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
-using Dynamo.Controls;
 using ISelectable = Dynamo.Selection.ISelectable;
 
 
@@ -694,7 +693,6 @@ namespace Dynamo.ViewModels
 
         private void SubscribeModelChangedHandlers()
         {
-            model.WorkspaceSaved += ModelWorkspaceSaved;
             model.PropertyChanged += _model_PropertyChanged;
             model.WorkspaceCleared += ModelWorkspaceCleared;
             model.RequestCancelActiveStateForNode += this.CancelActiveState;
@@ -702,7 +700,6 @@ namespace Dynamo.ViewModels
 
         private void UnsubscribeModelChangedEvents()
         {
-            model.WorkspaceSaved -= ModelWorkspaceSaved;
             model.PropertyChanged -= _model_PropertyChanged;
             model.WorkspaceCleared -= ModelWorkspaceCleared;
             model.RequestCancelActiveStateForNode -= this.CancelActiveState;
@@ -752,11 +749,6 @@ namespace Dynamo.ViewModels
             {
                 action();
             }
-        }
-
-        private void ModelWorkspaceSaved(WorkspaceModel model)
-        {
-            this.AddToRecentFiles(model.FileName);
         }
 
         private void ModelWorkspaceCleared(WorkspaceModel workspace)
@@ -1206,21 +1198,38 @@ namespace Dynamo.ViewModels
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
             // that can't be handled reliably
-            string xmlFilePath = string.Empty;
+            string filePath = string.Empty;
             bool forceManualMode = false; 
             try
             {
                 var packedParams = parameters as Tuple<string, bool>;
                 if (packedParams != null)
                 {
-                    xmlFilePath = packedParams.Item1;
+                    filePath = packedParams.Item1;
                     forceManualMode = packedParams.Item2;
                 }
                 else
                 {
-                    xmlFilePath = parameters as string;
+                    filePath = parameters as string;
                 }
-                ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath, forceManualMode));
+                ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
+
+                string fileContents = File.ReadAllText(filePath);
+                try
+                {
+                    // This call will fail in the case of an XML file
+                    ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
+
+                    this.Model.CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo);
+                    this.Model.OnWorkspaceOpening(viewInfo);
+                }
+                catch (Exception e)
+                {
+                    this.ShowStartPage = false; // Hide start page if there's one.
+                    return;
+                }
+
+                // TODO: Finish initialization of the WorkspaceViewModel
             }
             catch (Exception e)
             {
@@ -1231,15 +1240,15 @@ namespace Dynamo.ViewModels
                     // Catch all the IO exceptions and file access here. The message provided by .Net is clear enough to indicate the problem in this case.
                     if (e is IOException || e is UnauthorizedAccessException)
                     {
-                        errorMsgString = String.Format(e.Message, xmlFilePath);
+                        errorMsgString = String.Format(e.Message, filePath);
                     }
                     else if (e is System.Xml.XmlException)
                     {
-                        errorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, xmlFilePath);
+                        errorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, filePath);
                     }
                     else
                     {
-                        errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, xmlFilePath);
+                        errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, filePath);
                     }
                     model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
                     System.Windows.MessageBox.Show(errorMsgString);
@@ -1376,20 +1385,50 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Save the current workspace to a specific file path, if the path is null 
-        /// or empty, does nothing. If successful, the CurrentWorkspace.FileName
-        /// field is updated as a side effect.
+        /// Save the current workspace to a specific file path. If the file path is null or empty, an
+        /// exception is written to the console.
         /// </summary>
-        /// <param name="path">The path to save to</param>
+        /// <param name="path">The path to the file.</param>
+        /// <exception cref="IOException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
         internal void SaveAs(string path)
         {
             try
             {
-                Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
+                Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
+
+                CurrentSpaceViewModel.Save(path, Model.EngineController);
+                
+                AddToRecentFiles(path);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                if (ex is IOException || ex is System.UnauthorizedAccessException)
+                Model.Logger.Log(ex.Message);
+                Model.Logger.Log(ex.StackTrace);
+
+                if (ex is IOException || ex is UnauthorizedAccessException)
+                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+            }
+        }
+
+        /// <summary>
+        /// Save the specified workspace to a file. If the file path is null or empty, an
+        /// exception is written to the console.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="workspace">The Workspace to save.</param>
+        internal void SaveAs(string path, WorkspaceModel workspace)
+        {
+            try
+            {
+                workspace.Save(path, false, EngineController);
+            }
+            catch (Exception ex)
+            {
+                Model.Logger.Log(ex.Message);
+                Model.Logger.Log(ex.StackTrace);
+
+                if (ex is IOException || ex is UnauthorizedAccessException)
                     System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
             }
         }
@@ -1402,10 +1441,10 @@ namespace Dynamo.ViewModels
         /// <returns>true if save was successful, false otherwise</returns>
         internal bool ShowSaveDialogIfNeededAndSave(WorkspaceModel workspace)
         {
-            // crash sould always allow save as
+            // crash should always allow save as
             if (!String.IsNullOrEmpty(workspace.FileName) && !DynamoModel.IsCrashing)
             {
-                workspace.Save(EngineController.LiveRunnerRuntimeCore);
+                SaveAs(workspace.FileName, workspace);
                 return true;
             }
             else
@@ -1419,7 +1458,7 @@ namespace Dynamo.ViewModels
                 fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
-                    workspace.SaveAs(fd.FileName, EngineController.LiveRunnerRuntimeCore);
+                    SaveAs(fd.FileName, workspace);
                     return true;
                 }
             }
@@ -1477,7 +1516,7 @@ namespace Dynamo.ViewModels
             {
                 //set the zoom and offsets events
                 CurrentSpace.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(CurrentSpace.X, CurrentSpace.Y)));
-                CurrentSpace.OnZoomChanged(this, new ZoomEventArgs(CurrentSpace.Zoom));
+                CurrentSpaceViewModel.OnZoomChanged(this, new ZoomEventArgs(CurrentSpaceViewModel.Zoom));
             }
         }
 
@@ -1636,7 +1675,7 @@ namespace Dynamo.ViewModels
 
             FileDialog _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
 
-            //if the xmlPath is not empty set the default directory
+            // If the filePath is not empty set the default directory
             if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
             {
                 var fi = new FileInfo(vm.Model.CurrentWorkspace.FileName);
@@ -1722,7 +1761,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void GoHomeView(object parameter)
         {
-            model.CurrentWorkspace.Zoom = 1.0;
+            CurrentSpaceViewModel.Zoom = 1.0;
 
             var ws = this.Model.Workspaces.First(x => x == model.CurrentWorkspace);
             ws.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(0, 0)));
@@ -2096,10 +2135,10 @@ namespace Dynamo.ViewModels
 
         internal void Pan(object parameter)
         {
-            Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", model.CurrentWorkspace.X, model.CurrentWorkspace.Y, model.CurrentWorkspace.Zoom));
+            Debug.WriteLine(string.Format("Offset: {0},{1}, Zoom: {2}", CurrentSpaceViewModel.X, CurrentSpaceViewModel.Y, currentWorkspaceViewModel.Zoom));
             var panType = parameter.ToString();
             double pan = 10;
-            var pt = new Point2D(model.CurrentWorkspace.X, model.CurrentWorkspace.Y);
+            var pt = new Point2D(CurrentSpaceViewModel.X, CurrentSpaceViewModel.Y);
 
             switch (panType)
             {

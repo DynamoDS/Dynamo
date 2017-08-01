@@ -33,9 +33,18 @@ namespace CoreNodeModels.Input
         {
             get
             {
-                return "IntegerRangeInputNode";
+                return "NumberInputNode";
             }
         }
+
+        public string NumberType
+        {
+            get
+            {
+                return "Integer";
+            }
+        }
+
 
         [JsonConstructor]
         private IntegerSlider(IEnumerable<PortModel> inPorts,

@@ -280,6 +280,29 @@ namespace Dynamo.ViewModels
             get { return LibraryRootCategories; }
         }
 
+        /// <summary>
+        /// To get view model for a node based on its name
+        /// </summary>
+        /// <param name="nodeName"></param>
+        /// <returns></returns>
+        public NodeSearchElementViewModel FindViewModelForNode(string nodeName)
+        {
+            var result = dynamoViewModel.Model.SearchModel.SearchEntries.Where(e => {
+                if (e.CreationName.Equals(nodeName))
+                {
+                    return true;
+                }
+                return false;
+            });
+
+            if (!result.Any())
+            {
+                return null;
+            }
+
+            return MakeNodeSearchElementVM(result.ElementAt(0));
+        }
+
         public NodeSearchModel Model { get; private set; }
         private readonly DynamoViewModel dynamoViewModel;
 

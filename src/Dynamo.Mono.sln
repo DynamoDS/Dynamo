@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoConversions", "Libraries\DynamoConversions\DynamoConversions.csproj", "{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}"
 EndProject
@@ -144,8 +144,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapewaysClient", "ShapewaysClient\ShapewaysClient.csproj", "{756CEBA5-4E20-4403-8448-C3C47957975B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watch3DNodeModels", "Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj", "{31183026-DE70-49CB-BC7C-0DFD0A088F62}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workspaces", "Workspaces\Workspaces.csproj", "{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -301,10 +299,6 @@ Global
 		{31183026-DE70-49CB-BC7C-0DFD0A088F62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31183026-DE70-49CB-BC7C-0DFD0A088F62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31183026-DE70-49CB-BC7C-0DFD0A088F62}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D2AAA2DD-6C7E-41F4-8E36-8E0D112CB8DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

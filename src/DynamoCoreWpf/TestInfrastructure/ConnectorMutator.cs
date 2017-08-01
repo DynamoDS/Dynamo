@@ -37,7 +37,7 @@ namespace Dynamo.TestInfrastructure
                     Guid guid = connector.Start.Owner.GUID;
                     if (!valueMap.ContainsKey(guid))
                     {
-                        String val = connector.Start.Owner.NickName;
+                        String val = connector.Start.Owner.Name;
                         valueMap.Add(guid, val);
                         writer.WriteLine(guid + " :: " + val);
                         writer.Flush();
@@ -48,7 +48,7 @@ namespace Dynamo.TestInfrastructure
                     Guid guid = connector.End.Owner.GUID;
                     if (!valueMap.ContainsKey(guid))
                     {
-                        String val = connector.End.Owner.NickName;
+                        String val = connector.End.Owner.Name;
                         valueMap.Add(guid, val);
                         writer.WriteLine(guid + " :: " + val);
                         writer.Flush();

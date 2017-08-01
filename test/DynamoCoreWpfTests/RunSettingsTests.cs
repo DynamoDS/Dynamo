@@ -132,7 +132,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(homeSpace.RunSettings.RunPeriod, RunSettings.DefaultRunPeriod);
         }
 
-        [Test]
+        // TODO, QNTM-1100: Re-enable this test once the strategy for WorkspaceInfo has been decided on
+        [Test, Ignore]
         public void RunSettingsControllerSavesAndLoads()
         {
             var homeSpace = GetHomeSpace();
@@ -140,7 +141,7 @@ namespace DynamoCoreWpfTests
             homeSpace.FileName = tmpPath;
             homeSpace.RunSettings.RunType = RunType.Periodic;
             homeSpace.RunSettings.RunPeriod = 10;
-            ViewModel.Model.CurrentWorkspace.Save(Model.EngineController.LiveRunnerRuntimeCore);
+            Model.CurrentWorkspace.Save(Model.CurrentWorkspace.FileName);
             homeSpace.Clear();
             Model.OpenFileFromPath(tmpPath);
             homeSpace = GetHomeSpace();

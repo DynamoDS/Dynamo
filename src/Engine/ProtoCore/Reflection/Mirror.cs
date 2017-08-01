@@ -6,6 +6,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Lang;
 using ProtoCore.AST.AssociativeAST;
 using System.Text;
+using ProtoCore.CompilerDefinitions;
 
 namespace ProtoCore
 {
@@ -410,7 +411,9 @@ namespace ProtoCore
                     x =>
                     {
                         bool hidden = x.MethodAttribute == null ? false : x.MethodAttribute.HiddenInLibrary;
-                        return x.IsConstructor && !hidden;
+
+                        // There could be DS class constructors that are private
+                        return x.IsConstructor && x.AccessModifier != AccessModifier.Private && !hidden;
                     }
                     ).Select(y => new MethodMirror(y));
             }

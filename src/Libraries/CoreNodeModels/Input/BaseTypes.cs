@@ -123,7 +123,15 @@ namespace CoreNodeModels.Input
         {
             get
             {
-                return "FloatInputNode";
+                return "NumberInputNode";
+            }
+        }
+
+        public string NumberType
+        {
+            get
+            {
+                return "Double";
             }
         }
 
@@ -196,7 +204,7 @@ namespace CoreNodeModels.Input
                         InPorts.Add(new PortModel(PortType.Input, this, new PortData(id, "variable")));
                     }
 
-                    ClearRuntimeError();
+                    ClearErrorsAndWarnings();
 
                     ArgumentLacing = InPorts.Any() ? LacingStrategy.Longest : LacingStrategy.Disabled;
                 }
@@ -370,7 +378,7 @@ namespace CoreNodeModels.Input
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
-            var paramDict = InPorts.Select(x => x.PortName)
+            var paramDict = InPorts.Select(x => x.Name)
                    .Zip<string, AssociativeNode, Tuple<string, AssociativeNode>>(inputAstNodes, Tuple.Create)
                    .ToDictionary(x => x.Item1, x => x.Item2);
 

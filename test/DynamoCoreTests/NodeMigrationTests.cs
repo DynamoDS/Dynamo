@@ -20,6 +20,7 @@ namespace Dynamo.Tests
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("DSOffice.dll");
             libraries.Add("FunctionObject.ds");
+            libraries.Add("BuiltIn.ds");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -37,6 +38,12 @@ namespace Dynamo.Tests
         public void TestMigration_Analyze_Structure()
         {
             TestMigration("TestMigration_Analyze_Structure.dyn");
+        }
+
+        [Test]
+        public void TestMigration_BuiltIn()
+        {
+            TestMigration("TestMigration_BuiltIn.dyn");
         }
 
         [Test]
@@ -97,6 +104,36 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestMigration_Excel()
+        {
+            TestMigration("TestMigration_Excel.dyn");
+        }
+
+        [Test]
+        public void TestMigration_File_Directory()
+        {
+            TestMigration("TestMigration_File_Directory.dyn");
+        }
+
+        [Test]
+        public void TestMigration_ImportExportCSV()
+        {
+            TestMigration("TestMigration_ImportExportCSV.dyn");
+        }
+
+        [Test]
+        public void TestMigration_DSCore_IO_FilePath()
+        {
+            TestMigration("TestMigration_DSCore_IO_FilePath.dyn");
+        }
+
+        [Test]
+        public void TestMigration_DSCore_Math()
+        {
+            TestMigration("TestMigration_DSCore_Math.dyn");
+        }
+
+        [Test]
         public void TestMigration_InputOutput_Excel()
         {
             TestMigration("TestMigration_InputOutput_Excel.dyn");
@@ -137,6 +174,30 @@ namespace Dynamo.Tests
         public void TestMigration_Logic_Math()
         {
             TestMigration("TestMigration_Logic_Math.dyn");
+        }
+
+        [Test]
+        public void TestMigration_DSCore_Display_ByGeometryColor()
+        {
+            TestMigration("TestMigration_DSCore_Display_ByGeometryColor.dyn");
+        }
+
+        [Test]
+        public void TestMigration_Display_ByGeometryColor()
+        {
+            TestMigration("TestMigration_Display_ByGeometryColor.dyn");
+        }
+
+        [Test]
+        public void TestMigration_Display_BySurfaceColors()
+        {
+            TestMigration("TestMigration_Display_BySurfaceColors.dyn");
+        }
+
+        [Test]
+        public void TestMigration_ColorRange()
+        {
+            TestMigration("TestMigration_ColorRange.dyn");
         }
 
         [Test]
@@ -1146,6 +1207,35 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestListFlatten()
+        {
+            // This file contains a code block node with value {1,3,5,{2,4,{6},8},7,9,{{0}}},
+            // connected to List.Flatten(list) node and List.Flatten(list, amt) node with amt = 1.
+            OpenModel(GetDynPath("TestListFlatten.dyn"));
+
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var flattenWithoutAmt = workspace.NodeFromWorkspace<DSFunction>(
+                "eba368d6-f0cf-4bbe-9cf8-949943ab7789");
+            var flattenWithAmt = workspace.NodeFromWorkspace<DSFunction>(
+                "6e175514-15ed-43f6-a124-a51dd43f15e7");
+
+            // 2 code block nodes (one with the list and one with amt) + 2 List.Flatten nodes
+            Assert.AreEqual(4, workspace.Nodes.Count());
+            Assert.AreEqual(3, workspace.Connectors.Count());
+
+            Assert.NotNull(flattenWithoutAmt);
+            Assert.NotNull(flattenWithAmt);
+
+            // List.Flatten(list) should be migrated and flatten the given list completely.
+            AssertPreviewValue("eba368d6-f0cf-4bbe-9cf8-949943ab7789",
+                new object[] { 1, 3, 5, 2, 4, 6, 8, 7, 9, 0});
+
+            // List.Flatten(list, amt) should have amt = 1 instead of the default value (-1).
+            AssertPreviewValue("6e175514-15ed-43f6-a124-a51dd43f15e7",
+                new object[] { 1, 3, 5, 2, 4, new object[] { 6 }, 8, 7, 9, new object[] { 0 } });
+        }
+
+        [Test]
         public void TestAddToList()
         {
             OpenModel(GetDynPath("TestAddToList.dyn"));
@@ -1953,6 +2043,12 @@ namespace Dynamo.Tests
             TestMigration("TestMigration_SortByKeyUI.dyn");
         }
 
+        [Test]
+        public void TestMigration_BuiltIns_To_DSBuiltInClass()
+        {
+            TestMigration("TestMigrateBuiltIn.dyn");
+        }
+
         #endregion
 
         #region Dynamo Libraries Node Migration Tests
@@ -1971,9 +2067,9 @@ namespace Dynamo.Tests
             // check that no nodes are migrated to dummy nodes
             Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DummyNode));
 
-            // check that the node is migrated to a DSFunction nicknamed "ReferencePoint.ByPoint"
+            // check that the node is migrated to a DSFunction named "ReferencePoint.ByPoint"
             StringAssert.Contains("Reference", workspace.NodeFromWorkspace<DSFunction>(
-                "d615cc73-d32d-4b1f-b519-0b8f9b903ebf").NickName);
+                "d615cc73-d32d-4b1f-b519-0b8f9b903ebf").Name);
         }
 
         [Test]
@@ -1990,9 +2086,9 @@ namespace Dynamo.Tests
             // check that no nodes are migrated to dummy nodes
             Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DummyNode));
 
-            // check that the node is migrated to a DSFunction nicknamed "FamilyInstance.ByPoint"
+            // check that the node is migrated to a DSFunction named "FamilyInstance.ByPoint"
             StringAssert.Contains("Instance", workspace.NodeFromWorkspace<DSFunction>(
-                "fc83b9b2-42c6-4a9f-8f60-a6ee29ef8a34").NickName);
+                "fc83b9b2-42c6-4a9f-8f60-a6ee29ef8a34").Name);
         }
 
         [Test]
@@ -2009,9 +2105,9 @@ namespace Dynamo.Tests
             // check that no nodes are migrated to dummy nodes
             Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DummyNode));
 
-            // check that the node is migrated to a DSFunction nicknamed "ModelCurve.ByCurve"
+            // check that the node is migrated to a DSFunction named "ModelCurve.ByCurve"
             StringAssert.Contains("Model", workspace.NodeFromWorkspace<DSFunction>(
-                "fdea006e-b127-4280-a407-4058b78b93a3").NickName);
+                "fdea006e-b127-4280-a407-4058b78b93a3").Name);
         }
 
         [Test]
@@ -2046,7 +2142,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DummyNode));
 
             // check that some of the nodes are Excel nodes
-            Assert.AreEqual(4, workspace.Nodes.AsQueryable().Count(x => x.NickName.Contains("Excel")));
+            Assert.AreEqual(4, workspace.Nodes.AsQueryable().Count(x => x.Name.Contains("Excel")));
         }
 
         [Test]
@@ -2059,9 +2155,8 @@ namespace Dynamo.Tests
             OpenModel(oldPath);
 
             var newPath = this.GetNewFileNameOnTempPath("dyn");
-            var res = CurrentDynamoModel.CurrentWorkspace.SaveAs(newPath, model.EngineController.LiveRunnerRuntimeCore);
+            CurrentDynamoModel.CurrentWorkspace.Save(newPath);
 
-            Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
 
             XmlDocument docOld = new XmlDocument();
@@ -2099,9 +2194,8 @@ namespace Dynamo.Tests
             OpenModel(oldPath);
 
             var newPath = this.GetNewFileNameOnTempPath("dyn");
-            var res = CurrentDynamoModel.CurrentWorkspace.SaveAs(newPath, model.EngineController.LiveRunnerRuntimeCore);
+            model.CurrentWorkspace.Save(newPath);
 
-            Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
 
             XmlDocument docOld = new XmlDocument();
@@ -2155,7 +2249,7 @@ namespace Dynamo.Tests
                 if (node.NodeNature == DummyNode.Nature.Unresolved)
                 {
                     unresolvedNodeCount++;
-                    str += node.NickName;
+                    str += node.Name;
                     str += "\n";
                 }
             }

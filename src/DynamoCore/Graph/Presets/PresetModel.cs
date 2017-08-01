@@ -45,7 +45,7 @@ namespace Dynamo.Graph.Presets
         /// <summary>
         /// Name attribute name used during serialization
         /// </summary>
-        public const string NameAttributeName = "Name";
+        public const string StateNameAttributeName = "Name";
 
         /// <summary>
         /// Description attribute name used during serialization
@@ -53,9 +53,9 @@ namespace Dynamo.Graph.Presets
         public const string DescriptionAttributeName = "Description";
 
         /// <summary>
-        /// Nickname attribute name used during serialization
+        /// NodeName attribute name used during serialization
         /// </summary>
-        public const string NicknameAttributeName = "nickname";
+        public const string NodeNameAttributeName = "nickname";
 
         #endregion
 
@@ -122,7 +122,7 @@ namespace Dynamo.Graph.Presets
 
         protected override void SerializeCore(System.Xml.XmlElement element, SaveContext context)
         {
-            element.SetAttribute(NameAttributeName, this.Name);
+            element.SetAttribute(StateNameAttributeName, this.Name);
             element.SetAttribute(DescriptionAttributeName, this.Description);
             element.SetAttribute(GuidAttributeName, this.GUID.ToString());
             //the states are already serialized
@@ -136,7 +136,7 @@ namespace Dynamo.Graph.Presets
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            var stateName = nodeElement.GetAttribute(NameAttributeName);
+            var stateName = nodeElement.GetAttribute(StateNameAttributeName);
             var stateguidString = nodeElement.GetAttribute(GuidAttributeName);
             var stateDescription = nodeElement.GetAttribute(DescriptionAttributeName);
 
@@ -154,7 +154,7 @@ namespace Dynamo.Graph.Presets
             //iterate each actual saved nodemodel in the state
             foreach (XmlElement node in nodeElement.ChildNodes)
             {
-                var nodename = node.GetAttribute(NicknameAttributeName);
+                var nodename = node.GetAttribute(NodeNameAttributeName);
                 var guidString = node.GetAttribute(GuidAttributeName);
                 Guid nodeID;
                 if (!Guid.TryParse(guidString, out nodeID))

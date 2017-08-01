@@ -202,10 +202,6 @@
       <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
       <Name>DynamoShapeManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Workspaces\Workspaces.csproj">
-      <Project>{d2aaa2dd-6c7e-41f4-8e36-8e0d112cb8dc}</Project>
-      <Name>Workspaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Libraries\SystemTestServices\SystemTestServices.csproj">
       <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
       <Name>SystemTestServices</Name>

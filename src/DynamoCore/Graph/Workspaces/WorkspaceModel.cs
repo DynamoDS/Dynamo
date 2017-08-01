@@ -1,14 +1,18 @@
-﻿using Dynamo.Core;
-using Dynamo.Engine;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Xml;
+using Dynamo.Core;
 using Dynamo.Engine.CodeGeneration;
-using Dynamo.Engine.NodeToCode;
 using Dynamo.Events;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
-using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Logging;
@@ -16,35 +20,86 @@ using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
 using ProtoCore.Namespace;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Xml;
 using Utils = Dynamo.Graph.Nodes.Utilities;
+using Dynamo.Engine;
+using Dynamo.Scheduler;
 
 namespace Dynamo.Graph.Workspaces
 {
     /// <summary>
+    /// Non view-specific container for additional view information required to
+    /// fully construct a WorkspaceModel from JSON
+    /// </summary>
+    public class ExtraWorkspaceViewInfo
+    {
+        public object Cameras;
+        public IEnumerable<ExtraNodeViewInfo> NodeViews;
+        public IEnumerable<ExtraNoteViewInfo> Notes;
+        public IEnumerable<ExtraAnnotationViewInfo> Annotations;
+        public double X;
+        public double Y;
+        public double Zoom;        
+    }
+
+    /// <summary>
+    /// Non view-specific container for additional node view information 
+    /// required to fully construct a WorkspaceModel from JSON
+    /// </summary>
+    public class ExtraNodeViewInfo
+    {
+        public string Id;
+        public string Name;
+        public double X;
+        public double Y;
+        public bool ShowGeometry;
+        public bool IsUpstreamVisible;
+    }
+
+    /// <summary>
+    /// Non view-specific container for additional note view information 
+    /// required to fully construct a WorkspaceModel from JSON
+    /// </summary>
+    public class ExtraNoteViewInfo
+    {
+        public string Id;
+        public double X;
+        public double Y;
+        public string Text;
+
+        // TODO, QNTM-1099: Figure out if this is necessary
+        // public int ZIndex;
+    }
+
+    /// <summary>
+    /// Non view-specific container for additional annotation view information 
+    /// required to fully construct a WorkspaceModel from JSON
+    /// </summary>
+    public class ExtraAnnotationViewInfo
+    {
+      public string Title;
+      public IEnumerable<string> Nodes;
+      public double FontSize;
+      public string Background;
+
+      // TODO, QNTM-1099: Determine if these are required
+      // public string Id;
+      // public double Left;
+      // public double Top;
+      // public double Width;
+      // public double Height;
+      // public double InitialTop;
+      // public double InitialHeight;
+      // public double TextBlockHeight;
+  }
+
+    /// <summary>
     /// Represents base class for all kind of workspaces which contains general data
     /// such as Name, collections of nodes, notes, annotations, etc.
     /// </summary>
-    public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable, IWorkspaceModel
+    public abstract partial class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable, IWorkspaceModel
     {
-
-        /// <summary>
-        /// Represents maximum value of workspace zoom
-        /// </summary>
-        public const double ZOOM_MAXIMUM = 4.0;
-
-        /// <summary>
-        /// Represents minimum value of workspace zoom
-        /// </summary>
-        public const double ZOOM_MINIMUM = 0.01;
-
         #region private/internal members
 
         /// <summary>
@@ -86,12 +141,13 @@ namespace Dynamo.Graph.Workspaces
         private readonly List<NodeModel> nodes;
         private readonly List<NoteModel> notes;
         private readonly List<AnnotationModel> annotations;
-        private readonly List<PresetModel> presets;
+        internal readonly List<PresetModel> presets;
         private readonly UndoRedoRecorder undoRecorder;
         private static List<ModelBase> savedModels = null;
         private double scaleFactor = 1.0;
         private bool hasNodeInSyncWithDefinition;
         protected Guid guid;
+        private HashSet<Guid> dependencies = new HashSet<Guid>();
 
         /// <summary>
         /// This is set to true after a workspace is added.
@@ -125,34 +181,6 @@ namespace Dynamo.Graph.Workspaces
             if (RequestNodeCentered != null)
                 RequestNodeCentered(this, e);
         }
-
-
-        /// <summary>
-        ///     Function that can be used to respond to a changed workspace Zoom amount.
-        /// </summary>
-        /// <param name="sender">The object where the event handler is attached.</param>
-        /// <param name="e">The event data.</param>
-        public delegate void ZoomEventHandler(object sender, EventArgs e);
-
-        /// <summary>
-        ///     Event that is fired every time the zoom factor of a workspace changes.
-        /// </summary>
-        public event ZoomEventHandler ZoomChanged;
-
-        /// <summary>
-        /// Used during open and workspace changes to set the zoom of the workspace
-        /// </summary>
-        /// <param name="sender">The object which triggers the event</param>
-        /// <param name="e">The zoom event data.</param>
-        internal virtual void OnZoomChanged(object sender, ZoomEventArgs e)
-        {
-            if (ZoomChanged != null)
-            {
-                //Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
-                ZoomChanged(this, e);
-            }
-        }
-
         /// <summary>
         ///     Function that can be used to respond to a "point event"
         /// </summary>
@@ -180,16 +208,16 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Event that is fired when the workspace is saved.
+        /// Event that is fired when the workspace is saved.
         /// </summary>
-        public event Action WorkspaceSaved;
-        protected virtual void OnWorkspaceSaved()
+        public event Action Saved;
+        internal virtual void OnSaved()
         {
             LastSaved = DateTime.Now;
             HasUnsavedChanges = false;
 
-            if (WorkspaceSaved != null)
-                WorkspaceSaved();
+            if (Saved != null)
+                Saved();
         }
 
         /// <summary>
@@ -394,6 +422,33 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// gathers the direct workspace dependencies of this workspace.
+        /// </summary>
+        /// <returns> a list of workspace IDs in GUID form</returns>
+        public HashSet<Guid> Dependencies
+        {
+            get {
+                dependencies.Clear();
+                //if the workspace is a main workspace then find all functions and their dependencies
+                if (this is HomeWorkspaceModel)
+                {
+                    foreach (var node in this.Nodes.OfType<Function>())
+                    {
+                        dependencies.Add(node.FunctionUuid);
+                    }
+                }
+                //else the workspace is a customnode - and we can add the dependencies directly
+                else
+                {
+                    var customNodeDirectDependencies = new HashSet<Guid>((this as CustomNodeWorkspaceModel).
+                        CustomNodeDefinition.DirectDependencies.Select(x => x.FunctionId));
+                    dependencies = customNodeDirectDependencies;
+                }
+                return dependencies;
+            }
+        }
+
+        /// <summary>
         ///     An author of the workspace
         /// </summary>
         public string Author
@@ -481,17 +536,6 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        /// <summary>
-        /// List of subgraphs for graph layout algorithm.
-        /// </summary>
-        internal List<GraphLayout.Graph> LayoutSubgraphs;
-
-        /// <summary>
-        /// List of clusters (groups of nodes) which will be processed separately
-        /// in the subgraph creation of graph layout algorithm.
-        /// </summary>
-        private List<List<GraphLayout.Node>> SubgraphClusters;
-
         private void AddNode(NodeModel node)
         {
             lock (nodes)
@@ -545,6 +589,8 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns all of the annotations currently present in the workspace.
         /// </summary>
+        [JsonIgnore]
+        [Obsolete("This property will be removed from the model, please use Annotations on the WorkspaceViewModel in the DynamoCoreWpf assembly")]
         public IEnumerable<AnnotationModel> Annotations
         {
             get
@@ -588,6 +634,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns or set the X position of the workspace.
         /// </summary>
+        [Obsolete("This property will be removed from the model, please use the X property on the WorkspaceViewModel in the DynamoCoreWpf assembly.")]
         public double X
         {
             get { return x; }
@@ -601,6 +648,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns or set the Y position of the workspace
         /// </summary>
+        [Obsolete("This property will be removed from the model, please use the Y property on the WorkspaceViewModel in the DynamoCoreWpf assembly.")]
         public double Y
         {
             get { return y; }
@@ -610,10 +658,12 @@ namespace Dynamo.Graph.Workspaces
                 RaisePropertyChanged("Y");
             }
         }
-
+        
         /// <summary>
         ///     Get or set the zoom value of the workspace.
         /// </summary>
+        [JsonIgnore]
+        [Obsolete("This property will be removed from the model, please use the Zoom property on the WorkspaceViewModel in the DynamoCoreWpf assembly.")]
         public double Zoom
         {
             get { return zoom; }
@@ -627,6 +677,8 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns the height of the workspace's bounds.
         /// </summary>
+        [JsonIgnore]
+        [Obsolete("This property will be removed from the model, please use the Zoom property on the WorkspaceViewModel in the DynamoCoreWpf assembly.")]
         public double Height
         {
             get { return height; }
@@ -640,6 +692,8 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns the width of the workspace's bounds.
         /// </summary>
+        [JsonIgnore]
+        [Obsolete("This property will be removed from the model, please use the Zoom property on the WorkspaceViewModel in the DynamoCoreWpf assembly.")]
         public double Width
         {
             get { return width; }
@@ -656,22 +710,6 @@ namespace Dynamo.Graph.Workspaces
         public Rect2D Rect
         {
             get { return new Rect2D(x, y, width, height); }
-        }
-
-        /// <summary>
-        ///     Determine if undo operation is currently possible.
-        /// </summary>
-        public bool CanUndo
-        {
-            get { return ((null != undoRecorder) && undoRecorder.CanUndo); }
-        }
-
-        /// <summary>
-        ///     Determine if redo operation is currently possible.
-        /// </summary>
-        public bool CanRedo
-        {
-            get { return ((null != undoRecorder) && undoRecorder.CanRedo); }
         }
 
         //TODO(Steve): This probably isn't needed inside of WorkspaceModel -- MAGN-5714
@@ -695,19 +733,6 @@ namespace Dynamo.Graph.Workspaces
         {
             get { return 0; }
             set { }
-        }
-
-        /// <summary>
-        /// Returns the current UndoRedoRecorder that is associated with the current
-        /// WorkspaceModel. Note that external parties should not have the needs
-        /// to access the recorder directly, so this property is exposed just as
-        /// a "temporary solution". Before using this property, consider using
-        /// WorkspaceModel.RecordModelsForUndo method which allows for multiple
-        /// modifications in a single action group.
-        /// </summary>
-        internal UndoRedoRecorder UndoRecorder
-        {
-            get { return undoRecorder; }
         }
 
         /// <summary>
@@ -766,7 +791,8 @@ namespace Dynamo.Graph.Workspaces
             X = info.X;
             Y = info.Y;
             FileName = info.FileName;
-            Zoom = info.Zoom;
+            Zoom = info.Zoom; 
+
 
             HasUnsavedChanges = false;
             IsReadOnly = DynamoUtilities.PathHelper.IsReadOnlyPath(fileName);
@@ -908,34 +934,41 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        ///     Save to a specific file path, if the path is null or empty, does nothing.
-        ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
+        /// Workspace's Save method serializes the Workspace to JSON and writes it to the specified file path.
         /// </summary>
-        /// <param name="newPath">The path to save to</param>
-        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object
-        /// to obtain serialized trace data for node list to save.</param>
-        /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
+        /// <param name="filePath">The path of the file.</param>
+        /// <param name="isBackup">A flag indicating whether this save operation represents a backup. If it's not backup,
         /// we should add it to recent files. Otherwise leave it.</param>
-        public virtual bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackup = false)
+        /// <param name="engine">An EngineController instance to be used to serialize node bindings.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
+        public virtual void Save(string filePath, bool isBackup = false, EngineController engine = null)
         {
-            if (String.IsNullOrEmpty(newPath)) return false;
+            if (String.IsNullOrEmpty(filePath))
+            {
+                throw new ArgumentNullException("filePath");
+            }
 
-            Log(String.Format(Resources.SavingInProgress, newPath));
             try
             {
-                if (SaveInternal(newPath, runtimeCore) && !isBackup)
-                    OnWorkspaceSaved();
+                // Stage 1: Serialize the workspace.
+                var json = this.ToJson(engine);
+
+                // Stage 2: Save
+                File.WriteAllText(filePath, json);
+
+                // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
+                // Only for actual save, update file path and recent file list
+                if (!isBackup)
+                {
+                    FileName = filePath;
+                    OnSaved();
+                }
             }
             catch (Exception ex)
             {
-                //Log(ex);
-                Log(ex.Message);
-                Log(ex.StackTrace);
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 throw (ex);
             }
-
-            return true;
         }
 
         /// <summary>
@@ -982,7 +1015,7 @@ namespace Dynamo.Graph.Workspaces
 
         }
 
-        protected virtual void RequestRun()
+        internal virtual void RequestRun()
         {
 
         }
@@ -1136,408 +1169,6 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// This function wraps a few methods on the workspace model layer
-        /// to set up and run the graph layout algorithm.
-        /// </summary>
-        internal void DoGraphAutoLayout()
-        {
-            if (Nodes.Count() < 2) return;
-
-            var selection = DynamoSelection.Instance.Selection;
-
-            // Check if all the selected models are groups
-            bool isGroupLayout = selection.Count > 0 &&
-                selection.All(x => x is AnnotationModel ||
-                    selection.OfType<AnnotationModel>().Any(g => g.SelectedModels.Contains(x)));
-
-            GenerateCombinedGraph(isGroupLayout);
-            RecordUndoGraphLayout(isGroupLayout);
-
-            // Generate subgraphs separately for each cluster
-            SubgraphClusters.ForEach(
-                x => GenerateSeparateSubgraphs(new HashSet<GraphLayout.Node>(x)));
-
-            // Deselect all nodes
-            SubgraphClusters.ForEach(c => c.ForEach(x => x.IsSelected = false));
-
-            // Run layout algorithm for each subgraph
-            LayoutSubgraphs.Skip(1).ToList().ForEach(g => RunLayoutSubgraph(g, isGroupLayout));
-            AvoidSubgraphOverlap();
-            SaveLayoutGraph();
-
-            // Restore the workspace model selection information
-            selection.ToList().ForEach(x => x.Select());
-        }
-
-        /// <summary>
-        /// This method extracts all models from the workspace and puts them
-        /// into the combined graph object, LayoutSubgraphs.First()
-        /// <param name="isGroupLayout">True if all the selected models are groups.</param>
-        /// </summary>
-        private void GenerateCombinedGraph(bool isGroupLayout)
-        {
-            LayoutSubgraphs = new List<GraphLayout.Graph>();
-            LayoutSubgraphs.Add(new GraphLayout.Graph());
-
-            GraphLayout.Graph combinedGraph = LayoutSubgraphs.First();
-            SubgraphClusters = new List<List<GraphLayout.Node>>();
-
-            if (!isGroupLayout)
-            {
-                foreach (AnnotationModel group in Annotations)
-                {
-                    // Treat a group as a graph layout node/vertex
-                    combinedGraph.AddNode(group.GUID, group.Width, group.Height, group.X, group.Y,
-                        group.IsSelected || DynamoSelection.Instance.Selection.Count == 0);
-                }
-            }
-
-            foreach (NodeModel node in Nodes)
-            {
-                if (!isGroupLayout)
-                {
-                    AnnotationModel group = Annotations.Where(
-                        g => g.SelectedModels.Contains(node)).ToList().FirstOrDefault();
-
-                    // Do not process nodes within groups
-                    if (group == null)
-                    {
-                        combinedGraph.AddNode(node.GUID, node.Width, node.Height, node.X, node.Y,
-                            node.IsSelected || DynamoSelection.Instance.Selection.Count == 0);
-                    }
-                }
-                else
-                {
-                    // Process all nodes inside the selection
-                    combinedGraph.AddNode(node.GUID, node.Width, node.Height, node.X, node.Y,
-                        node.IsSelected || DynamoSelection.Instance.Selection.Count == 0);
-                }
-            }
-
-            foreach (ConnectorModel edge in Connectors)
-            {
-                if (!isGroupLayout)
-                {
-                    AnnotationModel startGroup = null, endGroup = null;
-                    startGroup = Annotations.Where(
-                        g => g.SelectedModels.Contains(edge.Start.Owner)).ToList().FirstOrDefault();
-                    endGroup = Annotations.Where(
-                        g => g.SelectedModels.Contains(edge.End.Owner)).ToList().FirstOrDefault();
-
-                    // Treat a group as a node, but do not process edges within a group
-                    if (startGroup == null || endGroup == null || startGroup != endGroup)
-                    {
-                        combinedGraph.AddEdge(
-                            startGroup == null ? edge.Start.Owner.GUID : startGroup.GUID,
-                            endGroup == null ? edge.End.Owner.GUID : endGroup.GUID,
-                            edge.Start.Center.X, edge.Start.Center.Y, edge.End.Center.X, edge.End.Center.Y);
-                    }
-                }
-                else
-                {
-                    // Edges within a group are also processed
-                    combinedGraph.AddEdge(edge.Start.Owner.GUID, edge.End.Owner.GUID,
-                        edge.Start.Center.X, edge.Start.Center.Y, edge.End.Center.X, edge.End.Center.Y);
-                }
-            }
-
-            foreach (NoteModel note in Notes)
-            {
-                AnnotationModel group = Annotations.Where(
-                    g => g.SelectedModels.Contains(note)).ToList().FirstOrDefault();
-
-                GraphLayout.Node nd = null;
-
-                if (!isGroupLayout || group == null)
-                {
-                    // If note is not part of a group, link to the nearest node in the graph
-                    nd = combinedGraph.Nodes.OrderBy(node =>
-                        Math.Pow(node.X + node.Width / 2 - note.X - note.Width / 2, 2) +
-                        Math.Pow(node.Y + node.Height / 2 - note.Y - note.Height / 2, 2)).FirstOrDefault();
-                }
-                else
-                {
-                    // If note is part of a group, link to the nearest node in the group
-                    NodeModel ndm = group.SelectedModels.OfType<NodeModel>().OrderBy(node =>
-                        Math.Pow(node.X + node.Width / 2 - note.X - note.Width / 2, 2) +
-                        Math.Pow(node.Y + node.Height / 2 - note.Y - note.Height / 2, 2)).FirstOrDefault();
-
-                    // Skip processing the group if there is no node in the group
-                    if (ndm == null) continue;
-
-                    // If the nearest point is a node model
-                    nd = combinedGraph.FindNode(ndm.GUID);
-
-                    // If the nearest point is a group model
-                    nd = nd ?? combinedGraph.FindNode(group.GUID);
-                }
-
-                // Otherwise, leave the note unchanged
-                if (nd != null)
-                {
-                    nd.LinkNote(note, note.Width, note.Height);
-                }
-            }
-
-            if (!isGroupLayout)
-            {
-                // Add all nodes to one big cluster
-                List<GraphLayout.Node> bigcluster = new List<GraphLayout.Node>();
-                bigcluster.AddRange(combinedGraph.Nodes);
-                SubgraphClusters.Add(bigcluster);
-            }
-            else
-            {
-                // Each group becomes one cluster
-                foreach (AnnotationModel group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
-                {
-                    List<GraphLayout.Node> cluster = new List<GraphLayout.Node>();
-                    cluster.AddRange(group.SelectedModels.OfType<NodeModel>().Select(x => combinedGraph.FindNode(x.GUID)));
-                    SubgraphClusters.Add(cluster);
-                }
-            }
-
-        }
-
-        /// <summary>
-        /// This method adds relevant models to the undo recorder.
-        /// </summary>
-        /// <param name="isGroupLayout">True if all the selected models are groups.</param>
-        private void RecordUndoGraphLayout(bool isGroupLayout)
-        {
-            List<ModelBase> undoItems = new List<ModelBase>();
-
-            if (!isGroupLayout)
-            {
-                // Add all selected items to the undo recorder
-                undoItems.AddRange(Nodes);
-                undoItems.AddRange(Notes);
-                if (DynamoSelection.Instance.Selection.Count > 0)
-                {
-                    undoItems = undoItems.Where(x => x.IsSelected).ToList();
-                }
-            }
-            else
-            {
-                // Add all models inside selected groups
-                foreach (var group in Annotations)
-                {
-                    if (group.IsSelected)
-                    {
-                        group.SelectedModels.OfType<NodeModel>().ToList().ForEach(x => x.IsSelected = false);
-                        undoItems.AddRange(group.SelectedModels);
-                    }
-                }
-            }
-
-            WorkspaceModel.RecordModelsForModification(undoItems, UndoRecorder);
-        }
-
-        /// <summary>
-        /// This method repeatedly takes a selected node in the combined graph and
-        /// uses breadth-first search to find all other nodes in the same subgraph
-        /// until all selected nodes have been processed.
-        /// </summary>
-        /// <param name="nodes">A cluster of nodes to be separated into subgraphs.</param>
-        private void GenerateSeparateSubgraphs(HashSet<GraphLayout.Node> nodes)
-        {
-            int processed = 0;
-            var combinedGraph = LayoutSubgraphs.First();
-            GraphLayout.Graph graph = new GraphLayout.Graph();
-            Queue<GraphLayout.Node> queue = new Queue<GraphLayout.Node>();
-
-            while (nodes.Count(n => n.IsSelected) > 0)
-            {
-                GraphLayout.Node currentNode;
-
-                if (queue.Count == 0)
-                {
-                    if (graph.Nodes.Count > 0)
-                    {
-                        // Save the subgraph and subtract these nodes from the combined graph
-
-                        LayoutSubgraphs.Add(graph);
-                        nodes.ExceptWith(graph.Nodes);
-                        combinedGraph.Nodes.ExceptWith(graph.Nodes);
-                        graph = new GraphLayout.Graph();
-                    }
-                    if (nodes.Count(n => n.IsSelected) == 0) break;
-
-                    currentNode = nodes.FirstOrDefault(n => n.IsSelected);
-                    graph.Nodes.Add(currentNode);
-                }
-                else
-                {
-                    currentNode = queue.Dequeue();
-                }
-
-                // Find all nodes in the selection which are connected directly
-                // to the left or to the right to the currentNode
-
-                var selectedNodes = currentNode.RightEdges.Select(e => e.EndNode)
-                    .Union(currentNode.LeftEdges.Select(e => e.StartNode))
-                    .Where(x => nodes.Contains(x) && x.IsSelected)
-                    .Except(graph.Nodes).ToList();
-                graph.Nodes.UnionWith(selectedNodes);
-                graph.Edges.UnionWith(currentNode.RightEdges);
-                graph.Edges.UnionWith(currentNode.LeftEdges);
-
-                // If any of the incident edges are connected to unselected (outside) nodes
-                // then mark these edges as anchors.
-
-                graph.AnchorRightEdges.UnionWith(currentNode.RightEdges.Where(e => !e.EndNode.IsSelected));
-                graph.AnchorLeftEdges.UnionWith(currentNode.LeftEdges.Where(e => !e.StartNode.IsSelected));
-
-                foreach (var node in selectedNodes)
-                {
-                    queue.Enqueue(node);
-                    processed++;
-                }
-            }
-        }
-
-        /// <summary>
-        /// This function calls the graph layout algorithm methods.
-        /// </summary>
-        /// <param name="graph">The subgraph to be processed.</param>
-        /// <param name="isGroupLayout">True if all selected models are groups.</param>
-        private void RunLayoutSubgraph(GraphLayout.Graph graph, bool isGroupLayout)
-        {
-            // Select relevant nodes
-            graph.Nodes.ToList().ForEach(x => x.IsSelected = true);
-
-            // Save subgraph position before running the layout
-            graph.RecordInitialPosition();
-
-            // Sugiyama algorithm steps
-            graph.RemoveCycles();
-            graph.AssignLayers();
-            graph.OrderNodes();
-
-            // Node and graph positioning
-            graph.DistributeNodePosition();
-            graph.SetGraphPosition(isGroupLayout);
-
-            // Reset layer information and deselect nodes
-            graph.ResetLayers();
-            graph.Nodes.ToList().ForEach(x => x.IsSelected = false);
-        }
-
-        /// <summary>
-        /// This method repeatedly shifts subgraphs away vertically from each other
-        /// when there are any two nodes from different subgraphs overlapping.
-        /// </summary>
-        private void AvoidSubgraphOverlap()
-        {
-            bool done;
-
-            do
-            {
-                done = true;
-
-                foreach (var g1 in LayoutSubgraphs.Skip(1))
-                {
-                    foreach (var g2 in LayoutSubgraphs.Skip(1))
-                    {
-                        // The first subgraph's center point must be higher than the second subgraph
-                        if (!g1.Equals(g2) && (g1.GraphCenterY + g1.OffsetY <= g2.GraphCenterY + g2.OffsetY))
-                        {
-                            var g1nodes = g1.Nodes.OrderBy(n => n.Y + n.TotalHeight);
-                            var g2nodes = g2.Nodes.OrderBy(n => n.Y);
-
-                            foreach (var node1 in g1nodes)
-                            {
-                                foreach (var node2 in g2nodes)
-                                {
-                                    // If any two nodes from these two different subgraphs overlap
-                                    if ((node1.Y + node1.TotalHeight + GraphLayout.Graph.VerticalNodeDistance + g1.OffsetY > node2.Y + g2.OffsetY) &&
-                                        (((node1.X <= node2.X) && (node1.X + node1.Width + GraphLayout.Graph.HorizontalNodeDistance > node2.X)) ||
-                                        ((node2.X <= node1.X) && (node2.X + node2.Width + GraphLayout.Graph.HorizontalNodeDistance > node1.X))))
-                                    {
-                                        // Shift the first subgraph to the top and the second subgraph to the bottom
-                                        g1.OffsetY -= 5;
-                                        g2.OffsetY += 5;
-                                        done = false;
-                                    }
-                                    if (!done) break;
-                                }
-                                if (!done) break;
-                            }
-                        }
-                    }
-                }
-            } while (!done);
-        }
-
-        /// <summary>
-        /// This method pushes changes from the GraphLayout.Graph objects
-        /// back to the workspace models.
-        /// </summary>
-        private void SaveLayoutGraph()
-        {
-            // Assign coordinates to nodes inside groups
-            foreach (var group in Annotations)
-            {
-                GraphLayout.Graph graph = LayoutSubgraphs
-                    .FirstOrDefault(g => g.FindNode(group.GUID) != null);
-
-                if (graph != null)
-                {
-                    GraphLayout.Node n = graph.FindNode(group.GUID);
-
-                    double deltaX = n.X - group.X;
-                    double deltaY = n.Y - group.Y + graph.OffsetY;
-                    foreach (var node in group.SelectedModels.OfType<NodeModel>())
-                    {
-                        node.X += deltaX;
-                        node.Y += deltaY;
-                        node.ReportPosition();
-                    }
-
-                    foreach (NoteModel note in n.LinkedNotes)
-                    {
-                        if (note.IsSelected || DynamoSelection.Instance.Selection.Count == 0)
-                        {
-                            note.X += deltaX;
-                            note.Y += deltaY;
-                            note.ReportPosition();
-                        }
-                    }
-                }
-            }
-
-            // Assign coordinates to nodes outside groups
-            foreach (var node in Nodes)
-            {
-                GraphLayout.Graph graph = LayoutSubgraphs
-                    .FirstOrDefault(g => g.FindNode(node.GUID) != null);
-
-                if (graph != null)
-                {
-                    GraphLayout.Node n = graph.FindNode(node.GUID);
-                    double offsetY = graph.OffsetY;
-
-                    node.X = n.X;
-                    node.Y = n.Y + n.NotesHeight + offsetY;
-                    node.ReportPosition();
-                    HasUnsavedChanges = true;
-
-                    double noteOffset = -n.NotesHeight;
-                    foreach (NoteModel note in n.LinkedNotes)
-                    {
-                        if (note.IsSelected || DynamoSelection.Instance.Selection.Count == 0)
-                        {
-                            note.X = node.X;
-                            note.Y = node.Y + noteOffset;
-                            noteOffset += note.Height + GraphLayout.Graph.VerticalNoteDistance;
-                            note.ReportPosition();
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// this sets the event on Annotation. This event return the model from the workspace.
         /// When a model is ungrouped from a group, that model will be deleted from that group.
         /// So, when UNDO execution, cannot get that model from that group, it has to get from the workspace.
@@ -1582,23 +1213,13 @@ namespace Dynamo.Graph.Workspaces
             bool nodesInSameGroup = false;
             foreach (var group in this.Annotations)
             {
-                var groupModels = group.SelectedModels;
+                var groupModels = group.Nodes;
                 nodesInSameGroup = !selectedModels.Except(groupModels).Any();
                 if (nodesInSameGroup)
                     break;
             }
 
             return nodesInSameGroup;
-        }
-
-        /// <summary>
-        /// Save assuming that the Filepath attribute is set.
-        /// </summary>
-        /// <param name="runtimeCore">The <see cref="ProtoCore.RuntimeCore"/> object
-        /// to obtain serialized trace data for node list to save.</param>
-        public virtual bool Save(ProtoCore.RuntimeCore runtimeCore)
-        {
-            return SaveAs(FileName, runtimeCore);
         }
 
         internal void ResetWorkspace()
@@ -1670,135 +1291,7 @@ namespace Dynamo.Graph.Workspaces
 
         #endregion
 
-        #region Presets
-
-        /// <summary>
-        ///  this method creates a new preset state from a set of NodeModels and adds this new state to this presets collection
-        /// </summary>
-        /// <param name="name">the name of preset state</param>
-        /// <param name="description">a description of what the state does</param>
-        /// <param name="currentSelection">a set of NodeModels that are to be serialized in this state</param>
-        private PresetModel AddPresetCore(string name, string description, IEnumerable<NodeModel> currentSelection)
-        {
-            if (currentSelection == null || currentSelection.Count() < 1)
-            {
-                throw new ArgumentException("currentSelection is empty or null");
-            }
-            var inputs = currentSelection;
-
-            var newstate = new PresetModel(name, description, inputs);
-            if (Presets.Any(x => x.GUID == newstate.GUID))
-            {
-                throw new ArgumentException("duplicate id in collection");
-            }
-
-            presets.Add(newstate);
-            return newstate;
-        }
-
-        /// <summary>
-        /// Removes a specified <see cref="PresetModel"/> object from the preset collection of the workspace.
-        /// </summary>
-        /// <param name="state"><see cref="PresetModel"/> object to remove.</param>
-        public void RemovePreset(PresetModel state)
-        {
-            if (Presets.Contains(state))
-            {
-                presets.Remove(state);
-            }
-        }
-
-        internal void ApplyPreset(PresetModel state)
-        {
-            if (state == null)
-            {
-                Log("Attempted to apply a PresetState that was null");
-                return;
-            }
-            //start an undoBeginGroup
-            using (var undoGroup = this.undoRecorder.BeginActionGroup())
-            {
-               //reload each node, and record each each modification in the undogroup
-                foreach (var node in state.Nodes)
-                {
-                    //check that node still exists in this workspace,
-                    //otherwise bail on this node, check by GUID instead of nodemodel
-                    if (nodes.Select(x=>x.GUID).Contains(node.GUID))
-                    {
-                        var originalpos = node.Position;
-                        var serializedNode = state.SerializedNodes.ToList().Find(x => Guid.Parse(x.GetAttribute("guid")) == node.GUID);
-                        //overwrite the xy coords of the serialized node with the current position, so the node is not moved
-                        serializedNode.SetAttribute("x", originalpos.X.ToString(CultureInfo.InvariantCulture));
-                        serializedNode.SetAttribute("y", originalpos.Y.ToString(CultureInfo.InvariantCulture));
-                        serializedNode.SetAttribute("isPinned", node.PreviewPinned.ToString());
-
-                        this.undoRecorder.RecordModificationForUndo(node);
-                        this.ReloadModel(serializedNode);
-                    }
-                }
-                //select all the modified nodes in the UI
-                DynamoSelection.Instance.ClearSelection();
-                foreach(var node in state.Nodes)
-                {
-                    DynamoSelection.Instance.Selection.Add(node);
-                }
-            }
-        }
-
-        internal PresetModel AddPreset(string name, string description, IEnumerable<Guid> IDSToSave)
-        {
-                //lookup the nodes by their ID, can also check that we find all of them....
-                var nodesFromIDs = this.Nodes.Where(node => IDSToSave.Contains(node.GUID));
-                //access the presetsCollection and add a new state based on the current selection
-                var newpreset = this.AddPresetCore(name, description, nodesFromIDs);
-                HasUnsavedChanges = true;
-                return newpreset;
-        }
-
-        /// <summary>
-        /// Adds a specified collection <see cref="PresetModel"/> objects to the preset collection of the workspace.
-        /// </summary>
-        /// <param name="presetCollection"><see cref="PresetModel"/> objects to add.</param>
-        public void ImportPresets(IEnumerable<PresetModel> presetCollection)
-        {
-            presets.AddRange(presetCollection);
-        }
-
-        #endregion
-
         #region private/internal methods
-
-        private bool SaveInternal(string targetFilePath, ProtoCore.RuntimeCore runtimeCore)
-        {
-            // Create the xml document to write to.
-            var document = new XmlDocument();
-            document.CreateXmlDeclaration("1.0", null, null);
-            document.AppendChild(document.CreateElement("Workspace"));
-
-            Utils.SetDocumentXmlPath(document, targetFilePath);
-
-            if (!PopulateXmlDocument(document))
-                return false;
-
-            SerializeSessionData(document, runtimeCore);
-
-            try
-            {
-                Utils.SetDocumentXmlPath(document, string.Empty);
-                document.Save(targetFilePath);
-            }
-            catch (IOException ex)
-            {
-                throw (ex);
-            }
-            catch (System.UnauthorizedAccessException ex)
-            {
-                throw (ex);
-            }
-
-            FileName = targetFilePath;
-            return true;
-        }
 
         private void SerializeElementResolver(XmlDocument xmlDoc)
         {
@@ -1829,7 +1322,6 @@ namespace Dynamo.Graph.Workspaces
                 root.SetAttribute("Version", WorkspaceVersion.ToString());
                 root.SetAttribute("X", X.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("zoom", Zoom.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("ScaleFactor", ScaleFactor.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Name", Name);
                 root.SetAttribute("Description", Description);
@@ -1908,42 +1400,6 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        // TODO(Ben): Documentation to come before pull request.
-        // TODO(Steve): This probably only belongs on HomeWorkspaceModel. -- MAGN-5715
-        protected virtual void SerializeSessionData(XmlDocument document, ProtoCore.RuntimeCore runtimeCore)
-        {
-            if (document.DocumentElement == null)
-            {
-                const string message = "Workspace should have been saved before this";
-                throw new InvalidOperationException(message);
-            }
-
-            try
-            {
-                if (runtimeCore == null) // No execution yet as of this point.
-                    return;
-
-                // Selecting all nodes that are either a DSFunction,
-                // a DSVarArgFunction or a CodeBlockNodeModel into a list.
-                var nodeGuids =
-                    Nodes.Where(
-                        n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel || n is Function)
-                        .Select(n => n.GUID);
-
-                var nodeTraceDataList = runtimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids, runtimeCore.DSExecutable);
-
-                if (nodeTraceDataList.Any())
-                    Utils.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
-            }
-            catch (Exception exception)
-            {
-                // We'd prefer file saving process to not crash Dynamo,
-                // otherwise user will lose the last hope in retaining data.
-                Log(exception.Message);
-                Log(exception.StackTrace);
-            }
-        }
-
         internal void SendModelEvent(Guid modelGuid, string eventName, int value)
         {
             var retrievedModel = GetModelInternal(modelGuid);
@@ -2006,694 +1462,6 @@ namespace Dynamo.Graph.Workspaces
             HasUnsavedChanges = true;
         }
 
-        internal void ConvertNodesToCodeInternal(EngineController engineController, INamingProvider namingProvider)
-        {
-            var selectedNodes = DynamoSelection.Instance
-                                               .Selection
-                                               .OfType<NodeModel>()
-                                               .Where(n => n.IsConvertible);
-            if (!selectedNodes.Any())
-                return;
-
-            var cliques = NodeToCodeCompiler.GetCliques(selectedNodes).Where(c => !(c.Count == 1 && c.First() is CodeBlockNodeModel));
-            var codeBlockNodes = new List<CodeBlockNodeModel>();
-
-            //UndoRedo Action Group----------------------------------------------
-            NodeToCodeUndoHelper undoHelper = new NodeToCodeUndoHelper();
-
-            // using (UndoRecorder.BeginActionGroup())
-            {
-                foreach (var nodeList in cliques)
-                {
-                    //Create two dictionarys to store the details of the external connections that have to
-                    //be recreated after the conversion
-                    var externalInputConnections = new Dictionary<ConnectorModel, string>();
-                    var externalOutputConnections = new Dictionary<ConnectorModel, string>();
-
-                    //Also collect the average X and Y co-ordinates of the different nodes
-                    int nodeCount = nodeList.Count;
-
-                    var nodeToCodeResult = engineController.ConvertNodesToCode(this.nodes, nodeList, namingProvider);
-
-                    #region Step I. Delete all nodes and their connections
-
-                    double totalX = 0, totalY = 0;
-
-                    foreach (var node in nodeList)
-                    {
-                        #region Step I.A. Delete the connections for the node
-
-                        foreach (var connector in node.AllConnectors.ToList())
-                        {
-                            if (!IsInternalNodeToCodeConnection(nodeList, connector))
-                            {
-                                //If the connector is an external connector, the save its details
-                                //for recreation later
-                                var startNode = connector.Start.Owner;
-                                int index = startNode.OutPorts.IndexOf(connector.Start);
-                                //We use the varibleName as the connection between the port of the old Node
-                                //to the port of the new node.
-                                var variableName = startNode.GetAstIdentifierForOutputIndex(index).Value;
-
-                                //Store the data in the corresponding dictionary
-                                if (startNode == node)
-                                {
-                                    if (nodeToCodeResult.OutputMap.ContainsKey(variableName))
-                                        variableName = nodeToCodeResult.OutputMap[variableName];
-                                    externalOutputConnections.Add(connector, variableName);
-                                }
-                                else
-                                {
-                                    if (nodeToCodeResult.InputMap.ContainsKey(variableName))
-                                        variableName = nodeToCodeResult.InputMap[variableName];
-                                    externalInputConnections.Add(connector, variableName);
-                                }
-                            }
-
-                            //Delete the connector
-                            undoHelper.RecordDeletion(connector);
-                            connector.Delete();
-                        }
-                        #endregion
-
-                        #region Step I.B. Delete the node
-                        totalX += node.X;
-                        totalY += node.Y;
-                        undoHelper.RecordDeletion(node);
-                        RemoveAndDisposeNode(node);
-                        #endregion
-                    }
-                    #endregion
-
-                    #region Step II. Create the new code block node
-                    var outputVariables = externalOutputConnections.Values;
-                    var newResult = NodeToCodeCompiler.ConstantPropagationForTemp(nodeToCodeResult, outputVariables);
-
-                    // Rewrite the AST using the shortest unique name in case of namespace conflicts
-                    NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
-                        engineController.LibraryServices.LibraryManagementCore.ClassTable, newResult.AstNodes, ElementResolver);
-                    var codegen = new ProtoCore.CodeGenDS(newResult.AstNodes);
-                    var code = codegen.GenerateCode();
-
-                    var codeBlockNode = new CodeBlockNodeModel(
-                        code,
-                        System.Guid.NewGuid(),
-                        totalX / nodeCount,
-                        totalY / nodeCount, engineController.LibraryServices, ElementResolver);
-                    undoHelper.RecordCreation(codeBlockNode);
-
-                    AddAndRegisterNode(codeBlockNode, false);
-                    codeBlockNodes.Add(codeBlockNode);
-                    #endregion
-
-                    #region Step III. Recreate the necessary connections
-                    var newInputConnectors = ReConnectInputConnections(externalInputConnections, codeBlockNode);
-                    foreach (var connector in newInputConnectors)
-                    {
-                        undoHelper.RecordCreation(connector);
-                    }
-
-                    var newOutputConnectors = ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
-                    foreach (var connector in newOutputConnectors)
-                    {
-                        undoHelper.RecordCreation(connector);
-                    }
-                    #endregion
-                }
-            }
-
-            undoHelper.ApplyActions(UndoRecorder);
-
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.AddRange(codeBlockNodes);
-
-            RequestRun();
-        }
-
-        #endregion
-
-        #region Undo/Redo Supporting Methods
-
-        internal void Undo()
-        {
-            if (null != undoRecorder)
-            {
-                undoRecorder.Undo();
-
-                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7883
-                // Request run for every undo action
-                RequestRun();
-            }
-        }
-
-        internal void Redo()
-        {
-            if (null != undoRecorder)
-            {
-                undoRecorder.Redo();
-
-                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7883
-                // Request run for every redo action
-                RequestRun();
-            }
-        }
-
-        internal void ClearUndoRecorder()
-        {
-            if (null != undoRecorder)
-                undoRecorder.Clear();
-        }
-
-        // See RecordModelsForModification below for more details.
-        internal static void RecordModelForModification(ModelBase model, UndoRedoRecorder recorder)
-        {
-            if (null != model)
-            {
-                var models = new List<ModelBase> { model };
-                RecordModelsForModification(models, recorder);
-            }
-        }
-
-        /// <summary>
-        /// TODO(Ben): This method is exposed this way for external codes (e.g.
-        /// the DragCanvas) to record models before they are modified. This is
-        /// by no means ideal. The ideal case of course is for ALL codes that
-        /// end up modifying models to be folded back into WorkspaceViewModel in
-        /// the form of commands. These commands then internally record those
-        /// affected models before updating them. We need this method to be gone
-        /// sooner than later.
-        /// </summary>
-        /// <param name="models">The models to be recorded for undo.</param>
-        /// <param name="recorder"></param>
-        internal static void RecordModelsForModification(List<ModelBase> models, UndoRedoRecorder recorder)
-        {
-            if (null == recorder)
-                return;
-            if (!ShouldProceedWithRecording(models))
-                return;
-
-            using (recorder.BeginActionGroup())
-            {
-                foreach (var model in models)
-                    recorder.RecordModificationForUndo(model);
-            }
-        }
-
-        internal static void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models, UndoRedoRecorder recorder)
-        {
-            if (null == recorder)
-                return;
-            if (!ShouldProceedWithRecording(models))
-                return;
-            
-            if (null != savedModels)
-            {
-                // Before an existing connector is reconnected, we have one action group
-                // which records the deletion of the connector. Pop that out so that we can
-                // record the deletion and reconnection in one action group.
-                recorder.PopFromUndoGroup();
-            }
-
-            using (recorder.BeginActionGroup())
-            {
-                if (null != savedModels)
-                {
-                    foreach (var modelPair in savedModels)
-                    {
-                        recorder.RecordDeletionForUndo(modelPair);
-                    }
-                    savedModels = null;
-                }
-                foreach (var modelPair in models)
-                {
-                    switch (modelPair.Value)
-                    {
-                        case UndoRedoRecorder.UserAction.Creation:
-                            recorder.RecordCreationForUndo(modelPair.Key);
-                            break;
-                        case UndoRedoRecorder.UserAction.Deletion:
-                            recorder.RecordDeletionForUndo(modelPair.Key);
-                            break;
-                        case UndoRedoRecorder.UserAction.Modification:
-                            recorder.RecordModificationForUndo(modelPair.Key);
-                            break;
-                    }
-                }
-            }
-        }
-
-        internal void RecordCreatedModel(ModelBase model)
-        {
-            if (null == model) return;
-
-            using (undoRecorder.BeginActionGroup())
-            {
-                undoRecorder.RecordCreationForUndo(model);
-            }
-        }
-
-        internal void RecordCreatedModels(List<ModelBase> models)
-        {
-            if (!ShouldProceedWithRecording(models))
-                return; // There's nothing created.
-
-            using (undoRecorder.BeginActionGroup())
-            {
-                foreach (ModelBase model in models)
-                    undoRecorder.RecordCreationForUndo(model);
-            }
-        }
-
-        internal void RecordAndDeleteModels(List<ModelBase> models)
-
-        {
-            if (!ShouldProceedWithRecording(models))
-                return; // There's nothing for deletion.
-
-            // Gather a list of connectors first before the nodes they connect
-            // to are deleted. We will have to delete the connectors first
-            // before
-
-            using (undoRecorder.BeginActionGroup()) // Start a new action group.
-            {
-                foreach (var model in models)
-                {
-                    if (model is NoteModel)
-                    {
-                        // Take a snapshot of the note before it goes away.
-                        undoRecorder.RecordDeletionForUndo(model);
-                        RemoveNote(model as NoteModel);
-                    }
-                    else if (model is AnnotationModel)
-                    {
-                        undoRecorder.RecordDeletionForUndo(model);
-                        RemoveAnnotation(model as AnnotationModel);
-                    }
-
-                    else if (model is PresetModel)
-                    {
-                        undoRecorder.RecordDeletionForUndo(model);
-                        RemovePreset(model as PresetModel);
-                    }
-
-                    else if (model is NodeModel)
-                    {
-                        // Just to make sure we don't end up deleting nodes from
-                        // another workspace (potentially two issues: the node was
-                        // having its "Workspace" pointing to another workspace,
-                        // or the selection set was not quite set up properly.
-                        //
-                        var node = model as NodeModel;
-                        Debug.Assert(Nodes.Contains(node));
-
-                        bool silentFlag = node.RaisesModificationEvents;
-                        node.RaisesModificationEvents = false;
-
-                        // Note that AllConnectors is duplicated as a separate list
-                        // by calling its "ToList" method. This is the because the
-                        // "Connectors.Remove" will modify "AllConnectors", causing
-                        // the Enumerator in this "foreach" to become invalid.
-                        foreach (var conn in node.AllConnectors.ToList())
-                        {
-                            conn.Delete();
-                            undoRecorder.RecordDeletionForUndo(conn);
-                        }
-
-                        node.RaisesModificationEvents = silentFlag;
-
-                        // Take a snapshot of the node before it goes away.
-                        undoRecorder.RecordDeletionForUndo(node);
-
-                        RemoveAndDisposeNode(node);
-                    }
-                    else if (model is ConnectorModel)
-                    {
-                        undoRecorder.RecordDeletionForUndo(model);
-                    }
-                }
-
-                RequestRun();
-
-            } // Conclude the deletion.
-        }
-
-        internal void DeleteSavedModels()
-        {
-            savedModels = null;
-        }
-
-        internal void SaveAndDeleteModels(List<ModelBase> models)
-        {
-            if (null != models)
-            {
-                // If an existing connector is grabbed (to be reconnected), save the 
-                // models for deletion later in one action group.
-                savedModels = models;
-
-                // After saving the models, delete them from the workspace
-                // in one action group.
-                RecordAndDeleteModels(models);
-            }
-        }
-
-        internal void RecordGroupModelBeforeUngroup(AnnotationModel annotation)
-        {
-            using (undoRecorder.BeginActionGroup()) // Start a new action group.
-            {
-                undoRecorder.RecordModificationForUndo(annotation);
-            }
-        }
-
-        private static bool ShouldProceedWithRecording(List<ModelBase> models)
-        {
-            if (null == models)
-                return false;
-
-            models.RemoveAll(x => x == null);
-            return models.Count > 0;
-        }
-
-        private static bool ShouldProceedWithRecording(
-            Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
-        {
-            return (null != models && (models.Count > 0));
-        }
-
-        #endregion
-
-        #region IUndoRedoRecorderClient Members
-
-        /// <summary>
-        /// Deletes <see cref="ModelBase"/> object given by <see cref="XmlElement"/>
-        /// from a corresponding collection of the workspace.
-        /// </summary>
-        /// <param name="modelData"><see cref="ModelBase"/> object given by <see cref="XmlElement"/></param>
-        public void DeleteModel(XmlElement modelData)
-        {
-            //When there is a Redo operation, model is removed from
-            //the workspace but the model is "not disposed" from memory.
-            //Identified this when redo operation is performed on groups
-            ModelBase model = GetModelForElement(modelData);
-
-            if (model is NoteModel)
-            {
-                var note = model as NoteModel;
-                RemoveNote(note);
-                note.Dispose();
-            }
-            else if (model is AnnotationModel)
-            {
-                RemoveGroup(model);
-            }
-            else if (model is PresetModel)
-            {
-                RemovePreset(model as PresetModel);
-            }
-            else if (model is ConnectorModel)
-            {
-                var connector = model as ConnectorModel;
-                connector.Delete();
-            }
-            else if (model is NodeModel)
-            {
-                RemoveAndDisposeNode(model as NodeModel);
-            }
-            else
-            {
-                // If it gets here we obviously need to handle it.
-                throw new InvalidOperationException(string.Format(
-                    "Unhandled type: {0}", model.GetType()));
-            }
-        }
-
-        /// <summary>
-        /// Deletes <see cref="AnnotationModel"/> object from annotation collection of the workspace.
-        /// </summary>
-        /// <param name="model"><see cref="AnnotationModel"/> object to remove.</param>
-        public void RemoveGroup(ModelBase model)
-        {
-            var annotation = model as AnnotationModel;
-            RemoveAnnotation(annotation);
-            annotation.Dispose();
-        }
-
-        /// <summary>
-        /// Updates <see cref="ModelBase"/> object with given xml data
-        /// </summary>
-        /// <param name="modelData">Xml data to update model</param>
-        public void ReloadModel(XmlElement modelData)
-        {
-            ModelBase model = GetModelForElement(modelData);
-            model.Deserialize(modelData, SaveContext.Undo);
-        }
-
-        /// <summary>
-        /// Creates <see cref="ModelBase"/> object by given xml data and
-        /// adds it to corresponding collection of the workspace.
-        /// </summary>
-        /// <param name="modelData">Xml data to create model</param>
-        public void CreateModel(XmlElement modelData)
-        {
-            var helper = new XmlElementHelper(modelData);
-            string typeName = helper.ReadString("type", String.Empty);
-            if (string.IsNullOrEmpty(typeName))
-            {
-                // If there wasn't a "type" attribute, then we fall-back onto
-                // the name of the XmlElement itself, which is usually the type
-                // name.
-                typeName = modelData.Name;
-                if (string.IsNullOrEmpty(typeName))
-                {
-                    string guid = helper.ReadString("guid");
-                    throw new InvalidOperationException(
-                        string.Format("No type information: {0}", guid));
-                }
-            }
-
-            if (typeName.Contains("ConnectorModel"))
-            {
-                var connector = NodeGraph.LoadConnectorFromXml(modelData,
-                    Nodes.ToDictionary(node => node.GUID));
-
-                // It is possible that in some cases connector can't be created,
-                // for example, connector connects to a custom node instance
-                // whose input ports have been changed, so connector can't find
-                // its end port owner.
-                if (connector == null)
-                {
-                    var guidAttribute = modelData.Attributes["guid"];
-                    if (guidAttribute == null)
-                    {
-                        throw new InvalidOperationException("'guid' field missing from recorded model");
-                    }
-                    undoRecorder.RecordModelAsOffTrack(Guid.Parse(guidAttribute.Value));
-                }
-                else
-                {
-                    OnConnectorAdded(connector); // Update view-model and view.
-                }
-            }
-            else if (typeName.Contains("NoteModel"))
-            {
-                var noteModel = NodeGraph.LoadNoteFromXml(modelData);
-                AddNote(noteModel);
-
-                //check whether this note belongs to a group
-                foreach (var annotation in Annotations)
-                {
-                    //this note "was" in a group
-                    if (annotation.DeletedModelBases.Any(m => m.GUID == noteModel.GUID))
-                    {
-                        annotation.AddToSelectedModels(noteModel);
-                    }
-                }
-            }
-            else if (typeName.Contains("AnnotationModel"))
-            {
-                var selectedNodes = this.Nodes == null ? null : this.Nodes.Where(s => s.IsSelected);
-                var selectedNotes = this.Notes == null ? null : this.Notes.Where(s => s.IsSelected);
-
-                var annotationModel = new AnnotationModel(selectedNodes, selectedNotes);
-                annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
-                annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
-                annotationModel.Deserialize(modelData, SaveContext.Undo);
-                AddNewAnnotation(annotationModel);
-            }
-
-            else if (typeName.Contains("PresetModel"))
-            {
-                var preset = new PresetModel(this.Nodes);
-                preset.Deserialize(modelData, SaveContext.Undo);
-                presets.Add(preset);
-                //we raise this property change here so that this event bubbles up through
-                //the model and to the DynamoViewModel so that presets show in the UI menu if our undo/redo
-                //created the first preset
-                RaisePropertyChanged("EnablePresetOptions");
-
-            }
-            else // Other node types.
-            {
-                NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo, ElementResolver);
-
-                AddAndRegisterNode(nodeModel);
-
-                //check whether this node belongs to a group
-                foreach (var annotation in Annotations)
-                {
-                    //this node "was" in a group
-                    if (annotation.DeletedModelBases.Any(m=>m.GUID == nodeModel.GUID))
-                    {
-                        annotation.AddToSelectedModels(nodeModel);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets model by GUID which is contained in given Xml data.
-        /// </summary>
-        /// <param name="modelData">Xml data to find model.</param>
-        /// <returns>Found <see cref="ModelBase"/> object.</returns>
-        public ModelBase GetModelForElement(XmlElement modelData)
-        {
-            // TODO(Ben): This may or may not be true, but I guess we should be
-            // using "System.Type" (given the "type" information in "modelData"),
-            // and determine the matching category (e.g. is this a Node, or a
-            // Connector?) instead of checking in each and every collections we
-            // have in the workspace.
-            //
-            // System.Type type = System.Type.GetType(helper.ReadString("type"));
-            // if (typeof(Dynamo.Models.NodeModel).IsAssignableFrom(type))
-            //     return Nodes.First((x) => (x.GUID == modelGuid));
-
-            var helper = new XmlElementHelper(modelData);
-            Guid modelGuid = helper.ReadGuid("guid");
-
-            ModelBase foundModel = GetModelInternal(modelGuid);
-            if (null != foundModel)
-                return foundModel;
-
-            throw new ArgumentException(
-                string.Format("Unhandled model type: {0}", helper.ReadString("type", modelData.Name)));
-        }
-
-        /// <summary>
-        /// Returns model by GUID
-        /// </summary>
-        /// <param name="modelGuid">Identifier of the requested model.</param>
-        /// <returns>Found <see cref="ModelBase"/> object.</returns>
-        public ModelBase GetModelInternal(Guid modelGuid)
-        {
-            ModelBase foundModel = (Connectors.FirstOrDefault(c => c.GUID == modelGuid)
-                ?? Nodes.FirstOrDefault(node => node.GUID == modelGuid) as ModelBase)
-                ?? (Notes.FirstOrDefault(note => note.GUID == modelGuid)
-                ?? Annotations.FirstOrDefault(annotation => annotation.GUID == modelGuid) as ModelBase
-                ?? Presets.FirstOrDefault(preset => preset.GUID == modelGuid) as ModelBase);
-
-            return foundModel;
-        }
-
-        /// <summary>
-        /// Gets model list by their GUIDs
-        /// </summary>
-        /// <param name="modelGuids">Identifiers of the requested models.</param>
-        /// <returns>All found <see cref="ModelBase"/> objects.</returns>
-        private IEnumerable<ModelBase> GetModelsInternal(IEnumerable<Guid> modelGuids)
-        {
-            var foundModels = new List<ModelBase>();
-
-            foreach (var modelGuid in modelGuids)
-            {
-                var foundModel = GetModelInternal(modelGuid);
-                if (foundModel != null)
-                    foundModels.Add(foundModel);
-            }
-
-            return foundModels;
-        }
-
-        #endregion
-
-        #region Node To Code Reconnection
-
-        /// <summary>
-        /// Checks whether the given connection is inside the node to code set or outside it.
-        /// This determines if it should be redrawn(if it is external) or if it should be
-        /// deleted (if it is internal)
-        /// </summary>
-        private static bool IsInternalNodeToCodeConnection(IEnumerable<NodeModel> nodes, ConnectorModel connector)
-        {
-            return nodes.Contains(connector.Start.Owner) && nodes.Contains(connector.End.Owner);
-        }
-
-        /// <summary>
-        /// Forms new connections from the external nodes to the Node To Code Node,
-        /// based on the connectors passed as inputs.
-        /// </summary>
-        /// <param name="externalOutputConnections">List of connectors to remake, along with the port names of the new port</param>
-        /// <param name="cbn">The new Node To Code created Code Block Node</param>
-        private List<ConnectorModel> ReConnectOutputConnections(Dictionary<ConnectorModel, string> externalOutputConnections, CodeBlockNodeModel cbn)
-        {
-            List<ConnectorModel> newConnectors = new List<ConnectorModel>();
-            foreach (var kvp in externalOutputConnections)
-            {
-                var connector = kvp.Key;
-                var variableName = kvp.Value;
-
-                //Get the start and end idex for the ports for the connection
-                var portModel = cbn.OutPorts.FirstOrDefault(
-                    port => cbn.GetRawAstIdentifierForOutputIndex(port.Index).Value.Equals(variableName));
-
-                if (portModel == null)
-                    continue;
-
-                //Make the new connection and then record and add it
-                var newConnector = ConnectorModel.Make(
-                    cbn,
-                    connector.End.Owner,
-                    portModel.Index,
-                    connector.End.Index);
-
-                newConnectors.Add(newConnector);
-            }
-            return newConnectors;
-        }
-
-        /// <summary>
-        /// Forms new connections from the external nodes to the Node To Code Node,
-        /// based on the connectors passed as inputs.
-        /// </summary>
-        /// <param name="externalInputConnections">List of connectors to remake, along with the port names of the new port</param>
-        /// <param name="cbn">The new Node To Code created Code Block Node</param>
-        private List<ConnectorModel> ReConnectInputConnections(
-            Dictionary<ConnectorModel, string> externalInputConnections, CodeBlockNodeModel cbn)
-        {
-            List<ConnectorModel> newConnectors = new List<ConnectorModel>();
-
-            foreach (var kvp in externalInputConnections)
-            {
-                var connector = kvp.Key;
-                var variableName = kvp.Value;
-
-                var endPortIndex = CodeBlockNodeModel.GetInportIndex(cbn, variableName);
-                if (endPortIndex < 0)
-                    continue;
-
-                if (Connectors.Any(c => c.End == cbn.InPorts[endPortIndex]))
-                    continue;
-
-                var newConnector = ConnectorModel.Make(
-                    connector.Start.Owner,
-                    cbn,
-                    connector.Start.Index,
-                    endPortIndex);
-
-                newConnectors.Add(newConnector);
-            }
-
-            return newConnectors;
-        }
-
         #endregion
 
         internal string GetStringRepOfWorkspace()
@@ -2749,5 +1517,145 @@ namespace Dynamo.Graph.Workspaces
 
         #endregion
 
+
+        /// <summary>
+        /// Load a WorkspaceModel from json. If the WorkspaceModel is a HomeWorkspaceModel
+        /// it will be set as the current workspace.
+        /// </summary>
+        /// <param name="json"></param>
+        /// <param name="libraryServices"></param>
+        /// <param name="engineController"></param>
+        /// <param name="scheduler"></param>
+        /// <param name="factory"></param>
+        /// <param name="isTestMode"></param>
+        /// <param name="verboseLogging"></param>
+        /// <param name="manager"></param>
+        public static WorkspaceModel FromJson(string json, LibraryServices libraryServices,
+            EngineController engineController, DynamoScheduler scheduler, NodeFactory factory,
+            bool isTestMode, bool verboseLogging, CustomNodeManager manager)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                Converters = new List<JsonConverter>{
+                        new ConnectorConverter(),
+                        new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
+                        new NodeReadConverter(manager, libraryServices),
+                    },
+                ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
+            };
+
+            var result = SerializationExtensions.ReplaceTypeDeclarations(json, true);
+            var ws = JsonConvert.DeserializeObject<WorkspaceModel>(result, settings);
+
+            return ws;
+        }
+
+        /// <summary>
+        /// Updates a workspace model with extra view information. When loading a workspace from JSON,
+        /// the data is split into two parts, model and view. This method sets the view information.
+        /// </summary>
+        /// <param name="workspaceViewInfo">The extra view information from the workspace to update the model with.</param>
+        public void UpdateWithExtraWorkspaceViewInfo(ExtraWorkspaceViewInfo workspaceViewInfo)
+        {
+            X = workspaceViewInfo.X;
+            Y = workspaceViewInfo.Y;
+            Zoom = workspaceViewInfo.Zoom; 
+
+            foreach (ExtraNodeViewInfo nodeViewInfo in workspaceViewInfo.NodeViews)
+            {
+                var guidValue = IdToGuidConverter(nodeViewInfo.Id);
+                var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
+                if (nodeModel != null)
+                {
+                    nodeModel.X = nodeViewInfo.X;
+                    nodeModel.Y = nodeViewInfo.Y;
+                    nodeModel.Name = nodeViewInfo.Name;
+
+                    // Note: These parameters are not directly accessible due to undo/redo considerations
+                    //       which should not be used during deserialization (see "ArgumentLacing" for details)
+                    nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeViewInfo.ShowGeometry.ToString()));
+                    nodeModel.UpdateValue(new UpdateValueParams("IsUpstreamVisible", nodeViewInfo.IsUpstreamVisible.ToString()));
+                }
+            }
+
+            foreach (ExtraNoteViewInfo noteViewInfo in workspaceViewInfo.Notes)
+            {
+                var guidValue = IdToGuidConverter(noteViewInfo.Id);
+
+                // TODO, QNTM-1099: Figure out if ZIndex needs to be set here as well
+                var noteModel = new NoteModel(noteViewInfo.X, noteViewInfo.Y, noteViewInfo.Text, guidValue);
+                this.AddNote(noteModel);
+            }
+
+            foreach (ExtraAnnotationViewInfo annotationViewInfo in workspaceViewInfo.Annotations)
+            {
+                // TODO, QNTM-1099: Determine where to set the ID for annotations
+                // Guid guidValue = IdToGuidConverter(annotationInfo.Id);
+
+                // Create a collection of nodes in the given annotation
+                var nodes = new List<NodeModel>();
+                foreach (string nodeId in annotationViewInfo.Nodes)
+                {
+                  var guidValue = IdToGuidConverter(nodeId);
+                  if (guidValue == null)
+                    continue;
+
+                  // NOTE: Some nodes may be annotations and not be found here
+                  var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
+                  if (nodeModel == null)
+                    continue;
+
+                  nodes.Add(nodeModel);
+                }
+
+                // Create a collection of notes in the given annotation
+                var notes = new List<NoteModel>();
+                foreach (string noteId in annotationViewInfo.Nodes)
+                {
+                  var guidValue = IdToGuidConverter(noteId);
+                  if (guidValue == null)
+                    continue;
+
+                  // NOTE: Some nodes may not be annotations and not be found here
+                  var noteModel = Notes.FirstOrDefault(note => note.GUID == guidValue);
+                  if (noteModel == null)
+                    continue;
+
+                  notes.Add(noteModel);
+                }
+
+                var annotationModel = new AnnotationModel(nodes, notes);
+                annotationModel.AnnotationText = annotationViewInfo.Title;
+                annotationModel.FontSize = annotationViewInfo.FontSize;
+                annotationModel.Background = annotationViewInfo.Background;
+                this.AddNewAnnotation(annotationModel);
+            }
+
+            // TODO, QNTM-1099: These items are not in the extra view info
+            // Name = info.Name;
+            // Description = info.Description;
+            // FileName = info.FileName;
+        }
+
+        private Guid IdToGuidConverter(string id)
+        {
+            Guid deterministicGuid;
+            if (!Guid.TryParse(id, out deterministicGuid))
+            {
+                Console.WriteLine("The id was not a guid, converting to a guid");
+                deterministicGuid = GuidUtility.Create(GuidUtility.UrlNamespace, id);
+                Console.WriteLine(id + " becomes " + deterministicGuid);
+            }
+
+            return deterministicGuid;
+        }
     }
 }

@@ -443,12 +443,15 @@ namespace Dynamo.UI.Controls
                 .TransformToAncestor(dynamoWindow)
                 .Transform(new Point(0, 0));
 
+            double x = 0;
             // Count width.
             // multiplying by xfactor scales the placement point of the library UI tooltip to the correct location
             //otherwise direct pixel coordinates are off by this factor due to screen dpi.
-            double x = 0;
-            x = (WpfUtilities.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
-                + gap * 2 + targetLocation.X * (-1)) * xfactor;
+            var placementTarget = PlacementTarget as FrameworkElement;
+            if (placementTarget != null)
+            {
+                x = (placementTarget.ActualWidth + gap * 2 + targetLocation.X * (-1)) * xfactor;
+            }
 
             // Count height.
             var availableHeight = dynamoWindow.ActualHeight - popup.Height
@@ -458,7 +461,7 @@ namespace Dynamo.UI.Controls
             if (availableHeight < Configurations.BottomPanelHeight)
                 y = availableHeight - (Configurations.BottomPanelHeight + gap * 4);
 
-            return new CustomPopupPlacement[]
+            return new[]
             {
                 new CustomPopupPlacement()
                 {

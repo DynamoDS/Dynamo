@@ -13,6 +13,7 @@ using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.Views;
+using Newtonsoft.Json;
 using Color = System.Windows.Media.Color;
 
 namespace Dynamo.ViewModels
@@ -21,7 +22,8 @@ namespace Dynamo.ViewModels
     {
         private AnnotationModel annotationModel;
         public readonly WorkspaceViewModel WorkspaceViewModel;        
-      
+        
+        [JsonIgnore]
         public AnnotationModel AnnotationModel
         {
             get { return annotationModel; }
@@ -32,11 +34,13 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public Double Width
         {
             get { return annotationModel.Width; }
         }
 
+        [JsonIgnore]
         public Double Height
         {
             get { return annotationModel.Height; }
@@ -46,6 +50,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
         public Double Top
         {
             get { return annotationModel.Y; }
@@ -54,19 +59,22 @@ namespace Dynamo.ViewModels
                 annotationModel.Y = value;                
             }
         }
-       
+
+        [JsonIgnore]
         public Double Left
         {
             get { return annotationModel.X; }
             set { annotationModel.X = value; }
         }
 
+        [JsonIgnore]
         public double ZIndex
         {
             get { return 1; }
             
         }
 
+        [JsonIgnore]
         public String AnnotationText
         {
             get { return annotationModel.AnnotationText; }
@@ -77,6 +85,7 @@ namespace Dynamo.ViewModels
         }
        
         private Color _background;
+        [JsonIgnore]
         public Color Background
         {
             get
@@ -92,7 +101,8 @@ namespace Dynamo.ViewModels
                 annotationModel.Background = value.ToString();                
             }
         }
-        
+
+        [JsonIgnore]
         public PreviewState PreviewState
         {
             get
@@ -107,6 +117,7 @@ namespace Dynamo.ViewModels
         }
 
         private DelegateCommand _changeFontSize;
+        [JsonIgnore]
         public DelegateCommand ChangeFontSize
         {
             get
@@ -120,6 +131,7 @@ namespace Dynamo.ViewModels
         }
 
         private DelegateCommand _addToGroupCommand;
+        [JsonIgnore]
         public DelegateCommand AddToGroupCommand
         {
              get
@@ -151,7 +163,8 @@ namespace Dynamo.ViewModels
                 }
             }
         }
-      
+
+        [JsonIgnore]
         public Double FontSize
         {
             get
@@ -164,9 +177,10 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public IEnumerable<ModelBase> SelectedModels
+        [JsonIgnore]
+        public IEnumerable<ModelBase> Nodes
         {
-            get { return annotationModel.SelectedModels; }
+            get { return annotationModel.Nodes; }
         }
        
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
@@ -240,7 +254,7 @@ namespace Dynamo.ViewModels
 
             //Select all the models inside the group - This avoids some performance bottleneck 
             //with many nodes selected at the same time - which makes moving the group very slow
-            DynamoSelection.Instance.Selection.AddRange(this.AnnotationModel.SelectedModels);
+            DynamoSelection.Instance.Selection.AddRange(this.AnnotationModel.Nodes);
         }
     }
 }

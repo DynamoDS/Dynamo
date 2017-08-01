@@ -84,7 +84,7 @@ namespace ProtoCore.Lang
             "CountFalse",               // kCountFalse
             "SetDifference",            // kDifference
             "%dot",                     // kDot
-            "Equals",                   // kEquals
+            "__Equals",                   // kEquals
             "GetElapsedTime",           // kGetElapsedTime
             Constants.kGetTypeMethodName,// kGetType
             "Flatten",                  // kFlatten
@@ -105,7 +105,7 @@ namespace ProtoCore.Lang
             "Remove",                   // kRemove
             "RemoveDuplicates",         // kRemoveDuplicates
             "RemoveNulls",              // kRemoveNulls
-            "RemoveIfNot",              // kRemoveIfNot
+            "__RemoveIfNot",              // kRemoveIfNot
             "Reverse",                  // kReverse
             "Sleep",                    // kSleep
             "SomeFalse",                // kSomeFalse
@@ -124,10 +124,10 @@ namespace ProtoCore.Lang
             "SetUnion",                 // kUnion
             Constants.kInlineConditionalMethodName,
             "Break",                    // kBreak
-            "GetKeys",                  // kGetKeys    
-            "GetValues",                // kGetValues    
-            "RemoveKey",                // kRemoveKey
-            "ContainsKey",              // kContainsKey
+            "__GetKeys",                  // kGetKeys    
+            "__GetValues",                // kGetValues    
+            "__RemoveKey",                // kRemoveKey
+            "__ContainsKey",              // kContainsKey
             "Evaluate",                 // kEvaluateFunctionPointer
             "__TryGetValueFromNestedDictionaries",// kTryGetValueFromNestedDictionaries
             Constants.kNodeAstFailed,   // kNodeAstFailed
