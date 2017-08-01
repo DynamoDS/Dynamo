@@ -43,8 +43,6 @@ namespace CoreNodeModels.Input
         }
         public override NodeInputData InputData()
         {
-            //TODO nodeModel should actually return null here
-            //as we don't know this is an input node
             return new NodeInputData()
             {
                 Id = this.GUID.ToString("N"),
