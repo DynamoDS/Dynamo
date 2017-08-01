@@ -656,7 +656,7 @@ namespace ProtoFFI
                 return null;
 
             ProtoCore.AST.AssociativeAST.FunctionDefinitionNode func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
-            func.Name = string.Format("%get_{0}", f.Name);
+            func.Name = string.Format("{0}{1}", Constants.kGetterPrefix, f.Name);
             func.Signature = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
             func.ReturnType = CLRModuleType.GetProtoCoreType(f.FieldType, Module);
             func.FunctionBody = null;
@@ -690,8 +690,7 @@ namespace ProtoFFI
                 return node;
             }
 
-            //Need to hide property accessor from design script users, prefix with %
-            string prefix = (isOperator || propaccessor) ? "%" : "";
+            string prefix = isOperator ? Constants.kInternalNamePrefix : string.Empty;
             var func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
 
             if (isOperator)
