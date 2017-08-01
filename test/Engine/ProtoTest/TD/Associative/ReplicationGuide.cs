@@ -390,6 +390,29 @@ test = foo( x<1>,y<2> );
 
         [Test]
         [Category("Replication")]
+        public void T0001_Replication_Guide_Function_With_3_Args()
+        {
+            String code =
+                @"
+def foo: var[]..[](x : string, y : string, z : string)
+{
+return = x + y + z;
+}
+x = {{""1""}};
+y = ""2"";
+z = {""3"", ""4""};
+a = foo(x<1>, y<2>, z<3>);
+b = foo(x<1>, y<2>, z<3><4>);
+";
+            ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
+            String errmsg = "";
+            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
+            thisTest.Verify("a", new object[] {new object[] {new object[] {"123"}, new object[] {"124"}}});
+            thisTest.Verify("b", new object[] {new object[] {new object[] {"123"}, new object[] {"124"}}});
+        }
+
+        [Test]
+        [Category("Replication")]
         public void T0002_Replication_Guide_Function_With_3_Arg()
         {
             String code =
