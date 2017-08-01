@@ -641,7 +641,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 };
 
                 var cameraData = JsonConvert.DeserializeObject<CameraData>(cameraJson, settings);
-                SetCameraData(cameraData, "JSON");
+
+                cameraData.EyePosition = new Point3D(cameraData.EyeX, cameraData.EyeY, cameraData.EyeZ);
+                cameraData.LookDirection = new Vector3D(cameraData.LookX, cameraData.LookY, cameraData.LookZ);
+                cameraData.UpDirection = new Vector3D(cameraData.UpX, cameraData.UpY, cameraData.UpZ);
+
+                SetCameraData(cameraData);
             }
         }
 
@@ -1327,16 +1332,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        public void SetCameraData(CameraData data, string fileType = "XML")
+        public void SetCameraData(CameraData data)
         {
             if (Camera == null) return;
-
-            if (fileType == "JSON")
-            {
-                data.LookDirection = new Vector3D(data.LookX, data.LookY, data.LookZ);
-                data.EyePosition = new Point3D(data.EyeX, data.EyeY, data.EyeZ);
-                data.UpDirection = new Vector3D(data.UpX, data.UpY, data.UpZ);
-            }
 
             Camera.LookDirection = data.LookDirection;
             Camera.Position = data.EyePosition;
