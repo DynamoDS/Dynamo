@@ -42,26 +42,32 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// If this input is a selection type a list of choices a user can select.
         /// </summary>
+        [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
         public List<string> Choices { get; set; }
         /// <summary>
         /// if this input is a Number, the max value of that number.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public double? MaximumValue { get; set; }
         /// <summary>
         /// if this input is a Number, the min value of that number.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public double? MinimumValue { get; set; }
         /// <summary>
         /// if this input is a Number, the step value of that number when it acts as a slider.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public double? StepValue { get; set; }
         /// <summary>
         /// if this input is a Number, the number type Double or Integer that the number returns.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string NumberType { get; set; }
         /// <summary>
         /// Description displayed to user of this input node.
         /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Description { get; set; }
 
         private static Dictionary<Type, NodeInputTypes> dotNetTypeToNodeInputType = new Dictionary<Type, NodeInputTypes>
