@@ -590,7 +590,7 @@ test = TestObjectC.TestObjectC(x<1>,y<2>).z;
             ProtoScript.Runners.ProtoScriptRunner fsr = new ProtoScript.Runners.ProtoScriptRunner();
             String errmsg = "DNL-1467459 NotImplemented Exception occurs when replication guides are used on a combination of collection and singleton";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new Object[] { new object[] { 2 }, new object[] { 3 } });
+            thisTest.Verify("test", new Object[] {  2, 3 });
         }
 
         [Test]
@@ -2914,10 +2914,7 @@ t1 = foo(a<1>, b<2>);
 ";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t1", new Object[]
-                {
-                    new Object[] { 0, 1}
-                });
+            thisTest.Verify("t1", new Object[] {0, 1});
 
         }
 
