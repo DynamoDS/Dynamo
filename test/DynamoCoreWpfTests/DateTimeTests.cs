@@ -52,8 +52,7 @@ namespace DynamoCoreWpfTests
             var testDate = new System.DateTime(2150, 1, 1, 12, 0, 0);
             node.Value = testDate;
 
-            CurrentDynamoModel.CurrentWorkspace.SaveAs(tempPath,
-                CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore);
+            CurrentDynamoModel.CurrentWorkspace.Save(tempPath);
 
             CurrentDynamoModel.OpenFileFromPath(tempPath);
 

@@ -318,6 +318,7 @@ newArray[2] = { 7, 8, 9 }; // and good
         public void set_operation_functions_test_1()
         {
             string code = @"
+import(""BuiltIn.ds"");
 set = { true, { false, true } };
 allFalseSet = AllFalse(set);
 someFalseSet = SomeFalse(set);
@@ -336,7 +337,7 @@ removeNullsSetInsert = RemoveNulls(setInsert);
 removeDuplicatesSetInsert = RemoveDuplicates(setInsert);
 flattenSetInsert = Flatten(setInsert);
 removeDuplicatesSetInsertFalttened = RemoveDuplicates(flattenSetInsert);
-removeIfNotSetInsert = RemoveIfNot(flattenSetInsert, ""bool""); // (={})... this looks incorrect
+removeIfNotSetInsert = List.RemoveIfNot(flattenSetInsert, ""bool""); // (={})... this looks incorrect
 one1Dcollection = { 3, 1 };
 other1Dcollection = { 0, 1, 2, 3, 4 };
 setDifferenceA = SetDifference(one1Dcollection, other1Dcollection);

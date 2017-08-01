@@ -5,8 +5,8 @@
   <UpdateModelValueCommand ModelGuid="5cf9dff2-4a3e-428a-a98a-60d0de0d323e" Name="Code" Value="a=10;" />
   <CreateNodeCommand NodeId="5c93c110-bd77-4129-a896-5aec7cba98e0" NodeName="+@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="5cf9dff2-4a3e-428a-a98a-60d0de0d323e" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="5cf9dff2-4a3e-428a-a98a-60d0de0d323e" Name="NickName" Value="CBN" />
+  <UpdateModelValueCommand ModelGuid="5cf9dff2-4a3e-428a-a98a-60d0de0d323e" Name="Name" Value="CBN" />
   <SelectModelCommand ModelGuid="5c93c110-bd77-4129-a896-5aec7cba98e0" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="5c93c110-bd77-4129-a896-5aec7cba98e0" Name="NickName" Value="AddNode" />
+  <UpdateModelValueCommand ModelGuid="5c93c110-bd77-4129-a896-5aec7cba98e0" Name="Name" Value="AddNode" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
 </Commands>

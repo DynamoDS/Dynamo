@@ -27,7 +27,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
         {
             string assembly = "";
             string function;
-            var nickname = nodeElement.Attributes["nickname"].Value;
+            var name = nodeElement.Attributes["nickname"].Value;
 
             FunctionDescriptor descriptor;
 
@@ -36,7 +36,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
             if (nodeElement.Attributes["assembly"] == null)
             {
                 assembly = DetermineAssemblyName(nodeElement);
-                function = nickname.Replace(".get", ".");
+                function = name.Replace(".get", ".");
             }
             else
             {
@@ -48,7 +48,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
                 if (hintedSigniture != null)
                 {
                     nodeElement.Attributes["nickname"].Value =
-                        libraryServices.NicknameFromFunctionSignatureHint(xmlSignature);
+                        libraryServices.NameFromFunctionSignature(xmlSignature);
                     function = hintedSigniture;
 
                     // if the node needs additional parameters, add them here
@@ -80,7 +80,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
                 else
                 {
                     // If the desired assembly is not loaded already. Check if it belongs to BuiltInFunctionGroup.
-                    if (libraryServices.IsFunctionBuiltIn(assembly, nickname))
+                    if (libraryServices.IsFunctionBuiltIn(assembly, name))
                     {
                         descriptor = libraryServices.GetFunctionDescriptor(function);
                     }
@@ -111,7 +111,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
                 return new DummyNode(
                     inputcount,
                     1,
-                    nickname,
+                    name,
                     nodeElement,
                     assembly,
                     DummyNode.Nature.Unresolved);
@@ -144,14 +144,15 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
                 string[] oldSignature = function.Split('@');
                 string[] inputTypes = oldSignature.Length > 1 ? oldSignature[1].Split(',') : new string[]{};
                 int i = 0, j = 0;
-                foreach (var param in descriptor.Parameters)
+                foreach (var param in descriptor.InputParameters)
                 {
-                    if (i >= inputTypes.Length || param.Type.ToString() != inputTypes[i])
+                    if (i >= inputTypes.Length || param.Item2 != inputTypes[i])
                         result.InPorts[j].UsingDefaultValue = result.InPorts[j].DefaultValue != null;
                     else
                         i++;
                     j++;
                 }
+                
             }
 
             return result;

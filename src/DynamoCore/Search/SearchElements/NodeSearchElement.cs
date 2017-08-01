@@ -78,7 +78,7 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         ///     The full name of entry which consists of category name and entry name.
         /// </summary>
-        public string FullName
+        public virtual string FullName
         {
             get { return FullCategoryName + "." + Name; }
         }

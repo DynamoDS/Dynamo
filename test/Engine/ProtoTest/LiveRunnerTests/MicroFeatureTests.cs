@@ -1349,15 +1349,15 @@ def f()
             // Test function re-defintion but without parameters
             List<string> codes = new List<string>() 
             {
-                "def f() { t = 41; return = t;} x = f(); r = Equals(x, 41);",
-                "def f() { t1 = 41; t2 = 42; return = {t1, t2}; } x = f(); r = Equals(x, {41, 42});",
-                "def f() { t1 = 41; t2 = 42; t3 = 43; return = {t1, t2, t3};} x = f(); r = Equals(x, {41, 42, 43});",
-                "def f() { t1 = 43; t2 = 42; t3 = 41; return = {t1, t2, t3};} x = f(); r = Equals(x, {43, 42, 41});",
-                "def f() { t1 = t2 + t3; return = t;} x = f(); r = Equals(x, null);",
-                "def f() { t1 = 2; t2 = 5; t3 = t1..t2; return = t3;} x = f(); r = Equals(x, {2, 3, 4, 5});",
-                "def f() { t1 = 2; t2 = 5; t3 = t1..t2..#2; return = t3;} x = f(); r = Equals(x, {2, 5});",
-                "def f() { a = 1; b = 2; c = (a == b) ? 3 : 4; return = c; } x = f(); r = Equals(x, 4);",
-                "def f() { a = 2; b = 2; c = (a == b) ? 3 : 4; return = c; } x = f(); r = Equals(x, 3);",
+                "def f() { t = 41; return = t;} x = f(); r = __Equals(x, 41);",
+                "def f() { t1 = 41; t2 = 42; return = {t1, t2}; } x = f(); r = __Equals(x, {41, 42});",
+                "def f() { t1 = 41; t2 = 42; t3 = 43; return = {t1, t2, t3};} x = f(); r = __Equals(x, {41, 42, 43});",
+                "def f() { t1 = 43; t2 = 42; t3 = 41; return = {t1, t2, t3};} x = f(); r = __Equals(x, {43, 42, 41});",
+                "def f() { t1 = t2 + t3; return = t;} x = f(); r = __Equals(x, null);",
+                "def f() { t1 = 2; t2 = 5; t3 = t1..t2; return = t3;} x = f(); r = __Equals(x, {2, 3, 4, 5});",
+                "def f() { t1 = 2; t2 = 5; t3 = t1..t2..#2; return = t3;} x = f(); r = __Equals(x, {2, 5});",
+                "def f() { a = 1; b = 2; c = (a == b) ? 3 : 4; return = c; } x = f(); r = __Equals(x, 4);",
+                "def f() { a = 2; b = 2; c = (a == b) ? 3 : 4; return = c; } x = f(); r = __Equals(x, 3);",
             };
 
             Guid guid = System.Guid.NewGuid();
@@ -1405,7 +1405,7 @@ def f()
     return = t;
 } 
 x = f(); 
-r = Equals(x, 41);
+r = __Equals(x, 41);
 ",
                 @"
 def f() 
@@ -1415,7 +1415,7 @@ def f()
     return = {t1, t2}; 
 } 
 x = f(); 
-r = Equals(x, {41, 42});
+r = __Equals(x, {41, 42});
 ",
             };
 
@@ -1446,8 +1446,8 @@ r = Equals(x, {41, 42});
             // Test function re-define and should remove the old function
             List<string> codes = new List<string>() 
             {
-                "def f() { return = 41; } x = f(); r1 = Equals(x, 41); y = f(0); r2 = Equals(y, null); r = r1 && r2;",
-                "def f(x) { return = 42;} x = f(0); r1 = Equals(x, 42); y = f(); r2 = Equals(y, null); r = r1 && r2;",
+                "def f() { return = 41; } x = f(); r1 = __Equals(x, 41); y = f(0); r2 = __Equals(y, null); r = r1 && r2;",
+                "def f(x) { return = 42;} x = f(0); r1 = __Equals(x, 42); y = f(); r2 = __Equals(y, null); r = r1 && r2;",
             };
 
             Guid guid = System.Guid.NewGuid();

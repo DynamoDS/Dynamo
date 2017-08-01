@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using Dynamo.Configuration;
-using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Search.SearchElements;
-using Dynamo.Wpf.ViewModels;
 
 using NUnit.Framework;
 
@@ -18,6 +12,7 @@ namespace Dynamo.Tests
         [Test]
         public void SavingFilesUpdateRecentFileList()
         {
+            var model = ViewModel.Model;
             // Open a file
             var examplePath = Path.Combine(TestDirectory, @"core\math", "Add.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
@@ -29,8 +24,7 @@ namespace Dynamo.Tests
             for (int i = 0; i < maxNum + 1; i++)
             {
                 var newPath = GetNewFileNameOnTempPath("dyn");
-                var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
-                Assert.IsTrue(res);
+                ViewModel.SaveAs(newPath);
                 paths.Add(newPath);
             }
 

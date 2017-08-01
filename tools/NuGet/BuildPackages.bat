@@ -1,14 +1,23 @@
 :: Argument %1: path to template folder
+:: Argument %2: path to dynamo build directory
 ::
 
-@echo off
+if not "%2"=="" goto :harvestpathdefined
+
+echo The path to the Dynamo dlls was not specified. Using the dlls in the install directory...
 set harvestPath=..\..\src\DynamoInstall\harvest
 if not exist %harvestPath% (
   echo Dynamo\src\DynamoInstall\harvest folder not found.
   echo Please build Dynamo\src\Install.sln before running this script!
   exit /b 1
 )
+goto :build
 
+:harvestpathdefined
+set harvestPath=%2
+
+:build
+@echo off
 :: Get version string from "DynamoCore.dll"
 set count=1
 for /f %%f in ('cscript //Nologo ..\install\GetFileVersion.vbs %harvestPath%\DynamoCore.dll') do (
@@ -23,7 +32,7 @@ setlocal DisableDelayedExpansion
 set version=%Major%.%Minor%.%Build%-beta%Revision%
 
 :: Clean files generated from the previous run
-del *.nupkg
+if exist *.nupkg ( del *.nupkg )
 if exist nuspec ( rmdir /s /q nuspec )
 mkdir nuspec
 
@@ -40,7 +49,9 @@ for %%f in (%1\*.nuspec) do (
 )
 
 :: Pack .nupkg files based on each .nuspec in the "nuspec" folder
-@echo on
 for %%f in (nuspec\*.nuspec) do (
   nuget pack %%f -basepath %harvestPath%
+  if not exist %%~nf.%version%.nupkg (
+    exit /b 1
+  )
 )

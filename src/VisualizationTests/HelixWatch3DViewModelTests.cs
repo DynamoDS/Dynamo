@@ -56,7 +56,7 @@ namespace WpfVisualizationTests
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DSIronPython.dll");
             libraries.Add("DSCoreNodes.dll");
-            libraries.Add("Display.dll");
+            libraries.Add("GeometryColor.dll");
             libraries.Add("VMDataBridge.dll");
             base.GetLibrariesToPreload(libraries);
         }
@@ -430,7 +430,7 @@ namespace WpfVisualizationTests
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
 
-            var numberOfPlanesNode = ws.Nodes.FirstOrDefault(n => n.NickName == "Number of Planes") as DoubleInput;
+            var numberOfPlanesNode = ws.Nodes.FirstOrDefault(n => n.Name == "Number of Planes") as DoubleInput;
             Assert.NotNull(numberOfPlanesNode);
 
             var numberOfPlanes = int.Parse(numberOfPlanesNode.Value);
@@ -926,14 +926,14 @@ namespace WpfVisualizationTests
         }
 
         private void tagGeometryWhenClickingItem(int[] indexes, int expectedNumberOfLabels, 
-            string nodeNickName, Func<NodeView,NodeModel> getGeometryOwnerNode, bool expandPreviewBubble = false)
+            string nodeName, Func<NodeView,NodeModel> getGeometryOwnerNode, bool expandPreviewBubble = false)
         {
             OpenVisualizationTest("MAGN_3815.dyn");
             RunCurrentModel();
             DispatcherUtil.DoEvents();
             Assert.AreEqual(3, Model.CurrentWorkspace.Nodes.Count());
-            var nodeView = View.ChildrenOfType<NodeView>().First(nv => nv.ViewModel.NickName == nodeNickName);
-            Assert.IsNotNull(nodeView, "NodeView has not been found by given nickname: " + nodeNickName);
+            var nodeView = View.ChildrenOfType<NodeView>().First(nv => nv.ViewModel.Name == nodeName);
+            Assert.IsNotNull(nodeView, "NodeView has not been found by given name: " + nodeName);
 
             if (expandPreviewBubble)
             {

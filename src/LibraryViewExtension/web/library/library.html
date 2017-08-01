@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Librarie.js sample page</title>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            background-color: #353535;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Placeholders must exist before all other scripts that try to access them -->
+    <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
+    
+    <!-- The main library view compoment -->
+    <script src='./dist/librarie.min.js'></script>
+    
+    <script>
+        //Get hold of object registered from C#
+        let csharpController = window["controller"];
+
+        function refreshLibraryView(libraryController) {
+            //Create library container
+            let jsonUrls = ["loadedTypes", "layoutSpecs"];
+            let downloader = LibraryEntryPoint.CreateJsonDownloader(jsonUrls, function (jsonUrl, jsonObject) {
+
+                let downloaded = downloader.getDownloadedJsonObjects();
+                let loadedTypesJson = downloaded["loadedTypes"];
+                let layoutSpecsJson = downloaded["layoutSpecs"];
+
+                if (!loadedTypesJson || (!layoutSpecsJson)) {
+                    console.log("Error: Couldn't get enough data to load library.");
+                    return; // Not fully downloaded yet, bail.
+                }
+
+                // Supply loaded types and layout specs at a much later time.
+                let append = false; // Replace existing contents instead of appending.
+                libraryController.setLoadedTypesJson(loadedTypesJson, append);
+                libraryController.setLayoutSpecsJson(layoutSpecsJson, append);
+                libraryController.refreshLibraryView(); // Refresh library view.
+            });
+        }
+
+        //Create library controller
+        let libController = LibraryEntryPoint.CreateLibraryController();
+
+        //Create library view
+        let libContainer = libController.createLibraryByElementId("libraryContainerPlaceholder");
+        //Update the view with contents
+        refreshLibraryView(libController);
+
+        libController.searchLibraryItemsHandler = function (text, callback) {
+            let url = "nodeSearch" + "/" + text;
+            let jsonUrls = [url];
+            let downloader = LibraryEntryPoint.CreateJsonDownloader(jsonUrls, function (jsonUrl, jsonObject) {
+
+                let downloaded = downloader.getDownloadedJsonObjects();
+                let searchLoadedTypesJson = downloaded[url];
+
+                if (!searchLoadedTypesJson) {
+                    console.log("Error: no search result.");
+                    return;
+                }
+
+                callback(searchLoadedTypesJson);
+            });
+        }
+
+        // Register event handlers for various events on library controller and package controller.
+
+        libController.on(libController.ItemClickedEventName, function (nodeCreationName) {
+            console.log('Library Node Clicked: ' + nodeCreationName);
+            //csharpController.closeDetailsView(); //ensure that the details view is closed.
+            csharpController.createNode(nodeCreationName);
+        });
+
+        libController.on(libController.ItemMouseEnterEventName, function (arg) {
+            //console.log('Mouse entered: ' + arg.data);
+            csharpController.showNodeTooltip(arg.data, arg.rect.top);
+        });
+
+        libController.on(libController.ItemMouseLeaveEventName, function (arg) {
+            //console.log('Mouse left: ' + arg.data);
+            csharpController.closeNodeTooltip(true);
+        });
+
+        libController.on(libController.SectionIconClickedEventName, function (section) {
+            console.log("Section clicked: " + section);
+            if (section == "Add-ons") {
+                csharpController.importLibrary();
+            }
+        });
+
+        csharpController.on("error", function (msg) {
+            console.log("Error: " + msg);
+            pkgController.raiseEvent("error", msg);
+        });
+
+        csharpController.on("libraryDataUpdated", function (items) {
+            console.log(items);
+            refreshLibraryView(libController);
+        });
+
+    </script>
+
+</body>
+
+</html>

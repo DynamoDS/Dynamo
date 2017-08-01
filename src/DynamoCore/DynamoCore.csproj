@@ -103,6 +103,7 @@ limitations under the License.
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -117,6 +118,13 @@ limitations under the License.
     <Compile Include="Configuration\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
     <Compile Include="Exceptions\LibraryLoadFailedException.cs" />
+    <Compile Include="Graph\Workspaces\LayoutExtensions.cs" />
+    <Compile Include="Graph\Workspaces\NodesToCodeExtensions.cs" />
+    <Compile Include="Graph\Workspaces\PresetExtensions.cs" />
+    <Compile Include="Graph\Workspaces\SerializationConverters.cs" />
+    <Compile Include="Graph\Workspaces\SerializationExtensions.cs" />
+    <Compile Include="Graph\Workspaces\UndoRedo.cs" />
+    <Compile Include="Extensions\IServiceManager.cs" />
     <Compile Include="Logging\AnalyticsService.cs" />
     <Compile Include="Logging\DynamoAnalyticsClient.cs" />
     <Compile Include="Logging\IAnalyticsSession.cs" />
@@ -361,7 +369,7 @@ limitations under the License.
       <ExternLibG220 Include="$(SolutionDir)..\extern\LibG_220\*" />
       <ExternLibG221 Include="$(SolutionDir)..\extern\LibG_221\*" />
       <ExternLibG222 Include="$(SolutionDir)..\extern\LibG_222\*" />
-	  <ExternLibG223 Include="$(SolutionDir)..\extern\LibG_223\*" />
+      <ExternLibG223 Include="$(SolutionDir)..\extern\LibG_223\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
       <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
@@ -380,7 +388,7 @@ limitations under the License.
     <Copy SourceFiles="@(ExternLibG220)" DestinationFolder="$(OutputPath)libg_220\" />
     <Copy SourceFiles="@(ExternLibG221)" DestinationFolder="$(OutputPath)libg_221\" />
     <Copy SourceFiles="@(ExternLibG222)" DestinationFolder="$(OutputPath)libg_222\" />
-	<Copy SourceFiles="@(ExternLibG223)" DestinationFolder="$(OutputPath)libg_223\" />
+    <Copy SourceFiles="@(ExternLibG223)" DestinationFolder="$(OutputPath)libg_223\" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(ExternAnalytics)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />

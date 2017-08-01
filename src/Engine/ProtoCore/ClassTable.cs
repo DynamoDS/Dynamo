@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Properties;
 using ProtoCore.Utils;
@@ -21,6 +22,7 @@ namespace ProtoCore.DSASM
         public int Base { get; set; }
         public bool IsImportedClass { get; set; }
         public ClassAttributes ClassAttributes { get; set; }
+        public bool IsStatic { get; set; }
 
         /// <summary>
         /// String description of where the classnode was loaded from 
@@ -41,7 +43,7 @@ namespace ProtoCore.DSASM
                 return IsImportedClass && string.IsNullOrEmpty(ExternLib);
             }
         }
-
+        
         private ProcedureNode disposeMethod;
         private bool hasCachedDisposeMethod;
 
@@ -377,6 +379,7 @@ namespace ProtoCore.DSASM
             }
             return disposeMethod;
         }
+
     }
 
 

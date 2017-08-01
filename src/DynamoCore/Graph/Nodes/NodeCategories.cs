@@ -42,6 +42,8 @@ namespace Dynamo.Graph.Nodes
 
         public const string IO = "Input/Output";
         public const string IO_HARDWARE = "Input/Output.Hardware";
+
+        public const string MODIFIERS = "Modifiers";
     }
 
     /// <summary>
@@ -268,77 +270,6 @@ namespace Dynamo.Graph.Nodes
             }
 
             return attrib.Value;
-        }
-
-        /// <summary>
-        /// Call this method to serialize given node-data-list pairs into an 
-        /// XmlDocument. Serialized data in the XmlDocument can be loaded by a 
-        /// call to LoadTraceDataFromXmlDocument method.
-        /// </summary>
-        /// <param name="document">The target document to which the trade data 
-        /// is to be written. This parameter cannot be null and must represent 
-        /// a valid XmlDocument object.</param>
-        /// <param name="nodeTraceDataList">A dictionary of node-data-list pairs
-        /// to be saved to the XmlDocument. This parameter cannot be null and 
-        /// must represent a non-empty list of node-data-list pairs.</param>
-        internal static void SaveTraceDataToXmlDocument(XmlDocument document,
-            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> nodeTraceDataList)
-        {
-            #region Parameter Validations
-
-            if (document == null)
-                throw new ArgumentNullException("document");
-
-            if (document.DocumentElement == null)
-            {
-                const string message = "Document does not have a root element";
-                throw new ArgumentException(message, "document");
-            }
-
-            if (nodeTraceDataList == null)
-                throw new ArgumentNullException("nodeTraceDataList");
-
-            if (!nodeTraceDataList.Any())
-            {
-                const string message = "Trade data list must be non-empty";
-                throw new ArgumentException(message, "nodeTraceDataList");
-            }
-
-            #endregion
-
-            #region Session Xml Element
-
-            var sessionElement = document.CreateElement(
-                Configurations.SessionTraceDataXmlTag);
-
-            document.DocumentElement.AppendChild(sessionElement);
-
-            #endregion
-
-            #region Serialize Node Xml Elements
-
-            foreach (var pair in nodeTraceDataList)
-            {
-                var nodeElement = document.CreateElement(
-                    Configurations.NodeTraceDataXmlTag);
-
-                // Set the node ID attribute for this element.
-                var nodeGuid = pair.Key.ToString();
-                nodeElement.SetAttribute(Configurations.NodeIdAttribName, nodeGuid);
-                sessionElement.AppendChild(nodeElement);
-
-                foreach (var data in pair.Value)
-                {
-                    var callsiteXmlElement = document.CreateElement(
-                        Configurations.CallsiteTraceDataXmlTag);
-                    callsiteXmlElement.SetAttribute(Configurations.CallSiteID, data.ID);
-
-                    callsiteXmlElement.InnerText = data.Data;
-                    nodeElement.AppendChild(callsiteXmlElement);
-                }
-            }
-
-            #endregion
         }
 
         /// <summary>

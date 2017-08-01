@@ -6,6 +6,7 @@ using Dynamo.Tests;
 using System;
 using Moq;
 using System.Collections.Generic;
+using Dynamo.Graph.Workspaces;
 
 namespace DynamoCoreWpfTests
 {

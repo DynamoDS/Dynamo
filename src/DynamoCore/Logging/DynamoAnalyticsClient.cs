@@ -151,7 +151,7 @@ namespace Dynamo.Logging
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
 
-            product = new ProductInfo() { Name = "Dynamo", VersionString = appversion };
+            product = new ProductInfo() { Name = "Dynamo", VersionString = appversion, AppVersion = dynamoModel.Version };
         }
 
         /// <summary>

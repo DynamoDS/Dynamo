@@ -339,6 +339,9 @@
   <data name="kMultipleSymbolFoundFromName" xml:space="preserve">
     <value>Multiple definitions for '{0}' are found as {1}</value>
   </data>
+  <data name="kMethodDeprecated" xml:space="preserve">
+    <value>Method '{0}' has been deprecated, please use method '{1}' instead</value>
+  </data>
   <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
     <value>No step size is specified in amount range expression</value>
   </data>

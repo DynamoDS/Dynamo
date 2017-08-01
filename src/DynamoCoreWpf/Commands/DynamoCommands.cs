@@ -89,7 +89,7 @@ namespace Dynamo.ViewModels
             switch (name)
             {
                 case "OpenFileCommand":
-                    this.AddToRecentFiles((command as DynamoModel.OpenFileCommand).XmlFilePath);
+                    this.AddToRecentFiles((command as DynamoModel.OpenFileCommand).FilePath);
                     break;
 
                 case "MutateTestCommand":
@@ -222,6 +222,11 @@ namespace Dynamo.ViewModels
 
                 case DynamoModel.MakeConnectionCommand.Mode.EndShiftReconnections:
                     CurrentSpaceViewModel.EndConnection(
+                        nodeId, command.PortIndex, command.Type);
+                    break;
+
+                case DynamoModel.MakeConnectionCommand.Mode.EndAndStartCtrlConnection:
+                    CurrentSpaceViewModel.EndAndStartCtrlConnection(
                         nodeId, command.PortIndex, command.Type);
                     break;
 

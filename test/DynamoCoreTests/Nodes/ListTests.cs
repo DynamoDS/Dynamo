@@ -18,6 +18,7 @@ namespace Dynamo.Tests
             libraries.Add("VMDataBridge.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("FunctionObject.ds");
+            libraries.Add("BuiltIn.ds");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -1251,8 +1252,8 @@ namespace Dynamo.Tests
 			// check that max & min nodes are loaded as DSFunction
 			var maxNoKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("3db0d46d-fea6-4fc9-8c51-a8110f919c5f");
 			var minNoKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("ef9a3ab0-b4c2-440d-9291-5807bc92e26f");
-			var maxWithKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("a8ad0bfb-25f2-4ddc-aea6-927bdc739753");
-			var minWithKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("2b2b1e9c-2ae1-4ba2-8b82-e01311df5429");
+			var maxWithKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("a8ad0bfb-25f2-4ddc-aea6-927bdc739753");
+			var minWithKey = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("2b2b1e9c-2ae1-4ba2-8b82-e01311df5429");
 
 			// check that the nodes are migrated based on whether the key is connected or not
 			Assert.AreEqual(1, maxNoKey.InPorts.Count);

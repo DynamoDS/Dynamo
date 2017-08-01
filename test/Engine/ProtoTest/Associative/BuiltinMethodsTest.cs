@@ -207,11 +207,12 @@ y = p[1][1];
         public void BIM10_RemoveIfNot()
         {
             String code =
-@"a = {""This is "",""a very complex "",""array"",1,2.0,3,false,4.0,5,6.0,true,{2,3.1415926},null,false,'c'};
-b = RemoveIfNot(a, ""int"");
-c = RemoveIfNot(a, ""double"");
-d = RemoveIfNot(a, ""bool"");
-e = RemoveIfNot(a, ""array"");
+@"import(""BuiltIn.ds"");
+a = {""This is "",""a very complex "",""array"",1,2.0,3,false,4.0,5,6.0,true,{2,3.1415926},null,false,'c'};
+b = List.RemoveIfNot(a, ""int"");
+c = List.RemoveIfNot(a, ""double"");
+d = List.RemoveIfNot(a, ""bool"");
+e = List.RemoveIfNot(a, ""array"");
 q = b[0];
 r = c[0];
 s = d[0];
@@ -639,8 +640,9 @@ z = IsRectangular(c);
         public void BIM29_RemoveIfNot()
         {
             string code = @"
+import(""BuiltIn.ds"");
 a = { true,null,false,true};
-b = RemoveIfNot(a, ""bool""); 
+b = List.RemoveIfNot(a, ""bool""); 
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { true, false, true });

@@ -2683,8 +2683,9 @@ d = ImportFromCSV(c);
         {
             String code =
 @"
+import(""BuiltIn.ds"");
 a = { true,null,false,true};
-b = RemoveIfNot(a, ""bool"");
+b = List.RemoveIfNot(a, ""bool"");
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { true, false, true }
@@ -2697,11 +2698,12 @@ b = RemoveIfNot(a, ""bool"");
         {
             String code =
 @"
+import(""BuiltIn.ds"");
 b;
 [Imperative]
 {
     a = { true,null,false,true};
-    b = RemoveIfNot(a, ""bool"");
+    b = List.RemoveIfNot(a, ""bool"");
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
@@ -2715,10 +2717,11 @@ b;
         {
             String code =
 @"
+import(""BuiltIn.ds"");
 b;
     a = { true,null,false,true};
     c=""bool"";
-    b = RemoveIfNot(a, c);
+    b = List.RemoveIfNot(a, c);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { true, false, true }
@@ -2731,10 +2734,11 @@ b;
         {
             String code =
 @"
+import(""BuiltIn.ds"");
 b;
     a = { true,null,false,true};
     c=""int"";
-    b = RemoveIfNot(a, c);
+    b = List.RemoveIfNot(a, c);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { }
@@ -2747,10 +2751,11 @@ b;
         {
             String code =
 @"
+import(""BuiltIn.ds"");
 b;
     a = { 1.0,null,1,2};
     c=""double"";
-    b = RemoveIfNot(a, c);
+    b = List.RemoveIfNot(a, c);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { 1.0 }
@@ -2763,10 +2768,11 @@ b;
         {
             String code =
 @"
+import(""BuiltIn.ds"");
 b;
     a = { true,null,{true},false};
     c=""array"";
-    b = RemoveIfNot(a, c);
+    b = List.RemoveIfNot(a, c);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("b", new object[] { new object[] { true } }
@@ -3403,8 +3409,9 @@ def foo ()
         public void TestRemoveKeyNoThrow()
         {
             string code = @"
+import(""BuiltIn.ds"");
 x = 0;
-y = RemoveKey(x, x);
+y = List.RemoveKey(x, x);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("y", 0);
@@ -3414,8 +3421,9 @@ y = RemoveKey(x, x);
         public void TestContainsKeyNoThrow()
         {
             string code = @"
+import(""BuiltIn.ds"");
 x = 0;
-y = ContainsKey(x, x);
+y = List.ContainsKey(x, x);
 ";
             Assert.DoesNotThrow(() => thisTest.RunScriptSource(code));
             thisTest.Verify("y", false);

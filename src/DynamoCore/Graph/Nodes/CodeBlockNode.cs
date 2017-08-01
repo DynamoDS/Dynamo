@@ -241,7 +241,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        ///     Sets string content of CodeBlock node.
+        /// Sets string content of CodeBlock node.
         /// </summary>
         /// <param name="newCode">New content of the code block</param>
         /// <param name="workspaceElementResolver"><see cref="ElementResolver"/> object</param>
@@ -276,11 +276,16 @@ namespace Dynamo.Graph.Nodes
 
                 ReportPosition();
 
-                ClearRuntimeError();
+                ClearErrorsAndWarnings();
                 if (!string.IsNullOrEmpty(errorMessage))
+                {
                     Error(errorMessage);
+                }
                 else if (!string.IsNullOrEmpty(warningMessage))
-                    Warning(warningMessage);
+                {
+                    // Build warnings must persist so that they are not cleared by runtime warnings
+                    Warning(warningMessage, isPersistent:true);
+                }
 
                 this.OnRequestSilenceModifiedEvents(false);
 
@@ -353,7 +358,7 @@ namespace Dynamo.Graph.Nodes
             var inPorts = childNodes.Where(node => node.Name.Equals("PortInfo"));
             foreach (var tuple in inPorts.Zip(InPorts, Tuple.Create))
             {
-                tuple.Item1.SetAttribute("name", tuple.Item2.PortName);
+                tuple.Item1.SetAttribute("name", tuple.Item2.Name);
             }
 
             //write output port line number info
@@ -600,14 +605,15 @@ namespace Dynamo.Graph.Nodes
             ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
 
-            ClearRuntimeError();
+            ClearErrorsAndWarnings();
             if (!string.IsNullOrEmpty(errorMessage))
             {
                 Error(errorMessage);
             }
             else if (!string.IsNullOrEmpty(warningMessage))
             {
-                Warning(warningMessage);
+                // Build warnings must persist so that they are not cleared by runtime warnings
+                Warning(warningMessage, isPersistent:true);
             }
 
             // Mark node for update
@@ -629,8 +635,9 @@ namespace Dynamo.Graph.Nodes
                 // in which case, a local copy of the ER obtained from the CBN is used
                 var resolver = workspaceElementResolver ?? this.ElementResolver;
                 var parseParam = new ParseParam(GUID, code, resolver);
+                var priorNames = libraryServices.GetPriorNames();
 
-                if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ref parseParam))
+                if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ref parseParam, priorNames))
                 {
                     if (parseParam.ParsedNodes != null)
                     {

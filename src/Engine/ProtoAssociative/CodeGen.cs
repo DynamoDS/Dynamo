@@ -2959,18 +2959,15 @@ namespace ProtoAssociative
                 thisClass.IsImportedClass = classDecl.IsImportedClass;
                 thisClass.TypeSystem = core.TypeSystem;
                 thisClass.ClassAttributes = classDecl.ClassAttributes;
-                
-                if (classDecl.ExternLibName != null)
-                    thisClass.ExternLib = classDecl.ExternLibName;
-                else
-                    thisClass.ExternLib = Path.GetFileName(core.CurrentDSFileName);
+                thisClass.IsStatic = classDecl.IsStatic;
+
+                thisClass.ExternLib = classDecl.ExternLibName ?? Path.GetFileName(core.CurrentDSFileName);
 
                 globalClassIndex = core.ClassTable.Append(thisClass);
                 if (ProtoCore.DSASM.Constants.kInvalidIndex == globalClassIndex)
                 {
                     string message = string.Format("Class redefinition '{0}' (BE1C3285).\n", classDecl.ClassName);
                     buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
-                    throw new BuildHaltException(message);
                 }
 
                 unPopulatedClasses.Add(globalClassIndex, classDecl);
@@ -2994,18 +2991,31 @@ namespace ProtoAssociative
                     {
                         string message = string.Format("Class '{0}' cannot derive from itself (DED0A61F).\n", classDecl.ClassName);
                         buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
-                        throw new BuildHaltException(message);
                     }
 
                     if (ProtoCore.DSASM.Constants.kInvalidIndex != baseClass)
                     {
-                        if (core.ClassTable.ClassNodes[baseClass].IsImportedClass && !thisClass.IsImportedClass)
-                        {
-                            string message = string.Format("Cannot derive from FFI class {0} (DA87AC4D).\n",
-                                core.ClassTable.ClassNodes[baseClass].Name);
+                        var baseClassNode = core.ClassTable.ClassNodes[baseClass];
 
-                            buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
-                            throw new BuildHaltException(message);
+                        // Cannot derive DS class from non-static FFI class
+                        if (baseClassNode.IsImportedClass && !classDecl.IsExternLib)
+                        {
+                            if (!baseClassNode.IsStatic)
+                            {
+                                string message =
+                                    string.Format("Cannot derive DS class from non-static FFI class {0} (DA87AC4D).\n",
+                                        core.ClassTable.ClassNodes[baseClass].Name);
+
+                                buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line,
+                                    classDecl.col);
+                            }
+                            else
+                            {
+                                // All DS classes declared in imported DS files that inherit from static FFI base classes are imported
+                                classDecl.IsStatic = baseClassNode.IsStatic;
+                                thisClass.IsStatic = baseClassNode.IsStatic;
+                                thisClass.IsImportedClass = true;
+                            }
                         }
 
                         thisClass.Base = baseClass;
@@ -3015,7 +3025,6 @@ namespace ProtoAssociative
                     {
                         string message = string.Format("Unknown base class '{0}' (9E44FFB3).\n", classDecl.BaseClass);
                         buildStatus.LogSemanticError(message, core.CurrentDSFileName, classDecl.line, classDecl.col);
-                        throw new BuildHaltException(message);
                     }
                 }
             }
@@ -3066,6 +3075,14 @@ namespace ProtoAssociative
                 List<AssociativeNode> thisPtrOverloadList = new List<AssociativeNode>();
                 foreach (AssociativeNode funcdecl in classDecl.Procedures)
                 {
+                    // Do not allow static DS class to have a constructor defined 
+                    if (!classDecl.IsExternLib && classDecl.IsStatic && funcdecl is ConstructorDefinitionNode)
+                    {
+                        string message = string.Format("Static DS class {0} cannot have a constructor.\n", classDecl.ClassName);
+
+                        buildStatus.LogSemanticError(message, core.CurrentDSFileName, funcdecl.line, funcdecl.col);
+                    }
+
                     DfsTraverse(funcdecl, ref inferedType);
 
                     var funcDef = funcdecl as FunctionDefinitionNode;
@@ -3117,7 +3134,7 @@ namespace ProtoAssociative
                     else
                     {
                         // Generate a static function for member function f():
-                        //     satic def f(a: A)
+                        //     static def f(a: A)
                         //     { 
                         //        return = a.f()
                         //     }
@@ -3143,7 +3160,8 @@ namespace ProtoAssociative
 
                 classDecl.Procedures.AddRange(thisPtrOverloadList);
 
-                if (!classDecl.IsExternLib)
+                // Prevent creation of default constructor for static DS class
+                if (!classDecl.IsExternLib && !classDecl.IsStatic)
                 {
                     ProtoCore.DSASM.ProcedureTable vtable = core.ClassTable.ClassNodes[globalClassIndex].ProcTable;
                     if (vtable.GetFunctionBySignature(classDecl.ClassName, new List<ProtoCore.Type>()) == null)
@@ -3191,7 +3209,6 @@ namespace ProtoAssociative
                             if (currentClassScope != sn.classScope)
                             {
                                 currentClassScope = sn.classScope;
-                                ix = 0;
                             }
                         }
                         else
@@ -3199,7 +3216,6 @@ namespace ProtoAssociative
                             if (currentClassScope != globalClassIndex)
                             {
                                 currentClassScope = globalClassIndex;
-                                ix = 0;
                             }
                         }
                     }
@@ -3334,6 +3350,7 @@ namespace ProtoAssociative
                 Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex, "A constructor node must be associated with class");
                 localProcedure.LocalCount = 0;
                 localProcedure.ClassID = globalClassIndex;
+                localProcedure.AccessModifier = funcDef.Access;
 
                 localProcedure.MethodAttribute = funcDef.MethodAttributes;
 

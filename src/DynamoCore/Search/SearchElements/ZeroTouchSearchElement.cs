@@ -16,12 +16,18 @@ namespace Dynamo.Search.SearchElements
     public class ZeroTouchSearchElement : NodeSearchElement
     {
         private readonly FunctionDescriptor functionDescriptor;
+        private readonly string fullname;
 
         /// <summary>
         /// The name that is used during node creation
         /// </summary>
         public override string CreationName { get { return functionDescriptor != null ? functionDescriptor.MangledName : this.Name; } }
 
+        /// <summary>
+        ///     The full name of entry which consists of assembly name and qualified name for function descriptor.
+        /// </summary>
+        public override string FullName { get { return fullname; } }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="ZeroTouchSearchElement"/> class 
         /// with the DesignScript function description
@@ -48,6 +54,8 @@ namespace Dynamo.Search.SearchElements
             Description = functionDescriptor.Description;
             Assembly = functionDescriptor.Assembly;
 
+            //Create full name including assembly name
+            fullname = string.Format("{0}.{1}", System.IO.Path.GetFileNameWithoutExtension(Assembly), functionDescriptor.QualifiedName);
             ElementType = ElementTypes.ZeroTouch;
 
             if (functionDescriptor.IsBuiltIn)
