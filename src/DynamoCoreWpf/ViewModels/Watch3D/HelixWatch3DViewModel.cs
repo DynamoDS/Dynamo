@@ -644,7 +644,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 };
 
                 var cameraData = JsonConvert.DeserializeObject<CameraData>(cameraJson, settings);
-
                 SetCameraData(cameraData);
             }
         }
