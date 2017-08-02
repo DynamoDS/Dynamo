@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Globalization;
@@ -269,17 +269,28 @@ namespace DSOffice
         /// <param name="file">File representing the Microsoft Excel spreadsheet.</param>
         /// <param name="sheetName">Name of the worksheet containing the data.</param>
         /// <param name="readAsStrings">toggle to switch between reading Excel file as strings only or not</param>
+        /// <param name="visible">toggle to switch between showing and hiding the main Excel window</param>
         /// <returns name="data">Rows of data from the Excel worksheet.</returns>
         /// <search>office,excel,spreadsheet,ifequalreturnindex</search>
         [IsVisibleInDynamoLibrary(false)]
-        public static object[][] ReadFromFile(FileInfo file, string sheetName, bool readAsStrings = false)
+        public static object[][] ReadFromFile(FileInfo file, string sheetName, bool readAsStrings = false, bool visible = true)
         {
-            WorkBook wb = WorkBook.ReadExcelFile(file.FullName);
+        	object[][] data;
+        	
+        	if(!visible)
+        		ExcelInterop.ShowOnStartup = false;
+        	WorkBook wb = WorkBook.ReadExcelFile(file.FullName);
             WorkSheet ws = wb.GetWorksheetByName(sheetName);
             if (readAsStrings)
-                return ws.GetData(true);
-
-            return ws.Data;
+                data = ws.GetData(true);
+            else
+            	data = ws.Data;
+            if(!visible)
+            {
+            	wb.CloseHidden();
+            	ExcelInterop.ShowOnStartup = true;
+            }
+            return data;
         }
 
         [NodeObsolete("ReadObsolete", typeof(Properties.Resources))]
@@ -598,6 +609,15 @@ namespace DSOffice
             else
                 wb = ExcelInterop.App.Workbooks.Add();
         }
+        
+        /// <summary>
+        /// Helper method for reading workbooks with a disabled visibility.
+        /// </summary>
+        public void CloseHidden()
+        {
+        	wb.Close();
+        	wb = null;
+        }
 
         /// <summary>
         /// (SaveAsExcelWorkbook node)
@@ -772,9 +792,9 @@ namespace DSOffice
             else return DSCore.List.Transpose(CSVdatalist);
         }
 
-        public static object[][] ImportExcel(FileInfo file, string sheetName, bool readAsStrings = false)
+        public static object[][] ImportExcel(FileInfo file, string sheetName, bool readAsStrings = false, bool visible = true)
         {
-            return Excel.ReadFromFile(file, sheetName, readAsStrings);
+            return Excel.ReadFromFile(file, sheetName, readAsStrings, visible);
         }
 
         public static object[][] ExportExcel(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false)
