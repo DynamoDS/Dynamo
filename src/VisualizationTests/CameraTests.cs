@@ -73,8 +73,11 @@ namespace WpfVisualizationTests
 
             var openPath = Path.Combine(
                 GetTestDirectory(ExecutingDirectory),
-                @"core\camera\CameraDataJSON.dyn");
+                @"core\camera\CameraData.dyn");
             OpenDynamoDefinition(openPath);
+            var tempFileName = Path.GetTempPath() + "CameraDataJson.dyn";
+            ViewModel.SaveAs(tempFileName);
+            OpenDynamoDefinition(tempFileName);
 
             var cam = ((HelixWatch3DViewModel)ViewModel.BackgroundPreviewViewModel).Camera;
 
@@ -87,6 +90,8 @@ namespace WpfVisualizationTests
             Assert.AreEqual(cam.UpDirection.X, -0.369622383590052, 1e-6);
             Assert.AreEqual(cam.UpDirection.Y, 0.417338454481821, 1e-6);
             Assert.AreEqual(cam.UpDirection.Z, 0.830185466001387, 1e-6);
+
+            File.Delete(tempFileName);
         }
 
         [Test]
