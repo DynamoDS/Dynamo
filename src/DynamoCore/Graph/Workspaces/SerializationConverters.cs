@@ -476,11 +476,11 @@ namespace Dynamo.Graph.Workspaces
 
             writer.WriteStartObject();
             writer.WritePropertyName("Start");
-            writer.WriteValue(connector.Start.GUID.ToString());
+            writer.WriteValue(connector.Start.GUID.ToString("N"));
             writer.WritePropertyName("End");
-            writer.WriteValue(connector.End.GUID.ToString());
+            writer.WriteValue(connector.End.GUID.ToString("N"));
             writer.WritePropertyName("Id");
-            writer.WriteValue(connector.GUID.ToString());
+            writer.WriteValue(connector.GUID.ToString("N"));
             writer.WriteEndObject();
         }
     }
@@ -511,15 +511,7 @@ namespace Dynamo.Graph.Workspaces
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
-        }
-
-        public override bool CanWrite
-        {
-            get
-            {
-                return false;
-            }
+            writer.WriteValue(((Guid)value).ToString("N"));
         }
     }
 

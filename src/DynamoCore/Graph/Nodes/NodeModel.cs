@@ -722,7 +722,7 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                return GUID.ToString().Replace("-", string.Empty).ToLower();
+                return GUID.ToString("N");
             }
         }
 

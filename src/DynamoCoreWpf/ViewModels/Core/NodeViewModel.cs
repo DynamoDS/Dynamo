@@ -56,6 +56,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Returns NodeModel ID
         /// </summary>
+        [JsonConverter(typeof(IdToGuidConverter))]
         public Guid Id
         {
             get { return NodeModel.GUID; }

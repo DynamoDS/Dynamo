@@ -601,7 +601,7 @@ namespace Dynamo.Tests
             foreach (var nodeId in model.CurrentWorkspace.Nodes.Select(x => x.GUID))
             {
                 modelsGuidToIdMap.Add(nodeId, idcount.ToString());
-                json = json.Replace(nodeId.ToString(), idcount.ToString());
+                json = json.Replace(nodeId.ToString("N"), idcount.ToString());
                 idcount = idcount + 1;
             }
 
@@ -611,14 +611,14 @@ namespace Dynamo.Tests
                 foreach (var port in node.InPorts)
                 {
                     modelsGuidToIdMap.Add(port.GUID, idcount.ToString());
-                    json = json.Replace(port.GUID.ToString(), idcount.ToString());
+                    json = json.Replace(port.GUID.ToString("N"), idcount.ToString());
                     idcount = idcount + 1;
                 }
 
                 foreach (var port in node.OutPorts)
                 {
                     modelsGuidToIdMap.Add(port.GUID, idcount.ToString());
-                    json = json.Replace(port.GUID.ToString(), idcount.ToString());
+                    json = json.Replace(port.GUID.ToString("N"), idcount.ToString());
                     idcount = idcount + 1;
                 }
             }
@@ -626,14 +626,14 @@ namespace Dynamo.Tests
             foreach (var connector in model.CurrentWorkspace.Connectors)
             {
                 modelsGuidToIdMap.Add(connector.GUID, idcount.ToString());
-                json = json.Replace(connector.GUID.ToString(), idcount.ToString());
+                json = json.Replace(connector.GUID.ToString("N"), idcount.ToString());
                 idcount = idcount + 1;
             }
             //alter the output json so that all annotationModel ids are not guids
             foreach (var annotation in model.CurrentWorkspace.Annotations)
             {
                 modelsGuidToIdMap.Add(annotation.GUID, idcount.ToString());
-                json = json.Replace(annotation.GUID.ToString(), idcount.ToString());
+                json = json.Replace(annotation.GUID.ToString("N"), idcount.ToString());
                 idcount = idcount + 1;
             }
 

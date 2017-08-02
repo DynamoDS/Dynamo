@@ -71,14 +71,14 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WriteStartObject();
 
             writer.WritePropertyName("Id");
-            writer.WriteValue(anno.GUID.ToString());
+            writer.WriteValue(anno.GUID.ToString("N"));
             writer.WritePropertyName("Title");
             writer.WriteValue(anno.AnnotationText);
             writer.WritePropertyName("Nodes");
             writer.WriteStartArray();
             foreach (var m in anno.Nodes)
             {
-                writer.WriteValue(m.GUID.ToString());
+                writer.WriteValue(m.GUID.ToString("N"));
             }
             writer.WriteEndArray();
             writer.WritePropertyName("Left");
@@ -127,7 +127,7 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             // For each noteViewModel, start a new object
             writer.WriteStartObject();
             writer.WritePropertyName("Id");
-            writer.WriteValue(notes.GUID);
+            writer.WriteValue(notes.GUID.ToString("N"));
             writer.WritePropertyName("X");
             writer.WriteValue(notes.X);
             writer.WritePropertyName("Y");
