@@ -498,7 +498,7 @@ namespace Dynamo.Tests
             var jObject = JObject.Parse(json);
             var jToken = jObject["Inputs"];
             var inputs = jToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
-            var inputs2 = ws1.Nodes.Where(x => x.IsSetAsInput == true).Select(input => input.InputData()).ToList();
+            var inputs2 = ws1.Nodes.Where(x => x.IsSetAsInput == true).Select(input => input.InputData).ToList();
             Assert.IsTrue(inputs.SequenceEqual(inputs2));
         }
 

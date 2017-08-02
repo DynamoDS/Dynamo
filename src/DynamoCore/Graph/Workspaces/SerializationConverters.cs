@@ -346,8 +346,9 @@ namespace Dynamo.Graph.Workspaces
 
             //inputs
             writer.WritePropertyName("Inputs");
-            //find nodes which are inputs and get their inputData
-            var inputNodeDatas = ws.Nodes.Where((node) => node.IsSetAsInput == true).Select(inputNode => inputNode.InputData()).ToList();
+            //find nodes which are inputs and get their inputData if its not null.
+            var inputNodeDatas = ws.Nodes.Where((node) => node.IsSetAsInput == true && node.InputData != null)
+                .Select(inputNode => inputNode.InputData).ToList();
             serializer.Serialize(writer, inputNodeDatas);
 
             //nodes

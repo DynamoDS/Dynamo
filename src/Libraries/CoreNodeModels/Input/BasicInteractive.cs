@@ -37,19 +37,22 @@ namespace CoreNodeModels.Input
                 }               
             }
         }
-        public override NodeInputData InputData()
+        public override NodeInputData InputData
         {
            
-            return new NodeInputData()
+            get
             {
-                Id = this.GUID.ToString("N"),
-                Name = this.Name,
-                //use the <T> type to convert to the correct nodeTypeString defined by
-                //the schema
-                Type = NodeInputData.getNodeInputTypeFromType(typeof(T)),
-                Description = this.Description,
-                Value = Value.ToString(),
-            };
+                return new NodeInputData()
+                {
+                    Id = this.GUID.ToString("N"),
+                    Name = this.Name,
+                    //use the <T> type to convert to the correct nodeTypeString defined by
+                    //the schema
+                    Type = NodeInputData.getNodeInputTypeFromType(typeof(T)),
+                    Description = this.Description,
+                    Value = Value.ToString(),
+                };
+            }
         }
 
         // Making these abstract so that derived classes are forced to come up 
