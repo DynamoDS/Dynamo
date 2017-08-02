@@ -13,6 +13,7 @@ using Dynamo.Engine;
 using Dynamo.Events;
 using System.Text.RegularExpressions;
 using Dynamo.Utilities;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Tests
 {
@@ -491,6 +492,14 @@ namespace Dynamo.Tests
                 Assert.True(ws2.Nodes.Contains(c.Start.Owner));
                 Assert.True(ws2.Nodes.Contains(c.End.Owner));
             }
+
+            //assert that the inputs in the saved json file are the same as those we can gather from the 
+            //grah at runtime - because we don't deserialize these directly we check the json itself.
+            var jObject = JObject.Parse(json);
+            var jToken = jObject["Inputs"];
+            var inputs = jToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
+            var inputs2 = ws1.Nodes.Where(x => x.IsSetAsInput == true).Select(input => input.InputData()).ToList();
+            Assert.IsTrue(inputs.SequenceEqual(inputs2));
         }
 
         private static void SaveWorkspaceComparisonData(WorkspaceComparisonData wcd1, string filePathBase, TimeSpan executionDuration)

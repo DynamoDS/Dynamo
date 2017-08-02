@@ -65,18 +65,11 @@ namespace CoreNodeModels
 
         public override NodeInputData InputData()
         {
-
-            return new NodeInputData()
-            {
-                Id = this.GUID.ToString("N"),
-                Name = this.Name,
-
-                Type = NodeInputTypes.selectionInput,
-                Description = this.Description,
-                //TODO investigate if this node type also needs to serialize it's selected index.
-                Value = this.Items[this.selectedIndex].Name,
-                Choices = this.items.Select(x => x.Name).ToList(),
-            };
+            //TODO There is not yet an appropriate input type
+            //defined in the cogs graph schema to support dropdowns
+            //which return arbitrary objects at some index - implement this
+            //when that exists.
+            return null;
         }
 
         private int selectedIndex = 0;

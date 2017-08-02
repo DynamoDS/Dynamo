@@ -1,17 +1,30 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Dynamo.Graph.Nodes
 {
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum NodeInputTypes
     {
-        numberInput, booleanInput, stringInput, colorInput, dateInput, selectionInput
+        [EnumMember(Value = "number")]
+        numberInput,
+        [EnumMember(Value = "boolean")]
+        booleanInput,
+        [EnumMember(Value = "string")]
+        stringInput,
+        [EnumMember(Value = "color")]
+        colorInput,
+        [EnumMember(Value = "date")]
+        dateInput,
+        [EnumMember(Value = "selection")]
+        selectionInput
     };
-
 
 
     /// <summary>
@@ -31,7 +44,6 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// The type of input this node is.
         /// </summary>
-        [JsonConverter(typeof(NodeInputTypeConverter))]
         public NodeInputTypes Type { get; set; }
         /// <summary>
         /// The value of the input when the graph was saved.
@@ -79,18 +91,6 @@ namespace Dynamo.Graph.Nodes
             { typeof(int),NodeInputTypes.numberInput},
             {typeof(float),NodeInputTypes.numberInput},
         };
-
-        private static Dictionary<NodeInputTypes, string> enumToStringMap = new Dictionary<NodeInputTypes, string>
-        {
-            {NodeInputTypes.stringInput,"string"},
-            {NodeInputTypes.selectionInput,"selection"},
-            {NodeInputTypes.colorInput,"color"},
-            {NodeInputTypes.booleanInput,"boolean"},
-            {NodeInputTypes.numberInput,"number"},
-            {NodeInputTypes.dateInput,"date"}
-        };
-
-
         public static NodeInputTypes getNodeInputTypeFromType(Type type)
         {
             NodeInputTypes output;
@@ -103,45 +103,20 @@ namespace Dynamo.Graph.Nodes
                 throw new ArgumentException("could not find an inputType for this type");
             }
         }
-        public static string getStringName(NodeInputTypes type)
-        {
-            string output;
-            if (enumToStringMap.TryGetValue(type, out output))
-            {
-                return output;
-            }
-            else
-            {
-                throw new ArgumentException("could not find a string name for this type");
-            }
-        }
-    }
 
-    public class NodeInputTypeConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
+        public override bool Equals(object obj)
         {
-            return (objectType == typeof(NodeInputTypes));
-        }
-        public override bool CanRead
-        {
-            get { return false; }
-        }
-        public override bool CanWrite
-        {
-            get { return true; }
-        }
-
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var name = NodeInputData.getStringName((NodeInputTypes)value);
-            serializer.Serialize(writer, name);
+            var converted = obj as NodeInputData;
+            return obj is NodeInputData && this.Id == converted.Id &&
+                this.Description == converted.Description &&
+                this.Choices == converted.Choices &&
+                this.MaximumValue == converted.MaximumValue &&
+                this.MinimumValue == converted.MinimumValue &&
+                this.Name == converted.Name &&
+                this.NumberType == converted.NumberType &&
+                this.StepValue == converted.StepValue &&
+                this.Type == converted.Type &&
+                this.Value == converted.Value;
         }
     }
 
