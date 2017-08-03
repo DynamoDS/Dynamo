@@ -44,7 +44,7 @@ namespace CoreNodeModels.Input
             {
                 return new NodeInputData()
                 {
-                    Id = this.GUID.ToString("N"),
+                    Id = this.GUID,
                     Name = this.Name,
                     //use the <T> type to convert to the correct nodeTypeString defined by
                     //the schema

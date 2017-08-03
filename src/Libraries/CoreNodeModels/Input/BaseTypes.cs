@@ -131,7 +131,7 @@ namespace CoreNodeModels.Input
            get {
                 return new NodeInputData()
                 {
-                    Id = this.GUID.ToString("N"),
+                    Id = this.GUID,
                     Name = this.Name,
                     Type = NodeInputTypes.numberInput,
                     Description = this.Description,

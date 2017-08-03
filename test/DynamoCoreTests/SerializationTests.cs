@@ -89,6 +89,7 @@ namespace Dynamo.Tests
             public Dictionary<Guid, int> InportCountMap { get; set; }
             public Dictionary<Guid, int> OutportCountMap { get; set; }
             public Dictionary<Guid, PortComparisonData> PortDataMap { get; set; }
+            public Dictionary<Guid,NodeInputData> InputsMap { get; set; }
             public string DesignScript { get; set; }
 
             public WorkspaceComparisonData(WorkspaceModel workspace, EngineController controller)
@@ -103,11 +104,17 @@ namespace Dynamo.Tests
                 OutportCountMap = new Dictionary<Guid, int>();
                 PortDataMap = new Dictionary<Guid, PortComparisonData>();
                 NodeReplicationMap = new Dictionary<Guid, string>();
+                InputsMap = new Dictionary<Guid, NodeInputData>();
 
                 foreach (var n in workspace.Nodes)
                 {
                     NodeTypeMap.Add(n.GUID, n.GetType());
                     NodeReplicationMap.Add(n.GUID,n.ArgumentLacing.ToString());
+                    //save input nodes to inputs block
+                    if (n.IsSetAsInput)
+                    {
+                        InputsMap.Add(n.GUID, n.InputData);
+                    }
 
                     var portvalues = n.OutPorts.Select(p =>
                         GetDataOfValue(n.GetValue(p.Index, controller))).ToList<object>();
@@ -292,6 +299,13 @@ namespace Dynamo.Tests
                 {
                     continue;
                 }
+            }
+
+            foreach(var kvp in a.InputsMap)
+            {
+                var vala = kvp.Value;
+                var valb = b.InputsMap[kvp.Key];
+                Assert.AreEqual(vala, valb,"input datas are not the same.");
             }
         }
 
