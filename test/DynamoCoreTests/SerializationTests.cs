@@ -68,8 +68,8 @@ namespace Dynamo.Tests
             {
                 var other = (obj as PortComparisonData);
                 return ID == other.ID &&
-                    other.KeepListStructure == this.KeepListStructure && 
-                    other.Level == this.Level && 
+                    other.KeepListStructure == this.KeepListStructure &&
+                    other.Level == this.Level &&
                     other.UseLevels == this.UseLevels;
             }
         }
@@ -85,11 +85,11 @@ namespace Dynamo.Tests
             public int ConnectorCount { get; set; }
             public Dictionary<Guid, Type> NodeTypeMap { get; set; }
             public Dictionary<Guid, List<object>> NodeDataMap { get; set; }
-            public Dictionary<Guid,string> NodeReplicationMap { get; set; }
+            public Dictionary<Guid, string> NodeReplicationMap { get; set; }
             public Dictionary<Guid, int> InportCountMap { get; set; }
             public Dictionary<Guid, int> OutportCountMap { get; set; }
             public Dictionary<Guid, PortComparisonData> PortDataMap { get; set; }
-            public Dictionary<Guid,NodeInputData> InputsMap { get; set; }
+            public Dictionary<Guid, NodeInputData> InputsMap { get; set; }
             public string DesignScript { get; set; }
 
             public WorkspaceComparisonData(WorkspaceModel workspace, EngineController controller)
@@ -109,7 +109,7 @@ namespace Dynamo.Tests
                 foreach (var n in workspace.Nodes)
                 {
                     NodeTypeMap.Add(n.GUID, n.GetType());
-                    NodeReplicationMap.Add(n.GUID,n.ArgumentLacing.ToString());
+                    NodeReplicationMap.Add(n.GUID, n.ArgumentLacing.ToString());
                     //save input nodes to inputs block
                     if (n.IsSetAsInput)
                     {
@@ -201,8 +201,8 @@ namespace Dynamo.Tests
                 var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, this.modelsGuidToIdMap[portkvp.Key]);
                 Assert.IsTrue(b.PortDataMap.ContainsKey(newGuid));
                 var aPort = a.PortDataMap[portkvp.Key];
-                var bPort= b.PortDataMap[newGuid];
-                Assert.AreEqual(aPort.UseLevels,bPort.UseLevels);
+                var bPort = b.PortDataMap[newGuid];
+                Assert.AreEqual(aPort.UseLevels, bPort.UseLevels);
                 Assert.AreEqual(aPort.KeepListStructure, bPort.KeepListStructure);
                 Assert.AreEqual(aPort.Level, bPort.Level);
             }
@@ -301,11 +301,11 @@ namespace Dynamo.Tests
                 }
             }
 
-            foreach(var kvp in a.InputsMap)
+            foreach (var kvp in a.InputsMap)
             {
                 var vala = kvp.Value;
                 var valb = b.InputsMap[kvp.Key];
-                Assert.AreEqual(vala, valb,"input datas are not the same.");
+                Assert.AreEqual(vala, valb, "input datas are not the same.");
             }
         }
 
@@ -512,7 +512,16 @@ namespace Dynamo.Tests
             var jObject = JObject.Parse(json);
             var jToken = jObject["Inputs"];
             var inputs = jToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
-            var inputs2 = ws1.Nodes.Where(x => x.IsSetAsInput == true).Select(input => input.InputData).ToList();
+            var inputs2 = ws1.Nodes.Where(x => x.IsSetAsInput == true && x.InputData != null).Select(input => input.InputData).ToList();
+
+            //inputs2 might come from a WS with non guids, so we need to replace the ids with guids if they exist in the map
+            foreach (var input in inputs2)
+            {
+                if (modelsGuidToIdMap.ContainsKey(input.Id))
+                {
+                    input.Id = GuidUtility.Create(GuidUtility.UrlNamespace, modelsGuidToIdMap[input.Id]);
+                }
+            }
             Assert.IsTrue(inputs.SequenceEqual(inputs2));
         }
 
