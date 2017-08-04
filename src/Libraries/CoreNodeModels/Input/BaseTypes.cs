@@ -135,7 +135,7 @@ namespace CoreNodeModels.Input
                     Name = this.Name,
                     Type = NodeInputTypes.numberInput,
                     Description = this.Description,
-                    Value = Value.ToString(),
+                    Value = System.Convert.ToDouble(Value),
 
                     NumberType = this.NumberType,
 

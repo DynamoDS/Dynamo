@@ -50,7 +50,7 @@ namespace CoreNodeModels.Input
                     //the schema
                     Type = NodeInputData.getNodeInputTypeFromType(typeof(T)),
                     Description = this.Description,
-                    Value = Value.ToString(),
+                    Value = Value,
                 };
             }
         }

@@ -50,7 +50,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// The value of the input when the graph was saved.
         /// </summary>
-        public string Value { get; set; }
+        public object Value { get; set; }
 
         //optional properties, might be null
         /// <summary>
@@ -109,6 +109,13 @@ namespace Dynamo.Graph.Nodes
         public override bool Equals(object obj)
         {
             var converted = obj as NodeInputData;
+
+            var valNumberComparison = false;
+            if(this.Value is double && converted.Value is double)
+            {
+                valNumberComparison = Math.Abs((double)this.Value - (double)converted.Value) < .000001;
+            }
+
             return obj is NodeInputData && this.Id == converted.Id &&
                 this.Description == converted.Description &&
                 this.Choices == converted.Choices &&
@@ -121,7 +128,7 @@ namespace Dynamo.Graph.Nodes
                 this.StepValue == converted.StepValue &&
                 this.Type == converted.Type &&
                 //check if the value is the same or if the value is a number check is it similar
-                ((this.Value == converted.Value) || Math.Abs(Convert.ToDouble(this.Value) -  Convert.ToDouble(converted.Value)) < .000001) ;
+                ((this.Value == converted.Value) || valNumberComparison || this.Value.ToString() == this.Value.ToString() );
         }
     }
 
