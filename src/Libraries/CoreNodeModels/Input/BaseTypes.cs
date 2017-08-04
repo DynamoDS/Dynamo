@@ -38,7 +38,8 @@ namespace CoreNodeModels.Input
         }
 
         [JsonConstructor]
-        private StringInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) {
+        private StringInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
             Value = "";
             ShouldDisplayPreviewCore = false;
         }
@@ -152,10 +153,8 @@ namespace CoreNodeModels.Input
         }
 
         [JsonConstructor]
-        private DoubleInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
+        private DoubleInput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            InPorts.AddRange(inPorts);
-            OutPorts.AddRange(outPorts);
             ShouldDisplayPreviewCore = false;
             ConvertToken = Convert;
             Value = "0";

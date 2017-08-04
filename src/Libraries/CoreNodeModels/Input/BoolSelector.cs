@@ -10,9 +10,13 @@ namespace CoreNodeModels.Input
     public abstract class Bool : BasicInteractive<bool>
     {
         [JsonConstructor]
-        protected Bool(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+        protected Bool(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+        }
 
-        protected Bool() : base() { }
+        protected Bool() : base()
+        {
+        }
 
         protected override bool DeserializeValue(string val)
         {

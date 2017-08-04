@@ -96,6 +96,12 @@ namespace CoreNodeModels
             PopulateItems();
         }
 
+        [JsonConstructor]
+        protected DSDropDownBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            PopulateItems();
+        }
+
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.SerializeCore(nodeElement, context);
