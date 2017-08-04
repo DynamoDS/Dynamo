@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="CoreNodeModelsWpf.Controls.DateTimePaletteUI"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:local="clr-namespace:Dynamo.Wpf.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="310">
+    <Grid>
+        <xctk:DateTimePicker Margin="5" Value ="{Binding SysDateTime, Mode=TwoWay}" AllowTextInput="False" ValueChanged="DateTimePicker_ValueChanged"/>
+    </Grid>
+</UserControl>

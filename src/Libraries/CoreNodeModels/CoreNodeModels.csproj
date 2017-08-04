@@ -55,6 +55,7 @@
     <Compile Include="Input\ColorPalette.cs" />
     <Compile Include="Input\DateTime.cs" />
     <Compile Include="DynamoConvert.cs" />
+    <Compile Include="Input\DateTimePalette.cs" />
     <Compile Include="Input\SliderBase.cs" />
     <Compile Include="Input\Double.cs" />
     <Compile Include="Input\BaseTypes.cs" />
