@@ -6,6 +6,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf;
 
 using PythonNodeModels;
+using System;
 
 namespace PythonNodeModelsWpf
 {
@@ -13,6 +14,7 @@ namespace PythonNodeModelsWpf
     {
         private DynamoViewModel dynamoViewModel;
         private PythonNode model;
+        private ScriptEditorWindow editWindow;
 
         public void CustomizeView(PythonNode nodeModel, NodeView nodeView)
         {
@@ -38,17 +40,25 @@ namespace PythonNodeModelsWpf
             }
         }
 
+        public void view_EditWindowClosed(object sender, EventArgs e)
+        {
+            editWindow = null;
+        }
+
         private void EditScriptContent()
         {
             using (var cmd = Dynamo.Logging.Analytics.TrackCommandEvent("PythonEdit"))
             {
-                var editWindow = new ScriptEditorWindow(dynamoViewModel);
-                editWindow.Initialize(model.GUID, "ScriptContent", model.Script);
-                bool? acceptChanged = editWindow.ShowDialog();
-                if (acceptChanged.HasValue && acceptChanged.Value)
+                if (editWindow != null)
                 {
-                    // Mark node for update
-                    model.OnNodeModified();
+                    editWindow.Activate();
+                }
+                else
+                {
+                    editWindow = new ScriptEditorWindow(dynamoViewModel, model);
+                    editWindow.Initialize(model.GUID, "ScriptContent", model.Script);
+                    editWindow.Closed += this.view_EditWindowClosed;
+                    editWindow.Show();
                 }
             }
         }

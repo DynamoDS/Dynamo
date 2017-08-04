@@ -133,6 +133,9 @@
   <data name="PythonScriptEditorAcceptChangesButton" xml:space="preserve">
     <value>Accept Changes</value>
   </data>
+  <data name="PythonScriptEditorTestButton" xml:space="preserve">
+    <value>Test</value>
+  </data>  
   <data name="PythonScriptEditorCaption" xml:space="preserve">
     <value>Edit Python Script...</value>
   </data>
