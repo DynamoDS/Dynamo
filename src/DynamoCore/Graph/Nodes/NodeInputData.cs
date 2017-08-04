@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Dynamo.Graph.Workspaces;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,8 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// The id of the node.
         /// </summary>
-        public string Id { get; set; }
+        [JsonConverter(typeof(IdToGuidConverter))]
+        public Guid Id { get; set; }
         /// <summary>
         /// Display name of the input node.
         /// </summary>
@@ -48,7 +50,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// The value of the input when the graph was saved.
         /// </summary>
-        public string Value { get; set; }
+        public object Value { get; set; }
 
         //optional properties, might be null
         /// <summary>
@@ -107,16 +109,26 @@ namespace Dynamo.Graph.Nodes
         public override bool Equals(object obj)
         {
             var converted = obj as NodeInputData;
+
+            var valNumberComparison = false;
+            if(this.Value is double && converted.Value is double)
+            {
+                valNumberComparison = Math.Abs((double)this.Value - (double)converted.Value) < .000001;
+            }
+
             return obj is NodeInputData && this.Id == converted.Id &&
                 this.Description == converted.Description &&
                 this.Choices == converted.Choices &&
                 this.MaximumValue == converted.MaximumValue &&
                 this.MinimumValue == converted.MinimumValue &&
-                this.Name == converted.Name &&
+                //TODO don't check name for now as this requires a VIew.
+                //and we only have model level tests.
+                //this.Name == converted.Name &&
                 this.NumberType == converted.NumberType &&
                 this.StepValue == converted.StepValue &&
                 this.Type == converted.Type &&
-                this.Value == converted.Value;
+                //check if the value is the same or if the value is a number check is it similar
+                ((this.Value == converted.Value) || valNumberComparison || this.Value.ToString() == this.Value.ToString() );
         }
     }
 

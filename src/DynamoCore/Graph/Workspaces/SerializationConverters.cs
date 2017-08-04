@@ -134,6 +134,8 @@ namespace Dynamo.Graph.Workspaces
 
         /// <summary>
         /// Map old Guids to new Models in the IdReferenceResolver.
+        /// This method also sets portData from the deserialized ports onto the 
+        /// newly created ports.
         /// </summary>
         /// <param name="node">The newly created node.</param>
         /// <param name="inPorts">The deserialized input ports.</param>
@@ -236,7 +238,23 @@ namespace Dynamo.Graph.Workspaces
 
             // nodes
             var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
-            
+
+            // nodes
+            var inputsToken = obj["Inputs"];
+            if(inputsToken != null)
+            {
+               var inputs = inputsToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
+               //using the inputs lets set the correct properties on the nodes.
+               foreach(var inputData in inputs)
+                {
+                    var matchingNode = nodes.Where(x => x.GUID == inputData.Id).FirstOrDefault();
+                    if(matchingNode != null)
+                    {
+                        matchingNode.IsSetAsInput = true;
+                    }
+                }
+            }
+
             // notes
             //TODO: Check this when implementing ReadJSON in ViewModel.
             //var notes = obj["Notes"].ToObject<IEnumerable<NoteModel>>(serializer);
