@@ -49,14 +49,15 @@ namespace Dynamo.Graph.Nodes
         public NodeInputTypes Type { get; set; }
         /// <summary>
         /// The value of the input when the graph was saved.
+        /// This shoud always be a string for all types.
         /// </summary>
-        public object Value { get; set; }
+        public string Value { get; set; }
 
         //optional properties, might be null
         /// <summary>
         /// If this input is a selection type a list of choices a user can select.
         /// </summary>
-        [JsonProperty(NullValueHandling=NullValueHandling.Ignore)]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<string> Choices { get; set; }
         /// <summary>
         /// if this input is a Number, the max value of that number.
@@ -111,9 +112,14 @@ namespace Dynamo.Graph.Nodes
             var converted = obj as NodeInputData;
 
             var valNumberComparison = false;
-            if(this.Value is double && converted.Value is double)
+            try
             {
-                valNumberComparison = Math.Abs((double)this.Value - (double)converted.Value) < .000001;
+                valNumberComparison = Math.Abs(Convert.ToDouble(this.Value) - Convert.ToDouble(converted.Value)) < .000001;
+            }
+            catch (Exception e)
+            {
+                //this just stays false.
+                valNumberComparison = false;
             }
 
             return obj is NodeInputData && this.Id == converted.Id &&
@@ -128,7 +134,7 @@ namespace Dynamo.Graph.Nodes
                 this.StepValue == converted.StepValue &&
                 this.Type == converted.Type &&
                 //check if the value is the same or if the value is a number check is it similar
-                ((this.Value == converted.Value) || valNumberComparison || this.Value.ToString() == this.Value.ToString() );
+                ((this.Value == converted.Value) || valNumberComparison || this.Value.ToString() == this.Value.ToString());
         }
     }
 
