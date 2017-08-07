@@ -51,7 +51,7 @@ namespace CoreNodeModels.Input
                     Name = this.Name,
                     Type = NodeInputTypes.numberInput,
                     Description = this.Description,
-                    Value = Value.ToString(),
+                    Value = Value.ToString(CultureInfo.InvariantCulture),
 
                     MinimumValue = this.Min,
                     MaximumValue = this.Max,
