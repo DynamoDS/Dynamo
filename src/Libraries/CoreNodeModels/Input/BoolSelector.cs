@@ -41,6 +41,22 @@ namespace CoreNodeModels.Input
             return base.UpdateValueCore(updateValueParams);
         }
 
+        public override NodeInputData InputData
+        {
+
+            get
+            {
+                return new NodeInputData()
+                {
+                    Id = this.GUID,
+                    Name = this.Name,
+                    Type = NodeInputData.getNodeInputTypeFromType(typeof(System.Boolean)),
+                    Description = this.Description,
+                    Value = Value.ToString().ToLower(),
+                };
+            }
+        }
+
         protected override string SerializeValue()
         {
             return Value.ToString();
