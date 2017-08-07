@@ -185,7 +185,7 @@ namespace Dynamo.ViewModels
         /// Gets the Camera Data. This is used when serializing Camera Data in the View block
         /// of Graph.Json.
         /// </summary>
-        [JsonProperty("Cameras")]
+        [JsonProperty("Camera")]
         public CameraData Camera
         {
             get { return DynamoViewModel.BackgroundPreviewViewModel.GetCameraInformation(); }
