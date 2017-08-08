@@ -2,6 +2,7 @@
 using Dynamo.Engine;
 using Dynamo.Interfaces;
 using ProtoCore.AST.AssociativeAST;
+using Newtonsoft.Json;
 
 namespace Dynamo.Library
 {
@@ -54,9 +55,33 @@ namespace Dynamo.Library
         public ProtoCore.Type Type { get; private set; }
 
         /// <summary>
-        /// Returns default value of the parameter.
+        /// Returns default value of the parameter as AST node.
         /// </summary>
+        [JsonIgnore]
         public AssociativeNode DefaultValue { get; private set; }
+
+        /// <summary>
+        /// Returns fully qualified string representation of AST node.
+        /// </summary>
+        [JsonProperty("DefaultValue")]
+        public string DefaultValueString
+        {
+            get
+            {
+                string description = string.Empty;
+                if (!string.IsNullOrEmpty(Summary))
+                    description = description + Summary + "\n\n";
+
+                description = description + DisplayTypeName;
+
+                if (defaultValueString != null)
+                {
+                    description = defaultValueString;
+                }
+
+                return description;
+            }
+        }
 
         /// <summary>
         /// Returns summary of the parameter.
