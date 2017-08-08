@@ -68,18 +68,7 @@ namespace Dynamo.Library
         {
             get
             {
-                string description = string.Empty;
-
-                if (defaultValueString != null)
-                {
-                    description = defaultValueString;
-                }
-                else
-                {
-                    description = null;
-                }
-
-                return description;
+                return defaultValueString;
             }
         }
 
