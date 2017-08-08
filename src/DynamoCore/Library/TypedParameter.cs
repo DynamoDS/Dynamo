@@ -69,14 +69,14 @@ namespace Dynamo.Library
             get
             {
                 string description = string.Empty;
-                if (!string.IsNullOrEmpty(Summary))
-                    description = description + Summary + "\n\n";
-
-                description = description + DisplayTypeName;
 
                 if (defaultValueString != null)
                 {
                     description = defaultValueString;
+                }
+                else
+                {
+                    description = null;
                 }
 
                 return description;
