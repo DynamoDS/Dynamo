@@ -1,0 +1,155 @@
+{
+  "Uuid": "bbc0b62d-17a9-4b28-944e-1ce4d531e9bb",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Home",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionUuid": "5e1e9c3d-5f0c-490a-9a51-aa190e90a786",
+      "NodeType": "CustomFunctionNode",
+      "Id": "33a4b79fb3a446e1a8a3d3e049149556",
+      "Inputs": [
+        {
+          "Id": "f0419d2b9ede44a9b7d1e8285b2dfc6c",
+          "Name": "x",
+          "Description": "int",
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6b89c1bd3b324b049b2d61e695628e96",
+          "Name": "y",
+          "Description": "int\nDefault value : 42",
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bd2122db910b42cd83c34ee650f81b7f",
+          "Name": "var[]..[]",
+          "Description": "return value",
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": ""
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "100;",
+      "Id": "dad4e2849d5848fb8956ffe6e3057e3d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "dbaa42c079be4712a269ab402bc3f700",
+          "Name": "",
+          "Description": "t6BBA4B28C5E54CF89F300D510499A00E_0",
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "405d0c036b22466ea2b9b9bf602e1762",
+      "Inputs": [
+        {
+          "Id": "2b377bde8108454bb3fd6c59261bea29",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "eac37c1d6393437c9e84b0552b33f05b",
+          "Name": "",
+          "Description": "Watch contents.",
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "bd2122db910b42cd83c34ee650f81b7f",
+      "End": "2b377bde8108454bb3fd6c59261bea29",
+      "Id": "415d6c2035624aa6bd9cf1df39ede414"
+    },
+    {
+      "Start": "dbaa42c079be4712a269ab402bc3f700",
+      "End": "f0419d2b9ede44a9b7d1e8285b2dfc6c",
+      "Id": "3f32f642620b4abca9a17ba18883d9b2"
+    }
+  ],
+  "Dependencies": [
+    "5e1e9c3d-5f0c-490a-9a51-aa190e90a786"
+  ],
+  "Bindings": [],
+  "View": {
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "addWithDefault",
+        "Id": "33a4b79fb3a446e1a8a3d3e049149556",
+        "IsUpstreamVisible": true,
+        "X": 284.4,
+        "Y": 247.6
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "dad4e2849d5848fb8956ffe6e3057e3d",
+        "IsUpstreamVisible": true,
+        "X": 183.110983086959,
+        "Y": 252.060211856884
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "405d0c036b22466ea2b9b9bf602e1762",
+        "IsUpstreamVisible": true,
+        "X": 473.227624977806,
+        "Y": 247.001180078351
+      }
+    ],
+    "Notes": [],
+    "Annotations": [],
+    "X": 296.838314842316,
+    "Y": 23.8723279692377,
+    "Zoom": 0.931811528498331
+  }
+}

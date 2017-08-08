@@ -750,6 +750,18 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestCustomNodeDefaultValueJson()
+        {
+            // Test custom node default value works in Json
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\TestDefaultValueJson.dyn");
+
+            OpenModel(dynFilePath);
+            BeginRun();
+
+            AssertPreviewValue("405d0c03-6b22-466e-a2b9-b9bf602e1762", 142);
+        }
+
+        [Test]
         public void TestCustomNodeInvalidType()
         {
             // Custom node has invalid type, which should be captured by Input node
