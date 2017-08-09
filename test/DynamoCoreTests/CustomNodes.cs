@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using Dynamo.Models;
 using Dynamo.Selection;
-
 using NUnit.Framework;
 using System.Collections;
 using CoreNodeModels;
@@ -15,6 +14,7 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Graph.Notes;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Tests
 {
@@ -752,13 +752,34 @@ namespace Dynamo.Tests
         [Test]
         public void TestCustomNodeDefaultValueJson()
         {
-            // Test custom node default value works in Json
-            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\TestDefaultValueJson.dyn");
-
+            // load xml dyf test file
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\CNDefault.dyf");
             OpenModel(dynFilePath);
-            BeginRun();
 
-            AssertPreviewValue("405d0c03-6b22-466e-a2b9-b9bf602e1762", 142);
+            // get custom node ws as json
+            var cws = CurrentDynamoModel.Workspaces.FirstOrDefault(ws => ws is CustomNodeWorkspaceModel);
+            Assert.NotNull(cws);
+            var customNodeWorkspace = (CustomNodeWorkspaceModel)cws;
+            var json = customNodeWorkspace.ToJson(CurrentDynamoModel.EngineController);
+            var jObject = JObject.Parse(json);
+
+            // check first input defaults
+            string concreteType = (string)jObject.SelectToken("Nodes[1].ConcreteType");
+            string inputSymbol = (string)jObject.SelectToken("Nodes[1].InputSymbol");
+            string defaultValue = (string)jObject.SelectToken("Nodes[1].Parameter.DefaultValue");
+
+            Assert.IsTrue(concreteType == "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore");
+            Assert.IsTrue(inputSymbol == "center: Point = Point.ByCoordinates(10,10,10);");
+            Assert.IsTrue(defaultValue == "Autodesk.DesignScript.Geometry.Point.ByCoordinates(10, 10, 10)");
+
+            // check second input defaults
+            concreteType = (string)jObject.SelectToken("Nodes[2].ConcreteType");
+            inputSymbol = (string)jObject.SelectToken("Nodes[2].InputSymbol");
+            defaultValue = (string)jObject.SelectToken("Nodes[2].Parameter.DefaultValue");
+
+            Assert.IsTrue(concreteType == "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore");
+            Assert.IsTrue(inputSymbol == "radius: double = 5.5;");
+            Assert.IsTrue(defaultValue == "5.5");
         }
 
         [Test]
