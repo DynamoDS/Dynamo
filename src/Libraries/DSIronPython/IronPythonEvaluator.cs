@@ -6,6 +6,7 @@ using Dynamo.Utilities;
 using IronPython.Hosting;
 
 using Microsoft.Scripting.Hosting;
+using Microsoft.Scripting.Runtime;
 
 namespace DSIronPython
 {
@@ -46,7 +47,10 @@ namespace DSIronPython
         {
             if (code != prev_code)
             {
-                ScriptSource script = Python.CreateEngine().CreateScriptSourceFromString(code);
+                // Add Create Options Dictionary
+                var options = new System.Collections.Generic.Dictionary<string, object>();
+                options["FullFrames"] = true;
+                ScriptSource script = Python.CreateEngine(options).CreateScriptSourceFromString(code);
                 script.Compile();
                 prev_script = script;
                 prev_code = code;
