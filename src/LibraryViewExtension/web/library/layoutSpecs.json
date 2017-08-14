@@ -966,6 +966,9 @@
                   "path": "DSCoreNodes.DSCore.IO.File.WriteText"
                 },
                 {
+                  "path": "DSCoreNodes.DSCore.IO.File.AppendText"
+                },
+								{
                   "path": "DSCoreNodes.DSCore.IO.File.MoveDirectory"
                 },
                 {
