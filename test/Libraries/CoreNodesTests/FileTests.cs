@@ -219,9 +219,9 @@ namespace Dynamo.Tests
             const string contents = "test";
             var fn = GetNewFileNameOnTempPath(".txt");
             Assert.IsFalse(System.IO.File.Exists(fn));
-            File.WriteText(fn, contents);
             File.AppendText(fn, contents);
             Assert.IsTrue(System.IO.File.Exists(fn));
+            File.AppendText(fn, contents);
             Assert.AreEqual(contents + contents, System.IO.File.ReadAllText(fn));
         }
         #endregion
