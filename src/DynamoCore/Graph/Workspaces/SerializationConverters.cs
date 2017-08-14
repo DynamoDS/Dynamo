@@ -134,6 +134,8 @@ namespace Dynamo.Graph.Workspaces
 
         /// <summary>
         /// Map old Guids to new Models in the IdReferenceResolver.
+        /// This method also sets portData from the deserialized ports onto the 
+        /// newly created ports.
         /// </summary>
         /// <param name="node">The newly created node.</param>
         /// <param name="inPorts">The deserialized input ports.</param>
@@ -236,7 +238,23 @@ namespace Dynamo.Graph.Workspaces
 
             // nodes
             var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
-            
+
+            // nodes
+            var inputsToken = obj["Inputs"];
+            if(inputsToken != null)
+            {
+               var inputs = inputsToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
+               //using the inputs lets set the correct properties on the nodes.
+               foreach(var inputData in inputs)
+                {
+                    var matchingNode = nodes.Where(x => x.GUID == inputData.Id).FirstOrDefault();
+                    if(matchingNode != null)
+                    {
+                        matchingNode.IsSetAsInput = true;
+                    }
+                }
+            }
+
             // notes
             //TODO: Check this when implementing ReadJSON in ViewModel.
             //var notes = obj["Notes"].ToObject<IEnumerable<NoteModel>>(serializer);
@@ -343,6 +361,13 @@ namespace Dynamo.Graph.Workspaces
             //element resolver
             writer.WritePropertyName("ElementResolver");
             serializer.Serialize(writer, ws.ElementResolver);
+
+            //inputs
+            writer.WritePropertyName("Inputs");
+            //find nodes which are inputs and get their inputData if its not null.
+            var inputNodeDatas = ws.Nodes.Where((node) => node.IsSetAsInput == true && node.InputData != null)
+                .Select(inputNode => inputNode.InputData).ToList();
+            serializer.Serialize(writer, inputNodeDatas);
 
             //nodes
             writer.WritePropertyName("Nodes");
@@ -469,11 +494,11 @@ namespace Dynamo.Graph.Workspaces
 
             writer.WriteStartObject();
             writer.WritePropertyName("Start");
-            writer.WriteValue(connector.Start.GUID.ToString());
+            writer.WriteValue(connector.Start.GUID.ToString("N"));
             writer.WritePropertyName("End");
-            writer.WriteValue(connector.End.GUID.ToString());
+            writer.WriteValue(connector.End.GUID.ToString("N"));
             writer.WritePropertyName("Id");
-            writer.WriteValue(connector.GUID.ToString());
+            writer.WriteValue(connector.GUID.ToString("N"));
             writer.WriteEndObject();
         }
     }
@@ -504,15 +529,7 @@ namespace Dynamo.Graph.Workspaces
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
-        }
-
-        public override bool CanWrite
-        {
-            get
-            {
-                return false;
-            }
+            writer.WriteValue(((Guid)value).ToString("N"));
         }
     }
 

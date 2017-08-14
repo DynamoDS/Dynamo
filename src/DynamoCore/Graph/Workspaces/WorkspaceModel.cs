@@ -34,7 +34,7 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public class ExtraWorkspaceViewInfo
     {
-        public object Cameras;
+        public object Camera;
         public IEnumerable<ExtraNodeViewInfo> NodeViews;
         public IEnumerable<ExtraNoteViewInfo> Notes;
         public IEnumerable<ExtraAnnotationViewInfo> Annotations;

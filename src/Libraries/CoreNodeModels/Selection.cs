@@ -131,7 +131,7 @@ namespace CoreNodeModels
             SelectionResults = new List<TResult>();
         }
 
-        public override void ClearRuntimeError()
+        public override void ClearErrorsAndWarnings()
         {
             //do nothing as the errors for the selection nodes
             //are not created when running the graph

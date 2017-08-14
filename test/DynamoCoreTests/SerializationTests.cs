@@ -13,6 +13,7 @@ using Dynamo.Engine;
 using Dynamo.Events;
 using System.Text.RegularExpressions;
 using Dynamo.Utilities;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Tests
 {
@@ -67,8 +68,8 @@ namespace Dynamo.Tests
             {
                 var other = (obj as PortComparisonData);
                 return ID == other.ID &&
-                    other.KeepListStructure == this.KeepListStructure && 
-                    other.Level == this.Level && 
+                    other.KeepListStructure == this.KeepListStructure &&
+                    other.Level == this.Level &&
                     other.UseLevels == this.UseLevels;
             }
         }
@@ -84,10 +85,11 @@ namespace Dynamo.Tests
             public int ConnectorCount { get; set; }
             public Dictionary<Guid, Type> NodeTypeMap { get; set; }
             public Dictionary<Guid, List<object>> NodeDataMap { get; set; }
-            public Dictionary<Guid,string> NodeReplicationMap { get; set; }
+            public Dictionary<Guid, string> NodeReplicationMap { get; set; }
             public Dictionary<Guid, int> InportCountMap { get; set; }
             public Dictionary<Guid, int> OutportCountMap { get; set; }
             public Dictionary<Guid, PortComparisonData> PortDataMap { get; set; }
+            public Dictionary<Guid, NodeInputData> InputsMap { get; set; }
             public string DesignScript { get; set; }
 
             public WorkspaceComparisonData(WorkspaceModel workspace, EngineController controller)
@@ -102,11 +104,17 @@ namespace Dynamo.Tests
                 OutportCountMap = new Dictionary<Guid, int>();
                 PortDataMap = new Dictionary<Guid, PortComparisonData>();
                 NodeReplicationMap = new Dictionary<Guid, string>();
+                InputsMap = new Dictionary<Guid, NodeInputData>();
 
                 foreach (var n in workspace.Nodes)
                 {
                     NodeTypeMap.Add(n.GUID, n.GetType());
-                    NodeReplicationMap.Add(n.GUID,n.ArgumentLacing.ToString());
+                    NodeReplicationMap.Add(n.GUID, n.ArgumentLacing.ToString());
+                    //save input nodes to inputs block
+                    if (n.IsSetAsInput)
+                    {
+                        InputsMap.Add(n.GUID, n.InputData);
+                    }
 
                     var portvalues = n.OutPorts.Select(p =>
                         GetDataOfValue(n.GetValue(p.Index, controller))).ToList<object>();
@@ -193,8 +201,8 @@ namespace Dynamo.Tests
                 var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, this.modelsGuidToIdMap[portkvp.Key]);
                 Assert.IsTrue(b.PortDataMap.ContainsKey(newGuid));
                 var aPort = a.PortDataMap[portkvp.Key];
-                var bPort= b.PortDataMap[newGuid];
-                Assert.AreEqual(aPort.UseLevels,bPort.UseLevels);
+                var bPort = b.PortDataMap[newGuid];
+                Assert.AreEqual(aPort.UseLevels, bPort.UseLevels);
                 Assert.AreEqual(aPort.KeepListStructure, bPort.KeepListStructure);
                 Assert.AreEqual(aPort.Level, bPort.Level);
             }
@@ -291,6 +299,13 @@ namespace Dynamo.Tests
                 {
                     continue;
                 }
+            }
+
+            foreach (var kvp in a.InputsMap)
+            {
+                var vala = kvp.Value;
+                var valb = b.InputsMap[kvp.Key];
+                Assert.AreEqual(vala, valb, "input datas are not the same.");
             }
         }
 
@@ -491,6 +506,23 @@ namespace Dynamo.Tests
                 Assert.True(ws2.Nodes.Contains(c.Start.Owner));
                 Assert.True(ws2.Nodes.Contains(c.End.Owner));
             }
+
+            //assert that the inputs in the saved json file are the same as those we can gather from the 
+            //grah at runtime - because we don't deserialize these directly we check the json itself.
+            var jObject = JObject.Parse(json);
+            var jToken = jObject["Inputs"];
+            var inputs = jToken.ToArray().Select(x => x.ToObject<NodeInputData>()).ToList();
+            var inputs2 = ws1.Nodes.Where(x => x.IsSetAsInput == true && x.InputData != null).Select(input => input.InputData).ToList();
+
+            //inputs2 might come from a WS with non guids, so we need to replace the ids with guids if they exist in the map
+            foreach (var input in inputs2)
+            {
+                if (modelsGuidToIdMap.ContainsKey(input.Id))
+                {
+                    input.Id = GuidUtility.Create(GuidUtility.UrlNamespace, modelsGuidToIdMap[input.Id]);
+                }
+            }
+            Assert.IsTrue(inputs.SequenceEqual(inputs2));
         }
 
         private static void SaveWorkspaceComparisonData(WorkspaceComparisonData wcd1, string filePathBase, TimeSpan executionDuration)
@@ -592,7 +624,7 @@ namespace Dynamo.Tests
             foreach (var nodeId in model.CurrentWorkspace.Nodes.Select(x => x.GUID))
             {
                 modelsGuidToIdMap.Add(nodeId, idcount.ToString());
-                json = json.Replace(nodeId.ToString(), idcount.ToString());
+                json = json.Replace(nodeId.ToString("N"), idcount.ToString());
                 idcount = idcount + 1;
             }
 
@@ -602,14 +634,14 @@ namespace Dynamo.Tests
                 foreach (var port in node.InPorts)
                 {
                     modelsGuidToIdMap.Add(port.GUID, idcount.ToString());
-                    json = json.Replace(port.GUID.ToString(), idcount.ToString());
+                    json = json.Replace(port.GUID.ToString("N"), idcount.ToString());
                     idcount = idcount + 1;
                 }
 
                 foreach (var port in node.OutPorts)
                 {
                     modelsGuidToIdMap.Add(port.GUID, idcount.ToString());
-                    json = json.Replace(port.GUID.ToString(), idcount.ToString());
+                    json = json.Replace(port.GUID.ToString("N"), idcount.ToString());
                     idcount = idcount + 1;
                 }
             }
@@ -617,14 +649,14 @@ namespace Dynamo.Tests
             foreach (var connector in model.CurrentWorkspace.Connectors)
             {
                 modelsGuidToIdMap.Add(connector.GUID, idcount.ToString());
-                json = json.Replace(connector.GUID.ToString(), idcount.ToString());
+                json = json.Replace(connector.GUID.ToString("N"), idcount.ToString());
                 idcount = idcount + 1;
             }
             //alter the output json so that all annotationModel ids are not guids
             foreach (var annotation in model.CurrentWorkspace.Annotations)
             {
                 modelsGuidToIdMap.Add(annotation.GUID, idcount.ToString());
-                json = json.Replace(annotation.GUID.ToString(), idcount.ToString());
+                json = json.Replace(annotation.GUID.ToString("N"), idcount.ToString());
                 idcount = idcount + 1;
             }
 
