@@ -55,6 +55,7 @@ namespace Dynamo.Graph.Workspaces
         public double Y;
         public bool ShowGeometry;
         public bool IsUpstreamVisible;
+        public bool Excluded;
     }
 
     /// <summary>
@@ -1578,6 +1579,7 @@ namespace Dynamo.Graph.Workspaces
                     nodeModel.X = nodeViewInfo.X;
                     nodeModel.Y = nodeViewInfo.Y;
                     nodeModel.Name = nodeViewInfo.Name;
+                    nodeModel.IsFrozen = nodeViewInfo.Excluded;
 
                     // Note: These parameters are not directly accessible due to undo/redo considerations
                     //       which should not be used during deserialization (see "ArgumentLacing" for details)
