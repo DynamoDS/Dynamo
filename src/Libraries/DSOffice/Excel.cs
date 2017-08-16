@@ -278,18 +278,25 @@ namespace DSOffice
         	object[][] data;
         	
         	if(!visible)
+        	{
         		ExcelInterop.ShowOnStartup = false;
+        	}
         	WorkBook wb = WorkBook.ReadExcelFile(file.FullName);
             WorkSheet ws = wb.GetWorksheetByName(sheetName);
             if (readAsStrings)
-                data = ws.GetData(true);
+            {
+            	data = ws.GetData(true);
+            }
             else
+            {
             	data = ws.Data;
+            }
             if(!visible)
             {
             	wb.CloseHidden();
             	ExcelInterop.ShowOnStartup = true;
             }
+            
             return data;
         }
 
@@ -613,7 +620,7 @@ namespace DSOffice
         /// <summary>
         /// Helper method for reading workbooks with a disabled visibility.
         /// </summary>
-        public void CloseHidden()
+        internal void CloseHidden()
         {
         	wb.Close();
         	wb = null;
