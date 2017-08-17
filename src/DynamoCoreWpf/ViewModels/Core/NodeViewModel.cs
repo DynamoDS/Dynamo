@@ -445,7 +445,7 @@ namespace Dynamo.ViewModels
         /// <value>
         ///  Returns true if the node has been frozen explicitly by the user, otherwise false.
         /// </value>  
-        [JsonIgnore]
+        [JsonProperty("Excluded")]
         public bool IsFrozenExplicitly
         {
             get
