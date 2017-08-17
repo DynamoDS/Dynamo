@@ -253,7 +253,16 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Path to the Python (.py) file to use as a starting template when creating a new PythonScript Node.
         /// </summary>
-        public string PythonTemplateFilePath { get; set; }
+        public string PythonTemplateFilePath
+        {
+            get { return pythonTemplateFilePath; }
+            set { pythonTemplateFilePath = value; }
+        }
+
+        /// <summary>
+        /// The backing store for the Python template file path. Required as static property cannot implement an interface member.
+        /// </summary>
+        private static string pythonTemplateFilePath = "";
 
         /// <summary>
         /// This defines how long (in milliseconds) will the graph be automatically saved.
