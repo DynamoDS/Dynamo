@@ -94,6 +94,25 @@ namespace PythonNodeModels
         }
 
         /// <summary>
+        /// The default Python code template. Code comments are saved in *.resx for localisation.
+        /// </summary>
+        private string defaultPythonTemplateCode
+        {
+            get
+            {
+                return Properties.Resources.PythonScriptEditorImports + Environment.NewLine +
+                        "import clr" + Environment.NewLine +
+                        "clr.AddReference('ProtoGeometry')" + Environment.NewLine +
+                        "from Autodesk.DesignScript.Geometry import *" + Environment.NewLine + Environment.NewLine +
+                        "# " + Properties.Resources.PythonScriptEditorInputComment + Environment.NewLine +
+                        "dataEnteringNode = IN" + Environment.NewLine + Environment.NewLine +
+                        "# " + Properties.Resources.PythonScriptEditorCodeComment + Environment.NewLine + Environment.NewLine +
+                        "# " + Properties.Resources.PythonScriptEditorOutputComment + Environment.NewLine +
+                        "OUT = 0";
+            }
+        }
+
+        /// <summary>
         /// Private constructor used for serialization.
         /// </summary>
         /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
@@ -107,15 +126,7 @@ namespace PythonNodeModels
             if (!String.IsNullOrEmpty(pythonTemplatePath) && File.Exists(pythonTemplatePath))
                 script = File.ReadAllText(pythonTemplatePath);
             else
-                script = "# " + Properties.Resources.PythonScriptEditorImports + Environment.NewLine +
-                    "import clr" + Environment.NewLine +
-                    "clr.AddReference('ProtoGeometry')" + Environment.NewLine +
-                    "from Autodesk.DesignScript.Geometry import *" + Environment.NewLine + Environment.NewLine +
-                    "# " + Properties.Resources.PythonScriptEditorInputComment + Environment.NewLine +
-                    "dataEnteringNode = IN" + Environment.NewLine + Environment.NewLine +
-                    "# " + Properties.Resources.PythonScriptEditorCodeComment + Environment.NewLine + Environment.NewLine +
-                    "# " + Properties.Resources.PythonScriptEditorOutputComment + Environment.NewLine +
-                    "OUT = 0";
+                script = defaultPythonTemplateCode;
 
             AddInput();
         }
