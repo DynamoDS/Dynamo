@@ -416,6 +416,15 @@ namespace Dynamo.Configuration
             return settings;
         }
 
+        /// <summary>
+        /// Returns the static Python template file path
+        /// </summary>
+        /// <returns></returns>
+        public static string GetPythonTemplateFilePath()
+        {
+            return pythonTemplateFilePath;
+        }
+
         internal void InitializeNamespacesToExcludeFromLibrary()
         {
             if (!NamespacesToExcludeFromLibrarySpecified)
