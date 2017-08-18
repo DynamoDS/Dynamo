@@ -100,7 +100,7 @@ namespace PythonNodeModels
         {
             get
             {
-                return Properties.Resources.PythonScriptEditorImports + Environment.NewLine +
+                return  "# " + Properties.Resources.PythonScriptEditorImports + Environment.NewLine +
                         "import clr" + Environment.NewLine +
                         "clr.AddReference('ProtoGeometry')" + Environment.NewLine +
                         "from Autodesk.DesignScript.Geometry import *" + Environment.NewLine + Environment.NewLine +
