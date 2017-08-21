@@ -122,7 +122,7 @@ namespace PythonNodeModels
 
         public PythonNode()
         {
-            var pythonTemplatePath = new PreferenceSettings().PythonTemplateFilePath;
+            var pythonTemplatePath = PreferenceSettings.GetPythonTemplateFilePath();
             if (!String.IsNullOrEmpty(pythonTemplatePath) && File.Exists(pythonTemplatePath))
                 script = File.ReadAllText(pythonTemplatePath);
             else
