@@ -54,24 +54,45 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Vector3D defaultCameraUpDirection = new Vector3D(0, 1, 0);
         private const double defaultNearPlaneDistance = 0.1;
         private const double defaultFarPlaneDistance = 10000000;
-         
-        public Point3D EyePosition { get; set; }
-        public Vector3D UpDirection { get; set; }
-        public Vector3D LookDirection { get; set; }
-        public string Name { get; set; }
+
+        [JsonIgnore]
+        public Point3D EyePosition { get { return new Point3D(EyeX, EyeY, EyeZ); } }
+        [JsonIgnore]
+        public Vector3D UpDirection { get { return new Vector3D(UpX, UpY, UpZ); } }
+        [JsonIgnore]
+        public Vector3D LookDirection { get { return new Vector3D(LookX, LookY, LookZ); } }
         [JsonIgnore]
         public double NearPlaneDistance { get; set; }
         [JsonIgnore]
         public double FarPlaneDistance { get; set; }
 
+        // JSON camera data
+        public string Name { get; set; }
+        public double EyeX { get; set; }
+        public double EyeY { get; set; }
+        public double EyeZ { get; set; }
+        public double LookX { get; set; }
+        public double LookY { get; set; }
+        public double LookZ { get; set; }
+        public double UpX { get; set; }
+        public double UpY { get; set; }
+        public double UpZ { get; set; }
+
         public CameraData()
         {
-            Name = "Default Camera";
-            EyePosition = defaultCameraPosition;
-            UpDirection = defaultCameraUpDirection;
-            LookDirection = defaultCameraLookDirection;
             NearPlaneDistance = defaultNearPlaneDistance;
             FarPlaneDistance = defaultFarPlaneDistance;
+
+            Name = "Default Camera";
+            EyeX = defaultCameraPosition.X;
+            EyeY = defaultCameraPosition.Y;
+            EyeZ = defaultCameraPosition.Z;
+            LookX = defaultCameraLookDirection.X;
+            LookY = defaultCameraLookDirection.Y;
+            LookZ = defaultCameraLookDirection.Z;
+            UpX = defaultCameraUpDirection.X;
+            UpY = defaultCameraUpDirection.Y;
+            UpZ = defaultCameraUpDirection.Z;
         }
     }
 
@@ -505,9 +526,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 var camData = new CameraData
                 {
                     Name = name,
-                    EyePosition = new Point3D(ex, ey, ez),
-                    LookDirection = new Vector3D(lx, ly, lz),
-                    UpDirection = new Vector3D(ux, uy, uz)
+                    EyeX = ex,
+                    EyeY = ey,
+                    EyeZ = ez,
+                    LookX = lx,
+                    LookY = ly,
+                    LookZ = lz,
+                    UpX = ux,
+                    UpY = uy,
+                    UpZ = uz
                 };
 
                 return camData;
@@ -602,7 +629,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             ExtraWorkspaceViewInfo workspaceViewInfo = obj as ExtraWorkspaceViewInfo;
             if (workspaceViewInfo != null)
             {
-                var cameraJson = workspaceViewInfo.Cameras.ToString();
+                var cameraJson = workspaceViewInfo.Camera.ToString();
 
                 var settings = new JsonSerializerSettings
                 {
@@ -2241,12 +2268,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             var camData = new CameraData
             {
-                Name = name,
-                LookDirection = camera.LookDirection,
-                EyePosition = camera.Position,
-                UpDirection = camera.UpDirection,
                 NearPlaneDistance = camera.NearPlaneDistance,
-                FarPlaneDistance = camera.FarPlaneDistance
+                FarPlaneDistance = camera.FarPlaneDistance,
+
+                Name = name,
+                EyeX = camera.Position.X,
+                EyeY = camera.Position.Y,
+                EyeZ = camera.Position.Z,
+                LookX = camera.LookDirection.X,
+                LookY = camera.LookDirection.Y,
+                LookZ = camera.LookDirection.Z,
+                UpX = camera.UpDirection.X,
+                UpY = camera.UpDirection.Y,
+                UpZ = camera.UpDirection.Z
             };
 
             return camData;

@@ -5,6 +5,8 @@ using System.Linq;
 
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
+using Newtonsoft.Json;
+using Dynamo.Graph.Nodes;
 
 namespace CoreNodeModels
 {
@@ -56,6 +58,11 @@ namespace CoreNodeModels
         protected AllChildrenOfType() : base("Types")
         {
             RegisterAllPorts();
+        }
+
+        [JsonConstructor]
+        protected AllChildrenOfType(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
         }
 
         protected override SelectionState PopulateItemsCore(string currentSelection)

@@ -54,20 +54,22 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
-        /// A flag used during serialization to indicate
-        /// that the node is a custom node.
-        /// </summary>
-        public bool IsCustomNode
-        {
-            get { return true; }
-        }
-
-        /// <summary>
         /// The unique id of the underlying function.
         /// </summary>
         public Guid FunctionUuid
         {
             get { return Definition.FunctionId; }
+        }
+
+        /// <summary>
+        /// The type of node.
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "CustomFunctionNode";
+            }
         }
 
         /// <summary>
@@ -267,7 +269,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             } 
             else
             {
-                this.ClearRuntimeError();
+                this.ClearErrorsAndWarnings();
             }
         }
 
@@ -345,7 +347,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             {
                 inputSymbol = value;
                 name = inputSymbol;
-                ClearRuntimeError();
+                ClearErrorsAndWarnings();
 
                 var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var);
                 AssociativeNode defaultValue = null;
@@ -567,7 +569,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             set
             {
                 symbol = value;
-                ClearRuntimeError();
+                ClearErrorsAndWarnings();
 
                 string comment = string.Empty;
                 IdentifierNode identNode;

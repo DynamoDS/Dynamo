@@ -33,9 +33,38 @@ namespace CoreNodeModels.Input
         {
             get
             {
-                return "IntegerRangeInputNode";
+                return "NumberInputNode";
             }
         }
+
+        public string NumberType
+        {
+            get
+            {
+                return "Integer";
+            }
+        }
+        public override NodeInputData InputData
+        {
+           get
+            {
+                return new NodeInputData()
+                {
+                    Id = this.GUID,
+                    Name = this.Name,
+                    Type = NodeInputTypes.numberInput,
+                    Description = this.Description,
+                    Value = Value.ToString(CultureInfo.InvariantCulture),
+
+                    MinimumValue = this.Min,
+                    MaximumValue = this.Max,
+                    StepValue = this.Step,
+                    NumberType = this.NumberType,
+
+                };
+            }
+        }
+
 
         [JsonConstructor]
         private IntegerSlider(IEnumerable<PortModel> inPorts,

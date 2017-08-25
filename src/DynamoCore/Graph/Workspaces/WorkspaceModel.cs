@@ -34,7 +34,7 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public class ExtraWorkspaceViewInfo
     {
-        public object Cameras;
+        public object Camera;
         public IEnumerable<ExtraNodeViewInfo> NodeViews;
         public IEnumerable<ExtraNoteViewInfo> Notes;
         public IEnumerable<ExtraAnnotationViewInfo> Annotations;
@@ -53,8 +53,9 @@ namespace Dynamo.Graph.Workspaces
         public string Name;
         public double X;
         public double Y;
-        public bool IsVisible;
+        public bool ShowGeometry;
         public bool IsUpstreamVisible;
+        public bool Excluded;
     }
 
     /// <summary>
@@ -1578,10 +1579,11 @@ namespace Dynamo.Graph.Workspaces
                     nodeModel.X = nodeViewInfo.X;
                     nodeModel.Y = nodeViewInfo.Y;
                     nodeModel.Name = nodeViewInfo.Name;
+                    nodeModel.IsFrozen = nodeViewInfo.Excluded;
 
                     // Note: These parameters are not directly accessible due to undo/redo considerations
                     //       which should not be used during deserialization (see "ArgumentLacing" for details)
-                    nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeViewInfo.IsVisible.ToString()));
+                    nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeViewInfo.ShowGeometry.ToString()));
                     nodeModel.UpdateValue(new UpdateValueParams("IsUpstreamVisible", nodeViewInfo.IsUpstreamVisible.ToString()));
                 }
             }

@@ -680,7 +680,6 @@ namespace DSOffice
         /// </summary>
         /// <param name="filePath">Path to write to</param>
         /// <param name="data">List of lists to write into CSV</param>
-        /// <returns name="str">Contents of the text file.</returns>
         /// <search>write,text,file</search>
         public static void ExportCSV(string filePath, object[][] data)
         {

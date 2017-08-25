@@ -12,7 +12,7 @@ namespace CoreNodeModels.Input
         private T min;
         private T step;
 
-        [JsonProperty("RangeMax")]
+        [JsonProperty("MaximumValue")]
         public T Max
         {
             get { return max; }
@@ -34,7 +34,7 @@ namespace CoreNodeModels.Input
             }
         }
 
-        [JsonProperty("RangeMin")]
+        [JsonProperty("MinimumValue")]
         public T Min
         {
             get { return min; }
@@ -56,7 +56,7 @@ namespace CoreNodeModels.Input
             }
         }
 
-        [JsonProperty("RangeStep")]
+        [JsonProperty("StepValue")]
         public T Step
         {
             get { return step; }
@@ -79,8 +79,7 @@ namespace CoreNodeModels.Input
             }
         }
 
-        protected SliderBase(IEnumerable<PortModel> inPorts,
-            IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        protected SliderBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             base.PropertyChanged += SliderBase_PropertyChanged;
         }

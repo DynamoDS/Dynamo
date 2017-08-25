@@ -38,9 +38,9 @@ namespace ProtoCore.Namespace
         /// update ResolutionMap with fully resolved name from compiler.
         /// </summary>
         /// <param name="classTable"></param>
-        /// <param name="handler"></param>
         /// <param name="elementResolver"></param>
         /// <param name="astNodes"> parent AST node </param>
+        /// <param name="handler"></param>
         public static IEnumerable<Node> RewriteElementNames(ClassTable classTable, 
             ElementResolver elementResolver, IEnumerable<Node> astNodes, SymbolConflictWarningHandler handler = null)
         {
