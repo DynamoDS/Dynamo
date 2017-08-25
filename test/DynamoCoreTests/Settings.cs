@@ -30,6 +30,17 @@ namespace Dynamo.Tests
             Assert.IsFalse(comparisonResult.Any(isEqual => !isEqual));
         }
 
+        [Test]
+        public void LoadInvalidPythonTemplateFromSetting()
+        {
+            var filePath = Path.Combine(SettingDirectory, "invalidPythonTemplate_DynamoSettings.xml");
+            var settings = PreferenceSettings.Load(filePath);
+
+            Assert.NotNull(settings);
+            Assert.AreEqual(settings.PythonTemplateFilePath, @"C:\this_folder_doesn't_exist\PythonTemplate.py");
+        }
+
+
     }
 
 }
