@@ -331,13 +331,12 @@ namespace Dynamo.Configuration
             ShowDetailedLayout = true;
             NamespacesToExcludeFromLibrary = new List<string>();
 
-            PythonTemplateFilePath = PathManager.GetPythonTemplatePath();
-
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
 
             CustomPackageFolders = new List<string>();
+            PythonTemplateFilePath = "";
         }
 
         /// <summary>

@@ -76,7 +76,7 @@ namespace Dynamo.Core
         private readonly string backupDirectory;
         private readonly string preferenceFilePath;
         private readonly string galleryFilePath;
-        private static string pythonTemplateFilePath;
+        private string pythonTemplateFilePath;
 
         private readonly List<string> rootDirectories;
         private readonly HashSet<string> nodeDirectories;
@@ -595,11 +595,6 @@ namespace Dynamo.Core
                 yield return path;
 
             yield return Path.GetFullPath(library);
-        }
-
-        internal static string GetPythonTemplatePath()
-        {
-            return pythonTemplateFilePath;
         }
 
         #endregion
