@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using ProtoCore.DSASM;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.Configuration;
 
 namespace Dynamo.Tests
 {
@@ -47,6 +48,26 @@ namespace Dynamo.Tests
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
             CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count(), 1);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanReadPythonTemplateSetting()
+        {
+            // load the settings from disk to DynamoModel
+            string settingDirectory = Path.Combine(TestDirectory, "settings");
+            var settingsFilePath = Path.Combine(settingDirectory, "DynamoSettings-invalidPaths.xml");
+            var settings = PreferenceSettings.Load(settingsFilePath);
+            var pyFile = @"C:\this_folder_doesn't_exist\PythonTemplate.py";
+
+            // check files required for test exist
+            Assert.IsTrue(File.Exists(settingsFilePath));
+
+            // check settings were read correctly
+            Assert.IsFalse(settings == null);
+            Assert.IsFalse(File.Exists(settings.PythonTemplateFilePath));
+            Assert.IsFalse(File.Exists(pyFile));
+            Assert.IsTrue(System.String.Equals(settings.PythonTemplateFilePath, pyFile));
         }
 
         [Test]
@@ -245,6 +266,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests"), Category("Slow")]
+        [Ignore("Ignore this test as it takes 1 minutes")]
         public void CanAdd100NodesToClipboardAndPaste()
         {
             int numNodes = 100;
@@ -330,6 +352,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests"), Category("Slow")]
+        [Ignore("Ignore this test as it takes 10 minutes")]
         public void CanAdd100NodesToClipboardAndPaste3Times()
         {
             int numNodes = 100;
