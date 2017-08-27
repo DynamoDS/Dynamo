@@ -33,14 +33,20 @@ namespace Dynamo.Tests
         [Test]
         public void LoadInvalidPythonTemplateFromSetting()
         {
-            var filePath = Path.Combine(SettingDirectory, "DynamoSettings-invalidPythonTemplate.xml");
-            var settings = PreferenceSettings.Load(filePath);
+            // load the settings from disk to DynamoModel
+            var settingsFilePath = Path.Combine(SettingDirectory, "DynamoSettings-invalidPaths.xml");
+            var settings = PreferenceSettings.Load(settingsFilePath);
+            var pyFile = @"C:\this_folder_doesn't_exist\PythonTemplate.py";
 
+            // check files required for test exist
+            Assert.IsTrue(File.Exists(settingsFilePath));
+
+            // check settings were read correctly
             Assert.NotNull(settings);
-            Assert.IsTrue(File.Exists(CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath));
-            Assert.AreEqual(settings.PythonTemplateFilePath, @"C:\this_folder_doesn't_exist\PythonTemplate.py");
+            Assert.IsFalse(File.Exists(settings.PythonTemplateFilePath));
+            Assert.IsFalse(File.Exists(pyFile));
+            Assert.AreEqual(settings.PythonTemplateFilePath, pyFile);
         }
-
 
     }
 
