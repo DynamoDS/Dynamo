@@ -1,4 +1,4 @@
-# Default Python template example
+# Unit tests Python template example
 import clr
 clr.AddReference('ProtoGeometry')
 from Autodesk.DesignScript.Geometry import *
