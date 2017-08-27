@@ -69,7 +69,7 @@ namespace Dynamo.Tests
             Assert.IsFalse(settings == null);
             Assert.IsFalse(File.Exists(settings.PythonTemplateFilePath));
             Assert.IsFalse(File.Exists(pyFile));
-            Assert.IsTrue(System.String.Equals(settings.PythonTemplateFilePath, pyFile));
+            Assert.AreEqual(settings.PythonTemplateFilePath, pyFile);
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace Dynamo.Tests
             // Assert path in settings file and in test match
             Assert.AreEqual(settings.PythonTemplateFilePath, initialPyFilePath);
 
-            // Propagate Python template specified in settings file to DynamoModel & read it from XML file
+            // Propagate Python template specified in settings file to DynamoModel & read it from *.py file
             CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath = settings.PythonTemplateFilePath;
             pyTemplate = File.ReadAllText(CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath);
 
@@ -133,7 +133,7 @@ namespace Dynamo.Tests
             // no need for combining paths here as we have already done so before saving
             settings = PreferenceSettings.Load(changedSettingsFilePath);
 
-            // update the DynamoModel settings & check template is not empty
+            // update the DynamoModel settings
             CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath = settings.PythonTemplateFilePath;
             updatedPyTemplate = File.ReadAllText(CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath);
 
@@ -147,7 +147,7 @@ namespace Dynamo.Tests
 
             // create a Python nodeModel & add node to workspace 
             var secondPyNodeModel = new PythonNodeModels.PythonNode();
-            CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(secondPyNodeModel, 0, 0, true, false));
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(secondPyNodeModel, 100, 100, true, false));
             var secondPyNode = CurrentDynamoModel.CurrentWorkspace.Nodes.Last() as PythonNodeModels.PythonNode;
 
             // Assert a new node has been added to workspace
