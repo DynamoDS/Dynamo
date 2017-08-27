@@ -356,7 +356,6 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests"), Category("Slow")]
-        [Ignore("Ignore this test as it takes 1 minutes")]
         public void CanAdd100NodesToClipboardAndPaste()
         {
             int numNodes = 100;
@@ -442,7 +441,6 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests"), Category("Slow")]
-        [Ignore("Ignore this test as it takes 10 minutes")]
         public void CanAdd100NodesToClipboardAndPaste3Times()
         {
             int numNodes = 100;
