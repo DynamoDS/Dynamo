@@ -54,14 +54,16 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CanReadPythonTemplateSetting()
         {
-            // load the settings from disk to DynamoModel
+            // load the settings from XML file to DynamoModel
             string settingDirectory = Path.Combine(TestDirectory, "settings");
             var settingsFilePath = Path.Combine(settingDirectory, "DynamoSettings-invalidPaths.xml");
-            var settings = PreferenceSettings.Load(settingsFilePath);
             var pyFile = @"C:\this_folder_doesn't_exist\PythonTemplate.py";
 
             // check files required for test exist
             Assert.IsTrue(File.Exists(settingsFilePath));
+
+            // load the settings from file
+            var settings = PreferenceSettings.Load(settingsFilePath);
 
             // check settings were read correctly
             Assert.IsFalse(settings == null);
@@ -74,7 +76,6 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CanUpdatePythonTemplateSettings()
         {
-            // load the settings from disk to DynamoModel
             string settingDirectory = Path.Combine(TestDirectory, "settings");
             string settingsFilePath = Path.Combine(settingDirectory, "DynamoSettings-PythonTemplate-initial.xml");
             string changedSettingsFilePath = Path.Combine(settingDirectory, "DynamoSettings-PythonTemplate-changed.xml");
@@ -85,20 +86,20 @@ namespace Dynamo.Tests
             string pyTemplate = "";
             string updatedPyTemplate = "";
 
-            // load initial settings
-            // Keep in mind the initial settings file for this test has only specified a filename, not a full path
-            var settings = PreferenceSettings.Load(settingsFilePath);
-            settings.PythonTemplateFilePath = Path.Combine(settingDirectory, settings.PythonTemplateFilePath);
-
             // Assert files required for test exist
             Assert.IsTrue(File.Exists(settingsFilePath));
             Assert.IsTrue(File.Exists(initialPyFilePath));
             Assert.IsTrue(File.Exists(changedPyFilePath));
 
+            // load initial settings
+            // Keep in mind the initial settings file for this test has only specified a filename, not a full path
+            var settings = PreferenceSettings.Load(settingsFilePath);
+            settings.PythonTemplateFilePath = Path.Combine(settingDirectory, settings.PythonTemplateFilePath);
+
             // Assert path in settings file and in test match
             Assert.AreEqual(settings.PythonTemplateFilePath, initialPyFilePath);
 
-            // Propagate Python template specified in settings file to DynamoModel & read it from disk
+            // Propagate Python template specified in settings file to DynamoModel & read it from XML file
             CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath = settings.PythonTemplateFilePath;
             pyTemplate = File.ReadAllText(CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath);
 
@@ -124,7 +125,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(firstPyNodeModel.Script.StartsWith(initialPyVerificationText));
             Assert.IsTrue(firstPyNode.Script.StartsWith(initialPyVerificationText));
 
-            // change Python template & save settings to disk
+            // change Python template & save settings to XML file
             CurrentDynamoModel.PreferenceSettings.PythonTemplateFilePath = changedPyFilePath;
             CurrentDynamoModel.PreferenceSettings.Save(changedSettingsFilePath);
 
