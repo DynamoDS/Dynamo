@@ -44,12 +44,34 @@ namespace Dynamo.Tests
         public void FixtureSetup()
         {
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
+
+            //Clear Temp directory folders before start of the new serialization test run
+            var ext = new List<string> { "ds", "dyn", "data" };
+
+            var tempPath = Path.GetTempPath();
+            var jsonFolder = Path.Combine(tempPath, "json");
+            var jsonNonGuidFolder = Path.Combine(tempPath, "jsonNonGuid");
+
+            var jsonNonGuidFiles = Directory.GetFiles(jsonNonGuidFolder, "*.*", SearchOption.AllDirectories);
+            var jsonFiles = Directory.GetFiles(jsonFolder, "*.*", SearchOption.AllDirectories);
+
+            //Delete files from json and jsonNonGuid folders
+            DeleteJsonFilesFromTemp(jsonFiles);
+            DeleteJsonFilesFromTemp(jsonNonGuidFiles);
         }
 
         [TestFixtureTearDown]
         public void TearDown()
         {
             ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;
+        }
+
+        private void DeleteJsonFilesFromTemp(string[] files)
+        {
+            foreach (var file in files)
+            {
+                File.Delete(file);
+            }
         }
 
         private void ExecutionEvents_GraphPostExecution(Session.IExecutionSession session)
@@ -357,6 +379,9 @@ namespace Dynamo.Tests
         {
             modelsGuidToIdMap.Clear();
             DoWorkspaceOpenAndCompare(filePath, "json_nonGuidIds", ConvertCurrentWorkspaceToNonGuidJsonAndSave, CompareWorkspacesDifferentGuids, SaveWorkspaceComparisonDataWithNonGuidIds);
+
+            //UploadToS3() from Ram;
+            
         }
 
         private static List<string> bannedTests = new List<string>()
@@ -605,7 +630,7 @@ namespace Dynamo.Tests
                 Directory.CreateDirectory(jsonFolder);
             }
 
-            var jsonPath = filePathBase + ".json";
+            var jsonPath = filePathBase + ".dyn";
             if (File.Exists(jsonPath))
             {
                 File.Delete(jsonPath);
@@ -670,7 +695,7 @@ namespace Dynamo.Tests
                 Directory.CreateDirectory(jsonFolder);
             }
 
-            var jsonPath = filePathBase + ".jsonNonGuid";
+            var jsonPath = filePathBase + ".dyn";
             if (File.Exists(jsonPath))
             {
                 File.Delete(jsonPath);
