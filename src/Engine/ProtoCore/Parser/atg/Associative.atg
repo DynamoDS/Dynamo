@@ -1502,11 +1502,6 @@ Associative_Ident<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                     errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                 }
                 int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.Return : (int)ProtoCore.PrimitiveType.Var;
-                if (ltype == (int)ProtoCore.PrimitiveType.Return && la.val != "=")
-                {
-                     SynErr(String.Format(Resources.InvalidReturnStatement, la.val));
-                }
-                
                 var identNode = AstFactory.BuildIdentifier(t.val);
                 identNode.datatype = TypeSystem.BuildPrimitiveTypeObject((ProtoCore.PrimitiveType)ltype);
                 node = identNode;

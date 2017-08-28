@@ -299,7 +299,14 @@ Imperative_assignstmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                         .)
         |
         (
-            '='     
+            (
+                (
+                IF(IsReturn(lhsNode))
+                    ['=']
+                )
+                |
+                '='     
+            )
             (. ProtoCore.AST.ImperativeAST.ImperativeNode rhsNode = null; .)
             (   
                 ( 
@@ -800,10 +807,6 @@ Imperative_Ident<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                         errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                     }
                     int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.Return : (int)ProtoCore.PrimitiveType.Var;
-                    if (ltype == (int)ProtoCore.PrimitiveType.Return && la.val != "=")
-                    {
-                        SynErr(String.Format(Resources.InvalidReturnStatement, la.val)); 
-                    }        
                     node = BuildImperativeIdentifier(t.val, (ProtoCore.PrimitiveType)ltype);
                     NodeUtils.SetNodeLocation(node, t);
                 .)
