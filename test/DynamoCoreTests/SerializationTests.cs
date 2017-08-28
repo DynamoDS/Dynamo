@@ -46,8 +46,6 @@ namespace Dynamo.Tests
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
 
             //Clear Temp directory folders before start of the new serialization test run
-            var ext = new List<string> { "ds", "dyn", "data" };
-
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, "json");
             var jsonNonGuidFolder = Path.Combine(tempPath, "jsonNonGuid");
