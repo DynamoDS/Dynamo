@@ -321,7 +321,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// </summary>
         [JsonIgnore]
         public ElementResolver ElementResolver { get; set; }
-        
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="Symbol"/> class.
         /// </summary>
@@ -593,6 +593,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// <summary>
         /// Output name and its description tuple.
         /// </summary>
+        [JsonIgnore]
         public Tuple<string, string> Return
         {
             get

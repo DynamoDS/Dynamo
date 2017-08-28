@@ -65,6 +65,7 @@ namespace Dynamo.Library
         /// <summary>
         /// Returns fully qualified string representation of AST node.
         /// </summary>
+        [JsonIgnore]
         public string DefaultValueString
         {
             get
