@@ -154,7 +154,7 @@ COMPILER DesignScriptParser
 		if (IsTypedVariable())
             return false;
 
-        if (la.value == "return")
+        if (la.val == "return")
             return false;
 
         Token pt = la;
@@ -180,8 +180,12 @@ COMPILER DesignScriptParser
         return true;
     }
 
-    private bool IsAssignmentStatement()
+    private bool IsAssignmentOrReturnStatement()
     {
+		if (la.val == "return") {
+		    return true;
+		}
+
         Token pt = la;
         while (pt.kind != _EOF)
         {

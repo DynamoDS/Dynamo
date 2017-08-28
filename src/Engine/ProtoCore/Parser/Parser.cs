@@ -228,6 +228,9 @@ public Node root { get; set; }
 		if (IsTypedVariable())
             return false;
 
+        if (la.val == "return")
+            return false;
+
         Token pt = la;
         while (pt.kind != _EOF)
         {
@@ -251,8 +254,12 @@ public Node root { get; set; }
         return true;
     }
 
-    private bool IsAssignmentStatement()
+    private bool IsAssignmentOrReturnStatement()
     {
+		if (la.val == "return") {
+		    return true;
+		}
+
         Token pt = la;
         while (pt.kind != _EOF)
         {
@@ -2553,7 +2560,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			
 			Expect(23);
 			node = new ProtoCore.AST.ImperativeAST.ContinueNode(); NodeUtils.SetNodeLocation(node, t); 
-		} else if (IsAssignmentStatement() || IsVariableDeclaration()) {
+		} else if (IsAssignmentOrReturnStatement() || IsVariableDeclaration()) {
 			Imperative_assignstmt(out node);
 		} else if (StartOf(4)) {
 			Imperative_expr(out node);

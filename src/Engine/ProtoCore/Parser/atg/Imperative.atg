@@ -111,7 +111,7 @@ Imperative_stmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
             endline
         )  (. node = new ProtoCore.AST.ImperativeAST.ContinueNode(); NodeUtils.SetNodeLocation(node, t); .)
         |
-        (IF(IsAssignmentStatement() || IsVariableDeclaration())
+        (IF(IsAssignmentOrReturnStatement() || IsVariableDeclaration())
             Imperative_assignstmt<out node>
         )
         |
