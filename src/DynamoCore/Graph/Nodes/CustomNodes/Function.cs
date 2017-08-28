@@ -339,6 +339,17 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
+        ///     Initializes a new instance of the <see cref="Symbol"/> class.
+        /// </summary>
+        [JsonConstructor]
+        public Symbol(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+            InputSymbol = String.Empty;
+            ElementResolver = new ElementResolver();
+        }
+
+        /// <summary>
         ///     Represents string input. 
         /// </summary>
         [JsonIgnore]
@@ -559,6 +570,15 @@ namespace Dynamo.Graph.Nodes.CustomNodes
 
             RegisterAllPorts();
 
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        /// <summary>
+        /// Create output node.
+        /// </summary>
+        [JsonConstructor]
+        public Output(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
