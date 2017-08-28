@@ -28,6 +28,7 @@
   <WindowW>1024</WindowW>
   <WindowH>768</WindowH>
   <UseHardwareAcceleration>true</UseHardwareAcceleration>
+  <PythonTemplateFilePath>C:\this_folder_doesn't_exist\PythonTemplate.py</PythonTemplateFilePath>
   <BackupInterval>60000</BackupInterval>
   <BackupFilesCount>1</BackupFilesCount>
   <PackageDownloadTouAccepted>false</PackageDownloadTouAccepted>
