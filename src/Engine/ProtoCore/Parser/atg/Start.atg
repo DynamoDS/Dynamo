@@ -420,6 +420,20 @@ COMPILER DesignScriptParser
         return true;    
     }
 
+    private bool IsReturn(ProtoCore.AST.Node ident) {
+        ProtoCore.AST.AssociativeAST.IdentifierNode assocIdent = ident as ProtoCore.AST.AssociativeAST.IdentifierNode;
+        if (assocIdent != null) {
+            return assocIdent.Value == "return";
+        }
+
+        ProtoCore.AST.ImperativeAST.IdentifierNode impIdent = ident as ProtoCore.AST.ImperativeAST.IdentifierNode;
+        if (impIdent != null) {
+            return impIdent.Value == "return";
+        }
+
+        return false;
+    }
+
     private AssociativeNode GenerateBinaryOperatorMethodCallNode(Operator op, ProtoCore.AST.AssociativeAST.AssociativeNode op1, ProtoCore.AST.AssociativeAST.AssociativeNode op2)
     {
         FunctionCallNode funCallNode = new FunctionCallNode();

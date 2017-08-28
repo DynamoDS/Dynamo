@@ -980,7 +980,14 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
                                 .)
         |
         (
-            '='                 
+            (
+                (
+                IF(IsReturn(leftNode))
+                    ['=']
+                )
+                |
+                '='
+            )
                                 (. 
                                     ProtoCore.AST.AssociativeAST.AssociativeNode rightNode = null;
                                     bool isLeftMostNode = false; 
