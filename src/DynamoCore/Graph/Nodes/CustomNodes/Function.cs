@@ -319,6 +319,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         ///     Responsible for resolving 
         ///     a partial class name to its fully resolved name
         /// </summary>
+        [JsonIgnore]
         public ElementResolver ElementResolver { get; set; }
         
         /// <summary>
@@ -340,6 +341,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// <summary>
         ///     Represents string input. 
         /// </summary>
+        [JsonIgnore]
         public string InputSymbol
         {
             get { return inputSymbol; }

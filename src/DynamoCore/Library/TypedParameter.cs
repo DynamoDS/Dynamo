@@ -42,6 +42,7 @@ namespace Dynamo.Library
         /// <summary>
         /// Returns DesignScript function.
         /// </summary>
+        [JsonIgnore]
         public FunctionDescriptor Function { get; private set; }
 
         /// <summary>
@@ -52,6 +53,7 @@ namespace Dynamo.Library
         /// <summary>
         /// Returns type of the parameter.
         /// </summary>
+        [JsonIgnore]
         public ProtoCore.Type Type { get; private set; }
 
         /// <summary>
@@ -63,7 +65,6 @@ namespace Dynamo.Library
         /// <summary>
         /// Returns fully qualified string representation of AST node.
         /// </summary>
-        [JsonProperty("DefaultValue")]
         public string DefaultValueString
         {
             get
@@ -75,6 +76,7 @@ namespace Dynamo.Library
         /// <summary>
         /// Returns summary of the parameter.
         /// </summary>
+        [JsonIgnore]
         public string Summary
         {
             get
@@ -91,6 +93,7 @@ namespace Dynamo.Library
         /// <summary>
         /// Returns description of the parameter.
         /// </summary>
+        [JsonIgnore]
         public string Description
         {
             get
