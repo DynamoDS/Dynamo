@@ -154,6 +154,9 @@ COMPILER DesignScriptParser
 		if (IsTypedVariable())
             return false;
 
+        if (la.val == "return")
+            return false;
+
         Token pt = la;
         while (pt.kind != _EOF)
         {
@@ -177,8 +180,12 @@ COMPILER DesignScriptParser
         return true;
     }
 
-    private bool IsAssignmentStatement()
+    private bool IsAssignmentOrReturnStatement()
     {
+		if (la.val == "return") {
+		    return true;
+		}
+
         Token pt = la;
         while (pt.kind != _EOF)
         {
@@ -418,6 +425,20 @@ COMPILER DesignScriptParser
         }
         scanner.ResetPeek();        
         return true;    
+    }
+
+    private bool IsReturn(ProtoCore.AST.Node ident) {
+        ProtoCore.AST.AssociativeAST.IdentifierNode assocIdent = ident as ProtoCore.AST.AssociativeAST.IdentifierNode;
+        if (assocIdent != null) {
+            return assocIdent.Value == "return";
+        }
+
+        ProtoCore.AST.ImperativeAST.IdentifierNode impIdent = ident as ProtoCore.AST.ImperativeAST.IdentifierNode;
+        if (impIdent != null) {
+            return impIdent.Value == "return";
+        }
+
+        return false;
     }
 
     private AssociativeNode GenerateBinaryOperatorMethodCallNode(Operator op, ProtoCore.AST.AssociativeAST.AssociativeNode op1, ProtoCore.AST.AssociativeAST.AssociativeNode op2)
