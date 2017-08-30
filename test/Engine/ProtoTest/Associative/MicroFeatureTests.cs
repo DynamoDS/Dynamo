@@ -486,26 +486,6 @@ b = S.a;
             thisTest.Verify("b",2);
         }
 
-
-        [Test]
-        [Category("DSDefinedClass_Ported")]
-        public void TestStaticMethodResolution()
-        {
-            string code = @"
-	        def foo(a : int)
-	        {
-		        return = 1;
-	        }
-	        def foo(a : int[])
-	        {
-		        return = 2;
-            }
-            c = {1,2,3,4};
-            d = foo(c);";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("d", 2);
-        }
-
         [Test]
         public void TestTemporaryArrayIndexing01()
         {

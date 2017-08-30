@@ -300,7 +300,7 @@ sum;
              {
                 dummy = Dummy.Dummy();
                 arr = 1..10.0;
-                sum = dummy.SumAll(arr);
+                sum = dummy.SumAll1D(arr);
              }
             ";
             Type dummy = typeof (FFITarget.Dummy);
@@ -320,7 +320,7 @@ sum;
                 dummy = Dummy.Dummy();
                 arr = 1..10.0;
                 arr_2 = dummy.Twice(arr);
-                sum = dummy.SumAll(arr_2);
+                sum = dummy.SumAll1D(arr_2);
              }
             ";
             Type dummy = typeof (FFITarget.Dummy);
@@ -451,7 +451,7 @@ sum;
             @"
                dummy = DerivedDummy.DerivedDummy();
                arr = 1..10.0;
-               sum = dummy.SumAll(arr);
+               sum = dummy.SumAll1D(arr);
             ";
             Type dummy = typeof (FFITarget.DerivedDummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
