@@ -44,18 +44,31 @@ namespace Dynamo.Tests
         public void FixtureSetup()
         {
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
-
+            
             //Clear Temp directory folders before start of the new serialization test run
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, "json");
             var jsonNonGuidFolder = Path.Combine(tempPath, "jsonNonGuid");
 
-            var jsonNonGuidFiles = Directory.GetFiles(jsonNonGuidFolder, "*.*", SearchOption.AllDirectories);
-            var jsonFiles = Directory.GetFiles(jsonFolder, "*.*", SearchOption.AllDirectories);
+            var jsonFilesList = new List<string>();
+            var jsonNonGuidFilesList = new List<string>();
 
-            //Delete files from json and jsonNonGuid folders
-            DeleteJsonFilesFromTemp(jsonFiles);
-            DeleteJsonFilesFromTemp(jsonNonGuidFiles);
+            if (Directory.Exists(jsonFolder) || Directory.Exists(jsonNonGuidFolder))
+            {
+                try
+                {
+                    jsonFilesList = Directory.GetFiles(jsonNonGuidFolder, "*.*", SearchOption.AllDirectories).ToList();
+                    jsonNonGuidFilesList = Directory.GetFiles(jsonFolder, "*.*", SearchOption.AllDirectories).ToList();
+
+                    //Delete files from json and jsonNonGuid folders
+                    DeleteJsonFilesFromTemp(jsonFilesList);
+                    DeleteJsonFilesFromTemp(jsonNonGuidFilesList);
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }      
         }
 
         [TestFixtureTearDown]
@@ -64,11 +77,14 @@ namespace Dynamo.Tests
             ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;
         }
 
-        private void DeleteJsonFilesFromTemp(string[] files)
+        private void DeleteJsonFilesFromTemp(List<string> files)
         {
             foreach (var file in files)
             {
-                File.Delete(file);
+                if (File.Exists(file))
+                {
+                    File.Delete(file);
+                }
             }
         }
 
