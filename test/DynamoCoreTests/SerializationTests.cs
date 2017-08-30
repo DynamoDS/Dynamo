@@ -50,9 +50,6 @@ namespace Dynamo.Tests
             var jsonFolder = Path.Combine(tempPath, "json");
             var jsonNonGuidFolder = Path.Combine(tempPath, "jsonNonGuid");
 
-            var jsonFilesList = new List<string>();
-            var jsonNonGuidFilesList = new List<string>();
-
             //Try and delete all the files from the previous run. 
             //If there's an error in deleting files, the tests should countinue
             if (Directory.Exists(jsonFolder))
