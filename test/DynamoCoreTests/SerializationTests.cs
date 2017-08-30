@@ -392,10 +392,7 @@ namespace Dynamo.Tests
         public void SerializationNonGuidIdsTest(string filePath)
         {
             modelsGuidToIdMap.Clear();
-            DoWorkspaceOpenAndCompare(filePath, "json_nonGuidIds", ConvertCurrentWorkspaceToNonGuidJsonAndSave, CompareWorkspacesDifferentGuids, SaveWorkspaceComparisonDataWithNonGuidIds);
-
-            //UploadToS3() from Ram;
-            
+            DoWorkspaceOpenAndCompare(filePath, "json_nonGuidIds", ConvertCurrentWorkspaceToNonGuidJsonAndSave, CompareWorkspacesDifferentGuids, SaveWorkspaceComparisonDataWithNonGuidIds);        
         }
 
         private static List<string> bannedTests = new List<string>()
