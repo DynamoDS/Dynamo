@@ -55,6 +55,10 @@ namespace Dynamo.Tests
 
             if (Directory.Exists(jsonFolder) || Directory.Exists(jsonNonGuidFolder))
             {
+
+                //Try and delete all the files from the previous run. 
+                //If there's an error in deleting files, the tests should countinue
+
                 try
                 {
                     jsonFilesList = Directory.GetFiles(jsonNonGuidFolder, "*.*", SearchOption.AllDirectories).ToList();
@@ -81,6 +85,7 @@ namespace Dynamo.Tests
         {
             foreach (var file in files)
             {
+                //Delete files if they exist
                 if (File.Exists(file))
                 {
                     File.Delete(file);
