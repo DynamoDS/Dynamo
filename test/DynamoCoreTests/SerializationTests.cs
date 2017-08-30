@@ -53,44 +53,39 @@ namespace Dynamo.Tests
             var jsonFilesList = new List<string>();
             var jsonNonGuidFilesList = new List<string>();
 
-            if (Directory.Exists(jsonFolder) || Directory.Exists(jsonNonGuidFolder))
+            //Try and delete all the files from the previous run. 
+            //If there's an error in deleting files, the tests should countinue
+            if (Directory.Exists(jsonFolder))
             {
-
-                //Try and delete all the files from the previous run. 
-                //If there's an error in deleting files, the tests should countinue
-
                 try
                 {
-                    jsonFilesList = Directory.GetFiles(jsonNonGuidFolder, "*.*", SearchOption.AllDirectories).ToList();
-                    jsonNonGuidFilesList = Directory.GetFiles(jsonFolder, "*.*", SearchOption.AllDirectories).ToList();
-
-                    //Delete files from json and jsonNonGuid folders
-                    DeleteJsonFilesFromTemp(jsonFilesList);
-                    DeleteJsonFilesFromTemp(jsonNonGuidFilesList);
+                    Console.WriteLine("Deleting JSON directory from temp");
+                    Directory.Delete(jsonFolder, true);
                 }
                 catch(Exception e)
                 {
                     Console.WriteLine(e.Message);
                 }
-            }      
+            }
+
+            if (Directory.Exists(jsonNonGuidFolder))
+            {
+                try
+                {
+                    Console.WriteLine("Deleting jsonNonGuid directory from temp");
+                    Directory.Delete(jsonNonGuidFolder, true);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
         }
 
         [TestFixtureTearDown]
         public void TearDown()
         {
             ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;
-        }
-
-        private void DeleteJsonFilesFromTemp(List<string> files)
-        {
-            foreach (var file in files)
-            {
-                //Delete files if they exist
-                if (File.Exists(file))
-                {
-                    File.Delete(file);
-                }
-            }
         }
 
         private void ExecutionEvents_GraphPostExecution(Session.IExecutionSession session)
