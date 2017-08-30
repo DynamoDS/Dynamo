@@ -283,7 +283,7 @@ namespace ProtoCore.DSASM
 
         public int Append(ProcedureNode node)
         {
-            var procNode = GetFunctionBySignature(node.Name, node.ArgumentTypes);
+            var procNode = GetFunctionByNonStrictSignature(node.Name, node.ArgumentTypes);
             if (procNode == null)
             {
                 Procedures.Add(node);
@@ -395,6 +395,32 @@ namespace ProtoCore.DSASM
                 }
             }
             return currentProcedure;
+        }
+
+        private ProcedureNode GetFunctionByNonStrictSignature(string functionName, List<Type> parameterTypes)
+        {
+            foreach (var f in Procedures)
+            {
+                if (f.Name != functionName || f.ArgumentTypes.Count != parameterTypes.Count)
+                {
+                    continue;
+                }
+                
+                for (int i = 0; i < parameterTypes.Count; i++)
+                {
+                    if (f.ArgumentTypes[i].Name != parameterTypes[i].Name || f.ArgumentTypes[i].UID != parameterTypes[i].UID)
+                    {
+                        goto NotMatch; 
+                    }
+                }
+
+                return f;
+
+                NotMatch:
+                    ;
+            }
+
+            return null;
         }
     }
 }
