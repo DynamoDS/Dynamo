@@ -38,7 +38,6 @@ namespace ProtoCore.Lang
             MapTo,
             NormalizeDepth,
             Print,
-            PrintIndexable,
             Rank,
             Remove,
             RemoveDuplicates,
@@ -99,7 +98,6 @@ namespace ProtoCore.Lang
             "Map",                      // kMap
             "MapTo",                    // kMapTo
             "NormalizeDepth",           // kNormalizeDepth
-            "Print",                    // kPrint
             "Print",                    // kPrint
             "Rank",                     // kRank
             "Remove",                   // kRemove
@@ -720,20 +718,9 @@ namespace ProtoCore.Lang
                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Void, 0),
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
-                        new KeyValuePair<string, ProtoCore.Type>("msg", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),                    
-                    },
-                    ID = BuiltInMethods.MethodID.Print,
-                    MethodAttributes = new MethodAttributes(true),
-                },
-
-                new BuiltInMethod()
-                {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Void, 0),
-                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                    {
                         new KeyValuePair<string, ProtoCore.Type>("msg", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),                    
                     },
-                    ID = BuiltInMethods.MethodID.PrintIndexable,
+                    ID = BuiltInMethods.MethodID.Print,
                     MethodAttributes = new MethodAttributes(true),
                 },
 
