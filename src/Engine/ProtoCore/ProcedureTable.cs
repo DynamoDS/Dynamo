@@ -225,19 +225,6 @@ namespace ProtoCore.DSASM
                    LocalCount == rhs.LocalCount && 
                    Name.Equals(rhs.Name);
         }
-
-        /// <summary>
-        /// Returns true if two procedure nodes have same signature.
-        /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public bool Matches(string name, List<ProtoCore.Type> argumentTypes)
-        {
-            if (argumentTypes == null)
-                throw new ArgumentNullException("argumentTypes");
-
-            return Name == name && ArgumentTypes.SequenceEqual(argumentTypes);
-        }
     }
 
     public class ProcedureTable
@@ -283,7 +270,7 @@ namespace ProtoCore.DSASM
 
         public int Append(ProcedureNode node)
         {
-            var procNode = GetFunctionByNonStrictSignature(node.Name, node.ArgumentTypes);
+            var procNode = GetFunctionBySignature(node.Name, node.ArgumentTypes);
             if (procNode == null)
             {
                 Procedures.Add(node);
@@ -330,17 +317,6 @@ namespace ProtoCore.DSASM
                 return (argumentNumber <= parameterNumber) &&
                        (argumentNumber - parameterNumber <= defaultArgumentNumber);
             }).OrderBy(p => p.ArgumentTypes.Count - argumentNumber);
-        }
-
-        /// <summary>
-        /// Returns function with specified signature.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        public ProcedureNode GetFunctionBySignature(string name, List<Type> args)
-        {
-            return Procedures.FirstOrDefault(p => p.Matches(name, args));
         }
 
         // TODO: To be deleted.
@@ -397,7 +373,13 @@ namespace ProtoCore.DSASM
             return currentProcedure;
         }
 
-        private ProcedureNode GetFunctionByNonStrictSignature(string functionName, List<Type> parameterTypes)
+        /// <summary>
+        /// Get function by its signature.
+        /// </summary>
+        /// <param name="functionName"></param>
+        /// <param name="parameterTypes"></param>
+        /// <returns></returns>
+        public ProcedureNode GetFunctionBySignature(string functionName, List<Type> parameterTypes)
         {
             foreach (var f in Procedures)
             {
