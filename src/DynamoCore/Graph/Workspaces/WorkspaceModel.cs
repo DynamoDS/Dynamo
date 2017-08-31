@@ -1570,6 +1570,10 @@ namespace Dynamo.Graph.Workspaces
             Y = workspaceViewInfo.Y;
             Zoom = workspaceViewInfo.Zoom; 
 
+            OnCurrentOffsetChanged(
+                this,
+                new PointEventArgs(new Point2D(X, Y)));
+
             foreach (ExtraNodeViewInfo nodeViewInfo in workspaceViewInfo.NodeViews)
             {
                 var guidValue = IdToGuidConverter(nodeViewInfo.Id);

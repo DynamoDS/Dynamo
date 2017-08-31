@@ -44,11 +44,25 @@ using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
-// NOTE, QNTM-1101: For WorkspaceInfo deserialization
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Models
 {
+    /// <summary>
+    /// This class contains the extra Dynamo-specific preferences data
+    /// </summary>
+    public class DynamoPreferencesData
+    {
+      public double ScaleFactor;
+
+      public DynamoPreferencesData(
+        double scaleFactor)
+      {
+        ScaleFactor = scaleFactor;
+      }
+    }
+
     /// <summary>
     /// This class creates an interface for Engine controller.
     /// </summary>
@@ -1299,6 +1313,28 @@ namespace Dynamo.Models
             Logger.LogError("Could not open workspace at: " + filePath);
         }
 
+        static private DynamoPreferencesData DynamoPreferencesDataFromJson(string json)
+        {
+            JsonReader reader = new JsonTextReader(new StringReader(json));
+            var obj = JObject.Load(reader);
+            var viewBlock = obj["View"];
+            var dynamoBlock = viewBlock["Dynamo"];
+           
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Newtonsoft.Json.Formatting.Indented
+            };
+
+            return JsonConvert.DeserializeObject<DynamoPreferencesData>(dynamoBlock.ToString(), settings);
+        }
+
         /// <summary>
         /// Opens a Dynamo workspace from a path to an JSON file on disk.
         /// </summary>
@@ -1313,24 +1349,14 @@ namespace Dynamo.Models
             {
                 string fileContents = File.ReadAllText(filePath);
 
-                // TODO, QNTM-1101: Figure out the plan for WorkspaceInfoin JSON files
-                // NOTE, short-term fix, QNTM-1100: Either implicit or explicit default WorkspaceInfo values 
-                // are being used for now, long-term fix is being tracked by QNTM-1101
-                WorkspaceInfo workspaceInfo = JsonConvert.DeserializeObject<WorkspaceInfo>(fileContents);
-                if (workspaceInfo != null)
+                DynamoPreferencesData dynamoPreferences = DynamoPreferencesDataFromJson(fileContents);
+                if (dynamoPreferences != null)
                 {
-                    // NOTE, short-term fix, QNTM-1100: Default the FileName property here to show the file name in the view tab
-                    workspaceInfo.FileName = filePath;
-
-                    // NOTE, short-term fix, QNTM-1100: Default The scale factor to 1 (instead of 0) to enable 
-                    // proper geometry display when loading JSON
-                    workspaceInfo.ScaleFactor = 1;
-
                     // TODO, QNTM-1101: Figure out JSON migration strategy
-                    if (true) //MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
+                    if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
                         WorkspaceModel ws;
-                        if (OpenJsonFile(workspaceInfo, fileContents, out ws))
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, out ws))
                         {
                             OpenWorkspace(ws);
                             SetPeriodicEvaluation(ws);
@@ -1431,10 +1457,14 @@ namespace Dynamo.Models
             }
         }
 
-        private bool OpenJsonFile(WorkspaceInfo workspaceInfo, string fileContents, out WorkspaceModel workspace)
+        private bool OpenJsonFile(
+          string filePath, 
+          string fileContents, 
+          DynamoPreferencesData dynamoPreferences, 
+          out WorkspaceModel workspace)
         {
             CustomNodeManager.AddUninitializedCustomNodesInPath(
-                Path.GetDirectoryName(workspaceInfo.FileName),
+                Path.GetDirectoryName(filePath),
                 IsTestMode);
 
             // TODO, QNTM-1108: WorkspaceModel.FromJson does not check a schema and so will not fail as long
@@ -1449,13 +1479,8 @@ namespace Dynamo.Models
                 false,
                 CustomNodeManager);
 
-            workspace.FileName = workspaceInfo.FileName;
-
-            workspace.OnCurrentOffsetChanged(
-                this,
-                new PointEventArgs(new Point2D(workspaceInfo.X, workspaceInfo.Y)));
-
-            workspace.ScaleFactor = workspaceInfo.ScaleFactor;
+            workspace.FileName = filePath;
+            workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
 
             return true;
         }

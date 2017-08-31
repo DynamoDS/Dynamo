@@ -29,7 +29,6 @@ using Dynamo.Engine;
 
 namespace Dynamo.ViewModels
 {
-
     public delegate void NoteEventHandler(object sender, EventArgs e);
     public delegate void ViewEventHandler(object sender, EventArgs e);
     public delegate void SelectionEventHandler(object sender, SelectionBoxUpdateArgs e);
@@ -180,6 +179,20 @@ namespace Dynamo.ViewModels
 
         [JsonIgnore]
         public bool IsSnapping { get; set; }
+
+        /// <summary>
+        /// Gets the collection of Dynamo-specific preferences.
+        /// This is used when serializing Dynamo preferences in the View block of Graph.Json.
+        /// </summary>
+        [JsonProperty("Dynamo")]
+        public DynamoPreferencesData DynamoPreferences
+        {
+            get
+            {
+              return new DynamoPreferencesData(
+                Model.ScaleFactor);
+            }
+        }
 
         /// <summary>
         /// Gets the Camera Data. This is used when serializing Camera Data in the View block
