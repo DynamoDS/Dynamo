@@ -58,17 +58,23 @@ namespace Dynamo.Models
       public bool HasRunWithoutCrash { get; internal set; }
       public bool IsVisibleInDynamoLibrary { get; internal set; }
       public string Version { get; internal set; }
+      public string RunType { get; internal set; }
+      public string RunPeriod { get; internal set; }
 
       public DynamoPreferencesData(
         double scaleFactor,
         bool hasRunWithoutCrash,
         bool isVisibleInDynamoLibrary,
-        string version)
+        string version,
+        string runType,
+        string runPeriod)
       {
         ScaleFactor = scaleFactor;
         HasRunWithoutCrash = hasRunWithoutCrash;
         IsVisibleInDynamoLibrary = isVisibleInDynamoLibrary;
         Version = version;
+        RunType = runType;
+        RunPeriod = runPeriod;
       }
     }
 
@@ -1500,7 +1506,17 @@ namespace Dynamo.Models
 
             HomeWorkspaceModel homeWorkspace = workspace as HomeWorkspaceModel;
             if (homeWorkspace != null)
+            {
               homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
+
+              RunType runType;
+              if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType))
+                  runType = RunType.Manual;
+              int runPeriod;
+              if (!Int32.TryParse(dynamoPreferences.RunPeriod, out runPeriod))
+                  runPeriod = RunSettings.DefaultRunPeriod;
+              homeWorkspace.RunSettings = new RunSettings(runType, runPeriod);
+            }
 
             CustomNodeWorkspaceModel customNodeWorkspace = workspace as CustomNodeWorkspaceModel;
             if (customNodeWorkspace != null)

@@ -190,9 +190,15 @@ namespace Dynamo.ViewModels
             get
             {
               bool hasRunWithoutCrash = false;
+              string runType = RunType.Manual.ToString();
+              string runPeriod = RunSettings.DefaultRunPeriod.ToString();
               HomeWorkspaceModel homeWorkspace = Model as HomeWorkspaceModel;
               if (homeWorkspace != null)
+              {
                 hasRunWithoutCrash = homeWorkspace.HasRunWithoutCrash;
+                runType = homeWorkspace.RunSettings.RunType.ToString();
+                runPeriod = homeWorkspace.RunSettings.RunPeriod.ToString();
+              }
 
               bool isVisibleInDynamoLibrary = true;
               CustomNodeWorkspaceModel customNodeWorkspace = Model as CustomNodeWorkspaceModel;
@@ -203,7 +209,9 @@ namespace Dynamo.ViewModels
                 Model.ScaleFactor,
                 hasRunWithoutCrash,
                 isVisibleInDynamoLibrary,
-                Model.WorkspaceVersion.ToString());
+                Model.WorkspaceVersion.ToString(),
+                runType,
+                runPeriod);
             }
         }
 

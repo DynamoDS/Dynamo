@@ -73,7 +73,7 @@ namespace Dynamo.Graph.Workspaces
         /// how execution is carried out.
         /// </summary>
         [JsonIgnore]
-        public readonly RunSettings RunSettings;
+        public RunSettings RunSettings { get; set; }
 
         /// <summary>
         /// Evaluation count is incremented whenever the graph is evaluated. 
