@@ -202,7 +202,8 @@ namespace Dynamo.ViewModels
               return new DynamoPreferencesData(
                 Model.ScaleFactor,
                 hasRunWithoutCrash,
-                isVisibleInDynamoLibrary);
+                isVisibleInDynamoLibrary,
+                Model.WorkspaceVersion.ToString());
             }
         }
 

@@ -57,15 +57,18 @@ namespace Dynamo.Models
       public double ScaleFactor { get; internal set; }
       public bool HasRunWithoutCrash { get; internal set; }
       public bool IsVisibleInDynamoLibrary { get; internal set; }
+      public string Version { get; internal set; }
 
       public DynamoPreferencesData(
         double scaleFactor,
         bool hasRunWithoutCrash,
-        bool isVisibleInDynamoLibrary)
+        bool isVisibleInDynamoLibrary,
+        string version)
       {
         ScaleFactor = scaleFactor;
         HasRunWithoutCrash = hasRunWithoutCrash;
         IsVisibleInDynamoLibrary = isVisibleInDynamoLibrary;
+        Version = version;
       }
     }
 
@@ -1487,6 +1490,13 @@ namespace Dynamo.Models
 
             workspace.FileName = filePath;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
+
+            // NOTE: This is to handle the case of opening a JSON file that does not have a version string
+            //       This logic may not be correct, need to decide the importance of versioning early JSON files
+            string versionString = dynamoPreferences.Version;
+            if (versionString == null)
+              versionString = AssemblyHelper.GetDynamoVersion().ToString();
+            workspace.WorkspaceVersion = new System.Version(versionString);
 
             HomeWorkspaceModel homeWorkspace = workspace as HomeWorkspaceModel;
             if (homeWorkspace != null)
