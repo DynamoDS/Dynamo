@@ -74,9 +74,10 @@ namespace CoreNodeModels
         {
             get
             {
-                if (selectionIdentifier == null || selectionIdentifier.Count() == 0)
+                IEnumerable<String> updatedSelection = selection.Select(GetIdentifierFromModelObject).Where(x => x != null).ToList();
+                if (updatedSelection.Count() > 0)
                 {
-                    selectionIdentifier = selection.Select(GetIdentifierFromModelObject).Where(x => x != null).ToList();
+                    selectionIdentifier = updatedSelection;
                 }
 
                 return selectionIdentifier;
