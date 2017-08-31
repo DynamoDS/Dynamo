@@ -26,7 +26,7 @@ namespace CoreNodeModels
         private readonly string selectionMessage;
         private List<TResult> selectionResults = new List<TResult>();
         private List<TSelection> selection = new List<TSelection>();
-        private IEnumerable<string> selectionIdentifier;
+        private List<string> selectionIdentifier;
         private readonly SelectionType selectionType;
         private readonly SelectionObjectType selectionObjectType;
         
@@ -70,12 +70,18 @@ namespace CoreNodeModels
         }
 
         [JsonProperty("InstanceId")]
-        public IEnumerable<string> SelectionIdentifier
+        public List<string> SelectionIdentifier
         {
             get
             {
-                return selection.Select(GetIdentifierFromModelObject).Where(x => x != null).ToList();
+                if (selectionIdentifier == null || selectionIdentifier.Count == 0)
+                {
+                    selectionIdentifier = selection.Select(GetIdentifierFromModelObject).Where(x => x != null).ToList();
+                }
+
+                return selectionIdentifier;
             }
+
             set
             {
                 selectionIdentifier = value;
@@ -147,7 +153,7 @@ namespace CoreNodeModels
             SelectionObjectType selectionObjectType,
             string message,
             string prefix,
-            IEnumerable<string> selectionIdentifier,
+            List<string> selectionIdentifier,
             IEnumerable<PortModel> inPorts,
             IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
@@ -161,6 +167,9 @@ namespace CoreNodeModels
             State = ElementState.Warning;
 
             ShouldDisplayPreviewCore = true;
+
+            SelectionIdentifier = selectionIdentifier;
+            ResetSelectionFromIds(SelectionIdentifier);
         }
 
         #endregion
