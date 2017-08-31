@@ -54,12 +54,15 @@ namespace Dynamo.Models
     /// </summary>
     public class DynamoPreferencesData
     {
-      public double ScaleFactor;
+      public double ScaleFactor { get; internal set; }
+      public bool HasRunWithoutCrash { get; internal set; }
 
       public DynamoPreferencesData(
-        double scaleFactor)
+        double scaleFactor,
+        bool hasRunWithoutCrash)
       {
         ScaleFactor = scaleFactor;
+        HasRunWithoutCrash = hasRunWithoutCrash;
       }
     }
 
@@ -1481,6 +1484,10 @@ namespace Dynamo.Models
 
             workspace.FileName = filePath;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
+
+            HomeWorkspaceModel homeWorkspace = workspace as HomeWorkspaceModel;
+            if (homeWorkspace != null)
+              homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
 
             return true;
         }

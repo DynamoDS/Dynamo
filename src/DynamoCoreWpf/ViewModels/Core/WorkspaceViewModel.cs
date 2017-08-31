@@ -189,8 +189,14 @@ namespace Dynamo.ViewModels
         {
             get
             {
+              bool hasRunWithoutCrash = false;
+              HomeWorkspaceModel homeWorkspace = Model as HomeWorkspaceModel;
+              if (homeWorkspace != null)
+                hasRunWithoutCrash = homeWorkspace.HasRunWithoutCrash;
+
               return new DynamoPreferencesData(
-                Model.ScaleFactor);
+                Model.ScaleFactor,
+                hasRunWithoutCrash);
             }
         }
 
