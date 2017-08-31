@@ -30,6 +30,22 @@ namespace CoreNodeModels.Input
             ShouldDisplayPreviewCore = false;
         }
 
+        public override NodeInputData InputData
+        {
+            get
+            {
+                return new NodeInputData()
+                {
+                    Id = this.GUID,
+                    Name = this.Name,
+                    Type = NodeInputData.getNodeInputTypeFromType(typeof(System.DateTime)),
+                    Description = this.Description,
+                    //format dateTime with swagger spec in mind:  ISO 8601.
+                    Value = Value.ToString("s",CultureInfo.InvariantCulture),
+                };
+            }
+        }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var yearNode = AstFactory.BuildIntNode(Value.Year);

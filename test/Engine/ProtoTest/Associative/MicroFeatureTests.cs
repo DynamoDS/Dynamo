@@ -3526,5 +3526,33 @@ b = TestThisOverload.Mul(obj, 4);
             // Here we shouldn't generate an overloaded one.
             thisTest.Verify("b", 24);
         }
+
+        [Test]
+        public void TestReturnStatement01()
+        {
+            string code = @"
+def foo() {
+    return 21;
+}
+r = foo();
+";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("r", 21);
+        }
+
+
+        [Test]
+        public void TestReturnStatement02()
+        {
+            string code = @"
+r = [Imperative] {
+    return 21;
+}
+";
+            thisTest.RunScriptSource(code);
+            thisTest.VerifyBuildWarningCount(0);
+            thisTest.Verify("r", 21);
+        }
     }
 }

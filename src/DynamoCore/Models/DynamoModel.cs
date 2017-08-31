@@ -101,7 +101,7 @@ namespace Dynamo.Models
             if (WorkspaceSaved != null)
             {
                 WorkspaceSaved(workspace);
-            } 
+            }
         }
 
         /// <summary>
@@ -581,17 +581,32 @@ namespace Dynamo.Models
             // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
             // PackageFolders
             if (PreferenceSettings.CustomPackageFolders.Count == 0)
-                PreferenceSettings.CustomPackageFolders = new List<string> {pathManager.UserDataDirectory};
+                PreferenceSettings.CustomPackageFolders = new List<string> { pathManager.UserDataDirectory };
 
-            //Make sure that the default package folder is added in the list if custom packages folder.
-            var userDataFolder = pathManager.GetUserDataFolder(); //Get the default user data path
+            // Make sure that the default package folder is added in the list if custom packages folder.
+            var userDataFolder = pathManager.GetUserDataFolder(); // Get the default user data path
             if (Directory.Exists(userDataFolder) && !PreferenceSettings.CustomPackageFolders.Contains(userDataFolder))
             {
                 PreferenceSettings.CustomPackageFolders.Add(userDataFolder);
             }
 
-            pathManager.Preferences = PreferenceSettings;
+            // Check if the Python template file specified in the settings file exists & it's not empty
+            // If not, check the default filepath for the Python template (userDataFolder\PythonTemplate.py).
+            // If that doesn't exist either or is empty, Dynamo falls back to the hard-coded Python script template.
+            // We log the behaviour to make it easy for users to troubleshoot this.
+            if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath))
+            {
+                if (string.IsNullOrEmpty(pathManager.PythonTemplateFilePath) || !File.Exists(pathManager.PythonTemplateFilePath))
+                    Logger.Log(Resources.PythonTemplateInvalid);
+                else
+                {
+                    PreferenceSettings.PythonTemplateFilePath = pathManager.PythonTemplateFilePath;
+                    Logger.Log(Resources.PythonTemplateDefaultFile + " : " + pathManager.PythonTemplateFilePath);
+                }
+            }
+            else Logger.Log(Resources.PythonTemplateUserFile + " : " + pathManager.PythonTemplateFilePath);
 
+            pathManager.Preferences = PreferenceSettings;
 
             SearchModel = new NodeSearchModel();
             SearchModel.ItemProduced +=
@@ -632,7 +647,7 @@ namespace Dynamo.Models
             // config.UpdateManager has to be cast to IHostUpdateManager in order to extract the HostVersion and HostName
             // see IHostUpdateManager summary for more details 
             var hostUpdateManager = config.UpdateManager as IHostUpdateManager;
-          
+
             if (hostUpdateManager != null)
             {
                 HostName = hostUpdateManager.HostName;
@@ -643,7 +658,7 @@ namespace Dynamo.Models
                 HostName = string.Empty;
                 HostVersion = null;
             }
-            
+
             UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode && !IsHeadless)
             {
@@ -720,7 +735,7 @@ namespace Dynamo.Models
 
         private void EngineController_TraceReconcliationComplete(TraceReconciliationEventArgs obj)
         {
-            Debug.WriteLine("TRACE RECONCILIATION: {0} total serializables were orphaned.", obj.CallsiteToOrphanMap.SelectMany(kvp=>kvp.Value).Count());
+            Debug.WriteLine("TRACE RECONCILIATION: {0} total serializables were orphaned.", obj.CallsiteToOrphanMap.SelectMany(kvp => kvp.Value).Count());
 
             // The orphans will come back here as a dictionary of lists of ISerializables jeyed by their callsite id.
             // This dictionary gets redistributed into a dictionary keyed by the workspace id.
@@ -1275,13 +1290,13 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
-          if (OpenXmlFileFromPath(filePath, forceManualExecutionMode))
-            return;
+            if (OpenXmlFileFromPath(filePath, forceManualExecutionMode))
+                return;
 
-          if (OpenJsonFileFromPath(filePath, forceManualExecutionMode))
-            return;
+            if (OpenJsonFileFromPath(filePath, forceManualExecutionMode))
+                return;
 
-          Logger.LogError("Could not open workspace at: " + filePath);
+            Logger.LogError("Could not open workspace at: " + filePath);
         }
 
         /// <summary>
@@ -1293,42 +1308,42 @@ namespace Dynamo.Models
         /// <returns>True if workspace was opened successfully</returns>
         private bool OpenJsonFileFromPath(string filePath, bool forceManualExecutionMode)
         {
-          bool success = true;
-          try
-          {
-            string fileContents = File.ReadAllText(filePath);
-
-            // TODO, QNTM-1101: Figure out the plan for WorkspaceInfoin JSON files
-            // NOTE, short-term fix, QNTM-1100: Either implicit or explicit default WorkspaceInfo values 
-            // are being used for now, long-term fix is being tracked by QNTM-1101
-            WorkspaceInfo workspaceInfo = JsonConvert.DeserializeObject<WorkspaceInfo>(fileContents);
-            if (workspaceInfo != null)
+            bool success = true;
+            try
             {
-              // NOTE, short-term fix, QNTM-1100: Default the FileName property here to show the file name in the view tab
-              workspaceInfo.FileName = filePath;
+                string fileContents = File.ReadAllText(filePath);
 
-              // NOTE, short-term fix, QNTM-1100: Default The scale factor to 1 (instead of 0) to enable 
-              // proper geometry display when loading JSON
-              workspaceInfo.ScaleFactor = 1;
-
-              // TODO, QNTM-1101: Figure out JSON migration strategy
-              if (true) //MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
-              {
-                WorkspaceModel ws;
-                if (OpenJsonFile(workspaceInfo, fileContents, out ws))
+                // TODO, QNTM-1101: Figure out the plan for WorkspaceInfoin JSON files
+                // NOTE, short-term fix, QNTM-1100: Either implicit or explicit default WorkspaceInfo values 
+                // are being used for now, long-term fix is being tracked by QNTM-1101
+                WorkspaceInfo workspaceInfo = JsonConvert.DeserializeObject<WorkspaceInfo>(fileContents);
+                if (workspaceInfo != null)
                 {
-                  OpenWorkspace(ws);
-                  SetPeriodicEvaluation(ws);
-                }
-              }
-            }
-          }
-          catch (Exception e)
-          {
-            success = false;
-          }
+                    // NOTE, short-term fix, QNTM-1100: Default the FileName property here to show the file name in the view tab
+                    workspaceInfo.FileName = filePath;
 
-          return success;
+                    // NOTE, short-term fix, QNTM-1100: Default The scale factor to 1 (instead of 0) to enable 
+                    // proper geometry display when loading JSON
+                    workspaceInfo.ScaleFactor = 1;
+
+                    // TODO, QNTM-1101: Figure out JSON migration strategy
+                    if (true) //MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
+                    {
+                        WorkspaceModel ws;
+                        if (OpenJsonFile(workspaceInfo, fileContents, out ws))
+                        {
+                            OpenWorkspace(ws);
+                            SetPeriodicEvaluation(ws);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                success = false;
+            }
+
+            return success;
         }
 
         /// <summary>
@@ -1340,80 +1355,80 @@ namespace Dynamo.Models
         /// <returns>True if workspace was opened successfully</returns>
         private bool OpenXmlFileFromPath(string filePath, bool forceManualExecutionMode)
         {
-          bool success = true;
-          try
-          {
-            var xmlDoc = new XmlDocument();
-            xmlDoc.Load(filePath);
-
-            WorkspaceInfo workspaceInfo;
-            if (WorkspaceInfo.FromXmlDocument(xmlDoc, filePath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
+            bool success = true;
+            try
             {
-              if (MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
-              {
-                WorkspaceModel ws;
-                if (OpenXmlFile(workspaceInfo, xmlDoc, out ws))
+                var xmlDoc = new XmlDocument();
+                xmlDoc.Load(filePath);
+
+                WorkspaceInfo workspaceInfo;
+                if (WorkspaceInfo.FromXmlDocument(xmlDoc, filePath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
                 {
-                  OpenWorkspace(ws);
+                    if (MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
+                    {
+                        WorkspaceModel ws;
+                        if (OpenXmlFile(workspaceInfo, xmlDoc, out ws))
+                        {
+                            OpenWorkspace(ws);
 
-                  // Set up workspace cameras here
-                  OnWorkspaceOpening(xmlDoc);
-                  SetPeriodicEvaluation(ws);
+                            // Set up workspace cameras here
+                            OnWorkspaceOpening(xmlDoc);
+                            SetPeriodicEvaluation(ws);
+                        }
+                    }
                 }
-              }
             }
-          }
-          catch (Exception e)
-          {
-            success = false;
-          }
+            catch (Exception e)
+            {
+                success = false;
+            }
 
-          return success;
+            return success;
         }
 
         private void OpenWorkspace(WorkspaceModel ws)
         {
-          // TODO: #4258
-          // The logic to remove all other home workspaces from the model
-          // was moved from the ViewModel. When #4258 is implemented, we will need to
-          // remove this step.
-          var currentHomeSpaces = Workspaces.OfType<HomeWorkspaceModel>().ToList();
-          if (currentHomeSpaces.Any())
-          {
-            // If the workspace we're opening is a home workspace,
-            // then remove all the other home workspaces. Otherwise,
-            // Remove all but the first home workspace.
-            var end = ws is HomeWorkspaceModel ? 0 : 1;
-
-            for (var i = currentHomeSpaces.Count - 1; i >= end; i--)
+            // TODO: #4258
+            // The logic to remove all other home workspaces from the model
+            // was moved from the ViewModel. When #4258 is implemented, we will need to
+            // remove this step.
+            var currentHomeSpaces = Workspaces.OfType<HomeWorkspaceModel>().ToList();
+            if (currentHomeSpaces.Any())
             {
-              RemoveWorkspace(currentHomeSpaces[i]);
-            }
-          }
+                // If the workspace we're opening is a home workspace,
+                // then remove all the other home workspaces. Otherwise,
+                // Remove all but the first home workspace.
+                var end = ws is HomeWorkspaceModel ? 0 : 1;
 
-          AddWorkspace(ws);
-          CurrentWorkspace = ws;
+                for (var i = currentHomeSpaces.Count - 1; i >= end; i--)
+                {
+                    RemoveWorkspace(currentHomeSpaces[i]);
+                }
+            }
+
+            AddWorkspace(ws);
+            CurrentWorkspace = ws;
         }
 
         private void SetPeriodicEvaluation(WorkspaceModel ws)
         {
-          // TODO: #4258
-          // The following logic to start periodic evaluation will need to be moved
-          // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
-          // as it causes an immediate crash due to the above ResetEngine call.
-          var hws = ws as HomeWorkspaceModel;
-          if (hws != null)
-          {
             // TODO: #4258
-            // Remove this ResetEngine call when multiple home workspaces is supported.
-            // This call formerly lived in DynamoViewModel
-            ResetEngine();
-
-            if (hws.RunSettings.RunType == RunType.Periodic)
+            // The following logic to start periodic evaluation will need to be moved
+            // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
+            // as it causes an immediate crash due to the above ResetEngine call.
+            var hws = ws as HomeWorkspaceModel;
+            if (hws != null)
             {
-              hws.StartPeriodicEvaluation();
+                // TODO: #4258
+                // Remove this ResetEngine call when multiple home workspaces is supported.
+                // This call formerly lived in DynamoViewModel
+                ResetEngine();
+
+                if (hws.RunSettings.RunType == RunType.Periodic)
+                {
+                    hws.StartPeriodicEvaluation();
+                }
             }
-          }
         }
 
         private bool OpenJsonFile(WorkspaceInfo workspaceInfo, string fileContents, out WorkspaceModel workspace)
@@ -1425,15 +1440,15 @@ namespace Dynamo.Models
             // TODO, QNTM-1108: WorkspaceModel.FromJson does not check a schema and so will not fail as long
             // as the fileContents are valid JSON, regardless of if all required data is present or not
             workspace = WorkspaceModel.FromJson(
-                fileContents, 
+                fileContents,
                 LibraryServices,
-                EngineController, 
-                Scheduler, 
-                NodeFactory, 
-                IsTestMode, 
+                EngineController,
+                Scheduler,
+                NodeFactory,
+                IsTestMode,
                 false,
                 CustomNodeManager);
-            
+
             workspace.FileName = workspaceInfo.FileName;
 
             workspace.OnCurrentOffsetChanged(
@@ -1516,7 +1531,7 @@ namespace Dynamo.Models
                 // when the last auto-save operation happens. Now the IDs will be used to know
                 // whether some workspaces have already been backed up. If so, those workspaces won't be
                 // backed up again.
-                var tempDict = new Dictionary<Guid,string>(backupFilesDict);
+                var tempDict = new Dictionary<Guid, string>(backupFilesDict);
                 backupFilesDict.Clear();
                 PreferenceSettings.BackupFiles.Clear();
                 foreach (var workspace in Workspaces)
@@ -1633,7 +1648,7 @@ namespace Dynamo.Models
                     {
                         var list = annotation.Nodes.ToList();
 
-                        if(list.Count > 1)
+                        if (list.Count > 1)
                         {
                             CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                             if (list.Remove(model))
@@ -1650,7 +1665,7 @@ namespace Dynamo.Models
                 }
             }
 
-            if(emptyGroup.Any())
+            if (emptyGroup.Any())
             {
                 DeleteModelInternal(emptyGroup);
             }
@@ -1701,7 +1716,7 @@ namespace Dynamo.Models
                 Scheduler,
                 NodeFactory,
                 DebugSettings.VerboseLogging,
-                IsTestMode,string.Empty);
+                IsTestMode, string.Empty);
 
             RegisterHomeWorkspace(defaultWorkspace);
             AddWorkspace(defaultWorkspace);
@@ -1726,7 +1741,8 @@ namespace Dynamo.Models
             OnWorkspaceRemoveStarted(workspace);
             if (_workspaces.Remove(workspace))
             {
-                if (workspace is HomeWorkspaceModel) {
+                if (workspace is HomeWorkspaceModel)
+                {
                     workspace.Dispose();
                 }
                 OnWorkspaceRemoved(workspace);
@@ -1855,7 +1871,7 @@ namespace Dynamo.Models
             {
                 var noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid());
                 //Store the old note as Key and newnote as value.
-                modelLookup.Add(note.GUID,noteModel);
+                modelLookup.Add(note.GUID, noteModel);
                 newNoteModels.Add(noteModel);
             }
 
@@ -1928,8 +1944,8 @@ namespace Dynamo.Models
             var newConnectors =
                 from c in connectors
 
-                // If the guid is in nodeLookup, then we connect to the new pasted node. Otherwise we
-                // re-connect to the original.
+                    // If the guid is in nodeLookup, then we connect to the new pasted node. Otherwise we
+                    // re-connect to the original.
                 let startNode =
                     modelLookup.TryGetValue(c.Start.Owner.GUID, out start)
                         ? start as NodeModel
@@ -2251,7 +2267,8 @@ namespace Dynamo.Models
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
-                Resources.FutureFileTitle, summary, description) { ClickedButtonId = (int)ButtonId.Cancel };
+                Resources.FutureFileTitle, summary, description)
+            { ClickedButtonId = (int)ButtonId.Cancel };
 
             args.AddRightAlignedButton((int)ButtonId.Cancel, Resources.CancelButton);
             args.AddRightAlignedButton((int)ButtonId.DownloadLatest, Resources.DownloadLatestButton);

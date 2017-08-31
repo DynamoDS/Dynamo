@@ -42,11 +42,18 @@ namespace Dynamo.LibraryUI.Handlers
             Name = iconName + ".Small";
             if (customNode)
             {
-                string customizationPath = System.IO.Path.GetDirectoryName(Path);
-                customizationPath = Directory.GetParent(customizationPath).FullName;
+                string customizationPath = null;
+                if (Path != null && Path != String.Empty)
+                {
+                  customizationPath = System.IO.Path.GetDirectoryName(Path);
+                  customizationPath = Directory.GetParent(customizationPath).FullName;
+                }
+
                 Path = DefaultPath;
                 Name = DefaultIcon;
-                if (File.Exists(System.IO.Path.Combine(customizationPath, "bin", "Package.customization.dll")))
+
+                if (customizationPath != null &&
+                    File.Exists(System.IO.Path.Combine(customizationPath, "bin", "Package.customization.dll")))
                 {
                     Path = System.IO.Path.Combine(customizationPath, "bin", "Package.dll");
                 }

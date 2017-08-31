@@ -18,6 +18,8 @@ namespace DSCore.IO
     /// </summary>
     public static class File
     {
+        #region file methods
+
         /// <summary>
         /// Returns absolute path from the given path. If the given path is 
         /// relative path then it is resolved with respect to the current 
@@ -34,7 +36,7 @@ namespace DSCore.IO
             if (Path.IsPathRooted(path)) return path;
 
             var session = Dynamo.Events.ExecutionEvents.ActiveSession;
-            if(session != null && !string.IsNullOrEmpty(session.CurrentWorkspacePath))
+            if (session != null && !string.IsNullOrEmpty(session.CurrentWorkspacePath))
             {
                 var parent = Path.GetDirectoryName(session.CurrentWorkspacePath);
                 var filepath = Path.Combine(parent, path);
@@ -124,6 +126,18 @@ namespace DSCore.IO
         }
 
         /// <summary>
+        /// Append the text content to a file specified by the path
+        /// </summary>
+        /// <param name="filePath">Path to write to</param>
+        /// <param name="text">Text content</param>
+        /// <search>append file,write file,text,file,filepath</search>
+        public static void AppendText(string filePath, string text)
+        {
+            var fullpath = AbsolutePath(filePath);
+            System.IO.File.AppendAllText(fullpath, text);
+        }
+
+        /// <summary>
         ///     Combines multiple strings into a single file path.
         /// </summary>
         /// <param name="paths">String to combine into a path.</param>
@@ -131,7 +145,7 @@ namespace DSCore.IO
         {
             return Path.Combine(paths);
         }
-  
+
         /// <summary>
         /// Returns the extension from a file path.
         /// </summary>
@@ -140,7 +154,7 @@ namespace DSCore.IO
         {
             return Path.GetExtension(path);
         }
-  
+
         /// <summary>
         ///     Changes the extension of a file path.
         /// </summary>
@@ -150,7 +164,7 @@ namespace DSCore.IO
         {
             return Path.ChangeExtension(path, newExtension);
         }
-  
+
         /// <summary>
         /// Returns the directory name of a file path.
         /// </summary>
@@ -160,7 +174,7 @@ namespace DSCore.IO
         {
             return Path.GetDirectoryName(path);
         }
-  
+
         /// <summary>
         /// Returns the file name of a file path.
         /// </summary>
@@ -170,7 +184,7 @@ namespace DSCore.IO
         {
             return withExtension ? Path.GetFileName(path) : Path.GetFileNameWithoutExtension(path);
         }
-  
+
         /// <summary>
         ///     Determines whether or not a file path contains an extension.
         /// </summary>
@@ -181,19 +195,24 @@ namespace DSCore.IO
         }
 
         /// <summary>          
-        ///     Returns all of the contents of a given directory.
+        ///  Returns all of the contents of a given directory.
         /// </summary>
         /// <param name="directory">Directory to get contents of.</param>
         /// <param name="searchString">Search string used to filter results. Defaults to "*.*" (displays all contents).</param>
+        /// <param name="includeSubdirectories">Set to true to include files & folders in subdirectories (recursive) or set to false to include results from top-level of given directory only. Defaults to false.</param>
         [MultiReturn("files", "directories")]
-        public static Dictionary<string, IList> GetDirectoryContents(DirectoryInfo directory, string searchString = "*.*")
+        public static Dictionary<string, IList> GetDirectoryContents(DirectoryInfo directory, string searchString = "*.*", bool includeSubdirectories = false)
         {
+            var searchOptions = SearchOption.TopDirectoryOnly;
+            if (includeSubdirectories == true) searchOptions = SearchOption.AllDirectories;
+
             return new Dictionary<string, IList>
             {
-                { "files", directory.EnumerateFiles(searchString).Select(x => x.FullName).ToList() },
-                { "directories", directory.EnumerateDirectories(searchString).Select(x => x.FullName).ToList() }
+                { "files", directory.EnumerateFiles(searchString, searchOptions).Select(x => x.FullName).ToList() },
+                { "directories", directory.EnumerateDirectories(searchString, searchOptions).Select(x => x.FullName).ToList() }
             };
         }
+        #endregion
 
         #region directory methods
         /// <summary>
@@ -276,7 +295,6 @@ namespace DSCore.IO
         }
         #endregion
 
-
         #region Obsolete Methods
 
 
@@ -340,7 +358,7 @@ namespace DSCore.IO
         /// <param name="ySamples">Number of sample grid points in the Y direction.</param>
         /// <returns name="colors">Colors at the specified grid points.</returns>
         /// <search>read,image,bitmap,png,jpg,jpeg</search>
-        public static Color[][] Pixels(Bitmap image, int? xSamples=null, int? ySamples=null)
+        public static Color[][] Pixels(Bitmap image, int? xSamples = null, int? ySamples = null)
         {
             var numX = xSamples ?? image.Width;
             var numY = ySamples ?? image.Height;
@@ -350,7 +368,7 @@ namespace DSCore.IO
                     .Select(
                         y =>
                             Enumerable.Range(0, numX)
-                                .Select(x => 
+                                .Select(x =>
                                      Color.ByColor(image.GetPixel(x * (image.Width / numX), y * (image.Height / numY))))
                                 .ToArray())
                     .ToArray();
@@ -417,10 +435,10 @@ namespace DSCore.IO
         [MultiReturn("width", "height")]
         public static Dictionary<string, int> Dimensions(Bitmap image)
         {
-            return new Dictionary<string, int> 
-            { 
-                { "width", image.Width }, 
-                { "height", image.Height } 
+            return new Dictionary<string, int>
+            {
+                { "width", image.Width },
+                { "height", image.Height }
             };
         }
 

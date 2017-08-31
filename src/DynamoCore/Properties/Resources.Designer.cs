@@ -1080,6 +1080,33 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Python template set to default file.
+        /// </summary>
+        public static string PythonTemplateDefaultFile {
+            get {
+                return ResourceManager.GetString("PythonTemplateDefaultFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Python template : no valid template found..
+        /// </summary>
+        public static string PythonTemplateInvalid {
+            get {
+                return ResourceManager.GetString("PythonTemplateInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Python template set to user file.
+        /// </summary>
+        public static string PythonTemplateUserFile {
+            get {
+                return ResourceManager.GetString("PythonTemplateUserFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Range end could not be parsed..
         /// </summary>
         public static string RangeEndCouldNotBeParsed {
