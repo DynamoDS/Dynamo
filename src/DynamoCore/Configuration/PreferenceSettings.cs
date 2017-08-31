@@ -15,7 +15,7 @@ namespace Dynamo.Configuration
     /// PreferenceSettings is a class for GUI to persist certain settings.
     /// Upon running of the GUI, those settings that are persistent will be loaded
     /// from a XML file from DYNAMO_SETTINGS_FILE.
-    /// When GUI is closed, the settings into the XML file.
+    /// When GUI is closed, the settings are saved back into the XML file.
     /// </summary>
     public class PreferenceSettings : NotificationObject, IPreferences, IPreviewBubblePreference, IBackgroundPreviewPreference
     {
@@ -23,6 +23,7 @@ namespace Dynamo.Configuration
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
 
+        #region Constants
         /// <summary>
         /// Indicates the maximum number of files shown in Recent Files
         /// </summary>
@@ -43,9 +44,10 @@ namespace Dynamo.Configuration
         /// </summary>
         public static readonly System.DateTime DynamoDefaultTime = new System.DateTime(1977, 4, 12, 12, 12, 0, 0);
 
-        // Variables of the settings that will be persistent
+        #endregion
 
-        #region Collect Information Settings
+        /// The following settings are persistent between Dynamo sessions and are user-controllable
+        #region Collect Information settings
 
         /// <summary>
         /// Indicates first run
@@ -62,6 +64,8 @@ namespace Dynamo.Configuration
         /// </summary>
         public bool IsAnalyticsReportingApproved { get; set; }
         #endregion
+
+        #region UI & Graphics settings
 
         /// <summary>
         /// The width of the library pane.
@@ -94,10 +98,10 @@ namespace Dynamo.Configuration
         public List<BackgroundPreviewActiveState> BackgroundPreviews { get; set; }
 
         /// <summary>
-         /// Returns active state of specified background preview 
-         /// </summary>
-         /// <param name="name">Background preview name</param>
-         /// <returns>The active state</returns>
+        /// Returns active state of specified background preview 
+        /// </summary>
+        /// <param name="name">Background preview name</param>
+        /// <returns>The active state</returns>
         public bool GetIsBackgroundPreviewActive(string name)
         {
             var pair = GetBackgroundPreviewData(name);
@@ -139,7 +143,9 @@ namespace Dynamo.Configuration
         /// Indicates whether background preview is active or not.
         /// </summary>
         [Obsolete("Property will be deprecated in Dynamo 2.0, please use BackgroundPreviews")]
-        public bool IsBackgroundPreviewActive { get
+        public bool IsBackgroundPreviewActive
+        {
+            get
             {
                 return GetIsBackgroundPreviewActive("IsBackgroundPreviewActive");
             }
@@ -148,6 +154,47 @@ namespace Dynamo.Configuration
                 SetIsBackgroundPreviewActive("IsBackgroundPreviewActive", value);
             }
         }
+
+        /// <summary>
+        /// Indicates whether surface and solid edges will 
+        /// be rendered.
+        /// </summary>
+        public bool ShowEdges { get; set; }
+
+        /// <summary>
+        /// Indicates whether show detailed or compact layout during search.
+        /// </summary>
+        public bool ShowDetailedLayout { get; set; }
+
+
+        /// <summary>
+        /// The last X coordinate of the Dynamo window.
+        /// </summary>
+        public double WindowX { get; set; }
+
+        /// <summary>
+        /// The last Y coordinate of the Dynamo window.
+        /// </summary>
+        public double WindowY { get; set; }
+
+        /// <summary>
+        /// The last width of the Dynamo window.
+        /// </summary>
+        public double WindowW { get; set; }
+
+        /// <summary>
+        /// The last height of the Dynamo window.
+        /// </summary>
+        public double WindowH { get; set; }
+
+        /// <summary>
+        /// Should Dynamo use hardware acceleration if it is supported?
+        /// </summary>
+        public bool UseHardwareAcceleration { get; set; }
+
+        #endregion
+
+        #region Dynamo application settings
 
         /// <summary>
         /// The decimal precision used to display numbers.
@@ -195,7 +242,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// A list of folders containing zero-touch nodes and custom nodes.
         /// </summary>
-        public List<string> CustomPackageFolders { get; set; } 
+        public List<string> CustomPackageFolders { get; set; }
 
         /// <summary>
         /// A list of packages used by the Package Manager to determine
@@ -204,29 +251,18 @@ namespace Dynamo.Configuration
         public List<string> PackageDirectoriesToUninstall { get; set; }
 
         /// <summary>
-        /// The last X coordinate of the Dynamo window.
+        /// Path to the Python (.py) file to use as a starting template when creating a new PythonScript Node.
         /// </summary>
-        public double WindowX { get; set; }
+        public string PythonTemplateFilePath
+        {
+            get { return pythonTemplateFilePath; }
+            set { pythonTemplateFilePath = value; }
+        }
 
         /// <summary>
-        /// The last Y coordinate of the Dynamo window.
+        /// The backing store for the Python template file path. Required as static property cannot implement an interface member.
         /// </summary>
-        public double WindowY { get; set; }
-
-        /// <summary>
-        /// The last width of the Dynamo window.
-        /// </summary>
-        public double WindowW { get; set; }
-
-        /// <summary>
-        /// The last height of the Dynamo window.
-        /// </summary>
-        public double WindowH { get; set; }
-
-        /// <summary>
-        /// Should Dynamo use hardware acceleration if it is supported?
-        /// </summary>
-        public bool UseHardwareAcceleration { get; set; }
+        private static string pythonTemplateFilePath = "";
 
         /// <summary>
         /// This defines how long (in milliseconds) will the graph be automatically saved.
@@ -245,17 +281,6 @@ namespace Dynamo.Configuration
         public bool PackageDownloadTouAccepted { get; set; }
 
         /// <summary>
-        /// Indicates whether surface and solid edges will 
-        /// be rendered.
-        /// </summary>
-        public bool ShowEdges { get; set; }
-
-        /// <summary>
-        /// Indicates whether show detailed or compact layout during search.
-        /// </summary>
-        public bool ShowDetailedLayout { get; set; }
-
-        /// <summary>
         /// Indicates the default state of the "Open in Manual Mode"
         /// checkbox in OpenFileDialog
         /// </summary>
@@ -272,6 +297,8 @@ namespace Dynamo.Configuration
         /// </summary>
         [XmlIgnore]
         public bool NamespacesToExcludeFromLibrarySpecified { get; set; }
+
+        #endregion
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PreferenceSettings"/> class.
@@ -309,14 +336,14 @@ namespace Dynamo.Configuration
             BackupFiles = new List<string>();
 
             CustomPackageFolders = new List<string>();
+            PythonTemplateFilePath = "";
         }
 
         /// <summary>
-        /// Saves PreferenceSettings in XML File Path if possible,
-        /// else return false
+        /// Saves PreferenceSettings to XML, given a file path.
         /// </summary>
-        /// <param name="filePath">Path of the XML File</param>
-        /// <returns>Whether file is saved or error occurred.</returns>
+        /// <param name="filePath">Path of the XML File to save to.</param>
+        /// <returns>True if file is saved successfully, false if an error occurred.</returns>
         public bool Save(string filePath)
         {
             try
@@ -345,7 +372,7 @@ namespace Dynamo.Configuration
         /// <param name="preferenceFilePath">The file path to save preference
         /// settings to. If this parameter is null or empty string, preference 
         /// settings will be saved to the default path.</param>
-        /// <returns>Whether file is saved or error occurred.</returns>
+        /// <returns>True if file is saved successfully, false if an error occurred.</returns>
         public bool SaveInternal(string preferenceFilePath)
         {
             if (!String.IsNullOrEmpty(DynamoTestPath))
@@ -357,8 +384,8 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Returns PreferenceSettings from XML path if possible,
-        /// else return PreferenceSettings with default values
+        /// Loads PreferenceSettings from specified XML file if possible,
+        /// else initialises PreferenceSettings with default values.
         /// </summary>
         /// <param name="filePath">Path of the XML File</param>
         /// <returns>
@@ -386,7 +413,17 @@ namespace Dynamo.Configuration
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
 
             return settings;
-		}
+        }
+
+        /// <summary>
+        /// Returns the static Python template file path.
+        /// When the file exists and is not empty, its contents are used to populate new Python Script nodes added to the Dynamo workspace.
+        /// </summary>
+        /// <returns></returns>
+        public static string GetPythonTemplateFilePath()
+        {
+            return pythonTemplateFilePath;
+        }
 
         internal void InitializeNamespacesToExcludeFromLibrary()
         {

@@ -971,24 +971,6 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Return statement is invalid. Do you mean: return = {0} ?.
-        /// </summary>
-        public static string InvalidReturnStatement {
-            get {
-                return ResourceManager.GetString("InvalidReturnStatement", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Syntax Error: invalid symbol &apos;{0}&apos;. (Did you mean to use Modifier Stack \&quot; =&gt; \&quot;).
-        /// </summary>
-        public static string InvalidSymbol {
-            get {
-                return ResourceManager.GetString("InvalidSymbol", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to File : &apos;{0}&apos; is already imported.
         /// </summary>
         public static string kAlreadyImported {
@@ -1372,6 +1354,15 @@ namespace ProtoCore.Properties {
         public static string kMethodAlreadyDefined {
             get {
                 return ResourceManager.GetString("kMethodAlreadyDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; has been deprecated, please use method &apos;{1}&apos; instead.
+        /// </summary>
+        public static string kMethodDeprecated {
+            get {
+                return ResourceManager.GetString("kMethodDeprecated", resourceCulture);
             }
         }
         

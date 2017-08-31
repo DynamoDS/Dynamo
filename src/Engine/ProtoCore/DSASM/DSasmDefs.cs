@@ -366,8 +366,8 @@ namespace ProtoCore.DSASM
  
         public const string termline = ";\n";
         public const string kInternalNamePrefix = "%";
-        public const string kGetterPrefix = "%get_";
-        public const string kSetterPrefix = "%set_";
+        public const string kGetterPrefix = "get_";
+        public const string kSetterPrefix = "set_";
         public const string kLHS = "%lhs";
         public const string kRHS = "%rhs";
         public const string kTempFunctionReturnVar = "%tmpRet";

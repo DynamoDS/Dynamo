@@ -56,6 +56,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Returns NodeModel ID
         /// </summary>
+        [JsonConverter(typeof(IdToGuidConverter))]
         public Guid Id
         {
             get { return NodeModel.GUID; }
@@ -444,7 +445,7 @@ namespace Dynamo.ViewModels
         /// <value>
         ///  Returns true if the node has been frozen explicitly by the user, otherwise false.
         /// </value>  
-        [JsonIgnore]
+        [JsonProperty("Excluded")]
         public bool IsFrozenExplicitly
         {
             get

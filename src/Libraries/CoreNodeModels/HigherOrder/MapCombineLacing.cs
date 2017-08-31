@@ -51,10 +51,8 @@ namespace CoreNodeModels.HigherOrder
     {
         private readonly int minPorts;
 
-        protected CombinatorNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
+        protected CombinatorNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            InPorts.AddRange(inPorts);
-            OutPorts.AddRange(outPorts);
         }
 
         protected CombinatorNode() : this(3)
@@ -99,9 +97,13 @@ namespace CoreNodeModels.HigherOrder
     public class Combine : CombinatorNode
     {
         [JsonConstructor]
-        private Combine(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) { }
+        private Combine(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+        }
 
-        public Combine() : base() { }
+        public Combine() : base()
+        {
+        }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -130,9 +132,13 @@ namespace CoreNodeModels.HigherOrder
     public class ForEach : CombinatorNode
     {
         [JsonConstructor]
-        private ForEach(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) { }
+        private ForEach(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+        }
   
-        public ForEach() : base(2) { }
+        public ForEach() : base(2)
+        {
+        }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -162,9 +168,13 @@ namespace CoreNodeModels.HigherOrder
     public class LaceShortest : CombinatorNode
     {
         [JsonConstructor]
-        private LaceShortest(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
+        private LaceShortest(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+        }
 
-        public LaceShortest() : base() { }
+        public LaceShortest() : base()
+        {
+        }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -194,9 +204,13 @@ namespace CoreNodeModels.HigherOrder
     public class LaceLongest : CombinatorNode
     {
         [JsonConstructor]
-        private LaceLongest(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
+        private LaceLongest(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+        }
 
-        public LaceLongest() : base() { }
+        public LaceLongest() : base()
+        {
+        }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -227,9 +241,13 @@ namespace CoreNodeModels.HigherOrder
     public class CartesianProduct : CombinatorNode
     {
         [JsonConstructor]
-        private CartesianProduct(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts, outPorts) { }
+        private CartesianProduct(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+        }
 
-        public CartesianProduct() : base() { }
+        public CartesianProduct() : base()
+        {
+        }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {

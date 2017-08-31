@@ -10,133 +10,6 @@ namespace ProtoCore.Lang.Replication
 {
     public class Replicator
     {
-        public static List<ReplicationInstruction> BuildPartialReplicationInstructions_Old(List<List<ProtoCore.ReplicationGuide>> partialRepGuides)
-        {
-            //DS code:          foo(a<1><2><3>, b<2>, c)
-            //partialGuides     {1,2,3}, {2}, {}
-            //Instructions
-
-            //Check for out of order unboxing
-
-            // Comment Jun: Convert from new replication guide data struct to the old format where guides are only a list of ints
-            // TODO Luke: Remove this temporary marshalling and use the replicationguide data structure directly
-            List<List<int>> partialGuides = new List<List<int>>();
-            List<List<ZipAlgorithm>> partialGuidesLace = new List<List<ZipAlgorithm>>();
-
-            foreach (List<ReplicationGuide> guidesOnParam in partialRepGuides)
-            {
-                List<int> tempGuide = new List<int>();
-                List<ZipAlgorithm> tempGuideLaceStrategy = new List<ZipAlgorithm>();
-                foreach (ReplicationGuide guide in guidesOnParam)
-                {
-                    tempGuide.Add(guide.GuideNumber);
-                    tempGuideLaceStrategy.Add(guide.IsLongest ? ZipAlgorithm.Longest : ZipAlgorithm.Shortest);
-                }
-                partialGuides.Add(tempGuide);
-                partialGuidesLace.Add(tempGuideLaceStrategy);
-            }
-
-            //Guide -> args
-            Dictionary<int, List<int>> index = new Dictionary<int, List<int>>();
-            Dictionary<int, ZipAlgorithm> indexLace = new Dictionary<int, ZipAlgorithm>();
-
-            int maxGuide = int.MinValue;
-
-            foreach (List<int> guidesOnParam in partialGuides)
-            {
-                foreach (int guide in guidesOnParam)
-                    maxGuide = Math.Max(maxGuide, guide);
-            }
-
-            //There were no guides, exit with no instructions
-            if (maxGuide == int.MinValue)
-                return new List<ReplicationInstruction>();
-
-            //Iterate over all of the guides
-            for (int guideCounter = 1; guideCounter <= maxGuide; guideCounter++)
-            {
-                index.Add(guideCounter, new List<int>());
-                // indexLace.Add(guideCounter, ZipAlgorithm.Shortest);
-
-                for (int i = 0; i < partialGuides.Count; i++)
-                {
-                    if (partialGuides[i].Contains(guideCounter))
-                    {
-                        index[guideCounter].Add(i);
-
-                        int indexOfGuide = partialGuides[i].IndexOf(guideCounter);
-
-                        if (partialGuidesLace[i][indexOfGuide] == ZipAlgorithm.Longest)
-                        {
-                            ZipAlgorithm zipAlgorithm;
-                            if (indexLace.TryGetValue(guideCounter, out zipAlgorithm))
-                            {
-                                //If we've previous seen a shortest node with this guide
-                                if (i > 0 && indexLace[guideCounter] == ZipAlgorithm.Shortest)
-                                {
-                                    throw new ReplicationCaseNotCurrentlySupported(Resources.ZipAlgorithmError);
-                                }
-                            }
-                            else
-                            {
-                                //Overwrite the default behaviour
-                                indexLace[guideCounter] = ZipAlgorithm.Longest;
-                            }
-                        }
-                        else
-                        {
-                            //it's shortest, if we had something previous saying it should be longest
-                            //then we've created a violation foo(a<1>, b1<1L>) is not allowed
-                            ZipAlgorithm zipAlgorithm;
-                            if (indexLace.TryGetValue(guideCounter, out zipAlgorithm))
-                            {
-                                if (zipAlgorithm == ZipAlgorithm.Longest)
-                                {
-                                    throw new ReplicationCaseNotCurrentlySupported(Resources.ZipAlgorithmError);
-                                }
-                            }
-                            else
-                            {
-                                indexLace[guideCounter] = ZipAlgorithm.Shortest;
-                            }
-                        }
-                    }
-                }
-            }
-
-            //Now walk over the guides in order creating the replication 
-            int[] uniqueGuides = new int[index.Keys.Count];
-            index.Keys.CopyTo(uniqueGuides, 0);
-            Array.Sort(uniqueGuides);
-
-            List<ReplicationInstruction> ret = new List<ReplicationInstruction>();
-            foreach (int i in uniqueGuides)
-            {
-                //Create a new replication instruction
-                ReplicationInstruction ri = new ReplicationInstruction();
-
-                if (index[i].Count == 0)
-                {
-                    continue;
-                }
-                else if (index[i].Count == 1)
-                {
-                    ri.CartesianIndex = index[i][0];
-                    ri.Zipped = false;
-                }
-                else
-                {
-                    ri.Zipped = true;
-                    ri.ZipIndecies = index[i];
-                    ri.ZipAlgorithm = indexLace[i];
-                }
-
-                ret.Add(ri);
-            }
-
-            return ret;
-        }
-
         /// <summary>
         /// Calculate partial replication instruciton based on replication guide level.
         /// For example, for foo(xs<1><2><3>, ys<1><1><2>, zs<1><1><3>), the guides
@@ -528,7 +401,10 @@ namespace ProtoCore.Lang.Replication
                     }
                     else
                     {
-                        maxReductionDepths[ri.CartesianIndex] = maxReductionDepths[ri.CartesianIndex] - 1;
+                        if (maxReductionDepths[ri.CartesianIndex] > 0)
+                        {
+                            maxReductionDepths[ri.CartesianIndex] = maxReductionDepths[ri.CartesianIndex] - 1;
+                        }
                     }
                 }
             }

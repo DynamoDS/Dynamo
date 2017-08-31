@@ -88,15 +88,6 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel.
-        /// </summary>
-        public static string PythonScriptEditoCancelButton {
-            get {
-                return ResourceManager.GetString("PythonScriptEditoCancelButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Accept Changes.
         /// </summary>
         public static string PythonScriptEditorAcceptChangesButton {
@@ -106,11 +97,38 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string PythonScriptEditorCancelButton {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorCancelButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit Python Script....
         /// </summary>
         public static string PythonScriptEditorCaption {
             get {
                 return ResourceManager.GetString("PythonScriptEditorCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Place your code below this line.
+        /// </summary>
+        public static string PythonScriptEditorCodeComment {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorCodeComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Python support and load DesignScript library.
+        /// </summary>
+        public static string PythonScriptEditorImports {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorImports", resourceCulture);
             }
         }
         

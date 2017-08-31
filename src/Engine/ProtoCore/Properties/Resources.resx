@@ -189,12 +189,6 @@
   <data name="InvalidLanguageBlockIdentifier" xml:space="preserve">
     <value>\"{0}\" is not a valid language block identifier, do you mean \"Associative\" or \"Imperative\"?</value>
   </data>
-  <data name="InvalidReturnStatement" xml:space="preserve">
-    <value>Return statement is invalid. Do you mean: return = {0} ?</value>
-  </data>
-  <data name="InvalidSymbol" xml:space="preserve">
-    <value>Syntax Error: invalid symbol '{0}'. (Did you mean to use Modifier Stack \" =&gt; \")</value>
-  </data>
   <data name="kAlreadyImported" xml:space="preserve">
     <value>File : '{0}' is already imported</value>
   </data>
@@ -338,6 +332,9 @@
   </data>
   <data name="kMultipleSymbolFoundFromName" xml:space="preserve">
     <value>Multiple definitions for '{0}' are found as {1}</value>
+  </data>
+  <data name="kMethodDeprecated" xml:space="preserve">
+    <value>Method '{0}' has been deprecated, please use method '{1}' instead</value>
   </data>
   <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
     <value>No step size is specified in amount range expression</value>
