@@ -194,9 +194,15 @@ namespace Dynamo.ViewModels
               if (homeWorkspace != null)
                 hasRunWithoutCrash = homeWorkspace.HasRunWithoutCrash;
 
+              bool isVisibleInDynamoLibrary = true;
+              CustomNodeWorkspaceModel customNodeWorkspace = Model as CustomNodeWorkspaceModel;
+              if (customNodeWorkspace != null)
+                isVisibleInDynamoLibrary = customNodeWorkspace.IsVisibleInDynamoLibrary;
+
               return new DynamoPreferencesData(
                 Model.ScaleFactor,
-                hasRunWithoutCrash);
+                hasRunWithoutCrash,
+                isVisibleInDynamoLibrary);
             }
         }
 

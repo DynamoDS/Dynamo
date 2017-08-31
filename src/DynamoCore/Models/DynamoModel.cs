@@ -56,13 +56,16 @@ namespace Dynamo.Models
     {
       public double ScaleFactor { get; internal set; }
       public bool HasRunWithoutCrash { get; internal set; }
+      public bool IsVisibleInDynamoLibrary { get; internal set; }
 
       public DynamoPreferencesData(
         double scaleFactor,
-        bool hasRunWithoutCrash)
+        bool hasRunWithoutCrash,
+        bool isVisibleInDynamoLibrary)
       {
         ScaleFactor = scaleFactor;
         HasRunWithoutCrash = hasRunWithoutCrash;
+        IsVisibleInDynamoLibrary = isVisibleInDynamoLibrary;
       }
     }
 
@@ -1488,6 +1491,10 @@ namespace Dynamo.Models
             HomeWorkspaceModel homeWorkspace = workspace as HomeWorkspaceModel;
             if (homeWorkspace != null)
               homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
+
+            CustomNodeWorkspaceModel customNodeWorkspace = workspace as CustomNodeWorkspaceModel;
+            if (customNodeWorkspace != null)
+              customNodeWorkspace.IsVisibleInDynamoLibrary = dynamoPreferences.IsVisibleInDynamoLibrary;
 
             return true;
         }
