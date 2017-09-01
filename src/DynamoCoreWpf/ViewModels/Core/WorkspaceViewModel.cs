@@ -209,7 +209,7 @@ namespace Dynamo.ViewModels
                 Model.ScaleFactor,
                 hasRunWithoutCrash,
                 isVisibleInDynamoLibrary,
-                Model.WorkspaceVersion.ToString(),
+                AssemblyHelper.GetDynamoVersion().ToString(),
                 runType,
                 runPeriod);
             }
