@@ -342,10 +342,10 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         ///     Initializes a new instance of the <see cref="Symbol"/> class.
         /// </summary>
         [JsonConstructor]
-        public Symbol(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        public Symbol(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts, TypedParameter parameter) : base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InputSymbol = String.Empty;
+            InputSymbol = parameter.ToString();
             ElementResolver = new ElementResolver();
         }
 

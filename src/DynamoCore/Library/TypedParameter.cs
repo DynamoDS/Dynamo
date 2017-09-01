@@ -14,6 +14,7 @@ namespace Dynamo.Library
         private string summary = null; // Indicating that it is not initialized.
         private readonly string defaultValueString;
 
+
         /// <summary>
         /// This function creates TypedParameter
         /// </summary>
@@ -22,6 +23,23 @@ namespace Dynamo.Library
         /// <param name="defaultValue">parameter default value</param>
         /// <param name="shortArgumentName">short name is used as tooltip</param>
         /// <param name="summary">parameter description</param>
+        [JsonConstructor]
+        public TypedParameter(string name, ProtoCore.Type type, string defaultValue)
+        {
+            Name = name;
+            Type = type;
+            defaultValueString = defaultValue;
+        }
+        
+        
+        /// <summary>
+         /// This function creates TypedParameter
+         /// </summary>
+         /// <param name="name">parameter name</param>
+         /// <param name="type">parameter type</param>
+         /// <param name="defaultValue">parameter default value</param>
+         /// <param name="shortArgumentName">short name is used as tooltip</param>
+         /// <param name="summary">parameter description</param>
         public TypedParameter(string name, ProtoCore.Type type, AssociativeNode defaultValue = null, string shortArgumentName = null, string summary = null)
         {
             if (name == null)
