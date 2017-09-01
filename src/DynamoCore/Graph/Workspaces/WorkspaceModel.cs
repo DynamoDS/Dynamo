@@ -1566,6 +1566,9 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="workspaceViewInfo">The extra view information from the workspace to update the model with.</param>
         public void UpdateWithExtraWorkspaceViewInfo(ExtraWorkspaceViewInfo workspaceViewInfo)
         {
+            if (workspaceViewInfo == null)
+              return;
+
             X = workspaceViewInfo.X;
             Y = workspaceViewInfo.Y;
             Zoom = workspaceViewInfo.Zoom; 

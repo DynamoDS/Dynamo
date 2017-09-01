@@ -76,6 +76,17 @@ namespace Dynamo.Models
         RunType = runType;
         RunPeriod = runPeriod;
       }
+
+      public static DynamoPreferencesData Default()
+      {
+        return new DynamoPreferencesData(
+          1.0,
+          false,
+          true,
+          AssemblyHelper.GetDynamoVersion().ToString(),
+          Models.RunType.Manual.ToString(),
+          RunSettings.DefaultRunPeriod.ToString());
+      }
     }
 
     /// <summary>
@@ -1333,7 +1344,9 @@ namespace Dynamo.Models
             JsonReader reader = new JsonTextReader(new StringReader(json));
             var obj = JObject.Load(reader);
             var viewBlock = obj["View"];
-            var dynamoBlock = viewBlock["Dynamo"];
+            var dynamoBlock = viewBlock == null ? null : viewBlock["Dynamo"];
+            if (dynamoBlock == null)
+              return DynamoPreferencesData.Default();
            
             var settings = new JsonSerializerSettings
             {

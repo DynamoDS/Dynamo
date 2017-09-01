@@ -531,6 +531,8 @@ namespace Dynamo.ViewModels
             JsonReader reader = new JsonTextReader(new StringReader(json));
             var obj = JObject.Load(reader);
             var viewBlock = obj["View"];
+            if (viewBlock == null)
+              return null;
            
             var settings = new JsonSerializerSettings
             {
