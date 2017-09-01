@@ -29,7 +29,6 @@ using Dynamo.Engine;
 
 namespace Dynamo.ViewModels
 {
-
     public delegate void NoteEventHandler(object sender, EventArgs e);
     public delegate void ViewEventHandler(object sender, EventArgs e);
     public delegate void SelectionEventHandler(object sender, SelectionBoxUpdateArgs e);
@@ -180,6 +179,41 @@ namespace Dynamo.ViewModels
 
         [JsonIgnore]
         public bool IsSnapping { get; set; }
+
+        /// <summary>
+        /// Gets the collection of Dynamo-specific preferences.
+        /// This is used when serializing Dynamo preferences in the View block of Graph.Json.
+        /// </summary>
+        [JsonProperty("Dynamo")]
+        public DynamoPreferencesData DynamoPreferences
+        {
+            get
+            {
+              bool hasRunWithoutCrash = false;
+              string runType = RunType.Manual.ToString();
+              string runPeriod = RunSettings.DefaultRunPeriod.ToString();
+              HomeWorkspaceModel homeWorkspace = Model as HomeWorkspaceModel;
+              if (homeWorkspace != null)
+              {
+                hasRunWithoutCrash = homeWorkspace.HasRunWithoutCrash;
+                runType = homeWorkspace.RunSettings.RunType.ToString();
+                runPeriod = homeWorkspace.RunSettings.RunPeriod.ToString();
+              }
+
+              bool isVisibleInDynamoLibrary = true;
+              CustomNodeWorkspaceModel customNodeWorkspace = Model as CustomNodeWorkspaceModel;
+              if (customNodeWorkspace != null)
+                isVisibleInDynamoLibrary = customNodeWorkspace.IsVisibleInDynamoLibrary;
+
+              return new DynamoPreferencesData(
+                Model.ScaleFactor,
+                hasRunWithoutCrash,
+                isVisibleInDynamoLibrary,
+                AssemblyHelper.GetDynamoVersion().ToString(),
+                runType,
+                runPeriod);
+            }
+        }
 
         /// <summary>
         /// Gets the Camera Data. This is used when serializing Camera Data in the View block
@@ -497,6 +531,8 @@ namespace Dynamo.ViewModels
             JsonReader reader = new JsonTextReader(new StringReader(json));
             var obj = JObject.Load(reader);
             var viewBlock = obj["View"];
+            if (viewBlock == null)
+              return null;
            
             var settings = new JsonSerializerSettings
             {
